@@ -4,7 +4,7 @@ const commonClinicalRules = `<clinical_safety_rules>
 Use only de-identified context in this prompt or earlier in this OpenEvidence conversation.
 Do not invent facts, identifiers, orders, diagnoses, results, responses, or consultant recommendations.
 Separate facts from interpretation, preserve uncertainty, and frame possible actions as items to verify or consider with the treating team.
-Local validated clinical intents and reviewed evidence remain authoritative for bedside questions/exams. Do not write, rewrite, or silently expand the final bedside checklist; label any bedside addition idea as an UNVALIDATED GAP SUGGESTION.
+Local validated clinical intents and reviewed evidence remain authoritative for bedside questions/exams. Do not write, rewrite, or silently expand bedside checklist rows unless the selected task is Checklist improvement review; that task must output only the requested structured JSON replacement.
 </clinical_safety_rules>`;
 
 const abbreviationRules = `<abbreviation_rules>
@@ -96,15 +96,14 @@ function initialRoundsPrompt(context) {
   return buildPatientPrompt(
     context,
     `<role>
-Attending physician and clerkship coach helping a medical student prepare concise rounds.
+Attending physician and clerkship coach helping a medical student prepare a concise attending-ready rounds presentation.
 </role>
 
 ${taskBoundary({
-  primary: "Turn de-identified chart context into a compact, presentation-ready orientation for morning rounds.",
+  primary: "Turn de-identified chart context into a concise SOAP-format rounds report with a merged assessment/plan.",
   notFor: [
-    "a full attending assessment and plan",
+    "a comprehensive full SOAP note",
     "a medication-only safety audit",
-    "a guideline currency review",
     "a teaching handout",
     "a discharge readiness review",
     "a blind-spot second opinion"
@@ -112,18 +111,26 @@ ${taskBoundary({
 })}
 
 <task>
-Create a patient-specific rounds report: what to say, what to self-check before rounds, and only decision-level team questions.
+Create a concise report the student can deliver to an attending on rounds. Avoid redundancy. Include each detail only if it changes the clinical story, objective interpretation, or management.
 </task>`,
     `<output_format>
-Use at most 6 bullets total.
-Prefix every bullet with SAY, CHECK, ASK, or WATCH.
-SAY = wording that materially improves the rounds presentation.
-CHECK = chart, bedside, lab, medication administration record, order, imaging, intake/output, or note fact the student should verify directly.
-ASK = team judgment, rationale, contingency threshold, consultant preference, or unavailable context.
-WATCH = escalation, monitoring, or disposition cue.
-Do not include citations or a reference list for routine rounds preparation.
-Do not write a full problem-based plan; reserve that for the attending-level plan task.
-Do not add headings or empty categories.
+Use concise bullets only, organized exactly as:
+I. SUBJECTIVE
+- One-liner
+- HPI / consult question / management to date
+- Medications and allergies, grouped by indication
+- Relevant psychosocial, family, and social history
+II. OBJECTIVE
+- Vitals
+- Physical exam
+- Laboratory data and trends
+- Imaging / other workup
+III. ASSESSMENT AND PLAN
+- Summary of patient
+- Problem list with management plan / workup for each active problem
+For each management recommendation, include an inline citation to current guideline or literature when OpenEvidence can support it.
+Keep subjective and objective sections as short as possible without losing management-changing details.
+Do not repeat the same fact in multiple sections unless it changes a separate management decision.
 </output_format>`
   );
 }
@@ -132,15 +139,14 @@ function fullRoundsReportPrompt(context) {
   return buildPatientPrompt(
     context,
     `<role>
-Attending physician and clerkship coach helping a medical student prepare a complete but concise rounds report.
+Attending physician and clerkship coach helping a medical student prepare a complete SOAP rounds report.
 </role>
 
 ${taskBoundary({
-  primary: "Turn de-identified chart context into a fuller rounds report with concise clinical trajectory, objective anchors, assessment, and management priorities.",
+  primary: "Turn de-identified chart context into a full SOAP-format rounds report with all clinically relevant details.",
   notFor: [
-    "a short bullets-only rounds orientation; use the concise rounds report for that",
+    "a short highlights-only report; use the concise rounds report for that",
     "a medication-only safety audit",
-    "a guideline currency review",
     "a teaching handout",
     "a discharge readiness-only review",
     "a blind-spot second opinion"
@@ -148,23 +154,26 @@ ${taskBoundary({
 })}
 
 <task>
-Create a full rounds report modeled on a classic one-liner, active-problem trajectory, objective data, assessment, and plan. Make it compact enough to present from, with no repeated data unless a repeated value changes the interpretation.
+Create a full rounds report in SOAP format. Include all details needed to understand the patient, but avoid copied chart narrative and avoid repeating data unless the repetition changes interpretation.
 </task>`,
     `<output_format>
-Use exactly these headings, in this order:
-ONE-LINER
-ACTIVE PROBLEMS AND TRAJECTORY
-TODAY'S ROUNDS PRIORITIES
-SUBJECTIVE AND INTERVAL EVENTS
-OBJECTIVE DATA TO ANCHOR PRESENTATION
-ASSESSMENT AND PLAN
-CONTINGENCIES AND DISPOSITION
-Keep the whole report concise: max 1 one-liner sentence, max 6 active problems, max 5 priorities, max 6 objective anchors, max 6 assessment/plan bullets, and max 4 contingency/disposition bullets.
-For each active problem, include only status, trend, and the decision it changes today.
-Put each lab/vital/medication/imaging trend in only one section unless it changes a separate decision elsewhere.
-Do not include exhaustive PMH, medication lists, normal exam, negative ROS, or copied chart narrative unless it changes today's plan.
-Put chart-verifiable missing data under TODAY'S ROUNDS PRIORITIES or OBJECTIVE DATA TO ANCHOR PRESENTATION; put true team judgment under ASSESSMENT AND PLAN.
-Do not include citations or a reference list.
+Use concise bullets only, organized exactly as:
+I. SUBJECTIVE
+- One-liner
+- HPI / consult question / management to date
+- Medications and allergies, grouped by indication
+- Relevant psychosocial, family, and social history
+II. OBJECTIVE
+- Vitals
+- Physical exam
+- Laboratory data and trends
+- Imaging / other workup
+III. ASSESSMENT AND PLAN
+- Summary of patient
+- Problem list with management plan / workup for each active problem
+Include important negatives, trends, medication context, and contingencies when they matter to the team's management.
+For each management recommendation, include an inline citation to current guideline or literature when OpenEvidence can support it.
+Do not add a separate reference list unless inline citations would be unclear.
 </output_format>`
   );
 }
@@ -172,10 +181,10 @@ Do not include citations or a reference list.
 function finalRoundsPrompt(context) {
   return [
     `<role>
-Attending physician and clerkship coach updating a rounds presentation after bedside pre-rounding.
+Attending physician and clerkship coach updating yesterday's rounds presentation.
 </role>`,
     taskBoundary({
-      primary: "Update the already-created OpenEvidence rounds conversation using only new bedside findings and local checklist results.",
+      primary: "Create a very short SOAP-format 24-hour rounds update focused on what changed and how it changes management.",
       notFor: [
         "re-summarizing the full chart from scratch",
         "adding unsupported new diagnoses or orders",
@@ -189,12 +198,14 @@ Attending physician and clerkship coach updating a rounds presentation after bed
     context.userContext || "",
     findingsContextBlock(context),
     `<output_format>
-Use at most 5 bullets total.
-Prefix every bullet with SAY, CHECK, ASK, or WATCH.
-Only include changes since the initial report that change the presentation, self-checks, escalation/monitoring, or a true team decision question.
-Do not ask the team about bedside findings, labs, medication administration record entries, or other facts the student can verify directly.
-Do not include citations or a reference list.
-Do not add headings, unchanged items, or empty categories.
+Use concise bullets only.
+Assume the attending heard the full presentation yesterday; do not repeat stable background.
+Organize exactly as:
+I. SUBJECTIVE - only new symptoms, interval events, or patient-reported changes
+II. OBJECTIVE - only new vitals, exam changes, labs/trends, imaging, medication administrations, or procedures
+III. ASSESSMENT AND PLAN - each bullet must state what changed in the last 24 hours and whether/how it changes management
+Include "no management change" only when a new result might otherwise appear to require action.
+Use inline guideline/literature citations only for new management recommendations or changed thresholds.
 </output_format>`
   ].filter(Boolean).join("\n\n");
 }
@@ -205,33 +216,30 @@ Attending physician and medication safety reviewer helping a student prepare for
 </role>
 
 ${taskBoundary({
-  primary: "Find medication, dosing, administration, monitoring, interaction, and supply issues that should be verified before rounds.",
+  primary: "Audit the medication administration record and notes for 5Rs medication safety on every active medication.",
   notFor: [
     "a general assessment and plan",
     "a discharge checklist except medication or supply barriers",
-    "a guideline literature review",
     "a broad blind-spot review unrelated to medications"
   ]
 })}
 
 <task>
-Identify medication-related issues to verify before rounds. Use cautious language; call something an error only if directly supported.
+Compare ordered medications, administration record details, and note context. Verify right patient/context, right medication, right dose, right route, and right time/frequency for every active medication when data are available.
 </task>
 
 <safety_focus>
-Check dose/frequency, renal/hepatic/weight/age fit, duplicate therapy, disease/lab mismatches, held/refused/delayed/missing administrations, order/MAR mismatches, high-risk interactions, peri-procedural timing, prophylaxis gaps, and critical home med restart/hold questions.
+Check whether medications are being given as ordered; dose/frequency fit with renal/hepatic/weight/age status; medication has a clear indication; the selected medication is appropriate for this patient's active problems; duplicate therapy; disease/lab mismatches; held/refused/delayed/missing administrations; order/MAR mismatches; interactions; peri-procedural timing; prophylaxis gaps; and home medication restart/hold questions.
 </safety_focus>`;
 
   const output = `<output_format>
-Use at most 5 bullets total.
-Prefix every bullet with VERIFY, ASK, MONITOR, or ESCALATE.
-For each bullet: name the medication/class, state what could be wrong or unclear, and explain why it changes safety or management.
-VERIFY = chart-verifiable order, dose, route, frequency, renal/hepatic/weight/age fit, lab monitoring, or medication administration record issue.
-ASK = rationale, intended plan, unclear hold/restart, missing administration context, nursing barrier, or consultant preference not visible in the chart.
-MONITOR = monitoring action tied to a medication risk.
-ESCALATE = urgent medication safety concern.
+Use concise bullets only.
+Group by medication or medication class.
+For each active medication with enough context, address the 5Rs: right patient/context, right medication, right dose, right route, right time/frequency.
+For each issue, state: medication/class; what is mismatched, missing, unsafe, or unclear; why it matters; what to verify or change.
+Use prefixes only when helpful: VERIFY, HOLD/RESTART, DOSE, INDICATION, INTERACTION, MONITOR, ESCALATE.
+Include "no issue found" only for a high-risk medication where the MAR and notes clearly support all 5Rs.
 Do not include non-medication problems unless they directly change medication safety.
-Do not include likely-okay, no-action, or no-concern bullets.
 </output_format>`;
 
   if (context.sameConversationReady && !context.forceIncludeSourceForMedicationSafety) {
@@ -315,27 +323,25 @@ Attending physician giving a concise assessment and plan to help a learner under
 </role>
 
 ${taskBoundary({
-  primary: "Build a problem-based diagnostic and treatment reasoning plan from supported case facts.",
+  primary: "Give patient-specific management recommendations based on current guidelines and literature.",
   notFor: [
     "a compact rounds presentation script",
     "a medication-only safety check",
-    "a guideline currency audit",
     "a teaching handout",
     "a discharge logistics checklist"
   ]
 })}
 
 <task>
-Create an attending-level assessment and plan from supported facts. Separate confirmed facts, plausible interpretations, and items needing team verification.
+Create concise attending-level management recommendations from supported facts. Use OpenEvidence's current guideline/literature access for recommendation support and thresholds.
 </task>`,
     `<output_format>
-Use at most 6 bullets total.
-Prefix every bullet with DIAGNOSIS, TREATMENT, MONITOR, ESCALATE, or ASK.
-Include only diagnostic or treatment reasoning that changes today's decisions, monitoring, escalation, or team discussion.
-Keep chart, bedside, medication administration record, and order checks as student-verifiable facts; use ASK only for team judgment or unavailable context.
-Do not invent orders.
-Do not include citations or a reference list; this is a reasoning handoff, not a literature review.
-Do not write a full problem-list assessment and plan or repeat a full rounds report.
+Use concise bullets only.
+Organize by active problem.
+For each problem, include management recommendations, diagnostic workup, monitoring/escalation thresholds, and what would change the plan.
+For each recommendation, include an inline citation to the latest guideline or literature OpenEvidence can support.
+State uncertainty explicitly and avoid inventing orders or facts.
+Do not write a full SOAP note; focus on management.
 </output_format>`
   );
 }
@@ -348,7 +354,7 @@ Attending physician teaching an early third-year medical student.
 </role>
 
 ${taskBoundary({
-  primary: "Explain the case, reasoning, and learning points so a junior student can understand and present intelligently.",
+  primary: "Explain the full SOAP report so a new third-year medical student can understand the case and reasoning.",
   notFor: [
     "a directive attending plan",
     "a medication safety audit",
@@ -359,15 +365,18 @@ ${taskBoundary({
 })}
 
 <task>
-Explain the patient and reasoning in practical language for prerounding, presentation, data interpretation, and common learner mistakes.
+Create a teaching report that follows the full SOAP structure, expands medical abbreviations, and explains why each clinically important detail matters.
 </task>`,
     `<output_format>
-Use at most 4 bullets total.
-Prefix every bullet with SAY, CHECK, ASK, or AVOID.
-Include only learner-facing points that change what the student says on rounds, verifies before rounds, asks the team, or avoids overclaiming.
-Use ASK only for concepts or reasoning worth asking a supervising clinician; do not include factual questions answerable from the chart.
-Do not include citations or a reference list. Do not include a reading plan, source names, journal names, society names, evidence grades, bracketed citation markers, relevant images, or external links.
-Do not write an illness-script review, background review, or management plan.
+Use SOAP headings:
+I. SUBJECTIVE
+II. OBJECTIVE
+III. ASSESSMENT AND PLAN
+Within each section, use bullets with short explanations in plain language for a brand-new third-year medical student.
+Spell out all non-obvious abbreviations and briefly define them on first use.
+Explain the clinical reasoning behind important symptoms, exam findings, lab trends, imaging, medications, and management choices.
+Include enough background for the learner to understand the case, but keep it patient-specific rather than a generic textbook chapter.
+Do not include a reading plan or external links unless directly needed to explain a cited management recommendation.
 </output_format>`
   );
 }
@@ -445,9 +454,8 @@ Attending physician helping a clinician pressure-test a locally generated bedsid
 </role>
 
 ${taskBoundary({
-  primary: "Critique the locally generated bedside checklist for omissions, wording problems, and mismatch with validated local workup context.",
+  primary: "Return a complete structured replacement checklist/workup that can be pasted back into the local app.",
   notFor: [
-    "creating a replacement checklist",
     "writing a patient management plan",
     "summarizing the full chart",
     "performing a medication-only audit",
@@ -456,7 +464,7 @@ ${taskBoundary({
 })}
 
 <task>
-Review the current checklist against the compact de-identified context. Flag omissions, broad/unclear wording, unsafe assumptions, and mismatch with the selected local diagnosis/workup.
+Review the current checklist against the compact de-identified context and selected local workup. Return a complete replacement checklist in the schema below, with clinically coherent answer choices, normal defaults, and explicit answerMode metadata.
 </task>`,
     commonClinicalRules,
     abbreviationRules,
@@ -471,12 +479,103 @@ Raw chart text, HPI, identifiers, names, exact dates, room numbers, and medical 
 </privacy_boundary>
 
 <output_format>
-Use at most 5 bullets total.
-Prefix every bullet with ADD, REMOVE, or WORDING.
-Include only checklist changes that could alter bedside verification, escalation, disposition, or team decision-making.
-Label every suggested added or changed bedside question/exam item as UNVALIDATED LOCAL REVIEW in the same bullet.
-Do not output a replacement final checklist. Do not provide a copy-ready checklist.
-Do not include citations or a reference list.
+Output only one fenced JSON block. Do not include prose before or after it.
+Use this exact top-level schema:
+{
+  "schema": "workup_refinement_v1",
+  "workupId": "selected local workup id if known",
+  "title": "selected workup title",
+  "replaceMode": "full_replacement",
+  "sections": [
+    {
+      "title": "SECTION TITLE",
+      "organSystemKey": "endocrine_metabolic",
+      "items": [
+        {
+          "id": "stable_snake_case_id",
+          "category": "bedside or exam",
+          "label": "Bedside question or exam maneuver",
+          "answerMode": "single or multi",
+          "options": ["option 1", "option 2"],
+          "normalAnswers": ["normal option"],
+          "exclusiveGroups": [["mutually exclusive option A", "mutually exclusive option B"]],
+          "patientSpecific": false,
+          "rationale": "Why this item changes bedside verification or management.",
+          "citations": ["Guideline/literature citation when OpenEvidence can support it"]
+        }
+      ]
+    }
+  ],
+  "removedItemLabels": []
+}
+Use patientSpecific true only for a row that should not become the future default for this workup.
+Prefer multi answerMode when independent findings can coexist, such as normal strength plus symmetric pulses.
+Prefer one combined option when the choices are truly mutually exclusive, such as basal/bolus subQ insulin regimen.
+Do not include identifiers, exact dates, room numbers, medical record numbers, or full chart narrative.
+</output_format>`
+  ].filter(Boolean).join("\n\n");
+}
+
+function decisionTreeBuilderPrompt(context) {
+  return [
+    `<role>
+Clinical guideline extraction assistant creating a reviewed management pathway for a clinician-maintained local workup.
+</role>
+
+${taskBoundary({
+  primary: "Extract the latest clinical guidelines and format the management pathway as importable decision-tree JSON.",
+  notFor: [
+    "writing a rounds report",
+    "editing the bedside checklist",
+    "creating patient-specific orders without guideline support",
+    "returning prose, markdown explanation, or a reference essay"
+  ]
+})}
+
+<task>
+Extract the latest clinical guidelines for ${clean(context.selectedWorkupTitle) || "{{selected_workup_title}}"}.
+
+Format the clinical management pathway as a single, valid JSON object optimized for a hierarchical node-link graph.
+The output must be a clinically deep management pathway, not a shallow outline. Use the existing tree only as context to replace or improve it.
+</task>`,
+    commonClinicalRules,
+    abbreviationRules,
+    block("selected_workup_title", context.selectedWorkupTitle),
+    block("selected_workup_id", context.selectedWorkupId),
+    block("objective_data", context.objectiveData),
+    block("existing_decision_tree_json", context.decisionTreeJson),
+    `<output_format>
+Follow this structural schema exactly:
+- Return only the raw JSON object. Do not include introductory text, concluding text, markdown fences, comments, or citations outside JSON.
+- Every node must have a unique string "id".
+- Every node must have a "label" with brief clinical text.
+- Every node must have a "type" equal to "action", "decision", or "endpoint".
+- Every node must include a "children" array containing the next logical node objects down the pathway.
+- For nodes where type == "decision", each child object within the "children" array must include an "edgeLabel" string indicating the specific clinical criteria required to trigger that path.
+- Include enough depth to be at least as detailed as a sepsis pathway that branches through initial stabilization, likelihood/mimic checks, no-shock versus shock bundles, source control, vasopressors, refractory shock, glucose, renal support, stewardship, reassessment, de-escalation, and stopping criteria.
+- Cover initial assessment, red flags/instability, diagnostic confirmation, mimics/exclusions, severity/risk stratification, first-line management, escalation/emergency actions, contraindications/special populations, monitoring/reassessment, de-escalation/stopping criteria, disposition, follow-up, and safety-netting.
+- Include missing-data endpoints that name the exact patient data needed when symptoms, exam, vitals, labs, imaging/results, medications, comorbidities, demographics, pregnancy status, or workup findings are unavailable.
+- Every actionable branch, threshold, escalation rule, disposition recommendation, endpoint, and stopping/de-escalation rule must cite "source_ids". Add top-level "source_metadata" rows for every source_id with title, URL or DOI, year, access date, citation text, and review status.
+- Add "activationRules" for structured traversal from patient context. Use objective fields and explicit operators for thresholds whenever possible, for example lactate >= 4, glucose >= 180, oxygen saturation below a threshold, positive imaging, pregnancy status documented, or renal function documented.
+- Every root-to-leaf path must end in an actionable endpoint: diagnostic step, treatment, escalation/disposition, monitoring/reassessment, follow-up, safety-net instruction, or clinician-review handoff.
+- Do not collapse the pathway to a generic "assess, test, treat, follow up" chain. If guideline evidence is uncertain, inaccessible, conflicting, or local-policy-dependent, route that branch to a clinician-review endpoint and say what input is needed.
+
+Use this exact top-level app schema:
+{
+  "schema": "clinical_pathway_tree_v1",
+  "workupId": "${clean(context.selectedWorkupId) || "module_id"}",
+  "title": "${clean(context.selectedWorkupTitle) || "Workup title"}",
+  "root": {
+    "id": "root",
+    "label": "Brief text",
+    "type": "action",
+    "children": []
+  },
+  "activationRules": {}
+}
+
+Keep labels brief enough to fit a node-link graph, but preserve clinical specificity. Put branch criteria in edgeLabel, not in the child label when possible.
+Do not include patient identifiers, exact dates, room numbers, medical record numbers, or site names.
 </output_format>`
   ].filter(Boolean).join("\n\n");
 }
@@ -486,8 +585,8 @@ export const openEvidenceTasks = [
   { id: "full_rounds_report", label: "Full rounds report", category: "Rounds", requiredContext: "source", outputKind: "full_rounds_report", promptBuilder: fullRoundsReportPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Full rounds report prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
   { id: "final_rounds_update", label: "Final rounds update", category: "Rounds", requiredContext: "findings", outputKind: "rounds_update", promptBuilder: finalRoundsPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Final rounds update prompt copied. Paste it into OpenEvidence.", requiresSameConversation: true },
   { id: "checklist_improvement_review", label: "Checklist improvement review", category: "Checklist", requiredContext: "checklist_refinement", outputKind: "checklist_improvement_review", promptBuilder: checklistImprovementPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Checklist improvement prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
+  { id: "decision_tree_builder", label: "Decision tree builder", category: "Pathway", requiredContext: "decision_tree", outputKind: "decision_tree_json", promptBuilder: decisionTreeBuilderPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Decision tree builder prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
   { id: "medication_safety", label: "Medication safety", category: "Safety", requiredContext: "medication_context", outputKind: "medication_safety", promptBuilder: medicationSafetyPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Medication safety prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
-  { id: "confirm_guideline", label: "Confirm guideline", category: "Guidelines", requiredContext: "guideline_or_source", outputKind: "guideline_confirmation", promptBuilder: guidelinePrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Guideline confirmation prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
   { id: "find_exception", label: "Find exception", category: "Guidelines", requiredContext: "source", outputKind: "guideline_exceptions", promptBuilder: exceptionPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Exception-finding prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
   { id: "attending_plan", label: "Attending-level plan", category: "Reasoning", requiredContext: "source", outputKind: "attending_plan", promptBuilder: attendingPlanPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Attending-level plan prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
   { id: "teaching_explanation", label: "Teaching explanation", category: "Teaching", requiredContext: "source", outputKind: "teaching", promptBuilder: teachingPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Teaching explanation prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
@@ -509,12 +608,18 @@ export function buildOpenEvidencePrompt(taskId, context = {}) {
   const promptIncludesChecklist = /<current_checklist>/i.test(prompt);
   const promptIncludesPatientContext = /<deidentified_patient_context>/i.test(prompt);
   const promptIncludesFindings = /<new_bedside_findings>/i.test(prompt);
-  const sourceIncluded = promptIncludesSource || promptIncludesChecklist || promptIncludesPatientContext || promptIncludesFindings;
+  const promptIncludesObjective = /<objective_data>/i.test(prompt);
+  const promptIncludesWorkupTitle = /<selected_workup_title>/i.test(prompt);
+  const promptIncludesDecisionTree = /<existing_decision_tree_json>/i.test(prompt) || /<decision_tree_json>/i.test(prompt);
+  const sourceIncluded = promptIncludesSource || promptIncludesChecklist || promptIncludesPatientContext || promptIncludesFindings || promptIncludesObjective || promptIncludesWorkupTitle || promptIncludesDecisionTree;
   const reviewText = [
     promptIncludesSource ? context.sourceContext : "",
     promptIncludesPatientContext ? context.checklistPatientSummary : "",
     promptIncludesChecklist ? context.currentChecklist : "",
-    promptIncludesFindings ? context.compiledFindings : ""
+    promptIncludesFindings ? context.compiledFindings : "",
+    promptIncludesObjective ? context.objectiveData : "",
+    promptIncludesWorkupTitle ? context.selectedWorkupTitle : "",
+    promptIncludesDecisionTree ? context.decisionTreeJson : ""
   ].filter((value) => clean(value)).join("\n\n");
   return {
     taskId: task.id,

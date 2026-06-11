@@ -1921,6 +1921,2939 @@
           "need"
         ]
       }
-    ]
+    ],
+    "clinical_pathway_tree_v1": {
+      "schema": "clinical_pathway_tree_v1",
+      "workupId": "pediatric_chest_pain_syncope_v1",
+      "workup_id": "pediatric_chest_pain_syncope_v1",
+      "title": "Pediatric chest pain, syncope, or palpitations",
+      "version": "3.0.0",
+      "status": "hand_polished_compact_pathway_needs_clinician_review",
+      "source_ids": [
+        "RCH_CHEST_PAIN_CHILD",
+        "RCH_SYNCOPE_CHILD",
+        "RCH_PEDIATRIC_ECG",
+        "JHACH_CHEST_PAIN_2018",
+        "CHOP_PEDS_CHEST_PAIN_2025",
+        "AHRQ_CALIBRATE_DX"
+      ],
+      "source_metadata": [
+        {
+          "source_id": "RCH_CHEST_PAIN_CHILD",
+          "title": "Royal Children's Hospital Clinical Practice Guideline: Chest Pain",
+          "url": "https://www.rch.org.au/clinicalguide/guideline_index/Chest_Pain/",
+          "url_or_doi": "https://www.rch.org.au/clinicalguide/guideline_index/Chest_Pain/",
+          "year": "2023",
+          "access_date": "2026-06-09",
+          "date_accessed": "2026-06-09",
+          "citation_text": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Chest pain.",
+          "review_status": "reviewed_current_for_scope"
+        },
+        {
+          "source_id": "RCH_SYNCOPE_CHILD",
+          "title": "Royal Children's Hospital Clinical Practice Guideline: Syncope",
+          "url": "https://www.rch.org.au/clinicalguide/guideline_index/Syncope/",
+          "url_or_doi": "https://www.rch.org.au/clinicalguide/guideline_index/Syncope/",
+          "year": "2023",
+          "access_date": "2026-06-09",
+          "date_accessed": "2026-06-09",
+          "citation_text": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Syncope.",
+          "review_status": "reviewed_current_for_scope"
+        },
+        {
+          "source_id": "RCH_PEDIATRIC_ECG",
+          "title": "Royal Children's Hospital Clinical Practice Guideline: Basic Paediatric ECG Interpretation",
+          "url": "https://www.rch.org.au/clinicalguide/guideline_index/Basic_Paediatric_ECG_interpretation/",
+          "url_or_doi": "https://www.rch.org.au/clinicalguide/guideline_index/Basic_Paediatric_ECG_interpretation/",
+          "year": "2026",
+          "access_date": "2026-06-09",
+          "date_accessed": "2026-06-09",
+          "citation_text": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Basic paediatric ECG interpretation.",
+          "review_status": "reviewed_current_for_scope"
+        },
+        {
+          "source_id": "JHACH_CHEST_PAIN_2018",
+          "title": "Johns Hopkins All Children's Hospital Chest Pain Clinical Pathway",
+          "url": "https://www.hopkinsmedicine.org/-/media/files/allchildrens/clinical-pathways/jhach-chest-pain-clinical-pathway-updated-july-2018.pdf",
+          "url_or_doi": "https://www.hopkinsmedicine.org/-/media/files/allchildrens/clinical-pathways/jhach-chest-pain-clinical-pathway-updated-july-2018.pdf",
+          "year": "2018",
+          "access_date": "2026-06-09",
+          "date_accessed": "2026-06-09",
+          "citation_text": "Johns Hopkins All Children's Hospital. Chest Pain Clinical Pathway. July 2018.",
+          "review_status": "reviewed_legacy_active"
+        },
+        {
+          "source_id": "CHOP_PEDS_CHEST_PAIN_2025",
+          "title": "CHOP Emergency Department Clinical Pathway: Chest Pain",
+          "url": "https://www.chop.edu/clinical-pathway/chest-pain-clinical-pathway",
+          "url_or_doi": "https://www.chop.edu/clinical-pathway/chest-pain-clinical-pathway",
+          "year": "2025",
+          "access_date": "2026-06-09",
+          "date_accessed": "2026-06-09",
+          "citation_text": "Children's Hospital of Philadelphia. Emergency Department Clinical Pathway for Evaluation/Treatment of Children with Chest Pain without Known Cardiac Disease. Last revised July 2025.",
+          "review_status": "reviewed_current_for_scope"
+        },
+        {
+          "source_id": "AHRQ_CALIBRATE_DX",
+          "title": "Calibrate Dx Diagnostic Safety Tool",
+          "url": "https://www.ahrq.gov/diagnostic-safety/tools/calibrate-dx.html",
+          "url_or_doi": "https://www.ahrq.gov/diagnostic-safety/tools/calibrate-dx.html",
+          "year": "current",
+          "access_date": "2026-06-07",
+          "date_accessed": "2026-06-07",
+          "citation_text": "AHRQ Calibrate Dx Diagnostic Safety Tool",
+          "review_status": "reviewed_current_for_scope"
+        }
+      ],
+      "provenance": {
+        "generated_by": "scripts/hand-polish-clinical-pathway-trees.js",
+        "generated_at": "2026-06-11T00:00:00.000Z",
+        "update_scope": "clinical_pathway_tree_v1 plus explicit clinical_cutoff_criteria enrichment where needed",
+        "source_material": "Local module evidence rows, source registry metadata, and targeted guideline/literature review for cutoff gaps",
+        "review_note": "Compact tree is cutoff-cited and traversable but requires clinician review for local policy, patient-specific contraindications, and source conflicts."
+      },
+      "source_thresholds": [
+        {
+          "threshold": "1%",
+          "evidence_item_id": "peds_chest_pain_low_base_rate_and_targeted_testing",
+          "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+          "source_ids": [
+            "RCH_CHEST_PAIN_CHILD"
+          ],
+          "review_status": "source_backed"
+        },
+        {
+          "threshold": "at least once",
+          "evidence_item_id": "peds_chest_syncope_ecg_required_once",
+          "label": "Pediatric syncope: obtain an ECG at least once; urgent referral for exertional syncope, chest pain/palpitations, abnormal ECG, or family history",
+          "source_ids": [
+            "RCH_SYNCOPE_CHILD"
+          ],
+          "review_status": "source_backed"
+        },
+        {
+          "threshold": ">0.12 seconds",
+          "evidence_item_id": "peds_ecg_high_risk_intervals",
+          "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc >450 ms or <=340 ms, ST shift >2 mm in precordial leads",
+          "source_ids": [
+            "RCH_PEDIATRIC_ECG"
+          ],
+          "review_status": "source_backed"
+        },
+        {
+          "threshold": ">340 ms",
+          "evidence_item_id": "peds_ecg_high_risk_intervals",
+          "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc >450 ms or <=340 ms, ST shift >2 mm in precordial leads",
+          "source_ids": [
+            "RCH_PEDIATRIC_ECG"
+          ],
+          "review_status": "source_backed"
+        },
+        {
+          "threshold": "<=450 ms",
+          "evidence_item_id": "peds_ecg_high_risk_intervals",
+          "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc >450 ms or <=340 ms, ST shift >2 mm in precordial leads",
+          "source_ids": [
+            "RCH_PEDIATRIC_ECG"
+          ],
+          "review_status": "source_backed"
+        },
+        {
+          "threshold": ">2 mm",
+          "evidence_item_id": "peds_ecg_high_risk_intervals",
+          "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc >450 ms or <=340 ms, ST shift >2 mm in precordial leads",
+          "source_ids": [
+            "RCH_PEDIATRIC_ECG"
+          ],
+          "review_status": "source_backed"
+        }
+      ],
+      "traversable_context": {
+        "input_modes": [
+          "structured_patient_context",
+          "extractable_note_context",
+          "clinician_selected_workup"
+        ],
+        "active_branch_output": [
+          "active_node_id",
+          "active_branch_label",
+          "missing_data_needed",
+          "terminal_endpoint_id",
+          "review_needed_reason"
+        ],
+        "required_domains": [
+          {
+            "domain": "symptoms",
+            "exact_data_needed": [
+              "presenting symptom/diagnosis trigger",
+              "onset/duration/trajectory",
+              "Pediatric chest pain age band",
+              "Chest pain character and timing",
+              "Syncope palpitations and dizziness",
+              "Family and personal cardiac risk"
+            ],
+            "source_ids": [
+              "JHACH_CHEST_PAIN_2018",
+              "CHOP_PEDS_CHEST_PAIN_2025",
+              "RCH_SYNCOPE_CHILD",
+              "RCH_CHEST_PAIN_CHILD",
+              "RCH_PEDIATRIC_ECG",
+              "AHRQ_CALIBRATE_DX"
+            ]
+          },
+          {
+            "domain": "exam",
+            "exact_data_needed": [
+              "condition-specific focused exam",
+              "Auscultate heart sounds",
+              "Palpate peripheral pulses",
+              "Auscultate lung fields",
+              "Observe work of breathing"
+            ],
+            "source_ids": [
+              "CHOP_PEDS_CHEST_PAIN_2025",
+              "JHACH_CHEST_PAIN_2018",
+              "RCH_CHEST_PAIN_CHILD",
+              "RCH_SYNCOPE_CHILD",
+              "RCH_PEDIATRIC_ECG",
+              "AHRQ_CALIBRATE_DX"
+            ]
+          },
+          {
+            "domain": "vitals",
+            "exact_data_needed": [
+              "blood pressure",
+              "heart rate",
+              "respiratory rate",
+              "oxygen saturation",
+              "temperature",
+              "mental status",
+              "weight when dosing depends on it",
+              "Exertional chest pain or syncope",
+              "Abnormal cardiac exam or poor perfusion"
+            ],
+            "source_ids": [
+              "RCH_SYNCOPE_CHILD",
+              "CHOP_PEDS_CHEST_PAIN_2025",
+              "JHACH_CHEST_PAIN_2018",
+              "RCH_PEDIATRIC_ECG",
+              "RCH_CHEST_PAIN_CHILD",
+              "AHRQ_CALIBRATE_DX"
+            ]
+          },
+          {
+            "domain": "labs",
+            "exact_data_needed": [
+              "ECG when cardiac risk or syncope is present",
+              "Chest X-ray only when indicated",
+              "Troponin and inflammatory labs when indicated",
+              "Syncope ECG glucose anemia and pregnancy tests",
+              "Echo Holter or exercise testing after review",
+              "risk factor history",
+              "cardiorespiratory exam",
+              "vital signs",
+              "ECG if risk factor present",
+              "syncope timing/activity",
+              "prodrome",
+              "palpitations/chest pain",
+              "family history"
+            ],
+            "source_ids": [
+              "RCH_PEDIATRIC_ECG",
+              "JHACH_CHEST_PAIN_2018",
+              "RCH_SYNCOPE_CHILD",
+              "RCH_CHEST_PAIN_CHILD",
+              "CHOP_PEDS_CHEST_PAIN_2025",
+              "AHRQ_CALIBRATE_DX"
+            ]
+          },
+          {
+            "domain": "imaging_results",
+            "exact_data_needed": [
+              "source-directed imaging/ECG/procedure results when indicated",
+              "ECG when cardiac risk or syncope is present",
+              "Chest X-ray only when indicated",
+              "Syncope ECG glucose anemia and pregnancy tests",
+              "Echo Holter or exercise testing after review"
+            ],
+            "source_ids": [
+              "RCH_PEDIATRIC_ECG",
+              "JHACH_CHEST_PAIN_2018",
+              "RCH_SYNCOPE_CHILD",
+              "RCH_CHEST_PAIN_CHILD",
+              "CHOP_PEDS_CHEST_PAIN_2025",
+              "AHRQ_CALIBRATE_DX"
+            ]
+          },
+          {
+            "domain": "medications",
+            "exact_data_needed": [
+              "current medication list",
+              "recent changes/missed doses",
+              "allergies",
+              "contraindications",
+              "drug interactions",
+              "adherence/access barriers"
+            ],
+            "source_ids": [
+              "RCH_CHEST_PAIN_CHILD",
+              "RCH_SYNCOPE_CHILD",
+              "RCH_PEDIATRIC_ECG",
+              "JHACH_CHEST_PAIN_2018",
+              "CHOP_PEDS_CHEST_PAIN_2025",
+              "AHRQ_CALIBRATE_DX"
+            ]
+          },
+          {
+            "domain": "comorbidities",
+            "exact_data_needed": [
+              "major comorbidities",
+              "renal/hepatic/cardiac disease",
+              "immunocompromise/high-risk host factors",
+              "frailty/function",
+              "prior relevant disease/procedure"
+            ],
+            "source_ids": [
+              "RCH_CHEST_PAIN_CHILD",
+              "RCH_SYNCOPE_CHILD",
+              "RCH_PEDIATRIC_ECG",
+              "JHACH_CHEST_PAIN_2018",
+              "CHOP_PEDS_CHEST_PAIN_2025",
+              "AHRQ_CALIBRATE_DX"
+            ]
+          },
+          {
+            "domain": "demographics",
+            "exact_data_needed": [
+              "age band",
+              "pediatric/adult pathway fit",
+              "sex/reproductive context",
+              "weight when dose-based",
+              "pathway applicability"
+            ],
+            "source_ids": [
+              "RCH_CHEST_PAIN_CHILD",
+              "RCH_SYNCOPE_CHILD",
+              "RCH_PEDIATRIC_ECG",
+              "JHACH_CHEST_PAIN_2018",
+              "CHOP_PEDS_CHEST_PAIN_2025",
+              "AHRQ_CALIBRATE_DX"
+            ]
+          },
+          {
+            "domain": "pregnancy_status",
+            "exact_data_needed": [
+              "pregnant/not pregnant/unknown when pregnancy potential exists",
+              "postpartum/lactation status when relevant",
+              "fertility intent when treatment depends on it"
+            ],
+            "source_ids": [
+              "RCH_CHEST_PAIN_CHILD",
+              "RCH_SYNCOPE_CHILD",
+              "RCH_PEDIATRIC_ECG",
+              "JHACH_CHEST_PAIN_2018",
+              "CHOP_PEDS_CHEST_PAIN_2025",
+              "AHRQ_CALIBRATE_DX"
+            ]
+          },
+          {
+            "domain": "workup_findings",
+            "exact_data_needed": [
+              "diagnosis confirmation status",
+              "mimics considered",
+              "severity/risk category",
+              "treatment response",
+              "disposition constraints",
+              "Cardiac chest pain or syncope risk with exertional symptoms, syncope, palpitations, abnormal cardiac exam, abnormal ECG, cardiac history, or family history of early sudden death",
+              "Respiratory, pulmonary embolus, pneumothorax, asthma, pneumonia, or hypoxemic cause of pediatric chest pain",
+              "Musculoskeletal pain, costochondritis, precordial catch, anxiety, reflux, or other self-limited cause after serious features are absent",
+              "Vasovagal, orthostatic, POTS, seizure mimic, hypoglycemia, toxin, or cardiogenic syncope pattern",
+              "Emergency pediatric cardiology escalation",
+              "Low-risk chest pain testing restraint",
+              "Syncope consultation and discharge route",
+              "Respiratory or PE route"
+            ],
+            "source_ids": [
+              "RCH_CHEST_PAIN_CHILD",
+              "RCH_SYNCOPE_CHILD",
+              "RCH_PEDIATRIC_ECG",
+              "JHACH_CHEST_PAIN_2018",
+              "CHOP_PEDS_CHEST_PAIN_2025",
+              "AHRQ_CALIBRATE_DX"
+            ]
+          }
+        ],
+        "missing_data_endpoint_id": "endpoint_missing_context"
+      },
+      "activationRules": {
+        "root": {
+          "rule_id": "activate_workup",
+          "source": "criteria",
+          "description": "Activate when structured or extractable context matches Pediatric chest pain, syncope, or palpitations triggers or the clinician selects workup pediatric_chest_pain_syncope_v1.",
+          "evaluable_from": [
+            "selected_workup_id",
+            "presenting_symptoms",
+            "problem_list_or_diagnosis",
+            "clinician_selected_module"
+          ],
+          "source_ids": [
+            "RCH_CHEST_PAIN_CHILD",
+            "RCH_SYNCOPE_CHILD",
+            "RCH_PEDIATRIC_ECG",
+            "JHACH_CHEST_PAIN_2018",
+            "CHOP_PEDS_CHEST_PAIN_2025",
+            "AHRQ_CALIBRATE_DX"
+          ]
+        },
+        "endpoint_missing_context": {
+          "rule_id": "missing_context_criteria",
+          "source": "criteria",
+          "description": "Route here when the patient context needed to activate Pediatric chest pain, syncope, or palpitations is absent or cannot be extracted.",
+          "evaluable_from": [
+            "symptoms",
+            "exam",
+            "vitals",
+            "labs",
+            "imaging_results",
+            "medications",
+            "comorbidities",
+            "demographics",
+            "pregnancy_status",
+            "workup_findings"
+          ],
+          "source_ids": [
+            "AHRQ_CALIBRATE_DX"
+          ],
+          "missing_any": [
+            "symptoms",
+            "exam",
+            "vitals",
+            "labs",
+            "imaging_results",
+            "medications",
+            "comorbidities",
+            "demographics",
+            "pregnancy_status",
+            "workup_findings"
+          ]
+        },
+        "pediatric_chest_pain_syncope_concurrent_data_bundle": {
+          "rule_id": "pediatric_chest_pain_syncope_data_bundle_criteria",
+          "source": "criteria",
+          "description": "Obtain Pediatric chest pain, syncope, or palpitations diagnostic/severity/treatment-safety data together rather than as a one-step chain.",
+          "evaluable_from": [
+            "symptoms",
+            "exam",
+            "vitals",
+            "labs",
+            "imaging_results",
+            "medications",
+            "comorbidities",
+            "pregnancy_status"
+          ],
+          "source_ids": [
+            "RCH_PEDIATRIC_ECG",
+            "JHACH_CHEST_PAIN_2018",
+            "RCH_SYNCOPE_CHILD",
+            "CHOP_PEDS_CHEST_PAIN_2025",
+            "RCH_CHEST_PAIN_CHILD",
+            "AHRQ_CALIBRATE_DX"
+          ]
+        },
+        "pediatric_chest_pain_syncope_classification_decision": {
+          "rule_id": "pediatric_chest_pain_syncope_classification_criteria",
+          "source": "criteria",
+          "description": "Classify Pediatric chest pain, syncope, or palpitations against explicit cited cutoffs: Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present: 1% | Pediatric syncope: obtain an ECG at least once; urgent referral for exertional syncope, chest pain/palpitations, abnormal ECG, or family history: at least once | Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc >450 ms or <=340 ms, ST shift >2 mm in precordial leads: >0.12 seconds, >340 ms, <=450 ms, >2 mm",
+          "evaluable_from": [
+            "symptoms",
+            "exam",
+            "vitals",
+            "labs",
+            "imaging_results",
+            "medications",
+            "comorbidities",
+            "demographics",
+            "pregnancy_status",
+            "workup_findings"
+          ],
+          "source_ids": [
+            "RCH_CHEST_PAIN_CHILD",
+            "RCH_SYNCOPE_CHILD",
+            "RCH_PEDIATRIC_ECG",
+            "JHACH_CHEST_PAIN_2018",
+            "CHOP_PEDS_CHEST_PAIN_2025",
+            "AHRQ_CALIBRATE_DX"
+          ],
+          "criteria_options": [
+            {
+              "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
+              "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+              "criteria_text": "Most pediatric chest pain is benign; RCH notes cardiac-related causes account for as few as 1% of children with chest pain, so ECG, CXR, and blood tests should be reserved for risk factors on history/exam.",
+              "cutoffs": [
+                "1%"
+              ],
+              "data_needed": [
+                "risk factor history",
+                "cardiorespiratory exam",
+                "vital signs",
+                "ECG if risk factor present"
+              ],
+              "source_ids": [
+                "RCH_CHEST_PAIN_CHILD"
+              ],
+              "source_section": "Background and assessment",
+              "review_status": "source_backed"
+            },
+            {
+              "id": "peds_chest_syncope_ecg_required_once",
+              "label": "Pediatric syncope: obtain an ECG at least once; urgent referral for exertional syncope, chest pain/palpitations, abnormal ECG, or family history",
+              "criteria_text": "An ECG should be obtained in all children with syncope at least once; cardiac syncope concern includes exercise association, no prodrome, chest pain/palpitations, past cardiac disease, or family history of early cardiac death/arrhythmia/sudden death.",
+              "cutoffs": [
+                "at least once"
+              ],
+              "data_needed": [
+                "syncope timing/activity",
+                "prodrome",
+                "palpitations/chest pain",
+                "family history",
+                "ECG"
+              ],
+              "source_ids": [
+                "RCH_SYNCOPE_CHILD"
+              ],
+              "source_section": "Investigations and consultation",
+              "review_status": "source_backed"
+            },
+            {
+              "id": "peds_ecg_high_risk_intervals",
+              "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc >450 ms or <=340 ms, ST shift >2 mm in precordial leads",
+              "criteria_text": "Pediatric ECG review should flag QRS duration >0.12 seconds, manual QTc outside >340 ms and <=450 ms, or ST elevation/depression above 2 mm in precordial leads as abnormal/high-risk in context.",
+              "cutoffs": [
+                ">0.12 seconds",
+                ">340 ms",
+                "<=450 ms",
+                ">2 mm"
+              ],
+              "data_needed": [
+                "manual ECG intervals",
+                "age",
+                "lead placement/scale",
+                "symptoms and cardiac red flags"
+              ],
+              "source_ids": [
+                "RCH_PEDIATRIC_ECG"
+              ],
+              "source_section": "Basic pediatric ECG interpretation",
+              "review_status": "source_backed"
+            }
+          ]
+        },
+        "pediatric_chest_pain_syncope_missing_cutoff_data_endpoint": {
+          "rule_id": "pediatric_chest_pain_syncope_missing_cutoff_data_criteria",
+          "source": "criteria",
+          "description": "Route here when Pediatric chest pain, syncope, or palpitations cannot be classified because exact cutoff-bearing data are missing.",
+          "evaluable_from": [
+            "symptoms",
+            "exam",
+            "vitals",
+            "labs",
+            "imaging_results",
+            "medications",
+            "comorbidities",
+            "demographics",
+            "pregnancy_status",
+            "workup_findings"
+          ],
+          "source_ids": [
+            "AHRQ_CALIBRATE_DX",
+            "RCH_CHEST_PAIN_CHILD",
+            "RCH_SYNCOPE_CHILD",
+            "RCH_PEDIATRIC_ECG",
+            "JHACH_CHEST_PAIN_2018",
+            "CHOP_PEDS_CHEST_PAIN_2025"
+          ],
+          "missing_any": [
+            "risk factor history",
+            "cardiorespiratory exam",
+            "vital signs",
+            "ECG if risk factor present",
+            "syncope timing/activity",
+            "prodrome",
+            "palpitations/chest pain",
+            "family history",
+            "ECG",
+            "manual ECG intervals",
+            "age",
+            "lead placement/scale",
+            "ECG when cardiac risk or syncope is present",
+            "Chest X-ray only when indicated",
+            "Troponin and inflammatory labs when indicated",
+            "Syncope ECG glucose anemia and pregnancy tests",
+            "Echo Holter or exercise testing after review",
+            "1%",
+            "at least once",
+            ">0.12 seconds",
+            ">340 ms",
+            "<=450 ms",
+            ">2 mm"
+          ]
+        },
+        "pediatric_chest_pain_syncope_urgent_endpoint": {
+          "rule_id": "pediatric_chest_pain_syncope_urgent_criteria",
+          "source": "criteria",
+          "description": "Escalate Pediatric chest pain, syncope, or palpitations when any condition-specific danger feature, high-risk cutoff, unstable physiology, or monitored-care disposition rule is present.",
+          "evaluable_from": [
+            "symptoms",
+            "exam",
+            "vitals",
+            "labs",
+            "imaging_results",
+            "mental_status",
+            "workup_findings"
+          ],
+          "source_ids": [
+            "RCH_SYNCOPE_CHILD",
+            "CHOP_PEDS_CHEST_PAIN_2025",
+            "JHACH_CHEST_PAIN_2018",
+            "RCH_PEDIATRIC_ECG",
+            "RCH_CHEST_PAIN_CHILD",
+            "AHRQ_CALIBRATE_DX"
+          ],
+          "criteria_options": [
+            {
+              "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
+              "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+              "criteria_text": "Most pediatric chest pain is benign; RCH notes cardiac-related causes account for as few as 1% of children with chest pain, so ECG, CXR, and blood tests should be reserved for risk factors on history/exam.",
+              "cutoffs": [
+                "1%"
+              ],
+              "data_needed": [
+                "risk factor history",
+                "cardiorespiratory exam",
+                "vital signs",
+                "ECG if risk factor present"
+              ],
+              "source_ids": [
+                "RCH_CHEST_PAIN_CHILD"
+              ],
+              "source_section": "Background and assessment",
+              "review_status": "source_backed"
+            },
+            {
+              "id": "peds_chest_syncope_ecg_required_once",
+              "label": "Pediatric syncope: obtain an ECG at least once; urgent referral for exertional syncope, chest pain/palpitations, abnormal ECG, or family history",
+              "criteria_text": "An ECG should be obtained in all children with syncope at least once; cardiac syncope concern includes exercise association, no prodrome, chest pain/palpitations, past cardiac disease, or family history of early cardiac death/arrhythmia/sudden death.",
+              "cutoffs": [
+                "at least once"
+              ],
+              "data_needed": [
+                "syncope timing/activity",
+                "prodrome",
+                "palpitations/chest pain",
+                "family history",
+                "ECG"
+              ],
+              "source_ids": [
+                "RCH_SYNCOPE_CHILD"
+              ],
+              "source_section": "Investigations and consultation",
+              "review_status": "source_backed"
+            },
+            {
+              "id": "peds_ecg_high_risk_intervals",
+              "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc >450 ms or <=340 ms, ST shift >2 mm in precordial leads",
+              "criteria_text": "Pediatric ECG review should flag QRS duration >0.12 seconds, manual QTc outside >340 ms and <=450 ms, or ST elevation/depression above 2 mm in precordial leads as abnormal/high-risk in context.",
+              "cutoffs": [
+                ">0.12 seconds",
+                ">340 ms",
+                "<=450 ms",
+                ">2 mm"
+              ],
+              "data_needed": [
+                "manual ECG intervals",
+                "age",
+                "lead placement/scale",
+                "symptoms and cardiac red flags"
+              ],
+              "source_ids": [
+                "RCH_PEDIATRIC_ECG"
+              ],
+              "source_section": "Basic pediatric ECG interpretation",
+              "review_status": "source_backed"
+            }
+          ]
+        },
+        "pediatric_chest_pain_syncope_treatment_bundle": {
+          "rule_id": "pediatric_chest_pain_syncope_treatment_bundle_criteria",
+          "source": "criteria",
+          "description": "Use the Pediatric chest pain, syncope, or palpitations treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+          "evaluable_from": [
+            "symptoms",
+            "exam",
+            "vitals",
+            "labs",
+            "imaging_results",
+            "medications",
+            "comorbidities",
+            "pregnancy_status",
+            "workup_findings"
+          ],
+          "source_ids": [
+            "RCH_PEDIATRIC_ECG",
+            "RCH_CHEST_PAIN_CHILD",
+            "RCH_SYNCOPE_CHILD",
+            "JHACH_CHEST_PAIN_2018",
+            "CHOP_PEDS_CHEST_PAIN_2025",
+            "AHRQ_CALIBRATE_DX"
+          ],
+          "criteria_options": [
+            {
+              "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
+              "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+              "criteria_text": "Most pediatric chest pain is benign; RCH notes cardiac-related causes account for as few as 1% of children with chest pain, so ECG, CXR, and blood tests should be reserved for risk factors on history/exam.",
+              "cutoffs": [
+                "1%"
+              ],
+              "data_needed": [
+                "risk factor history",
+                "cardiorespiratory exam",
+                "vital signs",
+                "ECG if risk factor present"
+              ],
+              "source_ids": [
+                "RCH_CHEST_PAIN_CHILD"
+              ],
+              "source_section": "Background and assessment",
+              "review_status": "source_backed"
+            },
+            {
+              "id": "peds_chest_syncope_ecg_required_once",
+              "label": "Pediatric syncope: obtain an ECG at least once; urgent referral for exertional syncope, chest pain/palpitations, abnormal ECG, or family history",
+              "criteria_text": "An ECG should be obtained in all children with syncope at least once; cardiac syncope concern includes exercise association, no prodrome, chest pain/palpitations, past cardiac disease, or family history of early cardiac death/arrhythmia/sudden death.",
+              "cutoffs": [
+                "at least once"
+              ],
+              "data_needed": [
+                "syncope timing/activity",
+                "prodrome",
+                "palpitations/chest pain",
+                "family history",
+                "ECG"
+              ],
+              "source_ids": [
+                "RCH_SYNCOPE_CHILD"
+              ],
+              "source_section": "Investigations and consultation",
+              "review_status": "source_backed"
+            },
+            {
+              "id": "peds_ecg_high_risk_intervals",
+              "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc >450 ms or <=340 ms, ST shift >2 mm in precordial leads",
+              "criteria_text": "Pediatric ECG review should flag QRS duration >0.12 seconds, manual QTc outside >340 ms and <=450 ms, or ST elevation/depression above 2 mm in precordial leads as abnormal/high-risk in context.",
+              "cutoffs": [
+                ">0.12 seconds",
+                ">340 ms",
+                "<=450 ms",
+                ">2 mm"
+              ],
+              "data_needed": [
+                "manual ECG intervals",
+                "age",
+                "lead placement/scale",
+                "symptoms and cardiac red flags"
+              ],
+              "source_ids": [
+                "RCH_PEDIATRIC_ECG"
+              ],
+              "source_section": "Basic pediatric ECG interpretation",
+              "review_status": "source_backed"
+            }
+          ]
+        },
+        "pediatric_chest_pain_syncope_treatment_safety_decision": {
+          "rule_id": "pediatric_chest_pain_syncope_safety_decision_criteria",
+          "source": "criteria",
+          "description": "Route Pediatric chest pain, syncope, or palpitations management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.",
+          "evaluable_from": [
+            "medications",
+            "allergies",
+            "pregnancy_status",
+            "demographics",
+            "comorbidities",
+            "labs",
+            "workup_findings"
+          ],
+          "source_ids": [
+            "RCH_CHEST_PAIN_CHILD",
+            "RCH_SYNCOPE_CHILD",
+            "RCH_PEDIATRIC_ECG",
+            "JHACH_CHEST_PAIN_2018",
+            "CHOP_PEDS_CHEST_PAIN_2025",
+            "AHRQ_CALIBRATE_DX"
+          ],
+          "criteria_options": []
+        },
+        "pediatric_chest_pain_syncope_review_endpoint": {
+          "rule_id": "pediatric_chest_pain_syncope_review_criteria",
+          "source": "criteria",
+          "description": "Use clinician review when Pediatric chest pain, syncope, or palpitations treatment/disposition depends on pregnancy/postpartum status, pediatric/adult applicability, renal/hepatic/cardiac disease, allergy, drug interaction, procedural risk, guideline conflict, or local protocol.",
+          "evaluable_from": [
+            "pregnancy_status",
+            "demographics",
+            "medications",
+            "comorbidities",
+            "allergies",
+            "local_policy",
+            "workup_findings"
+          ],
+          "source_ids": [
+            "RCH_CHEST_PAIN_CHILD",
+            "RCH_SYNCOPE_CHILD",
+            "RCH_PEDIATRIC_ECG",
+            "JHACH_CHEST_PAIN_2018",
+            "CHOP_PEDS_CHEST_PAIN_2025",
+            "AHRQ_CALIBRATE_DX"
+          ]
+        },
+        "pediatric_chest_pain_syncope_monitoring_bundle": {
+          "rule_id": "pediatric_chest_pain_syncope_monitoring_criteria",
+          "source": "criteria",
+          "description": "Monitor Pediatric chest pain, syncope, or palpitations by trending the same cutoff-bearing findings that selected the branch, plus medication adverse effects and disposition constraints.",
+          "evaluable_from": [
+            "symptoms",
+            "exam",
+            "vitals",
+            "labs",
+            "imaging_results",
+            "medications",
+            "workup_findings"
+          ],
+          "source_ids": [
+            "RCH_PEDIATRIC_ECG",
+            "RCH_CHEST_PAIN_CHILD",
+            "RCH_SYNCOPE_CHILD",
+            "JHACH_CHEST_PAIN_2018",
+            "CHOP_PEDS_CHEST_PAIN_2025",
+            "AHRQ_CALIBRATE_DX"
+          ],
+          "criteria_options": [
+            {
+              "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
+              "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+              "criteria_text": "Most pediatric chest pain is benign; RCH notes cardiac-related causes account for as few as 1% of children with chest pain, so ECG, CXR, and blood tests should be reserved for risk factors on history/exam.",
+              "cutoffs": [
+                "1%"
+              ],
+              "data_needed": [
+                "risk factor history",
+                "cardiorespiratory exam",
+                "vital signs",
+                "ECG if risk factor present"
+              ],
+              "source_ids": [
+                "RCH_CHEST_PAIN_CHILD"
+              ],
+              "source_section": "Background and assessment",
+              "review_status": "source_backed"
+            },
+            {
+              "id": "peds_chest_syncope_ecg_required_once",
+              "label": "Pediatric syncope: obtain an ECG at least once; urgent referral for exertional syncope, chest pain/palpitations, abnormal ECG, or family history",
+              "criteria_text": "An ECG should be obtained in all children with syncope at least once; cardiac syncope concern includes exercise association, no prodrome, chest pain/palpitations, past cardiac disease, or family history of early cardiac death/arrhythmia/sudden death.",
+              "cutoffs": [
+                "at least once"
+              ],
+              "data_needed": [
+                "syncope timing/activity",
+                "prodrome",
+                "palpitations/chest pain",
+                "family history",
+                "ECG"
+              ],
+              "source_ids": [
+                "RCH_SYNCOPE_CHILD"
+              ],
+              "source_section": "Investigations and consultation",
+              "review_status": "source_backed"
+            },
+            {
+              "id": "peds_ecg_high_risk_intervals",
+              "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc >450 ms or <=340 ms, ST shift >2 mm in precordial leads",
+              "criteria_text": "Pediatric ECG review should flag QRS duration >0.12 seconds, manual QTc outside >340 ms and <=450 ms, or ST elevation/depression above 2 mm in precordial leads as abnormal/high-risk in context.",
+              "cutoffs": [
+                ">0.12 seconds",
+                ">340 ms",
+                "<=450 ms",
+                ">2 mm"
+              ],
+              "data_needed": [
+                "manual ECG intervals",
+                "age",
+                "lead placement/scale",
+                "symptoms and cardiac red flags"
+              ],
+              "source_ids": [
+                "RCH_PEDIATRIC_ECG"
+              ],
+              "source_section": "Basic pediatric ECG interpretation",
+              "review_status": "source_backed"
+            }
+          ]
+        },
+        "pediatric_chest_pain_syncope_worsening_endpoint": {
+          "rule_id": "pediatric_chest_pain_syncope_worsening_criteria",
+          "source": "criteria",
+          "description": "Escalate Pediatric chest pain, syncope, or palpitations if symptoms, vitals, critical cutoffs, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+          "evaluable_from": [
+            "symptoms",
+            "exam",
+            "vitals",
+            "labs",
+            "imaging_results",
+            "medications",
+            "workup_findings"
+          ],
+          "source_ids": [
+            "RCH_SYNCOPE_CHILD",
+            "CHOP_PEDS_CHEST_PAIN_2025",
+            "JHACH_CHEST_PAIN_2018",
+            "RCH_PEDIATRIC_ECG",
+            "RCH_CHEST_PAIN_CHILD",
+            "AHRQ_CALIBRATE_DX"
+          ],
+          "criteria_options": [
+            {
+              "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
+              "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+              "criteria_text": "Most pediatric chest pain is benign; RCH notes cardiac-related causes account for as few as 1% of children with chest pain, so ECG, CXR, and blood tests should be reserved for risk factors on history/exam.",
+              "cutoffs": [
+                "1%"
+              ],
+              "data_needed": [
+                "risk factor history",
+                "cardiorespiratory exam",
+                "vital signs",
+                "ECG if risk factor present"
+              ],
+              "source_ids": [
+                "RCH_CHEST_PAIN_CHILD"
+              ],
+              "source_section": "Background and assessment",
+              "review_status": "source_backed"
+            },
+            {
+              "id": "peds_chest_syncope_ecg_required_once",
+              "label": "Pediatric syncope: obtain an ECG at least once; urgent referral for exertional syncope, chest pain/palpitations, abnormal ECG, or family history",
+              "criteria_text": "An ECG should be obtained in all children with syncope at least once; cardiac syncope concern includes exercise association, no prodrome, chest pain/palpitations, past cardiac disease, or family history of early cardiac death/arrhythmia/sudden death.",
+              "cutoffs": [
+                "at least once"
+              ],
+              "data_needed": [
+                "syncope timing/activity",
+                "prodrome",
+                "palpitations/chest pain",
+                "family history",
+                "ECG"
+              ],
+              "source_ids": [
+                "RCH_SYNCOPE_CHILD"
+              ],
+              "source_section": "Investigations and consultation",
+              "review_status": "source_backed"
+            },
+            {
+              "id": "peds_ecg_high_risk_intervals",
+              "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc >450 ms or <=340 ms, ST shift >2 mm in precordial leads",
+              "criteria_text": "Pediatric ECG review should flag QRS duration >0.12 seconds, manual QTc outside >340 ms and <=450 ms, or ST elevation/depression above 2 mm in precordial leads as abnormal/high-risk in context.",
+              "cutoffs": [
+                ">0.12 seconds",
+                ">340 ms",
+                "<=450 ms",
+                ">2 mm"
+              ],
+              "data_needed": [
+                "manual ECG intervals",
+                "age",
+                "lead placement/scale",
+                "symptoms and cardiac red flags"
+              ],
+              "source_ids": [
+                "RCH_PEDIATRIC_ECG"
+              ],
+              "source_section": "Basic pediatric ECG interpretation",
+              "review_status": "source_backed"
+            }
+          ]
+        },
+        "pediatric_chest_pain_syncope_deescalate_endpoint": {
+          "rule_id": "pediatric_chest_pain_syncope_deescalate_criteria",
+          "source": "criteria",
+          "description": "Stop, narrow, taper, or de-escalate Pediatric chest pain, syncope, or palpitations treatment only when objective response, diagnosis certainty, and cited stopping criteria support it.",
+          "evaluable_from": [
+            "symptoms",
+            "exam",
+            "vitals",
+            "labs",
+            "imaging_results",
+            "medications",
+            "workup_findings"
+          ],
+          "source_ids": [
+            "RCH_PEDIATRIC_ECG",
+            "RCH_CHEST_PAIN_CHILD",
+            "RCH_SYNCOPE_CHILD",
+            "JHACH_CHEST_PAIN_2018",
+            "CHOP_PEDS_CHEST_PAIN_2025",
+            "AHRQ_CALIBRATE_DX"
+          ],
+          "criteria_options": [
+            {
+              "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
+              "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+              "criteria_text": "Most pediatric chest pain is benign; RCH notes cardiac-related causes account for as few as 1% of children with chest pain, so ECG, CXR, and blood tests should be reserved for risk factors on history/exam.",
+              "cutoffs": [
+                "1%"
+              ],
+              "data_needed": [
+                "risk factor history",
+                "cardiorespiratory exam",
+                "vital signs",
+                "ECG if risk factor present"
+              ],
+              "source_ids": [
+                "RCH_CHEST_PAIN_CHILD"
+              ],
+              "source_section": "Background and assessment",
+              "review_status": "source_backed"
+            },
+            {
+              "id": "peds_chest_syncope_ecg_required_once",
+              "label": "Pediatric syncope: obtain an ECG at least once; urgent referral for exertional syncope, chest pain/palpitations, abnormal ECG, or family history",
+              "criteria_text": "An ECG should be obtained in all children with syncope at least once; cardiac syncope concern includes exercise association, no prodrome, chest pain/palpitations, past cardiac disease, or family history of early cardiac death/arrhythmia/sudden death.",
+              "cutoffs": [
+                "at least once"
+              ],
+              "data_needed": [
+                "syncope timing/activity",
+                "prodrome",
+                "palpitations/chest pain",
+                "family history",
+                "ECG"
+              ],
+              "source_ids": [
+                "RCH_SYNCOPE_CHILD"
+              ],
+              "source_section": "Investigations and consultation",
+              "review_status": "source_backed"
+            },
+            {
+              "id": "peds_ecg_high_risk_intervals",
+              "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc >450 ms or <=340 ms, ST shift >2 mm in precordial leads",
+              "criteria_text": "Pediatric ECG review should flag QRS duration >0.12 seconds, manual QTc outside >340 ms and <=450 ms, or ST elevation/depression above 2 mm in precordial leads as abnormal/high-risk in context.",
+              "cutoffs": [
+                ">0.12 seconds",
+                ">340 ms",
+                "<=450 ms",
+                ">2 mm"
+              ],
+              "data_needed": [
+                "manual ECG intervals",
+                "age",
+                "lead placement/scale",
+                "symptoms and cardiac red flags"
+              ],
+              "source_ids": [
+                "RCH_PEDIATRIC_ECG"
+              ],
+              "source_section": "Basic pediatric ECG interpretation",
+              "review_status": "source_backed"
+            }
+          ]
+        },
+        "pediatric_chest_pain_syncope_followup_endpoint": {
+          "rule_id": "pediatric_chest_pain_syncope_followup_criteria",
+          "source": "criteria",
+          "description": "Use after Pediatric chest pain, syncope, or palpitations is stable, actionable results have an owner, and return precautions are documented.",
+          "evaluable_from": [
+            "symptoms",
+            "vitals",
+            "labs",
+            "imaging_results",
+            "medications",
+            "follow_up_access",
+            "workup_findings"
+          ],
+          "source_ids": [
+            "RCH_PEDIATRIC_ECG",
+            "RCH_CHEST_PAIN_CHILD",
+            "RCH_SYNCOPE_CHILD",
+            "JHACH_CHEST_PAIN_2018",
+            "CHOP_PEDS_CHEST_PAIN_2025",
+            "AHRQ_CALIBRATE_DX"
+          ]
+        },
+        "pediatric_chest_pain_syncope_alternate_endpoint": {
+          "rule_id": "pediatric_chest_pain_syncope_alternate_criteria",
+          "source": "criteria",
+          "description": "Use an alternate pathway when Pediatric chest pain, syncope, or palpitations criteria are absent, a cited mimic better explains the presentation, or cutoff data contradict this workup.",
+          "evaluable_from": [
+            "symptoms",
+            "exam",
+            "vitals",
+            "labs",
+            "imaging_results",
+            "workup_findings"
+          ],
+          "source_ids": [
+            "RCH_CHEST_PAIN_CHILD",
+            "RCH_SYNCOPE_CHILD",
+            "RCH_PEDIATRIC_ECG",
+            "JHACH_CHEST_PAIN_2018",
+            "CHOP_PEDS_CHEST_PAIN_2025",
+            "AHRQ_CALIBRATE_DX"
+          ],
+          "criteria_options": [
+            {
+              "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
+              "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+              "criteria_text": "Most pediatric chest pain is benign; RCH notes cardiac-related causes account for as few as 1% of children with chest pain, so ECG, CXR, and blood tests should be reserved for risk factors on history/exam.",
+              "cutoffs": [
+                "1%"
+              ],
+              "data_needed": [
+                "risk factor history",
+                "cardiorespiratory exam",
+                "vital signs",
+                "ECG if risk factor present"
+              ],
+              "source_ids": [
+                "RCH_CHEST_PAIN_CHILD"
+              ],
+              "source_section": "Background and assessment",
+              "review_status": "source_backed"
+            },
+            {
+              "id": "peds_chest_syncope_ecg_required_once",
+              "label": "Pediatric syncope: obtain an ECG at least once; urgent referral for exertional syncope, chest pain/palpitations, abnormal ECG, or family history",
+              "criteria_text": "An ECG should be obtained in all children with syncope at least once; cardiac syncope concern includes exercise association, no prodrome, chest pain/palpitations, past cardiac disease, or family history of early cardiac death/arrhythmia/sudden death.",
+              "cutoffs": [
+                "at least once"
+              ],
+              "data_needed": [
+                "syncope timing/activity",
+                "prodrome",
+                "palpitations/chest pain",
+                "family history",
+                "ECG"
+              ],
+              "source_ids": [
+                "RCH_SYNCOPE_CHILD"
+              ],
+              "source_section": "Investigations and consultation",
+              "review_status": "source_backed"
+            },
+            {
+              "id": "peds_ecg_high_risk_intervals",
+              "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc >450 ms or <=340 ms, ST shift >2 mm in precordial leads",
+              "criteria_text": "Pediatric ECG review should flag QRS duration >0.12 seconds, manual QTc outside >340 ms and <=450 ms, or ST elevation/depression above 2 mm in precordial leads as abnormal/high-risk in context.",
+              "cutoffs": [
+                ">0.12 seconds",
+                ">340 ms",
+                "<=450 ms",
+                ">2 mm"
+              ],
+              "data_needed": [
+                "manual ECG intervals",
+                "age",
+                "lead placement/scale",
+                "symptoms and cardiac red flags"
+              ],
+              "source_ids": [
+                "RCH_PEDIATRIC_ECG"
+              ],
+              "source_section": "Basic pediatric ECG interpretation",
+              "review_status": "source_backed"
+            }
+          ]
+        }
+      },
+      "root": {
+        "id": "root",
+        "type": "decision",
+        "label": "Pediatric chest pain, syncope, or palpitations: compact evidence-cited management pathway",
+        "edgeLabel": "",
+        "source_ids": [
+          "RCH_CHEST_PAIN_CHILD",
+          "RCH_SYNCOPE_CHILD",
+          "RCH_PEDIATRIC_ECG",
+          "JHACH_CHEST_PAIN_2018",
+          "CHOP_PEDS_CHEST_PAIN_2025",
+          "AHRQ_CALIBRATE_DX"
+        ],
+        "criteria": {
+          "rule_id": "activate_workup",
+          "source": "criteria",
+          "description": "Activate when structured or extractable context matches Pediatric chest pain, syncope, or palpitations triggers or the clinician selects workup pediatric_chest_pain_syncope_v1.",
+          "evaluable_from": [
+            "selected_workup_id",
+            "presenting_symptoms",
+            "problem_list_or_diagnosis",
+            "clinician_selected_module"
+          ],
+          "source_ids": [
+            "RCH_CHEST_PAIN_CHILD",
+            "RCH_SYNCOPE_CHILD",
+            "RCH_PEDIATRIC_ECG",
+            "JHACH_CHEST_PAIN_2018",
+            "CHOP_PEDS_CHEST_PAIN_2025",
+            "AHRQ_CALIBRATE_DX"
+          ]
+        },
+        "action": "Route Pediatric chest pain, syncope, or palpitations using cutoff-bearing diagnostic criteria, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+        "children": [
+          {
+            "id": "endpoint_missing_context",
+            "type": "endpoint",
+            "label": "Missing data needed: Pediatric chest pain, syncope, or palpitations pathway context",
+            "edgeLabel": "Missing context",
+            "source_ids": [
+              "AHRQ_CALIBRATE_DX"
+            ],
+            "criteria": {
+              "rule_id": "missing_context_criteria",
+              "source": "criteria",
+              "description": "Route here when the patient context needed to activate Pediatric chest pain, syncope, or palpitations is absent or cannot be extracted.",
+              "evaluable_from": [
+                "symptoms",
+                "exam",
+                "vitals",
+                "labs",
+                "imaging_results",
+                "medications",
+                "comorbidities",
+                "demographics",
+                "pregnancy_status",
+                "workup_findings"
+              ],
+              "source_ids": [
+                "AHRQ_CALIBRATE_DX"
+              ],
+              "missing_any": [
+                "symptoms",
+                "exam",
+                "vitals",
+                "labs",
+                "imaging_results",
+                "medications",
+                "comorbidities",
+                "demographics",
+                "pregnancy_status",
+                "workup_findings"
+              ]
+            },
+            "action": "Before choosing a non-emergency Pediatric chest pain, syncope, or palpitations branch, document: presenting trigger, onset/trajectory, focused exam, vital signs, cutoff-bearing labs/results, medication/allergy context, comorbidities, demographics, pregnancy/applicability status, and current workup findings.",
+            "children": [],
+            "endpoint_type": "missing_data_needed",
+            "missing_data_needed": [
+              "symptoms",
+              "exam",
+              "vitals",
+              "labs",
+              "imaging_results",
+              "medications",
+              "comorbidities",
+              "demographics",
+              "pregnancy_status",
+              "workup_findings"
+            ]
+          },
+          {
+            "id": "pediatric_chest_pain_syncope_concurrent_data_bundle",
+            "type": "action",
+            "label": "Pediatric chest pain, syncope, or palpitations: obtain concurrent diagnostic, severity, and treatment-safety data",
+            "edgeLabel": "Pediatric chest pain, syncope, or palpitations trigger present with enough context to gather objective data",
+            "source_ids": [
+              "RCH_PEDIATRIC_ECG",
+              "JHACH_CHEST_PAIN_2018",
+              "RCH_SYNCOPE_CHILD",
+              "CHOP_PEDS_CHEST_PAIN_2025",
+              "RCH_CHEST_PAIN_CHILD",
+              "AHRQ_CALIBRATE_DX"
+            ],
+            "criteria": {
+              "rule_id": "pediatric_chest_pain_syncope_data_bundle_criteria",
+              "source": "criteria",
+              "description": "Obtain Pediatric chest pain, syncope, or palpitations diagnostic/severity/treatment-safety data together rather than as a one-step chain.",
+              "evaluable_from": [
+                "symptoms",
+                "exam",
+                "vitals",
+                "labs",
+                "imaging_results",
+                "medications",
+                "comorbidities",
+                "pregnancy_status"
+              ],
+              "source_ids": [
+                "RCH_PEDIATRIC_ECG",
+                "JHACH_CHEST_PAIN_2018",
+                "RCH_SYNCOPE_CHILD",
+                "CHOP_PEDS_CHEST_PAIN_2025",
+                "RCH_CHEST_PAIN_CHILD",
+                "AHRQ_CALIBRATE_DX"
+              ]
+            },
+            "action": "Obtain together: ECG when cardiac risk or syncope is present; Chest X-ray only when indicated; Troponin and inflammatory labs when indicated; Syncope ECG glucose anemia and pregnancy tests; Echo Holter or exercise testing after review; Measure blood pressure; Measure heart rate; Measure respiratory rate; Measure oxygen saturation; Measure temperature; risk factor history; cardiorespiratory exam; vital signs; ECG if risk factor present; syncope timing/activity; prodrome; palpitations/chest pain; family history.",
+            "children": [
+              {
+                "id": "pediatric_chest_pain_syncope_classification_decision",
+                "type": "decision",
+                "label": "Pediatric chest pain, syncope, or palpitations: classify using explicit guideline cutoffs",
+                "edgeLabel": "Concurrent data bundle obtained",
+                "source_ids": [
+                  "RCH_CHEST_PAIN_CHILD",
+                  "RCH_SYNCOPE_CHILD",
+                  "RCH_PEDIATRIC_ECG",
+                  "JHACH_CHEST_PAIN_2018",
+                  "CHOP_PEDS_CHEST_PAIN_2025",
+                  "AHRQ_CALIBRATE_DX"
+                ],
+                "criteria": {
+                  "rule_id": "pediatric_chest_pain_syncope_classification_criteria",
+                  "source": "criteria",
+                  "description": "Classify Pediatric chest pain, syncope, or palpitations against explicit cited cutoffs: Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present: 1% | Pediatric syncope: obtain an ECG at least once; urgent referral for exertional syncope, chest pain/palpitations, abnormal ECG, or family history: at least once | Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc >450 ms or <=340 ms, ST shift >2 mm in precordial leads: >0.12 seconds, >340 ms, <=450 ms, >2 mm",
+                  "evaluable_from": [
+                    "symptoms",
+                    "exam",
+                    "vitals",
+                    "labs",
+                    "imaging_results",
+                    "medications",
+                    "comorbidities",
+                    "demographics",
+                    "pregnancy_status",
+                    "workup_findings"
+                  ],
+                  "source_ids": [
+                    "RCH_CHEST_PAIN_CHILD",
+                    "RCH_SYNCOPE_CHILD",
+                    "RCH_PEDIATRIC_ECG",
+                    "JHACH_CHEST_PAIN_2018",
+                    "CHOP_PEDS_CHEST_PAIN_2025",
+                    "AHRQ_CALIBRATE_DX"
+                  ],
+                  "criteria_options": [
+                    {
+                      "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
+                      "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                      "criteria_text": "Most pediatric chest pain is benign; RCH notes cardiac-related causes account for as few as 1% of children with chest pain, so ECG, CXR, and blood tests should be reserved for risk factors on history/exam.",
+                      "cutoffs": [
+                        "1%"
+                      ],
+                      "data_needed": [
+                        "risk factor history",
+                        "cardiorespiratory exam",
+                        "vital signs",
+                        "ECG if risk factor present"
+                      ],
+                      "source_ids": [
+                        "RCH_CHEST_PAIN_CHILD"
+                      ],
+                      "source_section": "Background and assessment",
+                      "review_status": "source_backed"
+                    },
+                    {
+                      "id": "peds_chest_syncope_ecg_required_once",
+                      "label": "Pediatric syncope: obtain an ECG at least once; urgent referral for exertional syncope, chest pain/palpitations, abnormal ECG, or family history",
+                      "criteria_text": "An ECG should be obtained in all children with syncope at least once; cardiac syncope concern includes exercise association, no prodrome, chest pain/palpitations, past cardiac disease, or family history of early cardiac death/arrhythmia/sudden death.",
+                      "cutoffs": [
+                        "at least once"
+                      ],
+                      "data_needed": [
+                        "syncope timing/activity",
+                        "prodrome",
+                        "palpitations/chest pain",
+                        "family history",
+                        "ECG"
+                      ],
+                      "source_ids": [
+                        "RCH_SYNCOPE_CHILD"
+                      ],
+                      "source_section": "Investigations and consultation",
+                      "review_status": "source_backed"
+                    },
+                    {
+                      "id": "peds_ecg_high_risk_intervals",
+                      "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc >450 ms or <=340 ms, ST shift >2 mm in precordial leads",
+                      "criteria_text": "Pediatric ECG review should flag QRS duration >0.12 seconds, manual QTc outside >340 ms and <=450 ms, or ST elevation/depression above 2 mm in precordial leads as abnormal/high-risk in context.",
+                      "cutoffs": [
+                        ">0.12 seconds",
+                        ">340 ms",
+                        "<=450 ms",
+                        ">2 mm"
+                      ],
+                      "data_needed": [
+                        "manual ECG intervals",
+                        "age",
+                        "lead placement/scale",
+                        "symptoms and cardiac red flags"
+                      ],
+                      "source_ids": [
+                        "RCH_PEDIATRIC_ECG"
+                      ],
+                      "source_section": "Basic pediatric ECG interpretation",
+                      "review_status": "source_backed"
+                    }
+                  ]
+                },
+                "action": "Choose the active Pediatric chest pain, syncope, or palpitations branch by matching patient data to the cited cutoffs and condition-specific criteria.",
+                "children": [
+                  {
+                    "id": "pediatric_chest_pain_syncope_missing_cutoff_data_endpoint",
+                    "type": "endpoint",
+                    "label": "Missing data needed: Pediatric chest pain, syncope, or palpitations cutoff-bearing results",
+                    "edgeLabel": "Cutoff data missing",
+                    "source_ids": [
+                      "AHRQ_CALIBRATE_DX",
+                      "RCH_CHEST_PAIN_CHILD",
+                      "RCH_SYNCOPE_CHILD",
+                      "RCH_PEDIATRIC_ECG",
+                      "JHACH_CHEST_PAIN_2018",
+                      "CHOP_PEDS_CHEST_PAIN_2025"
+                    ],
+                    "criteria": {
+                      "rule_id": "pediatric_chest_pain_syncope_missing_cutoff_data_criteria",
+                      "source": "criteria",
+                      "description": "Route here when Pediatric chest pain, syncope, or palpitations cannot be classified because exact cutoff-bearing data are missing.",
+                      "evaluable_from": [
+                        "symptoms",
+                        "exam",
+                        "vitals",
+                        "labs",
+                        "imaging_results",
+                        "medications",
+                        "comorbidities",
+                        "demographics",
+                        "pregnancy_status",
+                        "workup_findings"
+                      ],
+                      "source_ids": [
+                        "AHRQ_CALIBRATE_DX",
+                        "RCH_CHEST_PAIN_CHILD",
+                        "RCH_SYNCOPE_CHILD",
+                        "RCH_PEDIATRIC_ECG",
+                        "JHACH_CHEST_PAIN_2018",
+                        "CHOP_PEDS_CHEST_PAIN_2025"
+                      ],
+                      "missing_any": [
+                        "risk factor history",
+                        "cardiorespiratory exam",
+                        "vital signs",
+                        "ECG if risk factor present",
+                        "syncope timing/activity",
+                        "prodrome",
+                        "palpitations/chest pain",
+                        "family history",
+                        "ECG",
+                        "manual ECG intervals",
+                        "age",
+                        "lead placement/scale",
+                        "ECG when cardiac risk or syncope is present",
+                        "Chest X-ray only when indicated",
+                        "Troponin and inflammatory labs when indicated",
+                        "Syncope ECG glucose anemia and pregnancy tests",
+                        "Echo Holter or exercise testing after review",
+                        "1%",
+                        "at least once",
+                        ">0.12 seconds",
+                        ">340 ms",
+                        "<=450 ms",
+                        ">2 mm"
+                      ]
+                    },
+                    "action": "Obtain the exact Pediatric chest pain, syncope, or palpitations data needed for cutoff-based routing: risk factor history; cardiorespiratory exam; vital signs; ECG if risk factor present; syncope timing/activity; prodrome; palpitations/chest pain; family history; ECG; manual ECG intervals; age; lead placement/scale; ECG when cardiac risk or syncope is present; Chest X-ray only when indicated; Troponin and inflammatory labs when indicated; Syncope ECG glucose anemia and pregnancy tests; Echo Holter or exercise testin....",
+                    "children": [],
+                    "endpoint_type": "missing_data_needed",
+                    "missing_data_needed": [
+                      "risk factor history",
+                      "cardiorespiratory exam",
+                      "vital signs",
+                      "ECG if risk factor present",
+                      "syncope timing/activity",
+                      "prodrome",
+                      "palpitations/chest pain",
+                      "family history",
+                      "ECG",
+                      "manual ECG intervals",
+                      "age",
+                      "lead placement/scale",
+                      "ECG when cardiac risk or syncope is present",
+                      "Chest X-ray only when indicated",
+                      "Troponin and inflammatory labs when indicated",
+                      "Syncope ECG glucose anemia and pregnancy tests",
+                      "Echo Holter or exercise testing after review",
+                      "1%",
+                      "at least once",
+                      ">0.12 seconds",
+                      ">340 ms",
+                      "<=450 ms",
+                      ">2 mm"
+                    ]
+                  },
+                  {
+                    "id": "pediatric_chest_pain_syncope_urgent_endpoint",
+                    "type": "endpoint",
+                    "label": "Pediatric chest pain, syncope, or palpitations: emergency escalation or monitored-care disposition when danger cutoffs are met",
+                    "edgeLabel": "Emergency or high-risk criteria met",
+                    "source_ids": [
+                      "RCH_SYNCOPE_CHILD",
+                      "CHOP_PEDS_CHEST_PAIN_2025",
+                      "JHACH_CHEST_PAIN_2018",
+                      "RCH_PEDIATRIC_ECG",
+                      "RCH_CHEST_PAIN_CHILD",
+                      "AHRQ_CALIBRATE_DX"
+                    ],
+                    "criteria": {
+                      "rule_id": "pediatric_chest_pain_syncope_urgent_criteria",
+                      "source": "criteria",
+                      "description": "Escalate Pediatric chest pain, syncope, or palpitations when any condition-specific danger feature, high-risk cutoff, unstable physiology, or monitored-care disposition rule is present.",
+                      "evaluable_from": [
+                        "symptoms",
+                        "exam",
+                        "vitals",
+                        "labs",
+                        "imaging_results",
+                        "mental_status",
+                        "workup_findings"
+                      ],
+                      "source_ids": [
+                        "RCH_SYNCOPE_CHILD",
+                        "CHOP_PEDS_CHEST_PAIN_2025",
+                        "JHACH_CHEST_PAIN_2018",
+                        "RCH_PEDIATRIC_ECG",
+                        "RCH_CHEST_PAIN_CHILD",
+                        "AHRQ_CALIBRATE_DX"
+                      ],
+                      "criteria_options": [
+                        {
+                          "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
+                          "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                          "criteria_text": "Most pediatric chest pain is benign; RCH notes cardiac-related causes account for as few as 1% of children with chest pain, so ECG, CXR, and blood tests should be reserved for risk factors on history/exam.",
+                          "cutoffs": [
+                            "1%"
+                          ],
+                          "data_needed": [
+                            "risk factor history",
+                            "cardiorespiratory exam",
+                            "vital signs",
+                            "ECG if risk factor present"
+                          ],
+                          "source_ids": [
+                            "RCH_CHEST_PAIN_CHILD"
+                          ],
+                          "source_section": "Background and assessment",
+                          "review_status": "source_backed"
+                        },
+                        {
+                          "id": "peds_chest_syncope_ecg_required_once",
+                          "label": "Pediatric syncope: obtain an ECG at least once; urgent referral for exertional syncope, chest pain/palpitations, abnormal ECG, or family history",
+                          "criteria_text": "An ECG should be obtained in all children with syncope at least once; cardiac syncope concern includes exercise association, no prodrome, chest pain/palpitations, past cardiac disease, or family history of early cardiac death/arrhythmia/sudden death.",
+                          "cutoffs": [
+                            "at least once"
+                          ],
+                          "data_needed": [
+                            "syncope timing/activity",
+                            "prodrome",
+                            "palpitations/chest pain",
+                            "family history",
+                            "ECG"
+                          ],
+                          "source_ids": [
+                            "RCH_SYNCOPE_CHILD"
+                          ],
+                          "source_section": "Investigations and consultation",
+                          "review_status": "source_backed"
+                        },
+                        {
+                          "id": "peds_ecg_high_risk_intervals",
+                          "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc >450 ms or <=340 ms, ST shift >2 mm in precordial leads",
+                          "criteria_text": "Pediatric ECG review should flag QRS duration >0.12 seconds, manual QTc outside >340 ms and <=450 ms, or ST elevation/depression above 2 mm in precordial leads as abnormal/high-risk in context.",
+                          "cutoffs": [
+                            ">0.12 seconds",
+                            ">340 ms",
+                            "<=450 ms",
+                            ">2 mm"
+                          ],
+                          "data_needed": [
+                            "manual ECG intervals",
+                            "age",
+                            "lead placement/scale",
+                            "symptoms and cardiac red flags"
+                          ],
+                          "source_ids": [
+                            "RCH_PEDIATRIC_ECG"
+                          ],
+                          "source_section": "Basic pediatric ECG interpretation",
+                          "review_status": "source_backed"
+                        }
+                      ]
+                    },
+                    "action": "Exertional chest pain or syncope; Abnormal cardiac exam or poor perfusion; Family history of early sudden death or cardiomyopathy; Hypoxia respiratory distress or hemoptysis. Monitor treatment response, complications, and need for reassessment with: ECG when cardiac risk or syncope is present.; Emergency pediatric cardiology escalation; Low-risk chest pain testing restraint; Syncope consultation and discharge r...",
+                    "children": [],
+                    "endpoint_type": "escalation_disposition",
+                    "guideline_cutoffs": [
+                      {
+                        "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
+                        "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                        "criteria_text": "Most pediatric chest pain is benign; RCH notes cardiac-related causes account for as few as 1% of children with chest pain, so ECG, CXR, and blood tests should be reserved for risk factors on history/exam.",
+                        "cutoffs": [
+                          "1%"
+                        ],
+                        "data_needed": [
+                          "risk factor history",
+                          "cardiorespiratory exam",
+                          "vital signs",
+                          "ECG if risk factor present"
+                        ],
+                        "source_ids": [
+                          "RCH_CHEST_PAIN_CHILD"
+                        ],
+                        "source_section": "Background and assessment",
+                        "review_status": "source_backed"
+                      },
+                      {
+                        "id": "peds_chest_syncope_ecg_required_once",
+                        "label": "Pediatric syncope: obtain an ECG at least once; urgent referral for exertional syncope, chest pain/palpitations, abnormal ECG, or family history",
+                        "criteria_text": "An ECG should be obtained in all children with syncope at least once; cardiac syncope concern includes exercise association, no prodrome, chest pain/palpitations, past cardiac disease, or family history of early cardiac death/arrhythmia/sudden death.",
+                        "cutoffs": [
+                          "at least once"
+                        ],
+                        "data_needed": [
+                          "syncope timing/activity",
+                          "prodrome",
+                          "palpitations/chest pain",
+                          "family history",
+                          "ECG"
+                        ],
+                        "source_ids": [
+                          "RCH_SYNCOPE_CHILD"
+                        ],
+                        "source_section": "Investigations and consultation",
+                        "review_status": "source_backed"
+                      },
+                      {
+                        "id": "peds_ecg_high_risk_intervals",
+                        "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc >450 ms or <=340 ms, ST shift >2 mm in precordial leads",
+                        "criteria_text": "Pediatric ECG review should flag QRS duration >0.12 seconds, manual QTc outside >340 ms and <=450 ms, or ST elevation/depression above 2 mm in precordial leads as abnormal/high-risk in context.",
+                        "cutoffs": [
+                          ">0.12 seconds",
+                          ">340 ms",
+                          "<=450 ms",
+                          ">2 mm"
+                        ],
+                        "data_needed": [
+                          "manual ECG intervals",
+                          "age",
+                          "lead placement/scale",
+                          "symptoms and cardiac red flags"
+                        ],
+                        "source_ids": [
+                          "RCH_PEDIATRIC_ECG"
+                        ],
+                        "source_section": "Basic pediatric ECG interpretation",
+                        "review_status": "source_backed"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "pediatric_chest_pain_syncope_treatment_bundle",
+                    "type": "action",
+                    "label": "Pediatric chest pain, syncope, or palpitations: start the indicated treatment/disposition bundle when cutoff criteria match",
+                    "edgeLabel": "Criteria match Pediatric chest pain, syncope, or palpitations or treatment cannot safely wait",
+                    "source_ids": [
+                      "RCH_PEDIATRIC_ECG",
+                      "RCH_CHEST_PAIN_CHILD",
+                      "RCH_SYNCOPE_CHILD",
+                      "JHACH_CHEST_PAIN_2018",
+                      "CHOP_PEDS_CHEST_PAIN_2025",
+                      "AHRQ_CALIBRATE_DX"
+                    ],
+                    "criteria": {
+                      "rule_id": "pediatric_chest_pain_syncope_treatment_bundle_criteria",
+                      "source": "criteria",
+                      "description": "Use the Pediatric chest pain, syncope, or palpitations treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+                      "evaluable_from": [
+                        "symptoms",
+                        "exam",
+                        "vitals",
+                        "labs",
+                        "imaging_results",
+                        "medications",
+                        "comorbidities",
+                        "pregnancy_status",
+                        "workup_findings"
+                      ],
+                      "source_ids": [
+                        "RCH_PEDIATRIC_ECG",
+                        "RCH_CHEST_PAIN_CHILD",
+                        "RCH_SYNCOPE_CHILD",
+                        "JHACH_CHEST_PAIN_2018",
+                        "CHOP_PEDS_CHEST_PAIN_2025",
+                        "AHRQ_CALIBRATE_DX"
+                      ],
+                      "criteria_options": [
+                        {
+                          "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
+                          "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                          "criteria_text": "Most pediatric chest pain is benign; RCH notes cardiac-related causes account for as few as 1% of children with chest pain, so ECG, CXR, and blood tests should be reserved for risk factors on history/exam.",
+                          "cutoffs": [
+                            "1%"
+                          ],
+                          "data_needed": [
+                            "risk factor history",
+                            "cardiorespiratory exam",
+                            "vital signs",
+                            "ECG if risk factor present"
+                          ],
+                          "source_ids": [
+                            "RCH_CHEST_PAIN_CHILD"
+                          ],
+                          "source_section": "Background and assessment",
+                          "review_status": "source_backed"
+                        },
+                        {
+                          "id": "peds_chest_syncope_ecg_required_once",
+                          "label": "Pediatric syncope: obtain an ECG at least once; urgent referral for exertional syncope, chest pain/palpitations, abnormal ECG, or family history",
+                          "criteria_text": "An ECG should be obtained in all children with syncope at least once; cardiac syncope concern includes exercise association, no prodrome, chest pain/palpitations, past cardiac disease, or family history of early cardiac death/arrhythmia/sudden death.",
+                          "cutoffs": [
+                            "at least once"
+                          ],
+                          "data_needed": [
+                            "syncope timing/activity",
+                            "prodrome",
+                            "palpitations/chest pain",
+                            "family history",
+                            "ECG"
+                          ],
+                          "source_ids": [
+                            "RCH_SYNCOPE_CHILD"
+                          ],
+                          "source_section": "Investigations and consultation",
+                          "review_status": "source_backed"
+                        },
+                        {
+                          "id": "peds_ecg_high_risk_intervals",
+                          "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc >450 ms or <=340 ms, ST shift >2 mm in precordial leads",
+                          "criteria_text": "Pediatric ECG review should flag QRS duration >0.12 seconds, manual QTc outside >340 ms and <=450 ms, or ST elevation/depression above 2 mm in precordial leads as abnormal/high-risk in context.",
+                          "cutoffs": [
+                            ">0.12 seconds",
+                            ">340 ms",
+                            "<=450 ms",
+                            ">2 mm"
+                          ],
+                          "data_needed": [
+                            "manual ECG intervals",
+                            "age",
+                            "lead placement/scale",
+                            "symptoms and cardiac red flags"
+                          ],
+                          "source_ids": [
+                            "RCH_PEDIATRIC_ECG"
+                          ],
+                          "source_section": "Basic pediatric ECG interpretation",
+                          "review_status": "source_backed"
+                        }
+                      ]
+                    },
+                    "action": "Monitor treatment response, complications, and need for reassessment with: ECG when cardiac risk or syncope is present.; Emergency pediatric cardiology escalation; Low-risk chest pain testing restraint; Syncope consultation and discharge route; Emergency pediatric cardiology escalation; Low-risk chest pain testing restraint; Syncope consultation and discharge route",
+                    "children": [
+                      {
+                        "id": "pediatric_chest_pain_syncope_treatment_safety_decision",
+                        "type": "decision",
+                        "label": "Pediatric chest pain, syncope, or palpitations: medication/procedure safety and special-population cutoffs resolved?",
+                        "edgeLabel": "Diagnosis/risk branch selected",
+                        "source_ids": [
+                          "RCH_CHEST_PAIN_CHILD",
+                          "RCH_SYNCOPE_CHILD",
+                          "RCH_PEDIATRIC_ECG",
+                          "JHACH_CHEST_PAIN_2018",
+                          "CHOP_PEDS_CHEST_PAIN_2025",
+                          "AHRQ_CALIBRATE_DX"
+                        ],
+                        "criteria": {
+                          "rule_id": "pediatric_chest_pain_syncope_safety_decision_criteria",
+                          "source": "criteria",
+                          "description": "Route Pediatric chest pain, syncope, or palpitations management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.",
+                          "evaluable_from": [
+                            "medications",
+                            "allergies",
+                            "pregnancy_status",
+                            "demographics",
+                            "comorbidities",
+                            "labs",
+                            "workup_findings"
+                          ],
+                          "source_ids": [
+                            "RCH_CHEST_PAIN_CHILD",
+                            "RCH_SYNCOPE_CHILD",
+                            "RCH_PEDIATRIC_ECG",
+                            "JHACH_CHEST_PAIN_2018",
+                            "CHOP_PEDS_CHEST_PAIN_2025",
+                            "AHRQ_CALIBRATE_DX"
+                          ],
+                          "criteria_options": []
+                        },
+                        "action": "Apply Pediatric chest pain, syncope, or palpitations-specific safety modifiers before final treatment/disposition.",
+                        "children": [
+                          {
+                            "id": "pediatric_chest_pain_syncope_review_endpoint",
+                            "type": "endpoint",
+                            "label": "Pediatric chest pain, syncope, or palpitations: clinician review for contraindication, special population, or local-policy cutoff",
+                            "edgeLabel": "Treatment modifier unresolved",
+                            "source_ids": [
+                              "RCH_CHEST_PAIN_CHILD",
+                              "RCH_SYNCOPE_CHILD",
+                              "RCH_PEDIATRIC_ECG",
+                              "JHACH_CHEST_PAIN_2018",
+                              "CHOP_PEDS_CHEST_PAIN_2025",
+                              "AHRQ_CALIBRATE_DX"
+                            ],
+                            "criteria": {
+                              "rule_id": "pediatric_chest_pain_syncope_review_criteria",
+                              "source": "criteria",
+                              "description": "Use clinician review when Pediatric chest pain, syncope, or palpitations treatment/disposition depends on pregnancy/postpartum status, pediatric/adult applicability, renal/hepatic/cardiac disease, allergy, drug interaction, procedural risk, guideline conflict, or local protocol.",
+                              "evaluable_from": [
+                                "pregnancy_status",
+                                "demographics",
+                                "medications",
+                                "comorbidities",
+                                "allergies",
+                                "local_policy",
+                                "workup_findings"
+                              ],
+                              "source_ids": [
+                                "RCH_CHEST_PAIN_CHILD",
+                                "RCH_SYNCOPE_CHILD",
+                                "RCH_PEDIATRIC_ECG",
+                                "JHACH_CHEST_PAIN_2018",
+                                "CHOP_PEDS_CHEST_PAIN_2025",
+                                "AHRQ_CALIBRATE_DX"
+                              ]
+                            },
+                            "action": "Pause non-emergent Pediatric chest pain, syncope, or palpitations treatment choices until the modifier is resolved and the reviewer documents the applicable guideline/local cutoff.",
+                            "children": [],
+                            "endpoint_type": "clinician_review_handoff",
+                            "review_needed_reason": "Patient-specific contraindication, special population, guideline conflict, or local policy affects treatment or disposition."
+                          },
+                          {
+                            "id": "pediatric_chest_pain_syncope_monitoring_bundle",
+                            "type": "action",
+                            "label": "Pediatric chest pain, syncope, or palpitations: concurrent monitoring, response checks, and disposition readiness",
+                            "edgeLabel": "Treatment started or diagnostic plan active",
+                            "source_ids": [
+                              "RCH_PEDIATRIC_ECG",
+                              "RCH_CHEST_PAIN_CHILD",
+                              "RCH_SYNCOPE_CHILD",
+                              "JHACH_CHEST_PAIN_2018",
+                              "CHOP_PEDS_CHEST_PAIN_2025",
+                              "AHRQ_CALIBRATE_DX"
+                            ],
+                            "criteria": {
+                              "rule_id": "pediatric_chest_pain_syncope_monitoring_criteria",
+                              "source": "criteria",
+                              "description": "Monitor Pediatric chest pain, syncope, or palpitations by trending the same cutoff-bearing findings that selected the branch, plus medication adverse effects and disposition constraints.",
+                              "evaluable_from": [
+                                "symptoms",
+                                "exam",
+                                "vitals",
+                                "labs",
+                                "imaging_results",
+                                "medications",
+                                "workup_findings"
+                              ],
+                              "source_ids": [
+                                "RCH_PEDIATRIC_ECG",
+                                "RCH_CHEST_PAIN_CHILD",
+                                "RCH_SYNCOPE_CHILD",
+                                "JHACH_CHEST_PAIN_2018",
+                                "CHOP_PEDS_CHEST_PAIN_2025",
+                                "AHRQ_CALIBRATE_DX"
+                              ],
+                              "criteria_options": [
+                                {
+                                  "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
+                                  "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                                  "criteria_text": "Most pediatric chest pain is benign; RCH notes cardiac-related causes account for as few as 1% of children with chest pain, so ECG, CXR, and blood tests should be reserved for risk factors on history/exam.",
+                                  "cutoffs": [
+                                    "1%"
+                                  ],
+                                  "data_needed": [
+                                    "risk factor history",
+                                    "cardiorespiratory exam",
+                                    "vital signs",
+                                    "ECG if risk factor present"
+                                  ],
+                                  "source_ids": [
+                                    "RCH_CHEST_PAIN_CHILD"
+                                  ],
+                                  "source_section": "Background and assessment",
+                                  "review_status": "source_backed"
+                                },
+                                {
+                                  "id": "peds_chest_syncope_ecg_required_once",
+                                  "label": "Pediatric syncope: obtain an ECG at least once; urgent referral for exertional syncope, chest pain/palpitations, abnormal ECG, or family history",
+                                  "criteria_text": "An ECG should be obtained in all children with syncope at least once; cardiac syncope concern includes exercise association, no prodrome, chest pain/palpitations, past cardiac disease, or family history of early cardiac death/arrhythmia/sudden death.",
+                                  "cutoffs": [
+                                    "at least once"
+                                  ],
+                                  "data_needed": [
+                                    "syncope timing/activity",
+                                    "prodrome",
+                                    "palpitations/chest pain",
+                                    "family history",
+                                    "ECG"
+                                  ],
+                                  "source_ids": [
+                                    "RCH_SYNCOPE_CHILD"
+                                  ],
+                                  "source_section": "Investigations and consultation",
+                                  "review_status": "source_backed"
+                                },
+                                {
+                                  "id": "peds_ecg_high_risk_intervals",
+                                  "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc >450 ms or <=340 ms, ST shift >2 mm in precordial leads",
+                                  "criteria_text": "Pediatric ECG review should flag QRS duration >0.12 seconds, manual QTc outside >340 ms and <=450 ms, or ST elevation/depression above 2 mm in precordial leads as abnormal/high-risk in context.",
+                                  "cutoffs": [
+                                    ">0.12 seconds",
+                                    ">340 ms",
+                                    "<=450 ms",
+                                    ">2 mm"
+                                  ],
+                                  "data_needed": [
+                                    "manual ECG intervals",
+                                    "age",
+                                    "lead placement/scale",
+                                    "symptoms and cardiac red flags"
+                                  ],
+                                  "source_ids": [
+                                    "RCH_PEDIATRIC_ECG"
+                                  ],
+                                  "source_section": "Basic pediatric ECG interpretation",
+                                  "review_status": "source_backed"
+                                }
+                              ]
+                            },
+                            "action": "Reassess Pediatric chest pain, syncope, or palpitations using the active cutoffs and clinical course; do not close the pathway until response, adverse effects, pending data, and disposition are owned.",
+                            "children": [
+                              {
+                                "id": "pediatric_chest_pain_syncope_worsening_endpoint",
+                                "type": "endpoint",
+                                "label": "Pediatric chest pain, syncope, or palpitations: escalate when reassessment worsens or contradicts expected course",
+                                "edgeLabel": "Worsening or discordant reassessment",
+                                "source_ids": [
+                                  "RCH_SYNCOPE_CHILD",
+                                  "CHOP_PEDS_CHEST_PAIN_2025",
+                                  "JHACH_CHEST_PAIN_2018",
+                                  "RCH_PEDIATRIC_ECG",
+                                  "RCH_CHEST_PAIN_CHILD",
+                                  "AHRQ_CALIBRATE_DX"
+                                ],
+                                "criteria": {
+                                  "rule_id": "pediatric_chest_pain_syncope_worsening_criteria",
+                                  "source": "criteria",
+                                  "description": "Escalate Pediatric chest pain, syncope, or palpitations if symptoms, vitals, critical cutoffs, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+                                  "evaluable_from": [
+                                    "symptoms",
+                                    "exam",
+                                    "vitals",
+                                    "labs",
+                                    "imaging_results",
+                                    "medications",
+                                    "workup_findings"
+                                  ],
+                                  "source_ids": [
+                                    "RCH_SYNCOPE_CHILD",
+                                    "CHOP_PEDS_CHEST_PAIN_2025",
+                                    "JHACH_CHEST_PAIN_2018",
+                                    "RCH_PEDIATRIC_ECG",
+                                    "RCH_CHEST_PAIN_CHILD",
+                                    "AHRQ_CALIBRATE_DX"
+                                  ],
+                                  "criteria_options": [
+                                    {
+                                      "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
+                                      "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                                      "criteria_text": "Most pediatric chest pain is benign; RCH notes cardiac-related causes account for as few as 1% of children with chest pain, so ECG, CXR, and blood tests should be reserved for risk factors on history/exam.",
+                                      "cutoffs": [
+                                        "1%"
+                                      ],
+                                      "data_needed": [
+                                        "risk factor history",
+                                        "cardiorespiratory exam",
+                                        "vital signs",
+                                        "ECG if risk factor present"
+                                      ],
+                                      "source_ids": [
+                                        "RCH_CHEST_PAIN_CHILD"
+                                      ],
+                                      "source_section": "Background and assessment",
+                                      "review_status": "source_backed"
+                                    },
+                                    {
+                                      "id": "peds_chest_syncope_ecg_required_once",
+                                      "label": "Pediatric syncope: obtain an ECG at least once; urgent referral for exertional syncope, chest pain/palpitations, abnormal ECG, or family history",
+                                      "criteria_text": "An ECG should be obtained in all children with syncope at least once; cardiac syncope concern includes exercise association, no prodrome, chest pain/palpitations, past cardiac disease, or family history of early cardiac death/arrhythmia/sudden death.",
+                                      "cutoffs": [
+                                        "at least once"
+                                      ],
+                                      "data_needed": [
+                                        "syncope timing/activity",
+                                        "prodrome",
+                                        "palpitations/chest pain",
+                                        "family history",
+                                        "ECG"
+                                      ],
+                                      "source_ids": [
+                                        "RCH_SYNCOPE_CHILD"
+                                      ],
+                                      "source_section": "Investigations and consultation",
+                                      "review_status": "source_backed"
+                                    },
+                                    {
+                                      "id": "peds_ecg_high_risk_intervals",
+                                      "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc >450 ms or <=340 ms, ST shift >2 mm in precordial leads",
+                                      "criteria_text": "Pediatric ECG review should flag QRS duration >0.12 seconds, manual QTc outside >340 ms and <=450 ms, or ST elevation/depression above 2 mm in precordial leads as abnormal/high-risk in context.",
+                                      "cutoffs": [
+                                        ">0.12 seconds",
+                                        ">340 ms",
+                                        "<=450 ms",
+                                        ">2 mm"
+                                      ],
+                                      "data_needed": [
+                                        "manual ECG intervals",
+                                        "age",
+                                        "lead placement/scale",
+                                        "symptoms and cardiac red flags"
+                                      ],
+                                      "source_ids": [
+                                        "RCH_PEDIATRIC_ECG"
+                                      ],
+                                      "source_section": "Basic pediatric ECG interpretation",
+                                      "review_status": "source_backed"
+                                    }
+                                  ]
+                                },
+                                "action": "Repeat critical Pediatric chest pain, syncope, or palpitations objective data, reassess mimics/complications, and move to ED/admission/specialty review according to the abnormal cutoff or danger feature.",
+                                "children": [],
+                                "endpoint_type": "escalation_disposition",
+                                "guideline_cutoffs": [
+                                  {
+                                    "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
+                                    "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                                    "criteria_text": "Most pediatric chest pain is benign; RCH notes cardiac-related causes account for as few as 1% of children with chest pain, so ECG, CXR, and blood tests should be reserved for risk factors on history/exam.",
+                                    "cutoffs": [
+                                      "1%"
+                                    ],
+                                    "data_needed": [
+                                      "risk factor history",
+                                      "cardiorespiratory exam",
+                                      "vital signs",
+                                      "ECG if risk factor present"
+                                    ],
+                                    "source_ids": [
+                                      "RCH_CHEST_PAIN_CHILD"
+                                    ],
+                                    "source_section": "Background and assessment",
+                                    "review_status": "source_backed"
+                                  },
+                                  {
+                                    "id": "peds_chest_syncope_ecg_required_once",
+                                    "label": "Pediatric syncope: obtain an ECG at least once; urgent referral for exertional syncope, chest pain/palpitations, abnormal ECG, or family history",
+                                    "criteria_text": "An ECG should be obtained in all children with syncope at least once; cardiac syncope concern includes exercise association, no prodrome, chest pain/palpitations, past cardiac disease, or family history of early cardiac death/arrhythmia/sudden death.",
+                                    "cutoffs": [
+                                      "at least once"
+                                    ],
+                                    "data_needed": [
+                                      "syncope timing/activity",
+                                      "prodrome",
+                                      "palpitations/chest pain",
+                                      "family history",
+                                      "ECG"
+                                    ],
+                                    "source_ids": [
+                                      "RCH_SYNCOPE_CHILD"
+                                    ],
+                                    "source_section": "Investigations and consultation",
+                                    "review_status": "source_backed"
+                                  },
+                                  {
+                                    "id": "peds_ecg_high_risk_intervals",
+                                    "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc >450 ms or <=340 ms, ST shift >2 mm in precordial leads",
+                                    "criteria_text": "Pediatric ECG review should flag QRS duration >0.12 seconds, manual QTc outside >340 ms and <=450 ms, or ST elevation/depression above 2 mm in precordial leads as abnormal/high-risk in context.",
+                                    "cutoffs": [
+                                      ">0.12 seconds",
+                                      ">340 ms",
+                                      "<=450 ms",
+                                      ">2 mm"
+                                    ],
+                                    "data_needed": [
+                                      "manual ECG intervals",
+                                      "age",
+                                      "lead placement/scale",
+                                      "symptoms and cardiac red flags"
+                                    ],
+                                    "source_ids": [
+                                      "RCH_PEDIATRIC_ECG"
+                                    ],
+                                    "source_section": "Basic pediatric ECG interpretation",
+                                    "review_status": "source_backed"
+                                  }
+                                ]
+                              },
+                              {
+                                "id": "pediatric_chest_pain_syncope_deescalate_endpoint",
+                                "type": "endpoint",
+                                "label": "Pediatric chest pain, syncope, or palpitations: de-escalate, stop, or narrow when objective criteria normalize",
+                                "edgeLabel": "Stopping or de-escalation criteria met",
+                                "source_ids": [
+                                  "RCH_PEDIATRIC_ECG",
+                                  "RCH_CHEST_PAIN_CHILD",
+                                  "RCH_SYNCOPE_CHILD",
+                                  "JHACH_CHEST_PAIN_2018",
+                                  "CHOP_PEDS_CHEST_PAIN_2025",
+                                  "AHRQ_CALIBRATE_DX"
+                                ],
+                                "criteria": {
+                                  "rule_id": "pediatric_chest_pain_syncope_deescalate_criteria",
+                                  "source": "criteria",
+                                  "description": "Stop, narrow, taper, or de-escalate Pediatric chest pain, syncope, or palpitations treatment only when objective response, diagnosis certainty, and cited stopping criteria support it.",
+                                  "evaluable_from": [
+                                    "symptoms",
+                                    "exam",
+                                    "vitals",
+                                    "labs",
+                                    "imaging_results",
+                                    "medications",
+                                    "workup_findings"
+                                  ],
+                                  "source_ids": [
+                                    "RCH_PEDIATRIC_ECG",
+                                    "RCH_CHEST_PAIN_CHILD",
+                                    "RCH_SYNCOPE_CHILD",
+                                    "JHACH_CHEST_PAIN_2018",
+                                    "CHOP_PEDS_CHEST_PAIN_2025",
+                                    "AHRQ_CALIBRATE_DX"
+                                  ],
+                                  "criteria_options": [
+                                    {
+                                      "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
+                                      "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                                      "criteria_text": "Most pediatric chest pain is benign; RCH notes cardiac-related causes account for as few as 1% of children with chest pain, so ECG, CXR, and blood tests should be reserved for risk factors on history/exam.",
+                                      "cutoffs": [
+                                        "1%"
+                                      ],
+                                      "data_needed": [
+                                        "risk factor history",
+                                        "cardiorespiratory exam",
+                                        "vital signs",
+                                        "ECG if risk factor present"
+                                      ],
+                                      "source_ids": [
+                                        "RCH_CHEST_PAIN_CHILD"
+                                      ],
+                                      "source_section": "Background and assessment",
+                                      "review_status": "source_backed"
+                                    },
+                                    {
+                                      "id": "peds_chest_syncope_ecg_required_once",
+                                      "label": "Pediatric syncope: obtain an ECG at least once; urgent referral for exertional syncope, chest pain/palpitations, abnormal ECG, or family history",
+                                      "criteria_text": "An ECG should be obtained in all children with syncope at least once; cardiac syncope concern includes exercise association, no prodrome, chest pain/palpitations, past cardiac disease, or family history of early cardiac death/arrhythmia/sudden death.",
+                                      "cutoffs": [
+                                        "at least once"
+                                      ],
+                                      "data_needed": [
+                                        "syncope timing/activity",
+                                        "prodrome",
+                                        "palpitations/chest pain",
+                                        "family history",
+                                        "ECG"
+                                      ],
+                                      "source_ids": [
+                                        "RCH_SYNCOPE_CHILD"
+                                      ],
+                                      "source_section": "Investigations and consultation",
+                                      "review_status": "source_backed"
+                                    },
+                                    {
+                                      "id": "peds_ecg_high_risk_intervals",
+                                      "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc >450 ms or <=340 ms, ST shift >2 mm in precordial leads",
+                                      "criteria_text": "Pediatric ECG review should flag QRS duration >0.12 seconds, manual QTc outside >340 ms and <=450 ms, or ST elevation/depression above 2 mm in precordial leads as abnormal/high-risk in context.",
+                                      "cutoffs": [
+                                        ">0.12 seconds",
+                                        ">340 ms",
+                                        "<=450 ms",
+                                        ">2 mm"
+                                      ],
+                                      "data_needed": [
+                                        "manual ECG intervals",
+                                        "age",
+                                        "lead placement/scale",
+                                        "symptoms and cardiac red flags"
+                                      ],
+                                      "source_ids": [
+                                        "RCH_PEDIATRIC_ECG"
+                                      ],
+                                      "source_section": "Basic pediatric ECG interpretation",
+                                      "review_status": "source_backed"
+                                    }
+                                  ]
+                                },
+                                "action": "Use the active Pediatric chest pain, syncope, or palpitations cutoff criteria and response trend to stop, narrow, taper, or continue treatment; document what cutoff or finding changed.",
+                                "children": [],
+                                "endpoint_type": "deescalation_stopping",
+                                "guideline_cutoffs": [
+                                  {
+                                    "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
+                                    "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                                    "criteria_text": "Most pediatric chest pain is benign; RCH notes cardiac-related causes account for as few as 1% of children with chest pain, so ECG, CXR, and blood tests should be reserved for risk factors on history/exam.",
+                                    "cutoffs": [
+                                      "1%"
+                                    ],
+                                    "data_needed": [
+                                      "risk factor history",
+                                      "cardiorespiratory exam",
+                                      "vital signs",
+                                      "ECG if risk factor present"
+                                    ],
+                                    "source_ids": [
+                                      "RCH_CHEST_PAIN_CHILD"
+                                    ],
+                                    "source_section": "Background and assessment",
+                                    "review_status": "source_backed"
+                                  },
+                                  {
+                                    "id": "peds_chest_syncope_ecg_required_once",
+                                    "label": "Pediatric syncope: obtain an ECG at least once; urgent referral for exertional syncope, chest pain/palpitations, abnormal ECG, or family history",
+                                    "criteria_text": "An ECG should be obtained in all children with syncope at least once; cardiac syncope concern includes exercise association, no prodrome, chest pain/palpitations, past cardiac disease, or family history of early cardiac death/arrhythmia/sudden death.",
+                                    "cutoffs": [
+                                      "at least once"
+                                    ],
+                                    "data_needed": [
+                                      "syncope timing/activity",
+                                      "prodrome",
+                                      "palpitations/chest pain",
+                                      "family history",
+                                      "ECG"
+                                    ],
+                                    "source_ids": [
+                                      "RCH_SYNCOPE_CHILD"
+                                    ],
+                                    "source_section": "Investigations and consultation",
+                                    "review_status": "source_backed"
+                                  },
+                                  {
+                                    "id": "peds_ecg_high_risk_intervals",
+                                    "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc >450 ms or <=340 ms, ST shift >2 mm in precordial leads",
+                                    "criteria_text": "Pediatric ECG review should flag QRS duration >0.12 seconds, manual QTc outside >340 ms and <=450 ms, or ST elevation/depression above 2 mm in precordial leads as abnormal/high-risk in context.",
+                                    "cutoffs": [
+                                      ">0.12 seconds",
+                                      ">340 ms",
+                                      "<=450 ms",
+                                      ">2 mm"
+                                    ],
+                                    "data_needed": [
+                                      "manual ECG intervals",
+                                      "age",
+                                      "lead placement/scale",
+                                      "symptoms and cardiac red flags"
+                                    ],
+                                    "source_ids": [
+                                      "RCH_PEDIATRIC_ECG"
+                                    ],
+                                    "source_section": "Basic pediatric ECG interpretation",
+                                    "review_status": "source_backed"
+                                  }
+                                ]
+                              },
+                              {
+                                "id": "pediatric_chest_pain_syncope_followup_endpoint",
+                                "type": "endpoint",
+                                "label": "Pediatric chest pain, syncope, or palpitations: follow-up ownership and safety-net endpoint",
+                                "edgeLabel": "Stable for follow-up with safety net",
+                                "source_ids": [
+                                  "RCH_PEDIATRIC_ECG",
+                                  "RCH_CHEST_PAIN_CHILD",
+                                  "RCH_SYNCOPE_CHILD",
+                                  "JHACH_CHEST_PAIN_2018",
+                                  "CHOP_PEDS_CHEST_PAIN_2025",
+                                  "AHRQ_CALIBRATE_DX"
+                                ],
+                                "criteria": {
+                                  "rule_id": "pediatric_chest_pain_syncope_followup_criteria",
+                                  "source": "criteria",
+                                  "description": "Use after Pediatric chest pain, syncope, or palpitations is stable, actionable results have an owner, and return precautions are documented.",
+                                  "evaluable_from": [
+                                    "symptoms",
+                                    "vitals",
+                                    "labs",
+                                    "imaging_results",
+                                    "medications",
+                                    "follow_up_access",
+                                    "workup_findings"
+                                  ],
+                                  "source_ids": [
+                                    "RCH_PEDIATRIC_ECG",
+                                    "RCH_CHEST_PAIN_CHILD",
+                                    "RCH_SYNCOPE_CHILD",
+                                    "JHACH_CHEST_PAIN_2018",
+                                    "CHOP_PEDS_CHEST_PAIN_2025",
+                                    "AHRQ_CALIBRATE_DX"
+                                  ]
+                                },
+                                "action": "Document the Pediatric chest pain, syncope, or palpitations diagnosis/risk category, pending-result owner, follow-up interval, and return precautions for worsening symptoms, new danger features, inability to complete treatment, or abnormal pending results.",
+                                "children": [],
+                                "endpoint_type": "safety_net_instruction",
+                                "monitoring_plan": [
+                                  "pending-result owner",
+                                  "follow-up interval",
+                                  "return precautions",
+                                  "access barriers"
+                                ]
+                              }
+                            ],
+                            "parallel_actions": [
+                              "repeat vital signs",
+                              "trend cutoff-bearing labs/results",
+                              "review treatment response/adverse effects",
+                              "confirm disposition and follow-up owner",
+                              "Measure blood pressure",
+                              "Measure heart rate",
+                              "Measure respiratory rate",
+                              "Measure oxygen saturation",
+                              "Measure temperature"
+                            ],
+                            "guideline_cutoffs": [
+                              {
+                                "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
+                                "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                                "criteria_text": "Most pediatric chest pain is benign; RCH notes cardiac-related causes account for as few as 1% of children with chest pain, so ECG, CXR, and blood tests should be reserved for risk factors on history/exam.",
+                                "cutoffs": [
+                                  "1%"
+                                ],
+                                "data_needed": [
+                                  "risk factor history",
+                                  "cardiorespiratory exam",
+                                  "vital signs",
+                                  "ECG if risk factor present"
+                                ],
+                                "source_ids": [
+                                  "RCH_CHEST_PAIN_CHILD"
+                                ],
+                                "source_section": "Background and assessment",
+                                "review_status": "source_backed"
+                              },
+                              {
+                                "id": "peds_chest_syncope_ecg_required_once",
+                                "label": "Pediatric syncope: obtain an ECG at least once; urgent referral for exertional syncope, chest pain/palpitations, abnormal ECG, or family history",
+                                "criteria_text": "An ECG should be obtained in all children with syncope at least once; cardiac syncope concern includes exercise association, no prodrome, chest pain/palpitations, past cardiac disease, or family history of early cardiac death/arrhythmia/sudden death.",
+                                "cutoffs": [
+                                  "at least once"
+                                ],
+                                "data_needed": [
+                                  "syncope timing/activity",
+                                  "prodrome",
+                                  "palpitations/chest pain",
+                                  "family history",
+                                  "ECG"
+                                ],
+                                "source_ids": [
+                                  "RCH_SYNCOPE_CHILD"
+                                ],
+                                "source_section": "Investigations and consultation",
+                                "review_status": "source_backed"
+                              },
+                              {
+                                "id": "peds_ecg_high_risk_intervals",
+                                "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc >450 ms or <=340 ms, ST shift >2 mm in precordial leads",
+                                "criteria_text": "Pediatric ECG review should flag QRS duration >0.12 seconds, manual QTc outside >340 ms and <=450 ms, or ST elevation/depression above 2 mm in precordial leads as abnormal/high-risk in context.",
+                                "cutoffs": [
+                                  ">0.12 seconds",
+                                  ">340 ms",
+                                  "<=450 ms",
+                                  ">2 mm"
+                                ],
+                                "data_needed": [
+                                  "manual ECG intervals",
+                                  "age",
+                                  "lead placement/scale",
+                                  "symptoms and cardiac red flags"
+                                ],
+                                "source_ids": [
+                                  "RCH_PEDIATRIC_ECG"
+                                ],
+                                "source_section": "Basic pediatric ECG interpretation",
+                                "review_status": "source_backed"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "parallel_actions": [
+                      "Monitor treatment response, complications, and need for reassessment with: ECG when cardiac risk or syncope is present.",
+                      "Emergency pediatric cardiology escalation",
+                      "Low-risk chest pain testing restraint",
+                      "Syncope consultation and discharge route",
+                      "Respiratory or PE route"
+                    ],
+                    "guideline_cutoffs": [
+                      {
+                        "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
+                        "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                        "criteria_text": "Most pediatric chest pain is benign; RCH notes cardiac-related causes account for as few as 1% of children with chest pain, so ECG, CXR, and blood tests should be reserved for risk factors on history/exam.",
+                        "cutoffs": [
+                          "1%"
+                        ],
+                        "data_needed": [
+                          "risk factor history",
+                          "cardiorespiratory exam",
+                          "vital signs",
+                          "ECG if risk factor present"
+                        ],
+                        "source_ids": [
+                          "RCH_CHEST_PAIN_CHILD"
+                        ],
+                        "source_section": "Background and assessment",
+                        "review_status": "source_backed"
+                      },
+                      {
+                        "id": "peds_chest_syncope_ecg_required_once",
+                        "label": "Pediatric syncope: obtain an ECG at least once; urgent referral for exertional syncope, chest pain/palpitations, abnormal ECG, or family history",
+                        "criteria_text": "An ECG should be obtained in all children with syncope at least once; cardiac syncope concern includes exercise association, no prodrome, chest pain/palpitations, past cardiac disease, or family history of early cardiac death/arrhythmia/sudden death.",
+                        "cutoffs": [
+                          "at least once"
+                        ],
+                        "data_needed": [
+                          "syncope timing/activity",
+                          "prodrome",
+                          "palpitations/chest pain",
+                          "family history",
+                          "ECG"
+                        ],
+                        "source_ids": [
+                          "RCH_SYNCOPE_CHILD"
+                        ],
+                        "source_section": "Investigations and consultation",
+                        "review_status": "source_backed"
+                      },
+                      {
+                        "id": "peds_ecg_high_risk_intervals",
+                        "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc >450 ms or <=340 ms, ST shift >2 mm in precordial leads",
+                        "criteria_text": "Pediatric ECG review should flag QRS duration >0.12 seconds, manual QTc outside >340 ms and <=450 ms, or ST elevation/depression above 2 mm in precordial leads as abnormal/high-risk in context.",
+                        "cutoffs": [
+                          ">0.12 seconds",
+                          ">340 ms",
+                          "<=450 ms",
+                          ">2 mm"
+                        ],
+                        "data_needed": [
+                          "manual ECG intervals",
+                          "age",
+                          "lead placement/scale",
+                          "symptoms and cardiac red flags"
+                        ],
+                        "source_ids": [
+                          "RCH_PEDIATRIC_ECG"
+                        ],
+                        "source_section": "Basic pediatric ECG interpretation",
+                        "review_status": "source_backed"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "pediatric_chest_pain_syncope_alternate_endpoint",
+                    "type": "endpoint",
+                    "label": "Pediatric chest pain, syncope, or palpitations: switch to mimic/alternate pathway when cutoff criteria do not fit",
+                    "edgeLabel": "Criteria favor mimic or alternate pathway",
+                    "source_ids": [
+                      "RCH_CHEST_PAIN_CHILD",
+                      "RCH_SYNCOPE_CHILD",
+                      "RCH_PEDIATRIC_ECG",
+                      "JHACH_CHEST_PAIN_2018",
+                      "CHOP_PEDS_CHEST_PAIN_2025",
+                      "AHRQ_CALIBRATE_DX"
+                    ],
+                    "criteria": {
+                      "rule_id": "pediatric_chest_pain_syncope_alternate_criteria",
+                      "source": "criteria",
+                      "description": "Use an alternate pathway when Pediatric chest pain, syncope, or palpitations criteria are absent, a cited mimic better explains the presentation, or cutoff data contradict this workup.",
+                      "evaluable_from": [
+                        "symptoms",
+                        "exam",
+                        "vitals",
+                        "labs",
+                        "imaging_results",
+                        "workup_findings"
+                      ],
+                      "source_ids": [
+                        "RCH_CHEST_PAIN_CHILD",
+                        "RCH_SYNCOPE_CHILD",
+                        "RCH_PEDIATRIC_ECG",
+                        "JHACH_CHEST_PAIN_2018",
+                        "CHOP_PEDS_CHEST_PAIN_2025",
+                        "AHRQ_CALIBRATE_DX"
+                      ],
+                      "criteria_options": [
+                        {
+                          "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
+                          "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                          "criteria_text": "Most pediatric chest pain is benign; RCH notes cardiac-related causes account for as few as 1% of children with chest pain, so ECG, CXR, and blood tests should be reserved for risk factors on history/exam.",
+                          "cutoffs": [
+                            "1%"
+                          ],
+                          "data_needed": [
+                            "risk factor history",
+                            "cardiorespiratory exam",
+                            "vital signs",
+                            "ECG if risk factor present"
+                          ],
+                          "source_ids": [
+                            "RCH_CHEST_PAIN_CHILD"
+                          ],
+                          "source_section": "Background and assessment",
+                          "review_status": "source_backed"
+                        },
+                        {
+                          "id": "peds_chest_syncope_ecg_required_once",
+                          "label": "Pediatric syncope: obtain an ECG at least once; urgent referral for exertional syncope, chest pain/palpitations, abnormal ECG, or family history",
+                          "criteria_text": "An ECG should be obtained in all children with syncope at least once; cardiac syncope concern includes exercise association, no prodrome, chest pain/palpitations, past cardiac disease, or family history of early cardiac death/arrhythmia/sudden death.",
+                          "cutoffs": [
+                            "at least once"
+                          ],
+                          "data_needed": [
+                            "syncope timing/activity",
+                            "prodrome",
+                            "palpitations/chest pain",
+                            "family history",
+                            "ECG"
+                          ],
+                          "source_ids": [
+                            "RCH_SYNCOPE_CHILD"
+                          ],
+                          "source_section": "Investigations and consultation",
+                          "review_status": "source_backed"
+                        },
+                        {
+                          "id": "peds_ecg_high_risk_intervals",
+                          "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc >450 ms or <=340 ms, ST shift >2 mm in precordial leads",
+                          "criteria_text": "Pediatric ECG review should flag QRS duration >0.12 seconds, manual QTc outside >340 ms and <=450 ms, or ST elevation/depression above 2 mm in precordial leads as abnormal/high-risk in context.",
+                          "cutoffs": [
+                            ">0.12 seconds",
+                            ">340 ms",
+                            "<=450 ms",
+                            ">2 mm"
+                          ],
+                          "data_needed": [
+                            "manual ECG intervals",
+                            "age",
+                            "lead placement/scale",
+                            "symptoms and cardiac red flags"
+                          ],
+                          "source_ids": [
+                            "RCH_PEDIATRIC_ECG"
+                          ],
+                          "source_section": "Basic pediatric ECG interpretation",
+                          "review_status": "source_backed"
+                        }
+                      ]
+                    },
+                    "action": "Document why Pediatric chest pain, syncope, or palpitations is not the active pathway and route to the competing diagnosis: Cardiac chest pain or syncope risk with exertional symptoms, syncope, palpitations, abnormal cardiac exam, abnormal ECG, cardiac history, or family history of early sudden death; Respiratory, pulmonary embolus, pneumothorax, asthma, pneumonia, or hypoxemic cause of pediatric chest pain; Musculoskeletal pain, costochon....",
+                    "children": [],
+                    "endpoint_type": "clinician_review_handoff",
+                    "review_needed_reason": "Competing diagnosis or exclusion changes the active pathway."
+                  }
+                ],
+                "guideline_cutoffs": [
+                  {
+                    "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
+                    "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                    "criteria_text": "Most pediatric chest pain is benign; RCH notes cardiac-related causes account for as few as 1% of children with chest pain, so ECG, CXR, and blood tests should be reserved for risk factors on history/exam.",
+                    "cutoffs": [
+                      "1%"
+                    ],
+                    "data_needed": [
+                      "risk factor history",
+                      "cardiorespiratory exam",
+                      "vital signs",
+                      "ECG if risk factor present"
+                    ],
+                    "source_ids": [
+                      "RCH_CHEST_PAIN_CHILD"
+                    ],
+                    "source_section": "Background and assessment",
+                    "review_status": "source_backed"
+                  },
+                  {
+                    "id": "peds_chest_syncope_ecg_required_once",
+                    "label": "Pediatric syncope: obtain an ECG at least once; urgent referral for exertional syncope, chest pain/palpitations, abnormal ECG, or family history",
+                    "criteria_text": "An ECG should be obtained in all children with syncope at least once; cardiac syncope concern includes exercise association, no prodrome, chest pain/palpitations, past cardiac disease, or family history of early cardiac death/arrhythmia/sudden death.",
+                    "cutoffs": [
+                      "at least once"
+                    ],
+                    "data_needed": [
+                      "syncope timing/activity",
+                      "prodrome",
+                      "palpitations/chest pain",
+                      "family history",
+                      "ECG"
+                    ],
+                    "source_ids": [
+                      "RCH_SYNCOPE_CHILD"
+                    ],
+                    "source_section": "Investigations and consultation",
+                    "review_status": "source_backed"
+                  },
+                  {
+                    "id": "peds_ecg_high_risk_intervals",
+                    "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc >450 ms or <=340 ms, ST shift >2 mm in precordial leads",
+                    "criteria_text": "Pediatric ECG review should flag QRS duration >0.12 seconds, manual QTc outside >340 ms and <=450 ms, or ST elevation/depression above 2 mm in precordial leads as abnormal/high-risk in context.",
+                    "cutoffs": [
+                      ">0.12 seconds",
+                      ">340 ms",
+                      "<=450 ms",
+                      ">2 mm"
+                    ],
+                    "data_needed": [
+                      "manual ECG intervals",
+                      "age",
+                      "lead placement/scale",
+                      "symptoms and cardiac red flags"
+                    ],
+                    "source_ids": [
+                      "RCH_PEDIATRIC_ECG"
+                    ],
+                    "source_section": "Basic pediatric ECG interpretation",
+                    "review_status": "source_backed"
+                  }
+                ],
+                "clinical_criteria": [
+                  {
+                    "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
+                    "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                    "criteria_text": "Most pediatric chest pain is benign; RCH notes cardiac-related causes account for as few as 1% of children with chest pain, so ECG, CXR, and blood tests should be reserved for risk factors on history/exam.",
+                    "cutoffs": [
+                      "1%"
+                    ],
+                    "data_needed": [
+                      "risk factor history",
+                      "cardiorespiratory exam",
+                      "vital signs",
+                      "ECG if risk factor present"
+                    ],
+                    "source_ids": [
+                      "RCH_CHEST_PAIN_CHILD"
+                    ],
+                    "source_section": "Background and assessment",
+                    "review_status": "source_backed"
+                  },
+                  {
+                    "id": "peds_chest_syncope_ecg_required_once",
+                    "label": "Pediatric syncope: obtain an ECG at least once; urgent referral for exertional syncope, chest pain/palpitations, abnormal ECG, or family history",
+                    "criteria_text": "An ECG should be obtained in all children with syncope at least once; cardiac syncope concern includes exercise association, no prodrome, chest pain/palpitations, past cardiac disease, or family history of early cardiac death/arrhythmia/sudden death.",
+                    "cutoffs": [
+                      "at least once"
+                    ],
+                    "data_needed": [
+                      "syncope timing/activity",
+                      "prodrome",
+                      "palpitations/chest pain",
+                      "family history",
+                      "ECG"
+                    ],
+                    "source_ids": [
+                      "RCH_SYNCOPE_CHILD"
+                    ],
+                    "source_section": "Investigations and consultation",
+                    "review_status": "source_backed"
+                  },
+                  {
+                    "id": "peds_ecg_high_risk_intervals",
+                    "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc >450 ms or <=340 ms, ST shift >2 mm in precordial leads",
+                    "criteria_text": "Pediatric ECG review should flag QRS duration >0.12 seconds, manual QTc outside >340 ms and <=450 ms, or ST elevation/depression above 2 mm in precordial leads as abnormal/high-risk in context.",
+                    "cutoffs": [
+                      ">0.12 seconds",
+                      ">340 ms",
+                      "<=450 ms",
+                      ">2 mm"
+                    ],
+                    "data_needed": [
+                      "manual ECG intervals",
+                      "age",
+                      "lead placement/scale",
+                      "symptoms and cardiac red flags"
+                    ],
+                    "source_ids": [
+                      "RCH_PEDIATRIC_ECG"
+                    ],
+                    "source_section": "Basic pediatric ECG interpretation",
+                    "review_status": "source_backed"
+                  }
+                ]
+              }
+            ],
+            "parallel_actions": [
+              "ECG when cardiac risk or syncope is present",
+              "Chest X-ray only when indicated",
+              "Troponin and inflammatory labs when indicated",
+              "Syncope ECG glucose anemia and pregnancy tests",
+              "Echo Holter or exercise testing after review",
+              "Measure blood pressure",
+              "Measure heart rate",
+              "Measure respiratory rate",
+              "Measure oxygen saturation",
+              "Measure temperature",
+              "risk factor history",
+              "cardiorespiratory exam",
+              "vital signs",
+              "ECG if risk factor present",
+              "syncope timing/activity",
+              "prodrome",
+              "palpitations/chest pain",
+              "family history"
+            ],
+            "required_data": [
+              "risk factor history",
+              "cardiorespiratory exam",
+              "vital signs",
+              "ECG if risk factor present",
+              "syncope timing/activity",
+              "prodrome",
+              "palpitations/chest pain",
+              "family history",
+              "ECG",
+              "manual ECG intervals",
+              "age",
+              "lead placement/scale",
+              "ECG when cardiac risk or syncope is present",
+              "Chest X-ray only when indicated",
+              "Troponin and inflammatory labs when indicated",
+              "Syncope ECG glucose anemia and pregnancy tests",
+              "Echo Holter or exercise testing after review",
+              "1%",
+              "at least once",
+              ">0.12 seconds",
+              ">340 ms",
+              "<=450 ms",
+              ">2 mm"
+            ],
+            "guideline_cutoffs": [
+              {
+                "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
+                "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                "criteria_text": "Most pediatric chest pain is benign; RCH notes cardiac-related causes account for as few as 1% of children with chest pain, so ECG, CXR, and blood tests should be reserved for risk factors on history/exam.",
+                "cutoffs": [
+                  "1%"
+                ],
+                "data_needed": [
+                  "risk factor history",
+                  "cardiorespiratory exam",
+                  "vital signs",
+                  "ECG if risk factor present"
+                ],
+                "source_ids": [
+                  "RCH_CHEST_PAIN_CHILD"
+                ],
+                "source_section": "Background and assessment",
+                "review_status": "source_backed"
+              },
+              {
+                "id": "peds_chest_syncope_ecg_required_once",
+                "label": "Pediatric syncope: obtain an ECG at least once; urgent referral for exertional syncope, chest pain/palpitations, abnormal ECG, or family history",
+                "criteria_text": "An ECG should be obtained in all children with syncope at least once; cardiac syncope concern includes exercise association, no prodrome, chest pain/palpitations, past cardiac disease, or family history of early cardiac death/arrhythmia/sudden death.",
+                "cutoffs": [
+                  "at least once"
+                ],
+                "data_needed": [
+                  "syncope timing/activity",
+                  "prodrome",
+                  "palpitations/chest pain",
+                  "family history",
+                  "ECG"
+                ],
+                "source_ids": [
+                  "RCH_SYNCOPE_CHILD"
+                ],
+                "source_section": "Investigations and consultation",
+                "review_status": "source_backed"
+              },
+              {
+                "id": "peds_ecg_high_risk_intervals",
+                "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc >450 ms or <=340 ms, ST shift >2 mm in precordial leads",
+                "criteria_text": "Pediatric ECG review should flag QRS duration >0.12 seconds, manual QTc outside >340 ms and <=450 ms, or ST elevation/depression above 2 mm in precordial leads as abnormal/high-risk in context.",
+                "cutoffs": [
+                  ">0.12 seconds",
+                  ">340 ms",
+                  "<=450 ms",
+                  ">2 mm"
+                ],
+                "data_needed": [
+                  "manual ECG intervals",
+                  "age",
+                  "lead placement/scale",
+                  "symptoms and cardiac red flags"
+                ],
+                "source_ids": [
+                  "RCH_PEDIATRIC_ECG"
+                ],
+                "source_section": "Basic pediatric ECG interpretation",
+                "review_status": "source_backed"
+              }
+            ]
+          }
+        ]
+      },
+      "synthetic_patient_scenarios": [
+        {
+          "scenario_id": "missing_context",
+          "major_pathway": "missing_data_needed",
+          "expected_endpoint_id": "endpoint_missing_context",
+          "expected_active_branch": "Missing context"
+        },
+        {
+          "scenario_id": "missing_cutoff_data",
+          "major_pathway": "diagnostic_confirmation_missing_data",
+          "expected_endpoint_id": "pediatric_chest_pain_syncope_missing_cutoff_data_endpoint",
+          "expected_active_branch": "Cutoff data missing"
+        },
+        {
+          "scenario_id": "urgent_or_high_risk",
+          "major_pathway": "escalation_emergency_actions",
+          "expected_endpoint_id": "pediatric_chest_pain_syncope_urgent_endpoint",
+          "expected_active_branch": "Emergency or high-risk criteria met"
+        },
+        {
+          "scenario_id": "alternate_pathway",
+          "major_pathway": "mimics_exclusions",
+          "expected_endpoint_id": "pediatric_chest_pain_syncope_alternate_endpoint",
+          "expected_active_branch": "Criteria favor mimic or alternate pathway"
+        },
+        {
+          "scenario_id": "special_population_review",
+          "major_pathway": "contraindications_special_populations",
+          "expected_endpoint_id": "pediatric_chest_pain_syncope_review_endpoint",
+          "expected_active_branch": "Treatment modifier unresolved"
+        },
+        {
+          "scenario_id": "worsening_after_treatment",
+          "major_pathway": "monitoring_reassessment_escalation",
+          "expected_endpoint_id": "pediatric_chest_pain_syncope_worsening_endpoint",
+          "expected_active_branch": "Worsening or discordant reassessment"
+        },
+        {
+          "scenario_id": "deescalation_ready",
+          "major_pathway": "deescalation_stopping_criteria",
+          "expected_endpoint_id": "pediatric_chest_pain_syncope_deescalate_endpoint",
+          "expected_active_branch": "Stopping or de-escalation criteria met"
+        },
+        {
+          "scenario_id": "followup_safety_net",
+          "major_pathway": "disposition_followup_safety_netting",
+          "expected_endpoint_id": "pediatric_chest_pain_syncope_followup_endpoint",
+          "expected_active_branch": "Stable for follow-up with safety net"
+        }
+      ],
+      "audit_requirements": {
+        "required_domains": [
+          "initial assessment",
+          "red flags/instability",
+          "diagnostic confirmation",
+          "mimics/exclusions",
+          "severity/risk stratification",
+          "first-line management",
+          "escalation/emergency actions",
+          "contraindications/special populations",
+          "monitoring/reassessment",
+          "de-escalation/stopping criteria",
+          "disposition",
+          "follow-up",
+          "safety-netting"
+        ],
+        "compact_tree_requirements": [
+          "no prohibited generic node labels",
+          "concurrent diagnostic/treatment bundles instead of long one-step chains",
+          "cutoff-bearing criteria visible in classification and endpoint nodes",
+          "all endpoints cite evidence or state needs_clinical_review",
+          "missing-data endpoints name exact data needed"
+        ]
+      }
+    },
+    "clinical_cutoff_criteria": [
+      {
+        "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
+        "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+        "criteria_text": "Most pediatric chest pain is benign; RCH notes cardiac-related causes account for as few as 1% of children with chest pain, so ECG, CXR, and blood tests should be reserved for risk factors on history/exam.",
+        "cutoffs": [
+          "1%"
+        ],
+        "data_needed": [
+          "risk factor history",
+          "cardiorespiratory exam",
+          "vital signs",
+          "ECG if risk factor present"
+        ],
+        "source_ids": [
+          "RCH_CHEST_PAIN_CHILD"
+        ],
+        "source_section": "Background and assessment",
+        "review_status": "source_backed"
+      },
+      {
+        "id": "peds_chest_syncope_ecg_required_once",
+        "label": "Pediatric syncope: obtain an ECG at least once; urgent referral for exertional syncope, chest pain/palpitations, abnormal ECG, or family history",
+        "criteria_text": "An ECG should be obtained in all children with syncope at least once; cardiac syncope concern includes exercise association, no prodrome, chest pain/palpitations, past cardiac disease, or family history of early cardiac death/arrhythmia/sudden death.",
+        "cutoffs": [
+          "at least once"
+        ],
+        "data_needed": [
+          "syncope timing/activity",
+          "prodrome",
+          "palpitations/chest pain",
+          "family history",
+          "ECG"
+        ],
+        "source_ids": [
+          "RCH_SYNCOPE_CHILD"
+        ],
+        "source_section": "Investigations and consultation",
+        "review_status": "source_backed"
+      },
+      {
+        "id": "peds_ecg_high_risk_intervals",
+        "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc >450 ms or <=340 ms, ST shift >2 mm in precordial leads",
+        "criteria_text": "Pediatric ECG review should flag QRS duration >0.12 seconds, manual QTc outside >340 ms and <=450 ms, or ST elevation/depression above 2 mm in precordial leads as abnormal/high-risk in context.",
+        "cutoffs": [
+          ">0.12 seconds",
+          ">340 ms",
+          "<=450 ms",
+          ">2 mm"
+        ],
+        "data_needed": [
+          "manual ECG intervals",
+          "age",
+          "lead placement/scale",
+          "symptoms and cardiac red flags"
+        ],
+        "source_ids": [
+          "RCH_PEDIATRIC_ECG"
+        ],
+        "source_section": "Basic pediatric ECG interpretation",
+        "review_status": "source_backed"
+      }
+    ],
+    "clinical_cutoff_review": {
+      "status": "source_backed_cutoff_enrichment_added",
+      "reviewed_on": "2026-06-11",
+      "review_note": "Cutoff rows were added because the prior module evidence did not expose enough explicit guideline thresholds for pathway traversal."
+    }
   }
 }

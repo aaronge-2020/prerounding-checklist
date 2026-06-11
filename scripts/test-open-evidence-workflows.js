@@ -10,15 +10,15 @@ import {
   parseOpenEvidenceResult
 } from "../open-evidence-results.js";
 
-assert.equal(openEvidenceTasks.length, 11, "OpenEvidence tasks should include concise and full rounds tasks plus higher-reasoning tasks and optional checklist improvement review");
+assert.equal(openEvidenceTasks.length, 11, "OpenEvidence tasks should include rounds, safety, teaching, checklist refinement, and decision-tree builder tasks without the removed guideline-confirmation task");
 const ids = new Set(openEvidenceTasks.map((task) => task.id));
 [
   "initial_rounds_report",
   "full_rounds_report",
   "final_rounds_update",
   "checklist_improvement_review",
+  "decision_tree_builder",
   "medication_safety",
-  "confirm_guideline",
   "find_exception",
   "attending_plan",
   "teaching_explanation",
@@ -48,25 +48,37 @@ const baseContext = {
   checklistAuditSummary: "Bedside checklist has only 1 patient question.",
   refinementNotes: "Too short and missing discharge readiness.",
   compiledFindings: "Nausea resolved. Mental status alert.",
+  objectiveData: "- Glucose: 486 (auto from chart)\n- Potassium: 3.4 (manual)",
+  selectedWorkupTitle: "Hyperglycemia / possible DKA or HHS",
+  selectedWorkupId: "hyperglycemia_possible_dka_v1",
+  decisionTreeJson: "{\"schema\":\"clinical_pathway_tree_v1\",\"workupId\":\"hyperglycemia_possible_dka_v1\",\"root\":{\"id\":\"root\",\"label\":\"Current pathway\",\"type\":\"decision\",\"children\":[]},\"activationRules\":{}}",
   sameConversationReady: true
 };
 
 const outputContracts = {
-  initial_rounds_report: ["Use at most 6 bullets total.", "Prefix every bullet with SAY, CHECK, ASK, or WATCH."],
+  initial_rounds_report: ["I. SUBJECTIVE", "III. ASSESSMENT AND PLAN", "include an inline citation to current guideline or literature"],
   full_rounds_report: [
-    "Use exactly these headings, in this order:",
-    "ACTIVE PROBLEMS AND TRAJECTORY",
-    "ASSESSMENT AND PLAN",
-    "Put each lab/vital/medication/imaging trend in only one section unless it changes a separate decision elsewhere.",
-    "Do not include exhaustive PMH, medication lists, normal exam, negative ROS, or copied chart narrative unless it changes today's plan."
+    "I. SUBJECTIVE",
+    "II. OBJECTIVE",
+    "III. ASSESSMENT AND PLAN",
+    "Include important negatives, trends, medication context, and contingencies"
   ],
-  final_rounds_update: ["Use at most 5 bullets total.", "Only include changes since the initial report"],
-  checklist_improvement_review: ["Use at most 5 bullets total.", "Prefix every bullet with ADD, REMOVE, or WORDING.", "UNVALIDATED LOCAL REVIEW"],
-  medication_safety: ["Use at most 5 bullets total.", "Prefix every bullet with VERIFY, ASK, MONITOR, or ESCALATE."],
-  confirm_guideline: ["Use at most 4 bullets total.", "Use OpenEvidence's own current guideline access; do not ask me to paste guidelines.", "Include at most 2 citations total"],
+  final_rounds_update: ["Assume the attending heard the full presentation yesterday", "III. ASSESSMENT AND PLAN", "changes management"],
+  checklist_improvement_review: ["Output only one fenced JSON block", "\"schema\": \"workup_refinement_v1\"", "\"answerMode\": \"single or multi\"", "\"normalAnswers\""],
+  decision_tree_builder: [
+    "Return only the raw JSON object",
+    "\"schema\": \"clinical_pathway_tree_v1\"",
+    "Every node must have a unique string \"id\"",
+    "\"edgeLabel\"",
+    "clinically deep management pathway",
+    "source_metadata",
+    "missing-data endpoints",
+    "activationRules"
+  ],
+  medication_safety: ["5Rs", "right medication", "right dose", "right route", "right time/frequency"],
   find_exception: ["Use at most 4 bullets total.", "Prefix every bullet with EXCEPTION, CONTRAINDICATION, PREREQUISITE, or SPECIAL-POPULATION."],
-  attending_plan: ["Use at most 6 bullets total.", "Do not write a full problem-list assessment and plan"],
-  teaching_explanation: ["Use at most 4 bullets total.", "Do not write an illness-script review, background review, or management plan."],
+  attending_plan: ["patient-specific management recommendations", "latest guideline or literature", "Organize by active problem"],
+  teaching_explanation: ["Use SOAP headings", "brand-new third-year medical student", "Spell out all non-obvious abbreviations"],
   discharge_checklist: ["Use at most 5 bullets total.", "Prefix every bullet with BARRIER, SUPPLY, FOLLOW-UP, COUNSEL, or RETURN."],
   what_am_i_missing: ["Use at most 5 bullets total.", "Prefix every bullet with MISS, VERIFY, ESCALATE, ASK, or UNVALIDATED GAP."]
 };
@@ -77,43 +89,42 @@ openEvidenceTasks.forEach((task) => {
   assert.ok(task.requiredContext, `${task.id} should declare required context`);
   assert.ok(task.outputKind, `${task.id} should declare output kind`);
   const built = buildOpenEvidencePrompt(task.id, baseContext);
-  assert.ok(built.prompt.length < 4000, `${task.id} base prompt should stay tighter than the old 4.6k cap; saw ${built.prompt.length} chars`);
+  const maxPromptLength = task.id === "decision_tree_builder" ? 6500 : 5200;
+  assert.ok(built.prompt.length < maxPromptLength, `${task.id} base prompt should stay compact enough to review; saw ${built.prompt.length} chars`);
   assert.ok(built.prompt.includes("<task_boundary>"), `${task.id} prompt should define a unique task boundary`);
   assert.ok(built.prompt.includes("Primary purpose:"), `${task.id} prompt should define a primary purpose`);
   assert.ok(built.prompt.includes("Do not use this task for:"), `${task.id} prompt should name exclusions to prevent redundant task use`);
   assert.ok(built.prompt.includes("<clinical_safety_rules>"), `${task.id} prompt should include safety rules`);
-  assert.ok(built.prompt.includes("<usefulness_rules>"), `${task.id} prompt should include usefulness rules`);
-  assert.ok(
-    built.prompt.includes("Output only management-changing items"),
-    `${task.id} prompt should require management-changing output only`
-  );
-  assert.ok(
-    built.prompt.includes("NO MANAGEMENT-CHANGING ITEMS FOUND"),
-    `${task.id} prompt should define the no-management-change fallback`
-  );
-  assert.ok(
-    built.prompt.includes("Do not ask the team about facts the student can usually verify directly"),
-    `${task.id} prompt should prevent self-checkable facts from becoming team questions`
-  );
-  assert.ok(
-    built.prompt.includes("Do not include conversational follow-up offers"),
-    `${task.id} prompt should suppress low-value conversational closing offers`
-  );
-  assert.ok(
-    built.prompt.includes("Use only the prefixes or headings requested by the task; do not add empty headings or sections."),
-    `${task.id} prompt should avoid padded headings and sections`
-  );
+  if (task.id !== "decision_tree_builder") {
+    assert.ok(built.prompt.includes("<usefulness_rules>"), `${task.id} prompt should include usefulness rules`);
+    assert.ok(
+      built.prompt.includes("Output only management-changing items"),
+      `${task.id} prompt should require management-changing output only`
+    );
+    assert.ok(
+      built.prompt.includes("NO MANAGEMENT-CHANGING ITEMS FOUND"),
+      `${task.id} prompt should define the no-management-change fallback`
+    );
+    assert.ok(
+      built.prompt.includes("Do not ask the team about facts the student can usually verify directly"),
+      `${task.id} prompt should prevent self-checkable facts from becoming team questions`
+    );
+    assert.ok(
+      built.prompt.includes("Do not include conversational follow-up offers"),
+      `${task.id} prompt should suppress low-value conversational closing offers`
+    );
+    assert.ok(
+      built.prompt.includes("Use only the prefixes or headings requested by the task; do not add empty headings or sections."),
+      `${task.id} prompt should avoid padded headings and sections`
+    );
+  }
   assert.ok(
     built.prompt.includes("Local validated clinical intents and reviewed evidence remain authoritative"),
     `${task.id} prompt should preserve the local validated-intent authority boundary`
   );
   assert.ok(
-    built.prompt.includes("UNVALIDATED GAP SUGGESTION"),
-    `${task.id} prompt should label missing bedside question/exam ideas as unvalidated gap suggestions`
-  );
-  assert.ok(
-    built.prompt.includes("Do not write, rewrite, or silently expand the final bedside checklist"),
-    `${task.id} prompt should prevent OpenEvidence from creating bedside checklist rows`
+    built.prompt.includes("unless the selected task is Checklist improvement review"),
+    `${task.id} prompt should scope bedside checklist rewriting to the structured checklist task`
   );
   assert.ok(!built.prompt.includes("<local_guideline_pathway>"), `${task.id} prompt should not paste local guideline pathway dumps into OpenEvidence`);
   assert.ok(!built.prompt.includes("<evidence_retrieval_summary>"), `${task.id} prompt should not paste local evidence retrieval summaries into OpenEvidence`);
@@ -130,7 +141,7 @@ openEvidenceTasks.forEach((task) => {
 });
 
 const builtPromptById = Object.fromEntries(openEvidenceTasks.map((task) => [task.id, buildOpenEvidencePrompt(task.id, baseContext).prompt]));
-assert.ok(!builtPromptById.confirm_guideline.includes("CONTRAINDICATIONS COMPETING RISKS OR SPECIAL POPULATIONS"), "guideline confirmation should not duplicate the exception-hunting output");
+assert.ok(!ids.has("confirm_guideline"), "Confirm guideline task should be removed because attending-level plan covers guideline-based recommendations");
 assert.ok(!builtPromptById.find_exception.includes("GUIDELINE ALIGNMENT VERDICT"), "exception finding should not duplicate guideline confirmation");
 assert.ok(!builtPromptById.attending_plan.includes("READING PLAN"), "attending plan should not duplicate teaching output");
 assert.ok(!builtPromptById.teaching_explanation.includes("READING PLAN"), "teaching output should avoid reference-triggering reading plan sections");
@@ -140,20 +151,8 @@ assert.ok(!builtPromptById.initial_rounds_report.includes("QUESTIONS FOR TEAM"),
 assert.ok(!builtPromptById.initial_rounds_report.includes("PRE-ROUNDS SELF-CHECKS"), "initial rounds should not restore the old rounds report sections");
 assert.ok(!builtPromptById.final_rounds_update.includes("PLAN OR TASK CHANGES TO VERIFY"), "final update should avoid vague task-change sections");
 assert.ok(!builtPromptById.medication_safety.includes("MEDICATION QUESTIONS FOR TEAM OR NURSING"), "medication prompt should avoid generic team/nursing questions");
-[
-  "initial_rounds_report",
-  "full_rounds_report",
-  "final_rounds_update",
-  "checklist_improvement_review",
-  "attending_plan",
-  "teaching_explanation",
-  "discharge_checklist",
-  "what_am_i_missing"
-].forEach((taskId) => {
-  assert.ok(builtPromptById[taskId].includes("Do not include citations or a reference list"), `${taskId} should suppress citation/reference tails`);
-});
-["teaching_explanation", "discharge_checklist"].forEach((taskId) => {
-  assert.ok(builtPromptById[taskId].includes("source names, journal names, society names"), `${taskId} should explicitly suppress evidence-source clutter`);
+["initial_rounds_report", "full_rounds_report", "final_rounds_update", "attending_plan"].forEach((taskId) => {
+  assert.ok(/citation|guideline|literature/i.test(builtPromptById[taskId]), `${taskId} should request guideline/literature support where management recommendations are made`);
 });
 
 const verboseGuidelineReport = [
@@ -170,7 +169,7 @@ const promptWithoutGuidelineDump = buildOpenEvidencePrompt("initial_rounds_repor
   complaintCdsReport: verboseGuidelineReport,
   evidenceSummary: `${"- Retrieved evidence detail that should not be pasted.\n".repeat(120)}`
 }).prompt;
-assert.ok(promptWithoutGuidelineDump.length < 4000, `verbose guideline/evidence context should not bloat OpenEvidence prompts; saw ${promptWithoutGuidelineDump.length} chars`);
+assert.ok(promptWithoutGuidelineDump.length < 5200, `verbose guideline/evidence context should not bloat OpenEvidence prompts; saw ${promptWithoutGuidelineDump.length} chars`);
 assert.ok(!promptWithoutGuidelineDump.includes("Measure vital sign 1"), "OpenEvidence prompt should not include local guideline rows");
 assert.ok(!promptWithoutGuidelineDump.includes("Retrieved evidence detail"), "OpenEvidence prompt should not include retrieved evidence summaries");
 assert.ok(!promptWithoutGuidelineDump.includes("trace fever_infection_sepsis_v1"), "OpenEvidence prompt should not include local trace/debug metadata");
@@ -188,7 +187,7 @@ const checklistImprovementPrompt = buildOpenEvidencePrompt("checklist_improvemen
   sourceContext: "Raw HPI from John Smith with room 123 should never be included in this prompt."
 });
 assert.equal(checklistImprovementPrompt.requiredContext, "checklist_refinement", "checklist improvement should require the local checklist plus compact context");
-assert.equal(checklistImprovementPrompt.outputKind, "checklist_improvement_review", "checklist improvement should not parse as a replacement checklist");
+assert.equal(checklistImprovementPrompt.outputKind, "checklist_improvement_review", "checklist improvement should remain the structured checklist refinement task");
 assert.ok(checklistImprovementPrompt.prompt.includes("<current_checklist>"), "checklist improvement prompt should include the current checklist");
 assert.ok(checklistImprovementPrompt.prompt.includes("<deidentified_patient_context>"), "checklist improvement prompt should include compact de-identified context");
 assert.ok(!checklistImprovementPrompt.prompt.includes("<source_context>"), "checklist improvement prompt must not include the full source context");
@@ -196,8 +195,9 @@ assert.ok(!checklistImprovementPrompt.prompt.includes("<local_guideline_pathway>
 assert.ok(!checklistImprovementPrompt.prompt.includes("<evidence_retrieval_summary>"), "checklist improvement prompt must not include evidence retrieval summaries");
 assert.ok(!checklistImprovementPrompt.prompt.includes("John Smith"), "checklist improvement prompt must not leak raw source text");
 assert.ok(checklistImprovementPrompt.prompt.includes("full HPI are intentionally excluded"), "checklist improvement prompt should state the HPI boundary");
-assert.ok(checklistImprovementPrompt.prompt.includes("UNVALIDATED LOCAL REVIEW"), "checklist improvement prompt should label local-review suggestions");
-assert.ok(checklistImprovementPrompt.prompt.includes("Do not output a replacement final checklist"), "checklist improvement prompt should not create a replacement checklist");
+assert.ok(checklistImprovementPrompt.prompt.includes("workup_refinement_v1"), "checklist improvement prompt should request structured replacement JSON");
+assert.ok(checklistImprovementPrompt.prompt.includes("Output only one fenced JSON block"), "checklist improvement prompt should be paste-back friendly");
+assert.ok(checklistImprovementPrompt.prompt.includes("patientSpecific true"), "checklist improvement prompt should support patient-only rows");
 assert.ok(checklistImprovementPrompt.reviewText.includes("Selected local workup"), "PHI review text should include the compact patient summary");
 assert.ok(checklistImprovementPrompt.reviewText.includes("How is your nausea today?"), "PHI review text should include the current checklist");
 assert.ok(!checklistImprovementPrompt.reviewText.includes("John Smith"), "PHI review text should not scan or expose withheld raw source text for checklist improvement");
@@ -226,21 +226,28 @@ assert.equal(medicationResult.outputKind, "medication_safety");
 assert.equal(medicationResult.concerns.length, 1, "medication parser should retain actionable concern bullets");
 assert.ok(medicationResult.citations.length >= 1, "medication parser should extract citations");
 
-const guidelineResult = parseOpenEvidenceResult({
-  taskId: "confirm_guideline",
-  outputKind: "guideline_confirmation",
-  text: "CHANGE\n- Use a lower treatment threshold supported by Diabetes Care 2024. doi:10.2337/dci24-0032"
+const attendingPlanResult = parseOpenEvidenceResult({
+  taskId: "attending_plan",
+  outputKind: "attending_plan",
+  text: "DIABETIC KETOACIDOSIS\n- Continue insulin strategy supported by Diabetes Care 2024. doi:10.2337/dci24-0032"
 });
-assert.ok(guidelineResult.sections.some((section) => /CHANGE/.test(section.title)), "guideline parser should retain section headings");
-assert.ok(extractCitations(guidelineResult.sections.map((section) => section.body).join("\n")).length >= 1, "citation extractor should find guideline citations");
+assert.ok(attendingPlanResult.sections.some((section) => /DIABETIC KETOACIDOSIS/.test(section.title)), "attending plan parser should retain problem headings");
+assert.ok(extractCitations(attendingPlanResult.sections.map((section) => section.body).join("\n")).length >= 1, "citation extractor should find guideline citations in attending plan output");
 
 assert.equal(getOpenEvidenceTask("not_a_task"), null, "unknown task lookup should return null");
 
 const appHtml = readFileSync(new URL("../index.html", import.meta.url), "utf8");
-assert.ok(appHtml.includes('"Task boundary:"'), "OpenEvidence review-tab preview should expose each prompt's task boundary");
-assert.ok(appHtml.includes('"Output contract:"'), "OpenEvidence review-tab preview should expose each prompt's output contract");
-assert.ok(appHtml.includes('"Context preview:"'), "OpenEvidence review-tab preview should separate context from instructions");
+assert.ok(appHtml.includes("promptTemplatesByTaskId"), "OpenEvidence prompt templates should persist as first-class local state");
+assert.ok(appHtml.includes("resolvePromptTemplate"), "OpenEvidence copy should resolve editable template variables before copying");
+assert.ok(appHtml.includes("Editable smart-phrase template"), "OpenEvidence review tab should show editable smart-phrase prompt templates");
+assert.ok(appHtml.includes('id="savePromptTemplateButton"'), "OpenEvidence review tab should let users save edited prompt templates");
+assert.ok(appHtml.includes('id="promptVariableBar"'), "OpenEvidence review tab should expose prompt variable insertion");
+assert.ok(!appHtml.includes("Paste answer for local review"), "OpenEvidence review tab should not invite arbitrary answer paste-back");
 assert.ok(!appHtml.includes("Answer in concise bullet points. Do not include patient identifiers."), "review-tab preview should not collapse every task into a generic bullet-answer prompt");
 assert.ok(!appHtml.includes("1) List current medications and doses when provided."), "medication safety preview should use the registry output contract, not legacy generic preview instructions");
+assert.ok(appHtml.includes("workupRefinementsByModuleId"), "app should persist saved workup refinements in vault state");
+assert.ok(appHtml.includes("patientWorkupRefinements"), "app should support patient-only checklist refinements");
+assert.ok(appHtml.includes("decisionTreeGraphsByModuleId"), "app should persist saved decision-tree defaults in vault state");
+assert.ok(appHtml.includes('id="decisionTreeJsonInput"'), "app should support decision-tree JSON paste-back");
 
 console.log("OpenEvidence workflow tests passed.");

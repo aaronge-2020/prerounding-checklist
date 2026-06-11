@@ -15,7 +15,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_legacy_active",
-      "citation": "AACE/ATA Hypothyroidism in Adults Guideline"
+      "citation": "AACE/ATA Hypothyroidism in Adults Guideline",
+      "year": "2012",
+      "review_status": "reviewed_legacy_active",
+      "url_or_doi": "https://www.guidelinecentral.com/guideline/6855/",
+      "citation_text": "AACE/ATA Hypothyroidism in Adults Guideline"
     },
     {
       "id": "AACE_OSTEOPOROSIS_2020",
@@ -29,7 +33,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_legacy_active",
-      "citation": "AACE Clinical Practice Guideline for Postmenopausal Osteoporosis"
+      "citation": "AACE Clinical Practice Guideline for Postmenopausal Osteoporosis",
+      "year": "2020",
+      "review_status": "reviewed_legacy_active",
+      "url_or_doi": "https://pro.aace.com/clinical-guidance/2020-clinical-practice-guidelines-diagnosis-and-treatment-postmenopausal",
+      "citation_text": "AACE Clinical Practice Guideline for Postmenopausal Osteoporosis"
     },
     {
       "id": "AAP_FEBRILE_INFANT_2021",
@@ -43,7 +51,11 @@
       "last_reviewed": "2026-06-08",
       "next_review_due": "2027-06-08",
       "currency_status": "reviewed_legacy_active",
-      "citation": "AAP Evaluation and Management of Well-Appearing Febrile Infants 8 to 60 Days Old"
+      "citation": "AAP Evaluation and Management of Well-Appearing Febrile Infants 8 to 60 Days Old",
+      "year": "2021",
+      "review_status": "reviewed_legacy_active",
+      "url_or_doi": "https://publications.aap.org/pediatrics/article/148/2/e2021052228/179783/Evaluation-and-Management-of-Well-Appearing",
+      "citation_text": "AAP Evaluation and Management of Well-Appearing Febrile Infants 8 to 60 Days Old"
     },
     {
       "id": "ACEP_APPENDICITIS_2023",
@@ -57,7 +69,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "American College of Emergency Physicians. Clinical Policy: Critical Issues in the Evaluation and Management of Emergency Department Patients With Suspected Appendicitis. 2023."
+      "citation": "American College of Emergency Physicians. Clinical Policy: Critical Issues in the Evaluation and Management of Emergency Department Patients With Suspected Appendicitis. 2023.",
+      "year": "2023",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.acep.org/siteassets/sites/acep/media/clinical-policies/appendicitis2023.pdf",
+      "citation_text": "American College of Emergency Physicians. Clinical Policy: Critical Issues in the Evaluation and Management of Emergency Department Patients With Suspected Appendicitis. 2023."
     },
     {
       "id": "ACR_ACUTELY_LIMPING_CHILD_2018",
@@ -71,7 +87,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "American College of Radiology. ACR Appropriateness Criteria: Acutely Limping Child Up To Age 5."
+      "citation": "American College of Radiology. ACR Appropriateness Criteria: Acutely Limping Child Up To Age 5.",
+      "year": "2026",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://acsearch.acr.org/list/TopicNarrativePdf?topicId=25",
+      "citation_text": "American College of Radiology. ACR Appropriateness Criteria: Acutely Limping Child Up To Age 5."
     },
     {
       "id": "ACROMEGALY_COMPLICATIONS_2026",
@@ -85,7 +105,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Acromegaly Consensus Group Complications Update"
+      "citation": "Acromegaly Consensus Group Complications Update",
+      "year": "2026",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13124806/",
+      "citation_text": "Acromegaly Consensus Group Complications Update"
     },
     {
       "id": "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
@@ -99,7 +123,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Acromegaly Consensus Group Criteria for Diagnosis and Remission"
+      "citation": "Acromegaly Consensus Group Criteria for Diagnosis and Remission",
+      "year": "2024",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://pubmed.ncbi.nlm.nih.gov/37923946/",
+      "citation_text": "Acromegaly Consensus Group Criteria for Diagnosis and Remission"
     },
     {
       "id": "ADA_DIAGNOSIS_2026",
@@ -113,7 +141,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "ADA Diagnosis and Classification of Diabetes 2026"
+      "citation": "ADA Diagnosis and Classification of Diabetes 2026",
+      "year": "2026",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://diabetesjournals.org/care/article/49/Supplement_1/S27/163926/2-Diagnosis-and-Classification-of-Diabetes",
+      "citation_text": "ADA Diagnosis and Classification of Diabetes 2026"
     },
     {
       "id": "ADA_HYPERGLYCEMIC_CRISES_2024",
@@ -127,7 +159,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "2024 Diabetes Care hyperglycemic crises consensus report"
+      "citation": "2024 Diabetes Care hyperglycemic crises consensus report",
+      "year": "2024",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://diabetesjournals.org/care/article/47/8/1257/156808/Hyperglycemic-Crises-in-Adults-With-Diabetes-A",
+      "citation_text": "2024 Diabetes Care hyperglycemic crises consensus report"
     },
     {
       "id": "ADA_SOC_2026",
@@ -141,7 +177,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "ADA Standards of Care in Diabetes 2026"
+      "citation": "ADA Standards of Care in Diabetes 2026",
+      "year": "2026",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://professional.diabetes.org/standards-of-care/practice-guidelines-resources",
+      "citation_text": "ADA Standards of Care in Diabetes 2026"
     },
     {
       "id": "ADA_STANDARDS_HOSPITAL_2026",
@@ -155,7 +195,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "ADA Standards of Care in Diabetes-2026, Section 16"
+      "citation": "ADA Standards of Care in Diabetes-2026, Section 16",
+      "year": "2026",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://doi.org/10.2337/dc26-S016",
+      "citation_text": "ADA Standards of Care in Diabetes-2026, Section 16"
     },
     {
       "id": "AGS_BEERS_2023",
@@ -169,7 +213,11 @@
       "last_reviewed": "2026-06-08",
       "next_review_due": "2027-06-08",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "American Geriatrics Society. 2023 updated AGS Beers Criteria for Potentially Inappropriate Medication Use in Older Adults."
+      "citation": "American Geriatrics Society. 2023 updated AGS Beers Criteria for Potentially Inappropriate Medication Use in Older Adults.",
+      "year": "2023",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.americangeriatrics.org/media-center/news/many-older-adults-take-multiple-medications-updated-ags-beers-criteriar-will-help",
+      "citation_text": "American Geriatrics Society. 2023 updated AGS Beers Criteria for Potentially Inappropriate Medication Use in Older Adults."
     },
     {
       "id": "AHA_ACC_CHEST_PAIN_2021",
@@ -183,7 +231,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "2021 AHA/ACC multisociety chest pain guideline"
+      "citation": "2021 AHA/ACC multisociety chest pain guideline",
+      "year": "2021",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://professional.heart.org/en/guidelines-statements/2021-ahaaccasechestsaemscctscmr-guideline-for-the-evaluation-and-diagnosis-ofcir0000000000001029",
+      "citation_text": "2021 AHA/ACC multisociety chest pain guideline"
     },
     {
       "id": "AHRQ_CALIBRATE_DX",
@@ -197,7 +249,11 @@
       "last_reviewed": "2026-06-07",
       "next_review_due": "2027-06-07",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "AHRQ Calibrate Dx Diagnostic Safety Tool"
+      "citation": "AHRQ Calibrate Dx Diagnostic Safety Tool",
+      "year": "current",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.ahrq.gov/diagnostic-safety/tools/calibrate-dx.html",
+      "citation_text": "AHRQ Calibrate Dx Diagnostic Safety Tool"
     },
     {
       "id": "AHRQ_CDS_IMPLEMENTATION",
@@ -211,7 +267,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "AHRQ clinical decision support resources"
+      "citation": "AHRQ clinical decision support resources",
+      "year": "current",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.ahrq.gov/cpi/about/otherwebsites/clinical-decision-support/index.html",
+      "citation_text": "AHRQ clinical decision support resources"
     },
     {
       "id": "ASH_VTE_PREGNANCY_2018",
@@ -225,7 +285,11 @@
       "last_reviewed": "2026-06-08",
       "next_review_due": "2027-06-08",
       "currency_status": "reviewed_legacy_active",
-      "citation": "American Society of Hematology. VTE in the Context of Pregnancy Guidelines. 2018."
+      "citation": "American Society of Hematology. VTE in the Context of Pregnancy Guidelines. 2018.",
+      "year": "2018",
+      "review_status": "reviewed_legacy_active",
+      "url_or_doi": "https://www.hematology.org/education/clinicians/guidelines-and-quality-care/clinical-practice-guidelines/venous-thromboembolism-guidelines/pregnancy",
+      "citation_text": "American Society of Hematology. VTE in the Context of Pregnancy Guidelines. 2018."
     },
     {
       "id": "ASRM_AMENORRHEA_2024",
@@ -239,7 +303,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "ASRM Current Evaluation of Amenorrhea Committee Opinion 2024"
+      "citation": "ASRM Current Evaluation of Amenorrhea Committee Opinion 2024",
+      "year": "2024",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.asrm.org/practice-guidance/practice-committee-documents/current-evaluation-of-amenorrhea/",
+      "citation_text": "ASRM Current Evaluation of Amenorrhea Committee Opinion 2024"
     },
     {
       "id": "ATA_HYPERTHYROIDISM_2016",
@@ -253,7 +321,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_legacy_active",
-      "citation": "ATA Hyperthyroidism and Thyrotoxicosis Guideline"
+      "citation": "ATA Hyperthyroidism and Thyrotoxicosis Guideline",
+      "year": "2016",
+      "review_status": "reviewed_legacy_active",
+      "url_or_doi": "https://journals.sagepub.com/doi/10.1089/thy.2016.0229",
+      "citation_text": "ATA Hyperthyroidism and Thyrotoxicosis Guideline"
     },
     {
       "id": "ATA_HYPOTHYROIDISM_2014",
@@ -267,7 +339,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_legacy_active",
-      "citation": "American Thyroid Association Task Force on Thyroid Hormone Replacement. Guidelines for the Treatment of Hypothyroidism. Thyroid. 2014."
+      "citation": "American Thyroid Association Task Force on Thyroid Hormone Replacement. Guidelines for the Treatment of Hypothyroidism. Thyroid. 2014.",
+      "year": "2014",
+      "review_status": "reviewed_legacy_active",
+      "url_or_doi": "https://www.thyroid.org/professionals/ata-professional-guidelines/",
+      "citation_text": "American Thyroid Association Task Force on Thyroid Hormone Replacement. Guidelines for the Treatment of Hypothyroidism. Thyroid. 2014."
     },
     {
       "id": "ATA_THYROID_CANCER_2025",
@@ -281,7 +357,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "ATA Differentiated Thyroid Cancer Guideline Resource"
+      "citation": "ATA Differentiated Thyroid Cancer Guideline Resource",
+      "year": "2025",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.thyroid.org/ata-professional-guidelines/",
+      "citation_text": "ATA Differentiated Thyroid Cancer Guideline Resource"
     },
     {
       "id": "ATA_THYROID_NODULE_DTC_2015",
@@ -295,7 +375,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_legacy_active",
-      "citation": "Haugen BR et al. 2015 ATA Management Guidelines for Adult Patients with Thyroid Nodules and Differentiated Thyroid Cancer. Thyroid. 2016."
+      "citation": "Haugen BR et al. 2015 ATA Management Guidelines for Adult Patients with Thyroid Nodules and Differentiated Thyroid Cancer. Thyroid. 2016.",
+      "year": "2015",
+      "review_status": "reviewed_legacy_active",
+      "url_or_doi": "https://www.thyroid.org/professionals/ata-professional-guidelines/",
+      "citation_text": "Haugen BR et al. 2015 ATA Management Guidelines for Adult Patients with Thyroid Nodules and Differentiated Thyroid Cancer. Thyroid. 2016."
     },
     {
       "id": "ATS_CAP_2025",
@@ -309,7 +393,11 @@
       "last_reviewed": "2026-06-08",
       "next_review_due": "2027-06-08",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Jones BE et al. Diagnosis and Management of Community-Acquired Pneumonia. An Official American Thoracic Society Clinical Practice Guideline. Am J Respir Crit Care Med. 2026;212(1):24-44."
+      "citation": "Jones BE et al. Diagnosis and Management of Community-Acquired Pneumonia. An Official American Thoracic Society Clinical Practice Guideline. Am J Respir Crit Care Med. 2026;212(1):24-44.",
+      "year": "2026",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://academic.oup.com/ajrccm/article/212/1/24/8435770",
+      "citation_text": "Jones BE et al. Diagnosis and Management of Community-Acquired Pneumonia. An Official American Thoracic Society Clinical Practice Guideline. Am J Respir Crit Care Med. 2026;212(1):24-44."
     },
     {
       "id": "AUA_ED_2018",
@@ -323,7 +411,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_legacy_active",
-      "citation": "AUA Erectile Dysfunction Guideline"
+      "citation": "AUA Erectile Dysfunction Guideline",
+      "year": "2018",
+      "review_status": "reviewed_legacy_active",
+      "url_or_doi": "https://www.auanet.org/guidelines-and-quality/guidelines/erectile-dysfunction-%28ed%29-guideline",
+      "citation_text": "AUA Erectile Dysfunction Guideline"
     },
     {
       "id": "AUA_TESTOSTERONE_2024",
@@ -337,7 +429,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "AUA Testosterone Deficiency Guideline; validity confirmed 2024"
+      "citation": "AUA Testosterone Deficiency Guideline; validity confirmed 2024",
+      "year": "2024",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.auanet.org/guidelines-and-quality/guidelines/testosterone-deficiency-guideline",
+      "citation_text": "AUA Testosterone Deficiency Guideline; validity confirmed 2024"
     },
     {
       "id": "CDC_HEAR_HER_WARNING_SIGNS_2024",
@@ -351,7 +447,11 @@
       "last_reviewed": "2026-06-08",
       "next_review_due": "2027-06-08",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Centers for Disease Control and Prevention. Hear Her: Urgent Maternal Warning Signs and Symptoms. 2024."
+      "citation": "Centers for Disease Control and Prevention. Hear Her: Urgent Maternal Warning Signs and Symptoms. 2024.",
+      "year": "2024",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.cdc.gov/hearher/maternal-warning-signs/index.html",
+      "citation_text": "Centers for Disease Control and Prevention. Hear Her: Urgent Maternal Warning Signs and Symptoms. 2024."
     },
     {
       "id": "CDC_STEADI_2025",
@@ -365,7 +465,11 @@
       "last_reviewed": "2026-06-08",
       "next_review_due": "2027-06-08",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Centers for Disease Control and Prevention. STEADI Older Adult Fall Prevention Clinical Resources. 2025."
+      "citation": "Centers for Disease Control and Prevention. STEADI Older Adult Fall Prevention Clinical Resources. 2025.",
+      "year": "2025",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.cdc.gov/steadi/hcp/clinical-resources/index.html",
+      "citation_text": "Centers for Disease Control and Prevention. STEADI Older Adult Fall Prevention Clinical Resources. 2025."
     },
     {
       "id": "CHOP_PEDS_CHEST_PAIN_2025",
@@ -379,7 +483,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Children's Hospital of Philadelphia. Emergency Department Clinical Pathway for Evaluation/Treatment of Children with Chest Pain without Known Cardiac Disease. Last revised July 2025."
+      "citation": "Children's Hospital of Philadelphia. Emergency Department Clinical Pathway for Evaluation/Treatment of Children with Chest Pain without Known Cardiac Disease. Last revised July 2025.",
+      "year": "2025",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.chop.edu/clinical-pathway/chest-pain-clinical-pathway",
+      "citation_text": "Children's Hospital of Philadelphia. Emergency Department Clinical Pathway for Evaluation/Treatment of Children with Chest Pain without Known Cardiac Disease. Last revised July 2025."
     },
     {
       "id": "CHQ_BONE_JOINT_INFECTION_2025",
@@ -393,7 +501,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Children's Health Queensland. CHQ-GDL-01067 Paediatric Bone and Joint Infection Management. Version 6.0."
+      "citation": "Children's Health Queensland. CHQ-GDL-01067 Paediatric Bone and Joint Infection Management. Version 6.0.",
+      "year": "2025",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.childrens.health.qld.gov.au/__data/assets/pdf_file/0029/176915/guide-paed-bone-jnt.pdf",
+      "citation_text": "Children's Health Queensland. CHQ-GDL-01067 Paediatric Bone and Joint Infection Management. Version 6.0."
     },
     {
       "id": "CHQ_DKA_HHS_CHILD_2024",
@@ -407,7 +519,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Children's Health Queensland. Diabetic ketoacidosis and hyperosmolar hyperglycaemic state. Version 6.0, July 2024."
+      "citation": "Children's Health Queensland. Diabetic ketoacidosis and hyperosmolar hyperglycaemic state. Version 6.0, July 2024.",
+      "year": "2024",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.childrens.health.qld.gov.au/for-health-professionals/queensland-paediatric-emergency-care-qpec/queensland-paediatric-clinical-guidelines/dka-hyperosmolar-hyperglycaemic-state",
+      "citation_text": "Children's Health Queensland. Diabetic ketoacidosis and hyperosmolar hyperglycaemic state. Version 6.0, July 2024."
     },
     {
       "id": "CHQ_LIMP_CHILD_2026",
@@ -421,7 +537,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Children's Health Queensland. Limp - Emergency management in children. Approval date 28 April 2026."
+      "citation": "Children's Health Queensland. Limp - Emergency management in children. Approval date 28 April 2026.",
+      "year": "2026",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.childrens.health.qld.gov.au/for-health-professionals/queensland-paediatric-emergency-care-qpec/queensland-paediatric-clinical-guidelines/limp",
+      "citation_text": "Children's Health Queensland. Limp - Emergency management in children. Approval date 28 April 2026."
     },
     {
       "id": "CHQ_PEDS_UTI_2024",
@@ -435,7 +555,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Children's Health Queensland. Urinary tract infection - Emergency management in children. Last updated March 2024."
+      "citation": "Children's Health Queensland. Urinary tract infection - Emergency management in children. Last updated March 2024.",
+      "year": "2024",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.childrens.health.qld.gov.au/for-health-professionals/queensland-paediatric-emergency-care-qpec/queensland-paediatric-clinical-guidelines/urinary-tract-infection?pfstyle=wp",
+      "citation_text": "Children's Health Queensland. Urinary tract infection - Emergency management in children. Last updated March 2024."
     },
     {
       "id": "CHQ_STATUS_EPILEPTICUS_CHILD",
@@ -449,7 +573,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Children's Health Queensland. Status epilepticus - Emergency management in children."
+      "citation": "Children's Health Queensland. Status epilepticus - Emergency management in children.",
+      "year": "2026",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.childrens.health.qld.gov.au/for-health-professionals/queensland-paediatric-emergency-care-qpec/queensland-paediatric-clinical-guidelines/status-epilepticus",
+      "citation_text": "Children's Health Queensland. Status epilepticus - Emergency management in children."
     },
     {
       "id": "ENDO_OSTEOPOROSIS_2020",
@@ -463,7 +591,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_legacy_active",
-      "citation": "Endocrine Society Osteoporosis Pharmacologic Management Guideline Update"
+      "citation": "Endocrine Society Osteoporosis Pharmacologic Management Guideline Update",
+      "year": "2020",
+      "review_status": "reviewed_legacy_active",
+      "url_or_doi": "https://academic.oup.com/jcem/article/105/3/587/5739968",
+      "citation_text": "Endocrine Society Osteoporosis Pharmacologic Management Guideline Update"
     },
     {
       "id": "ENDO_VITD_2024",
@@ -477,7 +609,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Endocrine Society Vitamin D for Prevention of Disease Guideline"
+      "citation": "Endocrine Society Vitamin D for Prevention of Disease Guideline",
+      "year": "2024",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.endocrine.org/clinical-practice-guidelines/vitamin-d-for-prevention-of-disease",
+      "citation_text": "Endocrine Society Vitamin D for Prevention of Disease Guideline"
     },
     {
       "id": "ENDOTEXT_DI_2026",
@@ -491,7 +627,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Endotext Diabetes Insipidus/AVP-deficiency Testing"
+      "citation": "Endotext Diabetes Insipidus/AVP-deficiency Testing",
+      "year": "2026",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.ncbi.nlm.nih.gov/books/NBK537591/",
+      "citation_text": "Endotext Diabetes Insipidus/AVP-deficiency Testing"
     },
     {
       "id": "ES_ACROMEGALY_2014",
@@ -505,7 +645,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_legacy_active",
-      "citation": "Endocrine Society Acromegaly Clinical Practice Guideline"
+      "citation": "Endocrine Society Acromegaly Clinical Practice Guideline",
+      "year": "2014",
+      "review_status": "reviewed_legacy_active",
+      "url_or_doi": "https://www.endocrine.org/clinical-practice-guidelines/acromegaly",
+      "citation_text": "Endocrine Society Acromegaly Clinical Practice Guideline"
     },
     {
       "id": "ES_ADRENAL_INSUFFICIENCY_2016",
@@ -519,7 +663,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_legacy_active",
-      "citation": "Endocrine Society Primary Adrenal Insufficiency Guideline"
+      "citation": "Endocrine Society Primary Adrenal Insufficiency Guideline",
+      "year": "2016",
+      "review_status": "reviewed_legacy_active",
+      "url_or_doi": "https://www.endocrine.org/clinical-practice-guidelines/primary-adrenal-insufficiency",
+      "citation_text": "Endocrine Society Primary Adrenal Insufficiency Guideline"
     },
     {
       "id": "ES_CAH_2018",
@@ -533,7 +681,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_legacy_active",
-      "citation": "Endocrine Society Congenital Adrenal Hyperplasia Guideline"
+      "citation": "Endocrine Society Congenital Adrenal Hyperplasia Guideline",
+      "year": "2018",
+      "review_status": "reviewed_legacy_active",
+      "url_or_doi": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6456929/",
+      "citation_text": "Endocrine Society Congenital Adrenal Hyperplasia Guideline"
     },
     {
       "id": "ES_CUSHING_DX_2008",
@@ -547,7 +699,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_legacy_active",
-      "citation": "Endocrine Society Diagnosis of Cushing Syndrome Guideline"
+      "citation": "Endocrine Society Diagnosis of Cushing Syndrome Guideline",
+      "year": "2008",
+      "review_status": "reviewed_legacy_active",
+      "url_or_doi": "https://academic.oup.com/jcem/article/93/5/1526/2598096",
+      "citation_text": "Endocrine Society Diagnosis of Cushing Syndrome Guideline"
     },
     {
       "id": "ES_CUSHING_TREATMENT_2015",
@@ -561,7 +717,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_legacy_active",
-      "citation": "Endocrine Society Treatment of Cushing Syndrome Guideline"
+      "citation": "Endocrine Society Treatment of Cushing Syndrome Guideline",
+      "year": "2015",
+      "review_status": "reviewed_legacy_active",
+      "url_or_doi": "https://www.endocrine.org/clinical-practice-guidelines/treatment-of-cushing-syndrome",
+      "citation_text": "Endocrine Society Treatment of Cushing Syndrome Guideline"
     },
     {
       "id": "ES_HIRSUTISM_2018",
@@ -575,7 +735,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_legacy_active",
-      "citation": "Endocrine Society Hirsutism Guideline"
+      "citation": "Endocrine Society Hirsutism Guideline",
+      "year": "2018",
+      "review_status": "reviewed_legacy_active",
+      "url_or_doi": "https://www.endocrine.org/clinical-practice-guidelines/hirsutism",
+      "citation_text": "Endocrine Society Hirsutism Guideline"
     },
     {
       "id": "ES_HYPERPROLACTINEMIA_2011",
@@ -589,7 +753,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_legacy_active",
-      "citation": "Endocrine Society Hyperprolactinemia Guideline"
+      "citation": "Endocrine Society Hyperprolactinemia Guideline",
+      "year": "2011",
+      "review_status": "reviewed_legacy_active",
+      "url_or_doi": "https://www.guidelinecentral.com/guideline/41733/",
+      "citation_text": "Endocrine Society Hyperprolactinemia Guideline"
     },
     {
       "id": "ES_HYPOPITUITARISM_2016",
@@ -603,7 +771,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_legacy_active",
-      "citation": "Endocrine Society Hormone Replacement in Hypopituitarism Guideline"
+      "citation": "Endocrine Society Hormone Replacement in Hypopituitarism Guideline",
+      "year": "2016",
+      "review_status": "reviewed_legacy_active",
+      "url_or_doi": "https://www.endocrine.org/clinical-practice-guidelines/hormone-replacement-in-hypopituitarism",
+      "citation_text": "Endocrine Society Hormone Replacement in Hypopituitarism Guideline"
     },
     {
       "id": "ES_PHEO_PPGL_2014",
@@ -617,7 +789,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_legacy_active",
-      "citation": "Endocrine Society Pheochromocytoma/Paraganglioma Guideline"
+      "citation": "Endocrine Society Pheochromocytoma/Paraganglioma Guideline",
+      "year": "2014",
+      "review_status": "reviewed_legacy_active",
+      "url_or_doi": "https://pubmed.ncbi.nlm.nih.gov/24893135/",
+      "citation_text": "Endocrine Society Pheochromocytoma/Paraganglioma Guideline"
     },
     {
       "id": "ES_PRIMARY_ALDO_2025",
@@ -631,7 +807,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Endocrine Society Primary Aldosteronism Guideline 2025"
+      "citation": "Endocrine Society Primary Aldosteronism Guideline 2025",
+      "year": "2025",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.endocrine.org/clinical-practice-guidelines/primary-aldosteronism-2",
+      "citation_text": "Endocrine Society Primary Aldosteronism Guideline 2025"
     },
     {
       "id": "ES_TESTOSTERONE_2018",
@@ -645,7 +825,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_legacy_active",
-      "citation": "Endocrine Society Testosterone Therapy in Men With Hypogonadism Guideline"
+      "citation": "Endocrine Society Testosterone Therapy in Men With Hypogonadism Guideline",
+      "year": "2018",
+      "review_status": "reviewed_legacy_active",
+      "url_or_doi": "https://doi.org/10.1210/JC.2018-00229",
+      "citation_text": "Endocrine Society Testosterone Therapy in Men With Hypogonadism Guideline"
     },
     {
       "id": "ESE_ADRENAL_INCIDENTALOMA_2023",
@@ -659,7 +843,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "European Society of Endocrinology Adrenal Incidentaloma Guideline"
+      "citation": "European Society of Endocrinology Adrenal Incidentaloma Guideline",
+      "year": "2023",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://academic.oup.com/ejendo/article/189/1/G1/7198474",
+      "citation_text": "European Society of Endocrinology Adrenal Incidentaloma Guideline"
     },
     {
       "id": "ESHRE_POI_2024",
@@ -673,7 +861,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "International Guideline on Premature Ovarian Insufficiency 2024"
+      "citation": "International Guideline on Premature Ovarian Insufficiency 2024",
+      "year": "2024",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.eshre.eu/-/media/sitecore-files/Guidelines/POI/2024/INTERNATIONAL-GUIDELINE-ON-POI_2024_2.pdf",
+      "citation_text": "International Guideline on Premature Ovarian Insufficiency 2024"
     },
     {
       "id": "ETA_THYROID_NODULE_2023",
@@ -687,7 +879,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "2023 European Thyroid Association Thyroid Nodule Guideline"
+      "citation": "2023 European Thyroid Association Thyroid Nodule Guideline",
+      "year": "2023",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10448590/",
+      "citation_text": "2023 European Thyroid Association Thyroid Nodule Guideline"
     },
     {
       "id": "GINA_ASTHMA_2025",
@@ -701,7 +897,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Global Initiative for Asthma. Global Strategy for Asthma Management and Prevention. 2025."
+      "citation": "Global Initiative for Asthma. Global Strategy for Asthma Management and Prevention. 2025.",
+      "year": "2025",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://ginasthma.org/2025-gina-strategy-report/",
+      "citation_text": "Global Initiative for Asthma. Global Strategy for Asthma Management and Prevention. 2025."
     },
     {
       "id": "HYPOPARA_TASK_FORCE_2022",
@@ -715,7 +915,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "2022 International Task Force Hypoparathyroidism Guidelines"
+      "citation": "2022 International Task Force Hypoparathyroidism Guidelines",
+      "year": "2022",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10118814/",
+      "citation_text": "2022 International Task Force Hypoparathyroidism Guidelines"
     },
     {
       "id": "IDSA_APPENDICITIS_IMAGING_2024",
@@ -729,7 +933,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "IDSA. 2024 Clinical Practice Guideline Update on Complicated Intra-abdominal Infections: Diagnostic Imaging of Suspected Acute Appendicitis."
+      "citation": "IDSA. 2024 Clinical Practice Guideline Update on Complicated Intra-abdominal Infections: Diagnostic Imaging of Suspected Acute Appendicitis.",
+      "year": "2024",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://academic.oup.com/cid/advance-article/doi/10.1093/cid/ciae348/7706132",
+      "citation_text": "IDSA. 2024 Clinical Practice Guideline Update on Complicated Intra-abdominal Infections: Diagnostic Imaging of Suspected Acute Appendicitis."
     },
     {
       "id": "IDSA_CAP_PATHWAY_2019",
@@ -743,7 +951,11 @@
       "last_reviewed": "2026-06-07",
       "next_review_due": "2027-06-07",
       "currency_status": "reviewed_legacy_active",
-      "citation": "IDSA Community-Acquired Pneumonia Clinical Pathway"
+      "citation": "IDSA Community-Acquired Pneumonia Clinical Pathway",
+      "year": "2019",
+      "review_status": "reviewed_legacy_active",
+      "url_or_doi": "https://www.idsociety.org/globalassets/idsa/practice-guidelines/community-acquired-pneumonia-in-adults/cap-clinical-pathway-final-online.pdf",
+      "citation_text": "IDSA Community-Acquired Pneumonia Clinical Pathway"
     },
     {
       "id": "IMS_MENOPAUSE_2026",
@@ -757,7 +969,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "International Menopause Society Recommendations and Key Messages on Women's Midlife Health and Menopause"
+      "citation": "International Menopause Society Recommendations and Key Messages on Women's Midlife Health and Menopause",
+      "year": "2026",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.imsociety.org/statements/ims-recommendations/",
+      "citation_text": "International Menopause Society Recommendations and Key Messages on Women's Midlife Health and Menopause"
     },
     {
       "id": "ISPAD_DKA_HHS_2022",
@@ -771,7 +987,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "ISPAD Clinical Practice Consensus Guidelines 2022. Diabetic ketoacidosis and hyperglycemic hyperosmolar state."
+      "citation": "ISPAD Clinical Practice Consensus Guidelines 2022. Diabetic ketoacidosis and hyperglycemic hyperosmolar state.",
+      "year": "2022",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.ispad.org/static/6dd62eae-c8cb-4b4a-84e1efc768505746/Ch11PediatricDiabetes.pdf",
+      "citation_text": "ISPAD Clinical Practice Consensus Guidelines 2022. Diabetic ketoacidosis and hyperglycemic hyperosmolar state."
     },
     {
       "id": "JHACH_CHEST_PAIN_2018",
@@ -785,7 +1005,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_legacy_active",
-      "citation": "Johns Hopkins All Children's Hospital. Chest Pain Clinical Pathway. July 2018."
+      "citation": "Johns Hopkins All Children's Hospital. Chest Pain Clinical Pathway. July 2018.",
+      "year": "2018",
+      "review_status": "reviewed_legacy_active",
+      "url_or_doi": "https://www.hopkinsmedicine.org/-/media/files/allchildrens/clinical-pathways/jhach-chest-pain-clinical-pathway-updated-july-2018.pdf",
+      "citation_text": "Johns Hopkins All Children's Hospital. Chest Pain Clinical Pathway. July 2018."
     },
     {
       "id": "JHACH_SSTI_CHILD_2023",
@@ -799,7 +1023,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Johns Hopkins All Children's Hospital. Skin and Soft Tissue Infections Clinical Pathway. Last revised October 2023."
+      "citation": "Johns Hopkins All Children's Hospital. Skin and Soft Tissue Infections Clinical Pathway. Last revised October 2023.",
+      "year": "2023",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.hopkinsmedicine.org/-/media/files/allchildrens/clinical-pathways/skin-soft-tissue-infections.pdf",
+      "citation_text": "Johns Hopkins All Children's Hospital. Skin and Soft Tissue Infections Clinical Pathway. Last revised October 2023."
     },
     {
       "id": "MENOPAUSE_SOCIETY_HT_2022",
@@ -813,7 +1041,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "The Menopause Society Hormone Therapy Position Statement"
+      "citation": "The Menopause Society Hormone Therapy Position Statement",
+      "year": "2022",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.menopause.org/publications/clinical-practice-materials/the-2022-hormone-therapy-position-statement-of-the-north-american-menopause-society",
+      "citation_text": "The Menopause Society Hormone Therapy Position Statement"
     },
     {
       "id": "MERCK_FEVER_ADULTS",
@@ -827,7 +1059,11 @@
       "last_reviewed": "2026-06-07",
       "next_review_due": "2027-06-07",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Merck Manual Professional Edition. Fever in Adults"
+      "citation": "Merck Manual Professional Edition. Fever in Adults",
+      "year": "current",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.merckmanuals.com/professional/infectious-diseases/biology-of-infectious-disease/fever",
+      "citation_text": "Merck Manual Professional Edition. Fever in Adults"
     },
     {
       "id": "NHLBI_METABOLIC_SYNDROME",
@@ -841,7 +1077,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "NHLBI Metabolic Syndrome Diagnosis"
+      "citation": "NHLBI Metabolic Syndrome Diagnosis",
+      "year": "current",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.nhlbi.nih.gov/health/metabolic-syndrome/diagnosis",
+      "citation_text": "NHLBI Metabolic Syndrome Diagnosis"
     },
     {
       "id": "NHLBI_NAEPP_ASTHMA_2020",
@@ -855,7 +1095,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_legacy_active",
-      "citation": "National Heart, Lung, and Blood Institute. 2020 Focused Updates to the Asthma Management Guidelines."
+      "citation": "National Heart, Lung, and Blood Institute. 2020 Focused Updates to the Asthma Management Guidelines.",
+      "year": "2020",
+      "review_status": "reviewed_legacy_active",
+      "url_or_doi": "https://www.nhlbi.nih.gov/health-topics/asthma-management-guidelines-2020-updates",
+      "citation_text": "National Heart, Lung, and Blood Institute. 2020 Focused Updates to the Asthma Management Guidelines."
     },
     {
       "id": "NICE_BRONCHIOLITIS_NG9",
@@ -869,7 +1113,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "National Institute for Health and Care Excellence. Bronchiolitis in children: diagnosis and management. NG9."
+      "citation": "National Institute for Health and Care Excellence. Bronchiolitis in children: diagnosis and management. NG9.",
+      "year": "2021",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.nice.org.uk/guidance/ng9",
+      "citation_text": "National Institute for Health and Care Excellence. Bronchiolitis in children: diagnosis and management. NG9."
     },
     {
       "id": "NICE_DELIRIUM_CG103",
@@ -883,7 +1131,11 @@
       "last_reviewed": "2026-06-08",
       "next_review_due": "2027-06-08",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "National Institute for Health and Care Excellence. Delirium: prevention, diagnosis and treatment in hospital and long-term care. CG103."
+      "citation": "National Institute for Health and Care Excellence. Delirium: prevention, diagnosis and treatment in hospital and long-term care. CG103.",
+      "year": "current",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.nice.org.uk/guidance/cg103",
+      "citation_text": "National Institute for Health and Care Excellence. Delirium: prevention, diagnosis and treatment in hospital and long-term care. CG103."
     },
     {
       "id": "NICE_ECTOPIC_MISCARRIAGE_NG126",
@@ -897,7 +1149,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "National Institute for Health and Care Excellence. Ectopic pregnancy and miscarriage: diagnosis and initial management. NG126."
+      "citation": "National Institute for Health and Care Excellence. Ectopic pregnancy and miscarriage: diagnosis and initial management. NG126.",
+      "year": "2023",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.nice.org.uk/guidance/ng126/chapter/Recommendations",
+      "citation_text": "National Institute for Health and Care Excellence. Ectopic pregnancy and miscarriage: diagnosis and initial management. NG126."
     },
     {
       "id": "NICE_FEVER_UNDER5_NG143",
@@ -911,7 +1167,11 @@
       "last_reviewed": "2026-06-08",
       "next_review_due": "2027-06-08",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "National Institute for Health and Care Excellence. Fever in under 5s: assessment and initial management. NG143."
+      "citation": "National Institute for Health and Care Excellence. Fever in under 5s: assessment and initial management. NG143.",
+      "year": "current",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.nice.org.uk/guidance/ng143",
+      "citation_text": "National Institute for Health and Care Excellence. Fever in under 5s: assessment and initial management. NG143."
     },
     {
       "id": "NICE_GASTROENTERITIS_UNDER5_CG84",
@@ -925,7 +1185,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "National Institute for Health and Care Excellence. Diarrhoea and vomiting caused by gastroenteritis in under 5s. CG84."
+      "citation": "National Institute for Health and Care Excellence. Diarrhoea and vomiting caused by gastroenteritis in under 5s. CG84.",
+      "year": "current",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.nice.org.uk/guidance/cg84/chapter/Recommendations",
+      "citation_text": "National Institute for Health and Care Excellence. Diarrhoea and vomiting caused by gastroenteritis in under 5s. CG84."
     },
     {
       "id": "NICE_NG12_SUSPECTED_CANCER_2026",
@@ -939,7 +1203,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "NICE NG12. Suspected cancer: recognition and referral. Recommendations."
+      "citation": "NICE NG12. Suspected cancer: recognition and referral. Recommendations.",
+      "year": "2026",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.nice.org.uk/guidance/ng12/chapter/Recommendations",
+      "citation_text": "NICE NG12. Suspected cancer: recognition and referral. Recommendations."
     },
     {
       "id": "NICE_NG127_CHILD_NEURO_2019",
@@ -953,7 +1221,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_legacy_active",
-      "citation": "NICE NG127. Suspected neurological conditions: recognition and referral. Recommendations for children aged under 16."
+      "citation": "NICE NG127. Suspected neurological conditions: recognition and referral. Recommendations for children aged under 16.",
+      "year": "2019",
+      "review_status": "reviewed_legacy_active",
+      "url_or_doi": "https://www.nice.org.uk/guidance/ng127/chapter/Recommendations-for-children-aged-under-16",
+      "citation_text": "NICE NG127. Suspected neurological conditions: recognition and referral. Recommendations for children aged under 16."
     },
     {
       "id": "NICE_NG18_DKA_CHILD",
@@ -967,7 +1239,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "NICE NG18. Diabetes (type 1 and type 2) in children and young people: diagnosis and management. DKA recommendations."
+      "citation": "NICE NG18. Diabetes (type 1 and type 2) in children and young people: diagnosis and management. DKA recommendations.",
+      "year": "2026",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.nice.org.uk/guidance/ng18/chapter/Recommendations",
+      "citation_text": "NICE NG18. Diabetes (type 1 and type 2) in children and young people: diagnosis and management. DKA recommendations."
     },
     {
       "id": "NICE_NG217_EPILEPSY_2025",
@@ -981,7 +1257,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "NICE NG217. Epilepsies in children, young people and adults. Last updated 30 January 2025."
+      "citation": "NICE NG217. Epilepsies in children, young people and adults. Last updated 30 January 2025.",
+      "year": "2025",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.nice.org.uk/guidance/ng217/chapter/diagnosis-and-assessment-of-epilepsy",
+      "citation_text": "NICE NG217. Epilepsies in children, young people and adults. Last updated 30 January 2025."
     },
     {
       "id": "NICE_SEPSIS_UNDER16_2025",
@@ -995,7 +1275,11 @@
       "last_reviewed": "2026-06-08",
       "next_review_due": "2027-06-08",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "National Institute for Health and Care Excellence. Suspected sepsis in under 16s: recognition, diagnosis and early management. NG254."
+      "citation": "National Institute for Health and Care Excellence. Suspected sepsis in under 16s: recognition, diagnosis and early management. NG254.",
+      "year": "2025",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.nice.org.uk/guidance/ng254",
+      "citation_text": "National Institute for Health and Care Excellence. Suspected sepsis in under 16s: recognition, diagnosis and early management. NG254."
     },
     {
       "id": "NICE_UTI_UNDER16_NG224",
@@ -1009,7 +1293,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "National Institute for Health and Care Excellence. Urinary tract infection in under 16s: diagnosis and management. NG224."
+      "citation": "National Institute for Health and Care Excellence. Urinary tract infection in under 16s: diagnosis and management. NG224.",
+      "year": "current",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.nice.org.uk/guidance/ng224/chapter/Recommendations",
+      "citation_text": "National Institute for Health and Care Excellence. Urinary tract infection in under 16s: diagnosis and management. NG224."
     },
     {
       "id": "NIH_VITD_FACTSHEET",
@@ -1023,21 +1311,29 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "NIH ODS Vitamin D Health Professional Fact Sheet"
+      "citation": "NIH ODS Vitamin D Health Professional Fact Sheet",
+      "year": "current",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://ods.od.nih.gov/factsheets/VitaminD-HealthProfessional/",
+      "citation_text": "NIH ODS Vitamin D Health Professional Fact Sheet"
     },
     {
       "id": "PCOS_GUIDELINE_2023",
       "title": "2023 International Evidence-based PCOS Guideline",
       "source": "International PCOS Guideline Network",
       "version": "2023",
-      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10755126/",
+      "url": "https://academic.oup.com/jcem/article/108/10/2447/7242360",
       "date_accessed": "2026-06-06",
       "review_owner": "endocrine_content_review",
       "reviewed_by_role": "clinician_content_reviewer",
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "2023 International Evidence-based PCOS Guideline"
+      "citation": "2023 International Evidence-based PCOS Guideline",
+      "year": "2023",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://doi.org/10.1210/clinem/dgad463",
+      "citation_text": "2023 International Evidence-based PCOS Guideline"
     },
     {
       "id": "PHPT_WORKSHOP_2022",
@@ -1051,7 +1347,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Fifth International Workshop Primary Hyperparathyroidism Guidelines"
+      "citation": "Fifth International Workshop Primary Hyperparathyroidism Guidelines",
+      "year": "2022",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://onlinelibrary.wiley.com/doi/10.1002/jbmr.4677",
+      "citation_text": "Fifth International Workshop Primary Hyperparathyroidism Guidelines"
     },
     {
       "id": "PITUITARY_ACROMEGALY_2021",
@@ -1065,7 +1365,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Pituitary Society Acromegaly Consensus"
+      "citation": "Pituitary Society Acromegaly Consensus",
+      "year": "2021",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://reference.medscape.com/viewarticle/946489",
+      "citation_text": "Pituitary Society Acromegaly Consensus"
     },
     {
       "id": "PITUITARY_PROLACTINOMA_2023",
@@ -1079,7 +1383,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Pituitary Society Prolactinoma International Consensus Statement"
+      "citation": "Pituitary Society Prolactinoma International Consensus Statement",
+      "year": "2023",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.nature.com/articles/s41574-023-00886-5",
+      "citation_text": "Pituitary Society Prolactinoma International Consensus Statement"
     },
     {
       "id": "RCH_ACUTE_ABDOMINAL_PAIN",
@@ -1093,7 +1401,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Abdominal pain - acute."
+      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Abdominal pain - acute.",
+      "year": "2026",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.rch.org.au/clinicalguide/guideline_index/Abdominal_pain/",
+      "citation_text": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Abdominal pain - acute."
     },
     {
       "id": "RCH_ALTERED_CONSCIOUS_STATE_2022",
@@ -1107,7 +1419,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Altered conscious state. Last updated November 2022."
+      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Altered conscious state. Last updated November 2022.",
+      "year": "2022",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.rch.org.au/clinicalguide/guideline_index/Altered_conscious_state/",
+      "citation_text": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Altered conscious state. Last updated November 2022."
     },
     {
       "id": "RCH_ANAEMIA_CHILD",
@@ -1121,7 +1437,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Anaemia."
+      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Anaemia.",
+      "year": "2026",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.rch.org.au/clinicalguide/guideline_index/Anaemia_Guideline/",
+      "citation_text": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Anaemia."
     },
     {
       "id": "RCH_BLOOD_PRODUCT_CHILD",
@@ -1135,7 +1455,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Blood product prescription."
+      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Blood product prescription.",
+      "year": "2026",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.rch.org.au/clinicalguide/guideline_index/Blood_product_prescription/",
+      "citation_text": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Blood product prescription."
     },
     {
       "id": "RCH_BONE_JOINT_INFECTION",
@@ -1149,7 +1473,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Bone and joint infection."
+      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Bone and joint infection.",
+      "year": "2021",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.rch.org.au/clinicalguide/guideline_index/Bone_and_joint_infection/",
+      "citation_text": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Bone and joint infection."
     },
     {
       "id": "RCH_CHEST_PAIN_CHILD",
@@ -1163,7 +1491,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Chest pain."
+      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Chest pain.",
+      "year": "2023",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.rch.org.au/clinicalguide/guideline_index/Chest_Pain/",
+      "citation_text": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Chest pain."
     },
     {
       "id": "RCH_DKA_CHILD",
@@ -1177,7 +1509,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Diabetic ketoacidosis."
+      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Diabetic ketoacidosis.",
+      "year": "2026",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.rch.org.au/clinicalguide/guideline_index/Diabetic_Ketoacidosis/",
+      "citation_text": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Diabetic ketoacidosis."
     },
     {
       "id": "RCH_HEADACHE_CHILD",
@@ -1191,7 +1527,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Headache."
+      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Headache.",
+      "year": "2026",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.rch.org.au/clinicalguide/guideline_index/Headache/",
+      "citation_text": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Headache."
     },
     {
       "id": "RCH_IRON_DEFICIENCY_CHILD",
@@ -1205,7 +1545,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Iron deficiency."
+      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Iron deficiency.",
+      "year": "2026",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.rch.org.au/clinicalguide/guideline_index/Iron_deficiency/",
+      "citation_text": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Iron deficiency."
     },
     {
       "id": "RCH_ITP_CHILD",
@@ -1219,7 +1563,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Immune thrombocytopenic purpura."
+      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Immune thrombocytopenic purpura.",
+      "year": "2026",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.rch.org.au/clinicalguide/guideline_index/Immune_thrombocytopenic_purpura/",
+      "citation_text": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Immune thrombocytopenic purpura."
     },
     {
       "id": "RCH_KAWASAKI_DISEASE",
@@ -1233,7 +1581,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Kawasaki disease."
+      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Kawasaki disease.",
+      "year": "2026",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.rch.org.au/clinicalguide/guideline_index/kawasaki_disease_guideline/",
+      "citation_text": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Kawasaki disease."
     },
     {
       "id": "RCH_LIMPING_CHILD",
@@ -1247,7 +1599,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: The limping or non-weight bearing child."
+      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: The limping or non-weight bearing child.",
+      "year": "2026",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.rch.org.au/clinicalguide/guideline_index/Child_with_limp/",
+      "citation_text": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: The limping or non-weight bearing child."
     },
     {
       "id": "RCH_PEDIATRIC_ECG",
@@ -1261,7 +1617,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Basic paediatric ECG interpretation."
+      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Basic paediatric ECG interpretation.",
+      "year": "2026",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.rch.org.au/clinicalguide/guideline_index/Basic_Paediatric_ECG_interpretation/",
+      "citation_text": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Basic paediatric ECG interpretation."
     },
     {
       "id": "RCH_PETECHIAE_PURPURA_CHILD",
@@ -1275,7 +1635,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Petechiae and purpura."
+      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Petechiae and purpura.",
+      "year": "2021",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.rch.org.au/clinicalguide/guideline_index/Fever_and_Petechiae_Purpura/",
+      "citation_text": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Petechiae and purpura."
     },
     {
       "id": "RCH_SEIZURES_ACUTE_2025",
@@ -1289,7 +1653,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Seizures - acute management. Last updated June 2025."
+      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Seizures - acute management. Last updated June 2025.",
+      "year": "2025",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.rch.org.au/clinicalguide/guideline_index/Seizures_-_acute_management/",
+      "citation_text": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Seizures - acute management. Last updated June 2025."
     },
     {
       "id": "RCH_SYNCOPE_CHILD",
@@ -1303,7 +1671,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Syncope."
+      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Syncope.",
+      "year": "2023",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.rch.org.au/clinicalguide/guideline_index/Syncope/",
+      "citation_text": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Syncope."
     },
     {
       "id": "RCH_URTICARIA_CHILD",
@@ -1317,7 +1689,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Urticaria."
+      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Urticaria.",
+      "year": "2023",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.rch.org.au/clinicalguide/guideline_index/Urticaria/",
+      "citation_text": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Urticaria."
     },
     {
       "id": "RCH_UTI_CHILD",
@@ -1331,7 +1707,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Urinary tract infection."
+      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Urinary tract infection.",
+      "year": "2025",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.rch.org.au/clinicalguide/guideline_index/urinary_tract_infection_guideline/",
+      "citation_text": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Urinary tract infection."
     },
     {
       "id": "RCH_VOMITING_CHILD",
@@ -1345,7 +1725,11 @@
       "last_reviewed": "2026-06-09",
       "next_review_due": "2027-06-09",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Vomiting."
+      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Vomiting.",
+      "year": "2026",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.rch.org.au/clinicalguide/guideline_index/Vomiting/",
+      "citation_text": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Vomiting."
     },
     {
       "id": "RCOG_VTE_PUERPERIUM_2015",
@@ -1359,7 +1743,11 @@
       "last_reviewed": "2026-06-08",
       "next_review_due": "2027-06-08",
       "currency_status": "reviewed_legacy_active",
-      "citation": "RCOG Green-top Guideline No. 37b. Thrombosis and Embolism during Pregnancy and the Puerperium: Acute Management. 2015."
+      "citation": "RCOG Green-top Guideline No. 37b. Thrombosis and Embolism during Pregnancy and the Puerperium: Acute Management. 2015.",
+      "year": "2015",
+      "review_status": "reviewed_legacy_active",
+      "url_or_doi": "https://www.rcog.org.uk/guidance/browse-all-guidance/green-top-guidelines/thrombosis-and-embolism-during-pregnancy-and-the-puerperium-acute-management-green-top-guideline-no-37b/",
+      "citation_text": "RCOG Green-top Guideline No. 37b. Thrombosis and Embolism during Pregnancy and the Puerperium: Acute Management. 2015."
     },
     {
       "id": "SFE_CDI_2018",
@@ -1373,7 +1761,11 @@
       "last_reviewed": "2026-06-06",
       "next_review_due": "2027-06-06",
       "currency_status": "reviewed_legacy_active",
-      "citation": "Society for Endocrinology Inpatient Cranial Diabetes Insipidus Guidance"
+      "citation": "Society for Endocrinology Inpatient Cranial Diabetes Insipidus Guidance",
+      "year": "2018",
+      "review_status": "reviewed_legacy_active",
+      "url_or_doi": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6013691/",
+      "citation_text": "Society for Endocrinology Inpatient Cranial Diabetes Insipidus Guidance"
     },
     {
       "id": "SM25",
@@ -1387,7 +1779,11 @@
       "last_reviewed": "2026-06-07",
       "next_review_due": "2027-06-07",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Stanford Medicine 25 Exam Guides"
+      "citation": "Stanford Medicine 25 Exam Guides",
+      "year": "current",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://med.stanford.edu/stanfordmedicine25/exam-guides-.html",
+      "citation_text": "Stanford Medicine 25 Exam Guides"
     },
     {
       "id": "SMFM_MATERNAL_SEPSIS_2023",
@@ -1401,7 +1797,11 @@
       "last_reviewed": "2026-06-08",
       "next_review_due": "2027-06-08",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Society for Maternal-Fetal Medicine Consult Series #67: Maternal Sepsis. 2023."
+      "citation": "Society for Maternal-Fetal Medicine Consult Series #67: Maternal Sepsis. 2023.",
+      "year": "2023",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://publications.smfm.org/publications/507-society-for-maternal-fetal-medicine-consult-series-67/",
+      "citation_text": "Society for Maternal-Fetal Medicine Consult Series #67: Maternal Sepsis. 2023."
     },
     {
       "id": "SSC_PEDIATRIC_SEPSIS_2026",
@@ -1415,7 +1815,11 @@
       "last_reviewed": "2026-06-08",
       "next_review_due": "2027-06-08",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Surviving Sepsis Campaign International Guidelines for Management of Sepsis and Septic Shock in Children 2026"
+      "citation": "Surviving Sepsis Campaign International Guidelines for Management of Sepsis and Septic Shock in Children 2026",
+      "year": "2026",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://sccm.org/survivingsepsiscampaign/guidelines-and-resources/surviving-sepsis-campaign-pediatric-guidelines",
+      "citation_text": "Surviving Sepsis Campaign International Guidelines for Management of Sepsis and Septic Shock in Children 2026"
     },
     {
       "id": "SSC_SEPSIS_2026",
@@ -1429,7 +1833,11 @@
       "last_reviewed": "2026-06-07",
       "next_review_due": "2027-06-07",
       "currency_status": "reviewed_current_for_scope",
-      "citation": "Surviving Sepsis Campaign International Guidelines for Management of Sepsis and Septic Shock 2026"
+      "citation": "Surviving Sepsis Campaign International Guidelines for Management of Sepsis and Septic Shock 2026",
+      "year": "2026",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.sccm.org/survivingsepsiscampaign/guidelines-and-resources/surviving-sepsis-campaign-adult-guidelines",
+      "citation_text": "Surviving Sepsis Campaign International Guidelines for Management of Sepsis and Septic Shock 2026"
     }
   ]
 }

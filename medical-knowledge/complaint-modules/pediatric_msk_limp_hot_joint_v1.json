@@ -1929,6 +1929,2928 @@
           "need"
         ]
       }
-    ]
+    ],
+    "clinical_pathway_tree_v1": {
+      "schema": "clinical_pathway_tree_v1",
+      "workupId": "pediatric_msk_limp_hot_joint_v1",
+      "workup_id": "pediatric_msk_limp_hot_joint_v1",
+      "title": "Pediatric limp, hot joint, injury, or non-weight bearing",
+      "version": "3.0.0",
+      "status": "hand_polished_compact_pathway_needs_clinician_review",
+      "source_ids": [
+        "RCH_LIMPING_CHILD",
+        "ACR_ACUTELY_LIMPING_CHILD_2018",
+        "RCH_BONE_JOINT_INFECTION",
+        "CHQ_LIMP_CHILD_2026",
+        "AHRQ_CALIBRATE_DX",
+        "CHQ_BONE_JOINT_INFECTION_2025"
+      ],
+      "source_metadata": [
+        {
+          "source_id": "RCH_LIMPING_CHILD",
+          "title": "Royal Children's Hospital Clinical Practice Guideline: The Limping or Non-Weight Bearing Child",
+          "url": "https://www.rch.org.au/clinicalguide/guideline_index/Child_with_limp/",
+          "url_or_doi": "https://www.rch.org.au/clinicalguide/guideline_index/Child_with_limp/",
+          "year": "2026",
+          "access_date": "2026-06-09",
+          "date_accessed": "2026-06-09",
+          "citation_text": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: The limping or non-weight bearing child.",
+          "review_status": "reviewed_current_for_scope"
+        },
+        {
+          "source_id": "ACR_ACUTELY_LIMPING_CHILD_2018",
+          "title": "ACR Appropriateness Criteria: Acutely Limping Child Up To Age 5",
+          "url": "https://acsearch.acr.org/list/TopicNarrativePdf?topicId=25",
+          "url_or_doi": "https://acsearch.acr.org/list/TopicNarrativePdf?topicId=25",
+          "year": "2026",
+          "access_date": "2026-06-09",
+          "date_accessed": "2026-06-09",
+          "citation_text": "American College of Radiology. ACR Appropriateness Criteria: Acutely Limping Child Up To Age 5.",
+          "review_status": "reviewed_current_for_scope"
+        },
+        {
+          "source_id": "RCH_BONE_JOINT_INFECTION",
+          "title": "Royal Children's Hospital Clinical Practice Guideline: Bone and Joint Infection",
+          "url": "https://www.rch.org.au/clinicalguide/guideline_index/Bone_and_joint_infection/",
+          "url_or_doi": "https://www.rch.org.au/clinicalguide/guideline_index/Bone_and_joint_infection/",
+          "year": "2021",
+          "access_date": "2026-06-09",
+          "date_accessed": "2026-06-09",
+          "citation_text": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Bone and joint infection.",
+          "review_status": "reviewed_current_for_scope"
+        },
+        {
+          "source_id": "CHQ_LIMP_CHILD_2026",
+          "title": "Children's Health Queensland: Limp - Emergency Management in Children",
+          "url": "https://www.childrens.health.qld.gov.au/for-health-professionals/queensland-paediatric-emergency-care-qpec/queensland-paediatric-clinical-guidelines/limp",
+          "url_or_doi": "https://www.childrens.health.qld.gov.au/for-health-professionals/queensland-paediatric-emergency-care-qpec/queensland-paediatric-clinical-guidelines/limp",
+          "year": "2026",
+          "access_date": "2026-06-09",
+          "date_accessed": "2026-06-09",
+          "citation_text": "Children's Health Queensland. Limp - Emergency management in children. Approval date 28 April 2026.",
+          "review_status": "reviewed_current_for_scope"
+        },
+        {
+          "source_id": "AHRQ_CALIBRATE_DX",
+          "title": "Calibrate Dx Diagnostic Safety Tool",
+          "url": "https://www.ahrq.gov/diagnostic-safety/tools/calibrate-dx.html",
+          "url_or_doi": "https://www.ahrq.gov/diagnostic-safety/tools/calibrate-dx.html",
+          "year": "current",
+          "access_date": "2026-06-07",
+          "date_accessed": "2026-06-07",
+          "citation_text": "AHRQ Calibrate Dx Diagnostic Safety Tool",
+          "review_status": "reviewed_current_for_scope"
+        },
+        {
+          "source_id": "CHQ_BONE_JOINT_INFECTION_2025",
+          "title": "Children's Health Queensland Guideline: Paediatric Bone and Joint Infection Management",
+          "url": "https://www.childrens.health.qld.gov.au/__data/assets/pdf_file/0029/176915/guide-paed-bone-jnt.pdf",
+          "url_or_doi": "https://www.childrens.health.qld.gov.au/__data/assets/pdf_file/0029/176915/guide-paed-bone-jnt.pdf",
+          "year": "2025",
+          "access_date": "2026-06-09",
+          "date_accessed": "2026-06-09",
+          "citation_text": "Children's Health Queensland. CHQ-GDL-01067 Paediatric Bone and Joint Infection Management. Version 6.0.",
+          "review_status": "reviewed_current_for_scope"
+        }
+      ],
+      "provenance": {
+        "generated_by": "scripts/hand-polish-clinical-pathway-trees.js",
+        "generated_at": "2026-06-11T00:00:00.000Z",
+        "update_scope": "clinical_pathway_tree_v1 plus explicit clinical_cutoff_criteria enrichment where needed",
+        "source_material": "Local module evidence rows, source registry metadata, and targeted guideline/literature review for cutoff gaps",
+        "review_note": "Compact tree is cutoff-cited and traversable but requires clinician review for local policy, patient-specific contraindications, and source conflicts."
+      },
+      "source_thresholds": [
+        {
+          "threshold": "7 days",
+          "evidence_item_id": "peds_limp_no_test_low_risk_review",
+          "label": "Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset",
+          "source_ids": [
+            "RCH_LIMPING_CHILD"
+          ],
+          "review_status": "source_backed"
+        },
+        {
+          "threshold": ">7 days",
+          "evidence_item_id": "peds_limp_escalation_duration_weight_bearing",
+          "label": "Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern",
+          "source_ids": [
+            "RCH_LIMPING_CHILD"
+          ],
+          "review_status": "source_backed"
+        },
+        {
+          "threshold": ">=20 mg/L",
+          "evidence_item_id": "peds_hip_septic_arthritis_cutoffs",
+          "label": "Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis",
+          "source_ids": [
+            "RCH_LIMPING_CHILD"
+          ],
+          "review_status": "source_backed"
+        },
+        {
+          "threshold": ">=7 mm",
+          "evidence_item_id": "peds_hip_septic_arthritis_cutoffs",
+          "label": "Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis",
+          "source_ids": [
+            "RCH_LIMPING_CHILD"
+          ],
+          "review_status": "source_backed"
+        }
+      ],
+      "traversable_context": {
+        "input_modes": [
+          "structured_patient_context",
+          "extractable_note_context",
+          "clinician_selected_workup"
+        ],
+        "active_branch_output": [
+          "active_node_id",
+          "active_branch_label",
+          "missing_data_needed",
+          "terminal_endpoint_id",
+          "review_needed_reason"
+        ],
+        "required_domains": [
+          {
+            "domain": "symptoms",
+            "exact_data_needed": [
+              "presenting symptom/diagnosis trigger",
+              "onset/duration/trajectory",
+              "Ask pediatric MSK age and walking baseline",
+              "Ask current weight-bearing ability",
+              "Ask onset and injury mechanism",
+              "Ask pain location and referred pain"
+            ],
+            "source_ids": [
+              "RCH_LIMPING_CHILD",
+              "RCH_BONE_JOINT_INFECTION",
+              "ACR_ACUTELY_LIMPING_CHILD_2018",
+              "CHQ_LIMP_CHILD_2026",
+              "AHRQ_CALIBRATE_DX",
+              "CHQ_BONE_JOINT_INFECTION_2025"
+            ]
+          },
+          {
+            "domain": "exam",
+            "exact_data_needed": [
+              "condition-specific focused exam",
+              "Observe gait",
+              "Inspect affected limb position",
+              "Palpate focal bony tenderness",
+              "Test active joint motion"
+            ],
+            "source_ids": [
+              "RCH_LIMPING_CHILD",
+              "RCH_BONE_JOINT_INFECTION",
+              "CHQ_BONE_JOINT_INFECTION_2025",
+              "ACR_ACUTELY_LIMPING_CHILD_2018",
+              "CHQ_LIMP_CHILD_2026",
+              "AHRQ_CALIBRATE_DX"
+            ]
+          },
+          {
+            "domain": "vitals",
+            "exact_data_needed": [
+              "blood pressure",
+              "heart rate",
+              "respiratory rate",
+              "oxygen saturation",
+              "temperature",
+              "mental status",
+              "weight when dosing depends on it",
+              "Unable to walk or weight bear",
+              "Fever with hot swollen limited joint"
+            ],
+            "source_ids": [
+              "RCH_LIMPING_CHILD",
+              "RCH_BONE_JOINT_INFECTION",
+              "CHQ_LIMP_CHILD_2026",
+              "ACR_ACUTELY_LIMPING_CHILD_2018",
+              "AHRQ_CALIBRATE_DX",
+              "CHQ_BONE_JOINT_INFECTION_2025"
+            ]
+          },
+          {
+            "domain": "labs",
+            "exact_data_needed": [
+              "No routine tests for low-risk comfortable limp",
+              "X-ray localized pain or injury area",
+              "Infection labs and blood culture route",
+              "Ultrasound hip effusion route",
+              "MRI for osteomyelitis localization",
+              "duration of limp",
+              "red-flag screen",
+              "ability to weight bear after analgesia",
+              "review access",
+              "symptom duration",
+              "weight-bearing status",
+              "range of motion after analgesia",
+              "temperature/systemic features"
+            ],
+            "source_ids": [
+              "RCH_LIMPING_CHILD",
+              "ACR_ACUTELY_LIMPING_CHILD_2018",
+              "RCH_BONE_JOINT_INFECTION",
+              "CHQ_LIMP_CHILD_2026",
+              "AHRQ_CALIBRATE_DX",
+              "CHQ_BONE_JOINT_INFECTION_2025"
+            ]
+          },
+          {
+            "domain": "imaging_results",
+            "exact_data_needed": [
+              "source-directed imaging/ECG/procedure results when indicated",
+              "X-ray localized pain or injury area",
+              "Infection labs and blood culture route",
+              "Ultrasound hip effusion route",
+              "MRI for osteomyelitis localization"
+            ],
+            "source_ids": [
+              "RCH_LIMPING_CHILD",
+              "ACR_ACUTELY_LIMPING_CHILD_2018",
+              "RCH_BONE_JOINT_INFECTION",
+              "CHQ_LIMP_CHILD_2026",
+              "AHRQ_CALIBRATE_DX",
+              "CHQ_BONE_JOINT_INFECTION_2025"
+            ]
+          },
+          {
+            "domain": "medications",
+            "exact_data_needed": [
+              "current medication list",
+              "recent changes/missed doses",
+              "allergies",
+              "contraindications",
+              "drug interactions",
+              "adherence/access barriers"
+            ],
+            "source_ids": [
+              "RCH_LIMPING_CHILD",
+              "ACR_ACUTELY_LIMPING_CHILD_2018",
+              "RCH_BONE_JOINT_INFECTION",
+              "CHQ_LIMP_CHILD_2026",
+              "AHRQ_CALIBRATE_DX",
+              "CHQ_BONE_JOINT_INFECTION_2025"
+            ]
+          },
+          {
+            "domain": "comorbidities",
+            "exact_data_needed": [
+              "major comorbidities",
+              "renal/hepatic/cardiac disease",
+              "immunocompromise/high-risk host factors",
+              "frailty/function",
+              "prior relevant disease/procedure"
+            ],
+            "source_ids": [
+              "RCH_LIMPING_CHILD",
+              "ACR_ACUTELY_LIMPING_CHILD_2018",
+              "RCH_BONE_JOINT_INFECTION",
+              "CHQ_LIMP_CHILD_2026",
+              "AHRQ_CALIBRATE_DX",
+              "CHQ_BONE_JOINT_INFECTION_2025"
+            ]
+          },
+          {
+            "domain": "demographics",
+            "exact_data_needed": [
+              "age band",
+              "pediatric/adult pathway fit",
+              "sex/reproductive context",
+              "weight when dose-based",
+              "pathway applicability"
+            ],
+            "source_ids": [
+              "RCH_LIMPING_CHILD",
+              "ACR_ACUTELY_LIMPING_CHILD_2018",
+              "RCH_BONE_JOINT_INFECTION",
+              "CHQ_LIMP_CHILD_2026",
+              "AHRQ_CALIBRATE_DX",
+              "CHQ_BONE_JOINT_INFECTION_2025"
+            ]
+          },
+          {
+            "domain": "pregnancy_status",
+            "exact_data_needed": [
+              "pregnant/not pregnant/unknown when pregnancy potential exists",
+              "postpartum/lactation status when relevant",
+              "fertility intent when treatment depends on it"
+            ],
+            "source_ids": [
+              "RCH_LIMPING_CHILD",
+              "ACR_ACUTELY_LIMPING_CHILD_2018",
+              "RCH_BONE_JOINT_INFECTION",
+              "CHQ_LIMP_CHILD_2026",
+              "AHRQ_CALIBRATE_DX",
+              "CHQ_BONE_JOINT_INFECTION_2025"
+            ]
+          },
+          {
+            "domain": "workup_findings",
+            "exact_data_needed": [
+              "diagnosis confirmation status",
+              "mimics considered",
+              "severity/risk category",
+              "treatment response",
+              "disposition constraints",
+              "Septic arthritis or osteomyelitis until excluded",
+              "Fracture, occult injury, or safeguarding concern",
+              "Lower-risk transient synovitis or self-limited limp after danger features are absent",
+              "Age-specific hip or referred knee pathology",
+              "Immediate orthopedic route for septic arthritis",
+              "Bone infection admission and antibiotic route",
+              "Low-risk discharge only when walking comfortably",
+              "Persistent limp or negative X-ray route"
+            ],
+            "source_ids": [
+              "RCH_LIMPING_CHILD",
+              "ACR_ACUTELY_LIMPING_CHILD_2018",
+              "RCH_BONE_JOINT_INFECTION",
+              "CHQ_LIMP_CHILD_2026",
+              "AHRQ_CALIBRATE_DX",
+              "CHQ_BONE_JOINT_INFECTION_2025"
+            ]
+          }
+        ],
+        "missing_data_endpoint_id": "endpoint_missing_context"
+      },
+      "activationRules": {
+        "root": {
+          "rule_id": "activate_workup",
+          "source": "criteria",
+          "description": "Activate when structured or extractable context matches Pediatric limp, hot joint, injury, or non-weight bearing triggers or the clinician selects workup pediatric_msk_limp_hot_joint_v1.",
+          "evaluable_from": [
+            "selected_workup_id",
+            "presenting_symptoms",
+            "problem_list_or_diagnosis",
+            "clinician_selected_module"
+          ],
+          "source_ids": [
+            "RCH_LIMPING_CHILD",
+            "ACR_ACUTELY_LIMPING_CHILD_2018",
+            "RCH_BONE_JOINT_INFECTION",
+            "CHQ_LIMP_CHILD_2026",
+            "AHRQ_CALIBRATE_DX",
+            "CHQ_BONE_JOINT_INFECTION_2025"
+          ]
+        },
+        "endpoint_missing_context": {
+          "rule_id": "missing_context_criteria",
+          "source": "criteria",
+          "description": "Route here when the patient context needed to activate Pediatric limp, hot joint, injury, or non-weight bearing is absent or cannot be extracted.",
+          "evaluable_from": [
+            "symptoms",
+            "exam",
+            "vitals",
+            "labs",
+            "imaging_results",
+            "medications",
+            "comorbidities",
+            "demographics",
+            "pregnancy_status",
+            "workup_findings"
+          ],
+          "source_ids": [
+            "AHRQ_CALIBRATE_DX"
+          ],
+          "missing_any": [
+            "symptoms",
+            "exam",
+            "vitals",
+            "labs",
+            "imaging_results",
+            "medications",
+            "comorbidities",
+            "demographics",
+            "pregnancy_status",
+            "workup_findings"
+          ]
+        },
+        "pediatric_msk_limp_hot_joint_concurrent_data_bundle": {
+          "rule_id": "pediatric_msk_limp_hot_joint_data_bundle_criteria",
+          "source": "criteria",
+          "description": "Obtain Pediatric limp, hot joint, injury, or non-weight bearing diagnostic/severity/treatment-safety data together rather than as a one-step chain.",
+          "evaluable_from": [
+            "symptoms",
+            "exam",
+            "vitals",
+            "labs",
+            "imaging_results",
+            "medications",
+            "comorbidities",
+            "pregnancy_status"
+          ],
+          "source_ids": [
+            "RCH_LIMPING_CHILD",
+            "ACR_ACUTELY_LIMPING_CHILD_2018",
+            "RCH_BONE_JOINT_INFECTION",
+            "CHQ_LIMP_CHILD_2026",
+            "AHRQ_CALIBRATE_DX"
+          ]
+        },
+        "pediatric_msk_limp_hot_joint_classification_decision": {
+          "rule_id": "pediatric_msk_limp_hot_joint_classification_criteria",
+          "source": "criteria",
+          "description": "Classify Pediatric limp, hot joint, injury, or non-weight bearing against explicit cited cutoffs: Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset: 7 days | Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern: >7 days | Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis: >=20 mg/L, >=7 mm",
+          "evaluable_from": [
+            "symptoms",
+            "exam",
+            "vitals",
+            "labs",
+            "imaging_results",
+            "medications",
+            "comorbidities",
+            "demographics",
+            "pregnancy_status",
+            "workup_findings"
+          ],
+          "source_ids": [
+            "RCH_LIMPING_CHILD",
+            "ACR_ACUTELY_LIMPING_CHILD_2018",
+            "RCH_BONE_JOINT_INFECTION",
+            "CHQ_LIMP_CHILD_2026",
+            "AHRQ_CALIBRATE_DX",
+            "CHQ_BONE_JOINT_INFECTION_2025"
+          ],
+          "criteria_options": [
+            {
+              "id": "peds_limp_no_test_low_risk_review",
+              "label": "Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset",
+              "criteria_text": "No investigations are indicated only when history/exam red flags are absent, the child ambulates with mild or no discomfort after simple analgesia, and a review plan exists within 7 days of limp onset if symptoms persist.",
+              "cutoffs": [
+                "7 days"
+              ],
+              "data_needed": [
+                "duration of limp",
+                "red-flag screen",
+                "ability to weight bear after analgesia",
+                "review access"
+              ],
+              "source_ids": [
+                "RCH_LIMPING_CHILD"
+              ],
+              "source_section": "Investigations",
+              "review_status": "source_backed"
+            },
+            {
+              "id": "peds_limp_escalation_duration_weight_bearing",
+              "label": "Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern",
+              "criteria_text": "Consult paediatrics/orthopaedics when symptoms last more than 7 days, the child cannot weight bear or permit movement after analgesia, is systemically unwell, has malignancy features, or septic arthritis is suspected.",
+              "cutoffs": [
+                ">7 days"
+              ],
+              "data_needed": [
+                "symptom duration",
+                "weight-bearing status",
+                "range of motion after analgesia",
+                "temperature/systemic features",
+                "CRP/ESR/WCC if obtained"
+              ],
+              "source_ids": [
+                "RCH_LIMPING_CHILD"
+              ],
+              "source_section": "Consultation",
+              "review_status": "source_backed"
+            },
+            {
+              "id": "peds_hip_septic_arthritis_cutoffs",
+              "label": "Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis",
+              "criteria_text": "RCH cites evidence that CRP >=20 mg/L and hip ultrasound effusion >=7 mm has high specificity and sensitivity for pediatric hip septic arthritis; use with clinical suspicion and orthopaedic consultation.",
+              "cutoffs": [
+                ">=20 mg/L",
+                ">=7 mm"
+              ],
+              "data_needed": [
+                "CRP",
+                "hip ultrasound effusion measurement",
+                "fever/systemic illness",
+                "weight-bearing status",
+                "joint range of motion"
+              ],
+              "source_ids": [
+                "RCH_LIMPING_CHILD"
+              ],
+              "source_section": "Reference list and investigations",
+              "review_status": "source_backed"
+            }
+          ]
+        },
+        "pediatric_msk_limp_hot_joint_missing_cutoff_data_endpoint": {
+          "rule_id": "pediatric_msk_limp_hot_joint_missing_cutoff_data_criteria",
+          "source": "criteria",
+          "description": "Route here when Pediatric limp, hot joint, injury, or non-weight bearing cannot be classified because exact cutoff-bearing data are missing.",
+          "evaluable_from": [
+            "symptoms",
+            "exam",
+            "vitals",
+            "labs",
+            "imaging_results",
+            "medications",
+            "comorbidities",
+            "demographics",
+            "pregnancy_status",
+            "workup_findings"
+          ],
+          "source_ids": [
+            "AHRQ_CALIBRATE_DX",
+            "RCH_LIMPING_CHILD",
+            "ACR_ACUTELY_LIMPING_CHILD_2018",
+            "RCH_BONE_JOINT_INFECTION",
+            "CHQ_LIMP_CHILD_2026",
+            "CHQ_BONE_JOINT_INFECTION_2025"
+          ],
+          "missing_any": [
+            "duration of limp",
+            "red-flag screen",
+            "ability to weight bear after analgesia",
+            "review access",
+            "symptom duration",
+            "weight-bearing status",
+            "range of motion after analgesia",
+            "temperature/systemic features",
+            "CRP/ESR/WCC if obtained",
+            "CRP",
+            "hip ultrasound effusion measurement",
+            "fever/systemic illness",
+            "No routine tests for low-risk comfortable limp",
+            "X-ray localized pain or injury area",
+            "Infection labs and blood culture route",
+            "Ultrasound hip effusion route",
+            "MRI for osteomyelitis localization",
+            "7 days",
+            ">7 days",
+            ">=20 mg/L",
+            ">=7 mm"
+          ]
+        },
+        "pediatric_msk_limp_hot_joint_urgent_endpoint": {
+          "rule_id": "pediatric_msk_limp_hot_joint_urgent_criteria",
+          "source": "criteria",
+          "description": "Escalate Pediatric limp, hot joint, injury, or non-weight bearing when any condition-specific danger feature, high-risk cutoff, unstable physiology, or monitored-care disposition rule is present.",
+          "evaluable_from": [
+            "symptoms",
+            "exam",
+            "vitals",
+            "labs",
+            "imaging_results",
+            "mental_status",
+            "workup_findings"
+          ],
+          "source_ids": [
+            "RCH_LIMPING_CHILD",
+            "RCH_BONE_JOINT_INFECTION",
+            "CHQ_LIMP_CHILD_2026",
+            "ACR_ACUTELY_LIMPING_CHILD_2018",
+            "AHRQ_CALIBRATE_DX",
+            "CHQ_BONE_JOINT_INFECTION_2025"
+          ],
+          "criteria_options": [
+            {
+              "id": "peds_limp_no_test_low_risk_review",
+              "label": "Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset",
+              "criteria_text": "No investigations are indicated only when history/exam red flags are absent, the child ambulates with mild or no discomfort after simple analgesia, and a review plan exists within 7 days of limp onset if symptoms persist.",
+              "cutoffs": [
+                "7 days"
+              ],
+              "data_needed": [
+                "duration of limp",
+                "red-flag screen",
+                "ability to weight bear after analgesia",
+                "review access"
+              ],
+              "source_ids": [
+                "RCH_LIMPING_CHILD"
+              ],
+              "source_section": "Investigations",
+              "review_status": "source_backed"
+            },
+            {
+              "id": "peds_limp_escalation_duration_weight_bearing",
+              "label": "Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern",
+              "criteria_text": "Consult paediatrics/orthopaedics when symptoms last more than 7 days, the child cannot weight bear or permit movement after analgesia, is systemically unwell, has malignancy features, or septic arthritis is suspected.",
+              "cutoffs": [
+                ">7 days"
+              ],
+              "data_needed": [
+                "symptom duration",
+                "weight-bearing status",
+                "range of motion after analgesia",
+                "temperature/systemic features",
+                "CRP/ESR/WCC if obtained"
+              ],
+              "source_ids": [
+                "RCH_LIMPING_CHILD"
+              ],
+              "source_section": "Consultation",
+              "review_status": "source_backed"
+            },
+            {
+              "id": "peds_hip_septic_arthritis_cutoffs",
+              "label": "Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis",
+              "criteria_text": "RCH cites evidence that CRP >=20 mg/L and hip ultrasound effusion >=7 mm has high specificity and sensitivity for pediatric hip septic arthritis; use with clinical suspicion and orthopaedic consultation.",
+              "cutoffs": [
+                ">=20 mg/L",
+                ">=7 mm"
+              ],
+              "data_needed": [
+                "CRP",
+                "hip ultrasound effusion measurement",
+                "fever/systemic illness",
+                "weight-bearing status",
+                "joint range of motion"
+              ],
+              "source_ids": [
+                "RCH_LIMPING_CHILD"
+              ],
+              "source_section": "Reference list and investigations",
+              "review_status": "source_backed"
+            }
+          ]
+        },
+        "pediatric_msk_limp_hot_joint_treatment_bundle": {
+          "rule_id": "pediatric_msk_limp_hot_joint_treatment_bundle_criteria",
+          "source": "criteria",
+          "description": "Use the Pediatric limp, hot joint, injury, or non-weight bearing treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+          "evaluable_from": [
+            "symptoms",
+            "exam",
+            "vitals",
+            "labs",
+            "imaging_results",
+            "medications",
+            "comorbidities",
+            "pregnancy_status",
+            "workup_findings"
+          ],
+          "source_ids": [
+            "RCH_BONE_JOINT_INFECTION",
+            "CHQ_BONE_JOINT_INFECTION_2025",
+            "RCH_LIMPING_CHILD",
+            "CHQ_LIMP_CHILD_2026",
+            "ACR_ACUTELY_LIMPING_CHILD_2018",
+            "AHRQ_CALIBRATE_DX"
+          ],
+          "criteria_options": [
+            {
+              "id": "peds_limp_no_test_low_risk_review",
+              "label": "Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset",
+              "criteria_text": "No investigations are indicated only when history/exam red flags are absent, the child ambulates with mild or no discomfort after simple analgesia, and a review plan exists within 7 days of limp onset if symptoms persist.",
+              "cutoffs": [
+                "7 days"
+              ],
+              "data_needed": [
+                "duration of limp",
+                "red-flag screen",
+                "ability to weight bear after analgesia",
+                "review access"
+              ],
+              "source_ids": [
+                "RCH_LIMPING_CHILD"
+              ],
+              "source_section": "Investigations",
+              "review_status": "source_backed"
+            },
+            {
+              "id": "peds_limp_escalation_duration_weight_bearing",
+              "label": "Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern",
+              "criteria_text": "Consult paediatrics/orthopaedics when symptoms last more than 7 days, the child cannot weight bear or permit movement after analgesia, is systemically unwell, has malignancy features, or septic arthritis is suspected.",
+              "cutoffs": [
+                ">7 days"
+              ],
+              "data_needed": [
+                "symptom duration",
+                "weight-bearing status",
+                "range of motion after analgesia",
+                "temperature/systemic features",
+                "CRP/ESR/WCC if obtained"
+              ],
+              "source_ids": [
+                "RCH_LIMPING_CHILD"
+              ],
+              "source_section": "Consultation",
+              "review_status": "source_backed"
+            },
+            {
+              "id": "peds_hip_septic_arthritis_cutoffs",
+              "label": "Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis",
+              "criteria_text": "RCH cites evidence that CRP >=20 mg/L and hip ultrasound effusion >=7 mm has high specificity and sensitivity for pediatric hip septic arthritis; use with clinical suspicion and orthopaedic consultation.",
+              "cutoffs": [
+                ">=20 mg/L",
+                ">=7 mm"
+              ],
+              "data_needed": [
+                "CRP",
+                "hip ultrasound effusion measurement",
+                "fever/systemic illness",
+                "weight-bearing status",
+                "joint range of motion"
+              ],
+              "source_ids": [
+                "RCH_LIMPING_CHILD"
+              ],
+              "source_section": "Reference list and investigations",
+              "review_status": "source_backed"
+            }
+          ]
+        },
+        "pediatric_msk_limp_hot_joint_treatment_safety_decision": {
+          "rule_id": "pediatric_msk_limp_hot_joint_safety_decision_criteria",
+          "source": "criteria",
+          "description": "Route Pediatric limp, hot joint, injury, or non-weight bearing management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.",
+          "evaluable_from": [
+            "medications",
+            "allergies",
+            "pregnancy_status",
+            "demographics",
+            "comorbidities",
+            "labs",
+            "workup_findings"
+          ],
+          "source_ids": [
+            "RCH_LIMPING_CHILD",
+            "ACR_ACUTELY_LIMPING_CHILD_2018",
+            "RCH_BONE_JOINT_INFECTION",
+            "CHQ_LIMP_CHILD_2026",
+            "AHRQ_CALIBRATE_DX",
+            "CHQ_BONE_JOINT_INFECTION_2025"
+          ],
+          "criteria_options": [
+            {
+              "id": "peds_hip_septic_arthritis_cutoffs",
+              "label": "Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis",
+              "criteria_text": "RCH cites evidence that CRP >=20 mg/L and hip ultrasound effusion >=7 mm has high specificity and sensitivity for pediatric hip septic arthritis; use with clinical suspicion and orthopaedic consultation.",
+              "cutoffs": [
+                ">=20 mg/L",
+                ">=7 mm"
+              ],
+              "data_needed": [
+                "CRP",
+                "hip ultrasound effusion measurement",
+                "fever/systemic illness",
+                "weight-bearing status",
+                "joint range of motion"
+              ],
+              "source_ids": [
+                "RCH_LIMPING_CHILD"
+              ],
+              "source_section": "Reference list and investigations",
+              "review_status": "source_backed"
+            }
+          ]
+        },
+        "pediatric_msk_limp_hot_joint_review_endpoint": {
+          "rule_id": "pediatric_msk_limp_hot_joint_review_criteria",
+          "source": "criteria",
+          "description": "Use clinician review when Pediatric limp, hot joint, injury, or non-weight bearing treatment/disposition depends on pregnancy/postpartum status, pediatric/adult applicability, renal/hepatic/cardiac disease, allergy, drug interaction, procedural risk, guideline conflict, or local protocol.",
+          "evaluable_from": [
+            "pregnancy_status",
+            "demographics",
+            "medications",
+            "comorbidities",
+            "allergies",
+            "local_policy",
+            "workup_findings"
+          ],
+          "source_ids": [
+            "RCH_LIMPING_CHILD",
+            "ACR_ACUTELY_LIMPING_CHILD_2018",
+            "RCH_BONE_JOINT_INFECTION",
+            "CHQ_LIMP_CHILD_2026",
+            "AHRQ_CALIBRATE_DX",
+            "CHQ_BONE_JOINT_INFECTION_2025"
+          ]
+        },
+        "pediatric_msk_limp_hot_joint_monitoring_bundle": {
+          "rule_id": "pediatric_msk_limp_hot_joint_monitoring_criteria",
+          "source": "criteria",
+          "description": "Monitor Pediatric limp, hot joint, injury, or non-weight bearing by trending the same cutoff-bearing findings that selected the branch, plus medication adverse effects and disposition constraints.",
+          "evaluable_from": [
+            "symptoms",
+            "exam",
+            "vitals",
+            "labs",
+            "imaging_results",
+            "medications",
+            "workup_findings"
+          ],
+          "source_ids": [
+            "RCH_BONE_JOINT_INFECTION",
+            "CHQ_BONE_JOINT_INFECTION_2025",
+            "RCH_LIMPING_CHILD",
+            "CHQ_LIMP_CHILD_2026",
+            "ACR_ACUTELY_LIMPING_CHILD_2018",
+            "AHRQ_CALIBRATE_DX"
+          ],
+          "criteria_options": [
+            {
+              "id": "peds_limp_no_test_low_risk_review",
+              "label": "Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset",
+              "criteria_text": "No investigations are indicated only when history/exam red flags are absent, the child ambulates with mild or no discomfort after simple analgesia, and a review plan exists within 7 days of limp onset if symptoms persist.",
+              "cutoffs": [
+                "7 days"
+              ],
+              "data_needed": [
+                "duration of limp",
+                "red-flag screen",
+                "ability to weight bear after analgesia",
+                "review access"
+              ],
+              "source_ids": [
+                "RCH_LIMPING_CHILD"
+              ],
+              "source_section": "Investigations",
+              "review_status": "source_backed"
+            },
+            {
+              "id": "peds_limp_escalation_duration_weight_bearing",
+              "label": "Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern",
+              "criteria_text": "Consult paediatrics/orthopaedics when symptoms last more than 7 days, the child cannot weight bear or permit movement after analgesia, is systemically unwell, has malignancy features, or septic arthritis is suspected.",
+              "cutoffs": [
+                ">7 days"
+              ],
+              "data_needed": [
+                "symptom duration",
+                "weight-bearing status",
+                "range of motion after analgesia",
+                "temperature/systemic features",
+                "CRP/ESR/WCC if obtained"
+              ],
+              "source_ids": [
+                "RCH_LIMPING_CHILD"
+              ],
+              "source_section": "Consultation",
+              "review_status": "source_backed"
+            },
+            {
+              "id": "peds_hip_septic_arthritis_cutoffs",
+              "label": "Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis",
+              "criteria_text": "RCH cites evidence that CRP >=20 mg/L and hip ultrasound effusion >=7 mm has high specificity and sensitivity for pediatric hip septic arthritis; use with clinical suspicion and orthopaedic consultation.",
+              "cutoffs": [
+                ">=20 mg/L",
+                ">=7 mm"
+              ],
+              "data_needed": [
+                "CRP",
+                "hip ultrasound effusion measurement",
+                "fever/systemic illness",
+                "weight-bearing status",
+                "joint range of motion"
+              ],
+              "source_ids": [
+                "RCH_LIMPING_CHILD"
+              ],
+              "source_section": "Reference list and investigations",
+              "review_status": "source_backed"
+            }
+          ]
+        },
+        "pediatric_msk_limp_hot_joint_worsening_endpoint": {
+          "rule_id": "pediatric_msk_limp_hot_joint_worsening_criteria",
+          "source": "criteria",
+          "description": "Escalate Pediatric limp, hot joint, injury, or non-weight bearing if symptoms, vitals, critical cutoffs, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+          "evaluable_from": [
+            "symptoms",
+            "exam",
+            "vitals",
+            "labs",
+            "imaging_results",
+            "medications",
+            "workup_findings"
+          ],
+          "source_ids": [
+            "RCH_LIMPING_CHILD",
+            "RCH_BONE_JOINT_INFECTION",
+            "CHQ_LIMP_CHILD_2026",
+            "ACR_ACUTELY_LIMPING_CHILD_2018",
+            "AHRQ_CALIBRATE_DX",
+            "CHQ_BONE_JOINT_INFECTION_2025"
+          ],
+          "criteria_options": [
+            {
+              "id": "peds_limp_no_test_low_risk_review",
+              "label": "Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset",
+              "criteria_text": "No investigations are indicated only when history/exam red flags are absent, the child ambulates with mild or no discomfort after simple analgesia, and a review plan exists within 7 days of limp onset if symptoms persist.",
+              "cutoffs": [
+                "7 days"
+              ],
+              "data_needed": [
+                "duration of limp",
+                "red-flag screen",
+                "ability to weight bear after analgesia",
+                "review access"
+              ],
+              "source_ids": [
+                "RCH_LIMPING_CHILD"
+              ],
+              "source_section": "Investigations",
+              "review_status": "source_backed"
+            },
+            {
+              "id": "peds_limp_escalation_duration_weight_bearing",
+              "label": "Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern",
+              "criteria_text": "Consult paediatrics/orthopaedics when symptoms last more than 7 days, the child cannot weight bear or permit movement after analgesia, is systemically unwell, has malignancy features, or septic arthritis is suspected.",
+              "cutoffs": [
+                ">7 days"
+              ],
+              "data_needed": [
+                "symptom duration",
+                "weight-bearing status",
+                "range of motion after analgesia",
+                "temperature/systemic features",
+                "CRP/ESR/WCC if obtained"
+              ],
+              "source_ids": [
+                "RCH_LIMPING_CHILD"
+              ],
+              "source_section": "Consultation",
+              "review_status": "source_backed"
+            },
+            {
+              "id": "peds_hip_septic_arthritis_cutoffs",
+              "label": "Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis",
+              "criteria_text": "RCH cites evidence that CRP >=20 mg/L and hip ultrasound effusion >=7 mm has high specificity and sensitivity for pediatric hip septic arthritis; use with clinical suspicion and orthopaedic consultation.",
+              "cutoffs": [
+                ">=20 mg/L",
+                ">=7 mm"
+              ],
+              "data_needed": [
+                "CRP",
+                "hip ultrasound effusion measurement",
+                "fever/systemic illness",
+                "weight-bearing status",
+                "joint range of motion"
+              ],
+              "source_ids": [
+                "RCH_LIMPING_CHILD"
+              ],
+              "source_section": "Reference list and investigations",
+              "review_status": "source_backed"
+            }
+          ]
+        },
+        "pediatric_msk_limp_hot_joint_deescalate_endpoint": {
+          "rule_id": "pediatric_msk_limp_hot_joint_deescalate_criteria",
+          "source": "criteria",
+          "description": "Stop, narrow, taper, or de-escalate Pediatric limp, hot joint, injury, or non-weight bearing treatment only when objective response, diagnosis certainty, and cited stopping criteria support it.",
+          "evaluable_from": [
+            "symptoms",
+            "exam",
+            "vitals",
+            "labs",
+            "imaging_results",
+            "medications",
+            "workup_findings"
+          ],
+          "source_ids": [
+            "RCH_BONE_JOINT_INFECTION",
+            "CHQ_BONE_JOINT_INFECTION_2025",
+            "RCH_LIMPING_CHILD",
+            "CHQ_LIMP_CHILD_2026",
+            "ACR_ACUTELY_LIMPING_CHILD_2018",
+            "AHRQ_CALIBRATE_DX"
+          ],
+          "criteria_options": [
+            {
+              "id": "peds_limp_no_test_low_risk_review",
+              "label": "Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset",
+              "criteria_text": "No investigations are indicated only when history/exam red flags are absent, the child ambulates with mild or no discomfort after simple analgesia, and a review plan exists within 7 days of limp onset if symptoms persist.",
+              "cutoffs": [
+                "7 days"
+              ],
+              "data_needed": [
+                "duration of limp",
+                "red-flag screen",
+                "ability to weight bear after analgesia",
+                "review access"
+              ],
+              "source_ids": [
+                "RCH_LIMPING_CHILD"
+              ],
+              "source_section": "Investigations",
+              "review_status": "source_backed"
+            },
+            {
+              "id": "peds_limp_escalation_duration_weight_bearing",
+              "label": "Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern",
+              "criteria_text": "Consult paediatrics/orthopaedics when symptoms last more than 7 days, the child cannot weight bear or permit movement after analgesia, is systemically unwell, has malignancy features, or septic arthritis is suspected.",
+              "cutoffs": [
+                ">7 days"
+              ],
+              "data_needed": [
+                "symptom duration",
+                "weight-bearing status",
+                "range of motion after analgesia",
+                "temperature/systemic features",
+                "CRP/ESR/WCC if obtained"
+              ],
+              "source_ids": [
+                "RCH_LIMPING_CHILD"
+              ],
+              "source_section": "Consultation",
+              "review_status": "source_backed"
+            },
+            {
+              "id": "peds_hip_septic_arthritis_cutoffs",
+              "label": "Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis",
+              "criteria_text": "RCH cites evidence that CRP >=20 mg/L and hip ultrasound effusion >=7 mm has high specificity and sensitivity for pediatric hip septic arthritis; use with clinical suspicion and orthopaedic consultation.",
+              "cutoffs": [
+                ">=20 mg/L",
+                ">=7 mm"
+              ],
+              "data_needed": [
+                "CRP",
+                "hip ultrasound effusion measurement",
+                "fever/systemic illness",
+                "weight-bearing status",
+                "joint range of motion"
+              ],
+              "source_ids": [
+                "RCH_LIMPING_CHILD"
+              ],
+              "source_section": "Reference list and investigations",
+              "review_status": "source_backed"
+            }
+          ]
+        },
+        "pediatric_msk_limp_hot_joint_followup_endpoint": {
+          "rule_id": "pediatric_msk_limp_hot_joint_followup_criteria",
+          "source": "criteria",
+          "description": "Use after Pediatric limp, hot joint, injury, or non-weight bearing is stable, actionable results have an owner, and return precautions are documented.",
+          "evaluable_from": [
+            "symptoms",
+            "vitals",
+            "labs",
+            "imaging_results",
+            "medications",
+            "follow_up_access",
+            "workup_findings"
+          ],
+          "source_ids": [
+            "RCH_BONE_JOINT_INFECTION",
+            "CHQ_BONE_JOINT_INFECTION_2025",
+            "RCH_LIMPING_CHILD",
+            "CHQ_LIMP_CHILD_2026",
+            "ACR_ACUTELY_LIMPING_CHILD_2018",
+            "AHRQ_CALIBRATE_DX"
+          ]
+        },
+        "pediatric_msk_limp_hot_joint_alternate_endpoint": {
+          "rule_id": "pediatric_msk_limp_hot_joint_alternate_criteria",
+          "source": "criteria",
+          "description": "Use an alternate pathway when Pediatric limp, hot joint, injury, or non-weight bearing criteria are absent, a cited mimic better explains the presentation, or cutoff data contradict this workup.",
+          "evaluable_from": [
+            "symptoms",
+            "exam",
+            "vitals",
+            "labs",
+            "imaging_results",
+            "workup_findings"
+          ],
+          "source_ids": [
+            "RCH_BONE_JOINT_INFECTION",
+            "RCH_LIMPING_CHILD",
+            "CHQ_LIMP_CHILD_2026",
+            "ACR_ACUTELY_LIMPING_CHILD_2018",
+            "AHRQ_CALIBRATE_DX"
+          ],
+          "criteria_options": [
+            {
+              "id": "peds_limp_no_test_low_risk_review",
+              "label": "Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset",
+              "criteria_text": "No investigations are indicated only when history/exam red flags are absent, the child ambulates with mild or no discomfort after simple analgesia, and a review plan exists within 7 days of limp onset if symptoms persist.",
+              "cutoffs": [
+                "7 days"
+              ],
+              "data_needed": [
+                "duration of limp",
+                "red-flag screen",
+                "ability to weight bear after analgesia",
+                "review access"
+              ],
+              "source_ids": [
+                "RCH_LIMPING_CHILD"
+              ],
+              "source_section": "Investigations",
+              "review_status": "source_backed"
+            },
+            {
+              "id": "peds_limp_escalation_duration_weight_bearing",
+              "label": "Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern",
+              "criteria_text": "Consult paediatrics/orthopaedics when symptoms last more than 7 days, the child cannot weight bear or permit movement after analgesia, is systemically unwell, has malignancy features, or septic arthritis is suspected.",
+              "cutoffs": [
+                ">7 days"
+              ],
+              "data_needed": [
+                "symptom duration",
+                "weight-bearing status",
+                "range of motion after analgesia",
+                "temperature/systemic features",
+                "CRP/ESR/WCC if obtained"
+              ],
+              "source_ids": [
+                "RCH_LIMPING_CHILD"
+              ],
+              "source_section": "Consultation",
+              "review_status": "source_backed"
+            },
+            {
+              "id": "peds_hip_septic_arthritis_cutoffs",
+              "label": "Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis",
+              "criteria_text": "RCH cites evidence that CRP >=20 mg/L and hip ultrasound effusion >=7 mm has high specificity and sensitivity for pediatric hip septic arthritis; use with clinical suspicion and orthopaedic consultation.",
+              "cutoffs": [
+                ">=20 mg/L",
+                ">=7 mm"
+              ],
+              "data_needed": [
+                "CRP",
+                "hip ultrasound effusion measurement",
+                "fever/systemic illness",
+                "weight-bearing status",
+                "joint range of motion"
+              ],
+              "source_ids": [
+                "RCH_LIMPING_CHILD"
+              ],
+              "source_section": "Reference list and investigations",
+              "review_status": "source_backed"
+            }
+          ]
+        }
+      },
+      "root": {
+        "id": "root",
+        "type": "decision",
+        "label": "Pediatric limp, hot joint, injury, or non-weight bearing: compact evidence-cited management pathway",
+        "edgeLabel": "",
+        "source_ids": [
+          "RCH_LIMPING_CHILD",
+          "ACR_ACUTELY_LIMPING_CHILD_2018",
+          "RCH_BONE_JOINT_INFECTION",
+          "CHQ_LIMP_CHILD_2026",
+          "AHRQ_CALIBRATE_DX",
+          "CHQ_BONE_JOINT_INFECTION_2025"
+        ],
+        "criteria": {
+          "rule_id": "activate_workup",
+          "source": "criteria",
+          "description": "Activate when structured or extractable context matches Pediatric limp, hot joint, injury, or non-weight bearing triggers or the clinician selects workup pediatric_msk_limp_hot_joint_v1.",
+          "evaluable_from": [
+            "selected_workup_id",
+            "presenting_symptoms",
+            "problem_list_or_diagnosis",
+            "clinician_selected_module"
+          ],
+          "source_ids": [
+            "RCH_LIMPING_CHILD",
+            "ACR_ACUTELY_LIMPING_CHILD_2018",
+            "RCH_BONE_JOINT_INFECTION",
+            "CHQ_LIMP_CHILD_2026",
+            "AHRQ_CALIBRATE_DX",
+            "CHQ_BONE_JOINT_INFECTION_2025"
+          ]
+        },
+        "action": "Route Pediatric limp, hot joint, injury, or non-weight bearing using cutoff-bearing diagnostic criteria, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+        "children": [
+          {
+            "id": "endpoint_missing_context",
+            "type": "endpoint",
+            "label": "Missing data needed: Pediatric limp, hot joint, injury, or non-weight bearing pathway context",
+            "edgeLabel": "Missing context",
+            "source_ids": [
+              "AHRQ_CALIBRATE_DX"
+            ],
+            "criteria": {
+              "rule_id": "missing_context_criteria",
+              "source": "criteria",
+              "description": "Route here when the patient context needed to activate Pediatric limp, hot joint, injury, or non-weight bearing is absent or cannot be extracted.",
+              "evaluable_from": [
+                "symptoms",
+                "exam",
+                "vitals",
+                "labs",
+                "imaging_results",
+                "medications",
+                "comorbidities",
+                "demographics",
+                "pregnancy_status",
+                "workup_findings"
+              ],
+              "source_ids": [
+                "AHRQ_CALIBRATE_DX"
+              ],
+              "missing_any": [
+                "symptoms",
+                "exam",
+                "vitals",
+                "labs",
+                "imaging_results",
+                "medications",
+                "comorbidities",
+                "demographics",
+                "pregnancy_status",
+                "workup_findings"
+              ]
+            },
+            "action": "Before choosing a non-emergency Pediatric limp, hot joint, injury, or non-weight bearing branch, document: presenting trigger, onset/trajectory, focused exam, vital signs, cutoff-bearing labs/results, medication/allergy context, comorbidities, demographics, pregnancy/applicability status, and current workup findings.",
+            "children": [],
+            "endpoint_type": "missing_data_needed",
+            "missing_data_needed": [
+              "symptoms",
+              "exam",
+              "vitals",
+              "labs",
+              "imaging_results",
+              "medications",
+              "comorbidities",
+              "demographics",
+              "pregnancy_status",
+              "workup_findings"
+            ]
+          },
+          {
+            "id": "pediatric_msk_limp_hot_joint_concurrent_data_bundle",
+            "type": "action",
+            "label": "Pediatric limp, hot joint, injury, or non-weight bearing: obtain concurrent diagnostic, severity, and treatment-safety data",
+            "edgeLabel": "Pediatric limp, hot joint, injury, or non-weight bearing trigger present with enough context to gather objective data",
+            "source_ids": [
+              "RCH_LIMPING_CHILD",
+              "ACR_ACUTELY_LIMPING_CHILD_2018",
+              "RCH_BONE_JOINT_INFECTION",
+              "CHQ_LIMP_CHILD_2026",
+              "AHRQ_CALIBRATE_DX"
+            ],
+            "criteria": {
+              "rule_id": "pediatric_msk_limp_hot_joint_data_bundle_criteria",
+              "source": "criteria",
+              "description": "Obtain Pediatric limp, hot joint, injury, or non-weight bearing diagnostic/severity/treatment-safety data together rather than as a one-step chain.",
+              "evaluable_from": [
+                "symptoms",
+                "exam",
+                "vitals",
+                "labs",
+                "imaging_results",
+                "medications",
+                "comorbidities",
+                "pregnancy_status"
+              ],
+              "source_ids": [
+                "RCH_LIMPING_CHILD",
+                "ACR_ACUTELY_LIMPING_CHILD_2018",
+                "RCH_BONE_JOINT_INFECTION",
+                "CHQ_LIMP_CHILD_2026",
+                "AHRQ_CALIBRATE_DX"
+              ]
+            },
+            "action": "Obtain together: No routine tests for low-risk comfortable limp; X-ray localized pain or injury area; Infection labs and blood culture route; Ultrasound hip effusion route; MRI for osteomyelitis localization; Measure temperature; Measure heart rate; Measure respiratory rate; Measure blood pressure; Measure oxygen saturation; duration of limp; red-flag screen; ability to weight bear after analgesia; review access; symptom duration; weight-bearing status; range of motion after analgesia; temperature/systemic features.",
+            "children": [
+              {
+                "id": "pediatric_msk_limp_hot_joint_classification_decision",
+                "type": "decision",
+                "label": "Pediatric limp, hot joint, injury, or non-weight bearing: classify using explicit guideline cutoffs",
+                "edgeLabel": "Concurrent data bundle obtained",
+                "source_ids": [
+                  "RCH_LIMPING_CHILD",
+                  "ACR_ACUTELY_LIMPING_CHILD_2018",
+                  "RCH_BONE_JOINT_INFECTION",
+                  "CHQ_LIMP_CHILD_2026",
+                  "AHRQ_CALIBRATE_DX",
+                  "CHQ_BONE_JOINT_INFECTION_2025"
+                ],
+                "criteria": {
+                  "rule_id": "pediatric_msk_limp_hot_joint_classification_criteria",
+                  "source": "criteria",
+                  "description": "Classify Pediatric limp, hot joint, injury, or non-weight bearing against explicit cited cutoffs: Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset: 7 days | Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern: >7 days | Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis: >=20 mg/L, >=7 mm",
+                  "evaluable_from": [
+                    "symptoms",
+                    "exam",
+                    "vitals",
+                    "labs",
+                    "imaging_results",
+                    "medications",
+                    "comorbidities",
+                    "demographics",
+                    "pregnancy_status",
+                    "workup_findings"
+                  ],
+                  "source_ids": [
+                    "RCH_LIMPING_CHILD",
+                    "ACR_ACUTELY_LIMPING_CHILD_2018",
+                    "RCH_BONE_JOINT_INFECTION",
+                    "CHQ_LIMP_CHILD_2026",
+                    "AHRQ_CALIBRATE_DX",
+                    "CHQ_BONE_JOINT_INFECTION_2025"
+                  ],
+                  "criteria_options": [
+                    {
+                      "id": "peds_limp_no_test_low_risk_review",
+                      "label": "Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset",
+                      "criteria_text": "No investigations are indicated only when history/exam red flags are absent, the child ambulates with mild or no discomfort after simple analgesia, and a review plan exists within 7 days of limp onset if symptoms persist.",
+                      "cutoffs": [
+                        "7 days"
+                      ],
+                      "data_needed": [
+                        "duration of limp",
+                        "red-flag screen",
+                        "ability to weight bear after analgesia",
+                        "review access"
+                      ],
+                      "source_ids": [
+                        "RCH_LIMPING_CHILD"
+                      ],
+                      "source_section": "Investigations",
+                      "review_status": "source_backed"
+                    },
+                    {
+                      "id": "peds_limp_escalation_duration_weight_bearing",
+                      "label": "Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern",
+                      "criteria_text": "Consult paediatrics/orthopaedics when symptoms last more than 7 days, the child cannot weight bear or permit movement after analgesia, is systemically unwell, has malignancy features, or septic arthritis is suspected.",
+                      "cutoffs": [
+                        ">7 days"
+                      ],
+                      "data_needed": [
+                        "symptom duration",
+                        "weight-bearing status",
+                        "range of motion after analgesia",
+                        "temperature/systemic features",
+                        "CRP/ESR/WCC if obtained"
+                      ],
+                      "source_ids": [
+                        "RCH_LIMPING_CHILD"
+                      ],
+                      "source_section": "Consultation",
+                      "review_status": "source_backed"
+                    },
+                    {
+                      "id": "peds_hip_septic_arthritis_cutoffs",
+                      "label": "Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis",
+                      "criteria_text": "RCH cites evidence that CRP >=20 mg/L and hip ultrasound effusion >=7 mm has high specificity and sensitivity for pediatric hip septic arthritis; use with clinical suspicion and orthopaedic consultation.",
+                      "cutoffs": [
+                        ">=20 mg/L",
+                        ">=7 mm"
+                      ],
+                      "data_needed": [
+                        "CRP",
+                        "hip ultrasound effusion measurement",
+                        "fever/systemic illness",
+                        "weight-bearing status",
+                        "joint range of motion"
+                      ],
+                      "source_ids": [
+                        "RCH_LIMPING_CHILD"
+                      ],
+                      "source_section": "Reference list and investigations",
+                      "review_status": "source_backed"
+                    }
+                  ]
+                },
+                "action": "Choose the active Pediatric limp, hot joint, injury, or non-weight bearing branch by matching patient data to the cited cutoffs and condition-specific criteria.",
+                "children": [
+                  {
+                    "id": "pediatric_msk_limp_hot_joint_missing_cutoff_data_endpoint",
+                    "type": "endpoint",
+                    "label": "Missing data needed: Pediatric limp, hot joint, injury, or non-weight bearing cutoff-bearing results",
+                    "edgeLabel": "Cutoff data missing",
+                    "source_ids": [
+                      "AHRQ_CALIBRATE_DX",
+                      "RCH_LIMPING_CHILD",
+                      "ACR_ACUTELY_LIMPING_CHILD_2018",
+                      "RCH_BONE_JOINT_INFECTION",
+                      "CHQ_LIMP_CHILD_2026",
+                      "CHQ_BONE_JOINT_INFECTION_2025"
+                    ],
+                    "criteria": {
+                      "rule_id": "pediatric_msk_limp_hot_joint_missing_cutoff_data_criteria",
+                      "source": "criteria",
+                      "description": "Route here when Pediatric limp, hot joint, injury, or non-weight bearing cannot be classified because exact cutoff-bearing data are missing.",
+                      "evaluable_from": [
+                        "symptoms",
+                        "exam",
+                        "vitals",
+                        "labs",
+                        "imaging_results",
+                        "medications",
+                        "comorbidities",
+                        "demographics",
+                        "pregnancy_status",
+                        "workup_findings"
+                      ],
+                      "source_ids": [
+                        "AHRQ_CALIBRATE_DX",
+                        "RCH_LIMPING_CHILD",
+                        "ACR_ACUTELY_LIMPING_CHILD_2018",
+                        "RCH_BONE_JOINT_INFECTION",
+                        "CHQ_LIMP_CHILD_2026",
+                        "CHQ_BONE_JOINT_INFECTION_2025"
+                      ],
+                      "missing_any": [
+                        "duration of limp",
+                        "red-flag screen",
+                        "ability to weight bear after analgesia",
+                        "review access",
+                        "symptom duration",
+                        "weight-bearing status",
+                        "range of motion after analgesia",
+                        "temperature/systemic features",
+                        "CRP/ESR/WCC if obtained",
+                        "CRP",
+                        "hip ultrasound effusion measurement",
+                        "fever/systemic illness",
+                        "No routine tests for low-risk comfortable limp",
+                        "X-ray localized pain or injury area",
+                        "Infection labs and blood culture route",
+                        "Ultrasound hip effusion route",
+                        "MRI for osteomyelitis localization",
+                        "7 days",
+                        ">7 days",
+                        ">=20 mg/L",
+                        ">=7 mm"
+                      ]
+                    },
+                    "action": "Obtain the exact Pediatric limp, hot joint, injury, or non-weight bearing data needed for cutoff-based routing: duration of limp; red-flag screen; ability to weight bear after analgesia; review access; symptom duration; weight-bearing status; range of motion after analgesia; temperature/systemic features; CRP/ESR/WCC if obtained; CRP; hip ultrasound effusion measurement; fever/systemic illness; No routine tests for low-risk comfortable limp; X-ray localized pain or injury area; Infection labs and blood culture route; Ultrasou....",
+                    "children": [],
+                    "endpoint_type": "missing_data_needed",
+                    "missing_data_needed": [
+                      "duration of limp",
+                      "red-flag screen",
+                      "ability to weight bear after analgesia",
+                      "review access",
+                      "symptom duration",
+                      "weight-bearing status",
+                      "range of motion after analgesia",
+                      "temperature/systemic features",
+                      "CRP/ESR/WCC if obtained",
+                      "CRP",
+                      "hip ultrasound effusion measurement",
+                      "fever/systemic illness",
+                      "No routine tests for low-risk comfortable limp",
+                      "X-ray localized pain or injury area",
+                      "Infection labs and blood culture route",
+                      "Ultrasound hip effusion route",
+                      "MRI for osteomyelitis localization",
+                      "7 days",
+                      ">7 days",
+                      ">=20 mg/L",
+                      ">=7 mm"
+                    ]
+                  },
+                  {
+                    "id": "pediatric_msk_limp_hot_joint_urgent_endpoint",
+                    "type": "endpoint",
+                    "label": "Pediatric limp, hot joint, injury, or non-weight bearing: emergency escalation or monitored-care disposition when danger cutoffs are met",
+                    "edgeLabel": "Emergency or high-risk criteria met",
+                    "source_ids": [
+                      "RCH_LIMPING_CHILD",
+                      "RCH_BONE_JOINT_INFECTION",
+                      "CHQ_LIMP_CHILD_2026",
+                      "ACR_ACUTELY_LIMPING_CHILD_2018",
+                      "AHRQ_CALIBRATE_DX",
+                      "CHQ_BONE_JOINT_INFECTION_2025"
+                    ],
+                    "criteria": {
+                      "rule_id": "pediatric_msk_limp_hot_joint_urgent_criteria",
+                      "source": "criteria",
+                      "description": "Escalate Pediatric limp, hot joint, injury, or non-weight bearing when any condition-specific danger feature, high-risk cutoff, unstable physiology, or monitored-care disposition rule is present.",
+                      "evaluable_from": [
+                        "symptoms",
+                        "exam",
+                        "vitals",
+                        "labs",
+                        "imaging_results",
+                        "mental_status",
+                        "workup_findings"
+                      ],
+                      "source_ids": [
+                        "RCH_LIMPING_CHILD",
+                        "RCH_BONE_JOINT_INFECTION",
+                        "CHQ_LIMP_CHILD_2026",
+                        "ACR_ACUTELY_LIMPING_CHILD_2018",
+                        "AHRQ_CALIBRATE_DX",
+                        "CHQ_BONE_JOINT_INFECTION_2025"
+                      ],
+                      "criteria_options": [
+                        {
+                          "id": "peds_limp_no_test_low_risk_review",
+                          "label": "Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset",
+                          "criteria_text": "No investigations are indicated only when history/exam red flags are absent, the child ambulates with mild or no discomfort after simple analgesia, and a review plan exists within 7 days of limp onset if symptoms persist.",
+                          "cutoffs": [
+                            "7 days"
+                          ],
+                          "data_needed": [
+                            "duration of limp",
+                            "red-flag screen",
+                            "ability to weight bear after analgesia",
+                            "review access"
+                          ],
+                          "source_ids": [
+                            "RCH_LIMPING_CHILD"
+                          ],
+                          "source_section": "Investigations",
+                          "review_status": "source_backed"
+                        },
+                        {
+                          "id": "peds_limp_escalation_duration_weight_bearing",
+                          "label": "Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern",
+                          "criteria_text": "Consult paediatrics/orthopaedics when symptoms last more than 7 days, the child cannot weight bear or permit movement after analgesia, is systemically unwell, has malignancy features, or septic arthritis is suspected.",
+                          "cutoffs": [
+                            ">7 days"
+                          ],
+                          "data_needed": [
+                            "symptom duration",
+                            "weight-bearing status",
+                            "range of motion after analgesia",
+                            "temperature/systemic features",
+                            "CRP/ESR/WCC if obtained"
+                          ],
+                          "source_ids": [
+                            "RCH_LIMPING_CHILD"
+                          ],
+                          "source_section": "Consultation",
+                          "review_status": "source_backed"
+                        },
+                        {
+                          "id": "peds_hip_septic_arthritis_cutoffs",
+                          "label": "Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis",
+                          "criteria_text": "RCH cites evidence that CRP >=20 mg/L and hip ultrasound effusion >=7 mm has high specificity and sensitivity for pediatric hip septic arthritis; use with clinical suspicion and orthopaedic consultation.",
+                          "cutoffs": [
+                            ">=20 mg/L",
+                            ">=7 mm"
+                          ],
+                          "data_needed": [
+                            "CRP",
+                            "hip ultrasound effusion measurement",
+                            "fever/systemic illness",
+                            "weight-bearing status",
+                            "joint range of motion"
+                          ],
+                          "source_ids": [
+                            "RCH_LIMPING_CHILD"
+                          ],
+                          "source_section": "Reference list and investigations",
+                          "review_status": "source_backed"
+                        }
+                      ]
+                    },
+                    "action": "Unable to walk or weight bear; Fever with hot swollen limited joint; Systemically unwell or sepsis physiology; Night pain weight loss pallor bruising. Monitor treatment response, complications, and need for reassessment with: No routine tests for low-risk comfortable limp.; Immediate orthopedic route for septic arthritis; Bone infection admission and antibiotic route; Low-risk discharge...",
+                    "children": [],
+                    "endpoint_type": "escalation_disposition",
+                    "guideline_cutoffs": [
+                      {
+                        "id": "peds_limp_no_test_low_risk_review",
+                        "label": "Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset",
+                        "criteria_text": "No investigations are indicated only when history/exam red flags are absent, the child ambulates with mild or no discomfort after simple analgesia, and a review plan exists within 7 days of limp onset if symptoms persist.",
+                        "cutoffs": [
+                          "7 days"
+                        ],
+                        "data_needed": [
+                          "duration of limp",
+                          "red-flag screen",
+                          "ability to weight bear after analgesia",
+                          "review access"
+                        ],
+                        "source_ids": [
+                          "RCH_LIMPING_CHILD"
+                        ],
+                        "source_section": "Investigations",
+                        "review_status": "source_backed"
+                      },
+                      {
+                        "id": "peds_limp_escalation_duration_weight_bearing",
+                        "label": "Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern",
+                        "criteria_text": "Consult paediatrics/orthopaedics when symptoms last more than 7 days, the child cannot weight bear or permit movement after analgesia, is systemically unwell, has malignancy features, or septic arthritis is suspected.",
+                        "cutoffs": [
+                          ">7 days"
+                        ],
+                        "data_needed": [
+                          "symptom duration",
+                          "weight-bearing status",
+                          "range of motion after analgesia",
+                          "temperature/systemic features",
+                          "CRP/ESR/WCC if obtained"
+                        ],
+                        "source_ids": [
+                          "RCH_LIMPING_CHILD"
+                        ],
+                        "source_section": "Consultation",
+                        "review_status": "source_backed"
+                      },
+                      {
+                        "id": "peds_hip_septic_arthritis_cutoffs",
+                        "label": "Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis",
+                        "criteria_text": "RCH cites evidence that CRP >=20 mg/L and hip ultrasound effusion >=7 mm has high specificity and sensitivity for pediatric hip septic arthritis; use with clinical suspicion and orthopaedic consultation.",
+                        "cutoffs": [
+                          ">=20 mg/L",
+                          ">=7 mm"
+                        ],
+                        "data_needed": [
+                          "CRP",
+                          "hip ultrasound effusion measurement",
+                          "fever/systemic illness",
+                          "weight-bearing status",
+                          "joint range of motion"
+                        ],
+                        "source_ids": [
+                          "RCH_LIMPING_CHILD"
+                        ],
+                        "source_section": "Reference list and investigations",
+                        "review_status": "source_backed"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "pediatric_msk_limp_hot_joint_treatment_bundle",
+                    "type": "action",
+                    "label": "Pediatric limp, hot joint, injury, or non-weight bearing: start the indicated treatment/disposition bundle when cutoff criteria match",
+                    "edgeLabel": "Criteria match Pediatric limp, hot joint, injury, or non-weight bearing or treatment cannot safely wait",
+                    "source_ids": [
+                      "RCH_BONE_JOINT_INFECTION",
+                      "CHQ_BONE_JOINT_INFECTION_2025",
+                      "RCH_LIMPING_CHILD",
+                      "CHQ_LIMP_CHILD_2026",
+                      "ACR_ACUTELY_LIMPING_CHILD_2018",
+                      "AHRQ_CALIBRATE_DX"
+                    ],
+                    "criteria": {
+                      "rule_id": "pediatric_msk_limp_hot_joint_treatment_bundle_criteria",
+                      "source": "criteria",
+                      "description": "Use the Pediatric limp, hot joint, injury, or non-weight bearing treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+                      "evaluable_from": [
+                        "symptoms",
+                        "exam",
+                        "vitals",
+                        "labs",
+                        "imaging_results",
+                        "medications",
+                        "comorbidities",
+                        "pregnancy_status",
+                        "workup_findings"
+                      ],
+                      "source_ids": [
+                        "RCH_BONE_JOINT_INFECTION",
+                        "CHQ_BONE_JOINT_INFECTION_2025",
+                        "RCH_LIMPING_CHILD",
+                        "CHQ_LIMP_CHILD_2026",
+                        "ACR_ACUTELY_LIMPING_CHILD_2018",
+                        "AHRQ_CALIBRATE_DX"
+                      ],
+                      "criteria_options": [
+                        {
+                          "id": "peds_limp_no_test_low_risk_review",
+                          "label": "Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset",
+                          "criteria_text": "No investigations are indicated only when history/exam red flags are absent, the child ambulates with mild or no discomfort after simple analgesia, and a review plan exists within 7 days of limp onset if symptoms persist.",
+                          "cutoffs": [
+                            "7 days"
+                          ],
+                          "data_needed": [
+                            "duration of limp",
+                            "red-flag screen",
+                            "ability to weight bear after analgesia",
+                            "review access"
+                          ],
+                          "source_ids": [
+                            "RCH_LIMPING_CHILD"
+                          ],
+                          "source_section": "Investigations",
+                          "review_status": "source_backed"
+                        },
+                        {
+                          "id": "peds_limp_escalation_duration_weight_bearing",
+                          "label": "Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern",
+                          "criteria_text": "Consult paediatrics/orthopaedics when symptoms last more than 7 days, the child cannot weight bear or permit movement after analgesia, is systemically unwell, has malignancy features, or septic arthritis is suspected.",
+                          "cutoffs": [
+                            ">7 days"
+                          ],
+                          "data_needed": [
+                            "symptom duration",
+                            "weight-bearing status",
+                            "range of motion after analgesia",
+                            "temperature/systemic features",
+                            "CRP/ESR/WCC if obtained"
+                          ],
+                          "source_ids": [
+                            "RCH_LIMPING_CHILD"
+                          ],
+                          "source_section": "Consultation",
+                          "review_status": "source_backed"
+                        },
+                        {
+                          "id": "peds_hip_septic_arthritis_cutoffs",
+                          "label": "Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis",
+                          "criteria_text": "RCH cites evidence that CRP >=20 mg/L and hip ultrasound effusion >=7 mm has high specificity and sensitivity for pediatric hip septic arthritis; use with clinical suspicion and orthopaedic consultation.",
+                          "cutoffs": [
+                            ">=20 mg/L",
+                            ">=7 mm"
+                          ],
+                          "data_needed": [
+                            "CRP",
+                            "hip ultrasound effusion measurement",
+                            "fever/systemic illness",
+                            "weight-bearing status",
+                            "joint range of motion"
+                          ],
+                          "source_ids": [
+                            "RCH_LIMPING_CHILD"
+                          ],
+                          "source_section": "Reference list and investigations",
+                          "review_status": "source_backed"
+                        }
+                      ]
+                    },
+                    "action": "Monitor treatment response, complications, and need for reassessment with: No routine tests for low-risk comfortable limp.; Immediate orthopedic route for septic arthritis; Bone infection admission and antibiotic route; Low-risk discharge only when walking comfortably; Immediate orthopedic route for septic arthritis; Bone infection admission and antibiotic route; Low-risk discharge only when walking comfortably",
+                    "children": [
+                      {
+                        "id": "pediatric_msk_limp_hot_joint_treatment_safety_decision",
+                        "type": "decision",
+                        "label": "Pediatric limp, hot joint, injury, or non-weight bearing: medication/procedure safety and special-population cutoffs resolved?",
+                        "edgeLabel": "Diagnosis/risk branch selected",
+                        "source_ids": [
+                          "RCH_LIMPING_CHILD",
+                          "ACR_ACUTELY_LIMPING_CHILD_2018",
+                          "RCH_BONE_JOINT_INFECTION",
+                          "CHQ_LIMP_CHILD_2026",
+                          "AHRQ_CALIBRATE_DX",
+                          "CHQ_BONE_JOINT_INFECTION_2025"
+                        ],
+                        "criteria": {
+                          "rule_id": "pediatric_msk_limp_hot_joint_safety_decision_criteria",
+                          "source": "criteria",
+                          "description": "Route Pediatric limp, hot joint, injury, or non-weight bearing management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.",
+                          "evaluable_from": [
+                            "medications",
+                            "allergies",
+                            "pregnancy_status",
+                            "demographics",
+                            "comorbidities",
+                            "labs",
+                            "workup_findings"
+                          ],
+                          "source_ids": [
+                            "RCH_LIMPING_CHILD",
+                            "ACR_ACUTELY_LIMPING_CHILD_2018",
+                            "RCH_BONE_JOINT_INFECTION",
+                            "CHQ_LIMP_CHILD_2026",
+                            "AHRQ_CALIBRATE_DX",
+                            "CHQ_BONE_JOINT_INFECTION_2025"
+                          ],
+                          "criteria_options": [
+                            {
+                              "id": "peds_hip_septic_arthritis_cutoffs",
+                              "label": "Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis",
+                              "criteria_text": "RCH cites evidence that CRP >=20 mg/L and hip ultrasound effusion >=7 mm has high specificity and sensitivity for pediatric hip septic arthritis; use with clinical suspicion and orthopaedic consultation.",
+                              "cutoffs": [
+                                ">=20 mg/L",
+                                ">=7 mm"
+                              ],
+                              "data_needed": [
+                                "CRP",
+                                "hip ultrasound effusion measurement",
+                                "fever/systemic illness",
+                                "weight-bearing status",
+                                "joint range of motion"
+                              ],
+                              "source_ids": [
+                                "RCH_LIMPING_CHILD"
+                              ],
+                              "source_section": "Reference list and investigations",
+                              "review_status": "source_backed"
+                            }
+                          ]
+                        },
+                        "action": "Apply Pediatric limp, hot joint, injury, or non-weight bearing-specific safety modifiers before final treatment/disposition.",
+                        "children": [
+                          {
+                            "id": "pediatric_msk_limp_hot_joint_review_endpoint",
+                            "type": "endpoint",
+                            "label": "Pediatric limp, hot joint, injury, or non-weight bearing: clinician review for contraindication, special population, or local-policy cutoff",
+                            "edgeLabel": "Treatment modifier unresolved",
+                            "source_ids": [
+                              "RCH_LIMPING_CHILD",
+                              "ACR_ACUTELY_LIMPING_CHILD_2018",
+                              "RCH_BONE_JOINT_INFECTION",
+                              "CHQ_LIMP_CHILD_2026",
+                              "AHRQ_CALIBRATE_DX",
+                              "CHQ_BONE_JOINT_INFECTION_2025"
+                            ],
+                            "criteria": {
+                              "rule_id": "pediatric_msk_limp_hot_joint_review_criteria",
+                              "source": "criteria",
+                              "description": "Use clinician review when Pediatric limp, hot joint, injury, or non-weight bearing treatment/disposition depends on pregnancy/postpartum status, pediatric/adult applicability, renal/hepatic/cardiac disease, allergy, drug interaction, procedural risk, guideline conflict, or local protocol.",
+                              "evaluable_from": [
+                                "pregnancy_status",
+                                "demographics",
+                                "medications",
+                                "comorbidities",
+                                "allergies",
+                                "local_policy",
+                                "workup_findings"
+                              ],
+                              "source_ids": [
+                                "RCH_LIMPING_CHILD",
+                                "ACR_ACUTELY_LIMPING_CHILD_2018",
+                                "RCH_BONE_JOINT_INFECTION",
+                                "CHQ_LIMP_CHILD_2026",
+                                "AHRQ_CALIBRATE_DX",
+                                "CHQ_BONE_JOINT_INFECTION_2025"
+                              ]
+                            },
+                            "action": "Pause non-emergent Pediatric limp, hot joint, injury, or non-weight bearing treatment choices until the modifier is resolved and the reviewer documents the applicable guideline/local cutoff.",
+                            "children": [],
+                            "endpoint_type": "clinician_review_handoff",
+                            "review_needed_reason": "Patient-specific contraindication, special population, guideline conflict, or local policy affects treatment or disposition."
+                          },
+                          {
+                            "id": "pediatric_msk_limp_hot_joint_monitoring_bundle",
+                            "type": "action",
+                            "label": "Pediatric limp, hot joint, injury, or non-weight bearing: concurrent monitoring, response checks, and disposition readiness",
+                            "edgeLabel": "Treatment started or diagnostic plan active",
+                            "source_ids": [
+                              "RCH_BONE_JOINT_INFECTION",
+                              "CHQ_BONE_JOINT_INFECTION_2025",
+                              "RCH_LIMPING_CHILD",
+                              "CHQ_LIMP_CHILD_2026",
+                              "ACR_ACUTELY_LIMPING_CHILD_2018",
+                              "AHRQ_CALIBRATE_DX"
+                            ],
+                            "criteria": {
+                              "rule_id": "pediatric_msk_limp_hot_joint_monitoring_criteria",
+                              "source": "criteria",
+                              "description": "Monitor Pediatric limp, hot joint, injury, or non-weight bearing by trending the same cutoff-bearing findings that selected the branch, plus medication adverse effects and disposition constraints.",
+                              "evaluable_from": [
+                                "symptoms",
+                                "exam",
+                                "vitals",
+                                "labs",
+                                "imaging_results",
+                                "medications",
+                                "workup_findings"
+                              ],
+                              "source_ids": [
+                                "RCH_BONE_JOINT_INFECTION",
+                                "CHQ_BONE_JOINT_INFECTION_2025",
+                                "RCH_LIMPING_CHILD",
+                                "CHQ_LIMP_CHILD_2026",
+                                "ACR_ACUTELY_LIMPING_CHILD_2018",
+                                "AHRQ_CALIBRATE_DX"
+                              ],
+                              "criteria_options": [
+                                {
+                                  "id": "peds_limp_no_test_low_risk_review",
+                                  "label": "Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset",
+                                  "criteria_text": "No investigations are indicated only when history/exam red flags are absent, the child ambulates with mild or no discomfort after simple analgesia, and a review plan exists within 7 days of limp onset if symptoms persist.",
+                                  "cutoffs": [
+                                    "7 days"
+                                  ],
+                                  "data_needed": [
+                                    "duration of limp",
+                                    "red-flag screen",
+                                    "ability to weight bear after analgesia",
+                                    "review access"
+                                  ],
+                                  "source_ids": [
+                                    "RCH_LIMPING_CHILD"
+                                  ],
+                                  "source_section": "Investigations",
+                                  "review_status": "source_backed"
+                                },
+                                {
+                                  "id": "peds_limp_escalation_duration_weight_bearing",
+                                  "label": "Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern",
+                                  "criteria_text": "Consult paediatrics/orthopaedics when symptoms last more than 7 days, the child cannot weight bear or permit movement after analgesia, is systemically unwell, has malignancy features, or septic arthritis is suspected.",
+                                  "cutoffs": [
+                                    ">7 days"
+                                  ],
+                                  "data_needed": [
+                                    "symptom duration",
+                                    "weight-bearing status",
+                                    "range of motion after analgesia",
+                                    "temperature/systemic features",
+                                    "CRP/ESR/WCC if obtained"
+                                  ],
+                                  "source_ids": [
+                                    "RCH_LIMPING_CHILD"
+                                  ],
+                                  "source_section": "Consultation",
+                                  "review_status": "source_backed"
+                                },
+                                {
+                                  "id": "peds_hip_septic_arthritis_cutoffs",
+                                  "label": "Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis",
+                                  "criteria_text": "RCH cites evidence that CRP >=20 mg/L and hip ultrasound effusion >=7 mm has high specificity and sensitivity for pediatric hip septic arthritis; use with clinical suspicion and orthopaedic consultation.",
+                                  "cutoffs": [
+                                    ">=20 mg/L",
+                                    ">=7 mm"
+                                  ],
+                                  "data_needed": [
+                                    "CRP",
+                                    "hip ultrasound effusion measurement",
+                                    "fever/systemic illness",
+                                    "weight-bearing status",
+                                    "joint range of motion"
+                                  ],
+                                  "source_ids": [
+                                    "RCH_LIMPING_CHILD"
+                                  ],
+                                  "source_section": "Reference list and investigations",
+                                  "review_status": "source_backed"
+                                }
+                              ]
+                            },
+                            "action": "Reassess Pediatric limp, hot joint, injury, or non-weight bearing using the active cutoffs and clinical course; do not close the pathway until response, adverse effects, pending data, and disposition are owned.",
+                            "children": [
+                              {
+                                "id": "pediatric_msk_limp_hot_joint_worsening_endpoint",
+                                "type": "endpoint",
+                                "label": "Pediatric limp, hot joint, injury, or non-weight bearing: escalate when reassessment worsens or contradicts expected course",
+                                "edgeLabel": "Worsening or discordant reassessment",
+                                "source_ids": [
+                                  "RCH_LIMPING_CHILD",
+                                  "RCH_BONE_JOINT_INFECTION",
+                                  "CHQ_LIMP_CHILD_2026",
+                                  "ACR_ACUTELY_LIMPING_CHILD_2018",
+                                  "AHRQ_CALIBRATE_DX",
+                                  "CHQ_BONE_JOINT_INFECTION_2025"
+                                ],
+                                "criteria": {
+                                  "rule_id": "pediatric_msk_limp_hot_joint_worsening_criteria",
+                                  "source": "criteria",
+                                  "description": "Escalate Pediatric limp, hot joint, injury, or non-weight bearing if symptoms, vitals, critical cutoffs, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+                                  "evaluable_from": [
+                                    "symptoms",
+                                    "exam",
+                                    "vitals",
+                                    "labs",
+                                    "imaging_results",
+                                    "medications",
+                                    "workup_findings"
+                                  ],
+                                  "source_ids": [
+                                    "RCH_LIMPING_CHILD",
+                                    "RCH_BONE_JOINT_INFECTION",
+                                    "CHQ_LIMP_CHILD_2026",
+                                    "ACR_ACUTELY_LIMPING_CHILD_2018",
+                                    "AHRQ_CALIBRATE_DX",
+                                    "CHQ_BONE_JOINT_INFECTION_2025"
+                                  ],
+                                  "criteria_options": [
+                                    {
+                                      "id": "peds_limp_no_test_low_risk_review",
+                                      "label": "Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset",
+                                      "criteria_text": "No investigations are indicated only when history/exam red flags are absent, the child ambulates with mild or no discomfort after simple analgesia, and a review plan exists within 7 days of limp onset if symptoms persist.",
+                                      "cutoffs": [
+                                        "7 days"
+                                      ],
+                                      "data_needed": [
+                                        "duration of limp",
+                                        "red-flag screen",
+                                        "ability to weight bear after analgesia",
+                                        "review access"
+                                      ],
+                                      "source_ids": [
+                                        "RCH_LIMPING_CHILD"
+                                      ],
+                                      "source_section": "Investigations",
+                                      "review_status": "source_backed"
+                                    },
+                                    {
+                                      "id": "peds_limp_escalation_duration_weight_bearing",
+                                      "label": "Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern",
+                                      "criteria_text": "Consult paediatrics/orthopaedics when symptoms last more than 7 days, the child cannot weight bear or permit movement after analgesia, is systemically unwell, has malignancy features, or septic arthritis is suspected.",
+                                      "cutoffs": [
+                                        ">7 days"
+                                      ],
+                                      "data_needed": [
+                                        "symptom duration",
+                                        "weight-bearing status",
+                                        "range of motion after analgesia",
+                                        "temperature/systemic features",
+                                        "CRP/ESR/WCC if obtained"
+                                      ],
+                                      "source_ids": [
+                                        "RCH_LIMPING_CHILD"
+                                      ],
+                                      "source_section": "Consultation",
+                                      "review_status": "source_backed"
+                                    },
+                                    {
+                                      "id": "peds_hip_septic_arthritis_cutoffs",
+                                      "label": "Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis",
+                                      "criteria_text": "RCH cites evidence that CRP >=20 mg/L and hip ultrasound effusion >=7 mm has high specificity and sensitivity for pediatric hip septic arthritis; use with clinical suspicion and orthopaedic consultation.",
+                                      "cutoffs": [
+                                        ">=20 mg/L",
+                                        ">=7 mm"
+                                      ],
+                                      "data_needed": [
+                                        "CRP",
+                                        "hip ultrasound effusion measurement",
+                                        "fever/systemic illness",
+                                        "weight-bearing status",
+                                        "joint range of motion"
+                                      ],
+                                      "source_ids": [
+                                        "RCH_LIMPING_CHILD"
+                                      ],
+                                      "source_section": "Reference list and investigations",
+                                      "review_status": "source_backed"
+                                    }
+                                  ]
+                                },
+                                "action": "Repeat critical Pediatric limp, hot joint, injury, or non-weight bearing objective data, reassess mimics/complications, and move to ED/admission/specialty review according to the abnormal cutoff or danger feature.",
+                                "children": [],
+                                "endpoint_type": "escalation_disposition",
+                                "guideline_cutoffs": [
+                                  {
+                                    "id": "peds_limp_no_test_low_risk_review",
+                                    "label": "Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset",
+                                    "criteria_text": "No investigations are indicated only when history/exam red flags are absent, the child ambulates with mild or no discomfort after simple analgesia, and a review plan exists within 7 days of limp onset if symptoms persist.",
+                                    "cutoffs": [
+                                      "7 days"
+                                    ],
+                                    "data_needed": [
+                                      "duration of limp",
+                                      "red-flag screen",
+                                      "ability to weight bear after analgesia",
+                                      "review access"
+                                    ],
+                                    "source_ids": [
+                                      "RCH_LIMPING_CHILD"
+                                    ],
+                                    "source_section": "Investigations",
+                                    "review_status": "source_backed"
+                                  },
+                                  {
+                                    "id": "peds_limp_escalation_duration_weight_bearing",
+                                    "label": "Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern",
+                                    "criteria_text": "Consult paediatrics/orthopaedics when symptoms last more than 7 days, the child cannot weight bear or permit movement after analgesia, is systemically unwell, has malignancy features, or septic arthritis is suspected.",
+                                    "cutoffs": [
+                                      ">7 days"
+                                    ],
+                                    "data_needed": [
+                                      "symptom duration",
+                                      "weight-bearing status",
+                                      "range of motion after analgesia",
+                                      "temperature/systemic features",
+                                      "CRP/ESR/WCC if obtained"
+                                    ],
+                                    "source_ids": [
+                                      "RCH_LIMPING_CHILD"
+                                    ],
+                                    "source_section": "Consultation",
+                                    "review_status": "source_backed"
+                                  },
+                                  {
+                                    "id": "peds_hip_septic_arthritis_cutoffs",
+                                    "label": "Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis",
+                                    "criteria_text": "RCH cites evidence that CRP >=20 mg/L and hip ultrasound effusion >=7 mm has high specificity and sensitivity for pediatric hip septic arthritis; use with clinical suspicion and orthopaedic consultation.",
+                                    "cutoffs": [
+                                      ">=20 mg/L",
+                                      ">=7 mm"
+                                    ],
+                                    "data_needed": [
+                                      "CRP",
+                                      "hip ultrasound effusion measurement",
+                                      "fever/systemic illness",
+                                      "weight-bearing status",
+                                      "joint range of motion"
+                                    ],
+                                    "source_ids": [
+                                      "RCH_LIMPING_CHILD"
+                                    ],
+                                    "source_section": "Reference list and investigations",
+                                    "review_status": "source_backed"
+                                  }
+                                ]
+                              },
+                              {
+                                "id": "pediatric_msk_limp_hot_joint_deescalate_endpoint",
+                                "type": "endpoint",
+                                "label": "Pediatric limp, hot joint, injury, or non-weight bearing: de-escalate, stop, or narrow when objective criteria normalize",
+                                "edgeLabel": "Stopping or de-escalation criteria met",
+                                "source_ids": [
+                                  "RCH_BONE_JOINT_INFECTION",
+                                  "CHQ_BONE_JOINT_INFECTION_2025",
+                                  "RCH_LIMPING_CHILD",
+                                  "CHQ_LIMP_CHILD_2026",
+                                  "ACR_ACUTELY_LIMPING_CHILD_2018",
+                                  "AHRQ_CALIBRATE_DX"
+                                ],
+                                "criteria": {
+                                  "rule_id": "pediatric_msk_limp_hot_joint_deescalate_criteria",
+                                  "source": "criteria",
+                                  "description": "Stop, narrow, taper, or de-escalate Pediatric limp, hot joint, injury, or non-weight bearing treatment only when objective response, diagnosis certainty, and cited stopping criteria support it.",
+                                  "evaluable_from": [
+                                    "symptoms",
+                                    "exam",
+                                    "vitals",
+                                    "labs",
+                                    "imaging_results",
+                                    "medications",
+                                    "workup_findings"
+                                  ],
+                                  "source_ids": [
+                                    "RCH_BONE_JOINT_INFECTION",
+                                    "CHQ_BONE_JOINT_INFECTION_2025",
+                                    "RCH_LIMPING_CHILD",
+                                    "CHQ_LIMP_CHILD_2026",
+                                    "ACR_ACUTELY_LIMPING_CHILD_2018",
+                                    "AHRQ_CALIBRATE_DX"
+                                  ],
+                                  "criteria_options": [
+                                    {
+                                      "id": "peds_limp_no_test_low_risk_review",
+                                      "label": "Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset",
+                                      "criteria_text": "No investigations are indicated only when history/exam red flags are absent, the child ambulates with mild or no discomfort after simple analgesia, and a review plan exists within 7 days of limp onset if symptoms persist.",
+                                      "cutoffs": [
+                                        "7 days"
+                                      ],
+                                      "data_needed": [
+                                        "duration of limp",
+                                        "red-flag screen",
+                                        "ability to weight bear after analgesia",
+                                        "review access"
+                                      ],
+                                      "source_ids": [
+                                        "RCH_LIMPING_CHILD"
+                                      ],
+                                      "source_section": "Investigations",
+                                      "review_status": "source_backed"
+                                    },
+                                    {
+                                      "id": "peds_limp_escalation_duration_weight_bearing",
+                                      "label": "Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern",
+                                      "criteria_text": "Consult paediatrics/orthopaedics when symptoms last more than 7 days, the child cannot weight bear or permit movement after analgesia, is systemically unwell, has malignancy features, or septic arthritis is suspected.",
+                                      "cutoffs": [
+                                        ">7 days"
+                                      ],
+                                      "data_needed": [
+                                        "symptom duration",
+                                        "weight-bearing status",
+                                        "range of motion after analgesia",
+                                        "temperature/systemic features",
+                                        "CRP/ESR/WCC if obtained"
+                                      ],
+                                      "source_ids": [
+                                        "RCH_LIMPING_CHILD"
+                                      ],
+                                      "source_section": "Consultation",
+                                      "review_status": "source_backed"
+                                    },
+                                    {
+                                      "id": "peds_hip_septic_arthritis_cutoffs",
+                                      "label": "Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis",
+                                      "criteria_text": "RCH cites evidence that CRP >=20 mg/L and hip ultrasound effusion >=7 mm has high specificity and sensitivity for pediatric hip septic arthritis; use with clinical suspicion and orthopaedic consultation.",
+                                      "cutoffs": [
+                                        ">=20 mg/L",
+                                        ">=7 mm"
+                                      ],
+                                      "data_needed": [
+                                        "CRP",
+                                        "hip ultrasound effusion measurement",
+                                        "fever/systemic illness",
+                                        "weight-bearing status",
+                                        "joint range of motion"
+                                      ],
+                                      "source_ids": [
+                                        "RCH_LIMPING_CHILD"
+                                      ],
+                                      "source_section": "Reference list and investigations",
+                                      "review_status": "source_backed"
+                                    }
+                                  ]
+                                },
+                                "action": "Use the active Pediatric limp, hot joint, injury, or non-weight bearing cutoff criteria and response trend to stop, narrow, taper, or continue treatment; document what cutoff or finding changed.",
+                                "children": [],
+                                "endpoint_type": "deescalation_stopping",
+                                "guideline_cutoffs": [
+                                  {
+                                    "id": "peds_limp_no_test_low_risk_review",
+                                    "label": "Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset",
+                                    "criteria_text": "No investigations are indicated only when history/exam red flags are absent, the child ambulates with mild or no discomfort after simple analgesia, and a review plan exists within 7 days of limp onset if symptoms persist.",
+                                    "cutoffs": [
+                                      "7 days"
+                                    ],
+                                    "data_needed": [
+                                      "duration of limp",
+                                      "red-flag screen",
+                                      "ability to weight bear after analgesia",
+                                      "review access"
+                                    ],
+                                    "source_ids": [
+                                      "RCH_LIMPING_CHILD"
+                                    ],
+                                    "source_section": "Investigations",
+                                    "review_status": "source_backed"
+                                  },
+                                  {
+                                    "id": "peds_limp_escalation_duration_weight_bearing",
+                                    "label": "Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern",
+                                    "criteria_text": "Consult paediatrics/orthopaedics when symptoms last more than 7 days, the child cannot weight bear or permit movement after analgesia, is systemically unwell, has malignancy features, or septic arthritis is suspected.",
+                                    "cutoffs": [
+                                      ">7 days"
+                                    ],
+                                    "data_needed": [
+                                      "symptom duration",
+                                      "weight-bearing status",
+                                      "range of motion after analgesia",
+                                      "temperature/systemic features",
+                                      "CRP/ESR/WCC if obtained"
+                                    ],
+                                    "source_ids": [
+                                      "RCH_LIMPING_CHILD"
+                                    ],
+                                    "source_section": "Consultation",
+                                    "review_status": "source_backed"
+                                  },
+                                  {
+                                    "id": "peds_hip_septic_arthritis_cutoffs",
+                                    "label": "Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis",
+                                    "criteria_text": "RCH cites evidence that CRP >=20 mg/L and hip ultrasound effusion >=7 mm has high specificity and sensitivity for pediatric hip septic arthritis; use with clinical suspicion and orthopaedic consultation.",
+                                    "cutoffs": [
+                                      ">=20 mg/L",
+                                      ">=7 mm"
+                                    ],
+                                    "data_needed": [
+                                      "CRP",
+                                      "hip ultrasound effusion measurement",
+                                      "fever/systemic illness",
+                                      "weight-bearing status",
+                                      "joint range of motion"
+                                    ],
+                                    "source_ids": [
+                                      "RCH_LIMPING_CHILD"
+                                    ],
+                                    "source_section": "Reference list and investigations",
+                                    "review_status": "source_backed"
+                                  }
+                                ]
+                              },
+                              {
+                                "id": "pediatric_msk_limp_hot_joint_followup_endpoint",
+                                "type": "endpoint",
+                                "label": "Pediatric limp, hot joint, injury, or non-weight bearing: follow-up ownership and safety-net endpoint",
+                                "edgeLabel": "Stable for follow-up with safety net",
+                                "source_ids": [
+                                  "RCH_BONE_JOINT_INFECTION",
+                                  "CHQ_BONE_JOINT_INFECTION_2025",
+                                  "RCH_LIMPING_CHILD",
+                                  "CHQ_LIMP_CHILD_2026",
+                                  "ACR_ACUTELY_LIMPING_CHILD_2018",
+                                  "AHRQ_CALIBRATE_DX"
+                                ],
+                                "criteria": {
+                                  "rule_id": "pediatric_msk_limp_hot_joint_followup_criteria",
+                                  "source": "criteria",
+                                  "description": "Use after Pediatric limp, hot joint, injury, or non-weight bearing is stable, actionable results have an owner, and return precautions are documented.",
+                                  "evaluable_from": [
+                                    "symptoms",
+                                    "vitals",
+                                    "labs",
+                                    "imaging_results",
+                                    "medications",
+                                    "follow_up_access",
+                                    "workup_findings"
+                                  ],
+                                  "source_ids": [
+                                    "RCH_BONE_JOINT_INFECTION",
+                                    "CHQ_BONE_JOINT_INFECTION_2025",
+                                    "RCH_LIMPING_CHILD",
+                                    "CHQ_LIMP_CHILD_2026",
+                                    "ACR_ACUTELY_LIMPING_CHILD_2018",
+                                    "AHRQ_CALIBRATE_DX"
+                                  ]
+                                },
+                                "action": "Document the Pediatric limp, hot joint, injury, or non-weight bearing diagnosis/risk category, pending-result owner, follow-up interval, and return precautions for worsening symptoms, new danger features, inability to complete treatment, or abnormal pending results.",
+                                "children": [],
+                                "endpoint_type": "safety_net_instruction",
+                                "monitoring_plan": [
+                                  "pending-result owner",
+                                  "follow-up interval",
+                                  "return precautions",
+                                  "access barriers"
+                                ]
+                              }
+                            ],
+                            "parallel_actions": [
+                              "repeat vital signs",
+                              "trend cutoff-bearing labs/results",
+                              "review treatment response/adverse effects",
+                              "confirm disposition and follow-up owner",
+                              "Measure temperature",
+                              "Measure heart rate",
+                              "Measure respiratory rate",
+                              "Measure blood pressure",
+                              "Measure oxygen saturation"
+                            ],
+                            "guideline_cutoffs": [
+                              {
+                                "id": "peds_limp_no_test_low_risk_review",
+                                "label": "Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset",
+                                "criteria_text": "No investigations are indicated only when history/exam red flags are absent, the child ambulates with mild or no discomfort after simple analgesia, and a review plan exists within 7 days of limp onset if symptoms persist.",
+                                "cutoffs": [
+                                  "7 days"
+                                ],
+                                "data_needed": [
+                                  "duration of limp",
+                                  "red-flag screen",
+                                  "ability to weight bear after analgesia",
+                                  "review access"
+                                ],
+                                "source_ids": [
+                                  "RCH_LIMPING_CHILD"
+                                ],
+                                "source_section": "Investigations",
+                                "review_status": "source_backed"
+                              },
+                              {
+                                "id": "peds_limp_escalation_duration_weight_bearing",
+                                "label": "Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern",
+                                "criteria_text": "Consult paediatrics/orthopaedics when symptoms last more than 7 days, the child cannot weight bear or permit movement after analgesia, is systemically unwell, has malignancy features, or septic arthritis is suspected.",
+                                "cutoffs": [
+                                  ">7 days"
+                                ],
+                                "data_needed": [
+                                  "symptom duration",
+                                  "weight-bearing status",
+                                  "range of motion after analgesia",
+                                  "temperature/systemic features",
+                                  "CRP/ESR/WCC if obtained"
+                                ],
+                                "source_ids": [
+                                  "RCH_LIMPING_CHILD"
+                                ],
+                                "source_section": "Consultation",
+                                "review_status": "source_backed"
+                              },
+                              {
+                                "id": "peds_hip_septic_arthritis_cutoffs",
+                                "label": "Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis",
+                                "criteria_text": "RCH cites evidence that CRP >=20 mg/L and hip ultrasound effusion >=7 mm has high specificity and sensitivity for pediatric hip septic arthritis; use with clinical suspicion and orthopaedic consultation.",
+                                "cutoffs": [
+                                  ">=20 mg/L",
+                                  ">=7 mm"
+                                ],
+                                "data_needed": [
+                                  "CRP",
+                                  "hip ultrasound effusion measurement",
+                                  "fever/systemic illness",
+                                  "weight-bearing status",
+                                  "joint range of motion"
+                                ],
+                                "source_ids": [
+                                  "RCH_LIMPING_CHILD"
+                                ],
+                                "source_section": "Reference list and investigations",
+                                "review_status": "source_backed"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "parallel_actions": [
+                      "Monitor treatment response, complications, and need for reassessment with: No routine tests for low-risk comfortable limp.",
+                      "Immediate orthopedic route for septic arthritis",
+                      "Bone infection admission and antibiotic route",
+                      "Low-risk discharge only when walking comfortably",
+                      "Persistent limp or negative X-ray route"
+                    ],
+                    "guideline_cutoffs": [
+                      {
+                        "id": "peds_limp_no_test_low_risk_review",
+                        "label": "Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset",
+                        "criteria_text": "No investigations are indicated only when history/exam red flags are absent, the child ambulates with mild or no discomfort after simple analgesia, and a review plan exists within 7 days of limp onset if symptoms persist.",
+                        "cutoffs": [
+                          "7 days"
+                        ],
+                        "data_needed": [
+                          "duration of limp",
+                          "red-flag screen",
+                          "ability to weight bear after analgesia",
+                          "review access"
+                        ],
+                        "source_ids": [
+                          "RCH_LIMPING_CHILD"
+                        ],
+                        "source_section": "Investigations",
+                        "review_status": "source_backed"
+                      },
+                      {
+                        "id": "peds_limp_escalation_duration_weight_bearing",
+                        "label": "Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern",
+                        "criteria_text": "Consult paediatrics/orthopaedics when symptoms last more than 7 days, the child cannot weight bear or permit movement after analgesia, is systemically unwell, has malignancy features, or septic arthritis is suspected.",
+                        "cutoffs": [
+                          ">7 days"
+                        ],
+                        "data_needed": [
+                          "symptom duration",
+                          "weight-bearing status",
+                          "range of motion after analgesia",
+                          "temperature/systemic features",
+                          "CRP/ESR/WCC if obtained"
+                        ],
+                        "source_ids": [
+                          "RCH_LIMPING_CHILD"
+                        ],
+                        "source_section": "Consultation",
+                        "review_status": "source_backed"
+                      },
+                      {
+                        "id": "peds_hip_septic_arthritis_cutoffs",
+                        "label": "Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis",
+                        "criteria_text": "RCH cites evidence that CRP >=20 mg/L and hip ultrasound effusion >=7 mm has high specificity and sensitivity for pediatric hip septic arthritis; use with clinical suspicion and orthopaedic consultation.",
+                        "cutoffs": [
+                          ">=20 mg/L",
+                          ">=7 mm"
+                        ],
+                        "data_needed": [
+                          "CRP",
+                          "hip ultrasound effusion measurement",
+                          "fever/systemic illness",
+                          "weight-bearing status",
+                          "joint range of motion"
+                        ],
+                        "source_ids": [
+                          "RCH_LIMPING_CHILD"
+                        ],
+                        "source_section": "Reference list and investigations",
+                        "review_status": "source_backed"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "pediatric_msk_limp_hot_joint_alternate_endpoint",
+                    "type": "endpoint",
+                    "label": "Pediatric limp, hot joint, injury, or non-weight bearing: switch to mimic/alternate pathway when cutoff criteria do not fit",
+                    "edgeLabel": "Criteria favor mimic or alternate pathway",
+                    "source_ids": [
+                      "RCH_BONE_JOINT_INFECTION",
+                      "RCH_LIMPING_CHILD",
+                      "CHQ_LIMP_CHILD_2026",
+                      "ACR_ACUTELY_LIMPING_CHILD_2018",
+                      "AHRQ_CALIBRATE_DX"
+                    ],
+                    "criteria": {
+                      "rule_id": "pediatric_msk_limp_hot_joint_alternate_criteria",
+                      "source": "criteria",
+                      "description": "Use an alternate pathway when Pediatric limp, hot joint, injury, or non-weight bearing criteria are absent, a cited mimic better explains the presentation, or cutoff data contradict this workup.",
+                      "evaluable_from": [
+                        "symptoms",
+                        "exam",
+                        "vitals",
+                        "labs",
+                        "imaging_results",
+                        "workup_findings"
+                      ],
+                      "source_ids": [
+                        "RCH_BONE_JOINT_INFECTION",
+                        "RCH_LIMPING_CHILD",
+                        "CHQ_LIMP_CHILD_2026",
+                        "ACR_ACUTELY_LIMPING_CHILD_2018",
+                        "AHRQ_CALIBRATE_DX"
+                      ],
+                      "criteria_options": [
+                        {
+                          "id": "peds_limp_no_test_low_risk_review",
+                          "label": "Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset",
+                          "criteria_text": "No investigations are indicated only when history/exam red flags are absent, the child ambulates with mild or no discomfort after simple analgesia, and a review plan exists within 7 days of limp onset if symptoms persist.",
+                          "cutoffs": [
+                            "7 days"
+                          ],
+                          "data_needed": [
+                            "duration of limp",
+                            "red-flag screen",
+                            "ability to weight bear after analgesia",
+                            "review access"
+                          ],
+                          "source_ids": [
+                            "RCH_LIMPING_CHILD"
+                          ],
+                          "source_section": "Investigations",
+                          "review_status": "source_backed"
+                        },
+                        {
+                          "id": "peds_limp_escalation_duration_weight_bearing",
+                          "label": "Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern",
+                          "criteria_text": "Consult paediatrics/orthopaedics when symptoms last more than 7 days, the child cannot weight bear or permit movement after analgesia, is systemically unwell, has malignancy features, or septic arthritis is suspected.",
+                          "cutoffs": [
+                            ">7 days"
+                          ],
+                          "data_needed": [
+                            "symptom duration",
+                            "weight-bearing status",
+                            "range of motion after analgesia",
+                            "temperature/systemic features",
+                            "CRP/ESR/WCC if obtained"
+                          ],
+                          "source_ids": [
+                            "RCH_LIMPING_CHILD"
+                          ],
+                          "source_section": "Consultation",
+                          "review_status": "source_backed"
+                        },
+                        {
+                          "id": "peds_hip_septic_arthritis_cutoffs",
+                          "label": "Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis",
+                          "criteria_text": "RCH cites evidence that CRP >=20 mg/L and hip ultrasound effusion >=7 mm has high specificity and sensitivity for pediatric hip septic arthritis; use with clinical suspicion and orthopaedic consultation.",
+                          "cutoffs": [
+                            ">=20 mg/L",
+                            ">=7 mm"
+                          ],
+                          "data_needed": [
+                            "CRP",
+                            "hip ultrasound effusion measurement",
+                            "fever/systemic illness",
+                            "weight-bearing status",
+                            "joint range of motion"
+                          ],
+                          "source_ids": [
+                            "RCH_LIMPING_CHILD"
+                          ],
+                          "source_section": "Reference list and investigations",
+                          "review_status": "source_backed"
+                        }
+                      ]
+                    },
+                    "action": "Document why Pediatric limp, hot joint, injury, or non-weight bearing is not the active pathway and route to the competing diagnosis: Septic arthritis or osteomyelitis until excluded; Fracture, occult injury, or safeguarding concern; Lower-risk transient synovitis or self-limited limp after danger features are absent; Age-specific hip or referred knee pathology; Systemic, hematologic, rheumatologic, neurologic, or referred cause.",
+                    "children": [],
+                    "endpoint_type": "clinician_review_handoff",
+                    "review_needed_reason": "Competing diagnosis or exclusion changes the active pathway."
+                  }
+                ],
+                "guideline_cutoffs": [
+                  {
+                    "id": "peds_limp_no_test_low_risk_review",
+                    "label": "Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset",
+                    "criteria_text": "No investigations are indicated only when history/exam red flags are absent, the child ambulates with mild or no discomfort after simple analgesia, and a review plan exists within 7 days of limp onset if symptoms persist.",
+                    "cutoffs": [
+                      "7 days"
+                    ],
+                    "data_needed": [
+                      "duration of limp",
+                      "red-flag screen",
+                      "ability to weight bear after analgesia",
+                      "review access"
+                    ],
+                    "source_ids": [
+                      "RCH_LIMPING_CHILD"
+                    ],
+                    "source_section": "Investigations",
+                    "review_status": "source_backed"
+                  },
+                  {
+                    "id": "peds_limp_escalation_duration_weight_bearing",
+                    "label": "Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern",
+                    "criteria_text": "Consult paediatrics/orthopaedics when symptoms last more than 7 days, the child cannot weight bear or permit movement after analgesia, is systemically unwell, has malignancy features, or septic arthritis is suspected.",
+                    "cutoffs": [
+                      ">7 days"
+                    ],
+                    "data_needed": [
+                      "symptom duration",
+                      "weight-bearing status",
+                      "range of motion after analgesia",
+                      "temperature/systemic features",
+                      "CRP/ESR/WCC if obtained"
+                    ],
+                    "source_ids": [
+                      "RCH_LIMPING_CHILD"
+                    ],
+                    "source_section": "Consultation",
+                    "review_status": "source_backed"
+                  },
+                  {
+                    "id": "peds_hip_septic_arthritis_cutoffs",
+                    "label": "Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis",
+                    "criteria_text": "RCH cites evidence that CRP >=20 mg/L and hip ultrasound effusion >=7 mm has high specificity and sensitivity for pediatric hip septic arthritis; use with clinical suspicion and orthopaedic consultation.",
+                    "cutoffs": [
+                      ">=20 mg/L",
+                      ">=7 mm"
+                    ],
+                    "data_needed": [
+                      "CRP",
+                      "hip ultrasound effusion measurement",
+                      "fever/systemic illness",
+                      "weight-bearing status",
+                      "joint range of motion"
+                    ],
+                    "source_ids": [
+                      "RCH_LIMPING_CHILD"
+                    ],
+                    "source_section": "Reference list and investigations",
+                    "review_status": "source_backed"
+                  }
+                ],
+                "clinical_criteria": [
+                  {
+                    "id": "peds_limp_no_test_low_risk_review",
+                    "label": "Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset",
+                    "criteria_text": "No investigations are indicated only when history/exam red flags are absent, the child ambulates with mild or no discomfort after simple analgesia, and a review plan exists within 7 days of limp onset if symptoms persist.",
+                    "cutoffs": [
+                      "7 days"
+                    ],
+                    "data_needed": [
+                      "duration of limp",
+                      "red-flag screen",
+                      "ability to weight bear after analgesia",
+                      "review access"
+                    ],
+                    "source_ids": [
+                      "RCH_LIMPING_CHILD"
+                    ],
+                    "source_section": "Investigations",
+                    "review_status": "source_backed"
+                  },
+                  {
+                    "id": "peds_limp_escalation_duration_weight_bearing",
+                    "label": "Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern",
+                    "criteria_text": "Consult paediatrics/orthopaedics when symptoms last more than 7 days, the child cannot weight bear or permit movement after analgesia, is systemically unwell, has malignancy features, or septic arthritis is suspected.",
+                    "cutoffs": [
+                      ">7 days"
+                    ],
+                    "data_needed": [
+                      "symptom duration",
+                      "weight-bearing status",
+                      "range of motion after analgesia",
+                      "temperature/systemic features",
+                      "CRP/ESR/WCC if obtained"
+                    ],
+                    "source_ids": [
+                      "RCH_LIMPING_CHILD"
+                    ],
+                    "source_section": "Consultation",
+                    "review_status": "source_backed"
+                  },
+                  {
+                    "id": "peds_hip_septic_arthritis_cutoffs",
+                    "label": "Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis",
+                    "criteria_text": "RCH cites evidence that CRP >=20 mg/L and hip ultrasound effusion >=7 mm has high specificity and sensitivity for pediatric hip septic arthritis; use with clinical suspicion and orthopaedic consultation.",
+                    "cutoffs": [
+                      ">=20 mg/L",
+                      ">=7 mm"
+                    ],
+                    "data_needed": [
+                      "CRP",
+                      "hip ultrasound effusion measurement",
+                      "fever/systemic illness",
+                      "weight-bearing status",
+                      "joint range of motion"
+                    ],
+                    "source_ids": [
+                      "RCH_LIMPING_CHILD"
+                    ],
+                    "source_section": "Reference list and investigations",
+                    "review_status": "source_backed"
+                  }
+                ]
+              }
+            ],
+            "parallel_actions": [
+              "No routine tests for low-risk comfortable limp",
+              "X-ray localized pain or injury area",
+              "Infection labs and blood culture route",
+              "Ultrasound hip effusion route",
+              "MRI for osteomyelitis localization",
+              "Measure temperature",
+              "Measure heart rate",
+              "Measure respiratory rate",
+              "Measure blood pressure",
+              "Measure oxygen saturation",
+              "duration of limp",
+              "red-flag screen",
+              "ability to weight bear after analgesia",
+              "review access",
+              "symptom duration",
+              "weight-bearing status",
+              "range of motion after analgesia",
+              "temperature/systemic features"
+            ],
+            "required_data": [
+              "duration of limp",
+              "red-flag screen",
+              "ability to weight bear after analgesia",
+              "review access",
+              "symptom duration",
+              "weight-bearing status",
+              "range of motion after analgesia",
+              "temperature/systemic features",
+              "CRP/ESR/WCC if obtained",
+              "CRP",
+              "hip ultrasound effusion measurement",
+              "fever/systemic illness",
+              "No routine tests for low-risk comfortable limp",
+              "X-ray localized pain or injury area",
+              "Infection labs and blood culture route",
+              "Ultrasound hip effusion route",
+              "MRI for osteomyelitis localization",
+              "7 days",
+              ">7 days",
+              ">=20 mg/L",
+              ">=7 mm"
+            ],
+            "guideline_cutoffs": [
+              {
+                "id": "peds_limp_no_test_low_risk_review",
+                "label": "Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset",
+                "criteria_text": "No investigations are indicated only when history/exam red flags are absent, the child ambulates with mild or no discomfort after simple analgesia, and a review plan exists within 7 days of limp onset if symptoms persist.",
+                "cutoffs": [
+                  "7 days"
+                ],
+                "data_needed": [
+                  "duration of limp",
+                  "red-flag screen",
+                  "ability to weight bear after analgesia",
+                  "review access"
+                ],
+                "source_ids": [
+                  "RCH_LIMPING_CHILD"
+                ],
+                "source_section": "Investigations",
+                "review_status": "source_backed"
+              },
+              {
+                "id": "peds_limp_escalation_duration_weight_bearing",
+                "label": "Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern",
+                "criteria_text": "Consult paediatrics/orthopaedics when symptoms last more than 7 days, the child cannot weight bear or permit movement after analgesia, is systemically unwell, has malignancy features, or septic arthritis is suspected.",
+                "cutoffs": [
+                  ">7 days"
+                ],
+                "data_needed": [
+                  "symptom duration",
+                  "weight-bearing status",
+                  "range of motion after analgesia",
+                  "temperature/systemic features",
+                  "CRP/ESR/WCC if obtained"
+                ],
+                "source_ids": [
+                  "RCH_LIMPING_CHILD"
+                ],
+                "source_section": "Consultation",
+                "review_status": "source_backed"
+              },
+              {
+                "id": "peds_hip_septic_arthritis_cutoffs",
+                "label": "Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis",
+                "criteria_text": "RCH cites evidence that CRP >=20 mg/L and hip ultrasound effusion >=7 mm has high specificity and sensitivity for pediatric hip septic arthritis; use with clinical suspicion and orthopaedic consultation.",
+                "cutoffs": [
+                  ">=20 mg/L",
+                  ">=7 mm"
+                ],
+                "data_needed": [
+                  "CRP",
+                  "hip ultrasound effusion measurement",
+                  "fever/systemic illness",
+                  "weight-bearing status",
+                  "joint range of motion"
+                ],
+                "source_ids": [
+                  "RCH_LIMPING_CHILD"
+                ],
+                "source_section": "Reference list and investigations",
+                "review_status": "source_backed"
+              }
+            ]
+          }
+        ]
+      },
+      "synthetic_patient_scenarios": [
+        {
+          "scenario_id": "missing_context",
+          "major_pathway": "missing_data_needed",
+          "expected_endpoint_id": "endpoint_missing_context",
+          "expected_active_branch": "Missing context"
+        },
+        {
+          "scenario_id": "missing_cutoff_data",
+          "major_pathway": "diagnostic_confirmation_missing_data",
+          "expected_endpoint_id": "pediatric_msk_limp_hot_joint_missing_cutoff_data_endpoint",
+          "expected_active_branch": "Cutoff data missing"
+        },
+        {
+          "scenario_id": "urgent_or_high_risk",
+          "major_pathway": "escalation_emergency_actions",
+          "expected_endpoint_id": "pediatric_msk_limp_hot_joint_urgent_endpoint",
+          "expected_active_branch": "Emergency or high-risk criteria met"
+        },
+        {
+          "scenario_id": "alternate_pathway",
+          "major_pathway": "mimics_exclusions",
+          "expected_endpoint_id": "pediatric_msk_limp_hot_joint_alternate_endpoint",
+          "expected_active_branch": "Criteria favor mimic or alternate pathway"
+        },
+        {
+          "scenario_id": "special_population_review",
+          "major_pathway": "contraindications_special_populations",
+          "expected_endpoint_id": "pediatric_msk_limp_hot_joint_review_endpoint",
+          "expected_active_branch": "Treatment modifier unresolved"
+        },
+        {
+          "scenario_id": "worsening_after_treatment",
+          "major_pathway": "monitoring_reassessment_escalation",
+          "expected_endpoint_id": "pediatric_msk_limp_hot_joint_worsening_endpoint",
+          "expected_active_branch": "Worsening or discordant reassessment"
+        },
+        {
+          "scenario_id": "deescalation_ready",
+          "major_pathway": "deescalation_stopping_criteria",
+          "expected_endpoint_id": "pediatric_msk_limp_hot_joint_deescalate_endpoint",
+          "expected_active_branch": "Stopping or de-escalation criteria met"
+        },
+        {
+          "scenario_id": "followup_safety_net",
+          "major_pathway": "disposition_followup_safety_netting",
+          "expected_endpoint_id": "pediatric_msk_limp_hot_joint_followup_endpoint",
+          "expected_active_branch": "Stable for follow-up with safety net"
+        }
+      ],
+      "audit_requirements": {
+        "required_domains": [
+          "initial assessment",
+          "red flags/instability",
+          "diagnostic confirmation",
+          "mimics/exclusions",
+          "severity/risk stratification",
+          "first-line management",
+          "escalation/emergency actions",
+          "contraindications/special populations",
+          "monitoring/reassessment",
+          "de-escalation/stopping criteria",
+          "disposition",
+          "follow-up",
+          "safety-netting"
+        ],
+        "compact_tree_requirements": [
+          "no prohibited generic node labels",
+          "concurrent diagnostic/treatment bundles instead of long one-step chains",
+          "cutoff-bearing criteria visible in classification and endpoint nodes",
+          "all endpoints cite evidence or state needs_clinical_review",
+          "missing-data endpoints name exact data needed"
+        ]
+      }
+    },
+    "clinical_cutoff_criteria": [
+      {
+        "id": "peds_limp_no_test_low_risk_review",
+        "label": "Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset",
+        "criteria_text": "No investigations are indicated only when history/exam red flags are absent, the child ambulates with mild or no discomfort after simple analgesia, and a review plan exists within 7 days of limp onset if symptoms persist.",
+        "cutoffs": [
+          "7 days"
+        ],
+        "data_needed": [
+          "duration of limp",
+          "red-flag screen",
+          "ability to weight bear after analgesia",
+          "review access"
+        ],
+        "source_ids": [
+          "RCH_LIMPING_CHILD"
+        ],
+        "source_section": "Investigations",
+        "review_status": "source_backed"
+      },
+      {
+        "id": "peds_limp_escalation_duration_weight_bearing",
+        "label": "Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern",
+        "criteria_text": "Consult paediatrics/orthopaedics when symptoms last more than 7 days, the child cannot weight bear or permit movement after analgesia, is systemically unwell, has malignancy features, or septic arthritis is suspected.",
+        "cutoffs": [
+          ">7 days"
+        ],
+        "data_needed": [
+          "symptom duration",
+          "weight-bearing status",
+          "range of motion after analgesia",
+          "temperature/systemic features",
+          "CRP/ESR/WCC if obtained"
+        ],
+        "source_ids": [
+          "RCH_LIMPING_CHILD"
+        ],
+        "source_section": "Consultation",
+        "review_status": "source_backed"
+      },
+      {
+        "id": "peds_hip_septic_arthritis_cutoffs",
+        "label": "Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis",
+        "criteria_text": "RCH cites evidence that CRP >=20 mg/L and hip ultrasound effusion >=7 mm has high specificity and sensitivity for pediatric hip septic arthritis; use with clinical suspicion and orthopaedic consultation.",
+        "cutoffs": [
+          ">=20 mg/L",
+          ">=7 mm"
+        ],
+        "data_needed": [
+          "CRP",
+          "hip ultrasound effusion measurement",
+          "fever/systemic illness",
+          "weight-bearing status",
+          "joint range of motion"
+        ],
+        "source_ids": [
+          "RCH_LIMPING_CHILD"
+        ],
+        "source_section": "Reference list and investigations",
+        "review_status": "source_backed"
+      }
+    ],
+    "clinical_cutoff_review": {
+      "status": "source_backed_cutoff_enrichment_added",
+      "reviewed_on": "2026-06-11",
+      "review_note": "Cutoff rows were added because the prior module evidence did not expose enough explicit guideline thresholds for pathway traversal."
+    }
   }
 }

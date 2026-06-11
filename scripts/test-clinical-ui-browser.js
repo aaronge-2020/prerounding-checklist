@@ -15,6 +15,17 @@ function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
+async function clickPatientTab(page, tabName) {
+  const selector = `button[data-patient-tab="${tabName}"]`;
+  const tab = page.locator(selector).first();
+  if (await tab.isVisible().catch(() => false)) {
+    await tab.click();
+  } else {
+    await page.evaluate((targetSelector) => document.querySelector(targetSelector)?.click(), selector);
+  }
+  await page.waitForFunction((expectedTab) => document.body.dataset.patientTab === expectedTab, tabName);
+}
+
 function startServer() {
   const server = createServer(async (request, response) => {
     try {
@@ -56,7 +67,15 @@ async function clickChecklistChipByValue(page, question, value) {
     const button = row
       ? Array.from(row.querySelectorAll(".answer-chip")).find((candidate) => candidate.dataset.answerValue === value)
       : null;
-    if (!button) throw new Error(`Missing checklist answer chip for ${question}: ${value}`);
+    if (!button) {
+      const select = row?.querySelector(".answer-select");
+      if (select && Array.from(select.options).some((option) => option.value === value)) {
+        select.value = value;
+        select.dispatchEvent(new Event("change", { bubbles: true }));
+        return;
+      }
+      throw new Error(`Missing checklist answer control for ${question}: ${value}`);
+    }
     button.click();
   }, { question, value });
 }
@@ -97,7 +116,20 @@ async function admitSyntheticPatient(page, patient) {
   await page.waitForFunction((title) => document.querySelector("#caseTitle")?.textContent?.includes(title), patient.title);
 }
 
+async function clickPatientRosterToggle(page) {
+  const sidebarVisible = await page.locator("#sidebarPatientRosterButton").isVisible().catch(() => false);
+  await page.click(sidebarVisible ? "#sidebarPatientRosterButton" : "#topPatientRosterButton");
+}
+
+async function ensurePatientRosterOpen(page) {
+  const isOpen = await page.evaluate(() => document.body.dataset.patientRoster === "expanded");
+  if (isOpen) return;
+  await clickPatientRosterToggle(page);
+  await page.waitForFunction(() => document.body.dataset.patientRoster === "expanded");
+}
+
 async function selectPatientByTitle(page, title) {
+  await ensurePatientRosterOpen(page);
   await page.locator(".patient-card", { hasText: title }).first().click();
   await page.waitForFunction((expectedTitle) => document.querySelector("#caseTitle")?.textContent?.includes(expectedTitle), title);
 }
@@ -169,25 +201,26 @@ try {
   await page.goto(`${baseUrl}/index.html?codexLiveWorkup=${Date.now()}`);
   await unlockVaultIfNeeded(page, vaultPassword);
   await page.waitForSelector("#workupView:not([hidden])");
-  await page.waitForFunction(() => document.querySelectorAll(".workup-row").length >= 6);
+  await page.waitForSelector("#workupOrdersPanel:not([hidden])");
+  await page.waitForSelector("#decisionTreePanel:not([hidden])");
 
-  const rowTexts = await page.locator(".workup-row").allTextContents();
-  assert(rowTexts.some((text) => text.includes("Prioritized bedside questions")), "clinical workup should render compact section rows");
-  assert(rowTexts.some((text) => text.includes("Decision tree")), "clinical workup should render guideline decision-tree row");
-  assert(rowTexts.some((text) => text.includes("Treatment options")), "clinical workup should render treatment-options row");
-  assert(!rowTexts.some((text) => /\?Prioritized|checksImmediate|flagsUrgent/.test(text)), "clinical workup rows should not concatenate raw generated detail");
-  const dkaWorkupSnapshot = await page.textContent("#workupGuidelineSnapshot");
-  assert(/Objective data/i.test(dkaWorkupSnapshot) && /Beta-hydroxybutyrate/i.test(dkaWorkupSnapshot), "DKA workup snapshot should show objective data needs");
-  assert(/Decision tree/i.test(dkaWorkupSnapshot) && /Management guidance/i.test(dkaWorkupSnapshot), "Workup tab should surface decision-tree and management guidance snapshots");
-
-  const modifiers = await page.locator(".modifier-chip").allTextContents();
-  assert(modifiers.includes("Vomiting") && modifiers.includes("Poor intake"), "clinical modifiers should be individually labeled");
-  const pressedCount = await page.locator('.modifier-chip[aria-pressed="true"]').count();
-  assert(pressedCount >= 2, "DKA workup should keep selected Vomiting and Poor intake modifiers");
+  const liveWorkupAudit = await page.evaluate(() => ({
+    rowCount: document.querySelectorAll(".workup-row").length,
+    modifierCount: document.querySelectorAll(".modifier-chip").length,
+    ordersText: document.querySelector("#workupOrdersPanel")?.textContent || "",
+    treeText: document.querySelector("#decisionTreePanel")?.textContent || "",
+    activeTreeNodes: document.querySelectorAll("#decisionTreePanel .decision-tree-node[data-state='active']").length,
+    pendingTreeNodes: document.querySelectorAll("#decisionTreePanel .decision-tree-node[data-state='pending']").length
+  }));
+  assert(liveWorkupAudit.rowCount === 0, `clinical workup should remove the old full-workup row drilldown: ${JSON.stringify(liveWorkupAudit)}`);
+  assert(liveWorkupAudit.modifierCount === 0, `clinical workup should remove clinical modifier chips: ${JSON.stringify(liveWorkupAudit)}`);
+  assert(/Orders and results/i.test(liveWorkupAudit.ordersText) && /Beta-hydroxybutyrate/i.test(liveWorkupAudit.ordersText), `workup should show necessary labs/exams and result fields: ${JSON.stringify(liveWorkupAudit)}`);
+  assert(/Live decision tree/i.test(liveWorkupAudit.treeText) && /Active branch/i.test(liveWorkupAudit.treeText) && /compact evidence-cited management pathway|evidence-cited clinical management pathway/i.test(liveWorkupAudit.treeText), `workup should render a live decision tree with traversal summary: ${JSON.stringify(liveWorkupAudit)}`);
+  assert(liveWorkupAudit.activeTreeNodes >= 1 && liveWorkupAudit.pendingTreeNodes >= 1, `decision tree should expose lit and pending path states: ${JSON.stringify(liveWorkupAudit)}`);
 
   await page.click("#closeToolsButton");
   await page.waitForSelector("#workspaceView:not([hidden])");
-  await page.click('[data-patient-tab="context"]');
+  await clickPatientTab(page, "context");
   await page.waitForSelector("#patientObjectiveDataPanel:not([hidden])");
   const dkaObjectiveLabels = await page.locator("#patientObjectiveDataPanel .objective-field label").allTextContents();
   for (const requiredLabel of ["Glucose", "Beta-hydroxybutyrate", "Anion gap", "Bicarbonate", "pH / VBG", "Potassium", "Creatinine", "Sodium / osmolality"]) {
@@ -200,14 +233,219 @@ try {
   await page.fill("#objective-potassium", "4.8");
   await page.fill("#objective-creatinine", "1.3");
   await page.fill("#objective-sodiumOsmolality", "Na 131, osm 318");
-  await page.click('[data-patient-tab="overview"]');
-  await page.waitForSelector("#patientOverviewPanel:not([hidden]) #patientObjectiveSummaryPanel:not([hidden])");
+  await clickPatientTab(page, "overview");
+  try {
+    await page.waitForFunction(() => {
+      const overview = document.querySelector("#patientOverviewPanel");
+      const summary = document.querySelector("#patientObjectiveSummaryPanel");
+      if (!overview || !summary || overview.hidden || summary.hidden) return false;
+      const style = getComputedStyle(summary);
+      return style.display !== "none" && /Workup data summary/i.test(summary.innerText || "");
+    });
+  } catch (error) {
+    const objectiveSummaryAudit = await page.evaluate(() => ({
+      bodyView: document.body.dataset.view,
+      patientTab: document.body.dataset.patientTab,
+      overviewHidden: document.querySelector("#patientOverviewPanel")?.hidden,
+      summaryHidden: document.querySelector("#patientObjectiveSummaryPanel")?.hidden,
+      summaryDisplay: getComputedStyle(document.querySelector("#patientObjectiveSummaryPanel")).display,
+      summaryText: document.querySelector("#patientObjectiveSummaryPanel")?.innerText || "",
+      contextLabels: Array.from(document.querySelectorAll("#patientObjectiveDataPanel .objective-field label")).map((node) => node.textContent || ""),
+      workupText: document.querySelector("#patientOverviewText")?.textContent || "",
+      selectedTab: Array.from(document.querySelectorAll("button[data-patient-tab]")).find((button) => button.getAttribute("aria-selected") === "true")?.dataset.patientTab || ""
+    }));
+    throw new Error(`objective summary should be visible on overview: ${JSON.stringify(objectiveSummaryAudit)}`);
+  }
   const objectiveSummaryText = await page.textContent("#patientObjectiveSummaryPanel");
   assert(/Beta-hydroxybutyrate[\s\S]*4\.2/i.test(objectiveSummaryText) && /Anion gap[\s\S]*22/i.test(objectiveSummaryText), "entered DKA labs should update the patient summary");
-  await page.click('[data-patient-tab="workup"]');
-  await page.waitForSelector("#patientWorkupPanel:not([hidden]) #patientGuidelineSnapshot:not([hidden])");
-  const patientGuidelineSnapshot = await page.textContent("#patientGuidelineSnapshot");
-  assert(/Decision tree/i.test(patientGuidelineSnapshot) && /Management guidance/i.test(patientGuidelineSnapshot) && /4\.2 mmol\/L/i.test(patientGuidelineSnapshot), "patient Workup tab should combine entered DKA labs with guideline snapshots");
+  await clickPatientTab(page, "workup");
+  await page.waitForSelector("#patientWorkupPanel:not([hidden]) #patientWorkupOrdersPanel:not([hidden])");
+  await page.waitForSelector("#patientWorkupPanel:not([hidden]) #patientDecisionTreePanel:not([hidden])");
+  const patientLiveWorkup = await page.evaluate(() => ({
+    orders: document.querySelector("#patientWorkupOrdersPanel")?.textContent || "",
+    bhbValue: document.querySelector("#patientWorkupOrdersPanel [data-objective-field='betaHydroxybutyrate']")?.value || "",
+    anionGapValue: document.querySelector("#patientWorkupOrdersPanel [data-objective-field='anionGap']")?.value || "",
+    tree: document.querySelector("#patientDecisionTreePanel")?.textContent || "",
+    activeNodes: Array.from(document.querySelectorAll("#patientDecisionTreePanel .decision-tree-node[data-state='active']")).map((node) => node.textContent || ""),
+    warningNodes: Array.from(document.querySelectorAll("#patientDecisionTreePanel .decision-tree-node[data-state='warning']")).map((node) => node.textContent || "")
+  }));
+  assert(/4\.2 mmol\/L/i.test(patientLiveWorkup.bhbValue) && /22/i.test(patientLiveWorkup.anionGapValue), `patient Workup tab should show entered DKA labs in orders/results inputs: ${JSON.stringify(patientLiveWorkup)}`);
+  assert(/(?:Live|Editable) decision tree|Decision pathway/i.test(patientLiveWorkup.tree) && /Active branch/i.test(patientLiveWorkup.tree) && /Hyperglycemia \/ possible DKA or HHS/i.test(patientLiveWorkup.tree), `patient Workup tab should show the DKA pathway traversal summary from entered labs: ${JSON.stringify(patientLiveWorkup)}`);
+  assert(/Auto from chart|Manual override|Missing/i.test(patientLiveWorkup.orders), `patient Workup tab should expose objective data source states: ${JSON.stringify(patientLiveWorkup)}`);
+  await page.waitForSelector("#decisionTreeEditorPanel:not([hidden])");
+  const editModeAudit = await page.evaluate(() => ({
+    editButtonCount: document.querySelectorAll("#toggleDecisionTreeEditButton").length,
+    toolbarExportCount: document.querySelectorAll("#exportDecisionTreeJsonButton").length,
+    saveSourceVisible: Boolean(document.querySelector("#saveDecisionTreeSourceButton")) && getComputedStyle(document.querySelector("#saveDecisionTreeSourceButton")).display !== "none",
+    editorHidden: document.querySelector("#decisionTreeEditorPanel")?.hidden,
+    editorDisplay: getComputedStyle(document.querySelector("#decisionTreeEditorPanel")).display,
+    svgNodeCount: document.querySelectorAll("#patientDecisionTreePanel .decision-tree-node-g").length,
+    readableOutlineCount: document.querySelectorAll("#patientDecisionTreePanel .decision-tree-readable-outline li").length,
+    outlineCollapsed: document.querySelector("#patientDecisionTreePanel .decision-tree-readable-outline")?.classList.contains("is-collapsed"),
+    outlineToggleText: document.querySelector("#patientDecisionTreePanel .decision-tree-outline-toggle")?.textContent || "",
+    previewCardCount: document.querySelectorAll("#patientDecisionTreePanel .workup-pathway-preview li").length,
+    focused: document.activeElement?.id || ""
+  }));
+  assert(editModeAudit.editButtonCount === 0 && editModeAudit.toolbarExportCount === 0 && editModeAudit.saveSourceVisible, `workup toolbar should remove edit/export buttons and expose source-file save: ${JSON.stringify(editModeAudit)}`);
+  assert(editModeAudit.editorHidden === false && editModeAudit.editorDisplay !== "none" && editModeAudit.svgNodeCount > 0 && editModeAudit.readableOutlineCount > 0 && editModeAudit.previewCardCount === 0, `decision-tree editor should be always available with the D3 tree and readable outline visible: ${JSON.stringify(editModeAudit)}`);
+  assert(editModeAudit.outlineCollapsed && /expand/i.test(editModeAudit.outlineToggleText), `pathway outline should be collapsed by default with an expand control: ${JSON.stringify(editModeAudit)}`);
+  await page.click("#patientDecisionTreePanel .decision-tree-outline-toggle");
+  await page.waitForFunction(() => {
+    const outline = document.querySelector("#patientDecisionTreePanel .decision-tree-readable-outline");
+    return Boolean(outline && !outline.classList.contains("is-collapsed") && getComputedStyle(outline.querySelector("ol")).display !== "none");
+  });
+  await page.fill("#decisionTreeNodeLabelInput", "DKA decision cockpit");
+  await page.waitForFunction(() => /DKA decision cockpit/i.test(document.querySelector("#patientDecisionTreePanel")?.textContent || ""));
+  await page.selectOption("#decisionTreeZoomSelect", "7");
+  await page.waitForFunction(() => /scale\(7\)/.test(document.querySelector("#patientDecisionTreePanel .decision-tree-zoom-layer")?.getAttribute("transform") || ""));
+  await page.click("#zoomOutDecisionTreeButton");
+  await page.waitForFunction(() => {
+    const transform = document.querySelector("#patientDecisionTreePanel .decision-tree-zoom-layer")?.getAttribute("transform") || "";
+    return /scale\(6\.5\)/.test(transform);
+  });
+  await page.click("#fitDecisionTreeButton");
+  await page.waitForFunction(() => {
+    const transform = document.querySelector("#patientDecisionTreePanel .decision-tree-zoom-layer")?.getAttribute("transform") || "";
+    const scale = Number(transform.match(/scale\(([^)]+)\)/)?.[1] || "1");
+    return Number.isFinite(scale) && scale < 1;
+  });
+  const rootRect = await page.locator("#patientDecisionTreePanel .decision-tree-node-g[data-node-id='root'] rect").boundingBox();
+  assert(rootRect, "root decision-tree node should be visible in the D3 graph");
+  const dynamicTreeAudit = await page.evaluate(() => {
+    const rects = Array.from(document.querySelectorAll("#patientDecisionTreePanel .decision-tree-node-g rect"));
+    const boxes = rects.map((rect) => {
+      const box = rect.getBoundingClientRect();
+      return {
+        left: box.left,
+        right: box.right,
+        top: box.top,
+        bottom: box.bottom,
+        width: box.width,
+        height: box.height,
+        svgWidth: Number(rect.getAttribute("width") || "0"),
+        svgHeight: Number(rect.getAttribute("height") || "0")
+      };
+    });
+    const overlaps = [];
+    boxes.forEach((a, index) => {
+      boxes.slice(index + 1).forEach((b, offset) => {
+        const separate = a.right <= b.left + 1 || b.right <= a.left + 1 || a.bottom <= b.top + 1 || b.bottom <= a.top + 1;
+        if (!separate) overlaps.push([index, index + offset + 1]);
+      });
+    });
+    const nodeTexts = Array.from(document.querySelectorAll("#patientDecisionTreePanel .decision-tree-node-g text"))
+      .map((node) => node.textContent || "");
+    return {
+      maxWidth: boxes.reduce((max, box) => Math.max(max, box.svgWidth), 0),
+      maxHeight: boxes.reduce((max, box) => Math.max(max, box.svgHeight), 0),
+      truncatedNodeTexts: nodeTexts.filter((text) => /\.{3}|…/.test(text)),
+      overlapCount: overlaps.length
+    };
+  });
+  assert(dynamicTreeAudit.maxWidth > 196 || dynamicTreeAudit.maxHeight > 92, `decision-tree boxes should resize beyond the old fixed dimensions when labels need more room: ${JSON.stringify(dynamicTreeAudit)}`);
+  assert(dynamicTreeAudit.truncatedNodeTexts.length === 0, `decision-tree node text should not be ellipsis-truncated: ${JSON.stringify(dynamicTreeAudit)}`);
+  assert(dynamicTreeAudit.overlapCount === 0, `decision-tree node boxes should not overlap after dynamic sizing: ${JSON.stringify(dynamicTreeAudit)}`);
+  await page.evaluate(() => {
+    window.__decisionTreeLocalSave = { written: "", closed: false };
+    window.showOpenFilePicker = async () => [{
+      getFile: async () => new File([
+        JSON.stringify({
+          schema_version: "medical_knowledge_database_v1",
+          artifact_type: "complaint_cds_module",
+          module: {
+            id: "hyperglycemia_possible_dka_v1",
+            title: "Hyperglycemia / possible DKA or HHS",
+            preservedSentinel: "do-not-overwrite",
+            redFlags: [{ id: "keep_existing_red_flag", label: "Keep existing red flag" }],
+            clinical_pathway_tree_v1: {
+              schema: "clinical_pathway_tree_v1",
+              workupId: "hyperglycemia_possible_dka_v1",
+              title: "Old pathway",
+              root: { id: "root", label: "Old root", type: "action", children: [] },
+              activationRules: {}
+            }
+          }
+        })
+      ], "hyperglycemia_possible_dka_v1.json", { type: "application/json" }),
+      createWritable: async () => ({
+        write: async (text) => {
+          window.__decisionTreeLocalSave.written = String(text);
+        },
+        close: async () => {
+          window.__decisionTreeLocalSave.closed = true;
+        }
+      })
+    }];
+  });
+  await page.click("#saveDecisionTreeSourceButton");
+  await page.waitForFunction(() => window.__decisionTreeLocalSave?.closed === true);
+  const localSourceSaveAudit = await page.evaluate(() => {
+    const parsed = JSON.parse(window.__decisionTreeLocalSave.written || "{}");
+    return {
+      closed: window.__decisionTreeLocalSave.closed,
+      moduleId: parsed.module?.id,
+      hasClinicalPathwayTree: Boolean(parsed.module?.clinical_pathway_tree_v1?.root),
+      hasDecisionTreeGraph: Boolean(parsed.module?.decisionTreeGraph),
+      preservedSentinel: parsed.module?.preservedSentinel,
+      preservedRedFlag: parsed.module?.redFlags?.[0]?.id,
+      status: document.querySelector("#statusLive")?.textContent || ""
+    };
+  });
+  assert(
+    localSourceSaveAudit.closed
+      && localSourceSaveAudit.moduleId === "hyperglycemia_possible_dka_v1"
+      && localSourceSaveAudit.hasClinicalPathwayTree
+      && !localSourceSaveAudit.hasDecisionTreeGraph
+      && localSourceSaveAudit.preservedSentinel === "do-not-overwrite"
+      && localSourceSaveAudit.preservedRedFlag === "keep_existing_red_flag"
+      && /clinical_pathway_tree_v1/i.test(localSourceSaveAudit.status),
+    `Save to source file should replace only clinical_pathway_tree_v1 while preserving the original module JSON: ${JSON.stringify(localSourceSaveAudit)}`
+  );
+  const importedTreeJson = JSON.stringify({
+    schema: "clinical_pathway_tree_v1",
+    workupId: "hyperglycemia_possible_dka_v1",
+    title: "Imported DKA pathway",
+    root: {
+      id: "root",
+      label: "Imported DKA pathway root",
+      type: "decision",
+      children: [
+        {
+          edgeLabel: "Ketosis plus acidosis",
+          id: "dka_branch",
+          label: "Treat as DKA when criteria are met",
+          type: "endpoint",
+          children: []
+        }
+      ]
+    },
+    activationRules: {}
+  });
+  await page.click("#openDecisionTreeImportButton");
+  await page.waitForFunction(() => {
+    const input = document.querySelector("#decisionTreeJsonInput");
+    return Boolean(input && getComputedStyle(input).display !== "none");
+  });
+  const importDrawerAudit = await page.evaluate(() => ({
+    importing: document.querySelector("#patientWorkupPanel")?.classList.contains("is-importing"),
+    editorHidden: document.querySelector("#decisionTreeEditorPanel")?.hidden,
+    inputVisible: getComputedStyle(document.querySelector("#decisionTreeJsonInput")).display !== "none",
+    focused: document.activeElement?.id || "",
+    overflowingButtons: Array.from(document.querySelectorAll("#decisionTreeEditorPanel .btn"))
+      .filter((button) => getComputedStyle(button).display !== "none" && button.scrollWidth > button.clientWidth + 1)
+      .map((button) => button.textContent.trim())
+  }));
+  assert(importDrawerAudit.importing && importDrawerAudit.editorHidden === false && importDrawerAudit.inputVisible && importDrawerAudit.focused === "decisionTreeJsonInput", `import button should open and focus the OpenEvidence JSON drawer: ${JSON.stringify(importDrawerAudit)}`);
+  assert(importDrawerAudit.overflowingButtons.length === 0, `right-panel decision-tree buttons should not overflow: ${JSON.stringify(importDrawerAudit)}`);
+  await page.fill("#decisionTreeJsonInput", `\`\`\`json\n${importedTreeJson}\n\`\`\``);
+  await page.click("#applyDecisionTreeJsonButton");
+  await page.waitForFunction(() => /Imported DKA pathway root/i.test(document.querySelector("#patientDecisionTreePanel")?.textContent || ""));
+  const postImportAudit = await page.evaluate(() => ({
+    importing: document.querySelector("#patientWorkupPanel")?.classList.contains("is-importing"),
+    editorHidden: document.querySelector("#decisionTreeEditorPanel")?.hidden,
+    labelValue: document.querySelector("#decisionTreeNodeLabelInput")?.value || ""
+  }));
+  assert(postImportAudit.importing === false && postImportAudit.editorHidden === false && /Imported DKA pathway root/i.test(postImportAudit.labelValue), `applying JSON should close only the import drawer and keep node editing available: ${JSON.stringify(postImportAudit)}`);
   await page.goto(`${baseUrl}/index.html?page=workup&afterObjectiveDataAudit=${Date.now()}`);
   await unlockVaultIfNeeded(page, vaultPassword);
   await page.waitForSelector("#workupView:not([hidden])");
@@ -264,6 +502,63 @@ try {
   });
   assert(dkaChecklistCopyAudit.rawCnsQuestions.length === 0, `bedside history questions should not expose raw CNS shorthand: ${JSON.stringify(dkaChecklistCopyAudit)}`);
   assert(dkaChecklistCopyAudit.clinicianFacingQuestions.length === 0, `bedside history questions should be patient-facing: ${JSON.stringify(dkaChecklistCopyAudit)}`);
+  const dkaAnswerSemantics = await page.evaluate(() => {
+    const rowFor = (pattern) => Array.from(document.querySelectorAll("#checklistSections .checklist-row"))
+      .find((row) => pattern.test(row.querySelector(".checklist-question")?.textContent?.trim() || ""));
+    const optionLabels = (row) => {
+      const chips = Array.from(row?.querySelectorAll(".answer-chip") || []).map((button) => button.dataset.answerValue || button.textContent?.trim() || "");
+      const selectOptions = Array.from(row?.querySelectorAll(".answer-select option") || [])
+        .map((option) => option.value || option.textContent?.trim() || "")
+        .filter(Boolean);
+      return chips.length ? chips : selectOptions;
+    };
+    const pulseRow = rowFor(/Palpate peripheral pulses/i);
+    const warmthRow = rowFor(/Palpate distal extremity warmth/i);
+    const insulinRow = rowFor(/What insulin regimen do you use/i);
+    return {
+      pulseQuestion: pulseRow?.querySelector(".checklist-question")?.textContent?.trim() || "",
+      pulseMode: pulseRow?.dataset.inputMode || "",
+      pulseOptions: optionLabels(pulseRow),
+      warmthQuestion: warmthRow?.querySelector(".checklist-question")?.textContent?.trim() || "",
+      warmthMode: warmthRow?.dataset.inputMode || "",
+      warmthOptions: optionLabels(warmthRow),
+      insulinOptions: optionLabels(insulinRow),
+      sectionNormalButtons: Array.from(document.querySelectorAll(".section-normal-button")).map((button) => button.textContent?.trim() || "")
+    };
+  });
+  assert(dkaAnswerSemantics.pulseMode === "multi-select", `peripheral pulses should allow concurrent normal findings: ${JSON.stringify(dkaAnswerSemantics)}`);
+  assert(["Normal strength", "Symmetric"].every((option) => dkaAnswerSemantics.pulseOptions.includes(option)), `pulse options should expose normal strength plus symmetry: ${JSON.stringify(dkaAnswerSemantics)}`);
+  assert(dkaAnswerSemantics.warmthMode === "multi-select", `distal warmth/perfusion should allow concurrent normal findings: ${JSON.stringify(dkaAnswerSemantics)}`);
+  assert(["Warm", "Normal perfusion"].every((option) => dkaAnswerSemantics.warmthOptions.includes(option)), `warmth options should expose warm plus normal perfusion: ${JSON.stringify(dkaAnswerSemantics)}`);
+  assert(dkaAnswerSemantics.insulinOptions.includes("Basal/bolus subQ"), `insulin regimen should include combined basal/bolus subQ choice: ${JSON.stringify(dkaAnswerSemantics)}`);
+  assert(!dkaAnswerSemantics.insulinOptions.includes("Basal") && !dkaAnswerSemantics.insulinOptions.includes("Bolus"), `insulin regimen should not split basal and bolus into separate standalone choices: ${JSON.stringify(dkaAnswerSemantics)}`);
+  assert(dkaAnswerSemantics.sectionNormalButtons.length > 0 && dkaAnswerSemantics.sectionNormalButtons.every((label) => label === "Mark section normal"), `each checklist section should expose a mark-normal action: ${JSON.stringify(dkaAnswerSemantics)}`);
+  await clickChecklistChipByValue(page, "Palpate peripheral pulses", "Normal strength");
+  await clickChecklistChipByValue(page, "Palpate peripheral pulses", "Symmetric");
+  await clickChecklistChipByValue(page, "Palpate distal extremity warmth", "Warm");
+  await clickChecklistChipByValue(page, "Palpate distal extremity warmth", "Normal perfusion");
+  const dkaConcurrentNormalPayload = await page.evaluate(() => {
+    const rowFor = (question) => Array.from(document.querySelectorAll("#checklistSections .checklist-row"))
+      .find((row) => row.querySelector(".checklist-question")?.textContent?.trim() === question);
+    const pulseRow = rowFor("Palpate peripheral pulses");
+    const warmthRow = rowFor("Palpate distal extremity warmth");
+    const beforePulsePayload = pulseRow?.dataset.answerPayload || "";
+    pulseRow?.closest(".checklist-section")?.querySelector(".section-normal-button")?.click();
+    return {
+      beforePulsePayload,
+      afterPulsePayload: pulseRow?.dataset.answerPayload || "",
+      warmthPayload: warmthRow?.dataset.answerPayload || "",
+      pulseTones: Array.from(pulseRow?.querySelectorAll(".answer-chip[aria-pressed='true']") || []).map((button) => button.dataset.tone || ""),
+      warmthTones: Array.from(warmthRow?.querySelectorAll(".answer-chip[aria-pressed='true']") || []).map((button) => button.dataset.tone || ""),
+      status: document.querySelector("#statusLive")?.textContent?.trim() || ""
+    };
+  });
+  assert(/Normal strength/.test(dkaConcurrentNormalPayload.beforePulsePayload) && /Symmetric/.test(dkaConcurrentNormalPayload.beforePulsePayload), `pulse row should preserve concurrent normal selections: ${JSON.stringify(dkaConcurrentNormalPayload)}`);
+  assert(dkaConcurrentNormalPayload.afterPulsePayload === dkaConcurrentNormalPayload.beforePulsePayload, `mark section normal should not overwrite existing pulse answers: ${JSON.stringify(dkaConcurrentNormalPayload)}`);
+  assert(/Warm/.test(dkaConcurrentNormalPayload.warmthPayload) && /Normal perfusion/.test(dkaConcurrentNormalPayload.warmthPayload), `warmth row should preserve concurrent normal perfusion selections: ${JSON.stringify(dkaConcurrentNormalPayload)}`);
+  assert(dkaConcurrentNormalPayload.pulseTones.every((tone) => tone === "negative"), `normal pulse chips should render as negative/normal tone: ${JSON.stringify(dkaConcurrentNormalPayload)}`);
+  assert(dkaConcurrentNormalPayload.warmthTones.every((tone) => tone === "negative"), `normal warmth/perfusion chips should render as negative/normal tone: ${JSON.stringify(dkaConcurrentNormalPayload)}`);
+  assert(/marked normal|No unanswered items/i.test(dkaConcurrentNormalPayload.status), `mark section normal should announce its effect: ${JSON.stringify(dkaConcurrentNormalPayload)}`);
   const firstQuestionControls = await page.locator(".checklist-row").first().evaluate((row) => {
     const chips = Array.from(row.querySelectorAll(".answer-chip")).map((button) => button.textContent.trim());
     if (chips.length) return chips;
@@ -365,15 +660,19 @@ try {
   assert(noteInteractionAudit.noteValue.includes("Oxygen need increased"), `note text should be retained in the row editor: ${JSON.stringify(noteInteractionAudit)}`);
   await page.click("#clearChecklistSearchButton");
   await page.click("#reviewFindingsButton");
-  await page.waitForSelector("#finalView:not([hidden])");
-  const noteFinalText = await page.textContent("#finalUpdatePreview");
-  assert(noteFinalText.includes("Oxygen need increased during hallway ambulation."), "row-level checklist notes should appear in the final update");
+  await page.waitForSelector("#workspaceView:not([hidden])");
+  await page.waitForFunction(() => document.body.dataset.patientTab === "evidence" && /Final rounds update/i.test(document.querySelector("#patientSelectedTaskTitle")?.textContent || ""));
+  await page.click("#copyPromptButton");
+  await page.waitForSelector("#phiOverlay:not([hidden])");
+  const notePromptText = await page.textContent("#phiPreviewText");
+  assert(notePromptText.includes("Oxygen need increased during hallway ambulation."), "row-level checklist notes should be resolved into the final rounds update prompt");
+  await page.click("#closePhiOverlayButton");
 
   await page.goto(`${baseUrl}/index.html?auditPage=workspace&caseWorkupControlAudit=${Date.now()}`);
   await unlockVaultIfNeeded(page, vaultPassword);
   await page.waitForSelector("#workspaceView:not([hidden])");
 	  await selectPatientByTitle(page, "Case C - CHF exacerbation");
-	  await page.click("#patientOverviewWorkupButton");
+	  await clickPatientTab(page, "workup");
 	  await page.waitForSelector("#patientWorkupPanel:not([hidden])");
 	  await page.fill("#patientWorkupConcernInput", "");
 	  await page.type("#patientWorkupConcernInput", "chest pain palpitations dyspnea", { delay: 5 });
@@ -382,14 +681,14 @@ try {
 	  await page.waitForFunction(() => document.querySelector("#patientBuildChecklistButton")?.disabled === false);
   await page.click("#patientBuildChecklistButton");
   await page.waitForSelector("#workspaceView:not([hidden])");
-  const caseCWorkspaceChecklistTab = await page.getAttribute('[data-patient-tab="checklist"]', "aria-selected");
+  const caseCWorkspaceChecklistTab = await page.getAttribute('button[data-patient-tab="checklist"]', "aria-selected");
   if (caseCWorkspaceChecklistTab !== "true") {
     const audit = await page.evaluate(() => ({
       status: document.querySelector("#statusLive")?.textContent?.trim() || "",
       buildStatus: document.querySelector("#patientWorkupBuildStatus")?.textContent?.trim() || "",
       workupValue: document.querySelector("#patientWorkupSelect")?.value || "",
       checklistStatus: document.querySelector("#workspaceChecklistStatus")?.textContent?.trim() || "",
-      activeTab: Array.from(document.querySelectorAll("[data-patient-tab]")).find((button) => button.getAttribute("aria-selected") === "true")?.dataset.patientTab || ""
+      activeTab: Array.from(document.querySelectorAll("button[data-patient-tab]")).find((button) => button.getAttribute("aria-selected") === "true")?.dataset.patientTab || ""
     }));
     assert(false, `patient-scoped checklist build should open the patient checklist tab: ${JSON.stringify({ ...audit, diagnostics: browserDiagnostics.slice(-8) })}`);
   }
@@ -503,7 +802,7 @@ try {
   await unlockVaultIfNeeded(page, vaultPassword);
   await page.waitForSelector("#workspaceView:not([hidden])");
   await selectPatientByTitle(page, "Case B - Pneumonia");
-  await page.click("#patientOverviewWorkupButton");
+  await clickPatientTab(page, "workup");
   await page.waitForSelector("#patientWorkupPanel:not([hidden])");
   await page.fill("#patientWorkupConcernInput", "pneumonia");
   await page.waitForFunction(() => document.querySelector("#patientWorkupSelect")?.value === "fever_infection_sepsis_v1");
@@ -517,9 +816,7 @@ try {
     resultSelection: document.querySelector('#patientWorkupResults .workup-result-row[aria-selected="true"]')?.dataset.moduleId || "",
     matchGroupLabel: document.querySelector("#patientWorkupSelect optgroup")?.label || "",
     resultGroupLabels: Array.from(document.querySelectorAll("#patientWorkupResults .workup-result-group-title")).map((node) => node.textContent?.trim() || ""),
-    visibleModifiers: Array.from(document.querySelectorAll("#patientModifierGrid .clinical-modifier-chip"))
-      .filter((chip) => !(chip.closest("details:not([open])") && !chip.matches("summary")))
-      .map((chip) => chip.textContent?.trim() || ""),
+    visibleModifiers: Array.from(document.querySelectorAll("#patientModifierGrid .clinical-modifier-chip")).map((chip) => chip.textContent?.trim() || ""),
     advancedModifierSummary: document.querySelector("#patientModifierGrid .advanced-modifier-panel summary")?.textContent?.trim() || "",
     optionTexts: Array.from(document.querySelectorAll("#patientWorkupSelect option")).map((option) => option.textContent || "")
   }));
@@ -531,19 +828,19 @@ try {
   assert(caseBWorkupSelection.resultRowCount >= 1, "workup UI should show selectable result rows in the unified picker");
   assert(caseBWorkupSelection.resultSelection === "fever_infection_sepsis_v1", "selected workup should be reflected in the result list");
   assert(!caseBWorkupSelection.resultGroupLabels.some((label) => /Closest reviewed workups/i.test(label)), `selected workup should collapse fallback suggestions: ${JSON.stringify(caseBWorkupSelection)}`);
-  assert(caseBWorkupSelection.visibleModifiers.join("|") === "Vomiting|Poor intake|Fever|Leg swelling|Chest pain|Focal weakness", `workup tab should show only common modifiers by default: ${JSON.stringify(caseBWorkupSelection)}`);
-  assert(/More context modifiers \(8\)/.test(caseBWorkupSelection.advancedModifierSummary), `advanced modifiers should stay behind a disclosure: ${JSON.stringify(caseBWorkupSelection)}`);
+  assert(caseBWorkupSelection.visibleModifiers.length === 0, `workup tab should remove clinical modifier chips: ${JSON.stringify(caseBWorkupSelection)}`);
+  assert(caseBWorkupSelection.advancedModifierSummary === "", `workup tab should remove advanced modifier disclosure: ${JSON.stringify(caseBWorkupSelection)}`);
   assert(!caseBWorkupSelection.buildDisabled, "Case B selected workup should allow checklist generation");
   await page.click("#patientBuildChecklistButton");
   await page.waitForSelector("#workspaceView:not([hidden])");
-  const caseBWorkspaceChecklistTab = await page.getAttribute('[data-patient-tab="checklist"]', "aria-selected");
+  const caseBWorkspaceChecklistTab = await page.getAttribute('button[data-patient-tab="checklist"]', "aria-selected");
   if (caseBWorkspaceChecklistTab !== "true") {
     const audit = await page.evaluate(() => ({
       status: document.querySelector("#statusLive")?.textContent?.trim() || "",
       buildStatus: document.querySelector("#patientWorkupBuildStatus")?.textContent?.trim() || "",
       workupValue: document.querySelector("#patientWorkupSelect")?.value || "",
       checklistStatus: document.querySelector("#workspaceChecklistStatus")?.textContent?.trim() || "",
-      activeTab: Array.from(document.querySelectorAll("[data-patient-tab]")).find((button) => button.getAttribute("aria-selected") === "true")?.dataset.patientTab || ""
+      activeTab: Array.from(document.querySelectorAll("button[data-patient-tab]")).find((button) => button.getAttribute("aria-selected") === "true")?.dataset.patientTab || ""
     }));
     assert(false, `building a patient checklist should keep the user in the patient checklist tab: ${JSON.stringify({ ...audit, diagnostics: browserDiagnostics.slice(-8) })}`);
   }
@@ -577,13 +874,24 @@ try {
   assert(caseBChecklistAudit.feverMedicationRows.every((row) => !row.clipped), `fever medication rows should not clip text: ${JSON.stringify(caseBChecklistAudit.feverMedicationRows)}`);
   assert(!/ketone|anion gap|insulin drip|basal transition/i.test(caseBChecklistAudit.rowText), "Case B checklist should not contain DKA-specific checklist rows");
   await page.click("#reviewFindingsButton");
-  await page.waitForSelector("#finalView:not([hidden])");
-  await page.click("#finalToEvidenceButton");
-  await page.waitForSelector("#evidenceView:not([hidden])");
+  await page.waitForSelector("#workspaceView:not([hidden])");
+  await page.waitForFunction(() => document.body.dataset.patientTab === "evidence" && /Final rounds update/i.test(document.querySelector("#patientSelectedTaskTitle")?.textContent || ""));
+  const finalUpdateTemplate = await page.inputValue("#patientEvidencePromptPreview");
+  assert(/{{new_bedside_findings}}|{{source_context}}/i.test(finalUpdateTemplate), "Final rounds update should show an editable template with patient variables");
+  await page.click("#copyPromptButton");
+  await page.waitForSelector("#phiOverlay:not([hidden])");
+  const caseBResolvedPrompt = await page.textContent("#phiPreviewText");
+  assert(caseBResolvedPrompt.includes("Case B - Pneumonia"), "Case B copied OpenEvidence prompt should resolve the selected patient title");
+  assert(caseBResolvedPrompt.includes("Selected workup: Fever, infection, or sepsis"), "Case B copied OpenEvidence prompt should resolve the selected workup");
+  assert(!caseBResolvedPrompt.includes("Synthetic adult DKA consult"), "Case B copied OpenEvidence prompt should not fall back to the DKA sample context");
+  await page.click("#closePhiOverlayButton");
+	  await page.click('#patientEvidenceTaskStrip [data-task-id="checklist_improvement_review"]');
+	  await page.waitForFunction(() => /Checklist improvement review/i.test(document.querySelector("#patientSelectedTaskTitle")?.textContent || ""));
+  await page.waitForSelector(".patient-evidence-answer-panel:not([hidden])");
   const globalEvidenceWorkbenchLayout = await page.evaluate(() => {
-    const prompt = document.querySelector("#openEvidencePromptPreview")?.getBoundingClientRect();
-    const answer = document.querySelector(".evidence-review-column")?.getBoundingClientRect();
-    const rebuild = document.querySelector("#rebuildLocalButton")?.getBoundingClientRect();
+    const prompt = document.querySelector("#patientEvidencePromptPreview")?.getBoundingClientRect();
+    const answer = document.querySelector(".patient-evidence-answer-panel")?.getBoundingClientRect();
+    const rebuild = document.querySelector("#patientApplyEvidenceRefinementButton")?.getBoundingClientRect();
     const copy = document.querySelector("#copyPromptButton")?.getBoundingClientRect();
     return {
       promptRight: Math.round(prompt?.right || 0),
@@ -597,29 +905,39 @@ try {
       copyVisible: Boolean(copy && copy.width > 0 && copy.height > 0 && copy.bottom <= window.innerHeight)
     };
   });
-  assert(globalEvidenceWorkbenchLayout.sideBySide, `global Evidence prompt and answer panel should be side-by-side at desktop width: ${JSON.stringify(globalEvidenceWorkbenchLayout)}`);
-  assert(globalEvidenceWorkbenchLayout.copyVisible && globalEvidenceWorkbenchLayout.rebuildVisible, `global Evidence copy and rebuild actions should be visible without scrolling: ${JSON.stringify(globalEvidenceWorkbenchLayout)}`);
-	  const caseBEvidencePrompt = await page.textContent("#openEvidencePromptPreview");
-	  assert(caseBEvidencePrompt.includes("Case B - Pneumonia"), "Case B OpenEvidence prompt should include the selected patient title");
-	  assert(caseBEvidencePrompt.includes("Selected workup: Fever, infection, or sepsis"), "Case B OpenEvidence prompt should include the selected workup");
-	  assert(!caseBEvidencePrompt.includes("Synthetic adult DKA consult"), "Case B OpenEvidence prompt should not fall back to the DKA sample context");
-	  await page.click('#evidenceTaskStrip [data-task-id="checklist_improvement_review"]');
-	  await page.waitForFunction(() => /Checklist improvement review/i.test(document.querySelector("#selectedTaskTitle")?.textContent || ""));
-	  await page.fill(
-	    "#openEvidenceAnswerInput",
-	    [
-	      "CHECKLIST FIT",
-	      "Good start.",
-	      "",
-	      "MISSING OR WEAKLY COVERED DOMAINS",
-	      "- Add sleep apnea screening because overnight hypoxia or untreated obstructive sleep apnea can change the bedside story.",
-	      "",
-	      "UNVALIDATED CHECKLIST IMPROVEMENT SUGGESTIONS",
-	      "- Add a bedside question about loud snoring, witnessed apneas, or CPAP use."
-	    ].join("\n")
-	  );
-	  await page.click("#rebuildLocalButton");
-	  await page.waitForFunction(() => /OpenEvidence items? added and \d+ removed|No supported add\/remove checklist changes/.test(document.querySelector("#statusLive")?.textContent || ""));
+  assert(globalEvidenceWorkbenchLayout.sideBySide, `shared Evidence prompt and answer panel should be side-by-side at desktop width: ${JSON.stringify(globalEvidenceWorkbenchLayout)}`);
+  assert(globalEvidenceWorkbenchLayout.copyVisible && globalEvidenceWorkbenchLayout.rebuildVisible, `shared Evidence copy and apply actions should be visible without scrolling: ${JSON.stringify(globalEvidenceWorkbenchLayout)}`);
+  const structuredSleepRefinement = {
+    schema: "workup_refinement_v1",
+    workupId: "fever_infection_sepsis_v1",
+    title: "Fever, infection, or sepsis",
+    replaceMode: "full_replacement",
+    sections: [
+      {
+        title: "RESPIRATORY / SLEEP",
+        organSystemKey: "respiratory",
+        items: [
+          {
+            id: "sleep_apnea_screening",
+            category: "bedside",
+            label: "Any loud snoring, witnessed apneas, or CPAP use?",
+            answerMode: "single",
+            options: ["No", "Yes", "Unknown", "Other"],
+            normalAnswers: ["No"],
+            exclusiveGroups: [["No", "Yes", "Unknown"]],
+            patientSpecific: false,
+            rationale: "Synthetic structured refinement for browser coverage.",
+            citations: ["Synthetic citation"]
+          }
+        ]
+      }
+    ],
+    removedItemLabels: []
+  };
+	  await page.fill("#patientEvidenceAnswerInput", `\`\`\`json\n${JSON.stringify(structuredSleepRefinement, null, 2)}\n\`\`\``);
+    await page.waitForFunction(() => /Structured refinement ready/i.test(document.querySelector("#patientEvidenceChangePreview")?.textContent || ""));
+	  await page.click("#patientApplyEvidenceRefinementButton");
+	  await page.waitForFunction(() => document.body.dataset.patientTab === "checklist" && /snoring|apneas|CPAP/i.test(document.body.innerText || ""));
 	  const checklistRefinementAudit = await page.evaluate(() => {
 	    const rowText = Array.from(document.querySelectorAll("#checklistSections .checklist-row")).map((row) => row.textContent || "").join("\n");
 	    return {
@@ -634,7 +952,7 @@ try {
   await unlockVaultIfNeeded(page, vaultPassword);
   await page.waitForSelector("#workspaceView:not([hidden])");
   await selectPatientByTitle(page, "Case H - Chest pain");
-  await page.click("#patientOverviewWorkupButton");
+  await clickPatientTab(page, "workup");
   await page.waitForSelector("#patientWorkupPanel:not([hidden])");
   await page.fill("#patientWorkupConcernInput", "AKI without exact local workup");
   await page.waitForFunction(() => /No exact local .* workup installed/i.test(document.querySelector("#patientWorkupResults .workup-picker-empty")?.textContent || ""));
@@ -643,7 +961,7 @@ try {
     intentLabel: document.querySelector("#patientValidatedIntentLabel")?.textContent?.trim() || "",
     buildDisabled: document.querySelector("#patientBuildChecklistButton")?.disabled || false,
     rows: document.querySelectorAll("#patientWorkupRows .workup-row").length,
-    detail: document.querySelector("#patientWorkupDetail")?.textContent?.trim() || "",
+    buildStatus: document.querySelector("#patientWorkupBuildStatus")?.textContent?.trim() || "",
     emptyNotice: document.querySelector("#patientWorkupResults .workup-picker-empty")?.textContent?.trim() || "",
     resultRowCount: document.querySelectorAll("#patientWorkupResults .workup-result-row").length
   }));
@@ -651,7 +969,7 @@ try {
   assert(/No validated workup selected/i.test(unsupportedAudit.intentLabel), `Unsupported AKI case should show a no-workup-selected label: ${JSON.stringify(unsupportedAudit)}`);
   assert(unsupportedAudit.buildDisabled, "Unsupported AKI case should disable checklist generation until a workup is chosen");
   assert(unsupportedAudit.rows === 0, "Unsupported AKI case should not render stale workup rows");
-  assert(/Select a validated workup/i.test(unsupportedAudit.detail), "Unsupported AKI case should tell the user to choose a workup");
+  assert(/Select a validated workup|No local workup is selected/i.test(unsupportedAudit.buildStatus), `Unsupported AKI case should tell the user to choose a workup: ${JSON.stringify(unsupportedAudit)}`);
   assert(/No exact local .* workup installed/i.test(unsupportedAudit.emptyNotice), `unsupported workup picker should show a no-exact-match notice: ${JSON.stringify(unsupportedAudit)}`);
   assert(unsupportedAudit.resultRowCount >= 1, "unsupported workup picker should still offer selectable reviewed workups");
   await page.fill("#patientWorkupConcernInput", "");
@@ -677,15 +995,16 @@ try {
   const caseHManualSelection = await page.evaluate(() => ({
     selectValue: document.querySelector("#patientWorkupSelect")?.value || "",
     intentLabel: document.querySelector("#patientValidatedIntentLabel")?.textContent?.trim() || "",
-    rows: document.querySelectorAll("#patientWorkupRows .workup-row").length,
+    ordersVisible: !document.querySelector("#patientWorkupOrdersPanel")?.hidden,
+    treeVisible: !document.querySelector("#patientDecisionTreePanel")?.hidden,
     buildDisabled: document.querySelector("#patientBuildChecklistButton")?.disabled || false
   }));
   assert(caseHManualSelection.selectValue === "chest_pain_v1", `Manual dropdown selection should set Case H workup: ${JSON.stringify(caseHManualSelection)}`);
   assert(/Chest pain/i.test(caseHManualSelection.intentLabel), `Manual dropdown selection should update the visible intent: ${JSON.stringify(caseHManualSelection)}`);
-  assert(caseHManualSelection.rows >= 6 && !caseHManualSelection.buildDisabled, "Manual dropdown selection should render workup rows and enable checklist generation");
+  assert(caseHManualSelection.ordersVisible && caseHManualSelection.treeVisible && !caseHManualSelection.buildDisabled, `Manual dropdown selection should render live workup panels and enable checklist generation: ${JSON.stringify(caseHManualSelection)}`);
   await selectPatientByTitle(page, "Case B - Pneumonia");
   await selectPatientByTitle(page, "Case H - Chest pain");
-  await page.click("#patientOverviewWorkupButton");
+  await clickPatientTab(page, "workup");
   await page.waitForSelector("#patientWorkupPanel:not([hidden])");
 	  const caseHPersistedSelection = await page.evaluate(() => ({
 	    selectValue: document.querySelector("#patientWorkupSelect")?.value || "",
@@ -704,38 +1023,66 @@ try {
 	    Array.from(document.querySelectorAll("#checklistSections .checklist-row")).map((row) => row.textContent || "").join("\n")
 	  ));
 	  assert(/libido|sex drive/i.test(hypogonadismChecklistBeforeRemoval), "Hypogonadism checklist should initially contain a libido/sex-drive row before OpenEvidence removal review");
-	  await page.evaluate(() => document.querySelector('[data-view-target="workspace"]')?.click());
+	  const bedsideReturnSelector = await page.locator("#bedsideHeaderSettingsButton").isVisible().catch(() => false)
+	    ? "#bedsideHeaderSettingsButton"
+	    : "#bedsideMobileMenuButton";
+	  await page.click(bedsideReturnSelector);
 	  await page.waitForSelector("#workspaceView:not([hidden])");
-	  await page.click('[data-patient-tab="evidence"]');
+	  await clickPatientTab(page, "evidence");
 	  await page.waitForSelector("#patientEvidencePanel:not([hidden])");
+    const hypogonadismStructuredRefinement = {
+      schema: "workup_refinement_v1",
+      workupId: "hypogonadism_v1",
+      title: "Hypogonadism",
+      replaceMode: "full_replacement",
+      sections: [
+        {
+          title: "ENDOCRINE / METABOLIC",
+          organSystemKey: "endocrine_metabolic",
+          items: [
+            {
+              id: "testosterone_steroid_opioid_use",
+              category: "bedside",
+              label: "Any testosterone, steroid, opioid, supplement, or hormone use?",
+              answerMode: "multi",
+              options: ["None", "Testosterone or androgen", "Opioid", "Steroid or glucocorticoid", "Supplement", "Recently stopped", "Unsure", "Other"],
+              normalAnswers: ["None"],
+              exclusiveGroups: [["None", "Testosterone or androgen", "Opioid", "Steroid or glucocorticoid", "Supplement", "Recently stopped"]],
+              patientSpecific: true,
+              rationale: "Medication and supplement exposures can explain secondary hypogonadism and change workup.",
+              citations: ["Synthetic OpenEvidence citation for local test"]
+            }
+          ]
+        }
+      ],
+      removedItemLabels: ["Any change in sex drive or libido?"]
+    };
 	  await page.fill(
 	    "#patientEvidenceAnswerInput",
-	    [
-	      "CHECKLIST FIT",
-	      "The checklist is too long for this encounter.",
-	      "",
-	      "DO NOT ASK / REMOVE",
-	      "- Do not ask about libido or sex drive today because that history is already documented."
-	    ].join("\n")
+	    `\`\`\`json\n${JSON.stringify(hypogonadismStructuredRefinement, null, 2)}\n\`\`\``
 	  );
-	  await page.waitForFunction(() => /0 add, 1 remove|Remove: .*libido|Remove: .*sex drive/i.test(document.querySelector("#patientEvidenceChangePreview")?.textContent || ""));
+	  await page.waitForFunction(() => /Structured refinement ready/i.test(document.querySelector("#patientEvidenceChangePreview")?.textContent || ""));
 	  const patientEvidenceApplyState = await page.evaluate(() => ({
 	    preview: document.querySelector("#patientEvidenceChangePreview")?.textContent?.replace(/\s+/g, " ").trim() || "",
 	    status: document.querySelector("#patientEvidenceChangePreview")?.dataset.status || "",
-	    button: document.querySelector("#patientRebuildFromEvidenceButton")?.textContent?.trim() || "",
-	    disabled: document.querySelector("#patientRebuildFromEvidenceButton")?.disabled || false
+	    patientButton: document.querySelector("#patientApplyEvidenceRefinementButton")?.textContent?.trim() || "",
+	    patientDisabled: document.querySelector("#patientApplyEvidenceRefinementButton")?.disabled || false,
+	    defaultButton: document.querySelector("#patientSaveDefaultEvidenceRefinementButton")?.textContent?.trim() || "",
+	    defaultDisabled: document.querySelector("#patientSaveDefaultEvidenceRefinementButton")?.disabled || false
 	  }));
 	  assert(patientEvidenceApplyState.status === "ready", `patient Evidence change preview should show supported changes: ${JSON.stringify(patientEvidenceApplyState)}`);
-	  assert(/Apply 1 change \+ review checklist/i.test(patientEvidenceApplyState.button) && !patientEvidenceApplyState.disabled, `patient Evidence apply button should describe the action: ${JSON.stringify(patientEvidenceApplyState)}`);
-	  await page.click("#patientRebuildFromEvidenceButton");
+	  assert(/Apply to this patient/i.test(patientEvidenceApplyState.patientButton) && !patientEvidenceApplyState.patientDisabled, `patient Evidence patient-only apply should be enabled: ${JSON.stringify(patientEvidenceApplyState)}`);
+	  assert(/Save as default/i.test(patientEvidenceApplyState.defaultButton) && !patientEvidenceApplyState.defaultDisabled, `patient Evidence default save should be enabled: ${JSON.stringify(patientEvidenceApplyState)}`);
+	  await page.click("#patientApplyEvidenceRefinementButton");
 	  await page.waitForFunction(() => document.body.dataset.view === "workspace" && document.body.dataset.patientTab === "checklist");
-	  await page.waitForFunction(() => /Review the updated rows|Checklist rebuilt/.test(document.querySelector("#statusLive")?.textContent || ""));
+	  await page.waitForFunction(() => /testosterone, steroid, opioid/i.test(document.querySelector("#workspaceChecklistPreviewList")?.textContent || document.body.innerText || ""));
 	  await page.click("#workspaceOpenBedsideChecklistButton");
 	  await page.waitForSelector("#bedsideView:not([hidden])");
 	  const hypogonadismChecklistAfterRemoval = await page.evaluate(() => (
 	    Array.from(document.querySelectorAll("#checklistSections .checklist-row")).map((row) => row.textContent || "").join("\n")
 	  ));
 	  assert(!/Any change in sex drive or libido/i.test(hypogonadismChecklistAfterRemoval), "OpenEvidence remove guidance should suppress the matching libido checklist row");
+	  assert(/testosterone, steroid, opioid/i.test(hypogonadismChecklistAfterRemoval), "structured patient refinement should replace the checklist with the pasted item");
 
 	  await assertNoHorizontalOverflow(page, "clinical UI browser workflow");
   console.log("Clinical UI browser checks passed.");
