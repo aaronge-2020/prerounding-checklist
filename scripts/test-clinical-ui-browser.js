@@ -215,7 +215,7 @@ try {
   assert(liveWorkupAudit.rowCount === 0, `clinical workup should remove the old full-workup row drilldown: ${JSON.stringify(liveWorkupAudit)}`);
   assert(liveWorkupAudit.modifierCount === 0, `clinical workup should remove clinical modifier chips: ${JSON.stringify(liveWorkupAudit)}`);
   assert(/Orders and results/i.test(liveWorkupAudit.ordersText) && /Beta-hydroxybutyrate/i.test(liveWorkupAudit.ordersText), `workup should show necessary labs/exams and result fields: ${JSON.stringify(liveWorkupAudit)}`);
-  assert(/Live decision tree/i.test(liveWorkupAudit.treeText) && /Active branch/i.test(liveWorkupAudit.treeText) && /does patient context support this workup|exact missing-data routing/i.test(liveWorkupAudit.treeText), `workup should render a live decision tree with traversal summary: ${JSON.stringify(liveWorkupAudit)}`);
+  assert(/Live decision tree/i.test(liveWorkupAudit.treeText) && /Active branch/i.test(liveWorkupAudit.treeText) && /DKA\/HHS urgency|adult DKA\/HHS context|hyperglycemic crisis/i.test(liveWorkupAudit.treeText), `workup should render a live decision tree with traversal summary: ${JSON.stringify(liveWorkupAudit)}`);
   assert(liveWorkupAudit.activeTreeNodes >= 1 && liveWorkupAudit.pendingTreeNodes >= 1, `decision tree should expose lit and pending path states: ${JSON.stringify(liveWorkupAudit)}`);
 
   await page.click("#closeToolsButton");
@@ -226,6 +226,7 @@ try {
   for (const requiredLabel of ["Glucose", "Beta-hydroxybutyrate", "Anion gap", "Bicarbonate", "pH / VBG", "Potassium", "Creatinine", "Sodium / osmolality"]) {
     assert(dkaObjectiveLabels.some((label) => label.includes(requiredLabel)), `DKA objective data editor should include ${requiredLabel}`);
   }
+  await page.fill("#objective-glucose", "275 mg/dL");
   await page.fill("#objective-betaHydroxybutyrate", "4.2 mmol/L");
   await page.fill("#objective-anionGap", "22");
   await page.fill("#objective-bicarbonate", "12 mEq/L");
@@ -270,7 +271,7 @@ try {
     warningNodes: Array.from(document.querySelectorAll("#patientDecisionTreePanel .decision-tree-node[data-state='warning']")).map((node) => node.textContent || "")
   }));
   assert(/4\.2 mmol\/L/i.test(patientLiveWorkup.bhbValue) && /22/i.test(patientLiveWorkup.anionGapValue), `patient Workup tab should show entered DKA labs in orders/results inputs: ${JSON.stringify(patientLiveWorkup)}`);
-  assert(/(?:Live|Editable) decision tree|Decision pathway/i.test(patientLiveWorkup.tree) && /Active branch/i.test(patientLiveWorkup.tree) && /Hyperglycemia \/ possible DKA or HHS/i.test(patientLiveWorkup.tree), `patient Workup tab should show the DKA pathway traversal summary from entered labs: ${JSON.stringify(patientLiveWorkup)}`);
+  assert(/(?:Live|Editable) decision tree|Decision pathway/i.test(patientLiveWorkup.tree) && /Active branch/i.test(patientLiveWorkup.tree) && /Adult hyperglycemia|DKA\/HHS urgency|hyperglycemic crisis/i.test(patientLiveWorkup.tree), `patient Workup tab should show the DKA pathway traversal summary from entered labs: ${JSON.stringify(patientLiveWorkup)}`);
   assert(/Auto from chart|Manual override|Missing/i.test(patientLiveWorkup.orders), `patient Workup tab should expose objective data source states: ${JSON.stringify(patientLiveWorkup)}`);
   await page.waitForSelector("#decisionTreeEditorPanel:not([hidden])");
   const editModeAudit = await page.evaluate(() => ({

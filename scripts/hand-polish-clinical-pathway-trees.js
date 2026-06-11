@@ -48,7 +48,7 @@ const contextDomains = [
   "workup_findings"
 ];
 
-const cutoffUnits = "(?:mg/dL|mg/L|g/L|mmol/L|mEq/L|mIU/L|mU/L|ng/mL|pg/mL|ug/L|mg/g|mcg/mg|mm Hg|mL/kg|mg/kg|g/kg|kg/m2|mL/min(?:/1\\.73\\s*m2)?|mL|hours?|days?|weeks?|months?|years?|cm|mm|ms|seconds?|minutes?|breaths/minute|x10\\^9/L|%|C|ULN|LLN|mOsm/kg|bpm|IU/L|U/L|mcg/dL|ug/dL|mcg/day|mcg|g|mg|kg|cycles/year|measurements?|collections?|samples?|percent|percentile)";
+const cutoffUnits = "(?:mg/dL|mg/L|g/L|mmol/L|mEq/L|mIU/L|mU/L|ng/mL|pg/mL|ug/L|mg/g|mcg/mg|mm Hg|mL/kg|mg/kg|g/kg|kg/m2|mL/min(?:/1\\.73\\s*m2)?|mL|hours?|days?|weeks?|months?|years?|cm|mm|ms|seconds?|minutes?|breaths/minute|x10\\^9/L|%|(?:deg\\s*C|degrees?\\s*C|C(?![a-z]))|ULN|LLN|mOsm/kg|bpm|IU/L|U/L|mcg/dL|ug/dL|mcg/day|mcg|g|mg|kg|cycles/year|measurements?|collections?|samples?|percent|percentile)";
 const cutoffPattern = new RegExp([
   "(?:(?:>=|<=|>|<|=)|(?:above|below|exceeds?))\\s*(?:the\\s+)?(?:assay\\s+)?(?:ULN|LLN|upper limit of normal|lower limit of normal|reference range)",
   "\\b\\d+(?:\\.\\d+)?\\s*(?:x|times|fold|-fold)\\s*(?:ULN|upper limit of normal)",
@@ -1667,6 +1667,605 @@ function buildAdultSepsisClinicalPathwayTree(module, sourceById) {
   };
 }
 
+function buildAdultDkaHhsClinicalPathwayTree(module, sourceById) {
+  const label = module.label || "Hyperglycemia / possible DKA or HHS";
+  const prefix = "adult_dka_hhs";
+  const adaCrisis = ["ADA_HYPERGLYCEMIC_CRISES_2024"];
+  const adaHospital = ["ADA_STANDARDS_HOSPITAL_2026"];
+  const sourceIds = unique([...adaCrisis, ...adaHospital, ...genericSourceIds]);
+  const tests = firstItems(module, "initialTests", 10);
+  const redFlags = firstItems(module, "redFlags", 8, ["safetyChecks"]);
+  const differentials = firstItems(module, "differentialBuckets", 8);
+  const dispositions = firstItems(module, "dispositionRules", 8, ["treatmentOptions"]);
+
+  const criteriaRows = [
+    criterion({
+      id: "adult_dka_diagnostic_thresholds",
+      label: "Adult DKA: diabetes/prior diabetes or glucose >=200 mg/dL, beta-hydroxybutyrate >=3.0 mmol/L or urine ketones >=2+, and pH <7.3 and/or bicarbonate <18 mmol/L",
+      criteria_text: "Classify DKA when diabetes/prior diabetes or glucose >=200 mg/dL is present with beta-hydroxybutyrate >=3.0 mmol/L or urine ketones >=2+ and metabolic acidosis with pH <7.3 and/or bicarbonate <18 mmol/L; evaluate acidosis even if glucose is <200 mg/dL when SGLT2 inhibitor, pregnancy, fasting, or poor intake raises euglycemic DKA risk.",
+      cutoffs: ["glucose >=200 mg/dL", "beta-hydroxybutyrate >=3.0 mmol/L", "urine ketones >=2+", "pH <7.3", "bicarbonate <18 mmol/L", "glucose <200 mg/dL"],
+      data_needed: ["glucose", "diabetes history", "beta-hydroxybutyrate", "urine ketones if blood ketones unavailable", "venous pH", "bicarbonate", "anion gap", "SGLT2 inhibitor/pregnancy/fasting context"],
+      source_ids: adaCrisis,
+      source_section: "Adult DKA diagnosis and euglycemic DKA"
+    }),
+    criterion({
+      id: "adult_hhs_diagnostic_thresholds",
+      label: "Adult HHS: glucose >=600 mg/dL with effective osmolality >300 mOsm/kg or total osmolality >320 mOsm/kg and absent significant ketonemia/acidosis",
+      criteria_text: "Classify HHS when glucose >=600 mg/dL is accompanied by effective osmolality >300 mOsm/kg or total osmolality >320 mOsm/kg, absent significant ketonemia, and no significant acidosis; assess for mixed DKA/HHS whenever ketones or acidosis coexist.",
+      cutoffs: ["glucose >=600 mg/dL", "effective osmolality >300 mOsm/kg", "total osmolality >320 mOsm/kg"],
+      data_needed: ["glucose", "sodium", "effective osmolality", "measured/total osmolality", "beta-hydroxybutyrate", "pH", "bicarbonate", "mental status"],
+      source_ids: adaCrisis,
+      source_section: "Adult HHS diagnosis and mixed crisis"
+    }),
+    criterion({
+      id: "adult_dka_potassium_insulin_safety",
+      label: "Adult DKA/HHS insulin safety: insulin should be delayed when potassium is <3.5 mmol/L and delay insulin until K is >3.5 mmol/L",
+      criteria_text: "Before insulin infusion, check potassium and ECG/renal risk; insulin should be delayed when potassium is <3.5 mmol/L, potassium should be replaced with monitored protocol care, and delay insulin until K is >3.5 mmol/L.",
+      cutoffs: ["potassium is <3.5 mmol/L", "K <3.5 mmol/L", "K is >3.5 mmol/L"],
+      data_needed: ["potassium", "ECG", "renal function", "urine output", "insulin plan", "potassium replacement capacity"],
+      source_ids: adaCrisis,
+      source_section: "Potassium replacement and insulin safety"
+    }),
+    criterion({
+      id: "adult_dka_hhs_initial_treatment",
+      label: "Adult DKA/HHS initial treatment: isotonic fluid, potassium-safe insulin, dextrose when glucose approaches DKA/HHS targets, and serial labs",
+      criteria_text: "Treat DKA/HHS with immediate isotonic crystalloid unless fluid-overload risk changes the plan, potassium-aware insulin therapy after safety labs, bedside glucose every 1-2 h, electrolytes/creatinine/phosphate/beta-hydroxybutyrate/venous pH about every 4 h for DKA, and osmolality about every 4 h for HHS.",
+      cutoffs: ["1-2 h", "4 h"],
+      data_needed: ["volume status", "heart failure/kidney disease", "glucose trend", "potassium", "beta-hydroxybutyrate", "venous pH", "bicarbonate", "osmolality"],
+      source_ids: adaCrisis,
+      source_section: "Fluids, insulin, and monitoring"
+    }),
+    criterion({
+      id: "adult_dka_hhs_resolution_transition",
+      label: "Adult DKA/HHS transition: biochemical resolution and clinical stability with basal insulin overlap 1-2 h before stopping IV insulin; do not use anion gap alone",
+      criteria_text: "Transition off IV insulin only after biochemical resolution and clinical stability; use basal-bolus insulin with basal overlap 1-2 h before stopping IV insulin and do not use anion gap alone as the resolution criterion.",
+      cutoffs: ["1-2 h"],
+      data_needed: ["beta-hydroxybutyrate/ketone trend", "pH", "bicarbonate", "osmolality", "mental status", "oral intake", "basal insulin timing"],
+      source_ids: adaCrisis,
+      source_section: "Resolution criteria and transition"
+    }),
+    criterion({
+      id: "adult_noncrisis_inpatient_hyperglycemia",
+      label: "Adult non-crisis inpatient hyperglycemia: persistent inpatient glucose >=180 mg/dL generally needs insulin initiation or intensification",
+      criteria_text: "When DKA/HHS criteria are absent, persistent inpatient glucose >=180 mg/dL generally warrants insulin initiation or intensification, medication reconciliation, nutrition/insulin matching, and follow-up planning; use A1c if no reliable result in the prior 3 months.",
+      cutoffs: ["persistent inpatient glucose >=180 mg/dL", "3 months"],
+      data_needed: ["repeat glucose", "DKA/HHS exclusion labs", "A1c within prior 3 months", "nutrition status", "current diabetes medications", "hypoglycemia risk"],
+      source_ids: adaHospital,
+      source_section: "Inpatient hyperglycemia treatment thresholds"
+    })
+  ];
+
+  const missingContextEndpoint = endpoint({
+    id: "endpoint_missing_context",
+    label: "Missing data needed: adult hyperglycemic-crisis context",
+    edgeLabel: "Missing adult DKA/HHS context: diabetes history, recent insulin/SGLT2 exposure, symptoms, full vitals, hydration/perfusion, mental status, pregnancy status, comorbid fluid risk, and available workup findings",
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_context_criteria`, "Route here when adult hyperglycemic-crisis pathway activation cannot be determined from extractable patient context.", contextDomains, sourceIds, { missing_any: contextDomains }),
+    action: "Document diabetes type/history, last insulin and pump/CGM status, SGLT2 inhibitor use, pregnancy/fasting/poor intake, polyuria/polydipsia/vomiting/abdominal pain, full vitals, hydration/perfusion, mental status, renal/cardiac disease, and current glucose/ketone/acid-base/osmolality results before selecting a non-emergency branch.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: contextDomains
+  });
+
+  const missingCrisisDataEndpoint = endpoint({
+    id: `${prefix}_missing_crisis_labs_endpoint`,
+    label: "Missing data needed: glucose, ketones, pH/bicarbonate, potassium, renal function, and osmolality",
+    edgeLabel: "Cannot distinguish DKA, HHS, mixed crisis, euglycemic DKA, potassium hazard, or non-crisis hyperglycemia until glucose, beta-hydroxybutyrate/ketones, pH, bicarbonate, potassium, creatinine, sodium, osmolality, and mental status are known",
+    sourceIds: adaCrisis,
+    criteria: criteria(`${prefix}_missing_crisis_labs_criteria`, "Route here when adult hyperglycemia is present but the exact results needed for DKA/HHS classification or insulin safety are unavailable.", contextDomains, adaCrisis, { missing_any: ["glucose", "beta-hydroxybutyrate or urine ketones", "venous pH", "bicarbonate", "potassium", "creatinine/eGFR", "sodium/corrected sodium", "effective or total osmolality", "mental status"] }),
+    action: "Obtain point-of-care glucose, serum/capillary beta-hydroxybutyrate or urine ketones, BMP with corrected sodium/potassium/creatinine/bicarbonate/anion gap, venous pH, osmolality when HHS or altered mental status is possible, ECG if potassium risk exists, and precipitant testing guided by symptoms.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["glucose", "beta-hydroxybutyrate or urine ketones", "venous pH", "bicarbonate", "potassium", "creatinine/eGFR", "sodium/corrected sodium", "effective or total osmolality", "mental status", "precipitant assessment"]
+  });
+
+  const potassiumHoldEndpoint = endpoint({
+    id: `${prefix}_potassium_insulin_hold_endpoint`,
+    label: "Potassium hazard: replace potassium and hold insulin until K is safe",
+    edgeLabel: "Potassium/ECG/renal hazard: insulin should be delayed when potassium is <3.5 mmol/L, marked hyperkalemia/ECG change is present, or renal failure prevents safe replacement",
+    sourceIds: adaCrisis,
+    criteria: criteria(`${prefix}_potassium_hold_criteria`, "Use before insulin when potassium or renal/ECG status makes insulin unsafe.", ["labs", "vitals", "medications", "comorbidities", "workup_findings"], adaCrisis, { criteria_options: criteriaRows }),
+    action: "Delay insulin until K is >3.5 mmol/L, replace potassium using a monitored protocol, use ECG/cardiac monitoring for severe hypo- or hyperkalemia, reassess renal function and urine output, and use specialist/ICU review when potassium cannot be monitored or replaced safely.",
+    endpointType: "treatment",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["potassium trend", "ECG", "renal function", "urine output", "insulin start time"]
+  });
+
+  const dkaProtocolEndpoint = endpoint({
+    id: `${prefix}_dka_protocol_endpoint`,
+    label: "Adult DKA confirmed: start fluid, potassium-aware insulin, precipitant treatment, and serial monitoring",
+    edgeLabel: "DKA branch: prior diabetes or glucose >=200 mg/dL, beta-hydroxybutyrate >=3.0 mmol/L or urine ketones >=2+, and pH <7.3 and/or bicarbonate <18 mmol/L",
+    sourceIds: adaCrisis,
+    criteria: criteria(`${prefix}_dka_protocol_criteria`, "Use when adult DKA diagnostic thresholds are met and potassium is safe enough for insulin.", ["symptoms", "vitals", "labs", "medications", "comorbidities", "workup_findings"], adaCrisis, { criteria_options: criteriaRows }),
+    action: "Treat as DKA with isotonic fluid resuscitation, potassium-guided insulin after safety labs, glucose checks every 1-2 h, electrolytes/creatinine/phosphate/beta-hydroxybutyrate/venous pH about every 4 h, dextrose-containing fluids as glucose falls per protocol, and source-directed treatment of infection, MI/stroke, pancreatitis, pump failure, missed insulin, medication access, alcohol, or pregnancy-related precipitant.",
+    endpointType: "treatment",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["glucose every 1-2 h", "potassium and electrolytes about every 4 h", "beta-hydroxybutyrate", "venous pH/bicarbonate", "fluid balance", "precipitant response"]
+  });
+
+  const dkaTransitionEndpoint = endpoint({
+    id: `${prefix}_dka_transition_discharge_endpoint`,
+    label: "Adult DKA resolving: transition to basal-bolus insulin, prevent recurrence, and safety-net",
+    edgeLabel: "DKA improving: biochemical resolution, stable vitals/mentation, oral intake possible, precipitant owned, and basal insulin can overlap IV insulin 1-2 h",
+    sourceIds: adaCrisis,
+    criteria: criteria(`${prefix}_dka_transition_criteria`, "Use when adult DKA has resolved enough to leave IV insulin and move to subcutaneous therapy or lower acuity.", ["vitals", "labs", "medications", "comorbidities", "workup_findings", "follow_up_access"], adaCrisis, { criteria_options: criteriaRows }),
+    action: "Transition only after biochemical resolution and clinical stability; give basal insulin overlap 1-2 h before stopping IV insulin, do not rely on anion gap alone, confirm insulin/supplies/ketone testing/sick-day plan/glucagon when indicated, address affordability and recurrent-DKA barriers, and provide return precautions for vomiting, rising ketones, recurrent glucose elevation, confusion, dyspnea, chest pain, syncope, or inability to take fluids/insulin.",
+    endpointType: "safety_net_instruction",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["basal overlap 1-2 h", "ketone/acid-base resolution", "oral intake", "insulin access", "follow-up owner", "return precautions"]
+  });
+
+  const dkaAction = actionNode({
+    id: `${prefix}_dka_action`,
+    label: "Adult DKA: classify severity, protect potassium safety, and treat the precipitant",
+    edgeLabel: "Adult DKA thresholds met, including prior diabetes or glucose >=200 mg/dL with ketonemia/ketonuria and pH <7.3 and/or bicarbonate <18 mmol/L",
+    sourceIds: adaCrisis,
+    criteria: criteria(`${prefix}_dka_action_criteria`, "Route here when adult DKA diagnostic thresholds are present or strongly suspected.", ["symptoms", "vitals", "labs", "medications", "comorbidities", "workup_findings"], adaCrisis, { criteria_options: criteriaRows }),
+    action: "Run potassium safety, DKA treatment, and transition planning as linked branches; escalate severe acidosis, shock, altered mentation, severe electrolyte disturbance, or inability to monitor to ICU/high-acuity care.",
+    parallelActions: ["potassium/ECG safety", "isotonic fluid", "insulin after potassium safety", "serial glucose/ketones/acid-base labs", "precipitant treatment", "transition/discharge prevention"],
+    guidelineCutoffs: criteriaRows,
+    children: [potassiumHoldEndpoint, dkaProtocolEndpoint, dkaTransitionEndpoint]
+  });
+
+  const hhsProtocolEndpoint = endpoint({
+    id: `${prefix}_hhs_protocol_endpoint`,
+    label: "Adult HHS confirmed: high-acuity fluid-first correction with osmolality and neurologic monitoring",
+    edgeLabel: "HHS branch: glucose >=600 mg/dL with effective osmolality >300 mOsm/kg or total osmolality >320 mOsm/kg, minimal ketonemia, and no major acidosis",
+    sourceIds: adaCrisis,
+    criteria: criteria(`${prefix}_hhs_protocol_criteria`, "Use when adult HHS thresholds are met or mixed DKA/HHS has been excluded.", ["vitals", "labs", "exam", "medications", "comorbidities", "workup_findings"], adaCrisis, { criteria_options: criteriaRows }),
+    action: "Treat as HHS with high-acuity monitoring, careful isotonic fluid replacement individualized for age, kidney disease, and heart failure, potassium monitoring before insulin, gradual glucose/sodium/osmolality correction, neurologic checks, precipitant treatment, and osmolality about every 4 h until stable.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["mental status", "effective/total osmolality about every 4 h", "corrected sodium", "glucose", "potassium", "fluid balance", "precipitant response"]
+  });
+
+  const hhsTransitionEndpoint = endpoint({
+    id: `${prefix}_hhs_resolution_endpoint`,
+    label: "Adult HHS improving: de-escalate only after osmolality, cognition, hydration, and precipitant stabilize",
+    edgeLabel: "HHS response branch: osmolality falling safely, mental status improving, perfusion restored, electrolyte plan stable, precipitant treated, and nutrition/insulin plan ready",
+    sourceIds: adaCrisis,
+    criteria: criteria(`${prefix}_hhs_resolution_criteria`, "Use when HHS is improving enough to step down monitoring or transition insulin strategy.", ["vitals", "labs", "exam", "medications", "comorbidities", "workup_findings", "follow_up_access"], adaCrisis, { criteria_options: criteriaRows }),
+    action: "Continue monitoring until hydration, osmolality, cognition, potassium, renal function, and precipitant are stable; transition to a sustainable diabetes regimen with education, medication affordability review, follow-up, and safety-net instructions for recurrent confusion, dehydration, vomiting, infection symptoms, chest pain, stroke symptoms, or severe hyperglycemia.",
+    endpointType: "deescalation_stopping",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const hhsAction = actionNode({
+    id: `${prefix}_hhs_action`,
+    label: "Adult HHS: fluid-first high-acuity pathway with gradual osmolality correction",
+    edgeLabel: "Adult HHS thresholds met: glucose >=600 mg/dL and effective osmolality >300 mOsm/kg or total osmolality >320 mOsm/kg, without significant ketoacidosis",
+    sourceIds: adaCrisis,
+    criteria: criteria(`${prefix}_hhs_action_criteria`, "Route here when adult HHS diagnostic thresholds are met.", ["symptoms", "vitals", "labs", "exam", "medications", "comorbidities", "workup_findings"], adaCrisis, { criteria_options: criteriaRows }),
+    action: "Treat HHS as high-risk hyperosmolar crisis with fluid-first correction, potassium/renal safety, delayed or cautious insulin according to protocol, and neurologic/osmolality monitoring.",
+    parallelActions: ["fluid deficit assessment", "osmolality trend", "potassium/renal safety", "mental status checks", "precipitant treatment", "transition planning"],
+    guidelineCutoffs: criteriaRows,
+    children: [hhsProtocolEndpoint, hhsTransitionEndpoint]
+  });
+
+  const mixedEndpoint = endpoint({
+    id: `${prefix}_mixed_dka_hhs_endpoint`,
+    label: "Mixed DKA/HHS: manage as high-acuity combined ketoacidotic and hyperosmolar crisis",
+    edgeLabel: "Mixed crisis: DKA ketone/acidosis thresholds coexist with HHS hyperglycemia/osmolality thresholds or altered mentation",
+    sourceIds: adaCrisis,
+    criteria: criteria(`${prefix}_mixed_criteria`, "Use when adult patient has DKA-level ketones/acidosis plus HHS-level hyperglycemia or osmolality.", ["vitals", "labs", "exam", "medications", "comorbidities", "workup_findings"], adaCrisis, { criteria_options: criteriaRows }),
+    action: "Use ICU/high-acuity protocol care, combine DKA insulin/ketone clearance with HHS fluid and osmolality precautions, monitor glucose every 1-2 h and osmolality/electrolytes/acid-base about every 4 h, and involve endocrinology/critical care when mental status, shock, renal failure, or electrolyte instability is present.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const euglycemicSpecialEndpoint = endpoint({
+    id: `${prefix}_euglycemic_special_population_endpoint`,
+    label: "Euglycemic DKA or special population: stop SGLT2 inhibitor and use clinician-governed fluid/insulin plan",
+    edgeLabel: "Ketotic acidosis even if glucose is <200 mg/dL, or pregnancy/frailty/heart failure/advanced kidney disease/SGLT2 exposure changes standard fluid or insulin assumptions",
+    sourceIds: adaCrisis,
+    criteria: criteria(`${prefix}_euglycemic_special_criteria`, "Use when glucose is lower than typical DKA thresholds but ketotic acidosis or special-population risk changes treatment.", ["symptoms", "vitals", "labs", "medications", "pregnancy_status", "comorbidities", "workup_findings"], adaCrisis, { criteria_options: criteriaRows }),
+    action: "Do not dismiss DKA because glucose is <200 mg/dL when SGLT2 inhibitor, pregnancy, fasting, or poor intake is present; stop SGLT2 inhibitor on admission, use dextrose-supported insulin/ketone clearance with potassium monitoring, and obtain endocrinology/obstetric/nephrology/cardiology or ICU input for pregnancy, frailty, heart failure, advanced kidney disease, or inability to monitor safely.",
+    endpointType: "clinician_review_handoff",
+    guidelineCutoffs: criteriaRows,
+    reviewNeededReason: "Euglycemic DKA, pregnancy, SGLT2 inhibitor exposure, major cardiac/renal disease, or local insulin/fluid protocol requires clinician governance."
+  });
+
+  const noncrisisEndpoint = endpoint({
+    id: `${prefix}_noncrisis_hyperglycemia_endpoint`,
+    label: "Hyperglycemia without DKA/HHS: treat persistent inpatient glucose >=180 mg/dL and arrange follow-up",
+    edgeLabel: "No DKA/HHS acidosis, ketone, osmolality, shock, or mental-status branch; persistent inpatient glucose >=180 mg/dL or outpatient hyperglycemia still needs diabetes plan",
+    sourceIds: adaHospital,
+    criteria: criteria(`${prefix}_noncrisis_criteria`, "Use when crisis thresholds are absent and the patient is stable enough for inpatient hyperglycemia or outpatient diabetes management.", ["symptoms", "vitals", "labs", "medications", "comorbidities", "workup_findings", "follow_up_access"], adaHospital, { criteria_options: criteriaRows }),
+    action: "Use inpatient hyperglycemia protocol when persistent glucose is >=180 mg/dL, reconcile home diabetes medications and nutrition/insulin timing, check A1c if no reliable value in the prior 3 months, address steroid/enteral/TPN drivers, and safety-net for ketones, vomiting, dehydration, confusion, dyspnea, chest pain, infection, or rising glucose.",
+    endpointType: "treatment",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const alternateEndpoint = endpoint({
+    id: `${prefix}_alternate_endpoint`,
+    label: "Alternate diagnosis or mimic: route away from DKA/HHS when objective thresholds contradict crisis",
+    edgeLabel: "DKA/HHS thresholds absent or another cause better explains symptoms: starvation/alcohol ketosis, lactic acidosis, renal failure, intoxication, sepsis, pancreatitis, MI/stroke, medication effect, or lab artifact",
+    sourceIds: unique([...adaCrisis, ...genericSourceIds]),
+    criteria: criteria(`${prefix}_alternate_criteria`, "Use an alternate pathway when adult DKA/HHS thresholds are absent or a competing diagnosis explains the abnormal data.", ["symptoms", "vitals", "labs", "imaging_results", "medications", "comorbidities", "workup_findings"], unique([...adaCrisis, ...genericSourceIds]), { criteria_options: criteriaRows }),
+    action: "Document which DKA/HHS criteria are absent, treat the competing diagnosis, continue glucose/ketone/acid-base monitoring if risk persists, and hand off clinician review when metabolic acidosis or altered mental status remains unexplained.",
+    endpointType: "clinician_review_handoff",
+    reviewNeededReason: "Competing acidosis, hyperosmolarity, intoxication, infection, ischemia, or medication effect changes the active pathway."
+  });
+
+  const classificationDecision = decision({
+    id: `${prefix}_classification_decision`,
+    label: "Adult hyperglycemic crisis: classify DKA, HHS, mixed crisis, euglycemic DKA, non-crisis hyperglycemia, or mimic",
+    edgeLabel: "Adult hyperglycemia labs and bedside severity available for threshold routing",
+    sourceIds,
+    criteria: criteria(`${prefix}_classification_criteria`, "Classify adult hyperglycemia using glucose, ketones, pH, bicarbonate, potassium, osmolality, mental status, pregnancy/SGLT2 status, and comorbid fluid risk.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Choose the active adult branch from DKA, HHS, mixed crisis, euglycemic/special-population DKA, non-crisis hyperglycemia, or mimic based on exact thresholds and treatment-safety data.",
+    clinicalCriteria: criteriaRows,
+    guidelineCutoffs: criteriaRows,
+    children: [missingCrisisDataEndpoint, dkaAction, hhsAction, mixedEndpoint, euglycemicSpecialEndpoint, noncrisisEndpoint, alternateEndpoint]
+  });
+
+  const initialAssessment = actionNode({
+    id: `${prefix}_initial_assessment`,
+    label: "Adult hyperglycemia: obtain crisis labs, severity exam, medication exposure, and precipitant data together",
+    edgeLabel: "Adult hyperglycemia, ketotic symptoms, dehydration, altered mentation, suspected DKA/HHS, SGLT2 exposure, or clinician-selected hyperglycemic-crisis workup",
+    sourceIds,
+    criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial adult DKA/HHS assessment requires concurrent clinical severity and lab data before a non-emergency branch is selected.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Assess airway/mentation/perfusion/hydration, measure full vitals and weight, obtain glucose, beta-hydroxybutyrate or urine ketones, BMP with potassium/bicarbonate/anion gap/creatinine/corrected sodium, venous pH, osmolality when HHS is possible, ECG for potassium risk, A1c if no reliable result in prior 3 months, pregnancy status when relevant, and source-directed precipitant testing.",
+    parallelActions: ["full vital signs and mental status", "glucose and ketones", "BMP with potassium/bicarbonate/anion gap/creatinine/corrected sodium", "venous pH", "osmolality when HHS possible", "ECG if potassium risk", "A1c if no reliable result in prior 3 months", "pregnancy/SGLT2/fasting review", "precipitant testing"],
+    requiredData: unique(criteriaRows.flatMap((row) => row.data_needed || [])),
+    guidelineCutoffs: criteriaRows,
+    children: [classificationDecision]
+  });
+
+  const root = decision({
+    id: "root",
+    label: "Adult hyperglycemia: choose DKA/HHS urgency, potassium safety, treatment path, and disposition",
+    sourceIds,
+    criteria: criteria(`${prefix}_activate`, "Activate for adult hyperglycemia, suspected DKA/HHS, ketones, acidosis, hyperosmolality, altered mental status, dehydration, SGLT2 inhibitor exposure, pregnancy, or clinician-selected hyperglycemic-crisis workup.", ["selected_workup_id", "presenting_symptoms", "vitals", "labs", "problem_list_or_diagnosis", "clinician_selected_module"], sourceIds),
+    action: "Route adult hyperglycemia through missing-data, DKA, HHS, mixed crisis, euglycemic/special-population, potassium safety, monitoring/transition, non-crisis, mimic, and safety-net endpoints.",
+    children: [missingContextEndpoint, initialAssessment]
+  });
+
+  const activationRules = {};
+  const allNodeSourceIds = [];
+  const collect = (entry) => {
+    allNodeSourceIds.push(...(entry.source_ids || []), ...(entry.criteria?.source_ids || []));
+    if (entry.criteria) activationRules[entry.id] = entry.criteria;
+    for (const child of entry.children || []) collect(child);
+  };
+  collect(root);
+  const sourceThresholds = sourceThresholdsFromCriteria(criteriaRows);
+  const localEvidenceSourceIds = sourceIdsForItems([...tests, ...redFlags, ...differentials, ...dispositions], sourceIds);
+  const finalSourceIds = unique([...sourceIds, ...localEvidenceSourceIds, ...allNodeSourceIds, ...sourceThresholds.flatMap((row) => row.source_ids || [])]);
+
+  return {
+    schema: "clinical_pathway_tree_v1",
+    workupId: module.id,
+    workup_id: module.id,
+    title: label,
+    version: "4.0.0",
+    status: "hand_polished_adult_dka_hhs_pathway_needs_clinician_review",
+    source_ids: finalSourceIds,
+    source_metadata: sourceRowsForTree(finalSourceIds, sourceById),
+    provenance: {
+      generated_by: "scripts/hand-polish-clinical-pathway-trees.js",
+      generated_at: `${auditDate}T00:00:00.000Z`,
+      update_scope: "clinical_pathway_tree_v1 only",
+      source_material: "ADA 2024 adult hyperglycemic-crises consensus, ADA 2026 hospital standards, and local module evidence rows",
+      review_note: "Adult DKA/HHS tree is disease-specific and threshold-cited; local insulin infusion order sets, electrolyte replacement policy, ICU criteria, and SGLT2 restart decisions require clinician governance."
+    },
+    source_thresholds: sourceThresholds,
+    traversable_context: buildTraversableContext(module, finalSourceIds, tests, criteriaRows),
+    activationRules,
+    root,
+    synthetic_patient_scenarios: [
+      { scenario_id: "missing_context", major_pathway: "missing_data_needed", expected_endpoint_id: missingContextEndpoint.id, expected_active_branch: missingContextEndpoint.edgeLabel },
+      { scenario_id: "missing_crisis_labs", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: missingCrisisDataEndpoint.id, expected_active_branch: missingCrisisDataEndpoint.edgeLabel },
+      { scenario_id: "adult_dka_potassium_hold", major_pathway: "contraindications_special_populations", expected_endpoint_id: potassiumHoldEndpoint.id, expected_active_branch: potassiumHoldEndpoint.edgeLabel },
+      { scenario_id: "adult_dka_protocol", major_pathway: "first_line_management", expected_endpoint_id: dkaProtocolEndpoint.id, expected_active_branch: dkaProtocolEndpoint.edgeLabel },
+      { scenario_id: "adult_hhs_protocol", major_pathway: "escalation_emergency_actions", expected_endpoint_id: hhsProtocolEndpoint.id, expected_active_branch: hhsProtocolEndpoint.edgeLabel },
+      { scenario_id: "adult_mixed_crisis", major_pathway: "severity_risk_stratification", expected_endpoint_id: mixedEndpoint.id, expected_active_branch: mixedEndpoint.edgeLabel },
+      { scenario_id: "adult_hhs_osmolality_monitoring", major_pathway: "monitoring_reassessment_escalation", expected_endpoint_id: hhsProtocolEndpoint.id, expected_active_branch: hhsProtocolEndpoint.edgeLabel },
+      { scenario_id: "adult_hhs_deescalation_ready", major_pathway: "deescalation_stopping_criteria", expected_endpoint_id: hhsTransitionEndpoint.id, expected_active_branch: hhsTransitionEndpoint.edgeLabel },
+      { scenario_id: "adult_noncrisis_hyperglycemia", major_pathway: "mimics_exclusions", expected_endpoint_id: noncrisisEndpoint.id, expected_active_branch: noncrisisEndpoint.edgeLabel },
+      { scenario_id: "adult_transition_safety_net", major_pathway: "disposition_followup_safety_netting", expected_endpoint_id: dkaTransitionEndpoint.id, expected_active_branch: dkaTransitionEndpoint.edgeLabel }
+    ],
+    audit_requirements: {
+      required_domains: requiredPathwayDomains,
+      hand_polished_requirements: [
+        "adult DKA branch uses glucose, ketone, pH, bicarbonate, potassium, and transition thresholds",
+        "adult HHS branch uses glucose and osmolality thresholds with neurologic monitoring",
+        "mixed DKA/HHS and euglycemic/SGLT2/pregnancy branches do not fall through routine hyperglycemia",
+        "potassium <3.5 mmol/L blocks insulin until corrected",
+        "local insulin infusion, electrolyte, ICU, and SGLT2 restart policies remain clinician-governed"
+      ]
+    }
+  };
+}
+
+function buildPediatricDkaHhsClinicalPathwayTree(module, sourceById) {
+  const label = module.label || "Pediatric DKA, HHS, or hyperglycemic crisis";
+  const prefix = "pediatric_dka_hhs";
+  const chq = ["CHQ_DKA_HHS_CHILD_2024"];
+  const nice = ["NICE_NG18_DKA_CHILD"];
+  const rch = ["RCH_DKA_CHILD"];
+  const ispad = ["ISPAD_DKA_HHS_2022"];
+  const sourceIds = unique([...chq, ...nice, ...rch, ...ispad, ...genericSourceIds]);
+  const tests = firstItems(module, "initialTests", 10);
+  const redFlags = firstItems(module, "redFlags", 8, ["safetyChecks"]);
+  const differentials = firstItems(module, "differentialBuckets", 8);
+  const dispositions = firstItems(module, "dispositionRules", 8, ["treatmentOptions"]);
+
+  const criteriaRows = [
+    criterion({
+      id: "pediatric_dka_diagnostic_thresholds",
+      label: "Pediatric DKA: BGL >11 mmol/L with pH <7.3 and/or bicarbonate <18 mmol/L plus moderate/large ketones; NICE uses beta-hydroxybutyrate >3 mmol/L or ketonuria ++",
+      criteria_text: "Diagnose pediatric DKA when glucose is >11 mmol/L with acidosis (pH <7.3 and/or bicarbonate <18 mmol/L in CHQ; NICE uses bicarbonate <15 mmol/L) and moderate/large ketonaemia/ketonuria; NICE diagnostic criteria include beta-hydroxybutyrate >3 mmol/L or ketonuria ++ and above.",
+      cutoffs: ["11 mmol/L", "pH <7.3", "bicarbonate <18 mmol/L", "bicarbonate <15 mmol/L", "beta-hydroxybutyrate >3 mmol/L"],
+      data_needed: ["age", "weight", "glucose", "blood ketones", "urine ketones if blood unavailable", "venous pH", "bicarbonate", "diabetes history", "SGLT2/pregnancy/fasting context"],
+      source_ids: unique([...chq, ...nice, ...ispad]),
+      source_section: "Pediatric DKA recognition and diagnosis"
+    }),
+    criterion({
+      id: "pediatric_dka_severity_thresholds",
+      label: "Pediatric DKA severity: mild pH 7.2-7.3 or HCO3 <18 mmol/L; moderate pH 7.1-7.2 or HCO3 <10 mmol/L; severe pH <7.1 or HCO3 <5 mmol/L",
+      criteria_text: "Classify severity by pH and bicarbonate: mild pH 7.2-7.3 or HCO3 <18 mmol/L, moderate pH 7.1-7.2 or HCO3 <10 mmol/L, severe pH <7.1 or HCO3 <5 mmol/L; children younger than 2 years or severe DKA need high-dependency/one-to-one nursing monitoring in NICE.",
+      cutoffs: ["7.2-7.3", "18 mmol/L", "7.1-7.2", "10 mmol/L", "pH <7.1", "HCO3 <5 mmol/L", "2 years"],
+      data_needed: ["venous pH", "bicarbonate", "age", "level of consciousness", "shock/cardiovascular status", "monitoring capacity"],
+      source_ids: unique([...chq, ...nice, ...rch]),
+      source_section: "Pediatric DKA severity and transfer criteria"
+    }),
+    criterion({
+      id: "pediatric_hhs_diagnostic_thresholds",
+      label: "Pediatric HHS: BGL >33.3 mmol/L, effective osmolality >320 mOsm/kg, ketones <1.1 mmol/L, and pH >7.25 and/or bicarbonate >15 mmol/L",
+      criteria_text: "Classify pediatric HHS when BGL >33.3 mmol/L, effective serum osmolality >320 mOsm/kg, absent to mild ketonemia <1.1 mmol/L, and pH >7.25 and/or bicarbonate >15 mmol/L; mixed DKA/HHS requires specialist care.",
+      cutoffs: ["33.3 mmol/L", "320 mOsm/kg", "1.1 mmol/L", "pH >7.25", "bicarbonate >15 mmol/L"],
+      data_needed: ["glucose", "effective osmolality", "sodium", "ketones", "venous pH", "bicarbonate", "mental status", "fluid deficit"],
+      source_ids: unique([...chq, ...ispad]),
+      source_section: "Pediatric HHS diagnosis and management"
+    }),
+    criterion({
+      id: "pediatric_dka_fluid_insulin_potassium",
+      label: "Pediatric DKA treatment: 0.9% saline 10 mL/kg bolus over 20-30 min if moderate/severe or shock, insulin 1 hour after fluids with no bolus, potassium usually 40 mmol/L",
+      criteria_text: "CHQ recommends 0.9% saline 10 mL/kg bolus over 20-30 minutes and repeat to a maximum 20 mL/kg when needed, urgent critical-care advice if shock requires two or more boluses, insulin one hour after fluids with no IV/IM bolus, ideal insulin infusion 0.1 units/kg/hr, and 40 mmol/L potassium chloride in default fluids unless hyperkalemia/anuria requires specialist advice.",
+      cutoffs: ["10 mL/kg", "20-30 min", "20 mL/kg", "1 hour", "0.1 units/kg/hr", "40 mmol/L"],
+      data_needed: ["weight", "shock/perfusion", "fluid boluses already given", "potassium", "urine output", "insulin start time", "cardiac monitoring"],
+      source_ids: unique([...chq, ...nice, ...rch]),
+      source_section: "Pediatric fluids, insulin, and potassium"
+    }),
+    criterion({
+      id: "pediatric_dka_glucose_monitoring_transition",
+      label: "Pediatric monitoring/transition: add 5% glucose when plasma glucose <14 mmol/L; if glucose <6 mmol/L continue insulin at least 0.05 units/kg/hour when ketosis persists; SC insulin 30 minutes before IV stop",
+      criteria_text: "NICE recommends changing to 0.9% saline with 5% glucose and potassium when plasma glucose falls below 14 mmol/L; if glucose falls below 6 mmol/L and ketosis persists, increase glucose and continue insulin at least 0.05 units/kg/hour; start subcutaneous insulin at least 30 minutes before stopping IV insulin.",
+      cutoffs: ["14 mmol/L", "6 mmol/L", "0.05 units/kg/hour", "30 minutes"],
+      data_needed: ["glucose trend", "ketone trend", "oral intake", "level of consciousness", "nausea/vomiting", "subcutaneous insulin timing"],
+      source_ids: nice,
+      source_section: "Pediatric glucose fluids and transition"
+    }),
+    criterion({
+      id: "pediatric_cerebral_edema_hypokalemia",
+      label: "Pediatric cerebral edema/hypokalemia: neuro checks every 30 minutes if high risk; treat cerebral edema immediately with mannitol 0.5-1 g/kg or hypertonic saline 2.5-5 mL/kg over 10-15 minutes; potassium <3 mmol/L needs critical-care discussion",
+      criteria_text: "NICE recommends every-30-minute consciousness/heart-rate monitoring for age under 2 years or severe DKA; suspected cerebral edema requires immediate treatment with mannitol 20% 0.5-1 g/kg over 10-15 minutes or hypertonic sodium chloride 2.7% or 3% 2.5-5 mL/kg over 10-15 minutes. If potassium is below 3 mmol/L, discuss urgent management with pediatric critical care.",
+      cutoffs: ["30 minutes", "2 years", "0.5-1 g/kg", "2.5-5 mL/kg", "10-15 minutes", "potassium below 3 mmol/L"],
+      data_needed: ["age", "pH", "level of consciousness", "headache/vomiting/bradycardia/rising BP", "sodium/osmolality trend", "potassium", "ECG", "critical-care access"],
+      source_ids: nice,
+      source_section: "Monitoring, cerebral edema, and hypokalemia"
+    })
+  ];
+
+  const missingContextEndpoint = endpoint({
+    id: "endpoint_missing_context",
+    label: "Missing data needed: pediatric DKA/HHS context",
+    edgeLabel: "Missing pediatric DKA/HHS context: age, weight, diabetes history, insulin/pump access, symptoms, vitals, hydration/perfusion, mental status, pregnancy/SGLT2 exposure when relevant, and current workup findings",
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_context_criteria`, "Route here when pediatric hyperglycemic-crisis activation cannot be determined from extractable context.", contextDomains, sourceIds, { missing_any: contextDomains }),
+    action: "Document age, weight, diabetes history, insulin/pump/CGM and access barriers, vomiting/intake/dehydration trajectory, full vital signs, hydration/perfusion, AVPU or modified GCS, pregnancy/SGLT2 exposure when relevant, and current glucose/ketone/pH/bicarbonate/potassium/osmolality data before selecting a non-emergency branch.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: contextDomains
+  });
+
+  const missingDataEndpoint = endpoint({
+    id: `${prefix}_missing_crisis_data_endpoint`,
+    label: "Missing data needed: pediatric glucose, ketones, acid-base, electrolytes, osmolality, neuro status, or weight",
+    edgeLabel: "Cannot classify pediatric DKA, HHS, cerebral edema risk, shock route, potassium safety, or transition readiness until glucose, ketones, pH, bicarbonate, potassium, sodium/osmolality, weight, fluid balance, and neuro status are known",
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_data_criteria`, "Route here when the exact data needed for pediatric DKA/HHS classification or treatment safety are unavailable.", contextDomains, sourceIds, { missing_any: ["age", "weight", "glucose", "blood or urine ketones", "venous pH", "bicarbonate", "potassium", "sodium/effective osmolality", "fluid boluses", "mental status"] }),
+    action: "Obtain bedside glucose and blood ketones, venous pH/bicarbonate, electrolytes/urea/creatinine with sodium and potassium, effective osmolality when HHS/mixed crisis is possible, weight, strict fluid balance, AVPU/modified GCS, ECG/cardiac monitoring when potassium risk exists, and senior pediatric/endocrine advice.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["age", "weight", "glucose", "blood or urine ketones", "venous pH", "bicarbonate", "potassium", "sodium/effective osmolality", "fluid boluses", "mental status"]
+  });
+
+  const cerebralEdemaEndpoint = endpoint({
+    id: `${prefix}_cerebral_edema_endpoint`,
+    label: "Cerebral edema suspected: treat immediately before imaging",
+    edgeLabel: "Headache, bradycardia or unexpected HR fall, rising BP, recurrent vomiting, agitation/irritability, deteriorating consciousness, respiratory pauses, oculomotor palsy, pupillary abnormality, falling sodium/osmolality, or high-risk age/severe DKA",
+    sourceIds: unique([...chq, ...nice]),
+    criteria: criteria(`${prefix}_cerebral_edema_criteria`, "Use whenever pediatric DKA neurologic warning signs or cerebral edema signs appear.", ["symptoms", "vitals", "exam", "labs", "workup_findings"], unique([...chq, ...nice]), { criteria_options: criteriaRows }),
+    action: "Start cerebral-edema treatment immediately, raise head of bed, give high-flow oxygen, reduce fluids per specialist advice, administer mannitol 20% 0.5-1 g/kg over 10-15 minutes or hypertonic sodium chloride 2.7% or 3% 2.5-5 mL/kg over 10-15 minutes depending on availability, seek pediatric critical-care advice, and do not delay for neuroimaging.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["neurologic status every 30 minutes when high risk", "heart rate/bradycardia", "blood pressure", "sodium/osmolality trend", "oxygenation", "critical-care disposition"]
+  });
+
+  const shockBolusEndpoint = endpoint({
+    id: `${prefix}_shock_bolus_endpoint`,
+    label: "Shock or cardiovascular compromise: 0.9% saline bolus and urgent critical-care route",
+    edgeLabel: "Shock, poor perfusion, hypotension, coma, cardiovascular compromise, or need for repeated fluid bolus; two 10 mL/kg boluses or maximum 20 mL/kg requires urgent critical-care advice",
+    sourceIds: chq,
+    criteria: criteria(`${prefix}_shock_bolus_criteria`, "Use when pediatric DKA/HHS presents with shock or severe perfusion compromise.", ["vitals", "exam", "labs", "workup_findings"], chq, { criteria_options: criteriaRows }),
+    action: "Give 0.9% sodium chloride 10 mL/kg over 20-30 minutes for moderate/severe DKA with shock, repeat only as needed to maximum 20 mL/kg, reassess perfusion after each bolus, seek pediatric critical-care/retrieval advice when two or more boluses are required, and evaluate sepsis or other shock causes.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["perfusion", "heart rate/BP", "bolus total mL/kg", "urine output", "senior/PICU contact"]
+  });
+
+  const pediatricDkaProtocolEndpoint = endpoint({
+    id: `${prefix}_dka_protocol_endpoint`,
+    label: "Pediatric DKA confirmed: fluids first, no insulin bolus, potassium-safe infusion, and hourly monitoring",
+    edgeLabel: "Pediatric DKA thresholds met: BGL >11 mmol/L, acidosis, and moderate/large ketones; severity and high-risk age determine monitoring location",
+    sourceIds: unique([...chq, ...nice, ...rch, ...ispad]),
+    criteria: criteria(`${prefix}_dka_protocol_criteria`, "Use when pediatric DKA diagnostic thresholds are met and cerebral edema/shock have been addressed.", ["symptoms", "vitals", "labs", "exam", "medications", "workup_findings"], unique([...chq, ...nice, ...rch, ...ispad]), { criteria_options: criteriaRows }),
+    action: "Start pediatric DKA protocol with IV fluids before insulin, no IV or IM insulin bolus, insulin 1 hour after fluids when potassium plan is safe, usual insulin infusion 0.1 units/kg/hr, potassium-containing 0.9% saline when not hyperkalemic/anuric, hourly vitals/glucose/fluid balance/neuro status, continuous ECG in ED, and labs at 2 hours then at least every 4 hours.",
+    endpointType: "treatment",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["hourly glucose/vitals/fluid balance/neuro status", "continuous ECG in ED", "blood tests at 2 hours then at least every 4 hours", "ketone trend", "potassium every 2 hours in CHQ ED pathway"]
+  });
+
+  const potassiumAnuriaEndpoint = endpoint({
+    id: `${prefix}_potassium_anuria_endpoint`,
+    label: "Potassium danger or anuria: specialist fluid/insulin modification",
+    edgeLabel: "K <3.5 mmol/L at diagnosis, potassium below 3 mmol/L during treatment, hyperkalemia, ECG changes, anuria, renal failure, or inability to monitor potassium safely",
+    sourceIds: unique([...chq, ...nice]),
+    criteria: criteria(`${prefix}_potassium_anuria_criteria`, "Use when potassium, urine output, ECG, or renal status changes pediatric DKA/HHS insulin and fluid safety.", ["labs", "vitals", "exam", "medications", "workup_findings"], unique([...chq, ...nice]), { criteria_options: criteriaRows }),
+    action: "Use continuous cardiac monitoring, check potassium at protocol intervals, seek endocrine/critical-care advice for K <3.5 mmol/L at diagnosis or potassium below 3 mmol/L during therapy, avoid potassium-containing fluids in anuria/hyperkalemia until specialist advice, and adjust insulin only with senior direction.",
+    endpointType: "clinician_review_handoff",
+    guidelineCutoffs: criteriaRows,
+    reviewNeededReason: "Potassium, anuria, renal impairment, ECG change, or local potassium-infusion policy changes insulin/fluid safety."
+  });
+
+  const pediatricHhsEndpoint = endpoint({
+    id: `${prefix}_hhs_specialist_endpoint`,
+    label: "Pediatric HHS or mixed DKA/HHS: urgent endocrine/critical-care pathway",
+    edgeLabel: "Pediatric HHS thresholds: BGL >33.3 mmol/L, effective osmolality >320 mOsm/kg, ketones <1.1 mmol/L, pH >7.25 and/or bicarbonate >15 mmol/L, or mixed DKA/HHS features",
+    sourceIds: unique([...chq, ...ispad]),
+    criteria: criteria(`${prefix}_hhs_criteria`, "Use when pediatric HHS or mixed DKA/HHS thresholds are present.", ["vitals", "labs", "exam", "medications", "comorbidities", "workup_findings"], unique([...chq, ...ispad]), { criteria_options: criteriaRows }),
+    action: "Treat as pediatric HHS/mixed crisis with urgent pediatric endocrine and critical-care advice, more aggressive but monitored fluid replacement than DKA, osmolality and corrected sodium trend monitoring, delayed/cautious insulin according to specialist guidance, VTE/rhabdomyolysis/AKI surveillance, and high-acuity disposition.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["effective osmolality", "corrected sodium", "mental status", "fluid balance", "potassium", "renal function", "rhabdomyolysis/VTE risk"]
+  });
+
+  const transitionEndpoint = endpoint({
+    id: `${prefix}_transition_recurrence_endpoint`,
+    label: "Pediatric DKA resolving: oral fluids, subcutaneous insulin overlap, education, and recurrence prevention",
+    edgeLabel: "DKA improving: ketosis resolving, pH >=7.3, alert, no vomiting, oral fluids tolerated, and subcutaneous insulin can start at least 30 minutes before stopping IV insulin",
+    sourceIds: unique([...chq, ...nice, ...rch]),
+    criteria: criteria(`${prefix}_transition_criteria`, "Use when pediatric DKA is resolving and transition or discharge planning can start.", ["vitals", "labs", "exam", "medications", "workup_findings", "follow_up_access"], unique([...chq, ...nice, ...rch]), { criteria_options: criteriaRows }),
+    action: "Continue IV fluids/insulin until ketosis is resolving, pH has reached 7.3, the child is alert, vomiting has stopped, and oral fluids are tolerated; start subcutaneous insulin at least 30 minutes before stopping IV insulin, or restart pump at least 60 minutes before stopping IV insulin with new cartridge/set/site, identify the precipitant, address nonadherence or access barriers, teach sick-day/ketone rules, and arrange pediatric diabetes follow-up.",
+    endpointType: "safety_net_instruction",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["ketone resolution", "pH >=7.3", "oral intake", "SC insulin overlap at least 30 minutes", "pump overlap at least 60 minutes", "recurrence prevention"]
+  });
+
+  const glucoseFluidsEndpoint = endpoint({
+    id: `${prefix}_glucose_fluids_endpoint`,
+    label: "Glucose falling during DKA therapy: add dextrose and continue insulin for ketone clearance",
+    edgeLabel: "Treatment glucose branch: plasma glucose <14 mmol/L needs 0.9% saline with 5% glucose and potassium; glucose <6 mmol/L with persisting ketosis needs more glucose and at least 0.05 units/kg/hour insulin",
+    sourceIds: nice,
+    criteria: criteria(`${prefix}_glucose_fluids_criteria`, "Use during pediatric DKA treatment when glucose falls before ketosis/acidosis has resolved.", ["labs", "medications", "workup_findings"], nice, { criteria_options: criteriaRows }),
+    action: "When plasma glucose falls below 14 mmol/L, change to 0.9% sodium chloride with 5% glucose and potassium if appropriate; if glucose falls below 6 mmol/L and ketosis persists, increase glucose concentration and continue insulin at least 0.05 units/kg/hour rather than stopping ketone-clearing insulin without senior advice.",
+    endpointType: "monitoring_reassessment",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const alternateEndpoint = endpoint({
+    id: `${prefix}_alternate_endpoint`,
+    label: "Alternate pediatric diagnosis or no crisis: route away from DKA/HHS only after thresholds are checked",
+    edgeLabel: "DKA/HHS thresholds absent or another diagnosis better explains vomiting, abdominal pain, acidosis, dehydration, altered mental status, or hyperglycemia",
+    sourceIds: unique([...chq, ...nice, ...genericSourceIds]),
+    criteria: criteria(`${prefix}_alternate_criteria`, "Use an alternate pathway when pediatric DKA/HHS thresholds are absent and another diagnosis better explains the presentation.", ["symptoms", "vitals", "labs", "exam", "imaging_results", "medications", "workup_findings"], unique([...chq, ...nice, ...genericSourceIds]), { criteria_options: criteriaRows }),
+    action: "Document which glucose, ketone, pH/bicarbonate, osmolality, and clinical severity criteria are absent; treat the competing diagnosis, continue repeat glucose/ketone checks if symptoms persist, and safety-net for vomiting, dehydration, Kussmaul breathing, altered mental status, rising ketones, or inability to keep fluids/insulin down.",
+    endpointType: "clinician_review_handoff",
+    reviewNeededReason: "Competing pediatric diagnosis or uncertain metabolic pattern changes the active pathway."
+  });
+
+  const dkaAction = actionNode({
+    id: `${prefix}_dka_action`,
+    label: "Pediatric DKA: severity, shock, potassium, glucose-fluid, and transition decisions",
+    edgeLabel: "Pediatric DKA diagnostic thresholds met; classify mild/moderate/severe by pH/bicarbonate and apply age, shock, potassium, cerebral-edema, and monitoring rules",
+    sourceIds: unique([...chq, ...nice, ...rch, ...ispad]),
+    criteria: criteria(`${prefix}_dka_action_criteria`, "Route here when pediatric DKA diagnostic thresholds are present.", ["symptoms", "vitals", "labs", "exam", "medications", "workup_findings"], unique([...chq, ...nice, ...rch, ...ispad]), { criteria_options: criteriaRows }),
+    action: "Run shock bolus, potassium/anuria safety, DKA treatment, glucose-fluid, and transition branches as concurrent pediatric protocol decisions.",
+    parallelActions: ["shock/perfusion route", "potassium/anuria safety", "fluids then insulin after 1 hour", "hourly neuro/glucose/vital monitoring", "glucose-containing fluids as glucose falls", "transition/recurrence prevention"],
+    guidelineCutoffs: criteriaRows,
+    children: [shockBolusEndpoint, potassiumAnuriaEndpoint, pediatricDkaProtocolEndpoint, glucoseFluidsEndpoint, transitionEndpoint]
+  });
+
+  const classificationDecision = decision({
+    id: `${prefix}_classification_decision`,
+    label: "Pediatric hyperglycemic crisis: classify DKA severity, HHS, cerebral edema, potassium hazard, transition readiness, or mimic",
+    edgeLabel: "Pediatric glucose, ketone, pH/bicarbonate, electrolyte, osmolality, weight, fluid, and neurologic data available for threshold routing",
+    sourceIds,
+    criteria: criteria(`${prefix}_classification_criteria`, "Classify pediatric DKA/HHS using age, weight, glucose, ketones, pH, bicarbonate, potassium, sodium/osmolality, shock/perfusion, mental status, and treatment response.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Choose the active pediatric branch from missing data, cerebral edema, DKA protocol, HHS/mixed crisis, glucose-fluid adjustment, transition/recurrence prevention, potassium hazard, or alternate diagnosis.",
+    clinicalCriteria: criteriaRows,
+    guidelineCutoffs: criteriaRows,
+    children: [missingDataEndpoint, cerebralEdemaEndpoint, dkaAction, pediatricHhsEndpoint, alternateEndpoint]
+  });
+
+  const initialAssessment = actionNode({
+    id: `${prefix}_initial_assessment`,
+    label: "Pediatric hyperglycemia: obtain emergency ABCD, weight, neuro status, ketone/acid-base, electrolyte, and osmolality data together",
+    edgeLabel: "Child or adolescent with hyperglycemia, ketones, vomiting, abdominal pain, dehydration, Kussmaul breathing, altered mental status, suspected DKA/HHS, pump failure, insulin omission, or clinician-selected pediatric crisis workup",
+    sourceIds,
+    criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial pediatric DKA/HHS assessment requires emergency ABCD, neurologic risk, weight-based dosing data, and threshold labs before a non-emergency branch is selected.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Perform ABCD assessment, measure age/weight/full vitals, document AVPU or modified GCS, hydration/perfusion and fluid balance, obtain bedside glucose and blood ketones or urine ketones, venous pH/bicarbonate, electrolytes/urea/creatinine with sodium and potassium, effective osmolality if HHS/mixed crisis possible, ECG/cardiac monitoring for potassium risk, and senior pediatric/endocrine advice.",
+    parallelActions: ["ABCD and airway protection", "age/weight/full vital signs", "AVPU or modified GCS", "hydration/perfusion/fluid balance", "glucose and ketones", "venous pH/bicarbonate", "electrolytes with sodium/potassium/renal function", "effective osmolality when HHS possible", "ECG/cardiac monitoring when potassium risk", "senior pediatric/endocrine contact"],
+    requiredData: unique(criteriaRows.flatMap((row) => row.data_needed || [])),
+    guidelineCutoffs: criteriaRows,
+    children: [classificationDecision]
+  });
+
+  const root = decision({
+    id: "root",
+    label: "Pediatric DKA/HHS: choose emergency stabilization, protocol treatment, cerebral-edema route, and disposition",
+    sourceIds,
+    criteria: criteria(`${prefix}_activate`, "Activate for child/adolescent hyperglycemia, suspected DKA/HHS, ketones, acidosis, dehydration, Kussmaul breathing, altered mental status, shock, SGLT2/pregnancy/fasting risk, pump failure, insulin omission, or clinician-selected pediatric hyperglycemic-crisis workup.", ["selected_workup_id", "presenting_symptoms", "vitals", "labs", "problem_list_or_diagnosis", "clinician_selected_module"], sourceIds),
+    action: "Route pediatric DKA/HHS through missing-data, cerebral edema, shock bolus, DKA protocol, HHS/mixed crisis, glucose-fluid adjustment, potassium/anuria review, transition, recurrence prevention, mimic, and safety-net endpoints.",
+    children: [missingContextEndpoint, initialAssessment]
+  });
+
+  const activationRules = {};
+  const allNodeSourceIds = [];
+  const collect = (entry) => {
+    allNodeSourceIds.push(...(entry.source_ids || []), ...(entry.criteria?.source_ids || []));
+    if (entry.criteria) activationRules[entry.id] = entry.criteria;
+    for (const child of entry.children || []) collect(child);
+  };
+  collect(root);
+  const sourceThresholds = sourceThresholdsFromCriteria(criteriaRows);
+  const localEvidenceSourceIds = sourceIdsForItems([...tests, ...redFlags, ...differentials, ...dispositions], sourceIds);
+  const finalSourceIds = unique([...sourceIds, ...localEvidenceSourceIds, ...allNodeSourceIds, ...sourceThresholds.flatMap((row) => row.source_ids || [])]);
+
+  return {
+    schema: "clinical_pathway_tree_v1",
+    workupId: module.id,
+    workup_id: module.id,
+    title: label,
+    version: "4.0.0",
+    status: "hand_polished_pediatric_dka_hhs_pathway_needs_clinician_review",
+    source_ids: finalSourceIds,
+    source_metadata: sourceRowsForTree(finalSourceIds, sourceById),
+    provenance: {
+      generated_by: "scripts/hand-polish-clinical-pathway-trees.js",
+      generated_at: `${auditDate}T00:00:00.000Z`,
+      update_scope: "clinical_pathway_tree_v1 only",
+      source_material: "Children's Health Queensland 2024 DKA/HHS guideline, NICE NG18 DKA recommendations, RCH pediatric DKA guideline, ISPAD 2022 DKA/HHS guideline, and local module evidence rows",
+      review_note: "Pediatric DKA/HHS tree is disease-specific and threshold-cited; local retrieval/PICU thresholds, fluid calculator/order sets, potassium infusion limits, and formulary-specific cerebral-edema medications require clinician governance."
+    },
+    source_thresholds: sourceThresholds,
+    traversable_context: buildTraversableContext(module, finalSourceIds, tests, criteriaRows),
+    activationRules,
+    root,
+    synthetic_patient_scenarios: [
+      { scenario_id: "missing_context", major_pathway: "missing_data_needed", expected_endpoint_id: missingContextEndpoint.id, expected_active_branch: missingContextEndpoint.edgeLabel },
+      { scenario_id: "missing_pediatric_crisis_data", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: missingDataEndpoint.id, expected_active_branch: missingDataEndpoint.edgeLabel },
+      { scenario_id: "pediatric_cerebral_edema", major_pathway: "escalation_emergency_actions", expected_endpoint_id: cerebralEdemaEndpoint.id, expected_active_branch: cerebralEdemaEndpoint.edgeLabel },
+      { scenario_id: "pediatric_dka_shock", major_pathway: "red_flags_instability", expected_endpoint_id: shockBolusEndpoint.id, expected_active_branch: shockBolusEndpoint.edgeLabel },
+      { scenario_id: "pediatric_dka_protocol", major_pathway: "first_line_management", expected_endpoint_id: pediatricDkaProtocolEndpoint.id, expected_active_branch: pediatricDkaProtocolEndpoint.edgeLabel },
+      { scenario_id: "pediatric_hhs_mixed", major_pathway: "severity_risk_stratification", expected_endpoint_id: pediatricHhsEndpoint.id, expected_active_branch: pediatricHhsEndpoint.edgeLabel },
+      { scenario_id: "pediatric_potassium_anuria", major_pathway: "contraindications_special_populations", expected_endpoint_id: potassiumAnuriaEndpoint.id, expected_active_branch: potassiumAnuriaEndpoint.edgeLabel },
+      { scenario_id: "pediatric_glucose_fluid_reassessment", major_pathway: "monitoring_reassessment_escalation", expected_endpoint_id: glucoseFluidsEndpoint.id, expected_active_branch: glucoseFluidsEndpoint.edgeLabel },
+      { scenario_id: "pediatric_deescalation_transition", major_pathway: "deescalation_stopping_criteria", expected_endpoint_id: transitionEndpoint.id, expected_active_branch: transitionEndpoint.edgeLabel },
+      { scenario_id: "pediatric_alternate_mimic", major_pathway: "mimics_exclusions", expected_endpoint_id: alternateEndpoint.id, expected_active_branch: alternateEndpoint.edgeLabel },
+      { scenario_id: "pediatric_transition_recurrence", major_pathway: "disposition_followup_safety_netting", expected_endpoint_id: transitionEndpoint.id, expected_active_branch: transitionEndpoint.edgeLabel }
+    ],
+    audit_requirements: {
+      required_domains: requiredPathwayDomains,
+      hand_polished_requirements: [
+        "pediatric DKA branch uses glucose, ketone, pH, bicarbonate, age, shock, fluid, insulin, and potassium thresholds",
+        "pediatric HHS branch uses glucose, ketone, pH/bicarbonate, and osmolality thresholds",
+        "cerebral-edema branch includes immediate treatment doses and avoids imaging delay",
+        "glucose-fluid and transition branches include dextrose, insulin-continuation, and subcutaneous overlap thresholds",
+        "local retrieval/PICU, fluid calculator, potassium infusion, and formulary policies remain clinician-governed"
+      ]
+    }
+  };
+}
+
 function enrichModule(module) {
   const curatedRows = curatedCutoffCriteria[module.id] || [];
   if (!curatedRows.length) return module;
@@ -1698,7 +2297,11 @@ function main() {
     const module = enrichModule(baseModule);
     const clinicalPathway = module.id === "fever_infection_sepsis_v1"
       ? buildAdultSepsisClinicalPathwayTree(module, sourceById)
-      : buildCompactClinicalPathwayTree(module, sourceById);
+      : module.id === "hyperglycemia_possible_dka_v1"
+        ? buildAdultDkaHhsClinicalPathwayTree(module, sourceById)
+        : module.id === "pediatric_dka_hhs_hyperglycemia_v1"
+          ? buildPediatricDkaHhsClinicalPathwayTree(module, sourceById)
+          : buildCompactClinicalPathwayTree(module, sourceById);
     const nextModule = { ...module, clinical_pathway_tree_v1: clinicalPathway };
     const nextRaw = raw.module ? { ...raw, module: nextModule } : nextModule;
     const next = `${JSON.stringify(nextRaw, null, 2)}\n`;
