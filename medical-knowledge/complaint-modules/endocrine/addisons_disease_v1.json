@@ -2588,7 +2588,7 @@
           {
             "domain": "exam",
             "exact_data_needed": [
-              "condition-specific focused exam",
+              "focused exam findings listed for this workup",
               "Inspect oral mucosa for hyperpigmentation",
               "Inspect mucous membranes for dehydration",
               "Test chair-rise strength",
@@ -2702,7 +2702,7 @@
             "domain": "pregnancy_status",
             "exact_data_needed": [
               "pregnant/not pregnant/unknown when pregnancy potential exists",
-              "postpartum/lactation status when relevant",
+              "postpartum/lactation status if testing or treatment could change",
               "fertility intent when treatment depends on it"
             ],
             "source_ids": [
@@ -2755,7 +2755,7 @@
         "endpoint_missing_context": {
           "rule_id": "addisons_disease_missing_context_criteria",
           "source": "criteria",
-          "description": "Route here when adrenal crisis risk, diagnostic status, medication exposure, or replacement-safety information cannot be extracted.",
+          "description": "Use this branch when adrenal crisis risk, diagnostic status, medication exposure, or replacement-safety information cannot be extracted.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3210,7 +3210,7 @@
         "addisons_disease_missing_adrenal_testing_endpoint": {
           "rule_id": "addisons_disease_missing_adrenal_testing_criteria",
           "source": "criteria",
-          "description": "Route here when adrenal insufficiency cannot be classified because exact endocrine or safety data are unavailable.",
+          "description": "Use this branch when adrenal insufficiency cannot be classified because exact endocrine or safety data are unavailable.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4889,7 +4889,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Addison's Disease: route by adrenal crisis physiology, cortisol confirmation, replacement needs, and safety planning",
+        "label": "Addison's Disease: use adrenal crisis physiology, cortisol confirmation, replacement needs, and safety planning",
         "edgeLabel": "",
         "source_ids": [
           "ES_ADRENAL_INSUFFICIENCY_2016",
@@ -4926,7 +4926,7 @@
             "criteria": {
               "rule_id": "addisons_disease_missing_context_criteria",
               "source": "criteria",
-              "description": "Route here when adrenal crisis risk, diagnostic status, medication exposure, or replacement-safety information cannot be extracted.",
+              "description": "Use this branch when adrenal crisis risk, diagnostic status, medication exposure, or replacement-safety information cannot be extracted.",
               "evaluable_from": [
                 "symptoms",
                 "exam",
@@ -5434,7 +5434,7 @@
                     "criteria": {
                       "rule_id": "addisons_disease_missing_adrenal_testing_criteria",
                       "source": "criteria",
-                      "description": "Route here when adrenal insufficiency cannot be classified because exact endocrine or safety data are unavailable.",
+                      "description": "Use this branch when adrenal insufficiency cannot be classified because exact endocrine or safety data are unavailable.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",

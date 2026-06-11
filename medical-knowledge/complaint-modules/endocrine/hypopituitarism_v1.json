@@ -2871,7 +2871,7 @@
           {
             "domain": "exam",
             "exact_data_needed": [
-              "condition-specific focused exam",
+              "focused exam findings listed for this workup",
               "Test confrontation visual fields",
               "Inspect secondary sex characteristics",
               "Inspect body hair distribution",
@@ -2908,7 +2908,7 @@
               "8 AM cortisol +/- ACTH stimulation.",
               "Free T4 with TSH.",
               "LH/FSH with testosterone or estradiol.",
-              "Prolactin, IGF-1 and dynamic GH testing when the branch-specific criteria in this node apply.",
+              "Prolactin, IGF-1 and dynamic GH testing.",
               "Pituitary MRI.",
               "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
               "8-9 AM cortisol",
@@ -2930,7 +2930,7 @@
             "exact_data_needed": [
               "imaging, ECG, culture, pathology, or procedure result required by the chosen branch",
               "8 AM cortisol +/- ACTH stimulation.",
-              "Prolactin, IGF-1 and dynamic GH testing when the branch-specific criteria in this node apply.",
+              "Prolactin, IGF-1 and dynamic GH testing.",
               "Pituitary MRI.",
               "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
               "Pituitary safety tests: check 8 AM cortisol/ACTH before thyroid replacement decisions, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, sodium/osmolality, and MRI/visual-field pathway when mass effect is possible."
@@ -2991,7 +2991,7 @@
             "domain": "pregnancy_status",
             "exact_data_needed": [
               "pregnant/not pregnant/unknown when pregnancy potential exists",
-              "postpartum/lactation status when relevant",
+              "postpartum/lactation status if testing or treatment could change",
               "fertility intent when treatment depends on it"
             ],
             "source_ids": [
@@ -3048,7 +3048,7 @@
         "endpoint_missing_context": {
           "rule_id": "hypopituitarism_missing_context_criteria",
           "source": "criteria",
-          "description": "Route here when pituitary mass-effect risk, adrenal reserve, thyroid status, water balance, gonadal/GH/prolactin axis, or medication history cannot be extracted.",
+          "description": "Use this branch when pituitary mass-effect risk, adrenal reserve, thyroid status, water balance, gonadal/GH/prolactin axis, or medication history cannot be extracted.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3482,7 +3482,7 @@
         "hypopituitarism_missing_axis_data_endpoint": {
           "rule_id": "hypopituitarism_missing_axis_data_criteria",
           "source": "criteria",
-          "description": "Route here when the exact endocrine axis or mass-effect data needed for safe sequencing are unavailable.",
+          "description": "Use this branch when the exact endocrine axis or mass-effect data needed for safe sequencing are unavailable.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -5269,7 +5269,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Hypopituitarism: route by apoplexy/adrenal crisis risk, pituitary-axis labs, hormone sequencing, DI safety, and disposition",
+        "label": "Hypopituitarism: use apoplexy/adrenal crisis risk, pituitary-axis labs, hormone sequencing, DI safety, and disposition",
         "edgeLabel": "",
         "source_ids": [
           "ES_HYPOPITUITARISM_2016",
@@ -5310,7 +5310,7 @@
             "criteria": {
               "rule_id": "hypopituitarism_missing_context_criteria",
               "source": "criteria",
-              "description": "Route here when pituitary mass-effect risk, adrenal reserve, thyroid status, water balance, gonadal/GH/prolactin axis, or medication history cannot be extracted.",
+              "description": "Use this branch when pituitary mass-effect risk, adrenal reserve, thyroid status, water balance, gonadal/GH/prolactin axis, or medication history cannot be extracted.",
               "evaluable_from": [
                 "symptoms",
                 "exam",
@@ -5574,7 +5574,7 @@
                 }
               ]
             },
-            "action": "Assess severe headache, vision, visual fields, ocular motility, and pituitary MRI need; measure blood pressure, measure heart rate, and document mental status. Obtain 8-9 AM cortisol before thyroid escalation when stable, free T4/TSH, sodium/glucose, serum and urine osmolality with urine output if DI is possible, prolactin, IGF-1, LH/FSH with sex steroid, pregnancy status when relevant, medication/surgery/radiation history, and current hormone access.",
+            "action": "Assess severe headache, vision, visual fields, ocular motility, and pituitary MRI need; measure blood pressure, measure heart rate, and document mental status. Obtain 8-9 AM cortisol before thyroid escalation when stable, free T4/TSH, sodium/glucose, serum and urine osmolality with urine output if DI is possible, prolactin, IGF-1, LH/FSH with sex steroid, pregnancy status, medication/surgery/radiation history, and current hormone access.",
             "children": [
               {
                 "id": "hypopituitarism_classification_decision",
@@ -5801,7 +5801,7 @@
                     "criteria": {
                       "rule_id": "hypopituitarism_missing_axis_data_criteria",
                       "source": "criteria",
-                      "description": "Route here when the exact endocrine axis or mass-effect data needed for safe sequencing are unavailable.",
+                      "description": "Use this branch when the exact endocrine axis or mass-effect data needed for safe sequencing are unavailable.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -7834,7 +7834,7 @@
                             }
                           ]
                         },
-                        "action": "Evaluate LH/FSH with testosterone or estradiol, prolactin, IGF-1 and dynamic GH testing when the branch-specific criteria in this node apply, pregnancy/fertility goals, tumor status, contraindications, and cardiometabolic or bone risk; if proven adult GH deficiency has no contraindication, start GH 0.2-0.4 mg/day when age is below 60 years or 0.1-0.2 mg/day when age is above 60 years, then titrate to keep IGF-1 below ULN and reduce for side effects.",
+                        "action": "Evaluate LH/FSH with testosterone or estradiol, prolactin, IGF-1 and dynamic GH testing, pregnancy/fertility goals, tumor status, contraindications, and cardiometabolic or bone risk; if proven adult GH deficiency has no contraindication, start GH 0.2-0.4 mg/day when age is below 60 years or 0.1-0.2 mg/day when age is above 60 years, then titrate to keep IGF-1 below ULN and reduce for side effects.",
                         "children": [],
                         "endpoint_type": "clinician_review_handoff",
                         "review_needed_reason": "Sex-steroid, fertility, GH, tumor, and prolactin management depends on reproductive goals, tumor type/activity, contraindications, and local endocrine protocols.",
@@ -9208,7 +9208,7 @@
                     "action": "Document which pituitary axis or imaging findings argue against hypopituitarism, treat emergency adrenal risk if still uncertain, then route to the competing primary endocrine, medication, renal/osmotic, pregnancy/lactation, inflammatory, infectious, malignant, or other sellar pathway.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Primary gland disease, medication effect, physiologic state, or nonpituitary sellar pathology changes the documented disease branch."
+                    "review_needed_reason": "Primary gland disease, medication effect, physiologic state, or nonpituitary sellar pathology changes the current diagnosis."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -9578,7 +9578,7 @@
               "free T4 and TSH",
               "sodium/glucose and DI water-balance data",
               "prolactin/IGF-1/LH/FSH/sex steroid panel",
-              "pituitary MRI and visual fields when indicated",
+              "pituitary MRI and visual fields",
               "medication/surgery/radiation/pregnancy context"
             ],
             "required_data": [

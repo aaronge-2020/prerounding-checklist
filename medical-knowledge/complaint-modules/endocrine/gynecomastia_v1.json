@@ -2331,7 +2331,7 @@
           {
             "domain": "exam",
             "exact_data_needed": [
-              "condition-specific focused exam",
+              "focused exam findings listed for this workup",
               "Measure testicular volume",
               "Inspect breast tissue",
               "Inspect body hair distribution",
@@ -2459,7 +2459,7 @@
             "domain": "pregnancy_status",
             "exact_data_needed": [
               "pregnant/not pregnant/unknown when pregnancy potential exists",
-              "postpartum/lactation status when relevant",
+              "postpartum/lactation status if testing or treatment could change",
               "fertility intent when treatment depends on it"
             ],
             "source_ids": [
@@ -2516,7 +2516,7 @@
         "endpoint_missing_context": {
           "rule_id": "missing_context_criteria",
           "source": "criteria",
-          "description": "Route here when the patient context needed to activate Gynecomastia (Enlarged male breast tissue) is absent or cannot be extracted.",
+          "description": "Use this branch when the patient context needed to activate Gynecomastia (Enlarged male breast tissue) is absent or cannot be extracted.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2569,7 +2569,7 @@
         "gynecomastia_classification_decision": {
           "rule_id": "gynecomastia_classification_criteria",
           "source": "criteria",
-          "description": "Classify Gynecomastia (Enlarged male breast tissue) against cited thresholds and condition-specific rules: Male hypogonadism pituitary imaging trigger: <150 ng/dL | Testosterone therapy safety stop/review: >4 ng/mL, >3 ng/mL, >54%, 6 months",
+          "description": "Classify Gynecomastia (Enlarged male breast tissue) using cited thresholds: Male hypogonadism pituitary imaging trigger: <150 ng/dL | Testosterone therapy safety stop/review: >4 ng/mL, >3 ng/mL, >54%, 6 months",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2637,7 +2637,7 @@
         "gynecomastia_missing_cutoff_data_endpoint": {
           "rule_id": "gynecomastia_missing_cutoff_data_criteria",
           "source": "criteria",
-          "description": "Route here when Gynecomastia (Enlarged male breast tissue) cannot be classified because exact threshold/result data are missing.",
+          "description": "Use this branch when Gynecomastia (Enlarged male breast tissue) cannot be classified because exact threshold/result data are missing.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2670,7 +2670,6 @@
             "Total testosterone, LH, FSH, estradiol.",
             "hCG if suspicious; consider AFP/testicular ultrasound if tumor concern.",
             "TSH, prolactin, liver/kidney function.",
-            "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
             "Gynecomastia safety tests: review medication/substance causes and check testosterone, estradiol, LH/FSH, beta-hCG, prolactin/TSH, liver/kidney function, and testicular evaluation when mass, rapid growth, or malignancy concern exists.",
             "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
             "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.",
@@ -2684,7 +2683,7 @@
         "gynecomastia_urgent_endpoint": {
           "rule_id": "gynecomastia_urgent_criteria",
           "source": "criteria",
-          "description": "Escalate Gynecomastia (Enlarged male breast tissue) when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
+          "description": "Escalate Gynecomastia (Enlarged male breast tissue) when Hard eccentric breast mass, nipple discharge, skin changes, nodes, testicular mass, rapid progression.; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; <150 ng/dL; >4 ng/mL; >3 ng/mL; Testicular mass/hCG elevation changes to urgent tumor pathway; hypogonadism pattern changes endocrine workup.; unstable physiology or dangerous electrolyte/glucose abnormality.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2816,7 +2815,7 @@
         "gynecomastia_treatment_safety_decision": {
           "rule_id": "gynecomastia_safety_decision_criteria",
           "source": "criteria",
-          "description": "Route Gynecomastia (Enlarged male breast tissue) management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.",
+          "description": "Check Gynecomastia (Enlarged male breast tissue) treatment contraindications, dose/weight/renal/pregnancy constraints, and institutional order-set limits before committing to therapy.",
           "evaluable_from": [
             "medications",
             "allergies",
@@ -2881,7 +2880,7 @@
         "gynecomastia_monitoring_bundle": {
           "rule_id": "gynecomastia_monitoring_criteria",
           "source": "criteria",
-          "description": "Monitor Gynecomastia (Enlarged male breast tissue) by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
+          "description": "Monitor Gynecomastia (Enlarged male breast tissue) by trending the cited cutoff(s), symptom course, medication adverse effects, and disposition constraints used for this branch.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2946,7 +2945,7 @@
         "gynecomastia_worsening_endpoint": {
           "rule_id": "gynecomastia_worsening_criteria",
           "source": "criteria",
-          "description": "Escalate Gynecomastia (Enlarged male breast tissue) if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+          "description": "Escalate Gynecomastia (Enlarged male breast tissue) if symptoms, vitals, cited thresholds, imaging/ECG/procedure findings, or treatment response worsen or no longer match the chosen branch.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3161,7 +3160,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Gynecomastia: route by Hard eccentric breast mass, nipple discharge, skin changes, nodes, testicular mass, rapid progression.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; <150 ng/dL; >4 ng/mL; >3 ng/mL; Stop or substitute causative medication/substance when feasible and treat underlying hypogonadism, thyroid, liver, kidney, or tumor cause.; Use reassurance and observation for mild recent physiologic gynecomastia without red flags.",
+        "label": "Gynecomastia: Hard eccentric breast mass, nipple discharge, skin changes, nodes, testicular mass, rapid progression.; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; <150 ng/dL; >4 ng/mL; >3 ng/mL; Stop or substitute causative medication/substance when feasible and treat underlying hypogonadism, thyroid, liver, kidney, or tumor cause.; Use reassurance and observation for mild recent physiologic gynecomastia without red flags.",
         "edgeLabel": "",
         "source_ids": [
           "ES_TESTOSTERONE_2018",
@@ -3186,7 +3185,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Gynecomastia from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
+        "action": "Check Hard eccentric breast mass, nipple discharge, skin changes, nodes, testicular mass, rapid progression.; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism and <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%; 6 months; use the listed assessment bundle to choose emergency care, treatment/disposition, reviewer handoff, alternate diagnosis, reassessment, de-escalation, or follow-up.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3199,7 +3198,7 @@
             "criteria": {
               "rule_id": "missing_context_criteria",
               "source": "criteria",
-              "description": "Route here when the patient context needed to activate Gynecomastia (Enlarged male breast tissue) is absent or cannot be extracted.",
+              "description": "Use this branch when the patient context needed to activate Gynecomastia (Enlarged male breast tissue) is absent or cannot be extracted.",
               "evaluable_from": [
                 "symptoms",
                 "exam",
@@ -3255,7 +3254,7 @@
             "id": "gynecomastia_concurrent_data_bundle",
             "type": "action",
             "label": "Gynecomastia: assessment, thresholds, and treatment-safety inputs",
-            "edgeLabel": "Collect Gynecomastia: Total testosterone, LH, FSH, estradiol.; hCG if suspicious; consider AFP/testicular ultrasound if tumor concern.; TSH, prolactin, liver/kidney function.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; <150 ng/dL; >4 ng/mL; >3 ng/mL",
+            "edgeLabel": "Collect Gynecomastia: Total testosterone, LH, FSH, estradiol.; hCG if suspicious; consider AFP/testicular ultrasound if tumor concern.; TSH, prolactin, liver/kidney function.; Gynecomastia safety tests: review medication/substance causes and check testosterone, estradiol, LH/FSH, beta-hCG, prolactin/TSH, liver/kidney function, and testicular evaluation when mass, rapid growth, or malignancy concern exists.; <150 ng/dL; >4 ng/mL; >3 ng/mL",
             "source_ids": [
               "ES_TESTOSTERONE_2018",
               "AUA_TESTOSTERONE_2024",
@@ -3283,7 +3282,7 @@
                 "AHRQ_CALIBRATE_DX"
               ]
             },
-            "action": "Obtain together: Total testosterone, LH, FSH, estradiol.; hCG if suspicious; consider AFP/testicular ultrasound if tumor concern.; TSH, prolactin, liver/kidney function.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; Gynecomastia safety tests: review medication/substance causes and check testosterone, estradiol, LH/FSH, beta-hCG, prolactin/TSH, liver/kidney function, and testicular evaluation when mass, rapid growth, or malignancy concern exists.; Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.; Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.; testosterone; LH/FSH; prolactin; other pituitary hormones; headache/visual symptoms; PSA; prostate exam/risk; hematocrit.",
+            "action": "Obtain together: Total testosterone, LH, FSH, estradiol.; hCG if suspicious; consider AFP/testicular ultrasound if tumor concern.; TSH, prolactin, liver/kidney function.; Gynecomastia safety tests: review medication/substance causes and check testosterone, estradiol, LH/FSH, beta-hCG, prolactin/TSH, liver/kidney function, and testicular evaluation when mass, rapid growth, or malignancy concern exists.; Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.; Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.; testosterone; LH/FSH; prolactin; other pituitary hormones; headache/visual symptoms; PSA; prostate exam/risk; hematocrit.",
             "children": [
               {
                 "id": "gynecomastia_classification_decision",
@@ -3299,7 +3298,7 @@
                 "criteria": {
                   "rule_id": "gynecomastia_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Gynecomastia (Enlarged male breast tissue) against cited thresholds and condition-specific rules: Male hypogonadism pituitary imaging trigger: <150 ng/dL | Testosterone therapy safety stop/review: >4 ng/mL, >3 ng/mL, >54%, 6 months",
+                  "description": "Classify Gynecomastia (Enlarged male breast tissue) using cited thresholds: Male hypogonadism pituitary imaging trigger: <150 ng/dL | Testosterone therapy safety stop/review: >4 ng/mL, >3 ng/mL, >54%, 6 months",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -3364,7 +3363,7 @@
                     }
                   ]
                 },
-                "action": "Choose the active Gynecomastia branch by matching patient data to the cited cutoffs and patient-specific safety rules.",
+                "action": "Match current patient data to <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%; 6 months; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
                 "children": [
                   {
                     "id": "gynecomastia_missing_cutoff_data_endpoint",
@@ -3380,7 +3379,7 @@
                     "criteria": {
                       "rule_id": "gynecomastia_missing_cutoff_data_criteria",
                       "source": "criteria",
-                      "description": "Route here when Gynecomastia (Enlarged male breast tissue) cannot be classified because exact threshold/result data are missing.",
+                      "description": "Use this branch when Gynecomastia (Enlarged male breast tissue) cannot be classified because exact threshold/result data are missing.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -3413,7 +3412,6 @@
                         "Total testosterone, LH, FSH, estradiol.",
                         "hCG if suspicious; consider AFP/testicular ultrasound if tumor concern.",
                         "TSH, prolactin, liver/kidney function.",
-                        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
                         "Gynecomastia safety tests: review medication/substance causes and check testosterone, estradiol, LH/FSH, beta-hCG, prolactin/TSH, liver/kidney function, and testicular evaluation when mass, rapid growth, or malignancy concern exists.",
                         "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
                         "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.",
@@ -3448,7 +3446,6 @@
                       "Total testosterone, LH, FSH, estradiol.",
                       "hCG if suspicious; consider AFP/testicular ultrasound if tumor concern.",
                       "TSH, prolactin, liver/kidney function.",
-                      "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
                       "Gynecomastia safety tests: review medication/substance causes and check testosterone, estradiol, LH/FSH, beta-hCG, prolactin/TSH, liver/kidney function, and testicular evaluation when mass, rapid growth, or malignancy concern exists.",
                       "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
                       "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.",
@@ -3463,7 +3460,7 @@
                     "id": "gynecomastia_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Gynecomastia: emergency or monitored-care disposition",
-                    "edgeLabel": "High-acuity threshold or monitored-care result present: Hard eccentric breast mass, nipple discharge, skin changes, nodes, testicular mass, rapid progression.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; <150 ng/dL; >4 ng/mL",
+                    "edgeLabel": "High-acuity threshold or monitored-care result present: Hard eccentric breast mass, nipple discharge, skin changes, nodes, testicular mass, rapid progression.; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; <150 ng/dL; >4 ng/mL",
                     "source_ids": [
                       "ES_TESTOSTERONE_2018",
                       "AUA_TESTOSTERONE_2024",
@@ -3473,7 +3470,7 @@
                     "criteria": {
                       "rule_id": "gynecomastia_urgent_criteria",
                       "source": "criteria",
-                      "description": "Escalate Gynecomastia (Enlarged male breast tissue) when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
+                      "description": "Escalate Gynecomastia (Enlarged male breast tissue) when Hard eccentric breast mass, nipple discharge, skin changes, nodes, testicular mass, rapid progression.; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; <150 ng/dL; >4 ng/mL; >3 ng/mL; Testicular mass/hCG elevation changes to urgent tumor pathway; hypogonadism pattern changes endocrine workup.; unstable physiology or dangerous electrolyte/glucose abnormality.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -3535,7 +3532,7 @@
                         }
                       ]
                     },
-                    "action": "Hard eccentric breast mass, nipple discharge, skin changes, nodes, testicular mass, rapid progression.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism. Escalate using the cited high-risk threshold, unstable vital sign, organ-risk finding, or monitored-care rule.",
+                    "action": "Send to ED, admission, or monitored specialty care for Hard eccentric breast mass, nipple discharge, skin changes, nodes, testicular mass, rapid progression.; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; <150 ng/dL; >4 ng/mL; >3 ng/mL; Testicular mass/hCG elevation changes to urgent tumor pathway; hypogonadism pattern changes endocrine workup.; unstable physiology or dangerous electrolyte/glucose abnormality; start stabilization and diagnosis-specific emergency treatment before routine outpatient management.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -3668,7 +3665,7 @@
                         "id": "gynecomastia_treatment_safety_decision",
                         "type": "decision",
                         "label": "Gynecomastia: contraindications, dosing, pregnancy, and comorbidity modifiers",
-                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan",
+                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "ES_TESTOSTERONE_2018",
                           "AUA_TESTOSTERONE_2024",
@@ -3678,7 +3675,7 @@
                         "criteria": {
                           "rule_id": "gynecomastia_safety_decision_criteria",
                           "source": "criteria",
-                          "description": "Route Gynecomastia (Enlarged male breast tissue) management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.",
+                          "description": "Check Gynecomastia (Enlarged male breast tissue) treatment contraindications, dose/weight/renal/pregnancy constraints, and institutional order-set limits before committing to therapy.",
                           "evaluable_from": [
                             "medications",
                             "allergies",
@@ -3762,7 +3759,7 @@
                             "id": "gynecomastia_monitoring_bundle",
                             "type": "action",
                             "label": "Gynecomastia: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Gynecomastia symptoms, vital signs, criterion-defining results, treatment response, adverse effects, and disposition readiness",
+                            "edgeLabel": "Trend Gynecomastia: <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%; Total testosterone, LH, FSH, estradiol.; hCG if suspicious; consider AFP/testicular ultrasound if tumor concern.; TSH, prolactin, liver/kidney function.; Measure blood pressure",
                             "source_ids": [
                               "ES_TESTOSTERONE_2018",
                               "AUA_TESTOSTERONE_2024",
@@ -3772,7 +3769,7 @@
                             "criteria": {
                               "rule_id": "gynecomastia_monitoring_criteria",
                               "source": "criteria",
-                              "description": "Monitor Gynecomastia (Enlarged male breast tissue) by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
+                              "description": "Monitor Gynecomastia (Enlarged male breast tissue) by trending the cited cutoff(s), symptom course, medication adverse effects, and disposition constraints used for this branch.",
                               "evaluable_from": [
                                 "symptoms",
                                 "exam",
@@ -3850,7 +3847,7 @@
                                 "criteria": {
                                   "rule_id": "gynecomastia_worsening_criteria",
                                   "source": "criteria",
-                                  "description": "Escalate Gynecomastia (Enlarged male breast tissue) if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+                                  "description": "Escalate Gynecomastia (Enlarged male breast tissue) if symptoms, vitals, cited thresholds, imaging/ECG/procedure findings, or treatment response worsen or no longer match the chosen branch.",
                                   "evaluable_from": [
                                     "symptoms",
                                     "exam",
@@ -3912,7 +3909,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Repeat or review Hard eccentric breast mass, nipple discharge, skin changes, nodes, testicular mass, rapid progression.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%; Total testosterone, LH, FSH, estradiol.; hCG if suspicious; consider AFP/testicular ultrasound if tumor concern.; reassess mimics and complications; move to ED, admission, or specialty review when the cited threshold, unstable vital sign, imaging/ECG/procedure result, or treatment-response pattern requires escalation.",
+                                "action": "Repeat or review Hard eccentric breast mass, nipple discharge, skin changes, nodes, testicular mass, rapid progression.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%; Total testosterone, LH, FSH, estradiol.; hCG if suspicious; consider AFP/testicular ultrasound if tumor concern.; reassess mimics and complications; move to ED, admission, or specialty review when that specific trend, vital sign, imaging/ECG/procedure finding, or treatment-response pattern requires escalation.",
                                 "children": [],
                                 "endpoint_type": "escalation_disposition",
                                 "guideline_cutoffs": [
@@ -4037,7 +4034,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Use active Gynecomastia results and response trend to stop, narrow, taper, or continue treatment; document which cutoff, symptom, adverse effect, or finding changed.",
+                                "action": "Use the measured Gynecomastia trend, cited cutoff(s), symptom response, adverse effects, and diagnosis certainty to stop, narrow, taper, or continue treatment; document the value or finding that changed.",
                                 "children": [],
                                 "endpoint_type": "deescalation_stopping",
                                 "guideline_cutoffs": [
@@ -4130,7 +4127,7 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend criterion-defining results",
+                              "trend <150 ng/dL; >4 ng/mL; >3 ng/mL",
                               "review treatment response and adverse effects",
                               "assign disposition and follow-up clinician/service"
                             ],
@@ -4415,7 +4412,6 @@
               "Total testosterone, LH, FSH, estradiol.",
               "hCG if suspicious; consider AFP/testicular ultrasound if tumor concern.",
               "TSH, prolactin, liver/kidney function.",
-              "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
               "Gynecomastia safety tests: review medication/substance causes and check testosterone, estradiol, LH/FSH, beta-hCG, prolactin/TSH, liver/kidney function, and testicular evaluation when mass, rapid growth, or malignancy concern exists.",
               "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
               "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.",
@@ -4442,7 +4438,6 @@
               "Total testosterone, LH, FSH, estradiol.",
               "hCG if suspicious; consider AFP/testicular ultrasound if tumor concern.",
               "TSH, prolactin, liver/kidney function.",
-              "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
               "Gynecomastia safety tests: review medication/substance causes and check testosterone, estradiol, LH/FSH, beta-hCG, prolactin/TSH, liver/kidney function, and testicular evaluation when mass, rapid growth, or malignancy concern exists.",
               "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
               "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.",
@@ -4531,7 +4526,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "gynecomastia_urgent_endpoint",
-          "expected_active_branch": "High-acuity threshold or monitored-care result present: Hard eccentric breast mass, nipple discharge, skin changes, nodes, testicular mass, rapid progression.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; <150 ng/dL; >4 ng/mL",
+          "expected_active_branch": "High-acuity threshold or monitored-care result present: Hard eccentric breast mass, nipple discharge, skin changes, nodes, testicular mass, rapid progression.; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; <150 ng/dL; >4 ng/mL",
           "expected_path_node_ids": [
             "root",
             "gynecomastia_concurrent_data_bundle",

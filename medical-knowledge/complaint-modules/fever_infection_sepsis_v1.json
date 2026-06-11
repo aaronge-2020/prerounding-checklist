@@ -2443,7 +2443,7 @@
           {
             "domain": "exam",
             "exact_data_needed": [
-              "condition-specific focused exam",
+              "focused exam findings listed for this workup",
               "Observe work of breathing",
               "Auscultate posterior lung fields",
               "Inspect skin for infection source",
@@ -2484,7 +2484,7 @@
             "domain": "labs",
             "exact_data_needed": [
               "Sepsis severity labs and reference thresholds",
-              "Source-directed infection studies",
+              "source-specific infection studies",
               "Respiratory source imaging and testing pathway",
               "suspected infection",
               "NEWS/NEWS2/MEWS/SIRS elements",
@@ -2508,7 +2508,7 @@
             "domain": "imaging_results",
             "exact_data_needed": [
               "imaging, ECG, culture, pathology, or procedure result required by the chosen branch",
-              "Source-directed infection studies",
+              "source-specific infection studies",
               "Respiratory source imaging and testing pathway"
             ],
             "source_ids": [
@@ -2579,7 +2579,7 @@
             "domain": "pregnancy_status",
             "exact_data_needed": [
               "pregnant/not pregnant/unknown when pregnancy potential exists",
-              "postpartum/lactation status when relevant",
+              "postpartum/lactation status if testing or treatment could change",
               "fertility intent when treatment depends on it"
             ],
             "source_ids": [
@@ -2641,7 +2641,7 @@
         "endpoint_missing_context": {
           "rule_id": "adult_sepsis_missing_context_criteria",
           "source": "criteria",
-          "description": "Route here when the data needed to decide infection likelihood, shock physiology, source, or disposition cannot be extracted.",
+          "description": "Use this branch when the data needed to decide infection likelihood, shock physiology, source, or disposition cannot be extracted.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2925,7 +2925,7 @@
         "fever_infection_sepsis_missing_lactate_culture_source_endpoint": {
           "rule_id": "fever_infection_sepsis_missing_sepsis_data_criteria",
           "source": "criteria",
-          "description": "Route here when suspected infection is present but exact data needed for sepsis/shock, antibiotic timing, source control, or disposition are missing.",
+          "description": "Use this branch when suspected infection is present but exact data needed for sepsis/shock, antibiotic timing, source control, or disposition are missing.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3199,7 +3199,7 @@
         "fever_infection_sepsis_shock_reassessment_decision": {
           "rule_id": "fever_infection_sepsis_shock_reassessment_criteria",
           "source": "criteria",
-          "description": "Route by response after initial shock/hypoperfusion therapy.",
+          "description": "use response after initial shock/hypoperfusion therapy.",
           "evaluable_from": [
             "vitals",
             "labs",
@@ -6672,7 +6672,7 @@
             "criteria": {
               "rule_id": "adult_sepsis_missing_context_criteria",
               "source": "criteria",
-              "description": "Route here when the data needed to decide infection likelihood, shock physiology, source, or disposition cannot be extracted.",
+              "description": "Use this branch when the data needed to decide infection likelihood, shock physiology, source, or disposition cannot be extracted.",
               "evaluable_from": [
                 "symptoms",
                 "exam",
@@ -6999,7 +6999,7 @@
                 "criteria": {
                   "rule_id": "fever_infection_sepsis_missing_sepsis_data_criteria",
                   "source": "criteria",
-                  "description": "Route here when suspected infection is present but exact data needed for sepsis/shock, antibiotic timing, source control, or disposition are missing.",
+                  "description": "Use this branch when suspected infection is present but exact data needed for sepsis/shock, antibiotic timing, source control, or disposition are missing.",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -7312,7 +7312,7 @@
                     "criteria": {
                       "rule_id": "fever_infection_sepsis_shock_reassessment_criteria",
                       "source": "criteria",
-                      "description": "Route by response after initial shock/hypoperfusion therapy.",
+                      "description": "use response after initial shock/hypoperfusion therapy.",
                       "evaluable_from": [
                         "vitals",
                         "labs",
@@ -10234,7 +10234,7 @@
                     }
                   ]
                 },
-                "action": "Give antimicrobials immediately and ideally within 1 hour, measure lactate, collect blood cultures as soon as possible and ideally before antimicrobials if no delay, select source-directed diagnostics, and determine whether source control or higher-acuity disposition is needed.",
+                "action": "Give antimicrobials immediately and ideally within 1 hour, measure lactate, collect blood cultures as soon as possible and ideally before antimicrobials if no delay, select source-specific diagnostics, and determine whether source control or higher-acuity disposition is needed.",
                 "children": [
                   {
                     "id": "fever_infection_sepsis_probable_definite_sepsis_treatment_endpoint",
@@ -12452,7 +12452,7 @@
                 "parallel_actions": [
                   "blood cultures/lactate",
                   "antimicrobials ideally within 1 hour",
-                  "source-directed imaging/tests",
+                  "source-specific imaging/tests",
                   "MDR/anaerobic/fungal risk review",
                   "disposition/monitoring decision"
                 ],
@@ -13192,7 +13192,7 @@
                         }
                       ]
                     },
-                    "action": "Perform rapid infectious-versus-noninfectious assessment, obtain blood cultures/lactate and source-directed data such as urinalysis/urine culture, CXR for respiratory signs, wound or CSF studies when those sources are suspected, repeat vitals/perfusion, and either administer antimicrobials within 3 hours if infection concern persists or defer antimicrobials with close monitoring when infection likelihood is low and shock is absent.",
+                    "action": "Perform rapid infectious-versus-noninfectious assessment, obtain blood cultures/lactate and source-specific data such as urinalysis/urine culture, CXR for respiratory signs, wound or CSF studies when those sources are suspected, repeat vitals/perfusion, and either administer antimicrobials within 3 hours if infection concern persists or defer antimicrobials with close monitoring when infection likelihood is low and shock is absent.",
                     "children": [],
                     "endpoint_type": "diagnostic_step",
                     "guideline_cutoffs": [
@@ -13426,7 +13426,7 @@
                     "monitoring_plan": [
                       "time first suspected",
                       "repeat vitals",
-                      "source-directed tests",
+                      "source-specific tests",
                       "decision by 3 hours",
                       "return/escalation precautions"
                     ]
@@ -13465,7 +13465,7 @@
                     "id": "fever_infection_sepsis_special_population_review_endpoint",
                     "type": "endpoint",
                     "label": "Clinician review: pregnancy/postpartum, immunocompromise, MDR risk, renal/hepatic dosing, or local sepsis policy",
-                    "edgeLabel": "Treatment/disposition changes because pregnancy/postpartum status, immunocompromise/neutropenia, MDR colonization/prior infection, renal/hepatic dysfunction, antimicrobial allergy, device infection, or local protocol applies",
+                    "edgeLabel": "Treatment/disposition changes because pregnancy/postpartum status, immunocompromise/neutropenia, MDR colonization/prior infection, renal/hepatic dysfunction, antimicrobial allergy, device infection, or institutional protocol applies",
                     "source_ids": [
                       "SSC_SEPSIS_2026",
                       "SMFM_MATERNAL_SEPSIS_2023"
@@ -13720,13 +13720,13 @@
                     "action": "Pause non-emergent branching long enough to involve the appropriate clinician/service, but do not delay resuscitation or time-critical antimicrobials/source control; document the modifier, applicable protocol, and reviewer recommendation.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Pregnancy/postpartum, immunocompromise, MDR risk, organ dysfunction dosing, allergies, devices, or local policy changes management."
+                    "review_needed_reason": "Pregnancy/postpartum, immunocompromise, MDR risk, organ dysfunction dosing, allergies, devices, or institutional policy changes management."
                   }
                 ],
                 "parallel_actions": [
                   "repeat vitals/perfusion",
-                  "source-directed labs/imaging",
-                  "culture only when indicated",
+                  "source-specific labs/imaging",
+                  "culture only",
                   "mimic review",
                   "3-hour antimicrobial decision"
                 ],
@@ -13965,7 +13965,7 @@
               "mental status/perfusion/urine output",
               "oxygenation/work of breathing",
               "blood cultures/lactate when sepsis possible",
-              "source-directed tests",
+              "source-specific tests",
               "allergy/recent antimicrobial/MDR risk review",
               "pregnancy/postpartum and immune status"
             ],
@@ -14259,7 +14259,7 @@
           "scenario_id": "pregnancy_or_mdr_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "fever_infection_sepsis_special_population_review_endpoint",
-          "expected_active_branch": "Treatment/disposition changes because pregnancy/postpartum status, immunocompromise/neutropenia, MDR colonization/prior infection, renal/hepatic dysfunction, antimicrobial allergy, device infection, or local protocol applies",
+          "expected_active_branch": "Treatment/disposition changes because pregnancy/postpartum status, immunocompromise/neutropenia, MDR colonization/prior infection, renal/hepatic dysfunction, antimicrobial allergy, device infection, or institutional protocol applies",
           "expected_path_node_ids": [
             "root",
             "fever_infection_sepsis_initial_assessment_bundle",

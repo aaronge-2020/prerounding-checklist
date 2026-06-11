@@ -2476,7 +2476,7 @@
           {
             "domain": "exam",
             "exact_data_needed": [
-              "condition-specific focused exam",
+              "focused exam findings listed for this workup",
               "Test confrontation visual fields",
               "Inspect for galactorrhea",
               "Inspect secondary sex characteristics",
@@ -2597,7 +2597,7 @@
             "domain": "pregnancy_status",
             "exact_data_needed": [
               "pregnant/not pregnant/unknown when pregnancy potential exists",
-              "postpartum/lactation status when relevant",
+              "postpartum/lactation status if testing or treatment could change",
               "fertility intent when treatment depends on it"
             ],
             "source_ids": [
@@ -2651,7 +2651,7 @@
         "endpoint_missing_context": {
           "rule_id": "missing_context_criteria",
           "source": "criteria",
-          "description": "Route here when the patient context needed to activate Prolactinoma (Benign pituitary tumor) is absent or cannot be extracted.",
+          "description": "Use this branch when the patient context needed to activate Prolactinoma (Benign pituitary tumor) is absent or cannot be extracted.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2703,7 +2703,7 @@
         "prolactinoma_classification_decision": {
           "rule_id": "prolactinoma_classification_criteria",
           "source": "criteria",
-          "description": "Classify Prolactinoma (Benign pituitary tumor) against cited thresholds and condition-specific rules: Hyperprolactinemia diagnosis: >ULN, <25 ug/L | Prolactinoma probability by prolactin level: >250 ug/L, >500 ug/L, >10 mm",
+          "description": "Classify Prolactinoma (Benign pituitary tumor) using cited thresholds: Hyperprolactinemia diagnosis: >ULN, <25 ug/L | Prolactinoma probability by prolactin level: >250 ug/L, >500 ug/L, >10 mm",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2770,7 +2770,7 @@
         "prolactinoma_missing_cutoff_data_endpoint": {
           "rule_id": "prolactinoma_missing_cutoff_data_criteria",
           "source": "criteria",
-          "description": "Route here when Prolactinoma (Benign pituitary tumor) cannot be classified because exact threshold/result data are missing.",
+          "description": "Use this branch when Prolactinoma (Benign pituitary tumor) cannot be classified because exact threshold/result data are missing.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2801,10 +2801,8 @@
             "Serum prolactin; repeat/macroprolactin if mild/discordant.",
             "Pregnancy test, TSH/free T4, renal function.",
             "Pituitary MRI after persistent unexplained elevation or mass symptoms.",
-            "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
             "Prolactin/pituitary mass safety tests: repeat fasting prolactin with macroprolactin, medication, pregnancy, TSH, and renal context, obtain pituitary MRI for persistent or mass-effect concern, and check gonadal/adrenal/thyroid axes for macroadenoma.",
-            "Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.",
-            "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when the branch-specific criteria in this node apply.",
+            "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing.",
             ">ULN",
             "<25 ug/L",
             ">250 ug/L",
@@ -2815,7 +2813,7 @@
         "prolactinoma_urgent_endpoint": {
           "rule_id": "prolactinoma_urgent_criteria",
           "source": "criteria",
-          "description": "Escalate Prolactinoma (Benign pituitary tumor) when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
+          "description": "Escalate Prolactinoma (Benign pituitary tumor) when Visual field deficit, severe headache/apoplexy, cranial nerve palsy, pregnancy with macroadenoma symptoms.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; >ULN; <25 ug/L; >250 ug/L; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement.; unstable physiology or dangerous electrolyte/glucose abnormality.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2945,7 +2943,7 @@
         "prolactinoma_treatment_safety_decision": {
           "rule_id": "prolactinoma_safety_decision_criteria",
           "source": "criteria",
-          "description": "Route Prolactinoma (Benign pituitary tumor) management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.",
+          "description": "Check Prolactinoma (Benign pituitary tumor) treatment contraindications, dose/weight/renal/pregnancy constraints, and institutional order-set limits before committing to therapy.",
           "evaluable_from": [
             "medications",
             "allergies",
@@ -2984,7 +2982,7 @@
         "prolactinoma_monitoring_bundle": {
           "rule_id": "prolactinoma_monitoring_criteria",
           "source": "criteria",
-          "description": "Monitor Prolactinoma (Benign pituitary tumor) by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
+          "description": "Monitor Prolactinoma (Benign pituitary tumor) by trending the cited cutoff(s), symptom course, medication adverse effects, and disposition constraints used for this branch.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3048,7 +3046,7 @@
         "prolactinoma_worsening_endpoint": {
           "rule_id": "prolactinoma_worsening_criteria",
           "source": "criteria",
-          "description": "Escalate Prolactinoma (Benign pituitary tumor) if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+          "description": "Escalate Prolactinoma (Benign pituitary tumor) if symptoms, vitals, cited thresholds, imaging/ECG/procedure findings, or treatment response worsen or no longer match the chosen branch.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3259,7 +3257,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Prolactinoma: route by Visual field deficit, severe headache/apoplexy, cranial nerve palsy, pregnancy with macroadenoma symptoms.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; >ULN; <25 ug/L; >250 ug/L; Use dopamine agonist therapy, usually cabergoline when appropriate, for most symptomatic prolactinomas or macroadenomas.; Monitor prolactin response, tumor size, vision, gonadal recovery, and medication tolerance.",
+        "label": "Prolactinoma: Visual field deficit, severe headache/apoplexy, cranial nerve palsy, pregnancy with macroadenoma symptoms.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; >ULN; <25 ug/L; >250 ug/L; Use dopamine agonist therapy, usually cabergoline when appropriate, for most symptomatic prolactinomas or macroadenomas.; Monitor prolactin response, tumor size, vision, gonadal recovery, and medication tolerance.",
         "edgeLabel": "",
         "source_ids": [
           "ES_HYPERPROLACTINEMIA_2011",
@@ -3282,7 +3280,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Prolactinoma from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
+        "action": "Check Visual field deficit, severe headache/apoplexy, cranial nerve palsy, pregnancy with macroadenoma symptoms.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy. and >ULN; <25 ug/L; >250 ug/L; >500 ug/L; >10 mm; use the listed assessment bundle to choose emergency care, treatment/disposition, reviewer handoff, alternate diagnosis, reassessment, de-escalation, or follow-up.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3295,7 +3293,7 @@
             "criteria": {
               "rule_id": "missing_context_criteria",
               "source": "criteria",
-              "description": "Route here when the patient context needed to activate Prolactinoma (Benign pituitary tumor) is absent or cannot be extracted.",
+              "description": "Use this branch when the patient context needed to activate Prolactinoma (Benign pituitary tumor) is absent or cannot be extracted.",
               "evaluable_from": [
                 "symptoms",
                 "exam",
@@ -3351,7 +3349,7 @@
             "id": "prolactinoma_concurrent_data_bundle",
             "type": "action",
             "label": "Prolactinoma: assessment, thresholds, and treatment-safety inputs",
-            "edgeLabel": "Collect Prolactinoma: Serum prolactin; repeat/macroprolactin if mild/discordant.; Pregnancy test, TSH/free T4, renal function.; Pituitary MRI after persistent unexplained elevation or mass symptoms.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; >ULN; <25 ug/L; >250 ug/L",
+            "edgeLabel": "Collect Prolactinoma: Serum prolactin; repeat/macroprolactin if mild/discordant.; Pregnancy test, TSH/free T4, renal function.; Pituitary MRI after persistent unexplained elevation or mass symptoms.; Prolactin/pituitary mass safety tests: repeat fasting prolactin with macroprolactin, medication, pregnancy, TSH, and renal context, obtain pituitary MRI for persistent or mass-effect concern, and check gonadal/adrenal/thyroid axes for macroadenoma.; >ULN; <25 ug/L; >250 ug/L",
             "source_ids": [
               "PITUITARY_PROLACTINOMA_2023",
               "ES_HYPERPROLACTINEMIA_2011",
@@ -3377,7 +3375,7 @@
                 "AHRQ_CALIBRATE_DX"
               ]
             },
-            "action": "Obtain together: Serum prolactin; repeat/macroprolactin if mild/discordant.; Pregnancy test, TSH/free T4, renal function.; Pituitary MRI after persistent unexplained elevation or mass symptoms.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; Prolactin/pituitary mass safety tests: repeat fasting prolactin with macroprolactin, medication, pregnancy, TSH, and renal context, obtain pituitary MRI for persistent or mass-effect concern, and check gonadal/adrenal/thyroid axes for macroadenoma.; Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.; Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when the branch-specific criteria in this node apply.; serum prolactin; assay ULN; venipuncture stress; pregnancy/lactation status; medication list; prolactin; pituitary MRI size; drug causes such as risperidone/metoclopramide.",
+            "action": "Obtain together: Serum prolactin; repeat/macroprolactin if mild/discordant.; Pregnancy test, TSH/free T4, renal function.; Pituitary MRI after persistent unexplained elevation or mass symptoms.; Prolactin/pituitary mass safety tests: repeat fasting prolactin with macroprolactin, medication, pregnancy, TSH, and renal context, obtain pituitary MRI for persistent or mass-effect concern, and check gonadal/adrenal/thyroid axes for macroadenoma.; Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing.; serum prolactin; assay ULN; venipuncture stress; pregnancy/lactation status; medication list; prolactin; pituitary MRI size; drug causes such as risperidone/metoclopramide.",
             "children": [
               {
                 "id": "prolactinoma_classification_decision",
@@ -3392,7 +3390,7 @@
                 "criteria": {
                   "rule_id": "prolactinoma_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Prolactinoma (Benign pituitary tumor) against cited thresholds and condition-specific rules: Hyperprolactinemia diagnosis: >ULN, <25 ug/L | Prolactinoma probability by prolactin level: >250 ug/L, >500 ug/L, >10 mm",
+                  "description": "Classify Prolactinoma (Benign pituitary tumor) using cited thresholds: Hyperprolactinemia diagnosis: >ULN, <25 ug/L | Prolactinoma probability by prolactin level: >250 ug/L, >500 ug/L, >10 mm",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -3456,7 +3454,7 @@
                     }
                   ]
                 },
-                "action": "Choose the active Prolactinoma branch by matching patient data to the cited cutoffs and patient-specific safety rules.",
+                "action": "Match current patient data to >ULN; <25 ug/L; >250 ug/L; >500 ug/L; >10 mm; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
                 "children": [
                   {
                     "id": "prolactinoma_missing_cutoff_data_endpoint",
@@ -3471,7 +3469,7 @@
                     "criteria": {
                       "rule_id": "prolactinoma_missing_cutoff_data_criteria",
                       "source": "criteria",
-                      "description": "Route here when Prolactinoma (Benign pituitary tumor) cannot be classified because exact threshold/result data are missing.",
+                      "description": "Use this branch when Prolactinoma (Benign pituitary tumor) cannot be classified because exact threshold/result data are missing.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -3502,10 +3500,8 @@
                         "Serum prolactin; repeat/macroprolactin if mild/discordant.",
                         "Pregnancy test, TSH/free T4, renal function.",
                         "Pituitary MRI after persistent unexplained elevation or mass symptoms.",
-                        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
                         "Prolactin/pituitary mass safety tests: repeat fasting prolactin with macroprolactin, medication, pregnancy, TSH, and renal context, obtain pituitary MRI for persistent or mass-effect concern, and check gonadal/adrenal/thyroid axes for macroadenoma.",
-                        "Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.",
-                        "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when the branch-specific criteria in this node apply.",
+                        "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing.",
                         ">ULN",
                         "<25 ug/L",
                         ">250 ug/L",
@@ -3536,10 +3532,8 @@
                       "Serum prolactin; repeat/macroprolactin if mild/discordant.",
                       "Pregnancy test, TSH/free T4, renal function.",
                       "Pituitary MRI after persistent unexplained elevation or mass symptoms.",
-                      "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
                       "Prolactin/pituitary mass safety tests: repeat fasting prolactin with macroprolactin, medication, pregnancy, TSH, and renal context, obtain pituitary MRI for persistent or mass-effect concern, and check gonadal/adrenal/thyroid axes for macroadenoma.",
-                      "Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.",
-                      "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when the branch-specific criteria in this node apply.",
+                      "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing.",
                       ">ULN",
                       "<25 ug/L",
                       ">250 ug/L",
@@ -3551,7 +3545,7 @@
                     "id": "prolactinoma_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Prolactinoma: emergency or monitored-care disposition",
-                    "edgeLabel": "High-acuity threshold or monitored-care result present: Visual field deficit, severe headache/apoplexy, cranial nerve palsy, pregnancy with macroadenoma symptoms.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; >ULN; <25 ug/L",
+                    "edgeLabel": "High-acuity threshold or monitored-care result present: Visual field deficit, severe headache/apoplexy, cranial nerve palsy, pregnancy with macroadenoma symptoms.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; >ULN; <25 ug/L",
                     "source_ids": [
                       "PITUITARY_PROLACTINOMA_2023",
                       "ES_HYPERPROLACTINEMIA_2011",
@@ -3560,7 +3554,7 @@
                     "criteria": {
                       "rule_id": "prolactinoma_urgent_criteria",
                       "source": "criteria",
-                      "description": "Escalate Prolactinoma (Benign pituitary tumor) when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
+                      "description": "Escalate Prolactinoma (Benign pituitary tumor) when Visual field deficit, severe headache/apoplexy, cranial nerve palsy, pregnancy with macroadenoma symptoms.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; >ULN; <25 ug/L; >250 ug/L; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement.; unstable physiology or dangerous electrolyte/glucose abnormality.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -3621,7 +3615,7 @@
                         }
                       ]
                     },
-                    "action": "Visual field deficit, severe headache/apoplexy, cranial nerve palsy, pregnancy with macroadenoma symptoms.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.. Escalate using the cited high-risk threshold, unstable vital sign, organ-risk finding, or monitored-care rule.",
+                    "action": "Send to ED, admission, or monitored specialty care for Visual field deficit, severe headache/apoplexy, cranial nerve palsy, pregnancy with macroadenoma symptoms.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; >ULN; <25 ug/L; >250 ug/L; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement.; unstable physiology or dangerous electrolyte/glucose abnormality; start stabilization and diagnosis-specific emergency treatment before routine outpatient management.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -3752,7 +3746,7 @@
                         "id": "prolactinoma_treatment_safety_decision",
                         "type": "decision",
                         "label": "Prolactinoma: contraindications, dosing, pregnancy, and comorbidity modifiers",
-                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan",
+                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "ES_HYPERPROLACTINEMIA_2011",
                           "PITUITARY_PROLACTINOMA_2023",
@@ -3761,7 +3755,7 @@
                         "criteria": {
                           "rule_id": "prolactinoma_safety_decision_criteria",
                           "source": "criteria",
-                          "description": "Route Prolactinoma (Benign pituitary tumor) management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.",
+                          "description": "Check Prolactinoma (Benign pituitary tumor) treatment contraindications, dose/weight/renal/pregnancy constraints, and institutional order-set limits before committing to therapy.",
                           "evaluable_from": [
                             "medications",
                             "allergies",
@@ -3818,7 +3812,7 @@
                             "id": "prolactinoma_monitoring_bundle",
                             "type": "action",
                             "label": "Prolactinoma: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Prolactinoma symptoms, vital signs, criterion-defining results, treatment response, adverse effects, and disposition readiness",
+                            "edgeLabel": "Trend Prolactinoma: >ULN; <25 ug/L; >250 ug/L; >500 ug/L; Serum prolactin; repeat/macroprolactin if mild/discordant.; Pregnancy test, TSH/free T4, renal function.; Pituitary MRI after persistent unexplained elevation or mass symptoms.; Measure blood pressure",
                             "source_ids": [
                               "PITUITARY_PROLACTINOMA_2023",
                               "ES_HYPERPROLACTINEMIA_2011",
@@ -3827,7 +3821,7 @@
                             "criteria": {
                               "rule_id": "prolactinoma_monitoring_criteria",
                               "source": "criteria",
-                              "description": "Monitor Prolactinoma (Benign pituitary tumor) by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
+                              "description": "Monitor Prolactinoma (Benign pituitary tumor) by trending the cited cutoff(s), symptom course, medication adverse effects, and disposition constraints used for this branch.",
                               "evaluable_from": [
                                 "symptoms",
                                 "exam",
@@ -3903,7 +3897,7 @@
                                 "criteria": {
                                   "rule_id": "prolactinoma_worsening_criteria",
                                   "source": "criteria",
-                                  "description": "Escalate Prolactinoma (Benign pituitary tumor) if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+                                  "description": "Escalate Prolactinoma (Benign pituitary tumor) if symptoms, vitals, cited thresholds, imaging/ECG/procedure findings, or treatment response worsen or no longer match the chosen branch.",
                                   "evaluable_from": [
                                     "symptoms",
                                     "exam",
@@ -3964,7 +3958,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Repeat or review Visual field deficit, severe headache/apoplexy, cranial nerve palsy, pregnancy with macroadenoma symptoms.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; >ULN; <25 ug/L; >250 ug/L; >500 ug/L; Serum prolactin; repeat/macroprolactin if mild/discordant.; Pregnancy test, TSH/free T4, renal function.; reassess mimics and complications; move to ED, admission, or specialty review when the cited threshold, unstable vital sign, imaging/ECG/procedure result, or treatment-response pattern requires escalation.",
+                                "action": "Repeat or review Visual field deficit, severe headache/apoplexy, cranial nerve palsy, pregnancy with macroadenoma symptoms.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; >ULN; <25 ug/L; >250 ug/L; >500 ug/L; Serum prolactin; repeat/macroprolactin if mild/discordant.; Pregnancy test, TSH/free T4, renal function.; reassess mimics and complications; move to ED, admission, or specialty review when that specific trend, vital sign, imaging/ECG/procedure finding, or treatment-response pattern requires escalation.",
                                 "children": [],
                                 "endpoint_type": "escalation_disposition",
                                 "guideline_cutoffs": [
@@ -4087,7 +4081,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Use active Prolactinoma results and response trend to stop, narrow, taper, or continue treatment; document which cutoff, symptom, adverse effect, or finding changed.",
+                                "action": "Use the measured Prolactinoma trend, cited cutoff(s), symptom response, adverse effects, and diagnosis certainty to stop, narrow, taper, or continue treatment; document the value or finding that changed.",
                                 "children": [],
                                 "endpoint_type": "deescalation_stopping",
                                 "guideline_cutoffs": [
@@ -4178,7 +4172,7 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend criterion-defining results",
+                              "trend >ULN; <25 ug/L; >250 ug/L",
                               "review treatment response and adverse effects",
                               "assign disposition and follow-up clinician/service"
                             ],
@@ -4461,10 +4455,8 @@
               "Serum prolactin; repeat/macroprolactin if mild/discordant.",
               "Pregnancy test, TSH/free T4, renal function.",
               "Pituitary MRI after persistent unexplained elevation or mass symptoms.",
-              "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
               "Prolactin/pituitary mass safety tests: repeat fasting prolactin with macroprolactin, medication, pregnancy, TSH, and renal context, obtain pituitary MRI for persistent or mass-effect concern, and check gonadal/adrenal/thyroid axes for macroadenoma.",
-              "Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.",
-              "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when the branch-specific criteria in this node apply.",
+              "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing.",
               "serum prolactin",
               "assay ULN",
               "venipuncture stress",
@@ -4487,10 +4479,8 @@
               "Serum prolactin; repeat/macroprolactin if mild/discordant.",
               "Pregnancy test, TSH/free T4, renal function.",
               "Pituitary MRI after persistent unexplained elevation or mass symptoms.",
-              "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
               "Prolactin/pituitary mass safety tests: repeat fasting prolactin with macroprolactin, medication, pregnancy, TSH, and renal context, obtain pituitary MRI for persistent or mass-effect concern, and check gonadal/adrenal/thyroid axes for macroadenoma.",
-              "Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.",
-              "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when the branch-specific criteria in this node apply.",
+              "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing.",
               ">ULN",
               "<25 ug/L",
               ">250 ug/L",
@@ -4576,7 +4566,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "prolactinoma_urgent_endpoint",
-          "expected_active_branch": "High-acuity threshold or monitored-care result present: Visual field deficit, severe headache/apoplexy, cranial nerve palsy, pregnancy with macroadenoma symptoms.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; >ULN; <25 ug/L",
+          "expected_active_branch": "High-acuity threshold or monitored-care result present: Visual field deficit, severe headache/apoplexy, cranial nerve palsy, pregnancy with macroadenoma symptoms.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; >ULN; <25 ug/L",
           "expected_path_node_ids": [
             "root",
             "prolactinoma_concurrent_data_bundle",

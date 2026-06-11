@@ -3033,7 +3033,7 @@
           {
             "domain": "exam",
             "exact_data_needed": [
-              "condition-specific focused exam",
+              "focused exam findings listed for this workup",
               "Auscultate heart rhythm",
               "Auscultate for cardiac murmurs",
               "Auscultate for gallop",
@@ -3066,7 +3066,7 @@
             "domain": "labs",
             "exact_data_needed": [
               "12-lead ECG immediately for acute chest pain, ideally within 10 minutes in emergency evaluation",
-              "High-sensitivity troponin pathway with serial testing per local protocol",
+              "High-sensitivity troponin pathway with serial testing per institutional protocol",
               "Cardiac monitor, IV access, and repeat vitals if acute or unstable",
               "Chest X-ray when pulmonary, pneumothorax, mediastinal, or heart failure features are possible",
               "If PE concern persists, use local PE pathway for D-dimer or CT pulmonary angiography",
@@ -3146,7 +3146,7 @@
             "domain": "pregnancy_status",
             "exact_data_needed": [
               "pregnant/not pregnant/unknown when pregnancy potential exists",
-              "postpartum/lactation status when relevant",
+              "postpartum/lactation status if testing or treatment could change",
               "fertility intent when treatment depends on it"
             ],
             "source_ids": [
@@ -3201,7 +3201,7 @@
         "endpoint_missing_context": {
           "rule_id": "adult_chest_pain_missing_context_criteria",
           "source": "criteria",
-          "description": "Route here when adult chest pain cannot be evaluated because the patient context needed for ACS, aortic, PE, respiratory, GI, musculoskeletal, or safety disposition is unavailable.",
+          "description": "Use this branch when adult chest pain cannot be evaluated because the patient context needed for ACS, aortic, PE, respiratory, GI, musculoskeletal, or safety disposition is unavailable.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3519,7 +3519,7 @@
         "adult_chest_pain_missing_acs_data_endpoint": {
           "rule_id": "adult_chest_pain_missing_acs_data_criteria",
           "source": "criteria",
-          "description": "Route here when the exact ACS/aortic risk data needed for disposition are unavailable.",
+          "description": "Use this branch when the exact ACS/aortic risk data needed for disposition are unavailable.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4286,7 +4286,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Adult chest pain: route by ACS timing, life-threatening mimics, structured risk, testing safety, and disposition",
+        "label": "Adult chest pain: use ACS timing, life-threatening mimics, structured risk, testing safety, and disposition",
         "edgeLabel": "",
         "source_ids": [
           "AHA_ACC_CHEST_PAIN_2021",
@@ -4324,7 +4324,7 @@
             "criteria": {
               "rule_id": "adult_chest_pain_missing_context_criteria",
               "source": "criteria",
-              "description": "Route here when adult chest pain cannot be evaluated because the patient context needed for ACS, aortic, PE, respiratory, GI, musculoskeletal, or safety disposition is unavailable.",
+              "description": "Use this branch when adult chest pain cannot be evaluated because the patient context needed for ACS, aortic, PE, respiratory, GI, musculoskeletal, or safety disposition is unavailable.",
               "evaluable_from": [
                 "symptoms",
                 "exam",
@@ -4696,7 +4696,7 @@
                     "criteria": {
                       "rule_id": "adult_chest_pain_missing_acs_data_criteria",
                       "source": "criteria",
-                      "description": "Route here when the exact ACS/aortic risk data needed for disposition are unavailable.",
+                      "description": "Use this branch when the exact ACS/aortic risk data needed for disposition are unavailable.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5397,7 +5397,7 @@
                         }
                       ]
                     },
-                    "action": "Get ED/cardiology/radiology review before unsafe non-emergent testing or treatment. Do not delay emergency ACS/aortic/PE stabilization; document the contraindication, approved local protocol, and reviewer recommendation.",
+                    "action": "Get ED/cardiology/radiology review before unsafe non-emergent testing or treatment. Do not delay emergency ACS/aortic/PE stabilization; document the contraindication, approved institutional protocol, and reviewer recommendation.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
                     "review_needed_reason": "Testing and treatment depend on local troponin assay pathway, imaging availability, pregnancy/renal/contrast risk, stress-test contraindications, and ACS medication risk."

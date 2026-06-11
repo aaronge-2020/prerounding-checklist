@@ -2434,7 +2434,7 @@
           {
             "domain": "exam",
             "exact_data_needed": [
-              "condition-specific focused exam",
+              "focused exam findings listed for this workup",
               "Inspect abdomen",
               "Auscultate bowel sounds",
               "Palpate abdomen for focal tenderness",
@@ -2484,7 +2484,7 @@
               "Equivocal ultrasound appendicitis pathway",
               "Urinalysis with urine culture",
               "Pregnancy test for pregnancy-capable adolescent",
-              "Stool microbiology when the branch-specific criteria in this node apply",
+              "Stool microbiology",
               "Oral rehydration therapy threshold",
               "point-of-care glucose",
               "blood or urine ketones",
@@ -2595,7 +2595,7 @@
             "domain": "pregnancy_status",
             "exact_data_needed": [
               "pregnant/not pregnant/unknown when pregnancy potential exists",
-              "postpartum/lactation status when relevant",
+              "postpartum/lactation status if testing or treatment could change",
               "fertility intent when treatment depends on it"
             ],
             "source_ids": [
@@ -2668,7 +2668,7 @@
         "endpoint_missing_context": {
           "rule_id": "missing_context_criteria",
           "source": "criteria",
-          "description": "Route here when the patient context needed to activate Pediatric abdominal pain, vomiting, or acute abdomen is absent or cannot be extracted.",
+          "description": "Use this branch when the patient context needed to activate Pediatric abdominal pain, vomiting, or acute abdomen is absent or cannot be extracted.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2725,7 +2725,7 @@
         "pediatric_abdominal_pain_vomiting_classification_decision": {
           "rule_id": "pediatric_abdominal_pain_vomiting_classification_criteria",
           "source": "criteria",
-          "description": "Classify Pediatric abdominal pain, vomiting, or acute abdomen against cited thresholds and condition-specific rules: Vomiting metabolic screen: <3 mmol/L, >11 mmol/L, <2.6 mmol/L | Vomiting shock resuscitation: 10-20 mL/kg | Ondansetron support if age >6 months: >6 months, 8-15 kg, 2 mg, 15-30 kg, 4 mg",
+          "description": "Classify Pediatric abdominal pain, vomiting, or acute abdomen using cited thresholds: Vomiting metabolic screen: <3 mmol/L, >11 mmol/L, <2.6 mmol/L | Vomiting shock resuscitation: 10-20 mL/kg | Ondansetron support if age >6 months: >6 months, 8-15 kg, 2 mg, 15-30 kg, 4 mg",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2821,7 +2821,7 @@
         "pediatric_abdominal_pain_vomiting_missing_cutoff_data_endpoint": {
           "rule_id": "pediatric_abdominal_pain_vomiting_missing_cutoff_data_criteria",
           "source": "criteria",
-          "description": "Route here when Pediatric abdominal pain, vomiting, or acute abdomen cannot be classified because exact threshold/result data are missing.",
+          "description": "Use this branch when Pediatric abdominal pain, vomiting, or acute abdomen cannot be classified because exact threshold/result data are missing.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2861,7 +2861,7 @@
             "Equivocal ultrasound appendicitis pathway",
             "Urinalysis with urine culture",
             "Pregnancy test for pregnancy-capable adolescent",
-            "Stool microbiology when the branch-specific criteria in this node apply",
+            "Stool microbiology",
             "Oral rehydration therapy threshold",
             "Avoid routine low-risk abdominal testing",
             "<3 mmol/L",
@@ -2877,7 +2877,7 @@
         "pediatric_abdominal_pain_vomiting_urgent_endpoint": {
           "rule_id": "pediatric_abdominal_pain_vomiting_urgent_criteria",
           "source": "criteria",
-          "description": "Escalate Pediatric abdominal pain, vomiting, or acute abdomen when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
+          "description": "Escalate Pediatric abdominal pain, vomiting, or acute abdomen when Bilious green vomiting or obstruction concern; Peritonitis or progressive localized pain; Possible ectopic pregnancy emergency; Possible testicular torsion emergency; <3 mmol/L; >11 mmol/L; <2.6 mmol/L; Surgical or ED escalation.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3065,7 +3065,7 @@
         "pediatric_abdominal_pain_vomiting_treatment_safety_decision": {
           "rule_id": "pediatric_abdominal_pain_vomiting_safety_decision_criteria",
           "source": "criteria",
-          "description": "Route Pediatric abdominal pain, vomiting, or acute abdomen management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.",
+          "description": "Check Pediatric abdominal pain, vomiting, or acute abdomen treatment contraindications, dose/weight/renal/pregnancy constraints, and institutional order-set limits before committing to therapy.",
           "evaluable_from": [
             "medications",
             "allergies",
@@ -3183,7 +3183,7 @@
         "pediatric_abdominal_pain_vomiting_monitoring_bundle": {
           "rule_id": "pediatric_abdominal_pain_vomiting_monitoring_criteria",
           "source": "criteria",
-          "description": "Monitor Pediatric abdominal pain, vomiting, or acute abdomen by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
+          "description": "Monitor Pediatric abdominal pain, vomiting, or acute abdomen by trending the cited cutoff(s), symptom course, medication adverse effects, and disposition constraints used for this branch.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3276,7 +3276,7 @@
         "pediatric_abdominal_pain_vomiting_worsening_endpoint": {
           "rule_id": "pediatric_abdominal_pain_vomiting_worsening_criteria",
           "source": "criteria",
-          "description": "Escalate Pediatric abdominal pain, vomiting, or acute abdomen if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+          "description": "Escalate Pediatric abdominal pain, vomiting, or acute abdomen if symptoms, vitals, cited thresholds, imaging/ECG/procedure findings, or treatment response worsen or no longer match the chosen branch.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3580,7 +3580,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Pediatric abdominal pain, vomiting, or acute abdomen: route by Bilious green vomiting or obstruction concern; Peritonitis or progressive localized pain; <3 mmol/L; >11 mmol/L; <2.6 mmol/L; Pediatric abdominal pain, vomiting, or acute abdomen: immediate stabilization or escalation trigger: Bilious green vomiting or obstruction concern.; Pediatric abdominal pain, vomiting, or acute abdomen: treatment or disposition for high-risk or confirmed disease: Surgical or ED escalation.",
+        "label": "Pediatric abdominal pain, vomiting, or acute abdomen: Bilious green vomiting or obstruction concern; Peritonitis or progressive localized pain; <3 mmol/L; >11 mmol/L; <2.6 mmol/L; Pediatric abdominal pain, vomiting, or acute abdomen: immediate stabilization or escalation trigger: Bilious green vomiting or obstruction concern.; Pediatric abdominal pain, vomiting, or acute abdomen: treatment or disposition for high-risk or confirmed disease: Surgical or ED escalation.",
         "edgeLabel": "",
         "source_ids": [
           "RCH_VOMITING_CHILD",
@@ -3615,7 +3615,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Pediatric abdominal pain, vomiting, or acute abdomen from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
+        "action": "Check Bilious green vomiting or obstruction concern; Peritonitis or progressive localized pain and <3 mmol/L; >11 mmol/L; <2.6 mmol/L; 10-20 mL/kg; >6 months; 8-15 kg; use the listed assessment bundle to choose emergency care, treatment/disposition, reviewer handoff, alternate diagnosis, reassessment, de-escalation, or follow-up.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3628,7 +3628,7 @@
             "criteria": {
               "rule_id": "missing_context_criteria",
               "source": "criteria",
-              "description": "Route here when the patient context needed to activate Pediatric abdominal pain, vomiting, or acute abdomen is absent or cannot be extracted.",
+              "description": "Use this branch when the patient context needed to activate Pediatric abdominal pain, vomiting, or acute abdomen is absent or cannot be extracted.",
               "evaluable_from": [
                 "symptoms",
                 "exam",
@@ -3720,7 +3720,7 @@
                 "AHRQ_CALIBRATE_DX"
               ]
             },
-            "action": "Obtain together: Right lower quadrant ultrasound first; Equivocal ultrasound appendicitis pathway; Urinalysis with urine culture; Pregnancy test for pregnancy-capable adolescent; Stool microbiology when the branch-specific criteria in this node apply; Oral rehydration therapy threshold; Avoid routine low-risk abdominal testing; point-of-care glucose; blood or urine ketones; hydration/perfusion status; weight; perfusion signs; blood pressure; heart rate; fluid contraindications.",
+            "action": "Obtain together: Right lower quadrant ultrasound first; Equivocal ultrasound appendicitis pathway; Urinalysis with urine culture; Pregnancy test for pregnancy-capable adolescent; Stool microbiology; Oral rehydration therapy threshold; Avoid routine low-risk abdominal testing; point-of-care glucose; blood or urine ketones; hydration/perfusion status; weight; perfusion signs; blood pressure; heart rate; fluid contraindications.",
             "children": [
               {
                 "id": "pediatric_abdominal_pain_vomiting_classification_decision",
@@ -3741,7 +3741,7 @@
                 "criteria": {
                   "rule_id": "pediatric_abdominal_pain_vomiting_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Pediatric abdominal pain, vomiting, or acute abdomen against cited thresholds and condition-specific rules: Vomiting metabolic screen: <3 mmol/L, >11 mmol/L, <2.6 mmol/L | Vomiting shock resuscitation: 10-20 mL/kg | Ondansetron support if age >6 months: >6 months, 8-15 kg, 2 mg, 15-30 kg, 4 mg",
+                  "description": "Classify Pediatric abdominal pain, vomiting, or acute abdomen using cited thresholds: Vomiting metabolic screen: <3 mmol/L, >11 mmol/L, <2.6 mmol/L | Vomiting shock resuscitation: 10-20 mL/kg | Ondansetron support if age >6 months: >6 months, 8-15 kg, 2 mg, 15-30 kg, 4 mg",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -3834,7 +3834,7 @@
                     }
                   ]
                 },
-                "action": "Choose the active Pediatric abdominal pain, vomiting, or acute abdomen branch by matching patient data to the cited cutoffs and patient-specific safety rules.",
+                "action": "Match current patient data to <3 mmol/L; >11 mmol/L; <2.6 mmol/L; 10-20 mL/kg; >6 months; 8-15 kg; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
                 "children": [
                   {
                     "id": "pediatric_abdominal_pain_vomiting_missing_cutoff_data_endpoint",
@@ -3855,7 +3855,7 @@
                     "criteria": {
                       "rule_id": "pediatric_abdominal_pain_vomiting_missing_cutoff_data_criteria",
                       "source": "criteria",
-                      "description": "Route here when Pediatric abdominal pain, vomiting, or acute abdomen cannot be classified because exact threshold/result data are missing.",
+                      "description": "Use this branch when Pediatric abdominal pain, vomiting, or acute abdomen cannot be classified because exact threshold/result data are missing.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -3895,7 +3895,7 @@
                         "Equivocal ultrasound appendicitis pathway",
                         "Urinalysis with urine culture",
                         "Pregnancy test for pregnancy-capable adolescent",
-                        "Stool microbiology when the branch-specific criteria in this node apply",
+                        "Stool microbiology",
                         "Oral rehydration therapy threshold",
                         "Avoid routine low-risk abdominal testing",
                         "<3 mmol/L",
@@ -3934,7 +3934,7 @@
                       "Equivocal ultrasound appendicitis pathway",
                       "Urinalysis with urine culture",
                       "Pregnancy test for pregnancy-capable adolescent",
-                      "Stool microbiology when the branch-specific criteria in this node apply",
+                      "Stool microbiology",
                       "Oral rehydration therapy threshold",
                       "Avoid routine low-risk abdominal testing",
                       "<3 mmol/L",
@@ -3951,7 +3951,7 @@
                     "id": "pediatric_abdominal_pain_vomiting_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Pediatric abdominal pain, vomiting, or acute abdomen: emergency or monitored-care disposition",
-                    "edgeLabel": "High-acuity threshold or monitored-care result present: Bilious green vomiting or obstruction concern; Peritonitis or progressive localized pain; Shock dehydration or altered mental status; <3 mmol/L; >11 mmol/L",
+                    "edgeLabel": "High-acuity threshold or monitored-care result present: Bilious green vomiting or obstruction concern; Peritonitis or progressive localized pain; Possible ectopic pregnancy emergency; <3 mmol/L; >11 mmol/L",
                     "source_ids": [
                       "RCH_VOMITING_CHILD",
                       "RCH_ACUTE_ABDOMINAL_PAIN",
@@ -3966,7 +3966,7 @@
                     "criteria": {
                       "rule_id": "pediatric_abdominal_pain_vomiting_urgent_criteria",
                       "source": "criteria",
-                      "description": "Escalate Pediatric abdominal pain, vomiting, or acute abdomen when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
+                      "description": "Escalate Pediatric abdominal pain, vomiting, or acute abdomen when Bilious green vomiting or obstruction concern; Peritonitis or progressive localized pain; Possible ectopic pregnancy emergency; Possible testicular torsion emergency; <3 mmol/L; >11 mmol/L; <2.6 mmol/L; Surgical or ED escalation.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4056,7 +4056,7 @@
                         }
                       ]
                     },
-                    "action": "Bilious green vomiting or obstruction concern; Peritonitis or progressive localized pain; Shock dehydration or altered mental status. Escalate using the cited high-risk threshold, unstable vital sign, organ-risk finding, or monitored-care rule.",
+                    "action": "Send to ED, admission, or monitored specialty care for Bilious green vomiting or obstruction concern; Peritonitis or progressive localized pain; Possible ectopic pregnancy emergency; Possible testicular torsion emergency; <3 mmol/L; >11 mmol/L; <2.6 mmol/L; Surgical or ED escalation; start stabilization and diagnosis-specific emergency treatment before routine outpatient management.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -4245,7 +4245,7 @@
                         "id": "pediatric_abdominal_pain_vomiting_treatment_safety_decision",
                         "type": "decision",
                         "label": "Pediatric abdominal pain, vomiting, or acute abdomen: contraindications, dosing, pregnancy, and comorbidity modifiers",
-                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan",
+                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "RCH_VOMITING_CHILD",
                           "IDSA_APPENDICITIS_IMAGING_2024",
@@ -4260,7 +4260,7 @@
                         "criteria": {
                           "rule_id": "pediatric_abdominal_pain_vomiting_safety_decision_criteria",
                           "source": "criteria",
-                          "description": "Route Pediatric abdominal pain, vomiting, or acute abdomen management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.",
+                          "description": "Check Pediatric abdominal pain, vomiting, or acute abdomen treatment contraindications, dose/weight/renal/pregnancy constraints, and institutional order-set limits before committing to therapy.",
                           "evaluable_from": [
                             "medications",
                             "allergies",
@@ -4402,7 +4402,7 @@
                             "id": "pediatric_abdominal_pain_vomiting_monitoring_bundle",
                             "type": "action",
                             "label": "Pediatric abdominal pain, vomiting, or acute abdomen: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Pediatric abdominal pain, vomiting, or acute abdomen symptoms, vital signs, criterion-defining results, treatment response, adverse effects, and disposition readiness",
+                            "edgeLabel": "Trend Pediatric abdominal pain, vomiting, or acute abdomen: <3 mmol/L; >11 mmol/L; <2.6 mmol/L; 10-20 mL/kg; Right lower quadrant ultrasound first; Equivocal ultrasound appendicitis pathway; Urinalysis with urine culture; Measure blood pressure",
                             "source_ids": [
                               "RCH_ACUTE_ABDOMINAL_PAIN",
                               "ACEP_APPENDICITIS_2023",
@@ -4417,7 +4417,7 @@
                             "criteria": {
                               "rule_id": "pediatric_abdominal_pain_vomiting_monitoring_criteria",
                               "source": "criteria",
-                              "description": "Monitor Pediatric abdominal pain, vomiting, or acute abdomen by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
+                              "description": "Monitor Pediatric abdominal pain, vomiting, or acute abdomen by trending the cited cutoff(s), symptom course, medication adverse effects, and disposition constraints used for this branch.",
                               "evaluable_from": [
                                 "symptoms",
                                 "exam",
@@ -4528,7 +4528,7 @@
                                 "criteria": {
                                   "rule_id": "pediatric_abdominal_pain_vomiting_worsening_criteria",
                                   "source": "criteria",
-                                  "description": "Escalate Pediatric abdominal pain, vomiting, or acute abdomen if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+                                  "description": "Escalate Pediatric abdominal pain, vomiting, or acute abdomen if symptoms, vitals, cited thresholds, imaging/ECG/procedure findings, or treatment response worsen or no longer match the chosen branch.",
                                   "evaluable_from": [
                                     "symptoms",
                                     "exam",
@@ -4618,7 +4618,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Repeat or review Bilious green vomiting or obstruction concern; Peritonitis or progressive localized pain; Shock dehydration or altered mental status; <3 mmol/L; >11 mmol/L; <2.6 mmol/L; 10-20 mL/kg; Right lower quadrant ultrasound first; Equivocal ultrasound appendicitis pathway; reassess mimics and complications; move to ED, admission, or specialty review when the cited threshold, unstable vital sign, imaging/ECG/procedure result, or treatment-response pattern requires escalation.",
+                                "action": "Repeat or review Bilious green vomiting or obstruction concern; Peritonitis or progressive localized pain; Shock dehydration or altered mental status; <3 mmol/L; >11 mmol/L; <2.6 mmol/L; 10-20 mL/kg; Right lower quadrant ultrasound first; Equivocal ultrasound appendicitis pathway; reassess mimics and complications; move to ED, admission, or specialty review when that specific trend, vital sign, imaging/ECG/procedure finding, or treatment-response pattern requires escalation.",
                                 "children": [],
                                 "endpoint_type": "escalation_disposition",
                                 "guideline_cutoffs": [
@@ -4799,7 +4799,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Use active Pediatric abdominal pain, vomiting, or acute abdomen results and response trend to stop, narrow, taper, or continue treatment; document which cutoff, symptom, adverse effect, or finding changed.",
+                                "action": "Use the measured Pediatric abdominal pain, vomiting, or acute abdomen trend, cited cutoff(s), symptom response, adverse effects, and diagnosis certainty to stop, narrow, taper, or continue treatment; document the value or finding that changed.",
                                 "children": [],
                                 "endpoint_type": "deescalation_stopping",
                                 "guideline_cutoffs": [
@@ -4925,7 +4925,7 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend criterion-defining results",
+                              "trend <3 mmol/L; >11 mmol/L; <2.6 mmol/L",
                               "review treatment response and adverse effects",
                               "assign disposition and follow-up clinician/service"
                             ],
@@ -5335,7 +5335,7 @@
               "Equivocal ultrasound appendicitis pathway",
               "Urinalysis with urine culture",
               "Pregnancy test for pregnancy-capable adolescent",
-              "Stool microbiology when the branch-specific criteria in this node apply",
+              "Stool microbiology",
               "Oral rehydration therapy threshold",
               "Avoid routine low-risk abdominal testing",
               "point-of-care glucose",
@@ -5363,7 +5363,7 @@
               "Equivocal ultrasound appendicitis pathway",
               "Urinalysis with urine culture",
               "Pregnancy test for pregnancy-capable adolescent",
-              "Stool microbiology when the branch-specific criteria in this node apply",
+              "Stool microbiology",
               "Oral rehydration therapy threshold",
               "Avoid routine low-risk abdominal testing",
               "<3 mmol/L",
@@ -5477,7 +5477,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "pediatric_abdominal_pain_vomiting_urgent_endpoint",
-          "expected_active_branch": "High-acuity threshold or monitored-care result present: Bilious green vomiting or obstruction concern; Peritonitis or progressive localized pain; Shock dehydration or altered mental status; <3 mmol/L; >11 mmol/L",
+          "expected_active_branch": "High-acuity threshold or monitored-care result present: Bilious green vomiting or obstruction concern; Peritonitis or progressive localized pain; Possible ectopic pregnancy emergency; <3 mmol/L; >11 mmol/L",
           "expected_path_node_ids": [
             "root",
             "pediatric_abdominal_pain_vomiting_concurrent_data_bundle",

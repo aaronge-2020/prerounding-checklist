@@ -2510,7 +2510,7 @@
           {
             "domain": "exam",
             "exact_data_needed": [
-              "condition-specific focused exam",
+              "focused exam findings listed for this workup",
               "Inspect skin for bruising",
               "Test chair-rise strength",
               "Inspect abdomen for purple striae",
@@ -2638,7 +2638,7 @@
             "domain": "pregnancy_status",
             "exact_data_needed": [
               "pregnant/not pregnant/unknown when pregnancy potential exists",
-              "postpartum/lactation status when relevant",
+              "postpartum/lactation status if testing or treatment could change",
               "fertility intent when treatment depends on it"
             ],
             "source_ids": [
@@ -2695,7 +2695,7 @@
         "endpoint_missing_context": {
           "rule_id": "missing_context_criteria",
           "source": "criteria",
-          "description": "Route here when the patient context needed to activate Cushing's Disease (Pituitary-dependent Cushing's) is absent or cannot be extracted.",
+          "description": "Use this branch when the patient context needed to activate Cushing's Disease (Pituitary-dependent Cushing's) is absent or cannot be extracted.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2748,7 +2748,7 @@
         "cushings_disease_classification_decision": {
           "rule_id": "cushings_disease_classification_criteria",
           "source": "criteria",
-          "description": "Classify Cushing's Disease (Pituitary-dependent Cushing's) against cited thresholds and condition-specific rules: Cushing initial testing: at least 2 measurements, 2 measurements, 1 mg, 2 mg/day, 48 hours | Cushing positive biochemical screen: >ULN, >1.8 ug/dL, >145 ng/dL",
+          "description": "Classify Cushing's Disease (Pituitary-dependent Cushing's) using cited thresholds: Cushing initial testing: at least 2 measurements, 2 measurements, 1 mg, 2 mg/day, 48 hours | Cushing positive biochemical screen: >ULN, >1.8 ug/dL, >145 ng/dL",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2818,7 +2818,7 @@
         "cushings_disease_missing_cutoff_data_endpoint": {
           "rule_id": "cushings_disease_missing_cutoff_data_criteria",
           "source": "criteria",
-          "description": "Route here when Cushing's Disease (Pituitary-dependent Cushing's) cannot be classified because exact threshold/result data are missing.",
+          "description": "Use this branch when Cushing's Disease (Pituitary-dependent Cushing's) cannot be classified because exact threshold/result data are missing.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2851,10 +2851,8 @@
             "ACTH: normal/high supports ACTH-dependent disease.",
             "Pituitary MRI.",
             "Inferior petrosal sinus sampling when MRI equivocal/discordant.",
-            "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-            "Cushing safety tests: use late-night salivary cortisol, 1-mg dexamethasone suppression, or 24-hour urinary free cortisol after excluding exogenous steroids, and assess glucose, BP, potassium, infection/VTE, and bone risk to determine severity and treatment urgency.",
-            "Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.",
-            "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when the branch-specific criteria in this node apply.",
+            "glucose, BP, potassium, infection/VTE, and bone-risk severity screen",
+            "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing.",
             "at least 2 measurements",
             "2 measurements",
             "1 mg",
@@ -2868,7 +2866,7 @@
         "cushings_disease_urgent_endpoint": {
           "rule_id": "cushings_disease_urgent_criteria",
           "source": "criteria",
-          "description": "Escalate Cushing's Disease (Pituitary-dependent Cushing's) when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
+          "description": "Escalate Cushing's Disease (Pituitary-dependent Cushing's) when Severe hypercortisolism with infection, hypokalemia, psychosis, VTE, uncontrolled hypertension/diabetes.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; at least 2 measurements; 2 measurements; 1 mg; ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS.; unstable physiology or dangerous electrolyte/glucose abnormality.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3004,7 +3002,7 @@
         "cushings_disease_treatment_safety_decision": {
           "rule_id": "cushings_disease_safety_decision_criteria",
           "source": "criteria",
-          "description": "Route Cushing's Disease (Pituitary-dependent Cushing's) management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.",
+          "description": "Check Cushing's Disease (Pituitary-dependent Cushing's) treatment contraindications, dose/weight/renal/pregnancy constraints, and institutional order-set limits before committing to therapy.",
           "evaluable_from": [
             "medications",
             "allergies",
@@ -3071,7 +3069,7 @@
         "cushings_disease_review_endpoint": {
           "rule_id": "cushings_disease_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Cushing's Disease (Pituitary-dependent Cushing's) treatment or disposition depends on Cushing initial testing; Cushing positive biochemical screen; ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure..",
+          "description": "Use reviewer handoff when Cushing's Disease (Pituitary-dependent Cushing's) treatment or disposition depends on Cushing initial testing; Cushing positive biochemical screen; ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-specific therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure..",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3091,7 +3089,7 @@
         "cushings_disease_monitoring_bundle": {
           "rule_id": "cushings_disease_monitoring_criteria",
           "source": "criteria",
-          "description": "Monitor Cushing's Disease (Pituitary-dependent Cushing's) by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
+          "description": "Monitor Cushing's Disease (Pituitary-dependent Cushing's) by trending the cited cutoff(s), symptom course, medication adverse effects, and disposition constraints used for this branch.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3158,7 +3156,7 @@
         "cushings_disease_worsening_endpoint": {
           "rule_id": "cushings_disease_worsening_criteria",
           "source": "criteria",
-          "description": "Escalate Cushing's Disease (Pituitary-dependent Cushing's) if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+          "description": "Escalate Cushing's Disease (Pituitary-dependent Cushing's) if symptoms, vitals, cited thresholds, imaging/ECG/procedure findings, or treatment response worsen or no longer match the chosen branch.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3379,7 +3377,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Cushing's Disease: route by Severe hypercortisolism with infection, hypokalemia, psychosis, VTE, uncontrolled hypertension/diabetes.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; at least 2 measurements; 2 measurements; 1 mg; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.",
+        "label": "Cushing's Disease: Severe hypercortisolism with infection, hypokalemia, psychosis, VTE, uncontrolled hypertension/diabetes.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; at least 2 measurements; 2 measurements; 1 mg; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-specific therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.",
         "edgeLabel": "",
         "source_ids": [
           "ES_CUSHING_DX_2008",
@@ -3404,7 +3402,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Cushing's Disease from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
+        "action": "Check Severe hypercortisolism with infection, hypokalemia, psychosis, VTE, uncontrolled hypertension/diabetes.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy. and at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; 48 hours; >ULN; use the listed assessment bundle to choose emergency care, treatment/disposition, reviewer handoff, alternate diagnosis, reassessment, de-escalation, or follow-up.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3417,7 +3415,7 @@
             "criteria": {
               "rule_id": "missing_context_criteria",
               "source": "criteria",
-              "description": "Route here when the patient context needed to activate Cushing's Disease (Pituitary-dependent Cushing's) is absent or cannot be extracted.",
+              "description": "Use this branch when the patient context needed to activate Cushing's Disease (Pituitary-dependent Cushing's) is absent or cannot be extracted.",
               "evaluable_from": [
                 "symptoms",
                 "exam",
@@ -3501,7 +3499,7 @@
                 "AHRQ_CALIBRATE_DX"
               ]
             },
-            "action": "Obtain together: First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL.; ACTH: normal/high supports ACTH-dependent disease.; Pituitary MRI.; Inferior petrosal sinus sampling when MRI equivocal/discordant.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; Cushing safety tests: use late-night salivary cortisol, 1-mg dexamethasone suppression, or 24-hour urinary free cortisol after excluding exogenous steroids, and assess glucose, BP, potassium, infection/VTE, and bone risk to determine severity and treatment urgency.; Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.; Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when the branch-specific criteria in this node apply.; UFC collection count; late-night salivary cortisol count; dexamethasone dose and timing; renal function; pregnancy/antiepileptic context; 24-hour UFC with assay ULN; post-DST cortisol; late-night salivary cortisol.",
+            "action": "Obtain together: First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL.; ACTH: normal/high supports ACTH-dependent disease.; Pituitary MRI.; Inferior petrosal sinus sampling when MRI equivocal/discordant.; glucose, BP, potassium, infection/VTE, and bone-risk severity screen; Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing.; UFC collection count; late-night salivary cortisol count; dexamethasone dose and timing; renal function; pregnancy/antiepileptic context; 24-hour UFC with assay ULN; post-DST cortisol; late-night salivary cortisol.",
             "children": [
               {
                 "id": "cushings_disease_classification_decision",
@@ -3517,7 +3515,7 @@
                 "criteria": {
                   "rule_id": "cushings_disease_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Cushing's Disease (Pituitary-dependent Cushing's) against cited thresholds and condition-specific rules: Cushing initial testing: at least 2 measurements, 2 measurements, 1 mg, 2 mg/day, 48 hours | Cushing positive biochemical screen: >ULN, >1.8 ug/dL, >145 ng/dL",
+                  "description": "Classify Cushing's Disease (Pituitary-dependent Cushing's) using cited thresholds: Cushing initial testing: at least 2 measurements, 2 measurements, 1 mg, 2 mg/day, 48 hours | Cushing positive biochemical screen: >ULN, >1.8 ug/dL, >145 ng/dL",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -3584,7 +3582,7 @@
                     }
                   ]
                 },
-                "action": "Choose the active Cushing's Disease branch by matching patient data to the cited cutoffs and patient-specific safety rules.",
+                "action": "Match current patient data to at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; 48 hours; >ULN; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
                 "children": [
                   {
                     "id": "cushings_disease_missing_cutoff_data_endpoint",
@@ -3600,7 +3598,7 @@
                     "criteria": {
                       "rule_id": "cushings_disease_missing_cutoff_data_criteria",
                       "source": "criteria",
-                      "description": "Route here when Cushing's Disease (Pituitary-dependent Cushing's) cannot be classified because exact threshold/result data are missing.",
+                      "description": "Use this branch when Cushing's Disease (Pituitary-dependent Cushing's) cannot be classified because exact threshold/result data are missing.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -3633,10 +3631,8 @@
                         "ACTH: normal/high supports ACTH-dependent disease.",
                         "Pituitary MRI.",
                         "Inferior petrosal sinus sampling when MRI equivocal/discordant.",
-                        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-                        "Cushing safety tests: use late-night salivary cortisol, 1-mg dexamethasone suppression, or 24-hour urinary free cortisol after excluding exogenous steroids, and assess glucose, BP, potassium, infection/VTE, and bone risk to determine severity and treatment urgency.",
-                        "Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.",
-                        "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when the branch-specific criteria in this node apply.",
+                        "glucose, BP, potassium, infection/VTE, and bone-risk severity screen",
+                        "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing.",
                         "at least 2 measurements",
                         "2 measurements",
                         "1 mg",
@@ -3671,10 +3667,8 @@
                       "ACTH: normal/high supports ACTH-dependent disease.",
                       "Pituitary MRI.",
                       "Inferior petrosal sinus sampling when MRI equivocal/discordant.",
-                      "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-                      "Cushing safety tests: use late-night salivary cortisol, 1-mg dexamethasone suppression, or 24-hour urinary free cortisol after excluding exogenous steroids, and assess glucose, BP, potassium, infection/VTE, and bone risk to determine severity and treatment urgency.",
-                      "Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.",
-                      "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when the branch-specific criteria in this node apply.",
+                      "glucose, BP, potassium, infection/VTE, and bone-risk severity screen",
+                      "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing.",
                       "at least 2 measurements",
                       "2 measurements",
                       "1 mg",
@@ -3689,7 +3683,7 @@
                     "id": "cushings_disease_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Cushing's Disease: emergency or monitored-care disposition",
-                    "edgeLabel": "High-acuity threshold or monitored-care result present: Severe hypercortisolism with infection, hypokalemia, psychosis, VTE, uncontrolled hypertension/diabetes.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; at least 2 measurements; 2 measurements",
+                    "edgeLabel": "High-acuity threshold or monitored-care result present: Severe hypercortisolism with infection, hypokalemia, psychosis, VTE, uncontrolled hypertension/diabetes.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; at least 2 measurements; 2 measurements",
                     "source_ids": [
                       "ES_CUSHING_DX_2008",
                       "ES_CUSHING_TREATMENT_2015",
@@ -3699,7 +3693,7 @@
                     "criteria": {
                       "rule_id": "cushings_disease_urgent_criteria",
                       "source": "criteria",
-                      "description": "Escalate Cushing's Disease (Pituitary-dependent Cushing's) when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
+                      "description": "Escalate Cushing's Disease (Pituitary-dependent Cushing's) when Severe hypercortisolism with infection, hypokalemia, psychosis, VTE, uncontrolled hypertension/diabetes.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; at least 2 measurements; 2 measurements; 1 mg; ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS.; unstable physiology or dangerous electrolyte/glucose abnormality.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -3763,7 +3757,7 @@
                         }
                       ]
                     },
-                    "action": "Severe hypercortisolism with infection, hypokalemia, psychosis, VTE, uncontrolled hypertension/diabetes.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.. Escalate using the cited high-risk threshold, unstable vital sign, organ-risk finding, or monitored-care rule.",
+                    "action": "Send to ED, admission, or monitored specialty care for Severe hypercortisolism with infection, hypokalemia, psychosis, VTE, uncontrolled hypertension/diabetes.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; at least 2 measurements; 2 measurements; 1 mg; ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS.; unstable physiology or dangerous electrolyte/glucose abnormality; start stabilization and diagnosis-specific emergency treatment before routine outpatient management.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -3894,13 +3888,13 @@
                         }
                       ]
                     },
-                    "action": "Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.; Use steroidogenesis inhibitors, glucocorticoid receptor blockade, pituitary-directed drugs, radiation, or bilateral adrenalectomy when surgery is delayed, incomplete, impossible, or recurrent.; ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Cushing initial testing; Cushing positive biochemical screen",
+                    "action": "Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-specific therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.; Use steroidogenesis inhibitors, glucocorticoid receptor blockade, pituitary-directed drugs, radiation, or bilateral adrenalectomy when surgery is delayed, incomplete, impossible, or recurrent.; ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Cushing initial testing; Cushing positive biochemical screen",
                     "children": [
                       {
                         "id": "cushings_disease_treatment_safety_decision",
                         "type": "decision",
                         "label": "Cushing's Disease: contraindications, dosing, pregnancy, and comorbidity modifiers",
-                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan",
+                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "ES_CUSHING_DX_2008",
                           "ES_CUSHING_TREATMENT_2015",
@@ -3910,7 +3904,7 @@
                         "criteria": {
                           "rule_id": "cushings_disease_safety_decision_criteria",
                           "source": "criteria",
-                          "description": "Route Cushing's Disease (Pituitary-dependent Cushing's) management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.",
+                          "description": "Check Cushing's Disease (Pituitary-dependent Cushing's) treatment contraindications, dose/weight/renal/pregnancy constraints, and institutional order-set limits before committing to therapy.",
                           "evaluable_from": [
                             "medications",
                             "allergies",
@@ -3979,8 +3973,8 @@
                           {
                             "id": "cushings_disease_review_endpoint",
                             "type": "endpoint",
-                            "label": "Cushing's Disease: review Cushing initial testing; Cushing positive biochemical screen; ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.",
-                            "edgeLabel": "Cushing's Disease modifier needing review: Cushing initial testing; Cushing positive biochemical screen; ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.",
+                            "label": "Cushing's Disease: review Cushing initial testing; Cushing positive biochemical screen; ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-specific therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.",
+                            "edgeLabel": "Cushing's Disease modifier needing review: Cushing initial testing; Cushing positive biochemical screen; ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-specific therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.",
                             "source_ids": [
                               "ES_CUSHING_DX_2008",
                               "ES_CUSHING_TREATMENT_2015",
@@ -3990,7 +3984,7 @@
                             "criteria": {
                               "rule_id": "cushings_disease_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Cushing's Disease (Pituitary-dependent Cushing's) treatment or disposition depends on Cushing initial testing; Cushing positive biochemical screen; ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure..",
+                              "description": "Use reviewer handoff when Cushing's Disease (Pituitary-dependent Cushing's) treatment or disposition depends on Cushing initial testing; Cushing positive biochemical screen; ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-specific therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure..",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4010,13 +4004,13 @@
                             "action": "Resolve the named Cushing's Disease modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
-                            "review_needed_reason": "Cushing's Disease management changes when Cushing initial testing; Cushing positive biochemical screen; ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.; document the exact modifier and reviewer input needed."
+                            "review_needed_reason": "Cushing's Disease management changes when Cushing initial testing; Cushing positive biochemical screen; ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-specific therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.; document the exact modifier and reviewer input needed."
                           },
                           {
                             "id": "cushings_disease_monitoring_bundle",
                             "type": "action",
                             "label": "Cushing's Disease: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Cushing's Disease symptoms, vital signs, criterion-defining results, treatment response, adverse effects, and disposition readiness",
+                            "edgeLabel": "Trend Cushing's Disease: at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL.; ACTH: normal/high supports ACTH-dependent disease.; Pituitary MRI.; Measure blood pressure",
                             "source_ids": [
                               "ES_CUSHING_DX_2008",
                               "ES_CUSHING_TREATMENT_2015",
@@ -4026,7 +4020,7 @@
                             "criteria": {
                               "rule_id": "cushings_disease_monitoring_criteria",
                               "source": "criteria",
-                              "description": "Monitor Cushing's Disease (Pituitary-dependent Cushing's) by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
+                              "description": "Monitor Cushing's Disease (Pituitary-dependent Cushing's) by trending the cited cutoff(s), symptom course, medication adverse effects, and disposition constraints used for this branch.",
                               "evaluable_from": [
                                 "symptoms",
                                 "exam",
@@ -4106,7 +4100,7 @@
                                 "criteria": {
                                   "rule_id": "cushings_disease_worsening_criteria",
                                   "source": "criteria",
-                                  "description": "Escalate Cushing's Disease (Pituitary-dependent Cushing's) if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+                                  "description": "Escalate Cushing's Disease (Pituitary-dependent Cushing's) if symptoms, vitals, cited thresholds, imaging/ECG/procedure findings, or treatment response worsen or no longer match the chosen branch.",
                                   "evaluable_from": [
                                     "symptoms",
                                     "exam",
@@ -4170,7 +4164,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Repeat or review Severe hypercortisolism with infection, hypokalemia, psychosis, VTE, uncontrolled hypertension/diabetes.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL.; ACTH: normal/high supports ACTH-dependent disease.; reassess mimics and complications; move to ED, admission, or specialty review when the cited threshold, unstable vital sign, imaging/ECG/procedure result, or treatment-response pattern requires escalation.",
+                                "action": "Repeat or review Severe hypercortisolism with infection, hypokalemia, psychosis, VTE, uncontrolled hypertension/diabetes.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL.; ACTH: normal/high supports ACTH-dependent disease.; reassess mimics and complications; move to ED, admission, or specialty review when that specific trend, vital sign, imaging/ECG/procedure finding, or treatment-response pattern requires escalation.",
                                 "children": [],
                                 "endpoint_type": "escalation_disposition",
                                 "guideline_cutoffs": [
@@ -4299,7 +4293,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Use active Cushing's Disease results and response trend to stop, narrow, taper, or continue treatment; document which cutoff, symptom, adverse effect, or finding changed.",
+                                "action": "Use the measured Cushing's Disease trend, cited cutoff(s), symptom response, adverse effects, and diagnosis certainty to stop, narrow, taper, or continue treatment; document the value or finding that changed.",
                                 "children": [],
                                 "endpoint_type": "deescalation_stopping",
                                 "guideline_cutoffs": [
@@ -4394,7 +4388,7 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend criterion-defining results",
+                              "trend at least 2 measurements; 2 measurements; 1 mg",
                               "review treatment response and adverse effects",
                               "assign disposition and follow-up clinician/service"
                             ],
@@ -4450,7 +4444,7 @@
                       }
                     ],
                     "parallel_actions": [
-                      "Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.",
+                      "Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-specific therapy.",
                       "Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.",
                       "Use steroidogenesis inhibitors, glucocorticoid receptor blockade, pituitary-directed drugs, radiation, or bilateral adrenalectomy when surgery is delayed, incomplete, impossible, or recurrent.",
                       "ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS.",
@@ -4690,10 +4684,8 @@
               "ACTH: normal/high supports ACTH-dependent disease.",
               "Pituitary MRI.",
               "Inferior petrosal sinus sampling when MRI equivocal/discordant.",
-              "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-              "Cushing safety tests: use late-night salivary cortisol, 1-mg dexamethasone suppression, or 24-hour urinary free cortisol after excluding exogenous steroids, and assess glucose, BP, potassium, infection/VTE, and bone risk to determine severity and treatment urgency.",
-              "Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.",
-              "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when the branch-specific criteria in this node apply.",
+              "glucose, BP, potassium, infection/VTE, and bone-risk severity screen",
+              "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing.",
               "UFC collection count",
               "late-night salivary cortisol count",
               "dexamethasone dose and timing",
@@ -4717,10 +4709,8 @@
               "ACTH: normal/high supports ACTH-dependent disease.",
               "Pituitary MRI.",
               "Inferior petrosal sinus sampling when MRI equivocal/discordant.",
-              "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-              "Cushing safety tests: use late-night salivary cortisol, 1-mg dexamethasone suppression, or 24-hour urinary free cortisol after excluding exogenous steroids, and assess glucose, BP, potassium, infection/VTE, and bone risk to determine severity and treatment urgency.",
-              "Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.",
-              "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when the branch-specific criteria in this node apply.",
+              "glucose, BP, potassium, infection/VTE, and bone-risk severity screen",
+              "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing.",
               "at least 2 measurements",
               "2 measurements",
               "1 mg",
@@ -4811,7 +4801,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "cushings_disease_urgent_endpoint",
-          "expected_active_branch": "High-acuity threshold or monitored-care result present: Severe hypercortisolism with infection, hypokalemia, psychosis, VTE, uncontrolled hypertension/diabetes.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; at least 2 measurements; 2 measurements",
+          "expected_active_branch": "High-acuity threshold or monitored-care result present: Severe hypercortisolism with infection, hypokalemia, psychosis, VTE, uncontrolled hypertension/diabetes.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; at least 2 measurements; 2 measurements",
           "expected_path_node_ids": [
             "root",
             "cushings_disease_concurrent_data_bundle",
@@ -4839,7 +4829,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "cushings_disease_review_endpoint",
-          "expected_active_branch": "Cushing's Disease modifier needing review: Cushing initial testing; Cushing positive biochemical screen; ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.",
+          "expected_active_branch": "Cushing's Disease modifier needing review: Cushing initial testing; Cushing positive biochemical screen; ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-specific therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.",
           "expected_path_node_ids": [
             "root",
             "cushings_disease_concurrent_data_bundle",

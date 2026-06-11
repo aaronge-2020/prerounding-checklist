@@ -2419,7 +2419,7 @@
           {
             "domain": "exam",
             "exact_data_needed": [
-              "condition-specific focused exam",
+              "focused exam findings listed for this workup",
               "Observe work of breathing",
               "Inspect skin rash",
               "Capillary refill time",
@@ -2460,7 +2460,7 @@
             "domain": "labs",
             "exact_data_needed": [
               "Pediatric sepsis lactate cultures and antibiotic timing",
-              "Age and source-directed pediatric fever tests",
+              "Age and source-specific pediatric fever tests",
               "Febrile infant 8 to 60 day pathway tests",
               "age in months/years",
               "oxygen saturation in air",
@@ -2484,8 +2484,7 @@
             "domain": "imaging_results",
             "exact_data_needed": [
               "imaging, ECG, culture, pathology, or procedure result required by the chosen branch",
-              "Pediatric sepsis lactate cultures and antibiotic timing",
-              "Age and source-directed pediatric fever tests"
+              "Pediatric sepsis lactate cultures and antibiotic timing"
             ],
             "source_ids": [
               "SSC_PEDIATRIC_SEPSIS_2026",
@@ -2555,7 +2554,7 @@
             "domain": "pregnancy_status",
             "exact_data_needed": [
               "pregnant/not pregnant/unknown when pregnancy potential exists",
-              "postpartum/lactation status when relevant",
+              "postpartum/lactation status if testing or treatment could change",
               "fertility intent when treatment depends on it"
             ],
             "source_ids": [
@@ -2918,7 +2917,7 @@
             },
             {
               "id": "peds_fever_ucsf_febrile_infant_age_branches",
-              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
               "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
               "cutoffs": [
                 "0-21 days",
@@ -3016,7 +3015,7 @@
         "pediatric_fever_sepsis_classification_decision": {
           "rule_id": "pediatric_fever_sepsis_classification_criteria",
           "source": "criteria",
-          "description": "Choose the pediatric fever/sepsis branch from shock, high-risk sepsis, moderate-risk sepsis, febrile infant, meningococcal/CNS/HSV, source-directed fever, pregnancy/postpartum, special-population review, low-risk safety-net, or monitoring.",
+          "description": "Choose the pediatric fever/sepsis branch from shock, high-risk sepsis, moderate-risk sepsis, febrile infant, meningococcal/CNS/HSV, source-specific fever, pregnancy/postpartum, special-population review, low-risk safety-net, or monitoring.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3275,7 +3274,7 @@
             },
             {
               "id": "peds_fever_ucsf_febrile_infant_age_branches",
-              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
               "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
               "cutoffs": [
                 "0-21 days",
@@ -3668,7 +3667,7 @@
             },
             {
               "id": "peds_fever_ucsf_febrile_infant_age_branches",
-              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
               "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
               "cutoffs": [
                 "0-21 days",
@@ -4016,7 +4015,7 @@
             },
             {
               "id": "peds_fever_ucsf_febrile_infant_age_branches",
-              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
               "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
               "cutoffs": [
                 "0-21 days",
@@ -4367,7 +4366,7 @@
             },
             {
               "id": "peds_fever_ucsf_febrile_infant_age_branches",
-              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
               "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
               "cutoffs": [
                 "0-21 days",
@@ -4722,7 +4721,7 @@
             },
             {
               "id": "peds_fever_ucsf_febrile_infant_age_branches",
-              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
               "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
               "cutoffs": [
                 "0-21 days",
@@ -5074,7 +5073,7 @@
             },
             {
               "id": "peds_fever_ucsf_febrile_infant_age_branches",
-              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
               "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
               "cutoffs": [
                 "0-21 days",
@@ -5426,7 +5425,7 @@
             },
             {
               "id": "peds_fever_ucsf_febrile_infant_age_branches",
-              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
               "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
               "cutoffs": [
                 "0-21 days",
@@ -5776,7 +5775,7 @@
             },
             {
               "id": "peds_fever_ucsf_febrile_infant_age_branches",
-              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
               "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
               "cutoffs": [
                 "0-21 days",
@@ -6131,7 +6130,7 @@
             },
             {
               "id": "peds_fever_ucsf_febrile_infant_age_branches",
-              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
               "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
               "cutoffs": [
                 "0-21 days",
@@ -6486,7 +6485,7 @@
             },
             {
               "id": "peds_fever_ucsf_febrile_infant_age_branches",
-              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
               "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
               "cutoffs": [
                 "0-21 days",
@@ -6841,7 +6840,7 @@
             },
             {
               "id": "peds_fever_ucsf_febrile_infant_age_branches",
-              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
               "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
               "cutoffs": [
                 "0-21 days",
@@ -7196,7 +7195,7 @@
             },
             {
               "id": "peds_fever_ucsf_febrile_infant_age_branches",
-              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
               "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
               "cutoffs": [
                 "0-21 days",
@@ -7548,7 +7547,7 @@
             },
             {
               "id": "peds_fever_ucsf_febrile_infant_age_branches",
-              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
               "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
               "cutoffs": [
                 "0-21 days",
@@ -7901,7 +7900,7 @@
             },
             {
               "id": "peds_fever_ucsf_febrile_infant_age_branches",
-              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
               "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
               "cutoffs": [
                 "0-21 days",
@@ -8032,7 +8031,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route pediatric fever or suspected sepsis through missing-data, shock, high-risk sepsis, moderate-risk sepsis, febrile infant, CNS/HSV, source-directed, pregnancy/postpartum, special-population, low-risk fever, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+        "action": "Route pediatric fever or suspected sepsis through missing-data, shock, high-risk sepsis, moderate-risk sepsis, febrile infant, CNS/HSV, source-specific, pregnancy/postpartum, special-population, low-risk fever, monitoring, de-escalation, follow-up, and safety-net endpoints.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -8392,7 +8391,7 @@
                 },
                 {
                   "id": "peds_fever_ucsf_febrile_infant_age_branches",
-                  "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+                  "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
                   "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
                   "cutoffs": [
                     "0-21 days",
@@ -8487,7 +8486,7 @@
                 }
               ]
             },
-            "action": "Assess exact age, gestational/corrected age when relevant, temperature value/method/duration, caregiver concern, behavior/social response, mental state, work of breathing, SpO2 and oxygen delivery, RR/HR/BP, capillary refill, pulses/extremity temperature, urine output or last void, hydration, rash blanching/purpura, meningitis/HSV features, respiratory/urinary/GI/skin/CNS/joint/travel/line source, immunization and recent vaccine timing, prematurity/chronic illness/immunocompromise, pregnancy status, current medications/allergies, weight, blood culture/lactate timing when probable sepsis or shock is possible, UA/urine culture, ANC/CRP/procalcitonin and CSF decision for infants, antibiotics already given, and follow-up reliability.",
+            "action": "Assess exact age, gestational/corrected age, temperature value/method/duration, caregiver concern, behavior/social response, mental state, work of breathing, SpO2 and oxygen delivery, RR/HR/BP, capillary refill, pulses/extremity temperature, urine output or last void, hydration, rash blanching/purpura, meningitis/HSV features, respiratory/urinary/GI/skin/CNS/joint/travel/line source, immunization and recent vaccine timing, prematurity/chronic illness/immunocompromise, pregnancy status, current medications/allergies, weight, blood culture/lactate timing when probable sepsis or shock is possible, UA/urine culture, ANC/CRP/procalcitonin and CSF decision for infants, antibiotics already given, and follow-up reliability.",
             "children": [
               {
                 "id": "pediatric_fever_sepsis_classification_decision",
@@ -8505,7 +8504,7 @@
                 "criteria": {
                   "rule_id": "pediatric_fever_sepsis_classification_criteria",
                   "source": "criteria",
-                  "description": "Choose the pediatric fever/sepsis branch from shock, high-risk sepsis, moderate-risk sepsis, febrile infant, meningococcal/CNS/HSV, source-directed fever, pregnancy/postpartum, special-population review, low-risk safety-net, or monitoring.",
+                  "description": "Choose the pediatric fever/sepsis branch from shock, high-risk sepsis, moderate-risk sepsis, febrile infant, meningococcal/CNS/HSV, source-specific fever, pregnancy/postpartum, special-population review, low-risk safety-net, or monitoring.",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -8764,7 +8763,7 @@
                     },
                     {
                       "id": "peds_fever_ucsf_febrile_infant_age_branches",
-                      "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+                      "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
                       "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
                       "cutoffs": [
                         "0-21 days",
@@ -8859,7 +8858,7 @@
                     }
                   ]
                 },
-                "action": "Select the active endpoint using the cited age-banded physiologic thresholds and infant rules: septic shock or organ dysfunction, NICE high-risk suspected sepsis, NICE moderate-risk suspected sepsis, well-appearing febrile infant age band, meningococcal/CNS/HSV emergency, source-directed fever, pregnant/postpartum adolescent review, special-population/local-policy review, low-risk safety-net, or monitoring/de-escalation/follow-up.",
+                "action": "Select the active endpoint using the cited age-banded physiologic thresholds and infant rules: septic shock or organ dysfunction, NICE high-risk suspected sepsis, NICE moderate-risk suspected sepsis, well-appearing febrile infant age band, meningococcal/CNS/HSV emergency, source-specific fever, pregnant/postpartum adolescent review, special-population/local-policy review, low-risk safety-net, or monitoring/de-escalation/follow-up.",
                 "children": [
                   {
                     "id": "pediatric_fever_sepsis_missing_objective_endpoint",
@@ -9215,7 +9214,7 @@
                         },
                         {
                           "id": "peds_fever_ucsf_febrile_infant_age_branches",
-                          "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+                          "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
                           "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
                           "cutoffs": [
                             "0-21 days",
@@ -9551,7 +9550,7 @@
                       },
                       {
                         "id": "peds_fever_ucsf_febrile_infant_age_branches",
-                        "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+                        "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
                         "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
                         "cutoffs": [
                           "0-21 days",
@@ -9907,7 +9906,7 @@
                         },
                         {
                           "id": "peds_fever_ucsf_febrile_infant_age_branches",
-                          "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+                          "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
                           "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
                           "cutoffs": [
                             "0-21 days",
@@ -10002,7 +10001,7 @@
                         }
                       ]
                     },
-                    "action": "Treat as high risk for severe illness or death from sepsis: urgent pediatric/ED assessment, blood culture and lactate when probable sepsis or shock is possible, source-directed testing, empiric antibiotics per age/source/local resistance rules without waiting for every result, oxygen for shock or SpO2 <92% in air, age-appropriate fluid resuscitation when needed with cardiac/renal caution, and monitored disposition until high-risk physiology resolves or a senior clinician documents an alternate explanation.",
+                    "action": "Treat as high risk for severe illness or death from sepsis: urgent pediatric/ED assessment, blood culture and lactate when probable sepsis or shock is possible, source-specific testing, empiric antibiotics per age/source/local resistance rules without waiting for every result, oxygen for shock or SpO2 <92% in air, age-appropriate fluid resuscitation when needed with cardiac/renal caution, and monitored disposition until high-risk physiology resolves or a senior clinician documents an alternate explanation.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -10243,7 +10242,7 @@
                       },
                       {
                         "id": "peds_fever_ucsf_febrile_infant_age_branches",
-                        "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+                        "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
                         "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
                         "cutoffs": [
                           "0-21 days",
@@ -10603,7 +10602,7 @@
                         },
                         {
                           "id": "peds_fever_ucsf_febrile_infant_age_branches",
-                          "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+                          "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
                           "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
                           "cutoffs": [
                             "0-21 days",
@@ -10939,7 +10938,7 @@
                       },
                       {
                         "id": "peds_fever_ucsf_febrile_infant_age_branches",
-                        "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+                        "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
                         "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
                         "cutoffs": [
                           "0-21 days",
@@ -11305,7 +11304,7 @@
                         },
                         {
                           "id": "peds_fever_ucsf_febrile_infant_age_branches",
-                          "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+                          "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
                           "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
                           "cutoffs": [
                             "0-21 days",
@@ -11641,7 +11640,7 @@
                       },
                       {
                         "id": "peds_fever_ucsf_febrile_infant_age_branches",
-                        "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+                        "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
                         "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
                         "cutoffs": [
                           "0-21 days",
@@ -12003,7 +12002,7 @@
                         },
                         {
                           "id": "peds_fever_ucsf_febrile_infant_age_branches",
-                          "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+                          "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
                           "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
                           "cutoffs": [
                             "0-21 days",
@@ -12098,7 +12097,7 @@
                         }
                       ]
                     },
-                    "action": "Do not use low-risk fever disposition. Give parenteral antibiotics at the earliest opportunity for suspected meningococcal disease, obtain CSF before antibiotics only when the branch-specific criteria in this node apply and safe without delaying treatment, add acyclovir for infant HSV risk, involve pediatrics/critical care/neurology or transfer services, and reassess for inotropes/ICU when shocked, unrousable, or showing meningococcal disease.",
+                    "action": "Do not use low-risk fever disposition. Give parenteral antibiotics at the earliest opportunity for suspected meningococcal disease, obtain CSF before antibiotics only and safe without delaying treatment, add acyclovir for infant HSV risk, involve pediatrics/critical care/neurology or transfer services, and reassess for inotropes/ICU when shocked, unrousable, or showing meningococcal disease.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -12339,7 +12338,7 @@
                       },
                       {
                         "id": "peds_fever_ucsf_febrile_infant_age_branches",
-                        "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+                        "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
                         "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
                         "cutoffs": [
                           "0-21 days",
@@ -12437,7 +12436,7 @@
                   {
                     "id": "pediatric_fever_sepsis_source_directed_endpoint",
                     "type": "endpoint",
-                    "label": "Source-directed fever branch",
+                    "label": "source-specific fever branch",
                     "edgeLabel": "Respiratory, urinary, skin, abdominal, line, CNS, joint, travel, or exposure source",
                     "source_ids": [
                       "NICE_FEVER_UNDER5_NG143",
@@ -12701,7 +12700,7 @@
                         },
                         {
                           "id": "peds_fever_ucsf_febrile_infant_age_branches",
-                          "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+                          "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
                           "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
                           "cutoffs": [
                             "0-21 days",
@@ -13037,7 +13036,7 @@
                       },
                       {
                         "id": "peds_fever_ucsf_febrile_infant_age_branches",
-                        "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+                        "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
                         "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
                         "cutoffs": [
                           "0-21 days",
@@ -13396,7 +13395,7 @@
                         },
                         {
                           "id": "peds_fever_ucsf_febrile_infant_age_branches",
-                          "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+                          "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
                           "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
                           "cutoffs": [
                             "0-21 days",
@@ -13499,8 +13498,8 @@
                   {
                     "id": "pediatric_fever_sepsis_special_population_review_endpoint",
                     "type": "endpoint",
-                    "label": "Special population or local policy",
-                    "edgeLabel": "Neonate, prematurity, immunocompromise, line/device, resistant risk, bronchiolitis exclusion, or local policy",
+                    "label": "Special population or institutional policy",
+                    "edgeLabel": "Neonate, prematurity, immunocompromise, line/device, resistant risk, bronchiolitis exclusion, or institutional policy",
                     "source_ids": [
                       "AAP_FEBRILE_INFANT_2021",
                       "UCSF_FEBRILE_INFANT_2023",
@@ -13769,7 +13768,7 @@
                         },
                         {
                           "id": "peds_fever_ucsf_febrile_infant_age_branches",
-                          "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+                          "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
                           "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
                           "cutoffs": [
                             "0-21 days",
@@ -13867,7 +13866,7 @@
                     "action": "Obtain pediatric, infectious diseases, neonatology, immunology, critical-care, transfer-center, or antimicrobial-stewardship review as appropriate. Resolve ceftriaxone safety in newborns, listeria coverage for age <3 months, resistant-organism coverage, device/line source control, immunocompromised fever rules, bronchiolitis or recent-immunization exclusions from febrile-infant algorithms, and local admission/transfer thresholds before assigning outpatient care.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Neonatal age, prematurity, immunocompromise, resistant organisms, ceftriaxone/calcium risk, local antibiotic formulary, transfer access, and febrile-infant exclusions require clinician governance."
+                    "review_needed_reason": "Neonatal age, prematurity, immunocompromise, resistant organisms, ceftriaxone/calcium risk, local antibiotic formulary, transfer access, and febrile-infant exclusions require specialist review."
                   },
                   {
                     "id": "pediatric_fever_sepsis_low_risk_fever_safety_endpoint",
@@ -14139,7 +14138,7 @@
                         },
                         {
                           "id": "peds_fever_ucsf_febrile_infant_age_branches",
-                          "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+                          "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
                           "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
                           "cutoffs": [
                             "0-21 days",
@@ -14475,7 +14474,7 @@
                       },
                       {
                         "id": "peds_fever_ucsf_febrile_infant_age_branches",
-                        "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+                        "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
                         "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
                         "cutoffs": [
                           "0-21 days",
@@ -14843,7 +14842,7 @@
                         },
                         {
                           "id": "peds_fever_ucsf_febrile_infant_age_branches",
-                          "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+                          "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
                           "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
                           "cutoffs": [
                             "0-21 days",
@@ -15213,7 +15212,7 @@
                             },
                             {
                               "id": "peds_fever_ucsf_febrile_infant_age_branches",
-                              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+                              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
                               "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
                               "cutoffs": [
                                 "0-21 days",
@@ -15549,7 +15548,7 @@
                           },
                           {
                             "id": "peds_fever_ucsf_febrile_infant_age_branches",
-                            "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+                            "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
                             "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
                             "cutoffs": [
                               "0-21 days",
@@ -15912,7 +15911,7 @@
                             },
                             {
                               "id": "peds_fever_ucsf_febrile_infant_age_branches",
-                              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+                              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
                               "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
                               "cutoffs": [
                                 "0-21 days",
@@ -16248,7 +16247,7 @@
                           },
                           {
                             "id": "peds_fever_ucsf_febrile_infant_age_branches",
-                            "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+                            "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
                             "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
                             "cutoffs": [
                               "0-21 days",
@@ -16612,7 +16611,7 @@
                             },
                             {
                               "id": "peds_fever_ucsf_febrile_infant_age_branches",
-                              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+                              "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
                               "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
                               "cutoffs": [
                                 "0-21 days",
@@ -16972,7 +16971,7 @@
                       },
                       {
                         "id": "peds_fever_ucsf_febrile_infant_age_branches",
-                        "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+                        "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
                         "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
                         "cutoffs": [
                           "0-21 days",
@@ -17306,7 +17305,7 @@
                   },
                   {
                     "id": "peds_fever_ucsf_febrile_infant_age_branches",
-                    "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+                    "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
                     "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
                     "cutoffs": [
                       "0-21 days",
@@ -17638,7 +17637,7 @@
                   },
                   {
                     "id": "peds_fever_ucsf_febrile_infant_age_branches",
-                    "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+                    "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
                     "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
                     "cutoffs": [
                       "0-21 days",
@@ -17735,7 +17734,7 @@
               }
             ],
             "parallel_actions": [
-              "Pediatric sepsis lactate cultures and antibiotic timing; Age and source-directed pediatric fever tests; Febrile infant 8 to 60 day pathway tests",
+              "Pediatric sepsis lactate cultures and antibiotic timing; Age and source-specific pediatric fever tests; Febrile infant 8 to 60 day pathway tests",
               "Fever in an infant under 3 months; Pediatric sepsis or shock danger physiology; Non-blanching rash meningitis or CNS cues; Measure temperature; Measure respiratory rate; Measure oxygen saturation",
               "Pediatric sepsis escalation antibiotics and fluids; Pediatric fever safety net and reassessment; Pregnant or postpartum adolescent fever route",
               "exact age in days/months/years and weight",
@@ -17761,9 +17760,9 @@
               "blood culture/lactate when sepsis possible",
               "UA/urine culture",
               "ANC/CRP/procalcitonin for febrile infants",
-              "CSF status when indicated",
+              "CSF status",
               "medication allergy and antibiotic timing",
-              "pregnancy status when relevant",
+              "pregnancy status",
               "follow-up access"
             ],
             "guideline_cutoffs": [
@@ -18004,7 +18003,7 @@
               },
               {
                 "id": "peds_fever_ucsf_febrile_infant_age_branches",
-                "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+                "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days use UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
                 "criteria_text": "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
                 "cutoffs": [
                   "0-21 days",
@@ -18230,7 +18229,7 @@
           "scenario_id": "neonate_immunocompromised_resistant_risk",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "pediatric_fever_sepsis_special_population_review_endpoint",
-          "expected_active_branch": "Neonate, prematurity, immunocompromise, line/device, resistant risk, bronchiolitis exclusion, or local policy",
+          "expected_active_branch": "Neonate, prematurity, immunocompromise, line/device, resistant risk, bronchiolitis exclusion, or institutional policy",
           "expected_path_node_ids": [
             "root",
             "pediatric_fever_sepsis_bedside_assessment_bundle",
@@ -18322,7 +18321,7 @@
           "SSC pediatric sepsis timing, blood culture, lactate, 10-20 mL/kg bolus, first-hour volume, vasoactive, and post-resuscitation SpO2 targets are represented",
           "febrile infant branch includes temperature >38.0 C, ANC/CRP/procalcitonin cutoffs, PECARN low-risk logic, age 0-21, 22-28, and 29-60 day routes, cultures, antibiotics, admission, and follow-up reliability",
           "NICE fever under-5 infant WBC <5 or >15 x10^9/L LP/antibiotic threshold and safety-net return rules are represented",
-          "meningococcal/CNS/HSV, source-directed fever, pregnancy/postpartum adolescent, immunocompromised/neonate/local-policy, low-risk fever, monitoring, de-escalation, follow-up, and safety-net endpoints all terminate in actionable instructions"
+          "meningococcal/CNS/HSV, source-specific fever, pregnancy/postpartum adolescent, immunocompromised/neonate/institutional-protocol review, low-risk fever, monitoring, de-escalation, follow-up, and safety-net endpoints all terminate in actionable instructions"
         ]
       }
     },

@@ -2962,7 +2962,7 @@
           {
             "domain": "exam",
             "exact_data_needed": [
-              "condition-specific focused exam",
+              "focused exam findings listed for this workup",
               "Measure testicular volume",
               "Inspect breast tissue",
               "Inspect body hair distribution",
@@ -3118,7 +3118,7 @@
             "domain": "pregnancy_status",
             "exact_data_needed": [
               "pregnant/not pregnant/unknown when pregnancy potential exists",
-              "postpartum/lactation status when relevant",
+              "postpartum/lactation status if testing or treatment could change",
               "fertility intent when treatment depends on it"
             ],
             "source_ids": [
@@ -4980,7 +4980,7 @@
             "id": "erectile_dysfunction_initial_assessment",
             "type": "action",
             "label": "ED intake, exam, labs, and safety screen",
-            "edgeLabel": "Assess erection pattern, libido, CV symptoms/exercise tolerance, meds/substances, BP/HR/pulses, genital/testicular/neuro exam, A1c/glucose/lipids, and testosterone/prolactin/TSH when the branch-specific criteria in this node apply",
+            "edgeLabel": "Assess erection pattern, libido, CV symptoms/exercise tolerance, meds/substances, BP/HR/pulses, genital/testicular/neuro exam, A1c/glucose/lipids, and testosterone/prolactin/TSH",
             "source_ids": [
               "ENDOTEXT_ED_2022",
               "STATPEARLS_ED_2024",
@@ -5156,13 +5156,13 @@
                 }
               ]
             },
-            "action": "Take a focused sexual/medical/psychosocial history; screen chest pain, claudication, neurologic deficit, severe hypogonadism/pituitary symptoms, priapism, hemodynamic instability, altered mental status, arrhythmia, airway compromise, vision threat, and pregnancy-critical issues when relevant. Measure BP, HR, BMI, pulses, genital/testicular findings, body hair/breast tissue, and focused neurologic findings. Order A1c or fasting glucose, lipids, kidney function, morning total testosterone when low testosterone is possible, and prolactin/TSH for low libido, gynecomastia, infertility, or pituitary symptoms.",
+            "action": "Take a focused sexual/medical/psychosocial history; screen chest pain, claudication, neurologic deficit, severe hypogonadism/pituitary symptoms, priapism, hemodynamic instability, altered mental status, arrhythmia, airway compromise, vision threat, and pregnancy-critical issues. Measure BP, HR, BMI, pulses, genital/testicular findings, body hair/breast tissue, and focused neurologic findings. Order A1c or fasting glucose, lipids, kidney function, morning total testosterone when low testosterone is possible, and prolactin/TSH for low libido, gynecomastia, infertility, or pituitary symptoms.",
             "children": [
               {
                 "id": "erectile_dysfunction_risk_decision",
                 "type": "decision",
                 "label": "Classify ED by danger, endocrine, metabolic, and medication safety",
-                "edgeLabel": "History, exam, vitals, metabolic labs, testosterone/prolactin/TSH when the branch-specific criteria in this node apply, medication review, and therapy-safety data are available",
+                "edgeLabel": "History, exam, vitals, metabolic labs, testosterone/prolactin/TSH, medication review, and therapy-safety data are available",
                 "source_ids": [
                   "ENDOTEXT_ED_2022",
                   "STATPEARLS_ED_2024",
@@ -5772,7 +5772,7 @@
                         }
                       ]
                     },
-                    "action": "Repeat prolactin if mild or stress-related, check medication causes, renal failure, hypothyroidism, pregnancy/lactation when relevant, and macroprolactin when asymptomatic. Obtain pituitary MRI/endocrinology review when testosterone is <150 ng/dL with secondary pattern, prolactin is persistently above ULN, prolactin is >250 ug/L or >500 ug/L, panhypopituitarism or headache/visual field symptoms are present, or a large sellar mass has only mild prolactin elevation needing 1:100 dilution.",
+                    "action": "Repeat prolactin if mild or stress-related, check medication causes, renal failure, hypothyroidism, pregnancy/lactation, and macroprolactin when asymptomatic. Obtain pituitary MRI/endocrinology review when testosterone is <150 ng/dL with secondary pattern, prolactin is persistently above ULN, prolactin is >250 ug/L or >500 ug/L, panhypopituitarism or headache/visual field symptoms are present, or a large sellar mass has only mild prolactin elevation needing 1:100 dilution.",
                     "children": [],
                     "endpoint_type": "diagnostic_step",
                     "guideline_cutoffs": [
@@ -6971,7 +6971,7 @@
                                 }
                               ]
                             },
-                            "action": "Escalate to ED/cardiology/urology/endocrinology when the branch-specific criteria in this node apply, stop the unsafe ED medication, repeat abnormal vitals, exam, glucose/A1c/lipid, testosterone/prolactin/TSH, PSA/hematocrit, or vascular findings as relevant, reassess mimics, verify PDE5 timing and adequate trials before labeling failure, and route priapism >4 hours, visual/hearing loss, chest pain, neurologic deficit, or pituitary mass-effect symptoms urgently.",
+                            "action": "Escalate to ED/cardiology/urology/endocrinology, stop the unsafe ED medication, repeat abnormal vitals, exam, glucose/A1c/lipid, testosterone/prolactin/TSH, PSA/hematocrit, or vascular findings as relevant, reassess mimics, verify PDE5 timing and adequate trials before labeling failure, and route priapism >4 hours, visual/hearing loss, chest pain, neurologic deficit, or pituitary mass-effect symptoms urgently.",
                             "children": [],
                             "endpoint_type": "escalation_disposition",
                             "guideline_cutoffs": [
@@ -7893,8 +7893,8 @@
               "medication/substance review including nitrates and alpha-blockers",
               "BP/HR/BMI/pulses and genital/testicular/neuro exam",
               "A1c or fasting glucose plus lipids",
-              "morning total testosterone when indicated",
-              "prolactin and TSH when indicated",
+              "morning total testosterone",
+              "prolactin and TSH",
               "fertility/prostate/hematocrit safety screen before testosterone"
             ],
             "required_data": [
@@ -7906,8 +7906,8 @@
               "blood pressure and pulses",
               "A1c or fasting glucose",
               "lipid profile",
-              "morning total testosterone when indicated",
-              "prolactin/TSH when indicated"
+              "morning total testosterone",
+              "prolactin/TSH"
             ],
             "guideline_cutoffs": [
               {

@@ -2872,7 +2872,7 @@
           {
             "domain": "exam",
             "exact_data_needed": [
-              "condition-specific focused exam",
+              "focused exam findings listed for this workup",
               "Inspect neck for acanthosis",
               "Observe Kussmaul breathing",
               "Palpate abdomen for tenderness",
@@ -3005,7 +3005,7 @@
             "domain": "pregnancy_status",
             "exact_data_needed": [
               "pregnant/not pregnant/unknown when pregnancy potential exists",
-              "postpartum/lactation status when relevant",
+              "postpartum/lactation status if testing or treatment could change",
               "fertility intent when treatment depends on it"
             ],
             "source_ids": [
@@ -3067,7 +3067,7 @@
         "endpoint_missing_context": {
           "rule_id": "gestational_diabetes_missing_context_criteria",
           "source": "criteria",
-          "description": "Route here when the pregnancy diabetes context needed to choose screening, treatment, escalation, or postpartum follow-up is unavailable.",
+          "description": "Use this branch when the pregnancy diabetes context needed to choose screening, treatment, escalation, or postpartum follow-up is unavailable.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3172,7 +3172,7 @@
             {
               "id": "gdm_two_step_carpenter_coustan",
               "label": "Two-step GDM diagnosis: 50-g screen threshold 130-140 mg/dL, then 100-g OGTT Carpenter-Coustan thresholds with usually 2 abnormal values",
-              "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by local policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
+              "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by institutional policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
               "cutoffs": [
                 "130-140 mg/dL",
                 "fasting 95 mg/dL",
@@ -3393,7 +3393,7 @@
             {
               "id": "gdm_two_step_carpenter_coustan",
               "label": "Two-step GDM diagnosis: 50-g screen threshold 130-140 mg/dL, then 100-g OGTT Carpenter-Coustan thresholds with usually 2 abnormal values",
-              "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by local policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
+              "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by institutional policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
               "cutoffs": [
                 "130-140 mg/dL",
                 "fasting 95 mg/dL",
@@ -3545,7 +3545,7 @@
         "gestational_diabetes_missing_ogtt_log_endpoint": {
           "rule_id": "gestational_diabetes_missing_ogtt_criteria",
           "source": "criteria",
-          "description": "Route here when exact GDM diagnostic or treatment-routing data are missing.",
+          "description": "Use this branch when exact GDM diagnostic or treatment-routing data are missing.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3644,7 +3644,7 @@
             {
               "id": "gdm_two_step_carpenter_coustan",
               "label": "Two-step GDM diagnosis: 50-g screen threshold 130-140 mg/dL, then 100-g OGTT Carpenter-Coustan thresholds with usually 2 abnormal values",
-              "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by local policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
+              "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by institutional policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
               "cutoffs": [
                 "130-140 mg/dL",
                 "fasting 95 mg/dL",
@@ -3865,7 +3865,7 @@
             {
               "id": "gdm_two_step_carpenter_coustan",
               "label": "Two-step GDM diagnosis: 50-g screen threshold 130-140 mg/dL, then 100-g OGTT Carpenter-Coustan thresholds with usually 2 abnormal values",
-              "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by local policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
+              "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by institutional policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
               "cutoffs": [
                 "130-140 mg/dL",
                 "fasting 95 mg/dL",
@@ -4077,7 +4077,7 @@
             {
               "id": "gdm_two_step_carpenter_coustan",
               "label": "Two-step GDM diagnosis: 50-g screen threshold 130-140 mg/dL, then 100-g OGTT Carpenter-Coustan thresholds with usually 2 abnormal values",
-              "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by local policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
+              "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by institutional policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
               "cutoffs": [
                 "130-140 mg/dL",
                 "fasting 95 mg/dL",
@@ -4289,7 +4289,7 @@
             {
               "id": "gdm_two_step_carpenter_coustan",
               "label": "Two-step GDM diagnosis: 50-g screen threshold 130-140 mg/dL, then 100-g OGTT Carpenter-Coustan thresholds with usually 2 abnormal values",
-              "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by local policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
+              "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by institutional policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
               "cutoffs": [
                 "130-140 mg/dL",
                 "fasting 95 mg/dL",
@@ -4503,7 +4503,7 @@
             {
               "id": "gdm_two_step_carpenter_coustan",
               "label": "Two-step GDM diagnosis: 50-g screen threshold 130-140 mg/dL, then 100-g OGTT Carpenter-Coustan thresholds with usually 2 abnormal values",
-              "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by local policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
+              "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by institutional policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
               "cutoffs": [
                 "130-140 mg/dL",
                 "fasting 95 mg/dL",
@@ -4721,7 +4721,7 @@
             {
               "id": "gdm_two_step_carpenter_coustan",
               "label": "Two-step GDM diagnosis: 50-g screen threshold 130-140 mg/dL, then 100-g OGTT Carpenter-Coustan thresholds with usually 2 abnormal values",
-              "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by local policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
+              "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by institutional policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
               "cutoffs": [
                 "130-140 mg/dL",
                 "fasting 95 mg/dL",
@@ -4874,7 +4874,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Gestational diabetes: route by pregnancy timing, OGTT thresholds, glucose targets, urgent obstetric risk, and postpartum prevention",
+        "label": "Gestational diabetes: use pregnancy timing, OGTT thresholds, glucose targets, urgent obstetric risk, and postpartum prevention",
         "edgeLabel": "",
         "source_ids": [
           "ADA_SOC_2026",
@@ -4920,7 +4920,7 @@
             "criteria": {
               "rule_id": "gestational_diabetes_missing_context_criteria",
               "source": "criteria",
-              "description": "Route here when the pregnancy diabetes context needed to choose screening, treatment, escalation, or postpartum follow-up is unavailable.",
+              "description": "Use this branch when the pregnancy diabetes context needed to choose screening, treatment, escalation, or postpartum follow-up is unavailable.",
               "evaluable_from": [
                 "symptoms",
                 "exam",
@@ -5060,7 +5060,7 @@
                 {
                   "id": "gdm_two_step_carpenter_coustan",
                   "label": "Two-step GDM diagnosis: 50-g screen threshold 130-140 mg/dL, then 100-g OGTT Carpenter-Coustan thresholds with usually 2 abnormal values",
-                  "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by local policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
+                  "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by institutional policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
                   "cutoffs": [
                     "130-140 mg/dL",
                     "fasting 95 mg/dL",
@@ -5295,7 +5295,7 @@
                     {
                       "id": "gdm_two_step_carpenter_coustan",
                       "label": "Two-step GDM diagnosis: 50-g screen threshold 130-140 mg/dL, then 100-g OGTT Carpenter-Coustan thresholds with usually 2 abnormal values",
-                      "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by local policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
+                      "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by institutional policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
                       "cutoffs": [
                         "130-140 mg/dL",
                         "fasting 95 mg/dL",
@@ -5461,7 +5461,7 @@
                     "criteria": {
                       "rule_id": "gestational_diabetes_missing_ogtt_criteria",
                       "source": "criteria",
-                      "description": "Route here when exact GDM diagnostic or treatment-routing data are missing.",
+                      "description": "Use this branch when exact GDM diagnostic or treatment-routing data are missing.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5592,7 +5592,7 @@
                         {
                           "id": "gdm_two_step_carpenter_coustan",
                           "label": "Two-step GDM diagnosis: 50-g screen threshold 130-140 mg/dL, then 100-g OGTT Carpenter-Coustan thresholds with usually 2 abnormal values",
-                          "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by local policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
+                          "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by institutional policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
                           "cutoffs": [
                             "130-140 mg/dL",
                             "fasting 95 mg/dL",
@@ -5741,7 +5741,7 @@
                         }
                       ]
                     },
-                    "action": "Send for urgent obstetric/endocrine evaluation, check glucose, serum or urine ketones, electrolytes, bicarbonate/anion gap, creatinine, mental status, hydration, blood pressure and preeclampsia symptoms, fetal status per gestational age/local protocol, and treat possible DKA or hypertensive emergency before routine GDM titration.",
+                    "action": "Send for urgent obstetric/endocrine evaluation, check glucose, serum or urine ketones, electrolytes, bicarbonate/anion gap, creatinine, mental status, hydration, blood pressure and preeclampsia symptoms, fetal status per gestational age/institutional protocol, and treat possible DKA or hypertensive emergency before routine GDM titration.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -5793,7 +5793,7 @@
                       {
                         "id": "gdm_two_step_carpenter_coustan",
                         "label": "Two-step GDM diagnosis: 50-g screen threshold 130-140 mg/dL, then 100-g OGTT Carpenter-Coustan thresholds with usually 2 abnormal values",
-                        "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by local policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
+                        "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by institutional policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
                         "cutoffs": [
                           "130-140 mg/dL",
                           "fasting 95 mg/dL",
@@ -6035,7 +6035,7 @@
                         {
                           "id": "gdm_two_step_carpenter_coustan",
                           "label": "Two-step GDM diagnosis: 50-g screen threshold 130-140 mg/dL, then 100-g OGTT Carpenter-Coustan thresholds with usually 2 abnormal values",
-                          "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by local policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
+                          "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by institutional policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
                           "cutoffs": [
                             "130-140 mg/dL",
                             "fasting 95 mg/dL",
@@ -6258,7 +6258,7 @@
                             {
                               "id": "gdm_two_step_carpenter_coustan",
                               "label": "Two-step GDM diagnosis: 50-g screen threshold 130-140 mg/dL, then 100-g OGTT Carpenter-Coustan thresholds with usually 2 abnormal values",
-                              "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by local policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
+                              "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by institutional policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
                               "cutoffs": [
                                 "130-140 mg/dL",
                                 "fasting 95 mg/dL",
@@ -6459,7 +6459,7 @@
                           {
                             "id": "gdm_two_step_carpenter_coustan",
                             "label": "Two-step GDM diagnosis: 50-g screen threshold 130-140 mg/dL, then 100-g OGTT Carpenter-Coustan thresholds with usually 2 abnormal values",
-                            "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by local policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
+                            "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by institutional policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
                             "cutoffs": [
                               "130-140 mg/dL",
                               "fasting 95 mg/dL",
@@ -6679,7 +6679,7 @@
                             {
                               "id": "gdm_two_step_carpenter_coustan",
                               "label": "Two-step GDM diagnosis: 50-g screen threshold 130-140 mg/dL, then 100-g OGTT Carpenter-Coustan thresholds with usually 2 abnormal values",
-                              "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by local policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
+                              "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by institutional policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
                               "cutoffs": [
                                 "130-140 mg/dL",
                                 "fasting 95 mg/dL",
@@ -6880,7 +6880,7 @@
                           {
                             "id": "gdm_two_step_carpenter_coustan",
                             "label": "Two-step GDM diagnosis: 50-g screen threshold 130-140 mg/dL, then 100-g OGTT Carpenter-Coustan thresholds with usually 2 abnormal values",
-                            "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by local policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
+                            "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by institutional policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
                             "cutoffs": [
                               "130-140 mg/dL",
                               "fasting 95 mg/dL",
@@ -7113,7 +7113,7 @@
                             {
                               "id": "gdm_two_step_carpenter_coustan",
                               "label": "Two-step GDM diagnosis: 50-g screen threshold 130-140 mg/dL, then 100-g OGTT Carpenter-Coustan thresholds with usually 2 abnormal values",
-                              "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by local policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
+                              "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by institutional policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
                               "cutoffs": [
                                 "130-140 mg/dL",
                                 "fasting 95 mg/dL",
@@ -7314,7 +7314,7 @@
                           {
                             "id": "gdm_two_step_carpenter_coustan",
                             "label": "Two-step GDM diagnosis: 50-g screen threshold 130-140 mg/dL, then 100-g OGTT Carpenter-Coustan thresholds with usually 2 abnormal values",
-                            "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by local policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
+                            "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by institutional policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
                             "cutoffs": [
                               "130-140 mg/dL",
                               "fasting 95 mg/dL",
@@ -7528,7 +7528,7 @@
                       {
                         "id": "gdm_two_step_carpenter_coustan",
                         "label": "Two-step GDM diagnosis: 50-g screen threshold 130-140 mg/dL, then 100-g OGTT Carpenter-Coustan thresholds with usually 2 abnormal values",
-                        "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by local policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
+                        "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by institutional policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
                         "cutoffs": [
                           "130-140 mg/dL",
                           "fasting 95 mg/dL",
@@ -7758,7 +7758,7 @@
                         {
                           "id": "gdm_two_step_carpenter_coustan",
                           "label": "Two-step GDM diagnosis: 50-g screen threshold 130-140 mg/dL, then 100-g OGTT Carpenter-Coustan thresholds with usually 2 abnormal values",
-                          "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by local policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
+                          "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by institutional policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
                           "cutoffs": [
                             "130-140 mg/dL",
                             "fasting 95 mg/dL",
@@ -7907,7 +7907,7 @@
                         }
                       ]
                     },
-                    "action": "Document why routine GDM is not the documented disease branch and route to the more specific diagnosis: One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL. Two-step approach if used: 50-g screen often >=130-140 mg/dL; 100-g Carpenter-Coustan thresholds fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL, usually 2 abnormal values.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics.",
+                    "action": "Document why routine GDM is not the current diagnosis and route to the more specific diagnosis: One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL. Two-step approach if used: 50-g screen often >=130-140 mg/dL; 100-g Carpenter-Coustan thresholds fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL, usually 2 abnormal values.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
                     "review_needed_reason": "Pregnancy hyperglycemia may represent overt diabetes, hyperglycemic crisis, medication effect, or another diagnosis requiring a different pathway."
@@ -7962,7 +7962,7 @@
                   {
                     "id": "gdm_two_step_carpenter_coustan",
                     "label": "Two-step GDM diagnosis: 50-g screen threshold 130-140 mg/dL, then 100-g OGTT Carpenter-Coustan thresholds with usually 2 abnormal values",
-                    "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by local policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
+                    "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by institutional policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
                     "cutoffs": [
                       "130-140 mg/dL",
                       "fasting 95 mg/dL",
@@ -8159,7 +8159,7 @@
                   {
                     "id": "gdm_two_step_carpenter_coustan",
                     "label": "Two-step GDM diagnosis: 50-g screen threshold 130-140 mg/dL, then 100-g OGTT Carpenter-Coustan thresholds with usually 2 abnormal values",
-                    "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by local policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
+                    "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by institutional policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
                     "cutoffs": [
                       "130-140 mg/dL",
                       "fasting 95 mg/dL",
@@ -8421,7 +8421,7 @@
               {
                 "id": "gdm_two_step_carpenter_coustan",
                 "label": "Two-step GDM diagnosis: 50-g screen threshold 130-140 mg/dL, then 100-g OGTT Carpenter-Coustan thresholds with usually 2 abnormal values",
-                "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by local policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
+                "criteria_text": "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by institutional policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
                 "cutoffs": [
                   "130-140 mg/dL",
                   "fasting 95 mg/dL",

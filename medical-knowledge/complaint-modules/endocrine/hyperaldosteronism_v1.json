@@ -2757,7 +2757,7 @@
           {
             "domain": "exam",
             "exact_data_needed": [
-              "condition-specific focused exam",
+              "focused exam findings listed for this workup",
               "Inspect and press lower leg edema",
               "Test chair-rise strength",
               "Auscultate heart rhythm",
@@ -2878,7 +2878,7 @@
             "domain": "pregnancy_status",
             "exact_data_needed": [
               "pregnant/not pregnant/unknown when pregnancy potential exists",
-              "postpartum/lactation status when relevant",
+              "postpartum/lactation status if testing or treatment could change",
               "fertility intent when treatment depends on it"
             ],
             "source_ids": [
@@ -2934,7 +2934,7 @@
         "endpoint_missing_context": {
           "rule_id": "primary_aldosteronism_missing_context_criteria",
           "source": "criteria",
-          "description": "Route here when PA routing data cannot be extracted.",
+          "description": "Use this branch when PA routing data cannot be extracted.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3368,7 +3368,7 @@
         "primary_aldosteronism_missing_screen_endpoint": {
           "rule_id": "primary_aldosteronism_missing_screen_criteria",
           "source": "criteria",
-          "description": "Route here when PA screening or confirmation cannot be interpreted because exact lab or medication data are absent.",
+          "description": "Use this branch when PA screening or confirmation cannot be interpreted because exact lab or medication data are absent.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4802,7 +4802,7 @@
             "criteria": {
               "rule_id": "primary_aldosteronism_missing_context_criteria",
               "source": "criteria",
-              "description": "Route here when PA routing data cannot be extracted.",
+              "description": "Use this branch when PA routing data cannot be extracted.",
               "evaluable_from": [
                 "symptoms",
                 "exam",
@@ -5291,7 +5291,7 @@
                     "criteria": {
                       "rule_id": "primary_aldosteronism_missing_screen_criteria",
                       "source": "criteria",
-                      "description": "Route here when PA screening or confirmation cannot be interpreted because exact lab or medication data are absent.",
+                      "description": "Use this branch when PA screening or confirmation cannot be interpreted because exact lab or medication data are absent.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",

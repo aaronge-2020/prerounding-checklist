@@ -1793,7 +1793,7 @@
           {
             "domain": "exam",
             "exact_data_needed": [
-              "condition-specific focused exam",
+              "focused exam findings listed for this workup",
               "Observe chest retractions",
               "Inspect nasal flaring",
               "Auscultate lung fields",
@@ -1922,7 +1922,7 @@
             "domain": "pregnancy_status",
             "exact_data_needed": [
               "pregnant/not pregnant/unknown when pregnancy potential exists",
-              "postpartum/lactation status when relevant",
+              "postpartum/lactation status if testing or treatment could change",
               "fertility intent when treatment depends on it"
             ],
             "source_ids": [
@@ -1982,7 +1982,7 @@
         "endpoint_missing_context": {
           "rule_id": "missing_context_criteria",
           "source": "criteria",
-          "description": "Route here when the patient context needed to activate Pediatric respiratory distress, wheeze, or bronchiolitis is absent or cannot be extracted.",
+          "description": "Use this branch when the patient context needed to activate Pediatric respiratory distress, wheeze, or bronchiolitis is absent or cannot be extracted.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2036,7 +2036,7 @@
         "pediatric_respiratory_wheeze_classification_decision": {
           "rule_id": "pediatric_respiratory_wheeze_classification_criteria",
           "source": "criteria",
-          "description": "Classify Pediatric respiratory distress, wheeze, or bronchiolitis against cited thresholds and condition-specific rules: Bronchiolitis frame: <2 years, 3-6 months, 3-5 days, 90%, 3 weeks | Bronchiolitis referral/admission: >60 breaths/minute, >70 breaths/minute, 50% to 75%, <92%, <90% | Bronchiolitis discharge oxygen: >90%, 4 hours, >=6 weeks, >92%, <6 weeks",
+          "description": "Classify Pediatric respiratory distress, wheeze, or bronchiolitis using cited thresholds: Bronchiolitis frame: <2 years, 3-6 months, 3-5 days, 90%, 3 weeks | Bronchiolitis referral/admission: >60 breaths/minute, >70 breaths/minute, 50% to 75%, <92%, <90% | Bronchiolitis discharge oxygen: >90%, 4 hours, >=6 weeks, >92%, <6 weeks",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2138,7 +2138,7 @@
         "pediatric_respiratory_wheeze_missing_cutoff_data_endpoint": {
           "rule_id": "pediatric_respiratory_wheeze_missing_cutoff_data_criteria",
           "source": "criteria",
-          "description": "Route here when Pediatric respiratory distress, wheeze, or bronchiolitis cannot be classified because exact threshold/result data are missing.",
+          "description": "Use this branch when Pediatric respiratory distress, wheeze, or bronchiolitis cannot be classified because exact threshold/result data are missing.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2187,7 +2187,7 @@
         "pediatric_respiratory_wheeze_urgent_endpoint": {
           "rule_id": "pediatric_respiratory_wheeze_urgent_criteria",
           "source": "criteria",
-          "description": "Escalate Pediatric respiratory distress, wheeze, or bronchiolitis when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
+          "description": "Escalate Pediatric respiratory distress, wheeze, or bronchiolitis when Apnea or central cyanosis; Exhaustion or poor respiratory effort; Severe respiratory distress; Poor intake or no urine; <2 years; 3-6 months; 3-5 days; Emergency pediatric respiratory escalation.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2387,7 +2387,7 @@
         "pediatric_respiratory_wheeze_treatment_safety_decision": {
           "rule_id": "pediatric_respiratory_wheeze_safety_decision_criteria",
           "source": "criteria",
-          "description": "Route Pediatric respiratory distress, wheeze, or bronchiolitis management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.",
+          "description": "Check Pediatric respiratory distress, wheeze, or bronchiolitis treatment contraindications, dose/weight/renal/pregnancy constraints, and institutional order-set limits before committing to therapy.",
           "evaluable_from": [
             "medications",
             "allergies",
@@ -2430,7 +2430,7 @@
         "pediatric_respiratory_wheeze_monitoring_bundle": {
           "rule_id": "pediatric_respiratory_wheeze_monitoring_criteria",
           "source": "criteria",
-          "description": "Monitor Pediatric respiratory distress, wheeze, or bronchiolitis by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
+          "description": "Monitor Pediatric respiratory distress, wheeze, or bronchiolitis by trending the cited cutoff(s), symptom course, medication adverse effects, and disposition constraints used for this branch.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2529,7 +2529,7 @@
         "pediatric_respiratory_wheeze_worsening_endpoint": {
           "rule_id": "pediatric_respiratory_wheeze_worsening_criteria",
           "source": "criteria",
-          "description": "Escalate Pediatric respiratory distress, wheeze, or bronchiolitis if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+          "description": "Escalate Pediatric respiratory distress, wheeze, or bronchiolitis if symptoms, vitals, cited thresholds, imaging/ECG/procedure findings, or treatment response worsen or no longer match the chosen branch.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2847,7 +2847,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: route by Apnea or central cyanosis; Exhaustion or poor respiratory effort; <2 years; 3-6 months; 3-5 days; Pediatric respiratory distress, wheeze, or bronchiolitis: immediate stabilization or escalation trigger: Apnea or central cyanosis.; Pediatric respiratory distress, wheeze, or bronchiolitis: treatment or disposition for high-risk or confirmed disease: Emergency pediatric respiratory escalation.",
+        "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: Apnea or central cyanosis; Exhaustion or poor respiratory effort; <2 years; 3-6 months; 3-5 days; Pediatric respiratory distress, wheeze, or bronchiolitis: immediate stabilization or escalation trigger: Apnea or central cyanosis.; Pediatric respiratory distress, wheeze, or bronchiolitis: treatment or disposition for high-risk or confirmed disease: Emergency pediatric respiratory escalation.",
         "edgeLabel": "",
         "source_ids": [
           "NICE_BRONCHIOLITIS_NG9",
@@ -2874,7 +2874,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Pediatric respiratory distress, wheeze, or bronchiolitis from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
+        "action": "Check Apnea or central cyanosis; Exhaustion or poor respiratory effort and <2 years; 3-6 months; 3-5 days; 90%; 3 weeks; >60 breaths/minute; use the listed assessment bundle to choose emergency care, treatment/disposition, reviewer handoff, alternate diagnosis, reassessment, de-escalation, or follow-up.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -2887,7 +2887,7 @@
             "criteria": {
               "rule_id": "missing_context_criteria",
               "source": "criteria",
-              "description": "Route here when the patient context needed to activate Pediatric respiratory distress, wheeze, or bronchiolitis is absent or cannot be extracted.",
+              "description": "Use this branch when the patient context needed to activate Pediatric respiratory distress, wheeze, or bronchiolitis is absent or cannot be extracted.",
               "evaluable_from": [
                 "symptoms",
                 "exam",
@@ -2990,7 +2990,7 @@
                 "criteria": {
                   "rule_id": "pediatric_respiratory_wheeze_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Pediatric respiratory distress, wheeze, or bronchiolitis against cited thresholds and condition-specific rules: Bronchiolitis frame: <2 years, 3-6 months, 3-5 days, 90%, 3 weeks | Bronchiolitis referral/admission: >60 breaths/minute, >70 breaths/minute, 50% to 75%, <92%, <90% | Bronchiolitis discharge oxygen: >90%, 4 hours, >=6 weeks, >92%, <6 weeks",
+                  "description": "Classify Pediatric respiratory distress, wheeze, or bronchiolitis using cited thresholds: Bronchiolitis frame: <2 years, 3-6 months, 3-5 days, 90%, 3 weeks | Bronchiolitis referral/admission: >60 breaths/minute, >70 breaths/minute, 50% to 75%, <92%, <90% | Bronchiolitis discharge oxygen: >90%, 4 hours, >=6 weeks, >92%, <6 weeks",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -3089,7 +3089,7 @@
                     }
                   ]
                 },
-                "action": "Choose the active Pediatric respiratory distress, wheeze, or bronchiolitis branch by matching patient data to the cited cutoffs and patient-specific safety rules.",
+                "action": "Match current patient data to <2 years; 3-6 months; 3-5 days; 90%; 3 weeks; >60 breaths/minute; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
                 "children": [
                   {
                     "id": "pediatric_respiratory_wheeze_missing_cutoff_data_endpoint",
@@ -3106,7 +3106,7 @@
                     "criteria": {
                       "rule_id": "pediatric_respiratory_wheeze_missing_cutoff_data_criteria",
                       "source": "criteria",
-                      "description": "Route here when Pediatric respiratory distress, wheeze, or bronchiolitis cannot be classified because exact threshold/result data are missing.",
+                      "description": "Use this branch when Pediatric respiratory distress, wheeze, or bronchiolitis cannot be classified because exact threshold/result data are missing.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -3203,7 +3203,7 @@
                     "criteria": {
                       "rule_id": "pediatric_respiratory_wheeze_urgent_criteria",
                       "source": "criteria",
-                      "description": "Escalate Pediatric respiratory distress, wheeze, or bronchiolitis when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
+                      "description": "Escalate Pediatric respiratory distress, wheeze, or bronchiolitis when Apnea or central cyanosis; Exhaustion or poor respiratory effort; Severe respiratory distress; Poor intake or no urine; <2 years; 3-6 months; 3-5 days; Emergency pediatric respiratory escalation.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -3299,7 +3299,7 @@
                         }
                       ]
                     },
-                    "action": "Apnea or central cyanosis; Exhaustion or poor respiratory effort; Severe respiratory distress. Escalate using the cited high-risk threshold, unstable vital sign, organ-risk finding, or monitored-care rule.",
+                    "action": "Send to ED, admission, or monitored specialty care for Apnea or central cyanosis; Exhaustion or poor respiratory effort; Severe respiratory distress; Poor intake or no urine; <2 years; 3-6 months; 3-5 days; Emergency pediatric respiratory escalation; start stabilization and diagnosis-specific emergency treatment before routine outpatient management.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -3500,7 +3500,7 @@
                         "id": "pediatric_respiratory_wheeze_treatment_safety_decision",
                         "type": "decision",
                         "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: contraindications, dosing, pregnancy, and comorbidity modifiers",
-                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan",
+                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "NICE_BRONCHIOLITIS_NG9",
                           "GINA_ASTHMA_2025",
@@ -3511,7 +3511,7 @@
                         "criteria": {
                           "rule_id": "pediatric_respiratory_wheeze_safety_decision_criteria",
                           "source": "criteria",
-                          "description": "Route Pediatric respiratory distress, wheeze, or bronchiolitis management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.",
+                          "description": "Check Pediatric respiratory distress, wheeze, or bronchiolitis treatment contraindications, dose/weight/renal/pregnancy constraints, and institutional order-set limits before committing to therapy.",
                           "evaluable_from": [
                             "medications",
                             "allergies",
@@ -3574,7 +3574,7 @@
                             "id": "pediatric_respiratory_wheeze_monitoring_bundle",
                             "type": "action",
                             "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Pediatric respiratory distress, wheeze, or bronchiolitis symptoms, vital signs, criterion-defining results, treatment response, adverse effects, and disposition readiness",
+                            "edgeLabel": "Trend Pediatric respiratory distress, wheeze, or bronchiolitis: <2 years; 3-6 months; 3-5 days; 90%; Bronchiolitis testing limits; Chest imaging when focal or severe; Asthma response reassessment; Measure oxygen saturation",
                             "source_ids": [
                               "NICE_BRONCHIOLITIS_NG9",
                               "GINA_ASTHMA_2025",
@@ -3585,7 +3585,7 @@
                             "criteria": {
                               "rule_id": "pediatric_respiratory_wheeze_monitoring_criteria",
                               "source": "criteria",
-                              "description": "Monitor Pediatric respiratory distress, wheeze, or bronchiolitis by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
+                              "description": "Monitor Pediatric respiratory distress, wheeze, or bronchiolitis by trending the cited cutoff(s), symptom course, medication adverse effects, and disposition constraints used for this branch.",
                               "evaluable_from": [
                                 "symptoms",
                                 "exam",
@@ -3698,7 +3698,7 @@
                                 "criteria": {
                                   "rule_id": "pediatric_respiratory_wheeze_worsening_criteria",
                                   "source": "criteria",
-                                  "description": "Escalate Pediatric respiratory distress, wheeze, or bronchiolitis if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+                                  "description": "Escalate Pediatric respiratory distress, wheeze, or bronchiolitis if symptoms, vitals, cited thresholds, imaging/ECG/procedure findings, or treatment response worsen or no longer match the chosen branch.",
                                   "evaluable_from": [
                                     "symptoms",
                                     "exam",
@@ -3794,7 +3794,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Repeat or review Apnea or central cyanosis; Exhaustion or poor respiratory effort; Severe respiratory distress; <2 years; 3-6 months; 3-5 days; 90%; Bronchiolitis testing limits; Chest imaging when focal or severe; reassess mimics and complications; move to ED, admission, or specialty review when the cited threshold, unstable vital sign, imaging/ECG/procedure result, or treatment-response pattern requires escalation.",
+                                "action": "Repeat or review Apnea or central cyanosis; Exhaustion or poor respiratory effort; Severe respiratory distress; <2 years; 3-6 months; 3-5 days; 90%; Bronchiolitis testing limits; Chest imaging when focal or severe; reassess mimics and complications; move to ED, admission, or specialty review when that specific trend, vital sign, imaging/ECG/procedure finding, or treatment-response pattern requires escalation.",
                                 "children": [],
                                 "endpoint_type": "escalation_disposition",
                                 "guideline_cutoffs": [
@@ -3987,7 +3987,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Use active Pediatric respiratory distress, wheeze, or bronchiolitis results and response trend to stop, narrow, taper, or continue treatment; document which cutoff, symptom, adverse effect, or finding changed.",
+                                "action": "Use the measured Pediatric respiratory distress, wheeze, or bronchiolitis trend, cited cutoff(s), symptom response, adverse effects, and diagnosis certainty to stop, narrow, taper, or continue treatment; document the value or finding that changed.",
                                 "children": [],
                                 "endpoint_type": "deescalation_stopping",
                                 "guideline_cutoffs": [
@@ -4115,7 +4115,7 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend criterion-defining results",
+                              "trend <2 years; 3-6 months; 3-5 days",
                               "review treatment response and adverse effects",
                               "assign disposition and follow-up clinician/service"
                             ],

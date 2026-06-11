@@ -2438,7 +2438,7 @@
           {
             "domain": "exam",
             "exact_data_needed": [
-              "condition-specific focused exam",
+              "focused exam findings listed for this workup",
               "Test confrontation visual fields",
               "Inspect hands for acral enlargement",
               "Inspect tongue size",
@@ -2573,7 +2573,7 @@
             "domain": "pregnancy_status",
             "exact_data_needed": [
               "pregnant/not pregnant/unknown when pregnancy potential exists",
-              "postpartum/lactation status when relevant",
+              "postpartum/lactation status if testing or treatment could change",
               "fertility intent when treatment depends on it"
             ],
             "source_ids": [
@@ -2635,7 +2635,7 @@
         "endpoint_missing_context": {
           "rule_id": "acromegaly_missing_context_criteria",
           "source": "criteria",
-          "description": "Route here when Acromegaly cannot be evaluated because key GH-excess data are unavailable.",
+          "description": "Use this branch when Acromegaly cannot be evaluated because key GH-excess data are unavailable.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3385,7 +3385,7 @@
         "acromegaly_missing_biochemical_endpoint": {
           "rule_id": "acromegaly_missing_biochemical_criteria",
           "source": "criteria",
-          "description": "Route here when Acromegaly biochemical confirmation data are incomplete.",
+          "description": "Use this branch when Acromegaly biochemical confirmation data are incomplete.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -6625,7 +6625,7 @@
             "criteria": {
               "rule_id": "acromegaly_missing_context_criteria",
               "source": "criteria",
-              "description": "Route here when Acromegaly cannot be evaluated because key GH-excess data are unavailable.",
+              "description": "Use this branch when Acromegaly cannot be evaluated because key GH-excess data are unavailable.",
               "evaluable_from": [
                 "symptoms",
                 "exam",
@@ -7440,7 +7440,7 @@
                     "criteria": {
                       "rule_id": "acromegaly_missing_biochemical_criteria",
                       "source": "criteria",
-                      "description": "Route here when Acromegaly biochemical confirmation data are incomplete.",
+                      "description": "Use this branch when Acromegaly biochemical confirmation data are incomplete.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -12426,7 +12426,7 @@
                             }
                           ]
                         },
-                        "action": "Trend age-normalized IGF-1, random GH goal <1 ug/L, symptoms, pituitary MRI, visual fields when relevant, pituitary hormone deficits, BP, fasting glucose/A1c, sleep apnea, cardiovascular disease, joint/bone disease, colon surveillance, thyroid nodules, SRL gallstone symptoms, pegvisomant liver tests monthly for 6 months then every 6 months, and annual GH/IGF-1 plus pituitary axes after radiotherapy.",
+                        "action": "Trend age-normalized IGF-1, random GH goal <1 ug/L, symptoms, pituitary MRI, visual fields, pituitary hormone deficits, BP, fasting glucose/A1c, sleep apnea, cardiovascular disease, joint/bone disease, colon surveillance, thyroid nodules, SRL gallstone symptoms, pegvisomant liver tests monthly for 6 months then every 6 months, and annual GH/IGF-1 plus pituitary axes after radiotherapy.",
                         "children": [],
                         "endpoint_type": "monitoring_reassessment",
                         "guideline_cutoffs": [

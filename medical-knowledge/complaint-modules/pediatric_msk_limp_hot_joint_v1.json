@@ -2462,7 +2462,7 @@
           {
             "domain": "exam",
             "exact_data_needed": [
-              "condition-specific focused exam",
+              "focused exam findings listed for this workup",
               "Observe gait",
               "Inspect affected limb position",
               "Palpate focal bony tenderness",
@@ -2616,7 +2616,7 @@
             "domain": "pregnancy_status",
             "exact_data_needed": [
               "pregnant/not pregnant/unknown when pregnancy potential exists",
-              "postpartum/lactation status when relevant",
+              "postpartum/lactation status if testing or treatment could change",
               "fertility intent when treatment depends on it"
             ],
             "source_ids": [
@@ -2689,7 +2689,7 @@
         "endpoint_missing_context": {
           "rule_id": "pediatric_msk_limp_hot_joint_missing_context_criteria",
           "source": "criteria",
-          "description": "Route here when pediatric limp or hot-joint management cannot be classified because core history, exam, vitals, objective results, comorbidity, or follow-up data are unavailable.",
+          "description": "Use this branch when pediatric limp or hot-joint management cannot be classified because core history, exam, vitals, objective results, comorbidity, or follow-up data are unavailable.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3414,7 +3414,7 @@
         "pediatric_msk_limp_hot_joint_missing_objective_endpoint": {
           "rule_id": "pediatric_msk_limp_hot_joint_missing_objective_criteria",
           "source": "criteria",
-          "description": "Route here when the patient has a pediatric limp or hot-joint presentation but weight-bearing, temperature, joint exam, inflammatory marker, culture, imaging/aspiration, or follow-up data needed for guideline branch selection are missing.",
+          "description": "Use this branch when the patient has a pediatric limp or hot-joint presentation but weight-bearing, temperature, joint exam, inflammatory marker, culture, imaging/aspiration, or follow-up data needed for guideline branch selection are missing.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -7488,7 +7488,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Pediatric limp/hot joint: route by instability, septic arthritis predictors, bone infection, injury, age-specific hip disease, systemic mimics, low-risk criteria, and safety-net needs",
+        "label": "Pediatric limp/hot joint: use instability, septic arthritis predictors, bone infection, injury, age-specific hip disease, systemic mimics, low-risk criteria, and safety-net needs",
         "edgeLabel": "",
         "source_ids": [
           "RCH_LIMPING_CHILD",
@@ -7544,7 +7544,7 @@
             "criteria": {
               "rule_id": "pediatric_msk_limp_hot_joint_missing_context_criteria",
               "source": "criteria",
-              "description": "Route here when pediatric limp or hot-joint management cannot be classified because core history, exam, vitals, objective results, comorbidity, or follow-up data are unavailable.",
+              "description": "Use this branch when pediatric limp or hot-joint management cannot be classified because core history, exam, vitals, objective results, comorbidity, or follow-up data are unavailable.",
               "evaluable_from": [
                 "symptoms",
                 "exam",
@@ -7973,7 +7973,7 @@
                 "id": "pediatric_msk_limp_hot_joint_classification_decision",
                 "type": "decision",
                 "label": "Pediatric limp/hot joint: classify instability, septic arthritis, bone infection, injury/safeguarding, SUFE/Perthes, systemic mimic, low-risk limp, or special-population review",
-                "edgeLabel": "Pediatric limp branch ready: age/development, trauma/safeguarding story, post-analgesia weight-bearing, temperature/vitals, pain localization, ROM, red flags, infection labs/cultures when the branch-specific criteria in this node apply, imaging/aspiration status, host factors, and follow-up access are available",
+                "edgeLabel": "Pediatric limp branch ready: age/development, trauma/safeguarding story, post-analgesia weight-bearing, temperature/vitals, pain localization, ROM, red flags, infection labs/cultures, imaging/aspiration status, host factors, and follow-up access are available",
                 "source_ids": [
                   "RCH_LIMPING_CHILD",
                   "RCH_BONE_JOINT_INFECTION",
@@ -8347,7 +8347,7 @@
                     "criteria": {
                       "rule_id": "pediatric_msk_limp_hot_joint_missing_objective_criteria",
                       "source": "criteria",
-                      "description": "Route here when the patient has a pediatric limp or hot-joint presentation but weight-bearing, temperature, joint exam, inflammatory marker, culture, imaging/aspiration, or follow-up data needed for guideline branch selection are missing.",
+                      "description": "Use this branch when the patient has a pediatric limp or hot-joint presentation but weight-bearing, temperature, joint exam, inflammatory marker, culture, imaging/aspiration, or follow-up data needed for guideline branch selection are missing.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -14126,7 +14126,7 @@
                             }
                           ]
                         },
-                        "action": "Repeat vitals and focused exam, recheck ability to weight bear after analgesia, repeat or obtain CRP/ESR/WBC and cultures when the branch-specific criteria in this node apply, review X-ray/ultrasound/MRI or obtain MRI when infection/occult fracture remains possible, move to septic arthritis, bone infection, fracture/safeguarding, systemic mimic, admission, or transfer branch according to the new finding, and stop low-risk discharge planning.",
+                        "action": "Repeat vitals and focused exam, recheck ability to weight bear after analgesia, repeat or obtain CRP/ESR/WBC and cultures, review X-ray/ultrasound/MRI or obtain MRI when infection/occult fracture remains possible, move to septic arthritis, bone infection, fracture/safeguarding, systemic mimic, admission, or transfer branch according to the new finding, and stop low-risk discharge planning.",
                         "children": [],
                         "endpoint_type": "escalation_disposition",
                         "guideline_cutoffs": [
@@ -16443,7 +16443,7 @@
               "passive joint range of motion",
               "hip exam for knee/thigh/groin pain",
               "FBE/WBC, ESR, CRP, and blood culture when infection is possible",
-              "site-specific X-ray or hip ultrasound/MRI when indicated",
+              "site-specific X-ray or hip ultrasound/MRI",
               "safeguarding consistency screen"
             ],
             "required_data": [
@@ -16455,8 +16455,8 @@
               "pain localization",
               "joint ROM",
               "neurovascular status",
-              "infection labs/cultures when indicated",
-              "imaging/aspiration status when indicated",
+              "infection labs/cultures",
+              "imaging/aspiration status",
               "follow-up access"
             ],
             "guideline_cutoffs": [

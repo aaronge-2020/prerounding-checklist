@@ -2834,7 +2834,7 @@
           {
             "domain": "exam",
             "exact_data_needed": [
-              "condition-specific focused exam",
+              "focused exam findings listed for this workup",
               "Palpate thyroid gland",
               "Palpate cervical lymph nodes",
               "Auscultate heart rhythm",
@@ -2967,7 +2967,7 @@
             "domain": "pregnancy_status",
             "exact_data_needed": [
               "pregnant/not pregnant/unknown when pregnancy potential exists",
-              "postpartum/lactation status when relevant",
+              "postpartum/lactation status if testing or treatment could change",
               "fertility intent when treatment depends on it"
             ],
             "source_ids": [
@@ -3027,7 +3027,7 @@
         "endpoint_missing_context": {
           "rule_id": "missing_context_criteria",
           "source": "criteria",
-          "description": "Route here when the patient context needed to activate Thyroid Cancer (Papillary, Follicular, Medullary) is absent or cannot be extracted.",
+          "description": "Use this branch when the patient context needed to activate Thyroid Cancer (Papillary, Follicular, Medullary) is absent or cannot be extracted.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3080,7 +3080,7 @@
         "thyroid_cancer_classification_decision": {
           "rule_id": "thyroid_cancer_classification_criteria",
           "source": "criteria",
-          "description": "Classify Thyroid Cancer (Papillary, Follicular, Medullary) against cited thresholds and condition-specific rules: ATA thyroid nodule FNA: >=1 cm | ATA thyroid nodule FNA: >=1.5 cm, >=2 cm | ATA thyroid nodule no-biopsy branch: <1% | Hypothyroid LT4 titration: 0.5 to 3.5 mIU/L, 4 mIU/L, 4-6 weeks",
+          "description": "Classify Thyroid Cancer (Papillary, Follicular, Medullary) using cited thresholds: ATA thyroid nodule FNA: >=1 cm | ATA thyroid nodule FNA: >=1.5 cm, >=2 cm | ATA thyroid nodule no-biopsy branch: <1% | Hypothyroid LT4 titration: 0.5 to 3.5 mIU/L, 4 mIU/L, 4-6 weeks",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3187,7 +3187,7 @@
         "thyroid_cancer_missing_cutoff_data_endpoint": {
           "rule_id": "thyroid_cancer_missing_cutoff_data_criteria",
           "source": "criteria",
-          "description": "Route here when Thyroid Cancer (Papillary, Follicular, Medullary) cannot be classified because exact threshold/result data are missing.",
+          "description": "Use this branch when Thyroid Cancer (Papillary, Follicular, Medullary) cannot be classified because exact threshold/result data are missing.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3223,7 +3223,6 @@
             "TSH/free T4.",
             "Calcitonin and CEA when medullary thyroid cancer suspected/confirmed.",
             "RET testing for medullary thyroid cancer.",
-            "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
             "Structural thyroid safety workup: use TSH to route radionuclide scan versus FNA pathway, thyroid ultrasound with cervical-node mapping for suspicious nodules/cancer, calcitonin/RET context when medullary cancer or MEN2 is possible, and pregnancy testing before radioiodine decisions.",
             "TSH with free T4; add T3 for thyrotoxicosis, TPO Ab for autoimmune hypothyroidism, TRAb/TSI for Graves, and thyroid ultrasound/FNA pathway for nodules.",
             ">=1 cm",
@@ -3238,7 +3237,7 @@
         "thyroid_cancer_urgent_endpoint": {
           "rule_id": "thyroid_cancer_urgent_criteria",
           "source": "criteria",
-          "description": "Escalate Thyroid Cancer (Papillary, Follicular, Medullary) when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
+          "description": "Escalate Thyroid Cancer (Papillary, Follicular, Medullary) when Airway compromise, vocal cord paralysis, bulky nodes, rapidly enlarging mass, suspected anaplastic transformation.; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; >=1 cm; >=1.5 cm; >=2 cm; Bethesda V/VI, suspicious nodes, calcitonin/CEA elevation, or RET positivity changes surgical/genetic pathway.; unstable physiology or dangerous electrolyte/glucose abnormality.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3446,7 +3445,7 @@
         "thyroid_cancer_treatment_safety_decision": {
           "rule_id": "thyroid_cancer_safety_decision_criteria",
           "source": "criteria",
-          "description": "Route Thyroid Cancer (Papillary, Follicular, Medullary) management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.",
+          "description": "Check Thyroid Cancer (Papillary, Follicular, Medullary) treatment contraindications, dose/weight/renal/pregnancy constraints, and institutional order-set limits before committing to therapy.",
           "evaluable_from": [
             "medications",
             "allergies",
@@ -3512,7 +3511,7 @@
         "thyroid_cancer_monitoring_bundle": {
           "rule_id": "thyroid_cancer_monitoring_criteria",
           "source": "criteria",
-          "description": "Monitor Thyroid Cancer (Papillary, Follicular, Medullary) by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
+          "description": "Monitor Thyroid Cancer (Papillary, Follicular, Medullary) by trending the cited cutoff(s), symptom course, medication adverse effects, and disposition constraints used for this branch.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3615,7 +3614,7 @@
         "thyroid_cancer_worsening_endpoint": {
           "rule_id": "thyroid_cancer_worsening_criteria",
           "source": "criteria",
-          "description": "Escalate Thyroid Cancer (Papillary, Follicular, Medullary) if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+          "description": "Escalate Thyroid Cancer (Papillary, Follicular, Medullary) if symptoms, vitals, cited thresholds, imaging/ECG/procedure findings, or treatment response worsen or no longer match the chosen branch.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3944,7 +3943,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Thyroid Cancer: route by Airway compromise, vocal cord paralysis, bulky nodes, rapidly enlarging mass, suspected anaplastic transformation.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; >=1 cm; >=1.5 cm; >=2 cm; Use active surveillance only for carefully selected very-low-risk papillary microcarcinoma when specialist follow-up is available.; Choose lobectomy versus total thyroidectomy, node dissection, radioactive iodine, and TSH suppression according to risk category and current ATA pathway.",
+        "label": "Thyroid Cancer: Airway compromise, vocal cord paralysis, bulky nodes, rapidly enlarging mass, suspected anaplastic transformation.; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; >=1 cm; >=1.5 cm; >=2 cm; Use active surveillance only for carefully selected very-low-risk papillary microcarcinoma when specialist follow-up is available.; Choose lobectomy versus total thyroidectomy, node dissection, radioactive iodine, and TSH suppression according to risk category and current ATA pathway.",
         "edgeLabel": "",
         "source_ids": [
           "ATA_THYROID_NODULE_DTC_2015",
@@ -3971,7 +3970,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Thyroid Cancer from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
+        "action": "Check Airway compromise, vocal cord paralysis, bulky nodes, rapidly enlarging mass, suspected anaplastic transformation.; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes. and >=1 cm; >=1.5 cm; >=2 cm; <1%; 0.5 to 3.5 mIU/L; 4 mIU/L; use the listed assessment bundle to choose emergency care, treatment/disposition, reviewer handoff, alternate diagnosis, reassessment, de-escalation, or follow-up.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3984,7 +3983,7 @@
             "criteria": {
               "rule_id": "missing_context_criteria",
               "source": "criteria",
-              "description": "Route here when the patient context needed to activate Thyroid Cancer (Papillary, Follicular, Medullary) is absent or cannot be extracted.",
+              "description": "Use this branch when the patient context needed to activate Thyroid Cancer (Papillary, Follicular, Medullary) is absent or cannot be extracted.",
               "evaluable_from": [
                 "symptoms",
                 "exam",
@@ -4068,7 +4067,7 @@
                 "AHRQ_CALIBRATE_DX"
               ]
             },
-            "action": "Obtain together: Neck ultrasound and nodal mapping.; FNA cytology with Bethesda category.; TSH/free T4.; Calcitonin and CEA when medullary thyroid cancer suspected/confirmed.; RET testing for medullary thyroid cancer.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; Structural thyroid safety workup: use TSH to route radionuclide scan versus FNA pathway, thyroid ultrasound with cervical-node mapping for suspicious nodules/cancer, calcitonin/RET context when medullary cancer or MEN2 is possible, and pregnancy testing before radioiodine decisions.; TSH with free T4; add T3 for thyrotoxicosis, TPO Ab for autoimmune hypothyroidism, TRAb/TSI for Graves, and thyroid ultrasound/FNA pathway for nodules.; thyroid ultrasound pattern; largest nodule dimension; extrathyroidal extension features; microcalcifications/margins/shape; lymph node findings; thyroid ultrasound pattern; largest nodule dimension; spongiform/partially cystic status.",
+            "action": "Obtain together: Neck ultrasound and nodal mapping.; FNA cytology with Bethesda category.; TSH/free T4.; Calcitonin and CEA when medullary thyroid cancer suspected/confirmed.; RET testing for medullary thyroid cancer.; Structural thyroid safety workup: use TSH to route radionuclide scan versus FNA pathway, thyroid ultrasound with cervical-node mapping for suspicious nodules/cancer, calcitonin/RET context when medullary cancer or MEN2 is possible, and pregnancy testing before radioiodine decisions.; TSH with free T4; add T3 for thyrotoxicosis, TPO Ab for autoimmune hypothyroidism, TRAb/TSI for Graves, and thyroid ultrasound/FNA pathway for nodules.; thyroid ultrasound pattern; largest nodule dimension; extrathyroidal extension features; microcalcifications/margins/shape; lymph node findings; thyroid ultrasound pattern; largest nodule dimension; spongiform/partially cystic status.",
             "children": [
               {
                 "id": "thyroid_cancer_classification_decision",
@@ -4085,7 +4084,7 @@
                 "criteria": {
                   "rule_id": "thyroid_cancer_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Thyroid Cancer (Papillary, Follicular, Medullary) against cited thresholds and condition-specific rules: ATA thyroid nodule FNA: >=1 cm | ATA thyroid nodule FNA: >=1.5 cm, >=2 cm | ATA thyroid nodule no-biopsy branch: <1% | Hypothyroid LT4 titration: 0.5 to 3.5 mIU/L, 4 mIU/L, 4-6 weeks",
+                  "description": "Classify Thyroid Cancer (Papillary, Follicular, Medullary) using cited thresholds: ATA thyroid nodule FNA: >=1 cm | ATA thyroid nodule FNA: >=1.5 cm, >=2 cm | ATA thyroid nodule no-biopsy branch: <1% | Hypothyroid LT4 titration: 0.5 to 3.5 mIU/L, 4 mIU/L, 4-6 weeks",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -4189,7 +4188,7 @@
                     }
                   ]
                 },
-                "action": "Choose the active Thyroid Cancer branch by matching patient data to the cited cutoffs and patient-specific safety rules.",
+                "action": "Match current patient data to >=1 cm; >=1.5 cm; >=2 cm; <1%; 0.5 to 3.5 mIU/L; 4 mIU/L; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
                 "children": [
                   {
                     "id": "thyroid_cancer_missing_cutoff_data_endpoint",
@@ -4206,7 +4205,7 @@
                     "criteria": {
                       "rule_id": "thyroid_cancer_missing_cutoff_data_criteria",
                       "source": "criteria",
-                      "description": "Route here when Thyroid Cancer (Papillary, Follicular, Medullary) cannot be classified because exact threshold/result data are missing.",
+                      "description": "Use this branch when Thyroid Cancer (Papillary, Follicular, Medullary) cannot be classified because exact threshold/result data are missing.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4242,7 +4241,6 @@
                         "TSH/free T4.",
                         "Calcitonin and CEA when medullary thyroid cancer suspected/confirmed.",
                         "RET testing for medullary thyroid cancer.",
-                        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
                         "Structural thyroid safety workup: use TSH to route radionuclide scan versus FNA pathway, thyroid ultrasound with cervical-node mapping for suspicious nodules/cancer, calcitonin/RET context when medullary cancer or MEN2 is possible, and pregnancy testing before radioiodine decisions.",
                         "TSH with free T4; add T3 for thyrotoxicosis, TPO Ab for autoimmune hypothyroidism, TRAb/TSI for Graves, and thyroid ultrasound/FNA pathway for nodules.",
                         ">=1 cm",
@@ -4280,7 +4278,6 @@
                       "TSH/free T4.",
                       "Calcitonin and CEA when medullary thyroid cancer suspected/confirmed.",
                       "RET testing for medullary thyroid cancer.",
-                      "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
                       "Structural thyroid safety workup: use TSH to route radionuclide scan versus FNA pathway, thyroid ultrasound with cervical-node mapping for suspicious nodules/cancer, calcitonin/RET context when medullary cancer or MEN2 is possible, and pregnancy testing before radioiodine decisions.",
                       "TSH with free T4; add T3 for thyrotoxicosis, TPO Ab for autoimmune hypothyroidism, TRAb/TSI for Graves, and thyroid ultrasound/FNA pathway for nodules.",
                       ">=1 cm",
@@ -4296,7 +4293,7 @@
                     "id": "thyroid_cancer_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Thyroid Cancer: emergency or monitored-care disposition",
-                    "edgeLabel": "High-acuity threshold or monitored-care result present: Airway compromise, vocal cord paralysis, bulky nodes, rapidly enlarging mass, suspected anaplastic transformation.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; >=1 cm; >=1.5 cm",
+                    "edgeLabel": "High-acuity threshold or monitored-care result present: Airway compromise, vocal cord paralysis, bulky nodes, rapidly enlarging mass, suspected anaplastic transformation.; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; >=1 cm; >=1.5 cm",
                     "source_ids": [
                       "ATA_THYROID_CANCER_2025",
                       "ATA_THYROID_NODULE_DTC_2015",
@@ -4306,7 +4303,7 @@
                     "criteria": {
                       "rule_id": "thyroid_cancer_urgent_criteria",
                       "source": "criteria",
-                      "description": "Escalate Thyroid Cancer (Papillary, Follicular, Medullary) when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
+                      "description": "Escalate Thyroid Cancer (Papillary, Follicular, Medullary) when Airway compromise, vocal cord paralysis, bulky nodes, rapidly enlarging mass, suspected anaplastic transformation.; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; >=1 cm; >=1.5 cm; >=2 cm; Bethesda V/VI, suspicious nodes, calcitonin/CEA elevation, or RET positivity changes surgical/genetic pathway.; unstable physiology or dangerous electrolyte/glucose abnormality.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4406,7 +4403,7 @@
                         }
                       ]
                     },
-                    "action": "Airway compromise, vocal cord paralysis, bulky nodes, rapidly enlarging mass, suspected anaplastic transformation.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.. Escalate using the cited high-risk threshold, unstable vital sign, organ-risk finding, or monitored-care rule.",
+                    "action": "Send to ED, admission, or monitored specialty care for Airway compromise, vocal cord paralysis, bulky nodes, rapidly enlarging mass, suspected anaplastic transformation.; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; >=1 cm; >=1.5 cm; >=2 cm; Bethesda V/VI, suspicious nodes, calcitonin/CEA elevation, or RET positivity changes surgical/genetic pathway.; unstable physiology or dangerous electrolyte/glucose abnormality; start stabilization and diagnosis-specific emergency treatment before routine outpatient management.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -4615,7 +4612,7 @@
                         "id": "thyroid_cancer_treatment_safety_decision",
                         "type": "decision",
                         "label": "Thyroid Cancer: contraindications, dosing, pregnancy, and comorbidity modifiers",
-                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan",
+                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "ATA_THYROID_NODULE_DTC_2015",
                           "ATA_HYPOTHYROIDISM_2014",
@@ -4626,7 +4623,7 @@
                         "criteria": {
                           "rule_id": "thyroid_cancer_safety_decision_criteria",
                           "source": "criteria",
-                          "description": "Route Thyroid Cancer (Papillary, Follicular, Medullary) management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.",
+                          "description": "Check Thyroid Cancer (Papillary, Follicular, Medullary) treatment contraindications, dose/weight/renal/pregnancy constraints, and institutional order-set limits before committing to therapy.",
                           "evaluable_from": [
                             "medications",
                             "allergies",
@@ -4712,7 +4709,7 @@
                             "id": "thyroid_cancer_monitoring_bundle",
                             "type": "action",
                             "label": "Thyroid Cancer: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Thyroid Cancer symptoms, vital signs, criterion-defining results, treatment response, adverse effects, and disposition readiness",
+                            "edgeLabel": "Trend Thyroid Cancer: >=1 cm; >=1.5 cm; >=2 cm; <1%; Neck ultrasound and nodal mapping.; FNA cytology with Bethesda category.; TSH/free T4.; Measure blood pressure",
                             "source_ids": [
                               "ATA_THYROID_CANCER_2025",
                               "ATA_THYROID_NODULE_DTC_2015",
@@ -4722,7 +4719,7 @@
                             "criteria": {
                               "rule_id": "thyroid_cancer_monitoring_criteria",
                               "source": "criteria",
-                              "description": "Monitor Thyroid Cancer (Papillary, Follicular, Medullary) by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
+                              "description": "Monitor Thyroid Cancer (Papillary, Follicular, Medullary) by trending the cited cutoff(s), symptom course, medication adverse effects, and disposition constraints used for this branch.",
                               "evaluable_from": [
                                 "symptoms",
                                 "exam",
@@ -4838,7 +4835,7 @@
                                 "criteria": {
                                   "rule_id": "thyroid_cancer_worsening_criteria",
                                   "source": "criteria",
-                                  "description": "Escalate Thyroid Cancer (Papillary, Follicular, Medullary) if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+                                  "description": "Escalate Thyroid Cancer (Papillary, Follicular, Medullary) if symptoms, vitals, cited thresholds, imaging/ECG/procedure findings, or treatment response worsen or no longer match the chosen branch.",
                                   "evaluable_from": [
                                     "symptoms",
                                     "exam",
@@ -4938,7 +4935,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Repeat or review Airway compromise, vocal cord paralysis, bulky nodes, rapidly enlarging mass, suspected anaplastic transformation.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; >=1 cm; >=1.5 cm; >=2 cm; <1%; Neck ultrasound and nodal mapping.; FNA cytology with Bethesda category.; reassess mimics and complications; move to ED, admission, or specialty review when the cited threshold, unstable vital sign, imaging/ECG/procedure result, or treatment-response pattern requires escalation.",
+                                "action": "Repeat or review Airway compromise, vocal cord paralysis, bulky nodes, rapidly enlarging mass, suspected anaplastic transformation.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; >=1 cm; >=1.5 cm; >=2 cm; <1%; Neck ultrasound and nodal mapping.; FNA cytology with Bethesda category.; reassess mimics and complications; move to ED, admission, or specialty review when that specific trend, vital sign, imaging/ECG/procedure finding, or treatment-response pattern requires escalation.",
                                 "children": [],
                                 "endpoint_type": "escalation_disposition",
                                 "guideline_cutoffs": [
@@ -5139,7 +5136,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Use active Thyroid Cancer results and response trend to stop, narrow, taper, or continue treatment; document which cutoff, symptom, adverse effect, or finding changed.",
+                                "action": "Use the measured Thyroid Cancer trend, cited cutoff(s), symptom response, adverse effects, and diagnosis certainty to stop, narrow, taper, or continue treatment; document the value or finding that changed.",
                                 "children": [],
                                 "endpoint_type": "deescalation_stopping",
                                 "guideline_cutoffs": [
@@ -5270,7 +5267,7 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend criterion-defining results",
+                              "trend >=1 cm; >=1.5 cm; >=2 cm",
                               "review treatment response and adverse effects",
                               "assign disposition and follow-up clinician/service"
                             ],
@@ -5746,7 +5743,6 @@
               "TSH/free T4.",
               "Calcitonin and CEA when medullary thyroid cancer suspected/confirmed.",
               "RET testing for medullary thyroid cancer.",
-              "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
               "Structural thyroid safety workup: use TSH to route radionuclide scan versus FNA pathway, thyroid ultrasound with cervical-node mapping for suspicious nodules/cancer, calcitonin/RET context when medullary cancer or MEN2 is possible, and pregnancy testing before radioiodine decisions.",
               "TSH with free T4; add T3 for thyrotoxicosis, TPO Ab for autoimmune hypothyroidism, TRAb/TSI for Graves, and thyroid ultrasound/FNA pathway for nodules.",
               "thyroid ultrasound pattern",
@@ -5772,7 +5768,6 @@
               "TSH/free T4.",
               "Calcitonin and CEA when medullary thyroid cancer suspected/confirmed.",
               "RET testing for medullary thyroid cancer.",
-              "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
               "Structural thyroid safety workup: use TSH to route radionuclide scan versus FNA pathway, thyroid ultrasound with cervical-node mapping for suspicious nodules/cancer, calcitonin/RET context when medullary cancer or MEN2 is possible, and pregnancy testing before radioiodine decisions.",
               "TSH with free T4; add T3 for thyrotoxicosis, TPO Ab for autoimmune hypothyroidism, TRAb/TSI for Graves, and thyroid ultrasound/FNA pathway for nodules.",
               ">=1 cm",
@@ -5900,7 +5895,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "thyroid_cancer_urgent_endpoint",
-          "expected_active_branch": "High-acuity threshold or monitored-care result present: Airway compromise, vocal cord paralysis, bulky nodes, rapidly enlarging mass, suspected anaplastic transformation.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; >=1 cm; >=1.5 cm",
+          "expected_active_branch": "High-acuity threshold or monitored-care result present: Airway compromise, vocal cord paralysis, bulky nodes, rapidly enlarging mass, suspected anaplastic transformation.; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; >=1 cm; >=1.5 cm",
           "expected_path_node_ids": [
             "root",
             "thyroid_cancer_concurrent_data_bundle",

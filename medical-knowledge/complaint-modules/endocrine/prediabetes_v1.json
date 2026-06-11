@@ -2627,7 +2627,7 @@
           {
             "domain": "exam",
             "exact_data_needed": [
-              "condition-specific focused exam",
+              "focused exam findings listed for this workup",
               "Inspect neck for acanthosis",
               "Inspect and press lower leg edema",
               "Inspect skin for xanthomas or xanthelasma",
@@ -2758,7 +2758,7 @@
             "domain": "pregnancy_status",
             "exact_data_needed": [
               "pregnant/not pregnant/unknown when pregnancy potential exists",
-              "postpartum/lactation status when relevant",
+              "postpartum/lactation status if testing or treatment could change",
               "fertility intent when treatment depends on it"
             ],
             "source_ids": [
@@ -2820,7 +2820,7 @@
         "endpoint_missing_context": {
           "rule_id": "prediabetes_missing_context_criteria",
           "source": "criteria",
-          "description": "Route here when glycemic classification or prevention eligibility cannot be determined.",
+          "description": "Use this branch when glycemic classification or prevention eligibility cannot be determined.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3196,7 +3196,7 @@
         "prediabetes_missing_glycemia_endpoint": {
           "rule_id": "prediabetes_missing_glycemia_criteria",
           "source": "criteria",
-          "description": "Route here when exact prediabetes or diabetes-range data are unavailable.",
+          "description": "Use this branch when exact prediabetes or diabetes-range data are unavailable.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4219,7 +4219,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Prediabetes: route by A1c/FPG/OGTT thresholds, diabetes exclusion, prevention eligibility, metformin criteria, and follow-up",
+        "label": "Prediabetes: use A1c/FPG/OGTT thresholds, diabetes exclusion, prevention eligibility, metformin criteria, and follow-up",
         "edgeLabel": "",
         "source_ids": [
           "ADA_DIAGNOSIS_2026",
@@ -4265,7 +4265,7 @@
             "criteria": {
               "rule_id": "prediabetes_missing_context_criteria",
               "source": "criteria",
-              "description": "Route here when glycemic classification or prevention eligibility cannot be determined.",
+              "description": "Use this branch when glycemic classification or prevention eligibility cannot be determined.",
               "evaluable_from": [
                 "symptoms",
                 "exam",
@@ -4706,7 +4706,7 @@
                     "criteria": {
                       "rule_id": "prediabetes_missing_glycemia_criteria",
                       "source": "criteria",
-                      "description": "Route here when exact prediabetes or diabetes-range data are unavailable.",
+                      "description": "Use this branch when exact prediabetes or diabetes-range data are unavailable.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",

@@ -2398,7 +2398,7 @@
           {
             "domain": "exam",
             "exact_data_needed": [
-              "condition-specific focused exam",
+              "focused exam findings listed for this workup",
               "Test central capillary refill",
               "Inspect mucous membranes",
               "Test skin turgor",
@@ -2466,7 +2466,7 @@
               "Electrolytes, urea, creatinine, corrected sodium, and potassium",
               "Effective osmolality for HHS or mixed DKA/HHS",
               "12-lead ECG when potassium risk or severe illness",
-              "Source-directed infection tests only when the branch-specific criteria in this node apply"
+              "source-specific infection tests only"
             ],
             "source_ids": [
               "CHQ_DKA_HHS_CHILD_2024",
@@ -2532,7 +2532,7 @@
             "domain": "pregnancy_status",
             "exact_data_needed": [
               "pregnant/not pregnant/unknown when pregnancy potential exists",
-              "postpartum/lactation status when relevant",
+              "postpartum/lactation status if testing or treatment could change",
               "fertility intent when treatment depends on it"
             ],
             "source_ids": [
@@ -2594,7 +2594,7 @@
         "endpoint_missing_context": {
           "rule_id": "pediatric_dka_hhs_missing_context_criteria",
           "source": "criteria",
-          "description": "Route here when pediatric hyperglycemic-crisis activation cannot be determined from extractable context.",
+          "description": "Use this branch when pediatric hyperglycemic-crisis activation cannot be determined from extractable context.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3008,7 +3008,7 @@
         "pediatric_dka_hhs_missing_crisis_data_endpoint": {
           "rule_id": "pediatric_dka_hhs_missing_data_criteria",
           "source": "criteria",
-          "description": "Route here when the exact data needed for pediatric DKA/HHS classification or treatment safety are unavailable.",
+          "description": "Use this branch when the exact data needed for pediatric DKA/HHS classification or treatment safety are unavailable.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3225,7 +3225,7 @@
         "pediatric_dka_hhs_dka_action": {
           "rule_id": "pediatric_dka_hhs_dka_action_criteria",
           "source": "criteria",
-          "description": "Route here when pediatric DKA diagnostic thresholds are present.",
+          "description": "Use this branch when pediatric DKA diagnostic thresholds are present.",
           "evaluable_from": [
             "symptoms",
             "vitals",
@@ -4727,7 +4727,7 @@
             "criteria": {
               "rule_id": "pediatric_dka_hhs_missing_context_criteria",
               "source": "criteria",
-              "description": "Route here when pediatric hyperglycemic-crisis activation cannot be determined from extractable context.",
+              "description": "Use this branch when pediatric hyperglycemic-crisis activation cannot be determined from extractable context.",
               "evaluable_from": [
                 "symptoms",
                 "exam",
@@ -5204,7 +5204,7 @@
                     "criteria": {
                       "rule_id": "pediatric_dka_hhs_missing_data_criteria",
                       "source": "criteria",
-                      "description": "Route here when the exact data needed for pediatric DKA/HHS classification or treatment safety are unavailable.",
+                      "description": "Use this branch when the exact data needed for pediatric DKA/HHS classification or treatment safety are unavailable.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5641,7 +5641,7 @@
                     "criteria": {
                       "rule_id": "pediatric_dka_hhs_dka_action_criteria",
                       "source": "criteria",
-                      "description": "Route here when pediatric DKA diagnostic thresholds are present.",
+                      "description": "Use this branch when pediatric DKA diagnostic thresholds are present.",
                       "evaluable_from": [
                         "symptoms",
                         "vitals",
@@ -8384,7 +8384,7 @@
                     "action": "Document which glucose, ketone, pH/bicarbonate, osmolality, and clinical severity criteria are absent; treat the competing diagnosis, continue repeat glucose/ketone checks if symptoms persist, and safety-net for vomiting, dehydration, Kussmaul breathing, altered mental status, rising ketones, or inability to keep fluids/insulin down.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Competing pediatric diagnosis or uncertain metabolic pattern changes the documented disease branch."
+                    "review_needed_reason": "Competing pediatric diagnosis or uncertain metabolic pattern changes the current diagnosis."
                   }
                 ],
                 "guideline_cutoffs": [

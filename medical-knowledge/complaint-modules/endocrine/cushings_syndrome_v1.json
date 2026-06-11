@@ -2705,7 +2705,7 @@
           {
             "domain": "exam",
             "exact_data_needed": [
-              "condition-specific focused exam",
+              "focused exam findings listed for this workup",
               "Inspect skin for bruising",
               "Test chair-rise strength",
               "Inspect abdomen for purple striae",
@@ -2833,7 +2833,7 @@
             "domain": "pregnancy_status",
             "exact_data_needed": [
               "pregnant/not pregnant/unknown when pregnancy potential exists",
-              "postpartum/lactation status when relevant",
+              "postpartum/lactation status if testing or treatment could change",
               "fertility intent when treatment depends on it"
             ],
             "source_ids": [
@@ -2890,7 +2890,7 @@
         "endpoint_missing_context": {
           "rule_id": "missing_context_criteria",
           "source": "criteria",
-          "description": "Route here when the patient context needed to activate Cushing's Syndrome is absent or cannot be extracted.",
+          "description": "Use this branch when the patient context needed to activate Cushing's Syndrome is absent or cannot be extracted.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2943,7 +2943,7 @@
         "cushings_syndrome_classification_decision": {
           "rule_id": "cushings_syndrome_classification_criteria",
           "source": "criteria",
-          "description": "Classify Cushing's Syndrome against cited thresholds and condition-specific rules: Cushing initial testing: at least 2 measurements, 2 measurements, 1 mg, 2 mg/day, 48 hours | Cushing positive biochemical screen: >ULN, >1.8 ug/dL, >145 ng/dL",
+          "description": "Classify Cushing's Syndrome using cited thresholds: Cushing initial testing: at least 2 measurements, 2 measurements, 1 mg, 2 mg/day, 48 hours | Cushing positive biochemical screen: >ULN, >1.8 ug/dL, >145 ng/dL",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3013,7 +3013,7 @@
         "cushings_syndrome_missing_cutoff_data_endpoint": {
           "rule_id": "cushings_syndrome_missing_cutoff_data_criteria",
           "source": "criteria",
-          "description": "Route here when Cushing's Syndrome cannot be classified because exact threshold/result data are missing.",
+          "description": "Use this branch when Cushing's Syndrome cannot be classified because exact threshold/result data are missing.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3047,8 +3047,7 @@
             "Late-night salivary cortisol, often two samples.",
             "24-hour urinary free cortisol, at least two collections.",
             "ACTH after confirmed hypercortisolism.",
-            "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-            "Cushing safety tests: use late-night salivary cortisol, 1-mg dexamethasone suppression, or 24-hour urinary free cortisol after excluding exogenous steroids, and assess glucose, BP, potassium, infection/VTE, and bone risk to determine severity and treatment urgency.",
+            "glucose, BP, potassium, infection/VTE, and bone-risk severity screen",
             "Morning cortisol/ACTH or cosyntropin for adrenal insufficiency; aldosterone-renin ratio with potassium correction for primary aldosteronism; metanephrines for PPGL.",
             "at least 2 measurements",
             "2 measurements",
@@ -3063,7 +3062,7 @@
         "cushings_syndrome_urgent_endpoint": {
           "rule_id": "cushings_syndrome_urgent_criteria",
           "source": "criteria",
-          "description": "Escalate Cushing's Syndrome when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
+          "description": "Escalate Cushing's Syndrome when Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE.; Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE.; at least 2 measurements; 2 measurements; 1 mg; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.; unstable physiology or dangerous electrolyte/glucose abnormality.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3199,7 +3198,7 @@
         "cushings_syndrome_treatment_safety_decision": {
           "rule_id": "cushings_syndrome_safety_decision_criteria",
           "source": "criteria",
-          "description": "Route Cushing's Syndrome management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.",
+          "description": "Check Cushing's Syndrome treatment contraindications, dose/weight/renal/pregnancy constraints, and institutional order-set limits before committing to therapy.",
           "evaluable_from": [
             "medications",
             "allergies",
@@ -3266,7 +3265,7 @@
         "cushings_syndrome_review_endpoint": {
           "rule_id": "cushings_syndrome_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Cushing's Syndrome treatment or disposition depends on Cushing initial testing; Cushing positive biochemical screen; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure..",
+          "description": "Use reviewer handoff when Cushing's Syndrome treatment or disposition depends on Cushing initial testing; Cushing positive biochemical screen; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-specific therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure..",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3286,7 +3285,7 @@
         "cushings_syndrome_monitoring_bundle": {
           "rule_id": "cushings_syndrome_monitoring_criteria",
           "source": "criteria",
-          "description": "Monitor Cushing's Syndrome by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
+          "description": "Monitor Cushing's Syndrome by trending the cited cutoff(s), symptom course, medication adverse effects, and disposition constraints used for this branch.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3353,7 +3352,7 @@
         "cushings_syndrome_worsening_endpoint": {
           "rule_id": "cushings_syndrome_worsening_criteria",
           "source": "criteria",
-          "description": "Escalate Cushing's Syndrome if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+          "description": "Escalate Cushing's Syndrome if symptoms, vitals, cited thresholds, imaging/ECG/procedure findings, or treatment response worsen or no longer match the chosen branch.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3574,7 +3573,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Cushing's Syndrome: route by Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; at least 2 measurements; 2 measurements; 1 mg; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.",
+        "label": "Cushing's Syndrome: Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE.; Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE.; at least 2 measurements; 2 measurements; 1 mg; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-specific therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.",
         "edgeLabel": "",
         "source_ids": [
           "ES_CUSHING_DX_2008",
@@ -3599,7 +3598,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Cushing's Syndrome from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
+        "action": "Check Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE.; Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE. and at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; 48 hours; >ULN; use the listed assessment bundle to choose emergency care, treatment/disposition, reviewer handoff, alternate diagnosis, reassessment, de-escalation, or follow-up.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3612,7 +3611,7 @@
             "criteria": {
               "rule_id": "missing_context_criteria",
               "source": "criteria",
-              "description": "Route here when the patient context needed to activate Cushing's Syndrome is absent or cannot be extracted.",
+              "description": "Use this branch when the patient context needed to activate Cushing's Syndrome is absent or cannot be extracted.",
               "evaluable_from": [
                 "symptoms",
                 "exam",
@@ -3696,7 +3695,7 @@
                 "AHRQ_CALIBRATE_DX"
               ]
             },
-            "action": "Obtain together: Exclude exogenous steroids.; 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.; Late-night salivary cortisol, often two samples.; 24-hour urinary free cortisol, at least two collections.; ACTH after confirmed hypercortisolism.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; Cushing safety tests: use late-night salivary cortisol, 1-mg dexamethasone suppression, or 24-hour urinary free cortisol after excluding exogenous steroids, and assess glucose, BP, potassium, infection/VTE, and bone risk to determine severity and treatment urgency.; Morning cortisol/ACTH or cosyntropin for adrenal insufficiency; aldosterone-renin ratio with potassium correction for primary aldosteronism; metanephrines for PPGL.; UFC collection count; late-night salivary cortisol count; dexamethasone dose and timing; renal function; pregnancy/antiepileptic context; 24-hour UFC with assay ULN; post-DST cortisol; late-night salivary cortisol.",
+            "action": "Obtain together: Exclude exogenous steroids.; 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.; Late-night salivary cortisol, often two samples.; 24-hour urinary free cortisol, at least two collections.; ACTH after confirmed hypercortisolism.; glucose, BP, potassium, infection/VTE, and bone-risk severity screen; Morning cortisol/ACTH or cosyntropin for adrenal insufficiency; aldosterone-renin ratio with potassium correction for primary aldosteronism; metanephrines for PPGL.; UFC collection count; late-night salivary cortisol count; dexamethasone dose and timing; renal function; pregnancy/antiepileptic context; 24-hour UFC with assay ULN; post-DST cortisol; late-night salivary cortisol.",
             "children": [
               {
                 "id": "cushings_syndrome_classification_decision",
@@ -3712,7 +3711,7 @@
                 "criteria": {
                   "rule_id": "cushings_syndrome_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Cushing's Syndrome against cited thresholds and condition-specific rules: Cushing initial testing: at least 2 measurements, 2 measurements, 1 mg, 2 mg/day, 48 hours | Cushing positive biochemical screen: >ULN, >1.8 ug/dL, >145 ng/dL",
+                  "description": "Classify Cushing's Syndrome using cited thresholds: Cushing initial testing: at least 2 measurements, 2 measurements, 1 mg, 2 mg/day, 48 hours | Cushing positive biochemical screen: >ULN, >1.8 ug/dL, >145 ng/dL",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -3779,7 +3778,7 @@
                     }
                   ]
                 },
-                "action": "Choose the active Cushing's Syndrome branch by matching patient data to the cited cutoffs and patient-specific safety rules.",
+                "action": "Match current patient data to at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; 48 hours; >ULN; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
                 "children": [
                   {
                     "id": "cushings_syndrome_missing_cutoff_data_endpoint",
@@ -3795,7 +3794,7 @@
                     "criteria": {
                       "rule_id": "cushings_syndrome_missing_cutoff_data_criteria",
                       "source": "criteria",
-                      "description": "Route here when Cushing's Syndrome cannot be classified because exact threshold/result data are missing.",
+                      "description": "Use this branch when Cushing's Syndrome cannot be classified because exact threshold/result data are missing.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -3829,8 +3828,7 @@
                         "Late-night salivary cortisol, often two samples.",
                         "24-hour urinary free cortisol, at least two collections.",
                         "ACTH after confirmed hypercortisolism.",
-                        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-                        "Cushing safety tests: use late-night salivary cortisol, 1-mg dexamethasone suppression, or 24-hour urinary free cortisol after excluding exogenous steroids, and assess glucose, BP, potassium, infection/VTE, and bone risk to determine severity and treatment urgency.",
+                        "glucose, BP, potassium, infection/VTE, and bone-risk severity screen",
                         "Morning cortisol/ACTH or cosyntropin for adrenal insufficiency; aldosterone-renin ratio with potassium correction for primary aldosteronism; metanephrines for PPGL.",
                         "at least 2 measurements",
                         "2 measurements",
@@ -3867,8 +3865,7 @@
                       "Late-night salivary cortisol, often two samples.",
                       "24-hour urinary free cortisol, at least two collections.",
                       "ACTH after confirmed hypercortisolism.",
-                      "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-                      "Cushing safety tests: use late-night salivary cortisol, 1-mg dexamethasone suppression, or 24-hour urinary free cortisol after excluding exogenous steroids, and assess glucose, BP, potassium, infection/VTE, and bone risk to determine severity and treatment urgency.",
+                      "glucose, BP, potassium, infection/VTE, and bone-risk severity screen",
                       "Morning cortisol/ACTH or cosyntropin for adrenal insufficiency; aldosterone-renin ratio with potassium correction for primary aldosteronism; metanephrines for PPGL.",
                       "at least 2 measurements",
                       "2 measurements",
@@ -3884,7 +3881,7 @@
                     "id": "cushings_syndrome_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Cushing's Syndrome: emergency or monitored-care disposition",
-                    "edgeLabel": "High-acuity threshold or monitored-care result present: Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE.; at least 2 measurements; 2 measurements",
+                    "edgeLabel": "High-acuity threshold or monitored-care result present: Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE.; Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE.; at least 2 measurements; 2 measurements",
                     "source_ids": [
                       "ES_CUSHING_DX_2008",
                       "ES_CUSHING_TREATMENT_2015",
@@ -3894,7 +3891,7 @@
                     "criteria": {
                       "rule_id": "cushings_syndrome_urgent_criteria",
                       "source": "criteria",
-                      "description": "Escalate Cushing's Syndrome when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
+                      "description": "Escalate Cushing's Syndrome when Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE.; Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE.; at least 2 measurements; 2 measurements; 1 mg; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.; unstable physiology or dangerous electrolyte/glucose abnormality.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -3958,7 +3955,7 @@
                         }
                       ]
                     },
-                    "action": "Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE.. Escalate using the cited high-risk threshold, unstable vital sign, organ-risk finding, or monitored-care rule.",
+                    "action": "Send to ED, admission, or monitored specialty care for Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE.; Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE.; at least 2 measurements; 2 measurements; 1 mg; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.; unstable physiology or dangerous electrolyte/glucose abnormality; start stabilization and diagnosis-specific emergency treatment before routine outpatient management.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -4089,13 +4086,13 @@
                         }
                       ]
                     },
-                    "action": "Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.; Use steroidogenesis inhibitors, glucocorticoid receptor blockade, pituitary-directed drugs, radiation, or bilateral adrenalectomy when surgery is delayed, incomplete, impossible, or recurrent.; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Cushing initial testing; Cushing positive biochemical screen",
+                    "action": "Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-specific therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.; Use steroidogenesis inhibitors, glucocorticoid receptor blockade, pituitary-directed drugs, radiation, or bilateral adrenalectomy when surgery is delayed, incomplete, impossible, or recurrent.; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Cushing initial testing; Cushing positive biochemical screen",
                     "children": [
                       {
                         "id": "cushings_syndrome_treatment_safety_decision",
                         "type": "decision",
                         "label": "Cushing's Syndrome: contraindications, dosing, pregnancy, and comorbidity modifiers",
-                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan",
+                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "ES_CUSHING_DX_2008",
                           "ES_CUSHING_TREATMENT_2015",
@@ -4105,7 +4102,7 @@
                         "criteria": {
                           "rule_id": "cushings_syndrome_safety_decision_criteria",
                           "source": "criteria",
-                          "description": "Route Cushing's Syndrome management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.",
+                          "description": "Check Cushing's Syndrome treatment contraindications, dose/weight/renal/pregnancy constraints, and institutional order-set limits before committing to therapy.",
                           "evaluable_from": [
                             "medications",
                             "allergies",
@@ -4174,8 +4171,8 @@
                           {
                             "id": "cushings_syndrome_review_endpoint",
                             "type": "endpoint",
-                            "label": "Cushing's Syndrome: review Cushing initial testing; Cushing positive biochemical screen; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.",
-                            "edgeLabel": "Cushing's Syndrome modifier needing review: Cushing initial testing; Cushing positive biochemical screen; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.",
+                            "label": "Cushing's Syndrome: review Cushing initial testing; Cushing positive biochemical screen; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-specific therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.",
+                            "edgeLabel": "Cushing's Syndrome modifier needing review: Cushing initial testing; Cushing positive biochemical screen; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-specific therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.",
                             "source_ids": [
                               "ES_CUSHING_DX_2008",
                               "ES_CUSHING_TREATMENT_2015",
@@ -4185,7 +4182,7 @@
                             "criteria": {
                               "rule_id": "cushings_syndrome_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Cushing's Syndrome treatment or disposition depends on Cushing initial testing; Cushing positive biochemical screen; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure..",
+                              "description": "Use reviewer handoff when Cushing's Syndrome treatment or disposition depends on Cushing initial testing; Cushing positive biochemical screen; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-specific therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure..",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4205,13 +4202,13 @@
                             "action": "Resolve the named Cushing's Syndrome modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
-                            "review_needed_reason": "Cushing's Syndrome management changes when Cushing initial testing; Cushing positive biochemical screen; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.; document the exact modifier and reviewer input needed."
+                            "review_needed_reason": "Cushing's Syndrome management changes when Cushing initial testing; Cushing positive biochemical screen; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-specific therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.; document the exact modifier and reviewer input needed."
                           },
                           {
                             "id": "cushings_syndrome_monitoring_bundle",
                             "type": "action",
                             "label": "Cushing's Syndrome: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Cushing's Syndrome symptoms, vital signs, criterion-defining results, treatment response, adverse effects, and disposition readiness",
+                            "edgeLabel": "Trend Cushing's Syndrome: at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; Exclude exogenous steroids.; 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.; Late-night salivary cortisol, often two samples.; Measure blood pressure",
                             "source_ids": [
                               "ES_CUSHING_DX_2008",
                               "ES_CUSHING_TREATMENT_2015",
@@ -4221,7 +4218,7 @@
                             "criteria": {
                               "rule_id": "cushings_syndrome_monitoring_criteria",
                               "source": "criteria",
-                              "description": "Monitor Cushing's Syndrome by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
+                              "description": "Monitor Cushing's Syndrome by trending the cited cutoff(s), symptom course, medication adverse effects, and disposition constraints used for this branch.",
                               "evaluable_from": [
                                 "symptoms",
                                 "exam",
@@ -4301,7 +4298,7 @@
                                 "criteria": {
                                   "rule_id": "cushings_syndrome_worsening_criteria",
                                   "source": "criteria",
-                                  "description": "Escalate Cushing's Syndrome if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+                                  "description": "Escalate Cushing's Syndrome if symptoms, vitals, cited thresholds, imaging/ECG/procedure findings, or treatment response worsen or no longer match the chosen branch.",
                                   "evaluable_from": [
                                     "symptoms",
                                     "exam",
@@ -4365,7 +4362,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Repeat or review Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE.; at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; Exclude exogenous steroids.; 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.; reassess mimics and complications; move to ED, admission, or specialty review when the cited threshold, unstable vital sign, imaging/ECG/procedure result, or treatment-response pattern requires escalation.",
+                                "action": "Repeat or review Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE.; at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; Exclude exogenous steroids.; 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.; reassess mimics and complications; move to ED, admission, or specialty review when that specific trend, vital sign, imaging/ECG/procedure finding, or treatment-response pattern requires escalation.",
                                 "children": [],
                                 "endpoint_type": "escalation_disposition",
                                 "guideline_cutoffs": [
@@ -4494,7 +4491,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Use active Cushing's Syndrome results and response trend to stop, narrow, taper, or continue treatment; document which cutoff, symptom, adverse effect, or finding changed.",
+                                "action": "Use the measured Cushing's Syndrome trend, cited cutoff(s), symptom response, adverse effects, and diagnosis certainty to stop, narrow, taper, or continue treatment; document the value or finding that changed.",
                                 "children": [],
                                 "endpoint_type": "deescalation_stopping",
                                 "guideline_cutoffs": [
@@ -4589,7 +4586,7 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend criterion-defining results",
+                              "trend at least 2 measurements; 2 measurements; 1 mg",
                               "review treatment response and adverse effects",
                               "assign disposition and follow-up clinician/service"
                             ],
@@ -4645,7 +4642,7 @@
                       }
                     ],
                     "parallel_actions": [
-                      "Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.",
+                      "Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-specific therapy.",
                       "Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.",
                       "Use steroidogenesis inhibitors, glucocorticoid receptor blockade, pituitary-directed drugs, radiation, or bilateral adrenalectomy when surgery is delayed, incomplete, impossible, or recurrent.",
                       "Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.",
@@ -4886,8 +4883,7 @@
               "Late-night salivary cortisol, often two samples.",
               "24-hour urinary free cortisol, at least two collections.",
               "ACTH after confirmed hypercortisolism.",
-              "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-              "Cushing safety tests: use late-night salivary cortisol, 1-mg dexamethasone suppression, or 24-hour urinary free cortisol after excluding exogenous steroids, and assess glucose, BP, potassium, infection/VTE, and bone risk to determine severity and treatment urgency.",
+              "glucose, BP, potassium, infection/VTE, and bone-risk severity screen",
               "Morning cortisol/ACTH or cosyntropin for adrenal insufficiency; aldosterone-renin ratio with potassium correction for primary aldosteronism; metanephrines for PPGL.",
               "UFC collection count",
               "late-night salivary cortisol count",
@@ -4913,8 +4909,7 @@
               "Late-night salivary cortisol, often two samples.",
               "24-hour urinary free cortisol, at least two collections.",
               "ACTH after confirmed hypercortisolism.",
-              "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-              "Cushing safety tests: use late-night salivary cortisol, 1-mg dexamethasone suppression, or 24-hour urinary free cortisol after excluding exogenous steroids, and assess glucose, BP, potassium, infection/VTE, and bone risk to determine severity and treatment urgency.",
+              "glucose, BP, potassium, infection/VTE, and bone-risk severity screen",
               "Morning cortisol/ACTH or cosyntropin for adrenal insufficiency; aldosterone-renin ratio with potassium correction for primary aldosteronism; metanephrines for PPGL.",
               "at least 2 measurements",
               "2 measurements",
@@ -5006,7 +5001,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "cushings_syndrome_urgent_endpoint",
-          "expected_active_branch": "High-acuity threshold or monitored-care result present: Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE.; at least 2 measurements; 2 measurements",
+          "expected_active_branch": "High-acuity threshold or monitored-care result present: Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE.; Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE.; at least 2 measurements; 2 measurements",
           "expected_path_node_ids": [
             "root",
             "cushings_syndrome_concurrent_data_bundle",
@@ -5034,7 +5029,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "cushings_syndrome_review_endpoint",
-          "expected_active_branch": "Cushing's Syndrome modifier needing review: Cushing initial testing; Cushing positive biochemical screen; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.",
+          "expected_active_branch": "Cushing's Syndrome modifier needing review: Cushing initial testing; Cushing positive biochemical screen; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-specific therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.",
           "expected_path_node_ids": [
             "root",
             "cushings_syndrome_concurrent_data_bundle",

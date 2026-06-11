@@ -2739,7 +2739,7 @@
           {
             "domain": "exam",
             "exact_data_needed": [
-              "condition-specific focused exam",
+              "focused exam findings listed for this workup",
               "Palpate thyroid gland",
               "Palpate cervical lymph nodes",
               "Auscultate heart rhythm",
@@ -2776,7 +2776,7 @@
               "RAIU: high uptake suggests overproduction; low uptake suggests thyroiditis/exogenous/iodine-related in many cases.",
               "ESR/CRP if painful thyroid.",
               "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-              "Thyrotoxicosis safety data: check TSH, free T4, total T3, TRAb/TSI or RAIU when the branch-specific criteria in this node apply, ECG for tachyarrhythmia, CBC/liver baseline before antithyroid drugs, and pregnancy testing before radioiodine or teratogenic treatment decisions.",
+              "Thyrotoxicosis safety data: check TSH, free T4, total T3, TRAb/TSI or RAIU, ECG for tachyarrhythmia, CBC/liver baseline before antithyroid drugs, and pregnancy testing before radioiodine or teratogenic treatment decisions.",
               "TSH",
               "free T4",
               "total/free T3",
@@ -2797,7 +2797,7 @@
               "imaging, ECG, culture, pathology, or procedure result required by the chosen branch",
               "RAIU: high uptake suggests overproduction; low uptake suggests thyroiditis/exogenous/iodine-related in many cases.",
               "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-              "Thyrotoxicosis safety data: check TSH, free T4, total T3, TRAb/TSI or RAIU when the branch-specific criteria in this node apply, ECG for tachyarrhythmia, CBC/liver baseline before antithyroid drugs, and pregnancy testing before radioiodine or teratogenic treatment decisions.",
+              "Thyrotoxicosis safety data: check TSH, free T4, total T3, TRAb/TSI or RAIU, ECG for tachyarrhythmia, CBC/liver baseline before antithyroid drugs, and pregnancy testing before radioiodine or teratogenic treatment decisions.",
               "TSH with free T4; add T3 for thyrotoxicosis, TPO Ab for autoimmune hypothyroidism, TRAb/TSI for Graves, and thyroid ultrasound/FNA pathway for nodules."
             ],
             "source_ids": [
@@ -2852,7 +2852,7 @@
             "domain": "pregnancy_status",
             "exact_data_needed": [
               "pregnant/not pregnant/unknown when pregnancy potential exists",
-              "postpartum/lactation status when relevant",
+              "postpartum/lactation status if testing or treatment could change",
               "fertility intent when treatment depends on it"
             ],
             "source_ids": [
@@ -2903,7 +2903,7 @@
         "endpoint_missing_context": {
           "rule_id": "missing_context_criteria",
           "source": "criteria",
-          "description": "Route here when the patient context needed to activate Thyrotoxicosis is absent or cannot be extracted.",
+          "description": "Use this branch when the patient context needed to activate Thyrotoxicosis is absent or cannot be extracted.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2954,7 +2954,7 @@
         "thyrotoxicosis_classification_decision": {
           "rule_id": "thyrotoxicosis_classification_criteria",
           "source": "criteria",
-          "description": "Classify Thyrotoxicosis against cited thresholds and condition-specific rules: Overt thyrotoxicosis biochemistry: TSH below LLN, free T4 above ULN, T3 above ULN | Subclinical hyperthyroidism high-risk stratum: TSH <0.1 mU/L, 3 to 6 months, age >65 years | Subclinical hyperthyroidism low-detectable stratum: TSH 0.1-0.4 mU/L, age >=65 years, age <65 years, 6-12 months",
+          "description": "Classify Thyrotoxicosis using cited thresholds: Overt thyrotoxicosis biochemistry: TSH below LLN, free T4 above ULN, T3 above ULN | Subclinical hyperthyroidism high-risk stratum: TSH <0.1 mU/L, 3 to 6 months, age >65 years | Subclinical hyperthyroidism low-detectable stratum: TSH 0.1-0.4 mU/L, age >=65 years, age <65 years, 6-12 months",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3046,7 +3046,7 @@
         "thyrotoxicosis_missing_cutoff_data_endpoint": {
           "rule_id": "thyrotoxicosis_missing_cutoff_data_criteria",
           "source": "criteria",
-          "description": "Route here when Thyrotoxicosis cannot be classified because exact threshold/result data are missing.",
+          "description": "Use this branch when Thyrotoxicosis cannot be classified because exact threshold/result data are missing.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3080,8 +3080,7 @@
             "TRAb/TSI.",
             "RAIU: high uptake suggests overproduction; low uptake suggests thyroiditis/exogenous/iodine-related in many cases.",
             "ESR/CRP if painful thyroid.",
-            "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-            "Thyrotoxicosis safety data: check TSH, free T4, total T3, TRAb/TSI or RAIU when the branch-specific criteria in this node apply, ECG for tachyarrhythmia, CBC/liver baseline before antithyroid drugs, and pregnancy testing before radioiodine or teratogenic treatment decisions.",
+            "Thyrotoxicosis safety data: check TSH, free T4, total T3, TRAb/TSI or RAIU, ECG for tachyarrhythmia, CBC/liver baseline before antithyroid drugs, and pregnancy testing before radioiodine or teratogenic treatment decisions.",
             "TSH with free T4; add T3 for thyrotoxicosis, TPO Ab for autoimmune hypothyroidism, TRAb/TSI for Graves, and thyroid ultrasound/FNA pathway for nodules.",
             "Hold high-dose biotin before susceptible assays when feasible and interpret thyroid labs with pregnancy, acute illness, and central hypothyroidism context.",
             "TSH below LLN",
@@ -3097,7 +3096,7 @@
         "thyrotoxicosis_urgent_endpoint": {
           "rule_id": "thyrotoxicosis_urgent_criteria",
           "source": "criteria",
-          "description": "Escalate Thyrotoxicosis when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
+          "description": "Escalate Thyrotoxicosis when Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; TSH below LLN; free T4 above ULN; T3 above ULN; Low uptake changes management away from antithyroid drugs toward thyroiditis/supportive pathway.; unstable physiology or dangerous electrolyte/glucose abnormality.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3277,7 +3276,7 @@
         "thyrotoxicosis_treatment_safety_decision": {
           "rule_id": "thyrotoxicosis_safety_decision_criteria",
           "source": "criteria",
-          "description": "Route Thyrotoxicosis management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.",
+          "description": "Check Thyrotoxicosis treatment contraindications, dose/weight/renal/pregnancy constraints, and institutional order-set limits before committing to therapy.",
           "evaluable_from": [
             "medications",
             "allergies",
@@ -3362,7 +3361,7 @@
         "thyrotoxicosis_monitoring_bundle": {
           "rule_id": "thyrotoxicosis_monitoring_criteria",
           "source": "criteria",
-          "description": "Monitor Thyrotoxicosis by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
+          "description": "Monitor Thyrotoxicosis by trending the cited cutoff(s), symptom course, medication adverse effects, and disposition constraints used for this branch.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3451,7 +3450,7 @@
         "thyrotoxicosis_worsening_endpoint": {
           "rule_id": "thyrotoxicosis_worsening_criteria",
           "source": "criteria",
-          "description": "Escalate Thyrotoxicosis if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+          "description": "Escalate Thyrotoxicosis if symptoms, vitals, cited thresholds, imaging/ECG/procedure findings, or treatment response worsen or no longer match the chosen branch.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3736,7 +3735,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Thyrotoxicosis: route by Storm physiology, AF, heart failure, severe weight loss, altered mental status.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; TSH below LLN; free T4 above ULN; T3 above ULN; Use beta-blocker symptom control when not contraindicated for adrenergic symptoms or tachycardia.; Use antithyroid drugs for Graves/toxic nodular hyperthyroidism when appropriate, with pregnancy trimester, liver disease, agranulocytosis counseling, and baseline labs considered.",
+        "label": "Thyrotoxicosis: Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; TSH below LLN; free T4 above ULN; T3 above ULN; Use beta-blocker symptom control when not contraindicated for adrenergic symptoms or tachycardia.; Use antithyroid drugs for Graves/toxic nodular hyperthyroidism when appropriate, with pregnancy trimester, liver disease, agranulocytosis counseling, and baseline labs considered.; Low uptake changes management away from antithyroid drugs toward thyroiditis/supportive pathway.",
         "edgeLabel": "",
         "source_ids": [
           "ATA_HYPERTHYROIDISM_2016",
@@ -3757,7 +3756,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Thyrotoxicosis from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
+        "action": "Check Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes. and TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; 3 to 6 months; age >65 years; use the listed assessment bundle to choose emergency care, treatment/disposition, reviewer handoff, alternate diagnosis, reassessment, de-escalation, or follow-up.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3770,7 +3769,7 @@
             "criteria": {
               "rule_id": "missing_context_criteria",
               "source": "criteria",
-              "description": "Route here when the patient context needed to activate Thyrotoxicosis is absent or cannot be extracted.",
+              "description": "Use this branch when the patient context needed to activate Thyrotoxicosis is absent or cannot be extracted.",
               "evaluable_from": [
                 "symptoms",
                 "exam",
@@ -3850,7 +3849,7 @@
                 "AHRQ_CALIBRATE_DX"
               ]
             },
-            "action": "Obtain together: TSH, free T4, T3.; TRAb/TSI.; RAIU: high uptake suggests overproduction; low uptake suggests thyroiditis/exogenous/iodine-related in many cases.; ESR/CRP if painful thyroid.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; Thyrotoxicosis safety data: check TSH, free T4, total T3, TRAb/TSI or RAIU when the branch-specific criteria in this node apply, ECG for tachyarrhythmia, CBC/liver baseline before antithyroid drugs, and pregnancy testing before radioiodine or teratogenic treatment decisions.; TSH with free T4; add T3 for thyrotoxicosis, TPO Ab for autoimmune hypothyroidism, TRAb/TSI for Graves, and thyroid ultrasound/FNA pathway for nodules.; Hold high-dose biotin before susceptible assays when feasible and interpret thyroid labs with pregnancy, acute illness, and central hypothyroidism context.; TSH; free T4; total/free T3; assay reference intervals; TRAb/TSI or uptake pattern when needed; repeat TSH dates; age; cardiac disease.",
+            "action": "Obtain together: TSH, free T4, T3.; TRAb/TSI.; RAIU: high uptake suggests overproduction; low uptake suggests thyroiditis/exogenous/iodine-related in many cases.; ESR/CRP if painful thyroid.; Thyrotoxicosis safety data: check TSH, free T4, total T3, TRAb/TSI or RAIU, ECG for tachyarrhythmia, CBC/liver baseline before antithyroid drugs, and pregnancy testing before radioiodine or teratogenic treatment decisions.; TSH with free T4; add T3 for thyrotoxicosis, TPO Ab for autoimmune hypothyroidism, TRAb/TSI for Graves, and thyroid ultrasound/FNA pathway for nodules.; Hold high-dose biotin before susceptible assays when feasible and interpret thyroid labs with pregnancy, acute illness, and central hypothyroidism context.; TSH; free T4; total/free T3; assay reference intervals; TRAb/TSI or uptake pattern when needed; repeat TSH dates; age; cardiac disease.",
             "children": [
               {
                 "id": "thyrotoxicosis_classification_decision",
@@ -3864,7 +3863,7 @@
                 "criteria": {
                   "rule_id": "thyrotoxicosis_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Thyrotoxicosis against cited thresholds and condition-specific rules: Overt thyrotoxicosis biochemistry: TSH below LLN, free T4 above ULN, T3 above ULN | Subclinical hyperthyroidism high-risk stratum: TSH <0.1 mU/L, 3 to 6 months, age >65 years | Subclinical hyperthyroidism low-detectable stratum: TSH 0.1-0.4 mU/L, age >=65 years, age <65 years, 6-12 months",
+                  "description": "Classify Thyrotoxicosis using cited thresholds: Overt thyrotoxicosis biochemistry: TSH below LLN, free T4 above ULN, T3 above ULN | Subclinical hyperthyroidism high-risk stratum: TSH <0.1 mU/L, 3 to 6 months, age >65 years | Subclinical hyperthyroidism low-detectable stratum: TSH 0.1-0.4 mU/L, age >=65 years, age <65 years, 6-12 months",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -3953,7 +3952,7 @@
                     }
                   ]
                 },
-                "action": "Choose the active Thyrotoxicosis branch by matching patient data to the cited cutoffs and patient-specific safety rules.",
+                "action": "Match current patient data to TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; 3 to 6 months; age >65 years; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
                 "children": [
                   {
                     "id": "thyrotoxicosis_missing_cutoff_data_endpoint",
@@ -3967,7 +3966,7 @@
                     "criteria": {
                       "rule_id": "thyrotoxicosis_missing_cutoff_data_criteria",
                       "source": "criteria",
-                      "description": "Route here when Thyrotoxicosis cannot be classified because exact threshold/result data are missing.",
+                      "description": "Use this branch when Thyrotoxicosis cannot be classified because exact threshold/result data are missing.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4001,8 +4000,7 @@
                         "TRAb/TSI.",
                         "RAIU: high uptake suggests overproduction; low uptake suggests thyroiditis/exogenous/iodine-related in many cases.",
                         "ESR/CRP if painful thyroid.",
-                        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-                        "Thyrotoxicosis safety data: check TSH, free T4, total T3, TRAb/TSI or RAIU when the branch-specific criteria in this node apply, ECG for tachyarrhythmia, CBC/liver baseline before antithyroid drugs, and pregnancy testing before radioiodine or teratogenic treatment decisions.",
+                        "Thyrotoxicosis safety data: check TSH, free T4, total T3, TRAb/TSI or RAIU, ECG for tachyarrhythmia, CBC/liver baseline before antithyroid drugs, and pregnancy testing before radioiodine or teratogenic treatment decisions.",
                         "TSH with free T4; add T3 for thyrotoxicosis, TPO Ab for autoimmune hypothyroidism, TRAb/TSI for Graves, and thyroid ultrasound/FNA pathway for nodules.",
                         "Hold high-dose biotin before susceptible assays when feasible and interpret thyroid labs with pregnancy, acute illness, and central hypothyroidism context.",
                         "TSH below LLN",
@@ -4042,8 +4040,7 @@
                       "TRAb/TSI.",
                       "RAIU: high uptake suggests overproduction; low uptake suggests thyroiditis/exogenous/iodine-related in many cases.",
                       "ESR/CRP if painful thyroid.",
-                      "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-                      "Thyrotoxicosis safety data: check TSH, free T4, total T3, TRAb/TSI or RAIU when the branch-specific criteria in this node apply, ECG for tachyarrhythmia, CBC/liver baseline before antithyroid drugs, and pregnancy testing before radioiodine or teratogenic treatment decisions.",
+                      "Thyrotoxicosis safety data: check TSH, free T4, total T3, TRAb/TSI or RAIU, ECG for tachyarrhythmia, CBC/liver baseline before antithyroid drugs, and pregnancy testing before radioiodine or teratogenic treatment decisions.",
                       "TSH with free T4; add T3 for thyrotoxicosis, TPO Ab for autoimmune hypothyroidism, TRAb/TSI for Graves, and thyroid ultrasound/FNA pathway for nodules.",
                       "Hold high-dose biotin before susceptible assays when feasible and interpret thyroid labs with pregnancy, acute illness, and central hypothyroidism context.",
                       "TSH below LLN",
@@ -4060,7 +4057,7 @@
                     "id": "thyrotoxicosis_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Thyrotoxicosis: emergency or monitored-care disposition",
-                    "edgeLabel": "High-acuity threshold or monitored-care result present: Storm physiology, AF, heart failure, severe weight loss, altered mental status.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; TSH below LLN; free T4 above ULN",
+                    "edgeLabel": "High-acuity threshold or monitored-care result present: Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; TSH below LLN; free T4 above ULN",
                     "source_ids": [
                       "ATA_HYPERTHYROIDISM_2016",
                       "AHRQ_CALIBRATE_DX"
@@ -4068,7 +4065,7 @@
                     "criteria": {
                       "rule_id": "thyrotoxicosis_urgent_criteria",
                       "source": "criteria",
-                      "description": "Escalate Thyrotoxicosis when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
+                      "description": "Escalate Thyrotoxicosis when Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; TSH below LLN; free T4 above ULN; T3 above ULN; Low uptake changes management away from antithyroid drugs toward thyroiditis/supportive pathway.; unstable physiology or dangerous electrolyte/glucose abnormality.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4154,7 +4151,7 @@
                         }
                       ]
                     },
-                    "action": "Storm physiology, AF, heart failure, severe weight loss, altered mental status.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.. Escalate using the cited high-risk threshold, unstable vital sign, organ-risk finding, or monitored-care rule.",
+                    "action": "Send to ED, admission, or monitored specialty care for Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; TSH below LLN; free T4 above ULN; T3 above ULN; Low uptake changes management away from antithyroid drugs toward thyroiditis/supportive pathway.; unstable physiology or dangerous electrolyte/glucose abnormality; start stabilization and diagnosis-specific emergency treatment before routine outpatient management.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -4335,7 +4332,7 @@
                         "id": "thyrotoxicosis_treatment_safety_decision",
                         "type": "decision",
                         "label": "Thyrotoxicosis: contraindications, dosing, pregnancy, and comorbidity modifiers",
-                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan",
+                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "ATA_HYPERTHYROIDISM_2016",
                           "AHRQ_CALIBRATE_DX"
@@ -4343,7 +4340,7 @@
                         "criteria": {
                           "rule_id": "thyrotoxicosis_safety_decision_criteria",
                           "source": "criteria",
-                          "description": "Route Thyrotoxicosis management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.",
+                          "description": "Check Thyrotoxicosis treatment contraindications, dose/weight/renal/pregnancy constraints, and institutional order-set limits before committing to therapy.",
                           "evaluable_from": [
                             "medications",
                             "allergies",
@@ -4445,7 +4442,7 @@
                             "id": "thyrotoxicosis_monitoring_bundle",
                             "type": "action",
                             "label": "Thyrotoxicosis: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Thyrotoxicosis symptoms, vital signs, criterion-defining results, treatment response, adverse effects, and disposition readiness",
+                            "edgeLabel": "Trend Thyrotoxicosis: TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; TSH, free T4, T3.; TRAb/TSI.; RAIU: high uptake suggests overproduction; low uptake suggests thyroiditis/exogenous/iodine-related in many cases.; Measure blood pressure",
                             "source_ids": [
                               "ATA_HYPERTHYROIDISM_2016",
                               "AHRQ_CALIBRATE_DX"
@@ -4453,7 +4450,7 @@
                             "criteria": {
                               "rule_id": "thyrotoxicosis_monitoring_criteria",
                               "source": "criteria",
-                              "description": "Monitor Thyrotoxicosis by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
+                              "description": "Monitor Thyrotoxicosis by trending the cited cutoff(s), symptom course, medication adverse effects, and disposition constraints used for this branch.",
                               "evaluable_from": [
                                 "symptoms",
                                 "exam",
@@ -4553,7 +4550,7 @@
                                 "criteria": {
                                   "rule_id": "thyrotoxicosis_worsening_criteria",
                                   "source": "criteria",
-                                  "description": "Escalate Thyrotoxicosis if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+                                  "description": "Escalate Thyrotoxicosis if symptoms, vitals, cited thresholds, imaging/ECG/procedure findings, or treatment response worsen or no longer match the chosen branch.",
                                   "evaluable_from": [
                                     "symptoms",
                                     "exam",
@@ -4639,7 +4636,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Repeat or review Storm physiology, AF, heart failure, severe weight loss, altered mental status.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; TSH, free T4, T3.; TRAb/TSI.; reassess mimics and complications; move to ED, admission, or specialty review when the cited threshold, unstable vital sign, imaging/ECG/procedure result, or treatment-response pattern requires escalation.",
+                                "action": "Repeat or review Storm physiology, AF, heart failure, severe weight loss, altered mental status.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; TSH, free T4, T3.; TRAb/TSI.; reassess mimics and complications; move to ED, admission, or specialty review when that specific trend, vital sign, imaging/ECG/procedure finding, or treatment-response pattern requires escalation.",
                                 "children": [],
                                 "endpoint_type": "escalation_disposition",
                                 "guideline_cutoffs": [
@@ -4812,7 +4809,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Use active Thyrotoxicosis results and response trend to stop, narrow, taper, or continue treatment; document which cutoff, symptom, adverse effect, or finding changed.",
+                                "action": "Use the measured Thyrotoxicosis trend, cited cutoff(s), symptom response, adverse effects, and diagnosis certainty to stop, narrow, taper, or continue treatment; document the value or finding that changed.",
                                 "children": [],
                                 "endpoint_type": "deescalation_stopping",
                                 "guideline_cutoffs": [
@@ -4927,7 +4924,7 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend criterion-defining results",
+                              "trend TSH below LLN; free T4 above ULN; T3 above ULN",
                               "review treatment response and adverse effects",
                               "assign disposition and follow-up clinician/service"
                             ],
@@ -5340,8 +5337,7 @@
               "TRAb/TSI.",
               "RAIU: high uptake suggests overproduction; low uptake suggests thyroiditis/exogenous/iodine-related in many cases.",
               "ESR/CRP if painful thyroid.",
-              "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-              "Thyrotoxicosis safety data: check TSH, free T4, total T3, TRAb/TSI or RAIU when the branch-specific criteria in this node apply, ECG for tachyarrhythmia, CBC/liver baseline before antithyroid drugs, and pregnancy testing before radioiodine or teratogenic treatment decisions.",
+              "Thyrotoxicosis safety data: check TSH, free T4, total T3, TRAb/TSI or RAIU, ECG for tachyarrhythmia, CBC/liver baseline before antithyroid drugs, and pregnancy testing before radioiodine or teratogenic treatment decisions.",
               "TSH with free T4; add T3 for thyrotoxicosis, TPO Ab for autoimmune hypothyroidism, TRAb/TSI for Graves, and thyroid ultrasound/FNA pathway for nodules.",
               "Hold high-dose biotin before susceptible assays when feasible and interpret thyroid labs with pregnancy, acute illness, and central hypothyroidism context.",
               "TSH",
@@ -5370,8 +5366,7 @@
               "TRAb/TSI.",
               "RAIU: high uptake suggests overproduction; low uptake suggests thyroiditis/exogenous/iodine-related in many cases.",
               "ESR/CRP if painful thyroid.",
-              "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-              "Thyrotoxicosis safety data: check TSH, free T4, total T3, TRAb/TSI or RAIU when the branch-specific criteria in this node apply, ECG for tachyarrhythmia, CBC/liver baseline before antithyroid drugs, and pregnancy testing before radioiodine or teratogenic treatment decisions.",
+              "Thyrotoxicosis safety data: check TSH, free T4, total T3, TRAb/TSI or RAIU, ECG for tachyarrhythmia, CBC/liver baseline before antithyroid drugs, and pregnancy testing before radioiodine or teratogenic treatment decisions.",
               "TSH with free T4; add T3 for thyrotoxicosis, TPO Ab for autoimmune hypothyroidism, TRAb/TSI for Graves, and thyroid ultrasound/FNA pathway for nodules.",
               "Hold high-dose biotin before susceptible assays when feasible and interpret thyroid labs with pregnancy, acute illness, and central hypothyroidism context.",
               "TSH below LLN",
@@ -5488,7 +5483,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "thyrotoxicosis_urgent_endpoint",
-          "expected_active_branch": "High-acuity threshold or monitored-care result present: Storm physiology, AF, heart failure, severe weight loss, altered mental status.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; TSH below LLN; free T4 above ULN",
+          "expected_active_branch": "High-acuity threshold or monitored-care result present: Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; TSH below LLN; free T4 above ULN",
           "expected_path_node_ids": [
             "root",
             "thyrotoxicosis_concurrent_data_bundle",

@@ -3100,7 +3100,7 @@
           {
             "domain": "exam",
             "exact_data_needed": [
-              "condition-specific focused exam",
+              "focused exam findings listed for this workup",
               "Inspect feet for ulcers",
               "Palpate pedal pulses",
               "Test monofilament sensation",
@@ -3237,7 +3237,7 @@
             "domain": "pregnancy_status",
             "exact_data_needed": [
               "pregnant/not pregnant/unknown when pregnancy potential exists",
-              "postpartum/lactation status when relevant",
+              "postpartum/lactation status if testing or treatment could change",
               "fertility intent when treatment depends on it"
             ],
             "source_ids": [
@@ -3302,7 +3302,7 @@
         "endpoint_missing_context": {
           "rule_id": "type_2_diabetes_missing_context_criteria",
           "source": "criteria",
-          "description": "Route here when the data needed to safely classify and manage Type 2 Diabetes Mellitus cannot be extracted.",
+          "description": "Use this branch when the data needed to safely classify and manage Type 2 Diabetes Mellitus cannot be extracted.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3733,7 +3733,7 @@
         "type_2_diabetes_missing_diabetes_data_endpoint": {
           "rule_id": "type_2_diabetes_missing_diabetes_data_criteria",
           "source": "criteria",
-          "description": "Route here when exact Type 2 Diabetes Mellitus threshold or treatment-safety data are unavailable.",
+          "description": "Use this branch when exact Type 2 Diabetes Mellitus threshold or treatment-safety data are unavailable.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -5109,7 +5109,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Type 2 Diabetes Mellitus: route by diagnostic glucose thresholds, crisis risk, diabetes type, treatment safety, complications, and follow-up",
+        "label": "Type 2 Diabetes Mellitus: use diagnostic glucose thresholds, crisis risk, diabetes type, treatment safety, complications, and follow-up",
         "edgeLabel": "",
         "source_ids": [
           "ADA_DIAGNOSIS_2026",
@@ -5158,7 +5158,7 @@
             "criteria": {
               "rule_id": "type_2_diabetes_missing_context_criteria",
               "source": "criteria",
-              "description": "Route here when the data needed to safely classify and manage Type 2 Diabetes Mellitus cannot be extracted.",
+              "description": "Use this branch when the data needed to safely classify and manage Type 2 Diabetes Mellitus cannot be extracted.",
               "evaluable_from": [
                 "symptoms",
                 "exam",
@@ -5657,7 +5657,7 @@
                     "criteria": {
                       "rule_id": "type_2_diabetes_missing_diabetes_data_criteria",
                       "source": "criteria",
-                      "description": "Route here when exact Type 2 Diabetes Mellitus threshold or treatment-safety data are unavailable.",
+                      "description": "Use this branch when exact Type 2 Diabetes Mellitus threshold or treatment-safety data are unavailable.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -8228,7 +8228,7 @@
                     "action": "Document which diabetes thresholds or type-classification findings are absent, then route to the appropriate alternate pathway: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Glucose thresholds, diabetes type, medication effect, pregnancy, or another endocrine/acute illness cause changes the documented disease branch."
+                    "review_needed_reason": "Glucose thresholds, diabetes type, medication effect, pregnancy, or another endocrine/acute illness cause changes the current diagnosis."
                   }
                 ],
                 "guideline_cutoffs": [

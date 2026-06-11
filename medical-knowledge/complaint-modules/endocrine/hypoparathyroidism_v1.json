@@ -2554,7 +2554,7 @@
           {
             "domain": "exam",
             "exact_data_needed": [
-              "condition-specific focused exam",
+              "focused exam findings listed for this workup",
               "Test proximal hip flexor strength",
               "Palpate focal bone tenderness",
               "Observe gait stability if safe",
@@ -2665,7 +2665,7 @@
             "domain": "pregnancy_status",
             "exact_data_needed": [
               "pregnant/not pregnant/unknown when pregnancy potential exists",
-              "postpartum/lactation status when relevant",
+              "postpartum/lactation status if testing or treatment could change",
               "fertility intent when treatment depends on it"
             ],
             "source_ids": [
@@ -2716,7 +2716,7 @@
         "endpoint_missing_context": {
           "rule_id": "missing_context_criteria",
           "source": "criteria",
-          "description": "Route here when the patient context needed to activate Hypoparathyroidism is absent or cannot be extracted.",
+          "description": "Use this branch when the patient context needed to activate Hypoparathyroidism is absent or cannot be extracted.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2767,7 +2767,7 @@
         "hypoparathyroidism_classification_decision": {
           "rule_id": "hypoparathyroidism_classification_criteria",
           "source": "criteria",
-          "description": "Classify Hypoparathyroidism against cited thresholds and condition-specific rules: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L, 10-65 pg/mL | Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L | Intact PTH often about 10-65 pg/mL but assay-specific.: 10-65 pg/mL | DXA T-score: normal >= -1.0, osteoporosis <= -2.5 | 25D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.: many labs flag <20 ng/mL, as low and <12 ng/mL",
+          "description": "Classify Hypoparathyroidism using cited thresholds: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L, 10-65 pg/mL | Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L | Intact PTH often about 10-65 pg/mL but assay-specific.: 10-65 pg/mL | DXA T-score: normal >= -1.0, osteoporosis <= -2.5 | 25D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.: many labs flag <20 ng/mL, as low and <12 ng/mL",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2880,7 +2880,7 @@
         "hypoparathyroidism_missing_cutoff_data_endpoint": {
           "rule_id": "hypoparathyroidism_missing_cutoff_data_criteria",
           "source": "criteria",
-          "description": "Route here when Hypoparathyroidism cannot be classified because exact threshold/result data are missing.",
+          "description": "Use this branch when Hypoparathyroidism cannot be classified because exact threshold/result data are missing.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2908,17 +2908,15 @@
             "Calcium plus PTH.",
             "Phosphorus, magnesium, creatinine/eGFR, 25(OH)D.",
             "24-hour urine calcium during chronic treatment.",
-            "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-            "Thyroid safety data: pair TSH/free T4 with syndrome-specific add-ons such as T3, antibodies, ultrasound/FNA, or radionuclide scan, and account for pregnancy, biotin, acute illness, central disease, and medication effects before treatment changes.",
-            "DXA/vertebral imaging or fracture-risk tool when bone density is in scope; calcium/PTH/phosphorus/magnesium/25(OH)D/renal function for calcium-bone disorders.",
-            "24-hour urine calcium and renal imaging when primary hyperparathyroidism, kidney stones, or chronic hypoparathyroidism management is relevant.",
+            "DXA/vertebral imaging or validated fracture-risk tool",
+            "24-hour urine calcium and renal imaging when calcium-stone risk is relevant",
             "Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab."
           ]
         },
         "hypoparathyroidism_urgent_endpoint": {
           "rule_id": "hypoparathyroidism_urgent_criteria",
           "source": "criteria",
-          "description": "Escalate Hypoparathyroidism when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
+          "description": "Escalate Hypoparathyroidism when Seizure, laryngospasm, arrhythmia/QT prolongation, severe symptomatic hypocalcemia.; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring.; unstable physiology or dangerous electrolyte/glucose abnormality.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3140,7 +3138,7 @@
         "hypoparathyroidism_treatment_safety_decision": {
           "rule_id": "hypoparathyroidism_safety_decision_criteria",
           "source": "criteria",
-          "description": "Route Hypoparathyroidism management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.",
+          "description": "Check Hypoparathyroidism treatment contraindications, dose/weight/renal/pregnancy constraints, and institutional order-set limits before committing to therapy.",
           "evaluable_from": [
             "medications",
             "allergies",
@@ -3268,7 +3266,7 @@
         "hypoparathyroidism_monitoring_bundle": {
           "rule_id": "hypoparathyroidism_monitoring_criteria",
           "source": "criteria",
-          "description": "Monitor Hypoparathyroidism by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
+          "description": "Monitor Hypoparathyroidism by trending the cited cutoff(s), symptom course, medication adverse effects, and disposition constraints used for this branch.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3378,7 +3376,7 @@
         "hypoparathyroidism_worsening_endpoint": {
           "rule_id": "hypoparathyroidism_worsening_criteria",
           "source": "criteria",
-          "description": "Escalate Hypoparathyroidism if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+          "description": "Escalate Hypoparathyroidism if symptoms, vitals, cited thresholds, imaging/ECG/procedure findings, or treatment response worsen or no longer match the chosen branch.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3726,7 +3724,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Hypoparathyroidism: route by Seizure, laryngospasm, arrhythmia/QT prolongation, severe symptomatic hypocalcemia.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; Treat severe symptomatic hypocalcemia with IV calcium and telemetry per local protocol while correcting magnesium.; Use oral calcium plus active vitamin D such as calcitriol for chronic conventional therapy, targeting low-normal or just-below-normal calcium with symptom control.",
+        "label": "Hypoparathyroidism: Seizure, laryngospasm, arrhythmia/QT prolongation, severe symptomatic hypocalcemia.; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; Treat severe symptomatic hypocalcemia with IV calcium and telemetry per institutional protocol while correcting magnesium.; Use oral calcium plus active vitamin D such as calcitriol for chronic conventional therapy, targeting low-normal or just-below-normal calcium with symptom control.",
         "edgeLabel": "",
         "source_ids": [
           "HYPOPARA_TASK_FORCE_2022",
@@ -3747,7 +3745,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Hypoparathyroidism from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
+        "action": "Check Seizure, laryngospasm, arrhythmia/QT prolongation, severe symptomatic hypocalcemia.; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia. and 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; osteoporosis <= -2.5; many labs flag <20 ng/mL; use the listed assessment bundle to choose emergency care, treatment/disposition, reviewer handoff, alternate diagnosis, reassessment, de-escalation, or follow-up.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3760,7 +3758,7 @@
             "criteria": {
               "rule_id": "missing_context_criteria",
               "source": "criteria",
-              "description": "Route here when the patient context needed to activate Hypoparathyroidism is absent or cannot be extracted.",
+              "description": "Use this branch when the patient context needed to activate Hypoparathyroidism is absent or cannot be extracted.",
               "evaluable_from": [
                 "symptoms",
                 "exam",
@@ -3816,7 +3814,7 @@
             "id": "hypoparathyroidism_concurrent_data_bundle",
             "type": "action",
             "label": "Hypoparathyroidism: assessment, thresholds, and treatment-safety inputs",
-            "edgeLabel": "Collect Hypoparathyroidism: Calcium plus PTH.; Phosphorus, magnesium, creatinine/eGFR, 25(OH)D.; 24-hour urine calcium during chronic treatment.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL",
+            "edgeLabel": "Collect Hypoparathyroidism: Calcium plus PTH.; Phosphorus, magnesium, creatinine/eGFR, 25(OH)D.; 24-hour urine calcium during chronic treatment.; DXA/vertebral imaging or validated fracture-risk tool; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL",
             "source_ids": [
               "HYPOPARA_TASK_FORCE_2022",
               "AHRQ_CALIBRATE_DX"
@@ -3840,7 +3838,7 @@
                 "AHRQ_CALIBRATE_DX"
               ]
             },
-            "action": "Obtain together: Calcium plus PTH.; Phosphorus, magnesium, creatinine/eGFR, 25(OH)D.; 24-hour urine calcium during chronic treatment.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; Thyroid safety data: pair TSH/free T4 with syndrome-specific add-ons such as T3, antibodies, ultrasound/FNA, or radionuclide scan, and account for pregnancy, biotin, acute illness, central disease, and medication effects before treatment changes.; DXA/vertebral imaging or fracture-risk tool when bone density is in scope; calcium/PTH/phosphorus/magnesium/25(OH)D/renal function for calcium-bone disorders.; 24-hour urine calcium and renal imaging when primary hyperparathyroidism, kidney stones, or chronic hypoparathyroidism management is relevant.; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; osteoporosis <= -2.5.",
+            "action": "Obtain together: Calcium plus PTH.; Phosphorus, magnesium, creatinine/eGFR, 25(OH)D.; 24-hour urine calcium during chronic treatment.; DXA/vertebral imaging or validated fracture-risk tool; 24-hour urine calcium and renal imaging when calcium-stone risk is relevant; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; osteoporosis <= -2.5.",
             "children": [
               {
                 "id": "hypoparathyroidism_classification_decision",
@@ -3854,7 +3852,7 @@
                 "criteria": {
                   "rule_id": "hypoparathyroidism_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Hypoparathyroidism against cited thresholds and condition-specific rules: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L, 10-65 pg/mL | Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L | Intact PTH often about 10-65 pg/mL but assay-specific.: 10-65 pg/mL | DXA T-score: normal >= -1.0, osteoporosis <= -2.5 | 25D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.: many labs flag <20 ng/mL, as low and <12 ng/mL",
+                  "description": "Classify Hypoparathyroidism using cited thresholds: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L, 10-65 pg/mL | Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L | Intact PTH often about 10-65 pg/mL but assay-specific.: 10-65 pg/mL | DXA T-score: normal >= -1.0, osteoporosis <= -2.5 | 25D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.: many labs flag <20 ng/mL, as low and <12 ng/mL",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -3964,7 +3962,7 @@
                     }
                   ]
                 },
-                "action": "Choose the active Hypoparathyroidism branch by matching patient data to the cited cutoffs and patient-specific safety rules.",
+                "action": "Match current patient data to 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; osteoporosis <= -2.5; many labs flag <20 ng/mL; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
                 "children": [
                   {
                     "id": "hypoparathyroidism_missing_cutoff_data_endpoint",
@@ -3978,7 +3976,7 @@
                     "criteria": {
                       "rule_id": "hypoparathyroidism_missing_cutoff_data_criteria",
                       "source": "criteria",
-                      "description": "Route here when Hypoparathyroidism cannot be classified because exact threshold/result data are missing.",
+                      "description": "Use this branch when Hypoparathyroidism cannot be classified because exact threshold/result data are missing.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4006,10 +4004,8 @@
                         "Calcium plus PTH.",
                         "Phosphorus, magnesium, creatinine/eGFR, 25(OH)D.",
                         "24-hour urine calcium during chronic treatment.",
-                        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-                        "Thyroid safety data: pair TSH/free T4 with syndrome-specific add-ons such as T3, antibodies, ultrasound/FNA, or radionuclide scan, and account for pregnancy, biotin, acute illness, central disease, and medication effects before treatment changes.",
-                        "DXA/vertebral imaging or fracture-risk tool when bone density is in scope; calcium/PTH/phosphorus/magnesium/25(OH)D/renal function for calcium-bone disorders.",
-                        "24-hour urine calcium and renal imaging when primary hyperparathyroidism, kidney stones, or chronic hypoparathyroidism management is relevant.",
+                        "DXA/vertebral imaging or validated fracture-risk tool",
+                        "24-hour urine calcium and renal imaging when calcium-stone risk is relevant",
                         "Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab."
                       ]
                     },
@@ -4034,10 +4030,8 @@
                       "Calcium plus PTH.",
                       "Phosphorus, magnesium, creatinine/eGFR, 25(OH)D.",
                       "24-hour urine calcium during chronic treatment.",
-                      "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-                      "Thyroid safety data: pair TSH/free T4 with syndrome-specific add-ons such as T3, antibodies, ultrasound/FNA, or radionuclide scan, and account for pregnancy, biotin, acute illness, central disease, and medication effects before treatment changes.",
-                      "DXA/vertebral imaging or fracture-risk tool when bone density is in scope; calcium/PTH/phosphorus/magnesium/25(OH)D/renal function for calcium-bone disorders.",
-                      "24-hour urine calcium and renal imaging when primary hyperparathyroidism, kidney stones, or chronic hypoparathyroidism management is relevant.",
+                      "DXA/vertebral imaging or validated fracture-risk tool",
+                      "24-hour urine calcium and renal imaging when calcium-stone risk is relevant",
                       "Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab."
                     ]
                   },
@@ -4045,7 +4039,7 @@
                     "id": "hypoparathyroidism_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Hypoparathyroidism: emergency or monitored-care disposition",
-                    "edgeLabel": "High-acuity threshold or monitored-care result present: Seizure, laryngospasm, arrhythmia/QT prolongation, severe symptomatic hypocalcemia.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
+                    "edgeLabel": "High-acuity threshold or monitored-care result present: Seizure, laryngospasm, arrhythmia/QT prolongation, severe symptomatic hypocalcemia.; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
                     "source_ids": [
                       "HYPOPARA_TASK_FORCE_2022",
                       "AHRQ_CALIBRATE_DX"
@@ -4053,7 +4047,7 @@
                     "criteria": {
                       "rule_id": "hypoparathyroidism_urgent_criteria",
                       "source": "criteria",
-                      "description": "Escalate Hypoparathyroidism when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
+                      "description": "Escalate Hypoparathyroidism when Seizure, laryngospasm, arrhythmia/QT prolongation, severe symptomatic hypocalcemia.; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring.; unstable physiology or dangerous electrolyte/glucose abnormality.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4160,7 +4154,7 @@
                         }
                       ]
                     },
-                    "action": "Seizure, laryngospasm, arrhythmia/QT prolongation, severe symptomatic hypocalcemia.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.. Escalate using the cited high-risk threshold, unstable vital sign, organ-risk finding, or monitored-care rule.",
+                    "action": "Send to ED, admission, or monitored specialty care for Seizure, laryngospasm, arrhythmia/QT prolongation, severe symptomatic hypocalcemia.; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring.; unstable physiology or dangerous electrolyte/glucose abnormality; start stabilization and diagnosis-specific emergency treatment before routine outpatient management.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -4377,13 +4371,13 @@
                         }
                       ]
                     },
-                    "action": "Treat severe symptomatic hypocalcemia with IV calcium and telemetry per local protocol while correcting magnesium.; Use oral calcium plus active vitamin D such as calcitriol for chronic conventional therapy, targeting low-normal or just-below-normal calcium with symptom control.; Use thiazide and low-sodium strategy for hypercalciuria when appropriate; avoid overtreatment that raises kidney-stone or nephrocalcinosis risk.; Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.",
+                    "action": "Treat severe symptomatic hypocalcemia with IV calcium and telemetry per institutional protocol while correcting magnesium.; Use oral calcium plus active vitamin D such as calcitriol for chronic conventional therapy, targeting low-normal or just-below-normal calcium with symptom control.; Use thiazide and low-sodium strategy for hypercalciuria when appropriate; avoid overtreatment that raises kidney-stone or nephrocalcinosis risk.; Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.",
                     "children": [
                       {
                         "id": "hypoparathyroidism_treatment_safety_decision",
                         "type": "decision",
                         "label": "Hypoparathyroidism: contraindications, dosing, pregnancy, and comorbidity modifiers",
-                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan",
+                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "HYPOPARA_TASK_FORCE_2022",
                           "AHRQ_CALIBRATE_DX"
@@ -4391,7 +4385,7 @@
                         "criteria": {
                           "rule_id": "hypoparathyroidism_safety_decision_criteria",
                           "source": "criteria",
-                          "description": "Route Hypoparathyroidism management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.",
+                          "description": "Check Hypoparathyroidism treatment contraindications, dose/weight/renal/pregnancy constraints, and institutional order-set limits before committing to therapy.",
                           "evaluable_from": [
                             "medications",
                             "allergies",
@@ -4536,7 +4530,7 @@
                             "id": "hypoparathyroidism_monitoring_bundle",
                             "type": "action",
                             "label": "Hypoparathyroidism: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Hypoparathyroidism symptoms, vital signs, criterion-defining results, treatment response, adverse effects, and disposition readiness",
+                            "edgeLabel": "Trend Hypoparathyroidism: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; Calcium plus PTH.; Phosphorus, magnesium, creatinine/eGFR, 25(OH)D.; 24-hour urine calcium during chronic treatment.; Measure blood pressure",
                             "source_ids": [
                               "HYPOPARA_TASK_FORCE_2022",
                               "AHRQ_CALIBRATE_DX"
@@ -4544,7 +4538,7 @@
                             "criteria": {
                               "rule_id": "hypoparathyroidism_monitoring_criteria",
                               "source": "criteria",
-                              "description": "Monitor Hypoparathyroidism by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
+                              "description": "Monitor Hypoparathyroidism by trending the cited cutoff(s), symptom course, medication adverse effects, and disposition constraints used for this branch.",
                               "evaluable_from": [
                                 "symptoms",
                                 "exam",
@@ -4665,7 +4659,7 @@
                                 "criteria": {
                                   "rule_id": "hypoparathyroidism_worsening_criteria",
                                   "source": "criteria",
-                                  "description": "Escalate Hypoparathyroidism if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+                                  "description": "Escalate Hypoparathyroidism if symptoms, vitals, cited thresholds, imaging/ECG/procedure findings, or treatment response worsen or no longer match the chosen branch.",
                                   "evaluable_from": [
                                     "symptoms",
                                     "exam",
@@ -4772,7 +4766,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Repeat or review Seizure, laryngospasm, arrhythmia/QT prolongation, severe symptomatic hypocalcemia.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; Calcium plus PTH.; Phosphorus, magnesium, creatinine/eGFR, 25(OH)D.; reassess mimics and complications; move to ED, admission, or specialty review when the cited threshold, unstable vital sign, imaging/ECG/procedure result, or treatment-response pattern requires escalation.",
+                                "action": "Repeat or review Seizure, laryngospasm, arrhythmia/QT prolongation, severe symptomatic hypocalcemia.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; Calcium plus PTH.; Phosphorus, magnesium, creatinine/eGFR, 25(OH)D.; reassess mimics and complications; move to ED, admission, or specialty review when that specific trend, vital sign, imaging/ECG/procedure finding, or treatment-response pattern requires escalation.",
                                 "children": [],
                                 "endpoint_type": "escalation_disposition",
                                 "guideline_cutoffs": [
@@ -4987,7 +4981,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Use active Hypoparathyroidism results and response trend to stop, narrow, taper, or continue treatment; document which cutoff, symptom, adverse effect, or finding changed.",
+                                "action": "Use the measured Hypoparathyroidism trend, cited cutoff(s), symptom response, adverse effects, and diagnosis certainty to stop, narrow, taper, or continue treatment; document the value or finding that changed.",
                                 "children": [],
                                 "endpoint_type": "deescalation_stopping",
                                 "guideline_cutoffs": [
@@ -5123,7 +5117,7 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend criterion-defining results",
+                              "trend 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL",
                               "review treatment response and adverse effects",
                               "assign disposition and follow-up clinician/service"
                             ],
@@ -5224,7 +5218,7 @@
                       }
                     ],
                     "parallel_actions": [
-                      "Treat severe symptomatic hypocalcemia with IV calcium and telemetry per local protocol while correcting magnesium.",
+                      "Treat severe symptomatic hypocalcemia with IV calcium and telemetry per institutional protocol while correcting magnesium.",
                       "Use oral calcium plus active vitamin D such as calcitriol for chronic conventional therapy, targeting low-normal or just-below-normal calcium with symptom control.",
                       "Use thiazide and low-sodium strategy for hypercalciuria when appropriate; avoid overtreatment that raises kidney-stone or nephrocalcinosis risk.",
                       "Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring.",
@@ -5642,10 +5636,8 @@
               "Calcium plus PTH.",
               "Phosphorus, magnesium, creatinine/eGFR, 25(OH)D.",
               "24-hour urine calcium during chronic treatment.",
-              "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-              "Thyroid safety data: pair TSH/free T4 with syndrome-specific add-ons such as T3, antibodies, ultrasound/FNA, or radionuclide scan, and account for pregnancy, biotin, acute illness, central disease, and medication effects before treatment changes.",
-              "DXA/vertebral imaging or fracture-risk tool when bone density is in scope; calcium/PTH/phosphorus/magnesium/25(OH)D/renal function for calcium-bone disorders.",
-              "24-hour urine calcium and renal imaging when primary hyperparathyroidism, kidney stones, or chronic hypoparathyroidism management is relevant.",
+              "DXA/vertebral imaging or validated fracture-risk tool",
+              "24-hour urine calcium and renal imaging when calcium-stone risk is relevant",
               "Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.",
               "8.5-10.5 mg/dL",
               "1.12-1.32 mmol/L",
@@ -5664,10 +5656,8 @@
               "Calcium plus PTH.",
               "Phosphorus, magnesium, creatinine/eGFR, 25(OH)D.",
               "24-hour urine calcium during chronic treatment.",
-              "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-              "Thyroid safety data: pair TSH/free T4 with syndrome-specific add-ons such as T3, antibodies, ultrasound/FNA, or radionuclide scan, and account for pregnancy, biotin, acute illness, central disease, and medication effects before treatment changes.",
-              "DXA/vertebral imaging or fracture-risk tool when bone density is in scope; calcium/PTH/phosphorus/magnesium/25(OH)D/renal function for calcium-bone disorders.",
-              "24-hour urine calcium and renal imaging when primary hyperparathyroidism, kidney stones, or chronic hypoparathyroidism management is relevant.",
+              "DXA/vertebral imaging or validated fracture-risk tool",
+              "24-hour urine calcium and renal imaging when calcium-stone risk is relevant",
               "Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab."
             ],
             "guideline_cutoffs": [
@@ -5796,7 +5786,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "hypoparathyroidism_urgent_endpoint",
-          "expected_active_branch": "High-acuity threshold or monitored-care result present: Seizure, laryngospasm, arrhythmia/QT prolongation, severe symptomatic hypocalcemia.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
+          "expected_active_branch": "High-acuity threshold or monitored-care result present: Seizure, laryngospasm, arrhythmia/QT prolongation, severe symptomatic hypocalcemia.; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
           "expected_path_node_ids": [
             "root",
             "hypoparathyroidism_concurrent_data_bundle",

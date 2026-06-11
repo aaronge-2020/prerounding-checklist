@@ -1297,15 +1297,28 @@ function cleanGeneratedScaffoldText(value = "", fallback = "") {
     .replace(/\bobjective data\b/gi, "measured findings")
     .replace(/\bobjective findings\b/gi, "measured findings")
     .replace(/\bdanger features?\b/gi, "high-risk findings")
-    .replace(/\bkey labs\/results\b/gi, "criterion-defining results")
-    .replace(/\bthreshold labs\/results\b/gi, "criterion-defining results")
-    .replace(/\bkey results\b/gi, "criterion-defining results")
-    .replace(/\bthreshold results\b/gi, "criterion-defining results")
-    .replace(/\bactive pathway\b/gi, "documented disease branch")
-    .replace(/\bselected pathway\b/gi, "documented disease branch")
-    .replace(/\bwhen clinically indicated\b/gi, "when the branch-specific criteria in this node apply")
-    .replace(/\bwhen indicated\b/gi, "when the branch-specific criteria in this node apply")
-    .replace(/\bas indicated\b/gi, "when the branch-specific criteria in this node apply")
+    .replace(/\bkey labs\/results\b/gi, "listed measurements")
+    .replace(/\bthreshold labs\/results\b/gi, "listed measurements")
+    .replace(/\bkey results\b/gi, "listed measurements")
+    .replace(/\bthreshold results\b/gi, "listed measurements")
+    .replace(/\bcriterion-defining results\b/gi, "listed measurements")
+    .replace(/\bactive pathway\b/gi, "current diagnosis")
+    .replace(/\bselected pathway\b/gi, "current diagnosis")
+    .replace(/\bdocumented disease branch\b/gi, "current diagnosis")
+    .replace(/\bPregnancy test when relevant\b/gi, "Pregnancy test if pregnancy is possible")
+    .replace(/\s+when the branch-specific criteria in this node apply\b/gi, "")
+    .replace(/\bwhen clinically indicated\b/gi, "")
+    .replace(/\bwhen indicated\b/gi, "")
+    .replace(/\bas indicated\b/gi, "")
+    .replace(/\s+when relevant\b/gi, "")
+    .replace(/\bsource-directed\b/gi, "source-specific")
+    .replace(/\bRoute here when\b/gi, "Use this branch when")
+    .replace(/\broute by\b/gi, "use")
+    .replace(/\bclinician-governed\b/gi, "specialist-reviewed")
+    .replace(/\bclinician governance\b/gi, "specialist review")
+    .replace(/\blocal protocol\b/gi, "institutional protocol")
+    .replace(/\blocal policy\b/gi, "institutional policy")
+    .replace(/\bexact patient data needed\b/gi, "specific patient data")
     .replace(/\btargeted\b/gi, "focused")
     .replace(/\btraditional abnormal cutoff\b/gi, "traditional abnormal threshold");
   return dedupeSentences(text) || cleanText(fallback);
@@ -1376,6 +1389,12 @@ function visibleEvidenceLabel(item = {}) {
   if (!text) return "";
   if (/diagnostic assessment/i.test(text)) return "";
   if (/Prolactin upper limit often|Male total testosterone should|TSH typical adult range|Free T4 typical adult range/i.test(text)) return "";
+  if (/^Compare with prior results and repeat discordant/i.test(text)) return "";
+  if (/^Thyroid safety data:/i.test(text)) return "";
+  if (/^Pituitary-axis panel guided by presentation/i.test(text)) return "";
+  if (/^DXA\/vertebral imaging or fracture-risk tool when bone density is in scope/i.test(text)) return "DXA/vertebral imaging or validated fracture-risk tool";
+  if (/^24-hour urine calcium and renal imaging when primary hyperparathyroidism/i.test(text)) return "24-hour urine calcium and renal imaging when calcium-stone risk is relevant";
+  if (/^Cushing safety tests:/i.test(text)) return "glucose, BP, potassium, infection/VTE, and bone-risk severity screen";
   if (/diagnostic frame from guideline-sourced endocrine workup/i.test(text)) return "";
   if (/^key thresholds and interpretation caveats/i.test(text)) return "";
   if (/^important mimics\/exclusions/i.test(text)) return "competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics";
@@ -1490,7 +1509,7 @@ function node({
     label: shortText(cleanGeneratedScaffoldText(label || id, id), 260),
     edgeLabel: cleanGeneratedScaffoldText(edgeLabel),
     source_ids: unique(sourceIds),
-    criteria: rule || criteria(`${id}_criteria`, `Use this ${type} when the cited condition-specific rule, cutoff, or patient-data route is satisfied.`, contextDomains, sourceIds),
+    criteria: rule || criteria(`${id}_criteria`, `Use this ${type} when the cited rule, cutoff, or patient-data route is satisfied.`, contextDomains, sourceIds),
     action: cleanGeneratedScaffoldText(action || label || id, label || id),
     children
   };
@@ -1509,11 +1528,11 @@ function node({
   }
   if (missingDataNeeded.length) entry.missing_data_needed = unique(missingDataNeeded);
   if (reviewNeededReason) entry.review_needed_reason = cleanGeneratedScaffoldText(reviewNeededReason);
-  if (parallelActions.length) entry.parallel_actions = parallelActions;
-  if (requiredData.length) entry.required_data = unique(requiredData);
+  if (parallelActions.length) entry.parallel_actions = unique(parallelActions.map((item) => cleanGeneratedScaffoldText(item)));
+  if (requiredData.length) entry.required_data = unique(requiredData.map((item) => cleanGeneratedScaffoldText(item)));
   if (guidelineCutoffs.length) entry.guideline_cutoffs = guidelineCutoffs;
   if (clinicalCriteria.length) entry.clinical_criteria = clinicalCriteria;
-  if (monitoringPlan.length) entry.monitoring_plan = unique(monitoringPlan);
+  if (monitoringPlan.length) entry.monitoring_plan = unique(monitoringPlan.map((item) => cleanGeneratedScaffoldText(item)));
   return entry;
 }
 
@@ -1593,14 +1612,14 @@ function buildTraversableContext(module, sourceIds, tests, criteriaRows) {
     active_branch_output: ["active_node_id", "active_branch_label", "missing_data_needed", "terminal_endpoint_id", "review_needed_reason"],
     required_domains: [
       { domain: "symptoms", exact_data_needed: unique(["presenting symptom/diagnosis trigger", "onset/duration/trajectory", ...listLabels(questions, 4)]), source_ids: sourceIdsForItems(questions, sourceIds) },
-      { domain: "exam", exact_data_needed: unique(["condition-specific focused exam", ...listLabels(exam, 4)]), source_ids: sourceIdsForItems(exam, sourceIds) },
+      { domain: "exam", exact_data_needed: unique(["focused exam findings listed for this workup", ...listLabels(exam, 4)]), source_ids: sourceIdsForItems(exam, sourceIds) },
       { domain: "vitals", exact_data_needed: unique(["blood pressure", "heart rate", "respiratory rate", "oxygen saturation", "temperature", "mental status", "weight when dosing depends on it", ...listLabels(redFlags, 2)]), source_ids: sourceIdsForItems(redFlags, sourceIds) },
       { domain: "labs", exact_data_needed: unique([...listLabels(tests, 6), ...criteriaRows.flatMap((row) => row.data_needed || []).slice(0, 8)]), source_ids: sourceIdsForItems(tests, sourceIds) },
       { domain: "imaging_results", exact_data_needed: unique(["imaging, ECG, culture, pathology, or procedure result required by the chosen branch", ...listLabels(tests.filter((item) => /imaging|ultrasound|ct|mri|x-ray|ecg|echo|culture|pathology|scan/i.test(itemLabel(item))), 5)]), source_ids: sourceIdsForItems(tests, sourceIds) },
       { domain: "medications", exact_data_needed: ["current medication list", "recent changes/missed doses", "allergies", "contraindications", "drug interactions", "adherence/access barriers"], source_ids: sourceIds },
       { domain: "comorbidities", exact_data_needed: ["major comorbidities", "renal/hepatic/cardiac disease", "immunocompromise/high-risk host factors", "frailty/function", "prior relevant disease/procedure"], source_ids: sourceIds },
       { domain: "demographics", exact_data_needed: ["age band", "pediatric/adult pathway fit", "sex/reproductive context", "weight when dose-based", "pathway applicability"], source_ids: sourceIds },
-      { domain: "pregnancy_status", exact_data_needed: ["pregnant/not pregnant/unknown when pregnancy potential exists", "postpartum/lactation status when relevant", "fertility intent when treatment depends on it"], source_ids: sourceIds },
+      { domain: "pregnancy_status", exact_data_needed: ["pregnant/not pregnant/unknown when pregnancy potential exists", "postpartum/lactation status if testing or treatment could change", "fertility intent when treatment depends on it"], source_ids: sourceIds },
       { domain: "workup_findings", exact_data_needed: unique(["diagnosis confirmation status", "mimics considered", "severity/risk category", "treatment response", "disposition constraints", ...listLabels(differential, 4), ...listLabels(treatments, 4)]), source_ids: sourceIds }
     ],
     missing_data_endpoint_id: "endpoint_missing_context"
@@ -1734,7 +1753,8 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
   const cutoffSummary = criteriaRows.slice(0, 5).map((row) => `${displayCriterionLabel(row)}: ${(row.cutoffs || []).slice(0, 5).join(", ")}`).join(" | ");
   const thresholdSummary = cutoffSummary || thresholdExamples.join("; ") || "documented diagnostic criteria with clinician review when numeric thresholds are unavailable";
   const shortThresholdSummary = arrayText(thresholdExamples, thresholdSummary, 6);
-  const redFlagSummary = visibleListLabels(redFlags, 3).join("; ");
+  const visibleRedFlagLabels = visibleListLabels(redFlags, 6).filter((label) => !/^(Measure|Document)\b|blood pressure|heart rate|body mass index|mental status/i.test(label));
+  const redFlagSummary = visibleRedFlagLabels.slice(0, 3).join("; ");
   const safetySummary = visibleListLabels(safetyChecks, 5);
   const treatmentSummary = [...visibleListLabels(treatments, 3), ...visibleListLabels(dispositions, 2)].filter(Boolean).join("; ");
   const clinicalSafetySummary = safetySummary.filter((label) => !/^(Measure|Document)\b|blood pressure|heart rate|body mass index|mental status/i.test(label));
@@ -1762,7 +1782,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     5
   );
   const compactRouteSummary = arrayText([
-    ...visibleListLabels(redFlags, 2),
+    ...visibleRedFlagLabels.slice(0, 2),
     ...thresholdExamples.slice(0, 3),
     ...visibleListLabels(treatments, 2),
     ...visibleListLabels(dispositions, 2)
@@ -1770,7 +1790,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
   const activationItems = firstItems(module, "requiredQuestions", 4, ["conditionalQuestions", "requiredExam"]);
   const activationSummary = arrayText([
     ...visibleListLabels(activationItems, 4),
-    ...visibleListLabels(redFlags, 2),
+    ...visibleRedFlagLabels.slice(0, 2),
     ...visibleListLabels(tests, 2)
   ], `${displayLabel} symptoms, exam, vitals, and criterion-defining results`, 7);
   const diagnosticDataSummary = arrayText([
@@ -1779,7 +1799,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     ...thresholdExamples.slice(0, 4)
   ], `${displayLabel} diagnostic, severity, and treatment-safety results`, 10);
   const redFlagBranchSummary = arrayText([
-    ...visibleListLabels(redFlags, 4),
+    ...visibleRedFlagLabels.slice(0, 4),
     ...thresholdExamples.slice(0, 3),
     ...visibleListLabels(dispositions, 2)
   ], `${displayLabel} high-acuity threshold, unstable physiology, or monitored-care rule`, 8);
@@ -1796,13 +1816,13 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     ...thresholdExamples.slice(0, 4),
     ...visibleListLabels(tests, 3),
     ...visibleListLabels(safetyChecks, 3)
-  ], `${displayLabel} symptoms, vitals, labs/results, adverse effects, and disposition`, 8);
+  ], `${displayLabel} symptoms, vitals, listed labs or imaging, adverse effects, and disposition`, 8);
   const reassessmentSummary = arrayText([
     ...visibleListLabels(redFlags, 3),
     ...thresholdExamples.slice(0, 4),
     ...visibleListLabels(tests, 3),
     ...visibleListLabels(safetyChecks, 2)
-  ], `${displayLabel} symptoms, vital signs, threshold results, imaging/ECG/procedure findings, treatment tolerance, and complications`, 9);
+  ], `${displayLabel} symptoms, vital signs, listed cutoffs, imaging/ECG/procedure findings, treatment tolerance, and complications`, 9);
   const deescalationSummary = arrayText([
     ...thresholdExamples.slice(0, 4),
     ...visibleListLabels(dispositions, 3),
@@ -1822,9 +1842,9 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     urgent: `High-acuity threshold or monitored-care result present: ${arrayText([redFlagSummary, ...thresholdExamples.slice(0, 2)], redFlagBranchSummary, 4)}`,
     treatment: `Confirmed/high-risk ${displayLabel} branch has treatment-safety data available`,
     alternate: `Mimic or alternate pathway favored: ${alternateBranchSummary}`,
-    safetySelected: `Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan`,
+    safetySelected: `Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan`,
     review: `${displayLabel} modifier needing review: ${modifierSummary}`,
-    monitoring: `Trend ${displayLabel} symptoms, vital signs, criterion-defining results, treatment response, adverse effects, and disposition readiness`,
+    monitoring: `Trend ${displayLabel}: ${monitoringSummary}`,
     worsening: `${displayLabel} reassessment worsens or ${reassessmentSummary} no longer fit the documented ${displayLabel} branch`,
     deescalate: `Measured response supports narrowing, stopping, tapering, or continuing ${displayLabel} care`,
     followup: `${displayLabel} stable enough for owned follow-up, pending results, and safety-netting`
@@ -1847,7 +1867,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     edgeLabel: edgeLabels.deescalate,
     sourceIds: managementSources,
     criteria: criteria(`${prefix}_deescalate_criteria`, `Stop, narrow, taper, or de-escalate ${label} treatment only when objective response, diagnosis certainty, and cited stopping criteria support it.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], managementSources, { criteria_options: criteriaRows.slice(0, 8) }),
-    action: `Use active ${displayLabel} results and response trend to stop, narrow, taper, or continue treatment; document which cutoff, symptom, adverse effect, or finding changed.`,
+    action: `Use the measured ${displayLabel} trend, cited cutoff(s), symptom response, adverse effects, and diagnosis certainty to stop, narrow, taper, or continue treatment; document the value or finding that changed.`,
     endpointType: "deescalation_stopping",
     guidelineCutoffs: criteriaRows
   });
@@ -1857,8 +1877,8 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     label: `${displayLabel}: reassessment escalation`,
     edgeLabel: edgeLabels.worsening,
     sourceIds: unique([...redFlagSources, ...managementSources]),
-    criteria: criteria(`${prefix}_worsening_criteria`, `Escalate ${label} if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], unique([...redFlagSources, ...managementSources]), { criteria_options: criteriaRows.slice(0, 8) }),
-    action: `Repeat or review ${reassessmentSummary}; reassess mimics and complications; move to ED, admission, or specialty review when the cited threshold, unstable vital sign, imaging/ECG/procedure result, or treatment-response pattern requires escalation.`,
+    criteria: criteria(`${prefix}_worsening_criteria`, `Escalate ${label} if symptoms, vitals, cited thresholds, imaging/ECG/procedure findings, or treatment response worsen or no longer match the chosen branch.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], unique([...redFlagSources, ...managementSources]), { criteria_options: criteriaRows.slice(0, 8) }),
+    action: `Repeat or review ${reassessmentSummary}; reassess mimics and complications; move to ED, admission, or specialty review when that specific trend, vital sign, imaging/ECG/procedure finding, or treatment-response pattern requires escalation.`,
     endpointType: "escalation_disposition",
     guidelineCutoffs: criteriaRows
   });
@@ -1868,9 +1888,9 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     label: `${displayLabel}: monitoring and disposition readiness`,
     edgeLabel: edgeLabels.monitoring,
     sourceIds: managementSources,
-    criteria: criteria(`${prefix}_monitoring_criteria`, `Monitor ${label} by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], managementSources, { criteria_options: criteriaRows.slice(0, 8) }),
+    criteria: criteria(`${prefix}_monitoring_criteria`, `Monitor ${label} by trending the cited cutoff(s), symptom course, medication adverse effects, and disposition constraints used for this branch.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], managementSources, { criteria_options: criteriaRows.slice(0, 8) }),
     action: `Reassess ${displayLabel} using the active thresholds and clinical course; do not close the pathway until response, adverse effects, pending data, and disposition are owned.`,
-    parallelActions: unique(["repeat vital signs", "trend criterion-defining results", "review treatment response and adverse effects", "assign disposition and follow-up clinician/service", ...clinicalSafetySummary]),
+    parallelActions: unique(["repeat vital signs", `trend ${arrayText(thresholdExamples.slice(0, 3), "the cited cutoff(s)", 3)}`, "review treatment response and adverse effects", "assign disposition and follow-up clinician/service", ...clinicalSafetySummary]),
     guidelineCutoffs: criteriaRows,
     children: [worseningEndpoint, deescalateEndpoint, followupEndpoint]
   });
@@ -1891,7 +1911,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     label: `${displayLabel}: contraindications, dosing, pregnancy, and comorbidity modifiers`,
     edgeLabel: edgeLabels.safetySelected,
     sourceIds: cutoffSources,
-    criteria: criteria(`${prefix}_safety_decision_criteria`, `Route ${label} management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.`, ["medications", "allergies", "pregnancy_status", "demographics", "comorbidities", "labs", "workup_findings"], cutoffSources, { criteria_options: criteriaRows.filter((row) => /treat|dose|mg|kg|pregnan|bmi|renal|contra/i.test(`${row.label} ${row.criteria_text}`)).slice(0, 8) }),
+    criteria: criteria(`${prefix}_safety_decision_criteria`, `Check ${label} treatment contraindications, dose/weight/renal/pregnancy constraints, and institutional order-set limits before committing to therapy.`, ["medications", "allergies", "pregnancy_status", "demographics", "comorbidities", "labs", "workup_findings"], cutoffSources, { criteria_options: criteriaRows.filter((row) => /treat|dose|mg|kg|pregnan|bmi|renal|contra/i.test(`${row.label} ${row.criteria_text}`)).slice(0, 8) }),
     action: `Apply ${displayLabel}-specific safety modifiers before final treatment or disposition.`,
     children: [reviewEndpoint, monitoring]
   });
@@ -1902,7 +1922,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     edgeLabel: edgeLabels.treatment,
     sourceIds: managementSources,
     criteria: criteria(`${prefix}_treatment_bundle_criteria`, `Start ${label} treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "pregnancy_status", "workup_findings"], managementSources, { criteria_options: criteriaRows.slice(0, 10) }),
-    action: managementActionSummary || `Treat ${displayLabel} according to the documented disease branch, severity, and patient-specific safety data.`,
+    action: managementActionSummary || `Treat ${displayLabel} according to the cited severity category and patient-specific safety data.`,
     parallelActions: unique([...treatmentModifierLabels, ...dispositionModifierLabels, ...diseaseModifierLabels.slice(0, 5)]),
     guidelineCutoffs: criteriaRows,
     children: [safetyDecision]
@@ -1924,8 +1944,8 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     label: `${displayLabel}: emergency or monitored-care disposition`,
     edgeLabel: edgeLabels.urgent,
     sourceIds: unique([...redFlagSources, ...managementSources]),
-    criteria: criteria(`${prefix}_urgent_criteria`, `Escalate ${label} when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "mental_status", "workup_findings"], unique([...redFlagSources, ...managementSources]), { criteria_options: criteriaRows.slice(0, 10) }),
-    action: redFlagSummary ? `${redFlagSummary}. Escalate using the cited high-risk threshold, unstable vital sign, organ-risk finding, or monitored-care rule.` : `Escalate ${displayLabel} for emergency evaluation or monitored care using cited high-risk thresholds, unstable vital signs, organ-risk findings, or monitored-care rules.`,
+    criteria: criteria(`${prefix}_urgent_criteria`, `Escalate ${label} when ${redFlagBranchSummary}.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "mental_status", "workup_findings"], unique([...redFlagSources, ...managementSources]), { criteria_options: criteriaRows.slice(0, 10) }),
+    action: `Send to ED, admission, or monitored specialty care for ${redFlagBranchSummary}; start stabilization and diagnosis-specific emergency treatment before routine outpatient management.`,
     endpointType: "escalation_disposition",
     guidelineCutoffs: criteriaRows
   });
@@ -1946,8 +1966,8 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     label: `${displayLabel}: classify thresholds, acuity, mimics, and disposition`,
     edgeLabel: edgeLabels.classification,
     sourceIds: cutoffSources,
-    criteria: criteria(`${prefix}_classification_criteria`, `Classify ${label} against cited thresholds and condition-specific rules: ${shortText(thresholdSummary, 520)}`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "demographics", "pregnancy_status", "workup_findings"], cutoffSources, { criteria_options: criteriaRows }),
-    action: `Choose the active ${displayLabel} branch by matching patient data to the cited cutoffs and patient-specific safety rules.`,
+    criteria: criteria(`${prefix}_classification_criteria`, `Classify ${label} using cited thresholds: ${shortText(thresholdSummary, 520)}`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "demographics", "pregnancy_status", "workup_findings"], cutoffSources, { criteria_options: criteriaRows }),
+    action: `Match current patient data to ${shortThresholdSummary}; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.`,
     clinicalCriteria: criteriaRows,
     guidelineCutoffs: criteriaRows,
     children: [missingCutoffEndpoint, urgentEndpoint, treatmentBundle, alternateEndpoint]
@@ -1979,10 +1999,10 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
 
   const root = decision({
     id: "root",
-    label: `${displayLabel}: route by ${compactRouteSummary}`,
+    label: `${displayLabel}: ${compactRouteSummary}`,
     sourceIds: cutoffSources,
     criteria: criteria("activate_workup", `Activate when structured or extractable context matches ${label} triggers or the clinician selects workup ${module.id}.`, ["selected_workup_id", "presenting_symptoms", "problem_list_or_diagnosis", "clinician_selected_module"], cutoffSources),
-    action: `Route ${displayLabel} from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.`,
+    action: `Check ${arrayText(visibleRedFlagLabels.slice(0, 2), `${displayLabel} red flags`, 2)} and ${shortThresholdSummary}; use the listed assessment bundle to choose emergency care, treatment/disposition, reviewer handoff, alternate diagnosis, reassessment, de-escalation, or follow-up.`,
     children: [missingContextEndpoint, dataBundle]
   });
 
@@ -6578,7 +6598,7 @@ function buildPediatricFeverSepsisClinicalPathwayTree(module, sourceById) {
       "SSC pediatric sepsis timing, blood culture, lactate, 10-20 mL/kg bolus, first-hour volume, vasoactive, and post-resuscitation SpO2 targets are represented",
       "febrile infant branch includes temperature >38.0 C, ANC/CRP/procalcitonin cutoffs, PECARN low-risk logic, age 0-21, 22-28, and 29-60 day routes, cultures, antibiotics, admission, and follow-up reliability",
       "NICE fever under-5 infant WBC <5 or >15 x10^9/L LP/antibiotic threshold and safety-net return rules are represented",
-      "meningococcal/CNS/HSV, source-directed fever, pregnancy/postpartum adolescent, immunocompromised/neonate/local-policy, low-risk fever, monitoring, de-escalation, follow-up, and safety-net endpoints all terminate in actionable instructions"
+      "meningococcal/CNS/HSV, source-specific fever, pregnancy/postpartum adolescent, immunocompromised/neonate/institutional-protocol review, low-risk fever, monitoring, de-escalation, follow-up, and safety-net endpoints all terminate in actionable instructions"
     ]
   });
 }

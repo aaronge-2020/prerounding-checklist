@@ -4304,7 +4304,7 @@
           {
             "domain": "exam",
             "exact_data_needed": [
-              "condition-specific focused exam",
+              "focused exam findings listed for this workup",
               "Inspect mucous membranes for dehydration",
               "Test skin turgor",
               "Observe Kussmaul breathing",
@@ -4341,7 +4341,7 @@
               "Point-of-care glucose now",
               "Blood beta-hydroxybutyrate preferred; urine ketones only if blood ketones are unavailable",
               "Basic metabolic panel/electrolytes with sodium, potassium, chloride, bicarbonate, BUN, creatinine, glucose, anion gap, and corrected sodium",
-              "Venous pH/blood gas for acidosis severity; arterial gas only when oxygenation/ventilation concern or local protocol requires it",
+              "Venous pH/blood gas for acidosis severity; arterial gas only when oxygenation/ventilation concern or institutional protocol requires it",
               "Calculate effective osmolality and measure serum osmolality when HHS/mixed crisis, severe dehydration, altered mental status, or very high glucose is possible",
               "ECG and potassium-focused monitoring if potassium abnormality, weakness, renal failure, or insulin therapy is expected",
               "glucose",
@@ -4425,7 +4425,7 @@
             "domain": "pregnancy_status",
             "exact_data_needed": [
               "pregnant/not pregnant/unknown when pregnancy potential exists",
-              "postpartum/lactation status when relevant",
+              "postpartum/lactation status if testing or treatment could change",
               "fertility intent when treatment depends on it"
             ],
             "source_ids": [
@@ -4482,7 +4482,7 @@
         "endpoint_missing_context": {
           "rule_id": "adult_dka_hhs_missing_context_criteria",
           "source": "criteria",
-          "description": "Route here when adult hyperglycemic-crisis pathway activation cannot be determined from extractable patient context.",
+          "description": "Use this branch when adult hyperglycemic-crisis pathway activation cannot be determined from extractable patient context.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4842,7 +4842,7 @@
         "adult_dka_hhs_missing_crisis_labs_endpoint": {
           "rule_id": "adult_dka_hhs_missing_crisis_labs_criteria",
           "source": "criteria",
-          "description": "Route here when adult hyperglycemia is present but the exact results needed for DKA/HHS classification or insulin safety are unavailable.",
+          "description": "Use this branch when adult hyperglycemia is present but the exact results needed for DKA/HHS classification or insulin safety are unavailable.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4873,7 +4873,7 @@
         "adult_dka_hhs_dka_action": {
           "rule_id": "adult_dka_hhs_dka_action_criteria",
           "source": "criteria",
-          "description": "Route here when adult DKA diagnostic thresholds are present or strongly suspected.",
+          "description": "Use this branch when adult DKA diagnostic thresholds are present or strongly suspected.",
           "evaluable_from": [
             "symptoms",
             "vitals",
@@ -5500,7 +5500,7 @@
         "adult_dka_hhs_hhs_action": {
           "rule_id": "adult_dka_hhs_hhs_action_criteria",
           "source": "criteria",
-          "description": "Route here when adult HHS diagnostic thresholds are met.",
+          "description": "Use this branch when adult HHS diagnostic thresholds are met.",
           "evaluable_from": [
             "symptoms",
             "vitals",
@@ -6646,7 +6646,7 @@
             "criteria": {
               "rule_id": "adult_dka_hhs_missing_context_criteria",
               "source": "criteria",
-              "description": "Route here when adult hyperglycemic-crisis pathway activation cannot be determined from extractable patient context.",
+              "description": "Use this branch when adult hyperglycemic-crisis pathway activation cannot be determined from extractable patient context.",
               "evaluable_from": [
                 "symptoms",
                 "exam",
@@ -6873,7 +6873,7 @@
                 }
               ]
             },
-            "action": "Assess airway/mentation/perfusion/hydration, measure full vitals and weight, obtain glucose, beta-hydroxybutyrate or urine ketones, BMP with potassium/bicarbonate/anion gap/creatinine/corrected sodium, venous pH, osmolality when HHS is possible, ECG for potassium risk, A1c if no reliable result in prior 3 months, pregnancy status when relevant, and source-directed precipitant testing.",
+            "action": "Assess airway/mentation/perfusion/hydration, measure full vitals and weight, obtain glucose, beta-hydroxybutyrate or urine ketones, BMP with potassium/bicarbonate/anion gap/creatinine/corrected sodium, venous pH, osmolality when HHS is possible, ECG for potassium risk, A1c if no reliable result in prior 3 months, pregnancy status, and source-specific precipitant testing.",
             "children": [
               {
                 "id": "adult_dka_hhs_classification_decision",
@@ -7061,7 +7061,7 @@
                     "criteria": {
                       "rule_id": "adult_dka_hhs_missing_crisis_labs_criteria",
                       "source": "criteria",
-                      "description": "Route here when adult hyperglycemia is present but the exact results needed for DKA/HHS classification or insulin safety are unavailable.",
+                      "description": "Use this branch when adult hyperglycemia is present but the exact results needed for DKA/HHS classification or insulin safety are unavailable.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -7123,7 +7123,7 @@
                     "criteria": {
                       "rule_id": "adult_dka_hhs_dka_action_criteria",
                       "source": "criteria",
-                      "description": "Route here when adult DKA diagnostic thresholds are present or strongly suspected.",
+                      "description": "Use this branch when adult DKA diagnostic thresholds are present or strongly suspected.",
                       "evaluable_from": [
                         "symptoms",
                         "vitals",
@@ -7760,7 +7760,7 @@
                             }
                           ]
                         },
-                        "action": "Treat as DKA with isotonic fluid resuscitation, potassium-guided insulin after safety labs, glucose checks every 1-2 h, electrolytes/creatinine/phosphate/beta-hydroxybutyrate/venous pH about every 4 h, dextrose-containing fluids as glucose falls per protocol, and source-directed treatment of infection, MI/stroke, pancreatitis, pump failure, missed insulin, medication access, alcohol, or pregnancy-related precipitant.",
+                        "action": "Treat as DKA with isotonic fluid resuscitation, potassium-guided insulin after safety labs, glucose checks every 1-2 h, electrolytes/creatinine/phosphate/beta-hydroxybutyrate/venous pH about every 4 h, dextrose-containing fluids as glucose falls per protocol, and source-specific treatment of infection, MI/stroke, pancreatitis, pump failure, missed insulin, medication access, alcohol, or pregnancy-related precipitant.",
                         "children": [],
                         "endpoint_type": "treatment",
                         "guideline_cutoffs": [
@@ -8078,7 +8078,7 @@
                             }
                           ]
                         },
-                        "action": "Transition only after biochemical resolution and clinical stability; give basal insulin overlap 1-2 h before stopping IV insulin, do not rely on anion gap alone, confirm insulin/supplies/ketone testing/sick-day plan/glucagon when the branch-specific criteria in this node apply, address affordability and recurrent-DKA barriers, and provide return precautions for vomiting, rising ketones, recurrent glucose elevation, confusion, dyspnea, chest pain, syncope, or inability to take fluids/insulin.",
+                        "action": "Transition only after biochemical resolution and clinical stability; give basal insulin overlap 1-2 h before stopping IV insulin, do not rely on anion gap alone, confirm insulin/supplies/ketone testing/sick-day plan/glucagon, address affordability and recurrent-DKA barriers, and provide return precautions for vomiting, rising ketones, recurrent glucose elevation, confusion, dyspnea, chest pain, syncope, or inability to take fluids/insulin.",
                         "children": [],
                         "endpoint_type": "safety_net_instruction",
                         "guideline_cutoffs": [
@@ -8393,7 +8393,7 @@
                     "criteria": {
                       "rule_id": "adult_dka_hhs_hhs_action_criteria",
                       "source": "criteria",
-                      "description": "Route here when adult HHS diagnostic thresholds are met.",
+                      "description": "Use this branch when adult HHS diagnostic thresholds are met.",
                       "evaluable_from": [
                         "symptoms",
                         "vitals",
@@ -9644,7 +9644,7 @@
                   {
                     "id": "adult_dka_hhs_euglycemic_special_population_endpoint",
                     "type": "endpoint",
-                    "label": "Euglycemic DKA or special population: stop SGLT2 inhibitor and use clinician-governed fluid/insulin plan",
+                    "label": "Euglycemic DKA or special population: stop SGLT2 inhibitor and use specialist-reviewed fluid/insulin plan",
                     "edgeLabel": "Ketotic acidosis even if glucose is <200 mg/dL, or pregnancy/frailty/heart failure/advanced kidney disease/SGLT2 exposure changes standard fluid or insulin assumptions",
                     "source_ids": [
                       "ADA_HYPERGLYCEMIC_CRISES_2024"
@@ -9810,7 +9810,7 @@
                     "action": "Do not dismiss DKA because glucose is <200 mg/dL when SGLT2 inhibitor, pregnancy, fasting, or poor intake is present; stop SGLT2 inhibitor on admission, use dextrose-supported insulin/ketone clearance with potassium monitoring, and obtain endocrinology/obstetric/nephrology/cardiology or ICU input for pregnancy, frailty, heart failure, advanced kidney disease, or inability to monitor safely.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Euglycemic DKA, pregnancy, SGLT2 inhibitor exposure, major cardiac/renal disease, or local insulin/fluid protocol requires clinician governance.",
+                    "review_needed_reason": "Euglycemic DKA, pregnancy, SGLT2 inhibitor exposure, major cardiac/renal disease, or local insulin/fluid protocol requires specialist review.",
                     "guideline_cutoffs": [
                       {
                         "id": "adult_dka_diagnostic_thresholds",
@@ -10435,7 +10435,7 @@
                     "action": "Document which DKA/HHS criteria are absent, treat the competing diagnosis, continue glucose/ketone/acid-base monitoring if risk persists, and hand off clinician review when metabolic acidosis or altered mental status remains unexplained.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Competing acidosis, hyperosmolarity, intoxication, infection, ischemia, or medication effect changes the documented disease branch."
+                    "review_needed_reason": "Competing acidosis, hyperosmolarity, intoxication, infection, ischemia, or medication effect changes the current diagnosis."
                   }
                 ],
                 "guideline_cutoffs": [

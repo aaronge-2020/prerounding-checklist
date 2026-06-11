@@ -2592,7 +2592,7 @@
           {
             "domain": "exam",
             "exact_data_needed": [
-              "condition-specific focused exam",
+              "focused exam findings listed for this workup",
               "Inspect neck for acanthosis",
               "Inspect and press lower leg edema",
               "Inspect skin for xanthomas or xanthelasma",
@@ -2731,7 +2731,7 @@
             "domain": "pregnancy_status",
             "exact_data_needed": [
               "pregnant/not pregnant/unknown when pregnancy potential exists",
-              "postpartum/lactation status when relevant",
+              "postpartum/lactation status if testing or treatment could change",
               "fertility intent when treatment depends on it"
             ],
             "source_ids": [
@@ -2796,7 +2796,7 @@
         "endpoint_missing_context": {
           "rule_id": "metabolic_syndrome_missing_context_criteria",
           "source": "criteria",
-          "description": "Route here when the five metabolic syndrome criteria or escalation context cannot be extracted.",
+          "description": "Use this branch when the five metabolic syndrome criteria or escalation context cannot be extracted.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2920,7 +2920,7 @@
             {
               "id": "metabolic_syndrome_glucose_cutoffs",
               "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
+              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the current diagnosis.",
               "cutoffs": [
                 "fasting glucose 100-125 mg/dL",
                 "fasting glucose >=126 mg/dL"
@@ -3110,7 +3110,7 @@
             {
               "id": "metabolic_syndrome_glucose_cutoffs",
               "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
+              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the current diagnosis.",
               "cutoffs": [
                 "fasting glucose 100-125 mg/dL",
                 "fasting glucose >=126 mg/dL"
@@ -3213,7 +3213,7 @@
         "metabolic_syndrome_missing_criteria_endpoint": {
           "rule_id": "metabolic_syndrome_missing_criteria_criteria",
           "source": "criteria",
-          "description": "Route here when exact metabolic syndrome criteria or escalation exclusions are unavailable.",
+          "description": "Use this branch when exact metabolic syndrome criteria or escalation exclusions are unavailable.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3330,7 +3330,7 @@
             {
               "id": "metabolic_syndrome_glucose_cutoffs",
               "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
+              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the current diagnosis.",
               "cutoffs": [
                 "fasting glucose 100-125 mg/dL",
                 "fasting glucose >=126 mg/dL"
@@ -3520,7 +3520,7 @@
             {
               "id": "metabolic_syndrome_glucose_cutoffs",
               "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
+              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the current diagnosis.",
               "cutoffs": [
                 "fasting glucose 100-125 mg/dL",
                 "fasting glucose >=126 mg/dL"
@@ -3701,7 +3701,7 @@
             {
               "id": "metabolic_syndrome_glucose_cutoffs",
               "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
+              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the current diagnosis.",
               "cutoffs": [
                 "fasting glucose 100-125 mg/dL",
                 "fasting glucose >=126 mg/dL"
@@ -3884,7 +3884,7 @@
             {
               "id": "metabolic_syndrome_glucose_cutoffs",
               "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
+              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the current diagnosis.",
               "cutoffs": [
                 "fasting glucose 100-125 mg/dL",
                 "fasting glucose >=126 mg/dL"
@@ -4069,7 +4069,7 @@
             {
               "id": "metabolic_syndrome_glucose_cutoffs",
               "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
+              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the current diagnosis.",
               "cutoffs": [
                 "fasting glucose 100-125 mg/dL",
                 "fasting glucose >=126 mg/dL"
@@ -4256,7 +4256,7 @@
             {
               "id": "metabolic_syndrome_glucose_cutoffs",
               "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
+              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the current diagnosis.",
               "cutoffs": [
                 "fasting glucose 100-125 mg/dL",
                 "fasting glucose >=126 mg/dL"
@@ -4360,7 +4360,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Metabolic syndrome: route by five criteria, urgent cardiometabolic exclusions, component treatment, and surveillance",
+        "label": "Metabolic syndrome: use five criteria, urgent cardiometabolic exclusions, component treatment, and surveillance",
         "edgeLabel": "",
         "source_ids": [
           "NHLBI_METABOLIC_SYNDROME",
@@ -4409,7 +4409,7 @@
             "criteria": {
               "rule_id": "metabolic_syndrome_missing_context_criteria",
               "source": "criteria",
-              "description": "Route here when the five metabolic syndrome criteria or escalation context cannot be extracted.",
+              "description": "Use this branch when the five metabolic syndrome criteria or escalation context cannot be extracted.",
               "evaluable_from": [
                 "symptoms",
                 "exam",
@@ -4569,7 +4569,7 @@
                 {
                   "id": "metabolic_syndrome_glucose_cutoffs",
                   "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                  "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
+                  "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the current diagnosis.",
                   "cutoffs": [
                     "fasting glucose 100-125 mg/dL",
                     "fasting glucose >=126 mg/dL"
@@ -4774,7 +4774,7 @@
                     {
                       "id": "metabolic_syndrome_glucose_cutoffs",
                       "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                      "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
+                      "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the current diagnosis.",
                       "cutoffs": [
                         "fasting glucose 100-125 mg/dL",
                         "fasting glucose >=126 mg/dL"
@@ -4892,7 +4892,7 @@
                     "criteria": {
                       "rule_id": "metabolic_syndrome_missing_criteria_criteria",
                       "source": "criteria",
-                      "description": "Route here when exact metabolic syndrome criteria or escalation exclusions are unavailable.",
+                      "description": "Use this branch when exact metabolic syndrome criteria or escalation exclusions are unavailable.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5043,7 +5043,7 @@
                         {
                           "id": "metabolic_syndrome_glucose_cutoffs",
                           "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                          "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
+                          "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the current diagnosis.",
                           "cutoffs": [
                             "fasting glucose 100-125 mg/dL",
                             "fasting glucose >=126 mg/dL"
@@ -5212,7 +5212,7 @@
                       {
                         "id": "metabolic_syndrome_glucose_cutoffs",
                         "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                        "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
+                        "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the current diagnosis.",
                         "cutoffs": [
                           "fasting glucose 100-125 mg/dL",
                           "fasting glucose >=126 mg/dL"
@@ -5424,7 +5424,7 @@
                         {
                           "id": "metabolic_syndrome_glucose_cutoffs",
                           "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                          "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
+                          "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the current diagnosis.",
                           "cutoffs": [
                             "fasting glucose 100-125 mg/dL",
                             "fasting glucose >=126 mg/dL"
@@ -5615,7 +5615,7 @@
                             {
                               "id": "metabolic_syndrome_glucose_cutoffs",
                               "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
+                              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the current diagnosis.",
                               "cutoffs": [
                                 "fasting glucose 100-125 mg/dL",
                                 "fasting glucose >=126 mg/dL"
@@ -5784,7 +5784,7 @@
                           {
                             "id": "metabolic_syndrome_glucose_cutoffs",
                             "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                            "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
+                            "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the current diagnosis.",
                             "cutoffs": [
                               "fasting glucose 100-125 mg/dL",
                               "fasting glucose >=126 mg/dL"
@@ -5977,7 +5977,7 @@
                             {
                               "id": "metabolic_syndrome_glucose_cutoffs",
                               "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
+                              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the current diagnosis.",
                               "cutoffs": [
                                 "fasting glucose 100-125 mg/dL",
                                 "fasting glucose >=126 mg/dL"
@@ -6077,7 +6077,7 @@
                             }
                           ]
                         },
-                        "action": "Treat each active criterion: weight and waist reduction plan, at least 150 minutes/week activity when safe, nutrition plan, BP treatment, lipid/ASCVD risk management, prediabetes/diabetes surveillance, sleep apnea/fatty-liver/PCOS assessment when relevant, and medication review for secondary causes.",
+                        "action": "Treat each active criterion: weight and waist reduction plan, at least 150 minutes/week activity when safe, nutrition plan, BP treatment, lipid/ASCVD risk management, prediabetes/diabetes surveillance, sleep apnea/fatty-liver/PCOS assessment, and medication review for secondary causes.",
                         "children": [],
                         "endpoint_type": "treatment",
                         "guideline_cutoffs": [
@@ -6146,7 +6146,7 @@
                           {
                             "id": "metabolic_syndrome_glucose_cutoffs",
                             "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                            "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
+                            "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the current diagnosis.",
                             "cutoffs": [
                               "fasting glucose 100-125 mg/dL",
                               "fasting glucose >=126 mg/dL"
@@ -6354,7 +6354,7 @@
                             {
                               "id": "metabolic_syndrome_glucose_cutoffs",
                               "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
+                              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the current diagnosis.",
                               "cutoffs": [
                                 "fasting glucose 100-125 mg/dL",
                                 "fasting glucose >=126 mg/dL"
@@ -6523,7 +6523,7 @@
                           {
                             "id": "metabolic_syndrome_glucose_cutoffs",
                             "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                            "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
+                            "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the current diagnosis.",
                             "cutoffs": [
                               "fasting glucose 100-125 mg/dL",
                               "fasting glucose >=126 mg/dL"
@@ -6708,7 +6708,7 @@
                       {
                         "id": "metabolic_syndrome_glucose_cutoffs",
                         "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                        "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
+                        "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the current diagnosis.",
                         "cutoffs": [
                           "fasting glucose 100-125 mg/dL",
                           "fasting glucose >=126 mg/dL"
@@ -6908,7 +6908,7 @@
                         {
                           "id": "metabolic_syndrome_glucose_cutoffs",
                           "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                          "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
+                          "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the current diagnosis.",
                           "cutoffs": [
                             "fasting glucose 100-125 mg/dL",
                             "fasting glucose >=126 mg/dL"
@@ -7080,7 +7080,7 @@
                   {
                     "id": "metabolic_syndrome_glucose_cutoffs",
                     "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                    "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
+                    "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the current diagnosis.",
                     "cutoffs": [
                       "fasting glucose 100-125 mg/dL",
                       "fasting glucose >=126 mg/dL"
@@ -7245,7 +7245,7 @@
                   {
                     "id": "metabolic_syndrome_glucose_cutoffs",
                     "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                    "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
+                    "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the current diagnosis.",
                     "cutoffs": [
                       "fasting glucose 100-125 mg/dL",
                       "fasting glucose >=126 mg/dL"
@@ -7458,7 +7458,7 @@
               {
                 "id": "metabolic_syndrome_glucose_cutoffs",
                 "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
+                "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the current diagnosis.",
                 "cutoffs": [
                   "fasting glucose 100-125 mg/dL",
                   "fasting glucose >=126 mg/dL"

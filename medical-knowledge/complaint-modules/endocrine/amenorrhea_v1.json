@@ -3080,7 +3080,7 @@
           {
             "domain": "exam",
             "exact_data_needed": [
-              "condition-specific focused exam",
+              "focused exam findings listed for this workup",
               "Inspect acne distribution",
               "Inspect terminal hair distribution",
               "Inspect neck for acanthosis",
@@ -3201,7 +3201,7 @@
             "domain": "pregnancy_status",
             "exact_data_needed": [
               "pregnant/not pregnant/unknown when pregnancy potential exists",
-              "postpartum/lactation status when relevant",
+              "postpartum/lactation status if testing or treatment could change",
               "fertility intent when treatment depends on it"
             ],
             "source_ids": [
@@ -3255,7 +3255,7 @@
         "endpoint_missing_context": {
           "rule_id": "missing_context_criteria",
           "source": "criteria",
-          "description": "Route here when the patient context needed to activate Amenorrhea (Absence of menstruation) is absent or cannot be extracted.",
+          "description": "Use this branch when the patient context needed to activate Amenorrhea (Absence of menstruation) is absent or cannot be extracted.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3306,7 +3306,7 @@
         "amenorrhea_classification_decision": {
           "rule_id": "amenorrhea_classification_criteria",
           "source": "criteria",
-          "description": "Classify Amenorrhea (Absence of menstruation) against cited thresholds and condition-specific rules: Amenorrhea evaluation timing: age 15, 5 years after breast development, age 10, age 13, >3 months | Amenorrhea initial labs: <15-20 ng/mL, 20-40 ng/mL | Amenorrhea pituitary branch: 50-60% | Amenorrhea hormone pattern: 30-50 pg/mL, 150-300 pg/mL, <30 pg/mL | Primary amenorrhea anatomic/DSD branch: 14-22%, age 20, <=25%",
+          "description": "Classify Amenorrhea (Absence of menstruation) using cited thresholds: Amenorrhea evaluation timing: age 15, 5 years after breast development, age 10, age 13, >3 months | Amenorrhea initial labs: <15-20 ng/mL, 20-40 ng/mL | Amenorrhea pituitary branch: 50-60% | Amenorrhea hormone pattern: 30-50 pg/mL, 150-300 pg/mL, <30 pg/mL | Primary amenorrhea anatomic/DSD branch: 14-22%, age 20, <=25%",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3479,7 +3479,7 @@
         "amenorrhea_missing_cutoff_data_endpoint": {
           "rule_id": "amenorrhea_missing_cutoff_data_criteria",
           "source": "criteria",
-          "description": "Route here when Amenorrhea (Absence of menstruation) cannot be classified because exact threshold/result data are missing.",
+          "description": "Use this branch when Amenorrhea (Absence of menstruation) cannot be classified because exact threshold/result data are missing.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3514,7 +3514,6 @@
             "TSH and prolactin.",
             "FSH and estradiol.",
             "Androgen testing when hyperandrogenism: testosterone, DHEAS, 17-OHP.",
-            "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
             "Gonadal axis safety tests: pregnancy test when possible, prolactin/TSH, LH/FSH with estradiol or repeated early-morning testosterone, and focused androgen, semen, bone, or metabolic testing based on syndrome and fertility goals.",
             "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
             "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.",
@@ -3531,7 +3530,7 @@
         "amenorrhea_urgent_endpoint": {
           "rule_id": "amenorrhea_urgent_criteria",
           "source": "criteria",
-          "description": "Escalate Amenorrhea (Absence of menstruation) when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
+          "description": "Escalate Amenorrhea (Absence of menstruation) when pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; age 15; 5 years after breast development; age 10; FSH/E2 pattern separates ovarian failure from central/hypothalamic causes and changes imaging/referral.; unstable physiology or dangerous electrolyte/glucose abnormality.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3871,7 +3870,7 @@
         "amenorrhea_treatment_safety_decision": {
           "rule_id": "amenorrhea_safety_decision_criteria",
           "source": "criteria",
-          "description": "Route Amenorrhea (Absence of menstruation) management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.",
+          "description": "Check Amenorrhea (Absence of menstruation) treatment contraindications, dose/weight/renal/pregnancy constraints, and institutional order-set limits before committing to therapy.",
           "evaluable_from": [
             "medications",
             "allergies",
@@ -3989,7 +3988,7 @@
         "amenorrhea_monitoring_bundle": {
           "rule_id": "amenorrhea_monitoring_criteria",
           "source": "criteria",
-          "description": "Monitor Amenorrhea (Absence of menstruation) by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
+          "description": "Monitor Amenorrhea (Absence of menstruation) by trending the cited cutoff(s), symptom course, medication adverse effects, and disposition constraints used for this branch.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4158,7 +4157,7 @@
         "amenorrhea_worsening_endpoint": {
           "rule_id": "amenorrhea_worsening_criteria",
           "source": "criteria",
-          "description": "Escalate Amenorrhea (Absence of menstruation) if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+          "description": "Escalate Amenorrhea (Absence of menstruation) if symptoms, vitals, cited thresholds, imaging/ECG/procedure findings, or treatment response worsen or no longer match the chosen branch.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4683,7 +4682,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Amenorrhea: route by pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; age 15; 5 years after breast development; age 10; Treat the cause: pregnancy care, thyroid disease, hyperprolactinemia, PCOS/anovulation, functional hypothalamic amenorrhea, POI, or structural outflow disorder.; For functional hypothalamic amenorrhea, prioritize nutrition, weight restoration, exercise reduction, stress care, and bone protection.",
+        "label": "Amenorrhea: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; age 15; 5 years after breast development; age 10; Treat the cause: pregnancy care, thyroid disease, hyperprolactinemia, PCOS/anovulation, functional hypothalamic amenorrhea, POI, or structural outflow disorder.; For functional hypothalamic amenorrhea, prioritize nutrition, weight restoration, exercise reduction, stress care, and bone protection.; FSH/E2 pattern separates ovarian failure from central/hypothalamic causes and changes imaging/referral.",
         "edgeLabel": "",
         "source_ids": [
           "ASRM_AMENORRHEA_2024",
@@ -4706,7 +4705,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Amenorrhea from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
+        "action": "Check pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism and age 15; 5 years after breast development; age 10; age 13; >3 months; 6 months; use the listed assessment bundle to choose emergency care, treatment/disposition, reviewer handoff, alternate diagnosis, reassessment, de-escalation, or follow-up.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -4719,7 +4718,7 @@
             "criteria": {
               "rule_id": "missing_context_criteria",
               "source": "criteria",
-              "description": "Route here when the patient context needed to activate Amenorrhea (Absence of menstruation) is absent or cannot be extracted.",
+              "description": "Use this branch when the patient context needed to activate Amenorrhea (Absence of menstruation) is absent or cannot be extracted.",
               "evaluable_from": [
                 "symptoms",
                 "exam",
@@ -4799,7 +4798,7 @@
                 "AHRQ_CALIBRATE_DX"
               ]
             },
-            "action": "Obtain together: Pregnancy test first.; TSH and prolactin.; FSH and estradiol.; Androgen testing when hyperandrogenism: testosterone, DHEAS, 17-OHP.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; Gonadal axis safety tests: pregnancy test when possible, prolactin/TSH, LH/FSH with estradiol or repeated early-morning testosterone, and focused androgen, semen, bone, or metabolic testing based on syndrome and fertility goals.; Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.; Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.; age; menarche status; breast development/thelarche timing; last menstrual period; prior cycle regularity; pregnancy possibility; pregnancy test; TSH.",
+            "action": "Obtain together: Pregnancy test first.; TSH and prolactin.; FSH and estradiol.; Androgen testing when hyperandrogenism: testosterone, DHEAS, 17-OHP.; Gonadal axis safety tests: pregnancy test when possible, prolactin/TSH, LH/FSH with estradiol or repeated early-morning testosterone, and focused androgen, semen, bone, or metabolic testing based on syndrome and fertility goals.; Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.; Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.; age; menarche status; breast development/thelarche timing; last menstrual period; prior cycle regularity; pregnancy possibility; pregnancy test; TSH.",
             "children": [
               {
                 "id": "amenorrhea_classification_decision",
@@ -4814,7 +4813,7 @@
                 "criteria": {
                   "rule_id": "amenorrhea_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Amenorrhea (Absence of menstruation) against cited thresholds and condition-specific rules: Amenorrhea evaluation timing: age 15, 5 years after breast development, age 10, age 13, >3 months | Amenorrhea initial labs: <15-20 ng/mL, 20-40 ng/mL | Amenorrhea pituitary branch: 50-60% | Amenorrhea hormone pattern: 30-50 pg/mL, 150-300 pg/mL, <30 pg/mL | Primary amenorrhea anatomic/DSD branch: 14-22%, age 20, <=25%",
+                  "description": "Classify Amenorrhea (Absence of menstruation) using cited thresholds: Amenorrhea evaluation timing: age 15, 5 years after breast development, age 10, age 13, >3 months | Amenorrhea initial labs: <15-20 ng/mL, 20-40 ng/mL | Amenorrhea pituitary branch: 50-60% | Amenorrhea hormone pattern: 30-50 pg/mL, 150-300 pg/mL, <30 pg/mL | Primary amenorrhea anatomic/DSD branch: 14-22%, age 20, <=25%",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -4984,7 +4983,7 @@
                     }
                   ]
                 },
-                "action": "Choose the active Amenorrhea branch by matching patient data to the cited cutoffs and patient-specific safety rules.",
+                "action": "Match current patient data to age 15; 5 years after breast development; age 10; age 13; >3 months; 6 months; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
                 "children": [
                   {
                     "id": "amenorrhea_missing_cutoff_data_endpoint",
@@ -4999,7 +4998,7 @@
                     "criteria": {
                       "rule_id": "amenorrhea_missing_cutoff_data_criteria",
                       "source": "criteria",
-                      "description": "Route here when Amenorrhea (Absence of menstruation) cannot be classified because exact threshold/result data are missing.",
+                      "description": "Use this branch when Amenorrhea (Absence of menstruation) cannot be classified because exact threshold/result data are missing.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5034,7 +5033,6 @@
                         "TSH and prolactin.",
                         "FSH and estradiol.",
                         "Androgen testing when hyperandrogenism: testosterone, DHEAS, 17-OHP.",
-                        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
                         "Gonadal axis safety tests: pregnancy test when possible, prolactin/TSH, LH/FSH with estradiol or repeated early-morning testosterone, and focused androgen, semen, bone, or metabolic testing based on syndrome and fertility goals.",
                         "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
                         "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.",
@@ -5075,7 +5073,6 @@
                       "TSH and prolactin.",
                       "FSH and estradiol.",
                       "Androgen testing when hyperandrogenism: testosterone, DHEAS, 17-OHP.",
-                      "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
                       "Gonadal axis safety tests: pregnancy test when possible, prolactin/TSH, LH/FSH with estradiol or repeated early-morning testosterone, and focused androgen, semen, bone, or metabolic testing based on syndrome and fertility goals.",
                       "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
                       "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.",
@@ -5093,7 +5090,7 @@
                     "id": "amenorrhea_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Amenorrhea: emergency or monitored-care disposition",
-                    "edgeLabel": "High-acuity threshold or monitored-care result present: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; age 15; 5 years after breast development",
+                    "edgeLabel": "High-acuity threshold or monitored-care result present: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; age 15; 5 years after breast development",
                     "source_ids": [
                       "ASRM_AMENORRHEA_2024",
                       "AHRQ_CALIBRATE_DX"
@@ -5101,7 +5098,7 @@
                     "criteria": {
                       "rule_id": "amenorrhea_urgent_criteria",
                       "source": "criteria",
-                      "description": "Escalate Amenorrhea (Absence of menstruation) when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
+                      "description": "Escalate Amenorrhea (Absence of menstruation) when pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; age 15; 5 years after breast development; age 10; FSH/E2 pattern separates ovarian failure from central/hypothalamic causes and changes imaging/referral.; unstable physiology or dangerous electrolyte/glucose abnormality.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5267,7 +5264,7 @@
                         }
                       ]
                     },
-                    "action": "pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism. Escalate using the cited high-risk threshold, unstable vital sign, organ-risk finding, or monitored-care rule.",
+                    "action": "Send to ED, admission, or monitored specialty care for pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; age 15; 5 years after breast development; age 10; FSH/E2 pattern separates ovarian failure from central/hypothalamic causes and changes imaging/referral.; unstable physiology or dangerous electrolyte/glucose abnormality; start stabilization and diagnosis-specific emergency treatment before routine outpatient management.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -5608,7 +5605,7 @@
                         "id": "amenorrhea_treatment_safety_decision",
                         "type": "decision",
                         "label": "Amenorrhea: contraindications, dosing, pregnancy, and comorbidity modifiers",
-                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan",
+                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "ASRM_AMENORRHEA_2024",
                           "ESHRE_POI_2024",
@@ -5617,7 +5614,7 @@
                         "criteria": {
                           "rule_id": "amenorrhea_safety_decision_criteria",
                           "source": "criteria",
-                          "description": "Route Amenorrhea (Absence of menstruation) management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.",
+                          "description": "Check Amenorrhea (Absence of menstruation) treatment contraindications, dose/weight/renal/pregnancy constraints, and institutional order-set limits before committing to therapy.",
                           "evaluable_from": [
                             "medications",
                             "allergies",
@@ -5753,7 +5750,7 @@
                             "id": "amenorrhea_monitoring_bundle",
                             "type": "action",
                             "label": "Amenorrhea: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Amenorrhea symptoms, vital signs, criterion-defining results, treatment response, adverse effects, and disposition readiness",
+                            "edgeLabel": "Trend Amenorrhea: age 15; 5 years after breast development; age 10; age 13; Pregnancy test first.; TSH and prolactin.; FSH and estradiol.; Measure blood pressure",
                             "source_ids": [
                               "ASRM_AMENORRHEA_2024",
                               "AHRQ_CALIBRATE_DX"
@@ -5761,7 +5758,7 @@
                             "criteria": {
                               "rule_id": "amenorrhea_monitoring_criteria",
                               "source": "criteria",
-                              "description": "Monitor Amenorrhea (Absence of menstruation) by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
+                              "description": "Monitor Amenorrhea (Absence of menstruation) by trending the cited cutoff(s), symptom course, medication adverse effects, and disposition constraints used for this branch.",
                               "evaluable_from": [
                                 "symptoms",
                                 "exam",
@@ -5941,7 +5938,7 @@
                                 "criteria": {
                                   "rule_id": "amenorrhea_worsening_criteria",
                                   "source": "criteria",
-                                  "description": "Escalate Amenorrhea (Absence of menstruation) if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+                                  "description": "Escalate Amenorrhea (Absence of menstruation) if symptoms, vitals, cited thresholds, imaging/ECG/procedure findings, or treatment response worsen or no longer match the chosen branch.",
                                   "evaluable_from": [
                                     "symptoms",
                                     "exam",
@@ -6107,7 +6104,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Repeat or review pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; age 15; 5 years after breast development; age 10; age 13; Pregnancy test first.; TSH and prolactin.; FSH and estradiol.; reassess mimics and complications; move to ED, admission, or specialty review when the cited threshold, unstable vital sign, imaging/ECG/procedure result, or treatment-response pattern requires escalation.",
+                                "action": "Repeat or review pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; age 15; 5 years after breast development; age 10; age 13; Pregnancy test first.; TSH and prolactin.; FSH and estradiol.; reassess mimics and complications; move to ED, admission, or specialty review when that specific trend, vital sign, imaging/ECG/procedure finding, or treatment-response pattern requires escalation.",
                                 "children": [],
                                 "endpoint_type": "escalation_disposition",
                                 "guideline_cutoffs": [
@@ -6440,7 +6437,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Use active Amenorrhea results and response trend to stop, narrow, taper, or continue treatment; document which cutoff, symptom, adverse effect, or finding changed.",
+                                "action": "Use the measured Amenorrhea trend, cited cutoff(s), symptom response, adverse effects, and diagnosis certainty to stop, narrow, taper, or continue treatment; document the value or finding that changed.",
                                 "children": [],
                                 "endpoint_type": "deescalation_stopping",
                                 "guideline_cutoffs": [
@@ -6635,7 +6632,7 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend criterion-defining results",
+                              "trend age 15; 5 years after breast development; age 10",
                               "review treatment response and adverse effects",
                               "assign disposition and follow-up clinician/service"
                             ],
@@ -7450,7 +7447,6 @@
               "TSH and prolactin.",
               "FSH and estradiol.",
               "Androgen testing when hyperandrogenism: testosterone, DHEAS, 17-OHP.",
-              "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
               "Gonadal axis safety tests: pregnancy test when possible, prolactin/TSH, LH/FSH with estradiol or repeated early-morning testosterone, and focused androgen, semen, bone, or metabolic testing based on syndrome and fertility goals.",
               "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
               "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.",
@@ -7480,7 +7476,6 @@
               "TSH and prolactin.",
               "FSH and estradiol.",
               "Androgen testing when hyperandrogenism: testosterone, DHEAS, 17-OHP.",
-              "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
               "Gonadal axis safety tests: pregnancy test when possible, prolactin/TSH, LH/FSH with estradiol or repeated early-morning testosterone, and focused androgen, semen, bone, or metabolic testing based on syndrome and fertility goals.",
               "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
               "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.",
@@ -7678,7 +7673,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "amenorrhea_urgent_endpoint",
-          "expected_active_branch": "High-acuity threshold or monitored-care result present: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; age 15; 5 years after breast development",
+          "expected_active_branch": "High-acuity threshold or monitored-care result present: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; age 15; 5 years after breast development",
           "expected_path_node_ids": [
             "root",
             "amenorrhea_concurrent_data_bundle",

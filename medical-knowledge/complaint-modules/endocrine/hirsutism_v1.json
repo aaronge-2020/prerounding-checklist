@@ -2563,7 +2563,7 @@
           {
             "domain": "exam",
             "exact_data_needed": [
-              "condition-specific focused exam",
+              "focused exam findings listed for this workup",
               "Inspect acne distribution",
               "Inspect terminal hair distribution",
               "Inspect neck for acanthosis",
@@ -2597,12 +2597,12 @@
           {
             "domain": "labs",
             "exact_data_needed": [
-              "Total testosterone and free testosterone when the branch-specific criteria in this node apply.",
+              "Total testosterone and free testosterone.",
               "Early morning 17-OHP.",
               "DHEAS when severe/rapid.",
               "TSH/prolactin/metabolic PCOS tests when menstrual disturbance.",
               "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-              "Hyperandrogenism/PCOS safety tests: pregnancy test when relevant, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin when the branch-specific criteria in this node apply, and A1c/OGTT/lipids for cardiometabolic risk.",
+              "Hyperandrogenism/PCOS safety tests: Pregnancy test if pregnancy is possible, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin, and A1c/OGTT/lipids for cardiometabolic risk.",
               "modified Ferriman-Gallwey or local hirsutism score",
               "ethnicity-specific scoring threshold",
               "menstrual pattern",
@@ -2624,7 +2624,7 @@
               "imaging, ECG, culture, pathology, or procedure result required by the chosen branch",
               "TSH/prolactin/metabolic PCOS tests when menstrual disturbance.",
               "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-              "Hyperandrogenism/PCOS safety tests: pregnancy test when relevant, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin when the branch-specific criteria in this node apply, and A1c/OGTT/lipids for cardiometabolic risk.",
+              "Hyperandrogenism/PCOS safety tests: Pregnancy test if pregnancy is possible, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin, and A1c/OGTT/lipids for cardiometabolic risk.",
               "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
               "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope."
             ],
@@ -2684,7 +2684,7 @@
             "domain": "pregnancy_status",
             "exact_data_needed": [
               "pregnant/not pregnant/unknown when pregnancy potential exists",
-              "postpartum/lactation status when relevant",
+              "postpartum/lactation status if testing or treatment could change",
               "fertility intent when treatment depends on it"
             ],
             "source_ids": [
@@ -2738,7 +2738,7 @@
         "endpoint_missing_context": {
           "rule_id": "missing_context_criteria",
           "source": "criteria",
-          "description": "Route here when the patient context needed to activate Hirsutism (Excessive hair growth) is absent or cannot be extracted.",
+          "description": "Use this branch when the patient context needed to activate Hirsutism (Excessive hair growth) is absent or cannot be extracted.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2790,7 +2790,7 @@
         "hirsutism_classification_decision": {
           "rule_id": "hirsutism_classification_criteria",
           "source": "criteria",
-          "description": "Classify Hirsutism (Excessive hair growth) against cited thresholds and condition-specific rules: Hirsutism workup trigger: above reference range | Hirsutism OCP choice modifier: age >39 years, 20 mcg | Hirsutism treatment response: at least 6 months, 6 months",
+          "description": "Classify Hirsutism (Excessive hair growth) using cited thresholds: Hirsutism workup trigger: above reference range | Hirsutism OCP choice modifier: age >39 years, 20 mcg | Hirsutism treatment response: at least 6 months, 6 months",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2875,7 +2875,7 @@
         "hirsutism_missing_cutoff_data_endpoint": {
           "rule_id": "hirsutism_missing_cutoff_data_criteria",
           "source": "criteria",
-          "description": "Route here when Hirsutism (Excessive hair growth) cannot be classified because exact threshold/result data are missing.",
+          "description": "Use this branch when Hirsutism (Excessive hair growth) cannot be classified because exact threshold/result data are missing.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2906,12 +2906,11 @@
             "therapy start date",
             "OCP/antiandrogen use",
             "contraception status",
-            "Total testosterone and free testosterone when the branch-specific criteria in this node apply.",
+            "Total testosterone and free testosterone.",
             "Early morning 17-OHP.",
             "DHEAS when severe/rapid.",
             "TSH/prolactin/metabolic PCOS tests when menstrual disturbance.",
-            "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-            "Hyperandrogenism/PCOS safety tests: pregnancy test when relevant, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin when the branch-specific criteria in this node apply, and A1c/OGTT/lipids for cardiometabolic risk.",
+            "Hyperandrogenism/PCOS safety tests: Pregnancy test if pregnancy is possible, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin, and A1c/OGTT/lipids for cardiometabolic risk.",
             "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
             "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.",
             "above reference range",
@@ -2924,7 +2923,7 @@
         "hirsutism_urgent_endpoint": {
           "rule_id": "hirsutism_urgent_criteria",
           "source": "criteria",
-          "description": "Escalate Hirsutism (Excessive hair growth) when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
+          "description": "Escalate Hirsutism (Excessive hair growth) when Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms.; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; above reference range; age >39 years; 20 mcg; Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway.; unstable physiology or dangerous electrolyte/glucose abnormality.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3090,7 +3089,7 @@
         "hirsutism_treatment_safety_decision": {
           "rule_id": "hirsutism_safety_decision_criteria",
           "source": "criteria",
-          "description": "Route Hirsutism (Excessive hair growth) management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.",
+          "description": "Check Hirsutism (Excessive hair growth) treatment contraindications, dose/weight/renal/pregnancy constraints, and institutional order-set limits before committing to therapy.",
           "evaluable_from": [
             "medications",
             "allergies",
@@ -3172,7 +3171,7 @@
         "hirsutism_monitoring_bundle": {
           "rule_id": "hirsutism_monitoring_criteria",
           "source": "criteria",
-          "description": "Monitor Hirsutism (Excessive hair growth) by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
+          "description": "Monitor Hirsutism (Excessive hair growth) by trending the cited cutoff(s), symptom course, medication adverse effects, and disposition constraints used for this branch.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3254,7 +3253,7 @@
         "hirsutism_worsening_endpoint": {
           "rule_id": "hirsutism_worsening_criteria",
           "source": "criteria",
-          "description": "Escalate Hirsutism (Excessive hair growth) if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+          "description": "Escalate Hirsutism (Excessive hair growth) if symptoms, vitals, cited thresholds, imaging/ECG/procedure findings, or treatment response worsen or no longer match the chosen branch.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3519,7 +3518,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Hirsutism: route by Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; above reference range; age >39 years; 20 mcg; Use lifestyle and weight-management support for metabolic risk and patient goals.; Use combined hormonal contraceptive for cycle control and hyperandrogenic symptoms when pregnancy is not desired and no contraindication exists.",
+        "label": "Hirsutism: Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms.; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; above reference range; age >39 years; 20 mcg; Use lifestyle and weight-management support for metabolic risk and patient goals.; Use combined hormonal contraceptive for cycle control and hyperandrogenic symptoms when pregnancy is not desired and no contraindication exists.",
         "edgeLabel": "",
         "source_ids": [
           "ES_HIRSUTISM_2018",
@@ -3542,7 +3541,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Hirsutism from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
+        "action": "Check Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms.; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism and above reference range; age >39 years; 20 mcg; at least 6 months; 6 months; use the listed assessment bundle to choose emergency care, treatment/disposition, reviewer handoff, alternate diagnosis, reassessment, de-escalation, or follow-up.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3555,7 +3554,7 @@
             "criteria": {
               "rule_id": "missing_context_criteria",
               "source": "criteria",
-              "description": "Route here when the patient context needed to activate Hirsutism (Excessive hair growth) is absent or cannot be extracted.",
+              "description": "Use this branch when the patient context needed to activate Hirsutism (Excessive hair growth) is absent or cannot be extracted.",
               "evaluable_from": [
                 "symptoms",
                 "exam",
@@ -3611,7 +3610,7 @@
             "id": "hirsutism_concurrent_data_bundle",
             "type": "action",
             "label": "Hirsutism: assessment, thresholds, and treatment-safety inputs",
-            "edgeLabel": "Collect Hirsutism: Total testosterone and free testosterone when the branch-specific criteria in this node apply.; Early morning 17-OHP.; DHEAS when severe/rapid.; TSH/prolactin/metabolic PCOS tests when menstrual disturbance.; above reference range; age >39 years; 20 mcg",
+            "edgeLabel": "Collect Hirsutism: Total testosterone and free testosterone.; Early morning 17-OHP.; DHEAS when severe/rapid.; TSH/prolactin/metabolic PCOS tests when menstrual disturbance.; above reference range; age >39 years; 20 mcg",
             "source_ids": [
               "ES_HIRSUTISM_2018",
               "PCOS_GUIDELINE_2023",
@@ -3637,7 +3636,7 @@
                 "AHRQ_CALIBRATE_DX"
               ]
             },
-            "action": "Obtain together: Total testosterone and free testosterone when the branch-specific criteria in this node apply.; Early morning 17-OHP.; DHEAS when severe/rapid.; TSH/prolactin/metabolic PCOS tests when menstrual disturbance.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; Hyperandrogenism/PCOS safety tests: pregnancy test when relevant, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin when the branch-specific criteria in this node apply, and A1c/OGTT/lipids for cardiometabolic risk.; Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.; Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.; modified Ferriman-Gallwey or local hirsutism score; ethnicity-specific scoring threshold; menstrual pattern; androgen assay; age; BMI/VTE risk factors; contraception need; OCP contraindications.",
+            "action": "Obtain together: Total testosterone and free testosterone.; Early morning 17-OHP.; DHEAS when severe/rapid.; TSH/prolactin/metabolic PCOS tests when menstrual disturbance.; Hyperandrogenism/PCOS safety tests: Pregnancy test if pregnancy is possible, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin, and A1c/OGTT/lipids for cardiometabolic risk.; Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.; Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.; modified Ferriman-Gallwey or local hirsutism score; ethnicity-specific scoring threshold; menstrual pattern; androgen assay; age; BMI/VTE risk factors; contraception need; OCP contraindications.",
             "children": [
               {
                 "id": "hirsutism_classification_decision",
@@ -3652,7 +3651,7 @@
                 "criteria": {
                   "rule_id": "hirsutism_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Hirsutism (Excessive hair growth) against cited thresholds and condition-specific rules: Hirsutism workup trigger: above reference range | Hirsutism OCP choice modifier: age >39 years, 20 mcg | Hirsutism treatment response: at least 6 months, 6 months",
+                  "description": "Classify Hirsutism (Excessive hair growth) using cited thresholds: Hirsutism workup trigger: above reference range | Hirsutism OCP choice modifier: age >39 years, 20 mcg | Hirsutism treatment response: at least 6 months, 6 months",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -3734,7 +3733,7 @@
                     }
                   ]
                 },
-                "action": "Choose the active Hirsutism branch by matching patient data to the cited cutoffs and patient-specific safety rules.",
+                "action": "Match current patient data to above reference range; age >39 years; 20 mcg; at least 6 months; 6 months; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
                 "children": [
                   {
                     "id": "hirsutism_missing_cutoff_data_endpoint",
@@ -3749,7 +3748,7 @@
                     "criteria": {
                       "rule_id": "hirsutism_missing_cutoff_data_criteria",
                       "source": "criteria",
-                      "description": "Route here when Hirsutism (Excessive hair growth) cannot be classified because exact threshold/result data are missing.",
+                      "description": "Use this branch when Hirsutism (Excessive hair growth) cannot be classified because exact threshold/result data are missing.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -3780,12 +3779,11 @@
                         "therapy start date",
                         "OCP/antiandrogen use",
                         "contraception status",
-                        "Total testosterone and free testosterone when the branch-specific criteria in this node apply.",
+                        "Total testosterone and free testosterone.",
                         "Early morning 17-OHP.",
                         "DHEAS when severe/rapid.",
                         "TSH/prolactin/metabolic PCOS tests when menstrual disturbance.",
-                        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-                        "Hyperandrogenism/PCOS safety tests: pregnancy test when relevant, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin when the branch-specific criteria in this node apply, and A1c/OGTT/lipids for cardiometabolic risk.",
+                        "Hyperandrogenism/PCOS safety tests: Pregnancy test if pregnancy is possible, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin, and A1c/OGTT/lipids for cardiometabolic risk.",
                         "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
                         "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.",
                         "above reference range",
@@ -3818,12 +3816,11 @@
                       "therapy start date",
                       "OCP/antiandrogen use",
                       "contraception status",
-                      "Total testosterone and free testosterone when the branch-specific criteria in this node apply.",
+                      "Total testosterone and free testosterone.",
                       "Early morning 17-OHP.",
                       "DHEAS when severe/rapid.",
                       "TSH/prolactin/metabolic PCOS tests when menstrual disturbance.",
-                      "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-                      "Hyperandrogenism/PCOS safety tests: pregnancy test when relevant, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin when the branch-specific criteria in this node apply, and A1c/OGTT/lipids for cardiometabolic risk.",
+                      "Hyperandrogenism/PCOS safety tests: Pregnancy test if pregnancy is possible, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin, and A1c/OGTT/lipids for cardiometabolic risk.",
                       "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
                       "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.",
                       "above reference range",
@@ -3837,7 +3834,7 @@
                     "id": "hirsutism_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Hirsutism: emergency or monitored-care disposition",
-                    "edgeLabel": "High-acuity threshold or monitored-care result present: Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; above reference range; age >39 years",
+                    "edgeLabel": "High-acuity threshold or monitored-care result present: Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms.; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; above reference range; age >39 years",
                     "source_ids": [
                       "ES_HIRSUTISM_2018",
                       "PCOS_GUIDELINE_2023",
@@ -3846,7 +3843,7 @@
                     "criteria": {
                       "rule_id": "hirsutism_urgent_criteria",
                       "source": "criteria",
-                      "description": "Escalate Hirsutism (Excessive hair growth) when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
+                      "description": "Escalate Hirsutism (Excessive hair growth) when Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms.; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; above reference range; age >39 years; 20 mcg; Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway.; unstable physiology or dangerous electrolyte/glucose abnormality.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -3925,7 +3922,7 @@
                         }
                       ]
                     },
-                    "action": "Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism. Escalate using the cited high-risk threshold, unstable vital sign, organ-risk finding, or monitored-care rule.",
+                    "action": "Send to ED, admission, or monitored specialty care for Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms.; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; above reference range; age >39 years; 20 mcg; Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway.; unstable physiology or dangerous electrolyte/glucose abnormality; start stabilization and diagnosis-specific emergency treatment before routine outpatient management.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -4092,7 +4089,7 @@
                         "id": "hirsutism_treatment_safety_decision",
                         "type": "decision",
                         "label": "Hirsutism: contraindications, dosing, pregnancy, and comorbidity modifiers",
-                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan",
+                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "ES_HIRSUTISM_2018",
                           "PCOS_GUIDELINE_2023",
@@ -4101,7 +4098,7 @@
                         "criteria": {
                           "rule_id": "hirsutism_safety_decision_criteria",
                           "source": "criteria",
-                          "description": "Route Hirsutism (Excessive hair growth) management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.",
+                          "description": "Check Hirsutism (Excessive hair growth) treatment contraindications, dose/weight/renal/pregnancy constraints, and institutional order-set limits before committing to therapy.",
                           "evaluable_from": [
                             "medications",
                             "allergies",
@@ -4201,7 +4198,7 @@
                             "id": "hirsutism_monitoring_bundle",
                             "type": "action",
                             "label": "Hirsutism: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Hirsutism symptoms, vital signs, criterion-defining results, treatment response, adverse effects, and disposition readiness",
+                            "edgeLabel": "Trend Hirsutism: above reference range; age >39 years; 20 mcg; at least 6 months; Total testosterone and free testosterone.; Early morning 17-OHP.; DHEAS when severe/rapid.; Measure blood pressure",
                             "source_ids": [
                               "ES_HIRSUTISM_2018",
                               "PCOS_GUIDELINE_2023",
@@ -4210,7 +4207,7 @@
                             "criteria": {
                               "rule_id": "hirsutism_monitoring_criteria",
                               "source": "criteria",
-                              "description": "Monitor Hirsutism (Excessive hair growth) by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
+                              "description": "Monitor Hirsutism (Excessive hair growth) by trending the cited cutoff(s), symptom course, medication adverse effects, and disposition constraints used for this branch.",
                               "evaluable_from": [
                                 "symptoms",
                                 "exam",
@@ -4295,7 +4292,7 @@
                                 "id": "hirsutism_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Hirsutism: reassessment escalation",
-                                "edgeLabel": "Hirsutism reassessment worsens or Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; above reference range; age >39 years; 20 mcg; at least 6 months; Total testosterone and free testosterone when the branch-specific criteria in this node apply.; Early morning 17-OHP. no longer fit the documented Hirsutism branch",
+                                "edgeLabel": "Hirsutism reassessment worsens or Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; above reference range; age >39 years; 20 mcg; at least 6 months; Total testosterone and free testosterone.; Early morning 17-OHP. no longer fit the documented Hirsutism branch",
                                 "source_ids": [
                                   "ES_HIRSUTISM_2018",
                                   "PCOS_GUIDELINE_2023",
@@ -4304,7 +4301,7 @@
                                 "criteria": {
                                   "rule_id": "hirsutism_worsening_criteria",
                                   "source": "criteria",
-                                  "description": "Escalate Hirsutism (Excessive hair growth) if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+                                  "description": "Escalate Hirsutism (Excessive hair growth) if symptoms, vitals, cited thresholds, imaging/ECG/procedure findings, or treatment response worsen or no longer match the chosen branch.",
                                   "evaluable_from": [
                                     "symptoms",
                                     "exam",
@@ -4383,7 +4380,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Repeat or review Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; above reference range; age >39 years; 20 mcg; at least 6 months; Total testosterone and free testosterone when the branch-specific criteria in this node apply.; Early morning 17-OHP.; reassess mimics and complications; move to ED, admission, or specialty review when the cited threshold, unstable vital sign, imaging/ECG/procedure result, or treatment-response pattern requires escalation.",
+                                "action": "Repeat or review Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; above reference range; age >39 years; 20 mcg; at least 6 months; Total testosterone and free testosterone.; Early morning 17-OHP.; reassess mimics and complications; move to ED, admission, or specialty review when that specific trend, vital sign, imaging/ECG/procedure finding, or treatment-response pattern requires escalation.",
                                 "children": [],
                                 "endpoint_type": "escalation_disposition",
                                 "guideline_cutoffs": [
@@ -4542,7 +4539,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Use active Hirsutism results and response trend to stop, narrow, taper, or continue treatment; document which cutoff, symptom, adverse effect, or finding changed.",
+                                "action": "Use the measured Hirsutism trend, cited cutoff(s), symptom response, adverse effects, and diagnosis certainty to stop, narrow, taper, or continue treatment; document the value or finding that changed.",
                                 "children": [],
                                 "endpoint_type": "deescalation_stopping",
                                 "guideline_cutoffs": [
@@ -4651,7 +4648,7 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend criterion-defining results",
+                              "trend above reference range; age >39 years; 20 mcg",
                               "review treatment response and adverse effects",
                               "assign disposition and follow-up clinician/service"
                             ],
@@ -5021,12 +5018,11 @@
               }
             ],
             "parallel_actions": [
-              "Total testosterone and free testosterone when the branch-specific criteria in this node apply.",
+              "Total testosterone and free testosterone.",
               "Early morning 17-OHP.",
               "DHEAS when severe/rapid.",
               "TSH/prolactin/metabolic PCOS tests when menstrual disturbance.",
-              "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-              "Hyperandrogenism/PCOS safety tests: pregnancy test when relevant, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin when the branch-specific criteria in this node apply, and A1c/OGTT/lipids for cardiometabolic risk.",
+              "Hyperandrogenism/PCOS safety tests: Pregnancy test if pregnancy is possible, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin, and A1c/OGTT/lipids for cardiometabolic risk.",
               "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
               "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.",
               "modified Ferriman-Gallwey or local hirsutism score",
@@ -5051,12 +5047,11 @@
               "therapy start date",
               "OCP/antiandrogen use",
               "contraception status",
-              "Total testosterone and free testosterone when the branch-specific criteria in this node apply.",
+              "Total testosterone and free testosterone.",
               "Early morning 17-OHP.",
               "DHEAS when severe/rapid.",
               "TSH/prolactin/metabolic PCOS tests when menstrual disturbance.",
-              "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-              "Hyperandrogenism/PCOS safety tests: pregnancy test when relevant, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin when the branch-specific criteria in this node apply, and A1c/OGTT/lipids for cardiometabolic risk.",
+              "Hyperandrogenism/PCOS safety tests: Pregnancy test if pregnancy is possible, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin, and A1c/OGTT/lipids for cardiometabolic risk.",
               "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
               "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.",
               "above reference range",
@@ -5162,7 +5157,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "hirsutism_urgent_endpoint",
-          "expected_active_branch": "High-acuity threshold or monitored-care result present: Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; above reference range; age >39 years",
+          "expected_active_branch": "High-acuity threshold or monitored-care result present: Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms.; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; above reference range; age >39 years",
           "expected_path_node_ids": [
             "root",
             "hirsutism_concurrent_data_bundle",
@@ -5206,7 +5201,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "hirsutism_worsening_endpoint",
-          "expected_active_branch": "Hirsutism reassessment worsens or Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; above reference range; age >39 years; 20 mcg; at least 6 months; Total testosterone and free testosterone when the branch-specific criteria in this node apply.; Early morning 17-OHP. no longer fit the documented Hirsutism branch",
+          "expected_active_branch": "Hirsutism reassessment worsens or Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; above reference range; age >39 years; 20 mcg; at least 6 months; Total testosterone and free testosterone.; Early morning 17-OHP. no longer fit the documented Hirsutism branch",
           "expected_path_node_ids": [
             "root",
             "hirsutism_concurrent_data_bundle",

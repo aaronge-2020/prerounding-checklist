@@ -2717,7 +2717,7 @@
           {
             "domain": "exam",
             "exact_data_needed": [
-              "condition-specific focused exam",
+              "focused exam findings listed for this workup",
               "Auscultate heart rhythm",
               "Inspect for diaphoresis",
               "Observe outstretched-hands tremor",
@@ -2845,7 +2845,7 @@
             "domain": "pregnancy_status",
             "exact_data_needed": [
               "pregnant/not pregnant/unknown when pregnancy potential exists",
-              "postpartum/lactation status when relevant",
+              "postpartum/lactation status if testing or treatment could change",
               "fertility intent when treatment depends on it"
             ],
             "source_ids": [
@@ -2903,7 +2903,7 @@
         "endpoint_missing_context": {
           "rule_id": "pheochromocytoma_missing_context_criteria",
           "source": "criteria",
-          "description": "Route here when PPGL routing data cannot be extracted.",
+          "description": "Use this branch when PPGL routing data cannot be extracted.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3087,7 +3087,7 @@
             {
               "id": "ppgl_alpha_blocker_starting_doses",
               "label": "PPGL alpha blockade options: phenoxybenzamine commonly starts 10 mg twice daily or selective alpha-1 blocker such as doxazosin 2 mg daily, then titrate",
-              "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require local protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
+              "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require institutional protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
               "cutoffs": [
                 "10 mg twice daily",
                 "2 mg daily"
@@ -3286,7 +3286,7 @@
             {
               "id": "ppgl_alpha_blocker_starting_doses",
               "label": "PPGL alpha blockade options: phenoxybenzamine commonly starts 10 mg twice daily or selective alpha-1 blocker such as doxazosin 2 mg daily, then titrate",
-              "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require local protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
+              "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require institutional protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
               "cutoffs": [
                 "10 mg twice daily",
                 "2 mg daily"
@@ -3335,7 +3335,7 @@
         "pheochromocytoma_missing_metanephrine_endpoint": {
           "rule_id": "pheochromocytoma_missing_metanephrine_criteria",
           "source": "criteria",
-          "description": "Route here when PPGL biochemical probability cannot be interpreted because exact metanephrine or sampling data are absent.",
+          "description": "Use this branch when PPGL biochemical probability cannot be interpreted because exact metanephrine or sampling data are absent.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3509,7 +3509,7 @@
             {
               "id": "ppgl_alpha_blocker_starting_doses",
               "label": "PPGL alpha blockade options: phenoxybenzamine commonly starts 10 mg twice daily or selective alpha-1 blocker such as doxazosin 2 mg daily, then titrate",
-              "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require local protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
+              "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require institutional protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
               "cutoffs": [
                 "10 mg twice daily",
                 "2 mg daily"
@@ -3706,7 +3706,7 @@
             {
               "id": "ppgl_alpha_blocker_starting_doses",
               "label": "PPGL alpha blockade options: phenoxybenzamine commonly starts 10 mg twice daily or selective alpha-1 blocker such as doxazosin 2 mg daily, then titrate",
-              "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require local protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
+              "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require institutional protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
               "cutoffs": [
                 "10 mg twice daily",
                 "2 mg daily"
@@ -3900,7 +3900,7 @@
             {
               "id": "ppgl_alpha_blocker_starting_doses",
               "label": "PPGL alpha blockade options: phenoxybenzamine commonly starts 10 mg twice daily or selective alpha-1 blocker such as doxazosin 2 mg daily, then titrate",
-              "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require local protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
+              "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require institutional protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
               "cutoffs": [
                 "10 mg twice daily",
                 "2 mg daily"
@@ -4093,7 +4093,7 @@
             {
               "id": "ppgl_alpha_blocker_starting_doses",
               "label": "PPGL alpha blockade options: phenoxybenzamine commonly starts 10 mg twice daily or selective alpha-1 blocker such as doxazosin 2 mg daily, then titrate",
-              "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require local protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
+              "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require institutional protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
               "cutoffs": [
                 "10 mg twice daily",
                 "2 mg daily"
@@ -4286,7 +4286,7 @@
             {
               "id": "ppgl_alpha_blocker_starting_doses",
               "label": "PPGL alpha blockade options: phenoxybenzamine commonly starts 10 mg twice daily or selective alpha-1 blocker such as doxazosin 2 mg daily, then titrate",
-              "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require local protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
+              "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require institutional protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
               "cutoffs": [
                 "10 mg twice daily",
                 "2 mg daily"
@@ -4486,7 +4486,7 @@
             {
               "id": "ppgl_alpha_blocker_starting_doses",
               "label": "PPGL alpha blockade options: phenoxybenzamine commonly starts 10 mg twice daily or selective alpha-1 blocker such as doxazosin 2 mg daily, then titrate",
-              "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require local protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
+              "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require institutional protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
               "cutoffs": [
                 "10 mg twice daily",
                 "2 mg daily"
@@ -4536,7 +4536,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Pheochromocytoma: route by metanephrine magnitude, sampling quality, crisis risk, localization, alpha blockade, surgery, and surveillance",
+        "label": "Pheochromocytoma: use metanephrine magnitude, sampling quality, crisis risk, localization, alpha blockade, surgery, and surveillance",
         "edgeLabel": "",
         "source_ids": [
           "ES_PHEO_PPGL_2014",
@@ -4576,7 +4576,7 @@
             "criteria": {
               "rule_id": "pheochromocytoma_missing_context_criteria",
               "source": "criteria",
-              "description": "Route here when PPGL routing data cannot be extracted.",
+              "description": "Use this branch when PPGL routing data cannot be extracted.",
               "evaluable_from": [
                 "symptoms",
                 "exam",
@@ -4792,7 +4792,7 @@
                 {
                   "id": "ppgl_alpha_blocker_starting_doses",
                   "label": "PPGL alpha blockade options: phenoxybenzamine commonly starts 10 mg twice daily or selective alpha-1 blocker such as doxazosin 2 mg daily, then titrate",
-                  "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require local protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
+                  "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require institutional protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
                   "cutoffs": [
                     "10 mg twice daily",
                     "2 mg daily"
@@ -5003,7 +5003,7 @@
                     {
                       "id": "ppgl_alpha_blocker_starting_doses",
                       "label": "PPGL alpha blockade options: phenoxybenzamine commonly starts 10 mg twice daily or selective alpha-1 blocker such as doxazosin 2 mg daily, then titrate",
-                      "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require local protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
+                      "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require institutional protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
                       "cutoffs": [
                         "10 mg twice daily",
                         "2 mg daily"
@@ -5062,7 +5062,7 @@
                     "criteria": {
                       "rule_id": "pheochromocytoma_missing_metanephrine_criteria",
                       "source": "criteria",
-                      "description": "Route here when PPGL biochemical probability cannot be interpreted because exact metanephrine or sampling data are absent.",
+                      "description": "Use this branch when PPGL biochemical probability cannot be interpreted because exact metanephrine or sampling data are absent.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5265,7 +5265,7 @@
                         {
                           "id": "ppgl_alpha_blocker_starting_doses",
                           "label": "PPGL alpha blockade options: phenoxybenzamine commonly starts 10 mg twice daily or selective alpha-1 blocker such as doxazosin 2 mg daily, then titrate",
-                          "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require local protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
+                          "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require institutional protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
                           "cutoffs": [
                             "10 mg twice daily",
                             "2 mg daily"
@@ -5446,7 +5446,7 @@
                       {
                         "id": "ppgl_alpha_blocker_starting_doses",
                         "label": "PPGL alpha blockade options: phenoxybenzamine commonly starts 10 mg twice daily or selective alpha-1 blocker such as doxazosin 2 mg daily, then titrate",
-                        "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require local protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
+                        "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require institutional protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
                         "cutoffs": [
                           "10 mg twice daily",
                           "2 mg daily"
@@ -5660,7 +5660,7 @@
                         {
                           "id": "ppgl_alpha_blocker_starting_doses",
                           "label": "PPGL alpha blockade options: phenoxybenzamine commonly starts 10 mg twice daily or selective alpha-1 blocker such as doxazosin 2 mg daily, then titrate",
-                          "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require local protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
+                          "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require institutional protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
                           "cutoffs": [
                             "10 mg twice daily",
                             "2 mg daily"
@@ -5864,7 +5864,7 @@
                             {
                               "id": "ppgl_alpha_blocker_starting_doses",
                               "label": "PPGL alpha blockade options: phenoxybenzamine commonly starts 10 mg twice daily or selective alpha-1 blocker such as doxazosin 2 mg daily, then titrate",
-                              "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require local protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
+                              "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require institutional protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
                               "cutoffs": [
                                 "10 mg twice daily",
                                 "2 mg daily"
@@ -6045,7 +6045,7 @@
                           {
                             "id": "ppgl_alpha_blocker_starting_doses",
                             "label": "PPGL alpha blockade options: phenoxybenzamine commonly starts 10 mg twice daily or selective alpha-1 blocker such as doxazosin 2 mg daily, then titrate",
-                            "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require local protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
+                            "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require institutional protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
                             "cutoffs": [
                               "10 mg twice daily",
                               "2 mg daily"
@@ -6254,7 +6254,7 @@
                             {
                               "id": "ppgl_alpha_blocker_starting_doses",
                               "label": "PPGL alpha blockade options: phenoxybenzamine commonly starts 10 mg twice daily or selective alpha-1 blocker such as doxazosin 2 mg daily, then titrate",
-                              "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require local protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
+                              "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require institutional protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
                               "cutoffs": [
                                 "10 mg twice daily",
                                 "2 mg daily"
@@ -6435,7 +6435,7 @@
                           {
                             "id": "ppgl_alpha_blocker_starting_doses",
                             "label": "PPGL alpha blockade options: phenoxybenzamine commonly starts 10 mg twice daily or selective alpha-1 blocker such as doxazosin 2 mg daily, then titrate",
-                            "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require local protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
+                            "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require institutional protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
                             "cutoffs": [
                               "10 mg twice daily",
                               "2 mg daily"
@@ -6645,7 +6645,7 @@
                             {
                               "id": "ppgl_alpha_blocker_starting_doses",
                               "label": "PPGL alpha blockade options: phenoxybenzamine commonly starts 10 mg twice daily or selective alpha-1 blocker such as doxazosin 2 mg daily, then titrate",
-                              "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require local protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
+                              "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require institutional protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
                               "cutoffs": [
                                 "10 mg twice daily",
                                 "2 mg daily"
@@ -6826,7 +6826,7 @@
                           {
                             "id": "ppgl_alpha_blocker_starting_doses",
                             "label": "PPGL alpha blockade options: phenoxybenzamine commonly starts 10 mg twice daily or selective alpha-1 blocker such as doxazosin 2 mg daily, then titrate",
-                            "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require local protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
+                            "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require institutional protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
                             "cutoffs": [
                               "10 mg twice daily",
                               "2 mg daily"
@@ -7022,7 +7022,7 @@
                       {
                         "id": "ppgl_alpha_blocker_starting_doses",
                         "label": "PPGL alpha blockade options: phenoxybenzamine commonly starts 10 mg twice daily or selective alpha-1 blocker such as doxazosin 2 mg daily, then titrate",
-                        "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require local protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
+                        "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require institutional protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
                         "cutoffs": [
                           "10 mg twice daily",
                           "2 mg daily"
@@ -7233,7 +7233,7 @@
                         {
                           "id": "ppgl_alpha_blocker_starting_doses",
                           "label": "PPGL alpha blockade options: phenoxybenzamine commonly starts 10 mg twice daily or selective alpha-1 blocker such as doxazosin 2 mg daily, then titrate",
-                          "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require local protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
+                          "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require institutional protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
                           "cutoffs": [
                             "10 mg twice daily",
                             "2 mg daily"
@@ -7415,7 +7415,7 @@
                       {
                         "id": "ppgl_alpha_blocker_starting_doses",
                         "label": "PPGL alpha blockade options: phenoxybenzamine commonly starts 10 mg twice daily or selective alpha-1 blocker such as doxazosin 2 mg daily, then titrate",
-                        "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require local protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
+                        "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require institutional protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
                         "cutoffs": [
                           "10 mg twice daily",
                           "2 mg daily"
@@ -7594,7 +7594,7 @@
                   {
                     "id": "ppgl_alpha_blocker_starting_doses",
                     "label": "PPGL alpha blockade options: phenoxybenzamine commonly starts 10 mg twice daily or selective alpha-1 blocker such as doxazosin 2 mg daily, then titrate",
-                    "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require local protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
+                    "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require institutional protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
                     "cutoffs": [
                       "10 mg twice daily",
                       "2 mg daily"
@@ -7771,7 +7771,7 @@
                   {
                     "id": "ppgl_alpha_blocker_starting_doses",
                     "label": "PPGL alpha blockade options: phenoxybenzamine commonly starts 10 mg twice daily or selective alpha-1 blocker such as doxazosin 2 mg daily, then titrate",
-                    "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require local protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
+                    "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require institutional protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
                     "cutoffs": [
                       "10 mg twice daily",
                       "2 mg daily"
@@ -7824,7 +7824,7 @@
               "metanephrines with ULN",
               "sampling position and reference interval",
               "medication/diet trigger review",
-              "renal function and glucose when indicated",
+              "renal function and glucose",
               "adrenal/extra-adrenal imaging context",
               "pregnancy and genetic-risk review",
               "surgery/surveillance status"
@@ -8004,7 +8004,7 @@
               {
                 "id": "ppgl_alpha_blocker_starting_doses",
                 "label": "PPGL alpha blockade options: phenoxybenzamine commonly starts 10 mg twice daily or selective alpha-1 blocker such as doxazosin 2 mg daily, then titrate",
-                "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require local protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
+                "criteria_text": "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require institutional protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
                 "cutoffs": [
                   "10 mg twice daily",
                   "2 mg daily"

@@ -2400,7 +2400,7 @@
           {
             "domain": "exam",
             "exact_data_needed": [
-              "condition-specific focused exam",
+              "focused exam findings listed for this workup",
               "Inspect mucous membranes for dehydration",
               "Test capillary refill",
               "Test skin turgor",
@@ -2463,7 +2463,7 @@
               "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
               "Diabetes insipidus safety tests: check serum sodium/osmolality, urine osmolality/specific gravity, urine volume, glucose/calcium/potassium/renal function, and desmopressin, copeptin, or supervised water-deprivation pathway only when stable.",
               "Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.",
-              "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when the branch-specific criteria in this node apply."
+              "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing."
             ],
             "source_ids": [
               "ENDOTEXT_DI_2026",
@@ -2521,7 +2521,7 @@
             "domain": "pregnancy_status",
             "exact_data_needed": [
               "pregnant/not pregnant/unknown when pregnancy potential exists",
-              "postpartum/lactation status when relevant",
+              "postpartum/lactation status if testing or treatment could change",
               "fertility intent when treatment depends on it"
             ],
             "source_ids": [
@@ -2575,7 +2575,7 @@
         "endpoint_missing_context": {
           "rule_id": "missing_context_criteria",
           "source": "criteria",
-          "description": "Route here when the patient context needed to activate Diabetes Insipidus is absent or cannot be extracted.",
+          "description": "Use this branch when the patient context needed to activate Diabetes Insipidus is absent or cannot be extracted.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2627,7 +2627,7 @@
         "diabetes_insipidus_classification_decision": {
           "rule_id": "diabetes_insipidus_classification_criteria",
           "source": "criteria",
-          "description": "Classify Diabetes Insipidus against cited thresholds and condition-specific rules: Diabetes Insipidus: adult urine volume often >3, L/day or >40, 50 mL/kg, day with urine osmolality often <300 mOsm/kg | Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 135-145 mmol/L, >160, Urine osmolality <300 mOsm/kg, >800 | Confirm hypotonic polyuria: adult urine volume often >3, L/day or >40, 50 mL/kg, day with urine osmolality often <300 mOsm/kg | Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 135-145 mmol/L, >160 | Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI.: Urine osmolality <300 mOsm/kg, >800",
+          "description": "Classify Diabetes Insipidus using cited thresholds: Diabetes Insipidus: adult urine volume often >3, L/day or >40, 50 mL/kg, day with urine osmolality often <300 mOsm/kg | Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 135-145 mmol/L, >160, Urine osmolality <300 mOsm/kg, >800 | Confirm hypotonic polyuria: adult urine volume often >3, L/day or >40, 50 mL/kg, day with urine osmolality often <300 mOsm/kg | Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 135-145 mmol/L, >160 | Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI.: Urine osmolality <300 mOsm/kg, >800",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2753,7 +2753,7 @@
         "diabetes_insipidus_missing_cutoff_data_endpoint": {
           "rule_id": "diabetes_insipidus_missing_cutoff_data_criteria",
           "source": "criteria",
-          "description": "Route here when Diabetes Insipidus cannot be classified because exact threshold/result data are missing.",
+          "description": "Use this branch when Diabetes Insipidus cannot be classified because exact threshold/result data are missing.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2784,16 +2784,14 @@
             "Serum sodium/plasma osmolality.",
             "Exclude osmotic diuresis: glucose, calcium, potassium, renal function.",
             "Water deprivation/desmopressin or copeptin-based test.",
-            "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
             "Diabetes insipidus safety tests: check serum sodium/osmolality, urine osmolality/specific gravity, urine volume, glucose/calcium/potassium/renal function, and desmopressin, copeptin, or supervised water-deprivation pathway only when stable.",
-            "Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.",
-            "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when the branch-specific criteria in this node apply."
+            "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing."
           ]
         },
         "diabetes_insipidus_urgent_endpoint": {
           "rule_id": "diabetes_insipidus_urgent_criteria",
           "source": "criteria",
-          "description": "Escalate Diabetes Insipidus when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
+          "description": "Escalate Diabetes Insipidus when Hypernatremia, inability to drink, impaired consciousness, postoperative pituitary patient without desmopressin access.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; adult urine volume often >3; L/day or >40; 50 mL/kg; Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway.; unstable physiology or dangerous electrolyte/glucose abnormality.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3041,7 +3039,7 @@
         "diabetes_insipidus_treatment_safety_decision": {
           "rule_id": "diabetes_insipidus_safety_decision_criteria",
           "source": "criteria",
-          "description": "Route Diabetes Insipidus management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.",
+          "description": "Check Diabetes Insipidus treatment contraindications, dose/weight/renal/pregnancy constraints, and institutional order-set limits before committing to therapy.",
           "evaluable_from": [
             "medications",
             "allergies",
@@ -3183,7 +3181,7 @@
         "diabetes_insipidus_monitoring_bundle": {
           "rule_id": "diabetes_insipidus_monitoring_criteria",
           "source": "criteria",
-          "description": "Monitor Diabetes Insipidus by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
+          "description": "Monitor Diabetes Insipidus by trending the cited cutoff(s), symptom course, medication adverse effects, and disposition constraints used for this branch.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3306,7 +3304,7 @@
         "diabetes_insipidus_worsening_endpoint": {
           "rule_id": "diabetes_insipidus_worsening_criteria",
           "source": "criteria",
-          "description": "Escalate Diabetes Insipidus if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+          "description": "Escalate Diabetes Insipidus if symptoms, vitals, cited thresholds, imaging/ECG/procedure findings, or treatment response worsen or no longer match the chosen branch.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3694,7 +3692,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Diabetes Insipidus: route by Hypernatremia, inability to drink, impaired consciousness, postoperative pituitary patient without desmopressin access.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; adult urine volume often >3; L/day or >40; 50 mL/kg; For central DI, use desmopressin with careful sodium monitoring and education to avoid hyponatremia.; For nephrogenic DI, remove offending drugs when possible, treat hypercalcemia/hypokalemia, use low-solute diet, and consider thiazide/NSAID/amiloride strategies under specialist guidance.",
+        "label": "Diabetes Insipidus: Hypernatremia, inability to drink, impaired consciousness, postoperative pituitary patient without desmopressin access.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; adult urine volume often >3; L/day or >40; 50 mL/kg; For central DI, use desmopressin with careful sodium monitoring and education to avoid hyponatremia.; For nephrogenic DI, remove offending drugs when possible, treat hypercalcemia/hypokalemia, use low-solute diet, and consider thiazide/NSAID/amiloride strategies under specialist guidance.",
         "edgeLabel": "",
         "source_ids": [
           "ENDOTEXT_DI_2026",
@@ -3717,7 +3715,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Diabetes Insipidus from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
+        "action": "Check Hypernatremia, inability to drink, impaired consciousness, postoperative pituitary patient without desmopressin access.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy. and adult urine volume often >3; L/day or >40; 50 mL/kg; day with urine osmolality often <300 mOsm/kg; 135-145 mmol/L; >160; use the listed assessment bundle to choose emergency care, treatment/disposition, reviewer handoff, alternate diagnosis, reassessment, de-escalation, or follow-up.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3730,7 +3728,7 @@
             "criteria": {
               "rule_id": "missing_context_criteria",
               "source": "criteria",
-              "description": "Route here when the patient context needed to activate Diabetes Insipidus is absent or cannot be extracted.",
+              "description": "Use this branch when the patient context needed to activate Diabetes Insipidus is absent or cannot be extracted.",
               "evaluable_from": [
                 "symptoms",
                 "exam",
@@ -3812,7 +3810,7 @@
                 "AHRQ_CALIBRATE_DX"
               ]
             },
-            "action": "Obtain together: Confirm hypotonic polyuria: adult urine volume often >3 L/day or >40-50 mL/kg/day with urine osmolality often <300 mOsm/kg.; Serum sodium/plasma osmolality.; Exclude osmotic diuresis: glucose, calcium, potassium, renal function.; Water deprivation/desmopressin or copeptin-based test.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; Diabetes insipidus safety tests: check serum sodium/osmolality, urine osmolality/specific gravity, urine volume, glucose/calcium/potassium/renal function, and desmopressin, copeptin, or supervised water-deprivation pathway only when stable.; Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.; Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when the branch-specific criteria in this node apply.; adult urine volume often >3; L/day or >40; 50 mL/kg; day with urine osmolality often <300 mOsm/kg; 135-145 mmol/L; >160; Urine osmolality <300 mOsm/kg; >800.",
+            "action": "Obtain together: Confirm hypotonic polyuria: adult urine volume often >3 L/day or >40-50 mL/kg/day with urine osmolality often <300 mOsm/kg.; Serum sodium/plasma osmolality.; Exclude osmotic diuresis: glucose, calcium, potassium, renal function.; Water deprivation/desmopressin or copeptin-based test.; Diabetes insipidus safety tests: check serum sodium/osmolality, urine osmolality/specific gravity, urine volume, glucose/calcium/potassium/renal function, and desmopressin, copeptin, or supervised water-deprivation pathway only when stable.; Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing.; adult urine volume often >3; L/day or >40; 50 mL/kg; day with urine osmolality often <300 mOsm/kg; 135-145 mmol/L; >160; Urine osmolality <300 mOsm/kg; >800.",
             "children": [
               {
                 "id": "diabetes_insipidus_classification_decision",
@@ -3827,7 +3825,7 @@
                 "criteria": {
                   "rule_id": "diabetes_insipidus_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Diabetes Insipidus against cited thresholds and condition-specific rules: Diabetes Insipidus: adult urine volume often >3, L/day or >40, 50 mL/kg, day with urine osmolality often <300 mOsm/kg | Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 135-145 mmol/L, >160, Urine osmolality <300 mOsm/kg, >800 | Confirm hypotonic polyuria: adult urine volume often >3, L/day or >40, 50 mL/kg, day with urine osmolality often <300 mOsm/kg | Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 135-145 mmol/L, >160 | Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI.: Urine osmolality <300 mOsm/kg, >800",
+                  "description": "Classify Diabetes Insipidus using cited thresholds: Diabetes Insipidus: adult urine volume often >3, L/day or >40, 50 mL/kg, day with urine osmolality often <300 mOsm/kg | Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 135-145 mmol/L, >160, Urine osmolality <300 mOsm/kg, >800 | Confirm hypotonic polyuria: adult urine volume often >3, L/day or >40, 50 mL/kg, day with urine osmolality often <300 mOsm/kg | Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 135-145 mmol/L, >160 | Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI.: Urine osmolality <300 mOsm/kg, >800",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -3950,7 +3948,7 @@
                     }
                   ]
                 },
-                "action": "Choose the active Diabetes Insipidus branch by matching patient data to the cited cutoffs and patient-specific safety rules.",
+                "action": "Match current patient data to adult urine volume often >3; L/day or >40; 50 mL/kg; day with urine osmolality often <300 mOsm/kg; 135-145 mmol/L; >160; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
                 "children": [
                   {
                     "id": "diabetes_insipidus_missing_cutoff_data_endpoint",
@@ -3965,7 +3963,7 @@
                     "criteria": {
                       "rule_id": "diabetes_insipidus_missing_cutoff_data_criteria",
                       "source": "criteria",
-                      "description": "Route here when Diabetes Insipidus cannot be classified because exact threshold/result data are missing.",
+                      "description": "Use this branch when Diabetes Insipidus cannot be classified because exact threshold/result data are missing.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -3996,10 +3994,8 @@
                         "Serum sodium/plasma osmolality.",
                         "Exclude osmotic diuresis: glucose, calcium, potassium, renal function.",
                         "Water deprivation/desmopressin or copeptin-based test.",
-                        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
                         "Diabetes insipidus safety tests: check serum sodium/osmolality, urine osmolality/specific gravity, urine volume, glucose/calcium/potassium/renal function, and desmopressin, copeptin, or supervised water-deprivation pathway only when stable.",
-                        "Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.",
-                        "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when the branch-specific criteria in this node apply."
+                        "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing."
                       ]
                     },
                     "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
@@ -4025,17 +4021,15 @@
                       "Serum sodium/plasma osmolality.",
                       "Exclude osmotic diuresis: glucose, calcium, potassium, renal function.",
                       "Water deprivation/desmopressin or copeptin-based test.",
-                      "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
                       "Diabetes insipidus safety tests: check serum sodium/osmolality, urine osmolality/specific gravity, urine volume, glucose/calcium/potassium/renal function, and desmopressin, copeptin, or supervised water-deprivation pathway only when stable.",
-                      "Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.",
-                      "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when the branch-specific criteria in this node apply."
+                      "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing."
                     ]
                   },
                   {
                     "id": "diabetes_insipidus_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Diabetes Insipidus: emergency or monitored-care disposition",
-                    "edgeLabel": "High-acuity threshold or monitored-care result present: Hypernatremia, inability to drink, impaired consciousness, postoperative pituitary patient without desmopressin access.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; adult urine volume often >3; L/day or >40",
+                    "edgeLabel": "High-acuity threshold or monitored-care result present: Hypernatremia, inability to drink, impaired consciousness, postoperative pituitary patient without desmopressin access.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; adult urine volume often >3; L/day or >40",
                     "source_ids": [
                       "ENDOTEXT_DI_2026",
                       "SFE_CDI_2018",
@@ -4044,7 +4038,7 @@
                     "criteria": {
                       "rule_id": "diabetes_insipidus_urgent_criteria",
                       "source": "criteria",
-                      "description": "Escalate Diabetes Insipidus when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
+                      "description": "Escalate Diabetes Insipidus when Hypernatremia, inability to drink, impaired consciousness, postoperative pituitary patient without desmopressin access.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; adult urine volume often >3; L/day or >40; 50 mL/kg; Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway.; unstable physiology or dangerous electrolyte/glucose abnormality.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4164,7 +4158,7 @@
                         }
                       ]
                     },
-                    "action": "Hypernatremia, inability to drink, impaired consciousness, postoperative pituitary patient without desmopressin access.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.. Escalate using the cited high-risk threshold, unstable vital sign, organ-risk finding, or monitored-care rule.",
+                    "action": "Send to ED, admission, or monitored specialty care for Hypernatremia, inability to drink, impaired consciousness, postoperative pituitary patient without desmopressin access.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; adult urine volume often >3; L/day or >40; 50 mL/kg; Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway.; unstable physiology or dangerous electrolyte/glucose abnormality; start stabilization and diagnosis-specific emergency treatment before routine outpatient management.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -4413,7 +4407,7 @@
                         "id": "diabetes_insipidus_treatment_safety_decision",
                         "type": "decision",
                         "label": "Diabetes Insipidus: contraindications, dosing, pregnancy, and comorbidity modifiers",
-                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan",
+                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "ENDOTEXT_DI_2026",
                           "SFE_CDI_2018",
@@ -4422,7 +4416,7 @@
                         "criteria": {
                           "rule_id": "diabetes_insipidus_safety_decision_criteria",
                           "source": "criteria",
-                          "description": "Route Diabetes Insipidus management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.",
+                          "description": "Check Diabetes Insipidus treatment contraindications, dose/weight/renal/pregnancy constraints, and institutional order-set limits before committing to therapy.",
                           "evaluable_from": [
                             "medications",
                             "allergies",
@@ -4582,7 +4576,7 @@
                             "id": "diabetes_insipidus_monitoring_bundle",
                             "type": "action",
                             "label": "Diabetes Insipidus: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Diabetes Insipidus symptoms, vital signs, criterion-defining results, treatment response, adverse effects, and disposition readiness",
+                            "edgeLabel": "Trend Diabetes Insipidus: adult urine volume often >3; L/day or >40; 50 mL/kg; day with urine osmolality often <300 mOsm/kg; Confirm hypotonic polyuria: adult urine volume often >3 L/day or >40-50 mL/kg/day with urine osmolality often <300 mOsm/kg.; Serum sodium/plasma osmolality.; Exclude osmotic diuresis: glucose, calcium, potassium, renal function.; Measure blood pressure",
                             "source_ids": [
                               "ENDOTEXT_DI_2026",
                               "SFE_CDI_2018",
@@ -4591,7 +4585,7 @@
                             "criteria": {
                               "rule_id": "diabetes_insipidus_monitoring_criteria",
                               "source": "criteria",
-                              "description": "Monitor Diabetes Insipidus by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
+                              "description": "Monitor Diabetes Insipidus by trending the cited cutoff(s), symptom course, medication adverse effects, and disposition constraints used for this branch.",
                               "evaluable_from": [
                                 "symptoms",
                                 "exam",
@@ -4726,7 +4720,7 @@
                                 "criteria": {
                                   "rule_id": "diabetes_insipidus_worsening_criteria",
                                   "source": "criteria",
-                                  "description": "Escalate Diabetes Insipidus if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+                                  "description": "Escalate Diabetes Insipidus if symptoms, vitals, cited thresholds, imaging/ECG/procedure findings, or treatment response worsen or no longer match the chosen branch.",
                                   "evaluable_from": [
                                     "symptoms",
                                     "exam",
@@ -4846,7 +4840,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Repeat or review Hypernatremia, inability to drink, impaired consciousness, postoperative pituitary patient without desmopressin access.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; adult urine volume often >3; L/day or >40; 50 mL/kg; day with urine osmolality often <300 mOsm/kg; Confirm hypotonic polyuria: adult urine volume often >3 L/day or >40-50 mL/kg/day with urine osmolality often <300 mOsm/kg.; Serum sodium/plasma osmolality.; reassess mimics and complications; move to ED, admission, or specialty review when the cited threshold, unstable vital sign, imaging/ECG/procedure result, or treatment-response pattern requires escalation.",
+                                "action": "Repeat or review Hypernatremia, inability to drink, impaired consciousness, postoperative pituitary patient without desmopressin access.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; adult urine volume often >3; L/day or >40; 50 mL/kg; day with urine osmolality often <300 mOsm/kg; Confirm hypotonic polyuria: adult urine volume often >3 L/day or >40-50 mL/kg/day with urine osmolality often <300 mOsm/kg.; Serum sodium/plasma osmolality.; reassess mimics and complications; move to ED, admission, or specialty review when that specific trend, vital sign, imaging/ECG/procedure finding, or treatment-response pattern requires escalation.",
                                 "children": [],
                                 "endpoint_type": "escalation_disposition",
                                 "guideline_cutoffs": [
@@ -5087,7 +5081,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Use active Diabetes Insipidus results and response trend to stop, narrow, taper, or continue treatment; document which cutoff, symptom, adverse effect, or finding changed.",
+                                "action": "Use the measured Diabetes Insipidus trend, cited cutoff(s), symptom response, adverse effects, and diagnosis certainty to stop, narrow, taper, or continue treatment; document the value or finding that changed.",
                                 "children": [],
                                 "endpoint_type": "deescalation_stopping",
                                 "guideline_cutoffs": [
@@ -5237,7 +5231,7 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend criterion-defining results",
+                              "trend adult urine volume often >3; L/day or >40; 50 mL/kg",
                               "review treatment response and adverse effects",
                               "assign disposition and follow-up clinician/service"
                             ],
@@ -5817,10 +5811,8 @@
               "Serum sodium/plasma osmolality.",
               "Exclude osmotic diuresis: glucose, calcium, potassium, renal function.",
               "Water deprivation/desmopressin or copeptin-based test.",
-              "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
               "Diabetes insipidus safety tests: check serum sodium/osmolality, urine osmolality/specific gravity, urine volume, glucose/calcium/potassium/renal function, and desmopressin, copeptin, or supervised water-deprivation pathway only when stable.",
-              "Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.",
-              "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when the branch-specific criteria in this node apply.",
+              "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing.",
               "adult urine volume often >3",
               "L/day or >40",
               "50 mL/kg",
@@ -5843,10 +5835,8 @@
               "Serum sodium/plasma osmolality.",
               "Exclude osmotic diuresis: glucose, calcium, potassium, renal function.",
               "Water deprivation/desmopressin or copeptin-based test.",
-              "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
               "Diabetes insipidus safety tests: check serum sodium/osmolality, urine osmolality/specific gravity, urine volume, glucose/calcium/potassium/renal function, and desmopressin, copeptin, or supervised water-deprivation pathway only when stable.",
-              "Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.",
-              "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when the branch-specific criteria in this node apply."
+              "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing."
             ],
             "guideline_cutoffs": [
               {
@@ -5986,7 +5976,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "diabetes_insipidus_urgent_endpoint",
-          "expected_active_branch": "High-acuity threshold or monitored-care result present: Hypernatremia, inability to drink, impaired consciousness, postoperative pituitary patient without desmopressin access.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; adult urine volume often >3; L/day or >40",
+          "expected_active_branch": "High-acuity threshold or monitored-care result present: Hypernatremia, inability to drink, impaired consciousness, postoperative pituitary patient without desmopressin access.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; adult urine volume often >3; L/day or >40",
           "expected_path_node_ids": [
             "root",
             "diabetes_insipidus_concurrent_data_bundle",
