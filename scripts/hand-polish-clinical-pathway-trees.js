@@ -2266,6 +2266,605 @@ function buildPediatricDkaHhsClinicalPathwayTree(module, sourceById) {
   };
 }
 
+function buildAdrenalInsufficiencyClinicalPathwayTree(module, sourceById) {
+  const label = module.label || (module.id === "addisons_disease_v1" ? "Addison's disease" : "Adrenal insufficiency");
+  const prefix = module.id === "addisons_disease_v1" ? "addisons_disease" : "adrenal_insufficiency";
+  const adrenal = ["ES_ADRENAL_INSUFFICIENCY_2016"];
+  const sourceIds = unique([...adrenal, ...genericSourceIds]);
+  const tests = firstItems(module, "initialTests", 10);
+  const redFlags = firstItems(module, "redFlags", 8, ["safetyChecks"]);
+  const differentials = firstItems(module, "differentialBuckets", 8);
+  const dispositions = firstItems(module, "dispositionRules", 5, ["treatmentOptions"]);
+
+  const criteriaRows = [
+    criterion({
+      id: "adrenal_crisis_immediate_hydrocortisone",
+      label: "Adrenal crisis or severe suspected adrenal insufficiency: give hydrocortisone before laboratory confirmation",
+      criteria_text: "Severe adrenal insufficiency symptoms or adrenal crisis require immediate IV or IM hydrocortisone at stress dose before diagnostic results are available.",
+      cutoffs: ["100 mg", "200 mg/24 hours", "50 mg/m2", "50-100 mg/m2"],
+      data_needed: ["shock or severe hypotension", "vomiting or inability to take oral steroids", "altered mental status", "hypoglycemia", "hyponatremia", "hyperkalemia", "fever/infection or major stress", "current steroid exposure"],
+      source_ids: adrenal,
+      source_section: "Adrenal crisis treatment and prevention recommendations 1.3 and 4.1"
+    }),
+    criterion({
+      id: "cosyntropin_confirmation_primary_ai",
+      label: "Confirm adrenal insufficiency when stable: 250 mcg cosyntropin with peak cortisol below 18 ug/dL at 30 or 60 minutes",
+      criteria_text: "The standard-dose corticotropin stimulation test uses 250 mcg in adults and children 2 years or older; peak cortisol below 500 nmol/L or 18 ug/dL at 30 or 60 minutes indicates adrenal insufficiency, with assay dependence.",
+      cutoffs: ["250 mcg", "age >=2 years", "peak cortisol <18 ug/dL", "500 nmol/L", "30 minutes", "60 minutes"],
+      data_needed: ["baseline cortisol", "cosyntropin dose", "30-minute cortisol", "60-minute cortisol", "assay-specific cutoff", "age"],
+      source_ids: adrenal,
+      source_section: "Diagnostic recommendation 2.1"
+    }),
+    criterion({
+      id: "morning_cortisol_acth_preliminary_primary_ai",
+      label: "If cosyntropin cannot be done: morning cortisol below 5 ug/dL with ACTH supports preliminary adrenal insufficiency diagnosis",
+      criteria_text: "When corticotropin stimulation is not feasible, morning cortisol below 140 nmol/L or 5 ug/dL with ACTH is a preliminary test until confirmatory testing is available.",
+      cutoffs: ["morning cortisol <5 ug/dL", "140 nmol/L"],
+      data_needed: ["8 AM or morning cortisol", "plasma ACTH drawn with cortisol", "acute illness status", "exogenous steroid use", "assay method"],
+      source_ids: adrenal,
+      source_section: "Diagnostic recommendation 2.3"
+    }),
+    criterion({
+      id: "primary_ai_acth_renin_aldosterone",
+      label: "Primary adrenal insufficiency pattern: confirmed cortisol deficiency plus ACTH greater than 2-fold ULN and mineralocorticoid assessment",
+      criteria_text: "In confirmed cortisol deficiency, plasma ACTH greater than 2-fold the upper limit of the reference range is consistent with primary adrenal insufficiency; renin and aldosterone should be measured to determine mineralocorticoid deficiency.",
+      cutoffs: ["ACTH >2-fold ULN"],
+      data_needed: ["plasma ACTH", "ACTH assay ULN", "renin", "aldosterone", "sodium", "potassium", "volume status", "21-hydroxylase antibodies or etiology workup"],
+      source_ids: adrenal,
+      source_section: "Diagnostic recommendations 2.4-2.6"
+    }),
+    criterion({
+      id: "adult_glucocorticoid_replacement_range",
+      label: "Adult chronic glucocorticoid replacement: hydrocortisone 15-25 mg/day or prednisolone 3-5 mg/day",
+      criteria_text: "Confirmed primary adrenal insufficiency should receive hydrocortisone 15-25 mg/day or cortisone acetate 20-35 mg/day in divided doses; prednisolone 3-5 mg/day once or twice daily is an alternative and dexamethasone is discouraged.",
+      cutoffs: ["15-25 mg", "20-35 mg", "3-5 mg/day"],
+      data_needed: ["confirmed adrenal insufficiency", "current glucocorticoid regimen", "weight", "postural blood pressure", "energy level", "Cushingoid signs", "adherence/access"],
+      source_ids: adrenal,
+      source_section: "Adult glucocorticoid replacement recommendations 3.1-3.6"
+    }),
+    criterion({
+      id: "adult_mineralocorticoid_replacement_range",
+      label: "Confirmed aldosterone deficiency: fludrocortisone 50-100 mcg/day and do not restrict salt",
+      criteria_text: "Adults with primary adrenal insufficiency and confirmed aldosterone deficiency should receive fludrocortisone starting dose 50-100 mcg/day, avoid salt restriction, and be monitored by clinical assessment and electrolytes.",
+      cutoffs: ["50-100 mcg/day"],
+      data_needed: ["aldosterone deficiency", "renin", "aldosterone", "blood pressure", "postural symptoms", "salt craving", "edema", "sodium", "potassium"],
+      source_ids: adrenal,
+      source_section: "Mineralocorticoid replacement recommendations 3.7-3.10"
+    }),
+    criterion({
+      id: "pregnancy_child_perioperative_adrenal_stress",
+      label: "Pregnancy, children, labor, or major stress require endocrine dosing review and stress-dose planning",
+      criteria_text: "Pregnancy requires at least one review per trimester, hydrocortisone preference, third-trimester dose adjustment when clinically needed, and labor dosing like major surgical stress; children use body-surface-area dosing, and major stress uses parenteral hydrocortisone protocols.",
+      cutoffs: ["1 review per trimester", "third trimester", "8 mg/m2", "100 mcg/day", "100 mg", "200 mg/24 hours"],
+      data_needed: ["pregnancy status", "gestational age", "labor/surgery/trauma status", "age", "body surface area", "pediatric/adult pathway fit", "current oral steroid dose"],
+      source_ids: adrenal,
+      source_section: "Pregnancy, childhood, and adrenal crisis recommendations 3.14-4.6"
+    }),
+    criterion({
+      id: "adrenal_followup_and_emergency_prevention",
+      label: "Crisis prevention: sick-day education, steroid emergency card, medical alert ID, injection kit, and endocrine follow-up at least annually",
+      criteria_text: "Adrenal insufficiency management includes education on glucocorticoid adjustment during stress, parenteral self or lay emergency dosing, steroid emergency card, medical alert identification, injection kit, and endocrine follow-up at least annually.",
+      cutoffs: ["at least annually", "3 to 4 months"],
+      data_needed: ["sick-day rules understood", "emergency injection kit available", "medical alert ID", "steroid card", "last endocrine follow-up", "recent crisis or hospitalization"],
+      source_ids: adrenal,
+      source_section: "Adrenal crisis prevention and monitoring recommendations 4.3-5.1"
+    })
+  ];
+
+  const missingContextEndpoint = endpoint({
+    id: "endpoint_missing_context",
+    label: `Missing data needed: ${label} crisis risk and diagnostic context`,
+    edgeLabel: "Missing exact adrenal data: vitals, volume status, glucose, sodium, potassium, cortisol/ACTH testing, steroid exposure, illness stress, pregnancy status, and current replacement plan",
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_context_criteria`, "Route here when adrenal crisis risk, diagnostic status, medication exposure, or replacement-safety information cannot be extracted.", contextDomains, sourceIds, { missing_any: contextDomains }),
+    action: "Document full vital signs including postural blood pressure when safe, mental status, hydration/perfusion, glucose, sodium, potassium, bicarbonate/renal function, cortisol/ACTH or cosyntropin status, renin/aldosterone when primary disease is possible, exogenous steroid exposure, acute illness or surgery stress, pregnancy status, and current steroid/mineralocorticoid access.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["blood pressure and postural symptoms", "mental status and perfusion", "glucose", "sodium", "potassium", "morning cortisol/ACTH or cosyntropin status", "renin/aldosterone if primary disease possible", "current/recent glucocorticoids", "pregnancy/labor/surgery/infection status"]
+  });
+
+  const missingAdrenalDataEndpoint = endpoint({
+    id: `${prefix}_missing_adrenal_testing_endpoint`,
+    label: "Missing data needed: cortisol, ACTH, cosyntropin, electrolytes, or steroid exposure",
+    edgeLabel: "Cannot separate crisis, primary adrenal insufficiency, central adrenal insufficiency, steroid withdrawal, or mimic until cortisol/ACTH timing, cosyntropin result, Na/K/glucose, and recent glucocorticoid exposure are known",
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_adrenal_testing_criteria`, "Route here when adrenal insufficiency cannot be classified because exact endocrine or safety data are unavailable.", contextDomains, sourceIds, { missing_any: ["8 AM or morning cortisol", "ACTH", "cosyntropin dose and 30/60-minute cortisol", "sodium", "potassium", "glucose", "recent glucocorticoid exposure"] }),
+    action: "Obtain paired morning cortisol and ACTH when stable, perform 250 mcg cosyntropin testing with 30- and/or 60-minute cortisol when circumstances allow, check sodium, potassium, glucose, bicarbonate, creatinine, current and recent glucocorticoids, and add renin/aldosterone and 21-hydroxylase antibody testing when primary adrenal insufficiency is suspected.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["8 AM or morning cortisol", "plasma ACTH", "250 mcg cosyntropin 30- or 60-minute cortisol", "sodium", "potassium", "glucose", "renal function/bicarbonate", "recent glucocorticoid exposure", "renin and aldosterone when primary disease is possible"]
+  });
+
+  const crisisEndpoint = endpoint({
+    id: `${prefix}_adrenal_crisis_endpoint`,
+    label: "Adrenal crisis or severe suspected adrenal insufficiency: hydrocortisone, isotonic fluid, dextrose when needed, and monitored care",
+    edgeLabel: "Severe branch: shock, marked hypotension, dehydration, vomiting, altered mental status, hypoglycemia, severe hyponatremia/hyperkalemia, infection, trauma, surgery, labor, or missed steroids",
+    sourceIds: adrenal,
+    criteria: criteria(`${prefix}_crisis_criteria`, "Use when severe adrenal insufficiency symptoms or adrenal crisis features are present or treatment cannot wait for endocrine testing.", ["symptoms", "exam", "vitals", "labs", "medications", "pregnancy_status", "workup_findings"], adrenal, { criteria_options: criteriaRows }),
+    action: "Draw cortisol and ACTH first only if this does not delay care, then give hydrocortisone 100 mg IV or IM immediately, provide isotonic saline with dextrose if hypoglycemia is present or intake is poor, continue hydrocortisone 200 mg over 24 hours by infusion or 50 mg every 6 hours, correct potassium/glucose abnormalities, treat the precipitating illness, and use ED/admission/ICU monitoring according to hemodynamics.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["blood pressure/MAP and perfusion", "mental status", "glucose", "sodium and potassium", "fluid balance", "infection or surgical source", "hydrocortisone dosing clock"]
+  });
+
+  const primaryConfirmedEndpoint = endpoint({
+    id: `${prefix}_primary_confirmed_endpoint`,
+    label: "Primary adrenal insufficiency confirmed or highly likely: replace glucocorticoid and mineralocorticoid axes",
+    edgeLabel: "Confirmed/likely primary pattern: cosyntropin peak cortisol below 18 ug/dL, morning cortisol below 5 ug/dL when stimulation cannot be done, ACTH above 2-fold ULN, or aldosterone deficiency with high renin",
+    sourceIds: adrenal,
+    criteria: criteria(`${prefix}_primary_confirmed_criteria`, "Use when primary adrenal insufficiency is confirmed or strongly likely after crisis stabilization.", ["labs", "vitals", "medications", "workup_findings"], adrenal, { criteria_options: criteriaRows }),
+    action: "Start chronic replacement after stabilization: hydrocortisone 15-25 mg/day in 2 or 3 divided oral doses, or prednisolone 3-5 mg/day when appropriate; avoid dexamethasone for routine replacement, add fludrocortisone 50-100 mcg/day when aldosterone deficiency is confirmed, avoid salt restriction, and document etiology testing such as 21-hydroxylase antibodies when autoimmune Addison's disease is possible.",
+    endpointType: "treatment",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["postural blood pressure", "weight and energy level", "salt craving or edema", "sodium", "potassium", "renin/aldosterone trend", "signs of glucocorticoid excess"]
+  });
+
+  const borderlineEndpoint = endpoint({
+    id: `${prefix}_borderline_assay_review_endpoint`,
+    label: "Borderline cortisol or assay-dependent result: endocrine review before excluding adrenal insufficiency",
+    edgeLabel: "Indeterminate branch: cortisol timing uncertain, cosyntropin cutoff differs by assay, acute illness alters interpretation, exogenous steroids interfere, or ACTH/mineralocorticoid pattern is discordant",
+    sourceIds: adrenal,
+    criteria: criteria(`${prefix}_borderline_assay_criteria`, "Use when cortisol/ACTH/cosyntropin data are incomplete, assay-dependent, discordant, or affected by acute illness or steroid exposure.", ["labs", "medications", "comorbidities", "pregnancy_status", "workup_findings"], adrenal, { criteria_options: criteriaRows }),
+    action: "Do not stop stress-dose treatment if the patient is unstable. For stable patients, repeat or complete paired morning cortisol/ACTH, document the assay-specific stimulated cortisol threshold, review recent glucocorticoids or estrogen effects, and obtain endocrinology input before labeling adrenal insufficiency absent.",
+    endpointType: "clinician_review_handoff",
+    guidelineCutoffs: criteriaRows,
+    reviewNeededReason: "Assay-specific cortisol thresholds, acute illness physiology, or steroid interference can change interpretation."
+  });
+
+  const mimicEndpoint = endpoint({
+    id: `${prefix}_mimic_exclusion_endpoint`,
+    label: "Mimic or competing adrenal pattern: route to the more specific diagnosis after crisis is excluded",
+    edgeLabel: "Adrenal thresholds do not fit or another cause better explains hypotension, electrolyte changes, weight loss, hyperpigmentation, vomiting, fatigue, or hypoglycemia",
+    sourceIds: sourceIdsForItems(differentials, sourceIds),
+    criteria: criteria(`${prefix}_mimic_criteria`, "Use when the cortisol/ACTH/mineralocorticoid pattern does not support this adrenal pathway or a competing diagnosis is more likely.", ["symptoms", "exam", "vitals", "labs", "medications", "comorbidities", "workup_findings"], sourceIdsForItems(differentials, sourceIds), { criteria_options: criteriaRows }),
+    action: `Document which adrenal data do not support ${label}, then route to the competing pathway such as exogenous glucocorticoid withdrawal, central adrenal insufficiency, sepsis/dehydration, renal disease, medication-related hyperkalemia or hyponatremia, gastrointestinal illness, thyroid disease, or other endocrine emergency.`,
+    endpointType: "clinician_review_handoff",
+    reviewNeededReason: "A competing diagnosis or central-vs-primary adrenal pattern changes treatment sequencing."
+  });
+
+  const specialPopulationEndpoint = endpoint({
+    id: `${prefix}_special_population_endpoint`,
+    label: "Pregnancy, child, labor, surgery, or major stress: endocrine-governed dosing branch",
+    edgeLabel: "Modifier branch: pregnancy, third trimester symptoms, active labor, child/adolescent dosing, surgery/anesthesia, trauma, ICU illness, or inability to use the local stress-dose protocol",
+    sourceIds: adrenal,
+    criteria: criteria(`${prefix}_special_population_criteria`, "Use when pregnancy, pediatric status, labor, major surgery, trauma, or local perioperative policy changes replacement or stress-dose decisions.", ["demographics", "pregnancy_status", "medications", "vitals", "labs", "workup_findings"], adrenal, { criteria_options: criteriaRows }),
+    action: "Use clinician review for dosing details: pregnancy needs at least one review per trimester and hydrocortisone preference; active labor or major surgery uses major-stress hydrocortisone dosing; children require body-surface-area dosing such as hydrocortisone 8 mg/m2/day for chronic primary adrenal insufficiency and 50 mg/m2 initial crisis dosing; local order sets should define perioperative taper and monitoring.",
+    endpointType: "clinician_review_handoff",
+    guidelineCutoffs: criteriaRows,
+    reviewNeededReason: "Pregnancy, pediatric body-surface dosing, and perioperative protocols require local endocrine governance."
+  });
+
+  const monitoringEndpoint = endpoint({
+    id: `${prefix}_monitoring_reassessment_endpoint`,
+    label: "Adrenal therapy monitoring: reassess hemodynamics, electrolytes, glucose, volume, and steroid adverse effects",
+    edgeLabel: "After hydrocortisone or chronic replacement: hypotension, glucose, sodium, potassium, edema, salt craving, weight, energy, infection source, or oral intake still needs active reassessment",
+    sourceIds: adrenal,
+    criteria: criteria(`${prefix}_monitoring_criteria`, "Use after acute or chronic adrenal treatment decisions to confirm physiologic response and medication safety.", ["symptoms", "exam", "vitals", "labs", "medications", "workup_findings"], adrenal, { criteria_options: criteriaRows }),
+    action: "Trend blood pressure including postural symptoms, perfusion, glucose, sodium, potassium, renal function, weight, edema/salt craving, energy level, infection or stressor control, oral intake, and signs of glucocorticoid excess; escalate care if hypotension, hypoglycemia, electrolyte instability, vomiting, or mental-status changes persist.",
+    endpointType: "monitoring_reassessment",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["blood pressure and postural symptoms", "glucose", "sodium", "potassium", "renal function/fluid balance", "edema or salt craving", "mental status", "oral intake and precipitating stressor"]
+  });
+
+  const transitionEndpoint = endpoint({
+    id: `${prefix}_transition_safety_endpoint`,
+    label: "Adrenal crisis resolving: transition to oral regimen, emergency kit, and sick-day safety plan",
+    edgeLabel: "Improving branch: hemodynamics stable, glucose/electrolytes improving, precipitating illness controlled, oral intake possible, and outpatient steroid access confirmed",
+    sourceIds: adrenal,
+    criteria: criteria(`${prefix}_transition_criteria`, "Use when adrenal crisis physiology has resolved enough to move from parenteral stress dosing to a documented oral and safety-net plan.", ["vitals", "labs", "medications", "follow_up_access", "workup_findings"], adrenal, { criteria_options: criteriaRows }),
+    action: "Taper from hydrocortisone 200 mg/24 hours to an oral physiologic regimen only when stable and eating, restart or initiate mineralocorticoid replacement when primary aldosterone deficiency applies, provide sick-day rules, emergency injection kit, steroid emergency card or medical alert ID, confirm medication access, assign endocrine follow-up at least annually, and give return precautions for vomiting, fever, syncope, severe weakness, confusion, or inability to keep steroids down.",
+    endpointType: "safety_net_instruction",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["oral steroid access", "fludrocortisone need", "sick-day rule comprehension", "emergency injection kit", "medical alert ID", "follow-up date", "return precautions"]
+  });
+
+  const chronicAction = actionNode({
+    id: `${prefix}_chronic_replacement_action`,
+    label: "Confirmed adrenal insufficiency: combine glucocorticoid plan, mineralocorticoid decision, monitoring, and crisis prevention",
+    edgeLabel: "Stable confirmed/likely branch: crisis excluded or treated, cortisol deficiency established, primary-vs-central pattern reviewed, and replacement plan can be made",
+    sourceIds,
+    criteria: criteria(`${prefix}_chronic_replacement_criteria`, "Route stable confirmed or highly likely adrenal insufficiency to replacement, mineralocorticoid assessment, monitoring, and safety education together.", ["labs", "vitals", "medications", "comorbidities", "pregnancy_status", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
+    action: "Address chronic replacement, fludrocortisone need, special-population modifiers, follow-up, and emergency prevention as one plan.",
+    parallelActions: ["hydrocortisone or prednisolone regimen", "renin/aldosterone and fludrocortisone decision", "pregnancy/pediatric/surgery dosing review", "clinical and electrolyte monitoring", "sick-day rules and emergency kit"],
+    guidelineCutoffs: criteriaRows,
+    children: [primaryConfirmedEndpoint, specialPopulationEndpoint, monitoringEndpoint, transitionEndpoint]
+  });
+
+  const classificationDecision = decision({
+    id: `${prefix}_classification_decision`,
+    label: `${label}: choose crisis treatment, endocrine confirmation, replacement, mimic, or review branch`,
+    edgeLabel: "Adrenal vitals, cortisol/ACTH or cosyntropin data, electrolytes, steroid exposure, renin/aldosterone status, and stress/pregnancy modifiers are available for routing",
+    sourceIds,
+    criteria: criteria(`${prefix}_classification_criteria`, "Classify adrenal urgency and replacement needs using hemodynamics, cortisol/ACTH testing, cosyntropin response, sodium, potassium, glucose, steroid exposure, renin/aldosterone status, and special-population modifiers.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Choose from adrenal crisis treatment, missing endocrine data, primary adrenal insufficiency replacement, borderline assay review, special-population review, monitoring/transition, or competing diagnosis.",
+    clinicalCriteria: criteriaRows,
+    guidelineCutoffs: criteriaRows,
+    children: [missingAdrenalDataEndpoint, crisisEndpoint, chronicAction, borderlineEndpoint, mimicEndpoint]
+  });
+
+  const initialAssessment = actionNode({
+    id: `${prefix}_initial_assessment`,
+    label: `${label}: assess crisis physiology and endocrine confirmation data together`,
+    edgeLabel: "Patient has hypotension, volume depletion, vomiting, fatigue/weight loss, hyperpigmentation, hypoglycemia, hyponatremia, hyperkalemia, suspected steroid withdrawal, autoimmune Addison's disease, or clinician-selected adrenal evaluation",
+    sourceIds,
+    criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial adrenal assessment requires immediate crisis screen plus paired endocrine and electrolyte data when the patient is stable enough for testing.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Check ABCs, full vitals, postural blood pressure when safe, mental status, hydration/perfusion, glucose, sodium, potassium, bicarbonate, renal function, current/recent glucocorticoids, infection/surgery/labor stress, and pregnancy status; if stable, obtain paired morning cortisol/ACTH, cosyntropin testing, and renin/aldosterone plus etiology testing when primary disease is possible.",
+    parallelActions: ["ABCs and hemodynamic assessment", "glucose/electrolytes/renal function", "current and recent steroid exposure", "paired morning cortisol and ACTH when stable", "250 mcg cosyntropin with 30/60-minute cortisol when feasible", "renin/aldosterone and 21-hydroxylase antibodies when primary disease suspected", "pregnancy/labor/surgery/infection stress assessment"],
+    requiredData: unique(criteriaRows.flatMap((row) => row.data_needed || [])),
+    guidelineCutoffs: criteriaRows,
+    children: [classificationDecision]
+  });
+
+  const root = decision({
+    id: "root",
+    label: `${label}: route by adrenal crisis physiology, cortisol confirmation, replacement needs, and safety planning`,
+    sourceIds,
+    criteria: criteria(`${prefix}_activate`, `Activate for suspected ${label}, adrenal crisis concern, Addison's disease history, glucocorticoid withdrawal, unexplained hypotension, hyponatremia, hyperkalemia, hypoglycemia, vomiting, hyperpigmentation, autoimmune adrenal disease, or clinician-chosen adrenal evaluation.`, ["selected_workup_id", "presenting_symptoms", "vitals", "labs", "problem_list_or_diagnosis", "clinician_selected_module"], sourceIds),
+    action: `Route ${label} through crisis treatment, cortisol/ACTH/cosyntropin confirmation, primary-vs-central pattern review, glucocorticoid and mineralocorticoid replacement, special-population dosing, monitoring, transition, follow-up, and sick-day safety endpoints.`,
+    children: [missingContextEndpoint, initialAssessment]
+  });
+
+  const activationRules = {};
+  const allNodeSourceIds = [];
+  const collect = (entry) => {
+    allNodeSourceIds.push(...(entry.source_ids || []), ...(entry.criteria?.source_ids || []));
+    if (entry.criteria) activationRules[entry.id] = entry.criteria;
+    for (const child of entry.children || []) collect(child);
+  };
+  collect(root);
+  const sourceThresholds = sourceThresholdsFromCriteria(criteriaRows);
+  const localEvidenceSourceIds = sourceIdsForItems([...tests, ...redFlags, ...differentials, ...dispositions], sourceIds);
+  const finalSourceIds = unique([...sourceIds, ...localEvidenceSourceIds, ...allNodeSourceIds, ...sourceThresholds.flatMap((row) => row.source_ids || [])]);
+
+  return {
+    schema: "clinical_pathway_tree_v1",
+    workupId: module.id,
+    workup_id: module.id,
+    title: label,
+    version: "4.0.0",
+    status: "hand_polished_adrenal_insufficiency_pathway_needs_clinician_review",
+    source_ids: finalSourceIds,
+    source_metadata: sourceRowsForTree(finalSourceIds, sourceById),
+    provenance: {
+      generated_by: "scripts/hand-polish-clinical-pathway-trees.js",
+      generated_at: `${auditDate}T00:00:00.000Z`,
+      update_scope: "clinical_pathway_tree_v1 only",
+      source_material: "Endocrine Society 2016 Primary Adrenal Insufficiency guideline and local module evidence rows",
+      review_note: "Adrenal insufficiency/Addison's tree is threshold-cited and patient-traversable; local perioperative order sets, pediatric body-surface dosing details, assay-specific cortisol cutoffs, formulary substitutions, and pregnancy care pathways require clinician governance."
+    },
+    source_thresholds: sourceThresholds,
+    traversable_context: buildTraversableContext(module, finalSourceIds, tests, criteriaRows),
+    activationRules,
+    root,
+    synthetic_patient_scenarios: [
+      { scenario_id: "missing_context", major_pathway: "missing_data_needed", expected_endpoint_id: missingContextEndpoint.id, expected_active_branch: missingContextEndpoint.edgeLabel },
+      { scenario_id: "missing_adrenal_testing", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: missingAdrenalDataEndpoint.id, expected_active_branch: missingAdrenalDataEndpoint.edgeLabel },
+      { scenario_id: "adrenal_crisis", major_pathway: "escalation_emergency_actions", expected_endpoint_id: crisisEndpoint.id, expected_active_branch: crisisEndpoint.edgeLabel },
+      { scenario_id: "primary_ai_replacement", major_pathway: "first_line_management", expected_endpoint_id: primaryConfirmedEndpoint.id, expected_active_branch: primaryConfirmedEndpoint.edgeLabel },
+      { scenario_id: "primary_ai_severity_pattern", major_pathway: "severity_risk_stratification", expected_endpoint_id: primaryConfirmedEndpoint.id, expected_active_branch: primaryConfirmedEndpoint.edgeLabel },
+      { scenario_id: "borderline_cortisol_review", major_pathway: "contraindications_special_populations", expected_endpoint_id: borderlineEndpoint.id, expected_active_branch: borderlineEndpoint.edgeLabel },
+      { scenario_id: "mimic_or_central_pattern", major_pathway: "mimics_exclusions", expected_endpoint_id: mimicEndpoint.id, expected_active_branch: mimicEndpoint.edgeLabel },
+      { scenario_id: "monitoring_after_replacement", major_pathway: "monitoring_reassessment_escalation", expected_endpoint_id: monitoringEndpoint.id, expected_active_branch: monitoringEndpoint.edgeLabel },
+      { scenario_id: "crisis_transition", major_pathway: "deescalation_stopping_criteria", expected_endpoint_id: transitionEndpoint.id, expected_active_branch: transitionEndpoint.edgeLabel },
+      { scenario_id: "followup_sick_day_safety", major_pathway: "disposition_followup_safety_netting", expected_endpoint_id: transitionEndpoint.id, expected_active_branch: transitionEndpoint.edgeLabel }
+    ],
+    audit_requirements: {
+      required_domains: requiredPathwayDomains,
+      hand_polish_requirements: [
+        "crisis branch gives hydrocortisone 100 mg immediately and 200 mg/24 hours continuation",
+        "diagnostic branch includes 250 mcg cosyntropin, 30/60-minute peak cortisol below 18 ug/dL, morning cortisol below 5 ug/dL fallback, and ACTH greater than 2-fold ULN",
+        "replacement branch includes hydrocortisone 15-25 mg/day, prednisolone 3-5 mg/day alternative, and fludrocortisone 50-100 mcg/day when aldosterone deficient",
+        "pregnancy, pediatric, labor, perioperative, assay-specific, and local-protocol items route to clinician review",
+        "transition endpoint includes sick-day rules, emergency injection kit, steroid card/medical alert, follow-up, and return precautions"
+      ]
+    }
+  };
+}
+
+function buildHypopituitarismClinicalPathwayTree(module, sourceById) {
+  const label = module.label || "Hypopituitarism";
+  const prefix = "hypopituitarism";
+  const hypopit = ["ES_HYPOPITUITARISM_2016"];
+  const adrenal = ["ES_ADRENAL_INSUFFICIENCY_2016"];
+  const sourceIds = unique([...hypopit, ...adrenal, ...genericSourceIds]);
+  const tests = firstItems(module, "initialTests", 10);
+  const redFlags = firstItems(module, "redFlags", 8, ["safetyChecks"]);
+  const differentials = firstItems(module, "differentialBuckets", 8);
+  const dispositions = firstItems(module, "dispositionRules", 5, ["treatmentOptions"]);
+
+  const criteriaRows = [
+    criterion({
+      id: "central_ai_morning_cortisol_bands",
+      label: "Central adrenal insufficiency: 8-9 AM cortisol below 3 ug/dL supports diagnosis; above 15 ug/dL usually excludes it",
+      criteria_text: "Endocrine Society hypopituitarism guidance recommends 8-9 AM serum cortisol as first-line testing for central adrenal insufficiency; cortisol below 3 ug/dL indicates adrenal insufficiency and above 15 ug/dL likely excludes it.",
+      cutoffs: ["8-9 AM", "cortisol <3 ug/dL", "cortisol >15 ug/dL"],
+      data_needed: ["8-9 AM cortisol", "recent glucocorticoid exposure", "acute illness status", "ACTH if primary/central distinction needed", "assay method"],
+      source_ids: hypopit,
+      source_section: "Central adrenal insufficiency diagnostic recommendations"
+    }),
+    criterion({
+      id: "central_ai_stimulation_indeterminate",
+      label: "Central adrenal insufficiency: dynamic testing when morning cortisol is 3-15 ug/dL",
+      criteria_text: "When morning cortisol is between 3 and 15 ug/dL, dynamic adrenal testing is used; peak cortisol below 18.1 ug/dL at 30 or 60 minutes indicates adrenal insufficiency, with assay dependence.",
+      cutoffs: ["3-15 ug/dL", "peak cortisol <18.1 ug/dL", "30 minutes", "60 minutes"],
+      data_needed: ["8-9 AM cortisol", "cosyntropin or dynamic test result", "30-minute cortisol", "60-minute cortisol", "assay-specific cutoff", "recent pituitary insult timing"],
+      source_ids: hypopit,
+      source_section: "Central adrenal insufficiency diagnostic recommendations"
+    }),
+    criterion({
+      id: "suspected_secondary_adrenal_crisis",
+      label: "Suspected secondary adrenal crisis: immediate hydrocortisone 50-100 mg",
+      criteria_text: "Patients suspected of adrenal crisis due to secondary adrenal insufficiency should receive immediate parenteral hydrocortisone 50-100 mg.",
+      cutoffs: ["50-100 mg"],
+      data_needed: ["shock or severe hypotension", "vomiting or inability to take oral steroids", "altered mental status", "hyponatremia", "hypoglycemia", "pituitary disease history", "current steroid replacement"],
+      source_ids: hypopit,
+      source_section: "Central adrenal insufficiency replacement recommendations"
+    }),
+    criterion({
+      id: "central_hypothyroidism_free_t4_sequence",
+      label: "Central hypothyroidism: evaluate adrenal insufficiency before levothyroxine and titrate by free T4, not TSH",
+      criteria_text: "Patients with central hypothyroidism should be evaluated for adrenal insufficiency before L-T4 therapy; if adrenal evaluation cannot be completed, empiric glucocorticoid therapy is recommended before starting L-T4. L-T4 dosing is adjusted to avoid low or elevated free T4 levels because TSH is unreliable.",
+      cutoffs: ["free T4 below reference range", "free T4 within target range"],
+      data_needed: ["free T4", "TSH", "morning cortisol or adrenal testing", "current glucocorticoid replacement", "pregnancy or estrogen therapy", "cardiac risk"],
+      source_ids: hypopit,
+      source_section: "Central hypothyroidism and hormone interaction recommendations"
+    }),
+    criterion({
+      id: "desmopressin_di_sodium_safety",
+      label: "Central diabetes insipidus: individualized DDAVP with deliberate polyuria periods and sodium monitoring when adipsic",
+      criteria_text: "DDAVP schedules for diabetes insipidus should be individualized; patients must be educated about overdose and hyponatremia risk, should periodically experience a phase of polyuria at least weekly, and adipsic DI requires frequent weighing and serum sodium monitoring.",
+      cutoffs: ["at least weekly"],
+      data_needed: ["polyuria/nocturia", "serum sodium", "urine output", "urine osmolality or specific gravity", "thirst/adipsia", "DDAVP schedule", "weight trend", "postoperative status"],
+      source_ids: hypopit,
+      source_section: "Diabetes insipidus recommendations 2.15-2.18"
+    }),
+    criterion({
+      id: "growth_hormone_replacement_starting_doses",
+      label: "Adult GH deficiency replacement: start 0.2-0.4 mg/day if age below 60 and 0.1-0.2 mg/day if age above 60",
+      criteria_text: "Adults with proven growth hormone deficiency and no contraindications can receive GH replacement starting at 0.2-0.4 mg/day when younger than 60 years and 0.1-0.2 mg/day when older than 60 years, titrated to keep IGF-1 below the upper limit of normal and reduced for side effects.",
+      cutoffs: ["0.2-0.4 mg/day", "age <60 years", "0.1-0.2 mg/day", "age >60 years", "IGF-1 below ULN"],
+      data_needed: ["proven GH deficiency", "age", "IGF-1 and assay ULN", "active malignancy/tumor status", "side effects", "glucose status", "current estrogen therapy"],
+      source_ids: hypopit,
+      source_section: "Growth hormone deficiency recommendations 2.11-2.14"
+    }),
+    criterion({
+      id: "pituitary_replacement_interactions",
+      label: "Hormone interaction safety: GH can unmask central hypothyroidism and glucocorticoids can unmask DI",
+      criteria_text: "HPA axis function should be checked before and after starting GH in selected patients, GH can lower free T4 below reference range requiring L-T4, estrogen changes require free T4 monitoring, and starting glucocorticoids may reveal diabetes insipidus.",
+      cutoffs: ["free T4 below reference range"],
+      data_needed: ["GH start or dose change", "free T4 trend", "estrogen therapy change", "glucocorticoid start", "new polyuria", "serum sodium", "urine output"],
+      source_ids: hypopit,
+      source_section: "Replacement hormone interactions recommendations 2.19-2.26"
+    }),
+    criterion({
+      id: "postoperative_and_overreplacement_monitoring",
+      label: "Pituitary surgery and overreplacement: stress-dose steroids before surgery when adrenal insufficiency exists, then taper and retest HPA axis",
+      criteria_text: "Pituitary surgery requires stress-dose steroids in adrenal insufficiency before surgery, tapered dosing after surgery before repeat HPA-axis testing, and monitoring to avoid glucocorticoid and thyroid hormone overreplacement.",
+      cutoffs: ["stress-dose steroids before surgery", "avoid low or elevated fT4"],
+      data_needed: ["pituitary surgery timing", "preoperative adrenal function", "current steroid dose", "postoperative cortisol plan", "free T4 trend", "fracture/cardiometabolic risk"],
+      source_ids: hypopit,
+      source_section: "Pituitary surgery and overreplacement recommendations 3.5-3.7 and 2.27-2.31"
+    })
+  ];
+
+  const missingContextEndpoint = endpoint({
+    id: "endpoint_missing_context",
+    label: "Missing data needed: pituitary axis, mass-effect, adrenal, thyroid, sodium, and medication context",
+    edgeLabel: "Missing exact hypopituitarism data: headache/vision/cranial nerves, 8-9 AM cortisol, free T4/TSH, sodium/osmolality/urine output, prolactin, IGF-1, LH/FSH/sex steroid, MRI/visual fields, surgery/radiation history, pregnancy status, and current replacement therapy",
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_context_criteria`, "Route here when pituitary mass-effect risk, adrenal reserve, thyroid status, water balance, gonadal/GH/prolactin axis, or medication history cannot be extracted.", contextDomains, sourceIds, { missing_any: contextDomains }),
+    action: "Document headache timing, visual acuity/fields, diplopia or cranial nerve palsy, mental status, vitals, 8-9 AM cortisol, sodium, glucose, serum/urine osmolality and urine output if DI is possible, free T4/TSH, prolactin, IGF-1, LH/FSH with testosterone or estradiol as applicable, pituitary MRI/visual-field status, pregnancy/fertility context, prior surgery/radiation, and current glucocorticoid/thyroid/DDAVP/GH/sex-steroid therapy.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["headache/vision/cranial nerve findings", "8-9 AM cortisol", "free T4 and TSH", "serum sodium", "urine output/osmolality when DI possible", "prolactin", "IGF-1", "LH/FSH with sex steroid", "pituitary MRI or visual-field status", "current hormone replacement medications"]
+  });
+
+  const missingPituitaryDataEndpoint = endpoint({
+    id: `${prefix}_missing_axis_data_endpoint`,
+    label: "Missing data needed: adrenal-first endocrine panel, DI safety data, or pituitary imaging",
+    edgeLabel: "Cannot route adrenal crisis, central hypothyroidism, DI, gonadal/GH deficiency, apoplexy, or tumor monitoring until axis labs, sodium/water-balance data, and sellar imaging/visual data are known",
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_axis_data_criteria`, "Route here when the exact endocrine axis or mass-effect data needed for safe sequencing are unavailable.", contextDomains, sourceIds, { missing_any: ["8-9 AM cortisol", "free T4", "TSH", "serum sodium", "urine output/osmolality when DI possible", "prolactin", "IGF-1", "LH/FSH and sex steroid", "pituitary MRI/visual fields"] }),
+    action: "Obtain 8-9 AM cortisol before thyroid escalation when stable, sodium and glucose, free T4/TSH, serum/urine osmolality and urine output if DI is possible, prolactin, IGF-1, LH/FSH plus testosterone or estradiol, pregnancy test when relevant, pituitary MRI, formal visual fields when optic chiasm risk exists, and medication history including glucocorticoids, opioids, dopamine agents, immune checkpoint inhibitors, and estrogen.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["8-9 AM cortisol", "free T4/TSH", "serum sodium", "urine output and urine osmolality/specific gravity", "prolactin", "IGF-1", "LH/FSH plus testosterone or estradiol", "pregnancy status when relevant", "pituitary MRI", "visual fields when chiasm risk exists", "current hormone and interacting medications"]
+  });
+
+  const apoplexyCrisisEndpoint = endpoint({
+    id: `${prefix}_apoplexy_or_adrenal_crisis_endpoint`,
+    label: "Pituitary apoplexy or secondary adrenal crisis: hydrocortisone now, urgent MRI/visual assessment, endocrine-neurosurgical disposition",
+    edgeLabel: "Emergency branch: sudden severe headache, visual loss, visual-field defect, ophthalmoplegia/cranial nerve palsy, reduced consciousness, meningism, severe hypotension, vomiting, hypoglycemia, or severe hyponatremia",
+    sourceIds: unique([...hypopit, ...adrenal]),
+    criteria: criteria(`${prefix}_apoplexy_crisis_criteria`, "Use when mass-effect symptoms, pituitary apoplexy concern, or secondary adrenal crisis features require emergency treatment and monitored disposition.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], unique([...hypopit, ...adrenal]), { criteria_options: criteriaRows }),
+    action: "Treat first-risk physiology: give hydrocortisone 50-100 mg immediately when secondary adrenal crisis is suspected, draw cortisol/ACTH first only if this does not delay care, correct hypoglycemia or severe hyponatremia cautiously, obtain urgent pituitary MRI or CT if MRI unavailable, perform visual acuity/fields and cranial nerve assessment, and arrange same-day endocrine plus neurosurgical/ophthalmology review with monitored or inpatient disposition.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["blood pressure/perfusion", "mental status", "glucose", "sodium", "visual acuity and fields", "cranial nerve findings", "MRI/CT completion", "hydrocortisone timing"]
+  });
+
+  const centralAiEndpoint = endpoint({
+    id: `${prefix}_central_ai_endpoint`,
+    label: "Central adrenal insufficiency: replace glucocorticoid before thyroid hormone escalation",
+    edgeLabel: "Adrenal branch: 8-9 AM cortisol below 3 ug/dL, indeterminate 3-15 ug/dL needing dynamic test, peak stimulated cortisol below 18.1 ug/dL, or adrenal status unknown before L-T4",
+    sourceIds: hypopit,
+    criteria: criteria(`${prefix}_central_ai_criteria`, "Use when central adrenal insufficiency is diagnosed, indeterminate, or must be covered before thyroid hormone is started.", ["labs", "medications", "vitals", "workup_findings"], hypopit, { criteria_options: criteriaRows }),
+    action: "Start or confirm physiologic glucocorticoid replacement before levothyroxine escalation; use the lowest tolerable hydrocortisone dose chronically, teach stress dosing, and complete dynamic adrenal testing when morning cortisol is 3-15 ug/dL or recent pituitary injury makes basal testing unreliable.",
+    endpointType: "treatment",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["symptoms of underreplacement", "weight/BP/metabolic effects", "stress-dose plan", "repeat adrenal testing date", "L-T4 timing only after adrenal coverage"]
+  });
+
+  const centralHypothyroidEndpoint = endpoint({
+    id: `${prefix}_central_hypothyroid_endpoint`,
+    label: "Central hypothyroidism: titrate levothyroxine by free T4 after adrenal coverage",
+    edgeLabel: "Thyroid branch: free T4 below reference range with low or inappropriately normal TSH, but adrenal reserve has been covered or excluded",
+    sourceIds: hypopit,
+    criteria: criteria(`${prefix}_central_hypothyroid_criteria`, "Use when central hypothyroidism is present and adrenal insufficiency has been excluded or glucocorticoid therapy has been started.", ["labs", "medications", "comorbidities", "pregnancy_status", "workup_findings"], hypopit, { criteria_options: criteriaRows }),
+    action: "Use free T4 rather than TSH to adjust levothyroxine, avoid both low and elevated free T4, reassess free T4 after estrogen or GH changes, use extra caution with cardiac disease or older age, and document that adrenal insufficiency was treated or excluded before thyroid hormone escalation.",
+    endpointType: "treatment",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["free T4 target range", "symptoms", "cardiac tolerance", "estrogen/GH changes", "adrenal coverage status"]
+  });
+
+  const diEndpoint = endpoint({
+    id: `${prefix}_di_ddavp_safety_endpoint`,
+    label: "Central diabetes insipidus: DDAVP plan with sodium, thirst, weight, and overdose safeguards",
+    edgeLabel: "DI branch: polyuria/nocturia, hypernatremia or high-normal sodium, dilute urine, postoperative DI, adipsia, DDAVP use, hyponatremia risk, or new polyuria after glucocorticoids",
+    sourceIds: hypopit,
+    criteria: criteria(`${prefix}_di_criteria`, "Use when central diabetes insipidus or DDAVP safety affects the active hypopituitarism branch.", ["symptoms", "labs", "medications", "comorbidities", "workup_findings"], hypopit, { criteria_options: criteriaRows }),
+    action: "Individualize DDAVP schedule, educate about overdose and hyponatremia risk, ensure at least weekly medication-wearoff polyuria unless specialist-directed otherwise, monitor serum sodium and weight more closely in adipsic DI, attempt at least one DDAVP discontinuation trial during weeks to months after pituitary surgery when safe, and use emergency medical identification.",
+    endpointType: "monitoring_reassessment",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["serum sodium", "urine output/nocturia", "thirst/adipsia", "weight", "DDAVP timing", "weekly polyuria interval", "postoperative recovery trial", "emergency bracelet/necklace"]
+  });
+
+  const gonadalGhProlactinEndpoint = endpoint({
+    id: `${prefix}_gonadal_gh_prolactin_endpoint`,
+    label: "Gonadal, GH, and prolactin axes: confirm deficiency, contraindications, fertility goals, and tumor context",
+    edgeLabel: "Stable axis branch: adrenal and thyroid sequencing addressed, then LH/FSH-sex steroid, prolactin, IGF-1/dynamic GH testing, fertility intent, age, tumor activity, and contraindications guide treatment",
+    sourceIds: hypopit,
+    criteria: criteria(`${prefix}_gonadal_gh_prolactin_criteria`, "Use for stable outpatient-style replacement decisions after emergency, adrenal, thyroid, and DI safety have been addressed.", ["labs", "medications", "demographics", "pregnancy_status", "comorbidities", "workup_findings"], hypopit, { criteria_options: criteriaRows }),
+    action: "Evaluate LH/FSH with testosterone or estradiol, prolactin, IGF-1 and dynamic GH testing when indicated, pregnancy/fertility goals, tumor status, contraindications, and cardiometabolic or bone risk; if proven adult GH deficiency has no contraindication, start GH 0.2-0.4 mg/day when age is below 60 years or 0.1-0.2 mg/day when age is above 60 years, then titrate to keep IGF-1 below ULN and reduce for side effects.",
+    endpointType: "clinician_review_handoff",
+    guidelineCutoffs: criteriaRows,
+    reviewNeededReason: "Sex-steroid, fertility, GH, tumor, and prolactin management depends on reproductive goals, tumor type/activity, contraindications, and local endocrine protocols."
+  });
+
+  const mimicEndpoint = endpoint({
+    id: `${prefix}_mimic_exclusion_endpoint`,
+    label: "Mimic or alternate pituitary-axis explanation: route after adrenal crisis and apoplexy are excluded",
+    edgeLabel: "Alternate branch: primary thyroid/adrenal/gonadal disease, medication effect, pregnancy/lactation physiology, renal or osmotic polyuria, hyperglycemia, hypercalcemia, infection, malignancy, or nonpituitary sellar disease fits better",
+    sourceIds: sourceIdsForItems(differentials, sourceIds),
+    criteria: criteria(`${prefix}_mimic_criteria`, "Use when pituitary-axis results or imaging do not support hypopituitarism or a competing diagnosis explains the abnormalities better.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "pregnancy_status", "workup_findings"], sourceIdsForItems(differentials, sourceIds), { criteria_options: criteriaRows }),
+    action: "Document which pituitary axis or imaging findings argue against hypopituitarism, treat emergency adrenal risk if still uncertain, then route to the competing primary endocrine, medication, renal/osmotic, pregnancy/lactation, inflammatory, infectious, malignant, or other sellar pathway.",
+    endpointType: "clinician_review_handoff",
+    reviewNeededReason: "Primary gland disease, medication effect, physiologic state, or nonpituitary sellar pathology changes the active pathway."
+  });
+
+  const monitoringEndpoint = endpoint({
+    id: `${prefix}_monitoring_interactions_endpoint`,
+    label: "Replacement monitoring: prevent adrenal, thyroid, DDAVP, GH, and postoperative interaction harms",
+    edgeLabel: "Monitoring branch: GH start, estrogen change, glucocorticoid start, DDAVP use, postoperative status, pituitary surgery, radiation, or overreplacement risk changes labs and symptoms",
+    sourceIds: hypopit,
+    criteria: criteria(`${prefix}_monitoring_criteria`, "Use after any hormone replacement or pituitary surgery/radiation plan to detect hormone interactions, underreplacement, overreplacement, and water-balance complications.", ["symptoms", "exam", "vitals", "labs", "medications", "imaging_results", "workup_findings"], hypopit, { criteria_options: criteriaRows }),
+    action: "Monitor free T4 after GH or estrogen changes, monitor for new polyuria/DI after glucocorticoid therapy, avoid glucocorticoid overreplacement, avoid low or elevated free T4, check sodium and weight on DDAVP or adipsic DI, reassess HPA axis after pituitary surgery when tapering steroids, and repeat MRI/visual evaluation according to tumor or postoperative plan.",
+    endpointType: "monitoring_reassessment",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["free T4", "morning cortisol or HPA retesting", "sodium", "urine output/weight", "IGF-1 and GH side effects", "visual fields/MRI", "fracture/cardiometabolic risks", "overreplacement symptoms"]
+  });
+
+  const followupEndpoint = endpoint({
+    id: `${prefix}_followup_safety_endpoint`,
+    label: "Hypopituitarism follow-up: emergency steroid/DI safety, pending-result ownership, and specialty review",
+    edgeLabel: "Stable branch: emergency physiology excluded or treated, hormone sequence documented, medication access confirmed, pending labs/imaging owned, and safety instructions can be delivered",
+    sourceIds,
+    criteria: criteria(`${prefix}_followup_criteria`, "Use when hypopituitarism management is stable enough for disposition and longitudinal endocrine follow-up.", ["vitals", "labs", "medications", "follow_up_access", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
+    action: "Confirm hydrocortisone stress-dose plan when adrenal insufficiency is present, emergency identification for adrenal insufficiency or DI, DDAVP overdose and hyponatremia instructions, thyroid dose follow-up using free T4, owner and timing for pituitary MRI/visual fields and axis labs, medication access, and return precautions for severe headache, vision change, diplopia, syncope, vomiting, confusion, severe polyuria/thirst, or inability to take steroids.",
+    endpointType: "safety_net_instruction",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["pending labs/imaging owner", "endocrinology follow-up", "stress-dose steroid plan", "DDAVP safety instructions", "free T4 monitoring", "return precautions", "medication access"]
+  });
+
+  const replacementAction = actionNode({
+    id: `${prefix}_replacement_sequence_action`,
+    label: "Stable hypopituitarism: sequence adrenal, thyroid, DI, gonadal, GH, monitoring, and follow-up decisions",
+    edgeLabel: "Stable branch: no immediate apoplexy or crisis physiology, and enough endocrine axis data exist to apply hormone-sequencing rules",
+    sourceIds,
+    criteria: criteria(`${prefix}_replacement_sequence_criteria`, "Route stable hypopituitarism through hormone replacement sequencing and monitoring after emergency features have been excluded.", ["labs", "medications", "imaging_results", "pregnancy_status", "comorbidities", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
+    action: "Address adrenal coverage before thyroid hormone, central hypothyroid dosing by free T4, DI/DDAVP sodium safety, gonadal/GH/prolactin decisions, monitoring interactions, and safety-net follow-up as concurrent endocrine tasks.",
+    parallelActions: ["adrenal coverage before L-T4", "free T4-guided thyroid replacement", "DDAVP and sodium safety", "gonadal/GH/prolactin axis review", "MRI/visual/tumor follow-up", "emergency steroid and DI safety instructions"],
+    guidelineCutoffs: criteriaRows,
+    children: [centralAiEndpoint, centralHypothyroidEndpoint, diEndpoint, gonadalGhProlactinEndpoint, monitoringEndpoint, followupEndpoint]
+  });
+
+  const classificationDecision = decision({
+    id: `${prefix}_classification_decision`,
+    label: "Hypopituitarism: choose apoplexy/crisis, adrenal-first sequence, DI safety, replacement, mimic, or follow-up branch",
+    edgeLabel: "Pituitary symptoms, visual findings, cortisol, free T4/TSH, sodium/water-balance data, pituitary MRI/visual results, medications, and special-population modifiers are available for routing",
+    sourceIds,
+    criteria: criteria(`${prefix}_classification_criteria`, "Classify hypopituitarism by emergency mass effect, central adrenal reserve, thyroid status, DI/water balance, remaining pituitary axes, medications, pregnancy/fertility status, imaging, and treatment response.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Choose from emergency apoplexy/adrenal crisis, missing axis data, stable hormone-sequencing plan, DI safety, gonadal/GH/prolactin review, monitoring, follow-up, or competing diagnosis.",
+    clinicalCriteria: criteriaRows,
+    guidelineCutoffs: criteriaRows,
+    children: [missingPituitaryDataEndpoint, apoplexyCrisisEndpoint, replacementAction, mimicEndpoint]
+  });
+
+  const initialAssessment = actionNode({
+    id: `${prefix}_initial_assessment`,
+    label: "Hypopituitarism: assess mass effect and endocrine axes with adrenal safety first",
+    edgeLabel: "Patient has known pituitary disease, surgery/radiation, immune checkpoint inhibitor exposure, postpartum pituitary injury, headache/vision symptoms, fatigue, amenorrhea/low libido, polyuria, hyponatremia, low free T4 with non-elevated TSH, or clinician-chosen pituitary evaluation",
+    sourceIds,
+    criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial hypopituitarism assessment requires emergency mass-effect screen and endocrine axes that allow safe replacement sequencing.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Assess severe headache, vision, visual fields, ocular motility, and pituitary MRI need; measure blood pressure, measure heart rate, and document mental status. Obtain 8-9 AM cortisol before thyroid escalation when stable, free T4/TSH, sodium/glucose, serum and urine osmolality with urine output if DI is possible, prolactin, IGF-1, LH/FSH with sex steroid, pregnancy status when relevant, medication/surgery/radiation history, and current hormone access.",
+    parallelActions: ["measure blood pressure", "measure heart rate", "document mental status", "headache/vision/cranial nerve assessment", "8-9 AM cortisol before thyroid escalation when stable", "free T4 and TSH", "sodium/glucose and DI water-balance data", "prolactin/IGF-1/LH/FSH/sex steroid panel", "pituitary MRI and visual fields when indicated", "medication/surgery/radiation/pregnancy context"],
+    requiredData: unique(criteriaRows.flatMap((row) => row.data_needed || [])),
+    guidelineCutoffs: criteriaRows,
+    children: [classificationDecision]
+  });
+
+  const root = decision({
+    id: "root",
+    label: "Hypopituitarism: route by apoplexy/adrenal crisis risk, pituitary-axis labs, hormone sequencing, DI safety, and disposition",
+    sourceIds,
+    criteria: criteria(`${prefix}_activate`, "Activate for known or suspected hypothalamic-pituitary disease, pituitary mass/surgery/radiation, apoplexy symptoms, postpartum pituitary injury, unexplained multi-axis hormone deficiency, central hypothyroidism, central adrenal insufficiency, central DI, hypogonadotropic hypogonadism, GH deficiency, or clinician-chosen pituitary evaluation.", ["selected_workup_id", "presenting_symptoms", "vitals", "labs", "imaging_results", "problem_list_or_diagnosis", "clinician_selected_module"], sourceIds),
+    action: "Route hypopituitarism through emergency apoplexy/adrenal crisis treatment, missing axis data, adrenal-before-thyroid sequencing, central hypothyroid dosing by free T4, DDAVP and sodium safety, gonadal/GH/prolactin review, monitoring interactions, follow-up, and safety-net endpoints.",
+    children: [missingContextEndpoint, initialAssessment]
+  });
+
+  const activationRules = {};
+  const allNodeSourceIds = [];
+  const collect = (entry) => {
+    allNodeSourceIds.push(...(entry.source_ids || []), ...(entry.criteria?.source_ids || []));
+    if (entry.criteria) activationRules[entry.id] = entry.criteria;
+    for (const child of entry.children || []) collect(child);
+  };
+  collect(root);
+  const sourceThresholds = sourceThresholdsFromCriteria(criteriaRows);
+  const localEvidenceSourceIds = sourceIdsForItems([...tests, ...redFlags, ...differentials, ...dispositions], sourceIds);
+  const finalSourceIds = unique([...sourceIds, ...localEvidenceSourceIds, ...allNodeSourceIds, ...sourceThresholds.flatMap((row) => row.source_ids || [])]);
+
+  return {
+    schema: "clinical_pathway_tree_v1",
+    workupId: module.id,
+    workup_id: module.id,
+    title: label,
+    version: "4.0.0",
+    status: "hand_polished_hypopituitarism_pathway_needs_clinician_review",
+    source_ids: finalSourceIds,
+    source_metadata: sourceRowsForTree(finalSourceIds, sourceById),
+    provenance: {
+      generated_by: "scripts/hand-polish-clinical-pathway-trees.js",
+      generated_at: `${auditDate}T00:00:00.000Z`,
+      update_scope: "clinical_pathway_tree_v1 only",
+      source_material: "Endocrine Society 2016 Hormone Replacement in Hypopituitarism guideline, Endocrine Society 2016 Primary Adrenal Insufficiency guideline for crisis dosing support, and local module evidence rows",
+      review_note: "Hypopituitarism tree is threshold-cited and patient-traversable; pituitary apoplexy surgical timing, tumor-specific therapy, fertility plans, postoperative protocols, and local DDAVP/steroid order sets require clinician governance."
+    },
+    source_thresholds: sourceThresholds,
+    traversable_context: buildTraversableContext(module, finalSourceIds, tests, criteriaRows),
+    activationRules,
+    root,
+    synthetic_patient_scenarios: [
+      { scenario_id: "missing_context", major_pathway: "missing_data_needed", expected_endpoint_id: missingContextEndpoint.id, expected_active_branch: missingContextEndpoint.edgeLabel },
+      { scenario_id: "missing_axis_data", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: missingPituitaryDataEndpoint.id, expected_active_branch: missingPituitaryDataEndpoint.edgeLabel },
+      { scenario_id: "pituitary_apoplexy_or_secondary_crisis", major_pathway: "escalation_emergency_actions", expected_endpoint_id: apoplexyCrisisEndpoint.id, expected_active_branch: apoplexyCrisisEndpoint.edgeLabel },
+      { scenario_id: "central_adrenal_first", major_pathway: "first_line_management", expected_endpoint_id: centralAiEndpoint.id, expected_active_branch: centralAiEndpoint.edgeLabel },
+      { scenario_id: "central_thyroid_and_di_risk", major_pathway: "severity_risk_stratification", expected_endpoint_id: centralHypothyroidEndpoint.id, expected_active_branch: centralHypothyroidEndpoint.edgeLabel },
+      { scenario_id: "axis_contraindication_review", major_pathway: "contraindications_special_populations", expected_endpoint_id: gonadalGhProlactinEndpoint.id, expected_active_branch: gonadalGhProlactinEndpoint.edgeLabel },
+      { scenario_id: "mimic_or_primary_gland_disease", major_pathway: "mimics_exclusions", expected_endpoint_id: mimicEndpoint.id, expected_active_branch: mimicEndpoint.edgeLabel },
+      { scenario_id: "replacement_interaction_monitoring", major_pathway: "monitoring_reassessment_escalation", expected_endpoint_id: monitoringEndpoint.id, expected_active_branch: monitoringEndpoint.edgeLabel },
+      { scenario_id: "postoperative_taper_or_ddavp_trial", major_pathway: "deescalation_stopping_criteria", expected_endpoint_id: monitoringEndpoint.id, expected_active_branch: monitoringEndpoint.edgeLabel },
+      { scenario_id: "followup_safety_net", major_pathway: "disposition_followup_safety_netting", expected_endpoint_id: followupEndpoint.id, expected_active_branch: followupEndpoint.edgeLabel }
+    ],
+    audit_requirements: {
+      required_domains: requiredPathwayDomains,
+      hand_polish_requirements: [
+        "emergency branch treats secondary adrenal crisis with hydrocortisone 50-100 mg and urgent visual/imaging/specialty disposition",
+        "adrenal branch uses 8-9 AM cortisol below 3 ug/dL, above 15 ug/dL, and 3-15 ug/dL dynamic-testing range",
+        "central hypothyroidism branch requires adrenal evaluation or empiric glucocorticoid before L-T4 and uses free T4 instead of TSH for titration",
+        "DI branch includes DDAVP overdose/hyponatremia education, at least weekly medication wearoff polyuria, sodium/weight monitoring, postoperative discontinuation trial, and emergency identification",
+        "GH branch includes 0.2-0.4 mg/day below age 60, 0.1-0.2 mg/day above age 60, IGF-1 below ULN titration, and contraindication review"
+      ]
+    }
+  };
+}
+
 function enrichModule(module) {
   const curatedRows = curatedCutoffCriteria[module.id] || [];
   if (!curatedRows.length) return module;
@@ -2301,7 +2900,11 @@ function main() {
         ? buildAdultDkaHhsClinicalPathwayTree(module, sourceById)
         : module.id === "pediatric_dka_hhs_hyperglycemia_v1"
           ? buildPediatricDkaHhsClinicalPathwayTree(module, sourceById)
-          : buildCompactClinicalPathwayTree(module, sourceById);
+          : ["addisons_disease_v1", "adrenal_insufficiency_v1"].includes(module.id)
+            ? buildAdrenalInsufficiencyClinicalPathwayTree(module, sourceById)
+            : module.id === "hypopituitarism_v1"
+              ? buildHypopituitarismClinicalPathwayTree(module, sourceById)
+              : buildCompactClinicalPathwayTree(module, sourceById);
     const nextModule = { ...module, clinical_pathway_tree_v1: clinicalPathway };
     const nextRaw = raw.module ? { ...raw, module: nextModule } : nextModule;
     const next = `${JSON.stringify(nextRaw, null, 2)}\n`;
