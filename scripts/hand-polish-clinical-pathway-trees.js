@@ -1062,6 +1062,87 @@ const curatedCutoffCriteria = {
       data_needed: ["clinical stability", "oral intake", "oxygen saturation trend in air", "sleep observation", "comorbidity/risk factors"],
       source_ids: ["NICE_BRONCHIOLITIS_NG9"],
       source_section: "When to discharge"
+    },
+    {
+      id: "peds_bronchiolitis_supportive_no_meds",
+      label: "Bronchiolitis supportive care: oxygen only for persistent SpO2 <90%; HFNP after 2 hours low-flow failure; NG feeds at two-thirds maintenance when non-oral hydration is needed",
+      criteria_text: "RCH bronchiolitis guidance targets SpO2 90%, starts nasal-prong oxygen only when SpO2 is persistently <90%, considers HFNP when SpO2 remains persistently <90% and respiratory state does not improve after 2 hours of low-flow oxygen, and uses NG bolus feeds at two-thirds maintenance when non-oral hydration is required.",
+      cutoffs: ["90%", "<90%", "2 hours", "two-thirds maintenance"],
+      data_needed: ["persistent oxygen saturation", "oxygen device and duration", "respiratory state after low-flow oxygen", "feeding percentage", "hydration status", "NG tolerance"],
+      source_ids: ["RCH_BRONCHIOLITIS_CHILD", "NICE_BRONCHIOLITIS_NG9"],
+      source_section: "Supplemental oxygen and hydration/nutrition"
+    },
+    {
+      id: "peds_bronchiolitis_high_risk_age_apnea",
+      label: "Bronchiolitis high-risk infants: gestation <37 weeks, age <10 weeks, age <3 months, apnea >15 seconds, or FiO2 >50% on HFNP changes admission or transfer",
+      criteria_text: "RCH lists prematurity <37 weeks, chronological age <10 weeks, cardiopulmonary, neurologic, growth, immune, smoke, Indigenous, or trisomy 21 risk factors for more serious bronchiolitis; apnea is absence of breathing >15 seconds with bradycardia or desaturation. NICE flags age <3 months and prematurity under 32 weeks as risk factors. RCH transfer guidance includes HFNP oxygen requirement with FiO2 >50%.",
+      cutoffs: ["<37 weeks", "<10 weeks", "<3 months", "under 32 weeks", ">15 seconds", ">50%"],
+      data_needed: ["gestational age", "chronological age", "apnea history", "bradycardia/desaturation", "HFNP FiO2", "cardiopulmonary disease", "neurologic disease", "growth restriction", "immune status", "smoke exposure", "trisomy 21", "Indigenous ethnicity"],
+      source_ids: ["RCH_BRONCHIOLITIS_CHILD", "NICE_BRONCHIOLITIS_NG9"],
+      source_section: "Risk factors, apnea observation, and transfer"
+    },
+    {
+      id: "peds_bronchiolitis_pneumonia_wheeze_mimics",
+      label: "Bronchiolitis mimics: fever >39 C or focal crackles suggests pneumonia; recurrent wheeze, atopy, or no crackles suggests asthma/viral wheeze; sudden choking or asymmetry needs foreign-body/pneumothorax review",
+      criteria_text: "NICE recommends considering pneumonia when fever is >39 C or focal crackles persist, and considering viral-induced wheeze or early asthma in older infants/young children with persistent wheeze without crackles, recurrent episodic wheeze, or personal/family atopy. RCH acute asthma notes persistent auscultatory asymmetry may indicate inhaled foreign body or pneumothorax.",
+      cutoffs: [">39 C", "<1 year"],
+      data_needed: ["temperature", "focal crackles", "wheeze versus crackles", "recurrent episodes", "personal/family atopy", "sudden choking", "persistent asymmetry", "chest pain", "CXR if indicated"],
+      source_ids: ["NICE_BRONCHIOLITIS_NG9", "RCH_ASTHMA_ACUTE_CHILD"],
+      source_section: "Assessment/diagnosis and red flags for alternative diagnoses"
+    },
+    {
+      id: "peds_asthma_pram_fev1_severity",
+      label: "Acute asthma severity: PRAM 0-3 mild, 4-7 moderate, 8-12 severe; FEV1 >70%, 50-70%, or <50%; SpO2 <=92% increases failure risk",
+      criteria_text: "Canadian Paediatric Society PRAM scoring classifies acute asthma as mild at 0-3, moderate at 4-7, and severe at 8-12; FEV1 is generally >70% in mild, 50-70% in moderate, and <50% in severe exacerbations. SpO2 <=92% on presentation is associated with higher morbidity and emergency-department management failure.",
+      cutoffs: ["0-3", "4-7", "8-12", ">70%", "50-70%", "<50%", "<=92%"],
+      data_needed: ["PRAM score", "oxygen saturation in air", "work of breathing", "air entry", "wheeze intensity or silent chest", "accessory muscle use", "FEV1 if feasible", "age/cooperation"],
+      source_ids: ["CPS_ACUTE_ASTHMA_CHILD_2021"],
+      source_section: "Assessment of respiratory distress and PRAM table"
+    },
+    {
+      id: "peds_asthma_initial_saba_ipratropium",
+      label: "Acute asthma inhaled therapy: salbutamol MDI 5 puffs if <20 kg or 10 puffs if >=20 kg; ipratropium 4 puffs x3, or 8 puffs if >=30 kg",
+      criteria_text: "CPS medication dosing table lists salbutamol MDI 500 mcg/dose (5 puffs of 100 mcg) for children <20 kg and 1000 mcg/dose (10 puffs) for children >=20 kg. Ipratropium MDI is 4 puffs of 20 mcg/puff for 3 doses, increasing to 8 puffs/dose if weight is >=30 kg.",
+      cutoffs: ["<20 kg", "500 mcg", "5 puffs", "100 mcg/puff", ">=20 kg", "1000 mcg", "10 puffs", "4 puffs", "20 mcg/puff", "3 doses", ">=30 kg", "8 puffs"],
+      data_needed: ["weight", "spacer/MDI ability", "PRAM severity", "oxygen saturation", "prior salbutamol timing", "ipratropium use", "tachycardia/tremor"],
+      source_ids: ["CPS_ACUTE_ASTHMA_CHILD_2021", "RCH_ASTHMA_ACUTE_CHILD"],
+      source_section: "Medication table and treatment key points"
+    },
+    {
+      id: "peds_asthma_nebulized_continuous_doses",
+      label: "Acute asthma nebulized therapy: intermittent salbutamol 2.5 mg if <20 kg or 5 mg if >=20 kg; continuous 0.5 mg/kg/h max 15 mg/h",
+      criteria_text: "CPS dosing table lists intermittent nebulized salbutamol 2.5 mg for children <20 kg and 5 mg for children >=20 kg, diluted to 3 mL. Continuous nebulization is 0.5 mg/kg/hour up to 15 mg/hour, or 7.5 mg over 1 hour if <20 kg and 15 mg over 1 hour if >=20 kg.",
+      cutoffs: ["2.5 mg", "<20 kg", "5 mg", ">=20 kg", "3 mL", "0.5 mg/kg/h", "15 mg/h", "7.5 mg", "1 hour", "15 mg"],
+      data_needed: ["weight", "severity/poor response", "oxygen desaturation between MDI treatments", "heart rhythm", "potassium", "glucose", "electrolytes", "lactate concern"],
+      source_ids: ["CPS_ACUTE_ASTHMA_CHILD_2021"],
+      source_section: "Medication table for intermittent and continuous nebulized salbutamol"
+    },
+    {
+      id: "peds_asthma_steroid_magnesium_doses",
+      label: "Acute asthma steroids/magnesium: dexamethasone 0.3-0.6 mg/kg max 10-16 mg; prednisolone 1-2 mg/kg max 50 mg; IV magnesium 40-75 mg/kg max 2.5 g",
+      criteria_text: "CPS recommends systemic steroids early in moderate to severe exacerbations, ideally within the first hour. Dosing table options include dexamethasone 0.3-0.6 mg/kg (max 10-16 mg), prednisolone/prednisone 1-2 mg/kg (max 50 mg), methylprednisolone 1-2 mg/kg (max 80-125 mg), and IV magnesium sulfate 40-75 mg/kg over 20-30 minutes (max 2.5 g). RCH acute asthma lists magnesium 50 mg/kg (0.2 mmol/kg) to max 8 mmol.",
+      cutoffs: ["0.3-0.6 mg/kg", "10-16 mg", "1-2 mg/kg", "50 mg", "80-125 mg", "40-75 mg/kg", "20-30 minutes", "2.5 g", "50 mg/kg", "0.2 mmol/kg", "8 mmol"],
+      data_needed: ["weight", "asthma severity", "oral tolerance/vomiting", "time from arrival", "blood pressure", "cardiorespiratory monitoring", "renal function if available", "steroid exposure"],
+      source_ids: ["CPS_ACUTE_ASTHMA_CHILD_2021", "RCH_ASTHMA_ACUTE_CHILD"],
+      source_section: "Systemic corticosteroids and IV magnesium sulfate dosing"
+    },
+    {
+      id: "peds_asthma_picu_admission_discharge",
+      label: "Acute asthma disposition: admit for PRAM >=4 at 4-6 h post-steroid, oxygen need, SABA more often than q4h; PICU if PRAM 8-12 persists after 1-2 h",
+      criteria_text: "CPS admission criteria include ongoing oxygen need, moderate/severe distress with PRAM >=4 four to six hours after corticosteroids, or beta2-agonist need more often than every 4 hours after conventional treatment. ICU/tertiary referral is considered when severe distress fails to improve after 1-2 hours with persisting PRAM 8-12. Discharge criteria include SpO2 >=92% in room air, PRAM <=3 sustained 1-2 hours after last bronchodilator, improved air entry, and SABA not more often than every 4 hours.",
+      cutoffs: [">=4", "4-6 hours", "every 4 hours", "1-2 hours", "8-12", ">=92%", "<=3"],
+      data_needed: ["PRAM trend", "time since corticosteroid", "oxygen requirement", "salbutamol interval", "air entry", "room-air oxygen saturation", "comorbidities", "follow-up reliability"],
+      source_ids: ["CPS_ACUTE_ASTHMA_CHILD_2021"],
+      source_section: "Disposition, ICU referral, and discharge criteria"
+    },
+    {
+      id: "peds_asthma_followup_controller_cutoffs",
+      label: "Asthma discharge prevention: daily ICS if symptoms or waking >=2 times/month, oral-steroid exacerbation in prior 12 months, preschool symptoms >=8 days/month, follow-up within 4 weeks",
+      criteria_text: "CPS recommends daily inhaled corticosteroids for children/youth with symptoms or nighttime waking 2 times/month or more, or moderate/severe exacerbations requiring oral steroids within the last 12 months; preschoolers should receive regular ICS for persistent symptoms >=8 days/month or moderate/severe exacerbation requiring oral steroids. Follow-up should occur within 4 weeks, and recurrent >=2 moderate/severe exacerbations despite moderate-dose ICS warrants specialist referral.",
+      cutoffs: [">=2 times/month", "12 months", ">=8 days/month", "4 weeks", ">=2"],
+      data_needed: ["daytime symptoms", "night waking", "prior oral steroid courses", "preschool symptom days/month", "current ICS/adherence/technique", "action plan", "follow-up appointment", "specialist referral criteria"],
+      source_ids: ["CPS_ACUTE_ASTHMA_CHILD_2021", "GINA_ASTHMA_2025", "NHLBI_NAEPP_ASTHMA_2020"],
+      source_section: "Discharge plan and controller prevention"
     }
   ],
   pediatric_urinary_uti_pyelonephritis_v1: [
@@ -7126,6 +7207,228 @@ function buildPediatricRashSkinClinicalPathwayTree(module, sourceById) {
   });
 }
 
+function buildPediatricRespiratoryWheezeClinicalPathwayTree(module, sourceById) {
+  const label = module.label || "Pediatric respiratory distress, wheeze, or bronchiolitis";
+  const prefix = "pediatric_resp_wheeze";
+  const niceBronch = ["NICE_BRONCHIOLITIS_NG9"];
+  const rchBronch = ["RCH_BRONCHIOLITIS_CHILD"];
+  const rchAsthma = ["RCH_ASTHMA_ACUTE_CHILD"];
+  const cpsAsthma = ["CPS_ACUTE_ASTHMA_CHILD_2021"];
+  const ginaAsthma = ["GINA_ASTHMA_2025"];
+  const nhlbiAsthma = ["NHLBI_NAEPP_ASTHMA_2020"];
+  const niceSepsis = ["NICE_SEPSIS_UNDER16_2025"];
+  const rchAnaphylaxis = ["RCH_ANAPHYLAXIS_CHILD"];
+  const sourceIds = unique([...niceBronch, ...rchBronch, ...rchAsthma, ...cpsAsthma, ...ginaAsthma, ...nhlbiAsthma, ...niceSepsis, ...rchAnaphylaxis, ...genericSourceIds]);
+  const tests = firstItems(module, "initialTests", 8);
+  const redFlags = firstItems(module, "redFlags", 8);
+  const differentials = firstItems(module, "differentialBuckets", 8);
+  const dispositions = firstItems(module, "dispositionRules", 8, ["treatmentOptions"]);
+  const safetyChecks = firstItems(module, "safetyChecks", 8);
+  const visibleSafetyLabels = visibleListLabels(safetyChecks, 8)
+    .filter((text) => !/^(Measure|Document)\b|oxygen saturation|respiratory rate|temperature/i.test(text));
+  const evidenceLabels = {
+    tests: compactArrayText(visibleListLabels(tests, 8), "pulse oximetry, PRAM/FEV1, CXR only when indicated", 4, 220),
+    redFlags: compactArrayText(visibleListLabels(redFlags, 8), "apnea, cyanosis, exhaustion, SpO2 failure, severe asthma, sepsis, or mimic red flags", 4, 240),
+    differentials: compactArrayText(visibleListLabels(differentials, 8), "bronchiolitis, asthma/viral wheeze, pneumonia, foreign body, anaphylaxis, sepsis, or cardiac mimic", 4, 240),
+    dispositions: compactArrayText(visibleListLabels(dispositions, 8), "bronchiolitis admission/discharge and asthma admission/PICU/follow-up rules", 4, 220),
+    safety: compactArrayText(visibleSafetyLabels, "prematurity, infant age, cardiopulmonary disease, immune risk, pregnancy, and access modifiers", 4, 220)
+  };
+  const criteriaRows = cutoffCriteriaForModule(module);
+
+  const missingContextEndpoint = endpoint({
+    id: "endpoint_missing_context",
+    label: "Missing core respiratory context",
+    edgeLabel: internalTraversalGuardLabel,
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_context_criteria`, "Use this endpoint only when pediatric respiratory routing cannot be calculated because essential respiratory age, oxygenation, work-of-breathing, feeding, asthma-response, or disposition inputs are unavailable.", contextDomains, sourceIds, { missing_any: contextDomains }),
+    action: "Document exact age, weight, gestational age and prematurity, illness day, cough/coryza onset, fever value, wheeze/crackles/asymmetry, work of breathing, respiratory rate, SpO2 in air and on oxygen, oxygen device/FiO2/flow, mental state, apnea/cyanosis, feeding percentage, wet diapers or urine output, hydration/perfusion, PRAM/FEV1 when feasible, prior asthma/atopy, prior severe attacks, current reliever/controller doses, response timing, comorbid cardiopulmonary/neuromuscular/immune disease, medication allergies, pregnancy possibility in adolescents, and follow-up/transport reliability.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["exact age", "weight", "gestational age and prematurity", "illness day", "cough/coryza pattern", "fever value", "wheeze/crackles/asymmetry", "work of breathing", "respiratory rate", "SpO2 in air", "oxygen device, flow, and FiO2", "mental state", "apnea or cyanosis", "feeding percentage", "urine output or wet diapers", "hydration/perfusion", "PRAM score or FEV1 when feasible", "asthma/atopy history", "prior ICU/intubation/ED visits", "reliever/controller dose timing", "bronchodilator response", "cardiopulmonary/neuromuscular/immune disease", "medication allergies", "pregnancy possibility in adolescents", "follow-up and transport access"]
+  });
+
+  const missingBranchDataEndpoint = endpoint({
+    id: `${prefix}_missing_branch_data_endpoint`,
+    label: "Missing respiratory branch data",
+    edgeLabel: internalTraversalGuardLabel,
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_branch_data_criteria`, "Use this endpoint only when a respiratory path requires unavailable branch-defining values such as age band, SpO2, RR, feeding, apnea, PRAM, FEV1, oxygen response, or treatment interval.", ["demographics", "symptoms", "exam", "vitals", "medications", "comorbidities", "workup_findings"], sourceIds, { missing_any: ["age band", "SpO2 in air", "respiratory rate", "work of breathing", "feeding percentage", "apnea/cyanosis", "PRAM or FEV1 when asthma possible", "oxygen response", "salbutamol interval", "steroid timing", "follow-up reliability"] }),
+    action: "Capture the exact branch-defining values before assigning a routine endpoint: age band, SpO2 in air, oxygen support and response, respiratory rate, work of breathing, apnea/cyanosis, mental state, feeding and urine output, PRAM or FEV1 when asthma is plausible, bronchodilator doses and interval, corticosteroid timing, magnesium/continuous-nebulization status, risk factors, and caregiver transport/follow-up reliability.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["age band", "SpO2 in air", "oxygen support and response", "respiratory rate", "work of breathing", "apnea/cyanosis", "mental state", "feeding and urine output", "PRAM or FEV1 when asthma is plausible", "bronchodilator doses and interval", "corticosteroid timing", "magnesium or continuous nebulization status", "risk factors", "caregiver transport and follow-up reliability"]
+  });
+
+  const respiratoryFailureEndpoint = endpoint({
+    id: `${prefix}_respiratory_failure_endpoint`,
+    label: "Respiratory failure or PICU transfer",
+    edgeLabel: "Apnea, central cyanosis, exhaustion, decreasing effort, poor SpO2 despite oxygen, PRAM 8-12 after 1-2 h, silent chest, altered mental state, or HFNP FiO2 >50%",
+    sourceIds: unique([...niceBronch, ...rchBronch, ...rchAsthma, ...cpsAsthma, ...niceSepsis]),
+    criteria: criteria(`${prefix}_respiratory_failure_criteria`, "Use when bronchiolitis or asthma physiology suggests impending respiratory failure, poor response to initial therapy, or need for pediatric critical-care transfer.", ["symptoms", "exam", "vitals", "medications", "comorbidities", "workup_findings"], unique([...niceBronch, ...rchBronch, ...rchAsthma, ...cpsAsthma, ...niceSepsis]), { criteria_options: criteriaRows }),
+    action: "Escalate now to ED resuscitation, pediatrics/PICU, or retrieval. In bronchiolitis, use oxygen for persistent SpO2 below the age/comorbidity threshold, consider CPAP for impending respiratory failure, check blood gas only for severe worsening distress with oxygen concentration >50% or suspected failure, and transfer when HFNP FiO2 is >50% or care exceeds local capability. In asthma, give oxygen, salbutamol plus ipratropium, systemic steroid, IV magnesium 40-75 mg/kg max 2.5 g or local 50 mg/kg max 8 mmol, and call PICU if PRAM 8-12 persists after 1-2 hours.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const bronchiolitisEndpoint = endpoint({
+    id: `${prefix}_bronchiolitis_endpoint`,
+    label: "Bronchiolitis supportive care",
+    edgeLabel: "Age <2 y with coryza 1-3 d then cough plus tachypnea/recession and wheeze/crackles; apply SpO2, feeding, apnea, and risk thresholds",
+    sourceIds: unique([...niceBronch, ...rchBronch]),
+    criteria: criteria(`${prefix}_bronchiolitis_criteria`, "Use when age, prodrome, cough, lower-respiratory signs, oxygenation, feeding, apnea, and risk-factor data support bronchiolitis rather than asthma, pneumonia, foreign body, sepsis, or cardiac disease.", ["demographics", "symptoms", "exam", "vitals", "comorbidities", "workup_findings"], unique([...niceBronch, ...rchBronch]), { criteria_options: criteriaRows }),
+    action: "Treat with supportive bronchiolitis care: minimal handling, nasal-prong oxygen only for persistent SpO2 <90% if age >=6 weeks, or <92% if <6 weeks or underlying disease; consider referral/admission for RR >60, RR >70, intake 50-75%, dehydration, apnea, age <3 months, prematurity, or high-risk comorbidity. Avoid routine CXR, blood tests, viral tests, antibiotics, salbutamol, ipratropium, steroids, adrenaline, hypertonic saline, and chest physiotherapy unless a different diagnosis or comorbidity justifies them. Use NG/OG fluids if oral intake is inadequate.",
+    endpointType: "treatment",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const asthmaEndpoint = endpoint({
+    id: `${prefix}_asthma_wheeze_endpoint`,
+    label: "Asthma or viral wheeze treatment",
+    edgeLabel: "Older/recurrent wheeze, atopy, prior asthma plan, PRAM 0-3/4-7/8-12, FEV1 >70/50-70/<50%, or salbutamol response supports asthma care",
+    sourceIds: unique([...rchAsthma, ...cpsAsthma, ...ginaAsthma, ...nhlbiAsthma]),
+    criteria: criteria(`${prefix}_asthma_wheeze_criteria`, "Use when recurrent/older-child wheeze, atopy, prior asthma, PRAM/FEV1 severity, and treatment response support asthma or viral-induced wheeze management.", ["demographics", "symptoms", "exam", "vitals", "medications", "comorbidities", "workup_findings"], unique([...rchAsthma, ...cpsAsthma, ...ginaAsthma, ...nhlbiAsthma]), { criteria_options: criteriaRows }),
+    action: "Treat acute asthma by severity. Give oxygen for SpO2 <92% and salbutamol MDI 5 puffs if <20 kg or 10 puffs if >=20 kg; use nebulized 2.5 mg if <20 kg or 5 mg if >=20 kg when MDI is not adequate. Add ipratropium for moderate-severe/severe attacks: 4 puffs x3, or 8 puffs if >=30 kg, or nebulized 250 mcg x3, 500 mcg x3 if >=30 kg. Give systemic steroid early: dexamethasone 0.3-0.6 mg/kg max 10-16 mg or prednisolone 1-2 mg/kg max 50 mg. Use IV magnesium for incomplete response after 1-2 hours with monitoring.",
+    endpointType: "treatment",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const mimicEndpoint = endpoint({
+    id: `${prefix}_mimic_endpoint`,
+    label: "Pneumonia, foreign body, anaphylaxis, or sepsis",
+    edgeLabel: "Fever >39 C, focal crackles, sudden choking, persistent asymmetry, urticaria/collapse, toxic appearance, poor perfusion, cardiac disease, or chest pain",
+    sourceIds: unique([...niceBronch, ...rchAsthma, ...niceSepsis, ...rchAnaphylaxis]),
+    criteria: criteria(`${prefix}_mimic_criteria`, "Use when findings favor pneumonia, foreign body, pneumothorax, anaphylaxis, sepsis, cardiac disease, or another condition that changes testing, medication, airway, or disposition.", ["symptoms", "exam", "vitals", "imaging_results", "medications", "comorbidities", "workup_findings"], unique([...niceBronch, ...rchAsthma, ...niceSepsis, ...rchAnaphylaxis]), { criteria_options: criteriaRows }),
+    action: "Do not close as bronchiolitis or asthma. Fever >39 C or persistent focal crackles should prompt pneumonia evaluation. Sudden choking, unilateral wheeze, persistent asymmetry, or hyperinflation concern should trigger foreign-body or pneumothorax assessment and imaging/specialty review. Urticaria, angioedema, hypotension, collapse, vomiting, or allergen exposure with wheeze should be treated immediately as anaphylaxis. Toxic appearance, poor perfusion, altered mental state, or sepsis physiology should enter the pediatric sepsis path.",
+    endpointType: "clinician_review_handoff",
+    guidelineCutoffs: criteriaRows,
+    reviewNeededReason: "A senior clinician should name the competing respiratory diagnosis and reconcile imaging, antibiotics, bronchoscopy, epinephrine, sepsis, or cardiac pathway needs."
+  });
+
+  const specialReviewEndpoint = endpoint({
+    id: `${prefix}_special_review_endpoint`,
+    label: "Infant, chronic disease, pregnancy, or policy review",
+    edgeLabel: "Age <6 wk, age <3 mo, prematurity <32-37 wk, cardiopulmonary/neuromuscular/immune disease, pregnancy, poor access, or local oxygen/transfer policy",
+    sourceIds,
+    criteria: criteria(`${prefix}_special_review_criteria`, "Use when age, prematurity, chronic disease, pregnancy, medication contraindication, oxygen-device policy, or access constraints make routine respiratory disposition unsafe.", ["demographics", "comorbidities", "pregnancy_status", "vitals", "medications", "follow_up_access", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
+    action: "Obtain pediatric, respiratory, allergy, infectious disease, obstetric/adult, critical-care, or retrieval review as appropriate. Resolve infant age <6 weeks or <3 months, prematurity, chronic lung or congenital heart disease, neuromuscular disease, immunodeficiency, trisomy 21, growth restriction, pregnancy/postpartum status, beta-agonist toxicity risk, steroid contraindication, oxygen/HFNP/CPAP availability, home oxygen policy, family transport, communication, and follow-up reliability before outpatient care.",
+    endpointType: "clinician_review_handoff",
+    reviewNeededReason: "Young infant age, prematurity, chronic disease, pregnancy, device availability, home oxygen, transfer thresholds, and follow-up reliability require clinician governance."
+  });
+
+  const worseningEndpoint = endpoint({
+    id: `${prefix}_worsening_endpoint`,
+    label: "Respiratory worsening or treatment failure",
+    edgeLabel: "New apnea/cyanosis/exhaustion, SpO2 below threshold, RR >70, intake <50-75%, no wet nappy 12 h, PRAM >=4 after 4-6 h steroid, or PRAM 8-12 after 1-2 h",
+    sourceIds,
+    criteria: criteria(`${prefix}_worsening_criteria`, "Escalate when respiratory reassessment no longer supports the current lower-acuity plan or the expected response has not occurred.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "follow_up_access", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
+    action: "Repeat ABCs, full vitals, SpO2 in air/on support, work of breathing, air entry, mental state, perfusion, feeding/urine output, PRAM/FEV1 if feasible, medication doses and timing, and diagnosis. Upgrade to admission, high-dependency/PICU, or transfer for apnea, cyanosis, exhaustion, silent chest, poor air entry, persistent SpO2 below age/comorbidity threshold, RR >70, intake <50-75%, no wet diaper for 12 hours, PRAM >=4 at 4-6 hours after steroid, PRAM 8-12 after 1-2 hours, or salbutamol toxicity with hypokalemia/lactate concern.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const deescalateEndpoint = endpoint({
+    id: `${prefix}_deescalation_endpoint`,
+    label: "Respiratory de-escalation or stop criteria",
+    edgeLabel: "Bronchiolitis stable with SpO2 above discharge threshold for 4 h including sleep, or asthma PRAM <=3 for 1-2 h after bronchodilator and SABA no more often than q4h",
+    sourceIds: unique([...niceBronch, ...rchBronch, ...rchAsthma, ...cpsAsthma]),
+    criteria: criteria(`${prefix}_deescalation_criteria`, "Use when oxygen, respiratory support, bronchodilator frequency, testing, or inpatient intensity can be safely reduced using objective reassessment thresholds.", ["symptoms", "exam", "vitals", "medications", "comorbidities", "follow_up_access", "workup_findings"], unique([...niceBronch, ...rchBronch, ...rchAsthma, ...cpsAsthma]), { criteria_options: criteriaRows }),
+    action: "For bronchiolitis, trial off oxygen every 6 hours when improving, stop saturation monitoring after 2 hours off oxygen with ongoing clinical stability, and discharge only when stable, drinking adequately, and SpO2 in air stays >90% for >=6 weeks or >92% for <6 weeks/underlying disease for 4 hours including sleep. For asthma, discharge only with SpO2 >=92% in room air, improved air entry, minimal/no distress, PRAM <=3 for 1-2 hours after last bronchodilator, and expected SABA need no more often than every 4 hours.",
+    endpointType: "deescalation_stopping",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const followupEndpoint = endpoint({
+    id: `${prefix}_followup_safety_endpoint`,
+    label: "Respiratory follow-up and safety-net",
+    edgeLabel: "Stable oxygenation, hydration, medication plan, action plan or bronchiolitis advice, result owner, follow-up interval, and return precautions are documented",
+    sourceIds: unique([...niceBronch, ...rchBronch, ...rchAsthma, ...cpsAsthma, ...ginaAsthma, ...nhlbiAsthma]),
+    criteria: criteria(`${prefix}_followup_safety_criteria`, "Use when pediatric respiratory illness is stable enough for discharge or lower-acuity care with medication instructions, result ownership, follow-up, and return precautions.", ["symptoms", "exam", "vitals", "medications", "comorbidities", "follow_up_access", "workup_findings"], unique([...niceBronch, ...rchBronch, ...rchAsthma, ...cpsAsthma, ...ginaAsthma, ...nhlbiAsthma]), { criteria_options: criteriaRows }),
+    action: "Document diagnosis, severity, oxygen and feeding status, medicines and exact doses, inhaler/spacer technique, asthma action plan when asthma/viral wheeze fits, and follow-up within 4 weeks for asthma. Start or review daily ICS when symptoms/night waking occur >=2 times/month, oral-steroid exacerbation occurred in the last 12 months, or preschool symptoms are >=8 days/month. Safety-net return for worsening work of breathing, grunting, nasal flaring, marked recession, apnea, cyanosis, exhaustion, fluid intake 50-75% or no wet diaper for 12 hours, reliever needed more often than every 4 hours, fever/focal chest signs, or caregiver concern.",
+    endpointType: "follow_up",
+    monitoringPlan: ["SpO2 trend and oxygen device", "work of breathing and respiratory rate", "feeding and urine output", "PRAM/FEV1 or bronchodilator interval for asthma", "medication dosing and adverse effects", "controller/action plan", "follow-up and return access"]
+  });
+
+  const monitoringBundle = actionNode({
+    id: `${prefix}_monitoring_bundle`,
+    label: "Monitor respiratory response and disposition",
+    edgeLabel: "Trend SpO2, oxygen support, work of breathing, RR, air entry, mental state, feeding/urine, PRAM/FEV1, bronchodilator interval, steroid timing, and access",
+    sourceIds,
+    criteria: criteria(`${prefix}_monitoring_bundle_criteria`, "Monitor pediatric respiratory illness by repeating the objective findings that selected bronchiolitis, asthma, respiratory-failure, mimic, or discharge paths.", ["symptoms", "exam", "vitals", "medications", "comorbidities", "follow_up_access", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
+    action: "Reassess SpO2 in air and on oxygen, device/flow/FiO2, respiratory rate, work of breathing, air entry/asymmetry, wheeze/crackles/silent chest, mental state, color/perfusion, feeding percentage, urine output, PRAM/FEV1 when asthma is plausible, salbutamol/ipratropium/steroid/magnesium timing, adverse effects, and caregiver access before discharge or escalation.",
+    parallelActions: unique([evidenceLabels.tests, evidenceLabels.redFlags, evidenceLabels.differentials, evidenceLabels.dispositions, evidenceLabels.safety, "SpO2 and oxygen-device trend", "RR and work-of-breathing trend", "feeding and urine-output check", "PRAM/FEV1 and salbutamol interval when asthma fits", "medication adverse-effect screen", "caregiver access and transport check"]),
+    guidelineCutoffs: criteriaRows,
+    children: [worseningEndpoint, deescalateEndpoint, followupEndpoint]
+  });
+
+  const classificationDecision = decision({
+    id: `${prefix}_classification_decision`,
+    label: "Classify pediatric breathing pattern",
+    edgeLabel: "Age band, illness day, coryza/cough pattern, wheeze/crackles/asymmetry, SpO2, RR, feeding, apnea, PRAM/FEV1, response, risk factors, and access are available",
+    sourceIds,
+    criteria: criteria(`${prefix}_classification_criteria`, "Classify pediatric respiratory illness using age, prodrome, oxygenation, work of breathing, feeding, apnea, asthma history/response, mimic features, and disposition modifiers.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Select respiratory failure/PICU, bronchiolitis supportive care, asthma/viral wheeze treatment, dangerous mimic review, special-population review, or monitoring/follow-up.",
+    clinicalCriteria: criteriaRows,
+    guidelineCutoffs: criteriaRows,
+    children: [missingBranchDataEndpoint, respiratoryFailureEndpoint, bronchiolitisEndpoint, asthmaEndpoint, mimicEndpoint, specialReviewEndpoint, monitoringBundle]
+  });
+
+  const initialAssessment = actionNode({
+    id: `${prefix}_initial_assessment_bundle`,
+    label: "Initial pediatric breathing assessment",
+    edgeLabel: "Start with age/weight, gestation, illness day, fever, SpO2/device, RR, work of breathing, air entry, feeding/urine, apnea/cyanosis, asthma history, meds, and access",
+    sourceIds,
+    criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial pediatric respiratory assessment must collect data needed to separate bronchiolitis, asthma/viral wheeze, respiratory failure, pneumonia/foreign body/anaphylaxis/sepsis/cardiac mimics, and safe disposition.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Assess exact age, weight, gestation/prematurity, illness day, coryza/cough pattern, fever value, respiratory rate, SpO2 in air and on support, oxygen device/FiO2/flow, work of breathing, grunting/recession/nasal flaring, air entry, wheeze/crackles/asymmetry/silent chest, mental state, color/perfusion, apnea/cyanosis, feeding percentage and wet diapers/urine output, dehydration, PRAM or FEV1 when asthma is plausible, prior asthma/atopy/ICU/intubation, current reliever/controller doses and response, allergies, comorbid cardiopulmonary/neuromuscular/immune disease, pregnancy possibility in adolescents, smoke exposure, and follow-up/transport access.",
+    parallelActions: unique([evidenceLabels.tests, evidenceLabels.redFlags, evidenceLabels.differentials, evidenceLabels.dispositions, evidenceLabels.safety, "age/gestation and illness-day check", "SpO2 in air plus oxygen-device details", "RR and work-of-breathing exam", "feeding, hydration, and urine-output check", "PRAM/FEV1 and inhaler-response check when asthma fits", "mimic screen for focal crackles, choking, anaphylaxis, sepsis, or cardiac disease"]),
+    requiredData: ["age and weight", "gestational age/prematurity", "illness day and cough/coryza pattern", "temperature", "SpO2 in air and on support", "oxygen device, flow, and FiO2", "respiratory rate", "work of breathing", "air entry and asymmetry", "wheeze/crackles/silent chest", "mental state", "apnea/cyanosis", "feeding percentage", "urine output", "PRAM or FEV1 when asthma is plausible", "asthma/atopy history", "reliever/controller dose timing", "bronchodilator response", "comorbid disease", "pregnancy possibility in adolescents", "follow-up/transport access"],
+    guidelineCutoffs: criteriaRows,
+    children: [classificationDecision]
+  });
+
+  const root = decision({
+    id: "root",
+    label: "Pediatric breathing/wheeze pathway",
+    sourceIds,
+    criteria: criteria(`${prefix}_activate`, "Activate for child or adolescent with respiratory distress, wheeze, suspected bronchiolitis, asthma exacerbation, viral-induced wheeze, hypoxemia, retractions, apnea, or clinician-chosen pediatric respiratory evaluation.", ["clinician_chosen_module", "symptoms", "exam", "vitals", "medications", "problem_list_or_diagnosis"], sourceIds),
+    action: "Use this pathway for bronchiolitis supportive care, asthma/viral wheeze treatment, respiratory-failure escalation, dangerous mimics, special-population review, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+    children: [missingContextEndpoint, initialAssessment]
+  });
+
+  return finalizeClinicalPathwayTree({
+    module,
+    sourceById,
+    label,
+    version: "4.0.0",
+    status: "hand_polished_pediatric_respiratory_wheeze_pathway_needs_clinician_review",
+    sourceIds,
+    criteriaRows,
+    tests,
+    redFlags,
+    differentials,
+    dispositions,
+    root,
+    sourceMaterial: "NICE NG9 bronchiolitis recommendations, RCH bronchiolitis and acute asthma guidelines, Canadian Paediatric Society acute asthma statement and medication table, GINA/NHLBI controller guidance, NICE sepsis under-16 guidance, and local module evidence rows",
+    reviewNote: "Pediatric respiratory/wheeze tree is threshold-cited and patient-traversable; local oxygen/HFNP/CPAP policy, retrieval thresholds, asthma order sets, antimicrobial policy, anaphylaxis protocol, and pregnancy/adolescent governance require clinician review.",
+    syntheticScenarios: [
+      { scenario_id: "missing_context", major_pathway: "missing_data_needed", expected_endpoint_id: missingContextEndpoint.id, expected_active_branch: missingContextEndpoint.edgeLabel },
+      { scenario_id: "missing_branch_data", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: missingBranchDataEndpoint.id, expected_active_branch: missingBranchDataEndpoint.edgeLabel },
+      { scenario_id: "apnea_or_pram_8_12_after_therapy", major_pathway: "escalation_emergency_actions", expected_endpoint_id: respiratoryFailureEndpoint.id, expected_active_branch: respiratoryFailureEndpoint.edgeLabel },
+      { scenario_id: "infant_bronchiolitis_low_spo2_or_poor_feeding", major_pathway: "first_line_management", expected_endpoint_id: bronchiolitisEndpoint.id, expected_active_branch: bronchiolitisEndpoint.edgeLabel },
+      { scenario_id: "older_child_recurrent_wheeze_pram_moderate", major_pathway: "first_line_management", expected_endpoint_id: asthmaEndpoint.id, expected_active_branch: asthmaEndpoint.edgeLabel },
+      { scenario_id: "focal_crackles_or_choking_or_anaphylaxis", major_pathway: "mimics_exclusions", expected_endpoint_id: mimicEndpoint.id, expected_active_branch: mimicEndpoint.edgeLabel },
+      { scenario_id: "young_infant_prematurity_chronic_disease_or_pregnancy", major_pathway: "contraindications_special_populations", expected_endpoint_id: specialReviewEndpoint.id, expected_active_branch: specialReviewEndpoint.edgeLabel },
+      { scenario_id: "worsening_after_initial_resp_care", major_pathway: "monitoring_reassessment_escalation", expected_endpoint_id: worseningEndpoint.id, expected_active_branch: worseningEndpoint.edgeLabel },
+      { scenario_id: "oxygen_wean_or_asthma_spacing_ready", major_pathway: "deescalation_stopping_criteria", expected_endpoint_id: deescalateEndpoint.id, expected_active_branch: deescalateEndpoint.edgeLabel },
+      { scenario_id: "respiratory_discharge_safety_net", major_pathway: "disposition_followup_safety_netting", expected_endpoint_id: followupEndpoint.id, expected_active_branch: followupEndpoint.edgeLabel }
+    ],
+    handPolishRequirements: [
+      "bronchiolitis branch includes age <2 years, peak illness timing, RR >60/>70, intake 50-75%, SpO2 <90/<92 thresholds, high-risk infant modifiers, oxygen/HFNP/NG fluid rules, and no-routine-medication exclusions",
+      "asthma/viral wheeze branch includes PRAM 0-3/4-7/8-12, FEV1 >70/50-70/<50%, salbutamol MDI/nebulized/continuous doses, ipratropium doses, systemic steroid doses, magnesium doses, admission/PICU/discharge thresholds, and controller follow-up triggers",
+      "mimic branch explicitly handles pneumonia fever >39 C/focal crackles, foreign body/pneumothorax asymmetry or choking, anaphylaxis features, sepsis physiology, and cardiac disease",
+      "respiratory reassessment includes 2-hour oxygen-off monitoring, 4-hour bronchiolitis discharge saturation with sleep, asthma PRAM <=3 after 1-2 hours, and SABA spacing to every 4 hours",
+      "safety-net branch includes worsening work of breathing, no wet diaper for 12 hours, intake 50-75%, apnea/cyanosis/exhaustion, reliever need more often than every 4 hours, fever/focal signs, and caregiver concern"
+    ]
+  });
+}
+
 function buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById) {
   const label = module.label || "Pediatric chest pain, syncope, or palpitations";
   const prefix = "pediatric_chest_syncope";
@@ -7769,11 +8072,13 @@ function main() {
                                     ? buildPediatricFeverSepsisClinicalPathwayTree(module, sourceById)
                                     : module.id === "pediatric_rash_skin_v1"
                                       ? buildPediatricRashSkinClinicalPathwayTree(module, sourceById)
-                                      : module.id === "pediatric_chest_pain_syncope_v1"
-                                        ? buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById)
-                                        : module.id === "pediatric_msk_limp_hot_joint_v1"
-                                          ? buildPediatricMskLimpHotJointClinicalPathwayTree(module, sourceById)
-                                          : buildCompactClinicalPathwayTree(module, sourceById);
+                                      : module.id === "pediatric_respiratory_wheeze_v1"
+                                        ? buildPediatricRespiratoryWheezeClinicalPathwayTree(module, sourceById)
+                                        : module.id === "pediatric_chest_pain_syncope_v1"
+                                          ? buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById)
+                                          : module.id === "pediatric_msk_limp_hot_joint_v1"
+                                            ? buildPediatricMskLimpHotJointClinicalPathwayTree(module, sourceById)
+                                            : buildCompactClinicalPathwayTree(module, sourceById);
     const nextModule = { ...baseModule, clinical_pathway_tree_v1: clinicalPathway };
     const nextRaw = raw.module ? { ...raw, module: nextModule } : nextModule;
     const next = `${JSON.stringify(nextRaw, null, 2)}\n`;
