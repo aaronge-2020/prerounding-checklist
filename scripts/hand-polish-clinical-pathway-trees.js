@@ -4738,6 +4738,568 @@ function buildGrowthHormoneExcessClinicalPathwayTree(module, sourceById, growthM
   });
 }
 
+function buildAdultChestPainClinicalPathwayTree(module, sourceById) {
+  const label = module.label || "Chest pain";
+  const prefix = "adult_chest_pain";
+  const aha = ["AHA_ACC_CHEST_PAIN_2021"];
+  const sourceIds = unique([...aha, ...genericSourceIds]);
+  const tests = firstItems(module, "initialTests", 8);
+  const redFlags = firstItems(module, "redFlags", 8, ["safetyChecks"]);
+  const differentials = firstItems(module, "differentialBuckets", 8);
+  const dispositions = firstItems(module, "dispositionRules", 8, ["treatmentOptions"]);
+  const safetyChecks = firstItems(module, "safetyChecks", 8);
+  const evidenceLabels = {
+    tests: listLabels(tests, 8).join("; "),
+    redFlags: listLabels(redFlags, 8).join("; "),
+    differentials: listLabels(differentials, 8).join("; "),
+    dispositions: listLabels(dispositions, 8).join("; "),
+    safety: listLabels(safetyChecks, 8).join("; ")
+  };
+  const criteriaRows = [
+    criterion({
+      id: "adult_chest_pain_ecg_troponin_timing",
+      label: "Acute chest pain ACS screen: 12-lead ECG reviewed within 10 minutes; cardiac troponin measured as soon as possible",
+      criteria_text: "For all adults with acute chest pain, acquire and review a 12-lead ECG for STEMI within 10 minutes of arrival; when ACS is suspected, measure cardiac troponin as soon as possible after presentation.",
+      cutoffs: ["10 minutes"],
+      data_needed: ["arrival time", "first ECG time", "ECG interpretation", "cardiac troponin assay", "troponin collection time", "symptom onset time"],
+      source_ids: aha,
+      source_section: "Setting considerations and biomarkers"
+    }),
+    criterion({
+      id: "adult_chest_pain_serial_troponin_intervals",
+      label: "Serial troponin rule-out/rule-in timing: hs-cTn repeat at 1-3 hours; conventional cTn repeat at 3-6 hours",
+      criteria_text: "When serial troponins are needed to exclude myocardial injury, repeat high-sensitivity troponin 1 to 3 hours after the time-zero sample or conventional troponin 3 to 6 hours after time zero, using assay-specific 99th percentile and delta criteria.",
+      cutoffs: ["1 to 3 hours", "3 to 6 hours", "99th percentile"],
+      data_needed: ["troponin assay type", "time-zero troponin", "repeat troponin time", "delta troponin", "assay 99th percentile", "ischemic ECG change"],
+      source_ids: aha,
+      source_section: "Patients with acute chest pain and suspected ACS"
+    }),
+    criterion({
+      id: "adult_chest_pain_low_risk_discharge",
+      label: "Low-risk chest pain: 30-day death/MACE risk <1%, HEART <3 or EDACS <16 with serial troponins below 99th percentile",
+      criteria_text: "Low-risk acute chest pain corresponds to estimated 30-day death or MACE risk <1%; examples include HEART score <3 or EDACS score <16 with initial and serial cTn/hs-cTn below the assay 99th percentile and no ischemic ECG change.",
+      cutoffs: ["30-day death/MACE risk <1%", "HEART score <3", "EDACS score <16", "99th percentile"],
+      data_needed: ["structured chest pain risk score", "HEART score", "EDACS score", "serial troponins", "assay 99th percentile", "ECG ischemia status", "follow-up access"],
+      source_ids: aha,
+      source_section: "Definition of low-risk patients with chest pain"
+    }),
+    criterion({
+      id: "adult_chest_pain_aortic_dissection_probability",
+      label: "Aortic dissection concern: abrupt severe/ripping pain plus pulse differential plus widened mediastinum gives >80% probability",
+      criteria_text: "Abrupt severe ripping chest or back pain, pulse differential, and widened mediastinum on chest radiograph should route to acute aortic syndrome imaging; the AHA/ACC slide set reports >80% probability when severe abrupt pain, pulse differential, and widened mediastinum coexist.",
+      cutoffs: [">80% probability"],
+      data_needed: ["pain onset and quality", "back radiation", "bilateral arm blood pressures or pulse differential", "neurologic deficit", "CXR mediastinum", "aortic risk factors", "CTA/TEE/MRA feasibility"],
+      source_ids: aha,
+      source_section: "Physical examination and acute aortic syndrome"
+    }),
+    criterion({
+      id: `${prefix}_single_hsctn_onset_3h`,
+      label: "Single hs-cTn rule-out is only a narrow option when symptoms began at least 3 hours before ED arrival and initial hs-cTn is below the assay limit of detection",
+      criteria_text: "For suspected ACS in selected low-risk ED contexts, a single hs-cTn below the assay limit of detection can exclude myocardial injury when symptoms began at least 3 hours before ED arrival and ECG/risk assessment is reassuring.",
+      cutoffs: ["at least 3 hours"],
+      data_needed: ["symptom onset time", "arrival time", "hs-cTn assay", "limit of detection", "ECG ischemia status", "risk score", "prior CAD"],
+      source_ids: aha,
+      source_section: "Low-risk and suspected ACS testing"
+    }),
+    criterion({
+      id: `${prefix}_stress_ccta_safety_cutoffs`,
+      label: "Testing safety: avoid stress testing in active ACS or AMI <2 days, severe BP >=200/110 mm Hg, SBP <90 mm Hg for vasodilators, GFR <30 mL/min/1.73 m2 for contrast-sensitive imaging when applicable, or caffeine within 12 hours for vasodilator stress",
+      criteria_text: "AHA/ACC testing tables list modality-specific contraindications, including active ACS or AMI <2 days, severe systemic hypertension such as >=200/110 mm Hg, significant hypotension such as SBP <90 mm Hg for vasodilator protocols, reduced GFR <30 mL/min/1.73 m2 for contrast-sensitive testing, and caffeine or methylxanthine use within 12 hours for vasodilator stress.",
+      cutoffs: ["AMI <2 days", ">=200/110 mm Hg", "SBP <90 mm Hg", "GFR <30 mL/min/1.73 m2", "12 hours"],
+      data_needed: ["active ACS status", "recent AMI timing", "blood pressure", "renal function/eGFR", "contrast allergy", "caffeine/methylxanthine timing", "arrhythmia", "bronchospasm", "pregnancy status"],
+      source_ids: aha,
+      source_section: "Contraindication by type of imaging modality and stress protocol",
+      needs_clinical_review: true,
+      reviewer_input_needed: "Local imaging, contrast, renal-risk, and stress-testing protocols determine the safest test and exact cancellation thresholds."
+    }),
+    criterion({
+      id: `${prefix}_intermediate_high_risk_thresholds`,
+      label: "Intermediate/high-risk examples: HEART 4-6 intermediate, HEART 7-10 high, GRACE <140 applies to selected low-risk ESC/GRACE pathways, T0 hs-cTn 12-52 ng/L or 1-hour delta 3-5 ng/L intermediate and T0 >52 ng/L or delta >5 ng/L high in one ESC pathway",
+      criteria_text: "AHA/ACC sample pathway tables list HEART score 4-6 as intermediate and 7-10 as high, and include examples such as GRACE <140 for selected low-risk classification and hs-cTn pathway bands T0 12-52 ng/L or 1-hour delta 3-5 ng/L for intermediate and T0 >52 ng/L or delta >5 ng/L for high risk; local assay pathways must govern troponin bands.",
+      cutoffs: ["HEART score 4-6", "HEART score 7-10", "GRACE <140", "T0 hs-cTn 12-52 ng/L", "1-hour delta 3-5 ng/L", "T0 hs-cTn >52 ng/L", "delta >5 ng/L"],
+      data_needed: ["HEART score", "GRACE score if used", "troponin assay protocol", "time-zero hs-cTn", "1-hour or 2-hour delta", "ECG ischemia status", "local pathway"],
+      source_ids: aha,
+      source_section: "Sample clinical decision pathways used to define risk",
+      needs_clinical_review: true,
+      reviewer_input_needed: "Troponin numeric bands are assay- and protocol-specific; local ED/cardiology governance must select the approved pathway."
+    })
+  ];
+
+  const missingContextEndpoint = endpoint({
+    id: "endpoint_missing_context",
+    label: "Missing data needed: adult chest pain context",
+    edgeLabel: "Missing adult chest pain context: symptom onset, ischemic descriptors, vitals, ECG timing/result, troponin timing/result, dissection/PE features, medications, comorbidities, age/pregnancy context, and follow-up access",
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_context_criteria`, "Route here when adult chest pain cannot be evaluated because the patient context needed for ACS, aortic, PE, respiratory, GI, musculoskeletal, or safety disposition is unavailable.", contextDomains, sourceIds, { missing_any: contextDomains }),
+    action: "Document onset time, symptom quality/radiation/exertional pattern, dyspnea/diaphoresis/syncope/neurologic symptoms, full vital signs, bilateral arm blood pressures when dissection is possible, focused cardiovascular/pulmonary exam, medication/anticoagulant/contrast allergy context, pregnancy possibility, comorbid CAD/aortic/PE risk, ECG timing/result, troponin assay/timing/result, CXR/imaging status, risk score, and follow-up access.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["symptom onset and duration", "ischemic descriptors and associated symptoms", "blood pressure, heart rate, respiratory rate, oxygen saturation, temperature", "bilateral arm BP or pulse differential when dissection possible", "focused cardiovascular and pulmonary exam", "12-lead ECG time and interpretation", "troponin assay type and collection times", "initial and repeat troponin values with assay 99th percentile", "aortic dissection and PE features", "medications/allergies/contrast risk", "age, pregnancy status, and comorbidities", "follow-up access"]
+  });
+
+  const missingAcsDataEndpoint = endpoint({
+    id: `${prefix}_missing_acs_data_endpoint`,
+    label: "Missing data needed: adult chest pain ECG, troponin, risk score, or aortic emergency data",
+    edgeLabel: "Cannot classify adult chest pain until ECG within 10 minutes if acute, troponin assay/timing including 1-3 hour hs-cTn or 3-6 hour conventional repeat when needed, ischemic ECG status, 99th percentile/delta, risk score, and dissection/PE danger findings are known",
+    sourceIds: aha,
+    criteria: criteria(`${prefix}_missing_acs_data_criteria`, "Route here when the exact ACS/aortic risk data needed for disposition are unavailable.", contextDomains, aha, { missing_any: ["arrival time", "12-lead ECG", "cardiac troponin assay and collection time", "troponin assay type", "time-zero troponin", "repeat troponin time", "delta troponin", "assay 99th percentile", "structured risk score", "bilateral arm BP/pulse differential when dissection possible"] }),
+    action: "Obtain or repeat 12-lead ECG and clinician interpretation, time-zero troponin with assay 99th percentile, repeat hs-cTn at 1 to 3 hours or conventional cTn at 3 to 6 hours when serial testing is required, structured HEART/EDACS or approved local pathway score, CXR/CTA data when aortic or pulmonary emergency remains possible, and follow-up access before low-risk discharge.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["arrival time", "12-lead ECG", "ECG interpretation", "cardiac troponin assay and collection time", "troponin assay type", "time-zero troponin", "repeat troponin time", "delta troponin", "assay 99th percentile", "structured risk score", "CXR or aortic imaging data when indicated", "follow-up access"]
+  });
+
+  const acsEmergencyEndpoint = endpoint({
+    id: `${prefix}_acs_emergency_endpoint`,
+    label: "Adult chest pain ACS emergency: STEMI/ischemic ECG, unstable vitals, shock, recurrent syncope, or rising troponin needs ED/cardiology escalation",
+    edgeLabel: `High-risk ACS branch: ECG reviewed within 10 minutes shows STEMI or ischemic change, serial ECG evolves, troponin rises above the 99th percentile with dynamic change, HEART 7-10 or equivalent high-risk pathway applies, or danger features are present: ${evidenceLabels.redFlags}`,
+    sourceIds: aha,
+    criteria: criteria(`${prefix}_acs_emergency_criteria`, "Use when acute coronary syndrome, myocardial injury, unstable physiology, or high-risk structured pathway criteria require emergency treatment/disposition rather than outpatient testing.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], aha, { criteria_options: criteriaRows }),
+    action: "Manage as high-risk acute chest pain: place on monitor, repeat ECGs if symptoms persist or ECG is nondiagnostic, treat STEMI/NSTE-ACS according to local ACS protocols, obtain cardiology/ED escalation, avoid delayed ED transfer for outpatient troponin testing, and document antiplatelet/anticoagulant contraindications through the local ACS pathway.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const lifeThreateningMimicEndpoint = endpoint({
+    id: `${prefix}_aortic_pe_esophageal_endpoint`,
+    label: "Adult chest pain non-ACS emergency: aortic syndrome, PE, pneumothorax, esophageal rupture, myocarditis/pericarditis, or sepsis route",
+    edgeLabel: `Non-ACS emergency branch: ${evidenceLabels.differentials} with dissection pattern, pulse/BP differential, widened mediastinum, pleuritic hypoxemia, unilateral absent breath sounds, fever/rub, emesis/subcutaneous emphysema, or other emergency physiology`,
+    sourceIds: aha,
+    criteria: criteria(`${prefix}_life_threatening_mimic_criteria`, "Use when adult chest pain features point to acute aortic syndrome, PE, pneumothorax, esophageal rupture, myocarditis/pericarditis, pneumonia, or another time-sensitive emergency.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "workup_findings"], aha, { criteria_options: criteriaRows }),
+    action: "Do not force an ACS-only route. Activate the specific emergency pathway: acute aortic imaging for abrupt severe ripping pain with pulse differential or widened mediastinum, PE pathway for dyspnea/tachycardia/pleuritic pain/VTE risk, pneumothorax pathway for unilateral breath-sound loss, esophageal rupture pathway for emesis/subcutaneous emphysema, myocarditis/pericarditis workup for fever/pleuritic-positional pain/rub, and monitored disposition when unstable.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const lowRiskEndpoint = endpoint({
+    id: `${prefix}_low_risk_discharge_endpoint`,
+    label: "Adult low-risk chest pain: discharge without urgent cardiac testing only after <1% 30-day death/MACE pathway criteria and serial troponin/ECG rules are satisfied",
+    edgeLabel: "Low-risk branch: estimated 30-day death/MACE risk <1%, HEART score <3 or EDACS score <16 with initial and serial troponins below the assay 99th percentile, no ischemic ECG change, no aortic/PE emergency features, symptoms stable, and follow-up/safety-net access documented",
+    sourceIds: aha,
+    criteria: criteria(`${prefix}_low_risk_discharge_criteria`, "Use only after the adult chest pain pathway demonstrates low short-term risk and no alternate emergency condition.", ["symptoms", "vitals", "labs", "imaging_results", "workup_findings", "follow_up_access"], aha, { criteria_options: criteriaRows }),
+    action: "Discharge or use outpatient management only when low-risk pathway criteria are satisfied. Document risk score, ECG/troponin timing and assay 99th percentile, absence of dissection/PE/emergency features, shared decision-making, follow-up owner, and return precautions for recurrent/worsening chest pressure, dyspnea, syncope, neurologic deficit, hemoptysis, severe back pain, fever, or inability to obtain follow-up.",
+    endpointType: "safety_net_instruction",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const intermediateEndpoint = endpoint({
+    id: `${prefix}_intermediate_testing_endpoint`,
+    label: "Adult intermediate-risk chest pain: observation, serial biomarkers/ECGs, and CCTA or stress imaging selected by patient factors and contraindications",
+    edgeLabel: "Intermediate-risk branch: HEART score 4-6, nondiagnostic ECG with ongoing suspicion, troponin not clearly ruled out, known CAD or risk factors, or local pathway calls for observation/imaging before discharge",
+    sourceIds: aha,
+    criteria: criteria(`${prefix}_intermediate_testing_criteria`, "Use when acute chest pain is not low risk and not an immediate high-risk emergency, and further observation or cardiac testing will change disposition.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "workup_findings"], aha, { criteria_options: criteriaRows }),
+    action: "Continue monitored observation or ED/cardiology-directed testing. Repeat ECG/troponin according to assay timing, choose CCTA or stress imaging based on age, prior CAD, ECG interpretability, ability to exercise, renal function, contrast allergy, arrhythmia, bronchospasm, pregnancy, and local availability; document why low-risk discharge is not yet appropriate.",
+    endpointType: "diagnostic_step",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const testingSafetyEndpoint = endpoint({
+    id: `${prefix}_testing_safety_review_endpoint`,
+    label: "Adult chest pain clinician review: pregnancy, renal/contrast risk, stress-test contraindication, assay-specific troponin pathway, anticoagulant/antiplatelet risk, or local protocol",
+    edgeLabel: "Special-population or contraindication branch: pregnancy/postpartum, age >75 with dyspnea/syncope/delirium/fall, GFR <30 mL/min/1.73 m2, contrast allergy, severe BP >=200/110 mm Hg, SBP <90 mm Hg, AMI <2 days/active ACS, bronchospasm, arrhythmia, caffeine within 12 hours, or assay-specific troponin thresholds require local governance",
+    sourceIds: aha,
+    criteria: criteria(`${prefix}_testing_safety_review_criteria`, "Use when patient-specific factors change adult chest pain testing, treatment, or disposition.", ["demographics", "pregnancy_status", "medications", "allergies", "comorbidities", "vitals", "labs", "local_policy", "workup_findings"], aha, { criteria_options: criteriaRows }),
+    action: "Get ED/cardiology/radiology or appropriate clinician review before non-emergent testing or treatment that could be unsafe. Do not delay emergency ACS/aortic/PE stabilization; document the contraindication, approved local pathway, and reviewer recommendation.",
+    endpointType: "clinician_review_handoff",
+    reviewNeededReason: "Testing and treatment depend on local troponin assay pathway, imaging availability, pregnancy/renal/contrast risk, stress-test contraindications, and ACS medication risk."
+  });
+
+  const worseningEndpoint = endpoint({
+    id: `${prefix}_worsening_endpoint`,
+    label: "Adult chest pain reassessment: worsening symptoms, ECG evolution, troponin rise, hypoxemia, hypotension, or new neurologic deficit escalates disposition",
+    edgeLabel: "Reassessment branch: pain recurs or worsens, ECG changes appear on serial tracing, troponin crosses the 99th percentile or delta becomes concerning, oxygenation/vitals worsen, syncope/neurologic deficit occurs, or aortic/PE/pneumothorax features emerge",
+    sourceIds: aha,
+    criteria: criteria(`${prefix}_worsening_criteria`, "Escalate adult chest pain when reassessment contradicts the current low/intermediate-risk branch.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "workup_findings"], aha, { criteria_options: criteriaRows }),
+    action: "Move to ED/cardiology or monitored emergency evaluation, repeat ECG and troponin per pathway, reconsider aortic/PE/pneumothorax/esophageal and myocarditis/pericarditis routes, and document the objective change that closed the lower-risk branch.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const deescalateEndpoint = endpoint({
+    id: `${prefix}_deescalation_endpoint`,
+    label: "Adult chest pain de-escalation: stop ACS escalation only after serial ECG/troponin and structured risk pathway support a lower-risk diagnosis",
+    edgeLabel: "De-escalation branch: symptoms stable or resolved, ECGs remain nonischemic, serial troponins stay below the assay 99th percentile with no concerning delta, HEART/EDACS or local pathway is low risk, and alternate emergency diagnoses have been excluded",
+    sourceIds: aha,
+    criteria: criteria(`${prefix}_deescalation_criteria`, "Use when objective adult chest pain reassessment supports narrowing from emergency ACS/aortic/PE evaluation to outpatient or alternate diagnosis care.", ["symptoms", "vitals", "labs", "imaging_results", "workup_findings", "follow_up_access"], aha, { criteria_options: criteriaRows }),
+    action: "Document the negative serial ECG/troponin timing, risk score, absence of emergency mimics, patient counseling, and follow-up; avoid urgent cardiac testing when AHA/ACC low-risk criteria are satisfied.",
+    endpointType: "deescalation_stopping",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const followupEndpoint = endpoint({
+    id: `${prefix}_followup_safety_endpoint`,
+    label: "Adult chest pain follow-up and safety-net: pending results, outpatient testing owner, risk-factor care, and return precautions",
+    edgeLabel: `Disposition branch: ${evidenceLabels.dispositions}; acute emergency excluded or managed, pending troponin/imaging/stress/CCTA results assigned, follow-up interval documented, and patient understands return precautions`,
+    sourceIds: aha,
+    criteria: criteria(`${prefix}_followup_safety_criteria`, "Use when adult chest pain is stable enough for discharge or lower-acuity care with result ownership and safety-net instructions.", ["symptoms", "vitals", "labs", "imaging_results", "medications", "follow_up_access", "workup_findings"], aha, { criteria_options: criteriaRows }),
+    action: "Assign owners for pending ECG/troponin/imaging results and outpatient testing, reconcile cardiac risk-factor and medication plans, document shared decision-making, and give return precautions for recurrent pressure/tightness, dyspnea, diaphoresis, syncope, neurologic deficit, severe sudden back pain, hemoptysis, fever, or worsening oxygenation.",
+    endpointType: "follow_up",
+    monitoringPlan: ["pending result owner", "outpatient test owner", "medication/risk-factor plan", "return precautions", "follow-up access"]
+  });
+
+  const alternateEndpoint = endpoint({
+    id: `${prefix}_alternate_noncardiac_endpoint`,
+    label: "Adult chest pain alternate diagnosis: musculoskeletal, GI, anxiety, pulmonary infection, shingles, or other noncardiac cause after emergencies are excluded",
+    edgeLabel: `Alternate diagnosis branch: ${evidenceLabels.differentials} fits better after ACS, aortic, PE, pneumothorax, esophageal rupture, myocarditis/pericarditis, and unstable physiology have been checked`,
+    sourceIds: aha,
+    criteria: criteria(`${prefix}_alternate_noncardiac_criteria`, "Use when a noncardiac or alternate pathway explains adult chest pain and emergency diagnoses are absent.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "workup_findings"], aha, { criteria_options: criteriaRows }),
+    action: "Treat the active alternate diagnosis and document why ACS/aortic/PE and other emergencies are no longer active. Use return precautions rather than reassurance alone when diagnostic uncertainty remains.",
+    endpointType: "clinician_review_handoff",
+    reviewNeededReason: "Alternate chest pain diagnosis should be documented with emergency exclusions and follow-up ownership."
+  });
+
+  const reassessmentBundle = actionNode({
+    id: `${prefix}_reassessment_bundle`,
+    label: "Adult chest pain monitoring: serial symptoms, vital signs, ECG, troponin, oxygenation, and disposition readiness",
+    edgeLabel: "Monitoring branch after initial adult chest pain classification: trend pain, hemodynamics, oxygenation, ECG, troponin timing/delta, imaging results, treatment adverse effects, and follow-up constraints",
+    sourceIds: aha,
+    criteria: criteria(`${prefix}_reassessment_bundle_criteria`, "Monitor adult chest pain by repeating the same objective data that selected the active branch.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], aha, { criteria_options: criteriaRows }),
+    action: "Reassess symptoms, vitals, oxygenation, serial ECGs, serial troponin timing/delta, imaging/test results, treatment response, medication contraindications, and disposition readiness before closure.",
+    parallelActions: unique(["repeat vital signs", "repeat ECG if symptoms persist or evolve", "serial troponin per hs-cTn 1-3 hour or conventional 3-6 hour timing", "review CXR/CTA/CCTA/stress results when ordered", "confirm follow-up and return precautions", evidenceLabels.safety]),
+    guidelineCutoffs: criteriaRows,
+    children: [worseningEndpoint, deescalateEndpoint, followupEndpoint]
+  });
+
+  const riskDecision = decision({
+    id: `${prefix}_risk_decision`,
+    label: "Adult chest pain: choose low-risk discharge, intermediate testing, emergency escalation, alternate diagnosis, or clinician-review branch",
+    edgeLabel: "Adult chest pain ECG/troponin/risk-score branch ready: 10-minute ECG status, hs-cTn 1-3 hour or conventional 3-6 hour plan, 99th percentile/delta, HEART/EDACS, and aortic/PE emergency features are available",
+    sourceIds: aha,
+    criteria: criteria(`${prefix}_risk_decision_criteria`, "Classify adult chest pain by ECG, troponin timing/delta, structured risk score, vital stability, and life-threatening non-ACS features.", contextDomains, aha, { criteria_options: criteriaRows }),
+    action: "Select the active branch: high-risk ACS emergency, aortic/PE/esophageal/pulmonary emergency, low-risk discharge, intermediate observation/testing, clinician-review modifier, reassessment, or documented alternate diagnosis.",
+    clinicalCriteria: criteriaRows,
+    guidelineCutoffs: criteriaRows,
+    children: [missingAcsDataEndpoint, acsEmergencyEndpoint, lifeThreateningMimicEndpoint, lowRiskEndpoint, intermediateEndpoint, testingSafetyEndpoint, alternateEndpoint, reassessmentBundle]
+  });
+
+  const initialAssessment = actionNode({
+    id: `${prefix}_initial_assessment_bundle`,
+    label: "Adult chest pain bedside assessment: ischemic symptoms, ECG within 10 minutes, troponin assay timing, vital stability, aortic/PE signs, and testing safety",
+    edgeLabel: `Adult chest pain assessment bundle: ${evidenceLabels.tests}; ${evidenceLabels.redFlags}; ${evidenceLabels.safety}`,
+    sourceIds,
+    criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial adult chest pain assessment requires symptom timing/quality, focused cardiovascular/pulmonary exam, full vital signs, 12-lead ECG, troponin assay plan, emergency mimic screening, medication/contraindication review, and disposition constraints.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Assess symptom onset/quality/radiation/exertion, dyspnea/diaphoresis/palpitations/syncope/neurologic symptoms, full vitals and oxygenation, focused cardiac/pulmonary/aortic exam, 12-lead ECG within 10 minutes for acute presentations, cardiac troponin as soon as possible when ACS is suspected, CXR when pulmonary/thoracic causes are possible, bilateral arm BP/pulse differential if aortic syndrome is possible, PE risk, pregnancy/renal/contrast/stress-test safety, and follow-up access.",
+    parallelActions: unique([evidenceLabels.tests, evidenceLabels.redFlags, evidenceLabels.safety, "arrival time", "symptom onset time", "cardiac troponin assay and 99th percentile", "structured HEART/EDACS or local pathway score", "aortic and PE emergency screen", "testing contraindication review"]),
+    requiredData: ["arrival time", "symptom onset time", "12-lead ECG", "troponin assay and 99th percentile", "serial troponin plan", "risk score", "aortic/PE screen", "testing contraindications"],
+    guidelineCutoffs: criteriaRows,
+    children: [riskDecision]
+  });
+
+  const root = decision({
+    id: "root",
+    label: "Adult chest pain: route by ACS timing, life-threatening mimics, structured risk, testing safety, and disposition",
+    sourceIds,
+    criteria: criteria(`${prefix}_activate`, "Activate for adult chest pain, chest pressure/tightness, anginal equivalent symptoms, suspected ACS, aortic or pulmonary emergency concern, or clinician-chosen adult chest-pain evaluation.", ["clinician_chosen_module", "symptoms", "exam", "vitals", "labs", "imaging_results", "problem_list_or_diagnosis"], sourceIds),
+    action: "Route adult chest pain through missing-data, ECG/troponin timing, high-risk ACS, aortic/PE/non-ACS emergency, low-risk discharge, intermediate testing, contraindication review, reassessment, de-escalation, follow-up, and safety-net endpoints.",
+    children: [missingContextEndpoint, initialAssessment]
+  });
+
+  return finalizeClinicalPathwayTree({
+    module,
+    sourceById,
+    label,
+    version: "4.0.0",
+    status: "hand_polished_adult_chest_pain_pathway_needs_clinician_review",
+    sourceIds,
+    criteriaRows,
+    tests,
+    redFlags,
+    differentials,
+    dispositions,
+    root,
+    sourceMaterial: "2021 AHA/ACC multisociety chest pain guideline and local module evidence rows",
+    reviewNote: "Adult chest pain tree is threshold-cited and patient-traversable; local ED ACS protocol, troponin assay-specific cutoffs, imaging availability, stress-testing rules, contrast/renal policy, and ACS medication orders require clinician governance.",
+    syntheticScenarios: [
+      { scenario_id: "missing_context", major_pathway: "missing_data_needed", expected_endpoint_id: missingContextEndpoint.id, expected_active_branch: missingContextEndpoint.edgeLabel },
+      { scenario_id: "missing_ecg_troponin", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: missingAcsDataEndpoint.id, expected_active_branch: missingAcsDataEndpoint.edgeLabel },
+      { scenario_id: "stemi_or_high_risk_acs", major_pathway: "escalation_emergency_actions", expected_endpoint_id: acsEmergencyEndpoint.id, expected_active_branch: acsEmergencyEndpoint.edgeLabel },
+      { scenario_id: "aortic_or_pe_emergency", major_pathway: "mimics_exclusions", expected_endpoint_id: lifeThreateningMimicEndpoint.id, expected_active_branch: lifeThreateningMimicEndpoint.edgeLabel },
+      { scenario_id: "low_risk_discharge", major_pathway: "disposition_followup_safety_netting", expected_endpoint_id: lowRiskEndpoint.id, expected_active_branch: lowRiskEndpoint.edgeLabel },
+      { scenario_id: "intermediate_observation_testing", major_pathway: "severity_risk_stratification", expected_endpoint_id: intermediateEndpoint.id, expected_active_branch: intermediateEndpoint.edgeLabel },
+      { scenario_id: "testing_contraindication_review", major_pathway: "contraindications_special_populations", expected_endpoint_id: testingSafetyEndpoint.id, expected_active_branch: testingSafetyEndpoint.edgeLabel },
+      { scenario_id: "worsening_serial_data", major_pathway: "monitoring_reassessment_escalation", expected_endpoint_id: worseningEndpoint.id, expected_active_branch: worseningEndpoint.edgeLabel },
+      { scenario_id: "deescalation_after_negative_series", major_pathway: "deescalation_stopping_criteria", expected_endpoint_id: deescalateEndpoint.id, expected_active_branch: deescalateEndpoint.edgeLabel },
+      { scenario_id: "alternate_noncardiac_followup", major_pathway: "first_line_management", expected_endpoint_id: alternateEndpoint.id, expected_active_branch: alternateEndpoint.edgeLabel }
+    ],
+    handPolishRequirements: [
+      "adult acute chest pain branch uses ECG within 10 minutes and troponin timing thresholds",
+      "low-risk disposition requires <1% 30-day death/MACE and structured pathway examples",
+      "aortic/PE/non-ACS emergency mimics route before reassurance",
+      "stress/imaging contraindications and assay-specific troponin bands route to clinician review",
+      "monitoring and de-escalation require serial ECG/troponin and symptom stability"
+    ]
+  });
+}
+
+function buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById) {
+  const label = module.label || "Pediatric chest pain, syncope, or palpitations";
+  const prefix = "pediatric_chest_syncope";
+  const rchChest = ["RCH_CHEST_PAIN_CHILD"];
+  const rchSyncope = ["RCH_SYNCOPE_CHILD"];
+  const rchEcg = ["RCH_PEDIATRIC_ECG"];
+  const sourceIds = unique([...rchChest, ...rchSyncope, ...rchEcg, ...genericSourceIds]);
+  const tests = firstItems(module, "initialTests", 8);
+  const redFlags = firstItems(module, "redFlags", 8, ["safetyChecks"]);
+  const differentials = firstItems(module, "differentialBuckets", 8);
+  const dispositions = firstItems(module, "dispositionRules", 8, ["treatmentOptions"]);
+  const safetyChecks = firstItems(module, "safetyChecks", 8);
+  const evidenceLabels = {
+    tests: listLabels(tests, 8).join("; "),
+    redFlags: listLabels(redFlags, 8).join("; "),
+    differentials: listLabels(differentials, 8).join("; "),
+    dispositions: listLabels(dispositions, 8).join("; "),
+    safety: listLabels(safetyChecks, 8).join("; ")
+  };
+  const criteriaRows = [
+    criterion({
+      id: "peds_chest_pain_low_base_rate_and_targeted_testing",
+      label: "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+      criteria_text: "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
+      cutoffs: ["1%"],
+      data_needed: ["age", "chest pain history", "exertional symptoms", "syncope", "palpitations", "cardiac exam", "ECG risk", "respiratory findings", "senior clinician discussion for echo/CTPA"],
+      source_ids: rchChest,
+      source_section: "Key points and investigation guidance"
+    }),
+    criterion({
+      id: "peds_chest_syncope_ecg_required_once",
+      label: "Pediatric syncope: obtain an ECG at least once; urgent referral for exertional syncope, chest pain/palpitations, abnormal ECG, or family history",
+      criteria_text: "RCH syncope guidance recommends orthostatic heart rate and blood pressure measurements, complete cardiac and neurological examination, ECG in all children at least once unless previously done with no new concern, and urgent referral when history, examination, or ECG suggests cardiac syncope.",
+      cutoffs: ["at least once"],
+      data_needed: ["syncope event details", "exercise relationship", "prodrome", "chest pain/palpitations", "family history of early cardiac death/arrhythmia/sudden death", "orthostatic vitals", "cardiac exam", "neurologic exam", "ECG"],
+      source_ids: rchSyncope,
+      source_section: "Examination, investigations, consultation, transfer, and discharge"
+    }),
+    criterion({
+      id: "peds_ecg_high_risk_intervals",
+      label: "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc outside >340 ms and <=450 ms normal range, and ST shift >2 mm in precordial leads",
+      criteria_text: "RCH pediatric ECG guidance states QRS duration >0.12 seconds is pathological in children, manual QTc should be >340 ms and <=450 ms, and ST elevation or depression above 2 mm in precordial leads should be considered pathological; abnormalities with syncope or cardiac red flags require pediatric/cardiology consultation.",
+      cutoffs: [">0.12 seconds", ">340 ms", "<=450 ms", "QTc >450 ms", "QTc <=340 ms", ">2 mm"],
+      data_needed: ["QRS duration", "manual QTc", "ST elevation/depression magnitude", "ECG scale 25 mm/second and 10 mm/mV", "syncope symptoms", "cardiac exam", "family history"],
+      source_ids: rchEcg,
+      source_section: "Basic paediatric ECG interpretation"
+    }),
+    criterion({
+      id: `${prefix}_orthostatic_pots_cutoffs`,
+      label: "Pediatric orthostatic syncope/POTS: within 2-3 minutes upright, systolic BP drop >20 mmHg or diastolic drop >10 mmHg; within 5-10 minutes upright, HR rise >40 bpm or >30 bpm without postural hypotension",
+      criteria_text: "RCH syncope guidance defines orthostatic hypotension as a systolic BP decrease >20 mmHg or diastolic BP decrease >10 mmHg within 2-3 minutes of assuming upright position, and POTS as daily chronic orthostatic intolerance with HR increase >40 bpm or >30 bpm without postural hypotension within 5-10 minutes upright.",
+      cutoffs: ["2-3 minutes", "systolic blood pressure >20 mmHg", "diastolic blood pressure >10 mmHg", "5-10 minutes", "HR increase >40 bpm", "HR increase >30 bpm"],
+      data_needed: ["supine BP/HR", "standing BP/HR", "minutes upright", "orthostatic symptoms", "daily chronic orthostatic intolerance", "hydration/anemia/medication context"],
+      source_ids: rchSyncope,
+      source_section: "Orthostatic hypotension and POTS"
+    }),
+    criterion({
+      id: `${prefix}_precordial_catch_low_risk`,
+      label: "Precordial catch pattern: sudden sharp pain at left lower sternal border/cardiac apex, not during sleep, brief 30 seconds to 3 minutes, normal exam, and no special investigations",
+      criteria_text: "RCH describes precordial catch as sudden sharp chest pain around the left lower sternal border or cardiac apex, not during sleep, intense but brief lasting 30 seconds to 3 minutes, with normal examination and no special investigations.",
+      cutoffs: ["30 seconds to 3 minutes"],
+      data_needed: ["pain location", "onset", "sleep relationship", "duration", "exam", "red flags absent"],
+      source_ids: rchChest,
+      source_section: "Musculoskeletal chest pain: precordial catch"
+    })
+  ];
+
+  const missingContextEndpoint = endpoint({
+    id: "endpoint_missing_context",
+    label: "Missing data needed: pediatric chest pain, syncope, or palpitations context",
+    edgeLabel: "Missing pediatric chest/syncope context: age, chest pain quality/onset/exertion, syncope/palpitations event details, family history, vitals including orthostatics when syncope, exam/perfusion, ECG, respiratory findings, medications/stimulants, pregnancy possibility, and follow-up access",
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_context_criteria`, "Route here when pediatric chest pain, syncope, or palpitations cannot be evaluated because key history, vitals, exam, ECG, or disposition data are unavailable.", contextDomains, sourceIds, { missing_any: contextDomains }),
+    action: "Document age, onset/duration/site/quality/radiation/reproducibility, exertional or sleep association, syncope/presyncope/palpitations event details, prodrome and recovery, chest pain with palpitations, family history of early sudden death/cardiomyopathy/arrhythmia, full vitals, oxygenation, orthostatic heart rate and BP when syncope, cardiac/pulmonary/neurologic exam, ECG when syncope or cardiac risk is present, respiratory/PE/trauma features, stimulant/toxin/medication use, adolescent pregnancy possibility, and follow-up access.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["age", "chest pain onset/duration/site/quality/radiation", "exertion or sleep relationship", "syncope/presyncope/palpitations event details", "prodrome and recovery", "family history of early sudden death/cardiomyopathy/arrhythmia", "blood pressure, heart rate, respiratory rate, oxygen saturation, temperature", "orthostatic BP/HR when syncope", "cardiac, pulmonary, neurologic exam", "ECG when syncope or cardiac risk present", "respiratory/PE/trauma features", "stimulant/toxin/medication history", "pregnancy possibility when relevant", "follow-up access"]
+  });
+
+  const missingObjectiveEndpoint = endpoint({
+    id: `${prefix}_missing_objective_endpoint`,
+    label: "Missing data needed: pediatric ECG, orthostatic vitals, oxygenation, respiratory exam, or family-history risk",
+    edgeLabel: "Cannot classify pediatric chest pain/syncope until ECG is obtained at least once for syncope or cardiac risk, QRS/QTc/ST findings are known when ECG is done, orthostatic BP/HR are measured when syncope/orthostatic intolerance is present, oxygenation and respiratory exam are documented, and family/cardiac history is known",
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_objective_criteria`, "Route here when pediatric cardiac/respiratory/syncope risk cannot be classified because required objective data are missing.", contextDomains, sourceIds, { missing_any: ["ECG", "QRS duration", "QTc", "ST shift", "orthostatic BP/HR", "oxygen saturation", "respiratory exam", "family history", "cardiac exam"] }),
+    action: "Obtain ECG at least once for syncope or cardiac concern, manual QRS/QTc/ST interpretation, full vitals including oxygen saturation, orthostatic BP/HR if syncope or orthostatic intolerance is present, cardiac/pulmonary/neurologic exam, BGL shortly after an event when indicated, FBE when anemia is suspected, pregnancy testing when relevant, and senior review before echo/Holter/exercise testing/CTPA.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["ECG", "QRS duration", "manual QTc", "ST shift magnitude", "orthostatic BP and HR", "oxygen saturation", "respiratory exam", "cardiac exam", "family history", "BGL after event when indicated", "FBE if anemia suspected", "pregnancy test when relevant"]
+  });
+
+  const cardiacEscalationEndpoint = endpoint({
+    id: `${prefix}_cardiac_escalation_endpoint`,
+    label: "Pediatric cardiac escalation: exertional chest pain/syncope, palpitations with syncope, abnormal exam/perfusion, abnormal ECG, cardiac history, or family sudden-death risk",
+    edgeLabel: `Cardiac risk branch: ${evidenceLabels.redFlags}; QRS >0.12 seconds, QTc <=340 ms or >450 ms, ST shift >2 mm, WPW, long QT, wide-complex tachycardia, hypertrophic cardiomyopathy pattern, or syncope during exercise/chest pain/palpitations`,
+    sourceIds: unique([...rchChest, ...rchSyncope, ...rchEcg]),
+    criteria: criteria(`${prefix}_cardiac_escalation_criteria`, "Use when pediatric chest pain, syncope, or palpitations has cardiac red flags, abnormal ECG, abnormal cardiac exam, poor perfusion, or serious family history.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "family_history", "workup_findings"], unique([...rchChest, ...rchSyncope, ...rchEcg]), { criteria_options: criteriaRows }),
+    action: "Urgently discuss with pediatric/cardiology or transfer pathway as appropriate. Restrict exertion pending review, obtain ECG interpretation, consider troponin/inflammatory labs only when myocarditis/pericarditis/ischemia risk is present, and avoid low-risk reassurance until cardiac syncope or cardiac chest pain is addressed.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const respiratoryEndpoint = endpoint({
+    id: `${prefix}_respiratory_pe_endpoint`,
+    label: "Pediatric respiratory, PE, pneumothorax, pneumonia, asthma, trauma, or foreign-body chest pain route",
+    edgeLabel: `Respiratory/PE branch: hypoxia, respiratory distress, hemoptysis, pleuritic pain, fever/cough, wheeze, unilateral decreased air entry, trauma, PE risk, or foreign-body concern; ${evidenceLabels.differentials}`,
+    sourceIds: rchChest,
+    criteria: criteria(`${prefix}_respiratory_pe_criteria`, "Use when pediatric chest pain is better explained by respiratory, PE, pneumothorax, pneumonia, asthma, trauma, or foreign-body features.", ["symptoms", "exam", "vitals", "imaging_results", "comorbidities", "pregnancy_status", "workup_findings"], rchChest, { criteria_options: criteriaRows }),
+    action: "Route to the respiratory/PE/pneumothorax/trauma pathway: give oxygen if hypoxemic, obtain CXR when indicated, discuss CTPA/advanced imaging with a senior clinician when PE risk exists, and escalate for respiratory distress, hemoptysis, stridor, unilateral absent breath sounds, or ongoing hypoxia.",
+    endpointType: "diagnostic_step",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const orthostaticSyncopeEndpoint = endpoint({
+    id: `${prefix}_orthostatic_syncope_endpoint`,
+    label: "Pediatric vasovagal, orthostatic hypotension, or POTS branch after cardiac red flags are absent",
+    edgeLabel: "Orthostatic/autonomic branch: reflex trigger/prodrome or standing symptoms with orthostatic BP drop >20 mmHg systolic or >10 mmHg diastolic within 2-3 minutes, or chronic orthostatic symptoms with HR rise >40 bpm or >30 bpm within 5-10 minutes without postural hypotension",
+    sourceIds: rchSyncope,
+    criteria: criteria(`${prefix}_orthostatic_syncope_criteria`, "Use when pediatric syncope fits vasovagal, orthostatic hypotension, or POTS and cardiac red flags are absent.", ["symptoms", "vitals", "exam", "labs", "workup_findings"], rchSyncope, { criteria_options: criteriaRows }),
+    action: "Treat frequent/problematic vasovagal or orthostatic syncope with trigger avoidance, increased fluid and salt intake, and early recognition of prodromal symptoms; arrange pediatric/cardiology review when recurrent symptoms do not respond to non-pharmacologic care or if cardiac features appear.",
+    endpointType: "treatment",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const lowRiskChestPainEndpoint = endpoint({
+    id: `${prefix}_low_risk_no_testing_endpoint`,
+    label: "Low-risk pediatric chest pain: no ECG/CXR/troponin/blood testing when risk factors and concerning exam findings are absent",
+    edgeLabel: "Low-risk pediatric chest pain branch: no exertional syncope/chest pain, no palpitations with syncope, normal vitals/perfusion/cardiac exam, no abnormal ECG concern, no serious family history, no hypoxia/respiratory distress/hemoptysis, and musculoskeletal/precordial catch/anxiety/reflux pattern fits",
+    sourceIds: rchChest,
+    criteria: criteria(`${prefix}_low_risk_no_testing_criteria`, "Use low-risk pediatric chest pain care only after cardiac, respiratory, PE, trauma, and systemic red flags are absent.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "workup_findings", "follow_up_access"], rchChest, { criteria_options: criteriaRows }),
+    action: "Avoid routine ECG, CXR, troponin, inflammatory labs, echocardiogram, or CTPA when no risk factors are present. Treat the likely benign cause, such as reproducible musculoskeletal pain or precordial catch, explain return precautions, and arrange follow-up if pain persists, changes, or red flags appear.",
+    endpointType: "safety_net_instruction",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const seizureMimicEndpoint = endpoint({
+    id: `${prefix}_seizure_mimic_endpoint`,
+    label: "Pediatric syncope mimic branch: seizure, hypoglycemia, toxin, anemia, pregnancy, or functional event",
+    edgeLabel: "Syncope mimic branch: prolonged confusion 20-30 minutes, tonic-clonic movements, clustering, hypoglycemia concern, toxin/stimulant exposure, anemia/menorrhagia, pregnancy possibility, or neurologic features better explain the event",
+    sourceIds: rchSyncope,
+    criteria: criteria(`${prefix}_seizure_mimic_criteria`, "Use when pediatric transient loss of consciousness is more consistent with seizure or another non-cardiac mimic than vasovagal syncope.", ["symptoms", "exam", "vitals", "labs", "medications", "pregnancy_status", "workup_findings"], rchSyncope, { criteria_options: criteriaRows }),
+    action: "Check BGL shortly after the event when indicated, FBE if anemia is suspected, pregnancy testing when relevant, toxin/stimulant exposure, and neurologic features; refer seizure-suspicious presentations to pediatric/neurology rather than labeling as benign syncope.",
+    endpointType: "diagnostic_step",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const specialReviewEndpoint = endpoint({
+    id: `${prefix}_special_population_review_endpoint`,
+    label: "Pediatric chest/syncope clinician review: pregnancy/postpartum adolescent, stimulant/toxin exposure, anticoagulation/VTE risk, congenital heart disease, known arrhythmia, or local cardiology pathway",
+    edgeLabel: "Special-population branch: pregnant/recently postpartum adolescent, PE/VTE risk, stimulant/toxin exposure, congenital/acquired heart disease, known arrhythmia/cardiomyopathy, prior cardiac surgery, abnormal ECG needing cardiology, or local sports-return policy applies",
+    sourceIds,
+    criteria: criteria(`${prefix}_special_population_review_criteria`, "Use when pediatric chest pain/syncope management depends on pregnancy, medication/toxin exposure, VTE risk, congenital heart disease, known arrhythmia, cardiology testing access, or local return-to-play policy.", ["demographics", "pregnancy_status", "medications", "comorbidities", "labs", "imaging_results", "local_policy", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
+    action: "Get pediatric, cardiology, respiratory, obstetric, toxicology, or neurology review as appropriate; do not clear exercise or discharge until the modifier, activity restriction, testing plan, and follow-up owner are documented.",
+    endpointType: "clinician_review_handoff",
+    reviewNeededReason: "Pregnancy/postpartum status, stimulant/toxin exposure, PE risk, congenital/acquired heart disease, ECG abnormality, or local sports/cardiology policy changes disposition."
+  });
+
+  const worseningEndpoint = endpoint({
+    id: `${prefix}_worsening_endpoint`,
+    label: "Pediatric chest/syncope reassessment: new exertional symptoms, abnormal ECG, hypoxia, poor perfusion, recurrent syncope, or worsening pain escalates care",
+    edgeLabel: "Reassessment branch: exertional pain/syncope appears, palpitations with syncope recur, ECG abnormality is found, oxygenation drops, respiratory distress develops, perfusion worsens, fever/myocarditis concern appears, or low-risk pain pattern no longer fits",
+    sourceIds,
+    criteria: criteria(`${prefix}_worsening_criteria`, "Escalate pediatric chest pain/syncope when reassessment contradicts the low-risk or autonomic branch.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
+    action: "Repeat vitals and focused exam, repeat or review ECG, recheck oxygenation/respiratory findings, reconsider myocarditis/pericarditis, PE, pneumothorax, cardiac syncope, seizure mimic, or toxin exposure, and move to pediatric/cardiology/ED transfer if danger findings are present.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const deescalateEndpoint = endpoint({
+    id: `${prefix}_deescalation_endpoint`,
+    label: "Pediatric chest/syncope de-escalation: stop cardiac/respiratory escalation only when red flags remain absent and objective findings support benign or autonomic care",
+    edgeLabel: "De-escalation branch: normal vitals/perfusion, no exertional symptoms, no concerning family history, normal ECG if obtained, no hypoxia/respiratory distress, orthostatic/autonomic pattern stable, and follow-up/safety-net access documented",
+    sourceIds,
+    criteria: criteria(`${prefix}_deescalation_criteria`, "Use when pediatric chest pain/syncope has been reassessed and emergency cardiac/respiratory/seizure features remain absent.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "follow_up_access", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
+    action: "Narrow to benign chest pain, vasovagal/orthostatic care, or another documented low-risk diagnosis only after red flags are absent, objective findings are stable, and return precautions/follow-up are clear.",
+    endpointType: "deescalation_stopping",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const followupEndpoint = endpoint({
+    id: `${prefix}_followup_safety_endpoint`,
+    label: "Pediatric chest/syncope follow-up and safety-net: activity restriction, result ownership, recurrent syncope plan, and return precautions",
+    edgeLabel: `Disposition branch: ${evidenceLabels.dispositions}; cause identified or serious causes addressed, follow-up arranged, exercise/activity advice documented, pending ECG/CXR/lab/imaging owners assigned, and family return precautions given`,
+    sourceIds,
+    criteria: criteria(`${prefix}_followup_safety_criteria`, "Use when pediatric chest pain/syncope is stable enough for discharge or lower-acuity follow-up.", ["symptoms", "vitals", "labs", "imaging_results", "medications", "follow_up_access", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
+    action: "Document diagnosis, red flags screened, activity restriction if cardiac review is pending, pending result owners, follow-up with pediatrician/cardiology/neurology/respiratory as indicated, hydration/salt plan for autonomic syncope when appropriate, and return precautions for exertional chest pain/syncope, palpitations with syncope, abnormal breathing, hypoxia, hemoptysis, fever, worsening pain, poor perfusion, or recurrent events.",
+    endpointType: "follow_up",
+    monitoringPlan: ["activity restriction if needed", "pending result owner", "follow-up specialty owner", "hydration/salt plan when autonomic", "return precautions"]
+  });
+
+  const monitoringBundle = actionNode({
+    id: `${prefix}_monitoring_bundle`,
+    label: "Pediatric chest/syncope monitoring: vitals, oxygenation, ECG interpretation, orthostatic response, pain pattern, event recurrence, and disposition readiness",
+    edgeLabel: "Monitoring branch after pediatric chest/syncope classification: trend pain, recurrence, exertional relationship, perfusion, oxygenation, ECG findings, orthostatic BP/HR, respiratory findings, and activity/follow-up constraints",
+    sourceIds,
+    criteria: criteria(`${prefix}_monitoring_bundle_criteria`, "Monitor pediatric chest pain/syncope by trending the objective findings that selected the active branch.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
+    action: "Reassess pain pattern, exertional symptoms, syncope recurrence, palpitations, perfusion, oxygenation/work of breathing, ECG interpretation, orthostatic vitals, respiratory findings, and disposition readiness before closure.",
+    parallelActions: unique(["repeat vital signs", "repeat oxygen saturation/work of breathing", "review ECG QRS/QTc/ST findings", "repeat orthostatic BP/HR when syncope/orthostatic symptoms persist", "confirm activity restriction and follow-up", evidenceLabels.safety]),
+    guidelineCutoffs: criteriaRows,
+    children: [worseningEndpoint, deescalateEndpoint, followupEndpoint]
+  });
+
+  const classificationDecision = decision({
+    id: `${prefix}_classification_decision`,
+    label: "Pediatric chest pain/syncope: classify cardiac risk, respiratory risk, autonomic syncope, low-risk chest pain, mimic, or clinician-review modifier",
+    edgeLabel: "Pediatric chest/syncope branch ready: history, family history, vitals, orthostatics when indicated, exam/perfusion, oxygenation, ECG when indicated, and respiratory or syncope mimic features are available",
+    sourceIds,
+    criteria: criteria(`${prefix}_classification_criteria`, "Classify pediatric chest pain/syncope using red flags, ECG intervals, orthostatic/POTS thresholds, respiratory findings, and low-risk pattern rules.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Select the active pediatric branch: cardiac escalation, respiratory/PE/pneumothorax route, orthostatic/POTS or vasovagal care, low-risk chest pain with no routine testing, seizure/mimic evaluation, special-population review, or monitoring/follow-up.",
+    clinicalCriteria: criteriaRows,
+    guidelineCutoffs: criteriaRows,
+    children: [missingObjectiveEndpoint, cardiacEscalationEndpoint, respiratoryEndpoint, orthostaticSyncopeEndpoint, lowRiskChestPainEndpoint, seizureMimicEndpoint, specialReviewEndpoint, monitoringBundle]
+  });
+
+  const initialAssessment = actionNode({
+    id: `${prefix}_initial_assessment_bundle`,
+    label: "Pediatric chest pain/syncope bedside assessment: age, exertion, syncope/palpitations, family history, vitals/orthostatics, cardiac/respiratory exam, and targeted ECG/testing",
+    edgeLabel: `Pediatric chest/syncope assessment bundle: ${evidenceLabels.tests}; ${evidenceLabels.redFlags}; ${evidenceLabels.dispositions}`,
+    sourceIds,
+    criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial pediatric chest pain/syncope assessment requires age, symptom pattern, exertion/syncope/palpitations, family history, vitals including orthostatics when indicated, cardiac/respiratory/neurologic exam, targeted ECG/testing, and disposition constraints.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Assess age and pathway fit, pain onset/duration/site/quality/radiation/reproducibility, exertion or sleep association, syncope/presyncope/palpitations event details, prodrome/recovery, family history, full vitals and oxygenation, orthostatic BP/HR when syncope or orthostatic symptoms are present, cardiac/pulmonary/neurologic exam, ECG when cardiac risk or syncope is present, CXR/troponin/labs only when risk factors or exam findings justify them, and senior discussion for echocardiogram, Holter/exercise testing, or CTPA.",
+    parallelActions: unique([evidenceLabels.tests, evidenceLabels.redFlags, evidenceLabels.dispositions, "orthostatic blood pressure and heart rate when syncope", "ECG at least once for syncope", "manual QRS/QTc/ST review", "family history of early sudden death/cardiomyopathy/arrhythmia", "respiratory/PE/pneumothorax screen"]),
+    requiredData: ["age", "exertional symptoms", "syncope/palpitations event details", "family history", "vital signs and oxygen saturation", "orthostatic BP/HR when indicated", "cardiac/pulmonary/neurologic exam", "ECG when indicated", "respiratory or PE features"],
+    guidelineCutoffs: criteriaRows,
+    children: [classificationDecision]
+  });
+
+  const root = decision({
+    id: "root",
+    label: "Pediatric chest pain/syncope: route by cardiac red flags, ECG cutoffs, orthostatic thresholds, respiratory danger, low-risk pattern, and follow-up needs",
+    sourceIds,
+    criteria: criteria(`${prefix}_activate`, "Activate for child/adolescent chest pain, exertional symptoms, syncope, near-syncope, palpitations, abnormal ECG concern, respiratory chest pain, or clinician-chosen pediatric chest/syncope evaluation.", ["clinician_chosen_module", "symptoms", "exam", "vitals", "labs", "imaging_results", "problem_list_or_diagnosis"], sourceIds),
+    action: "Route pediatric chest pain/syncope through missing-data, cardiac escalation, respiratory/PE/pneumothorax evaluation, orthostatic/POTS care, low-risk no-testing care, seizure/mimic evaluation, special-population review, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+    children: [missingContextEndpoint, initialAssessment]
+  });
+
+  return finalizeClinicalPathwayTree({
+    module,
+    sourceById,
+    label,
+    version: "4.0.0",
+    status: "hand_polished_pediatric_chest_pain_syncope_pathway_needs_clinician_review",
+    sourceIds,
+    criteriaRows,
+    tests,
+    redFlags,
+    differentials,
+    dispositions,
+    root,
+    sourceMaterial: "Royal Children's Hospital pediatric chest pain, syncope, and basic pediatric ECG guidelines plus local module evidence rows",
+    reviewNote: "Pediatric chest pain/syncope tree is threshold-cited and patient-traversable; local pediatric cardiology access, sports-return policy, adolescent pregnancy/PE pathway, troponin use, and transfer thresholds require clinician governance.",
+    syntheticScenarios: [
+      { scenario_id: "missing_context", major_pathway: "missing_data_needed", expected_endpoint_id: missingContextEndpoint.id, expected_active_branch: missingContextEndpoint.edgeLabel },
+      { scenario_id: "missing_ecg_orthostatics", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: missingObjectiveEndpoint.id, expected_active_branch: missingObjectiveEndpoint.edgeLabel },
+      { scenario_id: "exertional_syncope_abnormal_ecg", major_pathway: "escalation_emergency_actions", expected_endpoint_id: cardiacEscalationEndpoint.id, expected_active_branch: cardiacEscalationEndpoint.edgeLabel },
+      { scenario_id: "respiratory_pe_pneumothorax", major_pathway: "mimics_exclusions", expected_endpoint_id: respiratoryEndpoint.id, expected_active_branch: respiratoryEndpoint.edgeLabel },
+      { scenario_id: "orthostatic_pots", major_pathway: "first_line_management", expected_endpoint_id: orthostaticSyncopeEndpoint.id, expected_active_branch: orthostaticSyncopeEndpoint.edgeLabel },
+      { scenario_id: "low_risk_precordial_catch", major_pathway: "disposition_followup_safety_netting", expected_endpoint_id: lowRiskChestPainEndpoint.id, expected_active_branch: lowRiskChestPainEndpoint.edgeLabel },
+      { scenario_id: "seizure_or_hypoglycemia_mimic", major_pathway: "severity_risk_stratification", expected_endpoint_id: seizureMimicEndpoint.id, expected_active_branch: seizureMimicEndpoint.edgeLabel },
+      { scenario_id: "pregnancy_toxin_known_heart_disease", major_pathway: "contraindications_special_populations", expected_endpoint_id: specialReviewEndpoint.id, expected_active_branch: specialReviewEndpoint.edgeLabel },
+      { scenario_id: "worsening_after_low_risk_branch", major_pathway: "monitoring_reassessment_escalation", expected_endpoint_id: worseningEndpoint.id, expected_active_branch: worseningEndpoint.edgeLabel },
+      { scenario_id: "deescalation_and_return_precautions", major_pathway: "deescalation_stopping_criteria", expected_endpoint_id: deescalateEndpoint.id, expected_active_branch: deescalateEndpoint.edgeLabel }
+    ],
+    handPolishRequirements: [
+      "pediatric chest pain branch uses targeted testing rather than routine ECG/CXR/troponin when no risk factors are present",
+      "cardiac red flags and abnormal ECG intervals route to urgent pediatric/cardiology review",
+      "syncope branch includes ECG at least once plus orthostatic hypotension and POTS thresholds",
+      "respiratory/PE/pneumothorax and seizure/hypoglycemia/toxin mimics route explicitly",
+      "activity restriction, follow-up, and return precautions are explicit"
+    ]
+  });
+}
+
 function finalizeClinicalPathwayTree({
   module,
   sourceById,
@@ -4853,6 +5415,10 @@ function main() {
                             ? buildGrowthHormoneExcessClinicalPathwayTree(module, sourceById, "acromegaly")
                             : module.id === "gigantism_v1"
                               ? buildGrowthHormoneExcessClinicalPathwayTree(module, sourceById, "gigantism")
+                              : module.id === "chest_pain_v1"
+                                ? buildAdultChestPainClinicalPathwayTree(module, sourceById)
+                                : module.id === "pediatric_chest_pain_syncope_v1"
+                                  ? buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById)
                               : buildCompactClinicalPathwayTree(module, sourceById);
     const nextModule = { ...module, clinical_pathway_tree_v1: clinicalPathway };
     const nextRaw = raw.module ? { ...raw, module: nextModule } : nextModule;
