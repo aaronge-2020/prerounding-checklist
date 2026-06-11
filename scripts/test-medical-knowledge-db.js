@@ -206,7 +206,7 @@ assert.match(
   /Am J Respir Crit Care Med\. 2026;212\(1\):24-44/i,
   "ATS_CAP_2025 citation should distinguish the 2026 ATS guideline from the older ATS/IDSA 2019 guideline"
 );
-const sourceAuditDate = "2026-06-09";
+const sourceAuditDate = "2026-06-11";
 const allowedSourceCurrencyStatuses = new Set([
   "reviewed_current_for_scope",
   "reviewed_legacy_active",

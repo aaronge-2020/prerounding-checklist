@@ -287,7 +287,10 @@ for (const module of endocrineModules) {
   });
   module.endocrine_metadata.source_ids.forEach((sourceId) => {
     const source = complaintSourceRegistry.find((row) => row.id === sourceId);
-    assert.equal(source?.date_accessed, "2026-06-06", `${module.id} source ${sourceId} should have current access date`);
+    assert.match(source?.date_accessed || "", /^\d{4}-\d{2}-\d{2}$/, `${module.id} source ${sourceId} should use ISO access date`);
+    assert.ok(source.date_accessed <= "2026-06-11", `${module.id} source ${sourceId} access date should not be later than the audit date`);
+    assert.match(source?.last_reviewed || "", /^\d{4}-\d{2}-\d{2}$/, `${module.id} source ${sourceId} should use ISO last-reviewed date`);
+    assert.ok(source.last_reviewed >= source.date_accessed, `${module.id} source ${sourceId} should be reviewed on or after access`);
     assert.match(source?.url || "", /^https:\/\//, `${module.id} source ${sourceId} should have HTTPS provenance`);
   });
 }

@@ -67,13 +67,40 @@ const shallowGeneratedItemPattern = /\b(?:source-backed criteria|source-backed m
 
 const cahCutoffCriteria = [
   {
-    id: "cah_17ohp_reference_range_confirmation",
-    label: "CAH diagnostic confirmation: positive newborn screen or symptomatic patient needs 17-OHP above reference range with gestational-age/assay context and cosyntropin profile when borderline",
-    criteria_text: "Endocrine Society recommends gestational-age-stratified 17-hydroxyprogesterone screening, early-morning baseline 17-OHP by LC-MS/MS after infancy, and cosyntropin adrenocortical profile when 17-OHP is borderline or first-tier immunoassay screening is positive.",
-    cutoffs: ["17-OHP above reference range"],
-    data_needed: ["newborn screen result", "gestational age", "assay method", "baseline 17-OHP", "cosyntropin stimulated steroid profile when borderline"],
+    id: "cah_newborn_screen_confirmation",
+    label: "Newborn CAH screen: interpret 17-OHP by gestational age and confirm with LC-MS/MS or cosyntropin profile when first-tier results are positive or borderline",
+    criteria_text: "Endocrine Society recommends 17-hydroxyprogesterone newborn screening norms stratified by gestational age, second-tier LC-MS/MS when available, and cosyntropin stimulation testing before corticosteroids when immunoassay resources cannot improve specificity.",
+    cutoffs: ["17-OHP above gestational-age norm"],
+    data_needed: ["newborn screen result", "gestational age", "birth weight", "assay method", "serum 17-OHP", "second-tier LC-MS/MS steroid profile", "cosyntropin plan before steroid treatment when feasible"],
     source_ids: ["ES_CAH_2018"],
-    source_section: "Diagnosis of congenital adrenal hyperplasia recommendations 1.2, 1.3, 3.1-3.3"
+    source_section: "Newborn screening recommendations 1.2-1.3 and diagnosis recommendation 3.1"
+  },
+  {
+    id: "cah_cosyntropin_confirmation_profile",
+    label: "CAH cosyntropin profile: 0.25 mg IV cosyntropin, 0.125 mg in very-low-birth-weight infants, baseline and 60-minute steroids after the first 24-48 hours of life",
+    criteria_text: "The Endocrine Society diagnostic profile uses 0.25 mg IV cosyntropin, reduced to 0.125 mg in very-low-birth-weight infants, with baseline and 60-minute samples; testing should be deferred until after the first 24 to 48 hours of life because immediate postbirth sampling has false positives and false negatives.",
+    cutoffs: ["0.25 mg", "0.125 mg", "60 minutes", "24-48 hours"],
+    data_needed: ["age in hours/days", "birth weight", "baseline cortisol", "baseline 17-OHP", "60-minute cortisol", "60-minute 17-OHP", "11-deoxycortisol", "androstenedione", "assay/lab method", "current glucocorticoid exposure"],
+    source_ids: ["ES_CAH_2018"],
+    source_section: "Diagnosis evidence and cosyntropin testing details"
+  },
+  {
+    id: "cah_after_infancy_17ohp_cutoffs",
+    label: "After infancy 17-OHP cutoffs: classic CAH >10,000 ng/dL; nonclassic baseline 200-10,000 ng/dL and ACTH-stimulated 1,000-10,000 ng/dL",
+    criteria_text: "GeneReviews tabulates diagnostic 17-OHP ranges after infancy: classic CAH baseline or ACTH-stimulated 17-OHP greater than 10,000 ng/dL (300 nmol/L); nonclassic CAH baseline 200-10,000 ng/dL (6-300 nmol/L) or ACTH-stimulated 1,000-10,000 ng/dL (31-300 nmol/L); unaffected baseline is below 200 ng/dL and stimulated below 1,000 ng/dL.",
+    cutoffs: ["17-OHP >10,000 ng/dL", "300 nmol/L", "17-OHP 200-10,000 ng/dL", "6-300 nmol/L", "ACTH-stimulated 17-OHP 1,000-10,000 ng/dL", "31-300 nmol/L", "baseline 17-OHP <200 ng/dL", "ACTH-stimulated 17-OHP <1,000 ng/dL"],
+    data_needed: ["age after infancy", "early morning 17-OHP", "ACTH-stimulated 17-OHP", "timing before 8 AM", "follicular phase timing when menstruating", "assay method", "glucocorticoid exposure"],
+    source_ids: ["GENEREVIEWS_CAH_21OHD_2016", "ES_CAH_2018"],
+    source_section: "GeneReviews diagnostic testing table; Endocrine Society diagnosis recommendations 3.2-3.4"
+  },
+  {
+    id: "cah_salt_wasting_crisis_pattern",
+    label: "Salt-wasting CAH emergency: infant in first 4 weeks with dehydration, vomiting, shock, low sodium/chloride/CO2, high potassium, hypoglycemia, or inappropriately high urine sodium",
+    criteria_text: "GeneReviews identifies any infant with salt-losing crisis in the first 4 weeks of life as a CAH suspect; untreated or poorly controlled salt wasting may show decreased sodium, chloride, and total CO2, increased potassium, and inappropriately high urine sodium.",
+    cutoffs: ["first 4 weeks", "sodium below reference range", "potassium above reference range", "CO2 below reference range"],
+    data_needed: ["age in days", "vomiting", "feeding intolerance", "hydration/perfusion", "blood pressure", "glucose", "sodium", "potassium", "chloride", "CO2/bicarbonate", "urine sodium", "17-OHP/newborn screen"],
+    source_ids: ["GENEREVIEWS_CAH_21OHD_2016", "ES_CAH_2018"],
+    source_section: "GeneReviews suggestive findings and clinical features; Endocrine Society stress/adrenal crisis recommendations"
   },
   {
     id: "cah_stress_dose_fever_cutoff",
@@ -85,6 +112,33 @@ const cahCutoffCriteria = [
     source_section: "Stress dosing recommendations 4.7-4.11"
   },
   {
+    id: "cah_adrenal_crisis_hydrocortisone_doses",
+    label: "CAH adrenal crisis injection: hydrocortisone 25 mg infants/preschool, 50 mg school-age children, 100 mg adults; then one-quarter dose every 6 hours",
+    criteria_text: "Endocrine Society suggested initial parenteral hydrocortisone doses for adrenal crisis are 25 mg for infants and preschool children, 50 mg for school-age children, and 100 mg for adults; successive IV hydrocortisone may be one-quarter of the initial dose every 6 hours.",
+    cutoffs: ["25 mg", "50 mg", "100 mg", "every 6 hours", "one-quarter dose"],
+    data_needed: ["age band", "current adrenal crisis features", "vomiting/inability to take oral medication", "weight if local protocol is weight-based", "hydrocortisone route available", "time of last glucocorticoid dose"],
+    source_ids: ["ES_CAH_2018"],
+    source_section: "Stress dosing Table 4 and adrenal crisis evidence"
+  },
+  {
+    id: "cah_growing_classic_maintenance_doses",
+    label: "Growing classic CAH maintenance: hydrocortisone 10-15 mg/m2/day three times daily, fludrocortisone 0.05-0.2 mg/day, and infancy sodium chloride 1-2 g/day",
+    criteria_text: "Endocrine Society Table 2 lists maintenance therapy in growing classic CAH as hydrocortisone tablets 10-15 mg/m2/day divided three times daily, fludrocortisone 0.05-0.2 mg/day in 1-2 doses, and sodium chloride 1-2 g/day (17-34 mEq/day) in infancy divided into feedings.",
+    cutoffs: ["10-15 mg/m2/day", "3 times/day", "0.05-0.2 mg/day", "1-2 g/day", "17-34 mEq/day"],
+    data_needed: ["classic CAH diagnosis", "age/growth status", "body surface area", "current hydrocortisone dose", "fludrocortisone dose", "infancy sodium chloride supplementation", "blood pressure", "renin", "sodium", "potassium", "growth velocity"],
+    source_ids: ["ES_CAH_2018"],
+    source_section: "Treatment of classic CAH recommendations 4.1-4.6 and Table 2"
+  },
+  {
+    id: "cah_adult_classic_maintenance_doses",
+    label: "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when indicated",
+    criteria_text: "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when clinically indicated.",
+    cutoffs: ["15-25 mg/day", "2-3 doses", "5-7.5 mg/day", "4-6 mg/day", "0.25-0.5 mg/day", "0.05-0.2 mg/day"],
+    data_needed: ["adult classic CAH diagnosis", "current glucocorticoid regimen", "mineralocorticoid need", "blood pressure", "BMI/Cushingoid features", "renin", "sodium", "potassium", "fertility goals", "adrenal rest tumor status"],
+    source_ids: ["ES_CAH_2018"],
+    source_section: "Treatment of classic CAH recommendations 4.4-4.6 and Table 3"
+  },
+  {
     id: "cah_nonclassic_stress_cortisol_response",
     label: "Nonclassic CAH major-stress hydrocortisone only if cosyntropin cortisol response is suboptimal <14-18 ug/dL (<400-500 nmol/L) or iatrogenic suppression exists",
     criteria_text: "For nonclassic CAH, hydrocortisone stress dosing for major surgery, trauma, or childbirth is suggested only when cosyntropin cortisol response is suboptimal (<14 to 18 ug/dL or <400 to 500 nmol/L) or iatrogenic adrenal suppression is present.",
@@ -94,6 +148,15 @@ const cahCutoffCriteria = [
     source_section: "Nonclassic congenital adrenal hyperplasia recommendation 5.6"
   },
   {
+    id: "cah_nonclassic_daily_glucocorticoid_rules",
+    label: "Nonclassic CAH daily steroid rules: treat rapid pubarche, advanced bone age, overt virilization, infertility, or patient-important hyperandrogenism; do not treat asymptomatic nonpregnant patients",
+    criteria_text: "Endocrine Society suggests glucocorticoids for children/adolescents with inappropriately early rapid pubarche or bone age advancement, adolescents with overt virilization, and adult women with patient-important hyperandrogenism or infertility; it recommends against glucocorticoids in asymptomatic nonpregnant nonclassic CAH and suggests discontinuation when adult height is attained or symptoms resolve.",
+    cutoffs: ["adult height attained", "symptoms resolve"],
+    data_needed: ["nonclassic CAH confirmation", "pubarche timing/progression", "bone age", "virilization signs", "menstrual/fertility goals", "hyperandrogenism symptoms", "pregnancy status", "current glucocorticoid use", "adult height status"],
+    source_ids: ["ES_CAH_2018"],
+    source_section: "Treatment of nonclassic CAH recommendations 5.1-5.5"
+  },
+  {
     id: "cah_monitoring_age_intervals",
     label: "CAH pediatric monitoring: age <=18 months monitor first 3 months of life and every 3 months thereafter; age >18 months evaluate every 4 months",
     criteria_text: "For CAH patients <=18 months, monitor closely in the first 3 months of life and every 3 months thereafter; after 18 months, evaluate every 4 months, with pediatric growth, weight, blood pressure, exam, and biochemical measurements.",
@@ -101,6 +164,75 @@ const cahCutoffCriteria = [
     data_needed: ["age", "last endocrine visit date", "growth velocity", "weight", "blood pressure", "timed hormones"],
     source_ids: ["ES_CAH_2018"],
     source_section: "Monitoring therapy recommendations 4.12-4.16"
+  },
+  {
+    id: "cah_monitoring_targets_and_overtreatment",
+    label: "CAH monitoring targets: time hormones consistently; normal 17-OHP suggests overtreatment; follicular progesterone target <0.6 ng/mL when trying to conceive",
+    criteria_text: "Endocrine Society advises consistently timed hormone measurements relative to medication and time of day, not fully suppressing endogenous adrenal steroids, and interpreting 17-OHP normalization as overtreatment; for women trying to conceive, follicular-phase progesterone target is below 0.6 ng/mL (2 nmol/L).",
+    cutoffs: ["17-OHP normal", "progesterone <0.6 ng/mL", "2 nmol/L", "androstenedione/testosterone ratio <0.5", "androstenedione/testosterone ratio >2"],
+    data_needed: ["hormone draw time", "time since glucocorticoid dose", "17-OHP", "androstenedione", "testosterone", "renin", "sodium", "potassium", "blood pressure", "fertility intent", "follicular-phase progesterone"],
+    source_ids: ["ES_CAH_2018"],
+    source_section: "Monitoring therapy evidence and Table 5"
+  },
+  {
+    id: "cah_long_term_surveillance_intervals",
+    label: "CAH long-term surveillance: adults need annual exam; TART ultrasound interval differs by source and should use local endocrine policy",
+    criteria_text: "Endocrine Society recommends annual adult physical examination with blood pressure, BMI, Cushingoid features, and biochemical monitoring; it recommends periodic testicular ultrasound in males with classic CAH, with expert opinion suggesting about every 1-2 years in asymptomatic males. GeneReviews lists testicular adrenal rest tumor monitoring every 3-5 years after puberty. Because intervals differ, local endocrine policy should define the exact interval.",
+    cutoffs: ["annual", "1-2 years", "3-5 years"],
+    data_needed: ["adult status", "last exam date", "blood pressure", "BMI", "Cushingoid features", "biochemical monitoring", "sex/reproductive anatomy", "puberty status", "last testicular ultrasound", "local endocrine surveillance interval"],
+    source_ids: ["ES_CAH_2018", "GENEREVIEWS_CAH_21OHD_2016"],
+    source_section: "Long-term surveillance recommendation 6.13 and GeneReviews surveillance",
+    needs_clinical_review: true,
+    reviewer_input_needed: "Local endocrine policy must choose a TART ultrasound interval because Endocrine Society expert opinion and GeneReviews summarize different surveillance intervals."
+  },
+  {
+    id: "cah_pregnancy_fertility_genetic_rules",
+    label: "CAH pregnancy/fertility rules: genetic counseling for pregnancy planning, continue hydrocortisone/prednisolone and fludrocortisone, avoid dexamethasone, stress-dose labor",
+    criteria_text: "Endocrine Society recommends genetic counseling for CAH patients/partners planning pregnancy, specialist endocrine management during pregnancy, continuing prepregnancy hydrocortisone or prednisolone and fludrocortisone with adjustment for insufficiency symptoms, considering dose increase in the second or third trimester, stress-dose glucocorticoids during labor and delivery, and avoiding placenta-crossing glucocorticoids such as dexamethasone in pregnancy or conception attempts.",
+    cutoffs: ["second trimester", "third trimester", "labor and delivery"],
+    data_needed: ["pregnancy status", "gestational age", "fertility intent", "partner/carrier status", "current glucocorticoid", "fludrocortisone use", "symptoms of insufficiency", "labor/delivery plan", "dexamethasone exposure"],
+    source_ids: ["ES_CAH_2018"],
+    source_section: "Genetic counseling, fertility, and pregnancy recommendations 6.3-6.9"
+  },
+  {
+    id: "cah_prenatal_dexamethasone_restriction",
+    label: "Prenatal dexamethasone for CAH risk: experimental only, IRB-approved protocol, fetal sex screening, outcomes capture",
+    criteria_text: "Endocrine Society advises prenatal CAH therapy remains experimental, does not recommend specific protocols, and recommends prenatal therapy only through IRB-approved protocols at centers able to collect outcomes, with Y-chromosomal DNA screening in maternal blood to exclude male fetuses from potential treatment groups.",
+    cutoffs: ["IRB-approved protocol", "Y-chromosomal DNA screening"],
+    data_needed: ["pregnancy risk of affected fetus", "prenatal dexamethasone request/exposure", "IRB protocol availability", "outcomes registry capability", "maternal blood fetal sex screening", "genetic counseling"],
+    source_ids: ["ES_CAH_2018"],
+    source_section: "Prenatal treatment recommendations 2.1-2.3",
+    needs_clinical_review: true,
+    reviewer_input_needed: "Prenatal CAH dexamethasone requires formal research governance, maternal-fetal medicine/endocrinology review, and documented IRB-approved protocol."
+  },
+  {
+    id: "cah_crinecerfont_dosing_and_safety",
+    label: "Crinecerfont adjunct: classic CAH age >=4 years; adults 100 mg twice daily; pediatric doses 25/50/100 mg twice daily by 10-<20, 20-<55, or >=55 kg",
+    criteria_text: "DailyMed labeling indicates crinecerfont as adjunctive therapy to glucocorticoid replacement to control androgens in adults and pediatric patients 4 years and older with classic CAH. Adult dose is 100 mg orally twice daily with meals. Pediatric doses are 25 mg twice daily for 10 to less than 20 kg, 50 mg twice daily for 20 to less than 55 kg, and 100 mg twice daily for at least 55 kg. Continue glucocorticoid replacement, assess androstenedione beginning 4 weeks after initiation, and do not reduce glucocorticoid below replacement.",
+    cutoffs: ["age >=4 years", "100 mg twice daily", "10 kg to <20 kg", "25 mg twice daily", "20 kg to <55 kg", "50 mg twice daily", ">=55 kg", "4 weeks"],
+    data_needed: ["classic CAH diagnosis", "age", "weight", "current glucocorticoid replacement", "androgen control goal", "androstenedione baseline", "time since initiation", "meal timing", "hypersensitivity history", "renal function", "CYP3A4 inducer use"],
+    source_ids: ["DAILYMED_CRENESSITY_CRINECERFONT_2024"],
+    source_section: "Indications and dosage sections 1-2"
+  },
+  {
+    id: "cah_crinecerfont_contraindications_interactions",
+    label: "Crinecerfont safety: discontinue for clinically significant hypersensitivity, avoid severe renal impairment/ESRD, and double doses for CYP3A4 inducers per label",
+    criteria_text: "DailyMed labeling contraindicates crinecerfont in hypersensitivity to crinecerfont or excipients, directs discontinuation for clinically significant hypersensitivity, warns adrenal crisis can occur if glucocorticoids are inadequate, does not recommend use in severe renal impairment or end-stage renal disease, and modifies dosing with CYP3A4 inducers: strong inducers increase morning and evening dosage 2-fold; moderate inducers increase the evening dose 2-fold.",
+    cutoffs: ["severe renal impairment", "end-stage renal disease", "2-fold", "200 mg twice daily"],
+    data_needed: ["hypersensitivity symptoms", "glucocorticoid replacement dose", "acute illness/trauma/surgery", "eGFR/renal impairment status", "CYP3A4 inducer list", "crinecerfont morning dose", "crinecerfont evening dose"],
+    source_ids: ["DAILYMED_CRENESSITY_CRINECERFONT_2024"],
+    source_section: "Contraindications, warnings, renal impairment, and drug interaction sections"
+  },
+  {
+    id: "cah_genital_surgery_dsd_review",
+    label: "Virilized 46,XX classic CAH: surgery is optional shared decision in experienced DSD center; consider delaying or observing",
+    criteria_text: "Endocrine Society advises families of pediatric CAH patients, especially minimally virilized girls, be informed about options including delaying surgery or observation; surgery should be performed only in experienced centers with pediatric surgery/urology, endocrinology, anesthesiology, behavioral health, and social work, and decisions for minors remain a family shared decision with experienced consultants.",
+    cutoffs: ["Prader stage III-V", "experienced center"],
+    data_needed: ["karyotype/sex development context", "degree of virilization", "family goals", "urology/DSD center availability", "behavioral health support", "anesthesia risk", "informed consent and assent when applicable"],
+    source_ids: ["ES_CAH_2018"],
+    source_section: "Restoring functional anatomy by surgery recommendations 7.1-7.4",
+    needs_clinical_review: true,
+    reviewer_input_needed: "Elective genital surgery decisions require experienced DSD team review, family shared decision-making, and local legal/ethical governance."
   }
 ];
 
@@ -2436,6 +2568,282 @@ function buildPediatricDkaHhsClinicalPathwayTree(module, sourceById) {
         "cerebral-edema branch includes immediate treatment doses and avoids imaging delay",
         "glucose-fluid and transition branches include dextrose, insulin-continuation, and subcutaneous overlap thresholds",
         "local retrieval/PICU, fluid calculator, potassium infusion, and formulary policies remain clinician-governed"
+      ]
+    }
+  };
+}
+
+function buildCongenitalAdrenalHyperplasiaClinicalPathwayTree(module, sourceById) {
+  const label = module.label || "Congenital Adrenal Hyperplasia (CAH)";
+  const prefix = "congenital_adrenal_hyperplasia";
+  const esCah = ["ES_CAH_2018"];
+  const geneReviews = ["GENEREVIEWS_CAH_21OHD_2016"];
+  const crinecerfont = ["DAILYMED_CRENESSITY_CRINECERFONT_2024"];
+  const sourceIds = unique([...esCah, ...geneReviews, ...crinecerfont, ...genericSourceIds]);
+  const tests = firstItems(module, "initialTests", 10);
+  const redFlags = firstItems(module, "redFlags", 8, ["safetyChecks"]);
+  const differentials = firstItems(module, "differentialBuckets", 8);
+  const dispositions = firstItems(module, "dispositionRules", 5, ["treatmentOptions"]);
+  const criteriaRows = cahCutoffCriteria.map(criterion);
+
+  const missingContextEndpoint = endpoint({
+    id: "endpoint_missing_context",
+    label: "Missing data needed: CAH age band, crisis signs, 17-OHP profile, electrolytes, and steroid plan",
+    edgeLabel: "Missing exact CAH data: age/gestation, newborn screen or 17-OHP timing, sodium/potassium/glucose/CO2, crisis symptoms, current glucocorticoid/mineralocorticoid/crinecerfont use, pregnancy/fertility status, or follow-up access",
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_context_criteria`, "Route here when the chart does not contain enough CAH-specific data to distinguish salt-wasting emergency, diagnostic confirmation, classic treatment, nonclassic treatment, pregnancy/DSD review, or routine follow-up.", contextDomains, sourceIds, { missing_any: ["age in days/months/years", "gestational age or birth weight when newborn", "newborn screen or early morning 17-OHP", "sodium", "potassium", "glucose", "CO2/bicarbonate", "vomiting/dehydration/shock status", "current glucocorticoid/mineralocorticoid/crinecerfont plan", "pregnancy or fertility intent when relevant"] }),
+    action: "Before choosing a CAH branch, document age and gestational-age context, newborn screen result or early morning 17-OHP with assay method, cosyntropin timing/result if needed, sodium, potassium, glucose, CO2/bicarbonate, hydration and perfusion, vomiting or ability to keep steroids down, current hydrocortisone/prednisone/fludrocortisone/salt/crinecerfont use, pregnancy or fertility intent, CYP21A2/genetic counseling status, and reliable follow-up access.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["age in days/months/years", "gestational age and birth weight when newborn", "newborn screen result or early morning 17-OHP with assay method", "cosyntropin dose and 60-minute steroid profile when indicated", "sodium", "potassium", "glucose", "CO2/bicarbonate", "blood pressure/perfusion and hydration", "vomiting or oral intake", "current glucocorticoid/mineralocorticoid/salt/crinecerfont regimen", "pregnancy/fertility intent", "follow-up access"]
+  });
+
+  const missingDiagnosticEndpoint = endpoint({
+    id: `${prefix}_missing_diagnostic_data_endpoint`,
+    label: "Missing data needed: cannot classify classic, nonclassic, salt-wasting, or mimic",
+    edgeLabel: "CAH phenotype cannot be assigned until 17-OHP timing/assay, cosyntropin steroid profile, electrolytes, glucocorticoid exposure, and CYP21A2/family context are known",
+    sourceIds: unique([...esCah, ...geneReviews]),
+    criteria: criteria(`${prefix}_missing_diagnostic_data_criteria`, "Route here when a patient has possible CAH but the exact diagnostic thresholds or exclusion data are unavailable.", ["demographics", "symptoms", "exam", "labs", "medications", "workup_findings"], unique([...esCah, ...geneReviews]), { missing_any: ["early morning 17-OHP", "assay method", "age/gestational age", "baseline and 60-minute cosyntropin steroid profile when borderline", "sodium/potassium/glucose/CO2", "current glucocorticoid exposure", "CYP21A2 testing or family variant when diagnosis remains equivocal"] }),
+    action: "Complete CAH confirmation before labeling severity: repeat newborn screen or send serum 17-OHP with gestational-age and assay context, use LC-MS/MS when available, defer cosyntropin until after 24-48 hours of life when applicable, send baseline and 60-minute cortisol/17-OHP plus adrenal steroid profile for borderline results, check sodium, potassium, glucose, CO2/bicarbonate, renin/aldosterone when salt wasting is possible, and use CYP21A2 testing for equivocal profiles or genetic counseling.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["17-OHP value, timing, and assay", "gestational-age or early-morning context", "baseline and 60-minute cosyntropin steroid profile when borderline", "electrolytes and glucose", "renin/aldosterone when salt wasting possible", "glucocorticoid exposure", "CYP21A2/family testing when equivocal"]
+  });
+
+  const crisisEndpoint = endpoint({
+    id: `${prefix}_adrenal_crisis_endpoint`,
+    label: "Salt-wasting or adrenal crisis: hydrocortisone injection, isotonic fluid, dextrose, and monitored care",
+    edgeLabel: "Emergency branch: newborn first 4 weeks or any CAH patient with vomiting, dehydration, shock, hypoglycemia, hyponatremia, hyperkalemia, major illness, surgery, trauma, labor, or missed steroids",
+    sourceIds: unique([...esCah, ...geneReviews]),
+    criteria: criteria(`${prefix}_crisis_criteria`, "Use when salt-wasting crisis or adrenal crisis is suspected; treatment should not wait for full diagnostic confirmation in an unstable patient.", ["symptoms", "exam", "vitals", "labs", "medications", "demographics", "pregnancy_status", "workup_findings"], unique([...esCah, ...geneReviews]), { criteria_options: criteriaRows.filter((row) => /crisis|salt|stress|hydrocortisone|newborn/i.test(row.id)) }),
+    action: "If blood draw will not delay treatment, send cortisol/ACTH or CAH steroid profile first, then give parenteral hydrocortisone immediately: 25 mg for infants/preschool children, 50 mg for school-age children, or 100 mg for adults. Continue IV hydrocortisone as one-quarter of the initial dose every 6 hours per the CAH guideline, give isotonic saline with dextrose when hypoglycemic or unable to feed, correct potassium/glucose abnormalities, treat infection/trauma/surgical trigger, and admit or monitor at ED/ICU level until perfusion, glucose, sodium, potassium, and oral intake stabilize.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["blood pressure/perfusion", "mental status", "glucose", "sodium", "potassium", "CO2/bicarbonate", "urine output", "hydrocortisone dose time", "oral intake", "precipitating illness or surgery"]
+  });
+
+  const newbornDiagnosticEndpoint = endpoint({
+    id: `${prefix}_newborn_confirmation_endpoint`,
+    label: "Newborn positive screen or virilization: confirm 21-hydroxylase CAH and prevent salt wasting",
+    edgeLabel: "Newborn branch: positive screen, ambiguous genitalia/virilization, poor feeding, vomiting, weight loss, dehydration, or family history with age/gestation-adjusted 17-OHP pending",
+    sourceIds: unique([...esCah, ...geneReviews]),
+    criteria: criteria(`${prefix}_newborn_confirmation_criteria`, "Use for stable newborns or infants with a positive CAH screen, virilization, family risk, or early salt-wasting concern who are not already in adrenal crisis.", ["demographics", "symptoms", "exam", "labs", "workup_findings"], unique([...esCah, ...geneReviews]), { criteria_options: criteriaRows.filter((row) => /newborn|cosyntropin|salt/i.test(row.id)) }),
+    action: "Refer to pediatric endocrinology when regionally available, check serum 17-OHP with gestational-age/birth-weight interpretation, sodium, potassium, glucose, CO2/bicarbonate, renin/aldosterone when salt wasting is possible, and a second-tier LC-MS/MS or cosyntropin steroid profile when first-tier testing is positive or borderline. Do not use immediate postbirth cosyntropin sampling before 24-48 hours unless endocrine review determines benefit outweighs false result risk.",
+    endpointType: "diagnostic_step",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["feeding and weight", "hydration", "blood pressure/perfusion", "sodium", "potassium", "glucose", "17-OHP/steroid profile", "newborn-screen follow-up owner"]
+  });
+
+  const afterInfancyDiagnosticEndpoint = endpoint({
+    id: `${prefix}_after_infancy_diagnosis_endpoint`,
+    label: "After infancy: classify classic, nonclassic, carrier, or unaffected by early morning 17-OHP and cosyntropin profile",
+    edgeLabel: "Symptomatic child, adolescent, or adult branch: virilization, rapid pubarche, advanced bone age, hirsutism/acne, menstrual irregularity, infertility, adrenal rest tumor, or family history",
+    sourceIds: unique([...esCah, ...geneReviews]),
+    criteria: criteria(`${prefix}_after_infancy_diagnosis_criteria`, "Use when possible CAH presents after infancy and early morning biochemical thresholds can separate classic, nonclassic, and mimic pathways.", ["symptoms", "exam", "labs", "demographics", "pregnancy_status", "workup_findings"], unique([...esCah, ...geneReviews]), { criteria_options: criteriaRows.filter((row) => /17ohp|cosyntropin|after_infancy/i.test(row.id)) }),
+    action: "Screen symptomatic patients past infancy with early morning 17-OHP by LC-MS/MS, before 8 AM and in the follicular phase when menstruating. Treat classic-range 17-OHP greater than 10,000 ng/dL (300 nmol/L) as classic CAH confirmation with endocrinology. For baseline 17-OHP 200-10,000 ng/dL or ACTH-stimulated 17-OHP 1,000-10,000 ng/dL, route to nonclassic CAH management after excluding assay, timing, PCOS, adrenal tumor, and other steroidogenesis defects; if stimulated 17-OHP is nondiagnostic or testing is confounded by glucocorticoids, use CYP21A2 testing and specialist review.",
+    endpointType: "diagnostic_step",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["17-OHP timing and assay", "cosyntropin stimulated 17-OHP", "androgen profile", "bone age/growth in children", "menstrual/fertility status", "mimic evaluation"]
+  });
+
+  const classicTreatmentEndpoint = endpoint({
+    id: `${prefix}_classic_replacement_endpoint`,
+    label: "Classic CAH replacement: hydrocortisone, mineralocorticoid, salt in infancy, and dose-safety monitoring",
+    edgeLabel: "Classic CAH confirmed or highly likely without crisis: salt-wasting or simple-virilizing phenotype, classic 17-OHP range, or established CYP21A2 diagnosis needs maintenance therapy",
+    sourceIds: esCah,
+    criteria: criteria(`${prefix}_classic_replacement_criteria`, "Use for stable classic CAH patients who need maintenance glucocorticoid/mineralocorticoid replacement or dose review.", ["labs", "medications", "demographics", "exam", "vitals", "workup_findings"], esCah, { criteria_options: criteriaRows.filter((row) => /growing|adult_classic|monitoring|overtreatment/i.test(row.id)) }),
+    action: "For growing classic CAH, use hydrocortisone tablets 10-15 mg/m2/day divided three times daily, avoid oral hydrocortisone suspension and chronic long-acting potent glucocorticoids, add fludrocortisone 0.05-0.2 mg/day, and add sodium chloride 1-2 g/day (17-34 mEq/day) during infancy when salt-wasting risk applies. For fully grown adults, use an endocrine-supervised regimen such as hydrocortisone 15-25 mg/day in 2-3 doses or a selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when indicated. Do not drive 17-OHP into the normal range just to normalize labs because that suggests overtreatment.",
+    endpointType: "treatment",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["growth velocity and weight", "blood pressure", "renin", "sodium", "potassium", "17-OHP and androstenedione timing", "Cushingoid features", "salt craving or edema", "medication adherence/access"]
+  });
+
+  const nonclassicTreatmentEndpoint = endpoint({
+    id: `${prefix}_nonclassic_symptomatic_endpoint`,
+    label: "Nonclassic CAH symptoms: treat patient-important androgen effects or fertility goals, not an isolated lab value",
+    edgeLabel: "Nonclassic branch needing therapy: rapid pubarche, advanced bone age, overt virilization, infertility, miscarriage history, or patient-important hyperandrogenism",
+    sourceIds: esCah,
+    criteria: criteria(`${prefix}_nonclassic_symptomatic_criteria`, "Use when nonclassic CAH is confirmed and symptoms or reproductive goals justify treatment.", ["symptoms", "exam", "labs", "demographics", "pregnancy_status", "workup_findings"], esCah, { criteria_options: criteriaRows.filter((row) => /nonclassic/i.test(row.id)) }),
+    action: "Discuss glucocorticoid risks and benefits. Treat children/adolescents when pubarche or bone age advances inappropriately fast or overt virilization occurs; treat adult women when hyperandrogenism or infertility is patient-important. Use a glucocorticoid that does not cross the placenta when nonclassic CAH is associated with infertility or prior miscarriage, and coordinate fertility or reproductive endocrinology review when pregnancy is desired.",
+    endpointType: "treatment",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["pubarche or virilization trajectory", "bone age/growth", "androgen symptoms", "menstrual pattern", "fertility goal", "glucocorticoid adverse effects"]
+  });
+
+  const nonclassicDeescalationEndpoint = endpoint({
+    id: `${prefix}_nonclassic_no_daily_or_stop_endpoint`,
+    label: "Nonclassic CAH without treatment indication: avoid or stop daily steroids and reserve stress dosing for proven cortisol risk",
+    edgeLabel: "Low-treatment branch: asymptomatic nonpregnant nonclassic CAH, adult height attained, symptoms resolved, most adult males, or stress dosing question without inadequate cortisol reserve",
+    sourceIds: esCah,
+    criteria: criteria(`${prefix}_nonclassic_deescalation_criteria`, "Use when nonclassic CAH does not justify daily glucocorticoids or when prior treatment can be tapered/stopped.", ["symptoms", "exam", "labs", "demographics", "medications", "pregnancy_status", "workup_findings"], esCah, { criteria_options: criteriaRows.filter((row) => /nonclassic/i.test(row.id)) }),
+    action: "Do not prescribe daily glucocorticoids for asymptomatic nonpregnant nonclassic CAH. Offer discontinuation when adult height is attained or symptoms resolve. For major surgery, trauma, or childbirth, use hydrocortisone stress dosing only if cosyntropin peak cortisol is suboptimal below 14-18 ug/dL (400-500 nmol/L) or iatrogenic adrenal suppression is present; otherwise give routine perioperative care and safety-net instructions.",
+    endpointType: "de_escalation_stopping_criteria",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["symptom recurrence", "growth/bone age if pediatric", "cosyntropin peak cortisol when major stress is planned", "iatrogenic steroid suppression", "pregnancy/childbirth plan"]
+  });
+
+  const crinecerfontEndpoint = endpoint({
+    id: `${prefix}_crinecerfont_adjunct_endpoint`,
+    label: "Crinecerfont adjunct: age >=4 classic CAH with androgen-control need and continued glucocorticoid replacement",
+    edgeLabel: "Adjunct branch: classic CAH age at least 4 years, weight known, androgen control remains problematic, glucocorticoid replacement continues, and hypersensitivity/renal/CYP3A4 risks are reviewed",
+    sourceIds: crinecerfont,
+    criteria: criteria(`${prefix}_crinecerfont_criteria`, "Use when crinecerfont is being considered, started, monitored, dose-adjusted, or stopped.", ["demographics", "labs", "medications", "comorbidities", "vitals", "workup_findings"], crinecerfont, { criteria_options: criteriaRows.filter((row) => /crinecerfont/i.test(row.id)) }),
+    action: "Use crinecerfont only as adjunctive therapy for classic CAH in adults or children age 4 years or older. Dose adults at 100 mg twice daily with morning and evening meals. For pediatric patients age 4 years or older, dose 25 mg twice daily for 10 to less than 20 kg, 50 mg twice daily for 20 to less than 55 kg, and 100 mg twice daily for at least 55 kg. Continue glucocorticoid replacement, do not reduce below physiologic replacement, reassess androstenedione beginning 4 weeks after initiation, avoid use in severe renal impairment or ESRD, adjust for CYP3A4 inducers per label, and discontinue for clinically significant hypersensitivity.",
+    endpointType: "treatment",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["age and weight", "glucocorticoid replacement dose", "androstenedione at 4 weeks or later", "adrenal insufficiency symptoms", "hypersensitivity symptoms", "renal function", "CYP3A4 inducer list"]
+  });
+
+  const pregnancyDsdReviewEndpoint = endpoint({
+    id: `${prefix}_pregnancy_dsd_review_endpoint`,
+    label: "Pregnancy, prenatal dexamethasone, fertility, or DSD surgery: specialist review required",
+    edgeLabel: "Special branch: pregnancy or conception planning, infertility, prenatal dexamethasone request, partner/genetic counseling need, virilized 46,XX infant, or genital surgery discussion",
+    sourceIds: esCah,
+    criteria: criteria(`${prefix}_pregnancy_dsd_review_criteria`, "Use when pregnancy, fertility, prenatal treatment, genetic counseling, or genital anatomy decisions alter CAH management.", ["pregnancy_status", "demographics", "exam", "labs", "medications", "workup_findings"], esCah, { criteria_options: criteriaRows.filter((row) => /pregnancy|prenatal|genital|surgery/i.test(row.id)) }),
+    action: "Refer to endocrinology with maternal-fetal medicine, reproductive endocrinology, genetics, pediatric urology/DSD team, and behavioral health as appropriate. For pregnancy, continue prepregnancy hydrocortisone or prednisolone and fludrocortisone with symptom-guided adjustment, avoid dexamethasone when pregnant or trying to conceive, plan stress-dose glucocorticoids for labor/delivery, and complete genetic counseling for patients, partners, and families. Prenatal dexamethasone for CAH risk remains experimental and should occur only through an IRB-approved protocol with fetal sex screening and outcomes capture. Elective genital surgery should be optional, shared, and performed only in experienced centers.",
+    endpointType: "clinician_review_handoff",
+    guidelineCutoffs: criteriaRows,
+    reviewNeededReason: "Pregnancy, prenatal therapy, fertility, genetic counseling, and genital surgery decisions need specialist governance and local ethical/legal review."
+  });
+
+  const monitoringEndpoint = endpoint({
+    id: `${prefix}_monitoring_reassessment_endpoint`,
+    label: "CAH monitoring: growth/BP/electrolytes/renin/timed hormones and overtreatment checks",
+    edgeLabel: "Monitoring branch: patient is on glucocorticoid, mineralocorticoid, salt, or crinecerfont therapy, or has fertility/adrenal rest tumor surveillance needs",
+    sourceIds: unique([...esCah, ...geneReviews, ...crinecerfont]),
+    criteria: criteria(`${prefix}_monitoring_criteria`, "Use after any CAH diagnostic or treatment branch when response, dose toxicity, or long-term complication surveillance must be tracked.", ["symptoms", "exam", "vitals", "labs", "medications", "demographics", "pregnancy_status", "workup_findings"], unique([...esCah, ...geneReviews, ...crinecerfont]), { criteria_options: criteriaRows.filter((row) => /monitoring|surveillance|crinecerfont/i.test(row.id)) }),
+    action: "For patients 18 months or younger, schedule close follow-up during the first 3 months of life and every 3 months thereafter; after 18 months, evaluate about every 4 months while growing. Track growth velocity, weight, blood pressure, physical virilization or Cushingoid features, sodium, potassium, renin, and hormones drawn at consistent times relative to medication. Adults need at least annual physical examination with blood pressure, BMI, Cushingoid features, and biochemical monitoring. Use local endocrine policy for testicular adrenal rest tumor ultrasound because published interval summaries differ. Escalate urgently for vomiting, dehydration, hypoglycemia, electrolyte instability, or inability to take steroids.",
+    endpointType: "monitoring_reassessment",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["visit interval by age", "growth velocity", "weight/BMI", "blood pressure", "virilization or Cushingoid signs", "sodium", "potassium", "renin", "timed 17-OHP/androstenedione/testosterone", "follicular progesterone if trying to conceive", "TART ultrasound plan", "adverse effects or adrenal crisis events"]
+  });
+
+  const mimicEndpoint = endpoint({
+    id: `${prefix}_mimic_exclusion_endpoint`,
+    label: "CAH mimic or different enzyme defect: redirect after crisis risk is handled",
+    edgeLabel: "Mimic branch: CAH thresholds are not met, steroid profile suggests another enzyme defect, virilization/hyperandrogenism has another cause, or salt-wasting physiology has a non-CAH explanation",
+    sourceIds: sourceIdsForItems(differentials, unique([...esCah, ...geneReviews, ...genericSourceIds])),
+    criteria: criteria(`${prefix}_mimic_criteria`, "Use when the clinical or biochemical pattern fits a competing diagnosis better than 21-hydroxylase-deficient CAH.", ["symptoms", "exam", "vitals", "labs", "medications", "comorbidities", "demographics", "pregnancy_status", "workup_findings"], sourceIdsForItems(differentials, unique([...esCah, ...geneReviews, ...genericSourceIds])), { criteria_options: criteriaRows }),
+    action: "If the patient is unstable, treat adrenal crisis first. Otherwise document the non-CAH pattern and route to the best-fitting pathway: 11-beta-hydroxylase deficiency, 3-beta-hydroxysteroid dehydrogenase deficiency, P450 oxidoreductase deficiency, PCOS, premature adrenarche, adrenal/ovarian tumor, exogenous androgen or glucocorticoid effects, sepsis/dehydration, renal or gastrointestinal electrolyte disorders, or another DSD evaluation.",
+    endpointType: "clinician_review_handoff",
+    reviewNeededReason: "Alternative steroidogenesis defects and DSD/hyperandrogenism mimics require specialist interpretation of steroid ratios, imaging, genetics, and local testing availability."
+  });
+
+  const safetyNetEndpoint = endpoint({
+    id: `${prefix}_followup_safety_net_endpoint`,
+    label: "CAH disposition and safety net: emergency kit, medical ID, sick-day rules, and follow-up owner",
+    edgeLabel: "Stable branch: no active crisis, diagnostic/treatment plan is documented, medications are accessible, caregiver or patient can use injection kit, and follow-up/result ownership is assigned",
+    sourceIds: unique([...esCah, ...geneReviews, ...crinecerfont]),
+    criteria: criteria(`${prefix}_followup_safety_net_criteria`, "Use when the CAH plan is ready for discharge, outpatient management, or interval follow-up after emergency risk has been addressed.", ["vitals", "labs", "medications", "follow_up_access", "workup_findings"], unique([...esCah, ...geneReviews, ...crinecerfont]), { criteria_options: criteriaRows.filter((row) => /stress|hydrocortisone|monitoring|crinecerfont/i.test(row.id)) }),
+    action: "Document the disposition: ED/admission/ICU for crisis or unstable electrolytes/glucose; urgent pediatric endocrine follow-up for newborn positives or unclear classification; outpatient endocrine follow-up for stable chronic CAH when medications and monitoring are secure. Provide written sick-day dosing rules, teach parenteral hydrocortisone injection, confirm an emergency injection kit, medical alert ID or steroid card, medication refills, pending-result owner, and return precautions for fever over 38.5 C, vomiting, diarrhea/dehydration, syncope, severe weakness, confusion, hypoglycemia symptoms, inability to keep medications down, trauma, surgery, labor, throat tightness/rash/angioedema on crinecerfont, or worsening virilization/poor growth.",
+    endpointType: "safety_net_instruction",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["disposition level", "medication access", "injection kit", "medical ID/steroid card", "sick-day comprehension", "pending labs owner", "endocrine follow-up date", "return precautions"]
+  });
+
+  const classificationDecision = decision({
+    id: `${prefix}_branch_decision`,
+    label: "CAH branch: crisis, diagnosis, classic therapy, nonclassic therapy, crinecerfont, pregnancy/DSD, mimic, or safety net",
+    edgeLabel: "Use age/gestation, 17-OHP/cosyntropin profile, electrolytes/glucose, phenotype, current steroids, crinecerfont risks, pregnancy/fertility context, and follow-up reliability",
+    sourceIds,
+    criteria: criteria(`${prefix}_branch_criteria`, "Classify CAH management using crisis physiology, age and gestational context, 17-OHP/cosyntropin thresholds, salt-wasting labs, classic versus nonclassic phenotype, treatment exposure, medication contraindications, pregnancy/fertility status, and reliable follow-up.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Select the single active CAH branch: missing diagnostic data, adrenal crisis, newborn confirmation, after-infancy diagnostic classification, classic maintenance replacement, symptomatic nonclassic treatment, nonclassic no-treatment or stopping route, crinecerfont adjunct, pregnancy/fertility/DSD specialist review, mimic redirection, monitoring, or safety-net disposition.",
+    clinicalCriteria: criteriaRows,
+    guidelineCutoffs: criteriaRows,
+    children: [
+      missingDiagnosticEndpoint,
+      crisisEndpoint,
+      newbornDiagnosticEndpoint,
+      afterInfancyDiagnosticEndpoint,
+      classicTreatmentEndpoint,
+      nonclassicTreatmentEndpoint,
+      nonclassicDeescalationEndpoint,
+      crinecerfontEndpoint,
+      pregnancyDsdReviewEndpoint,
+      monitoringEndpoint,
+      mimicEndpoint,
+      safetyNetEndpoint
+    ]
+  });
+
+  const initialAssessment = actionNode({
+    id: `${prefix}_initial_assessment`,
+    label: "CAH initial screen: age/gestation, crisis signs, phenotype, 17-OHP, electrolytes, medications",
+    edgeLabel: "CAH is already suspected or known: assess salt-wasting danger, virilization/hyperandrogenism phenotype, diagnostic thresholds, and current steroid/mineralocorticoid/crinecerfont safety",
+    sourceIds,
+    criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial CAH assessment captures the exact patient data needed for emergency treatment, diagnosis, chronic replacement, nonclassic management, medication safety, and follow-up.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Check ABCs, blood pressure/perfusion, temperature, hydration, mental status, glucose, sodium, potassium, CO2/bicarbonate, newborn screen or early morning 17-OHP with assay/timing, cosyntropin steroid profile if borderline, virilization or hyperandrogenism phenotype, growth/bone age or fertility context, current hydrocortisone/prednisone/dexamethasone/fludrocortisone/salt/crinecerfont use, allergies/hypersensitivity, CYP3A4 inducer exposure, renal function, pregnancy/fertility intent, and follow-up reliability.",
+    parallelActions: ["emergency perfusion/glucose/electrolyte screen", "newborn or after-infancy diagnostic threshold review", "classic versus nonclassic phenotype review", "current steroid/mineralocorticoid/salt regimen check", "crinecerfont age/weight/renal/CYP3A4/hypersensitivity check", "pregnancy/fertility/genetic/DSD modifier review", "follow-up and emergency-kit access check"],
+    requiredData: unique(criteriaRows.flatMap((row) => row.data_needed || [])),
+    guidelineCutoffs: criteriaRows,
+    children: [classificationDecision]
+  });
+
+  const root = decision({
+    id: "root",
+    label: "CAH pathway: emergency, diagnosis, replacement, nonclassic care, medication safety, and follow-up",
+    sourceIds,
+    criteria: criteria(`${prefix}_activate`, "Activate for known or suspected 21-hydroxylase-deficient CAH, positive newborn screen, ambiguous genitalia/virilization, salt-wasting symptoms, adrenal crisis risk, early pubarche or hyperandrogenism, infertility/miscarriage context, chronic CAH medication review, crinecerfont review, pregnancy planning, or clinician-opened CAH evaluation.", ["problem_list_or_diagnosis", "presenting_symptoms", "exam", "vitals", "labs", "medications", "pregnancy_status", "clinician_opened_module"], sourceIds),
+    action: "Route CAH through immediate crisis treatment when unstable; otherwise use exact age, gestational, 17-OHP, cosyntropin, electrolyte, phenotype, medication, pregnancy/fertility, and follow-up data to reach an actionable diagnostic, treatment, monitoring, review, or safety-net endpoint.",
+    children: [missingContextEndpoint, initialAssessment]
+  });
+
+  const activationRules = {};
+  const allNodeSourceIds = [];
+  const collect = (entry) => {
+    allNodeSourceIds.push(...(entry.source_ids || []), ...(entry.criteria?.source_ids || []));
+    if (entry.criteria) activationRules[entry.id] = entry.criteria;
+    for (const child of entry.children || []) collect(child);
+  };
+  collect(root);
+  const sourceThresholds = sourceThresholdsFromCriteria(criteriaRows);
+  const localEvidenceSourceIds = sourceIdsForItems([...tests, ...redFlags, ...differentials, ...dispositions], sourceIds);
+  const finalSourceIds = unique([...sourceIds, ...localEvidenceSourceIds, ...allNodeSourceIds, ...sourceThresholds.flatMap((row) => row.source_ids || [])]);
+
+  return {
+    schema: "clinical_pathway_tree_v1",
+    workupId: module.id,
+    workup_id: module.id,
+    title: label,
+    version: "4.0.0",
+    status: "hand_polished_cah_pathway_needs_clinician_review",
+    source_ids: finalSourceIds,
+    source_metadata: sourceRowsForTree(finalSourceIds, sourceById),
+    provenance: {
+      generated_by: "scripts/hand-polish-clinical-pathway-trees.js",
+      generated_at: `${auditDate}T00:00:00.000Z`,
+      update_scope: "clinical_pathway_tree_v1 only",
+      source_material: "Endocrine Society 2018 CAH guideline, GeneReviews 21-hydroxylase-deficient CAH chapter, DailyMed crinecerfont label, and local module evidence rows",
+      review_note: "CAH tree is threshold-cited and patient-traversable; TART ultrasound interval, prenatal dexamethasone research governance, elective genital surgery, assay-specific steroid interpretation, and local emergency/stress-dose order sets require clinician governance."
+    },
+    source_thresholds: sourceThresholds,
+    traversable_context: buildTraversableContext(module, finalSourceIds, tests, criteriaRows),
+    activationRules,
+    root,
+    synthetic_patient_scenarios: [
+      { scenario_id: "missing_context", major_pathway: "missing_data_needed", expected_endpoint_id: missingContextEndpoint.id, expected_active_branch: missingContextEndpoint.edgeLabel },
+      { scenario_id: "missing_diagnostic_data", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: missingDiagnosticEndpoint.id, expected_active_branch: missingDiagnosticEndpoint.edgeLabel },
+      { scenario_id: "newborn_salt_wasting_crisis", major_pathway: "escalation_emergency_actions", expected_endpoint_id: crisisEndpoint.id, expected_active_branch: crisisEndpoint.edgeLabel },
+      { scenario_id: "positive_newborn_screen_stable", major_pathway: "diagnostic_confirmation", expected_endpoint_id: newbornDiagnosticEndpoint.id, expected_active_branch: newbornDiagnosticEndpoint.edgeLabel },
+      { scenario_id: "after_infancy_classification", major_pathway: "severity_risk_stratification", expected_endpoint_id: afterInfancyDiagnosticEndpoint.id, expected_active_branch: afterInfancyDiagnosticEndpoint.edgeLabel },
+      { scenario_id: "classic_cah_maintenance", major_pathway: "first_line_management", expected_endpoint_id: classicTreatmentEndpoint.id, expected_active_branch: classicTreatmentEndpoint.edgeLabel },
+      { scenario_id: "symptomatic_nonclassic_cah", major_pathway: "first_line_management", expected_endpoint_id: nonclassicTreatmentEndpoint.id, expected_active_branch: nonclassicTreatmentEndpoint.edgeLabel },
+      { scenario_id: "asymptomatic_nonclassic_or_stop", major_pathway: "deescalation_stopping_criteria", expected_endpoint_id: nonclassicDeescalationEndpoint.id, expected_active_branch: nonclassicDeescalationEndpoint.edgeLabel },
+      { scenario_id: "crinecerfont_candidate_or_safety_issue", major_pathway: "contraindications_special_populations", expected_endpoint_id: crinecerfontEndpoint.id, expected_active_branch: crinecerfontEndpoint.edgeLabel },
+      { scenario_id: "pregnancy_prenatal_or_dsd_review", major_pathway: "contraindications_special_populations", expected_endpoint_id: pregnancyDsdReviewEndpoint.id, expected_active_branch: pregnancyDsdReviewEndpoint.edgeLabel },
+      { scenario_id: "monitoring_overtreatment_or_tart", major_pathway: "monitoring_reassessment_escalation", expected_endpoint_id: monitoringEndpoint.id, expected_active_branch: monitoringEndpoint.edgeLabel },
+      { scenario_id: "mimic_or_other_enzyme_defect", major_pathway: "mimics_exclusions", expected_endpoint_id: mimicEndpoint.id, expected_active_branch: mimicEndpoint.edgeLabel },
+      { scenario_id: "stable_disposition_safety_net", major_pathway: "disposition_followup_safety_netting", expected_endpoint_id: safetyNetEndpoint.id, expected_active_branch: safetyNetEndpoint.edgeLabel }
+    ],
+    audit_requirements: {
+      required_domains: requiredPathwayDomains,
+      hand_polish_requirements: [
+        "every visible node label names a CAH-specific emergency, diagnostic, treatment, medication-safety, monitoring, review, or safety-net decision",
+        "diagnosis branch includes newborn gestational-age screen context, 0.25 mg/0.125 mg cosyntropin details, 60-minute profile, and numeric 17-OHP classic/nonclassic ranges",
+        "crisis branch includes age-banded hydrocortisone 25 mg, 50 mg, and 100 mg with every-6-hour continuation rule",
+        "classic treatment branch includes hydrocortisone 10-15 mg/m2/day for growing patients, adult options, fludrocortisone 0.05-0.2 mg/day, and infancy sodium chloride 1-2 g/day",
+        "nonclassic branch states when to treat, when not to treat, when to stop, and when stress dosing requires suboptimal cortisol response",
+        "crinecerfont branch includes age, weight, renal, hypersensitivity, CYP3A4, glucocorticoid-continuation, and 4-week androstenedione rules",
+        "pregnancy, prenatal dexamethasone, DSD surgery, assay-dependent steroid interpretation, and TART ultrasound interval differences are flagged for clinician review",
+        "follow-up endpoint includes disposition level, emergency kit, medical ID, sick-day rules, pending-result owner, and concrete return precautions"
       ]
     }
   };
@@ -6089,38 +6497,40 @@ function main() {
         ? buildAdultDkaHhsClinicalPathwayTree(module, sourceById)
         : module.id === "pediatric_dka_hhs_hyperglycemia_v1"
           ? buildPediatricDkaHhsClinicalPathwayTree(module, sourceById)
-          : ["addisons_disease_v1", "adrenal_insufficiency_v1"].includes(module.id)
-            ? buildAdrenalInsufficiencyClinicalPathwayTree(module, sourceById)
-            : module.id === "hypopituitarism_v1"
-              ? buildHypopituitarismClinicalPathwayTree(module, sourceById)
-              : module.id === "gestational_diabetes_v1"
-                ? buildGestationalDiabetesClinicalPathwayTree(module, sourceById)
-                : module.id === "type_1_diabetes_mellitus_v1"
-                  ? buildDiabetesMellitusClinicalPathwayTree(module, sourceById, "type1")
-                  : module.id === "type_2_diabetes_mellitus_v1"
-                    ? buildDiabetesMellitusClinicalPathwayTree(module, sourceById, "type2")
-                    : module.id === "prediabetes_v1"
-                      ? buildPrediabetesClinicalPathwayTree(module, sourceById)
-                    : module.id === "metabolic_syndrome_v1"
-                      ? buildMetabolicSyndromeClinicalPathwayTree(module, sourceById)
-                      : module.id === "hyperaldosteronism_v1"
-                        ? buildPrimaryAldosteronismClinicalPathwayTree(module, sourceById)
-                        : module.id === "pheochromocytoma_v1"
-                          ? buildPheochromocytomaClinicalPathwayTree(module, sourceById)
-                          : module.id === "acromegaly_v1"
-                            ? buildGrowthHormoneExcessClinicalPathwayTree(module, sourceById, "acromegaly")
-                            : module.id === "gigantism_v1"
-                              ? buildGrowthHormoneExcessClinicalPathwayTree(module, sourceById, "gigantism")
-                              : module.id === "chest_pain_v1"
-                              ? buildAdultChestPainClinicalPathwayTree(module, sourceById)
-                                : module.id === "pediatric_fever_sepsis_v1"
-                                  ? buildPediatricFeverSepsisClinicalPathwayTree(module, sourceById)
-                                : module.id === "pediatric_chest_pain_syncope_v1"
-                                  ? buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById)
-                                  : module.id === "pediatric_msk_limp_hot_joint_v1"
-                                    ? buildPediatricMskLimpHotJointClinicalPathwayTree(module, sourceById)
-                              : buildCompactClinicalPathwayTree(module, sourceById);
-    const nextModule = { ...module, clinical_pathway_tree_v1: clinicalPathway };
+          : module.id === "congenital_adrenal_hyperplasia_v1"
+            ? buildCongenitalAdrenalHyperplasiaClinicalPathwayTree(module, sourceById)
+            : ["addisons_disease_v1", "adrenal_insufficiency_v1"].includes(module.id)
+              ? buildAdrenalInsufficiencyClinicalPathwayTree(module, sourceById)
+              : module.id === "hypopituitarism_v1"
+                ? buildHypopituitarismClinicalPathwayTree(module, sourceById)
+                : module.id === "gestational_diabetes_v1"
+                  ? buildGestationalDiabetesClinicalPathwayTree(module, sourceById)
+                  : module.id === "type_1_diabetes_mellitus_v1"
+                    ? buildDiabetesMellitusClinicalPathwayTree(module, sourceById, "type1")
+                    : module.id === "type_2_diabetes_mellitus_v1"
+                      ? buildDiabetesMellitusClinicalPathwayTree(module, sourceById, "type2")
+                      : module.id === "prediabetes_v1"
+                        ? buildPrediabetesClinicalPathwayTree(module, sourceById)
+                      : module.id === "metabolic_syndrome_v1"
+                        ? buildMetabolicSyndromeClinicalPathwayTree(module, sourceById)
+                        : module.id === "hyperaldosteronism_v1"
+                          ? buildPrimaryAldosteronismClinicalPathwayTree(module, sourceById)
+                          : module.id === "pheochromocytoma_v1"
+                            ? buildPheochromocytomaClinicalPathwayTree(module, sourceById)
+                            : module.id === "acromegaly_v1"
+                              ? buildGrowthHormoneExcessClinicalPathwayTree(module, sourceById, "acromegaly")
+                              : module.id === "gigantism_v1"
+                                ? buildGrowthHormoneExcessClinicalPathwayTree(module, sourceById, "gigantism")
+                                : module.id === "chest_pain_v1"
+                                  ? buildAdultChestPainClinicalPathwayTree(module, sourceById)
+                                  : module.id === "pediatric_fever_sepsis_v1"
+                                    ? buildPediatricFeverSepsisClinicalPathwayTree(module, sourceById)
+                                    : module.id === "pediatric_chest_pain_syncope_v1"
+                                      ? buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById)
+                                      : module.id === "pediatric_msk_limp_hot_joint_v1"
+                                        ? buildPediatricMskLimpHotJointClinicalPathwayTree(module, sourceById)
+                                        : buildCompactClinicalPathwayTree(module, sourceById);
+    const nextModule = { ...baseModule, clinical_pathway_tree_v1: clinicalPathway };
     const nextRaw = raw.module ? { ...raw, module: nextModule } : nextModule;
     const next = `${JSON.stringify(nextRaw, null, 2)}\n`;
     if (`${original}\n` !== next) {
