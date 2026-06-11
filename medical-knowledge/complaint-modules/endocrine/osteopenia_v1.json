@@ -2852,7 +2852,7 @@
         "osteopenia_treatment_bundle": {
           "rule_id": "osteopenia_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use this Osteopenia management branch when Start osteoporosis pharmacotherapy if FRAX/local risk threshold; Treat reversible secondary causes such as hyperthyroidism; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy; discordant endocrine tests need correct timing; Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific applies and patient-specific safety modifiers have been checked.",
+          "description": "Proceed when the measured Osteopenia category supports Start osteoporosis pharmacotherapy if FRAX/local risk threshold; Treat reversible secondary causes such as hyperthyroidism; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3076,7 +3076,7 @@
         "osteopenia_review_endpoint": {
           "rule_id": "osteopenia_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Osteopenia management changes because of Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; DXA T-score; 25D thresholds vary; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy.",
+          "description": "Use reviewer handoff before non-emergent Osteopenia treatment when Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3428,7 +3428,7 @@
         "osteopenia_followup_endpoint": {
           "rule_id": "osteopenia_followup_criteria",
           "source": "criteria",
-          "description": "Use after Osteopenia is stable, actionable results have an owner, and return precautions are documented.",
+          "description": "Use after Osteopenia is stable, actionable results have an owner, and return precautions are recorded.",
           "evaluable_from": [
             "symptoms",
             "vitals",
@@ -3447,7 +3447,7 @@
         "osteopenia_alternate_endpoint": {
           "rule_id": "osteopenia_alternate_criteria",
           "source": "criteria",
-          "description": "Use an alternate pathway when Osteopenia criteria are absent, Corrected calcium often about 8.5-10.5 mg/dL better explains the presentation, or measured result data contradict this workup.",
+          "description": "Use an alternate pathway when measured findings do not satisfy Osteopenia, Corrected calcium often about 8.5-10.5 mg/dL better explains the presentation, or result data contradict this workup.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3581,7 +3581,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Send unstable patients to urgent care; compare 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; choose active management from Start osteoporosis pharmacotherapy if FRAX/local risk threshold; Treat reversible secondary causes such as hyperthyroidism; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy; discordant endocrine tests need correct timing; Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; switch to Corrected calcium often about 8.5-10.5 mg/dL when it fits better.",
+        "action": "Send unstable patients to urgent care. Compare 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0. Treat confirmed or likely Osteopenia with Start osteoporosis pharmacotherapy if FRAX/local risk threshold; Treat reversible secondary causes such as hyperthyroidism. If Corrected calcium often about 8.5-10.5 mg/dL, leave this pathway and document the competing diagnosis.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3682,7 +3682,7 @@
                 "id": "osteopenia_classification_decision",
                 "type": "decision",
                 "label": "Osteopenia decision: Corrected calcium often about 8.5-10.5 mg/dL",
-                "edgeLabel": "Threshold route: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0",
+                "edgeLabel": "Cutoff check: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0",
                 "source_ids": [
                   "AACE_OSTEOPOROSIS_2020",
                   "ENDO_OSTEOPOROSIS_2020",
@@ -3802,7 +3802,7 @@
                     }
                   ]
                 },
-                "action": "Compare current patient data with 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; route to urgent findings, active management, specialist-input modifier, or a named alternate diagnosis.",
+                "action": "Compare current patient data with 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; select emergency care for urgent findings, the treatment node for confirmed or likely disease, clinician review for contraindication/protocol modifiers, or the alternate-diagnosis endpoint when measured findings contradict this workup.",
                 "children": [
                   {
                     "id": "osteopenia_missing_cutoff_data_endpoint",
@@ -4107,7 +4107,7 @@
                     "criteria": {
                       "rule_id": "osteopenia_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use this Osteopenia management branch when Start osteoporosis pharmacotherapy if FRAX/local risk threshold; Treat reversible secondary causes such as hyperthyroidism; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy; discordant endocrine tests need correct timing; Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific applies and patient-specific safety modifiers have been checked.",
+                      "description": "Proceed when the measured Osteopenia category supports Start osteoporosis pharmacotherapy if FRAX/local risk threshold; Treat reversible secondary causes such as hyperthyroidism; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4223,7 +4223,7 @@
                         "id": "osteopenia_treatment_safety_decision",
                         "type": "decision",
                         "label": "Osteopenia safety: Corrected calcium often about 8.5-10.5 mg/dL",
-                        "edgeLabel": "Therapy modifier: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy",
+                        "edgeLabel": "Safety modifier: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy",
                         "source_ids": [
                           "AACE_OSTEOPOROSIS_2020",
                           "ENDO_OSTEOPOROSIS_2020",
@@ -4340,13 +4340,13 @@
                             }
                           ]
                         },
-                        "action": "Apply Osteopenia-specific safety modifiers before final treatment or disposition.",
+                        "action": "Apply Osteopenia-specific safety modifiers before final therapy, procedure, dose, or care-location choice.",
                         "children": [
                           {
                             "id": "osteopenia_review_endpoint",
                             "type": "endpoint",
                             "label": "Osteopenia consult: Corrected calcium often about 8.5-10.5 mg/dL",
-                            "edgeLabel": "Specialist input: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy",
+                            "edgeLabel": "Review trigger: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy",
                             "source_ids": [
                               "AACE_OSTEOPOROSIS_2020",
                               "ENDO_OSTEOPOROSIS_2020",
@@ -4355,7 +4355,7 @@
                             "criteria": {
                               "rule_id": "osteopenia_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Osteopenia management changes because of Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; DXA T-score; 25D thresholds vary; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy.",
+                              "description": "Use reviewer handoff before non-emergent Osteopenia treatment when Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4374,7 +4374,7 @@
                             "action": "Resolve the named Osteopenia modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
-                            "review_needed_reason": "Osteopenia management changes when Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; DXA T-score; 25D thresholds vary; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy; document the exact modifier and reviewer input needed."
+                            "review_needed_reason": "Clinician review is required before final Osteopenia therapy, dose, procedure, imaging, or care location when Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy; record the reviewer recommendation and protocol used."
                           },
                           {
                             "id": "osteopenia_monitoring_bundle",
@@ -4937,7 +4937,7 @@
                                 "id": "osteopenia_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Osteopenia return: return precautions",
-                                "edgeLabel": "Closure: result owner, interval, and return precautions",
+                                "edgeLabel": "Follow-up: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ENDO_OSTEOPOROSIS_2020",
                                   "AACE_OSTEOPOROSIS_2020",
@@ -4946,7 +4946,7 @@
                                 "criteria": {
                                   "rule_id": "osteopenia_followup_criteria",
                                   "source": "criteria",
-                                  "description": "Use after Osteopenia is stable, actionable results have an owner, and return precautions are documented.",
+                                  "description": "Use after Osteopenia is stable, actionable results have an owner, and return precautions are recorded.",
                                   "evaluable_from": [
                                     "symptoms",
                                     "vitals",
@@ -5193,7 +5193,7 @@
                     "criteria": {
                       "rule_id": "osteopenia_alternate_criteria",
                       "source": "criteria",
-                      "description": "Use an alternate pathway when Osteopenia criteria are absent, Corrected calcium often about 8.5-10.5 mg/dL better explains the presentation, or measured result data contradict this workup.",
+                      "description": "Use an alternate pathway when measured findings do not satisfy Osteopenia, Corrected calcium often about 8.5-10.5 mg/dL better explains the presentation, or result data contradict this workup.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5303,7 +5303,7 @@
                     "action": "Name the competing diagnosis or exclusion for Osteopenia, such as Corrected calcium often about 8.5-10.5 mg/dL; route to the corresponding workup or specialty pathway and document why this branch is not used.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Osteopenia criteria are absent or contradicted by Corrected calcium often about 8.5-10.5 mg/dL; competing diagnosis must be named before closure."
+                    "review_needed_reason": "Do not close Osteopenia as the diagnosis when Corrected calcium often about 8.5-10.5 mg/dL; name the competing diagnosis and assign the matching workup or specialty pathway."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -5672,7 +5672,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "osteopenia_review_endpoint",
-          "expected_active_branch": "Specialist input: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy",
+          "expected_active_branch": "Review trigger: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy",
           "expected_path_node_ids": [
             "root",
             "osteopenia_concurrent_data_bundle",
@@ -5722,7 +5722,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "osteopenia_followup_endpoint",
-          "expected_active_branch": "Closure: result owner, interval, and return precautions",
+          "expected_active_branch": "Follow-up: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "osteopenia_concurrent_data_bundle",

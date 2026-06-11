@@ -3185,7 +3185,7 @@
         "thyrotoxicosis_treatment_bundle": {
           "rule_id": "thyrotoxicosis_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use this Thyrotoxicosis management branch when Use beta-blocker symptom control when not contraindicated for adrenergic symptoms or tachycardia; Use antithyroid drugs for Graves/toxic nodular hyperthyroidism when appropriate; Choose radioactive iodine; Low uptake changes management away from antithyroid drugs toward thyroiditis/supportive pathway; discordant endocrine tests need correct timing; Overt thyrotoxicosis biochemistry applies and patient-specific safety modifiers have been checked.",
+          "description": "Proceed when the measured Thyrotoxicosis category supports Use beta-blocker symptom control when not contraindicated for adrenergic symptoms or tachycardia; Use antithyroid drugs for Graves/toxic nodular hyperthyroidism when appropriate; Choose radioactive iodine and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3343,7 +3343,7 @@
         "thyrotoxicosis_review_endpoint": {
           "rule_id": "thyrotoxicosis_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Thyrotoxicosis management changes because of Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum; Low uptake changes management away from antithyroid drugs toward thyroiditis/supportive pathway.",
+          "description": "Use reviewer handoff before non-emergent Thyrotoxicosis treatment when Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3628,7 +3628,7 @@
         "thyrotoxicosis_followup_endpoint": {
           "rule_id": "thyrotoxicosis_followup_criteria",
           "source": "criteria",
-          "description": "Use after Thyrotoxicosis is stable, actionable results have an owner, and return precautions are documented.",
+          "description": "Use after Thyrotoxicosis is stable, actionable results have an owner, and return precautions are recorded.",
           "evaluable_from": [
             "symptoms",
             "vitals",
@@ -3646,7 +3646,7 @@
         "thyrotoxicosis_alternate_endpoint": {
           "rule_id": "thyrotoxicosis_alternate_criteria",
           "source": "criteria",
-          "description": "Use an alternate pathway when Thyrotoxicosis criteria are absent, Thyrotoxicosis mimics or exclusions listed in the module differential better explains the presentation, or measured result data contradict this workup.",
+          "description": "Use an alternate pathway when measured findings do not satisfy Thyrotoxicosis, Thyrotoxicosis mimics or exclusions listed in the module differential better explains the presentation, or result data contradict this workup.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3756,7 +3756,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Send unstable patients to urgent care; compare TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; choose active management from Use beta-blocker symptom control when not contraindicated for adrenergic symptoms or tachycardia; Use antithyroid drugs for Graves/toxic nodular hyperthyroidism when appropriate; Choose radioactive iodine; Low uptake changes management away from antithyroid drugs toward thyroiditis/supportive pathway; discordant endocrine tests need correct timing; Overt thyrotoxicosis biochemistry; switch to competing diagnosis better explains the presentation when it fits better.",
+        "action": "Send unstable patients to urgent care. Compare TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L. Treat confirmed or likely Thyrotoxicosis with Use beta-blocker symptom control when not contraindicated for adrenergic symptoms or tachycardia; Use antithyroid drugs for Graves/toxic nodular hyperthyroidism when appropriate. If competing diagnosis fits better, leave this pathway and document the competing diagnosis.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3855,7 +3855,7 @@
                 "id": "thyrotoxicosis_classification_decision",
                 "type": "decision",
                 "label": "Thyrotoxicosis decision: Overt thyrotoxicosis biochemistry; TSH below LLN",
-                "edgeLabel": "Threshold route: TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L",
+                "edgeLabel": "Cutoff check: TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L",
                 "source_ids": [
                   "ATA_HYPERTHYROIDISM_2016",
                   "AHRQ_CALIBRATE_DX"
@@ -3952,7 +3952,7 @@
                     }
                   ]
                 },
-                "action": "Compare current patient data with TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; route to urgent findings, active management, specialist-input modifier, or a named alternate diagnosis.",
+                "action": "Compare current patient data with TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; select emergency care for urgent findings, the treatment node for confirmed or likely disease, clinician review for contraindication/protocol modifiers, or the alternate-diagnosis endpoint when measured findings contradict this workup.",
                 "children": [
                   {
                     "id": "thyrotoxicosis_missing_cutoff_data_endpoint",
@@ -4229,7 +4229,7 @@
                   {
                     "id": "thyrotoxicosis_treatment_bundle",
                     "type": "action",
-                    "label": "Thyrotoxicosis management plan",
+                    "label": "Thyrotoxicosis treatment decision",
                     "edgeLabel": "Thyrotoxicosis management: Use beta-blocker symptom control when not contraindicated for adrenergic symptoms or tachycardia; Use antithyroid drugs for Graves/toxic nodular hyperthyroidism when appropriate; Choose radioactive iodine",
                     "source_ids": [
                       "ATA_HYPERTHYROIDISM_2016",
@@ -4238,7 +4238,7 @@
                     "criteria": {
                       "rule_id": "thyrotoxicosis_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use this Thyrotoxicosis management branch when Use beta-blocker symptom control when not contraindicated for adrenergic symptoms or tachycardia; Use antithyroid drugs for Graves/toxic nodular hyperthyroidism when appropriate; Choose radioactive iodine; Low uptake changes management away from antithyroid drugs toward thyroiditis/supportive pathway; discordant endocrine tests need correct timing; Overt thyrotoxicosis biochemistry applies and patient-specific safety modifiers have been checked.",
+                      "description": "Proceed when the measured Thyrotoxicosis category supports Use beta-blocker symptom control when not contraindicated for adrenergic symptoms or tachycardia; Use antithyroid drugs for Graves/toxic nodular hyperthyroidism when appropriate; Choose radioactive iodine and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4332,7 +4332,7 @@
                         "id": "thyrotoxicosis_treatment_safety_decision",
                         "type": "decision",
                         "label": "Thyrotoxicosis safety: Overt thyrotoxicosis biochemistry",
-                        "edgeLabel": "Therapy modifier: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum",
+                        "edgeLabel": "Safety modifier: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum",
                         "source_ids": [
                           "ATA_HYPERTHYROIDISM_2016",
                           "AHRQ_CALIBRATE_DX"
@@ -4404,13 +4404,13 @@
                             }
                           ]
                         },
-                        "action": "Apply Thyrotoxicosis-specific safety modifiers before final treatment or disposition.",
+                        "action": "Apply Thyrotoxicosis-specific safety modifiers before final therapy, procedure, dose, or care-location choice.",
                         "children": [
                           {
                             "id": "thyrotoxicosis_review_endpoint",
                             "type": "endpoint",
                             "label": "Thyrotoxicosis consult: Overt thyrotoxicosis biochemistry",
-                            "edgeLabel": "Specialist input: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum",
+                            "edgeLabel": "Review trigger: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum",
                             "source_ids": [
                               "ATA_HYPERTHYROIDISM_2016",
                               "AHRQ_CALIBRATE_DX"
@@ -4418,7 +4418,7 @@
                             "criteria": {
                               "rule_id": "thyrotoxicosis_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Thyrotoxicosis management changes because of Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum; Low uptake changes management away from antithyroid drugs toward thyroiditis/supportive pathway.",
+                              "description": "Use reviewer handoff before non-emergent Thyrotoxicosis treatment when Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4436,7 +4436,7 @@
                             "action": "Resolve the named Thyrotoxicosis modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
-                            "review_needed_reason": "Thyrotoxicosis management changes when Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum; Low uptake changes management away from antithyroid drugs toward thyroiditis/supportive pathway; document the exact modifier and reviewer input needed."
+                            "review_needed_reason": "Clinician review is required before final Thyrotoxicosis therapy, dose, procedure, imaging, or care location when Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum; record the reviewer recommendation and protocol used."
                           },
                           {
                             "id": "thyrotoxicosis_monitoring_bundle",
@@ -4888,7 +4888,7 @@
                                 "id": "thyrotoxicosis_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Thyrotoxicosis return: return precautions",
-                                "edgeLabel": "Closure: result owner, interval, and return precautions",
+                                "edgeLabel": "Follow-up: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ATA_HYPERTHYROIDISM_2016",
                                   "AHRQ_CALIBRATE_DX"
@@ -4896,7 +4896,7 @@
                                 "criteria": {
                                   "rule_id": "thyrotoxicosis_followup_criteria",
                                   "source": "criteria",
-                                  "description": "Use after Thyrotoxicosis is stable, actionable results have an owner, and return precautions are documented.",
+                                  "description": "Use after Thyrotoxicosis is stable, actionable results have an owner, and return precautions are recorded.",
                                   "evaluable_from": [
                                     "symptoms",
                                     "vitals",
@@ -5097,7 +5097,7 @@
                     "criteria": {
                       "rule_id": "thyrotoxicosis_alternate_criteria",
                       "source": "criteria",
-                      "description": "Use an alternate pathway when Thyrotoxicosis criteria are absent, Thyrotoxicosis mimics or exclusions listed in the module differential better explains the presentation, or measured result data contradict this workup.",
+                      "description": "Use an alternate pathway when measured findings do not satisfy Thyrotoxicosis, Thyrotoxicosis mimics or exclusions listed in the module differential better explains the presentation, or result data contradict this workup.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5185,7 +5185,7 @@
                     "action": "Name the competing diagnosis or exclusion for Thyrotoxicosis, such as competing diagnosis better explains the presentation; route to the corresponding workup or specialty pathway and document why this branch is not used.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Thyrotoxicosis criteria are absent or contradicted by Thyrotoxicosis mimics or exclusions listed in the module differential; competing diagnosis must be named before closure."
+                    "review_needed_reason": "Do not close Thyrotoxicosis as the diagnosis when competing diagnosis better explains the presentation; name the competing diagnosis and assign the matching workup or specialty pathway."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -5508,7 +5508,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "thyrotoxicosis_review_endpoint",
-          "expected_active_branch": "Specialist input: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum",
+          "expected_active_branch": "Review trigger: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum",
           "expected_path_node_ids": [
             "root",
             "thyrotoxicosis_concurrent_data_bundle",
@@ -5558,7 +5558,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "thyrotoxicosis_followup_endpoint",
-          "expected_active_branch": "Closure: result owner, interval, and return precautions",
+          "expected_active_branch": "Follow-up: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "thyrotoxicosis_concurrent_data_bundle",

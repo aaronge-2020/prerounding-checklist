@@ -5888,7 +5888,7 @@
                         "id": "metabolic_syndrome_risk_reduction_endpoint",
                         "type": "endpoint",
                         "label": "Metabolic risk-reduction plan",
-                        "edgeLabel": "Management branch: metabolic syndrome confirmed or near-threshold high-risk pattern without urgent diabetes/BP/ASCVD symptoms",
+                        "edgeLabel": "Risk-reduction criteria: metabolic syndrome confirmed or near-threshold high-risk pattern without urgent diabetes/BP/ASCVD symptoms",
                         "source_ids": [
                           "NHLBI_METABOLIC_SYNDROME",
                           "ADA_SOC_2026",
@@ -7620,7 +7620,7 @@
           "scenario_id": "risk_reduction_plan",
           "major_pathway": "first_line_management",
           "expected_endpoint_id": "metabolic_syndrome_risk_reduction_endpoint",
-          "expected_active_branch": "Management branch: metabolic syndrome confirmed or near-threshold high-risk pattern without urgent diabetes/BP/ASCVD symptoms",
+          "expected_active_branch": "Risk-reduction criteria: metabolic syndrome confirmed or near-threshold high-risk pattern without urgent diabetes/BP/ASCVD symptoms",
           "expected_path_node_ids": [
             "root",
             "metabolic_syndrome_initial_assessment",

@@ -3173,7 +3173,7 @@
         "thyroid_nodules_treatment_bundle": {
           "rule_id": "thyroid_nodules_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use this Thyroid Nodules management branch when Observe benign low-risk nodules with ultrasound surveillance and symptom monitoring; Treat autonomous hyperfunctioning nodules with radioactive iodine; Refer suspicious cytology; Suspicious ultrasound/Bethesda cytology changes cancer pathway; Low TSH with hot nodule shifts to autonomous-function pathway applies and patient-specific safety modifiers have been checked.",
+          "description": "Proceed when the measured Thyroid Nodules category supports Observe benign low-risk nodules with ultrasound surveillance and symptom monitoring; Treat autonomous hyperfunctioning nodules with radioactive iodine; Refer suspicious cytology and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3275,7 +3275,7 @@
         "thyroid_nodules_review_endpoint": {
           "rule_id": "thyroid_nodules_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Thyroid Nodules (Benign) management changes because of Suspicious ultrasound/Bethesda cytology changes cancer pathway; Low TSH with hot nodule shifts to autonomous-function pathway; Observe benign low-risk nodules with ultrasound surveillance and symptom monitoring.",
+          "description": "Use reviewer handoff before non-emergent Thyroid Nodules treatment when Suspicious ultrasound/Bethesda cytology changes cancer pathway; Low TSH with hot nodule shifts to autonomous-function pathway; Observe benign low-risk nodules with ultrasound surveillance and symptom monitoring changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3534,7 +3534,7 @@
         "thyroid_nodules_followup_endpoint": {
           "rule_id": "thyroid_nodules_followup_criteria",
           "source": "criteria",
-          "description": "Use after Thyroid Nodules (Benign) is stable, actionable results have an owner, and return precautions are documented.",
+          "description": "Use after Thyroid Nodules (Benign) is stable, actionable results have an owner, and return precautions are recorded.",
           "evaluable_from": [
             "symptoms",
             "vitals",
@@ -3553,7 +3553,7 @@
         "thyroid_nodules_alternate_endpoint": {
           "rule_id": "thyroid_nodules_alternate_criteria",
           "source": "criteria",
-          "description": "Use an alternate pathway when Thyroid Nodules (Benign) criteria are absent, Thyroid Nodules mimics or exclusions listed in the module differential better explains the presentation, or measured result data contradict this workup.",
+          "description": "Use an alternate pathway when measured findings do not satisfy Thyroid Nodules (Benign), Thyroid Nodules mimics or exclusions listed in the module differential better explains the presentation, or result data contradict this workup.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3656,7 +3656,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Send unstable patients to urgent care; compare >=1 cm; >=1.5 cm; >=2 cm; <1%; choose active management from Observe benign low-risk nodules with ultrasound surveillance and symptom monitoring; Treat autonomous hyperfunctioning nodules with radioactive iodine; Refer suspicious cytology; Suspicious ultrasound/Bethesda cytology changes cancer pathway; Low TSH with hot nodule shifts to autonomous-function pathway; switch to competing diagnosis better explains the presentation when it fits better.",
+        "action": "Send unstable patients to urgent care. Compare >=1 cm; >=1.5 cm; >=2 cm; <1%. Treat confirmed or likely Thyroid Nodules with Observe benign low-risk nodules with ultrasound surveillance and symptom monitoring; Treat autonomous hyperfunctioning nodules with radioactive iodine; Refer suspicious cytology. If competing diagnosis fits better, leave this pathway and document the competing diagnosis.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3757,7 +3757,7 @@
                 "id": "thyroid_nodules_classification_decision",
                 "type": "decision",
                 "label": "Thyroid Nodules decision: ATA thyroid nodule FNA; >=1 cm; >=1.5 cm",
-                "edgeLabel": "Threshold route: >=1 cm; >=1.5 cm; >=2 cm; <1%",
+                "edgeLabel": "Cutoff check: >=1 cm; >=1.5 cm; >=2 cm; <1%",
                 "source_ids": [
                   "ATA_THYROID_NODULE_DTC_2015",
                   "ETA_THYROID_NODULE_2023",
@@ -3846,7 +3846,7 @@
                     }
                   ]
                 },
-                "action": "Compare current patient data with >=1 cm; >=1.5 cm; >=2 cm; <1%; route to urgent findings, active management, specialist-input modifier, or a named alternate diagnosis.",
+                "action": "Compare current patient data with >=1 cm; >=1.5 cm; >=2 cm; <1%; select emergency care for urgent findings, the treatment node for confirmed or likely disease, clinician review for contraindication/protocol modifiers, or the alternate-diagnosis endpoint when measured findings contradict this workup.",
                 "children": [
                   {
                     "id": "thyroid_nodules_missing_cutoff_data_endpoint",
@@ -4093,7 +4093,7 @@
                   {
                     "id": "thyroid_nodules_treatment_bundle",
                     "type": "action",
-                    "label": "Thyroid Nodules management plan",
+                    "label": "Thyroid Nodules treatment decision",
                     "edgeLabel": "Thyroid Nodules management: Observe benign low-risk nodules with ultrasound surveillance and symptom monitoring; Treat autonomous hyperfunctioning nodules with radioactive iodine; Refer suspicious cytology",
                     "source_ids": [
                       "ATA_THYROID_NODULE_DTC_2015",
@@ -4103,7 +4103,7 @@
                     "criteria": {
                       "rule_id": "thyroid_nodules_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use this Thyroid Nodules management branch when Observe benign low-risk nodules with ultrasound surveillance and symptom monitoring; Treat autonomous hyperfunctioning nodules with radioactive iodine; Refer suspicious cytology; Suspicious ultrasound/Bethesda cytology changes cancer pathway; Low TSH with hot nodule shifts to autonomous-function pathway applies and patient-specific safety modifiers have been checked.",
+                      "description": "Proceed when the measured Thyroid Nodules category supports Observe benign low-risk nodules with ultrasound surveillance and symptom monitoring; Treat autonomous hyperfunctioning nodules with radioactive iodine; Refer suspicious cytology and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4188,7 +4188,7 @@
                         "id": "thyroid_nodules_treatment_safety_decision",
                         "type": "decision",
                         "label": "Thyroid Nodules therapy safety",
-                        "edgeLabel": "Therapy modifier: Suspicious ultrasound/Bethesda cytology changes cancer pathway; Low TSH with hot nodule shifts to autonomous-function pathway; Observe benign low-risk nodules with ultrasound surveillance and symptom monitoring",
+                        "edgeLabel": "Safety modifier: Suspicious ultrasound/Bethesda cytology changes cancer pathway; Low TSH with hot nodule shifts to autonomous-function pathway; Observe benign low-risk nodules with ultrasound surveillance and symptom monitoring",
                         "source_ids": [
                           "ATA_THYROID_NODULE_DTC_2015",
                           "ETA_THYROID_NODULE_2023",
@@ -4214,13 +4214,13 @@
                           ],
                           "criteria_options": []
                         },
-                        "action": "Apply Thyroid Nodules-specific safety modifiers before final treatment or disposition.",
+                        "action": "Apply Thyroid Nodules-specific safety modifiers before final therapy, procedure, dose, or care-location choice.",
                         "children": [
                           {
                             "id": "thyroid_nodules_review_endpoint",
                             "type": "endpoint",
                             "label": "Thyroid Nodules specialist review",
-                            "edgeLabel": "Specialist input: Suspicious ultrasound/Bethesda cytology changes cancer pathway; Low TSH with hot nodule shifts to autonomous-function pathway; Observe benign low-risk nodules with ultrasound surveillance and symptom monitoring",
+                            "edgeLabel": "Review trigger: Suspicious ultrasound/Bethesda cytology changes cancer pathway; Low TSH with hot nodule shifts to autonomous-function pathway; Observe benign low-risk nodules with ultrasound surveillance and symptom monitoring",
                             "source_ids": [
                               "ATA_THYROID_NODULE_DTC_2015",
                               "ETA_THYROID_NODULE_2023",
@@ -4229,7 +4229,7 @@
                             "criteria": {
                               "rule_id": "thyroid_nodules_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Thyroid Nodules (Benign) management changes because of Suspicious ultrasound/Bethesda cytology changes cancer pathway; Low TSH with hot nodule shifts to autonomous-function pathway; Observe benign low-risk nodules with ultrasound surveillance and symptom monitoring.",
+                              "description": "Use reviewer handoff before non-emergent Thyroid Nodules treatment when Suspicious ultrasound/Bethesda cytology changes cancer pathway; Low TSH with hot nodule shifts to autonomous-function pathway; Observe benign low-risk nodules with ultrasound surveillance and symptom monitoring changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4248,7 +4248,7 @@
                             "action": "Resolve the named Thyroid Nodules modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
-                            "review_needed_reason": "Thyroid Nodules management changes when Suspicious ultrasound/Bethesda cytology changes cancer pathway; Low TSH with hot nodule shifts to autonomous-function pathway; Observe benign low-risk nodules with ultrasound surveillance and symptom monitoring; document the exact modifier and reviewer input needed."
+                            "review_needed_reason": "Clinician review is required before final Thyroid Nodules therapy, dose, procedure, imaging, or care location when Suspicious ultrasound/Bethesda cytology changes cancer pathway; Low TSH with hot nodule shifts to autonomous-function pathway; Observe benign low-risk nodules with ultrasound surveillance and symptom monitoring; record the reviewer recommendation and protocol used."
                           },
                           {
                             "id": "thyroid_nodules_monitoring_bundle",
@@ -4656,7 +4656,7 @@
                                 "id": "thyroid_nodules_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Thyroid Nodules return: return precautions",
-                                "edgeLabel": "Closure: result owner, interval, and return precautions",
+                                "edgeLabel": "Follow-up: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ATA_THYROID_NODULE_DTC_2015",
                                   "ETA_THYROID_NODULE_2023",
@@ -4665,7 +4665,7 @@
                                 "criteria": {
                                   "rule_id": "thyroid_nodules_followup_criteria",
                                   "source": "criteria",
-                                  "description": "Use after Thyroid Nodules (Benign) is stable, actionable results have an owner, and return precautions are documented.",
+                                  "description": "Use after Thyroid Nodules (Benign) is stable, actionable results have an owner, and return precautions are recorded.",
                                   "evaluable_from": [
                                     "symptoms",
                                     "vitals",
@@ -4845,7 +4845,7 @@
                     "criteria": {
                       "rule_id": "thyroid_nodules_alternate_criteria",
                       "source": "criteria",
-                      "description": "Use an alternate pathway when Thyroid Nodules (Benign) criteria are absent, Thyroid Nodules mimics or exclusions listed in the module differential better explains the presentation, or measured result data contradict this workup.",
+                      "description": "Use an alternate pathway when measured findings do not satisfy Thyroid Nodules (Benign), Thyroid Nodules mimics or exclusions listed in the module differential better explains the presentation, or result data contradict this workup.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4924,7 +4924,7 @@
                     "action": "Name the competing diagnosis or exclusion for Thyroid Nodules, such as competing diagnosis better explains the presentation; route to the corresponding workup or specialty pathway and document why this branch is not used.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Thyroid Nodules criteria are absent or contradicted by Thyroid Nodules mimics or exclusions listed in the module differential; competing diagnosis must be named before closure."
+                    "review_needed_reason": "Do not close Thyroid Nodules as the diagnosis when competing diagnosis better explains the presentation; name the competing diagnosis and assign the matching workup or specialty pathway."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -5209,7 +5209,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "thyroid_nodules_review_endpoint",
-          "expected_active_branch": "Specialist input: Suspicious ultrasound/Bethesda cytology changes cancer pathway; Low TSH with hot nodule shifts to autonomous-function pathway; Observe benign low-risk nodules with ultrasound surveillance and symptom monitoring",
+          "expected_active_branch": "Review trigger: Suspicious ultrasound/Bethesda cytology changes cancer pathway; Low TSH with hot nodule shifts to autonomous-function pathway; Observe benign low-risk nodules with ultrasound surveillance and symptom monitoring",
           "expected_path_node_ids": [
             "root",
             "thyroid_nodules_concurrent_data_bundle",
@@ -5259,7 +5259,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "thyroid_nodules_followup_endpoint",
-          "expected_active_branch": "Closure: result owner, interval, and return precautions",
+          "expected_active_branch": "Follow-up: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "thyroid_nodules_concurrent_data_bundle",

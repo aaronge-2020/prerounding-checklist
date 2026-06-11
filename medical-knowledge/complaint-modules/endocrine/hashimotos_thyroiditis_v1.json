@@ -3266,7 +3266,7 @@
         "hashimotos_thyroiditis_treatment_bundle": {
           "rule_id": "hashimotos_thyroiditis_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use this Hashimoto's Thyroiditis management branch when Treat overt primary hypothyroidism with levothyroxine; For subclinical hypothyroidism; Use free T4 rather than TSH to titrate central hypothyroidism, after adrenal status is safe; Positive TPO Ab supports autoimmune thyroiditis; Suspicious nodule/compressive findings move to ultrasound/FNA pathway; Hypothyroid LT4 titration applies and patient-specific safety modifiers have been checked.",
+          "description": "Proceed when the measured Hashimoto's Thyroiditis category supports Treat overt primary hypothyroidism with levothyroxine; For subclinical hypothyroidism; Use free T4 rather than TSH to titrate central hypothyroidism, after adrenal status is safe; Positive TPO Ab supports autoimmune thyroiditis and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3446,7 +3446,7 @@
         "hashimotos_thyroiditis_review_endpoint": {
           "rule_id": "hashimotos_thyroiditis_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) management changes because of Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; Positive TPO Ab supports autoimmune thyroiditis; Suspicious nodule/compressive findings move to ultrasound/FNA pathway.",
+          "description": "Use reviewer handoff before non-emergent Hashimoto's Thyroiditis treatment when Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; Positive TPO Ab supports autoimmune thyroiditis; Suspicious nodule/compressive findings move to ultrasound/FNA pathway changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3734,7 +3734,7 @@
         "hashimotos_thyroiditis_followup_endpoint": {
           "rule_id": "hashimotos_thyroiditis_followup_criteria",
           "source": "criteria",
-          "description": "Use after Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) is stable, actionable results have an owner, and return precautions are documented.",
+          "description": "Use after Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) is stable, actionable results have an owner, and return precautions are recorded.",
           "evaluable_from": [
             "symptoms",
             "vitals",
@@ -3755,7 +3755,7 @@
         "hashimotos_thyroiditis_alternate_endpoint": {
           "rule_id": "hashimotos_thyroiditis_alternate_criteria",
           "source": "criteria",
-          "description": "Use an alternate pathway when Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) criteria are absent, Hashimoto's Thyroiditis mimics or exclusions listed in the module differential better explains the presentation, or measured result data contradict this workup.",
+          "description": "Use an alternate pathway when measured findings do not satisfy Hashimoto's Thyroiditis (Autoimmune Hypothyroidism), Hashimoto's Thyroiditis mimics or exclusions listed in the module differential better explains the presentation, or result data contradict this workup.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3871,7 +3871,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Send unstable patients to urgent care; compare 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day; choose active management from Treat overt primary hypothyroidism with levothyroxine; For subclinical hypothyroidism; Use free T4 rather than TSH to titrate central hypothyroidism, after adrenal status is safe; Positive TPO Ab supports autoimmune thyroiditis; Suspicious nodule/compressive findings move to ultrasound/FNA pathway; Hypothyroid LT4 titration; switch to competing diagnosis better explains the presentation when it fits better.",
+        "action": "Send unstable patients to urgent care. Compare 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day. Treat confirmed or likely Hashimoto's Thyroiditis with Treat overt primary hypothyroidism with levothyroxine; For subclinical hypothyroidism; Use free T4 rather than TSH to titrate central hypothyroidism, after adrenal status is safe. If competing diagnosis fits better, leave this pathway and document the competing diagnosis.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3976,7 +3976,7 @@
                 "id": "hashimotos_thyroiditis_classification_decision",
                 "type": "decision",
                 "label": "Hashimoto's Thyroiditis decision: Hypothyroid LT4 titration; 0.5 to 3.5 mIU/L",
-                "edgeLabel": "Threshold route: 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day",
+                "edgeLabel": "Cutoff check: 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day",
                 "source_ids": [
                   "ATA_HYPOTHYROIDISM_2014",
                   "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -4076,7 +4076,7 @@
                     }
                   ]
                 },
-                "action": "Compare current patient data with 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day; route to urgent findings, active management, specialist-input modifier, or a named alternate diagnosis.",
+                "action": "Compare current patient data with 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day; select emergency care for urgent findings, the treatment node for confirmed or likely disease, clinician review for contraindication/protocol modifiers, or the alternate-diagnosis endpoint when measured findings contradict this workup.",
                 "children": [
                   {
                     "id": "hashimotos_thyroiditis_missing_cutoff_data_endpoint",
@@ -4365,7 +4365,7 @@
                     "criteria": {
                       "rule_id": "hashimotos_thyroiditis_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use this Hashimoto's Thyroiditis management branch when Treat overt primary hypothyroidism with levothyroxine; For subclinical hypothyroidism; Use free T4 rather than TSH to titrate central hypothyroidism, after adrenal status is safe; Positive TPO Ab supports autoimmune thyroiditis; Suspicious nodule/compressive findings move to ultrasound/FNA pathway; Hypothyroid LT4 titration applies and patient-specific safety modifiers have been checked.",
+                      "description": "Proceed when the measured Hashimoto's Thyroiditis category supports Treat overt primary hypothyroidism with levothyroxine; For subclinical hypothyroidism; Use free T4 rather than TSH to titrate central hypothyroidism, after adrenal status is safe; Positive TPO Ab supports autoimmune thyroiditis and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4459,7 +4459,7 @@
                         "id": "hashimotos_thyroiditis_treatment_safety_decision",
                         "type": "decision",
                         "label": "Hashimoto's Thyroiditis safety: Hypothyroid LT4 titration",
-                        "edgeLabel": "Therapy modifier: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; Positive TPO Ab supports autoimmune thyroiditis; Suspicious nodule/compressive findings move to ultrasound/FNA pathway",
+                        "edgeLabel": "Safety modifier: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; Positive TPO Ab supports autoimmune thyroiditis; Suspicious nodule/compressive findings move to ultrasound/FNA pathway",
                         "source_ids": [
                           "ATA_HYPOTHYROIDISM_2014",
                           "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -4556,13 +4556,13 @@
                             }
                           ]
                         },
-                        "action": "Apply Hashimoto's Thyroiditis-specific safety modifiers before final treatment or disposition.",
+                        "action": "Apply Hashimoto's Thyroiditis-specific safety modifiers before final therapy, procedure, dose, or care-location choice.",
                         "children": [
                           {
                             "id": "hashimotos_thyroiditis_review_endpoint",
                             "type": "endpoint",
                             "label": "Hashimoto's Thyroiditis consult: Hypothyroid LT4 titration",
-                            "edgeLabel": "Specialist input: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; Positive TPO Ab supports autoimmune thyroiditis; Suspicious nodule/compressive findings move to ultrasound/FNA pathway",
+                            "edgeLabel": "Review trigger: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; Positive TPO Ab supports autoimmune thyroiditis; Suspicious nodule/compressive findings move to ultrasound/FNA pathway",
                             "source_ids": [
                               "ATA_HYPOTHYROIDISM_2014",
                               "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -4573,7 +4573,7 @@
                             "criteria": {
                               "rule_id": "hashimotos_thyroiditis_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) management changes because of Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; Positive TPO Ab supports autoimmune thyroiditis; Suspicious nodule/compressive findings move to ultrasound/FNA pathway.",
+                              "description": "Use reviewer handoff before non-emergent Hashimoto's Thyroiditis treatment when Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; Positive TPO Ab supports autoimmune thyroiditis; Suspicious nodule/compressive findings move to ultrasound/FNA pathway changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4594,7 +4594,7 @@
                             "action": "Resolve the named Hashimoto's Thyroiditis modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
-                            "review_needed_reason": "Hashimoto's Thyroiditis management changes when Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; Positive TPO Ab supports autoimmune thyroiditis; Suspicious nodule/compressive findings move to ultrasound/FNA pathway; document the exact modifier and reviewer input needed."
+                            "review_needed_reason": "Clinician review is required before final Hashimoto's Thyroiditis therapy, dose, procedure, imaging, or care location when Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; Positive TPO Ab supports autoimmune thyroiditis; Suspicious nodule/compressive findings move to ultrasound/FNA pathway; record the reviewer recommendation and protocol used."
                           },
                           {
                             "id": "hashimotos_thyroiditis_monitoring_bundle",
@@ -5049,7 +5049,7 @@
                                 "id": "hashimotos_thyroiditis_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Hashimoto's Thyroiditis return: Positive TPO Ab supports autoimmune thyroiditis",
-                                "edgeLabel": "Closure: result owner, interval, and return precautions",
+                                "edgeLabel": "Follow-up: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ATA_HYPOTHYROIDISM_2014",
                                   "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -5060,7 +5060,7 @@
                                 "criteria": {
                                   "rule_id": "hashimotos_thyroiditis_followup_criteria",
                                   "source": "criteria",
-                                  "description": "Use after Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) is stable, actionable results have an owner, and return precautions are documented.",
+                                  "description": "Use after Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) is stable, actionable results have an owner, and return precautions are recorded.",
                                   "evaluable_from": [
                                     "symptoms",
                                     "vitals",
@@ -5261,7 +5261,7 @@
                     "criteria": {
                       "rule_id": "hashimotos_thyroiditis_alternate_criteria",
                       "source": "criteria",
-                      "description": "Use an alternate pathway when Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) criteria are absent, Hashimoto's Thyroiditis mimics or exclusions listed in the module differential better explains the presentation, or measured result data contradict this workup.",
+                      "description": "Use an alternate pathway when measured findings do not satisfy Hashimoto's Thyroiditis (Autoimmune Hypothyroidism), Hashimoto's Thyroiditis mimics or exclusions listed in the module differential better explains the presentation, or result data contradict this workup.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5349,7 +5349,7 @@
                     "action": "Name the competing diagnosis or exclusion for Hashimoto's Thyroiditis, such as competing diagnosis better explains the presentation; route to the corresponding workup or specialty pathway and document why this branch is not used.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Hashimoto's Thyroiditis criteria are absent or contradicted by Hashimoto's Thyroiditis mimics or exclusions listed in the module differential; competing diagnosis must be named before closure."
+                    "review_needed_reason": "Do not close Hashimoto's Thyroiditis as the diagnosis when competing diagnosis better explains the presentation; name the competing diagnosis and assign the matching workup or specialty pathway."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -5660,7 +5660,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "hashimotos_thyroiditis_review_endpoint",
-          "expected_active_branch": "Specialist input: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; Positive TPO Ab supports autoimmune thyroiditis; Suspicious nodule/compressive findings move to ultrasound/FNA pathway",
+          "expected_active_branch": "Review trigger: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; Positive TPO Ab supports autoimmune thyroiditis; Suspicious nodule/compressive findings move to ultrasound/FNA pathway",
           "expected_path_node_ids": [
             "root",
             "hashimotos_thyroiditis_concurrent_data_bundle",
@@ -5710,7 +5710,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "hashimotos_thyroiditis_followup_endpoint",
-          "expected_active_branch": "Closure: result owner, interval, and return precautions",
+          "expected_active_branch": "Follow-up: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "hashimotos_thyroiditis_concurrent_data_bundle",

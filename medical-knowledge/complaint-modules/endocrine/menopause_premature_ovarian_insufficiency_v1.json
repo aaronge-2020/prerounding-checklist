@@ -3400,7 +3400,7 @@
         "menopause_premature_ovarian_insufficiency_treatment_bundle": {
           "rule_id": "menopause_premature_ovarian_insufficiency_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use this Menopause / Premature Ovarian Insufficiency management branch when POI changes routine menopause counseling to etiologic evaluation; discordant endocrine tests need correct timing; POI diagnosis; POI hormone therapy; POI combined-pill caution; POI fertility counseling applies and patient-specific safety modifiers have been checked.",
+          "description": "Proceed when the measured Menopause / Premature Ovarian Insufficiency category supports POI changes routine menopause counseling to etiologic evaluation; discordant endocrine tests need correct timing; POI diagnosis; POI hormone therapy and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3605,7 +3605,7 @@
         "menopause_premature_ovarian_insufficiency_review_endpoint": {
           "rule_id": "menopause_premature_ovarian_insufficiency_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Menopause / Premature Ovarian Insufficiency management changes because of POI diagnosis; POI hormone therapy; POI combined-pill caution; POI fertility counseling; POI changes routine menopause counseling to etiologic evaluation.",
+          "description": "Use reviewer handoff before non-emergent Menopause / Premature Ovarian Insufficiency treatment when POI diagnosis; POI hormone therapy; POI combined-pill caution; POI changes routine menopause counseling to etiologic evaluation; discordant endocrine tests need correct timing changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3968,7 +3968,7 @@
         "menopause_premature_ovarian_insufficiency_followup_endpoint": {
           "rule_id": "menopause_premature_ovarian_insufficiency_followup_criteria",
           "source": "criteria",
-          "description": "Use after Menopause / Premature Ovarian Insufficiency is stable, actionable results have an owner, and return precautions are documented.",
+          "description": "Use after Menopause / Premature Ovarian Insufficiency is stable, actionable results have an owner, and return precautions are recorded.",
           "evaluable_from": [
             "symptoms",
             "vitals",
@@ -3989,7 +3989,7 @@
         "menopause_premature_ovarian_insufficiency_alternate_endpoint": {
           "rule_id": "menopause_premature_ovarian_insufficiency_alternate_criteria",
           "source": "criteria",
-          "description": "Use an alternate pathway when Menopause / Premature Ovarian Insufficiency criteria are absent, Menopause / Premature Ovarian Insufficiency mimics or exclusions listed in the module differential better explains the presentation, or measured result data contradict this workup.",
+          "description": "Use an alternate pathway when measured findings do not satisfy Menopause / Premature Ovarian Insufficiency, Menopause / Premature Ovarian Insufficiency mimics or exclusions listed in the module differential better explains the presentation, or result data contradict this workup.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4130,7 +4130,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Send unstable patients to urgent care; compare age <40; at least 4 months; FSH >25 IU/L; 4-6 weeks; choose active management from POI changes routine menopause counseling to etiologic evaluation; discordant endocrine tests need correct timing; POI diagnosis; POI hormone therapy; POI combined-pill caution; POI fertility counseling; switch to competing diagnosis better explains the presentation when it fits better.",
+        "action": "Send unstable patients to urgent care. Compare age <40; at least 4 months; FSH >25 IU/L; 4-6 weeks. Treat confirmed or likely Menopause / Premature Ovarian Insufficiency with POI changes routine menopause counseling to etiologic evaluation; discordant endocrine tests need correct timing; POI diagnosis. If competing diagnosis fits better, leave this pathway and document the competing diagnosis.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -4235,7 +4235,7 @@
                 "id": "menopause_premature_ovarian_insufficiency_classification_decision",
                 "type": "decision",
                 "label": "Menopause / Premature Ovarian Insufficiency decision: POI diagnosis; age <40",
-                "edgeLabel": "Threshold route: age <40; at least 4 months; FSH >25 IU/L; 4-6 weeks",
+                "edgeLabel": "Cutoff check: age <40; at least 4 months; FSH >25 IU/L; 4-6 weeks",
                 "source_ids": [
                   "ESHRE_POI_2024",
                   "ASRM_AMENORRHEA_2024",
@@ -4360,7 +4360,7 @@
                     }
                   ]
                 },
-                "action": "Compare current patient data with age <40; at least 4 months; FSH >25 IU/L; 4-6 weeks; route to urgent findings, active management, specialist-input modifier, or a named alternate diagnosis.",
+                "action": "Compare current patient data with age <40; at least 4 months; FSH >25 IU/L; 4-6 weeks; select emergency care for urgent findings, the treatment node for confirmed or likely disease, clinician review for contraindication/protocol modifiers, or the alternate-diagnosis endpoint when measured findings contradict this workup.",
                 "children": [
                   {
                     "id": "menopause_premature_ovarian_insufficiency_missing_cutoff_data_endpoint",
@@ -4693,7 +4693,7 @@
                   {
                     "id": "menopause_premature_ovarian_insufficiency_treatment_bundle",
                     "type": "action",
-                    "label": "Menopause / Premature Ovarian Insufficiency management plan",
+                    "label": "Menopause / Premature Ovarian Insufficiency treatment decision",
                     "edgeLabel": "Menopause / Premature Ovarian Insufficiency management: POI changes routine menopause counseling to etiologic evaluation; discordant endocrine tests need correct timing; POI diagnosis; POI hormone therapy",
                     "source_ids": [
                       "ESHRE_POI_2024",
@@ -4705,7 +4705,7 @@
                     "criteria": {
                       "rule_id": "menopause_premature_ovarian_insufficiency_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use this Menopause / Premature Ovarian Insufficiency management branch when POI changes routine menopause counseling to etiologic evaluation; discordant endocrine tests need correct timing; POI diagnosis; POI hormone therapy; POI combined-pill caution; POI fertility counseling applies and patient-specific safety modifiers have been checked.",
+                      "description": "Proceed when the measured Menopause / Premature Ovarian Insufficiency category supports POI changes routine menopause counseling to etiologic evaluation; discordant endocrine tests need correct timing; POI diagnosis; POI hormone therapy and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4824,7 +4824,7 @@
                         "id": "menopause_premature_ovarian_insufficiency_treatment_safety_decision",
                         "type": "decision",
                         "label": "Menopause / Premature Ovarian Insufficiency safety: POI diagnosis",
-                        "edgeLabel": "Therapy modifier: POI diagnosis; POI hormone therapy; POI combined-pill caution; POI changes routine menopause counseling to etiologic evaluation; discordant endocrine tests need correct timing",
+                        "edgeLabel": "Safety modifier: POI diagnosis; POI hormone therapy; POI combined-pill caution; POI changes routine menopause counseling to etiologic evaluation; discordant endocrine tests need correct timing",
                         "source_ids": [
                           "ESHRE_POI_2024",
                           "ASRM_AMENORRHEA_2024",
@@ -4921,13 +4921,13 @@
                             }
                           ]
                         },
-                        "action": "Apply Menopause / Premature Ovarian Insufficiency-specific safety modifiers before final treatment or disposition.",
+                        "action": "Apply Menopause / Premature Ovarian Insufficiency-specific safety modifiers before final therapy, procedure, dose, or care-location choice.",
                         "children": [
                           {
                             "id": "menopause_premature_ovarian_insufficiency_review_endpoint",
                             "type": "endpoint",
                             "label": "Menopause / Premature Ovarian Insufficiency consult: POI diagnosis",
-                            "edgeLabel": "Specialist input: POI diagnosis; POI hormone therapy; POI combined-pill caution; POI changes routine menopause counseling to etiologic evaluation; discordant endocrine tests need correct timing",
+                            "edgeLabel": "Review trigger: POI diagnosis; POI hormone therapy; POI combined-pill caution; POI changes routine menopause counseling to etiologic evaluation; discordant endocrine tests need correct timing",
                             "source_ids": [
                               "ESHRE_POI_2024",
                               "ASRM_AMENORRHEA_2024",
@@ -4938,7 +4938,7 @@
                             "criteria": {
                               "rule_id": "menopause_premature_ovarian_insufficiency_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Menopause / Premature Ovarian Insufficiency management changes because of POI diagnosis; POI hormone therapy; POI combined-pill caution; POI fertility counseling; POI changes routine menopause counseling to etiologic evaluation.",
+                              "description": "Use reviewer handoff before non-emergent Menopause / Premature Ovarian Insufficiency treatment when POI diagnosis; POI hormone therapy; POI combined-pill caution; POI changes routine menopause counseling to etiologic evaluation; discordant endocrine tests need correct timing changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4959,7 +4959,7 @@
                             "action": "Resolve the named Menopause / Premature Ovarian Insufficiency modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
-                            "review_needed_reason": "Menopause / Premature Ovarian Insufficiency management changes when POI diagnosis; POI hormone therapy; POI combined-pill caution; POI fertility counseling; POI changes routine menopause counseling to etiologic evaluation; document the exact modifier and reviewer input needed."
+                            "review_needed_reason": "Clinician review is required before final Menopause / Premature Ovarian Insufficiency therapy, dose, procedure, imaging, or care location when POI diagnosis; POI hormone therapy; POI combined-pill caution; POI changes routine menopause counseling to etiologic evaluation; discordant endocrine tests need correct timing; record the reviewer recommendation and protocol used."
                           },
                           {
                             "id": "menopause_premature_ovarian_insufficiency_monitoring_bundle",
@@ -5539,7 +5539,7 @@
                                 "id": "menopause_premature_ovarian_insufficiency_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Menopause / Premature Ovarian Insufficiency return: return precautions",
-                                "edgeLabel": "Closure: result owner, interval, and return precautions",
+                                "edgeLabel": "Follow-up: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ESHRE_POI_2024",
                                   "ASRM_AMENORRHEA_2024",
@@ -5550,7 +5550,7 @@
                                 "criteria": {
                                   "rule_id": "menopause_premature_ovarian_insufficiency_followup_criteria",
                                   "source": "criteria",
-                                  "description": "Use after Menopause / Premature Ovarian Insufficiency is stable, actionable results have an owner, and return precautions are documented.",
+                                  "description": "Use after Menopause / Premature Ovarian Insufficiency is stable, actionable results have an owner, and return precautions are recorded.",
                                   "evaluable_from": [
                                     "symptoms",
                                     "vitals",
@@ -5802,7 +5802,7 @@
                     "criteria": {
                       "rule_id": "menopause_premature_ovarian_insufficiency_alternate_criteria",
                       "source": "criteria",
-                      "description": "Use an alternate pathway when Menopause / Premature Ovarian Insufficiency criteria are absent, Menopause / Premature Ovarian Insufficiency mimics or exclusions listed in the module differential better explains the presentation, or measured result data contradict this workup.",
+                      "description": "Use an alternate pathway when measured findings do not satisfy Menopause / Premature Ovarian Insufficiency, Menopause / Premature Ovarian Insufficiency mimics or exclusions listed in the module differential better explains the presentation, or result data contradict this workup.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5915,7 +5915,7 @@
                     "action": "Name the competing diagnosis or exclusion for Menopause / Premature Ovarian Insufficiency, such as competing diagnosis better explains the presentation; route to the corresponding workup or specialty pathway and document why this branch is not used.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Menopause / Premature Ovarian Insufficiency criteria are absent or contradicted by Menopause / Premature Ovarian Insufficiency mimics or exclusions listed in the module differential; competing diagnosis must be named before closure."
+                    "review_needed_reason": "Do not close Menopause / Premature Ovarian Insufficiency as the diagnosis when competing diagnosis better explains the presentation; name the competing diagnosis and assign the matching workup or specialty pathway."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -6304,7 +6304,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "menopause_premature_ovarian_insufficiency_review_endpoint",
-          "expected_active_branch": "Specialist input: POI diagnosis; POI hormone therapy; POI combined-pill caution; POI changes routine menopause counseling to etiologic evaluation; discordant endocrine tests need correct timing",
+          "expected_active_branch": "Review trigger: POI diagnosis; POI hormone therapy; POI combined-pill caution; POI changes routine menopause counseling to etiologic evaluation; discordant endocrine tests need correct timing",
           "expected_path_node_ids": [
             "root",
             "menopause_premature_ovarian_insufficiency_concurrent_data_bundle",
@@ -6354,7 +6354,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "menopause_premature_ovarian_insufficiency_followup_endpoint",
-          "expected_active_branch": "Closure: result owner, interval, and return precautions",
+          "expected_active_branch": "Follow-up: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "menopause_premature_ovarian_insufficiency_concurrent_data_bundle",

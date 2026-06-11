@@ -3026,7 +3026,7 @@
         "hypoparathyroidism_treatment_bundle": {
           "rule_id": "hypoparathyroidism_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use this Hypoparathyroidism management branch when Use oral calcium plus active vitamin D such as calcitriol for chronic conventional therapy; Use thiazide and low-sodium strategy for hypercalciuria when appropriate; Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring; discordant endocrine tests need correct timing; Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific applies and patient-specific safety modifiers have been checked.",
+          "description": "Proceed when the measured Hypoparathyroidism category supports Use oral calcium plus active vitamin D such as calcitriol for chronic conventional therapy; Use thiazide and low-sodium strategy for hypercalciuria when appropriate and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3248,7 +3248,7 @@
         "hypoparathyroidism_review_endpoint": {
           "rule_id": "hypoparathyroidism_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Hypoparathyroidism management changes because of Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; DXA T-score; 25D thresholds vary; Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring.",
+          "description": "Use reviewer handoff before non-emergent Hypoparathyroidism treatment when Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3596,7 +3596,7 @@
         "hypoparathyroidism_followup_endpoint": {
           "rule_id": "hypoparathyroidism_followup_criteria",
           "source": "criteria",
-          "description": "Use after Hypoparathyroidism is stable, actionable results have an owner, and return precautions are documented.",
+          "description": "Use after Hypoparathyroidism is stable, actionable results have an owner, and return precautions are recorded.",
           "evaluable_from": [
             "symptoms",
             "vitals",
@@ -3614,7 +3614,7 @@
         "hypoparathyroidism_alternate_endpoint": {
           "rule_id": "hypoparathyroidism_alternate_criteria",
           "source": "criteria",
-          "description": "Use an alternate pathway when Hypoparathyroidism criteria are absent, Corrected calcium often about 8.5-10.5 mg/dL better explains the presentation, or measured result data contradict this workup.",
+          "description": "Use an alternate pathway when measured findings do not satisfy Hypoparathyroidism, Corrected calcium often about 8.5-10.5 mg/dL better explains the presentation, or result data contradict this workup.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3745,7 +3745,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Send unstable patients to urgent care; compare 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; choose active management from Use oral calcium plus active vitamin D such as calcitriol for chronic conventional therapy; Use thiazide and low-sodium strategy for hypercalciuria when appropriate; Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring; discordant endocrine tests need correct timing; Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; switch to Corrected calcium often about 8.5-10.5 mg/dL when it fits better.",
+        "action": "Send unstable patients to urgent care. Compare 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0. Treat confirmed or likely Hypoparathyroidism with Use oral calcium plus active vitamin D such as calcitriol for chronic conventional therapy; Use thiazide and low-sodium strategy for hypercalciuria when appropriate. If Corrected calcium often about 8.5-10.5 mg/dL, leave this pathway and document the competing diagnosis.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3844,7 +3844,7 @@
                 "id": "hypoparathyroidism_classification_decision",
                 "type": "decision",
                 "label": "Hypoparathyroidism decision: Corrected calcium often about 8.5-10.5 mg/dL",
-                "edgeLabel": "Threshold route: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0",
+                "edgeLabel": "Cutoff check: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0",
                 "source_ids": [
                   "HYPOPARA_TASK_FORCE_2022",
                   "AHRQ_CALIBRATE_DX"
@@ -3962,7 +3962,7 @@
                     }
                   ]
                 },
-                "action": "Compare current patient data with 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; route to urgent findings, active management, specialist-input modifier, or a named alternate diagnosis.",
+                "action": "Compare current patient data with 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; select emergency care for urgent findings, the treatment node for confirmed or likely disease, clinician review for contraindication/protocol modifiers, or the alternate-diagnosis endpoint when measured findings contradict this workup.",
                 "children": [
                   {
                     "id": "hypoparathyroidism_missing_cutoff_data_endpoint",
@@ -4253,7 +4253,7 @@
                   {
                     "id": "hypoparathyroidism_treatment_bundle",
                     "type": "action",
-                    "label": "Hypoparathyroidism management plan",
+                    "label": "Hypoparathyroidism treatment decision",
                     "edgeLabel": "Hypoparathyroidism management: Use oral calcium plus active vitamin D such as calcitriol for chronic conventional therapy; Use thiazide and low-sodium strategy for hypercalciuria when appropriate",
                     "source_ids": [
                       "HYPOPARA_TASK_FORCE_2022",
@@ -4262,7 +4262,7 @@
                     "criteria": {
                       "rule_id": "hypoparathyroidism_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use this Hypoparathyroidism management branch when Use oral calcium plus active vitamin D such as calcitriol for chronic conventional therapy; Use thiazide and low-sodium strategy for hypercalciuria when appropriate; Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring; discordant endocrine tests need correct timing; Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific applies and patient-specific safety modifiers have been checked.",
+                      "description": "Proceed when the measured Hypoparathyroidism category supports Use oral calcium plus active vitamin D such as calcitriol for chronic conventional therapy; Use thiazide and low-sodium strategy for hypercalciuria when appropriate and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4377,7 +4377,7 @@
                         "id": "hypoparathyroidism_treatment_safety_decision",
                         "type": "decision",
                         "label": "Hypoparathyroidism safety: Corrected calcium often about 8.5-10.5 mg/dL",
-                        "edgeLabel": "Therapy modifier: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring",
+                        "edgeLabel": "Safety modifier: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring",
                         "source_ids": [
                           "HYPOPARA_TASK_FORCE_2022",
                           "AHRQ_CALIBRATE_DX"
@@ -4492,13 +4492,13 @@
                             }
                           ]
                         },
-                        "action": "Apply Hypoparathyroidism-specific safety modifiers before final treatment or disposition.",
+                        "action": "Apply Hypoparathyroidism-specific safety modifiers before final therapy, procedure, dose, or care-location choice.",
                         "children": [
                           {
                             "id": "hypoparathyroidism_review_endpoint",
                             "type": "endpoint",
                             "label": "Hypoparathyroidism consult: Corrected calcium often about 8.5-10.5 mg/dL",
-                            "edgeLabel": "Specialist input: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring",
+                            "edgeLabel": "Review trigger: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring",
                             "source_ids": [
                               "HYPOPARA_TASK_FORCE_2022",
                               "AHRQ_CALIBRATE_DX"
@@ -4506,7 +4506,7 @@
                             "criteria": {
                               "rule_id": "hypoparathyroidism_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Hypoparathyroidism management changes because of Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; DXA T-score; 25D thresholds vary; Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring.",
+                              "description": "Use reviewer handoff before non-emergent Hypoparathyroidism treatment when Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4524,7 +4524,7 @@
                             "action": "Resolve the named Hypoparathyroidism modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
-                            "review_needed_reason": "Hypoparathyroidism management changes when Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; DXA T-score; 25D thresholds vary; Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring; document the exact modifier and reviewer input needed."
+                            "review_needed_reason": "Clinician review is required before final Hypoparathyroidism therapy, dose, procedure, imaging, or care location when Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring; record the reviewer recommendation and protocol used."
                           },
                           {
                             "id": "hypoparathyroidism_monitoring_bundle",
@@ -5081,7 +5081,7 @@
                                 "id": "hypoparathyroidism_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Hypoparathyroidism return: return precautions",
-                                "edgeLabel": "Closure: result owner, interval, and return precautions",
+                                "edgeLabel": "Follow-up: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "HYPOPARA_TASK_FORCE_2022",
                                   "AHRQ_CALIBRATE_DX"
@@ -5089,7 +5089,7 @@
                                 "criteria": {
                                   "rule_id": "hypoparathyroidism_followup_criteria",
                                   "source": "criteria",
-                                  "description": "Use after Hypoparathyroidism is stable, actionable results have an owner, and return precautions are documented.",
+                                  "description": "Use after Hypoparathyroidism is stable, actionable results have an owner, and return precautions are recorded.",
                                   "evaluable_from": [
                                     "symptoms",
                                     "vitals",
@@ -5334,7 +5334,7 @@
                     "criteria": {
                       "rule_id": "hypoparathyroidism_alternate_criteria",
                       "source": "criteria",
-                      "description": "Use an alternate pathway when Hypoparathyroidism criteria are absent, Corrected calcium often about 8.5-10.5 mg/dL better explains the presentation, or measured result data contradict this workup.",
+                      "description": "Use an alternate pathway when measured findings do not satisfy Hypoparathyroidism, Corrected calcium often about 8.5-10.5 mg/dL better explains the presentation, or result data contradict this workup.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5443,7 +5443,7 @@
                     "action": "Name the competing diagnosis or exclusion for Hypoparathyroidism, such as Corrected calcium often about 8.5-10.5 mg/dL; route to the corresponding workup or specialty pathway and document why this branch is not used.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Hypoparathyroidism criteria are absent or contradicted by Corrected calcium often about 8.5-10.5 mg/dL; competing diagnosis must be named before closure."
+                    "review_needed_reason": "Do not close Hypoparathyroidism as the diagnosis when Corrected calcium often about 8.5-10.5 mg/dL; name the competing diagnosis and assign the matching workup or specialty pathway."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -5812,7 +5812,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "hypoparathyroidism_review_endpoint",
-          "expected_active_branch": "Specialist input: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring",
+          "expected_active_branch": "Review trigger: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring",
           "expected_path_node_ids": [
             "root",
             "hypoparathyroidism_concurrent_data_bundle",
@@ -5862,7 +5862,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "hypoparathyroidism_followup_endpoint",
-          "expected_active_branch": "Closure: result owner, interval, and return precautions",
+          "expected_active_branch": "Follow-up: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "hypoparathyroidism_concurrent_data_bundle",

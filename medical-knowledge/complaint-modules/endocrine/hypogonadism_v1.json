@@ -2875,7 +2875,7 @@
         "hypogonadism_treatment_bundle": {
           "rule_id": "hypogonadism_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use this Hypogonadism management branch when Treat reversible causes such as obesity; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing; Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review applies and patient-specific safety modifiers have been checked.",
+          "description": "Proceed when the measured Hypogonadism category supports Treat reversible causes such as obesity; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing; Male hypogonadism pituitary imaging trigger and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2985,7 +2985,7 @@
         "hypogonadism_review_endpoint": {
           "rule_id": "hypogonadism_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Hypogonadism (Low Testosterone in Men) management changes because of Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing; Treat reversible causes such as obesity.",
+          "description": "Use reviewer handoff before non-emergent Hypogonadism treatment when Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3196,7 +3196,7 @@
         "hypogonadism_followup_endpoint": {
           "rule_id": "hypogonadism_followup_criteria",
           "source": "criteria",
-          "description": "Use after Hypogonadism (Low Testosterone in Men) is stable, actionable results have an owner, and return precautions are documented.",
+          "description": "Use after Hypogonadism (Low Testosterone in Men) is stable, actionable results have an owner, and return precautions are recorded.",
           "evaluable_from": [
             "symptoms",
             "vitals",
@@ -3215,7 +3215,7 @@
         "hypogonadism_alternate_endpoint": {
           "rule_id": "hypogonadism_alternate_criteria",
           "source": "criteria",
-          "description": "Use an alternate pathway when Hypogonadism (Low Testosterone in Men) criteria are absent, Hypogonadism mimics or exclusions listed in the module differential better explains the presentation, or measured result data contradict this workup.",
+          "description": "Use an alternate pathway when measured findings do not satisfy Hypogonadism (Low Testosterone in Men), Hypogonadism mimics or exclusions listed in the module differential better explains the presentation, or result data contradict this workup.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3302,7 +3302,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Send unstable patients to urgent care; compare <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%; choose active management from Treat reversible causes such as obesity; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing; Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; switch to competing diagnosis better explains the presentation when it fits better.",
+        "action": "Send unstable patients to urgent care. Compare <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%. Treat confirmed or likely Hypogonadism with Treat reversible causes such as obesity; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing. If competing diagnosis fits better, leave this pathway and document the competing diagnosis.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3403,7 +3403,7 @@
                 "id": "hypogonadism_classification_decision",
                 "type": "decision",
                 "label": "Hypogonadism decision: Male hypogonadism pituitary imaging trigger; <150 ng/dL",
-                "edgeLabel": "Threshold route: <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%",
+                "edgeLabel": "Cutoff check: <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%",
                 "source_ids": [
                   "ES_TESTOSTERONE_2018",
                   "AUA_TESTOSTERONE_2024",
@@ -3476,7 +3476,7 @@
                     }
                   ]
                 },
-                "action": "Compare current patient data with <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%; route to urgent findings, active management, specialist-input modifier, or a named alternate diagnosis.",
+                "action": "Compare current patient data with <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%; select emergency care for urgent findings, the treatment node for confirmed or likely disease, clinician review for contraindication/protocol modifiers, or the alternate-diagnosis endpoint when measured findings contradict this workup.",
                 "children": [
                   {
                     "id": "hypogonadism_missing_cutoff_data_endpoint",
@@ -3705,7 +3705,7 @@
                     "criteria": {
                       "rule_id": "hypogonadism_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use this Hypogonadism management branch when Treat reversible causes such as obesity; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing; Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review applies and patient-specific safety modifiers have been checked.",
+                      "description": "Proceed when the measured Hypogonadism category supports Treat reversible causes such as obesity; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing; Male hypogonadism pituitary imaging trigger and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -3774,7 +3774,7 @@
                         "id": "hypogonadism_treatment_safety_decision",
                         "type": "decision",
                         "label": "Hypogonadism safety: Male hypogonadism pituitary imaging trigger",
-                        "edgeLabel": "Therapy modifier: Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing",
+                        "edgeLabel": "Safety modifier: Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing",
                         "source_ids": [
                           "ES_TESTOSTERONE_2018",
                           "AUA_TESTOSTERONE_2024",
@@ -3824,13 +3824,13 @@
                             }
                           ]
                         },
-                        "action": "Apply Hypogonadism-specific safety modifiers before final treatment or disposition.",
+                        "action": "Apply Hypogonadism-specific safety modifiers before final therapy, procedure, dose, or care-location choice.",
                         "children": [
                           {
                             "id": "hypogonadism_review_endpoint",
                             "type": "endpoint",
                             "label": "Hypogonadism consult: Male hypogonadism pituitary imaging trigger",
-                            "edgeLabel": "Specialist input: Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing",
+                            "edgeLabel": "Review trigger: Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing",
                             "source_ids": [
                               "ES_TESTOSTERONE_2018",
                               "AUA_TESTOSTERONE_2024",
@@ -3839,7 +3839,7 @@
                             "criteria": {
                               "rule_id": "hypogonadism_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Hypogonadism (Low Testosterone in Men) management changes because of Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing; Treat reversible causes such as obesity.",
+                              "description": "Use reviewer handoff before non-emergent Hypogonadism treatment when Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -3858,7 +3858,7 @@
                             "action": "Resolve the named Hypogonadism modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
-                            "review_needed_reason": "Hypogonadism management changes when Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing; Treat reversible causes such as obesity; document the exact modifier and reviewer input needed."
+                            "review_needed_reason": "Clinician review is required before final Hypogonadism therapy, dose, procedure, imaging, or care location when Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing; record the reviewer recommendation and protocol used."
                           },
                           {
                             "id": "hypogonadism_monitoring_bundle",
@@ -4186,7 +4186,7 @@
                                 "id": "hypogonadism_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Hypogonadism return: Fertility plans change away from exogenous testosterone",
-                                "edgeLabel": "Closure: result owner, interval, and return precautions",
+                                "edgeLabel": "Follow-up: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ES_TESTOSTERONE_2018",
                                   "AUA_TESTOSTERONE_2024",
@@ -4195,7 +4195,7 @@
                                 "criteria": {
                                   "rule_id": "hypogonadism_followup_criteria",
                                   "source": "criteria",
-                                  "description": "Use after Hypogonadism (Low Testosterone in Men) is stable, actionable results have an owner, and return precautions are documented.",
+                                  "description": "Use after Hypogonadism (Low Testosterone in Men) is stable, actionable results have an owner, and return precautions are recorded.",
                                   "evaluable_from": [
                                     "symptoms",
                                     "vitals",
@@ -4345,7 +4345,7 @@
                     "criteria": {
                       "rule_id": "hypogonadism_alternate_criteria",
                       "source": "criteria",
-                      "description": "Use an alternate pathway when Hypogonadism (Low Testosterone in Men) criteria are absent, Hypogonadism mimics or exclusions listed in the module differential better explains the presentation, or measured result data contradict this workup.",
+                      "description": "Use an alternate pathway when measured findings do not satisfy Hypogonadism (Low Testosterone in Men), Hypogonadism mimics or exclusions listed in the module differential better explains the presentation, or result data contradict this workup.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4408,7 +4408,7 @@
                     "action": "Name the competing diagnosis or exclusion for Hypogonadism, such as competing diagnosis better explains the presentation; route to the corresponding workup or specialty pathway and document why this branch is not used.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Hypogonadism criteria are absent or contradicted by Hypogonadism mimics or exclusions listed in the module differential; competing diagnosis must be named before closure."
+                    "review_needed_reason": "Do not close Hypogonadism as the diagnosis when competing diagnosis better explains the presentation; name the competing diagnosis and assign the matching workup or specialty pathway."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -4648,7 +4648,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "hypogonadism_review_endpoint",
-          "expected_active_branch": "Specialist input: Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing",
+          "expected_active_branch": "Review trigger: Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing",
           "expected_path_node_ids": [
             "root",
             "hypogonadism_concurrent_data_bundle",
@@ -4698,7 +4698,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "hypogonadism_followup_endpoint",
-          "expected_active_branch": "Closure: result owner, interval, and return precautions",
+          "expected_active_branch": "Follow-up: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "hypogonadism_concurrent_data_bundle",

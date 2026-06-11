@@ -3340,7 +3340,7 @@
         "thyroid_cancer_treatment_bundle": {
           "rule_id": "thyroid_cancer_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use this Thyroid Cancer management branch when Choose lobectomy versus total thyroidectomy; For medullary thyroid cancer; discordant endocrine tests need correct timing; Hypothyroid LT4 titration applies and patient-specific safety modifiers have been checked.",
+          "description": "Proceed when the measured Thyroid Cancer category supports Choose lobectomy versus total thyroidectomy; For medullary thyroid cancer; discordant endocrine tests need correct timing; Hypothyroid LT4 titration and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3490,7 +3490,7 @@
         "thyroid_cancer_review_endpoint": {
           "rule_id": "thyroid_cancer_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Thyroid Cancer (Papillary, Follicular, Medullary) management changes because of Hypothyroid LT4 titration; discordant endocrine tests need correct timing; Choose lobectomy versus total thyroidectomy.",
+          "description": "Use reviewer handoff before non-emergent Thyroid Cancer treatment when Hypothyroid LT4 titration; discordant endocrine tests need correct timing; Choose lobectomy versus total thyroidectomy changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3820,7 +3820,7 @@
         "thyroid_cancer_followup_endpoint": {
           "rule_id": "thyroid_cancer_followup_criteria",
           "source": "criteria",
-          "description": "Use after Thyroid Cancer (Papillary, Follicular, Medullary) is stable, actionable results have an owner, and return precautions are documented.",
+          "description": "Use after Thyroid Cancer (Papillary, Follicular, Medullary) is stable, actionable results have an owner, and return precautions are recorded.",
           "evaluable_from": [
             "symptoms",
             "vitals",
@@ -3840,7 +3840,7 @@
         "thyroid_cancer_alternate_endpoint": {
           "rule_id": "thyroid_cancer_alternate_criteria",
           "source": "criteria",
-          "description": "Use an alternate pathway when Thyroid Cancer (Papillary, Follicular, Medullary) criteria are absent, Thyroid Cancer mimics or exclusions listed in the module differential better explains the presentation, or measured result data contradict this workup.",
+          "description": "Use an alternate pathway when measured findings do not satisfy Thyroid Cancer (Papillary, Follicular, Medullary), Thyroid Cancer mimics or exclusions listed in the module differential better explains the presentation, or result data contradict this workup.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3970,7 +3970,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Send unstable patients to urgent care; compare >=1 cm; >=1.5 cm; >=2 cm; <1%; choose active management from Choose lobectomy versus total thyroidectomy; For medullary thyroid cancer; discordant endocrine tests need correct timing; Hypothyroid LT4 titration; switch to competing diagnosis better explains the presentation when it fits better.",
+        "action": "Send unstable patients to urgent care. Compare >=1 cm; >=1.5 cm; >=2 cm; <1%. Treat confirmed or likely Thyroid Cancer with Choose lobectomy versus total thyroidectomy; For medullary thyroid cancer; discordant endocrine tests need correct timing. If competing diagnosis fits better, leave this pathway and document the competing diagnosis.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -4073,7 +4073,7 @@
                 "id": "thyroid_cancer_classification_decision",
                 "type": "decision",
                 "label": "Thyroid Cancer decision: ATA thyroid nodule FNA; >=1 cm; >=1.5 cm",
-                "edgeLabel": "Threshold route: >=1 cm; >=1.5 cm; >=2 cm; <1%",
+                "edgeLabel": "Cutoff check: >=1 cm; >=1.5 cm; >=2 cm; <1%",
                 "source_ids": [
                   "ATA_THYROID_NODULE_DTC_2015",
                   "ATA_HYPOTHYROIDISM_2014",
@@ -4188,7 +4188,7 @@
                     }
                   ]
                 },
-                "action": "Compare current patient data with >=1 cm; >=1.5 cm; >=2 cm; <1%; route to urgent findings, active management, specialist-input modifier, or a named alternate diagnosis.",
+                "action": "Compare current patient data with >=1 cm; >=1.5 cm; >=2 cm; <1%; select emergency care for urgent findings, the treatment node for confirmed or likely disease, clinician review for contraindication/protocol modifiers, or the alternate-diagnosis endpoint when measured findings contradict this workup.",
                 "children": [
                   {
                     "id": "thyroid_cancer_missing_cutoff_data_endpoint",
@@ -4504,7 +4504,7 @@
                     "criteria": {
                       "rule_id": "thyroid_cancer_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use this Thyroid Cancer management branch when Choose lobectomy versus total thyroidectomy; For medullary thyroid cancer; discordant endocrine tests need correct timing; Hypothyroid LT4 titration applies and patient-specific safety modifiers have been checked.",
+                      "description": "Proceed when the measured Thyroid Cancer category supports Choose lobectomy versus total thyroidectomy; For medullary thyroid cancer; discordant endocrine tests need correct timing; Hypothyroid LT4 titration and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4612,7 +4612,7 @@
                         "id": "thyroid_cancer_treatment_safety_decision",
                         "type": "decision",
                         "label": "Thyroid Cancer safety: Hypothyroid LT4 titration",
-                        "edgeLabel": "Therapy modifier: Hypothyroid LT4 titration; discordant endocrine tests need correct timing; Choose lobectomy versus total thyroidectomy",
+                        "edgeLabel": "Safety modifier: Hypothyroid LT4 titration; discordant endocrine tests need correct timing; Choose lobectomy versus total thyroidectomy",
                         "source_ids": [
                           "ATA_THYROID_NODULE_DTC_2015",
                           "ATA_HYPOTHYROIDISM_2014",
@@ -4665,13 +4665,13 @@
                             }
                           ]
                         },
-                        "action": "Apply Thyroid Cancer-specific safety modifiers before final treatment or disposition.",
+                        "action": "Apply Thyroid Cancer-specific safety modifiers before final therapy, procedure, dose, or care-location choice.",
                         "children": [
                           {
                             "id": "thyroid_cancer_review_endpoint",
                             "type": "endpoint",
                             "label": "Thyroid Cancer consult: Hypothyroid LT4 titration",
-                            "edgeLabel": "Specialist input: Hypothyroid LT4 titration; discordant endocrine tests need correct timing; Choose lobectomy versus total thyroidectomy",
+                            "edgeLabel": "Review trigger: Hypothyroid LT4 titration; discordant endocrine tests need correct timing; Choose lobectomy versus total thyroidectomy",
                             "source_ids": [
                               "ATA_THYROID_NODULE_DTC_2015",
                               "ATA_HYPOTHYROIDISM_2014",
@@ -4682,7 +4682,7 @@
                             "criteria": {
                               "rule_id": "thyroid_cancer_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Thyroid Cancer (Papillary, Follicular, Medullary) management changes because of Hypothyroid LT4 titration; discordant endocrine tests need correct timing; Choose lobectomy versus total thyroidectomy.",
+                              "description": "Use reviewer handoff before non-emergent Thyroid Cancer treatment when Hypothyroid LT4 titration; discordant endocrine tests need correct timing; Choose lobectomy versus total thyroidectomy changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4703,7 +4703,7 @@
                             "action": "Resolve the named Thyroid Cancer modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
-                            "review_needed_reason": "Thyroid Cancer management changes when Hypothyroid LT4 titration; discordant endocrine tests need correct timing; Choose lobectomy versus total thyroidectomy; document the exact modifier and reviewer input needed."
+                            "review_needed_reason": "Clinician review is required before final Thyroid Cancer therapy, dose, procedure, imaging, or care location when Hypothyroid LT4 titration; discordant endocrine tests need correct timing; Choose lobectomy versus total thyroidectomy; record the reviewer recommendation and protocol used."
                           },
                           {
                             "id": "thyroid_cancer_monitoring_bundle",
@@ -5227,7 +5227,7 @@
                                 "id": "thyroid_cancer_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Thyroid Cancer return: return precautions",
-                                "edgeLabel": "Closure: result owner, interval, and return precautions",
+                                "edgeLabel": "Follow-up: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ATA_THYROID_CANCER_2025",
                                   "ATA_THYROID_NODULE_DTC_2015",
@@ -5237,7 +5237,7 @@
                                 "criteria": {
                                   "rule_id": "thyroid_cancer_followup_criteria",
                                   "source": "criteria",
-                                  "description": "Use after Thyroid Cancer (Papillary, Follicular, Medullary) is stable, actionable results have an owner, and return precautions are documented.",
+                                  "description": "Use after Thyroid Cancer (Papillary, Follicular, Medullary) is stable, actionable results have an owner, and return precautions are recorded.",
                                   "evaluable_from": [
                                     "symptoms",
                                     "vitals",
@@ -5464,7 +5464,7 @@
                     "criteria": {
                       "rule_id": "thyroid_cancer_alternate_criteria",
                       "source": "criteria",
-                      "description": "Use an alternate pathway when Thyroid Cancer (Papillary, Follicular, Medullary) criteria are absent, Thyroid Cancer mimics or exclusions listed in the module differential better explains the presentation, or measured result data contradict this workup.",
+                      "description": "Use an alternate pathway when measured findings do not satisfy Thyroid Cancer (Papillary, Follicular, Medullary), Thyroid Cancer mimics or exclusions listed in the module differential better explains the presentation, or result data contradict this workup.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5566,7 +5566,7 @@
                     "action": "Name the competing diagnosis or exclusion for Thyroid Cancer, such as competing diagnosis better explains the presentation; route to the corresponding workup or specialty pathway and document why this branch is not used.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Thyroid Cancer criteria are absent or contradicted by Thyroid Cancer mimics or exclusions listed in the module differential; competing diagnosis must be named before closure."
+                    "review_needed_reason": "Do not close Thyroid Cancer as the diagnosis when competing diagnosis better explains the presentation; name the competing diagnosis and assign the matching workup or specialty pathway."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -5921,7 +5921,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "thyroid_cancer_review_endpoint",
-          "expected_active_branch": "Specialist input: Hypothyroid LT4 titration; discordant endocrine tests need correct timing; Choose lobectomy versus total thyroidectomy",
+          "expected_active_branch": "Review trigger: Hypothyroid LT4 titration; discordant endocrine tests need correct timing; Choose lobectomy versus total thyroidectomy",
           "expected_path_node_ids": [
             "root",
             "thyroid_cancer_concurrent_data_bundle",
@@ -5971,7 +5971,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "thyroid_cancer_followup_endpoint",
-          "expected_active_branch": "Closure: result owner, interval, and return precautions",
+          "expected_active_branch": "Follow-up: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "thyroid_cancer_concurrent_data_bundle",

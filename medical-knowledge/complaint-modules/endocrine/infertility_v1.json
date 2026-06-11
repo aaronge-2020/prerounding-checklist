@@ -3662,7 +3662,7 @@
         "infertility_treatment_bundle": {
           "rule_id": "infertility_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use this Infertility management branch when discordant endocrine tests need correct timing; Infertility evaluation timing; Infertility endocrine redirection applies and patient-specific safety modifiers have been checked.",
+          "description": "Proceed when the measured Infertility category supports discordant endocrine tests need correct timing; Infertility evaluation timing; Infertility endocrine redirection and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3837,7 +3837,7 @@
         "infertility_review_endpoint": {
           "rule_id": "infertility_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Infertility (Hormonal causes) management changes because of Infertility evaluation timing; Infertility endocrine redirection; discordant endocrine tests need correct timing.",
+          "description": "Use reviewer handoff before non-emergent Infertility treatment when Infertility evaluation timing; Infertility endocrine redirection; discordant endocrine tests need correct timing changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -4149,7 +4149,7 @@
         "infertility_followup_endpoint": {
           "rule_id": "infertility_followup_criteria",
           "source": "criteria",
-          "description": "Use after Infertility (Hormonal causes) is stable, actionable results have an owner, and return precautions are documented.",
+          "description": "Use after Infertility (Hormonal causes) is stable, actionable results have an owner, and return precautions are recorded.",
           "evaluable_from": [
             "symptoms",
             "vitals",
@@ -4169,7 +4169,7 @@
         "infertility_alternate_endpoint": {
           "rule_id": "infertility_alternate_criteria",
           "source": "criteria",
-          "description": "Use an alternate pathway when Infertility (Hormonal causes) criteria are absent, Infertility mimics or exclusions listed in the module differential better explains the presentation, or measured result data contradict this workup.",
+          "description": "Use an alternate pathway when measured findings do not satisfy Infertility (Hormonal causes), Infertility mimics or exclusions listed in the module differential better explains the presentation, or result data contradict this workup.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4293,7 +4293,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Send unstable patients to urgent care; compare >=12 months; age <35; 6 months; age >=35; choose active management from discordant endocrine tests need correct timing; Infertility evaluation timing; Infertility endocrine redirection; switch to competing diagnosis better explains the presentation when it fits better.",
+        "action": "Send unstable patients to urgent care. Compare >=12 months; age <35; 6 months; age >=35. Treat confirmed or likely Infertility with discordant endocrine tests need correct timing; Infertility evaluation timing; Infertility endocrine redirection. If competing diagnosis fits better, leave this pathway and document the competing diagnosis.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -4396,7 +4396,7 @@
                 "id": "infertility_classification_decision",
                 "type": "decision",
                 "label": "Infertility decision: Infertility evaluation timing; >=12 months; age <35",
-                "edgeLabel": "Threshold route: >=12 months; age <35; 6 months; age >=35",
+                "edgeLabel": "Cutoff check: >=12 months; age <35; 6 months; age >=35",
                 "source_ids": [
                   "ASRM_INFERTILITY_EVALUATION_2021",
                   "ASRM_AMENORRHEA_2024",
@@ -4505,7 +4505,7 @@
                     }
                   ]
                 },
-                "action": "Compare current patient data with >=12 months; age <35; 6 months; age >=35; route to urgent findings, active management, specialist-input modifier, or a named alternate diagnosis.",
+                "action": "Compare current patient data with >=12 months; age <35; 6 months; age >=35; select emergency care for urgent findings, the treatment node for confirmed or likely disease, clinician review for contraindication/protocol modifiers, or the alternate-diagnosis endpoint when measured findings contradict this workup.",
                 "children": [
                   {
                     "id": "infertility_missing_cutoff_data_endpoint",
@@ -4804,7 +4804,7 @@
                   {
                     "id": "infertility_treatment_bundle",
                     "type": "action",
-                    "label": "Infertility management plan",
+                    "label": "Infertility treatment decision",
                     "edgeLabel": "Infertility management: discordant endocrine tests need correct timing; Infertility evaluation timing; Infertility endocrine redirection",
                     "source_ids": [
                       "ASRM_AMENORRHEA_2024",
@@ -4815,7 +4815,7 @@
                     "criteria": {
                       "rule_id": "infertility_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use this Infertility management branch when discordant endocrine tests need correct timing; Infertility evaluation timing; Infertility endocrine redirection applies and patient-specific safety modifiers have been checked.",
+                      "description": "Proceed when the measured Infertility category supports discordant endocrine tests need correct timing; Infertility evaluation timing; Infertility endocrine redirection and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4917,7 +4917,7 @@
                         "id": "infertility_treatment_safety_decision",
                         "type": "decision",
                         "label": "Infertility safety: Infertility evaluation timing",
-                        "edgeLabel": "Therapy modifier: Infertility evaluation timing; Infertility endocrine redirection; discordant endocrine tests need correct timing",
+                        "edgeLabel": "Safety modifier: Infertility evaluation timing; Infertility endocrine redirection; discordant endocrine tests need correct timing",
                         "source_ids": [
                           "ASRM_INFERTILITY_EVALUATION_2021",
                           "ASRM_AMENORRHEA_2024",
@@ -5001,13 +5001,13 @@
                             }
                           ]
                         },
-                        "action": "Apply Infertility-specific safety modifiers before final treatment or disposition.",
+                        "action": "Apply Infertility-specific safety modifiers before final therapy, procedure, dose, or care-location choice.",
                         "children": [
                           {
                             "id": "infertility_review_endpoint",
                             "type": "endpoint",
                             "label": "Infertility consult: Infertility evaluation timing",
-                            "edgeLabel": "Specialist input: Infertility evaluation timing; Infertility endocrine redirection; discordant endocrine tests need correct timing",
+                            "edgeLabel": "Review trigger: Infertility evaluation timing; Infertility endocrine redirection; discordant endocrine tests need correct timing",
                             "source_ids": [
                               "ASRM_INFERTILITY_EVALUATION_2021",
                               "ASRM_AMENORRHEA_2024",
@@ -5018,7 +5018,7 @@
                             "criteria": {
                               "rule_id": "infertility_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Infertility (Hormonal causes) management changes because of Infertility evaluation timing; Infertility endocrine redirection; discordant endocrine tests need correct timing.",
+                              "description": "Use reviewer handoff before non-emergent Infertility treatment when Infertility evaluation timing; Infertility endocrine redirection; discordant endocrine tests need correct timing changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -5039,7 +5039,7 @@
                             "action": "Resolve the named Infertility modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
-                            "review_needed_reason": "Infertility management changes when Infertility evaluation timing; Infertility endocrine redirection; discordant endocrine tests need correct timing; document the exact modifier and reviewer input needed."
+                            "review_needed_reason": "Clinician review is required before final Infertility therapy, dose, procedure, imaging, or care location when Infertility evaluation timing; Infertility endocrine redirection; discordant endocrine tests need correct timing; record the reviewer recommendation and protocol used."
                           },
                           {
                             "id": "infertility_monitoring_bundle",
@@ -5533,7 +5533,7 @@
                                 "id": "infertility_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Infertility return: return precautions",
-                                "edgeLabel": "Closure: result owner, interval, and return precautions",
+                                "edgeLabel": "Follow-up: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ASRM_AMENORRHEA_2024",
                                   "PCOS_GUIDELINE_2023",
@@ -5543,7 +5543,7 @@
                                 "criteria": {
                                   "rule_id": "infertility_followup_criteria",
                                   "source": "criteria",
-                                  "description": "Use after Infertility (Hormonal causes) is stable, actionable results have an owner, and return precautions are documented.",
+                                  "description": "Use after Infertility (Hormonal causes) is stable, actionable results have an owner, and return precautions are recorded.",
                                   "evaluable_from": [
                                     "symptoms",
                                     "vitals",
@@ -5759,7 +5759,7 @@
                     "criteria": {
                       "rule_id": "infertility_alternate_criteria",
                       "source": "criteria",
-                      "description": "Use an alternate pathway when Infertility (Hormonal causes) criteria are absent, Infertility mimics or exclusions listed in the module differential better explains the presentation, or measured result data contradict this workup.",
+                      "description": "Use an alternate pathway when measured findings do not satisfy Infertility (Hormonal causes), Infertility mimics or exclusions listed in the module differential better explains the presentation, or result data contradict this workup.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5855,7 +5855,7 @@
                     "action": "Name the competing diagnosis or exclusion for Infertility, such as competing diagnosis better explains the presentation; route to the corresponding workup or specialty pathway and document why this branch is not used.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Infertility criteria are absent or contradicted by Infertility mimics or exclusions listed in the module differential; competing diagnosis must be named before closure."
+                    "review_needed_reason": "Do not close Infertility as the diagnosis when competing diagnosis better explains the presentation; name the competing diagnosis and assign the matching workup or specialty pathway."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -6196,7 +6196,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "infertility_review_endpoint",
-          "expected_active_branch": "Specialist input: Infertility evaluation timing; Infertility endocrine redirection; discordant endocrine tests need correct timing",
+          "expected_active_branch": "Review trigger: Infertility evaluation timing; Infertility endocrine redirection; discordant endocrine tests need correct timing",
           "expected_path_node_ids": [
             "root",
             "infertility_concurrent_data_bundle",
@@ -6246,7 +6246,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "infertility_followup_endpoint",
-          "expected_active_branch": "Closure: result owner, interval, and return precautions",
+          "expected_active_branch": "Follow-up: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "infertility_concurrent_data_bundle",

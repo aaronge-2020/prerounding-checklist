@@ -1298,6 +1298,12 @@ function cleanGeneratedScaffoldText(value = "", fallback = "") {
     .replace(/\bobjective findings\b/gi, "measured findings")
     .replace(/\bdanger features?\b/gi, "high-risk findings")
     .replace(/\bkey labs\/results\b/gi, "listed measurements")
+    .replace(/\bEmergency stabilization route\b/gi, "shock or active bleeding stabilization")
+    .replace(/\bRBC transfusion threshold route\b/gi, "RBC transfusion thresholds")
+    .replace(/\bIron therapy and diet route\b/gi, "oral iron and diet therapy")
+    .replace(/\bITP observation treatment and precautions route\b/gi, "ITP observation and bleeding precautions")
+    .replace(/\bLeukemia lymphoma urgent referral route\b/gi, "leukemia/lymphoma urgent referral")
+    .replace(/\bHematology handoff and review owner route\b/gi, "hematology handoff owner")
     .replace(/\bthreshold labs\/results\b/gi, "listed measurements")
     .replace(/\bkey results\b/gi, "listed measurements")
     .replace(/\bthreshold results\b/gi, "listed measurements")
@@ -1940,7 +1946,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     treatment: compactBranchLabel(`${rootDisplayLabel} plan`, branchDetails([
       ...treatmentModifierLabels.slice(0, 2),
       ...dispositionModifierLabels.slice(0, 1)
-    ]), diseaseBranchLabel("management plan"), 80),
+    ]), diseaseBranchLabel("treatment decision"), 80),
     safety: compactBranchLabel(`${rootDisplayLabel} safety`, branchDetails([
       ...clinicalSafetySummary.slice(0, 2),
       ...diseaseModifierLabels.slice(0, 1)
@@ -1988,6 +1994,13 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     3,
     220
   );
+  const rootThresholdDisplay = compactArrayText(branchDetails(thresholdExamples), "cited diagnostic cutoffs", 4, 140);
+  const rootMimicDisplay = compactArrayText(
+    branchDetails(visibleListLabels(differentials, 3)),
+    "competing diagnosis fits better",
+    2,
+    120
+  );
   const displayModifiers = compactArrayText(branchDetails([
     ...diseaseModifierLabels.slice(0, 3),
     ...dispositionModifierLabels.slice(0, 2),
@@ -2014,21 +2027,22 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     ...clinicalSafetySummary
   ]);
   const managementDisplay = compactArrayText(managementItems, treatmentSummary || `Treat ${displayLabel} by severity category and safety data`, 6, 420);
-  const managementEdgeDisplay = compactArrayText(managementItems, diseaseBranchLabel("management plan"), 4, 230);
+  const managementEdgeDisplay = compactArrayText(managementItems, diseaseBranchLabel("treatment decision"), 4, 230);
+  const rootManagementDisplay = compactArrayText(managementItems, diseaseBranchLabel("treatment decision"), 3, 180);
   const edgeLabels = {
     missingContext: `Missing ${displayLabel}: onset/trajectory, focused exam, vitals, criterion-defining results, meds, comorbidities, pregnancy/applicability, or follow-up access`,
     diagnosticData: `${displayLabel} data: ${displayDiagnosticData}`,
-    classification: `Threshold route: ${displayThresholds}`,
+    classification: `Cutoff check: ${displayThresholds}`,
     missingCutoff: `Missing ${displayLabel} result(s): ${arrayText(exactDiagnosticData, `${displayLabel} threshold/result data`, 6)}`,
     urgent: `Urgent findings: ${displayUrgent}`,
     treatment: `${displayLabel} management: ${managementEdgeDisplay}`,
     alternate: `Alternate diagnosis: ${displayMimics}`,
-    safetySelected: `Therapy modifier: ${displayModifiers}`,
-    review: `Specialist input: ${displayModifiers}`,
+    safetySelected: `Safety modifier: ${displayModifiers}`,
+    review: `Review trigger: ${displayModifiers}`,
     monitoring: `${displayLabel} trend: ${displayMonitoring}`,
     worsening: `Worsening finding: ${displayWorsening}`,
     deescalate: `De-escalate when response, safety, and diagnostic certainty support it`,
-    followup: `Closure: result owner, interval, and return precautions`
+    followup: `Follow-up: result owner, interval, and return precautions`
   };
 
   const followupEndpoint = endpoint({
@@ -2036,7 +2050,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     label: branchLabels.followup,
     edgeLabel: edgeLabels.followup,
     sourceIds: managementSources,
-    criteria: criteria(`${prefix}_followup_criteria`, `Use after ${label} is stable, actionable results have an owner, and return precautions are documented.`, ["symptoms", "vitals", "labs", "imaging_results", "medications", "follow_up_access", "workup_findings"], managementSources),
+    criteria: criteria(`${prefix}_followup_criteria`, `Use after ${label} is stable, actionable results have an owner, and return precautions are recorded.`, ["symptoms", "vitals", "labs", "imaging_results", "medications", "follow_up_access", "workup_findings"], managementSources),
     action: `Document the ${displayLabel} diagnosis/risk category, named pending-result clinician/service, follow-up interval, and return precautions for worsening symptoms, treatment intolerance, inability to complete treatment, or abnormal pending results.`,
     endpointType: "safety_net_instruction",
     monitoringPlan: ["pending-result owner", "follow-up interval", "return precautions", "access barriers"]
@@ -2081,10 +2095,10 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     label: branchLabels.review,
     edgeLabel: edgeLabels.review,
     sourceIds: cutoffSources,
-    criteria: criteria(`${prefix}_review_criteria`, `Use reviewer handoff when ${label} management changes because of ${modifierSummary}.`, ["pregnancy_status", "demographics", "medications", "comorbidities", "allergies", "local_policy", "workup_findings"], cutoffSources),
+    criteria: criteria(`${prefix}_review_criteria`, `Use reviewer handoff before non-emergent ${displayLabel} treatment when ${displayModifiers} changes the therapy, dose, procedure, imaging, assay interpretation, or care location.`, ["pregnancy_status", "demographics", "medications", "comorbidities", "allergies", "local_policy", "workup_findings"], cutoffSources),
     action: `Resolve the named ${displayLabel} modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.`,
     endpointType: "clinician_review_handoff",
-    reviewNeededReason: `${displayLabel} management changes when ${modifierSummary}; document the exact modifier and reviewer input needed.`
+    reviewNeededReason: `Clinician review is required before final ${displayLabel} therapy, dose, procedure, imaging, or care location when ${displayModifiers}; record the reviewer recommendation and protocol used.`
   });
 
   const safetyDecision = decision({
@@ -2093,7 +2107,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     edgeLabel: edgeLabels.safetySelected,
     sourceIds: cutoffSources,
     criteria: criteria(`${prefix}_safety_decision_criteria`, `Check ${label} treatment contraindications, dose/weight/renal/pregnancy constraints, and institutional order-set limits before committing to therapy.`, ["medications", "allergies", "pregnancy_status", "demographics", "comorbidities", "labs", "workup_findings"], cutoffSources, { criteria_options: criteriaRows.filter((row) => /treat|dose|mg|kg|pregnan|bmi|renal|contra/i.test(`${row.label} ${row.criteria_text}`)).slice(0, 8) }),
-    action: `Apply ${displayLabel}-specific safety modifiers before final treatment or disposition.`,
+    action: `Apply ${displayLabel}-specific safety modifiers before final therapy, procedure, dose, or care-location choice.`,
     children: [reviewEndpoint, monitoring]
   });
 
@@ -2102,7 +2116,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     label: branchLabels.treatment,
     edgeLabel: edgeLabels.treatment,
     sourceIds: managementSources,
-    criteria: criteria(`${prefix}_treatment_bundle_criteria`, `Use this ${displayLabel} management branch when ${managementDisplay} applies and patient-specific safety modifiers have been checked.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "pregnancy_status", "workup_findings"], managementSources, { criteria_options: criteriaRows.slice(0, 10) }),
+    criteria: criteria(`${prefix}_treatment_bundle_criteria`, `Proceed when the measured ${displayLabel} category supports ${managementEdgeDisplay} and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "pregnancy_status", "workup_findings"], managementSources, { criteria_options: criteriaRows.slice(0, 10) }),
     action: managementDisplay || `Apply the cited ${displayLabel} therapy, monitoring, and care-location rule tied to the measured diagnostic category.`,
     parallelActions: unique([...treatmentModifierLabels, ...dispositionModifierLabels, ...diseaseModifierLabels.slice(0, 5)]),
     guidelineCutoffs: criteriaRows,
@@ -2114,10 +2128,10 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     label: branchLabels.alternate,
     edgeLabel: edgeLabels.alternate,
     sourceIds: differentialSources,
-    criteria: criteria(`${prefix}_alternate_criteria`, `Use an alternate pathway when ${label} criteria are absent, ${mimicSummary} better explains the presentation, or measured result data contradict this workup.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "workup_findings"], differentialSources, { criteria_options: criteriaRows.slice(0, 8) }),
+    criteria: criteria(`${prefix}_alternate_criteria`, `Use an alternate pathway when measured findings do not satisfy ${label}, ${mimicSummary} better explains the presentation, or result data contradict this workup.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "workup_findings"], differentialSources, { criteria_options: criteriaRows.slice(0, 8) }),
     action: `Name the competing diagnosis or exclusion for ${displayLabel}, such as ${displayMimics}; route to the corresponding workup or specialty pathway and document why this branch is not used.`,
     endpointType: "clinician_review_handoff",
-    reviewNeededReason: `${displayLabel} criteria are absent or contradicted by ${mimicSummary}; competing diagnosis must be named before closure.`
+    reviewNeededReason: `Do not close ${displayLabel} as the diagnosis when ${displayMimics}; name the competing diagnosis and assign the matching workup or specialty pathway.`
   });
 
   const urgentEndpoint = endpoint({
@@ -2148,7 +2162,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     edgeLabel: edgeLabels.classification,
     sourceIds: cutoffSources,
     criteria: criteria(`${prefix}_classification_criteria`, `Classify ${label} using cited thresholds and branch-specific criteria.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "demographics", "pregnancy_status", "workup_findings"], cutoffSources, { criteria_options: criteriaRows }),
-    action: `Compare current patient data with ${displayThresholds}; route to urgent findings, active management, specialist-input modifier, or a named alternate diagnosis.`,
+    action: `Compare current patient data with ${displayThresholds}; select emergency care for urgent findings, the treatment node for confirmed or likely disease, clinician review for contraindication/protocol modifiers, or the alternate-diagnosis endpoint when measured findings contradict this workup.`,
     clinicalCriteria: criteriaRows,
     guidelineCutoffs: criteriaRows,
     children: [missingCutoffEndpoint, urgentEndpoint, treatmentBundle, alternateEndpoint]
@@ -2183,7 +2197,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     label: branchLabels.root,
     sourceIds: cutoffSources,
     criteria: criteria("activate_workup", `Activate when structured or extractable context matches ${label} triggers or the clinician selects workup ${module.id}.`, ["selected_workup_id", "presenting_symptoms", "problem_list_or_diagnosis", "clinician_selected_module"], cutoffSources),
-    action: `Send unstable patients to urgent care; compare ${displayThresholds}; choose active management from ${managementDisplay}; switch to ${displayMimics} when it fits better.`,
+    action: `Send unstable patients to urgent care. Compare ${rootThresholdDisplay}. Treat confirmed or likely ${displayLabel} with ${rootManagementDisplay}. If ${rootMimicDisplay}, leave this pathway and document the competing diagnosis.`,
     children: [missingContextEndpoint, dataBundle]
   });
 
@@ -5011,7 +5025,7 @@ function buildMetabolicSyndromeClinicalPathwayTree(module, sourceById) {
   const riskReductionEndpoint = endpoint({
     id: `${prefix}_risk_reduction_endpoint`,
     label: "Metabolic risk-reduction plan",
-    edgeLabel: "Management branch: metabolic syndrome confirmed or near-threshold high-risk pattern without urgent diabetes/BP/ASCVD symptoms",
+    edgeLabel: "Risk-reduction criteria: metabolic syndrome confirmed or near-threshold high-risk pattern without urgent diabetes/BP/ASCVD symptoms",
     sourceIds: unique([...nhlbi, ...soc, "CDC_NDPP_LIFESTYLE_2024"]),
     criteria: criteria(`${prefix}_risk_reduction_criteria`, "Use when active criteria can be targeted with outpatient risk reduction and surveillance.", ["vitals", "labs", "medications", "comorbidities", "follow_up_access", "workup_findings"], unique([...nhlbi, ...soc, "CDC_NDPP_LIFESTYLE_2024"]), { criteria_options: criteriaRows }),
     action: "Treat each active criterion: weight and waist reduction plan, at least 150 minutes/week activity when safe, nutrition plan, BP treatment, lipid/ASCVD risk management, prediabetes/diabetes surveillance, sleep apnea/fatty-liver/PCOS assessment when relevant, and medication review for secondary causes.",

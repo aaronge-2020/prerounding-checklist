@@ -3049,7 +3049,7 @@
         "hypothyroidism_treatment_bundle": {
           "rule_id": "hypothyroidism_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use this Hypothyroidism management branch when Treat overt primary hypothyroidism with levothyroxine; For subclinical hypothyroidism; Use free T4 rather than TSH to titrate central hypothyroidism, after adrenal status is safe; High TSH plus low FT4 confirms overt primary hypothyroidism; Low FT4 with low/normal TSH triggers central hypothyroidism/pituitary pathway; Hypothyroid LT4 titration applies and patient-specific safety modifiers have been checked.",
+          "description": "Proceed when the measured Hypothyroidism category supports Treat overt primary hypothyroidism with levothyroxine; For subclinical hypothyroidism; Use free T4 rather than TSH to titrate central hypothyroidism, after adrenal status is safe and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3225,7 +3225,7 @@
         "hypothyroidism_review_endpoint": {
           "rule_id": "hypothyroidism_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Hypothyroidism (Underactive Thyroid) management changes because of Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; High TSH plus low FT4 confirms overt primary hypothyroidism; Low FT4 with low/normal TSH triggers central hypothyroidism/pituitary pathway.",
+          "description": "Use reviewer handoff before non-emergent Hypothyroidism treatment when Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; High TSH plus low FT4 confirms overt primary hypothyroidism changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3505,7 +3505,7 @@
         "hypothyroidism_followup_endpoint": {
           "rule_id": "hypothyroidism_followup_criteria",
           "source": "criteria",
-          "description": "Use after Hypothyroidism (Underactive Thyroid) is stable, actionable results have an owner, and return precautions are documented.",
+          "description": "Use after Hypothyroidism (Underactive Thyroid) is stable, actionable results have an owner, and return precautions are recorded.",
           "evaluable_from": [
             "symptoms",
             "vitals",
@@ -3524,7 +3524,7 @@
         "hypothyroidism_alternate_endpoint": {
           "rule_id": "hypothyroidism_alternate_criteria",
           "source": "criteria",
-          "description": "Use an alternate pathway when Hypothyroidism (Underactive Thyroid) criteria are absent, Hypothyroidism mimics or exclusions listed in the module differential better explains the presentation, or measured result data contradict this workup.",
+          "description": "Use an alternate pathway when measured findings do not satisfy Hypothyroidism (Underactive Thyroid), Hypothyroidism mimics or exclusions listed in the module differential better explains the presentation, or result data contradict this workup.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3634,7 +3634,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Send unstable patients to urgent care; compare 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day; choose active management from Treat overt primary hypothyroidism with levothyroxine; For subclinical hypothyroidism; Use free T4 rather than TSH to titrate central hypothyroidism, after adrenal status is safe; High TSH plus low FT4 confirms overt primary hypothyroidism; Low FT4 with low/normal TSH triggers central hypothyroidism/pituitary pathway; Hypothyroid LT4 titration; switch to competing diagnosis better explains the presentation when it fits better.",
+        "action": "Send unstable patients to urgent care. Compare 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day. Treat confirmed or likely Hypothyroidism with Treat overt primary hypothyroidism with levothyroxine; For subclinical hypothyroidism; Use free T4 rather than TSH to titrate central hypothyroidism, after adrenal status is safe. If competing diagnosis fits better, leave this pathway and document the competing diagnosis.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3735,7 +3735,7 @@
                 "id": "hypothyroidism_classification_decision",
                 "type": "decision",
                 "label": "Hypothyroidism decision: Hypothyroid LT4 titration; 0.5 to 3.5 mIU/L; 4 mIU/L",
-                "edgeLabel": "Threshold route: 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day",
+                "edgeLabel": "Cutoff check: 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day",
                 "source_ids": [
                   "ATA_HYPOTHYROIDISM_2014",
                   "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -3831,7 +3831,7 @@
                     }
                   ]
                 },
-                "action": "Compare current patient data with 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day; route to urgent findings, active management, specialist-input modifier, or a named alternate diagnosis.",
+                "action": "Compare current patient data with 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day; select emergency care for urgent findings, the treatment node for confirmed or likely disease, clinician review for contraindication/protocol modifiers, or the alternate-diagnosis endpoint when measured findings contradict this workup.",
                 "children": [
                   {
                     "id": "hypothyroidism_missing_cutoff_data_endpoint",
@@ -4110,7 +4110,7 @@
                     "criteria": {
                       "rule_id": "hypothyroidism_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use this Hypothyroidism management branch when Treat overt primary hypothyroidism with levothyroxine; For subclinical hypothyroidism; Use free T4 rather than TSH to titrate central hypothyroidism, after adrenal status is safe; High TSH plus low FT4 confirms overt primary hypothyroidism; Low FT4 with low/normal TSH triggers central hypothyroidism/pituitary pathway; Hypothyroid LT4 titration applies and patient-specific safety modifiers have been checked.",
+                      "description": "Proceed when the measured Hypothyroidism category supports Treat overt primary hypothyroidism with levothyroxine; For subclinical hypothyroidism; Use free T4 rather than TSH to titrate central hypothyroidism, after adrenal status is safe and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4202,7 +4202,7 @@
                         "id": "hypothyroidism_treatment_safety_decision",
                         "type": "decision",
                         "label": "Hypothyroidism safety: Hypothyroid LT4 titration",
-                        "edgeLabel": "Therapy modifier: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; High TSH plus low FT4 confirms overt primary hypothyroidism",
+                        "edgeLabel": "Safety modifier: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; High TSH plus low FT4 confirms overt primary hypothyroidism",
                         "source_ids": [
                           "ATA_HYPOTHYROIDISM_2014",
                           "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -4295,13 +4295,13 @@
                             }
                           ]
                         },
-                        "action": "Apply Hypothyroidism-specific safety modifiers before final treatment or disposition.",
+                        "action": "Apply Hypothyroidism-specific safety modifiers before final therapy, procedure, dose, or care-location choice.",
                         "children": [
                           {
                             "id": "hypothyroidism_review_endpoint",
                             "type": "endpoint",
                             "label": "Hypothyroidism consult: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment",
-                            "edgeLabel": "Specialist input: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; High TSH plus low FT4 confirms overt primary hypothyroidism",
+                            "edgeLabel": "Review trigger: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; High TSH plus low FT4 confirms overt primary hypothyroidism",
                             "source_ids": [
                               "ATA_HYPOTHYROIDISM_2014",
                               "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -4310,7 +4310,7 @@
                             "criteria": {
                               "rule_id": "hypothyroidism_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Hypothyroidism (Underactive Thyroid) management changes because of Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; High TSH plus low FT4 confirms overt primary hypothyroidism; Low FT4 with low/normal TSH triggers central hypothyroidism/pituitary pathway.",
+                              "description": "Use reviewer handoff before non-emergent Hypothyroidism treatment when Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; High TSH plus low FT4 confirms overt primary hypothyroidism changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4329,7 +4329,7 @@
                             "action": "Resolve the named Hypothyroidism modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
-                            "review_needed_reason": "Hypothyroidism management changes when Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; High TSH plus low FT4 confirms overt primary hypothyroidism; Low FT4 with low/normal TSH triggers central hypothyroidism/pituitary pathway; document the exact modifier and reviewer input needed."
+                            "review_needed_reason": "Clinician review is required before final Hypothyroidism therapy, dose, procedure, imaging, or care location when Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; High TSH plus low FT4 confirms overt primary hypothyroidism; record the reviewer recommendation and protocol used."
                           },
                           {
                             "id": "hypothyroidism_monitoring_bundle",
@@ -4772,7 +4772,7 @@
                                 "id": "hypothyroidism_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Hypothyroidism return: return precautions",
-                                "edgeLabel": "Closure: result owner, interval, and return precautions",
+                                "edgeLabel": "Follow-up: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ATA_HYPOTHYROIDISM_2014",
                                   "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -4781,7 +4781,7 @@
                                 "criteria": {
                                   "rule_id": "hypothyroidism_followup_criteria",
                                   "source": "criteria",
-                                  "description": "Use after Hypothyroidism (Underactive Thyroid) is stable, actionable results have an owner, and return precautions are documented.",
+                                  "description": "Use after Hypothyroidism (Underactive Thyroid) is stable, actionable results have an owner, and return precautions are recorded.",
                                   "evaluable_from": [
                                     "symptoms",
                                     "vitals",
@@ -4978,7 +4978,7 @@
                     "criteria": {
                       "rule_id": "hypothyroidism_alternate_criteria",
                       "source": "criteria",
-                      "description": "Use an alternate pathway when Hypothyroidism (Underactive Thyroid) criteria are absent, Hypothyroidism mimics or exclusions listed in the module differential better explains the presentation, or measured result data contradict this workup.",
+                      "description": "Use an alternate pathway when measured findings do not satisfy Hypothyroidism (Underactive Thyroid), Hypothyroidism mimics or exclusions listed in the module differential better explains the presentation, or result data contradict this workup.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5064,7 +5064,7 @@
                     "action": "Name the competing diagnosis or exclusion for Hypothyroidism, such as competing diagnosis better explains the presentation; route to the corresponding workup or specialty pathway and document why this branch is not used.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Hypothyroidism criteria are absent or contradicted by Hypothyroidism mimics or exclusions listed in the module differential; competing diagnosis must be named before closure."
+                    "review_needed_reason": "Do not close Hypothyroidism as the diagnosis when competing diagnosis better explains the presentation; name the competing diagnosis and assign the matching workup or specialty pathway."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -5375,7 +5375,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "hypothyroidism_review_endpoint",
-          "expected_active_branch": "Specialist input: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; High TSH plus low FT4 confirms overt primary hypothyroidism",
+          "expected_active_branch": "Review trigger: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; High TSH plus low FT4 confirms overt primary hypothyroidism",
           "expected_path_node_ids": [
             "root",
             "hypothyroidism_concurrent_data_bundle",
@@ -5425,7 +5425,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "hypothyroidism_followup_endpoint",
-          "expected_active_branch": "Closure: result owner, interval, and return precautions",
+          "expected_active_branch": "Follow-up: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "hypothyroidism_concurrent_data_bundle",
