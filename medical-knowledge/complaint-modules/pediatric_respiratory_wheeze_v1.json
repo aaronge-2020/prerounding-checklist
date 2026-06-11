@@ -1220,7 +1220,7 @@
     "decisionTrees": [
       {
         "id": "decision_01",
-        "label": "Screen for immediate danger or disposition-changing findings before routine workup: Apnea or central cyanosis.",
+        "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: danger features or monitored-care triggers: Apnea or central cyanosis.",
         "item_type": "management_change",
         "source": {
           "source_id": "NICE_BRONCHIOLITIS_NG9",
@@ -1231,14 +1231,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "Do not wait for complete routine workup before escalation."
         },
-        "action": "Screen for immediate danger or disposition-changing findings before routine workup: Apnea or central cyanosis.",
-        "rationale": "Derives a Pediatric respiratory distress, wheeze, or bronchiolitis workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Screen for immediate danger or disposition-changing findings before routine workup: Apnea or central cyanosis.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric respiratory distress, wheeze, or bronchiolitis.",
-        "management_change": "Screen for immediate danger or disposition-changing findings before routine workup: Apnea or central cyanosis.",
+        "action": "Pediatric respiratory distress, wheeze, or bronchiolitis: danger features or monitored-care triggers: Apnea or central cyanosis.",
+        "rationale": "Pediatric respiratory distress, wheeze, or bronchiolitis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric respiratory distress, wheeze, or bronchiolitis: danger features or monitored-care triggers: Apnea or central cyanosis.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric respiratory distress, wheeze, or bronchiolitis.",
+        "management_change": "Pediatric respiratory distress, wheeze, or bronchiolitis: danger features or monitored-care triggers: Apnea or central cyanosis.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric respiratory distress, wheeze, or bronchiolitis.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric respiratory distress, wheeze, or bronchiolitis.",
         "tags": [
           "pediatric",
           "respiratory",
@@ -1248,17 +1248,17 @@
           "distress",
           "wheeze",
           "bronchiolitis",
-          "screen",
-          "immediate",
-          "danger",
-          "disposition",
-          "changing",
-          "findings"
+          "pediatric",
+          "respiratory",
+          "distress",
+          "wheeze",
+          "bronchiolitis",
+          "danger"
         ]
       },
       {
         "id": "decision_02",
-        "label": "Order focused first-line studies and interpret them in sequence: Bronchiolitis testing limits; Chest imaging when focal or severe; Asthma response reassessment; Controller and trigger review.",
+        "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: initial diagnostic data to obtain and interpret together: Bronchiolitis testing limits; Chest imaging when focal or severe; Asthma response reassessment; Controller and trigger review.",
         "item_type": "management_change",
         "source": {
           "source_id": "NICE_BRONCHIOLITIS_NG9",
@@ -1269,14 +1269,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "This is a testing-limitation row, not a prohibition when pneumonia, sepsis, foreign body, or ICU-level illness is suspected."
         },
-        "action": "Order focused first-line studies and interpret them in sequence: Bronchiolitis testing limits; Chest imaging when focal or severe; Asthma response reassessment; Controller and trigger review.",
-        "rationale": "Derives a Pediatric respiratory distress, wheeze, or bronchiolitis workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Order focused first-line studies and interpret them in sequence: Bronchiolitis testing limits; Chest imaging when focal or severe; Asthma response reassessment; Controller and trigger review.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric respiratory distress, wheeze, or bronchiolitis.",
-        "management_change": "Order focused first-line studies and interpret them in sequence: Bronchiolitis testing limits; Chest imaging when focal or severe; Asthma response reassessment; Controller and trigger review.",
+        "action": "Pediatric respiratory distress, wheeze, or bronchiolitis: initial diagnostic data to obtain and interpret together: Bronchiolitis testing limits; Chest imaging when focal or severe; Asthma response reassessment; Controller and trigger review.",
+        "rationale": "Pediatric respiratory distress, wheeze, or bronchiolitis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric respiratory distress, wheeze, or bronchiolitis: initial diagnostic data to obtain and interpret together: Bronchiolitis testing limits; Chest imaging when focal or severe; Asthma response reassessment; Controller and trigger review.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric respiratory distress, wheeze, or bronchiolitis.",
+        "management_change": "Pediatric respiratory distress, wheeze, or bronchiolitis: initial diagnostic data to obtain and interpret together: Bronchiolitis testing limits; Chest imaging when focal or severe; Asthma response reassessment; Controller and trigger review.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric respiratory distress, wheeze, or bronchiolitis.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric respiratory distress, wheeze, or bronchiolitis.",
         "tags": [
           "pediatric",
           "respiratory",
@@ -1286,17 +1286,17 @@
           "distress",
           "wheeze",
           "bronchiolitis",
-          "order",
-          "focused",
-          "first",
-          "line",
-          "studies",
-          "interpret"
+          "pediatric",
+          "respiratory",
+          "distress",
+          "wheeze",
+          "bronchiolitis",
+          "initial"
         ]
       },
       {
         "id": "decision_03",
-        "label": "Use the leading diagnostic frame to avoid premature closure: Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles.",
+        "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: leading diagnostic frame and mimics to resolve: Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles.",
         "item_type": "management_change",
         "source": {
           "source_id": "NICE_BRONCHIOLITIS_NG9",
@@ -1307,14 +1307,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "Apply bronchiolitis framing only in the clinical pattern and age scope; use local pediatric pathway for exact oxygen delivery and admission logistics."
         },
-        "action": "Use the leading diagnostic frame to avoid premature closure: Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles.",
-        "rationale": "Derives a Pediatric respiratory distress, wheeze, or bronchiolitis workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Use the leading diagnostic frame to avoid premature closure: Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric respiratory distress, wheeze, or bronchiolitis.",
-        "management_change": "Use the leading diagnostic frame to avoid premature closure: Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles.",
+        "action": "Pediatric respiratory distress, wheeze, or bronchiolitis: leading diagnostic frame and mimics to resolve: Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles.",
+        "rationale": "Pediatric respiratory distress, wheeze, or bronchiolitis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric respiratory distress, wheeze, or bronchiolitis: leading diagnostic frame and mimics to resolve: Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric respiratory distress, wheeze, or bronchiolitis.",
+        "management_change": "Pediatric respiratory distress, wheeze, or bronchiolitis: leading diagnostic frame and mimics to resolve: Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric respiratory distress, wheeze, or bronchiolitis.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric respiratory distress, wheeze, or bronchiolitis.",
         "tags": [
           "pediatric",
           "respiratory",
@@ -1324,17 +1324,17 @@
           "distress",
           "wheeze",
           "bronchiolitis",
-          "leading",
-          "diagnostic",
-          "frame",
-          "avoid",
-          "premature",
-          "closure"
+          "pediatric",
+          "respiratory",
+          "distress",
+          "wheeze",
+          "bronchiolitis",
+          "leading"
         ]
       },
       {
         "id": "decision_04",
-        "label": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Emergency pediatric respiratory escalation.",
+        "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: escalation or disposition rule triggered by abnormal results or worsening status: Emergency pediatric respiratory escalation.",
         "item_type": "management_change",
         "source": {
           "source_id": "NICE_BRONCHIOLITIS_NG9",
@@ -1345,14 +1345,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "Escalate first; complete detailed source localization after stabilization."
         },
-        "action": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Emergency pediatric respiratory escalation.",
-        "rationale": "Derives a Pediatric respiratory distress, wheeze, or bronchiolitis workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Emergency pediatric respiratory escalation.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric respiratory distress, wheeze, or bronchiolitis.",
-        "management_change": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Emergency pediatric respiratory escalation.",
+        "action": "Pediatric respiratory distress, wheeze, or bronchiolitis: escalation or disposition rule triggered by abnormal results or worsening status: Emergency pediatric respiratory escalation.",
+        "rationale": "Pediatric respiratory distress, wheeze, or bronchiolitis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric respiratory distress, wheeze, or bronchiolitis: escalation or disposition rule triggered by abnormal results or worsening status: Emergency pediatric respiratory escalation.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric respiratory distress, wheeze, or bronchiolitis.",
+        "management_change": "Pediatric respiratory distress, wheeze, or bronchiolitis: escalation or disposition rule triggered by abnormal results or worsening status: Emergency pediatric respiratory escalation.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric respiratory distress, wheeze, or bronchiolitis.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric respiratory distress, wheeze, or bronchiolitis.",
         "tags": [
           "pediatric",
           "respiratory",
@@ -1362,19 +1362,19 @@
           "distress",
           "wheeze",
           "bronchiolitis",
-          "results",
-          "bedside",
-          "status",
-          "high",
-          "risk",
-          "abnormal"
+          "pediatric",
+          "respiratory",
+          "distress",
+          "wheeze",
+          "bronchiolitis",
+          "escalation"
         ]
       }
     ],
     "treatmentOptions": [
       {
         "id": "treatment_01",
-        "label": "Stabilize or escalate before routine treatment when danger criteria are present: Apnea or central cyanosis.",
+        "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: immediate stabilization or escalation trigger: Apnea or central cyanosis.",
         "item_type": "management_change",
         "source": {
           "source_id": "NICE_BRONCHIOLITIS_NG9",
@@ -1385,14 +1385,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "Do not wait for complete routine workup before escalation."
         },
-        "action": "Stabilize or escalate before routine treatment when danger criteria are present: Apnea or central cyanosis.",
-        "rationale": "Derives a Pediatric respiratory distress, wheeze, or bronchiolitis workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Stabilize or escalate before routine treatment when danger criteria are present: Apnea or central cyanosis.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric respiratory distress, wheeze, or bronchiolitis.",
-        "management_change": "Stabilize or escalate before routine treatment when danger criteria are present: Apnea or central cyanosis.",
+        "action": "Pediatric respiratory distress, wheeze, or bronchiolitis: immediate stabilization or escalation trigger: Apnea or central cyanosis.",
+        "rationale": "Pediatric respiratory distress, wheeze, or bronchiolitis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric respiratory distress, wheeze, or bronchiolitis: immediate stabilization or escalation trigger: Apnea or central cyanosis.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric respiratory distress, wheeze, or bronchiolitis.",
+        "management_change": "Pediatric respiratory distress, wheeze, or bronchiolitis: immediate stabilization or escalation trigger: Apnea or central cyanosis.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric respiratory distress, wheeze, or bronchiolitis.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric respiratory distress, wheeze, or bronchiolitis.",
         "tags": [
           "pediatric",
           "respiratory",
@@ -1402,17 +1402,17 @@
           "distress",
           "wheeze",
           "bronchiolitis",
-          "stabilize",
-          "escalate",
-          "before",
-          "routine",
-          "treatment",
-          "when"
+          "pediatric",
+          "respiratory",
+          "distress",
+          "wheeze",
+          "bronchiolitis",
+          "immediate"
         ]
       },
       {
         "id": "treatment_02",
-        "label": "Use the high-risk or confirmed-pathway management option when criteria are met: Emergency pediatric respiratory escalation.",
+        "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: treatment or disposition for high-risk or confirmed disease: Emergency pediatric respiratory escalation.",
         "item_type": "management_change",
         "source": {
           "source_id": "NICE_BRONCHIOLITIS_NG9",
@@ -1423,14 +1423,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "Escalate first; complete detailed source localization after stabilization."
         },
-        "action": "Use the high-risk or confirmed-pathway management option when criteria are met: Emergency pediatric respiratory escalation.",
-        "rationale": "Derives a Pediatric respiratory distress, wheeze, or bronchiolitis workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Use the high-risk or confirmed-pathway management option when criteria are met: Emergency pediatric respiratory escalation.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric respiratory distress, wheeze, or bronchiolitis.",
-        "management_change": "Use the high-risk or confirmed-pathway management option when criteria are met: Emergency pediatric respiratory escalation.",
+        "action": "Pediatric respiratory distress, wheeze, or bronchiolitis: treatment or disposition for high-risk or confirmed disease: Emergency pediatric respiratory escalation.",
+        "rationale": "Pediatric respiratory distress, wheeze, or bronchiolitis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric respiratory distress, wheeze, or bronchiolitis: treatment or disposition for high-risk or confirmed disease: Emergency pediatric respiratory escalation.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric respiratory distress, wheeze, or bronchiolitis.",
+        "management_change": "Pediatric respiratory distress, wheeze, or bronchiolitis: treatment or disposition for high-risk or confirmed disease: Emergency pediatric respiratory escalation.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric respiratory distress, wheeze, or bronchiolitis.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric respiratory distress, wheeze, or bronchiolitis.",
         "tags": [
           "pediatric",
           "respiratory",
@@ -1440,17 +1440,17 @@
           "distress",
           "wheeze",
           "bronchiolitis",
-          "high",
-          "risk",
-          "confirmed",
-          "pathway",
-          "management",
-          "option"
+          "pediatric",
+          "respiratory",
+          "distress",
+          "wheeze",
+          "bronchiolitis",
+          "treatment"
         ]
       },
       {
         "id": "treatment_03",
-        "label": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: Bronchiolitis supportive plan.",
+        "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Bronchiolitis supportive plan.",
         "item_type": "management_change",
         "source": {
           "source_id": "NICE_BRONCHIOLITIS_NG9",
@@ -1461,14 +1461,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "Use local protocol for oxygen delivery, NG/IV fluids, and admission/discharge logistics."
         },
-        "action": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: Bronchiolitis supportive plan.",
-        "rationale": "Derives a Pediatric respiratory distress, wheeze, or bronchiolitis workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: Bronchiolitis supportive plan.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric respiratory distress, wheeze, or bronchiolitis.",
-        "management_change": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: Bronchiolitis supportive plan.",
+        "action": "Pediatric respiratory distress, wheeze, or bronchiolitis: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Bronchiolitis supportive plan.",
+        "rationale": "Pediatric respiratory distress, wheeze, or bronchiolitis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric respiratory distress, wheeze, or bronchiolitis: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Bronchiolitis supportive plan.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric respiratory distress, wheeze, or bronchiolitis.",
+        "management_change": "Pediatric respiratory distress, wheeze, or bronchiolitis: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Bronchiolitis supportive plan.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric respiratory distress, wheeze, or bronchiolitis.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric respiratory distress, wheeze, or bronchiolitis.",
         "tags": [
           "pediatric",
           "respiratory",
@@ -1478,17 +1478,17 @@
           "distress",
           "wheeze",
           "bronchiolitis",
-          "lower",
-          "risk",
-          "outpatient",
-          "supportive",
-          "safety",
-          "pathway"
+          "pediatric",
+          "respiratory",
+          "distress",
+          "wheeze",
+          "bronchiolitis",
+          "outpatient"
         ]
       },
       {
         "id": "treatment_04",
-        "label": "Monitor treatment response, complications, and need for reassessment with: Bronchiolitis testing limits.",
+        "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: monitoring data for response, complications, and reassessment: Bronchiolitis testing limits.",
         "item_type": "management_change",
         "source": {
           "source_id": "NICE_BRONCHIOLITIS_NG9",
@@ -1499,14 +1499,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "This is a testing-limitation row, not a prohibition when pneumonia, sepsis, foreign body, or ICU-level illness is suspected."
         },
-        "action": "Monitor treatment response, complications, and need for reassessment with: Bronchiolitis testing limits.",
-        "rationale": "Derives a Pediatric respiratory distress, wheeze, or bronchiolitis workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Monitor treatment response, complications, and need for reassessment with: Bronchiolitis testing limits.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric respiratory distress, wheeze, or bronchiolitis.",
-        "management_change": "Monitor treatment response, complications, and need for reassessment with: Bronchiolitis testing limits.",
+        "action": "Pediatric respiratory distress, wheeze, or bronchiolitis: monitoring data for response, complications, and reassessment: Bronchiolitis testing limits.",
+        "rationale": "Pediatric respiratory distress, wheeze, or bronchiolitis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric respiratory distress, wheeze, or bronchiolitis: monitoring data for response, complications, and reassessment: Bronchiolitis testing limits.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric respiratory distress, wheeze, or bronchiolitis.",
+        "management_change": "Pediatric respiratory distress, wheeze, or bronchiolitis: monitoring data for response, complications, and reassessment: Bronchiolitis testing limits.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric respiratory distress, wheeze, or bronchiolitis.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric respiratory distress, wheeze, or bronchiolitis.",
         "tags": [
           "pediatric",
           "respiratory",
@@ -1516,12 +1516,12 @@
           "distress",
           "wheeze",
           "bronchiolitis",
-          "monitor",
-          "treatment",
-          "response",
-          "complications",
-          "need",
-          "reassessment"
+          "pediatric",
+          "respiratory",
+          "distress",
+          "wheeze",
+          "bronchiolitis",
+          "monitoring"
         ]
       }
     ],
@@ -2327,7 +2327,7 @@
         "pediatric_respiratory_wheeze_treatment_bundle": {
           "rule_id": "pediatric_respiratory_wheeze_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Pediatric respiratory distress, wheeze, or bronchiolitis treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+          "description": "Start Pediatric respiratory distress, wheeze, or bronchiolitis treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2985,7 +2985,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: does patient context support this workup or require exact missing-data routing?",
+        "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: route by documented findings and exact missing-data needs",
         "edgeLabel": "",
         "source_ids": [
           "NICE_BRONCHIOLITIS_NG9",
@@ -3012,13 +3012,13 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Pediatric respiratory distress, wheeze, or bronchiolitis using cited diagnostic thresholds/rules, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+        "action": "Route Pediatric respiratory distress, wheeze, or bronchiolitis from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
         "children": [
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Pediatric respiratory distress, wheeze, or bronchiolitis pathway context",
-            "edgeLabel": "Missing exact Pediatric respiratory distress, wheeze, or bronchiolitis pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
+            "edgeLabel": "Missing exact Pediatric respiratory distress, wheeze, or bronchiolitis pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -3074,7 +3074,7 @@
             "id": "pediatric_respiratory_wheeze_concurrent_data_bundle",
             "type": "action",
             "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Selected Pediatric respiratory distress, wheeze, or bronchiolitis workup or documented findings: Exact pediatric respiratory age band; Coryzal prodrome before cough and lower respiratory signs; Recurrent wheeze asthma or atopy pattern; Reduced feeding or drinking; Apnea or central cyanosis; Exhaustion or poor respiratory effort; Bronchiolitis testing limits",
+            "edgeLabel": "Pediatric respiratory distress, wheeze, or bronchiolitis active from documented findings: Exact pediatric respiratory age band; Coryzal prodrome before cough and lower respiratory signs; Recurrent wheeze asthma or atopy pattern; Reduced feeding or drinking; Apnea or central cyanosis; Exhaustion or poor respiratory effort; Bronchiolitis testing limits",
             "source_ids": [
               "NICE_BRONCHIOLITIS_NG9",
               "GINA_ASTHMA_2025",
@@ -3455,7 +3455,7 @@
                         }
                       ]
                     },
-                    "action": "Apnea or central cyanosis; Exhaustion or poor respiratory effort; Severe respiratory distress; Poor intake or no urine. Monitor treatment response, complications, and need for reassessment with: Bronchiolitis testing limits.; Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Asthma acute plan; Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Asthma acute plan",
+                    "action": "Apnea or central cyanosis; Exhaustion or poor respiratory effort; Severe respiratory distress; Poor intake or no urine. Pediatric respiratory distress, wheeze, or bronchiolitis: immediate stabilization or escalation trigger: Apnea or central cyanosis.; Pediatric respiratory distress, wheeze, or bronchiolitis: treatment or disposition for high-risk or confirmed disease: Emergency pediatric respiratory escalation.; Pediatric respiratory distress, wheeze, or bronchiolitis: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Bronchiolitis supportive plan.; Pediatric respiratory distress, wheeze, or bronchiolitis: monitoring data for response, complications, and reassessment: Bronchiolitis testing limits.; Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Asthma acute plan",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -3557,7 +3557,7 @@
                     "id": "pediatric_respiratory_wheeze_treatment_bundle",
                     "type": "action",
                     "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: initiate treatment/disposition for the active threshold-defined branch",
-                    "edgeLabel": "Pediatric respiratory distress, wheeze, or bronchiolitis treatment/disposition indicated by: <2 years; 3-6 months; 3-5 days; 90%; 3 weeks; >60 breaths/minute; Monitor treatment response, complications, and need for reassessment with: Bronchiolitis testing limits.; Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Asthma acute plan; Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Asthma acute plan",
+                    "edgeLabel": "Pediatric respiratory distress, wheeze, or bronchiolitis treatment/disposition indicated by: <2 years; 3-6 months; 3-5 days; 90%; 3 weeks; >60 breaths/minute; Pediatric respiratory distress, wheeze, or bronchiolitis: immediate stabilization or escalation trigger: Apnea or central cyanosis.; Pediatric respiratory distress, wheeze, or bronchiolitis: treatment or disposition for high-risk or confirmed disease: Emergency pediatric respiratory escalation.; Pediatric respiratory distress, wheeze, or bronchiolitis: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Bronchiolitis supportive plan.; Pediatric respiratory distress, wheeze, or bronchiolitis: monitoring data for response, complications, and reassessment: Bronchiolitis testing limits.; Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Asthma acute plan",
                     "source_ids": [
                       "NICE_BRONCHIOLITIS_NG9",
                       "GINA_ASTHMA_2025",
@@ -3568,7 +3568,7 @@
                     "criteria": {
                       "rule_id": "pediatric_respiratory_wheeze_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Pediatric respiratory distress, wheeze, or bronchiolitis treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+                      "description": "Start Pediatric respiratory distress, wheeze, or bronchiolitis treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -3682,7 +3682,7 @@
                         }
                       ]
                     },
-                    "action": "Monitor treatment response, complications, and need for reassessment with: Bronchiolitis testing limits.; Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Asthma acute plan; Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Asthma acute plan",
+                    "action": "Pediatric respiratory distress, wheeze, or bronchiolitis: immediate stabilization or escalation trigger: Apnea or central cyanosis.; Pediatric respiratory distress, wheeze, or bronchiolitis: treatment or disposition for high-risk or confirmed disease: Emergency pediatric respiratory escalation.; Pediatric respiratory distress, wheeze, or bronchiolitis: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Bronchiolitis supportive plan.; Pediatric respiratory distress, wheeze, or bronchiolitis: monitoring data for response, complications, and reassessment: Bronchiolitis testing limits.; Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Asthma acute plan",
                     "children": [
                       {
                         "id": "pediatric_respiratory_wheeze_treatment_safety_decision",
@@ -4133,7 +4133,7 @@
                                 "id": "pediatric_respiratory_wheeze_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Pediatric respiratory distress, wheeze, or bronchiolitis objective response supports narrowing, stopping, tapering, or continuing: <2 years; 3-6 months; 3-5 days; 90%; Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Asthma acute plan; Monitor treatment response, complications, and need for reassessment with: Bronchiolitis testing limits.",
+                                "edgeLabel": "Pediatric respiratory distress, wheeze, or bronchiolitis objective response supports narrowing, stopping, tapering, or continuing: <2 years; 3-6 months; 3-5 days; 90%; Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Asthma acute plan; Pediatric respiratory distress, wheeze, or bronchiolitis: immediate stabilization or escalation trigger: Apnea or central cyanosis.",
                                 "source_ids": [
                                   "NICE_BRONCHIOLITIS_NG9",
                                   "GINA_ASTHMA_2025",
@@ -4358,7 +4358,7 @@
                                 "id": "pediatric_respiratory_wheeze_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Pediatric respiratory distress, wheeze, or bronchiolitis stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Asthma acute plan",
+                                "edgeLabel": "Pediatric respiratory distress, wheeze, or bronchiolitis discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Asthma acute plan",
                                 "source_ids": [
                                   "NICE_BRONCHIOLITIS_NG9",
                                   "GINA_ASTHMA_2025",
@@ -4508,11 +4508,13 @@
                       }
                     ],
                     "parallel_actions": [
-                      "Monitor treatment response, complications, and need for reassessment with: Bronchiolitis testing limits.",
+                      "Pediatric respiratory distress, wheeze, or bronchiolitis: immediate stabilization or escalation trigger: Apnea or central cyanosis.",
+                      "Pediatric respiratory distress, wheeze, or bronchiolitis: treatment or disposition for high-risk or confirmed disease: Emergency pediatric respiratory escalation.",
+                      "Pediatric respiratory distress, wheeze, or bronchiolitis: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Bronchiolitis supportive plan.",
+                      "Pediatric respiratory distress, wheeze, or bronchiolitis: monitoring data for response, complications, and reassessment: Bronchiolitis testing limits.",
                       "Emergency pediatric respiratory escalation",
                       "Bronchiolitis supportive plan",
-                      "Asthma acute plan",
-                      "Respiratory home safety net"
+                      "Asthma acute plan"
                     ],
                     "guideline_cutoffs": [
                       {
@@ -5077,7 +5079,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing exact Pediatric respiratory distress, wheeze, or bronchiolitis pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
+          "expected_active_branch": "Missing exact Pediatric respiratory distress, wheeze, or bronchiolitis pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
@@ -5113,13 +5115,13 @@
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "pediatric_respiratory_wheeze_deescalate_endpoint",
-          "expected_active_branch": "Pediatric respiratory distress, wheeze, or bronchiolitis objective response supports narrowing, stopping, tapering, or continuing: <2 years; 3-6 months; 3-5 days; 90%; Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Asthma acute plan; Monitor treatment response, complications, and need for reassessment with: Bronchiolitis testing limits."
+          "expected_active_branch": "Pediatric respiratory distress, wheeze, or bronchiolitis objective response supports narrowing, stopping, tapering, or continuing: <2 years; 3-6 months; 3-5 days; 90%; Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Asthma acute plan; Pediatric respiratory distress, wheeze, or bronchiolitis: immediate stabilization or escalation trigger: Apnea or central cyanosis."
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "pediatric_respiratory_wheeze_followup_endpoint",
-          "expected_active_branch": "Pediatric respiratory distress, wheeze, or bronchiolitis stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Asthma acute plan"
+          "expected_active_branch": "Pediatric respiratory distress, wheeze, or bronchiolitis discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Asthma acute plan"
         }
       ],
       "audit_requirements": {

@@ -1945,8 +1945,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "For suspected classic CAH or crisis, check electrolytes, glucose, cortisol/ACTH context, 17-hydroxyprogesterone, renin/aldosterone, and treat instability immediately.",
-        "rationale": "Routes Congenital Adrenal Hyperplasia (CAH) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "For suspected classic CAH or crisis, check electrolytes, glucose, cortisol/ACTH context, 17-hydroxyprogesterone, renin/aldosterone, and treat instability immediately.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
+        "rationale": "Congenital Adrenal Hyperplasia (CAH): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "For suspected classic CAH or crisis, check electrolytes, glucose, cortisol/ACTH context, 17-hydroxyprogesterone, renin/aldosterone, and treat instability immediately.: patient data that changes testing, treatment, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
         "management_change": "For suspected classic CAH or crisis, check electrolytes, glucose, cortisol/ACTH context, 17-hydroxyprogesterone, renin/aldosterone, and treat instability immediately.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1979,8 +1979,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "For nonclassic CAH, screen with early morning follicular 17-hydroxyprogesterone and confirm with cosyntropin-stimulated testing when borderline.",
-        "rationale": "Routes Congenital Adrenal Hyperplasia (CAH) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "For nonclassic CAH, screen with early morning follicular 17-hydroxyprogesterone and confirm with cosyntropin-stimulated testing when borderline.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
+        "rationale": "Congenital Adrenal Hyperplasia (CAH): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "For nonclassic CAH, screen with early morning follicular 17-hydroxyprogesterone and confirm with cosyntropin-stimulated testing when borderline.: patient data that changes testing, treatment, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
         "management_change": "For nonclassic CAH, screen with early morning follicular 17-hydroxyprogesterone and confirm with cosyntropin-stimulated testing when borderline.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2013,8 +2013,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret 17-OHP by age, gestational age, sex, assay, timing, menstrual phase, and glucocorticoid exposure.",
-        "rationale": "Routes Congenital Adrenal Hyperplasia (CAH) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Interpret 17-OHP by age, gestational age, sex, assay, timing, menstrual phase, and glucocorticoid exposure.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
+        "rationale": "Congenital Adrenal Hyperplasia (CAH): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Interpret 17-OHP by age, gestational age, sex, assay, timing, menstrual phase, and glucocorticoid exposure.: patient data that changes testing, treatment, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
         "management_change": "Interpret 17-OHP by age, gestational age, sex, assay, timing, menstrual phase, and glucocorticoid exposure.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2047,8 +2047,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use androgen profile and CYP21A2 genetics when diagnosis, family planning, or genotype-phenotype counseling is needed.",
-        "rationale": "Routes Congenital Adrenal Hyperplasia (CAH) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Use androgen profile and CYP21A2 genetics when diagnosis, family planning, or genotype-phenotype counseling is needed.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
+        "rationale": "Congenital Adrenal Hyperplasia (CAH): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Use androgen profile and CYP21A2 genetics when diagnosis, family planning, or genotype-phenotype counseling is needed.: patient data that changes testing, treatment, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
         "management_change": "Use androgen profile and CYP21A2 genetics when diagnosis, family planning, or genotype-phenotype counseling is needed.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2081,8 +2081,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Confirm that Congenital Adrenal Hyperplasia (CAH) is the selected clinical intent, then screen for red flags before routine outpatient testing.",
-        "rationale": "Routes Congenital Adrenal Hyperplasia (CAH) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Confirm that Congenital Adrenal Hyperplasia (CAH) is the selected clinical intent, then screen for red flags before routine outpatient testing.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
+        "rationale": "Congenital Adrenal Hyperplasia (CAH): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Confirm that Congenital Adrenal Hyperplasia (CAH) is the selected clinical intent, then screen for red flags before routine outpatient testing.: patient data that changes testing, treatment, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
         "management_change": "Confirm that Congenital Adrenal Hyperplasia (CAH) is the selected clinical intent, then screen for red flags before routine outpatient testing.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2115,8 +2115,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Order the first-line tests in sequence: 17-hydroxyprogesterone, often with cosyntropin stimulation; Electrolytes, glucose, renin/aldosterone; Androgens: testosterone, androstenedione, DHEAS as indicated.",
-        "rationale": "Routes Congenital Adrenal Hyperplasia (CAH) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Order the first-line tests in sequence: 17-hydroxyprogesterone, often with cosyntropin stimulation; Electrolytes, glucose, renin/aldosterone; Androgens: testosterone, androstenedione, DHEAS as indicated.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
+        "rationale": "Congenital Adrenal Hyperplasia (CAH): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Order the first-line tests in sequence: 17-hydroxyprogesterone, often with cosyntropin stimulation; Electrolytes, glucose, renin/aldosterone; Androgens: testosterone, androstenedione, DHEAS as indicated.: patient data that changes testing, treatment, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
         "management_change": "Order the first-line tests in sequence: 17-hydroxyprogesterone, often with cosyntropin stimulation; Electrolytes, glucose, renin/aldosterone; Androgens: testosterone, androstenedione, DHEAS as indicated.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2149,8 +2149,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret numeric results against the workup cutoffs and local assay ranges: 17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening.",
-        "rationale": "Routes Congenital Adrenal Hyperplasia (CAH) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Interpret numeric results against the workup cutoffs and local assay ranges: 17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
+        "rationale": "Congenital Adrenal Hyperplasia (CAH): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Interpret numeric results against the workup cutoffs and local assay ranges: 17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening.: patient data that changes testing, treatment, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
         "management_change": "Interpret numeric results against the workup cutoffs and local assay ranges: 17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2183,8 +2183,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.",
-        "rationale": "Routes Congenital Adrenal Hyperplasia (CAH) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
+        "rationale": "Congenital Adrenal Hyperplasia (CAH): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.: patient data that changes testing, treatment, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
         "management_change": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2220,7 +2220,7 @@
         },
         "action": "Treat adrenal crisis or salt-wasting with stress-dose hydrocortisone, fluids, dextrose, electrolyte correction, and mineralocorticoid/salt support as indicated.",
         "rationale": "Links confirmed Congenital Adrenal Hyperplasia (CAH) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Treat adrenal crisis or salt-wasting with stress-dose hydrocortisone, fluids, dextrose, electrolyte correction, and mineralocorticoid/salt support as indicated.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
+        "diagnostic_target": "Treat adrenal crisis or salt-wasting with stress-dose hydrocortisone, fluids, dextrose, electrolyte correction, and mineralocorticoid/salt support as indicated.: patient data that changes testing, treatment, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
         "management_change": "Treat adrenal crisis or salt-wasting with stress-dose hydrocortisone, fluids, dextrose, electrolyte correction, and mineralocorticoid/salt support as indicated.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2254,7 +2254,7 @@
         },
         "action": "Use physiologic glucocorticoid replacement for classic CAH and fludrocortisone when mineralocorticoid deficiency is present.",
         "rationale": "Links confirmed Congenital Adrenal Hyperplasia (CAH) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Use physiologic glucocorticoid replacement for classic CAH and fludrocortisone when mineralocorticoid deficiency is present.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
+        "diagnostic_target": "Use physiologic glucocorticoid replacement for classic CAH and fludrocortisone when mineralocorticoid deficiency is present.: patient data that changes testing, treatment, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
         "management_change": "Use physiologic glucocorticoid replacement for classic CAH and fludrocortisone when mineralocorticoid deficiency is present.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2288,7 +2288,7 @@
         },
         "action": "For nonclassic CAH, treat symptoms such as hirsutism, acne, menstrual dysfunction, or infertility rather than asymptomatic labs alone.",
         "rationale": "Links confirmed Congenital Adrenal Hyperplasia (CAH) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "For nonclassic CAH, treat symptoms such as hirsutism, acne, menstrual dysfunction, or infertility rather than asymptomatic labs alone.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
+        "diagnostic_target": "For nonclassic CAH, treat symptoms such as hirsutism, acne, menstrual dysfunction, or infertility rather than asymptomatic labs alone.: patient data that changes testing, treatment, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
         "management_change": "For nonclassic CAH, treat symptoms such as hirsutism, acne, menstrual dysfunction, or infertility rather than asymptomatic labs alone.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2322,7 +2322,7 @@
         },
         "action": "Monitor growth/puberty in younger patients and adult overtreatment risks including Cushingoid effects, bone, metabolic, fertility, and adrenal-rest tumors.",
         "rationale": "Links confirmed Congenital Adrenal Hyperplasia (CAH) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Monitor growth/puberty in younger patients and adult overtreatment risks including Cushingoid effects, bone, metabolic, fertility, and adrenal-rest tumors.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
+        "diagnostic_target": "Monitor growth/puberty in younger patients and adult overtreatment risks including Cushingoid effects, bone, metabolic, fertility, and adrenal-rest tumors.: patient data that changes testing, treatment, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
         "management_change": "Monitor growth/puberty in younger patients and adult overtreatment risks including Cushingoid effects, bone, metabolic, fertility, and adrenal-rest tumors.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2356,7 +2356,7 @@
         },
         "action": "Treat unstable presentations first using the urgent escalation rule for Congenital Adrenal Hyperplasia (CAH); draw time-sensitive labs only if doing so does not delay stabilization.",
         "rationale": "Links confirmed Congenital Adrenal Hyperplasia (CAH) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Treat unstable presentations first using the urgent escalation rule for Congenital Adrenal Hyperplasia (CAH); draw time-sensitive labs only if doing so does not delay stabilization.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
+        "diagnostic_target": "Treat unstable presentations first using the urgent escalation rule for Congenital Adrenal Hyperplasia (CAH); draw time-sensitive labs only if doing so does not delay stabilization.: patient data that changes testing, treatment, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
         "management_change": "Treat unstable presentations first using the urgent escalation rule for Congenital Adrenal Hyperplasia (CAH); draw time-sensitive labs only if doing so does not delay stabilization.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2390,7 +2390,7 @@
         },
         "action": "For confirmed Congenital Adrenal Hyperplasia (CAH), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.",
         "rationale": "Links confirmed Congenital Adrenal Hyperplasia (CAH) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "For confirmed Congenital Adrenal Hyperplasia (CAH), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
+        "diagnostic_target": "For confirmed Congenital Adrenal Hyperplasia (CAH), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.: patient data that changes testing, treatment, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
         "management_change": "For confirmed Congenital Adrenal Hyperplasia (CAH), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2424,7 +2424,7 @@
         },
         "action": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.",
         "rationale": "Links confirmed Congenital Adrenal Hyperplasia (CAH) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
+        "diagnostic_target": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.: patient data that changes testing, treatment, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
         "management_change": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2458,7 +2458,7 @@
         },
         "action": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.",
         "rationale": "Links confirmed Congenital Adrenal Hyperplasia (CAH) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
+        "diagnostic_target": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.: patient data that changes testing, treatment, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
         "management_change": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -3139,7 +3139,7 @@
         "congenital_adrenal_hyperplasia_treatment_bundle": {
           "rule_id": "congenital_adrenal_hyperplasia_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Congenital Adrenal Hyperplasia (CAH) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+          "description": "Start Congenital Adrenal Hyperplasia (CAH) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3757,7 +3757,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Congenital Adrenal Hyperplasia (CAH): does patient context support this workup or require exact missing-data routing?",
+        "label": "Congenital Adrenal Hyperplasia (CAH): route by documented findings and exact missing-data needs",
         "edgeLabel": "",
         "source_ids": [
           "ES_CAH_2018",
@@ -3778,13 +3778,13 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Congenital Adrenal Hyperplasia (CAH) using cited diagnostic thresholds/rules, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+        "action": "Route Congenital Adrenal Hyperplasia (CAH) from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
         "children": [
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Congenital Adrenal Hyperplasia (CAH) pathway context",
-            "edgeLabel": "Missing exact Congenital Adrenal Hyperplasia (CAH) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
+            "edgeLabel": "Missing exact Congenital Adrenal Hyperplasia (CAH) pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -3840,7 +3840,7 @@
             "id": "congenital_adrenal_hyperplasia_concurrent_data_bundle",
             "type": "action",
             "label": "Congenital Adrenal Hyperplasia (CAH): obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Selected Congenital Adrenal Hyperplasia (CAH) workup or documented findings: Any neonatal ambiguous genitalia, salt-wasting episode, early pubarche, rapid growth, virilization, menstrual/fertility issue, or family CAH history?; How long has conception been attempted, are cycles ovulatory/regular, and have partner semen analysis or prior fertility evaluations found abnormalities?; Any personal or family autoimmune thyroid disease, type 1 diabetes, celiac disease, pernicious anemia, adrenal disease, pituitary disease, or polyglandular autoimmune syndrome?; Any vomiting, severe weakness, abdominal pain, fever, missed steroid doses, recent illness, or inability to keep down stress-dose steroids?; Salt-wasting crisis, vomiting/dehydration, shock, hypoglycemia.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; 17-hydroxyprogesterone, often with cosyntropin stimulation.",
+            "edgeLabel": "Congenital Adrenal Hyperplasia (CAH) active from documented findings: Any neonatal ambiguous genitalia, salt-wasting episode, early pubarche, rapid growth, virilization, menstrual/fertility issue, or family CAH history?; How long has conception been attempted, are cycles ovulatory/regular, and have partner semen analysis or prior fertility evaluations found abnormalities?; Any personal or family autoimmune thyroid disease, type 1 diabetes, celiac disease, pernicious anemia, adrenal disease, pituitary disease, or polyglandular autoimmune syndrome?; Any vomiting, severe weakness, abdominal pain, fever, missed steroid doses, recent illness, or inability to keep down stress-dose steroids?; Salt-wasting crisis, vomiting/dehydration, shock, hypoglycemia.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; 17-hydroxyprogesterone, often with cosyntropin stimulation.",
             "source_ids": [
               "ES_CAH_2018",
               "AHRQ_CALIBRATE_DX"
@@ -4293,7 +4293,7 @@
                     "criteria": {
                       "rule_id": "congenital_adrenal_hyperplasia_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Congenital Adrenal Hyperplasia (CAH) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+                      "description": "Start Congenital Adrenal Hyperplasia (CAH) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5026,7 +5026,7 @@
                                 "id": "congenital_adrenal_hyperplasia_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Congenital Adrenal Hyperplasia (CAH): follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Congenital Adrenal Hyperplasia (CAH) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Electrolyte crisis or vomiting changes to emergency steroid/fluid pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+                                "edgeLabel": "Congenital Adrenal Hyperplasia (CAH) discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Electrolyte crisis or vomiting changes to emergency steroid/fluid pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                                 "source_ids": [
                                   "ES_CAH_2018",
                                   "AHRQ_CALIBRATE_DX"
@@ -5695,7 +5695,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing exact Congenital Adrenal Hyperplasia (CAH) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
+          "expected_active_branch": "Missing exact Congenital Adrenal Hyperplasia (CAH) pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
@@ -5737,7 +5737,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "congenital_adrenal_hyperplasia_followup_endpoint",
-          "expected_active_branch": "Congenital Adrenal Hyperplasia (CAH) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Electrolyte crisis or vomiting changes to emergency steroid/fluid pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
+          "expected_active_branch": "Congenital Adrenal Hyperplasia (CAH) discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Electrolyte crisis or vomiting changes to emergency steroid/fluid pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
         }
       ],
       "audit_requirements": {

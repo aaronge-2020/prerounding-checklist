@@ -58,6 +58,24 @@
       "citation_text": "AAP Evaluation and Management of Well-Appearing Febrile Infants 8 to 60 Days Old"
     },
     {
+      "id": "UCSF_FEBRILE_INFANT_2023",
+      "title": "UCSF Consensus Guidelines for Febrile Infants 0-90 Days of Age",
+      "source": "UCSF Benioff Children's Hospitals",
+      "version": "2023 consensus guideline, accessed 2026-06-09",
+      "url": "https://medconnection.ucsfbenioffchildrens.org/febrile-infant-guidelines",
+      "date_accessed": "2026-06-09",
+      "review_owner": "general_medicine_content_review",
+      "reviewed_by_role": "clinician_content_reviewer",
+      "last_reviewed": "2026-06-09",
+      "next_review_due": "2027-06-09",
+      "currency_status": "reviewed_current_for_scope",
+      "citation": "UCSF Benioff Children's Hospitals. Consensus Guidelines for Febrile Infants 0-90 Days of Age.",
+      "year": "2023",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://medconnection.ucsfbenioffchildrens.org/febrile-infant-guidelines",
+      "citation_text": "UCSF Benioff Children's Hospitals. Consensus Guidelines for Febrile Infants 0-90 Days of Age."
+    },
+    {
       "id": "ACEP_APPENDICITIS_2023",
       "title": "ACEP Clinical Policy: Suspected Appendicitis in the Emergency Department",
       "source": "American College of Emergency Physicians",

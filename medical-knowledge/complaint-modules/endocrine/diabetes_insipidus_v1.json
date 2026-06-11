@@ -1594,8 +1594,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "First confirm hypotonic polyuria: high urine volume with low urine osmolality, then check serum sodium and plasma osmolality.",
-        "rationale": "Routes Diabetes Insipidus testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "First confirm hypotonic polyuria: high urine volume with low urine osmolality, then check serum sodium and plasma osmolality.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Diabetes Insipidus.",
+        "rationale": "Diabetes Insipidus: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "First confirm hypotonic polyuria: high urine volume with low urine osmolality, then check serum sodium and plasma osmolality.: patient data that changes testing, treatment, monitoring, referral, or disposition for Diabetes Insipidus.",
         "management_change": "First confirm hypotonic polyuria: high urine volume with low urine osmolality, then check serum sodium and plasma osmolality.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1627,8 +1627,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Exclude osmotic diuresis and reversible nephrogenic contributors: hyperglycemia, hypercalcemia, hypokalemia, kidney disease, lithium, and diuretics.",
-        "rationale": "Routes Diabetes Insipidus testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Exclude osmotic diuresis and reversible nephrogenic contributors: hyperglycemia, hypercalcemia, hypokalemia, kidney disease, lithium, and diuretics.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Diabetes Insipidus.",
+        "rationale": "Diabetes Insipidus: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Exclude osmotic diuresis and reversible nephrogenic contributors: hyperglycemia, hypercalcemia, hypokalemia, kidney disease, lithium, and diuretics.: patient data that changes testing, treatment, monitoring, referral, or disposition for Diabetes Insipidus.",
         "management_change": "Exclude osmotic diuresis and reversible nephrogenic contributors: hyperglycemia, hypercalcemia, hypokalemia, kidney disease, lithium, and diuretics.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1661,8 +1661,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Differentiate central DI, nephrogenic DI, and primary polydipsia using supervised water deprivation/desmopressin or copeptin-based testing when stable.",
-        "rationale": "Routes Diabetes Insipidus testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Differentiate central DI, nephrogenic DI, and primary polydipsia using supervised water deprivation/desmopressin or copeptin-based testing when stable.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Diabetes Insipidus.",
+        "rationale": "Diabetes Insipidus: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Differentiate central DI, nephrogenic DI, and primary polydipsia using supervised water deprivation/desmopressin or copeptin-based testing when stable.: patient data that changes testing, treatment, monitoring, referral, or disposition for Diabetes Insipidus.",
         "management_change": "Differentiate central DI, nephrogenic DI, and primary polydipsia using supervised water deprivation/desmopressin or copeptin-based testing when stable.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1695,8 +1695,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "In postoperative or impaired-consciousness patients, treat hypernatremia and water access risk as urgent before elective diagnostic testing.",
-        "rationale": "Routes Diabetes Insipidus testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "In postoperative or impaired-consciousness patients, treat hypernatremia and water access risk as urgent before elective diagnostic testing.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Diabetes Insipidus.",
+        "rationale": "Diabetes Insipidus: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "In postoperative or impaired-consciousness patients, treat hypernatremia and water access risk as urgent before elective diagnostic testing.: patient data that changes testing, treatment, monitoring, referral, or disposition for Diabetes Insipidus.",
         "management_change": "In postoperative or impaired-consciousness patients, treat hypernatremia and water access risk as urgent before elective diagnostic testing.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1729,8 +1729,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Confirm that Diabetes Insipidus is the selected clinical intent, then screen for red flags before routine outpatient testing.",
-        "rationale": "Routes Diabetes Insipidus testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Confirm that Diabetes Insipidus is the selected clinical intent, then screen for red flags before routine outpatient testing.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Diabetes Insipidus.",
+        "rationale": "Diabetes Insipidus: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Confirm that Diabetes Insipidus is the selected clinical intent, then screen for red flags before routine outpatient testing.: patient data that changes testing, treatment, monitoring, referral, or disposition for Diabetes Insipidus.",
         "management_change": "Confirm that Diabetes Insipidus is the selected clinical intent, then screen for red flags before routine outpatient testing.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1763,8 +1763,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Order the first-line tests in sequence: Confirm hypotonic polyuria: adult urine volume often >3 L/day or >40-50 mL/kg/day with urine osmolality often <300 mOsm/kg; Serum sodium/plasma osmolality; Exclude osmotic diuresis: glucose, calcium, potassium, renal function.",
-        "rationale": "Routes Diabetes Insipidus testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Order the first-line tests in sequence: Confirm hypotonic polyuria: adult urine volume often >3 L/day or >40-50 mL/kg/day with urine osmolality often <300 mOsm/kg; Serum sodium/plasma osmolality; Exclude osmotic diuresis: glucose, calcium, potassium, renal function.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Diabetes Insipidus.",
+        "rationale": "Diabetes Insipidus: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Order the first-line tests in sequence: Confirm hypotonic polyuria: adult urine volume often >3 L/day or >40-50 mL/kg/day with urine osmolality often <300 mOsm/kg; Serum sodium/plasma osmolality; Exclude osmotic diuresis: glucose, calcium, potassium, renal function.: patient data that changes testing, treatment, monitoring, referral, or disposition for Diabetes Insipidus.",
         "management_change": "Order the first-line tests in sequence: Confirm hypotonic polyuria: adult urine volume often >3 L/day or >40-50 mL/kg/day with urine osmolality often <300 mOsm/kg; Serum sodium/plasma osmolality; Exclude osmotic diuresis: glucose, calcium, potassium, renal function.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1797,8 +1797,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret numeric results against the workup cutoffs and local assay ranges: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI.",
-        "rationale": "Routes Diabetes Insipidus testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Interpret numeric results against the workup cutoffs and local assay ranges: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Diabetes Insipidus.",
+        "rationale": "Diabetes Insipidus: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Interpret numeric results against the workup cutoffs and local assay ranges: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI.: patient data that changes testing, treatment, monitoring, referral, or disposition for Diabetes Insipidus.",
         "management_change": "Interpret numeric results against the workup cutoffs and local assay ranges: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1831,8 +1831,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.",
-        "rationale": "Routes Diabetes Insipidus testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Diabetes Insipidus.",
+        "rationale": "Diabetes Insipidus: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.: patient data that changes testing, treatment, monitoring, referral, or disposition for Diabetes Insipidus.",
         "management_change": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1868,7 +1868,7 @@
         },
         "action": "For central DI, use desmopressin with careful sodium monitoring and education to avoid hyponatremia.",
         "rationale": "Links confirmed Diabetes Insipidus results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "For central DI, use desmopressin with careful sodium monitoring and education to avoid hyponatremia.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Diabetes Insipidus.",
+        "diagnostic_target": "For central DI, use desmopressin with careful sodium monitoring and education to avoid hyponatremia.: patient data that changes testing, treatment, monitoring, referral, or disposition for Diabetes Insipidus.",
         "management_change": "For central DI, use desmopressin with careful sodium monitoring and education to avoid hyponatremia.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1902,7 +1902,7 @@
         },
         "action": "For nephrogenic DI, remove offending drugs when possible, treat hypercalcemia/hypokalemia, use low-solute diet, and consider thiazide/NSAID/amiloride strategies under specialist guidance.",
         "rationale": "Links confirmed Diabetes Insipidus results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "For nephrogenic DI, remove offending drugs when possible, treat hypercalcemia/hypokalemia, use low-solute diet, and consider thiazide/NSAID/amiloride strategies under specialist guidance.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Diabetes Insipidus.",
+        "diagnostic_target": "For nephrogenic DI, remove offending drugs when possible, treat hypercalcemia/hypokalemia, use low-solute diet, and consider thiazide/NSAID/amiloride strategies under specialist guidance.: patient data that changes testing, treatment, monitoring, referral, or disposition for Diabetes Insipidus.",
         "management_change": "For nephrogenic DI, remove offending drugs when possible, treat hypercalcemia/hypokalemia, use low-solute diet, and consider thiazide/NSAID/amiloride strategies under specialist guidance.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1936,7 +1936,7 @@
         },
         "action": "For primary polydipsia, avoid empiric desmopressin unless clearly indicated and address psychiatric, medication, or behavioral drivers.",
         "rationale": "Links confirmed Diabetes Insipidus results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "For primary polydipsia, avoid empiric desmopressin unless clearly indicated and address psychiatric, medication, or behavioral drivers.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Diabetes Insipidus.",
+        "diagnostic_target": "For primary polydipsia, avoid empiric desmopressin unless clearly indicated and address psychiatric, medication, or behavioral drivers.: patient data that changes testing, treatment, monitoring, referral, or disposition for Diabetes Insipidus.",
         "management_change": "For primary polydipsia, avoid empiric desmopressin unless clearly indicated and address psychiatric, medication, or behavioral drivers.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1970,7 +1970,7 @@
         },
         "action": "Treat hypernatremia or inability to drink with monitored fluids, desmopressin if central DI is likely, urine output tracking, and frequent sodium checks.",
         "rationale": "Links confirmed Diabetes Insipidus results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Treat hypernatremia or inability to drink with monitored fluids, desmopressin if central DI is likely, urine output tracking, and frequent sodium checks.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Diabetes Insipidus.",
+        "diagnostic_target": "Treat hypernatremia or inability to drink with monitored fluids, desmopressin if central DI is likely, urine output tracking, and frequent sodium checks.: patient data that changes testing, treatment, monitoring, referral, or disposition for Diabetes Insipidus.",
         "management_change": "Treat hypernatremia or inability to drink with monitored fluids, desmopressin if central DI is likely, urine output tracking, and frequent sodium checks.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2004,7 +2004,7 @@
         },
         "action": "Treat unstable presentations first using the urgent escalation rule for Diabetes Insipidus; draw time-sensitive labs only if doing so does not delay stabilization.",
         "rationale": "Links confirmed Diabetes Insipidus results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Treat unstable presentations first using the urgent escalation rule for Diabetes Insipidus; draw time-sensitive labs only if doing so does not delay stabilization.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Diabetes Insipidus.",
+        "diagnostic_target": "Treat unstable presentations first using the urgent escalation rule for Diabetes Insipidus; draw time-sensitive labs only if doing so does not delay stabilization.: patient data that changes testing, treatment, monitoring, referral, or disposition for Diabetes Insipidus.",
         "management_change": "Treat unstable presentations first using the urgent escalation rule for Diabetes Insipidus; draw time-sensitive labs only if doing so does not delay stabilization.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2038,7 +2038,7 @@
         },
         "action": "For confirmed Diabetes Insipidus, choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.",
         "rationale": "Links confirmed Diabetes Insipidus results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "For confirmed Diabetes Insipidus, choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Diabetes Insipidus.",
+        "diagnostic_target": "For confirmed Diabetes Insipidus, choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.: patient data that changes testing, treatment, monitoring, referral, or disposition for Diabetes Insipidus.",
         "management_change": "For confirmed Diabetes Insipidus, choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2072,7 +2072,7 @@
         },
         "action": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.",
         "rationale": "Links confirmed Diabetes Insipidus results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Diabetes Insipidus.",
+        "diagnostic_target": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.: patient data that changes testing, treatment, monitoring, referral, or disposition for Diabetes Insipidus.",
         "management_change": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2106,7 +2106,7 @@
         },
         "action": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.",
         "rationale": "Links confirmed Diabetes Insipidus results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Diabetes Insipidus.",
+        "diagnostic_target": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.: patient data that changes testing, treatment, monitoring, referral, or disposition for Diabetes Insipidus.",
         "management_change": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -3492,7 +3492,7 @@
         "diabetes_insipidus_treatment_bundle": {
           "rule_id": "diabetes_insipidus_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Diabetes Insipidus treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+          "description": "Start Diabetes Insipidus treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4806,7 +4806,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Diabetes Insipidus: does patient context support this workup or require exact missing-data routing?",
+        "label": "Diabetes Insipidus: route by documented findings and exact missing-data needs",
         "edgeLabel": "",
         "source_ids": [
           "ENDOTEXT_DI_2026",
@@ -4829,13 +4829,13 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Diabetes Insipidus using cited diagnostic thresholds/rules, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+        "action": "Route Diabetes Insipidus from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
         "children": [
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Diabetes Insipidus pathway context",
-            "edgeLabel": "Missing exact Diabetes Insipidus pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
+            "edgeLabel": "Missing exact Diabetes Insipidus pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -4891,7 +4891,7 @@
             "id": "diabetes_insipidus_concurrent_data_bundle",
             "type": "action",
             "label": "Diabetes Insipidus: obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Selected Diabetes Insipidus workup or documented findings: What is the approximate 24-hour urine volume, and has urine output changed from baseline?; How many times do you urinate overnight, and is this new or worsening?; How much are you drinking and urinating, including polyuria, polydipsia, overnight urination, thirst intensity, access to water, and any dehydration or confusion?; Do you have reliable access to water, and are thirst, intake, or mental status limiting safe hydration?; Hypernatremia, inability to drink, impaired consciousness, postoperative pituitary patient without desmopressin access.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Confirm hypotonic polyuria: adult urine volume often >3 L/day or >40-50 mL/kg/day with urine osmolality often <300 mOsm/kg.",
+            "edgeLabel": "Diabetes Insipidus active from documented findings: What is the approximate 24-hour urine volume, and has urine output changed from baseline?; How many times do you urinate overnight, and is this new or worsening?; How much are you drinking and urinating, including polyuria, polydipsia, overnight urination, thirst intensity, access to water, and any dehydration or confusion?; Do you have reliable access to water, and are thirst, intake, or mental status limiting safe hydration?; Hypernatremia, inability to drink, impaired consciousness, postoperative pituitary patient without desmopressin access.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Confirm hypotonic polyuria: adult urine volume often >3 L/day or >40-50 mL/kg/day with urine osmolality often <300 mOsm/kg.",
             "source_ids": [
               "ENDOTEXT_DI_2026",
               "SFE_CDI_2018",
@@ -5833,7 +5833,7 @@
                     "criteria": {
                       "rule_id": "diabetes_insipidus_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Diabetes Insipidus treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+                      "description": "Start Diabetes Insipidus treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -7525,7 +7525,7 @@
                                 "id": "diabetes_insipidus_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Diabetes Insipidus: follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Diabetes Insipidus stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+                                "edgeLabel": "Diabetes Insipidus discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                                 "source_ids": [
                                   "ENDOTEXT_DI_2026",
                                   "SFE_CDI_2018",
@@ -9186,7 +9186,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing exact Diabetes Insipidus pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
+          "expected_active_branch": "Missing exact Diabetes Insipidus pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
@@ -9228,7 +9228,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "diabetes_insipidus_followup_endpoint",
-          "expected_active_branch": "Diabetes Insipidus stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
+          "expected_active_branch": "Diabetes Insipidus discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
         }
       ],
       "audit_requirements": {

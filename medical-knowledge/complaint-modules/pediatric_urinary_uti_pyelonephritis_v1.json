@@ -1523,7 +1523,7 @@
     "decisionTrees": [
       {
         "id": "decision_01",
-        "label": "Screen for immediate danger or disposition-changing findings before routine workup: Suspected UTI in baby under 3 months.",
+        "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: danger features or monitored-care triggers: Suspected UTI in baby under 3 months.",
         "item_type": "management_change",
         "source": {
           "source_id": "NICE_UTI_UNDER16_NG224",
@@ -1534,14 +1534,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "Do not use older-child outpatient logic in this age band."
         },
-        "action": "Screen for immediate danger or disposition-changing findings before routine workup: Suspected UTI in baby under 3 months.",
-        "rationale": "Derives a Pediatric urinary symptoms, UTI, or pyelonephritis workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Screen for immediate danger or disposition-changing findings before routine workup: Suspected UTI in baby under 3 months.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric urinary symptoms, UTI, or pyelonephritis.",
-        "management_change": "Screen for immediate danger or disposition-changing findings before routine workup: Suspected UTI in baby under 3 months.",
+        "action": "Pediatric urinary symptoms, UTI, or pyelonephritis: danger features or monitored-care triggers: Suspected UTI in baby under 3 months.",
+        "rationale": "Pediatric urinary symptoms, UTI, or pyelonephritis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric urinary symptoms, UTI, or pyelonephritis: danger features or monitored-care triggers: Suspected UTI in baby under 3 months.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric urinary symptoms, UTI, or pyelonephritis.",
+        "management_change": "Pediatric urinary symptoms, UTI, or pyelonephritis: danger features or monitored-care triggers: Suspected UTI in baby under 3 months.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric urinary symptoms, UTI, or pyelonephritis.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric urinary symptoms, UTI, or pyelonephritis.",
         "tags": [
           "pediatric",
           "urinary",
@@ -1550,18 +1550,18 @@
           "urinary",
           "symptoms",
           "pyelonephritis",
-          "screen",
-          "immediate",
+          "pediatric",
+          "urinary",
+          "symptoms",
+          "pyelonephritis",
           "danger",
-          "disposition",
-          "changing",
-          "findings",
-          "before"
+          "features",
+          "monitored"
         ]
       },
       {
         "id": "decision_02",
-        "label": "Order focused first-line studies and interpret them in sequence: Urine sample before antibiotics when feasible; Dipstick microscopy and culture interpretation; Upper-tract labs and renal ultrasound when indicated; Age-based UTI imaging schedule.",
+        "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: initial diagnostic data to obtain and interpret together: Urine sample before antibiotics when feasible; Dipstick microscopy and culture interpretation; Upper-tract labs and renal ultrasound when indicated; Age-based UTI imaging schedule.",
         "item_type": "management_change",
         "source": {
           "source_id": "NICE_UTI_UNDER16_NG224",
@@ -1572,14 +1572,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "Do not delay treatment in high-risk serious illness if urine cannot be obtained."
         },
-        "action": "Order focused first-line studies and interpret them in sequence: Urine sample before antibiotics when feasible; Dipstick microscopy and culture interpretation; Upper-tract labs and renal ultrasound when indicated; Age-based UTI imaging schedule.",
-        "rationale": "Derives a Pediatric urinary symptoms, UTI, or pyelonephritis workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Order focused first-line studies and interpret them in sequence: Urine sample before antibiotics when feasible; Dipstick microscopy and culture interpretation; Upper-tract labs and renal ultrasound when indicated; Age-based UTI imaging schedule.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric urinary symptoms, UTI, or pyelonephritis.",
-        "management_change": "Order focused first-line studies and interpret them in sequence: Urine sample before antibiotics when feasible; Dipstick microscopy and culture interpretation; Upper-tract labs and renal ultrasound when indicated; Age-based UTI imaging schedule.",
+        "action": "Pediatric urinary symptoms, UTI, or pyelonephritis: initial diagnostic data to obtain and interpret together: Urine sample before antibiotics when feasible; Dipstick microscopy and culture interpretation; Upper-tract labs and renal ultrasound when indicated; Age-based UTI imaging schedule.",
+        "rationale": "Pediatric urinary symptoms, UTI, or pyelonephritis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric urinary symptoms, UTI, or pyelonephritis: initial diagnostic data to obtain and interpret together: Urine sample before antibiotics when feasible; Dipstick microscopy and culture interpretation; Upper-tract labs and renal ultrasound when indicated; Age-based UTI imaging schedule.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric urinary symptoms, UTI, or pyelonephritis.",
+        "management_change": "Pediatric urinary symptoms, UTI, or pyelonephritis: initial diagnostic data to obtain and interpret together: Urine sample before antibiotics when feasible; Dipstick microscopy and culture interpretation; Upper-tract labs and renal ultrasound when indicated; Age-based UTI imaging schedule.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric urinary symptoms, UTI, or pyelonephritis.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric urinary symptoms, UTI, or pyelonephritis.",
         "tags": [
           "pediatric",
           "urinary",
@@ -1588,18 +1588,18 @@
           "urinary",
           "symptoms",
           "pyelonephritis",
-          "order",
-          "focused",
-          "first",
-          "line",
-          "studies",
-          "interpret",
-          "them"
+          "pediatric",
+          "urinary",
+          "symptoms",
+          "pyelonephritis",
+          "initial",
+          "diagnostic",
+          "data"
         ]
       },
       {
         "id": "decision_03",
-        "label": "Use the leading diagnostic frame to avoid premature closure: Lower UTI or cystitis pattern with dysuria, urinary frequency, urgency, new wetting, suprapubic discomfort, malodorous/cloudy urine, or hematuria.",
+        "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: leading diagnostic frame and mimics to resolve: Lower UTI or cystitis pattern with dysuria, urinary frequency, urgency, new wetting, suprapubic discomfort, malodorous/cloudy urine, or hematuria.",
         "item_type": "management_change",
         "source": {
           "source_id": "NICE_UTI_UNDER16_NG224",
@@ -1610,14 +1610,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "Use symptom/sign clusters to decide urine testing; no single symptom alone should determine testing or treatment."
         },
-        "action": "Use the leading diagnostic frame to avoid premature closure: Lower UTI or cystitis pattern with dysuria, urinary frequency, urgency, new wetting, suprapubic discomfort, malodorous/cloudy urine, or hematuria.",
-        "rationale": "Derives a Pediatric urinary symptoms, UTI, or pyelonephritis workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Use the leading diagnostic frame to avoid premature closure: Lower UTI or cystitis pattern with dysuria, urinary frequency, urgency, new wetting, suprapubic discomfort, malodorous/cloudy urine, or hematuria.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric urinary symptoms, UTI, or pyelonephritis.",
-        "management_change": "Use the leading diagnostic frame to avoid premature closure: Lower UTI or cystitis pattern with dysuria, urinary frequency, urgency, new wetting, suprapubic discomfort, malodorous/cloudy urine, or hematuria.",
+        "action": "Pediatric urinary symptoms, UTI, or pyelonephritis: leading diagnostic frame and mimics to resolve: Lower UTI or cystitis pattern with dysuria, urinary frequency, urgency, new wetting, suprapubic discomfort, malodorous/cloudy urine, or hematuria.",
+        "rationale": "Pediatric urinary symptoms, UTI, or pyelonephritis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric urinary symptoms, UTI, or pyelonephritis: leading diagnostic frame and mimics to resolve: Lower UTI or cystitis pattern with dysuria, urinary frequency, urgency, new wetting, suprapubic discomfort, malodorous/cloudy urine, or hematuria.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric urinary symptoms, UTI, or pyelonephritis.",
+        "management_change": "Pediatric urinary symptoms, UTI, or pyelonephritis: leading diagnostic frame and mimics to resolve: Lower UTI or cystitis pattern with dysuria, urinary frequency, urgency, new wetting, suprapubic discomfort, malodorous/cloudy urine, or hematuria.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric urinary symptoms, UTI, or pyelonephritis.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric urinary symptoms, UTI, or pyelonephritis.",
         "tags": [
           "pediatric",
           "urinary",
@@ -1626,18 +1626,18 @@
           "urinary",
           "symptoms",
           "pyelonephritis",
+          "pediatric",
+          "urinary",
+          "symptoms",
+          "pyelonephritis",
           "leading",
           "diagnostic",
-          "frame",
-          "avoid",
-          "premature",
-          "closure",
-          "lower"
+          "frame"
         ]
       },
       {
         "id": "decision_04",
-        "label": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Infant or sepsis escalation.",
+        "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: escalation or disposition rule triggered by abnormal results or worsening status: Infant or sepsis escalation.",
         "item_type": "management_change",
         "source": {
           "source_id": "CHQ_PEDS_UTI_2024",
@@ -1648,14 +1648,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "Use local pediatric critical care/retrieval and sepsis pathways when unstable."
         },
-        "action": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Infant or sepsis escalation.",
-        "rationale": "Derives a Pediatric urinary symptoms, UTI, or pyelonephritis workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Infant or sepsis escalation.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric urinary symptoms, UTI, or pyelonephritis.",
-        "management_change": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Infant or sepsis escalation.",
+        "action": "Pediatric urinary symptoms, UTI, or pyelonephritis: escalation or disposition rule triggered by abnormal results or worsening status: Infant or sepsis escalation.",
+        "rationale": "Pediatric urinary symptoms, UTI, or pyelonephritis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric urinary symptoms, UTI, or pyelonephritis: escalation or disposition rule triggered by abnormal results or worsening status: Infant or sepsis escalation.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric urinary symptoms, UTI, or pyelonephritis.",
+        "management_change": "Pediatric urinary symptoms, UTI, or pyelonephritis: escalation or disposition rule triggered by abnormal results or worsening status: Infant or sepsis escalation.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric urinary symptoms, UTI, or pyelonephritis.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric urinary symptoms, UTI, or pyelonephritis.",
         "tags": [
           "pediatric",
           "urinary",
@@ -1664,20 +1664,20 @@
           "urinary",
           "symptoms",
           "pyelonephritis",
-          "results",
-          "bedside",
-          "status",
-          "high",
-          "risk",
-          "abnormal",
-          "worsening"
+          "pediatric",
+          "urinary",
+          "symptoms",
+          "pyelonephritis",
+          "escalation",
+          "disposition",
+          "rule"
         ]
       }
     ],
     "treatmentOptions": [
       {
         "id": "treatment_01",
-        "label": "Stabilize or escalate before routine treatment when danger criteria are present: Suspected UTI in baby under 3 months.",
+        "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: immediate stabilization or escalation trigger: Suspected UTI in baby under 3 months.",
         "item_type": "management_change",
         "source": {
           "source_id": "NICE_UTI_UNDER16_NG224",
@@ -1688,14 +1688,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "Do not use older-child outpatient logic in this age band."
         },
-        "action": "Stabilize or escalate before routine treatment when danger criteria are present: Suspected UTI in baby under 3 months.",
-        "rationale": "Derives a Pediatric urinary symptoms, UTI, or pyelonephritis workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Stabilize or escalate before routine treatment when danger criteria are present: Suspected UTI in baby under 3 months.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric urinary symptoms, UTI, or pyelonephritis.",
-        "management_change": "Stabilize or escalate before routine treatment when danger criteria are present: Suspected UTI in baby under 3 months.",
+        "action": "Pediatric urinary symptoms, UTI, or pyelonephritis: immediate stabilization or escalation trigger: Suspected UTI in baby under 3 months.",
+        "rationale": "Pediatric urinary symptoms, UTI, or pyelonephritis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric urinary symptoms, UTI, or pyelonephritis: immediate stabilization or escalation trigger: Suspected UTI in baby under 3 months.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric urinary symptoms, UTI, or pyelonephritis.",
+        "management_change": "Pediatric urinary symptoms, UTI, or pyelonephritis: immediate stabilization or escalation trigger: Suspected UTI in baby under 3 months.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric urinary symptoms, UTI, or pyelonephritis.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric urinary symptoms, UTI, or pyelonephritis.",
         "tags": [
           "pediatric",
           "urinary",
@@ -1704,18 +1704,18 @@
           "urinary",
           "symptoms",
           "pyelonephritis",
-          "stabilize",
-          "escalate",
-          "before",
-          "routine",
-          "treatment",
-          "when",
-          "danger"
+          "pediatric",
+          "urinary",
+          "symptoms",
+          "pyelonephritis",
+          "immediate",
+          "stabilization",
+          "escalation"
         ]
       },
       {
         "id": "treatment_02",
-        "label": "Use the high-risk or confirmed-pathway management option when criteria are met: Infant or sepsis escalation.",
+        "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: treatment or disposition for high-risk or confirmed disease: Infant or sepsis escalation.",
         "item_type": "management_change",
         "source": {
           "source_id": "CHQ_PEDS_UTI_2024",
@@ -1726,14 +1726,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "Use local pediatric critical care/retrieval and sepsis pathways when unstable."
         },
-        "action": "Use the high-risk or confirmed-pathway management option when criteria are met: Infant or sepsis escalation.",
-        "rationale": "Derives a Pediatric urinary symptoms, UTI, or pyelonephritis workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Use the high-risk or confirmed-pathway management option when criteria are met: Infant or sepsis escalation.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric urinary symptoms, UTI, or pyelonephritis.",
-        "management_change": "Use the high-risk or confirmed-pathway management option when criteria are met: Infant or sepsis escalation.",
+        "action": "Pediatric urinary symptoms, UTI, or pyelonephritis: treatment or disposition for high-risk or confirmed disease: Infant or sepsis escalation.",
+        "rationale": "Pediatric urinary symptoms, UTI, or pyelonephritis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric urinary symptoms, UTI, or pyelonephritis: treatment or disposition for high-risk or confirmed disease: Infant or sepsis escalation.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric urinary symptoms, UTI, or pyelonephritis.",
+        "management_change": "Pediatric urinary symptoms, UTI, or pyelonephritis: treatment or disposition for high-risk or confirmed disease: Infant or sepsis escalation.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric urinary symptoms, UTI, or pyelonephritis.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric urinary symptoms, UTI, or pyelonephritis.",
         "tags": [
           "pediatric",
           "urinary",
@@ -1742,18 +1742,18 @@
           "urinary",
           "symptoms",
           "pyelonephritis",
-          "high",
-          "risk",
-          "confirmed",
-          "pathway",
-          "management",
-          "option",
-          "when"
+          "pediatric",
+          "urinary",
+          "symptoms",
+          "pyelonephritis",
+          "treatment",
+          "disposition",
+          "high"
         ]
       },
       {
         "id": "treatment_03",
-        "label": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: Uncomplicated outpatient UTI route.",
+        "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Uncomplicated outpatient UTI route.",
         "item_type": "management_change",
         "source": {
           "source_id": "RCH_UTI_CHILD",
@@ -1764,14 +1764,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "Culture review should confirm or adjust management; local antimicrobial guidance controls drug choice."
         },
-        "action": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: Uncomplicated outpatient UTI route.",
-        "rationale": "Derives a Pediatric urinary symptoms, UTI, or pyelonephritis workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: Uncomplicated outpatient UTI route.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric urinary symptoms, UTI, or pyelonephritis.",
-        "management_change": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: Uncomplicated outpatient UTI route.",
+        "action": "Pediatric urinary symptoms, UTI, or pyelonephritis: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Uncomplicated outpatient UTI route.",
+        "rationale": "Pediatric urinary symptoms, UTI, or pyelonephritis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric urinary symptoms, UTI, or pyelonephritis: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Uncomplicated outpatient UTI route.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric urinary symptoms, UTI, or pyelonephritis.",
+        "management_change": "Pediatric urinary symptoms, UTI, or pyelonephritis: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Uncomplicated outpatient UTI route.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric urinary symptoms, UTI, or pyelonephritis.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric urinary symptoms, UTI, or pyelonephritis.",
         "tags": [
           "pediatric",
           "urinary",
@@ -1780,18 +1780,18 @@
           "urinary",
           "symptoms",
           "pyelonephritis",
-          "lower",
-          "risk",
+          "pediatric",
+          "urinary",
+          "symptoms",
+          "pyelonephritis",
           "outpatient",
-          "supportive",
           "safety",
-          "pathway",
-          "only"
+          "route"
         ]
       },
       {
         "id": "treatment_04",
-        "label": "Monitor treatment response, complications, and need for reassessment with: Urine sample before antibiotics when feasible.",
+        "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: monitoring data for response, complications, and reassessment: Urine sample before antibiotics when feasible.",
         "item_type": "management_change",
         "source": {
           "source_id": "NICE_UTI_UNDER16_NG224",
@@ -1802,14 +1802,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "Do not delay treatment in high-risk serious illness if urine cannot be obtained."
         },
-        "action": "Monitor treatment response, complications, and need for reassessment with: Urine sample before antibiotics when feasible.",
-        "rationale": "Derives a Pediatric urinary symptoms, UTI, or pyelonephritis workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Monitor treatment response, complications, and need for reassessment with: Urine sample before antibiotics when feasible.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric urinary symptoms, UTI, or pyelonephritis.",
-        "management_change": "Monitor treatment response, complications, and need for reassessment with: Urine sample before antibiotics when feasible.",
+        "action": "Pediatric urinary symptoms, UTI, or pyelonephritis: monitoring data for response, complications, and reassessment: Urine sample before antibiotics when feasible.",
+        "rationale": "Pediatric urinary symptoms, UTI, or pyelonephritis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric urinary symptoms, UTI, or pyelonephritis: monitoring data for response, complications, and reassessment: Urine sample before antibiotics when feasible.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric urinary symptoms, UTI, or pyelonephritis.",
+        "management_change": "Pediatric urinary symptoms, UTI, or pyelonephritis: monitoring data for response, complications, and reassessment: Urine sample before antibiotics when feasible.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric urinary symptoms, UTI, or pyelonephritis.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric urinary symptoms, UTI, or pyelonephritis.",
         "tags": [
           "pediatric",
           "urinary",
@@ -1818,13 +1818,13 @@
           "urinary",
           "symptoms",
           "pyelonephritis",
-          "monitor",
-          "treatment",
-          "response",
-          "complications",
-          "need",
-          "reassessment",
-          "with"
+          "pediatric",
+          "urinary",
+          "symptoms",
+          "pyelonephritis",
+          "monitoring",
+          "data",
+          "response"
         ]
       }
     ],
@@ -2731,7 +2731,7 @@
         "pediatric_urinary_uti_pyelonephritis_treatment_bundle": {
           "rule_id": "pediatric_urinary_uti_pyelonephritis_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Pediatric urinary symptoms, UTI, or pyelonephritis treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+          "description": "Start Pediatric urinary symptoms, UTI, or pyelonephritis treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3723,7 +3723,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: does patient context support this workup or require exact missing-data routing?",
+        "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: route by documented findings and exact missing-data needs",
         "edgeLabel": "",
         "source_ids": [
           "NICE_UTI_UNDER16_NG224",
@@ -3748,13 +3748,13 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Pediatric urinary symptoms, UTI, or pyelonephritis using cited diagnostic thresholds/rules, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+        "action": "Route Pediatric urinary symptoms, UTI, or pyelonephritis from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
         "children": [
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Pediatric urinary symptoms, UTI, or pyelonephritis pathway context",
-            "edgeLabel": "Missing exact Pediatric urinary symptoms, UTI, or pyelonephritis pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
+            "edgeLabel": "Missing exact Pediatric urinary symptoms, UTI, or pyelonephritis pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -3810,7 +3810,7 @@
             "id": "pediatric_urinary_uti_pyelonephritis_concurrent_data_bundle",
             "type": "action",
             "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Selected Pediatric urinary symptoms, UTI, or pyelonephritis workup or documented findings: Pediatric urinary age band; Classic urinary symptoms; Infant nonspecific UTI features; Upper-tract and systemic features; Suspected UTI in baby under 3 months; Toxic appearance or sepsis physiology; Urine sample before antibiotics when feasible",
+            "edgeLabel": "Pediatric urinary symptoms, UTI, or pyelonephritis active from documented findings: Pediatric urinary age band; Classic urinary symptoms; Infant nonspecific UTI features; Upper-tract and systemic features; Suspected UTI in baby under 3 months; Toxic appearance or sepsis physiology; Urine sample before antibiotics when feasible",
             "source_ids": [
               "NICE_UTI_UNDER16_NG224",
               "RCH_UTI_CHILD",
@@ -4327,7 +4327,7 @@
                         }
                       ]
                     },
-                    "action": "Suspected UTI in baby under 3 months; Toxic appearance or sepsis physiology; Upper UTI or pyelonephritis features; Atypical or recurrent UTI. Monitor treatment response, complications, and need for reassessment with: Urine sample before antibiotics when feasible.; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route",
+                    "action": "Suspected UTI in baby under 3 months; Toxic appearance or sepsis physiology; Upper UTI or pyelonephritis features; Atypical or recurrent UTI. Pediatric urinary symptoms, UTI, or pyelonephritis: immediate stabilization or escalation trigger: Suspected UTI in baby under 3 months.; Pediatric urinary symptoms, UTI, or pyelonephritis: treatment or disposition for high-risk or confirmed disease: Infant or sepsis escalation.; Pediatric urinary symptoms, UTI, or pyelonephritis: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Uncomplicated outpatient UTI route.; Pediatric urinary symptoms, UTI, or pyelonephritis: monitoring data for response, complications, and reassessment: Urine sample before antibiotics when feasible.; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -4499,7 +4499,7 @@
                     "id": "pediatric_urinary_uti_pyelonephritis_treatment_bundle",
                     "type": "action",
                     "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: initiate treatment/disposition for the active threshold-defined branch",
-                    "edgeLabel": "Pediatric urinary symptoms, UTI, or pyelonephritis treatment/disposition indicated by: 48 hours; 2 or more; 1 or more; 3 or more; <6 months; 6 weeks; Monitor treatment response, complications, and need for reassessment with: Urine sample before antibiotics when feasible.; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route",
+                    "edgeLabel": "Pediatric urinary symptoms, UTI, or pyelonephritis treatment/disposition indicated by: 48 hours; 2 or more; 1 or more; 3 or more; <6 months; 6 weeks; Pediatric urinary symptoms, UTI, or pyelonephritis: immediate stabilization or escalation trigger: Suspected UTI in baby under 3 months.; Pediatric urinary symptoms, UTI, or pyelonephritis: treatment or disposition for high-risk or confirmed disease: Infant or sepsis escalation.; Pediatric urinary symptoms, UTI, or pyelonephritis: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Uncomplicated outpatient UTI route.; Pediatric urinary symptoms, UTI, or pyelonephritis: monitoring data for response, complications, and reassessment: Urine sample before antibiotics when feasible.; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route",
                     "source_ids": [
                       "CHQ_PEDS_UTI_2024",
                       "RCH_UTI_CHILD",
@@ -4509,7 +4509,7 @@
                     "criteria": {
                       "rule_id": "pediatric_urinary_uti_pyelonephritis_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Pediatric urinary symptoms, UTI, or pyelonephritis treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+                      "description": "Start Pediatric urinary symptoms, UTI, or pyelonephritis treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4692,7 +4692,7 @@
                         }
                       ]
                     },
-                    "action": "Monitor treatment response, complications, and need for reassessment with: Urine sample before antibiotics when feasible.; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route",
+                    "action": "Pediatric urinary symptoms, UTI, or pyelonephritis: immediate stabilization or escalation trigger: Suspected UTI in baby under 3 months.; Pediatric urinary symptoms, UTI, or pyelonephritis: treatment or disposition for high-risk or confirmed disease: Infant or sepsis escalation.; Pediatric urinary symptoms, UTI, or pyelonephritis: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Uncomplicated outpatient UTI route.; Pediatric urinary symptoms, UTI, or pyelonephritis: monitoring data for response, complications, and reassessment: Urine sample before antibiotics when feasible.; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route",
                     "children": [
                       {
                         "id": "pediatric_urinary_uti_pyelonephritis_treatment_safety_decision",
@@ -5369,7 +5369,7 @@
                                 "id": "pediatric_urinary_uti_pyelonephritis_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Pediatric urinary symptoms, UTI, or pyelonephritis objective response supports narrowing, stopping, tapering, or continuing: 48 hours; 2 or more; 1 or more; 3 or more; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route; Monitor treatment response, complications, and need for reassessment with: Urine sample before antibiotics when feasible.",
+                                "edgeLabel": "Pediatric urinary symptoms, UTI, or pyelonephritis objective response supports narrowing, stopping, tapering, or continuing: 48 hours; 2 or more; 1 or more; 3 or more; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route; Pediatric urinary symptoms, UTI, or pyelonephritis: immediate stabilization or escalation trigger: Suspected UTI in baby under 3 months.",
                                 "source_ids": [
                                   "CHQ_PEDS_UTI_2024",
                                   "RCH_UTI_CHILD",
@@ -5716,7 +5716,7 @@
                                 "id": "pediatric_urinary_uti_pyelonephritis_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Pediatric urinary symptoms, UTI, or pyelonephritis stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route",
+                                "edgeLabel": "Pediatric urinary symptoms, UTI, or pyelonephritis discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route",
                                 "source_ids": [
                                   "CHQ_PEDS_UTI_2024",
                                   "RCH_UTI_CHILD",
@@ -5934,11 +5934,13 @@
                       }
                     ],
                     "parallel_actions": [
-                      "Monitor treatment response, complications, and need for reassessment with: Urine sample before antibiotics when feasible.",
+                      "Pediatric urinary symptoms, UTI, or pyelonephritis: immediate stabilization or escalation trigger: Suspected UTI in baby under 3 months.",
+                      "Pediatric urinary symptoms, UTI, or pyelonephritis: treatment or disposition for high-risk or confirmed disease: Infant or sepsis escalation.",
+                      "Pediatric urinary symptoms, UTI, or pyelonephritis: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Uncomplicated outpatient UTI route.",
+                      "Pediatric urinary symptoms, UTI, or pyelonephritis: monitoring data for response, complications, and reassessment: Urine sample before antibiotics when feasible.",
                       "Infant or sepsis escalation",
                       "Uncomplicated outpatient UTI route",
-                      "Upper or complex UTI route",
-                      "Imaging and follow-up stewardship"
+                      "Upper or complex UTI route"
                     ],
                     "guideline_cutoffs": [
                       {
@@ -6838,7 +6840,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing exact Pediatric urinary symptoms, UTI, or pyelonephritis pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
+          "expected_active_branch": "Missing exact Pediatric urinary symptoms, UTI, or pyelonephritis pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
@@ -6874,13 +6876,13 @@
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "pediatric_urinary_uti_pyelonephritis_deescalate_endpoint",
-          "expected_active_branch": "Pediatric urinary symptoms, UTI, or pyelonephritis objective response supports narrowing, stopping, tapering, or continuing: 48 hours; 2 or more; 1 or more; 3 or more; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route; Monitor treatment response, complications, and need for reassessment with: Urine sample before antibiotics when feasible."
+          "expected_active_branch": "Pediatric urinary symptoms, UTI, or pyelonephritis objective response supports narrowing, stopping, tapering, or continuing: 48 hours; 2 or more; 1 or more; 3 or more; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route; Pediatric urinary symptoms, UTI, or pyelonephritis: immediate stabilization or escalation trigger: Suspected UTI in baby under 3 months."
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "pediatric_urinary_uti_pyelonephritis_followup_endpoint",
-          "expected_active_branch": "Pediatric urinary symptoms, UTI, or pyelonephritis stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route"
+          "expected_active_branch": "Pediatric urinary symptoms, UTI, or pyelonephritis discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route"
         }
       ],
       "audit_requirements": {

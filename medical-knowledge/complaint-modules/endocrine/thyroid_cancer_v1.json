@@ -2079,8 +2079,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Confirm malignant or suspicious disease with ultrasound mapping, FNA/Bethesda cytology, and node evaluation; check calcitonin/CEA and RET when medullary cancer is suspected.",
-        "rationale": "Routes Thyroid Cancer (Papillary, Follicular, Medullary) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Confirm malignant or suspicious disease with ultrasound mapping, FNA/Bethesda cytology, and node evaluation; check calcitonin/CEA and RET when medullary cancer is suspected.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "rationale": "Thyroid Cancer (Papillary, Follicular, Medullary): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Confirm malignant or suspicious disease with ultrasound mapping, FNA/Bethesda cytology, and node evaluation; check calcitonin/CEA and RET when medullary cancer is suspected.: patient data that changes testing, treatment, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
         "management_change": "Confirm malignant or suspicious disease with ultrasound mapping, FNA/Bethesda cytology, and node evaluation; check calcitonin/CEA and RET when medullary cancer is suspected.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2113,8 +2113,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Risk-stratify by tumor type, size, nodal/distant spread, invasion, cytology/histology, molecular/genetic findings, voice/airway status, and patient goals.",
-        "rationale": "Routes Thyroid Cancer (Papillary, Follicular, Medullary) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Risk-stratify by tumor type, size, nodal/distant spread, invasion, cytology/histology, molecular/genetic findings, voice/airway status, and patient goals.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "rationale": "Thyroid Cancer (Papillary, Follicular, Medullary): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Risk-stratify by tumor type, size, nodal/distant spread, invasion, cytology/histology, molecular/genetic findings, voice/airway status, and patient goals.: patient data that changes testing, treatment, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
         "management_change": "Risk-stratify by tumor type, size, nodal/distant spread, invasion, cytology/histology, molecular/genetic findings, voice/airway status, and patient goals.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2147,8 +2147,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use cross-sectional imaging, laryngoscopy, or additional staging when bulky, invasive, recurrent, high-risk, or medullary/anaplastic disease is possible.",
-        "rationale": "Routes Thyroid Cancer (Papillary, Follicular, Medullary) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Use cross-sectional imaging, laryngoscopy, or additional staging when bulky, invasive, recurrent, high-risk, or medullary/anaplastic disease is possible.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "rationale": "Thyroid Cancer (Papillary, Follicular, Medullary): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Use cross-sectional imaging, laryngoscopy, or additional staging when bulky, invasive, recurrent, high-risk, or medullary/anaplastic disease is possible.: patient data that changes testing, treatment, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
         "management_change": "Use cross-sectional imaging, laryngoscopy, or additional staging when bulky, invasive, recurrent, high-risk, or medullary/anaplastic disease is possible.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2181,8 +2181,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "After initial therapy, monitor dynamic risk using thyroglobulin/antibody or calcitonin/CEA as appropriate plus neck imaging.",
-        "rationale": "Routes Thyroid Cancer (Papillary, Follicular, Medullary) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "After initial therapy, monitor dynamic risk using thyroglobulin/antibody or calcitonin/CEA as appropriate plus neck imaging.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "rationale": "Thyroid Cancer (Papillary, Follicular, Medullary): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "After initial therapy, monitor dynamic risk using thyroglobulin/antibody or calcitonin/CEA as appropriate plus neck imaging.: patient data that changes testing, treatment, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
         "management_change": "After initial therapy, monitor dynamic risk using thyroglobulin/antibody or calcitonin/CEA as appropriate plus neck imaging.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2215,8 +2215,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Confirm that Thyroid Cancer (Papillary, Follicular, Medullary) is the selected clinical intent, then screen for red flags before routine outpatient testing.",
-        "rationale": "Routes Thyroid Cancer (Papillary, Follicular, Medullary) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Confirm that Thyroid Cancer (Papillary, Follicular, Medullary) is the selected clinical intent, then screen for red flags before routine outpatient testing.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "rationale": "Thyroid Cancer (Papillary, Follicular, Medullary): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Confirm that Thyroid Cancer (Papillary, Follicular, Medullary) is the selected clinical intent, then screen for red flags before routine outpatient testing.: patient data that changes testing, treatment, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
         "management_change": "Confirm that Thyroid Cancer (Papillary, Follicular, Medullary) is the selected clinical intent, then screen for red flags before routine outpatient testing.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2249,8 +2249,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Order the first-line tests in sequence: Neck ultrasound and nodal mapping; FNA cytology with Bethesda category; TSH/free T4.",
-        "rationale": "Routes Thyroid Cancer (Papillary, Follicular, Medullary) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Order the first-line tests in sequence: Neck ultrasound and nodal mapping; FNA cytology with Bethesda category; TSH/free T4.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "rationale": "Thyroid Cancer (Papillary, Follicular, Medullary): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Order the first-line tests in sequence: Neck ultrasound and nodal mapping; FNA cytology with Bethesda category; TSH/free T4.: patient data that changes testing, treatment, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
         "management_change": "Order the first-line tests in sequence: Neck ultrasound and nodal mapping; FNA cytology with Bethesda category; TSH/free T4.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2283,8 +2283,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret numeric results against the workup cutoffs and local assay ranges: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
-        "rationale": "Routes Thyroid Cancer (Papillary, Follicular, Medullary) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Interpret numeric results against the workup cutoffs and local assay ranges: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "rationale": "Thyroid Cancer (Papillary, Follicular, Medullary): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Interpret numeric results against the workup cutoffs and local assay ranges: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.: patient data that changes testing, treatment, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
         "management_change": "Interpret numeric results against the workup cutoffs and local assay ranges: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2317,8 +2317,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.",
-        "rationale": "Routes Thyroid Cancer (Papillary, Follicular, Medullary) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "rationale": "Thyroid Cancer (Papillary, Follicular, Medullary): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.: patient data that changes testing, treatment, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
         "management_change": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2354,7 +2354,7 @@
         },
         "action": "Use active surveillance only for carefully selected very-low-risk papillary microcarcinoma when specialist follow-up is available.",
         "rationale": "Links confirmed Thyroid Cancer (Papillary, Follicular, Medullary) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Use active surveillance only for carefully selected very-low-risk papillary microcarcinoma when specialist follow-up is available.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "diagnostic_target": "Use active surveillance only for carefully selected very-low-risk papillary microcarcinoma when specialist follow-up is available.: patient data that changes testing, treatment, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
         "management_change": "Use active surveillance only for carefully selected very-low-risk papillary microcarcinoma when specialist follow-up is available.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2388,7 +2388,7 @@
         },
         "action": "Choose lobectomy versus total thyroidectomy, node dissection, radioactive iodine, and TSH suppression according to risk category and current ATA pathway.",
         "rationale": "Links confirmed Thyroid Cancer (Papillary, Follicular, Medullary) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Choose lobectomy versus total thyroidectomy, node dissection, radioactive iodine, and TSH suppression according to risk category and current ATA pathway.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "diagnostic_target": "Choose lobectomy versus total thyroidectomy, node dissection, radioactive iodine, and TSH suppression according to risk category and current ATA pathway.: patient data that changes testing, treatment, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
         "management_change": "Choose lobectomy versus total thyroidectomy, node dissection, radioactive iodine, and TSH suppression according to risk category and current ATA pathway.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2422,7 +2422,7 @@
         },
         "action": "For medullary thyroid cancer, coordinate RET testing, family screening, calcitonin/CEA surveillance, and specialized surgery.",
         "rationale": "Links confirmed Thyroid Cancer (Papillary, Follicular, Medullary) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "For medullary thyroid cancer, coordinate RET testing, family screening, calcitonin/CEA surveillance, and specialized surgery.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "diagnostic_target": "For medullary thyroid cancer, coordinate RET testing, family screening, calcitonin/CEA surveillance, and specialized surgery.: patient data that changes testing, treatment, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
         "management_change": "For medullary thyroid cancer, coordinate RET testing, family screening, calcitonin/CEA surveillance, and specialized surgery.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2456,7 +2456,7 @@
         },
         "action": "Escalate airway compromise, vocal cord paralysis, bulky nodes, suspected anaplastic transformation, or rapidly enlarging mass urgently.",
         "rationale": "Links confirmed Thyroid Cancer (Papillary, Follicular, Medullary) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Escalate airway compromise, vocal cord paralysis, bulky nodes, suspected anaplastic transformation, or rapidly enlarging mass urgently.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "diagnostic_target": "Escalate airway compromise, vocal cord paralysis, bulky nodes, suspected anaplastic transformation, or rapidly enlarging mass urgently.: patient data that changes testing, treatment, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
         "management_change": "Escalate airway compromise, vocal cord paralysis, bulky nodes, suspected anaplastic transformation, or rapidly enlarging mass urgently.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2490,7 +2490,7 @@
         },
         "action": "Treat unstable presentations first using the urgent escalation rule for Thyroid Cancer (Papillary, Follicular, Medullary); draw time-sensitive labs only if doing so does not delay stabilization.",
         "rationale": "Links confirmed Thyroid Cancer (Papillary, Follicular, Medullary) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Treat unstable presentations first using the urgent escalation rule for Thyroid Cancer (Papillary, Follicular, Medullary); draw time-sensitive labs only if doing so does not delay stabilization.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "diagnostic_target": "Treat unstable presentations first using the urgent escalation rule for Thyroid Cancer (Papillary, Follicular, Medullary); draw time-sensitive labs only if doing so does not delay stabilization.: patient data that changes testing, treatment, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
         "management_change": "Treat unstable presentations first using the urgent escalation rule for Thyroid Cancer (Papillary, Follicular, Medullary); draw time-sensitive labs only if doing so does not delay stabilization.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2524,7 +2524,7 @@
         },
         "action": "For confirmed Thyroid Cancer (Papillary, Follicular, Medullary), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.",
         "rationale": "Links confirmed Thyroid Cancer (Papillary, Follicular, Medullary) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "For confirmed Thyroid Cancer (Papillary, Follicular, Medullary), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "diagnostic_target": "For confirmed Thyroid Cancer (Papillary, Follicular, Medullary), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.: patient data that changes testing, treatment, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
         "management_change": "For confirmed Thyroid Cancer (Papillary, Follicular, Medullary), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2558,7 +2558,7 @@
         },
         "action": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.",
         "rationale": "Links confirmed Thyroid Cancer (Papillary, Follicular, Medullary) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "diagnostic_target": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.: patient data that changes testing, treatment, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
         "management_change": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2592,7 +2592,7 @@
         },
         "action": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.",
         "rationale": "Links confirmed Thyroid Cancer (Papillary, Follicular, Medullary) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "diagnostic_target": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.: patient data that changes testing, treatment, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
         "management_change": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -3688,7 +3688,7 @@
         "thyroid_cancer_treatment_bundle": {
           "rule_id": "thyroid_cancer_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Thyroid Cancer (Papillary, Follicular, Medullary) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+          "description": "Start Thyroid Cancer (Papillary, Follicular, Medullary) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4755,7 +4755,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Thyroid Cancer (Papillary, Follicular, Medullary): does patient context support this workup or require exact missing-data routing?",
+        "label": "Thyroid Cancer (Papillary, Follicular, Medullary): route by documented findings and exact missing-data needs",
         "edgeLabel": "",
         "source_ids": [
           "ATA_THYROID_NODULE_DTC_2015",
@@ -4782,13 +4782,13 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Thyroid Cancer (Papillary, Follicular, Medullary) using cited diagnostic thresholds/rules, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+        "action": "Route Thyroid Cancer (Papillary, Follicular, Medullary) from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
         "children": [
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Thyroid Cancer (Papillary, Follicular, Medullary) pathway context",
-            "edgeLabel": "Missing exact Thyroid Cancer (Papillary, Follicular, Medullary) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
+            "edgeLabel": "Missing exact Thyroid Cancer (Papillary, Follicular, Medullary) pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -4844,7 +4844,7 @@
             "id": "thyroid_cancer_concurrent_data_bundle",
             "type": "action",
             "label": "Thyroid Cancer (Papillary, Follicular, Medullary): obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Selected Thyroid Cancer (Papillary, Follicular, Medullary) workup or documented findings: Any neck swelling, rapid growth, pain, hoarseness, trouble swallowing, positional shortness of breath, radiation exposure, or family thyroid cancer/MEN2 history?; Any childhood head/neck radiation, therapeutic radiation, occupational exposure, or family thyroid cancer risk factor?; Any personal or family history of MEN, VHL, NF1, SDHx-related tumors, medullary thyroid cancer, pheochromocytoma, paraganglioma, or adrenal/pituitary tumors?; What is the current prior FNA Bethesda category, and how has it changed from baseline?; Airway compromise, vocal cord paralysis, bulky nodes, rapidly enlarging mass, suspected anaplastic transformation.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Neck ultrasound and nodal mapping.",
+            "edgeLabel": "Thyroid Cancer (Papillary, Follicular, Medullary) active from documented findings: Any neck swelling, rapid growth, pain, hoarseness, trouble swallowing, positional shortness of breath, radiation exposure, or family thyroid cancer/MEN2 history?; Any childhood head/neck radiation, therapeutic radiation, occupational exposure, or family thyroid cancer risk factor?; Any personal or family history of MEN, VHL, NF1, SDHx-related tumors, medullary thyroid cancer, pheochromocytoma, paraganglioma, or adrenal/pituitary tumors?; What is the current prior FNA Bethesda category, and how has it changed from baseline?; Airway compromise, vocal cord paralysis, bulky nodes, rapidly enlarging mass, suspected anaplastic transformation.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Neck ultrasound and nodal mapping.",
             "source_ids": [
               "ATA_THYROID_CANCER_2025",
               "ATA_THYROID_NODULE_DTC_2015",
@@ -5722,7 +5722,7 @@
                     "criteria": {
                       "rule_id": "thyroid_cancer_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Thyroid Cancer (Papillary, Follicular, Medullary) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+                      "description": "Start Thyroid Cancer (Papillary, Follicular, Medullary) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -7165,7 +7165,7 @@
                                 "id": "thyroid_cancer_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Thyroid Cancer (Papillary, Follicular, Medullary): follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Thyroid Cancer (Papillary, Follicular, Medullary) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Bethesda V/VI, suspicious nodes, calcitonin/CEA elevation, or RET positivity changes surgical/genetic pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+                                "edgeLabel": "Thyroid Cancer (Papillary, Follicular, Medullary) discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Bethesda V/VI, suspicious nodes, calcitonin/CEA elevation, or RET positivity changes surgical/genetic pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                                 "source_ids": [
                                   "ATA_THYROID_CANCER_2025",
                                   "ATA_THYROID_NODULE_DTC_2015",
@@ -8684,7 +8684,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing exact Thyroid Cancer (Papillary, Follicular, Medullary) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
+          "expected_active_branch": "Missing exact Thyroid Cancer (Papillary, Follicular, Medullary) pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
@@ -8726,7 +8726,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "thyroid_cancer_followup_endpoint",
-          "expected_active_branch": "Thyroid Cancer (Papillary, Follicular, Medullary) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Bethesda V/VI, suspicious nodes, calcitonin/CEA elevation, or RET positivity changes surgical/genetic pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
+          "expected_active_branch": "Thyroid Cancer (Papillary, Follicular, Medullary) discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Bethesda V/VI, suspicious nodes, calcitonin/CEA elevation, or RET positivity changes surgical/genetic pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
         }
       ],
       "audit_requirements": {

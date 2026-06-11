@@ -1848,7 +1848,7 @@
     "decisionTrees": [
       {
         "id": "decision_01",
-        "label": "Screen for immediate danger or disposition-changing findings before routine workup: Sepsis or shock physiology.",
+        "label": "Fever, infection, or sepsis: danger features or monitored-care triggers: Sepsis or shock physiology.",
         "item_type": "management_change",
         "source": {
           "source_id": "SSC_SEPSIS_2026",
@@ -1859,14 +1859,14 @@
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
         },
-        "action": "Screen for immediate danger or disposition-changing findings before routine workup: Sepsis or shock physiology.",
-        "rationale": "Derives a Fever, infection, or sepsis workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Screen for immediate danger or disposition-changing findings before routine workup: Sepsis or shock physiology.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Fever, infection, or sepsis.",
-        "management_change": "Screen for immediate danger or disposition-changing findings before routine workup: Sepsis or shock physiology.",
+        "action": "Fever, infection, or sepsis: danger features or monitored-care triggers: Sepsis or shock physiology.",
+        "rationale": "Fever, infection, or sepsis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Fever, infection, or sepsis: danger features or monitored-care triggers: Sepsis or shock physiology.: patient data that changes testing, treatment, monitoring, referral, or disposition for Fever, infection, or sepsis.",
+        "management_change": "Fever, infection, or sepsis: danger features or monitored-care triggers: Sepsis or shock physiology.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Fever, infection, or sepsis.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Fever, infection, or sepsis.",
         "tags": [
           "fever",
           "infection",
@@ -1874,19 +1874,19 @@
           "fever",
           "infection",
           "sepsis",
-          "screen",
-          "immediate",
+          "fever",
+          "infection",
+          "sepsis",
           "danger",
-          "disposition",
-          "changing",
-          "findings",
-          "before",
-          "routine"
+          "features",
+          "monitored",
+          "care",
+          "triggers"
         ]
       },
       {
         "id": "decision_02",
-        "label": "Order focused first-line studies and interpret them in sequence: Sepsis severity labs and reference thresholds; Source-directed infection studies; Respiratory source imaging and testing pathway.",
+        "label": "Fever, infection, or sepsis: initial diagnostic data to obtain and interpret together: Sepsis severity labs and reference thresholds; Source-directed infection studies; Respiratory source imaging and testing pathway.",
         "item_type": "management_change",
         "source": {
           "source_id": "SSC_SEPSIS_2026",
@@ -1897,14 +1897,14 @@
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
         },
-        "action": "Order focused first-line studies and interpret them in sequence: Sepsis severity labs and reference thresholds; Source-directed infection studies; Respiratory source imaging and testing pathway.",
-        "rationale": "Derives a Fever, infection, or sepsis workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Order focused first-line studies and interpret them in sequence: Sepsis severity labs and reference thresholds; Source-directed infection studies; Respiratory source imaging and testing pathway.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Fever, infection, or sepsis.",
-        "management_change": "Order focused first-line studies and interpret them in sequence: Sepsis severity labs and reference thresholds; Source-directed infection studies; Respiratory source imaging and testing pathway.",
+        "action": "Fever, infection, or sepsis: initial diagnostic data to obtain and interpret together: Sepsis severity labs and reference thresholds; Source-directed infection studies; Respiratory source imaging and testing pathway.",
+        "rationale": "Fever, infection, or sepsis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Fever, infection, or sepsis: initial diagnostic data to obtain and interpret together: Sepsis severity labs and reference thresholds; Source-directed infection studies; Respiratory source imaging and testing pathway.: patient data that changes testing, treatment, monitoring, referral, or disposition for Fever, infection, or sepsis.",
+        "management_change": "Fever, infection, or sepsis: initial diagnostic data to obtain and interpret together: Sepsis severity labs and reference thresholds; Source-directed infection studies; Respiratory source imaging and testing pathway.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Fever, infection, or sepsis.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Fever, infection, or sepsis.",
         "tags": [
           "fever",
           "infection",
@@ -1912,19 +1912,19 @@
           "fever",
           "infection",
           "sepsis",
-          "order",
-          "focused",
-          "first",
-          "line",
-          "studies",
-          "interpret",
-          "them",
-          "sequence"
+          "fever",
+          "infection",
+          "sepsis",
+          "initial",
+          "diagnostic",
+          "data",
+          "obtain",
+          "interpret"
         ]
       },
       {
         "id": "decision_03",
-        "label": "Use the leading diagnostic frame to avoid premature closure: Sepsis or serious bacterial infection with organ dysfunction, shock physiology, altered mentation, hypoxemia, oliguria, or rapid worsening.",
+        "label": "Fever, infection, or sepsis: leading diagnostic frame and mimics to resolve: Sepsis or serious bacterial infection with organ dysfunction, shock physiology, altered mentation, hypoxemia, oliguria, or rapid worsening.",
         "item_type": "management_change",
         "source": {
           "source_id": "SSC_SEPSIS_2026",
@@ -1935,15 +1935,18 @@
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": "Use bedside findings to trigger urgent reassessment; do not use them to delay cultures, antimicrobial treatment, source control, or escalation when sepsis is suspected."
         },
-        "action": "Use the leading diagnostic frame to avoid premature closure: Sepsis or serious bacterial infection with organ dysfunction, shock physiology, altered mentation, hypoxemia, oliguria, or rapid worsening.",
-        "rationale": "Derives a Fever, infection, or sepsis workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Use the leading diagnostic frame to avoid premature closure: Sepsis or serious bacterial infection with organ dysfunction, shock physiology, altered mentation, hypoxemia, oliguria, or rapid worsening.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Fever, infection, or sepsis.",
-        "management_change": "Use the leading diagnostic frame to avoid premature closure: Sepsis or serious bacterial infection with organ dysfunction, shock physiology, altered mentation, hypoxemia, oliguria, or rapid worsening.",
+        "action": "Fever, infection, or sepsis: leading diagnostic frame and mimics to resolve: Sepsis or serious bacterial infection with organ dysfunction, shock physiology, altered mentation, hypoxemia, oliguria, or rapid worsening.",
+        "rationale": "Fever, infection, or sepsis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Fever, infection, or sepsis: leading diagnostic frame and mimics to resolve: Sepsis or serious bacterial infection with organ dysfunction, shock physiology, altered mentation, hypoxemia, oliguria, or rapid worsening.: patient data that changes testing, treatment, monitoring, referral, or disposition for Fever, infection, or sepsis.",
+        "management_change": "Fever, infection, or sepsis: leading diagnostic frame and mimics to resolve: Sepsis or serious bacterial infection with organ dysfunction, shock physiology, altered mentation, hypoxemia, oliguria, or rapid worsening.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Fever, infection, or sepsis.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Fever, infection, or sepsis.",
         "tags": [
+          "fever",
+          "infection",
+          "sepsis",
           "fever",
           "infection",
           "sepsis",
@@ -1953,16 +1956,13 @@
           "leading",
           "diagnostic",
           "frame",
-          "avoid",
-          "premature",
-          "closure",
-          "sepsis",
-          "serious"
+          "mimics",
+          "resolve"
         ]
       },
       {
         "id": "decision_04",
-        "label": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Escalate unstable fever or suspected sepsis.",
+        "label": "Fever, infection, or sepsis: escalation or disposition rule triggered by abnormal results or worsening status: Escalate unstable fever or suspected sepsis.",
         "item_type": "management_change",
         "source": {
           "source_id": "SSC_SEPSIS_2026",
@@ -1973,14 +1973,14 @@
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
         },
-        "action": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Escalate unstable fever or suspected sepsis.",
-        "rationale": "Derives a Fever, infection, or sepsis workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Escalate unstable fever or suspected sepsis.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Fever, infection, or sepsis.",
-        "management_change": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Escalate unstable fever or suspected sepsis.",
+        "action": "Fever, infection, or sepsis: escalation or disposition rule triggered by abnormal results or worsening status: Escalate unstable fever or suspected sepsis.",
+        "rationale": "Fever, infection, or sepsis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Fever, infection, or sepsis: escalation or disposition rule triggered by abnormal results or worsening status: Escalate unstable fever or suspected sepsis.: patient data that changes testing, treatment, monitoring, referral, or disposition for Fever, infection, or sepsis.",
+        "management_change": "Fever, infection, or sepsis: escalation or disposition rule triggered by abnormal results or worsening status: Escalate unstable fever or suspected sepsis.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Fever, infection, or sepsis.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Fever, infection, or sepsis.",
         "tags": [
           "fever",
           "infection",
@@ -1988,21 +1988,21 @@
           "fever",
           "infection",
           "sepsis",
-          "results",
-          "bedside",
-          "status",
-          "high",
-          "risk",
-          "abnormal",
-          "worsening",
-          "discordant"
+          "fever",
+          "infection",
+          "sepsis",
+          "escalation",
+          "disposition",
+          "rule",
+          "triggered",
+          "abnormal"
         ]
       }
     ],
     "treatmentOptions": [
       {
         "id": "treatment_01",
-        "label": "Stabilize or escalate before routine treatment when danger criteria are present: Sepsis or shock physiology.",
+        "label": "Fever, infection, or sepsis: immediate stabilization or escalation trigger: Sepsis or shock physiology.",
         "item_type": "management_change",
         "source": {
           "source_id": "SSC_SEPSIS_2026",
@@ -2013,14 +2013,14 @@
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
         },
-        "action": "Stabilize or escalate before routine treatment when danger criteria are present: Sepsis or shock physiology.",
-        "rationale": "Derives a Fever, infection, or sepsis workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Stabilize or escalate before routine treatment when danger criteria are present: Sepsis or shock physiology.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Fever, infection, or sepsis.",
-        "management_change": "Stabilize or escalate before routine treatment when danger criteria are present: Sepsis or shock physiology.",
+        "action": "Fever, infection, or sepsis: immediate stabilization or escalation trigger: Sepsis or shock physiology.",
+        "rationale": "Fever, infection, or sepsis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Fever, infection, or sepsis: immediate stabilization or escalation trigger: Sepsis or shock physiology.: patient data that changes testing, treatment, monitoring, referral, or disposition for Fever, infection, or sepsis.",
+        "management_change": "Fever, infection, or sepsis: immediate stabilization or escalation trigger: Sepsis or shock physiology.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Fever, infection, or sepsis.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Fever, infection, or sepsis.",
         "tags": [
           "fever",
           "infection",
@@ -2028,19 +2028,19 @@
           "fever",
           "infection",
           "sepsis",
-          "stabilize",
-          "escalate",
-          "before",
-          "routine",
-          "treatment",
-          "when",
-          "danger",
-          "criteria"
+          "fever",
+          "infection",
+          "sepsis",
+          "immediate",
+          "stabilization",
+          "escalation",
+          "trigger",
+          "sepsis"
         ]
       },
       {
         "id": "treatment_02",
-        "label": "Use the high-risk or confirmed-pathway management option when criteria are met: Escalate unstable fever or suspected sepsis.",
+        "label": "Fever, infection, or sepsis: treatment or disposition for high-risk or confirmed disease: Escalate unstable fever or suspected sepsis.",
         "item_type": "management_change",
         "source": {
           "source_id": "SSC_SEPSIS_2026",
@@ -2051,14 +2051,14 @@
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
         },
-        "action": "Use the high-risk or confirmed-pathway management option when criteria are met: Escalate unstable fever or suspected sepsis.",
-        "rationale": "Derives a Fever, infection, or sepsis workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Use the high-risk or confirmed-pathway management option when criteria are met: Escalate unstable fever or suspected sepsis.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Fever, infection, or sepsis.",
-        "management_change": "Use the high-risk or confirmed-pathway management option when criteria are met: Escalate unstable fever or suspected sepsis.",
+        "action": "Fever, infection, or sepsis: treatment or disposition for high-risk or confirmed disease: Escalate unstable fever or suspected sepsis.",
+        "rationale": "Fever, infection, or sepsis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Fever, infection, or sepsis: treatment or disposition for high-risk or confirmed disease: Escalate unstable fever or suspected sepsis.: patient data that changes testing, treatment, monitoring, referral, or disposition for Fever, infection, or sepsis.",
+        "management_change": "Fever, infection, or sepsis: treatment or disposition for high-risk or confirmed disease: Escalate unstable fever or suspected sepsis.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Fever, infection, or sepsis.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Fever, infection, or sepsis.",
         "tags": [
           "fever",
           "infection",
@@ -2066,19 +2066,19 @@
           "fever",
           "infection",
           "sepsis",
+          "fever",
+          "infection",
+          "sepsis",
+          "treatment",
+          "disposition",
           "high",
           "risk",
-          "confirmed",
-          "pathway",
-          "management",
-          "option",
-          "when",
-          "criteria"
+          "confirmed"
         ]
       },
       {
         "id": "treatment_03",
-        "label": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: Use outpatient follow-up only when low risk and safety net is clear.",
+        "label": "Fever, infection, or sepsis: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Use outpatient follow-up only when low risk and safety net is clear.",
         "item_type": "management_change",
         "source": {
           "source_id": "MERCK_FEVER_ADULTS",
@@ -2089,14 +2089,14 @@
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
         },
-        "action": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: Use outpatient follow-up only when low risk and safety net is clear.",
-        "rationale": "Derives a Fever, infection, or sepsis workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: Use outpatient follow-up only when low risk and safety net is clear.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Fever, infection, or sepsis.",
-        "management_change": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: Use outpatient follow-up only when low risk and safety net is clear.",
+        "action": "Fever, infection, or sepsis: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Use outpatient follow-up only when low risk and safety net is clear.",
+        "rationale": "Fever, infection, or sepsis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Fever, infection, or sepsis: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Use outpatient follow-up only when low risk and safety net is clear.: patient data that changes testing, treatment, monitoring, referral, or disposition for Fever, infection, or sepsis.",
+        "management_change": "Fever, infection, or sepsis: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Use outpatient follow-up only when low risk and safety net is clear.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Fever, infection, or sepsis.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Fever, infection, or sepsis.",
         "tags": [
           "fever",
           "infection",
@@ -2104,19 +2104,19 @@
           "fever",
           "infection",
           "sepsis",
-          "lower",
-          "risk",
+          "fever",
+          "infection",
+          "sepsis",
           "outpatient",
-          "supportive",
           "safety",
-          "pathway",
-          "only",
-          "when"
+          "route",
+          "after",
+          "exclusion"
         ]
       },
       {
         "id": "treatment_04",
-        "label": "Monitor treatment response, complications, and need for reassessment with: Sepsis severity labs and reference thresholds.",
+        "label": "Fever, infection, or sepsis: monitoring data for response, complications, and reassessment: Sepsis severity labs and reference thresholds.",
         "item_type": "management_change",
         "source": {
           "source_id": "SSC_SEPSIS_2026",
@@ -2127,14 +2127,14 @@
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
         },
-        "action": "Monitor treatment response, complications, and need for reassessment with: Sepsis severity labs and reference thresholds.",
-        "rationale": "Derives a Fever, infection, or sepsis workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Monitor treatment response, complications, and need for reassessment with: Sepsis severity labs and reference thresholds.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Fever, infection, or sepsis.",
-        "management_change": "Monitor treatment response, complications, and need for reassessment with: Sepsis severity labs and reference thresholds.",
+        "action": "Fever, infection, or sepsis: monitoring data for response, complications, and reassessment: Sepsis severity labs and reference thresholds.",
+        "rationale": "Fever, infection, or sepsis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Fever, infection, or sepsis: monitoring data for response, complications, and reassessment: Sepsis severity labs and reference thresholds.: patient data that changes testing, treatment, monitoring, referral, or disposition for Fever, infection, or sepsis.",
+        "management_change": "Fever, infection, or sepsis: monitoring data for response, complications, and reassessment: Sepsis severity labs and reference thresholds.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Fever, infection, or sepsis.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Fever, infection, or sepsis.",
         "tags": [
           "fever",
           "infection",
@@ -2142,14 +2142,14 @@
           "fever",
           "infection",
           "sepsis",
-          "monitor",
-          "treatment",
+          "fever",
+          "infection",
+          "sepsis",
+          "monitoring",
+          "data",
           "response",
           "complications",
-          "need",
-          "reassessment",
-          "with",
-          "sepsis"
+          "reassessment"
         ]
       }
     ],
@@ -2605,7 +2605,8 @@
               "Skin, line, HEENT, CNS, abdominal, joint, travel, medication, or exposure-related fever source",
               "Escalate unstable fever or suspected sepsis",
               "Use outpatient follow-up only when low risk and safety net is clear",
-              "Monitor treatment response, complications, and need for reassessment with: Sepsis severity labs and reference thresholds."
+              "Fever, infection, or sepsis: immediate stabilization or escalation trigger: Sepsis or shock physiology.",
+              "Fever, infection, or sepsis: treatment or disposition for high-risk or confirmed disease: Escalate unstable fever or suspected sepsis."
             ],
             "source_ids": [
               "SSC_SEPSIS_2026",
@@ -13177,7 +13178,7 @@
                         }
                       ]
                     },
-                    "action": "Perform rapid assessment for infectious and noninfectious causes, obtain targeted tests and cultures when indicated, reassess vitals/perfusion, and either administer antimicrobials within 3 hours if infection concern persists or defer antimicrobials with close monitoring when infection likelihood is low and shock is absent.",
+                    "action": "Perform rapid infectious-versus-noninfectious assessment, obtain blood cultures/lactate and source-directed data such as urinalysis/urine culture, CXR for respiratory signs, wound or CSF studies when those sources are suspected, repeat vitals/perfusion, and either administer antimicrobials within 3 hours if infection concern persists or defer antimicrobials with close monitoring when infection likelihood is low and shock is absent.",
                     "children": [],
                     "endpoint_type": "diagnostic_step",
                     "guideline_cutoffs": [

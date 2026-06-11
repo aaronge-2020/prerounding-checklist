@@ -2016,8 +2016,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Start with TSH and free T4; high TSH with low free T4 supports overt primary hypothyroidism, while low free T4 with low/normal TSH suggests central disease.",
-        "rationale": "Routes Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Start with TSH and free T4; high TSH with low free T4 supports overt primary hypothyroidism, while low free T4 with low/normal TSH suggests central disease.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
+        "rationale": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Start with TSH and free T4; high TSH with low free T4 supports overt primary hypothyroidism, while low free T4 with low/normal TSH suggests central disease.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
         "management_change": "Start with TSH and free T4; high TSH with low free T4 supports overt primary hypothyroidism, while low free T4 with low/normal TSH suggests central disease.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2049,8 +2049,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Check TPO antibody when autoimmune thyroiditis changes prognosis, pregnancy planning, or etiology; ultrasound is reserved for goiter, nodule, asymmetry, or compressive symptoms.",
-        "rationale": "Routes Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Check TPO antibody when autoimmune thyroiditis changes prognosis, pregnancy planning, or etiology; ultrasound is reserved for goiter, nodule, asymmetry, or compressive symptoms.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
+        "rationale": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Check TPO antibody when autoimmune thyroiditis changes prognosis, pregnancy planning, or etiology; ultrasound is reserved for goiter, nodule, asymmetry, or compressive symptoms.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
         "management_change": "Check TPO antibody when autoimmune thyroiditis changes prognosis, pregnancy planning, or etiology; ultrasound is reserved for goiter, nodule, asymmetry, or compressive symptoms.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2083,8 +2083,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Before levothyroxine escalation in pituitary disease or severe illness, assess adrenal insufficiency risk.",
-        "rationale": "Routes Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Before levothyroxine escalation in pituitary disease or severe illness, assess adrenal insufficiency risk.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
+        "rationale": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Before levothyroxine escalation in pituitary disease or severe illness, assess adrenal insufficiency risk.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
         "management_change": "Before levothyroxine escalation in pituitary disease or severe illness, assess adrenal insufficiency risk.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2117,8 +2117,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Screen urgently for myxedema coma physiology when hypothermia, bradycardia, hypotension, hypoventilation, hyponatremia, or altered mental status is present.",
-        "rationale": "Routes Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Screen urgently for myxedema coma physiology when hypothermia, bradycardia, hypotension, hypoventilation, hyponatremia, or altered mental status is present.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
+        "rationale": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Screen urgently for myxedema coma physiology when hypothermia, bradycardia, hypotension, hypoventilation, hyponatremia, or altered mental status is present.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
         "management_change": "Screen urgently for myxedema coma physiology when hypothermia, bradycardia, hypotension, hypoventilation, hyponatremia, or altered mental status is present.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2151,8 +2151,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Confirm that Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) is the selected clinical intent, then screen for red flags before routine outpatient testing.",
-        "rationale": "Routes Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Confirm that Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) is the selected clinical intent, then screen for red flags before routine outpatient testing.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
+        "rationale": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Confirm that Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) is the selected clinical intent, then screen for red flags before routine outpatient testing.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
         "management_change": "Confirm that Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) is the selected clinical intent, then screen for red flags before routine outpatient testing.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2185,8 +2185,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Order the first-line tests in sequence: TSH, free T4, TPO antibody; Thyroglobulin antibody as adjunct; Ultrasound only for nodule, goiter, or compressive symptoms.",
-        "rationale": "Routes Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Order the first-line tests in sequence: TSH, free T4, TPO antibody; Thyroglobulin antibody as adjunct; Ultrasound only for nodule, goiter, or compressive symptoms.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
+        "rationale": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Order the first-line tests in sequence: TSH, free T4, TPO antibody; Thyroglobulin antibody as adjunct; Ultrasound only for nodule, goiter, or compressive symptoms.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
         "management_change": "Order the first-line tests in sequence: TSH, free T4, TPO antibody; Thyroglobulin antibody as adjunct; Ultrasound only for nodule, goiter, or compressive symptoms.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2219,8 +2219,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret numeric results against the workup cutoffs and local assay ranges: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
-        "rationale": "Routes Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Interpret numeric results against the workup cutoffs and local assay ranges: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
+        "rationale": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Interpret numeric results against the workup cutoffs and local assay ranges: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
         "management_change": "Interpret numeric results against the workup cutoffs and local assay ranges: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2253,8 +2253,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.",
-        "rationale": "Routes Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
+        "rationale": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
         "management_change": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2290,7 +2290,7 @@
         },
         "action": "Treat overt primary hypothyroidism with levothyroxine, adjusted for age, cardiac disease, pregnancy, weight, adherence, and interacting medications.",
         "rationale": "Links confirmed Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Treat overt primary hypothyroidism with levothyroxine, adjusted for age, cardiac disease, pregnancy, weight, adherence, and interacting medications.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
+        "diagnostic_target": "Treat overt primary hypothyroidism with levothyroxine, adjusted for age, cardiac disease, pregnancy, weight, adherence, and interacting medications.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
         "management_change": "Treat overt primary hypothyroidism with levothyroxine, adjusted for age, cardiac disease, pregnancy, weight, adherence, and interacting medications.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2324,7 +2324,7 @@
         },
         "action": "For subclinical hypothyroidism, individualize treatment by TSH level, symptoms, antibodies, pregnancy/fertility context, goiter, and cardiovascular risk.",
         "rationale": "Links confirmed Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "For subclinical hypothyroidism, individualize treatment by TSH level, symptoms, antibodies, pregnancy/fertility context, goiter, and cardiovascular risk.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
+        "diagnostic_target": "For subclinical hypothyroidism, individualize treatment by TSH level, symptoms, antibodies, pregnancy/fertility context, goiter, and cardiovascular risk.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
         "management_change": "For subclinical hypothyroidism, individualize treatment by TSH level, symptoms, antibodies, pregnancy/fertility context, goiter, and cardiovascular risk.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2358,7 +2358,7 @@
         },
         "action": "Use free T4 rather than TSH to titrate central hypothyroidism, after adrenal status is safe.",
         "rationale": "Links confirmed Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Use free T4 rather than TSH to titrate central hypothyroidism, after adrenal status is safe.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
+        "diagnostic_target": "Use free T4 rather than TSH to titrate central hypothyroidism, after adrenal status is safe.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
         "management_change": "Use free T4 rather than TSH to titrate central hypothyroidism, after adrenal status is safe.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2392,7 +2392,7 @@
         },
         "action": "For suspected myxedema coma, use emergency IV thyroid hormone, stress-dose glucocorticoid coverage, warming, ventilation, sodium/glucose correction, and ICU-level care per local protocol.",
         "rationale": "Links confirmed Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "For suspected myxedema coma, use emergency IV thyroid hormone, stress-dose glucocorticoid coverage, warming, ventilation, sodium/glucose correction, and ICU-level care per local protocol.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
+        "diagnostic_target": "For suspected myxedema coma, use emergency IV thyroid hormone, stress-dose glucocorticoid coverage, warming, ventilation, sodium/glucose correction, and ICU-level care per local protocol.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
         "management_change": "For suspected myxedema coma, use emergency IV thyroid hormone, stress-dose glucocorticoid coverage, warming, ventilation, sodium/glucose correction, and ICU-level care per local protocol.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2426,7 +2426,7 @@
         },
         "action": "Treat unstable presentations first using the urgent escalation rule for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism); draw time-sensitive labs only if doing so does not delay stabilization.",
         "rationale": "Links confirmed Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Treat unstable presentations first using the urgent escalation rule for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism); draw time-sensitive labs only if doing so does not delay stabilization.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
+        "diagnostic_target": "Treat unstable presentations first using the urgent escalation rule for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism); draw time-sensitive labs only if doing so does not delay stabilization.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
         "management_change": "Treat unstable presentations first using the urgent escalation rule for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism); draw time-sensitive labs only if doing so does not delay stabilization.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2460,7 +2460,7 @@
         },
         "action": "For confirmed Hashimoto's Thyroiditis (Autoimmune Hypothyroidism), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.",
         "rationale": "Links confirmed Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "For confirmed Hashimoto's Thyroiditis (Autoimmune Hypothyroidism), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
+        "diagnostic_target": "For confirmed Hashimoto's Thyroiditis (Autoimmune Hypothyroidism), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
         "management_change": "For confirmed Hashimoto's Thyroiditis (Autoimmune Hypothyroidism), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2494,7 +2494,7 @@
         },
         "action": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.",
         "rationale": "Links confirmed Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
+        "diagnostic_target": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
         "management_change": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2528,7 +2528,7 @@
         },
         "action": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.",
         "rationale": "Links confirmed Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
+        "diagnostic_target": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
         "management_change": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -3605,7 +3605,7 @@
         "hashimotos_thyroiditis_treatment_bundle": {
           "rule_id": "hashimotos_thyroiditis_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+          "description": "Start Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4695,7 +4695,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): does patient context support this workup or require exact missing-data routing?",
+        "label": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): route by documented findings and exact missing-data needs",
         "edgeLabel": "",
         "source_ids": [
           "ATA_HYPOTHYROIDISM_2014",
@@ -4722,13 +4722,13 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) using cited diagnostic thresholds/rules, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+        "action": "Route Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
         "children": [
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) pathway context",
-            "edgeLabel": "Missing exact Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
+            "edgeLabel": "Missing exact Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -4784,7 +4784,7 @@
             "id": "hashimotos_thyroiditis_concurrent_data_bundle",
             "type": "action",
             "label": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Selected Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) workup or documented findings: Have you had cold intolerance, constipation, fatigue, dry skin, slowed thinking, hoarse voice, weight gain, or heavy menses?; Any personal or family autoimmune disease, endocrine disease, thyroid cancer/MEN2, adrenal disease, or related inherited condition?; Any neck swelling, rapid growth, pain, hoarseness, trouble swallowing, positional shortness of breath, radiation exposure, or family thyroid cancer/MEN2 history?; Any palpitations, tremor, heat intolerance, anxiety, insomnia, weight loss, diarrhea, or sweating suggesting thyroid hormone excess or adrenergic physiology?; Rapidly enlarging thyroid, compressive symptoms, hard fixed nodule, cervical nodes.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; TSH, free T4, TPO antibody.",
+            "edgeLabel": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) active from documented findings: Have you had cold intolerance, constipation, fatigue, dry skin, slowed thinking, hoarse voice, weight gain, or heavy menses?; Any personal or family autoimmune disease, endocrine disease, thyroid cancer/MEN2, adrenal disease, or related inherited condition?; Any neck swelling, rapid growth, pain, hoarseness, trouble swallowing, positional shortness of breath, radiation exposure, or family thyroid cancer/MEN2 history?; Any palpitations, tremor, heat intolerance, anxiety, insomnia, weight loss, diarrhea, or sweating suggesting thyroid hormone excess or adrenergic physiology?; Rapidly enlarging thyroid, compressive symptoms, hard fixed nodule, cervical nodes.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; TSH, free T4, TPO antibody.",
             "source_ids": [
               "ATA_HYPOTHYROIDISM_2014",
               "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -5606,7 +5606,7 @@
                     "criteria": {
                       "rule_id": "hashimotos_thyroiditis_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+                      "description": "Start Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -7010,7 +7010,7 @@
                                 "id": "hashimotos_thyroiditis_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Positive TPO Ab supports autoimmune thyroiditis.; Suspicious nodule/compressive findings move to ultrasound/FNA pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+                                "edgeLabel": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Positive TPO Ab supports autoimmune thyroiditis.; Suspicious nodule/compressive findings move to ultrasound/FNA pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
                                 "source_ids": [
                                   "ATA_HYPOTHYROIDISM_2014",
                                   "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -8381,7 +8381,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing exact Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
+          "expected_active_branch": "Missing exact Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
@@ -8423,7 +8423,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "hashimotos_thyroiditis_followup_endpoint",
-          "expected_active_branch": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Positive TPO Ab supports autoimmune thyroiditis.; Suspicious nodule/compressive findings move to ultrasound/FNA pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care."
+          "expected_active_branch": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Positive TPO Ab supports autoimmune thyroiditis.; Suspicious nodule/compressive findings move to ultrasound/FNA pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care."
         }
       ],
       "audit_requirements": {

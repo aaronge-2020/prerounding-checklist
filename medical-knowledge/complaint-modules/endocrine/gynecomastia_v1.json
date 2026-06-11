@@ -1618,8 +1618,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Distinguish glandular gynecomastia from adiposity and from suspicious breast mass, then assess medications, substances, liver/kidney/thyroid disease, hypogonadism, and testicular symptoms.",
-        "rationale": "Routes Gynecomastia (Enlarged male breast tissue) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Distinguish glandular gynecomastia from adiposity and from suspicious breast mass, then assess medications, substances, liver/kidney/thyroid disease, hypogonadism, and testicular symptoms.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
+        "rationale": "Gynecomastia (Enlarged male breast tissue): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Distinguish glandular gynecomastia from adiposity and from suspicious breast mass, then assess medications, substances, liver/kidney/thyroid disease, hypogonadism, and testicular symptoms.: patient data that changes testing, treatment, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
         "management_change": "Distinguish glandular gynecomastia from adiposity and from suspicious breast mass, then assess medications, substances, liver/kidney/thyroid disease, hypogonadism, and testicular symptoms.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1651,8 +1651,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Order testosterone, LH/FSH, estradiol, hCG, prolactin, TSH, liver/kidney tests, and testicular ultrasound when tumor or testicular abnormality is suspected.",
-        "rationale": "Routes Gynecomastia (Enlarged male breast tissue) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Order testosterone, LH/FSH, estradiol, hCG, prolactin, TSH, liver/kidney tests, and testicular ultrasound when tumor or testicular abnormality is suspected.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
+        "rationale": "Gynecomastia (Enlarged male breast tissue): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Order testosterone, LH/FSH, estradiol, hCG, prolactin, TSH, liver/kidney tests, and testicular ultrasound when tumor or testicular abnormality is suspected.: patient data that changes testing, treatment, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
         "management_change": "Order testosterone, LH/FSH, estradiol, hCG, prolactin, TSH, liver/kidney tests, and testicular ultrasound when tumor or testicular abnormality is suspected.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1685,8 +1685,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Urgently evaluate hard eccentric mass, nipple discharge, skin/nodal changes, testicular mass, rapid progression, or elevated hCG/estradiol.",
-        "rationale": "Routes Gynecomastia (Enlarged male breast tissue) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Urgently evaluate hard eccentric mass, nipple discharge, skin/nodal changes, testicular mass, rapid progression, or elevated hCG/estradiol.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
+        "rationale": "Gynecomastia (Enlarged male breast tissue): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Urgently evaluate hard eccentric mass, nipple discharge, skin/nodal changes, testicular mass, rapid progression, or elevated hCG/estradiol.: patient data that changes testing, treatment, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
         "management_change": "Urgently evaluate hard eccentric mass, nipple discharge, skin/nodal changes, testicular mass, rapid progression, or elevated hCG/estradiol.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1719,8 +1719,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "If pubertal, medication-related, or physiologic and low risk, observe with follow-up.",
-        "rationale": "Routes Gynecomastia (Enlarged male breast tissue) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "If pubertal, medication-related, or physiologic and low risk, observe with follow-up.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
+        "rationale": "Gynecomastia (Enlarged male breast tissue): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "If pubertal, medication-related, or physiologic and low risk, observe with follow-up.: patient data that changes testing, treatment, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
         "management_change": "If pubertal, medication-related, or physiologic and low risk, observe with follow-up.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1752,8 +1752,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Confirm that Gynecomastia (Enlarged male breast tissue) is the selected clinical intent, then screen for red flags before routine outpatient testing.",
-        "rationale": "Routes Gynecomastia (Enlarged male breast tissue) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Confirm that Gynecomastia (Enlarged male breast tissue) is the selected clinical intent, then screen for red flags before routine outpatient testing.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
+        "rationale": "Gynecomastia (Enlarged male breast tissue): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Confirm that Gynecomastia (Enlarged male breast tissue) is the selected clinical intent, then screen for red flags before routine outpatient testing.: patient data that changes testing, treatment, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
         "management_change": "Confirm that Gynecomastia (Enlarged male breast tissue) is the selected clinical intent, then screen for red flags before routine outpatient testing.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1785,8 +1785,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Order the first-line tests in sequence: Total testosterone, LH, FSH, estradiol; hCG if suspicious; consider AFP/testicular ultrasound if tumor concern; TSH, prolactin, liver/kidney function.",
-        "rationale": "Routes Gynecomastia (Enlarged male breast tissue) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Order the first-line tests in sequence: Total testosterone, LH, FSH, estradiol; hCG if suspicious; consider AFP/testicular ultrasound if tumor concern; TSH, prolactin, liver/kidney function.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
+        "rationale": "Gynecomastia (Enlarged male breast tissue): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Order the first-line tests in sequence: Total testosterone, LH, FSH, estradiol; hCG if suspicious; consider AFP/testicular ultrasound if tumor concern; TSH, prolactin, liver/kidney function.: patient data that changes testing, treatment, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
         "management_change": "Order the first-line tests in sequence: Total testosterone, LH, FSH, estradiol; hCG if suspicious; consider AFP/testicular ultrasound if tumor concern; TSH, prolactin, liver/kidney function.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1819,8 +1819,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret numeric results against the workup cutoffs and local assay ranges: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
-        "rationale": "Routes Gynecomastia (Enlarged male breast tissue) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Interpret numeric results against the workup cutoffs and local assay ranges: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
+        "rationale": "Gynecomastia (Enlarged male breast tissue): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Interpret numeric results against the workup cutoffs and local assay ranges: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.: patient data that changes testing, treatment, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
         "management_change": "Interpret numeric results against the workup cutoffs and local assay ranges: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1853,8 +1853,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.",
-        "rationale": "Routes Gynecomastia (Enlarged male breast tissue) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
+        "rationale": "Gynecomastia (Enlarged male breast tissue): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.: patient data that changes testing, treatment, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
         "management_change": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1890,7 +1890,7 @@
         },
         "action": "Stop or substitute causative medication/substance when feasible and treat underlying hypogonadism, thyroid, liver, kidney, or tumor cause.",
         "rationale": "Links confirmed Gynecomastia (Enlarged male breast tissue) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Stop or substitute causative medication/substance when feasible and treat underlying hypogonadism, thyroid, liver, kidney, or tumor cause.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
+        "diagnostic_target": "Stop or substitute causative medication/substance when feasible and treat underlying hypogonadism, thyroid, liver, kidney, or tumor cause.: patient data that changes testing, treatment, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
         "management_change": "Stop or substitute causative medication/substance when feasible and treat underlying hypogonadism, thyroid, liver, kidney, or tumor cause.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1924,7 +1924,7 @@
         },
         "action": "Use reassurance and observation for mild recent physiologic gynecomastia without red flags.",
         "rationale": "Links confirmed Gynecomastia (Enlarged male breast tissue) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Use reassurance and observation for mild recent physiologic gynecomastia without red flags.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
+        "diagnostic_target": "Use reassurance and observation for mild recent physiologic gynecomastia without red flags.: patient data that changes testing, treatment, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
         "management_change": "Use reassurance and observation for mild recent physiologic gynecomastia without red flags.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1957,7 +1957,7 @@
         },
         "action": "Consider selective estrogen receptor modulator therapy for painful recent gynecomastia in appropriate patients with specialist input.",
         "rationale": "Links confirmed Gynecomastia (Enlarged male breast tissue) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Consider selective estrogen receptor modulator therapy for painful recent gynecomastia in appropriate patients with specialist input.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
+        "diagnostic_target": "Consider selective estrogen receptor modulator therapy for painful recent gynecomastia in appropriate patients with specialist input.: patient data that changes testing, treatment, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
         "management_change": "Consider selective estrogen receptor modulator therapy for painful recent gynecomastia in appropriate patients with specialist input.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1990,7 +1990,7 @@
         },
         "action": "Refer for breast imaging, oncology/urology/endocrine, or surgery when malignant, testicular, persistent, severe, or distressing disease is present.",
         "rationale": "Links confirmed Gynecomastia (Enlarged male breast tissue) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Refer for breast imaging, oncology/urology/endocrine, or surgery when malignant, testicular, persistent, severe, or distressing disease is present.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
+        "diagnostic_target": "Refer for breast imaging, oncology/urology/endocrine, or surgery when malignant, testicular, persistent, severe, or distressing disease is present.: patient data that changes testing, treatment, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
         "management_change": "Refer for breast imaging, oncology/urology/endocrine, or surgery when malignant, testicular, persistent, severe, or distressing disease is present.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2024,7 +2024,7 @@
         },
         "action": "Treat unstable presentations first using the urgent escalation rule for Gynecomastia (Enlarged male breast tissue); draw time-sensitive labs only if doing so does not delay stabilization.",
         "rationale": "Links confirmed Gynecomastia (Enlarged male breast tissue) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Treat unstable presentations first using the urgent escalation rule for Gynecomastia (Enlarged male breast tissue); draw time-sensitive labs only if doing so does not delay stabilization.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
+        "diagnostic_target": "Treat unstable presentations first using the urgent escalation rule for Gynecomastia (Enlarged male breast tissue); draw time-sensitive labs only if doing so does not delay stabilization.: patient data that changes testing, treatment, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
         "management_change": "Treat unstable presentations first using the urgent escalation rule for Gynecomastia (Enlarged male breast tissue); draw time-sensitive labs only if doing so does not delay stabilization.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2058,7 +2058,7 @@
         },
         "action": "For confirmed Gynecomastia (Enlarged male breast tissue), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.",
         "rationale": "Links confirmed Gynecomastia (Enlarged male breast tissue) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "For confirmed Gynecomastia (Enlarged male breast tissue), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
+        "diagnostic_target": "For confirmed Gynecomastia (Enlarged male breast tissue), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.: patient data that changes testing, treatment, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
         "management_change": "For confirmed Gynecomastia (Enlarged male breast tissue), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2091,7 +2091,7 @@
         },
         "action": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.",
         "rationale": "Links confirmed Gynecomastia (Enlarged male breast tissue) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
+        "diagnostic_target": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.: patient data that changes testing, treatment, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
         "management_change": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2125,7 +2125,7 @@
         },
         "action": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.",
         "rationale": "Links confirmed Gynecomastia (Enlarged male breast tissue) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
+        "diagnostic_target": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.: patient data that changes testing, treatment, monitoring, referral, or disposition for Gynecomastia (Enlarged male breast tissue).",
         "management_change": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -3220,7 +3220,7 @@
         "gynecomastia_treatment_bundle": {
           "rule_id": "gynecomastia_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Gynecomastia (Enlarged male breast tissue) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+          "description": "Start Gynecomastia (Enlarged male breast tissue) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4334,7 +4334,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Gynecomastia (Enlarged male breast tissue): does patient context support this workup or require exact missing-data routing?",
+        "label": "Gynecomastia (Enlarged male breast tissue): route by documented findings and exact missing-data needs",
         "edgeLabel": "",
         "source_ids": [
           "ES_TESTOSTERONE_2018",
@@ -4359,13 +4359,13 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Gynecomastia (Enlarged male breast tissue) using cited diagnostic thresholds/rules, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+        "action": "Route Gynecomastia (Enlarged male breast tissue) from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
         "children": [
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Gynecomastia (Enlarged male breast tissue) pathway context",
-            "edgeLabel": "Missing exact Gynecomastia (Enlarged male breast tissue) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
+            "edgeLabel": "Missing exact Gynecomastia (Enlarged male breast tissue) pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -4421,7 +4421,7 @@
             "id": "gynecomastia_concurrent_data_bundle",
             "type": "action",
             "label": "Gynecomastia (Enlarged male breast tissue): obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Selected Gynecomastia (Enlarged male breast tissue) workup or documented findings: How long has breast tissue enlargement or tenderness been present, is it unilateral or bilateral, and have rapid growth, discrete mass, skin change, or nipple discharge occurred?; Any breast tenderness, discrete mass, nipple discharge, testicular pain or mass, fertility change, libido change, medication exposure, liver/kidney disease, alcohol, or cannabis use?; Any change in libido, morning erections, erectile function, ejaculation, orgasm, fertility goals, or testicular symptoms?; How has height or growth velocity changed compared with prior measurements, family height pattern, and puberty timing?; Hard eccentric breast mass, nipple discharge, skin changes, nodes, testicular mass, rapid progression.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Total testosterone, LH, FSH, estradiol.",
+            "edgeLabel": "Gynecomastia (Enlarged male breast tissue) active from documented findings: How long has breast tissue enlargement or tenderness been present, is it unilateral or bilateral, and have rapid growth, discrete mass, skin change, or nipple discharge occurred?; Any breast tenderness, discrete mass, nipple discharge, testicular pain or mass, fertility change, libido change, medication exposure, liver/kidney disease, alcohol, or cannabis use?; Any change in libido, morning erections, erectile function, ejaculation, orgasm, fertility goals, or testicular symptoms?; How has height or growth velocity changed compared with prior measurements, family height pattern, and puberty timing?; Hard eccentric breast mass, nipple discharge, skin changes, nodes, testicular mass, rapid progression.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Total testosterone, LH, FSH, estradiol.",
             "source_ids": [
               "ES_TESTOSTERONE_2018",
               "AUA_TESTOSTERONE_2024",
@@ -5231,7 +5231,7 @@
                     "criteria": {
                       "rule_id": "gynecomastia_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Gynecomastia (Enlarged male breast tissue) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+                      "description": "Start Gynecomastia (Enlarged male breast tissue) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -6641,7 +6641,7 @@
                                 "id": "gynecomastia_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Gynecomastia (Enlarged male breast tissue): follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Gynecomastia (Enlarged male breast tissue) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Testicular mass/hCG elevation changes to urgent tumor pathway; hypogonadism pattern changes endocrine workup.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+                                "edgeLabel": "Gynecomastia (Enlarged male breast tissue) discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Testicular mass/hCG elevation changes to urgent tumor pathway; hypogonadism pattern changes endocrine workup.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                                 "source_ids": [
                                   "ES_TESTOSTERONE_2018",
                                   "AUA_TESTOSTERONE_2024",
@@ -7987,7 +7987,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing exact Gynecomastia (Enlarged male breast tissue) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
+          "expected_active_branch": "Missing exact Gynecomastia (Enlarged male breast tissue) pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
@@ -8029,7 +8029,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "gynecomastia_followup_endpoint",
-          "expected_active_branch": "Gynecomastia (Enlarged male breast tissue) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Testicular mass/hCG elevation changes to urgent tumor pathway; hypogonadism pattern changes endocrine workup.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
+          "expected_active_branch": "Gynecomastia (Enlarged male breast tissue) discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Testicular mass/hCG elevation changes to urgent tumor pathway; hypogonadism pattern changes endocrine workup.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
         }
       ],
       "audit_requirements": {

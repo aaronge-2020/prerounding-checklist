@@ -1625,8 +1625,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Diagnose osteoporosis by fragility fracture, T-score <= -2.5, or high fracture risk; assess vertebral imaging and secondary causes before therapy selection.",
-        "rationale": "Routes Osteoporosis testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Diagnose osteoporosis by fragility fracture, T-score <= -2.5, or high fracture risk; assess vertebral imaging and secondary causes before therapy selection.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Osteoporosis.",
+        "rationale": "Osteoporosis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Diagnose osteoporosis by fragility fracture, T-score <= -2.5, or high fracture risk; assess vertebral imaging and secondary causes before therapy selection.: patient data that changes testing, treatment, monitoring, referral, or disposition for Osteoporosis.",
         "management_change": "Diagnose osteoporosis by fragility fracture, T-score <= -2.5, or high fracture risk; assess vertebral imaging and secondary causes before therapy selection.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1657,8 +1657,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Classify fracture risk as high versus very high using recent fracture, multiple fractures, very low BMD, falls, glucocorticoids, and FRAX or local tool.",
-        "rationale": "Routes Osteoporosis testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Classify fracture risk as high versus very high using recent fracture, multiple fractures, very low BMD, falls, glucocorticoids, and FRAX or local tool.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Osteoporosis.",
+        "rationale": "Osteoporosis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Classify fracture risk as high versus very high using recent fracture, multiple fractures, very low BMD, falls, glucocorticoids, and FRAX or local tool.: patient data that changes testing, treatment, monitoring, referral, or disposition for Osteoporosis.",
         "management_change": "Classify fracture risk as high versus very high using recent fracture, multiple fractures, very low BMD, falls, glucocorticoids, and FRAX or local tool.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1690,8 +1690,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Check calcium, 25(OH)D, kidney function, PTH or other secondary-cause labs as indicated before antiresorptive or anabolic therapy.",
-        "rationale": "Routes Osteoporosis testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Check calcium, 25(OH)D, kidney function, PTH or other secondary-cause labs as indicated before antiresorptive or anabolic therapy.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Osteoporosis.",
+        "rationale": "Osteoporosis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Check calcium, 25(OH)D, kidney function, PTH or other secondary-cause labs as indicated before antiresorptive or anabolic therapy.: patient data that changes testing, treatment, monitoring, referral, or disposition for Osteoporosis.",
         "management_change": "Check calcium, 25(OH)D, kidney function, PTH or other secondary-cause labs as indicated before antiresorptive or anabolic therapy.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1724,8 +1724,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Reassess BMD and fracture risk after therapy interval, especially after 3-5 years of bisphosphonate exposure.",
-        "rationale": "Routes Osteoporosis testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Reassess BMD and fracture risk after therapy interval, especially after 3-5 years of bisphosphonate exposure.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Osteoporosis.",
+        "rationale": "Osteoporosis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Reassess BMD and fracture risk after therapy interval, especially after 3-5 years of bisphosphonate exposure.: patient data that changes testing, treatment, monitoring, referral, or disposition for Osteoporosis.",
         "management_change": "Reassess BMD and fracture risk after therapy interval, especially after 3-5 years of bisphosphonate exposure.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1757,8 +1757,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Confirm that Osteoporosis is the selected clinical intent, then screen for red flags before routine outpatient testing.",
-        "rationale": "Routes Osteoporosis testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Confirm that Osteoporosis is the selected clinical intent, then screen for red flags before routine outpatient testing.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Osteoporosis.",
+        "rationale": "Osteoporosis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Confirm that Osteoporosis is the selected clinical intent, then screen for red flags before routine outpatient testing.: patient data that changes testing, treatment, monitoring, referral, or disposition for Osteoporosis.",
         "management_change": "Confirm that Osteoporosis is the selected clinical intent, then screen for red flags before routine outpatient testing.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1790,8 +1790,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Order the first-line tests in sequence: DXA and vertebral imaging when indicated; Calcium, phosphorus, creatinine/eGFR, alkaline phosphatase, 25(OH)D, PTH, TSH/CBC/CMP and secondary-cause labs as indicated.",
-        "rationale": "Routes Osteoporosis testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Order the first-line tests in sequence: DXA and vertebral imaging when indicated; Calcium, phosphorus, creatinine/eGFR, alkaline phosphatase, 25(OH)D, PTH, TSH/CBC/CMP and secondary-cause labs as indicated.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Osteoporosis.",
+        "rationale": "Osteoporosis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Order the first-line tests in sequence: DXA and vertebral imaging when indicated; Calcium, phosphorus, creatinine/eGFR, alkaline phosphatase, 25(OH)D, PTH, TSH/CBC/CMP and secondary-cause labs as indicated.: patient data that changes testing, treatment, monitoring, referral, or disposition for Osteoporosis.",
         "management_change": "Order the first-line tests in sequence: DXA and vertebral imaging when indicated; Calcium, phosphorus, creatinine/eGFR, alkaline phosphatase, 25(OH)D, PTH, TSH/CBC/CMP and secondary-cause labs as indicated.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1824,8 +1824,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret numeric results against the workup cutoffs and local assay ranges: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.",
-        "rationale": "Routes Osteoporosis testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Interpret numeric results against the workup cutoffs and local assay ranges: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Osteoporosis.",
+        "rationale": "Osteoporosis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Interpret numeric results against the workup cutoffs and local assay ranges: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.: patient data that changes testing, treatment, monitoring, referral, or disposition for Osteoporosis.",
         "management_change": "Interpret numeric results against the workup cutoffs and local assay ranges: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1858,8 +1858,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.",
-        "rationale": "Routes Osteoporosis testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Osteoporosis.",
+        "rationale": "Osteoporosis: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.: patient data that changes testing, treatment, monitoring, referral, or disposition for Osteoporosis.",
         "management_change": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1895,7 +1895,7 @@
         },
         "action": "Use bisphosphonate first-line for many high-risk patients when renal function, esophageal risk, and adherence permit.",
         "rationale": "Links confirmed Osteoporosis results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Use bisphosphonate first-line for many high-risk patients when renal function, esophageal risk, and adherence permit.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Osteoporosis.",
+        "diagnostic_target": "Use bisphosphonate first-line for many high-risk patients when renal function, esophageal risk, and adherence permit.: patient data that changes testing, treatment, monitoring, referral, or disposition for Osteoporosis.",
         "management_change": "Use bisphosphonate first-line for many high-risk patients when renal function, esophageal risk, and adherence permit.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1929,7 +1929,7 @@
         },
         "action": "Use anabolic therapy such as teriparatide, abaloparatide, or romosozumab for very-high-risk patients, then follow with antiresorptive therapy.",
         "rationale": "Links confirmed Osteoporosis results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Use anabolic therapy such as teriparatide, abaloparatide, or romosozumab for very-high-risk patients, then follow with antiresorptive therapy.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Osteoporosis.",
+        "diagnostic_target": "Use anabolic therapy such as teriparatide, abaloparatide, or romosozumab for very-high-risk patients, then follow with antiresorptive therapy.: patient data that changes testing, treatment, monitoring, referral, or disposition for Osteoporosis.",
         "management_change": "Use anabolic therapy such as teriparatide, abaloparatide, or romosozumab for very-high-risk patients, then follow with antiresorptive therapy.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1963,7 +1963,7 @@
         },
         "action": "Use denosumab when appropriate, but plan transition therapy if stopping to avoid rebound vertebral fracture risk.",
         "rationale": "Links confirmed Osteoporosis results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Use denosumab when appropriate, but plan transition therapy if stopping to avoid rebound vertebral fracture risk.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Osteoporosis.",
+        "diagnostic_target": "Use denosumab when appropriate, but plan transition therapy if stopping to avoid rebound vertebral fracture risk.: patient data that changes testing, treatment, monitoring, referral, or disposition for Osteoporosis.",
         "management_change": "Use denosumab when appropriate, but plan transition therapy if stopping to avoid rebound vertebral fracture risk.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1997,7 +1997,7 @@
         },
         "action": "Ensure calcium/vitamin D adequacy, fall prevention, exercise, smoking/alcohol counseling, dental risk review, and secondary-cause treatment.",
         "rationale": "Links confirmed Osteoporosis results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Ensure calcium/vitamin D adequacy, fall prevention, exercise, smoking/alcohol counseling, dental risk review, and secondary-cause treatment.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Osteoporosis.",
+        "diagnostic_target": "Ensure calcium/vitamin D adequacy, fall prevention, exercise, smoking/alcohol counseling, dental risk review, and secondary-cause treatment.: patient data that changes testing, treatment, monitoring, referral, or disposition for Osteoporosis.",
         "management_change": "Ensure calcium/vitamin D adequacy, fall prevention, exercise, smoking/alcohol counseling, dental risk review, and secondary-cause treatment.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2031,7 +2031,7 @@
         },
         "action": "Treat unstable presentations first using the urgent escalation rule for Osteoporosis; draw time-sensitive labs only if doing so does not delay stabilization.",
         "rationale": "Links confirmed Osteoporosis results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Treat unstable presentations first using the urgent escalation rule for Osteoporosis; draw time-sensitive labs only if doing so does not delay stabilization.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Osteoporosis.",
+        "diagnostic_target": "Treat unstable presentations first using the urgent escalation rule for Osteoporosis; draw time-sensitive labs only if doing so does not delay stabilization.: patient data that changes testing, treatment, monitoring, referral, or disposition for Osteoporosis.",
         "management_change": "Treat unstable presentations first using the urgent escalation rule for Osteoporosis; draw time-sensitive labs only if doing so does not delay stabilization.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2065,7 +2065,7 @@
         },
         "action": "For confirmed Osteoporosis, choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.",
         "rationale": "Links confirmed Osteoporosis results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "For confirmed Osteoporosis, choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Osteoporosis.",
+        "diagnostic_target": "For confirmed Osteoporosis, choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.: patient data that changes testing, treatment, monitoring, referral, or disposition for Osteoporosis.",
         "management_change": "For confirmed Osteoporosis, choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2098,7 +2098,7 @@
         },
         "action": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.",
         "rationale": "Links confirmed Osteoporosis results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Osteoporosis.",
+        "diagnostic_target": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.: patient data that changes testing, treatment, monitoring, referral, or disposition for Osteoporosis.",
         "management_change": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2132,7 +2132,7 @@
         },
         "action": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.",
         "rationale": "Links confirmed Osteoporosis results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Osteoporosis.",
+        "diagnostic_target": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.: patient data that changes testing, treatment, monitoring, referral, or disposition for Osteoporosis.",
         "management_change": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -3579,7 +3579,7 @@
         "osteoporosis_treatment_bundle": {
           "rule_id": "osteoporosis_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Osteoporosis treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+          "description": "Start Osteoporosis treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -5015,7 +5015,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Osteoporosis: does patient context support this workup or require exact missing-data routing?",
+        "label": "Osteoporosis: route by documented findings and exact missing-data needs",
         "edgeLabel": "",
         "source_ids": [
           "AACE_OSTEOPOROSIS_2020",
@@ -5038,13 +5038,13 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Osteoporosis using cited diagnostic thresholds/rules, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+        "action": "Route Osteoporosis from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
         "children": [
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Osteoporosis pathway context",
-            "edgeLabel": "Missing exact Osteoporosis pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
+            "edgeLabel": "Missing exact Osteoporosis pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -5100,7 +5100,7 @@
             "id": "osteoporosis_concurrent_data_bundle",
             "type": "action",
             "label": "Osteoporosis: obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Selected Osteoporosis workup or documented findings: Any height loss, new back pain, kyphosis, low-trauma fracture, fall, neurologic symptom, or steroid exposure suggesting vertebral compression or bone fragility?; Any aromatase inhibitor, androgen-deprivation therapy, glucocorticoid, antiseizure medication, PPI, transplant medication, or other bone-active medication exposure?; What was the menopause or ovarian-insufficiency timing, and are there fragility fracture, vasomotor, genitourinary, or hormone-therapy considerations?; Any kidney stones, nephrocalcinosis, hematuria, flank pain, recurrent UTIs, polyuria, dehydration, or renal-function changes affecting calcium/PTH interpretation?; New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; DXA and vertebral imaging when indicated.",
+            "edgeLabel": "Osteoporosis active from documented findings: Any height loss, new back pain, kyphosis, low-trauma fracture, fall, neurologic symptom, or steroid exposure suggesting vertebral compression or bone fragility?; Any aromatase inhibitor, androgen-deprivation therapy, glucocorticoid, antiseizure medication, PPI, transplant medication, or other bone-active medication exposure?; What was the menopause or ovarian-insufficiency timing, and are there fragility fracture, vasomotor, genitourinary, or hormone-therapy considerations?; Any kidney stones, nephrocalcinosis, hematuria, flank pain, recurrent UTIs, polyuria, dehydration, or renal-function changes affecting calcium/PTH interpretation?; New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; DXA and vertebral imaging when indicated.",
             "source_ids": [
               "ENDO_OSTEOPOROSIS_2020",
               "AACE_OSTEOPOROSIS_2020",
@@ -6072,7 +6072,7 @@
                     "criteria": {
                       "rule_id": "osteoporosis_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Osteoporosis treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+                      "description": "Start Osteoporosis treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -7884,7 +7884,7 @@
                                 "id": "osteoporosis_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Osteoporosis: follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Osteoporosis stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; T-score <= -2.5 or fragility fracture confirms osteoporosis.; Hip/vertebral fracture or very low T-score changes to high/very-high-risk pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+                                "edgeLabel": "Osteoporosis discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; T-score <= -2.5 or fragility fracture confirms osteoporosis.; Hip/vertebral fracture or very low T-score changes to high/very-high-risk pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
                                 "source_ids": [
                                   "ENDO_OSTEOPOROSIS_2020",
                                   "AACE_OSTEOPOROSIS_2020",
@@ -9611,7 +9611,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing exact Osteoporosis pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
+          "expected_active_branch": "Missing exact Osteoporosis pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
@@ -9653,7 +9653,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "osteoporosis_followup_endpoint",
-          "expected_active_branch": "Osteoporosis stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; T-score <= -2.5 or fragility fracture confirms osteoporosis.; Hip/vertebral fracture or very low T-score changes to high/very-high-risk pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care."
+          "expected_active_branch": "Osteoporosis discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; T-score <= -2.5 or fragility fracture confirms osteoporosis.; Hip/vertebral fracture or very low T-score changes to high/very-high-risk pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care."
         }
       ],
       "audit_requirements": {

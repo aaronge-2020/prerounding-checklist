@@ -275,7 +275,7 @@ function sourceForDerivedSupport(module = {}, preferredItem = {}, section = "") 
   const source = fallbackItem?.source || {};
   return {
     ...source,
-    source_section: section || source.source_section || "derived source-backed decision support"
+    source_section: section || source.source_section || "derived clinical decision support from module evidence"
   };
 }
 
@@ -287,13 +287,13 @@ function derivedSupportItem(module = {}, id = "", label = "", sourceItem = {}, s
     item_type: "management_change",
     source,
     action: label,
-    rationale: rationale || `Derives a ${module.label || "selected"} workup decision from existing source-backed tests, red flags, and management rules.`,
-    diagnostic_target: `${label}: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for ${module.label || "the selected workup"}.`,
+    rationale: rationale || `${module.label || "Selected workup"}: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.`,
+    diagnostic_target: `${label}: patient data that changes testing, treatment, monitoring, referral, or disposition for ${module.label || "the active module"}.`,
     management_change: label,
     LR_plus: "n/a",
     LR_minus: "n/a",
-    likelihood_ratio_note: "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-    limitations: `Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for ${module.label || "the selected workup"}.`,
+    likelihood_ratio_note: "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+    limitations: `Requires clinician judgment, local protocols, patient-specific risks, and reassessment for ${module.label || "the active module"}.`,
     tags: supportTags(module, label)
   };
 }
@@ -304,14 +304,14 @@ function deriveDecisionTrees(module = {}) {
   const dispositions = module.dispositionRules || [];
   const differentials = module.differentialBuckets || [];
   const escalation = cleanSupportLabel(redFlags[0]?.label || dispositions[0]?.label || "unstable or high-risk presentation");
-  const testList = supportLabelList(tests, 4) || "use the source-backed initial test set";
+  const testList = supportLabelList(tests, 4) || "module-cited initial diagnostic tests";
   const riskFrame = cleanSupportLabel(differentials[0]?.label || tests[0]?.label || "the highest-risk diagnostic frame");
-  const management = cleanSupportLabel(dispositions[0]?.label || redFlags[0]?.action || "the source-backed escalation route");
+  const management = cleanSupportLabel(dispositions[0]?.label || redFlags[0]?.action || "the module-cited escalation route");
   return [
-    derivedSupportItem(module, "decision_01", `Screen for immediate danger or disposition-changing findings before routine workup: ${escalation}.`, redFlags[0] || dispositions[0] || tests[0], `${module.label} derived decision tree: triage and escalation`),
-    derivedSupportItem(module, "decision_02", `Order focused first-line studies and interpret them in sequence: ${testList}.`, tests[0] || dispositions[0], `${module.label} derived decision tree: initial tests`),
-    derivedSupportItem(module, "decision_03", `Use the leading diagnostic frame to avoid premature closure: ${riskFrame}.`, differentials[0] || tests[0], `${module.label} derived decision tree: diagnostic branching`),
-    derivedSupportItem(module, "decision_04", `If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: ${management}.`, dispositions[0] || redFlags[0] || tests[0], `${module.label} derived decision tree: management routing`)
+    derivedSupportItem(module, "decision_01", `${module.label}: danger features or monitored-care triggers: ${escalation}.`, redFlags[0] || dispositions[0] || tests[0], `${module.label} derived decision tree: triage and escalation`),
+    derivedSupportItem(module, "decision_02", `${module.label}: initial diagnostic data to obtain and interpret together: ${testList}.`, tests[0] || dispositions[0], `${module.label} derived decision tree: initial tests`),
+    derivedSupportItem(module, "decision_03", `${module.label}: leading diagnostic frame and mimics to resolve: ${riskFrame}.`, differentials[0] || tests[0], `${module.label} derived decision tree: diagnostic branching`),
+    derivedSupportItem(module, "decision_04", `${module.label}: escalation or disposition rule triggered by abnormal results or worsening status: ${management}.`, dispositions[0] || redFlags[0] || tests[0], `${module.label} derived decision tree: management routing`)
   ];
 }
 
@@ -321,13 +321,13 @@ function deriveTreatmentOptions(module = {}) {
   const dispositions = module.dispositionRules || [];
   const firstDisposition = cleanSupportLabel(dispositions[0]?.label || redFlags[0]?.action || "urgent escalation route");
   const secondDisposition = cleanSupportLabel(dispositions[1]?.label || dispositions[0]?.action || "lower-risk treatment or follow-up route when criteria are met");
-  const monitoring = cleanSupportLabel(tests[0]?.label || "the source-backed monitoring test set");
+  const monitoring = cleanSupportLabel(tests[0]?.label || "module-cited monitoring data");
   const safety = cleanSupportLabel(redFlags[0]?.label || "clinical worsening or unresolved diagnostic uncertainty");
   return [
-    derivedSupportItem(module, "treatment_01", `Stabilize or escalate before routine treatment when danger criteria are present: ${safety}.`, redFlags[0] || dispositions[0] || tests[0], `${module.label} derived treatment options: urgent care`),
-    derivedSupportItem(module, "treatment_02", `Use the high-risk or confirmed-pathway management option when criteria are met: ${firstDisposition}.`, dispositions[0] || redFlags[0] || tests[0], `${module.label} derived treatment options: high-risk pathway`),
-    derivedSupportItem(module, "treatment_03", `Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: ${secondDisposition}.`, dispositions[1] || dispositions[0] || tests[0], `${module.label} derived treatment options: lower-risk pathway`),
-    derivedSupportItem(module, "treatment_04", `Monitor treatment response, complications, and need for reassessment with: ${monitoring}.`, tests[0] || dispositions[0], `${module.label} derived treatment options: monitoring`)
+    derivedSupportItem(module, "treatment_01", `${module.label}: immediate stabilization or escalation trigger: ${safety}.`, redFlags[0] || dispositions[0] || tests[0], `${module.label} derived treatment options: urgent care`),
+    derivedSupportItem(module, "treatment_02", `${module.label}: treatment or disposition for high-risk or confirmed disease: ${firstDisposition}.`, dispositions[0] || redFlags[0] || tests[0], `${module.label} derived treatment options: high-risk pathway`),
+    derivedSupportItem(module, "treatment_03", `${module.label}: outpatient or safety-net route after exclusion criteria and follow-up access are documented: ${secondDisposition}.`, dispositions[1] || dispositions[0] || tests[0], `${module.label} derived treatment options: lower-risk pathway`),
+    derivedSupportItem(module, "treatment_04", `${module.label}: monitoring data for response, complications, and reassessment: ${monitoring}.`, tests[0] || dispositions[0], `${module.label} derived treatment options: monitoring`)
   ];
 }
 

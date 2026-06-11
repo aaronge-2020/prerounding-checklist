@@ -2106,8 +2106,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "For typical menopause at usual age, diagnose clinically when appropriate; rule out pregnancy or abnormal bleeding causes when indicated.",
-        "rationale": "Routes Menopause / Premature Ovarian Insufficiency testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "For typical menopause at usual age, diagnose clinically when appropriate; rule out pregnancy or abnormal bleeding causes when indicated.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
+        "rationale": "Menopause / Premature Ovarian Insufficiency: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "For typical menopause at usual age, diagnose clinically when appropriate; rule out pregnancy or abnormal bleeding causes when indicated.: patient data that changes testing, treatment, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
         "management_change": "For typical menopause at usual age, diagnose clinically when appropriate; rule out pregnancy or abnormal bleeding causes when indicated.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2140,8 +2140,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "For POI under age 40, confirm ovarian insufficiency with elevated FSH and low estradiol in the right clinical context, repeating if uncertain.",
-        "rationale": "Routes Menopause / Premature Ovarian Insufficiency testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "For POI under age 40, confirm ovarian insufficiency with elevated FSH and low estradiol in the right clinical context, repeating if uncertain.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
+        "rationale": "Menopause / Premature Ovarian Insufficiency: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "For POI under age 40, confirm ovarian insufficiency with elevated FSH and low estradiol in the right clinical context, repeating if uncertain.: patient data that changes testing, treatment, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
         "management_change": "For POI under age 40, confirm ovarian insufficiency with elevated FSH and low estradiol in the right clinical context, repeating if uncertain.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2174,8 +2174,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Evaluate POI causes and consequences with pregnancy test, TSH/prolactin when relevant, karyotype/FMR1/adrenal-thyroid autoimmunity, DXA, and fertility counseling as indicated.",
-        "rationale": "Routes Menopause / Premature Ovarian Insufficiency testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Evaluate POI causes and consequences with pregnancy test, TSH/prolactin when relevant, karyotype/FMR1/adrenal-thyroid autoimmunity, DXA, and fertility counseling as indicated.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
+        "rationale": "Menopause / Premature Ovarian Insufficiency: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Evaluate POI causes and consequences with pregnancy test, TSH/prolactin when relevant, karyotype/FMR1/adrenal-thyroid autoimmunity, DXA, and fertility counseling as indicated.: patient data that changes testing, treatment, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
         "management_change": "Evaluate POI causes and consequences with pregnancy test, TSH/prolactin when relevant, karyotype/FMR1/adrenal-thyroid autoimmunity, DXA, and fertility counseling as indicated.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2208,8 +2208,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Assess contraindications to hormone therapy, cardiovascular/VTE/breast cancer risk, uterine status, symptom burden, bone risk, and patient preferences.",
-        "rationale": "Routes Menopause / Premature Ovarian Insufficiency testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Assess contraindications to hormone therapy, cardiovascular/VTE/breast cancer risk, uterine status, symptom burden, bone risk, and patient preferences.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
+        "rationale": "Menopause / Premature Ovarian Insufficiency: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Assess contraindications to hormone therapy, cardiovascular/VTE/breast cancer risk, uterine status, symptom burden, bone risk, and patient preferences.: patient data that changes testing, treatment, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
         "management_change": "Assess contraindications to hormone therapy, cardiovascular/VTE/breast cancer risk, uterine status, symptom burden, bone risk, and patient preferences.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2242,8 +2242,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Confirm that Menopause / Premature Ovarian Insufficiency is the selected clinical intent, then screen for red flags before routine outpatient testing.",
-        "rationale": "Routes Menopause / Premature Ovarian Insufficiency testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Confirm that Menopause / Premature Ovarian Insufficiency is the selected clinical intent, then screen for red flags before routine outpatient testing.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
+        "rationale": "Menopause / Premature Ovarian Insufficiency: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Confirm that Menopause / Premature Ovarian Insufficiency is the selected clinical intent, then screen for red flags before routine outpatient testing.: patient data that changes testing, treatment, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
         "management_change": "Confirm that Menopause / Premature Ovarian Insufficiency is the selected clinical intent, then screen for red flags before routine outpatient testing.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2276,8 +2276,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Order the first-line tests in sequence: Pregnancy test if amenorrhea; FSH and estradiol for POI; FSH commonly >25 IU/L in context, repeat if uncertainty; TSH/prolactin.",
-        "rationale": "Routes Menopause / Premature Ovarian Insufficiency testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Order the first-line tests in sequence: Pregnancy test if amenorrhea; FSH and estradiol for POI; FSH commonly >25 IU/L in context, repeat if uncertainty; TSH/prolactin.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
+        "rationale": "Menopause / Premature Ovarian Insufficiency: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Order the first-line tests in sequence: Pregnancy test if amenorrhea; FSH and estradiol for POI; FSH commonly >25 IU/L in context, repeat if uncertainty; TSH/prolactin.: patient data that changes testing, treatment, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
         "management_change": "Order the first-line tests in sequence: Pregnancy test if amenorrhea; FSH and estradiol for POI; FSH commonly >25 IU/L in context, repeat if uncertainty; TSH/prolactin.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2310,8 +2310,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret numeric results against the workup cutoffs and local assay ranges: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
-        "rationale": "Routes Menopause / Premature Ovarian Insufficiency testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Interpret numeric results against the workup cutoffs and local assay ranges: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
+        "rationale": "Menopause / Premature Ovarian Insufficiency: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Interpret numeric results against the workup cutoffs and local assay ranges: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.: patient data that changes testing, treatment, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
         "management_change": "Interpret numeric results against the workup cutoffs and local assay ranges: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2344,8 +2344,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.",
-        "rationale": "Routes Menopause / Premature Ovarian Insufficiency testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
+        "rationale": "Menopause / Premature Ovarian Insufficiency: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.: patient data that changes testing, treatment, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
         "management_change": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2381,7 +2381,7 @@
         },
         "action": "Use menopausal hormone therapy for bothersome vasomotor symptoms or POI replacement when benefits outweigh risks and contraindications are absent.",
         "rationale": "Links confirmed Menopause / Premature Ovarian Insufficiency results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Use menopausal hormone therapy for bothersome vasomotor symptoms or POI replacement when benefits outweigh risks and contraindications are absent.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
+        "diagnostic_target": "Use menopausal hormone therapy for bothersome vasomotor symptoms or POI replacement when benefits outweigh risks and contraindications are absent.: patient data that changes testing, treatment, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
         "management_change": "Use menopausal hormone therapy for bothersome vasomotor symptoms or POI replacement when benefits outweigh risks and contraindications are absent.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2415,7 +2415,7 @@
         },
         "action": "For POI, generally replace estrogen to the usual age of menopause with progestogen if uterus is present, plus bone/cardiovascular and fertility counseling.",
         "rationale": "Links confirmed Menopause / Premature Ovarian Insufficiency results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "For POI, generally replace estrogen to the usual age of menopause with progestogen if uterus is present, plus bone/cardiovascular and fertility counseling.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
+        "diagnostic_target": "For POI, generally replace estrogen to the usual age of menopause with progestogen if uterus is present, plus bone/cardiovascular and fertility counseling.: patient data that changes testing, treatment, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
         "management_change": "For POI, generally replace estrogen to the usual age of menopause with progestogen if uterus is present, plus bone/cardiovascular and fertility counseling.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2449,7 +2449,7 @@
         },
         "action": "Use nonhormonal options for vasomotor symptoms when hormone therapy is contraindicated or declined.",
         "rationale": "Links confirmed Menopause / Premature Ovarian Insufficiency results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Use nonhormonal options for vasomotor symptoms when hormone therapy is contraindicated or declined.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
+        "diagnostic_target": "Use nonhormonal options for vasomotor symptoms when hormone therapy is contraindicated or declined.: patient data that changes testing, treatment, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
         "management_change": "Use nonhormonal options for vasomotor symptoms when hormone therapy is contraindicated or declined.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2481,7 +2481,7 @@
         },
         "action": "Treat genitourinary symptoms with local vaginal therapy or nonhormonal measures based on severity, contraindications, and preference.",
         "rationale": "Links confirmed Menopause / Premature Ovarian Insufficiency results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Treat genitourinary symptoms with local vaginal therapy or nonhormonal measures based on severity, contraindications, and preference.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
+        "diagnostic_target": "Treat genitourinary symptoms with local vaginal therapy or nonhormonal measures based on severity, contraindications, and preference.: patient data that changes testing, treatment, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
         "management_change": "Treat genitourinary symptoms with local vaginal therapy or nonhormonal measures based on severity, contraindications, and preference.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2515,7 +2515,7 @@
         },
         "action": "Treat unstable presentations first using the urgent escalation rule for Menopause / Premature Ovarian Insufficiency; draw time-sensitive labs only if doing so does not delay stabilization.",
         "rationale": "Links confirmed Menopause / Premature Ovarian Insufficiency results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Treat unstable presentations first using the urgent escalation rule for Menopause / Premature Ovarian Insufficiency; draw time-sensitive labs only if doing so does not delay stabilization.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
+        "diagnostic_target": "Treat unstable presentations first using the urgent escalation rule for Menopause / Premature Ovarian Insufficiency; draw time-sensitive labs only if doing so does not delay stabilization.: patient data that changes testing, treatment, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
         "management_change": "Treat unstable presentations first using the urgent escalation rule for Menopause / Premature Ovarian Insufficiency; draw time-sensitive labs only if doing so does not delay stabilization.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2549,7 +2549,7 @@
         },
         "action": "For confirmed Menopause / Premature Ovarian Insufficiency, choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.",
         "rationale": "Links confirmed Menopause / Premature Ovarian Insufficiency results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "For confirmed Menopause / Premature Ovarian Insufficiency, choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
+        "diagnostic_target": "For confirmed Menopause / Premature Ovarian Insufficiency, choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.: patient data that changes testing, treatment, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
         "management_change": "For confirmed Menopause / Premature Ovarian Insufficiency, choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2583,7 +2583,7 @@
         },
         "action": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.",
         "rationale": "Links confirmed Menopause / Premature Ovarian Insufficiency results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
+        "diagnostic_target": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.: patient data that changes testing, treatment, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
         "management_change": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2617,7 +2617,7 @@
         },
         "action": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.",
         "rationale": "Links confirmed Menopause / Premature Ovarian Insufficiency results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
+        "diagnostic_target": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.: patient data that changes testing, treatment, monitoring, referral, or disposition for Menopause / Premature Ovarian Insufficiency.",
         "management_change": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -3703,7 +3703,7 @@
         "menopause_premature_ovarian_insufficiency_treatment_bundle": {
           "rule_id": "menopause_premature_ovarian_insufficiency_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Menopause / Premature Ovarian Insufficiency treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+          "description": "Start Menopause / Premature Ovarian Insufficiency treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4797,7 +4797,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Menopause / Premature Ovarian Insufficiency: does patient context support this workup or require exact missing-data routing?",
+        "label": "Menopause / Premature Ovarian Insufficiency: route by documented findings and exact missing-data needs",
         "edgeLabel": "",
         "source_ids": [
           "ASRM_AMENORRHEA_2024",
@@ -4824,13 +4824,13 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Menopause / Premature Ovarian Insufficiency using cited diagnostic thresholds/rules, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+        "action": "Route Menopause / Premature Ovarian Insufficiency from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
         "children": [
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Menopause / Premature Ovarian Insufficiency pathway context",
-            "edgeLabel": "Missing exact Menopause / Premature Ovarian Insufficiency pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
+            "edgeLabel": "Missing exact Menopause / Premature Ovarian Insufficiency pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -4886,7 +4886,7 @@
             "id": "menopause_premature_ovarian_insufficiency_concurrent_data_bundle",
             "type": "action",
             "label": "Menopause / Premature Ovarian Insufficiency: obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Selected Menopause / Premature Ovarian Insufficiency workup or documented findings: When was the last menstrual period, how regular are cycles, and has bleeding changed from baseline?; Any hot flashes, night sweats, sleep disruption, mood change, vaginal dryness, dyspareunia, urinary symptoms, or sexual-function change?; Is pregnancy possible now, planned soon, or recently postpartum, and would pregnancy change medication or imaging safety?; Any chemotherapy, radiation, pelvic/cranial surgery, gonadal surgery, or cancer treatment that could affect endocrine function?; Pregnancy, heavy bleeding, pelvic mass symptoms, POI <40 needing bone/cardiovascular/fertility counseling.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Pregnancy test if amenorrhea.",
+            "edgeLabel": "Menopause / Premature Ovarian Insufficiency active from documented findings: When was the last menstrual period, how regular are cycles, and has bleeding changed from baseline?; Any hot flashes, night sweats, sleep disruption, mood change, vaginal dryness, dyspareunia, urinary symptoms, or sexual-function change?; Is pregnancy possible now, planned soon, or recently postpartum, and would pregnancy change medication or imaging safety?; Any chemotherapy, radiation, pelvic/cranial surgery, gonadal surgery, or cancer treatment that could affect endocrine function?; Pregnancy, heavy bleeding, pelvic mass symptoms, POI <40 needing bone/cardiovascular/fertility counseling.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Pregnancy test if amenorrhea.",
             "source_ids": [
               "ESHRE_POI_2024",
               "ASRM_AMENORRHEA_2024",
@@ -5658,7 +5658,7 @@
                     "criteria": {
                       "rule_id": "menopause_premature_ovarian_insufficiency_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Menopause / Premature Ovarian Insufficiency treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+                      "description": "Start Menopause / Premature Ovarian Insufficiency treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -7042,7 +7042,7 @@
                                 "id": "menopause_premature_ovarian_insufficiency_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Menopause / Premature Ovarian Insufficiency: follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Menopause / Premature Ovarian Insufficiency stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; POI changes routine menopause counseling to etiologic evaluation, fertility counseling, and bone/cardiovascular prevention.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+                                "edgeLabel": "Menopause / Premature Ovarian Insufficiency discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; POI changes routine menopause counseling to etiologic evaluation, fertility counseling, and bone/cardiovascular prevention.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                                 "source_ids": [
                                   "ESHRE_POI_2024",
                                   "ASRM_AMENORRHEA_2024",
@@ -8333,7 +8333,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing exact Menopause / Premature Ovarian Insufficiency pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
+          "expected_active_branch": "Missing exact Menopause / Premature Ovarian Insufficiency pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
@@ -8375,7 +8375,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "menopause_premature_ovarian_insufficiency_followup_endpoint",
-          "expected_active_branch": "Menopause / Premature Ovarian Insufficiency stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; POI changes routine menopause counseling to etiologic evaluation, fertility counseling, and bone/cardiovascular prevention.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
+          "expected_active_branch": "Menopause / Premature Ovarian Insufficiency discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; POI changes routine menopause counseling to etiologic evaluation, fertility counseling, and bone/cardiovascular prevention.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
         }
       ],
       "audit_requirements": {

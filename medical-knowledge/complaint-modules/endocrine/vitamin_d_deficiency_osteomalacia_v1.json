@@ -1617,8 +1617,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Test 25(OH)D when there is an established indication such as bone disease, hypocalcemia, malabsorption, CKD, osteoporosis therapy planning, or osteomalacia concern.",
-        "rationale": "Routes Vitamin D Deficiency / Osteomalacia testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Test 25(OH)D when there is an established indication such as bone disease, hypocalcemia, malabsorption, CKD, osteoporosis therapy planning, or osteomalacia concern.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
+        "rationale": "Vitamin D Deficiency / Osteomalacia: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Test 25(OH)D when there is an established indication such as bone disease, hypocalcemia, malabsorption, CKD, osteoporosis therapy planning, or osteomalacia concern.: patient data that changes testing, treatment, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
         "management_change": "Test 25(OH)D when there is an established indication such as bone disease, hypocalcemia, malabsorption, CKD, osteoporosis therapy planning, or osteomalacia concern.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1651,8 +1651,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret low 25(OH)D with calcium, phosphorus, alkaline phosphatase, PTH, renal function, symptoms, and fracture/bone pain context.",
-        "rationale": "Routes Vitamin D Deficiency / Osteomalacia testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Interpret low 25(OH)D with calcium, phosphorus, alkaline phosphatase, PTH, renal function, symptoms, and fracture/bone pain context.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
+        "rationale": "Vitamin D Deficiency / Osteomalacia: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Interpret low 25(OH)D with calcium, phosphorus, alkaline phosphatase, PTH, renal function, symptoms, and fracture/bone pain context.: patient data that changes testing, treatment, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
         "management_change": "Interpret low 25(OH)D with calcium, phosphorus, alkaline phosphatase, PTH, renal function, symptoms, and fracture/bone pain context.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1685,8 +1685,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "If osteomalacia is suspected, look for low phosphorus, elevated alkaline phosphatase, secondary hyperparathyroidism, Looser zones, or proximal weakness.",
-        "rationale": "Routes Vitamin D Deficiency / Osteomalacia testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "If osteomalacia is suspected, look for low phosphorus, elevated alkaline phosphatase, secondary hyperparathyroidism, Looser zones, or proximal weakness.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
+        "rationale": "Vitamin D Deficiency / Osteomalacia: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "If osteomalacia is suspected, look for low phosphorus, elevated alkaline phosphatase, secondary hyperparathyroidism, Looser zones, or proximal weakness.: patient data that changes testing, treatment, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
         "management_change": "If osteomalacia is suspected, look for low phosphorus, elevated alkaline phosphatase, secondary hyperparathyroidism, Looser zones, or proximal weakness.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1719,8 +1719,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Avoid routine population screening or target chasing in otherwise healthy adults where the 2024 prevention guideline does not support it.",
-        "rationale": "Routes Vitamin D Deficiency / Osteomalacia testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Avoid routine population screening or target chasing in otherwise healthy adults where the 2024 prevention guideline does not support it.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
+        "rationale": "Vitamin D Deficiency / Osteomalacia: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Avoid routine population screening or target chasing in otherwise healthy adults where the 2024 prevention guideline does not support it.: patient data that changes testing, treatment, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
         "management_change": "Avoid routine population screening or target chasing in otherwise healthy adults where the 2024 prevention guideline does not support it.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1753,8 +1753,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Confirm that Vitamin D Deficiency / Osteomalacia is the selected clinical intent, then screen for red flags before routine outpatient testing.",
-        "rationale": "Routes Vitamin D Deficiency / Osteomalacia testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Confirm that Vitamin D Deficiency / Osteomalacia is the selected clinical intent, then screen for red flags before routine outpatient testing.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
+        "rationale": "Vitamin D Deficiency / Osteomalacia: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Confirm that Vitamin D Deficiency / Osteomalacia is the selected clinical intent, then screen for red flags before routine outpatient testing.: patient data that changes testing, treatment, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
         "management_change": "Confirm that Vitamin D Deficiency / Osteomalacia is the selected clinical intent, then screen for red flags before routine outpatient testing.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1787,8 +1787,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Order the first-line tests in sequence: 25(OH)D when clinically indicated; Calcium, phosphorus, alkaline phosphatase, PTH, creatinine/eGFR.",
-        "rationale": "Routes Vitamin D Deficiency / Osteomalacia testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Order the first-line tests in sequence: 25(OH)D when clinically indicated; Calcium, phosphorus, alkaline phosphatase, PTH, creatinine/eGFR.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
+        "rationale": "Vitamin D Deficiency / Osteomalacia: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Order the first-line tests in sequence: 25(OH)D when clinically indicated; Calcium, phosphorus, alkaline phosphatase, PTH, creatinine/eGFR.: patient data that changes testing, treatment, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
         "management_change": "Order the first-line tests in sequence: 25(OH)D when clinically indicated; Calcium, phosphorus, alkaline phosphatase, PTH, creatinine/eGFR.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1821,8 +1821,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret numeric results against the workup cutoffs and local assay ranges: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.",
-        "rationale": "Routes Vitamin D Deficiency / Osteomalacia testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Interpret numeric results against the workup cutoffs and local assay ranges: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
+        "rationale": "Vitamin D Deficiency / Osteomalacia: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Interpret numeric results against the workup cutoffs and local assay ranges: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.: patient data that changes testing, treatment, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
         "management_change": "Interpret numeric results against the workup cutoffs and local assay ranges: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1855,8 +1855,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.",
-        "rationale": "Routes Vitamin D Deficiency / Osteomalacia testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
+        "rationale": "Vitamin D Deficiency / Osteomalacia: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.: patient data that changes testing, treatment, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
         "management_change": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1892,7 +1892,7 @@
         },
         "action": "Replete vitamin D and calcium intake when deficiency is clinically relevant, using local dosing protocols and malabsorption/obesity/medication adjustments.",
         "rationale": "Links confirmed Vitamin D Deficiency / Osteomalacia results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Replete vitamin D and calcium intake when deficiency is clinically relevant, using local dosing protocols and malabsorption/obesity/medication adjustments.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
+        "diagnostic_target": "Replete vitamin D and calcium intake when deficiency is clinically relevant, using local dosing protocols and malabsorption/obesity/medication adjustments.: patient data that changes testing, treatment, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
         "management_change": "Replete vitamin D and calcium intake when deficiency is clinically relevant, using local dosing protocols and malabsorption/obesity/medication adjustments.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1926,7 +1926,7 @@
         },
         "action": "Treat osteomalacia with vitamin D repletion, calcium/phosphate strategy when indicated, and cause-specific therapy for malabsorption, renal phosphate wasting, or medication effects.",
         "rationale": "Links confirmed Vitamin D Deficiency / Osteomalacia results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Treat osteomalacia with vitamin D repletion, calcium/phosphate strategy when indicated, and cause-specific therapy for malabsorption, renal phosphate wasting, or medication effects.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
+        "diagnostic_target": "Treat osteomalacia with vitamin D repletion, calcium/phosphate strategy when indicated, and cause-specific therapy for malabsorption, renal phosphate wasting, or medication effects.: patient data that changes testing, treatment, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
         "management_change": "Treat osteomalacia with vitamin D repletion, calcium/phosphate strategy when indicated, and cause-specific therapy for malabsorption, renal phosphate wasting, or medication effects.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1960,7 +1960,7 @@
         },
         "action": "Use age/risk-appropriate empiric supplementation only where guideline groups support it; otherwise follow dietary reference intake.",
         "rationale": "Links confirmed Vitamin D Deficiency / Osteomalacia results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Use age/risk-appropriate empiric supplementation only where guideline groups support it; otherwise follow dietary reference intake.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
+        "diagnostic_target": "Use age/risk-appropriate empiric supplementation only where guideline groups support it; otherwise follow dietary reference intake.: patient data that changes testing, treatment, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
         "management_change": "Use age/risk-appropriate empiric supplementation only where guideline groups support it; otherwise follow dietary reference intake.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1994,7 +1994,7 @@
         },
         "action": "Monitor calcium, phosphorus, PTH, alkaline phosphatase, 25(OH)D, symptoms, and bone outcomes according to indication and risk.",
         "rationale": "Links confirmed Vitamin D Deficiency / Osteomalacia results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Monitor calcium, phosphorus, PTH, alkaline phosphatase, 25(OH)D, symptoms, and bone outcomes according to indication and risk.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
+        "diagnostic_target": "Monitor calcium, phosphorus, PTH, alkaline phosphatase, 25(OH)D, symptoms, and bone outcomes according to indication and risk.: patient data that changes testing, treatment, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
         "management_change": "Monitor calcium, phosphorus, PTH, alkaline phosphatase, 25(OH)D, symptoms, and bone outcomes according to indication and risk.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2028,7 +2028,7 @@
         },
         "action": "Treat unstable presentations first using the urgent escalation rule for Vitamin D Deficiency / Osteomalacia; draw time-sensitive labs only if doing so does not delay stabilization.",
         "rationale": "Links confirmed Vitamin D Deficiency / Osteomalacia results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Treat unstable presentations first using the urgent escalation rule for Vitamin D Deficiency / Osteomalacia; draw time-sensitive labs only if doing so does not delay stabilization.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
+        "diagnostic_target": "Treat unstable presentations first using the urgent escalation rule for Vitamin D Deficiency / Osteomalacia; draw time-sensitive labs only if doing so does not delay stabilization.: patient data that changes testing, treatment, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
         "management_change": "Treat unstable presentations first using the urgent escalation rule for Vitamin D Deficiency / Osteomalacia; draw time-sensitive labs only if doing so does not delay stabilization.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2062,7 +2062,7 @@
         },
         "action": "For confirmed Vitamin D Deficiency / Osteomalacia, choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.",
         "rationale": "Links confirmed Vitamin D Deficiency / Osteomalacia results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "For confirmed Vitamin D Deficiency / Osteomalacia, choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
+        "diagnostic_target": "For confirmed Vitamin D Deficiency / Osteomalacia, choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.: patient data that changes testing, treatment, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
         "management_change": "For confirmed Vitamin D Deficiency / Osteomalacia, choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2096,7 +2096,7 @@
         },
         "action": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.",
         "rationale": "Links confirmed Vitamin D Deficiency / Osteomalacia results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
+        "diagnostic_target": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.: patient data that changes testing, treatment, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
         "management_change": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2130,7 +2130,7 @@
         },
         "action": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.",
         "rationale": "Links confirmed Vitamin D Deficiency / Osteomalacia results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
+        "diagnostic_target": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.: patient data that changes testing, treatment, monitoring, referral, or disposition for Vitamin D Deficiency / Osteomalacia.",
         "management_change": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -3553,7 +3553,7 @@
         "vitamin_d_deficiency_osteomalacia_treatment_bundle": {
           "rule_id": "vitamin_d_deficiency_osteomalacia_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Vitamin D Deficiency / Osteomalacia treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+          "description": "Start Vitamin D Deficiency / Osteomalacia treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4989,7 +4989,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Vitamin D Deficiency / Osteomalacia: does patient context support this workup or require exact missing-data routing?",
+        "label": "Vitamin D Deficiency / Osteomalacia: route by documented findings and exact missing-data needs",
         "edgeLabel": "",
         "source_ids": [
           "NIH_VITD_FACTSHEET",
@@ -5012,13 +5012,13 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Vitamin D Deficiency / Osteomalacia using cited diagnostic thresholds/rules, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+        "action": "Route Vitamin D Deficiency / Osteomalacia from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
         "children": [
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Vitamin D Deficiency / Osteomalacia pathway context",
-            "edgeLabel": "Missing exact Vitamin D Deficiency / Osteomalacia pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
+            "edgeLabel": "Missing exact Vitamin D Deficiency / Osteomalacia pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -5074,7 +5074,7 @@
             "id": "vitamin_d_deficiency_osteomalacia_concurrent_data_bundle",
             "type": "action",
             "label": "Vitamin D Deficiency / Osteomalacia: obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Selected Vitamin D Deficiency / Osteomalacia workup or documented findings: Do you have trouble rising from a chair, climbing stairs, lifting overhead, or getting up from the floor?; Any malabsorption, bariatric surgery, inflammatory bowel disease, celiac disease, pancreatic disease, or chronic diarrhea affecting nutrient or medication absorption?; Any chronic kidney disease, liver disease, malabsorption, bariatric surgery, or other condition that could alter vitamin D, calcium, phosphorus, or PTH interpretation?; Any antiseizure or enzyme-inducing medication use that could affect vitamin D metabolism, bone density, or calcium interpretation?; Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; 25(OH)D when clinically indicated.",
+            "edgeLabel": "Vitamin D Deficiency / Osteomalacia active from documented findings: Do you have trouble rising from a chair, climbing stairs, lifting overhead, or getting up from the floor?; Any malabsorption, bariatric surgery, inflammatory bowel disease, celiac disease, pancreatic disease, or chronic diarrhea affecting nutrient or medication absorption?; Any chronic kidney disease, liver disease, malabsorption, bariatric surgery, or other condition that could alter vitamin D, calcium, phosphorus, or PTH interpretation?; Any antiseizure or enzyme-inducing medication use that could affect vitamin D metabolism, bone density, or calcium interpretation?; Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; 25(OH)D when clinically indicated.",
             "source_ids": [
               "ENDO_VITD_2024",
               "NIH_VITD_FACTSHEET",
@@ -6014,7 +6014,7 @@
                     "criteria": {
                       "rule_id": "vitamin_d_deficiency_osteomalacia_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Vitamin D Deficiency / Osteomalacia treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+                      "description": "Start Vitamin D Deficiency / Osteomalacia treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -7794,7 +7794,7 @@
                                 "id": "vitamin_d_deficiency_osteomalacia_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Vitamin D Deficiency / Osteomalacia: follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Vitamin D Deficiency / Osteomalacia stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Low 25(OH)D with symptoms or osteomalacia labs changes from prevention advice to treatment and etiology evaluation.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+                                "edgeLabel": "Vitamin D Deficiency / Osteomalacia discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Low 25(OH)D with symptoms or osteomalacia labs changes from prevention advice to treatment and etiology evaluation.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                                 "source_ids": [
                                   "ENDO_VITD_2024",
                                   "NIH_VITD_FACTSHEET",
@@ -9441,7 +9441,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing exact Vitamin D Deficiency / Osteomalacia pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
+          "expected_active_branch": "Missing exact Vitamin D Deficiency / Osteomalacia pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
@@ -9483,7 +9483,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "vitamin_d_deficiency_osteomalacia_followup_endpoint",
-          "expected_active_branch": "Vitamin D Deficiency / Osteomalacia stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Low 25(OH)D with symptoms or osteomalacia labs changes from prevention advice to treatment and etiology evaluation.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
+          "expected_active_branch": "Vitamin D Deficiency / Osteomalacia discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Low 25(OH)D with symptoms or osteomalacia labs changes from prevention advice to treatment and etiology evaluation.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
         }
       ],
       "audit_requirements": {

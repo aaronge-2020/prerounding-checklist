@@ -1992,8 +1992,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Confirm thyrotoxicosis with suppressed TSH plus elevated free T4 and/or T3, then determine etiology with TRAb/TSI, uptake scan, Doppler ultrasound, medication/iodine history, or thyroiditis labs.",
-        "rationale": "Routes Graves' Disease testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Confirm thyrotoxicosis with suppressed TSH plus elevated free T4 and/or T3, then determine etiology with TRAb/TSI, uptake scan, Doppler ultrasound, medication/iodine history, or thyroiditis labs.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Graves' Disease.",
+        "rationale": "Graves' Disease: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Confirm thyrotoxicosis with suppressed TSH plus elevated free T4 and/or T3, then determine etiology with TRAb/TSI, uptake scan, Doppler ultrasound, medication/iodine history, or thyroiditis labs.: patient data that changes testing, treatment, monitoring, referral, or disposition for Graves' Disease.",
         "management_change": "Confirm thyrotoxicosis with suppressed TSH plus elevated free T4 and/or T3, then determine etiology with TRAb/TSI, uptake scan, Doppler ultrasound, medication/iodine history, or thyroiditis labs.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2026,8 +2026,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Differentiate high-uptake hormone overproduction from low-uptake thyroiditis, exogenous hormone, iodine/amiodarone effect, or destructive thyroiditis because treatment differs.",
-        "rationale": "Routes Graves' Disease testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Differentiate high-uptake hormone overproduction from low-uptake thyroiditis, exogenous hormone, iodine/amiodarone effect, or destructive thyroiditis because treatment differs.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Graves' Disease.",
+        "rationale": "Graves' Disease: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Differentiate high-uptake hormone overproduction from low-uptake thyroiditis, exogenous hormone, iodine/amiodarone effect, or destructive thyroiditis because treatment differs.: patient data that changes testing, treatment, monitoring, referral, or disposition for Graves' Disease.",
         "management_change": "Differentiate high-uptake hormone overproduction from low-uptake thyroiditis, exogenous hormone, iodine/amiodarone effect, or destructive thyroiditis because treatment differs.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2059,8 +2059,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Assess severity with heart rate/rhythm, fever, heart failure, mental status, liver disease, pregnancy, orbitopathy, and thyroid storm features.",
-        "rationale": "Routes Graves' Disease testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Assess severity with heart rate/rhythm, fever, heart failure, mental status, liver disease, pregnancy, orbitopathy, and thyroid storm features.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Graves' Disease.",
+        "rationale": "Graves' Disease: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Assess severity with heart rate/rhythm, fever, heart failure, mental status, liver disease, pregnancy, orbitopathy, and thyroid storm features.: patient data that changes testing, treatment, monitoring, referral, or disposition for Graves' Disease.",
         "management_change": "Assess severity with heart rate/rhythm, fever, heart failure, mental status, liver disease, pregnancy, orbitopathy, and thyroid storm features.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2092,8 +2092,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "For nodular or uncertain disease, evaluate autonomous nodules and malignancy-risk features before definitive therapy.",
-        "rationale": "Routes Graves' Disease testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "For nodular or uncertain disease, evaluate autonomous nodules and malignancy-risk features before definitive therapy.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Graves' Disease.",
+        "rationale": "Graves' Disease: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "For nodular or uncertain disease, evaluate autonomous nodules and malignancy-risk features before definitive therapy.: patient data that changes testing, treatment, monitoring, referral, or disposition for Graves' Disease.",
         "management_change": "For nodular or uncertain disease, evaluate autonomous nodules and malignancy-risk features before definitive therapy.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2126,8 +2126,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Confirm that Graves' Disease is the selected clinical intent, then screen for red flags before routine outpatient testing.",
-        "rationale": "Routes Graves' Disease testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Confirm that Graves' Disease is the selected clinical intent, then screen for red flags before routine outpatient testing.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Graves' Disease.",
+        "rationale": "Graves' Disease: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Confirm that Graves' Disease is the selected clinical intent, then screen for red flags before routine outpatient testing.: patient data that changes testing, treatment, monitoring, referral, or disposition for Graves' Disease.",
         "management_change": "Confirm that Graves' Disease is the selected clinical intent, then screen for red flags before routine outpatient testing.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2160,8 +2160,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Order the first-line tests in sequence: TSH, free T4, T3; TRAb/TSI; RAIU if TRAb negative, nodular, or unclear.",
-        "rationale": "Routes Graves' Disease testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Order the first-line tests in sequence: TSH, free T4, T3; TRAb/TSI; RAIU if TRAb negative, nodular, or unclear.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Graves' Disease.",
+        "rationale": "Graves' Disease: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Order the first-line tests in sequence: TSH, free T4, T3; TRAb/TSI; RAIU if TRAb negative, nodular, or unclear.: patient data that changes testing, treatment, monitoring, referral, or disposition for Graves' Disease.",
         "management_change": "Order the first-line tests in sequence: TSH, free T4, T3; TRAb/TSI; RAIU if TRAb negative, nodular, or unclear.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2194,8 +2194,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret numeric results against the workup cutoffs and local assay ranges: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
-        "rationale": "Routes Graves' Disease testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Interpret numeric results against the workup cutoffs and local assay ranges: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Graves' Disease.",
+        "rationale": "Graves' Disease: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Interpret numeric results against the workup cutoffs and local assay ranges: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.: patient data that changes testing, treatment, monitoring, referral, or disposition for Graves' Disease.",
         "management_change": "Interpret numeric results against the workup cutoffs and local assay ranges: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2228,8 +2228,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.",
-        "rationale": "Routes Graves' Disease testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Graves' Disease.",
+        "rationale": "Graves' Disease: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.: patient data that changes testing, treatment, monitoring, referral, or disposition for Graves' Disease.",
         "management_change": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2265,7 +2265,7 @@
         },
         "action": "Use beta-blocker symptom control when not contraindicated for adrenergic symptoms or tachycardia.",
         "rationale": "Links confirmed Graves' Disease results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Use beta-blocker symptom control when not contraindicated for adrenergic symptoms or tachycardia.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Graves' Disease.",
+        "diagnostic_target": "Use beta-blocker symptom control when not contraindicated for adrenergic symptoms or tachycardia.: patient data that changes testing, treatment, monitoring, referral, or disposition for Graves' Disease.",
         "management_change": "Use beta-blocker symptom control when not contraindicated for adrenergic symptoms or tachycardia.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2297,7 +2297,7 @@
         },
         "action": "Use antithyroid drugs for Graves/toxic nodular hyperthyroidism when appropriate, with pregnancy trimester, liver disease, agranulocytosis counseling, and baseline labs considered.",
         "rationale": "Links confirmed Graves' Disease results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Use antithyroid drugs for Graves/toxic nodular hyperthyroidism when appropriate, with pregnancy trimester, liver disease, agranulocytosis counseling, and baseline labs considered.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Graves' Disease.",
+        "diagnostic_target": "Use antithyroid drugs for Graves/toxic nodular hyperthyroidism when appropriate, with pregnancy trimester, liver disease, agranulocytosis counseling, and baseline labs considered.: patient data that changes testing, treatment, monitoring, referral, or disposition for Graves' Disease.",
         "management_change": "Use antithyroid drugs for Graves/toxic nodular hyperthyroidism when appropriate, with pregnancy trimester, liver disease, agranulocytosis counseling, and baseline labs considered.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2331,7 +2331,7 @@
         },
         "action": "Choose radioactive iodine, surgery, or continued medical therapy based on etiology, goiter/nodule features, orbitopathy, pregnancy plans, contraindications, and patient preference.",
         "rationale": "Links confirmed Graves' Disease results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Choose radioactive iodine, surgery, or continued medical therapy based on etiology, goiter/nodule features, orbitopathy, pregnancy plans, contraindications, and patient preference.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Graves' Disease.",
+        "diagnostic_target": "Choose radioactive iodine, surgery, or continued medical therapy based on etiology, goiter/nodule features, orbitopathy, pregnancy plans, contraindications, and patient preference.: patient data that changes testing, treatment, monitoring, referral, or disposition for Graves' Disease.",
         "management_change": "Choose radioactive iodine, surgery, or continued medical therapy based on etiology, goiter/nodule features, orbitopathy, pregnancy plans, contraindications, and patient preference.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2365,7 +2365,7 @@
         },
         "action": "Treat thyroiditis primarily with supportive care, NSAID or glucocorticoid when indicated, and avoid antithyroid drugs when hormone release rather than synthesis is the mechanism.",
         "rationale": "Links confirmed Graves' Disease results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Treat thyroiditis primarily with supportive care, NSAID or glucocorticoid when indicated, and avoid antithyroid drugs when hormone release rather than synthesis is the mechanism.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Graves' Disease.",
+        "diagnostic_target": "Treat thyroiditis primarily with supportive care, NSAID or glucocorticoid when indicated, and avoid antithyroid drugs when hormone release rather than synthesis is the mechanism.: patient data that changes testing, treatment, monitoring, referral, or disposition for Graves' Disease.",
         "management_change": "Treat thyroiditis primarily with supportive care, NSAID or glucocorticoid when indicated, and avoid antithyroid drugs when hormone release rather than synthesis is the mechanism.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2399,7 +2399,7 @@
         },
         "action": "Treat unstable presentations first using the urgent escalation rule for Graves' Disease; draw time-sensitive labs only if doing so does not delay stabilization.",
         "rationale": "Links confirmed Graves' Disease results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Treat unstable presentations first using the urgent escalation rule for Graves' Disease; draw time-sensitive labs only if doing so does not delay stabilization.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Graves' Disease.",
+        "diagnostic_target": "Treat unstable presentations first using the urgent escalation rule for Graves' Disease; draw time-sensitive labs only if doing so does not delay stabilization.: patient data that changes testing, treatment, monitoring, referral, or disposition for Graves' Disease.",
         "management_change": "Treat unstable presentations first using the urgent escalation rule for Graves' Disease; draw time-sensitive labs only if doing so does not delay stabilization.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2433,7 +2433,7 @@
         },
         "action": "For confirmed Graves' Disease, choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.",
         "rationale": "Links confirmed Graves' Disease results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "For confirmed Graves' Disease, choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Graves' Disease.",
+        "diagnostic_target": "For confirmed Graves' Disease, choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.: patient data that changes testing, treatment, monitoring, referral, or disposition for Graves' Disease.",
         "management_change": "For confirmed Graves' Disease, choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2467,7 +2467,7 @@
         },
         "action": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.",
         "rationale": "Links confirmed Graves' Disease results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Graves' Disease.",
+        "diagnostic_target": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.: patient data that changes testing, treatment, monitoring, referral, or disposition for Graves' Disease.",
         "management_change": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2501,7 +2501,7 @@
         },
         "action": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.",
         "rationale": "Links confirmed Graves' Disease results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Graves' Disease.",
+        "diagnostic_target": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.: patient data that changes testing, treatment, monitoring, referral, or disposition for Graves' Disease.",
         "management_change": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -3507,7 +3507,7 @@
         "graves_disease_treatment_bundle": {
           "rule_id": "graves_disease_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Graves' Disease treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+          "description": "Start Graves' Disease treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4585,7 +4585,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Graves' Disease: does patient context support this workup or require exact missing-data routing?",
+        "label": "Graves' Disease: route by documented findings and exact missing-data needs",
         "edgeLabel": "",
         "source_ids": [
           "ATA_HYPERTHYROIDISM_2016",
@@ -4606,13 +4606,13 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Graves' Disease using cited diagnostic thresholds/rules, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+        "action": "Route Graves' Disease from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
         "children": [
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Graves' Disease pathway context",
-            "edgeLabel": "Missing exact Graves' Disease pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
+            "edgeLabel": "Missing exact Graves' Disease pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -4668,7 +4668,7 @@
             "id": "graves_disease_concurrent_data_bundle",
             "type": "action",
             "label": "Graves' Disease: obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Selected Graves' Disease workup or documented findings: Have you had heat intolerance, palpitations, tremor, anxiety, unintentional weight loss, diarrhea, or increased sweating?; Any eye pain, redness, light sensitivity, bulging eyes, double vision, reduced vision, or trouble closing the eyelids?; Do you currently smoke or recently smoke, especially in the context of Graves orbitopathy or cardiovascular risk?; Is pregnancy possible now, planned soon, or recently postpartum, and would pregnancy change medication or imaging safety?; Thyroid storm, vision-threatening orbitopathy, pregnancy with uncontrolled hyperthyroidism.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; TSH, free T4, T3.",
+            "edgeLabel": "Graves' Disease active from documented findings: Have you had heat intolerance, palpitations, tremor, anxiety, unintentional weight loss, diarrhea, or increased sweating?; Any eye pain, redness, light sensitivity, bulging eyes, double vision, reduced vision, or trouble closing the eyelids?; Do you currently smoke or recently smoke, especially in the context of Graves orbitopathy or cardiovascular risk?; Is pregnancy possible now, planned soon, or recently postpartum, and would pregnancy change medication or imaging safety?; Thyroid storm, vision-threatening orbitopathy, pregnancy with uncontrolled hyperthyroidism.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; TSH, free T4, T3.",
             "source_ids": [
               "ATA_HYPERTHYROIDISM_2016",
               "AHRQ_CALIBRATE_DX"
@@ -5476,7 +5476,7 @@
                     "criteria": {
                       "rule_id": "graves_disease_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Graves' Disease treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+                      "description": "Start Graves' Disease treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -6862,7 +6862,7 @@
                                 "id": "graves_disease_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Graves' Disease: follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Graves' Disease stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; TRAb-positive biochemical hyperthyroidism supports Graves.; Orbitopathy changes radioactive iodine risk and ophthalmology urgency.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+                                "edgeLabel": "Graves' Disease discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; TRAb-positive biochemical hyperthyroidism supports Graves.; Orbitopathy changes radioactive iodine risk and ophthalmology urgency.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
                                 "source_ids": [
                                   "ATA_HYPERTHYROIDISM_2016",
                                   "AHRQ_CALIBRATE_DX"
@@ -8241,7 +8241,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing exact Graves' Disease pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
+          "expected_active_branch": "Missing exact Graves' Disease pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
@@ -8283,7 +8283,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "graves_disease_followup_endpoint",
-          "expected_active_branch": "Graves' Disease stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; TRAb-positive biochemical hyperthyroidism supports Graves.; Orbitopathy changes radioactive iodine risk and ophthalmology urgency.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care."
+          "expected_active_branch": "Graves' Disease discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; TRAb-positive biochemical hyperthyroidism supports Graves.; Orbitopathy changes radioactive iodine risk and ophthalmology urgency.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care."
         }
       ],
       "audit_requirements": {

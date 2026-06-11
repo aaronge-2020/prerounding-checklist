@@ -63,7 +63,7 @@ const cutoffPattern = new RegExp([
   "\\bage\\s+\\d+\\b",
   "\\b\\d+\\s+(?:principal clinical features|features|benzodiazepine doses|upper UTIs?|lower UTIs?)\\b"
 ].join("|"), "gi");
-const shallowGeneratedItemPattern = /\b(?:source-backed criteria|use the high-risk or confirmed-pathway management option|lower-risk, outpatient, supportive, or safety-net pathway|stabilize or escalate before routine treatment|screen for immediate danger or disposition-changing findings|order focused first-line studies and interpret them in sequence|apply source-backed decision steps)\b/i;
+const shallowGeneratedItemPattern = /\b(?:source-backed criteria|source-backed management route|use the high-risk or confirmed-pathway management option|lower-risk, outpatient, supportive, or safety-net pathway|stabilize or escalate before routine treatment|screen for immediate danger or disposition-changing findings|order focused first-line studies and interpret them in sequence|apply source-backed decision steps|does patient context support this workup|criteria match|concurrent data bundle)\b/i;
 
 const cahCutoffCriteria = [
   {
@@ -164,6 +164,90 @@ const adultSepsisCutoffCriteria = [
     data_needed: ["lactate", "blood pressure/perfusion", "weight", "heart failure/renal contraindications", "fluid response"],
     source_ids: ["SSC_SEPSIS_2026"],
     source_section: "Initial resuscitation and lactate-guided reassessment"
+  }
+];
+
+const pediatricFeverSepsisCutoffCriteria = [
+  {
+    id: "peds_fever_ng254_under5_sepsis_vitals",
+    label: "NICE under-5 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR and HR cutoffs are age-banded; CRT >=3 seconds, urine <1 mL/kg/h, temperature <36 C, age <3 months temperature >=38 C, or non-blanching rash are high risk",
+    criteria_text: "For suspected sepsis in children under 5, NICE NG254 grades high risk with SpO2 <90% in air or increased oxygen over baseline, respiratory rate >=60/min under 1 year, >=50/min age 1-2 years, >=40/min age 3-4 years, heart rate <60/min, capillary refill time >=3 seconds, catheter urine <1 mL/kg/hour, heart rate >=160/min under 1 year, >=150/min age 1-2 years, >=140/min age 3-4 years, non-blanching petechial or purpuric rash, temperature <36 C, or temperature >=38 C when younger than 3 months; moderate risk includes SpO2 <92%, RR 50-59/min under 1 year, 40-49/min age 1-2 years, 35-39/min age 3-4 years, HR 150-159/min under 1 year, 140-149/min age 1-2 years, 130-139/min age 3-4 years, age 3-6 months temperature >=39 C, leg pain, or cold hands/feet.",
+    cutoffs: ["SpO2 <90%", "SpO2 <92%", "RR >=60/min under 1 year", "RR 50-59/min under 1 year", "RR >=50/min age 1-2 years", "RR 40-49/min age 1-2 years", "RR >=40/min age 3-4 years", "RR 35-39/min age 3-4 years", "heart rate <60/min", "CRT >=3 seconds", "urine <1 mL/kg/hour", "HR >=160/min under 1 year", "HR 150-159/min under 1 year", "HR >=150/min age 1-2 years", "HR 140-149/min age 1-2 years", "HR >=140/min age 3-4 years", "HR 130-139/min age 3-4 years", "temperature <36 C", "age <3 months temperature >=38 C", "age 3-6 months temperature >=39 C"],
+    data_needed: ["age in months/years", "oxygen saturation in air", "baseline oxygen requirement", "respiratory rate", "heart rate", "capillary refill time", "urine output mL/kg/hour", "temperature and method", "rash blanching/purpura", "leg pain", "hand/foot temperature"],
+    source_ids: ["NICE_SEPSIS_UNDER16_2025"],
+    source_section: "NG254 table 1 under-5 risk stratification"
+  },
+  {
+    id: "peds_fever_ng254_5_11_sepsis_vitals",
+    label: "NICE age 5-11 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR/HR age bands, HR <60/min, CRT >=3 seconds, urine <1 mL/kg/h, tympanic temperature <36 C, or non-blanching rash change risk",
+    criteria_text: "For suspected sepsis age 5-11 years, NICE NG254 grades high risk with SpO2 <90% in air or increased oxygen over baseline, RR >=29/min at age 5, >=27/min age 6-7, >=25/min age 8-11, HR <60/min, CRT >=3 seconds, catheter urine <1 mL/kg/hour, HR >=130/min at age 5, >=120/min age 6-7, >=115/min age 8-11, non-blanching petechial or purpuric rash, or altered mental state; moderate risk includes SpO2 <92%, RR 24-28/min at age 5, 24-26/min age 6-7, 22-24/min age 8-11, HR 120-129/min at age 5, 110-119/min age 6-7, 105-114/min age 8-11, tympanic temperature <36 C, leg pain, or cold hands/feet.",
+    cutoffs: ["SpO2 <90%", "SpO2 <92%", "RR >=29/min age 5", "RR 24-28/min age 5", "RR >=27/min age 6-7", "RR 24-26/min age 6-7", "RR >=25/min age 8-11", "RR 22-24/min age 8-11", "HR <60/min", "CRT >=3 seconds", "urine <1 mL/kg/hour", "HR >=130/min age 5", "HR 120-129/min age 5", "HR >=120/min age 6-7", "HR 110-119/min age 6-7", "HR >=115/min age 8-11", "HR 105-114/min age 8-11", "tympanic temperature <36 C"],
+    data_needed: ["age in years", "oxygen saturation in air", "baseline oxygen requirement", "respiratory rate", "heart rate", "capillary refill time", "urine output mL/kg/hour", "temperature and method", "rash blanching/purpura", "mental state", "leg pain", "hand/foot temperature"],
+    source_ids: ["NICE_SEPSIS_UNDER16_2025"],
+    source_section: "NG254 table 2 age 5-11 risk stratification"
+  },
+  {
+    id: "peds_fever_ng254_12_15_sepsis_vitals",
+    label: "NICE age 12-15 suspected sepsis risk: RR >=25/min, FiO2 >=40%, SBP <=90 mm Hg or >40 mm Hg below normal, HR >130/min, no urine 18 hours or catheter urine <0.5 mL/kg/h are high risk",
+    criteria_text: "For suspected sepsis age 12-15 years, NICE NG254 grades high risk with new altered mental state, RR >=25/min, need for FiO2 >=40% to maintain SpO2 >92% or >88% in known chronic hypercapnic respiratory failure, systolic blood pressure <=90 mm Hg or >40 mm Hg below normal, heart rate >130/min, no urine in the previous 18 hours, catheter urine <0.5 mL/kg/hour, or non-blanching petechial/purpuric rash; moderate risk includes acute deterioration, impaired immunity, trauma/surgery/invasive procedure in the last 6 weeks, RR 21-24/min, SBP 91-100 mm Hg, HR 91-130/min or 100-130/min in pregnancy, new arrhythmia, no urine 12-18 hours, catheter urine 0.5-1 mL/kg/hour, tympanic temperature <36 C, or surgical-site infection signs.",
+    cutoffs: ["RR >=25/min", "RR 21-24/min", "FiO2 >=40%", "SpO2 >92%", "SpO2 >88% in chronic hypercapnic respiratory failure", "SBP <=90 mm Hg", "SBP >40 mm Hg below normal", "SBP 91-100 mm Hg", "HR >130/min", "HR 91-130/min", "HR 100-130/min in pregnancy", "no urine 18 hours", "urine <0.5 mL/kg/hour", "no urine 12-18 hours", "urine 0.5-1 mL/kg/hour", "temperature <36 C", "last 6 weeks"],
+    data_needed: ["age in years", "mental state", "respiratory rate", "oxygen delivery and FiO2", "oxygen saturation target", "chronic hypercapnic respiratory failure status", "systolic blood pressure and age-normal baseline", "heart rate", "pregnancy status", "arrhythmia", "urine timing", "catheter urine output mL/kg/hour", "temperature and method", "immune status", "trauma/surgery/invasive procedure within 6 weeks"],
+    source_ids: ["NICE_SEPSIS_UNDER16_2025"],
+    source_section: "NG254 table 3 age 12-15 risk stratification"
+  },
+  {
+    id: "peds_fever_ng254_antibiotic_fluid_oxygen",
+    label: "NICE pediatric sepsis initial therapy: ceftriaxone 80 mg/kg daily maximum 4 g if not newborn; newborn ceftriaxone 50 mg/kg daily only if >40 weeks corrected GA and no IV calcium; fluid bolus 10 mL/kg under 16 maximum 250 mL over <10 minutes",
+    criteria_text: "NICE NG254 recommends local antimicrobial guidance when the infection source is clear; for suspected community-acquired sepsis under 16 excluding newborns, ceftriaxone 80 mg/kg once daily to maximum 4 g/day; for newborn community-acquired sepsis, ceftriaxone 50 mg/kg once daily only when corrected gestational age is >40 weeks and no IV calcium is running, otherwise cefotaxime 50 mg/kg every 6-12 hours; under 3 months add listeria-active ampicillin or amoxicillin; newborn fluid bolus is 10-20 mL/kg over <10 minutes and under-16 bolus is 10 mL/kg over <10 minutes maximum 250 mL, with smaller volumes for cardiac or kidney disease and consultant in-person attendance if no improvement after a second bolus.",
+    cutoffs: ["ceftriaxone 80 mg/kg once daily", "maximum 4 g/day", "ceftriaxone 50 mg/kg once daily", ">40 weeks corrected gestational age", "cefotaxime 50 mg/kg every 6-12 hours", "age <3 months", "newborn bolus 10-20 mL/kg", "under-16 bolus 10 mL/kg", "maximum 250 mL", "<10 minutes", "second bolus"],
+    data_needed: ["age in days/months/years", "corrected gestational age", "IV calcium infusion status", "weight", "suspected infection source", "community vs hospital-acquired context", "ceftriaxone-resistant colonization/infection history", "allergy", "renal/cardiac disease", "need for fluid resuscitation", "response after first and second bolus"],
+    source_ids: ["NICE_SEPSIS_UNDER16_2025"],
+    source_section: "NG254 antibiotic, fluid, and oxygen recommendations 1.8-1.10"
+  },
+  {
+    id: "peds_fever_ssc_sepsis_timing_fluids",
+    label: "SSC pediatric sepsis timing and fluids: blood cultures before antibiotics if no substantial delay, antibiotics ideally within 1 hour for septic shock and within 3 hours for probable sepsis without shock; fluid boluses 10-20 mL/kg with repeated reassessment",
+    criteria_text: "SSC pediatric guidance recommends lactate for probable sepsis or suspected septic shock, blood cultures before antibiotics if this does not substantially delay therapy, antibiotics ideally within 1 hour for suspected septic shock and within 3 hours for probable sepsis without shock, and repeated reassessment after each 10-20 mL/kg bolus; where ICU is available, give up to 40-60 mL/kg in the first hour, while without ICU do not bolus sepsis without hypotension and give up to 40 mL/kg in the first hour for septic shock with hypotension; stop boluses when shock resolves or fluid overload develops, consider peripheral vasoactives rather than delaying for central access, and target SpO2 88-92% after resuscitation.",
+    cutoffs: ["antibiotics within 1 hour", "antibiotics within 3 hours", "10-20 mL/kg per bolus", "40-60 mL/kg first hour with ICU", "40 mL/kg first hour without ICU if hypotensive shock", "ScvO2 >=70%", "SpO2 88-92%", "SpO2 >94%"],
+    data_needed: ["shock status", "probable sepsis without shock status", "lactate", "blood culture timing", "antibiotic order and administration time", "weight", "ICU availability", "hypotension", "fluid overload signs", "perfusion after each bolus", "central venous access and ScvO2 if available", "vasoactive medication access", "post-resuscitation SpO2"],
+    source_ids: ["SSC_PEDIATRIC_SEPSIS_2026"],
+    source_section: "SSC 2026 pediatric infection, fluids, vasoactive, and ventilation recommendations"
+  },
+  {
+    id: "peds_fever_ucsf_febrile_infant_im_cutoffs",
+    label: "Febrile infant inflammatory markers: fever >38.0 C is true fever; elevated inflammatory markers include ANC >4000/uL, CRP >20 mg/L or 2.0 mg/dL, procalcitonin >0.5 ng/mL, or temperature >38.5 C",
+    criteria_text: "UCSF febrile infant consensus uses temperature >38.0 C as true fever and inflammatory marker cutoffs of ANC >4000/uL, CRP >20 mg/L or 2.0 mg/dL, procalcitonin >0.5 ng/mL, or temperature >38.5 C; PECARN low risk is UA negative, ANC <4000/uL, and procalcitonin <0.5 ng/mL.",
+    cutoffs: [">38.0 C", "ANC >4000/uL", "CRP >20 mg/L", "CRP >2.0 mg/dL", "procalcitonin >0.5 ng/mL", "temperature >38.5 C", "ANC <4000/uL", "procalcitonin <0.5 ng/mL"],
+    data_needed: ["age in days", "temperature value and method", "UA microscopy/leukocyte esterase/nitrite", "absolute neutrophil count", "CRP", "procalcitonin", "blood culture", "urine culture", "CSF results when obtained", "clinical appearance"],
+    source_ids: ["AAP_FEBRILE_INFANT_2021", "UCSF_FEBRILE_INFANT_2023"],
+    source_section: "Febrile infant inflammatory marker and PECARN low-risk criteria"
+  },
+  {
+    id: "peds_fever_ucsf_febrile_infant_age_branches",
+    label: "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+    criteria_text: "UCSF consensus recommends all well-appearing febrile infants under 21 days receive blood, urine, and CSF analysis/cultures and hospitalization with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending; age 22-28 days needs blood culture, inflammatory markers, UA/urine culture if positive, CSF and admission/IV antibiotics when markers are elevated or UA/CSF high risk, and selected low-risk outpatient observation only with reliable follow-up; age 29-60 days needs UA, urine culture if positive, blood culture, inflammatory markers, and may avoid CSF and use home oral UTI therapy or observation when low-risk criteria and follow-up/transport/communication are met.",
+    cutoffs: ["0-21 days", "22-28 days", "29-60 days", "24-48 hours", "24-hour follow-up", "48-hour follow-up", "24-36 hours no culture growth", "final cultures 5 days", "WBC >5 cells/hpf"],
+    data_needed: ["age in days", "well vs ill appearance", "blood culture", "urinalysis", "urine culture", "CSF cell count/culture if obtained", "inflammatory markers", "bronchiolitis or focal bacterial infection exclusion", "recent immunization 24-48 hours", "prematurity or chronic illness", "antibiotic timing", "follow-up appointment", "communication and transportation reliability", "culture follow-up owner"],
+    source_ids: ["AAP_FEBRILE_INFANT_2021", "UCSF_FEBRILE_INFANT_2023"],
+    source_section: "Febrile infant age-based evaluation, admission, discharge, and antibiotic discontinuation criteria"
+  },
+  {
+    id: "peds_fever_ng143_infant_under3_wbc_lp_antibiotics",
+    label: "NICE fever under 5 infant testing: under 3 months measure temperature/HR/RR, obtain FBC, blood culture, CRP, urine test; LP and parenteral antibiotics for age <1 month, unwell age 1-3 months, or WBC <5 or >15 x10^9/L",
+    criteria_text: "NICE NG143 recommends infants under 3 months with fever have temperature, heart rate, and respiratory rate recorded plus full blood count, blood culture, CRP, urine test, CXR only with respiratory signs, stool culture if diarrhoea; lumbar puncture unless contraindicated and parenteral antibiotics are indicated for infants younger than 1 month, all unwell infants 1-3 months, or infants 1-3 months with WBC <5 x10^9/L or >15 x10^9/L; when parenteral antibiotics are used in infants under 3 months, use a third-generation cephalosporin plus listeria-active ampicillin or amoxicillin.",
+    cutoffs: ["age <3 months", "age <1 month", "age 1-3 months", "WBC <5 x10^9/L", "WBC >15 x10^9/L"],
+    data_needed: ["age in months", "appearance/unwell status", "temperature", "heart rate", "respiratory rate", "FBC/WBC", "blood culture", "CRP", "urine test", "respiratory signs for CXR", "diarrhoea for stool culture", "LP contraindications", "antibiotic allergy"],
+    source_ids: ["NICE_FEVER_UNDER5_NG143"],
+    source_section: "NG143 pediatric specialist management of infants younger than 3 months"
+  },
+  {
+    id: "peds_fever_ng143_safety_net_antipyretics",
+    label: "NICE fever under 5 safety-net: red features urgent pediatric specialist, amber features safety-net if no diagnosis, fever >=5 days or non-blanching rash/fit/worsening concern requires further help; antipyretics only for distress",
+    criteria_text: "NICE NG143 recommends emergency care for immediately life-threatening fever features, urgent pediatric specialist care for red features, safety-net or specialist assessment for amber features with no diagnosis, and home care only for green features; if not admitted with red or amber features and no diagnosis, provide warning symptoms, planned follow-up, and direct access; antipyretics are for distress only, not just temperature reduction, and paracetamol and ibuprofen should not be given simultaneously; seek further help for fit, non-blanching rash, less well, increasing carer worry, fever lasting 5 days or longer, or carer inability to cope.",
+    cutoffs: ["fever >=5 days"],
+    data_needed: ["NICE red/amber/green features", "diagnosis reached or not", "parent/carer concern", "admission decision", "follow-up time/place", "direct access/out-of-hours plan", "distress with fever", "antipyretic dosing history", "fit", "non-blanching rash", "fever duration days", "caregiver ability to care"],
+    source_ids: ["NICE_FEVER_UNDER5_NG143"],
+    source_section: "NG143 non-paediatric and paediatric management, antipyretics, and home-care safety-netting"
   }
 ];
 
@@ -392,6 +476,7 @@ const curatedCutoffCriteria = {
   cushings_disease_v1: cushingDiagnosisCutoffCriteria,
   cushings_syndrome_v1: cushingDiagnosisCutoffCriteria,
   fever_infection_sepsis_v1: adultSepsisCutoffCriteria,
+  pediatric_fever_sepsis_v1: pediatricFeverSepsisCutoffCriteria,
   graves_disease_v1: thyroidHyperCutoffCriteria,
   hyperthyroidism_v1: thyroidHyperCutoffCriteria,
   thyrotoxicosis_v1: thyroidHyperCutoffCriteria,
@@ -963,7 +1048,7 @@ function node({
     label: shortText(label || id, 260),
     edgeLabel: cleanText(edgeLabel),
     source_ids: unique(sourceIds),
-    criteria: rule || criteria(`${id}_criteria`, `Apply ${label || id} when the cited condition-specific criteria match the patient context.`, contextDomains, sourceIds),
+    criteria: rule || criteria(`${id}_criteria`, `Use this ${type} when the cited condition-specific rule, cutoff, or patient-data route is satisfied.`, contextDomains, sourceIds),
     action: cleanText(action || label || id),
     children
   };
@@ -1140,8 +1225,8 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     ...listLabels(dispositions, 3)
   ], `${label} follow-up ownership and safety net`, 6);
   const edgeLabels = {
-    missingContext: `Missing exact ${label} pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings`,
-    diagnosticData: `Selected ${label} workup or documented findings: ${activationSummary}`,
+    missingContext: `Missing exact ${label} pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings`,
+    diagnosticData: `${label} active from documented findings: ${activationSummary}`,
     classification: `${label} results available for threshold classification: ${diagnosticDataSummary}`,
     missingCutoff: `Missing exact ${label} result(s): ${arrayText(exactDiagnosticData, `${label} threshold/result data`, 8)}`,
     urgent: `${label} danger feature or high-risk cutoff: ${redFlagBranchSummary}`,
@@ -1152,7 +1237,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     monitoring: `After ${label} therapy or diagnostic plan, trend: ${monitoringSummary}`,
     worsening: `${label} reassessment worsens or contradicts expected response: ${monitoringSummary}`,
     deescalate: `${label} objective response supports narrowing, stopping, tapering, or continuing: ${deescalationSummary}`,
-    followup: `${label} stable for discharge/outpatient plan: ${followupSummary}`
+    followup: `${label} discharge/outpatient criteria satisfied: ${followupSummary}`
   };
 
   const followupEndpoint = endpoint({
@@ -1226,7 +1311,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     label: `${label}: initiate treatment/disposition for the active threshold-defined branch`,
     edgeLabel: edgeLabels.treatment,
     sourceIds: managementSources,
-    criteria: criteria(`${prefix}_treatment_bundle_criteria`, `Use the ${label} treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "pregnancy_status", "workup_findings"], managementSources, { criteria_options: criteriaRows.slice(0, 10) }),
+    criteria: criteria(`${prefix}_treatment_bundle_criteria`, `Start ${label} treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "pregnancy_status", "workup_findings"], managementSources, { criteria_options: criteriaRows.slice(0, 10) }),
     action: treatmentSummary || `Treat ${label} according to the active threshold-defined branch and documented severity.`,
     parallelActions: unique([...listLabels(treatments, 5), ...listLabels(dispositions, 3)]),
     guidelineCutoffs: criteriaRows,
@@ -1304,10 +1389,10 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
 
   const root = decision({
     id: "root",
-    label: `${label}: does patient context support this workup or require exact missing-data routing?`,
+    label: `${label}: route by documented findings and exact missing-data needs`,
     sourceIds: cutoffSources,
     criteria: criteria("activate_workup", `Activate when structured or extractable context matches ${label} triggers or the clinician selects workup ${module.id}.`, ["selected_workup_id", "presenting_symptoms", "problem_list_or_diagnosis", "clinician_selected_module"], cutoffSources),
-    action: `Route ${label} using cited diagnostic thresholds/rules, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.`,
+    action: `Route ${label} from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.`,
     children: [missingContextEndpoint, dataBundle]
   });
 
@@ -1533,7 +1618,7 @@ function buildAdultSepsisClinicalPathwayTree(module, sourceById) {
     edgeLabel: "Possible infection without shock and diagnosis uncertain: investigate rapidly; if concern persists, give antimicrobials within 3 hours from first suspicion",
     sourceIds: ssc,
     criteria: criteria(`${prefix}_possible_sepsis_criteria`, "Use when sepsis is possible but not probable/definite and no shock is present.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "workup_findings"], ssc, { criteria_options: criteriaRows }),
-    action: "Perform rapid assessment for infectious and noninfectious causes, obtain targeted tests and cultures when indicated, reassess vitals/perfusion, and either administer antimicrobials within 3 hours if infection concern persists or defer antimicrobials with close monitoring when infection likelihood is low and shock is absent.",
+    action: "Perform rapid infectious-versus-noninfectious assessment, obtain blood cultures/lactate and source-directed data such as urinalysis/urine culture, CXR for respiratory signs, wound or CSF studies when those sources are suspected, repeat vitals/perfusion, and either administer antimicrobials within 3 hours if infection concern persists or defer antimicrobials with close monitoring when infection likelihood is low and shock is absent.",
     endpointType: "diagnostic_step",
     guidelineCutoffs: criteriaRows,
     monitoringPlan: ["time first suspected", "repeat vitals", "source-directed tests", "decision by 3 hours", "return/escalation precautions"]
@@ -1989,7 +2074,7 @@ function buildAdultDkaHhsClinicalPathwayTree(module, sourceById) {
 
   const initialAssessment = actionNode({
     id: `${prefix}_initial_assessment`,
-    label: "Adult hyperglycemia: obtain crisis labs, severity exam, medication exposure, and precipitant data together",
+    label: "Adult hyperglycemic crisis screen: glucose, ketones, pH or bicarbonate, potassium, creatinine, osmolality, mental status, medication exposure, and precipitant",
     edgeLabel: "Adult hyperglycemia, ketotic symptoms, dehydration, altered mentation, suspected DKA/HHS, SGLT2 exposure, or clinician-selected hyperglycemic-crisis workup",
     sourceIds,
     criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial adult DKA/HHS assessment requires concurrent clinical severity and lab data before a non-emergency branch is selected.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -3434,7 +3519,7 @@ function buildDiabetesMellitusClinicalPathwayTree(module, sourceById, diabetesTy
 
   const initialAssessment = actionNode({
     id: `${prefix}_initial_assessment`,
-    label: `${label}: collect A1c/glucose, crisis labs, diabetes type evidence, medication safety, vitals, weight, kidney/cardiovascular data, and access barriers`,
+    label: `${label}: collect A1c/glucose, ketone or acidosis data when symptomatic, diabetes type evidence, medication safety, vitals, weight, kidney/cardiovascular data, and access barriers`,
     edgeLabel: `${label} evaluation: diabetes-range test, hyperglycemia symptoms, abnormal glucose pattern, ketosis risk, hypoglycemia, medication adjustment need, complication concern, or clinician-chosen diabetes workup`,
     sourceIds,
     criteria: criteria(`${prefix}_initial_assessment_criteria`, `Initial ${label} assessment requires diagnostic thresholds, acute crisis safety, medication context, comorbid risk, and follow-up access before nonurgent therapy changes.`, contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -5119,6 +5204,271 @@ function buildAdultChestPainClinicalPathwayTree(module, sourceById) {
   });
 }
 
+function buildPediatricFeverSepsisClinicalPathwayTree(module, sourceById) {
+  const label = module.label || "Pediatric fever, infection, or sepsis";
+  const prefix = "pediatric_fever_sepsis";
+  const aapInfant = ["AAP_FEBRILE_INFANT_2021"];
+  const ucsfInfant = ["UCSF_FEBRILE_INFANT_2023"];
+  const niceFever = ["NICE_FEVER_UNDER5_NG143"];
+  const niceSepsis = ["NICE_SEPSIS_UNDER16_2025"];
+  const sscPeds = ["SSC_PEDIATRIC_SEPSIS_2026"];
+  const sourceIds = unique([...aapInfant, ...ucsfInfant, ...niceFever, ...niceSepsis, ...sscPeds, ...genericSourceIds]);
+  const tests = firstItems(module, "initialTests", 8);
+  const redFlags = firstItems(module, "redFlags", 8, ["safetyChecks"]);
+  const differentials = firstItems(module, "differentialBuckets", 8);
+  const dispositions = firstItems(module, "dispositionRules", 8);
+  const safetyChecks = firstItems(module, "safetyChecks", 8);
+  const criteriaRows = pediatricFeverSepsisCutoffCriteria.map(criterion);
+  const localEvidence = {
+    tests: listLabels(tests, 6).join("; "),
+    redFlags: listLabels(redFlags, 6).join("; "),
+    differentials: listLabels(differentials, 6).join("; "),
+    dispositions: listLabels(dispositions, 6).join("; "),
+    safety: listLabels(safetyChecks, 6).join("; ")
+  };
+
+  const missingContextEndpoint = endpoint({
+    id: "endpoint_missing_context",
+    label: "Missing core fever/sepsis context",
+    edgeLabel: "Missing age, fever method, vitals, perfusion, source, infant risk, or follow-up access",
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_context_criteria`, "Use this endpoint when pediatric fever or suspected sepsis cannot be routed because essential age, fever, vital-sign, perfusion, source, infant-risk, treatment-safety, or disposition data are unavailable.", contextDomains, sourceIds, { missing_any: contextDomains }),
+    action: "Before choosing a routine or outpatient branch, document exact age in days for infants and years for older children, temperature value/method and duration, full vital signs, oxygen requirement, mental state, capillary refill, urine output or last void, rash blanching/purpura, meningitis/HSV features, respiratory/urinary/skin/GI/CNS/joint/travel or line source symptoms, focused exam, immunization and prematurity/chronic illness status, recent immunization 24-48 hours, antibiotics already given, medication allergies, pregnancy or recent postpartum status in adolescents, caregiver concern, communication/transportation reliability, and pending result owner.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["exact age in days/months/years", "temperature value and measurement method", "fever duration and trajectory", "SpO2 in air and oxygen requirement", "respiratory rate", "heart rate", "blood pressure", "mental status", "capillary refill time", "urine output or last void", "rash blanching or purpura", "meningitis or HSV features", "source-localizing history and exam", "prematurity/chronic illness/immunocompromise", "recent immunization within 24-48 hours", "current medications and antibiotic exposure", "drug allergies", "pregnancy or recent postpartum status when relevant", "caregiver concern", "follow-up communication and transportation reliability"]
+  });
+
+  const missingObjectiveEndpoint = endpoint({
+    id: `${prefix}_missing_objective_endpoint`,
+    label: "Missing branch-critical vitals or labs",
+    edgeLabel: "Missing age-banded vitals, perfusion, cultures/lactate, UA, CSF, or infant markers",
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_objective_criteria`, "Use this endpoint when branch selection depends on objective values that are absent, including NICE age-banded vital thresholds, SSC shock data, or febrile-infant inflammatory markers and cultures.", ["demographics", "vitals", "exam", "labs", "imaging_results", "workup_findings"], sourceIds, { missing_any: ["age band", "temperature method", "SpO2", "oxygen requirement", "respiratory rate", "heart rate", "blood pressure", "mental state", "capillary refill time", "urine output", "rash blanching", "lactate", "blood culture", "urinalysis", "urine culture", "ANC", "CRP", "procalcitonin", "CSF when indicated"] }),
+    action: "Obtain or document the missing values before assigning a non-emergent endpoint: exact age band, fever method, SpO2 in air and oxygen delivery, respiratory rate, heart rate, systolic BP, mental state, CRT, urine timing or catheter mL/kg/hour, non-blanching rash assessment, lactate and blood culture when probable sepsis or shock is possible, UA/urine culture for infant or urinary-source fever, ANC/CRP/procalcitonin for febrile infants, CSF data when age or CNS rules require it, and weight for antibiotic/fluid dosing.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["exact age band", "temperature method", "SpO2 in air", "oxygen delivery and FiO2", "respiratory rate", "heart rate", "systolic blood pressure", "mental state", "capillary refill time", "urine output or last void", "rash blanching/purpura", "lactate", "blood culture timing", "urinalysis", "urine culture", "ANC", "CRP", "procalcitonin", "CSF results when indicated", "weight"]
+  });
+
+  const septicShockEndpoint = endpoint({
+    id: `${prefix}_septic_shock_endpoint`,
+    label: "Septic shock or organ dysfunction",
+    edgeLabel: "Shock, altered mental state, hypoxemia, poor perfusion, oliguria, or rapid decline",
+    sourceIds: unique([...sscPeds, ...niceSepsis, ...niceFever]),
+    criteria: criteria(`${prefix}_septic_shock_criteria`, "Use when suspected infection has shock, life-threatening organ dysfunction, severe hypoperfusion, or immediate pediatric critical-care need.", ["symptoms", "exam", "vitals", "labs", "medications", "comorbidities", "workup_findings"], unique([...sscPeds, ...niceSepsis, ...niceFever]), { criteria_options: criteriaRows }),
+    action: "Escalate immediately to emergency pediatric/critical-care or transfer pathway. Measure lactate, obtain blood cultures before antibiotics if this will not substantially delay treatment, give broad-spectrum antibiotics ideally within 1 hour for suspected septic shock, begin glucose-free crystalloid boluses 10-20 mL/kg with reassessment after each bolus, stop boluses if shock resolves or overload develops, use NICE maximum 250 mL bolus logic for under-16 resuscitation when applicable, add vasoactive medication through peripheral venous access rather than delaying for central access when shock persists, seek source control, avoid etomidate for intubation, and after resuscitation target SpO2 88-92% unless another condition requires a different target.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const highRiskSepsisEndpoint = endpoint({
+    id: `${prefix}_nice_high_risk_endpoint`,
+    label: "NICE high-risk sepsis physiology",
+    edgeLabel: "High-risk SpO2, RR, HR, BP, CRT, urine, temperature, mental state, or rash",
+    sourceIds: niceSepsis,
+    criteria: criteria(`${prefix}_nice_high_risk_criteria`, "Use when suspected sepsis meets any NICE NG254 high-risk criterion but the shock endpoint is not already active.", ["demographics", "symptoms", "exam", "vitals", "labs", "workup_findings"], niceSepsis, { criteria_options: criteriaRows }),
+    action: "Treat as high risk for severe illness or death from sepsis: urgent pediatric/ED assessment, blood culture and lactate when probable sepsis or shock is possible, source-directed testing, empiric antibiotics per age/source/local resistance rules without waiting for every result, oxygen for shock or SpO2 <92% in air, age-appropriate fluid resuscitation when needed with cardiac/renal caution, and monitored disposition until high-risk physiology resolves or a senior clinician documents an alternate explanation.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const moderateRiskEndpoint = endpoint({
+    id: `${prefix}_nice_moderate_risk_endpoint`,
+    label: "NICE moderate-risk sepsis",
+    edgeLabel: "Moderate SpO2/RR/HR/BP/urine band, hypothermia, leg pain, immune risk, or recent procedure",
+    sourceIds: unique([...niceSepsis, ...niceFever]),
+    criteria: criteria(`${prefix}_nice_moderate_risk_criteria`, "Use when suspected sepsis has NICE moderate-to-high risk criteria without a high-risk or shock feature.", ["demographics", "symptoms", "exam", "vitals", "labs", "comorbidities", "pregnancy_status", "workup_findings"], unique([...niceSepsis, ...niceFever]), { criteria_options: criteriaRows }),
+    action: "Arrange senior pediatric or ED review, repeat full observations, evaluate source, obtain blood culture/lactate when sepsis is possible, UA and urine culture for urinary-source or infant fever, CXR only with respiratory signs, and CSF when infant/CNS rules require it; reassess after antipyretics without using temperature response to rule out serious illness, decide observation/admission versus discharge only after red/high-risk features are absent, and provide written/verbal warning symptoms plus specified follow-up or direct access if no diagnosis is reached.",
+    endpointType: "monitoring_reassessment",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const febrileInfantEndpoint = endpoint({
+    id: `${prefix}_febrile_infant_endpoint`,
+    label: "Febrile infant age-band pathway",
+    edgeLabel: "Age 0-21, 22-28, or 29-60 days with fever >38.0 C",
+    sourceIds: unique([...aapInfant, ...ucsfInfant, ...niceFever, ...niceSepsis]),
+    criteria: criteria(`${prefix}_febrile_infant_criteria`, "Use for well-appearing febrile infants when the age and inflammatory-marker pathway applies and exclusions such as ill appearance, bronchiolitis pathway, focal bacterial infection, prematurity, chronic illness, immunodeficiency, or recent immunization need explicit handling.", ["demographics", "symptoms", "exam", "vitals", "labs", "imaging_results", "comorbidities", "medications", "follow_up_access", "workup_findings"], unique([...aapInfant, ...ucsfInfant, ...niceFever, ...niceSepsis]), { criteria_options: criteriaRows }),
+    action: "For 0-21 days, obtain blood, urine, and CSF analysis/cultures and hospitalize with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending. For 22-28 days, obtain blood culture, inflammatory markers, UA and urine culture if UA positive; elevated inflammatory markers, positive UA, or concerning CSF routes to CSF evaluation, admission, and IV antibiotics, while outpatient observation requires normal urine/CSF/inflammatory markers, broad-spectrum antibiotic plan when used, reliable communication/transport, and reevaluation within 24 hours. For 29-60 days, obtain UA with urine culture if positive, blood culture, ANC/CRP/procalcitonin, defer CSF only when low-risk logic permits, treat presumed UTI with oral antibiotics only when low-risk discharge criteria are met, and assign culture follow-up through final result.",
+    endpointType: "diagnostic_step",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const meningococcalCnsEndpoint = endpoint({
+    id: `${prefix}_meningococcal_cns_hsv_endpoint`,
+    label: "Meningococcal, CNS, or HSV concern",
+    edgeLabel: "Non-blanching rash, meningism, seizure/AMS, vesicles, hypothermia, or abnormal CSF/CBC/LFTs",
+    sourceIds: unique([...niceFever, ...niceSepsis, ...ucsfInfant]),
+    criteria: criteria(`${prefix}_meningococcal_cns_hsv_criteria`, "Use when fever has meningococcal disease, meningitis, encephalitis, or HSV features that override routine fever management.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "demographics", "workup_findings"], unique([...niceFever, ...niceSepsis, ...ucsfInfant]), { criteria_options: criteriaRows }),
+    action: "Do not use low-risk fever disposition. Give parenteral antibiotics at the earliest opportunity for suspected meningococcal disease, obtain CSF before antibiotics only when indicated and safe without delaying treatment, add acyclovir for infant HSV risk, involve pediatrics/critical care/neurology or transfer services, and reassess for inotropes/ICU when shocked, unrousable, or showing meningococcal disease.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const sourceDirectedEndpoint = endpoint({
+    id: `${prefix}_source_directed_endpoint`,
+    label: "Source-directed fever branch",
+    edgeLabel: "Respiratory, urinary, skin, abdominal, line, CNS, joint, travel, or exposure source",
+    sourceIds: unique([...niceFever, ...niceSepsis, ...sscPeds]),
+    criteria: criteria(`${prefix}_source_directed_criteria`, "Use when fever has a likely infection source or mimic requiring targeted tests, local antimicrobial guidance, or source control.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "workup_findings"], unique([...niceFever, ...niceSepsis, ...sscPeds]), { criteria_options: criteriaRows }),
+    action: "Use the identified source to choose targeted testing: urine testing for possible UTI, CXR only when respiratory signs indicate it, stool culture if diarrhea and infant rules apply, respiratory viral testing when it changes infant or isolation decisions, wound/line/joint/CNS cultures or imaging when those sources fit, and source control as soon as feasible. For clear-source suspected sepsis, use local antimicrobial guidance; for fever without apparent source in under-5 children, avoid oral antibiotics unless a bacterial source or specialist plan is documented.",
+    endpointType: "diagnostic_step",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const pregnancyPostpartumEndpoint = endpoint({
+    id: `${prefix}_pregnancy_postpartum_endpoint`,
+    label: "Pregnant or postpartum adolescent",
+    edgeLabel: "Pregnancy, recent postpartum state, or unknown status changes pathway",
+    sourceIds: unique([...niceSepsis, ...genericSourceIds]),
+    criteria: criteria(`${prefix}_pregnancy_postpartum_criteria`, "Use when pregnancy or recent postpartum status changes pediatric fever/sepsis pathway applicability, medication choice, imaging, fetal/obstetric assessment, or disposition.", ["demographics", "pregnancy_status", "vitals", "labs", "imaging_results", "medications", "workup_findings"], unique([...niceSepsis, ...genericSourceIds]), { criteria_options: criteriaRows }),
+    action: "Confirm pregnancy or postpartum status urgently. Route suspected sepsis in pregnancy or recent postpartum state to obstetric/adult sepsis governance, while still treating instability immediately. Document fetal/obstetric review needs, antimicrobial contraindications, imaging risk-benefit, source such as pyelonephritis/chorioamnionitis/endometritis, and the clinician responsible for reconciling pediatric versus obstetric protocols.",
+    endpointType: "clinician_review_handoff",
+    reviewNeededReason: "NICE NG254 under-16 sepsis guidance excludes pregnant or recently pregnant patients, so obstetric/adult sepsis policy must govern definitive management."
+  });
+
+  const specialReviewEndpoint = endpoint({
+    id: `${prefix}_special_population_review_endpoint`,
+    label: "Special population or local policy",
+    edgeLabel: "Neonate, prematurity, immunocompromise, line/device, resistant risk, bronchiolitis exclusion, or local policy",
+    sourceIds,
+    criteria: criteria(`${prefix}_special_population_review_criteria`, "Use when host factors, resistant-organism risk, febrile-infant exclusions, antimicrobial contraindications, or local pediatric transfer/formulary policies change routine fever management.", ["demographics", "comorbidities", "medications", "vitals", "labs", "imaging_results", "local_policy", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
+    action: "Obtain pediatric, infectious diseases, neonatology, immunology, critical-care, transfer-center, or antimicrobial-stewardship review as appropriate. Resolve ceftriaxone safety in newborns, listeria coverage for age <3 months, resistant-organism coverage, device/line source control, immunocompromised fever rules, bronchiolitis or recent-immunization exclusions from febrile-infant algorithms, and local admission/transfer thresholds before assigning outpatient care.",
+    endpointType: "clinician_review_handoff",
+    reviewNeededReason: "Neonatal age, prematurity, immunocompromise, resistant organisms, ceftriaxone/calcium risk, local antibiotic formulary, transfer access, and febrile-infant exclusions require clinician governance."
+  });
+
+  const lowRiskFeverEndpoint = endpoint({
+    id: `${prefix}_low_risk_fever_safety_endpoint`,
+    label: "Low-risk fever safety-net",
+    edgeLabel: "No sepsis, infant, CNS/HSV, pregnancy, or special-population branch is active",
+    sourceIds: unique([...niceFever, ...niceSepsis, ...ucsfInfant]),
+    criteria: criteria(`${prefix}_low_risk_fever_criteria`, "Use only after sepsis, meningococcal/CNS, febrile-infant, pregnancy/postpartum, special-population, and source complications have been addressed.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "demographics", "pregnancy_status", "follow_up_access", "workup_findings"], unique([...niceFever, ...niceSepsis, ...ucsfInfant]), { criteria_options: criteriaRows }),
+    action: "Provide home or outpatient care only with documented normal or improving mental state, oxygenation, perfusion, hydration, urine output, and caregiver reliability. Use paracetamol or ibuprofen only when the child appears distressed, not solely to lower temperature; do not give both simultaneously, and alternate only if distress persists or recurs before the next dose. Advise fluids, dehydration signs, non-blanching rash recognition, night checks, school/nursery exclusion while fever persists, and return for fit, non-blanching rash, child less well, caregiver more worried, fever lasting 5 days or longer, inability to care, breathing difficulty, poor intake/urine, or any sepsis feature.",
+    endpointType: "safety_net_instruction",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const worseningEndpoint = endpoint({
+    id: `${prefix}_worsening_endpoint`,
+    label: "Escalate on deterioration",
+    edgeLabel: "Worse vitals, oxygen need, perfusion, urine, mental state, rash, cultures, fever duration, or bolus response",
+    sourceIds,
+    criteria: criteria(`${prefix}_worsening_criteria`, "Escalate when reassessment shows pediatric fever is no longer following the expected lower-risk or improving course.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "follow_up_access", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
+    action: "Repeat full observations and focused exam, reassess perfusion/urine/mental state/oxygen need, review culture/UA/CSF/lactate/inflammatory-marker results, restart the sepsis or febrile-infant branch if a high-risk threshold appears, call a consultant in person if there is no improvement after a second fluid bolus, broaden source investigation when the original source no longer fits, and upgrade disposition to monitored care, admission, transfer, or specialty review.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const deescalateEndpoint = endpoint({
+    id: `${prefix}_deescalation_endpoint`,
+    label: "Narrow or stop antibiotics",
+    edgeLabel: "Microbiology supports narrowing, or infant cultures negative 24-36 h with improvement",
+    sourceIds: unique([...niceSepsis, ...sscPeds, ...ucsfInfant, ...aapInfant]),
+    criteria: criteria(`${prefix}_deescalation_criteria`, "Use when pediatric fever/sepsis treatment can be narrowed, stopped, or converted to oral therapy under microbiology, clinical-response, and follow-up criteria.", ["symptoms", "exam", "vitals", "labs", "medications", "follow_up_access", "workup_findings"], unique([...niceSepsis, ...sscPeds, ...ucsfInfant, ...aapInfant]), { criteria_options: criteriaRows }),
+    action: "Review pathogen and susceptibility data and narrow antibiotics when appropriate. If no pathogen is identified, narrow or stop only after clinical presentation, infection site, host risk, and improvement support it, with infectious-disease or microbiology input when needed. For febrile-infant rule-out treatment, discontinue antibiotics only when cultures show no growth at 24-36 hours, the infant is clinically improved and afebrile, no other treatable bacterial infection requires therapy, oral antibiotics are tolerated if a source remains, follow-up is scheduled within 48 hours, and a named clinician tracks cultures to final result, typically 5 days.",
+    endpointType: "deescalation_stopping",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const followupEndpoint = endpoint({
+    id: `${prefix}_followup_safety_endpoint`,
+    label: "Follow-up and return precautions",
+    edgeLabel: "Stable plan with pending-result owner, follow-up access, and fever safety-net instructions",
+    sourceIds: unique([...niceFever, ...niceSepsis, ...ucsfInfant, ...aapInfant]),
+    criteria: criteria(`${prefix}_followup_safety_criteria`, "Use when pediatric fever is stable enough for discharge, outpatient observation, or ward continuation with explicit follow-up ownership and return precautions.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "follow_up_access", "workup_findings"], unique([...niceFever, ...niceSepsis, ...ucsfInfant, ...aapInfant]), { criteria_options: criteriaRows }),
+    action: "Document the active diagnosis or risk category, why sepsis/meningococcal/febrile-infant high-risk branches are not active or how they are being treated, medication and antipyretic plan, hydration plan, pending result owner, culture follow-up owner, follow-up appointment or direct access route, and caregiver instructions to seek help for seizure, non-blanching rash, child less well, caregiver more worried, fever lasting 5 days or longer, dehydration signs, breathing difficulty, poor urine output, persistent lethargy, inability to take medications/fluids, or inability to care for the child.",
+    endpointType: "follow_up",
+    monitoringPlan: ["temperature and fever duration", "mental state and behavior", "SpO2/oxygen need", "RR/HR/BP by age band", "capillary refill and urine output", "culture/UA/CSF/lactate/inflammatory-marker results", "antibiotic and antipyretic tolerance", "follow-up appointment/direct access", "caregiver return precautions"]
+  });
+
+  const monitoringBundle = actionNode({
+    id: `${prefix}_monitoring_bundle`,
+    label: "Monitor fever/sepsis response",
+    edgeLabel: "After branch selection, reassess vitals, perfusion, urine, cultures, treatment response, and disposition",
+    sourceIds,
+    criteria: criteria(`${prefix}_monitoring_bundle_criteria`, "Monitor pediatric fever/sepsis by reassessing the exact findings that selected the active branch and the pending results that could change treatment or disposition.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "follow_up_access", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
+    action: "Repeat age-banded vital signs, oxygen need, mental state, perfusion, CRT, pulses, urine output, source exam, lactate when sepsis/shock is possible, blood/urine/CSF culture status, UA/ANC/CRP/procalcitonin for infants, antibiotic administration time, fluid bolus response and overload signs, medication adverse effects, caregiver concern, and disposition readiness before closing the pathway.",
+    parallelActions: unique(["repeat temperature, RR, HR, BP, SpO2, and oxygen delivery", "repeat mental state and social-response assessment", "repeat CRT, pulse quality, extremity temperature, and urine output", "track lactate and blood culture when sepsis is possible", "track UA, urine culture, CSF, ANC, CRP, and procalcitonin for febrile infants", "review antibiotic timing and allergy/adverse effects", "reassess after each fluid bolus and after the second bolus", "confirm pending-result owner and follow-up access", localEvidence.safety]),
+    guidelineCutoffs: criteriaRows,
+    children: [worseningEndpoint, deescalateEndpoint, followupEndpoint]
+  });
+
+  const classificationDecision = decision({
+    id: `${prefix}_classification_decision`,
+    label: "Choose fever/sepsis branch",
+    edgeLabel: "Age, fever method, vitals, perfusion, source exam, infant labs, modifiers, and follow-up known",
+    sourceIds,
+    criteria: criteria(`${prefix}_classification_criteria`, "Choose the pediatric fever/sepsis branch from shock, high-risk sepsis, moderate-risk sepsis, febrile infant, meningococcal/CNS/HSV, source-directed fever, pregnancy/postpartum, special-population review, low-risk safety-net, or monitoring.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Select the active endpoint using the cited age-banded physiologic thresholds and infant rules: septic shock or organ dysfunction, NICE high-risk suspected sepsis, NICE moderate-risk suspected sepsis, well-appearing febrile infant age band, meningococcal/CNS/HSV emergency, source-directed fever, pregnant/postpartum adolescent review, special-population/local-policy review, low-risk safety-net, or monitoring/de-escalation/follow-up.",
+    clinicalCriteria: criteriaRows,
+    guidelineCutoffs: criteriaRows,
+    children: [missingObjectiveEndpoint, septicShockEndpoint, highRiskSepsisEndpoint, moderateRiskEndpoint, febrileInfantEndpoint, meningococcalCnsEndpoint, sourceDirectedEndpoint, pregnancyPostpartumEndpoint, specialReviewEndpoint, lowRiskFeverEndpoint, monitoringBundle]
+  });
+
+  const initialAssessment = actionNode({
+    id: `${prefix}_bedside_assessment_bundle`,
+    label: "Bedside fever/sepsis assessment",
+    edgeLabel: "Start with age, fever method, vitals, perfusion, urine, rash/CNS signs, source exam, and infant labs",
+    sourceIds,
+    criteria: criteria(`${prefix}_bedside_assessment_criteria`, "Initial pediatric fever/sepsis assessment requires the age-specific data needed for NICE sepsis risk grading, febrile-infant rules, source diagnosis, treatment safety, and disposition.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Assess exact age, gestational/corrected age when relevant, temperature value/method/duration, caregiver concern, behavior/social response, mental state, work of breathing, SpO2 and oxygen delivery, RR/HR/BP, capillary refill, pulses/extremity temperature, urine output or last void, hydration, rash blanching/purpura, meningitis/HSV features, respiratory/urinary/GI/skin/CNS/joint/travel/line source, immunization and recent vaccine timing, prematurity/chronic illness/immunocompromise, pregnancy status, current medications/allergies, weight, blood culture/lactate timing when probable sepsis or shock is possible, UA/urine culture, ANC/CRP/procalcitonin and CSF decision for infants, antibiotics already given, and follow-up reliability.",
+    parallelActions: unique([localEvidence.tests, localEvidence.redFlags, localEvidence.dispositions, "exact age in days/months/years and weight", "temperature value and measurement method", "SpO2 in air, oxygen requirement, RR, HR, BP", "mental state, social response, CRT, pulses, extremity temperature, urine output", "non-blanching rash, meningitis, seizure, altered mental status, HSV features", "blood culture and lactate when probable sepsis or shock is possible", "UA/urine culture, ANC, CRP, procalcitonin, and CSF decision for febrile infants", "pregnancy status and medication allergy/safety check", "caregiver concern, communication, transportation, and follow-up access"]),
+    requiredData: ["exact age", "temperature value/method/duration", "full age-banded vital signs", "oxygen requirement", "mental state", "capillary refill", "urine output", "rash assessment", "source symptoms and focused exam", "blood culture/lactate when sepsis possible", "UA/urine culture", "ANC/CRP/procalcitonin for febrile infants", "CSF status when indicated", "medication allergy and antibiotic timing", "pregnancy status when relevant", "follow-up access"],
+    guidelineCutoffs: criteriaRows,
+    children: [classificationDecision]
+  });
+
+  const root = decision({
+    id: "root",
+    label: "Pediatric fever/sepsis pathway",
+    sourceIds,
+    criteria: criteria(`${prefix}_activate`, "Activate for child or adolescent fever, suspected infection, hypothermia with infection concern, sepsis concern, non-blanching rash, febrile infant, source-localizing fever, or clinician-chosen pediatric fever/sepsis evaluation.", ["clinician_chosen_module", "symptoms", "exam", "vitals", "labs", "imaging_results", "problem_list_or_diagnosis"], sourceIds),
+    action: "Route pediatric fever or suspected sepsis through missing-data, shock, high-risk sepsis, moderate-risk sepsis, febrile infant, CNS/HSV, source-directed, pregnancy/postpartum, special-population, low-risk fever, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+    children: [missingContextEndpoint, initialAssessment]
+  });
+
+  return finalizeClinicalPathwayTree({
+    module,
+    sourceById,
+    label,
+    version: "4.0.0",
+    status: "hand_polished_pediatric_fever_sepsis_pathway_needs_clinician_review",
+    sourceIds,
+    criteriaRows,
+    tests,
+    redFlags,
+    differentials,
+    dispositions,
+    root,
+    sourceMaterial: "NICE NG254 suspected sepsis in under 16s, NICE NG143 fever in under 5s, Surviving Sepsis Campaign 2026 pediatric sepsis guidance, AAP 2021 febrile infant guideline, UCSF 2023 febrile infant consensus, and local module evidence rows",
+    reviewNote: "Pediatric fever/sepsis tree is threshold-cited and patient-traversable; local antimicrobial formulary, local sepsis alert workflow, transfer thresholds, neonatal policy, resistant-organism coverage, and obstetric pathway for pregnant/postpartum adolescents require clinician governance.",
+    syntheticScenarios: [
+      { scenario_id: "missing_context", major_pathway: "missing_data_needed", expected_endpoint_id: missingContextEndpoint.id, expected_active_branch: missingContextEndpoint.edgeLabel },
+      { scenario_id: "missing_age_banded_vitals_or_infant_labs", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: missingObjectiveEndpoint.id, expected_active_branch: missingObjectiveEndpoint.edgeLabel },
+      { scenario_id: "septic_shock_lactate_antibiotics_fluids", major_pathway: "red_flags_instability", expected_endpoint_id: septicShockEndpoint.id, expected_active_branch: septicShockEndpoint.edgeLabel },
+      { scenario_id: "nice_high_risk_under5_or_12_15", major_pathway: "escalation_emergency_actions", expected_endpoint_id: highRiskSepsisEndpoint.id, expected_active_branch: highRiskSepsisEndpoint.edgeLabel },
+      { scenario_id: "nice_moderate_risk_observation", major_pathway: "severity_risk_stratification", expected_endpoint_id: moderateRiskEndpoint.id, expected_active_branch: moderateRiskEndpoint.edgeLabel },
+      { scenario_id: "well_appearing_febrile_infant_22_28_or_29_60", major_pathway: "diagnostic_confirmation", expected_endpoint_id: febrileInfantEndpoint.id, expected_active_branch: febrileInfantEndpoint.edgeLabel },
+      { scenario_id: "nonblanching_rash_or_hsv_cns", major_pathway: "mimics_exclusions", expected_endpoint_id: meningococcalCnsEndpoint.id, expected_active_branch: meningococcalCnsEndpoint.edgeLabel },
+      { scenario_id: "clear_urinary_or_respiratory_source", major_pathway: "first_line_management", expected_endpoint_id: sourceDirectedEndpoint.id, expected_active_branch: sourceDirectedEndpoint.edgeLabel },
+      { scenario_id: "pregnant_postpartum_adolescent", major_pathway: "contraindications_special_populations", expected_endpoint_id: pregnancyPostpartumEndpoint.id, expected_active_branch: pregnancyPostpartumEndpoint.edgeLabel },
+      { scenario_id: "neonate_immunocompromised_resistant_risk", major_pathway: "contraindications_special_populations", expected_endpoint_id: specialReviewEndpoint.id, expected_active_branch: specialReviewEndpoint.edgeLabel },
+      { scenario_id: "stable_child_low_risk_fever_home_care", major_pathway: "disposition_followup_safety_netting", expected_endpoint_id: lowRiskFeverEndpoint.id, expected_active_branch: lowRiskFeverEndpoint.edgeLabel },
+      { scenario_id: "deterioration_after_observation", major_pathway: "monitoring_reassessment_escalation", expected_endpoint_id: worseningEndpoint.id, expected_active_branch: worseningEndpoint.edgeLabel },
+      { scenario_id: "culture_negative_infant_or_narrow_antibiotics", major_pathway: "deescalation_stopping_criteria", expected_endpoint_id: deescalateEndpoint.id, expected_active_branch: deescalateEndpoint.edgeLabel },
+      { scenario_id: "followup_return_precautions_pending_cultures", major_pathway: "follow_up_safety_netting", expected_endpoint_id: followupEndpoint.id, expected_active_branch: followupEndpoint.edgeLabel }
+    ],
+    handPolishRequirements: [
+      "activation and root labels name concrete pediatric fever/sepsis branch decisions and do not use scaffold wording",
+      "NICE NG254 age-banded high-risk and moderate-risk sepsis thresholds are visible in branch labels and source thresholds",
+      "SSC pediatric sepsis timing, blood culture, lactate, 10-20 mL/kg bolus, first-hour volume, vasoactive, and post-resuscitation SpO2 targets are represented",
+      "febrile infant branch includes temperature >38.0 C, ANC/CRP/procalcitonin cutoffs, PECARN low-risk logic, age 0-21, 22-28, and 29-60 day routes, cultures, antibiotics, admission, and follow-up reliability",
+      "NICE fever under-5 infant WBC <5 or >15 x10^9/L LP/antibiotic threshold and safety-net return rules are represented",
+      "meningococcal/CNS/HSV, source-directed fever, pregnancy/postpartum adolescent, immunocompromised/neonate/local-policy, low-risk fever, monitoring, de-escalation, follow-up, and safety-net endpoints all terminate in actionable instructions"
+    ]
+  });
+}
+
 function buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById) {
   const label = module.label || "Pediatric chest pain, syncope, or palpitations";
   const prefix = "pediatric_chest_syncope";
@@ -5432,7 +5782,7 @@ function buildPediatricMskLimpHotJointClinicalPathwayTree(module, sourceById) {
     edgeLabel: "Cannot choose low-risk, infection, fracture, SUFE/Perthes, systemic-mimic, or admission branch until post-analgesia weight-bearing, temperature, ROM, pain localization, red flags, CRP/ESR/WBC/culture when infection is possible, and imaging/aspiration status are known",
     sourceIds,
     criteria: criteria(`${prefix}_missing_objective_criteria`, "Route here when the patient has a pediatric limp or hot-joint presentation but the objective findings needed for guideline branch selection are missing.", contextDomains, sourceIds, { missing_any: ["weight-bearing after analgesia", "temperature", "focused range of motion", "pain localization", "CRP/ESR/WBC when infection possible", "blood culture before antibiotics when feasible", "X-ray/ultrasound/MRI/aspiration status when indicated", "follow-up plan"] }),
-    action: "Complete the branch-critical data: repeat analgesia-supported walking assessment, measure temperature and full vitals, document passive joint motion and severe pain with movement, localize hip versus knee/thigh/bone pain, obtain FBE/WBC, ESR, CRP, blood culture before antibiotics when infection is possible, discuss aspiration for suspected septic arthritis without delaying antibiotics, obtain targeted X-ray for localized injury or hip disease, ultrasound for suspected hip effusion, MRI with contrast when osteomyelitis or deep infection remains possible, and document follow-up or transfer access before discharge.",
+    action: "Complete the branch-critical data: repeat analgesia-supported walking assessment, measure temperature and full vitals, document passive joint motion and severe pain with movement, localize hip versus knee/thigh/bone pain, obtain FBE/WBC, ESR, CRP, blood culture before antibiotics when infection is possible, discuss aspiration for suspected septic arthritis without delaying antibiotics, obtain localized X-ray for injury or hip disease, ultrasound for suspected hip effusion, MRI with contrast when osteomyelitis or deep infection remains possible, and document follow-up or transfer access before discharge.",
     endpointType: "missing_data_needed",
     missingDataNeeded: ["post-analgesia weight-bearing status", "temperature and full vitals", "passive joint range of motion", "pain localization", "CRP", "ESR", "WBC/FBE", "blood culture before antibiotics when feasible", "joint aspiration or orthopaedic plan when septic arthritis possible", "targeted X-ray when localized pain/injury/hip disease possible", "hip ultrasound effusion measurement when septic hip possible", "MRI plan/result when osteomyelitis or deep infection possible", "follow-up or transfer access"]
   });
@@ -5763,6 +6113,8 @@ function main() {
                               ? buildGrowthHormoneExcessClinicalPathwayTree(module, sourceById, "gigantism")
                               : module.id === "chest_pain_v1"
                               ? buildAdultChestPainClinicalPathwayTree(module, sourceById)
+                                : module.id === "pediatric_fever_sepsis_v1"
+                                  ? buildPediatricFeverSepsisClinicalPathwayTree(module, sourceById)
                                 : module.id === "pediatric_chest_pain_syncope_v1"
                                   ? buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById)
                                   : module.id === "pediatric_msk_limp_hot_joint_v1"

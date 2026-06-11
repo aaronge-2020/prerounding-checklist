@@ -1771,8 +1771,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Exclude exogenous glucocorticoid exposure first, including injections, creams, inhaled, topical, supplements, and medication interactions.",
-        "rationale": "Routes Cushing's Disease (Pituitary-dependent Cushing's) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Exclude exogenous glucocorticoid exposure first, including injections, creams, inhaled, topical, supplements, and medication interactions.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
+        "rationale": "Cushing's Disease (Pituitary-dependent Cushing's): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Exclude exogenous glucocorticoid exposure first, including injections, creams, inhaled, topical, supplements, and medication interactions.: patient data that changes testing, treatment, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
         "management_change": "Exclude exogenous glucocorticoid exposure first, including injections, creams, inhaled, topical, supplements, and medication interactions.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1805,8 +1805,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Screen with one of the recommended first-line tests: 1-mg overnight dexamethasone suppression, late-night salivary cortisol, or 24-hour urinary free cortisol, repeating or confirming abnormal results.",
-        "rationale": "Routes Cushing's Disease (Pituitary-dependent Cushing's) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Screen with one of the recommended first-line tests: 1-mg overnight dexamethasone suppression, late-night salivary cortisol, or 24-hour urinary free cortisol, repeating or confirming abnormal results.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
+        "rationale": "Cushing's Disease (Pituitary-dependent Cushing's): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Screen with one of the recommended first-line tests: 1-mg overnight dexamethasone suppression, late-night salivary cortisol, or 24-hour urinary free cortisol, repeating or confirming abnormal results.: patient data that changes testing, treatment, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
         "management_change": "Screen with one of the recommended first-line tests: 1-mg overnight dexamethasone suppression, late-night salivary cortisol, or 24-hour urinary free cortisol, repeating or confirming abnormal results.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1839,8 +1839,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "After endogenous hypercortisolism is confirmed, measure ACTH to separate ACTH-independent from ACTH-dependent disease.",
-        "rationale": "Routes Cushing's Disease (Pituitary-dependent Cushing's) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "After endogenous hypercortisolism is confirmed, measure ACTH to separate ACTH-independent from ACTH-dependent disease.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
+        "rationale": "Cushing's Disease (Pituitary-dependent Cushing's): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "After endogenous hypercortisolism is confirmed, measure ACTH to separate ACTH-independent from ACTH-dependent disease.: patient data that changes testing, treatment, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
         "management_change": "After endogenous hypercortisolism is confirmed, measure ACTH to separate ACTH-independent from ACTH-dependent disease.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1872,8 +1872,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use adrenal imaging for ACTH-independent disease; for ACTH-dependent disease use pituitary MRI and inferior petrosal sinus sampling when imaging and biochemistry are discordant.",
-        "rationale": "Routes Cushing's Disease (Pituitary-dependent Cushing's) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Use adrenal imaging for ACTH-independent disease; for ACTH-dependent disease use pituitary MRI and inferior petrosal sinus sampling when imaging and biochemistry are discordant.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
+        "rationale": "Cushing's Disease (Pituitary-dependent Cushing's): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Use adrenal imaging for ACTH-independent disease; for ACTH-dependent disease use pituitary MRI and inferior petrosal sinus sampling when imaging and biochemistry are discordant.: patient data that changes testing, treatment, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
         "management_change": "Use adrenal imaging for ACTH-independent disease; for ACTH-dependent disease use pituitary MRI and inferior petrosal sinus sampling when imaging and biochemistry are discordant.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1905,8 +1905,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Confirm that Cushing's Disease (Pituitary-dependent Cushing's) is the selected clinical intent, then screen for red flags before routine outpatient testing.",
-        "rationale": "Routes Cushing's Disease (Pituitary-dependent Cushing's) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Confirm that Cushing's Disease (Pituitary-dependent Cushing's) is the selected clinical intent, then screen for red flags before routine outpatient testing.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
+        "rationale": "Cushing's Disease (Pituitary-dependent Cushing's): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Confirm that Cushing's Disease (Pituitary-dependent Cushing's) is the selected clinical intent, then screen for red flags before routine outpatient testing.: patient data that changes testing, treatment, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
         "management_change": "Confirm that Cushing's Disease (Pituitary-dependent Cushing's) is the selected clinical intent, then screen for red flags before routine outpatient testing.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1938,8 +1938,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Order the first-line tests in sequence: First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL; ACTH: normal/high supports ACTH-dependent disease; Pituitary MRI.",
-        "rationale": "Routes Cushing's Disease (Pituitary-dependent Cushing's) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Order the first-line tests in sequence: First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL; ACTH: normal/high supports ACTH-dependent disease; Pituitary MRI.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
+        "rationale": "Cushing's Disease (Pituitary-dependent Cushing's): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Order the first-line tests in sequence: First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL; ACTH: normal/high supports ACTH-dependent disease; Pituitary MRI.: patient data that changes testing, treatment, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
         "management_change": "Order the first-line tests in sequence: First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL; ACTH: normal/high supports ACTH-dependent disease; Pituitary MRI.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1971,8 +1971,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret numeric results against the workup cutoffs and local assay ranges: Post-1 mg DST cortisol >1.8 ug/dL is a sensitive abnormal screen; late-night salivary and UFC cutoffs are assay-specific.",
-        "rationale": "Routes Cushing's Disease (Pituitary-dependent Cushing's) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Interpret numeric results against the workup cutoffs and local assay ranges: Post-1 mg DST cortisol >1.8 ug/dL is a sensitive abnormal screen; late-night salivary and UFC cutoffs are assay-specific.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
+        "rationale": "Cushing's Disease (Pituitary-dependent Cushing's): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Interpret numeric results against the workup cutoffs and local assay ranges: Post-1 mg DST cortisol >1.8 ug/dL is a sensitive abnormal screen; late-night salivary and UFC cutoffs are assay-specific.: patient data that changes testing, treatment, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
         "management_change": "Interpret numeric results against the workup cutoffs and local assay ranges: Post-1 mg DST cortisol >1.8 ug/dL is a sensitive abnormal screen; late-night salivary and UFC cutoffs are assay-specific.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2005,8 +2005,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.",
-        "rationale": "Routes Cushing's Disease (Pituitary-dependent Cushing's) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
+        "rationale": "Cushing's Disease (Pituitary-dependent Cushing's): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.: patient data that changes testing, treatment, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
         "management_change": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2042,7 +2042,7 @@
         },
         "action": "Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.",
         "rationale": "Links confirmed Cushing's Disease (Pituitary-dependent Cushing's) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
+        "diagnostic_target": "Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.: patient data that changes testing, treatment, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
         "management_change": "Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2076,7 +2076,7 @@
         },
         "action": "Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.",
         "rationale": "Links confirmed Cushing's Disease (Pituitary-dependent Cushing's) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
+        "diagnostic_target": "Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.: patient data that changes testing, treatment, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
         "management_change": "Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2110,7 +2110,7 @@
         },
         "action": "Use steroidogenesis inhibitors, glucocorticoid receptor blockade, pituitary-directed drugs, radiation, or bilateral adrenalectomy when surgery is delayed, incomplete, impossible, or recurrent.",
         "rationale": "Links confirmed Cushing's Disease (Pituitary-dependent Cushing's) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Use steroidogenesis inhibitors, glucocorticoid receptor blockade, pituitary-directed drugs, radiation, or bilateral adrenalectomy when surgery is delayed, incomplete, impossible, or recurrent.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
+        "diagnostic_target": "Use steroidogenesis inhibitors, glucocorticoid receptor blockade, pituitary-directed drugs, radiation, or bilateral adrenalectomy when surgery is delayed, incomplete, impossible, or recurrent.: patient data that changes testing, treatment, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
         "management_change": "Use steroidogenesis inhibitors, glucocorticoid receptor blockade, pituitary-directed drugs, radiation, or bilateral adrenalectomy when surgery is delayed, incomplete, impossible, or recurrent.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2144,7 +2144,7 @@
         },
         "action": "Provide postoperative adrenal insufficiency monitoring, glucocorticoid replacement/taper, recurrence surveillance, and cardiometabolic/bone risk treatment.",
         "rationale": "Links confirmed Cushing's Disease (Pituitary-dependent Cushing's) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Provide postoperative adrenal insufficiency monitoring, glucocorticoid replacement/taper, recurrence surveillance, and cardiometabolic/bone risk treatment.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
+        "diagnostic_target": "Provide postoperative adrenal insufficiency monitoring, glucocorticoid replacement/taper, recurrence surveillance, and cardiometabolic/bone risk treatment.: patient data that changes testing, treatment, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
         "management_change": "Provide postoperative adrenal insufficiency monitoring, glucocorticoid replacement/taper, recurrence surveillance, and cardiometabolic/bone risk treatment.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2178,7 +2178,7 @@
         },
         "action": "Treat unstable presentations first using the urgent escalation rule for Cushing's Disease (Pituitary-dependent Cushing's); draw time-sensitive labs only if doing so does not delay stabilization.",
         "rationale": "Links confirmed Cushing's Disease (Pituitary-dependent Cushing's) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Treat unstable presentations first using the urgent escalation rule for Cushing's Disease (Pituitary-dependent Cushing's); draw time-sensitive labs only if doing so does not delay stabilization.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
+        "diagnostic_target": "Treat unstable presentations first using the urgent escalation rule for Cushing's Disease (Pituitary-dependent Cushing's); draw time-sensitive labs only if doing so does not delay stabilization.: patient data that changes testing, treatment, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
         "management_change": "Treat unstable presentations first using the urgent escalation rule for Cushing's Disease (Pituitary-dependent Cushing's); draw time-sensitive labs only if doing so does not delay stabilization.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2212,7 +2212,7 @@
         },
         "action": "For confirmed Cushing's Disease (Pituitary-dependent Cushing's), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.",
         "rationale": "Links confirmed Cushing's Disease (Pituitary-dependent Cushing's) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "For confirmed Cushing's Disease (Pituitary-dependent Cushing's), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
+        "diagnostic_target": "For confirmed Cushing's Disease (Pituitary-dependent Cushing's), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.: patient data that changes testing, treatment, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
         "management_change": "For confirmed Cushing's Disease (Pituitary-dependent Cushing's), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2245,7 +2245,7 @@
         },
         "action": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.",
         "rationale": "Links confirmed Cushing's Disease (Pituitary-dependent Cushing's) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
+        "diagnostic_target": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.: patient data that changes testing, treatment, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
         "management_change": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2279,7 +2279,7 @@
         },
         "action": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.",
         "rationale": "Links confirmed Cushing's Disease (Pituitary-dependent Cushing's) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
+        "diagnostic_target": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.: patient data that changes testing, treatment, monitoring, referral, or disposition for Cushing's Disease (Pituitary-dependent Cushing's).",
         "management_change": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -3353,7 +3353,7 @@
         "cushings_disease_treatment_bundle": {
           "rule_id": "cushings_disease_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Cushing's Disease (Pituitary-dependent Cushing's) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+          "description": "Start Cushing's Disease (Pituitary-dependent Cushing's) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4417,7 +4417,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Cushing's Disease (Pituitary-dependent Cushing's): does patient context support this workup or require exact missing-data routing?",
+        "label": "Cushing's Disease (Pituitary-dependent Cushing's): route by documented findings and exact missing-data needs",
         "edgeLabel": "",
         "source_ids": [
           "ES_CUSHING_DX_2008",
@@ -4442,13 +4442,13 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Cushing's Disease (Pituitary-dependent Cushing's) using cited diagnostic thresholds/rules, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+        "action": "Route Cushing's Disease (Pituitary-dependent Cushing's) from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
         "children": [
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Cushing's Disease (Pituitary-dependent Cushing's) pathway context",
-            "edgeLabel": "Missing exact Cushing's Disease (Pituitary-dependent Cushing's) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
+            "edgeLabel": "Missing exact Cushing's Disease (Pituitary-dependent Cushing's) pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -4504,7 +4504,7 @@
             "id": "cushings_disease_concurrent_data_bundle",
             "type": "action",
             "label": "Cushing's Disease (Pituitary-dependent Cushing's): obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Selected Cushing's Disease (Pituitary-dependent Cushing's) workup or documented findings: Have you noticed easy bruising, proximal muscle weakness, wide purple stretch marks, facial rounding, new hypertension, new diabetes, or recurrent infections?; Do symptoms occur in episodes or cycles, and are there symptom-free intervals, repeated abnormal labs, or triggers that suggest cyclic hormone excess?; Any oral, injected, inhaled, topical, eye-drop, joint-injection, or supplement steroid exposure?; When was the last menstrual period, how regular are cycles, and has bleeding changed from baseline?; Severe hypercortisolism with infection, hypokalemia, psychosis, VTE, uncontrolled hypertension/diabetes.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL.",
+            "edgeLabel": "Cushing's Disease (Pituitary-dependent Cushing's) active from documented findings: Have you noticed easy bruising, proximal muscle weakness, wide purple stretch marks, facial rounding, new hypertension, new diabetes, or recurrent infections?; Do symptoms occur in episodes or cycles, and are there symptom-free intervals, repeated abnormal labs, or triggers that suggest cyclic hormone excess?; Any oral, injected, inhaled, topical, eye-drop, joint-injection, or supplement steroid exposure?; When was the last menstrual period, how regular are cycles, and has bleeding changed from baseline?; Severe hypercortisolism with infection, hypokalemia, psychosis, VTE, uncontrolled hypertension/diabetes.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL.",
             "source_ids": [
               "ES_CUSHING_DX_2008",
               "ES_CUSHING_TREATMENT_2015",
@@ -5342,7 +5342,7 @@
                     "criteria": {
                       "rule_id": "cushings_disease_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Cushing's Disease (Pituitary-dependent Cushing's) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+                      "description": "Start Cushing's Disease (Pituitary-dependent Cushing's) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -6746,7 +6746,7 @@
                                 "id": "cushings_disease_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Cushing's Disease (Pituitary-dependent Cushing's): follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Cushing's Disease (Pituitary-dependent Cushing's) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+                                "edgeLabel": "Cushing's Disease (Pituitary-dependent Cushing's) discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                                 "source_ids": [
                                   "ES_CUSHING_DX_2008",
                                   "ES_CUSHING_TREATMENT_2015",
@@ -8174,7 +8174,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing exact Cushing's Disease (Pituitary-dependent Cushing's) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
+          "expected_active_branch": "Missing exact Cushing's Disease (Pituitary-dependent Cushing's) pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
@@ -8216,7 +8216,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "cushings_disease_followup_endpoint",
-          "expected_active_branch": "Cushing's Disease (Pituitary-dependent Cushing's) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
+          "expected_active_branch": "Cushing's Disease (Pituitary-dependent Cushing's) discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
         }
       ],
       "audit_requirements": {

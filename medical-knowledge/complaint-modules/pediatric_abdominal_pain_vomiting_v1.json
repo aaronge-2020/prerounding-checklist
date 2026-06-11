@@ -1863,7 +1863,7 @@
     "decisionTrees": [
       {
         "id": "decision_01",
-        "label": "Screen for immediate danger or disposition-changing findings before routine workup: Bilious green vomiting or obstruction concern.",
+        "label": "Pediatric abdominal pain, vomiting, or acute abdomen: danger features or monitored-care triggers: Bilious green vomiting or obstruction concern.",
         "item_type": "management_change",
         "source": {
           "source_id": "RCH_VOMITING_CHILD",
@@ -1874,14 +1874,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "Escalate while arranging imaging and transfer; do not wait for routine outpatient testing."
         },
-        "action": "Screen for immediate danger or disposition-changing findings before routine workup: Bilious green vomiting or obstruction concern.",
-        "rationale": "Derives a Pediatric abdominal pain, vomiting, or acute abdomen workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Screen for immediate danger or disposition-changing findings before routine workup: Bilious green vomiting or obstruction concern.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric abdominal pain, vomiting, or acute abdomen.",
-        "management_change": "Screen for immediate danger or disposition-changing findings before routine workup: Bilious green vomiting or obstruction concern.",
+        "action": "Pediatric abdominal pain, vomiting, or acute abdomen: danger features or monitored-care triggers: Bilious green vomiting or obstruction concern.",
+        "rationale": "Pediatric abdominal pain, vomiting, or acute abdomen: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric abdominal pain, vomiting, or acute abdomen: danger features or monitored-care triggers: Bilious green vomiting or obstruction concern.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric abdominal pain, vomiting, or acute abdomen.",
+        "management_change": "Pediatric abdominal pain, vomiting, or acute abdomen: danger features or monitored-care triggers: Bilious green vomiting or obstruction concern.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric abdominal pain, vomiting, or acute abdomen.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric abdominal pain, vomiting, or acute abdomen.",
         "tags": [
           "pediatric",
           "abdominal",
@@ -1893,15 +1893,15 @@
           "vomiting",
           "acute",
           "abdomen",
-          "screen",
-          "immediate",
-          "danger",
-          "disposition"
+          "pediatric",
+          "abdominal",
+          "pain",
+          "vomiting"
         ]
       },
       {
         "id": "decision_02",
-        "label": "Order focused first-line studies and interpret them in sequence: Right lower quadrant ultrasound first; Equivocal ultrasound appendicitis pathway; Urinalysis with urine culture; Pregnancy test for pregnancy-capable adolescent.",
+        "label": "Pediatric abdominal pain, vomiting, or acute abdomen: initial diagnostic data to obtain and interpret together: Right lower quadrant ultrasound first; Equivocal ultrasound appendicitis pathway; Urinalysis with urine culture; Pregnancy test for pregnancy-capable adolescent.",
         "item_type": "management_change",
         "source": {
           "source_id": "IDSA_APPENDICITIS_IMAGING_2024",
@@ -1912,14 +1912,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "Do not treat adult CT-first logic as the pediatric default."
         },
-        "action": "Order focused first-line studies and interpret them in sequence: Right lower quadrant ultrasound first; Equivocal ultrasound appendicitis pathway; Urinalysis with urine culture; Pregnancy test for pregnancy-capable adolescent.",
-        "rationale": "Derives a Pediatric abdominal pain, vomiting, or acute abdomen workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Order focused first-line studies and interpret them in sequence: Right lower quadrant ultrasound first; Equivocal ultrasound appendicitis pathway; Urinalysis with urine culture; Pregnancy test for pregnancy-capable adolescent.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric abdominal pain, vomiting, or acute abdomen.",
-        "management_change": "Order focused first-line studies and interpret them in sequence: Right lower quadrant ultrasound first; Equivocal ultrasound appendicitis pathway; Urinalysis with urine culture; Pregnancy test for pregnancy-capable adolescent.",
+        "action": "Pediatric abdominal pain, vomiting, or acute abdomen: initial diagnostic data to obtain and interpret together: Right lower quadrant ultrasound first; Equivocal ultrasound appendicitis pathway; Urinalysis with urine culture; Pregnancy test for pregnancy-capable adolescent.",
+        "rationale": "Pediatric abdominal pain, vomiting, or acute abdomen: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric abdominal pain, vomiting, or acute abdomen: initial diagnostic data to obtain and interpret together: Right lower quadrant ultrasound first; Equivocal ultrasound appendicitis pathway; Urinalysis with urine culture; Pregnancy test for pregnancy-capable adolescent.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric abdominal pain, vomiting, or acute abdomen.",
+        "management_change": "Pediatric abdominal pain, vomiting, or acute abdomen: initial diagnostic data to obtain and interpret together: Right lower quadrant ultrasound first; Equivocal ultrasound appendicitis pathway; Urinalysis with urine culture; Pregnancy test for pregnancy-capable adolescent.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric abdominal pain, vomiting, or acute abdomen.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric abdominal pain, vomiting, or acute abdomen.",
         "tags": [
           "pediatric",
           "abdominal",
@@ -1931,15 +1931,15 @@
           "vomiting",
           "acute",
           "abdomen",
-          "order",
-          "focused",
-          "first",
-          "line"
+          "pediatric",
+          "abdominal",
+          "pain",
+          "vomiting"
         ]
       },
       {
         "id": "decision_03",
-        "label": "Use the leading diagnostic frame to avoid premature closure: Appendicitis or surgical acute abdomen with localized or progressive abdominal pain, peritoneal signs, obstruction features, or persistent focal tenderness.",
+        "label": "Pediatric abdominal pain, vomiting, or acute abdomen: leading diagnostic frame and mimics to resolve: Appendicitis or surgical acute abdomen with localized or progressive abdominal pain, peritoneal signs, obstruction features, or persistent focal tenderness.",
         "item_type": "management_change",
         "source": {
           "source_id": "IDSA_APPENDICITIS_IMAGING_2024",
@@ -1950,14 +1950,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "Pair imaging choice with bedside severity, local pediatric surgery access, and shared decision-making after equivocal ultrasound."
         },
-        "action": "Use the leading diagnostic frame to avoid premature closure: Appendicitis or surgical acute abdomen with localized or progressive abdominal pain, peritoneal signs, obstruction features, or persistent focal tenderness.",
-        "rationale": "Derives a Pediatric abdominal pain, vomiting, or acute abdomen workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Use the leading diagnostic frame to avoid premature closure: Appendicitis or surgical acute abdomen with localized or progressive abdominal pain, peritoneal signs, obstruction features, or persistent focal tenderness.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric abdominal pain, vomiting, or acute abdomen.",
-        "management_change": "Use the leading diagnostic frame to avoid premature closure: Appendicitis or surgical acute abdomen with localized or progressive abdominal pain, peritoneal signs, obstruction features, or persistent focal tenderness.",
+        "action": "Pediatric abdominal pain, vomiting, or acute abdomen: leading diagnostic frame and mimics to resolve: Appendicitis or surgical acute abdomen with localized or progressive abdominal pain, peritoneal signs, obstruction features, or persistent focal tenderness.",
+        "rationale": "Pediatric abdominal pain, vomiting, or acute abdomen: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric abdominal pain, vomiting, or acute abdomen: leading diagnostic frame and mimics to resolve: Appendicitis or surgical acute abdomen with localized or progressive abdominal pain, peritoneal signs, obstruction features, or persistent focal tenderness.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric abdominal pain, vomiting, or acute abdomen.",
+        "management_change": "Pediatric abdominal pain, vomiting, or acute abdomen: leading diagnostic frame and mimics to resolve: Appendicitis or surgical acute abdomen with localized or progressive abdominal pain, peritoneal signs, obstruction features, or persistent focal tenderness.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric abdominal pain, vomiting, or acute abdomen.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric abdominal pain, vomiting, or acute abdomen.",
         "tags": [
           "pediatric",
           "abdominal",
@@ -1969,15 +1969,15 @@
           "vomiting",
           "acute",
           "abdomen",
-          "leading",
-          "diagnostic",
-          "frame",
-          "avoid"
+          "pediatric",
+          "abdominal",
+          "pain",
+          "vomiting"
         ]
       },
       {
         "id": "decision_04",
-        "label": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Surgical or ED escalation.",
+        "label": "Pediatric abdominal pain, vomiting, or acute abdomen: escalation or disposition rule triggered by abnormal results or worsening status: Surgical or ED escalation.",
         "item_type": "management_change",
         "source": {
           "source_id": "RCH_ACUTE_ABDOMINAL_PAIN",
@@ -1988,14 +1988,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "Before transfer for possible surgical conditions, ensure analgesia, venous access, and fluids when clinically indicated."
         },
-        "action": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Surgical or ED escalation.",
-        "rationale": "Derives a Pediatric abdominal pain, vomiting, or acute abdomen workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Surgical or ED escalation.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric abdominal pain, vomiting, or acute abdomen.",
-        "management_change": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Surgical or ED escalation.",
+        "action": "Pediatric abdominal pain, vomiting, or acute abdomen: escalation or disposition rule triggered by abnormal results or worsening status: Surgical or ED escalation.",
+        "rationale": "Pediatric abdominal pain, vomiting, or acute abdomen: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric abdominal pain, vomiting, or acute abdomen: escalation or disposition rule triggered by abnormal results or worsening status: Surgical or ED escalation.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric abdominal pain, vomiting, or acute abdomen.",
+        "management_change": "Pediatric abdominal pain, vomiting, or acute abdomen: escalation or disposition rule triggered by abnormal results or worsening status: Surgical or ED escalation.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric abdominal pain, vomiting, or acute abdomen.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric abdominal pain, vomiting, or acute abdomen.",
         "tags": [
           "pediatric",
           "abdominal",
@@ -2007,17 +2007,17 @@
           "vomiting",
           "acute",
           "abdomen",
-          "results",
-          "bedside",
-          "status",
-          "high"
+          "pediatric",
+          "abdominal",
+          "pain",
+          "vomiting"
         ]
       }
     ],
     "treatmentOptions": [
       {
         "id": "treatment_01",
-        "label": "Stabilize or escalate before routine treatment when danger criteria are present: Bilious green vomiting or obstruction concern.",
+        "label": "Pediatric abdominal pain, vomiting, or acute abdomen: immediate stabilization or escalation trigger: Bilious green vomiting or obstruction concern.",
         "item_type": "management_change",
         "source": {
           "source_id": "RCH_VOMITING_CHILD",
@@ -2028,14 +2028,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "Escalate while arranging imaging and transfer; do not wait for routine outpatient testing."
         },
-        "action": "Stabilize or escalate before routine treatment when danger criteria are present: Bilious green vomiting or obstruction concern.",
-        "rationale": "Derives a Pediatric abdominal pain, vomiting, or acute abdomen workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Stabilize or escalate before routine treatment when danger criteria are present: Bilious green vomiting or obstruction concern.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric abdominal pain, vomiting, or acute abdomen.",
-        "management_change": "Stabilize or escalate before routine treatment when danger criteria are present: Bilious green vomiting or obstruction concern.",
+        "action": "Pediatric abdominal pain, vomiting, or acute abdomen: immediate stabilization or escalation trigger: Bilious green vomiting or obstruction concern.",
+        "rationale": "Pediatric abdominal pain, vomiting, or acute abdomen: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric abdominal pain, vomiting, or acute abdomen: immediate stabilization or escalation trigger: Bilious green vomiting or obstruction concern.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric abdominal pain, vomiting, or acute abdomen.",
+        "management_change": "Pediatric abdominal pain, vomiting, or acute abdomen: immediate stabilization or escalation trigger: Bilious green vomiting or obstruction concern.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric abdominal pain, vomiting, or acute abdomen.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric abdominal pain, vomiting, or acute abdomen.",
         "tags": [
           "pediatric",
           "abdominal",
@@ -2047,15 +2047,15 @@
           "vomiting",
           "acute",
           "abdomen",
-          "stabilize",
-          "escalate",
-          "before",
-          "routine"
+          "pediatric",
+          "abdominal",
+          "pain",
+          "vomiting"
         ]
       },
       {
         "id": "treatment_02",
-        "label": "Use the high-risk or confirmed-pathway management option when criteria are met: Surgical or ED escalation.",
+        "label": "Pediatric abdominal pain, vomiting, or acute abdomen: treatment or disposition for high-risk or confirmed disease: Surgical or ED escalation.",
         "item_type": "management_change",
         "source": {
           "source_id": "RCH_ACUTE_ABDOMINAL_PAIN",
@@ -2066,14 +2066,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "Before transfer for possible surgical conditions, ensure analgesia, venous access, and fluids when clinically indicated."
         },
-        "action": "Use the high-risk or confirmed-pathway management option when criteria are met: Surgical or ED escalation.",
-        "rationale": "Derives a Pediatric abdominal pain, vomiting, or acute abdomen workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Use the high-risk or confirmed-pathway management option when criteria are met: Surgical or ED escalation.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric abdominal pain, vomiting, or acute abdomen.",
-        "management_change": "Use the high-risk or confirmed-pathway management option when criteria are met: Surgical or ED escalation.",
+        "action": "Pediatric abdominal pain, vomiting, or acute abdomen: treatment or disposition for high-risk or confirmed disease: Surgical or ED escalation.",
+        "rationale": "Pediatric abdominal pain, vomiting, or acute abdomen: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric abdominal pain, vomiting, or acute abdomen: treatment or disposition for high-risk or confirmed disease: Surgical or ED escalation.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric abdominal pain, vomiting, or acute abdomen.",
+        "management_change": "Pediatric abdominal pain, vomiting, or acute abdomen: treatment or disposition for high-risk or confirmed disease: Surgical or ED escalation.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric abdominal pain, vomiting, or acute abdomen.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric abdominal pain, vomiting, or acute abdomen.",
         "tags": [
           "pediatric",
           "abdominal",
@@ -2085,15 +2085,15 @@
           "vomiting",
           "acute",
           "abdomen",
-          "high",
-          "risk",
-          "confirmed",
-          "pathway"
+          "pediatric",
+          "abdominal",
+          "pain",
+          "vomiting"
         ]
       },
       {
         "id": "treatment_03",
-        "label": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: Appendicitis imaging disposition.",
+        "label": "Pediatric abdominal pain, vomiting, or acute abdomen: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Appendicitis imaging disposition.",
         "item_type": "management_change",
         "source": {
           "source_id": "ACEP_APPENDICITIS_2023",
@@ -2104,14 +2104,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "Use local pediatric surgery/radiology resources and shared decision-making."
         },
-        "action": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: Appendicitis imaging disposition.",
-        "rationale": "Derives a Pediatric abdominal pain, vomiting, or acute abdomen workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: Appendicitis imaging disposition.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric abdominal pain, vomiting, or acute abdomen.",
-        "management_change": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: Appendicitis imaging disposition.",
+        "action": "Pediatric abdominal pain, vomiting, or acute abdomen: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Appendicitis imaging disposition.",
+        "rationale": "Pediatric abdominal pain, vomiting, or acute abdomen: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric abdominal pain, vomiting, or acute abdomen: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Appendicitis imaging disposition.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric abdominal pain, vomiting, or acute abdomen.",
+        "management_change": "Pediatric abdominal pain, vomiting, or acute abdomen: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Appendicitis imaging disposition.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric abdominal pain, vomiting, or acute abdomen.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric abdominal pain, vomiting, or acute abdomen.",
         "tags": [
           "pediatric",
           "abdominal",
@@ -2123,15 +2123,15 @@
           "vomiting",
           "acute",
           "abdomen",
-          "lower",
-          "risk",
-          "outpatient",
-          "supportive"
+          "pediatric",
+          "abdominal",
+          "pain",
+          "vomiting"
         ]
       },
       {
         "id": "treatment_04",
-        "label": "Monitor treatment response, complications, and need for reassessment with: Right lower quadrant ultrasound first.",
+        "label": "Pediatric abdominal pain, vomiting, or acute abdomen: monitoring data for response, complications, and reassessment: Right lower quadrant ultrasound first.",
         "item_type": "management_change",
         "source": {
           "source_id": "IDSA_APPENDICITIS_IMAGING_2024",
@@ -2142,14 +2142,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "Do not treat adult CT-first logic as the pediatric default."
         },
-        "action": "Monitor treatment response, complications, and need for reassessment with: Right lower quadrant ultrasound first.",
-        "rationale": "Derives a Pediatric abdominal pain, vomiting, or acute abdomen workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Monitor treatment response, complications, and need for reassessment with: Right lower quadrant ultrasound first.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric abdominal pain, vomiting, or acute abdomen.",
-        "management_change": "Monitor treatment response, complications, and need for reassessment with: Right lower quadrant ultrasound first.",
+        "action": "Pediatric abdominal pain, vomiting, or acute abdomen: monitoring data for response, complications, and reassessment: Right lower quadrant ultrasound first.",
+        "rationale": "Pediatric abdominal pain, vomiting, or acute abdomen: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric abdominal pain, vomiting, or acute abdomen: monitoring data for response, complications, and reassessment: Right lower quadrant ultrasound first.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric abdominal pain, vomiting, or acute abdomen.",
+        "management_change": "Pediatric abdominal pain, vomiting, or acute abdomen: monitoring data for response, complications, and reassessment: Right lower quadrant ultrasound first.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric abdominal pain, vomiting, or acute abdomen.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric abdominal pain, vomiting, or acute abdomen.",
         "tags": [
           "pediatric",
           "abdominal",
@@ -2161,10 +2161,10 @@
           "vomiting",
           "acute",
           "abdomen",
-          "monitor",
-          "treatment",
-          "response",
-          "complications"
+          "pediatric",
+          "abdominal",
+          "pain",
+          "vomiting"
         ]
       }
     ],
@@ -3106,7 +3106,7 @@
         "pediatric_abdominal_pain_vomiting_treatment_bundle": {
           "rule_id": "pediatric_abdominal_pain_vomiting_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Pediatric abdominal pain, vomiting, or acute abdomen treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+          "description": "Start Pediatric abdominal pain, vomiting, or acute abdomen treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3124,6 +3124,7 @@
             "NICE_GASTROENTERITIS_UNDER5_CG84",
             "NICE_UTI_UNDER16_NG224",
             "NICE_ECTOPIC_MISCARRIAGE_NG126",
+            "RCH_VOMITING_CHILD",
             "IDSA_APPENDICITIS_IMAGING_2024",
             "NICE_SEPSIS_UNDER16_2025",
             "AHRQ_CALIBRATE_DX"
@@ -3418,6 +3419,7 @@
             "NICE_GASTROENTERITIS_UNDER5_CG84",
             "NICE_UTI_UNDER16_NG224",
             "NICE_ECTOPIC_MISCARRIAGE_NG126",
+            "RCH_VOMITING_CHILD",
             "IDSA_APPENDICITIS_IMAGING_2024",
             "NICE_SEPSIS_UNDER16_2025",
             "AHRQ_CALIBRATE_DX"
@@ -3703,6 +3705,7 @@
             "NICE_GASTROENTERITIS_UNDER5_CG84",
             "NICE_UTI_UNDER16_NG224",
             "NICE_ECTOPIC_MISCARRIAGE_NG126",
+            "RCH_VOMITING_CHILD",
             "IDSA_APPENDICITIS_IMAGING_2024",
             "NICE_SEPSIS_UNDER16_2025",
             "AHRQ_CALIBRATE_DX"
@@ -3845,6 +3848,7 @@
             "NICE_GASTROENTERITIS_UNDER5_CG84",
             "NICE_UTI_UNDER16_NG224",
             "NICE_ECTOPIC_MISCARRIAGE_NG126",
+            "RCH_VOMITING_CHILD",
             "IDSA_APPENDICITIS_IMAGING_2024",
             "NICE_SEPSIS_UNDER16_2025",
             "AHRQ_CALIBRATE_DX"
@@ -3996,7 +4000,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Pediatric abdominal pain, vomiting, or acute abdomen: does patient context support this workup or require exact missing-data routing?",
+        "label": "Pediatric abdominal pain, vomiting, or acute abdomen: route by documented findings and exact missing-data needs",
         "edgeLabel": "",
         "source_ids": [
           "RCH_VOMITING_CHILD",
@@ -4031,13 +4035,13 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Pediatric abdominal pain, vomiting, or acute abdomen using cited diagnostic thresholds/rules, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+        "action": "Route Pediatric abdominal pain, vomiting, or acute abdomen from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
         "children": [
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Pediatric abdominal pain, vomiting, or acute abdomen pathway context",
-            "edgeLabel": "Missing exact Pediatric abdominal pain, vomiting, or acute abdomen pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
+            "edgeLabel": "Missing exact Pediatric abdominal pain, vomiting, or acute abdomen pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -4093,7 +4097,7 @@
             "id": "pediatric_abdominal_pain_vomiting_concurrent_data_bundle",
             "type": "action",
             "label": "Pediatric abdominal pain, vomiting, or acute abdomen: obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Selected Pediatric abdominal pain, vomiting, or acute abdomen workup or documented findings: Pediatric abdominal age band; Pain location and trajectory; Vomiting character; Diarrhea stool and exposure features; Bilious green vomiting or obstruction concern; Peritonitis or progressive localized pain; Right lower quadrant ultrasound first",
+            "edgeLabel": "Pediatric abdominal pain, vomiting, or acute abdomen active from documented findings: Pediatric abdominal age band; Pain location and trajectory; Vomiting character; Diarrhea stool and exposure features; Bilious green vomiting or obstruction concern; Peritonitis or progressive localized pain; Right lower quadrant ultrasound first",
             "source_ids": [
               "IDSA_APPENDICITIS_IMAGING_2024",
               "ACEP_APPENDICITIS_2023",
@@ -4558,7 +4562,7 @@
                         }
                       ]
                     },
-                    "action": "Bilious green vomiting or obstruction concern; Peritonitis or progressive localized pain; Shock dehydration or altered mental status; Possible ectopic pregnancy emergency. Monitor treatment response, complications, and need for reassessment with: Right lower quadrant ultrasound first.; Surgical or ED escalation; Appendicitis imaging disposition; Gastroenteritis oral rehydration safety net; Surgical or ED escalation; Appendicitis imaging disposition; Gastroenteritis oral rehydration safety net",
+                    "action": "Bilious green vomiting or obstruction concern; Peritonitis or progressive localized pain; Shock dehydration or altered mental status; Possible ectopic pregnancy emergency. Pediatric abdominal pain, vomiting, or acute abdomen: immediate stabilization or escalation trigger: Bilious green vomiting or obstruction concern.; Pediatric abdominal pain, vomiting, or acute abdomen: treatment or disposition for high-risk or confirmed disease: Surgical or ED escalation.; Pediatric abdominal pain, vomiting, or acute abdomen: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Appendicitis imaging disposition.; Pediatric abdominal pain, vomiting, or acute abdomen: monitoring data for response, complications, and reassessment: Right lower quadrant ultrasound first.; Surgical or ED escalation; Appendicitis imaging disposition; Gastroenteritis oral rehydration safety net",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -4684,13 +4688,14 @@
                     "id": "pediatric_abdominal_pain_vomiting_treatment_bundle",
                     "type": "action",
                     "label": "Pediatric abdominal pain, vomiting, or acute abdomen: initiate treatment/disposition for the active threshold-defined branch",
-                    "edgeLabel": "Pediatric abdominal pain, vomiting, or acute abdomen treatment/disposition indicated by: <3 mmol/L; >11 mmol/L; <2.6 mmol/L; 10-20 mL/kg; >6 months; 8-15 kg; Monitor treatment response, complications, and need for reassessment with: Right lower quadrant ultrasound first.; Surgical or ED escalation; Appendicitis imaging disposition; Gastroenteritis oral rehydration safety net; Surgical or ED escalation; Appendicitis imaging disposition; Gastroenteritis oral rehydration safety net",
+                    "edgeLabel": "Pediatric abdominal pain, vomiting, or acute abdomen treatment/disposition indicated by: <3 mmol/L; >11 mmol/L; <2.6 mmol/L; 10-20 mL/kg; >6 months; 8-15 kg; Pediatric abdominal pain, vomiting, or acute abdomen: immediate stabilization or escalation trigger: Bilious green vomiting or obstruction concern.; Pediatric abdominal pain, vomiting, or acute abdomen: treatment or disposition for high-risk or confirmed disease: Surgical or ED escalation.; Pediatric abdominal pain, vomiting, or acute abdomen: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Appendicitis imaging disposition.; Pediatric abdominal pain, vomiting, or acute abdomen: monitoring data for response, complications, and reassessment: Right lower quadrant ultrasound first.; Surgical or ED escalation; Appendicitis imaging disposition; Gastroenteritis oral rehydration safety net",
                     "source_ids": [
                       "RCH_ACUTE_ABDOMINAL_PAIN",
                       "ACEP_APPENDICITIS_2023",
                       "NICE_GASTROENTERITIS_UNDER5_CG84",
                       "NICE_UTI_UNDER16_NG224",
                       "NICE_ECTOPIC_MISCARRIAGE_NG126",
+                      "RCH_VOMITING_CHILD",
                       "IDSA_APPENDICITIS_IMAGING_2024",
                       "NICE_SEPSIS_UNDER16_2025",
                       "AHRQ_CALIBRATE_DX"
@@ -4698,7 +4703,7 @@
                     "criteria": {
                       "rule_id": "pediatric_abdominal_pain_vomiting_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Pediatric abdominal pain, vomiting, or acute abdomen treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+                      "description": "Start Pediatric abdominal pain, vomiting, or acute abdomen treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4716,6 +4721,7 @@
                         "NICE_GASTROENTERITIS_UNDER5_CG84",
                         "NICE_UTI_UNDER16_NG224",
                         "NICE_ECTOPIC_MISCARRIAGE_NG126",
+                        "RCH_VOMITING_CHILD",
                         "IDSA_APPENDICITIS_IMAGING_2024",
                         "NICE_SEPSIS_UNDER16_2025",
                         "AHRQ_CALIBRATE_DX"
@@ -4839,7 +4845,7 @@
                         }
                       ]
                     },
-                    "action": "Monitor treatment response, complications, and need for reassessment with: Right lower quadrant ultrasound first.; Surgical or ED escalation; Appendicitis imaging disposition; Gastroenteritis oral rehydration safety net; Surgical or ED escalation; Appendicitis imaging disposition; Gastroenteritis oral rehydration safety net",
+                    "action": "Pediatric abdominal pain, vomiting, or acute abdomen: immediate stabilization or escalation trigger: Bilious green vomiting or obstruction concern.; Pediatric abdominal pain, vomiting, or acute abdomen: treatment or disposition for high-risk or confirmed disease: Surgical or ED escalation.; Pediatric abdominal pain, vomiting, or acute abdomen: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Appendicitis imaging disposition.; Pediatric abdominal pain, vomiting, or acute abdomen: monitoring data for response, complications, and reassessment: Right lower quadrant ultrasound first.; Surgical or ED escalation; Appendicitis imaging disposition; Gastroenteritis oral rehydration safety net",
                     "children": [
                       {
                         "id": "pediatric_abdominal_pain_vomiting_treatment_safety_decision",
@@ -5043,6 +5049,7 @@
                               "NICE_GASTROENTERITIS_UNDER5_CG84",
                               "NICE_UTI_UNDER16_NG224",
                               "NICE_ECTOPIC_MISCARRIAGE_NG126",
+                              "RCH_VOMITING_CHILD",
                               "IDSA_APPENDICITIS_IMAGING_2024",
                               "NICE_SEPSIS_UNDER16_2025",
                               "AHRQ_CALIBRATE_DX"
@@ -5066,6 +5073,7 @@
                                 "NICE_GASTROENTERITIS_UNDER5_CG84",
                                 "NICE_UTI_UNDER16_NG224",
                                 "NICE_ECTOPIC_MISCARRIAGE_NG126",
+                                "RCH_VOMITING_CHILD",
                                 "IDSA_APPENDICITIS_IMAGING_2024",
                                 "NICE_SEPSIS_UNDER16_2025",
                                 "AHRQ_CALIBRATE_DX"
@@ -5476,13 +5484,14 @@
                                 "id": "pediatric_abdominal_pain_vomiting_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Pediatric abdominal pain, vomiting, or acute abdomen: de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Pediatric abdominal pain, vomiting, or acute abdomen objective response supports narrowing, stopping, tapering, or continuing: <3 mmol/L; >11 mmol/L; <2.6 mmol/L; 10-20 mL/kg; Surgical or ED escalation; Appendicitis imaging disposition; Gastroenteritis oral rehydration safety net; Monitor treatment response, complications, and need for reassessment with: Right lower quadrant ultrasound first.",
+                                "edgeLabel": "Pediatric abdominal pain, vomiting, or acute abdomen objective response supports narrowing, stopping, tapering, or continuing: <3 mmol/L; >11 mmol/L; <2.6 mmol/L; 10-20 mL/kg; Surgical or ED escalation; Appendicitis imaging disposition; Gastroenteritis oral rehydration safety net; Pediatric abdominal pain, vomiting, or acute abdomen: immediate stabilization or escalation trigger: Bilious green vomiting or obstruction concern.",
                                 "source_ids": [
                                   "RCH_ACUTE_ABDOMINAL_PAIN",
                                   "ACEP_APPENDICITIS_2023",
                                   "NICE_GASTROENTERITIS_UNDER5_CG84",
                                   "NICE_UTI_UNDER16_NG224",
                                   "NICE_ECTOPIC_MISCARRIAGE_NG126",
+                                  "RCH_VOMITING_CHILD",
                                   "IDSA_APPENDICITIS_IMAGING_2024",
                                   "NICE_SEPSIS_UNDER16_2025",
                                   "AHRQ_CALIBRATE_DX"
@@ -5506,6 +5515,7 @@
                                     "NICE_GASTROENTERITIS_UNDER5_CG84",
                                     "NICE_UTI_UNDER16_NG224",
                                     "NICE_ECTOPIC_MISCARRIAGE_NG126",
+                                    "RCH_VOMITING_CHILD",
                                     "IDSA_APPENDICITIS_IMAGING_2024",
                                     "NICE_SEPSIS_UNDER16_2025",
                                     "AHRQ_CALIBRATE_DX"
@@ -5755,13 +5765,14 @@
                                 "id": "pediatric_abdominal_pain_vomiting_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Pediatric abdominal pain, vomiting, or acute abdomen: follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Pediatric abdominal pain, vomiting, or acute abdomen stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Surgical or ED escalation; Appendicitis imaging disposition; Gastroenteritis oral rehydration safety net",
+                                "edgeLabel": "Pediatric abdominal pain, vomiting, or acute abdomen discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Surgical or ED escalation; Appendicitis imaging disposition; Gastroenteritis oral rehydration safety net",
                                 "source_ids": [
                                   "RCH_ACUTE_ABDOMINAL_PAIN",
                                   "ACEP_APPENDICITIS_2023",
                                   "NICE_GASTROENTERITIS_UNDER5_CG84",
                                   "NICE_UTI_UNDER16_NG224",
                                   "NICE_ECTOPIC_MISCARRIAGE_NG126",
+                                  "RCH_VOMITING_CHILD",
                                   "IDSA_APPENDICITIS_IMAGING_2024",
                                   "NICE_SEPSIS_UNDER16_2025",
                                   "AHRQ_CALIBRATE_DX"
@@ -5785,6 +5796,7 @@
                                     "NICE_GASTROENTERITIS_UNDER5_CG84",
                                     "NICE_UTI_UNDER16_NG224",
                                     "NICE_ECTOPIC_MISCARRIAGE_NG126",
+                                    "RCH_VOMITING_CHILD",
                                     "IDSA_APPENDICITIS_IMAGING_2024",
                                     "NICE_SEPSIS_UNDER16_2025",
                                     "AHRQ_CALIBRATE_DX"
@@ -5935,11 +5947,13 @@
                       }
                     ],
                     "parallel_actions": [
-                      "Monitor treatment response, complications, and need for reassessment with: Right lower quadrant ultrasound first.",
+                      "Pediatric abdominal pain, vomiting, or acute abdomen: immediate stabilization or escalation trigger: Bilious green vomiting or obstruction concern.",
+                      "Pediatric abdominal pain, vomiting, or acute abdomen: treatment or disposition for high-risk or confirmed disease: Surgical or ED escalation.",
+                      "Pediatric abdominal pain, vomiting, or acute abdomen: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Appendicitis imaging disposition.",
+                      "Pediatric abdominal pain, vomiting, or acute abdomen: monitoring data for response, complications, and reassessment: Right lower quadrant ultrasound first.",
                       "Surgical or ED escalation",
                       "Appendicitis imaging disposition",
-                      "Gastroenteritis oral rehydration safety net",
-                      "UTI testing treatment and follow-up route"
+                      "Gastroenteritis oral rehydration safety net"
                     ],
                     "guideline_cutoffs": [
                       {
@@ -6638,7 +6652,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing exact Pediatric abdominal pain, vomiting, or acute abdomen pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
+          "expected_active_branch": "Missing exact Pediatric abdominal pain, vomiting, or acute abdomen pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
@@ -6674,13 +6688,13 @@
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "pediatric_abdominal_pain_vomiting_deescalate_endpoint",
-          "expected_active_branch": "Pediatric abdominal pain, vomiting, or acute abdomen objective response supports narrowing, stopping, tapering, or continuing: <3 mmol/L; >11 mmol/L; <2.6 mmol/L; 10-20 mL/kg; Surgical or ED escalation; Appendicitis imaging disposition; Gastroenteritis oral rehydration safety net; Monitor treatment response, complications, and need for reassessment with: Right lower quadrant ultrasound first."
+          "expected_active_branch": "Pediatric abdominal pain, vomiting, or acute abdomen objective response supports narrowing, stopping, tapering, or continuing: <3 mmol/L; >11 mmol/L; <2.6 mmol/L; 10-20 mL/kg; Surgical or ED escalation; Appendicitis imaging disposition; Gastroenteritis oral rehydration safety net; Pediatric abdominal pain, vomiting, or acute abdomen: immediate stabilization or escalation trigger: Bilious green vomiting or obstruction concern."
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "pediatric_abdominal_pain_vomiting_followup_endpoint",
-          "expected_active_branch": "Pediatric abdominal pain, vomiting, or acute abdomen stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Surgical or ED escalation; Appendicitis imaging disposition; Gastroenteritis oral rehydration safety net"
+          "expected_active_branch": "Pediatric abdominal pain, vomiting, or acute abdomen discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Surgical or ED escalation; Appendicitis imaging disposition; Gastroenteritis oral rehydration safety net"
         }
       ],
       "audit_requirements": {

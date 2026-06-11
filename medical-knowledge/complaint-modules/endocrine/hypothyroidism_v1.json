@@ -1863,8 +1863,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Start with TSH and free T4; high TSH with low free T4 supports overt primary hypothyroidism, while low free T4 with low/normal TSH suggests central disease.",
-        "rationale": "Routes Hypothyroidism (Underactive Thyroid) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Start with TSH and free T4; high TSH with low free T4 supports overt primary hypothyroidism, while low free T4 with low/normal TSH suggests central disease.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
+        "rationale": "Hypothyroidism (Underactive Thyroid): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Start with TSH and free T4; high TSH with low free T4 supports overt primary hypothyroidism, while low free T4 with low/normal TSH suggests central disease.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
         "management_change": "Start with TSH and free T4; high TSH with low free T4 supports overt primary hypothyroidism, while low free T4 with low/normal TSH suggests central disease.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1895,8 +1895,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Check TPO antibody when autoimmune thyroiditis changes prognosis, pregnancy planning, or etiology; ultrasound is reserved for goiter, nodule, asymmetry, or compressive symptoms.",
-        "rationale": "Routes Hypothyroidism (Underactive Thyroid) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Check TPO antibody when autoimmune thyroiditis changes prognosis, pregnancy planning, or etiology; ultrasound is reserved for goiter, nodule, asymmetry, or compressive symptoms.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
+        "rationale": "Hypothyroidism (Underactive Thyroid): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Check TPO antibody when autoimmune thyroiditis changes prognosis, pregnancy planning, or etiology; ultrasound is reserved for goiter, nodule, asymmetry, or compressive symptoms.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
         "management_change": "Check TPO antibody when autoimmune thyroiditis changes prognosis, pregnancy planning, or etiology; ultrasound is reserved for goiter, nodule, asymmetry, or compressive symptoms.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1929,8 +1929,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Before levothyroxine escalation in pituitary disease or severe illness, assess adrenal insufficiency risk.",
-        "rationale": "Routes Hypothyroidism (Underactive Thyroid) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Before levothyroxine escalation in pituitary disease or severe illness, assess adrenal insufficiency risk.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
+        "rationale": "Hypothyroidism (Underactive Thyroid): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Before levothyroxine escalation in pituitary disease or severe illness, assess adrenal insufficiency risk.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
         "management_change": "Before levothyroxine escalation in pituitary disease or severe illness, assess adrenal insufficiency risk.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1963,8 +1963,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Screen urgently for myxedema coma physiology when hypothermia, bradycardia, hypotension, hypoventilation, hyponatremia, or altered mental status is present.",
-        "rationale": "Routes Hypothyroidism (Underactive Thyroid) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Screen urgently for myxedema coma physiology when hypothermia, bradycardia, hypotension, hypoventilation, hyponatremia, or altered mental status is present.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
+        "rationale": "Hypothyroidism (Underactive Thyroid): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Screen urgently for myxedema coma physiology when hypothermia, bradycardia, hypotension, hypoventilation, hyponatremia, or altered mental status is present.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
         "management_change": "Screen urgently for myxedema coma physiology when hypothermia, bradycardia, hypotension, hypoventilation, hyponatremia, or altered mental status is present.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1997,8 +1997,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Confirm that Hypothyroidism (Underactive Thyroid) is the selected clinical intent, then screen for red flags before routine outpatient testing.",
-        "rationale": "Routes Hypothyroidism (Underactive Thyroid) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Confirm that Hypothyroidism (Underactive Thyroid) is the selected clinical intent, then screen for red flags before routine outpatient testing.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
+        "rationale": "Hypothyroidism (Underactive Thyroid): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Confirm that Hypothyroidism (Underactive Thyroid) is the selected clinical intent, then screen for red flags before routine outpatient testing.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
         "management_change": "Confirm that Hypothyroidism (Underactive Thyroid) is the selected clinical intent, then screen for red flags before routine outpatient testing.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2030,8 +2030,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Order the first-line tests in sequence: TSH and free T4; TPO antibody for autoimmune etiology; Pregnancy test when relevant; pituitary/adrenal evaluation if central pattern.",
-        "rationale": "Routes Hypothyroidism (Underactive Thyroid) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Order the first-line tests in sequence: TSH and free T4; TPO antibody for autoimmune etiology; Pregnancy test when relevant; pituitary/adrenal evaluation if central pattern.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
+        "rationale": "Hypothyroidism (Underactive Thyroid): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Order the first-line tests in sequence: TSH and free T4; TPO antibody for autoimmune etiology; Pregnancy test when relevant; pituitary/adrenal evaluation if central pattern.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
         "management_change": "Order the first-line tests in sequence: TSH and free T4; TPO antibody for autoimmune etiology; Pregnancy test when relevant; pituitary/adrenal evaluation if central pattern.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2064,8 +2064,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret numeric results against the workup cutoffs and local assay ranges: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
-        "rationale": "Routes Hypothyroidism (Underactive Thyroid) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Interpret numeric results against the workup cutoffs and local assay ranges: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
+        "rationale": "Hypothyroidism (Underactive Thyroid): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Interpret numeric results against the workup cutoffs and local assay ranges: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
         "management_change": "Interpret numeric results against the workup cutoffs and local assay ranges: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2098,8 +2098,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.",
-        "rationale": "Routes Hypothyroidism (Underactive Thyroid) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
+        "rationale": "Hypothyroidism (Underactive Thyroid): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
         "management_change": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2135,7 +2135,7 @@
         },
         "action": "Treat overt primary hypothyroidism with levothyroxine, adjusted for age, cardiac disease, pregnancy, weight, adherence, and interacting medications.",
         "rationale": "Links confirmed Hypothyroidism (Underactive Thyroid) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Treat overt primary hypothyroidism with levothyroxine, adjusted for age, cardiac disease, pregnancy, weight, adherence, and interacting medications.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
+        "diagnostic_target": "Treat overt primary hypothyroidism with levothyroxine, adjusted for age, cardiac disease, pregnancy, weight, adherence, and interacting medications.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
         "management_change": "Treat overt primary hypothyroidism with levothyroxine, adjusted for age, cardiac disease, pregnancy, weight, adherence, and interacting medications.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2168,7 +2168,7 @@
         },
         "action": "For subclinical hypothyroidism, individualize treatment by TSH level, symptoms, antibodies, pregnancy/fertility context, goiter, and cardiovascular risk.",
         "rationale": "Links confirmed Hypothyroidism (Underactive Thyroid) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "For subclinical hypothyroidism, individualize treatment by TSH level, symptoms, antibodies, pregnancy/fertility context, goiter, and cardiovascular risk.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
+        "diagnostic_target": "For subclinical hypothyroidism, individualize treatment by TSH level, symptoms, antibodies, pregnancy/fertility context, goiter, and cardiovascular risk.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
         "management_change": "For subclinical hypothyroidism, individualize treatment by TSH level, symptoms, antibodies, pregnancy/fertility context, goiter, and cardiovascular risk.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2201,7 +2201,7 @@
         },
         "action": "Use free T4 rather than TSH to titrate central hypothyroidism, after adrenal status is safe.",
         "rationale": "Links confirmed Hypothyroidism (Underactive Thyroid) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Use free T4 rather than TSH to titrate central hypothyroidism, after adrenal status is safe.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
+        "diagnostic_target": "Use free T4 rather than TSH to titrate central hypothyroidism, after adrenal status is safe.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
         "management_change": "Use free T4 rather than TSH to titrate central hypothyroidism, after adrenal status is safe.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2234,7 +2234,7 @@
         },
         "action": "For suspected myxedema coma, use emergency IV thyroid hormone, stress-dose glucocorticoid coverage, warming, ventilation, sodium/glucose correction, and ICU-level care per local protocol.",
         "rationale": "Links confirmed Hypothyroidism (Underactive Thyroid) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "For suspected myxedema coma, use emergency IV thyroid hormone, stress-dose glucocorticoid coverage, warming, ventilation, sodium/glucose correction, and ICU-level care per local protocol.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
+        "diagnostic_target": "For suspected myxedema coma, use emergency IV thyroid hormone, stress-dose glucocorticoid coverage, warming, ventilation, sodium/glucose correction, and ICU-level care per local protocol.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
         "management_change": "For suspected myxedema coma, use emergency IV thyroid hormone, stress-dose glucocorticoid coverage, warming, ventilation, sodium/glucose correction, and ICU-level care per local protocol.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2268,7 +2268,7 @@
         },
         "action": "Treat unstable presentations first using the urgent escalation rule for Hypothyroidism (Underactive Thyroid); draw time-sensitive labs only if doing so does not delay stabilization.",
         "rationale": "Links confirmed Hypothyroidism (Underactive Thyroid) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Treat unstable presentations first using the urgent escalation rule for Hypothyroidism (Underactive Thyroid); draw time-sensitive labs only if doing so does not delay stabilization.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
+        "diagnostic_target": "Treat unstable presentations first using the urgent escalation rule for Hypothyroidism (Underactive Thyroid); draw time-sensitive labs only if doing so does not delay stabilization.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
         "management_change": "Treat unstable presentations first using the urgent escalation rule for Hypothyroidism (Underactive Thyroid); draw time-sensitive labs only if doing so does not delay stabilization.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2302,7 +2302,7 @@
         },
         "action": "For confirmed Hypothyroidism (Underactive Thyroid), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.",
         "rationale": "Links confirmed Hypothyroidism (Underactive Thyroid) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "For confirmed Hypothyroidism (Underactive Thyroid), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
+        "diagnostic_target": "For confirmed Hypothyroidism (Underactive Thyroid), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
         "management_change": "For confirmed Hypothyroidism (Underactive Thyroid), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2335,7 +2335,7 @@
         },
         "action": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.",
         "rationale": "Links confirmed Hypothyroidism (Underactive Thyroid) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
+        "diagnostic_target": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
         "management_change": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2369,7 +2369,7 @@
         },
         "action": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.",
         "rationale": "Links confirmed Hypothyroidism (Underactive Thyroid) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
+        "diagnostic_target": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypothyroidism (Underactive Thyroid).",
         "management_change": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -3388,7 +3388,7 @@
         "hypothyroidism_treatment_bundle": {
           "rule_id": "hypothyroidism_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Hypothyroidism (Underactive Thyroid) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+          "description": "Start Hypothyroidism (Underactive Thyroid) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4462,7 +4462,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Hypothyroidism (Underactive Thyroid): does patient context support this workup or require exact missing-data routing?",
+        "label": "Hypothyroidism (Underactive Thyroid): route by documented findings and exact missing-data needs",
         "edgeLabel": "",
         "source_ids": [
           "ATA_HYPOTHYROIDISM_2014",
@@ -4485,13 +4485,13 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Hypothyroidism (Underactive Thyroid) using cited diagnostic thresholds/rules, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+        "action": "Route Hypothyroidism (Underactive Thyroid) from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
         "children": [
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Hypothyroidism (Underactive Thyroid) pathway context",
-            "edgeLabel": "Missing exact Hypothyroidism (Underactive Thyroid) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
+            "edgeLabel": "Missing exact Hypothyroidism (Underactive Thyroid) pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -4547,7 +4547,7 @@
             "id": "hypothyroidism_concurrent_data_bundle",
             "type": "action",
             "label": "Hypothyroidism (Underactive Thyroid): obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Selected Hypothyroidism (Underactive Thyroid) workup or documented findings: Any fatigue, cold intolerance, constipation, dry skin, hoarse voice, slowed thinking, depression, heavy menses, or weight gain suggesting hypothyroidism?; How has weight changed from baseline, and was the change intentional or associated with appetite, fluid status, or systemic symptoms?; Any thyroid hormone, antithyroid drug, amiodarone, lithium, iodine/contrast exposure, biotin, supplement use, missed dose, or recent dose change affecting thyroid interpretation?; Any palpitations, tremor, heat intolerance, anxiety, insomnia, weight loss, diarrhea, or sweating suggesting thyroid hormone excess or adrenergic physiology?; Myxedema coma features: hypothermia, bradycardia, hypotension, hypoventilation, hyponatremia, altered mental status.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; TSH and free T4.",
+            "edgeLabel": "Hypothyroidism (Underactive Thyroid) active from documented findings: Any fatigue, cold intolerance, constipation, dry skin, hoarse voice, slowed thinking, depression, heavy menses, or weight gain suggesting hypothyroidism?; How has weight changed from baseline, and was the change intentional or associated with appetite, fluid status, or systemic symptoms?; Any thyroid hormone, antithyroid drug, amiodarone, lithium, iodine/contrast exposure, biotin, supplement use, missed dose, or recent dose change affecting thyroid interpretation?; Any palpitations, tremor, heat intolerance, anxiety, insomnia, weight loss, diarrhea, or sweating suggesting thyroid hormone excess or adrenergic physiology?; Myxedema coma features: hypothermia, bradycardia, hypotension, hypoventilation, hyponatremia, altered mental status.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; TSH and free T4.",
             "source_ids": [
               "ATA_HYPOTHYROIDISM_2014",
               "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -5351,7 +5351,7 @@
                     "criteria": {
                       "rule_id": "hypothyroidism_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Hypothyroidism (Underactive Thyroid) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+                      "description": "Start Hypothyroidism (Underactive Thyroid) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -6733,7 +6733,7 @@
                                 "id": "hypothyroidism_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Hypothyroidism (Underactive Thyroid): follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Hypothyroidism (Underactive Thyroid) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; High TSH plus low FT4 confirms overt primary hypothyroidism.; Low FT4 with low/normal TSH triggers central hypothyroidism/pituitary pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+                                "edgeLabel": "Hypothyroidism (Underactive Thyroid) discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; High TSH plus low FT4 confirms overt primary hypothyroidism.; Low FT4 with low/normal TSH triggers central hypothyroidism/pituitary pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
                                 "source_ids": [
                                   "ATA_HYPOTHYROIDISM_2014",
                                   "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -8096,7 +8096,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing exact Hypothyroidism (Underactive Thyroid) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
+          "expected_active_branch": "Missing exact Hypothyroidism (Underactive Thyroid) pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
@@ -8138,7 +8138,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "hypothyroidism_followup_endpoint",
-          "expected_active_branch": "Hypothyroidism (Underactive Thyroid) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; High TSH plus low FT4 confirms overt primary hypothyroidism.; Low FT4 with low/normal TSH triggers central hypothyroidism/pituitary pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care."
+          "expected_active_branch": "Hypothyroidism (Underactive Thyroid) discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; High TSH plus low FT4 confirms overt primary hypothyroidism.; Low FT4 with low/normal TSH triggers central hypothyroidism/pituitary pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care."
         }
       ],
       "audit_requirements": {

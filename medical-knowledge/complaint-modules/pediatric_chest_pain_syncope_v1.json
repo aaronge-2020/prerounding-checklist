@@ -1617,7 +1617,7 @@
     "decisionTrees": [
       {
         "id": "decision_01",
-        "label": "Screen for immediate danger or disposition-changing findings before routine workup: Exertional chest pain or syncope.",
+        "label": "Pediatric chest pain, syncope, or palpitations: danger features or monitored-care triggers: Exertional chest pain or syncope.",
         "item_type": "management_change",
         "source": {
           "source_id": "RCH_SYNCOPE_CHILD",
@@ -1628,14 +1628,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "Urgently refer when cardiac syncope is suspected from history, exam, or ECG."
         },
-        "action": "Screen for immediate danger or disposition-changing findings before routine workup: Exertional chest pain or syncope.",
-        "rationale": "Derives a Pediatric chest pain, syncope, or palpitations workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Screen for immediate danger or disposition-changing findings before routine workup: Exertional chest pain or syncope.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric chest pain, syncope, or palpitations.",
-        "management_change": "Screen for immediate danger or disposition-changing findings before routine workup: Exertional chest pain or syncope.",
+        "action": "Pediatric chest pain, syncope, or palpitations: danger features or monitored-care triggers: Exertional chest pain or syncope.",
+        "rationale": "Pediatric chest pain, syncope, or palpitations: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric chest pain, syncope, or palpitations: danger features or monitored-care triggers: Exertional chest pain or syncope.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric chest pain, syncope, or palpitations.",
+        "management_change": "Pediatric chest pain, syncope, or palpitations: danger features or monitored-care triggers: Exertional chest pain or syncope.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric chest pain, syncope, or palpitations.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric chest pain, syncope, or palpitations.",
         "tags": [
           "pediatric",
           "chest",
@@ -1646,16 +1646,16 @@
           "pain",
           "syncope",
           "palpitations",
-          "screen",
-          "immediate",
-          "danger",
-          "disposition",
-          "changing"
+          "pediatric",
+          "chest",
+          "pain",
+          "syncope",
+          "palpitations"
         ]
       },
       {
         "id": "decision_02",
-        "label": "Order focused first-line studies and interpret them in sequence: ECG when cardiac risk or syncope is present; Chest X-ray only when indicated; Troponin and inflammatory labs when indicated; Syncope ECG glucose anemia and pregnancy tests.",
+        "label": "Pediatric chest pain, syncope, or palpitations: initial diagnostic data to obtain and interpret together: ECG when cardiac risk or syncope is present; Chest X-ray only when indicated; Troponin and inflammatory labs when indicated; Syncope ECG glucose anemia and pregnancy tests.",
         "item_type": "management_change",
         "source": {
           "source_id": "RCH_PEDIATRIC_ECG",
@@ -1666,14 +1666,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "Check lead placement and manually review intervals when automated interpretation is discordant."
         },
-        "action": "Order focused first-line studies and interpret them in sequence: ECG when cardiac risk or syncope is present; Chest X-ray only when indicated; Troponin and inflammatory labs when indicated; Syncope ECG glucose anemia and pregnancy tests.",
-        "rationale": "Derives a Pediatric chest pain, syncope, or palpitations workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Order focused first-line studies and interpret them in sequence: ECG when cardiac risk or syncope is present; Chest X-ray only when indicated; Troponin and inflammatory labs when indicated; Syncope ECG glucose anemia and pregnancy tests.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric chest pain, syncope, or palpitations.",
-        "management_change": "Order focused first-line studies and interpret them in sequence: ECG when cardiac risk or syncope is present; Chest X-ray only when indicated; Troponin and inflammatory labs when indicated; Syncope ECG glucose anemia and pregnancy tests.",
+        "action": "Pediatric chest pain, syncope, or palpitations: initial diagnostic data to obtain and interpret together: ECG when cardiac risk or syncope is present; Chest X-ray only when indicated; Troponin and inflammatory labs when indicated; Syncope ECG glucose anemia and pregnancy tests.",
+        "rationale": "Pediatric chest pain, syncope, or palpitations: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric chest pain, syncope, or palpitations: initial diagnostic data to obtain and interpret together: ECG when cardiac risk or syncope is present; Chest X-ray only when indicated; Troponin and inflammatory labs when indicated; Syncope ECG glucose anemia and pregnancy tests.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric chest pain, syncope, or palpitations.",
+        "management_change": "Pediatric chest pain, syncope, or palpitations: initial diagnostic data to obtain and interpret together: ECG when cardiac risk or syncope is present; Chest X-ray only when indicated; Troponin and inflammatory labs when indicated; Syncope ECG glucose anemia and pregnancy tests.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric chest pain, syncope, or palpitations.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric chest pain, syncope, or palpitations.",
         "tags": [
           "pediatric",
           "chest",
@@ -1684,16 +1684,16 @@
           "pain",
           "syncope",
           "palpitations",
-          "order",
-          "focused",
-          "first",
-          "line",
-          "studies"
+          "pediatric",
+          "chest",
+          "pain",
+          "syncope",
+          "palpitations"
         ]
       },
       {
         "id": "decision_03",
-        "label": "Use the leading diagnostic frame to avoid premature closure: Cardiac chest pain or syncope risk with exertional symptoms, syncope, palpitations, abnormal cardiac exam, abnormal ECG, cardiac history, or family history of early sudden death.",
+        "label": "Pediatric chest pain, syncope, or palpitations: leading diagnostic frame and mimics to resolve: Cardiac chest pain or syncope risk with exertional symptoms, syncope, palpitations, abnormal cardiac exam, abnormal ECG, cardiac history, or family history of early sudden death.",
         "item_type": "management_change",
         "source": {
           "source_id": "RCH_CHEST_PAIN_CHILD",
@@ -1704,14 +1704,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "Use pediatric ECG interpretation and senior/cardiology review rather than adult ACS scores as the default frame."
         },
-        "action": "Use the leading diagnostic frame to avoid premature closure: Cardiac chest pain or syncope risk with exertional symptoms, syncope, palpitations, abnormal cardiac exam, abnormal ECG, cardiac history, or family history of early sudden death.",
-        "rationale": "Derives a Pediatric chest pain, syncope, or palpitations workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Use the leading diagnostic frame to avoid premature closure: Cardiac chest pain or syncope risk with exertional symptoms, syncope, palpitations, abnormal cardiac exam, abnormal ECG, cardiac history, or family history of early sudden death.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric chest pain, syncope, or palpitations.",
-        "management_change": "Use the leading diagnostic frame to avoid premature closure: Cardiac chest pain or syncope risk with exertional symptoms, syncope, palpitations, abnormal cardiac exam, abnormal ECG, cardiac history, or family history of early sudden death.",
+        "action": "Pediatric chest pain, syncope, or palpitations: leading diagnostic frame and mimics to resolve: Cardiac chest pain or syncope risk with exertional symptoms, syncope, palpitations, abnormal cardiac exam, abnormal ECG, cardiac history, or family history of early sudden death.",
+        "rationale": "Pediatric chest pain, syncope, or palpitations: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric chest pain, syncope, or palpitations: leading diagnostic frame and mimics to resolve: Cardiac chest pain or syncope risk with exertional symptoms, syncope, palpitations, abnormal cardiac exam, abnormal ECG, cardiac history, or family history of early sudden death.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric chest pain, syncope, or palpitations.",
+        "management_change": "Pediatric chest pain, syncope, or palpitations: leading diagnostic frame and mimics to resolve: Cardiac chest pain or syncope risk with exertional symptoms, syncope, palpitations, abnormal cardiac exam, abnormal ECG, cardiac history, or family history of early sudden death.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric chest pain, syncope, or palpitations.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric chest pain, syncope, or palpitations.",
         "tags": [
           "pediatric",
           "chest",
@@ -1722,16 +1722,16 @@
           "pain",
           "syncope",
           "palpitations",
-          "leading",
-          "diagnostic",
-          "frame",
-          "avoid",
-          "premature"
+          "pediatric",
+          "chest",
+          "pain",
+          "syncope",
+          "palpitations"
         ]
       },
       {
         "id": "decision_04",
-        "label": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Emergency pediatric cardiology escalation.",
+        "label": "Pediatric chest pain, syncope, or palpitations: escalation or disposition rule triggered by abnormal results or worsening status: Emergency pediatric cardiology escalation.",
         "item_type": "management_change",
         "source": {
           "source_id": "RCH_PEDIATRIC_ECG",
@@ -1742,14 +1742,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "Discuss cardiac red flags with senior clinician even when an ECG appears normal."
         },
-        "action": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Emergency pediatric cardiology escalation.",
-        "rationale": "Derives a Pediatric chest pain, syncope, or palpitations workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Emergency pediatric cardiology escalation.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric chest pain, syncope, or palpitations.",
-        "management_change": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Emergency pediatric cardiology escalation.",
+        "action": "Pediatric chest pain, syncope, or palpitations: escalation or disposition rule triggered by abnormal results or worsening status: Emergency pediatric cardiology escalation.",
+        "rationale": "Pediatric chest pain, syncope, or palpitations: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric chest pain, syncope, or palpitations: escalation or disposition rule triggered by abnormal results or worsening status: Emergency pediatric cardiology escalation.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric chest pain, syncope, or palpitations.",
+        "management_change": "Pediatric chest pain, syncope, or palpitations: escalation or disposition rule triggered by abnormal results or worsening status: Emergency pediatric cardiology escalation.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric chest pain, syncope, or palpitations.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric chest pain, syncope, or palpitations.",
         "tags": [
           "pediatric",
           "chest",
@@ -1760,18 +1760,18 @@
           "pain",
           "syncope",
           "palpitations",
-          "results",
-          "bedside",
-          "status",
-          "high",
-          "risk"
+          "pediatric",
+          "chest",
+          "pain",
+          "syncope",
+          "palpitations"
         ]
       }
     ],
     "treatmentOptions": [
       {
         "id": "treatment_01",
-        "label": "Stabilize or escalate before routine treatment when danger criteria are present: Exertional chest pain or syncope.",
+        "label": "Pediatric chest pain, syncope, or palpitations: immediate stabilization or escalation trigger: Exertional chest pain or syncope.",
         "item_type": "management_change",
         "source": {
           "source_id": "RCH_SYNCOPE_CHILD",
@@ -1782,14 +1782,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "Urgently refer when cardiac syncope is suspected from history, exam, or ECG."
         },
-        "action": "Stabilize or escalate before routine treatment when danger criteria are present: Exertional chest pain or syncope.",
-        "rationale": "Derives a Pediatric chest pain, syncope, or palpitations workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Stabilize or escalate before routine treatment when danger criteria are present: Exertional chest pain or syncope.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric chest pain, syncope, or palpitations.",
-        "management_change": "Stabilize or escalate before routine treatment when danger criteria are present: Exertional chest pain or syncope.",
+        "action": "Pediatric chest pain, syncope, or palpitations: immediate stabilization or escalation trigger: Exertional chest pain or syncope.",
+        "rationale": "Pediatric chest pain, syncope, or palpitations: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric chest pain, syncope, or palpitations: immediate stabilization or escalation trigger: Exertional chest pain or syncope.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric chest pain, syncope, or palpitations.",
+        "management_change": "Pediatric chest pain, syncope, or palpitations: immediate stabilization or escalation trigger: Exertional chest pain or syncope.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric chest pain, syncope, or palpitations.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric chest pain, syncope, or palpitations.",
         "tags": [
           "pediatric",
           "chest",
@@ -1800,16 +1800,16 @@
           "pain",
           "syncope",
           "palpitations",
-          "stabilize",
-          "escalate",
-          "before",
-          "routine",
-          "treatment"
+          "pediatric",
+          "chest",
+          "pain",
+          "syncope",
+          "palpitations"
         ]
       },
       {
         "id": "treatment_02",
-        "label": "Use the high-risk or confirmed-pathway management option when criteria are met: Emergency pediatric cardiology escalation.",
+        "label": "Pediatric chest pain, syncope, or palpitations: treatment or disposition for high-risk or confirmed disease: Emergency pediatric cardiology escalation.",
         "item_type": "management_change",
         "source": {
           "source_id": "RCH_PEDIATRIC_ECG",
@@ -1820,14 +1820,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "Discuss cardiac red flags with senior clinician even when an ECG appears normal."
         },
-        "action": "Use the high-risk or confirmed-pathway management option when criteria are met: Emergency pediatric cardiology escalation.",
-        "rationale": "Derives a Pediatric chest pain, syncope, or palpitations workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Use the high-risk or confirmed-pathway management option when criteria are met: Emergency pediatric cardiology escalation.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric chest pain, syncope, or palpitations.",
-        "management_change": "Use the high-risk or confirmed-pathway management option when criteria are met: Emergency pediatric cardiology escalation.",
+        "action": "Pediatric chest pain, syncope, or palpitations: treatment or disposition for high-risk or confirmed disease: Emergency pediatric cardiology escalation.",
+        "rationale": "Pediatric chest pain, syncope, or palpitations: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric chest pain, syncope, or palpitations: treatment or disposition for high-risk or confirmed disease: Emergency pediatric cardiology escalation.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric chest pain, syncope, or palpitations.",
+        "management_change": "Pediatric chest pain, syncope, or palpitations: treatment or disposition for high-risk or confirmed disease: Emergency pediatric cardiology escalation.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric chest pain, syncope, or palpitations.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric chest pain, syncope, or palpitations.",
         "tags": [
           "pediatric",
           "chest",
@@ -1838,16 +1838,16 @@
           "pain",
           "syncope",
           "palpitations",
-          "high",
-          "risk",
-          "confirmed",
-          "pathway",
-          "management"
+          "pediatric",
+          "chest",
+          "pain",
+          "syncope",
+          "palpitations"
         ]
       },
       {
         "id": "treatment_03",
-        "label": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: Low-risk chest pain testing restraint.",
+        "label": "Pediatric chest pain, syncope, or palpitations: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Low-risk chest pain testing restraint.",
         "item_type": "management_change",
         "source": {
           "source_id": "RCH_CHEST_PAIN_CHILD",
@@ -1858,14 +1858,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "Low-risk disposition requires documented absence of cardiac/respiratory/syncope/family-history red flags."
         },
-        "action": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: Low-risk chest pain testing restraint.",
-        "rationale": "Derives a Pediatric chest pain, syncope, or palpitations workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: Low-risk chest pain testing restraint.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric chest pain, syncope, or palpitations.",
-        "management_change": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: Low-risk chest pain testing restraint.",
+        "action": "Pediatric chest pain, syncope, or palpitations: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Low-risk chest pain testing restraint.",
+        "rationale": "Pediatric chest pain, syncope, or palpitations: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric chest pain, syncope, or palpitations: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Low-risk chest pain testing restraint.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric chest pain, syncope, or palpitations.",
+        "management_change": "Pediatric chest pain, syncope, or palpitations: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Low-risk chest pain testing restraint.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric chest pain, syncope, or palpitations.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric chest pain, syncope, or palpitations.",
         "tags": [
           "pediatric",
           "chest",
@@ -1876,16 +1876,16 @@
           "pain",
           "syncope",
           "palpitations",
-          "lower",
-          "risk",
-          "outpatient",
-          "supportive",
-          "safety"
+          "pediatric",
+          "chest",
+          "pain",
+          "syncope",
+          "palpitations"
         ]
       },
       {
         "id": "treatment_04",
-        "label": "Monitor treatment response, complications, and need for reassessment with: ECG when cardiac risk or syncope is present.",
+        "label": "Pediatric chest pain, syncope, or palpitations: monitoring data for response, complications, and reassessment: ECG when cardiac risk or syncope is present.",
         "item_type": "management_change",
         "source": {
           "source_id": "RCH_PEDIATRIC_ECG",
@@ -1896,14 +1896,14 @@
           "clinical_owner": "general_medicine_content_review",
           "implementation_notes": "Check lead placement and manually review intervals when automated interpretation is discordant."
         },
-        "action": "Monitor treatment response, complications, and need for reassessment with: ECG when cardiac risk or syncope is present.",
-        "rationale": "Derives a Pediatric chest pain, syncope, or palpitations workup decision from existing source-backed tests, red flags, and management rules.",
-        "diagnostic_target": "Monitor treatment response, complications, and need for reassessment with: ECG when cardiac risk or syncope is present.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric chest pain, syncope, or palpitations.",
-        "management_change": "Monitor treatment response, complications, and need for reassessment with: ECG when cardiac risk or syncope is present.",
+        "action": "Pediatric chest pain, syncope, or palpitations: monitoring data for response, complications, and reassessment: ECG when cardiac risk or syncope is present.",
+        "rationale": "Pediatric chest pain, syncope, or palpitations: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Pediatric chest pain, syncope, or palpitations: monitoring data for response, complications, and reassessment: ECG when cardiac risk or syncope is present.: patient data that changes testing, treatment, monitoring, referral, or disposition for Pediatric chest pain, syncope, or palpitations.",
+        "management_change": "Pediatric chest pain, syncope, or palpitations: monitoring data for response, complications, and reassessment: ECG when cardiac risk or syncope is present.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
-        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
-        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric chest pain, syncope, or palpitations.",
+        "likelihood_ratio_note": "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Requires clinician judgment, local protocols, patient-specific risks, and reassessment for Pediatric chest pain, syncope, or palpitations.",
         "tags": [
           "pediatric",
           "chest",
@@ -1914,11 +1914,11 @@
           "pain",
           "syncope",
           "palpitations",
-          "monitor",
-          "treatment",
-          "response",
-          "complications",
-          "need"
+          "pediatric",
+          "chest",
+          "pain",
+          "syncope",
+          "palpitations"
         ]
       }
     ],
@@ -4246,7 +4246,7 @@
             "id": "pediatric_chest_syncope_initial_assessment_bundle",
             "type": "action",
             "label": "Pediatric chest pain/syncope bedside assessment: age, exertion, syncope/palpitations, family history, vitals/orthostatics, cardiac/respiratory exam, and targeted ECG/testing",
-            "edgeLabel": "Pediatric chest/syncope assessment bundle: ECG when cardiac risk or syncope is present; Chest X-ray only when indicated; Troponin and inflammatory labs when indicated; Syncope ECG glucose anemia and pregnancy tests; Echo Holter or exercise testing after review; Exertional chest pain or syncope; Abnormal cardiac exam or poor perfusion; Family history of early sudden death or cardiomyopathy; Hypoxia respiratory distress or hemoptysis; Abnormal pediatric ECG; Measure blood pressure; Measure heart rate; Measure respiratory rate; Emergency pediatric cardiology escalation; Low-risk chest pain testing restraint; Syncope consultation and discharge route; Respiratory or PE route; Activity restriction and return precautions; Monitor treatment response, complications, and need for reassessment with: ECG when cardiac risk or syncope is present.",
+            "edgeLabel": "Pediatric chest/syncope assessment bundle: ECG when cardiac risk or syncope is present; Chest X-ray only when indicated; Troponin and inflammatory labs when indicated; Syncope ECG glucose anemia and pregnancy tests; Echo Holter or exercise testing after review; Exertional chest pain or syncope; Abnormal cardiac exam or poor perfusion; Family history of early sudden death or cardiomyopathy; Hypoxia respiratory distress or hemoptysis; Abnormal pediatric ECG; Measure blood pressure; Measure heart rate; Measure respiratory rate; Emergency pediatric cardiology escalation; Low-risk chest pain testing restraint; Syncope consultation and discharge route; Respiratory or PE route; Activity restriction and return precautions; Pediatric chest pain, syncope, or palpitations: immediate stabilization or escalation trigger: Exertional chest pain or syncope.; Pediatric chest pain, syncope, or palpitations: treatment or disposition for high-risk or confirmed disease: Emergency pediatric cardiology escalation.; Pediatric chest pain, syncope, or palpitations: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Low-risk chest pain testing restraint.",
             "source_ids": [
               "RCH_CHEST_PAIN_CHILD",
               "RCH_SYNCOPE_CHILD",
@@ -6863,7 +6863,7 @@
                         "id": "pediatric_chest_syncope_followup_safety_endpoint",
                         "type": "endpoint",
                         "label": "Pediatric chest/syncope follow-up and safety-net: activity restriction, result ownership, recurrent syncope plan, and return precautions",
-                        "edgeLabel": "Disposition branch: Emergency pediatric cardiology escalation; Low-risk chest pain testing restraint; Syncope consultation and discharge route; Respiratory or PE route; Activity restriction and return precautions; Monitor treatment response, complications, and need for reassessment with: ECG when cardiac risk or syncope is present.; cause identified or serious causes addressed, follow-up arranged, exercise/activity advice documented, pending ECG/CXR/lab/imaging owners assigned, and family return precautions given",
+                        "edgeLabel": "Disposition branch: Emergency pediatric cardiology escalation; Low-risk chest pain testing restraint; Syncope consultation and discharge route; Respiratory or PE route; Activity restriction and return precautions; Pediatric chest pain, syncope, or palpitations: immediate stabilization or escalation trigger: Exertional chest pain or syncope.; Pediatric chest pain, syncope, or palpitations: treatment or disposition for high-risk or confirmed disease: Emergency pediatric cardiology escalation.; Pediatric chest pain, syncope, or palpitations: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Low-risk chest pain testing restraint.; cause identified or serious causes addressed, follow-up arranged, exercise/activity advice documented, pending ECG/CXR/lab/imaging owners assigned, and family return precautions given",
                         "source_ids": [
                           "RCH_CHEST_PAIN_CHILD",
                           "RCH_SYNCOPE_CHILD",
@@ -7405,7 +7405,7 @@
             "parallel_actions": [
               "ECG when cardiac risk or syncope is present; Chest X-ray only when indicated; Troponin and inflammatory labs when indicated; Syncope ECG glucose anemia and pregnancy tests; Echo Holter or exercise testing after review",
               "Exertional chest pain or syncope; Abnormal cardiac exam or poor perfusion; Family history of early sudden death or cardiomyopathy; Hypoxia respiratory distress or hemoptysis; Abnormal pediatric ECG; Measure blood pressure; Measure heart rate; Measure respiratory rate",
-              "Emergency pediatric cardiology escalation; Low-risk chest pain testing restraint; Syncope consultation and discharge route; Respiratory or PE route; Activity restriction and return precautions; Monitor treatment response, complications, and need for reassessment with: ECG when cardiac risk or syncope is present.",
+              "Emergency pediatric cardiology escalation; Low-risk chest pain testing restraint; Syncope consultation and discharge route; Respiratory or PE route; Activity restriction and return precautions; Pediatric chest pain, syncope, or palpitations: immediate stabilization or escalation trigger: Exertional chest pain or syncope.; Pediatric chest pain, syncope, or palpitations: treatment or disposition for high-risk or confirmed disease: Emergency pediatric cardiology escalation.; Pediatric chest pain, syncope, or palpitations: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Low-risk chest pain testing restraint.",
               "orthostatic blood pressure and heart rate when syncope",
               "ECG at least once for syncope",
               "manual QRS/QTc/ST review",

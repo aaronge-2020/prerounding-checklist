@@ -1819,8 +1819,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Confirm hypocalcemia with low or inappropriately normal PTH, then check phosphorus, magnesium, creatinine/eGFR, 25(OH)D, urinary calcium, and postsurgical history.",
-        "rationale": "Routes Hypoparathyroidism testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Confirm hypocalcemia with low or inappropriately normal PTH, then check phosphorus, magnesium, creatinine/eGFR, 25(OH)D, urinary calcium, and postsurgical history.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypoparathyroidism.",
+        "rationale": "Hypoparathyroidism: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Confirm hypocalcemia with low or inappropriately normal PTH, then check phosphorus, magnesium, creatinine/eGFR, 25(OH)D, urinary calcium, and postsurgical history.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypoparathyroidism.",
         "management_change": "Confirm hypocalcemia with low or inappropriately normal PTH, then check phosphorus, magnesium, creatinine/eGFR, 25(OH)D, urinary calcium, and postsurgical history.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1853,8 +1853,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Classify acute symptomatic hypocalcemia separately from chronic stable disease; ECG/QT, seizure, laryngospasm, or arrhythmia changes urgency.",
-        "rationale": "Routes Hypoparathyroidism testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Classify acute symptomatic hypocalcemia separately from chronic stable disease; ECG/QT, seizure, laryngospasm, or arrhythmia changes urgency.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypoparathyroidism.",
+        "rationale": "Hypoparathyroidism: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Classify acute symptomatic hypocalcemia separately from chronic stable disease; ECG/QT, seizure, laryngospasm, or arrhythmia changes urgency.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypoparathyroidism.",
         "management_change": "Classify acute symptomatic hypocalcemia separately from chronic stable disease; ECG/QT, seizure, laryngospasm, or arrhythmia changes urgency.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1887,8 +1887,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Identify reversible contributors such as hypomagnesemia, vitamin D deficiency, hungry bone, renal disease, or medication effects.",
-        "rationale": "Routes Hypoparathyroidism testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Identify reversible contributors such as hypomagnesemia, vitamin D deficiency, hungry bone, renal disease, or medication effects.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypoparathyroidism.",
+        "rationale": "Hypoparathyroidism: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Identify reversible contributors such as hypomagnesemia, vitamin D deficiency, hungry bone, renal disease, or medication effects.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypoparathyroidism.",
         "management_change": "Identify reversible contributors such as hypomagnesemia, vitamin D deficiency, hungry bone, renal disease, or medication effects.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1921,8 +1921,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Monitor chronic therapy by serum calcium target, urinary calcium, kidney function, phosphorus, magnesium, and renal imaging when indicated.",
-        "rationale": "Routes Hypoparathyroidism testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Monitor chronic therapy by serum calcium target, urinary calcium, kidney function, phosphorus, magnesium, and renal imaging when indicated.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypoparathyroidism.",
+        "rationale": "Hypoparathyroidism: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Monitor chronic therapy by serum calcium target, urinary calcium, kidney function, phosphorus, magnesium, and renal imaging when indicated.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypoparathyroidism.",
         "management_change": "Monitor chronic therapy by serum calcium target, urinary calcium, kidney function, phosphorus, magnesium, and renal imaging when indicated.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1954,8 +1954,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Confirm that Hypoparathyroidism is the selected clinical intent, then screen for red flags before routine outpatient testing.",
-        "rationale": "Routes Hypoparathyroidism testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Confirm that Hypoparathyroidism is the selected clinical intent, then screen for red flags before routine outpatient testing.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypoparathyroidism.",
+        "rationale": "Hypoparathyroidism: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Confirm that Hypoparathyroidism is the selected clinical intent, then screen for red flags before routine outpatient testing.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypoparathyroidism.",
         "management_change": "Confirm that Hypoparathyroidism is the selected clinical intent, then screen for red flags before routine outpatient testing.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1987,8 +1987,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Order the first-line tests in sequence: Calcium plus PTH; Phosphorus, magnesium, creatinine/eGFR, 25(OH)D; 24-hour urine calcium during chronic treatment.",
-        "rationale": "Routes Hypoparathyroidism testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Order the first-line tests in sequence: Calcium plus PTH; Phosphorus, magnesium, creatinine/eGFR, 25(OH)D; 24-hour urine calcium during chronic treatment.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypoparathyroidism.",
+        "rationale": "Hypoparathyroidism: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Order the first-line tests in sequence: Calcium plus PTH; Phosphorus, magnesium, creatinine/eGFR, 25(OH)D; 24-hour urine calcium during chronic treatment.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypoparathyroidism.",
         "management_change": "Order the first-line tests in sequence: Calcium plus PTH; Phosphorus, magnesium, creatinine/eGFR, 25(OH)D; 24-hour urine calcium during chronic treatment.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2021,8 +2021,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret numeric results against the workup cutoffs and local assay ranges: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.",
-        "rationale": "Routes Hypoparathyroidism testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Interpret numeric results against the workup cutoffs and local assay ranges: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypoparathyroidism.",
+        "rationale": "Hypoparathyroidism: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Interpret numeric results against the workup cutoffs and local assay ranges: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypoparathyroidism.",
         "management_change": "Interpret numeric results against the workup cutoffs and local assay ranges: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2055,8 +2055,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.",
-        "rationale": "Routes Hypoparathyroidism testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypoparathyroidism.",
+        "rationale": "Hypoparathyroidism: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypoparathyroidism.",
         "management_change": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2092,7 +2092,7 @@
         },
         "action": "Treat severe symptomatic hypocalcemia with IV calcium and telemetry per local protocol while correcting magnesium.",
         "rationale": "Links confirmed Hypoparathyroidism results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Treat severe symptomatic hypocalcemia with IV calcium and telemetry per local protocol while correcting magnesium.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypoparathyroidism.",
+        "diagnostic_target": "Treat severe symptomatic hypocalcemia with IV calcium and telemetry per local protocol while correcting magnesium.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypoparathyroidism.",
         "management_change": "Treat severe symptomatic hypocalcemia with IV calcium and telemetry per local protocol while correcting magnesium.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2126,7 +2126,7 @@
         },
         "action": "Use oral calcium plus active vitamin D such as calcitriol for chronic conventional therapy, targeting low-normal or just-below-normal calcium with symptom control.",
         "rationale": "Links confirmed Hypoparathyroidism results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Use oral calcium plus active vitamin D such as calcitriol for chronic conventional therapy, targeting low-normal or just-below-normal calcium with symptom control.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypoparathyroidism.",
+        "diagnostic_target": "Use oral calcium plus active vitamin D such as calcitriol for chronic conventional therapy, targeting low-normal or just-below-normal calcium with symptom control.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypoparathyroidism.",
         "management_change": "Use oral calcium plus active vitamin D such as calcitriol for chronic conventional therapy, targeting low-normal or just-below-normal calcium with symptom control.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2160,7 +2160,7 @@
         },
         "action": "Use thiazide and low-sodium strategy for hypercalciuria when appropriate; avoid overtreatment that raises kidney-stone or nephrocalcinosis risk.",
         "rationale": "Links confirmed Hypoparathyroidism results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Use thiazide and low-sodium strategy for hypercalciuria when appropriate; avoid overtreatment that raises kidney-stone or nephrocalcinosis risk.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypoparathyroidism.",
+        "diagnostic_target": "Use thiazide and low-sodium strategy for hypercalciuria when appropriate; avoid overtreatment that raises kidney-stone or nephrocalcinosis risk.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypoparathyroidism.",
         "management_change": "Use thiazide and low-sodium strategy for hypercalciuria when appropriate; avoid overtreatment that raises kidney-stone or nephrocalcinosis risk.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2194,7 +2194,7 @@
         },
         "action": "Consider PTH replacement pathway when conventional therapy is inadequate or causes complications, subject to availability and specialty oversight.",
         "rationale": "Links confirmed Hypoparathyroidism results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Consider PTH replacement pathway when conventional therapy is inadequate or causes complications, subject to availability and specialty oversight.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypoparathyroidism.",
+        "diagnostic_target": "Consider PTH replacement pathway when conventional therapy is inadequate or causes complications, subject to availability and specialty oversight.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypoparathyroidism.",
         "management_change": "Consider PTH replacement pathway when conventional therapy is inadequate or causes complications, subject to availability and specialty oversight.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2228,7 +2228,7 @@
         },
         "action": "Treat unstable presentations first using the urgent escalation rule for Hypoparathyroidism; draw time-sensitive labs only if doing so does not delay stabilization.",
         "rationale": "Links confirmed Hypoparathyroidism results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Treat unstable presentations first using the urgent escalation rule for Hypoparathyroidism; draw time-sensitive labs only if doing so does not delay stabilization.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypoparathyroidism.",
+        "diagnostic_target": "Treat unstable presentations first using the urgent escalation rule for Hypoparathyroidism; draw time-sensitive labs only if doing so does not delay stabilization.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypoparathyroidism.",
         "management_change": "Treat unstable presentations first using the urgent escalation rule for Hypoparathyroidism; draw time-sensitive labs only if doing so does not delay stabilization.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2262,7 +2262,7 @@
         },
         "action": "For confirmed Hypoparathyroidism, choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.",
         "rationale": "Links confirmed Hypoparathyroidism results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "For confirmed Hypoparathyroidism, choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypoparathyroidism.",
+        "diagnostic_target": "For confirmed Hypoparathyroidism, choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypoparathyroidism.",
         "management_change": "For confirmed Hypoparathyroidism, choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2295,7 +2295,7 @@
         },
         "action": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.",
         "rationale": "Links confirmed Hypoparathyroidism results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypoparathyroidism.",
+        "diagnostic_target": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypoparathyroidism.",
         "management_change": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2329,7 +2329,7 @@
         },
         "action": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.",
         "rationale": "Links confirmed Hypoparathyroidism results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypoparathyroidism.",
+        "diagnostic_target": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.: patient data that changes testing, treatment, monitoring, referral, or disposition for Hypoparathyroidism.",
         "management_change": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -3825,7 +3825,7 @@
         "hypoparathyroidism_treatment_bundle": {
           "rule_id": "hypoparathyroidism_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Hypoparathyroidism treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+          "description": "Start Hypoparathyroidism treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -5313,7 +5313,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Hypoparathyroidism: does patient context support this workup or require exact missing-data routing?",
+        "label": "Hypoparathyroidism: route by documented findings and exact missing-data needs",
         "edgeLabel": "",
         "source_ids": [
           "HYPOPARA_TASK_FORCE_2022",
@@ -5334,13 +5334,13 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Hypoparathyroidism using cited diagnostic thresholds/rules, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+        "action": "Route Hypoparathyroidism from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
         "children": [
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Hypoparathyroidism pathway context",
-            "edgeLabel": "Missing exact Hypoparathyroidism pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
+            "edgeLabel": "Missing exact Hypoparathyroidism pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -5396,7 +5396,7 @@
             "id": "hypoparathyroidism_concurrent_data_bundle",
             "type": "action",
             "label": "Hypoparathyroidism: obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Selected Hypoparathyroidism workup or documented findings: Any childhood head/neck radiation, therapeutic radiation, occupational exposure, or family thyroid cancer risk factor?; Any muscle cramps, weakness, palpitations, constipation, paresthesias, or paralysis suggesting potassium, calcium, adrenal, or neuromuscular severity?; Any perioral numbness, tingling, cramps, tetany, carpopedal spasm, seizure, laryngospasm, or arrhythmia symptoms?; What is the usual calcium and vitamin D intake, supplement use, diet pattern, and sun exposure?; Seizure, laryngospasm, arrhythmia/QT prolongation, severe symptomatic hypocalcemia.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Calcium plus PTH.",
+            "edgeLabel": "Hypoparathyroidism active from documented findings: Any childhood head/neck radiation, therapeutic radiation, occupational exposure, or family thyroid cancer risk factor?; Any muscle cramps, weakness, palpitations, constipation, paresthesias, or paralysis suggesting potassium, calcium, adrenal, or neuromuscular severity?; Any perioral numbness, tingling, cramps, tetany, carpopedal spasm, seizure, laryngospasm, or arrhythmia symptoms?; What is the usual calcium and vitamin D intake, supplement use, diet pattern, and sun exposure?; Seizure, laryngospasm, arrhythmia/QT prolongation, severe symptomatic hypocalcemia.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Calcium plus PTH.",
             "source_ids": [
               "HYPOPARA_TASK_FORCE_2022",
               "AHRQ_CALIBRATE_DX"
@@ -6393,7 +6393,7 @@
                     "criteria": {
                       "rule_id": "hypoparathyroidism_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Hypoparathyroidism treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+                      "description": "Start Hypoparathyroidism treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -8268,7 +8268,7 @@
                                 "id": "hypoparathyroidism_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Hypoparathyroidism: follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Hypoparathyroidism stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+                                "edgeLabel": "Hypoparathyroidism discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                                 "source_ids": [
                                   "HYPOPARA_TASK_FORCE_2022",
                                   "AHRQ_CALIBRATE_DX"
@@ -10061,7 +10061,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing exact Hypoparathyroidism pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
+          "expected_active_branch": "Missing exact Hypoparathyroidism pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
@@ -10103,7 +10103,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "hypoparathyroidism_followup_endpoint",
-          "expected_active_branch": "Hypoparathyroidism stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
+          "expected_active_branch": "Hypoparathyroidism discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
         }
       ],
       "audit_requirements": {

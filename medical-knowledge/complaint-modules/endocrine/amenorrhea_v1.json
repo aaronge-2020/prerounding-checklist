@@ -2232,8 +2232,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Rule out pregnancy first in all pregnancy-capable patients with amenorrhea.",
-        "rationale": "Routes Amenorrhea (Absence of menstruation) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Rule out pregnancy first in all pregnancy-capable patients with amenorrhea.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
+        "rationale": "Amenorrhea (Absence of menstruation): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Rule out pregnancy first in all pregnancy-capable patients with amenorrhea.: patient data that changes testing, treatment, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
         "management_change": "Rule out pregnancy first in all pregnancy-capable patients with amenorrhea.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2263,8 +2263,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Initial labs include TSH, prolactin, FSH, and estradiol; add androgen testing when hyperandrogenism is present.",
-        "rationale": "Routes Amenorrhea (Absence of menstruation) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Initial labs include TSH, prolactin, FSH, and estradiol; add androgen testing when hyperandrogenism is present.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
+        "rationale": "Amenorrhea (Absence of menstruation): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Initial labs include TSH, prolactin, FSH, and estradiol; add androgen testing when hyperandrogenism is present.: patient data that changes testing, treatment, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
         "management_change": "Initial labs include TSH, prolactin, FSH, and estradiol; add androgen testing when hyperandrogenism is present.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2297,8 +2297,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use FSH/estradiol pattern to separate ovarian insufficiency from hypothalamic/pituitary causes, then image pituitary or pelvis when indicated.",
-        "rationale": "Routes Amenorrhea (Absence of menstruation) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Use FSH/estradiol pattern to separate ovarian insufficiency from hypothalamic/pituitary causes, then image pituitary or pelvis when indicated.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
+        "rationale": "Amenorrhea (Absence of menstruation): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Use FSH/estradiol pattern to separate ovarian insufficiency from hypothalamic/pituitary causes, then image pituitary or pelvis when indicated.: patient data that changes testing, treatment, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
         "management_change": "Use FSH/estradiol pattern to separate ovarian insufficiency from hypothalamic/pituitary causes, then image pituitary or pelvis when indicated.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2331,8 +2331,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Check urgent causes: pregnancy with pain/bleeding, severe eating disorder/vital instability, headache/vision symptoms, or rapid virilization.",
-        "rationale": "Routes Amenorrhea (Absence of menstruation) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Check urgent causes: pregnancy with pain/bleeding, severe eating disorder/vital instability, headache/vision symptoms, or rapid virilization.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
+        "rationale": "Amenorrhea (Absence of menstruation): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Check urgent causes: pregnancy with pain/bleeding, severe eating disorder/vital instability, headache/vision symptoms, or rapid virilization.: patient data that changes testing, treatment, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
         "management_change": "Check urgent causes: pregnancy with pain/bleeding, severe eating disorder/vital instability, headache/vision symptoms, or rapid virilization.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2365,8 +2365,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Confirm that Amenorrhea (Absence of menstruation) is the selected clinical intent, then screen for red flags before routine outpatient testing.",
-        "rationale": "Routes Amenorrhea (Absence of menstruation) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Confirm that Amenorrhea (Absence of menstruation) is the selected clinical intent, then screen for red flags before routine outpatient testing.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
+        "rationale": "Amenorrhea (Absence of menstruation): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Confirm that Amenorrhea (Absence of menstruation) is the selected clinical intent, then screen for red flags before routine outpatient testing.: patient data that changes testing, treatment, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
         "management_change": "Confirm that Amenorrhea (Absence of menstruation) is the selected clinical intent, then screen for red flags before routine outpatient testing.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2398,8 +2398,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Order the first-line tests in sequence: Pregnancy test first; TSH and prolactin; FSH and estradiol.",
-        "rationale": "Routes Amenorrhea (Absence of menstruation) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Order the first-line tests in sequence: Pregnancy test first; TSH and prolactin; FSH and estradiol.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
+        "rationale": "Amenorrhea (Absence of menstruation): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Order the first-line tests in sequence: Pregnancy test first; TSH and prolactin; FSH and estradiol.: patient data that changes testing, treatment, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
         "management_change": "Order the first-line tests in sequence: Pregnancy test first; TSH and prolactin; FSH and estradiol.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2431,8 +2431,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret numeric results against the workup cutoffs and local assay ranges: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
-        "rationale": "Routes Amenorrhea (Absence of menstruation) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Interpret numeric results against the workup cutoffs and local assay ranges: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
+        "rationale": "Amenorrhea (Absence of menstruation): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Interpret numeric results against the workup cutoffs and local assay ranges: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.: patient data that changes testing, treatment, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
         "management_change": "Interpret numeric results against the workup cutoffs and local assay ranges: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2465,8 +2465,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.",
-        "rationale": "Routes Amenorrhea (Absence of menstruation) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
+        "rationale": "Amenorrhea (Absence of menstruation): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.: patient data that changes testing, treatment, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
         "management_change": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2502,7 +2502,7 @@
         },
         "action": "Treat the cause: pregnancy care, thyroid disease, hyperprolactinemia, PCOS/anovulation, functional hypothalamic amenorrhea, POI, or structural outflow disorder.",
         "rationale": "Links confirmed Amenorrhea (Absence of menstruation) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Treat the cause: pregnancy care, thyroid disease, hyperprolactinemia, PCOS/anovulation, functional hypothalamic amenorrhea, POI, or structural outflow disorder.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
+        "diagnostic_target": "Treat the cause: pregnancy care, thyroid disease, hyperprolactinemia, PCOS/anovulation, functional hypothalamic amenorrhea, POI, or structural outflow disorder.: patient data that changes testing, treatment, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
         "management_change": "Treat the cause: pregnancy care, thyroid disease, hyperprolactinemia, PCOS/anovulation, functional hypothalamic amenorrhea, POI, or structural outflow disorder.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2536,7 +2536,7 @@
         },
         "action": "For functional hypothalamic amenorrhea, prioritize nutrition, weight restoration, exercise reduction, stress care, and bone protection.",
         "rationale": "Links confirmed Amenorrhea (Absence of menstruation) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "For functional hypothalamic amenorrhea, prioritize nutrition, weight restoration, exercise reduction, stress care, and bone protection.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
+        "diagnostic_target": "For functional hypothalamic amenorrhea, prioritize nutrition, weight restoration, exercise reduction, stress care, and bone protection.: patient data that changes testing, treatment, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
         "management_change": "For functional hypothalamic amenorrhea, prioritize nutrition, weight restoration, exercise reduction, stress care, and bone protection.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2569,7 +2569,7 @@
         },
         "action": "For POI, provide hormone replacement when appropriate, fertility counseling, and bone/cardiovascular prevention.",
         "rationale": "Links confirmed Amenorrhea (Absence of menstruation) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "For POI, provide hormone replacement when appropriate, fertility counseling, and bone/cardiovascular prevention.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
+        "diagnostic_target": "For POI, provide hormone replacement when appropriate, fertility counseling, and bone/cardiovascular prevention.: patient data that changes testing, treatment, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
         "management_change": "For POI, provide hormone replacement when appropriate, fertility counseling, and bone/cardiovascular prevention.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2603,7 +2603,7 @@
         },
         "action": "Provide endometrial protection for chronic anovulation when pregnancy is not desired.",
         "rationale": "Links confirmed Amenorrhea (Absence of menstruation) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Provide endometrial protection for chronic anovulation when pregnancy is not desired.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
+        "diagnostic_target": "Provide endometrial protection for chronic anovulation when pregnancy is not desired.: patient data that changes testing, treatment, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
         "management_change": "Provide endometrial protection for chronic anovulation when pregnancy is not desired.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2636,7 +2636,7 @@
         },
         "action": "Treat unstable presentations first using the urgent escalation rule for Amenorrhea (Absence of menstruation); draw time-sensitive labs only if doing so does not delay stabilization.",
         "rationale": "Links confirmed Amenorrhea (Absence of menstruation) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Treat unstable presentations first using the urgent escalation rule for Amenorrhea (Absence of menstruation); draw time-sensitive labs only if doing so does not delay stabilization.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
+        "diagnostic_target": "Treat unstable presentations first using the urgent escalation rule for Amenorrhea (Absence of menstruation); draw time-sensitive labs only if doing so does not delay stabilization.: patient data that changes testing, treatment, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
         "management_change": "Treat unstable presentations first using the urgent escalation rule for Amenorrhea (Absence of menstruation); draw time-sensitive labs only if doing so does not delay stabilization.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2670,7 +2670,7 @@
         },
         "action": "For confirmed Amenorrhea (Absence of menstruation), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.",
         "rationale": "Links confirmed Amenorrhea (Absence of menstruation) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "For confirmed Amenorrhea (Absence of menstruation), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
+        "diagnostic_target": "For confirmed Amenorrhea (Absence of menstruation), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.: patient data that changes testing, treatment, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
         "management_change": "For confirmed Amenorrhea (Absence of menstruation), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2703,7 +2703,7 @@
         },
         "action": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.",
         "rationale": "Links confirmed Amenorrhea (Absence of menstruation) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
+        "diagnostic_target": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.: patient data that changes testing, treatment, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
         "management_change": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2737,7 +2737,7 @@
         },
         "action": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.",
         "rationale": "Links confirmed Amenorrhea (Absence of menstruation) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
+        "diagnostic_target": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.: patient data that changes testing, treatment, monitoring, referral, or disposition for Amenorrhea (Absence of menstruation).",
         "management_change": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -3830,7 +3830,7 @@
         "amenorrhea_treatment_bundle": {
           "rule_id": "amenorrhea_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Amenorrhea (Absence of menstruation) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+          "description": "Start Amenorrhea (Absence of menstruation) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4974,7 +4974,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Amenorrhea (Absence of menstruation): does patient context support this workup or require exact missing-data routing?",
+        "label": "Amenorrhea (Absence of menstruation): route by documented findings and exact missing-data needs",
         "edgeLabel": "",
         "source_ids": [
           "ASRM_AMENORRHEA_2024",
@@ -4995,13 +4995,13 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Amenorrhea (Absence of menstruation) using cited diagnostic thresholds/rules, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+        "action": "Route Amenorrhea (Absence of menstruation) from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
         "children": [
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Amenorrhea (Absence of menstruation) pathway context",
-            "edgeLabel": "Missing exact Amenorrhea (Absence of menstruation) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
+            "edgeLabel": "Missing exact Amenorrhea (Absence of menstruation) pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -5057,7 +5057,7 @@
             "id": "amenorrhea_concurrent_data_bundle",
             "type": "action",
             "label": "Amenorrhea (Absence of menstruation): obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Selected Amenorrhea (Absence of menstruation) workup or documented findings: Did menstrual periods never start by the expected age, or did previously present periods stop?; When was the last menstrual period, how regular are cycles, and has bleeding changed from baseline?; Is pregnancy possible now, planned soon, or recently postpartum, and would pregnancy change medication or imaging safety?; How has weight changed from baseline, and was the change intentional or associated with appetite, fluid status, or systemic symptoms?; Positive pregnancy with pain/bleeding, visual loss/headache, rapid virilization, vital sign instability/eating disorder.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Pregnancy test first.",
+            "edgeLabel": "Amenorrhea (Absence of menstruation) active from documented findings: Did menstrual periods never start by the expected age, or did previously present periods stop?; When was the last menstrual period, how regular are cycles, and has bleeding changed from baseline?; Is pregnancy possible now, planned soon, or recently postpartum, and would pregnancy change medication or imaging safety?; How has weight changed from baseline, and was the change intentional or associated with appetite, fluid status, or systemic symptoms?; Positive pregnancy with pain/bleeding, visual loss/headache, rapid virilization, vital sign instability/eating disorder.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Pregnancy test first.",
             "source_ids": [
               "ASRM_AMENORRHEA_2024",
               "AHRQ_CALIBRATE_DX"
@@ -5844,7 +5844,7 @@
                     "criteria": {
                       "rule_id": "amenorrhea_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Amenorrhea (Absence of menstruation) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+                      "description": "Start Amenorrhea (Absence of menstruation) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -7285,7 +7285,7 @@
                                 "id": "amenorrhea_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Amenorrhea (Absence of menstruation): follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Amenorrhea (Absence of menstruation) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; FSH/E2 pattern separates ovarian failure from central/hypothalamic causes and changes imaging/referral.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+                                "edgeLabel": "Amenorrhea (Absence of menstruation) discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; FSH/E2 pattern separates ovarian failure from central/hypothalamic causes and changes imaging/referral.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                                 "source_ids": [
                                   "ASRM_AMENORRHEA_2024",
                                   "AHRQ_CALIBRATE_DX"
@@ -8646,7 +8646,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing exact Amenorrhea (Absence of menstruation) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
+          "expected_active_branch": "Missing exact Amenorrhea (Absence of menstruation) pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
@@ -8688,7 +8688,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "amenorrhea_followup_endpoint",
-          "expected_active_branch": "Amenorrhea (Absence of menstruation) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; FSH/E2 pattern separates ovarian failure from central/hypothalamic causes and changes imaging/referral.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
+          "expected_active_branch": "Amenorrhea (Absence of menstruation) discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; FSH/E2 pattern separates ovarian failure from central/hypothalamic causes and changes imaging/referral.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
         }
       ],
       "audit_requirements": {

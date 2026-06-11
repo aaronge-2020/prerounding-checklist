@@ -1914,7 +1914,7 @@
 
     .decision-tree-node-g text {
       fill: var(--ink);
-      font-size: 12px;
+      font-size: 12.5px;
       font-weight: 780;
       pointer-events: none;
     }
@@ -9749,7 +9749,10 @@
     let decisionTreeEditMode = true;
     let decisionTreeSearch = "";
     let decisionTreeZoom = 1;
-    let decisionTreeOutlineCollapsed = true;
+    const decisionTreeOutlineCollapsedByPanel = new Map([
+      ["patientDecisionTreePanel", true],
+      ["decisionTreePanel", false]
+    ]);
     let decisionTreeNodeEditTimer = null;
     let copyFindingsResetTimer = null;
     let vaultCryptoKey = null;
@@ -12392,11 +12395,11 @@
 
     function decisionTreeNodeRenderBox(entry) {
       const text = String(entry?.data?.label || entry?.data?.id || "Pathway step").replace(/\s+/g, " ").trim();
-      const wrapChars = text.length > 210 ? 42 : text.length > 150 ? 38 : text.length > 95 ? 34 : 30;
+      const wrapChars = text.length > 260 ? 62 : text.length > 190 ? 56 : text.length > 120 ? 46 : 34;
       const lines = wrapTreeText(text, wrapChars);
       const longestLine = lines.reduce((max, line) => Math.max(max, line.length), 0);
-      const width = Math.min(420, Math.max(230, longestLine * 7.1 + 42));
-      const height = Math.max(96, 54 + lines.length * 14);
+      const width = Math.min(720, Math.max(250, longestLine * 7.7 + 56));
+      const height = Math.max(108, 62 + lines.length * 16);
       return { width, height, lines };
     }
 
@@ -12436,7 +12439,7 @@
 
     function renderDecisionTreeReadableOutline(container, graph) {
       const panel = document.createElement("div");
-      const collapsed = container.id === "patientDecisionTreePanel" && decisionTreeOutlineCollapsed;
+      const collapsed = decisionTreeOutlineCollapsedByPanel.get(container.id) ?? false;
       panel.className = `decision-tree-readable-outline${collapsed ? " is-collapsed" : ""}`;
       const header = document.createElement("div");
       header.className = "decision-tree-outline-header";
@@ -12449,9 +12452,7 @@
       toggleButton.setAttribute("aria-expanded", String(!collapsed));
       toggleButton.addEventListener("click", () => {
         const nextCollapsed = !panel.classList.contains("is-collapsed");
-        if (container.id === "patientDecisionTreePanel") {
-          decisionTreeOutlineCollapsed = nextCollapsed;
-        }
+        decisionTreeOutlineCollapsedByPanel.set(container.id, nextCollapsed);
         panel.classList.toggle("is-collapsed", nextCollapsed);
         toggleButton.textContent = nextCollapsed ? "Expand" : "Hide";
         toggleButton.setAttribute("aria-expanded", String(!nextCollapsed));
@@ -12499,8 +12500,9 @@
       });
       const maxNodeWidth = Math.max(...root.descendants().map((entry) => decisionTreeNodeBox(entry).width), 230);
       const maxNodeHeight = Math.max(...root.descendants().map((entry) => decisionTreeNodeBox(entry).height), 96);
-      const xSpacing = maxNodeWidth + 72;
-      const ySpacing = maxNodeHeight + 128;
+      const maxEdgeLineCount = Math.max(1, ...root.links().map((link) => wrapTreeText(link.target.data.edgeLabel || "", 52).length));
+      const xSpacing = maxNodeWidth + 112;
+      const ySpacing = maxNodeHeight + 150 + Math.min(150, maxEdgeLineCount * 12);
       const treeLayout = d3.tree().nodeSize([xSpacing, ySpacing]).separation((a, b) => a.parent === b.parent ? 1 : 1.12);
       treeLayout(root);
       const nodes = root.descendants();
@@ -12546,10 +12548,10 @@
         .attr("text-anchor", "middle");
       edgeLabelSelection.each(function(link) {
         const label = d3.select(this);
-        for (const [lineIndex, line] of wrapTreeText(link.target.data.edgeLabel, 38).entries()) {
+        for (const [lineIndex, line] of wrapTreeText(link.target.data.edgeLabel, 52).entries()) {
           label.append("tspan")
             .attr("x", (link.source.x + link.target.x) / 2)
-            .attr("dy", lineIndex === 0 ? 0 : 12)
+            .attr("dy", lineIndex === 0 ? 0 : 13)
             .text(line);
         }
       });
@@ -12608,7 +12610,7 @@
         for (const [lineIndex, line] of box.lines.entries()) {
           group.append("text")
             .attr("x", 0)
-            .attr("y", -(box.height / 2) + 44 + lineIndex * 14)
+            .attr("y", -(box.height / 2) + 46 + lineIndex * 16)
             .attr("text-anchor", "middle")
             .text(line);
         }
@@ -12623,7 +12625,7 @@
         elements.decisionTreeZoomSelect.value = String(nearest);
       };
       const rootFocusedTransform = (scale = 1) => {
-        const rootTopPadding = Math.max(48, decisionTreeNodeBox(root).height / 2 + 24);
+        const rootTopPadding = Math.max(96, decisionTreeNodeBox(root).height / 2 + 56);
         return d3.zoomIdentity
           .translate(Math.round(width / 2 - root.x * scale), rootTopPadding - root.y * scale)
           .scale(scale);

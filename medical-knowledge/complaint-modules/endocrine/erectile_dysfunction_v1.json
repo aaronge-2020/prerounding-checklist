@@ -1931,8 +1931,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Assess onset, libido, morning erections, vascular risk, medications, depression, sleep apnea, neurologic symptoms, and cardiovascular exercise tolerance.",
-        "rationale": "Routes Erectile Dysfunction (Endocrine-related) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Assess onset, libido, morning erections, vascular risk, medications, depression, sleep apnea, neurologic symptoms, and cardiovascular exercise tolerance.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
+        "rationale": "Erectile Dysfunction (Endocrine-related): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Assess onset, libido, morning erections, vascular risk, medications, depression, sleep apnea, neurologic symptoms, and cardiovascular exercise tolerance.: patient data that changes testing, treatment, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
         "management_change": "Assess onset, libido, morning erections, vascular risk, medications, depression, sleep apnea, neurologic symptoms, and cardiovascular exercise tolerance.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1965,8 +1965,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Measure morning testosterone when low libido, symptoms of hypogonadism, infertility, or endocrine features are present; screen glycemia and lipids.",
-        "rationale": "Routes Erectile Dysfunction (Endocrine-related) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Measure morning testosterone when low libido, symptoms of hypogonadism, infertility, or endocrine features are present; screen glycemia and lipids.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
+        "rationale": "Erectile Dysfunction (Endocrine-related): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Measure morning testosterone when low libido, symptoms of hypogonadism, infertility, or endocrine features are present; screen glycemia and lipids.: patient data that changes testing, treatment, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
         "management_change": "Measure morning testosterone when low libido, symptoms of hypogonadism, infertility, or endocrine features are present; screen glycemia and lipids.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -1999,8 +1999,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "If testosterone is low, repeat and classify with LH/FSH and prolactin or pituitary workup when indicated.",
-        "rationale": "Routes Erectile Dysfunction (Endocrine-related) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "If testosterone is low, repeat and classify with LH/FSH and prolactin or pituitary workup when indicated.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
+        "rationale": "Erectile Dysfunction (Endocrine-related): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "If testosterone is low, repeat and classify with LH/FSH and prolactin or pituitary workup when indicated.: patient data that changes testing, treatment, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
         "management_change": "If testosterone is low, repeat and classify with LH/FSH and prolactin or pituitary workup when indicated.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2031,8 +2031,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Identify red flags such as priapism, penile trauma, neurologic deficit, testicular mass, or unstable cardiovascular symptoms.",
-        "rationale": "Routes Erectile Dysfunction (Endocrine-related) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Identify red flags such as priapism, penile trauma, neurologic deficit, testicular mass, or unstable cardiovascular symptoms.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
+        "rationale": "Erectile Dysfunction (Endocrine-related): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Identify red flags such as priapism, penile trauma, neurologic deficit, testicular mass, or unstable cardiovascular symptoms.: patient data that changes testing, treatment, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
         "management_change": "Identify red flags such as priapism, penile trauma, neurologic deficit, testicular mass, or unstable cardiovascular symptoms.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2065,8 +2065,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Confirm that Erectile Dysfunction (Endocrine-related) is the selected clinical intent, then screen for red flags before routine outpatient testing.",
-        "rationale": "Routes Erectile Dysfunction (Endocrine-related) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Confirm that Erectile Dysfunction (Endocrine-related) is the selected clinical intent, then screen for red flags before routine outpatient testing.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
+        "rationale": "Erectile Dysfunction (Endocrine-related): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Confirm that Erectile Dysfunction (Endocrine-related) is the selected clinical intent, then screen for red flags before routine outpatient testing.: patient data that changes testing, treatment, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
         "management_change": "Confirm that Erectile Dysfunction (Endocrine-related) is the selected clinical intent, then screen for red flags before routine outpatient testing.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2099,8 +2099,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Order the first-line tests in sequence: Morning total testosterone; A1c/FPG and lipids; TSH/prolactin when low libido, gynecomastia, infertility, or pituitary symptoms.",
-        "rationale": "Routes Erectile Dysfunction (Endocrine-related) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Order the first-line tests in sequence: Morning total testosterone; A1c/FPG and lipids; TSH/prolactin when low libido, gynecomastia, infertility, or pituitary symptoms.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
+        "rationale": "Erectile Dysfunction (Endocrine-related): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Order the first-line tests in sequence: Morning total testosterone; A1c/FPG and lipids; TSH/prolactin when low libido, gynecomastia, infertility, or pituitary symptoms.: patient data that changes testing, treatment, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
         "management_change": "Order the first-line tests in sequence: Morning total testosterone; A1c/FPG and lipids; TSH/prolactin when low libido, gynecomastia, infertility, or pituitary symptoms.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2133,8 +2133,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret numeric results against the workup cutoffs and local assay ranges: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
-        "rationale": "Routes Erectile Dysfunction (Endocrine-related) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Interpret numeric results against the workup cutoffs and local assay ranges: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
+        "rationale": "Erectile Dysfunction (Endocrine-related): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Interpret numeric results against the workup cutoffs and local assay ranges: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.: patient data that changes testing, treatment, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
         "management_change": "Interpret numeric results against the workup cutoffs and local assay ranges: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2167,8 +2167,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.",
-        "rationale": "Routes Erectile Dysfunction (Endocrine-related) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
+        "rationale": "Erectile Dysfunction (Endocrine-related): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.: patient data that changes testing, treatment, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
         "management_change": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2204,7 +2204,7 @@
         },
         "action": "Optimize cardiovascular risk, diabetes, BP/lipids, smoking, alcohol, sleep apnea, mood, and medication contributors.",
         "rationale": "Links confirmed Erectile Dysfunction (Endocrine-related) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Optimize cardiovascular risk, diabetes, BP/lipids, smoking, alcohol, sleep apnea, mood, and medication contributors.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
+        "diagnostic_target": "Optimize cardiovascular risk, diabetes, BP/lipids, smoking, alcohol, sleep apnea, mood, and medication contributors.: patient data that changes testing, treatment, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
         "management_change": "Optimize cardiovascular risk, diabetes, BP/lipids, smoking, alcohol, sleep apnea, mood, and medication contributors.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2238,7 +2238,7 @@
         },
         "action": "Use PDE5 inhibitor therapy when not contraindicated, with nitrate/riociguat interaction and cardiac risk review.",
         "rationale": "Links confirmed Erectile Dysfunction (Endocrine-related) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Use PDE5 inhibitor therapy when not contraindicated, with nitrate/riociguat interaction and cardiac risk review.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
+        "diagnostic_target": "Use PDE5 inhibitor therapy when not contraindicated, with nitrate/riociguat interaction and cardiac risk review.: patient data that changes testing, treatment, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
         "management_change": "Use PDE5 inhibitor therapy when not contraindicated, with nitrate/riociguat interaction and cardiac risk review.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2272,7 +2272,7 @@
         },
         "action": "Treat confirmed hypogonadism only when symptomatic and safe, avoiding exogenous testosterone when fertility is desired.",
         "rationale": "Links confirmed Erectile Dysfunction (Endocrine-related) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Treat confirmed hypogonadism only when symptomatic and safe, avoiding exogenous testosterone when fertility is desired.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
+        "diagnostic_target": "Treat confirmed hypogonadism only when symptomatic and safe, avoiding exogenous testosterone when fertility is desired.: patient data that changes testing, treatment, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
         "management_change": "Treat confirmed hypogonadism only when symptomatic and safe, avoiding exogenous testosterone when fertility is desired.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2306,7 +2306,7 @@
         },
         "action": "Escalate to vacuum device, intraurethral/intracavernosal therapy, penile prosthesis, psychosexual therapy, or urology referral when first-line therapy fails or is contraindicated.",
         "rationale": "Links confirmed Erectile Dysfunction (Endocrine-related) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Escalate to vacuum device, intraurethral/intracavernosal therapy, penile prosthesis, psychosexual therapy, or urology referral when first-line therapy fails or is contraindicated.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
+        "diagnostic_target": "Escalate to vacuum device, intraurethral/intracavernosal therapy, penile prosthesis, psychosexual therapy, or urology referral when first-line therapy fails or is contraindicated.: patient data that changes testing, treatment, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
         "management_change": "Escalate to vacuum device, intraurethral/intracavernosal therapy, penile prosthesis, psychosexual therapy, or urology referral when first-line therapy fails or is contraindicated.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2340,7 +2340,7 @@
         },
         "action": "Treat unstable presentations first using the urgent escalation rule for Erectile Dysfunction (Endocrine-related); draw time-sensitive labs only if doing so does not delay stabilization.",
         "rationale": "Links confirmed Erectile Dysfunction (Endocrine-related) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Treat unstable presentations first using the urgent escalation rule for Erectile Dysfunction (Endocrine-related); draw time-sensitive labs only if doing so does not delay stabilization.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
+        "diagnostic_target": "Treat unstable presentations first using the urgent escalation rule for Erectile Dysfunction (Endocrine-related); draw time-sensitive labs only if doing so does not delay stabilization.: patient data that changes testing, treatment, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
         "management_change": "Treat unstable presentations first using the urgent escalation rule for Erectile Dysfunction (Endocrine-related); draw time-sensitive labs only if doing so does not delay stabilization.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2374,7 +2374,7 @@
         },
         "action": "For confirmed Erectile Dysfunction (Endocrine-related), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.",
         "rationale": "Links confirmed Erectile Dysfunction (Endocrine-related) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "For confirmed Erectile Dysfunction (Endocrine-related), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
+        "diagnostic_target": "For confirmed Erectile Dysfunction (Endocrine-related), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.: patient data that changes testing, treatment, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
         "management_change": "For confirmed Erectile Dysfunction (Endocrine-related), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2408,7 +2408,7 @@
         },
         "action": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.",
         "rationale": "Links confirmed Erectile Dysfunction (Endocrine-related) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
+        "diagnostic_target": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.: patient data that changes testing, treatment, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
         "management_change": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2442,7 +2442,7 @@
         },
         "action": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.",
         "rationale": "Links confirmed Erectile Dysfunction (Endocrine-related) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
+        "diagnostic_target": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.: patient data that changes testing, treatment, monitoring, referral, or disposition for Erectile Dysfunction (Endocrine-related).",
         "management_change": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -4311,7 +4311,7 @@
         "erectile_dysfunction_treatment_bundle": {
           "rule_id": "erectile_dysfunction_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Erectile Dysfunction (Endocrine-related) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+          "description": "Start Erectile Dysfunction (Endocrine-related) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -6059,7 +6059,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Erectile Dysfunction (Endocrine-related): does patient context support this workup or require exact missing-data routing?",
+        "label": "Erectile Dysfunction (Endocrine-related): route by documented findings and exact missing-data needs",
         "edgeLabel": "",
         "source_ids": [
           "ES_TESTOSTERONE_2018",
@@ -6084,13 +6084,13 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Erectile Dysfunction (Endocrine-related) using cited diagnostic thresholds/rules, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+        "action": "Route Erectile Dysfunction (Endocrine-related) from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
         "children": [
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Erectile Dysfunction (Endocrine-related) pathway context",
-            "edgeLabel": "Missing exact Erectile Dysfunction (Endocrine-related) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
+            "edgeLabel": "Missing exact Erectile Dysfunction (Endocrine-related) pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -6146,7 +6146,7 @@
             "id": "erectile_dysfunction_concurrent_data_bundle",
             "type": "action",
             "label": "Erectile Dysfunction (Endocrine-related): obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Selected Erectile Dysfunction (Endocrine-related) workup or documented findings: Any change in libido, morning erections, erectile function, ejaculation, orgasm, fertility goals, or testicular symptoms?; Any new, worsening, resistant, or treatment-limiting hypertension or diabetes that changes endocrine severity, complication screening, or medication choice?; Any history of ASCVD, heart failure, stroke/TIA, peripheral arterial disease, claudication, or vascular procedures?; Any loud snoring, witnessed apneas, morning headaches, daytime sleepiness, resistant hypertension, or CPAP use?; New ED with chest pain/claudication, neurologic deficit, priapism, severe hypogonadism/pituitary symptoms.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Morning total testosterone.",
+            "edgeLabel": "Erectile Dysfunction (Endocrine-related) active from documented findings: Any change in libido, morning erections, erectile function, ejaculation, orgasm, fertility goals, or testicular symptoms?; Any new, worsening, resistant, or treatment-limiting hypertension or diabetes that changes endocrine severity, complication screening, or medication choice?; Any history of ASCVD, heart failure, stroke/TIA, peripheral arterial disease, claudication, or vascular procedures?; Any loud snoring, witnessed apneas, morning headaches, daytime sleepiness, resistant hypertension, or CPAP use?; New ED with chest pain/claudication, neurologic deficit, priapism, severe hypogonadism/pituitary symptoms.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Morning total testosterone.",
             "source_ids": [
               "AUA_ED_2018",
               "ES_TESTOSTERONE_2018",
@@ -7331,7 +7331,7 @@
                     "criteria": {
                       "rule_id": "erectile_dysfunction_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Erectile Dysfunction (Endocrine-related) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+                      "description": "Start Erectile Dysfunction (Endocrine-related) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -9552,7 +9552,7 @@
                                 "id": "erectile_dysfunction_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Erectile Dysfunction (Endocrine-related): follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Erectile Dysfunction (Endocrine-related) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Low testosterone changes to hypogonadism pathway; diabetes/ASCVD risk changes cardiovascular management.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+                                "edgeLabel": "Erectile Dysfunction (Endocrine-related) discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Low testosterone changes to hypogonadism pathway; diabetes/ASCVD risk changes cardiovascular management.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                                 "source_ids": [
                                   "AUA_ED_2018",
                                   "ES_TESTOSTERONE_2018",
@@ -11699,7 +11699,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing exact Erectile Dysfunction (Endocrine-related) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
+          "expected_active_branch": "Missing exact Erectile Dysfunction (Endocrine-related) pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
@@ -11741,7 +11741,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "erectile_dysfunction_followup_endpoint",
-          "expected_active_branch": "Erectile Dysfunction (Endocrine-related) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Low testosterone changes to hypogonadism pathway; diabetes/ASCVD risk changes cardiovascular management.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
+          "expected_active_branch": "Erectile Dysfunction (Endocrine-related) discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Low testosterone changes to hypogonadism pathway; diabetes/ASCVD risk changes cardiovascular management.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
         }
       ],
       "audit_requirements": {

@@ -2378,8 +2378,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Confirm duration, age, ovulatory pattern, pregnancy loss history, partner factors, and urgency criteria before endocrine-only testing.",
-        "rationale": "Routes Infertility (Hormonal causes) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Confirm duration, age, ovulatory pattern, pregnancy loss history, partner factors, and urgency criteria before endocrine-only testing.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Infertility (Hormonal causes).",
+        "rationale": "Infertility (Hormonal causes): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Confirm duration, age, ovulatory pattern, pregnancy loss history, partner factors, and urgency criteria before endocrine-only testing.: patient data that changes testing, treatment, monitoring, referral, or disposition for Infertility (Hormonal causes).",
         "management_change": "Confirm duration, age, ovulatory pattern, pregnancy loss history, partner factors, and urgency criteria before endocrine-only testing.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2412,8 +2412,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Evaluate ovulation and endocrine causes with pregnancy test when amenorrhea, TSH, prolactin, ovarian reserve markers when indicated, PCOS/androgen labs, and midluteal progesterone when useful.",
-        "rationale": "Routes Infertility (Hormonal causes) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Evaluate ovulation and endocrine causes with pregnancy test when amenorrhea, TSH, prolactin, ovarian reserve markers when indicated, PCOS/androgen labs, and midluteal progesterone when useful.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Infertility (Hormonal causes).",
+        "rationale": "Infertility (Hormonal causes): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Evaluate ovulation and endocrine causes with pregnancy test when amenorrhea, TSH, prolactin, ovarian reserve markers when indicated, PCOS/androgen labs, and midluteal progesterone when useful.: patient data that changes testing, treatment, monitoring, referral, or disposition for Infertility (Hormonal causes).",
         "management_change": "Evaluate ovulation and endocrine causes with pregnancy test when amenorrhea, TSH, prolactin, ovarian reserve markers when indicated, PCOS/androgen labs, and midluteal progesterone when useful.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2446,8 +2446,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Include semen analysis and tubal/uterine evaluation rather than assuming an endocrine-only cause.",
-        "rationale": "Routes Infertility (Hormonal causes) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Include semen analysis and tubal/uterine evaluation rather than assuming an endocrine-only cause.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Infertility (Hormonal causes).",
+        "rationale": "Infertility (Hormonal causes): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Include semen analysis and tubal/uterine evaluation rather than assuming an endocrine-only cause.: patient data that changes testing, treatment, monitoring, referral, or disposition for Infertility (Hormonal causes).",
         "management_change": "Include semen analysis and tubal/uterine evaluation rather than assuming an endocrine-only cause.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2480,8 +2480,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate earlier for age, POI, severe oligo/azoospermia, amenorrhea, recurrent loss, known tubal disease, or cancer-treatment history.",
-        "rationale": "Routes Infertility (Hormonal causes) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Escalate earlier for age, POI, severe oligo/azoospermia, amenorrhea, recurrent loss, known tubal disease, or cancer-treatment history.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Infertility (Hormonal causes).",
+        "rationale": "Infertility (Hormonal causes): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Escalate earlier for age, POI, severe oligo/azoospermia, amenorrhea, recurrent loss, known tubal disease, or cancer-treatment history.: patient data that changes testing, treatment, monitoring, referral, or disposition for Infertility (Hormonal causes).",
         "management_change": "Escalate earlier for age, POI, severe oligo/azoospermia, amenorrhea, recurrent loss, known tubal disease, or cancer-treatment history.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2514,8 +2514,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Confirm that Infertility (Hormonal causes) is the selected clinical intent, then screen for red flags before routine outpatient testing.",
-        "rationale": "Routes Infertility (Hormonal causes) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Confirm that Infertility (Hormonal causes) is the selected clinical intent, then screen for red flags before routine outpatient testing.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Infertility (Hormonal causes).",
+        "rationale": "Infertility (Hormonal causes): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Confirm that Infertility (Hormonal causes) is the selected clinical intent, then screen for red flags before routine outpatient testing.: patient data that changes testing, treatment, monitoring, referral, or disposition for Infertility (Hormonal causes).",
         "management_change": "Confirm that Infertility (Hormonal causes) is the selected clinical intent, then screen for red flags before routine outpatient testing.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2547,8 +2547,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Order the first-line tests in sequence: Pregnancy test if amenorrhea; TSH/prolactin; FSH/estradiol/AMH/antral follicle count as indicated.",
-        "rationale": "Routes Infertility (Hormonal causes) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Order the first-line tests in sequence: Pregnancy test if amenorrhea; TSH/prolactin; FSH/estradiol/AMH/antral follicle count as indicated.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Infertility (Hormonal causes).",
+        "rationale": "Infertility (Hormonal causes): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Order the first-line tests in sequence: Pregnancy test if amenorrhea; TSH/prolactin; FSH/estradiol/AMH/antral follicle count as indicated.: patient data that changes testing, treatment, monitoring, referral, or disposition for Infertility (Hormonal causes).",
         "management_change": "Order the first-line tests in sequence: Pregnancy test if amenorrhea; TSH/prolactin; FSH/estradiol/AMH/antral follicle count as indicated.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2581,8 +2581,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret numeric results against the workup cutoffs and local assay ranges: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
-        "rationale": "Routes Infertility (Hormonal causes) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "Interpret numeric results against the workup cutoffs and local assay ranges: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Infertility (Hormonal causes).",
+        "rationale": "Infertility (Hormonal causes): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "Interpret numeric results against the workup cutoffs and local assay ranges: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.: patient data that changes testing, treatment, monitoring, referral, or disposition for Infertility (Hormonal causes).",
         "management_change": "Interpret numeric results against the workup cutoffs and local assay ranges: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2615,8 +2615,8 @@
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.",
-        "rationale": "Routes Infertility (Hormonal causes) testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.",
-        "diagnostic_target": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Infertility (Hormonal causes).",
+        "rationale": "Infertility (Hormonal causes): connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.",
+        "diagnostic_target": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.: patient data that changes testing, treatment, monitoring, referral, or disposition for Infertility (Hormonal causes).",
         "management_change": "If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2652,7 +2652,7 @@
         },
         "action": "Treat thyroid disease, hyperprolactinemia, PCOS/anovulation, hypogonadism, or POI according to cause and pregnancy safety.",
         "rationale": "Links confirmed Infertility (Hormonal causes) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Treat thyroid disease, hyperprolactinemia, PCOS/anovulation, hypogonadism, or POI according to cause and pregnancy safety.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Infertility (Hormonal causes).",
+        "diagnostic_target": "Treat thyroid disease, hyperprolactinemia, PCOS/anovulation, hypogonadism, or POI according to cause and pregnancy safety.: patient data that changes testing, treatment, monitoring, referral, or disposition for Infertility (Hormonal causes).",
         "management_change": "Treat thyroid disease, hyperprolactinemia, PCOS/anovulation, hypogonadism, or POI according to cause and pregnancy safety.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2686,7 +2686,7 @@
         },
         "action": "Use ovulation induction, typically letrozole for PCOS-related anovulation, in the appropriate reproductive pathway.",
         "rationale": "Links confirmed Infertility (Hormonal causes) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Use ovulation induction, typically letrozole for PCOS-related anovulation, in the appropriate reproductive pathway.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Infertility (Hormonal causes).",
+        "diagnostic_target": "Use ovulation induction, typically letrozole for PCOS-related anovulation, in the appropriate reproductive pathway.: patient data that changes testing, treatment, monitoring, referral, or disposition for Infertility (Hormonal causes).",
         "management_change": "Use ovulation induction, typically letrozole for PCOS-related anovulation, in the appropriate reproductive pathway.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2720,7 +2720,7 @@
         },
         "action": "Use gonadotropins, dopamine agonists, surgery, ART, or male-factor treatment according to etiology and specialist guidance.",
         "rationale": "Links confirmed Infertility (Hormonal causes) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Use gonadotropins, dopamine agonists, surgery, ART, or male-factor treatment according to etiology and specialist guidance.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Infertility (Hormonal causes).",
+        "diagnostic_target": "Use gonadotropins, dopamine agonists, surgery, ART, or male-factor treatment according to etiology and specialist guidance.: patient data that changes testing, treatment, monitoring, referral, or disposition for Infertility (Hormonal causes).",
         "management_change": "Use gonadotropins, dopamine agonists, surgery, ART, or male-factor treatment according to etiology and specialist guidance.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2754,7 +2754,7 @@
         },
         "action": "Avoid teratogenic medications and align treatment with pregnancy status, partner context, and patient goals.",
         "rationale": "Links confirmed Infertility (Hormonal causes) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Avoid teratogenic medications and align treatment with pregnancy status, partner context, and patient goals.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Infertility (Hormonal causes).",
+        "diagnostic_target": "Avoid teratogenic medications and align treatment with pregnancy status, partner context, and patient goals.: patient data that changes testing, treatment, monitoring, referral, or disposition for Infertility (Hormonal causes).",
         "management_change": "Avoid teratogenic medications and align treatment with pregnancy status, partner context, and patient goals.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2787,7 +2787,7 @@
         },
         "action": "Treat unstable presentations first using the urgent escalation rule for Infertility (Hormonal causes); draw time-sensitive labs only if doing so does not delay stabilization.",
         "rationale": "Links confirmed Infertility (Hormonal causes) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Treat unstable presentations first using the urgent escalation rule for Infertility (Hormonal causes); draw time-sensitive labs only if doing so does not delay stabilization.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Infertility (Hormonal causes).",
+        "diagnostic_target": "Treat unstable presentations first using the urgent escalation rule for Infertility (Hormonal causes); draw time-sensitive labs only if doing so does not delay stabilization.: patient data that changes testing, treatment, monitoring, referral, or disposition for Infertility (Hormonal causes).",
         "management_change": "Treat unstable presentations first using the urgent escalation rule for Infertility (Hormonal causes); draw time-sensitive labs only if doing so does not delay stabilization.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2821,7 +2821,7 @@
         },
         "action": "For confirmed Infertility (Hormonal causes), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.",
         "rationale": "Links confirmed Infertility (Hormonal causes) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "For confirmed Infertility (Hormonal causes), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Infertility (Hormonal causes).",
+        "diagnostic_target": "For confirmed Infertility (Hormonal causes), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.: patient data that changes testing, treatment, monitoring, referral, or disposition for Infertility (Hormonal causes).",
         "management_change": "For confirmed Infertility (Hormonal causes), choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2854,7 +2854,7 @@
         },
         "action": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.",
         "rationale": "Links confirmed Infertility (Hormonal causes) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Infertility (Hormonal causes).",
+        "diagnostic_target": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.: patient data that changes testing, treatment, monitoring, referral, or disposition for Infertility (Hormonal causes).",
         "management_change": "Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -2888,7 +2888,7 @@
         },
         "action": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.",
         "rationale": "Links confirmed Infertility (Hormonal causes) results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.",
-        "diagnostic_target": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Infertility (Hormonal causes).",
+        "diagnostic_target": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.: patient data that changes testing, treatment, monitoring, referral, or disposition for Infertility (Hormonal causes).",
         "management_change": "Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.",
         "LR_plus": "n/a",
         "LR_minus": "n/a",
@@ -4110,7 +4110,7 @@
         "infertility_treatment_bundle": {
           "rule_id": "infertility_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Infertility (Hormonal causes) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+          "description": "Start Infertility (Hormonal causes) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -5272,7 +5272,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Infertility (Hormonal causes): does patient context support this workup or require exact missing-data routing?",
+        "label": "Infertility (Hormonal causes): route by documented findings and exact missing-data needs",
         "edgeLabel": "",
         "source_ids": [
           "PCOS_GUIDELINE_2023",
@@ -5297,13 +5297,13 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Infertility (Hormonal causes) using cited diagnostic thresholds/rules, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+        "action": "Route Infertility (Hormonal causes) from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
         "children": [
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Infertility (Hormonal causes) pathway context",
-            "edgeLabel": "Missing exact Infertility (Hormonal causes) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
+            "edgeLabel": "Missing exact Infertility (Hormonal causes) pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -5359,7 +5359,7 @@
             "id": "infertility_concurrent_data_bundle",
             "type": "action",
             "label": "Infertility (Hormonal causes): obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Selected Infertility (Hormonal causes) workup or documented findings: When was the last menstrual period, how regular are cycles, and has bleeding changed from baseline?; Are cycles predictably ovulatory, with mid-cycle symptoms, LH-kit evidence, luteal symptoms, or cycle tracking suggesting regular ovulation?; Has a semen analysis or partner fertility evaluation been completed, and were any abnormalities found?; Any spontaneous or expressible nipple discharge, breast tenderness, headaches, visual symptoms, or medications that raise prolactin?; Amenorrhea with visual symptoms, POI <40, severe hyperandrogenism, recurrent pregnancy loss needing specialist workup.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Pregnancy test if amenorrhea.",
+            "edgeLabel": "Infertility (Hormonal causes) active from documented findings: When was the last menstrual period, how regular are cycles, and has bleeding changed from baseline?; Are cycles predictably ovulatory, with mid-cycle symptoms, LH-kit evidence, luteal symptoms, or cycle tracking suggesting regular ovulation?; Has a semen analysis or partner fertility evaluation been completed, and were any abnormalities found?; Any spontaneous or expressible nipple discharge, breast tenderness, headaches, visual symptoms, or medications that raise prolactin?; Amenorrhea with visual symptoms, POI <40, severe hyperandrogenism, recurrent pregnancy loss needing specialist workup.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Pregnancy test if amenorrhea.",
             "source_ids": [
               "ASRM_AMENORRHEA_2024",
               "PCOS_GUIDELINE_2023",
@@ -6238,7 +6238,7 @@
                     "criteria": {
                       "rule_id": "infertility_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Infertility (Hormonal causes) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
+                      "description": "Start Infertility (Hormonal causes) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -7775,7 +7775,7 @@
                                 "id": "infertility_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Infertility (Hormonal causes): follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Infertility (Hormonal causes) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Anovulation, thyroid/prolactin abnormality, POI pattern, or male factor changes treatment/referral.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+                                "edgeLabel": "Infertility (Hormonal causes) discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Anovulation, thyroid/prolactin abnormality, POI pattern, or male factor changes treatment/referral.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                                 "source_ids": [
                                   "ASRM_AMENORRHEA_2024",
                                   "PCOS_GUIDELINE_2023",
@@ -9324,7 +9324,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing exact Infertility (Hormonal causes) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
+          "expected_active_branch": "Missing exact Infertility (Hormonal causes) pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
@@ -9366,7 +9366,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "infertility_followup_endpoint",
-          "expected_active_branch": "Infertility (Hormonal causes) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Anovulation, thyroid/prolactin abnormality, POI pattern, or male factor changes treatment/referral.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
+          "expected_active_branch": "Infertility (Hormonal causes) discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Anovulation, thyroid/prolactin abnormality, POI pattern, or male factor changes treatment/referral.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
         }
       ],
       "audit_requirements": {
