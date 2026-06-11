@@ -2748,7 +2748,7 @@
         "gynecomastia_treatment_bundle": {
           "rule_id": "gynecomastia_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Start Gynecomastia (Enlarged male breast tissue) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
+          "description": "Use this Gynecomastia management branch when Use reassurance and observation for mild recent physiologic gynecomastia without red flags; Testicular mass/hCG elevation changes to urgent tumor pathway; discordant endocrine tests need correct timing; Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review applies and patient-specific safety modifiers have been checked.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2860,7 +2860,7 @@
         "gynecomastia_review_endpoint": {
           "rule_id": "gynecomastia_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Gynecomastia (Enlarged male breast tissue) treatment or disposition depends on Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Testicular mass/hCG elevation changes to urgent tumor pathway; discordant endocrine tests need correct timing.",
+          "description": "Use reviewer handoff when Gynecomastia (Enlarged male breast tissue) management changes because of Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Testicular mass/hCG elevation changes to urgent tumor pathway; discordant endocrine tests need correct timing.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3185,7 +3185,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Screen for high-acuity findings; classify with <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%; then choose emergency, treatment/disposition, review, mimic, monitoring, de-escalation, or follow-up branch.",
+        "action": "Send unstable patients to urgent care; compare <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%; choose active management from Use reassurance and observation for mild recent physiologic gynecomastia without red flags; Testicular mass/hCG elevation changes to urgent tumor pathway; discordant endocrine tests need correct timing; Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; switch to competing diagnosis better explains the presentation when it fits better.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3253,8 +3253,8 @@
           {
             "id": "gynecomastia_concurrent_data_bundle",
             "type": "action",
-            "label": "Gynecomastia triage inputs",
-            "edgeLabel": "Assessment bundle: Total testosterone, LH, FSH, estradiol; hCG if suspicious; TSH, prolactin, liver/kidney function; Gynecomastia safety tests; testosterone; LH/FSH",
+            "label": "Gynecomastia data: Total testosterone, LH, FSH, estradiol; hCG if suspicious",
+            "edgeLabel": "Gynecomastia data: Total testosterone, LH, FSH, estradiol; hCG if suspicious; TSH, prolactin, liver/kidney function; Gynecomastia safety tests; testosterone; LH/FSH",
             "source_ids": [
               "ES_TESTOSTERONE_2018",
               "AUA_TESTOSTERONE_2024",
@@ -3287,8 +3287,8 @@
               {
                 "id": "gynecomastia_classification_decision",
                 "type": "decision",
-                "label": "Gynecomastia severity thresholds",
-                "edgeLabel": "Classify using <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%",
+                "label": "Gynecomastia decision: Male hypogonadism pituitary imaging trigger; <150 ng/dL",
+                "edgeLabel": "Threshold route: <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%",
                 "source_ids": [
                   "ES_TESTOSTERONE_2018",
                   "AUA_TESTOSTERONE_2024",
@@ -3363,7 +3363,7 @@
                     }
                   ]
                 },
-                "action": "Match current patient data to <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
+                "action": "Compare current patient data with <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%; route to urgent findings, active management, specialist-input modifier, or a named alternate diagnosis.",
                 "children": [
                   {
                     "id": "gynecomastia_missing_cutoff_data_endpoint",
@@ -3459,8 +3459,8 @@
                   {
                     "id": "gynecomastia_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Gynecomastia emergency criteria",
-                    "edgeLabel": "Escalate: Hard eccentric breast mass; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; <150 ng/dL",
+                    "label": "Gynecomastia urgent: Hard eccentric breast mass",
+                    "edgeLabel": "Urgent findings: Hard eccentric breast mass; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; <150 ng/dL",
                     "source_ids": [
                       "ES_TESTOSTERONE_2018",
                       "AUA_TESTOSTERONE_2024",
@@ -3584,8 +3584,8 @@
                   {
                     "id": "gynecomastia_treatment_bundle",
                     "type": "action",
-                    "label": "Gynecomastia treatment/disposition",
-                    "edgeLabel": "Treat/dispose using confirmed category and safety data",
+                    "label": "Gynecomastia plan: Testicular mass/hCG elevation changes to urgent tumor pathway",
+                    "edgeLabel": "Gynecomastia management: Use reassurance and observation for mild recent physiologic gynecomastia without red flags; Testicular mass/hCG elevation changes to urgent tumor pathway; discordant endocrine tests need correct timing",
                     "source_ids": [
                       "ES_TESTOSTERONE_2018",
                       "AUA_TESTOSTERONE_2024",
@@ -3595,7 +3595,7 @@
                     "criteria": {
                       "rule_id": "gynecomastia_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Start Gynecomastia (Enlarged male breast tissue) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
+                      "description": "Use this Gynecomastia management branch when Use reassurance and observation for mild recent physiologic gynecomastia without red flags; Testicular mass/hCG elevation changes to urgent tumor pathway; discordant endocrine tests need correct timing; Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review applies and patient-specific safety modifiers have been checked.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -3664,8 +3664,8 @@
                       {
                         "id": "gynecomastia_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Gynecomastia contraindication screen",
-                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
+                        "label": "Gynecomastia safety: Male hypogonadism pituitary imaging trigger",
+                        "edgeLabel": "Therapy modifier: Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Testicular mass/hCG elevation changes to urgent tumor pathway; discordant endocrine tests need correct timing",
                         "source_ids": [
                           "ES_TESTOSTERONE_2018",
                           "AUA_TESTOSTERONE_2024",
@@ -3722,8 +3722,8 @@
                           {
                             "id": "gynecomastia_review_endpoint",
                             "type": "endpoint",
-                            "label": "Gynecomastia clinician review",
-                            "edgeLabel": "Review modifier: Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Testicular mass/hCG elevation changes to urgent tumor pathway; discordant endocrine tests need correct timing",
+                            "label": "Gynecomastia consult: Male hypogonadism pituitary imaging trigger",
+                            "edgeLabel": "Specialist input: Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Testicular mass/hCG elevation changes to urgent tumor pathway; discordant endocrine tests need correct timing",
                             "source_ids": [
                               "ES_TESTOSTERONE_2018",
                               "AUA_TESTOSTERONE_2024",
@@ -3733,7 +3733,7 @@
                             "criteria": {
                               "rule_id": "gynecomastia_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Gynecomastia (Enlarged male breast tissue) treatment or disposition depends on Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Testicular mass/hCG elevation changes to urgent tumor pathway; discordant endocrine tests need correct timing.",
+                              "description": "Use reviewer handoff when Gynecomastia (Enlarged male breast tissue) management changes because of Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Testicular mass/hCG elevation changes to urgent tumor pathway; discordant endocrine tests need correct timing.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -3758,8 +3758,8 @@
                           {
                             "id": "gynecomastia_monitoring_bundle",
                             "type": "action",
-                            "label": "Gynecomastia response monitoring",
-                            "edgeLabel": "Monitor: <150 ng/dL; >4 ng/mL; Total testosterone, LH, FSH, estradiol; hCG if suspicious; treatment response",
+                            "label": "Gynecomastia trend: <150 ng/dL; Total testosterone, LH, FSH, estradiol",
+                            "edgeLabel": "Gynecomastia trend: <150 ng/dL; >4 ng/mL; Total testosterone, LH, FSH, estradiol; hCG if suspicious; treatment response",
                             "source_ids": [
                               "ES_TESTOSTERONE_2018",
                               "AUA_TESTOSTERONE_2024",
@@ -3836,8 +3836,8 @@
                               {
                                 "id": "gynecomastia_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Gynecomastia deterioration criteria",
-                                "edgeLabel": "Escalate if reassessment worsens: Hard eccentric breast mass; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; <150 ng/dL; >4 ng/mL; Total testosterone, LH, FSH, estradiol",
+                                "label": "Gynecomastia worse: Hard eccentric breast mass; <150 ng/dL",
+                                "edgeLabel": "Worsening finding: Hard eccentric breast mass; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; <150 ng/dL; >4 ng/mL; Total testosterone, LH, FSH, estradiol",
                                 "source_ids": [
                                   "ES_TESTOSTERONE_2018",
                                   "AUA_TESTOSTERONE_2024",
@@ -3961,8 +3961,8 @@
                               {
                                 "id": "gynecomastia_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Gynecomastia stop/narrow criteria",
-                                "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
+                                "label": "Gynecomastia de-escalate: <150 ng/dL",
+                                "edgeLabel": "De-escalate when response, safety, and diagnostic certainty support it",
                                 "source_ids": [
                                   "ES_TESTOSTERONE_2018",
                                   "AUA_TESTOSTERONE_2024",
@@ -4086,8 +4086,8 @@
                               {
                                 "id": "gynecomastia_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Gynecomastia follow-up and safety-net",
-                                "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
+                                "label": "Gynecomastia return: hypogonadism pattern changes endocrine workup",
+                                "edgeLabel": "Closure: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ES_TESTOSTERONE_2018",
                                   "AUA_TESTOSTERONE_2024",
@@ -4238,7 +4238,7 @@
                   {
                     "id": "gynecomastia_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Gynecomastia mimic/exclusion",
+                    "label": "Gynecomastia alternate route",
                     "edgeLabel": "Alternate diagnosis: competing diagnosis better explains the presentation",
                     "source_ids": [
                       "ES_TESTOSTERONE_2018",
@@ -4524,7 +4524,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "gynecomastia_urgent_endpoint",
-          "expected_active_branch": "Escalate: Hard eccentric breast mass; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; <150 ng/dL",
+          "expected_active_branch": "Urgent findings: Hard eccentric breast mass; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; <150 ng/dL",
           "expected_path_node_ids": [
             "root",
             "gynecomastia_concurrent_data_bundle",
@@ -4552,7 +4552,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "gynecomastia_review_endpoint",
-          "expected_active_branch": "Review modifier: Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Testicular mass/hCG elevation changes to urgent tumor pathway; discordant endocrine tests need correct timing",
+          "expected_active_branch": "Specialist input: Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Testicular mass/hCG elevation changes to urgent tumor pathway; discordant endocrine tests need correct timing",
           "expected_path_node_ids": [
             "root",
             "gynecomastia_concurrent_data_bundle",
@@ -4568,7 +4568,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "gynecomastia_worsening_endpoint",
-          "expected_active_branch": "Escalate if reassessment worsens: Hard eccentric breast mass; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; <150 ng/dL; >4 ng/mL; Total testosterone, LH, FSH, estradiol",
+          "expected_active_branch": "Worsening finding: Hard eccentric breast mass; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; <150 ng/dL; >4 ng/mL; Total testosterone, LH, FSH, estradiol",
           "expected_path_node_ids": [
             "root",
             "gynecomastia_concurrent_data_bundle",
@@ -4585,7 +4585,7 @@
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "gynecomastia_deescalate_endpoint",
-          "expected_active_branch": "Narrow/stop when response and diagnosis certainty support it",
+          "expected_active_branch": "De-escalate when response, safety, and diagnostic certainty support it",
           "expected_path_node_ids": [
             "root",
             "gynecomastia_concurrent_data_bundle",
@@ -4602,7 +4602,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "gynecomastia_followup_endpoint",
-          "expected_active_branch": "Follow-up ready: result owner, interval, and return precautions",
+          "expected_active_branch": "Closure: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "gynecomastia_concurrent_data_bundle",

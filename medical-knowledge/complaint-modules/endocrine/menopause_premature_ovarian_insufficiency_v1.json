@@ -3400,7 +3400,7 @@
         "menopause_premature_ovarian_insufficiency_treatment_bundle": {
           "rule_id": "menopause_premature_ovarian_insufficiency_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Start Menopause / Premature Ovarian Insufficiency treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
+          "description": "Use this Menopause / Premature Ovarian Insufficiency management branch when POI changes routine menopause counseling to etiologic evaluation; discordant endocrine tests need correct timing; POI diagnosis; POI hormone therapy; POI combined-pill caution; POI fertility counseling applies and patient-specific safety modifiers have been checked.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3605,7 +3605,7 @@
         "menopause_premature_ovarian_insufficiency_review_endpoint": {
           "rule_id": "menopause_premature_ovarian_insufficiency_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Menopause / Premature Ovarian Insufficiency treatment or disposition depends on POI diagnosis; POI hormone therapy; POI combined-pill caution; POI fertility counseling; POI changes routine menopause counseling to etiologic evaluation.",
+          "description": "Use reviewer handoff when Menopause / Premature Ovarian Insufficiency management changes because of POI diagnosis; POI hormone therapy; POI combined-pill caution; POI fertility counseling; POI changes routine menopause counseling to etiologic evaluation.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -4130,7 +4130,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Screen for high-acuity findings; classify with age <40; at least 4 months; FSH >25 IU/L; 4-6 weeks; then choose emergency, treatment/disposition, review, mimic, monitoring, de-escalation, or follow-up branch.",
+        "action": "Send unstable patients to urgent care; compare age <40; at least 4 months; FSH >25 IU/L; 4-6 weeks; choose active management from POI changes routine menopause counseling to etiologic evaluation; discordant endocrine tests need correct timing; POI diagnosis; POI hormone therapy; POI combined-pill caution; POI fertility counseling; switch to competing diagnosis better explains the presentation when it fits better.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -4198,8 +4198,8 @@
           {
             "id": "menopause_premature_ovarian_insufficiency_concurrent_data_bundle",
             "type": "action",
-            "label": "Menopause / Premature Ovarian Insufficiency triage inputs",
-            "edgeLabel": "Assessment bundle: Pregnancy test if amenorrhea; FSH and estradiol for POI; TSH/prolactin; POI etiology/health: karyotype/FMR1/adrenal-thyroid autoimmunity/DXA; age; menstrual disturbance duration",
+            "label": "Menopause / Premature Ovarian Insufficiency data: Pregnancy test if amenorrhea",
+            "edgeLabel": "Menopause / Premature Ovarian Insufficiency data: Pregnancy test if amenorrhea; FSH and estradiol for POI; TSH/prolactin; POI etiology/health: karyotype/FMR1/adrenal-thyroid autoimmunity/DXA; age; menstrual disturbance duration",
             "source_ids": [
               "ESHRE_POI_2024",
               "ASRM_AMENORRHEA_2024",
@@ -4234,8 +4234,8 @@
               {
                 "id": "menopause_premature_ovarian_insufficiency_classification_decision",
                 "type": "decision",
-                "label": "Menopause / Premature Ovarian Insufficiency severity thresholds",
-                "edgeLabel": "Classify using age <40; at least 4 months; FSH >25 IU/L; 4-6 weeks",
+                "label": "Menopause / Premature Ovarian Insufficiency decision: POI diagnosis; age <40",
+                "edgeLabel": "Threshold route: age <40; at least 4 months; FSH >25 IU/L; 4-6 weeks",
                 "source_ids": [
                   "ESHRE_POI_2024",
                   "ASRM_AMENORRHEA_2024",
@@ -4360,7 +4360,7 @@
                     }
                   ]
                 },
-                "action": "Match current patient data to age <40; at least 4 months; FSH >25 IU/L; 4-6 weeks; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
+                "action": "Compare current patient data with age <40; at least 4 months; FSH >25 IU/L; 4-6 weeks; route to urgent findings, active management, specialist-input modifier, or a named alternate diagnosis.",
                 "children": [
                   {
                     "id": "menopause_premature_ovarian_insufficiency_missing_cutoff_data_endpoint",
@@ -4470,8 +4470,8 @@
                   {
                     "id": "menopause_premature_ovarian_insufficiency_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Menopause / Premature Ovarian Insufficiency emergency criteria",
-                    "edgeLabel": "Escalate: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; POI diagnosis; POI hormone therapy; age <40; at least 4 months",
+                    "label": "Menopause / Premature Ovarian Insufficiency urgent: age <40",
+                    "edgeLabel": "Urgent findings: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; POI diagnosis; POI hormone therapy; age <40; at least 4 months",
                     "source_ids": [
                       "ESHRE_POI_2024",
                       "ASRM_AMENORRHEA_2024",
@@ -4693,8 +4693,8 @@
                   {
                     "id": "menopause_premature_ovarian_insufficiency_treatment_bundle",
                     "type": "action",
-                    "label": "Menopause / Premature Ovarian Insufficiency treatment/disposition",
-                    "edgeLabel": "Treat/dispose using confirmed category and safety data",
+                    "label": "Menopause / Premature Ovarian Insufficiency management plan",
+                    "edgeLabel": "Menopause / Premature Ovarian Insufficiency management: POI changes routine menopause counseling to etiologic evaluation; discordant endocrine tests need correct timing; POI diagnosis; POI hormone therapy",
                     "source_ids": [
                       "ESHRE_POI_2024",
                       "ASRM_AMENORRHEA_2024",
@@ -4705,7 +4705,7 @@
                     "criteria": {
                       "rule_id": "menopause_premature_ovarian_insufficiency_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Start Menopause / Premature Ovarian Insufficiency treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
+                      "description": "Use this Menopause / Premature Ovarian Insufficiency management branch when POI changes routine menopause counseling to etiologic evaluation; discordant endocrine tests need correct timing; POI diagnosis; POI hormone therapy; POI combined-pill caution; POI fertility counseling applies and patient-specific safety modifiers have been checked.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4823,8 +4823,8 @@
                       {
                         "id": "menopause_premature_ovarian_insufficiency_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Menopause / Premature Ovarian Insufficiency contraindication screen",
-                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
+                        "label": "Menopause / Premature Ovarian Insufficiency safety: POI diagnosis",
+                        "edgeLabel": "Therapy modifier: POI diagnosis; POI hormone therapy; POI combined-pill caution; POI changes routine menopause counseling to etiologic evaluation; discordant endocrine tests need correct timing",
                         "source_ids": [
                           "ESHRE_POI_2024",
                           "ASRM_AMENORRHEA_2024",
@@ -4926,8 +4926,8 @@
                           {
                             "id": "menopause_premature_ovarian_insufficiency_review_endpoint",
                             "type": "endpoint",
-                            "label": "Menopause / Premature Ovarian Insufficiency clinician review",
-                            "edgeLabel": "Review modifier: POI diagnosis; POI hormone therapy; POI combined-pill caution; POI changes routine menopause counseling to etiologic evaluation; discordant endocrine tests need correct timing",
+                            "label": "Menopause / Premature Ovarian Insufficiency consult: POI diagnosis",
+                            "edgeLabel": "Specialist input: POI diagnosis; POI hormone therapy; POI combined-pill caution; POI changes routine menopause counseling to etiologic evaluation; discordant endocrine tests need correct timing",
                             "source_ids": [
                               "ESHRE_POI_2024",
                               "ASRM_AMENORRHEA_2024",
@@ -4938,7 +4938,7 @@
                             "criteria": {
                               "rule_id": "menopause_premature_ovarian_insufficiency_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Menopause / Premature Ovarian Insufficiency treatment or disposition depends on POI diagnosis; POI hormone therapy; POI combined-pill caution; POI fertility counseling; POI changes routine menopause counseling to etiologic evaluation.",
+                              "description": "Use reviewer handoff when Menopause / Premature Ovarian Insufficiency management changes because of POI diagnosis; POI hormone therapy; POI combined-pill caution; POI fertility counseling; POI changes routine menopause counseling to etiologic evaluation.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4964,8 +4964,8 @@
                           {
                             "id": "menopause_premature_ovarian_insufficiency_monitoring_bundle",
                             "type": "action",
-                            "label": "Menopause / Premature Ovarian Insufficiency response monitoring",
-                            "edgeLabel": "Monitor: age <40; at least 4 months; Pregnancy test if amenorrhea; FSH and estradiol for POI; treatment response",
+                            "label": "Menopause / Premature Ovarian Insufficiency trend: age <40",
+                            "edgeLabel": "Menopause / Premature Ovarian Insufficiency trend: age <40; at least 4 months; Pregnancy test if amenorrhea; FSH and estradiol for POI; treatment response",
                             "source_ids": [
                               "ESHRE_POI_2024",
                               "ASRM_AMENORRHEA_2024",
@@ -5092,8 +5092,8 @@
                               {
                                 "id": "menopause_premature_ovarian_insufficiency_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Menopause / Premature Ovarian Insufficiency deterioration criteria",
-                                "edgeLabel": "Escalate if reassessment worsens: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; age <40; at least 4 months; Pregnancy test if amenorrhea; worsening symptoms or treatment intolerance",
+                                "label": "Menopause / Premature Ovarian Insufficiency worse: age <40",
+                                "edgeLabel": "Worsening finding: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; age <40; at least 4 months; Pregnancy test if amenorrhea; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "ESHRE_POI_2024",
                                   "ASRM_AMENORRHEA_2024",
@@ -5315,8 +5315,8 @@
                               {
                                 "id": "menopause_premature_ovarian_insufficiency_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Menopause / Premature Ovarian Insufficiency stop/narrow criteria",
-                                "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
+                                "label": "Menopause / Premature Ovarian Insufficiency de-escalate: age <40",
+                                "edgeLabel": "De-escalate when response, safety, and diagnostic certainty support it",
                                 "source_ids": [
                                   "ESHRE_POI_2024",
                                   "ASRM_AMENORRHEA_2024",
@@ -5538,8 +5538,8 @@
                               {
                                 "id": "menopause_premature_ovarian_insufficiency_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Menopause / Premature Ovarian Insufficiency follow-up and safety-net",
-                                "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
+                                "label": "Menopause / Premature Ovarian Insufficiency return: return precautions",
+                                "edgeLabel": "Closure: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ESHRE_POI_2024",
                                   "ASRM_AMENORRHEA_2024",
@@ -5790,7 +5790,7 @@
                   {
                     "id": "menopause_premature_ovarian_insufficiency_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Menopause / Premature Ovarian Insufficiency mimic/exclusion",
+                    "label": "Menopause / Premature Ovarian Insufficiency alternate route",
                     "edgeLabel": "Alternate diagnosis: competing diagnosis better explains the presentation",
                     "source_ids": [
                       "ESHRE_POI_2024",
@@ -6276,7 +6276,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "menopause_premature_ovarian_insufficiency_urgent_endpoint",
-          "expected_active_branch": "Escalate: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; POI diagnosis; POI hormone therapy; age <40; at least 4 months",
+          "expected_active_branch": "Urgent findings: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; POI diagnosis; POI hormone therapy; age <40; at least 4 months",
           "expected_path_node_ids": [
             "root",
             "menopause_premature_ovarian_insufficiency_concurrent_data_bundle",
@@ -6304,7 +6304,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "menopause_premature_ovarian_insufficiency_review_endpoint",
-          "expected_active_branch": "Review modifier: POI diagnosis; POI hormone therapy; POI combined-pill caution; POI changes routine menopause counseling to etiologic evaluation; discordant endocrine tests need correct timing",
+          "expected_active_branch": "Specialist input: POI diagnosis; POI hormone therapy; POI combined-pill caution; POI changes routine menopause counseling to etiologic evaluation; discordant endocrine tests need correct timing",
           "expected_path_node_ids": [
             "root",
             "menopause_premature_ovarian_insufficiency_concurrent_data_bundle",
@@ -6320,7 +6320,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "menopause_premature_ovarian_insufficiency_worsening_endpoint",
-          "expected_active_branch": "Escalate if reassessment worsens: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; age <40; at least 4 months; Pregnancy test if amenorrhea; worsening symptoms or treatment intolerance",
+          "expected_active_branch": "Worsening finding: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; age <40; at least 4 months; Pregnancy test if amenorrhea; worsening symptoms or treatment intolerance",
           "expected_path_node_ids": [
             "root",
             "menopause_premature_ovarian_insufficiency_concurrent_data_bundle",
@@ -6337,7 +6337,7 @@
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "menopause_premature_ovarian_insufficiency_deescalate_endpoint",
-          "expected_active_branch": "Narrow/stop when response and diagnosis certainty support it",
+          "expected_active_branch": "De-escalate when response, safety, and diagnostic certainty support it",
           "expected_path_node_ids": [
             "root",
             "menopause_premature_ovarian_insufficiency_concurrent_data_bundle",
@@ -6354,7 +6354,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "menopause_premature_ovarian_insufficiency_followup_endpoint",
-          "expected_active_branch": "Follow-up ready: result owner, interval, and return precautions",
+          "expected_active_branch": "Closure: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "menopause_premature_ovarian_insufficiency_concurrent_data_bundle",

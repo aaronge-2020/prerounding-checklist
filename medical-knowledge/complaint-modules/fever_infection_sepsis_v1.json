@@ -13465,7 +13465,7 @@
                     "id": "fever_infection_sepsis_special_population_review_endpoint",
                     "type": "endpoint",
                     "label": "Pregnancy, immunocompromise, MDR, or dosing review",
-                    "edgeLabel": "Treatment/disposition changes because pregnancy/postpartum status, immunocompromise/neutropenia, MDR colonization/prior infection, renal/hepatic dysfunction, antimicrobial allergy, device infection, or institutional protocol applies",
+                    "edgeLabel": "Pregnancy/postpartum status, immunocompromise/neutropenia, MDR colonization/prior infection, renal/hepatic dysfunction, antimicrobial allergy, device infection, or institutional protocol changes antimicrobials, source control, dosing, monitoring, or care location",
                     "source_ids": [
                       "SSC_SEPSIS_2026",
                       "SMFM_MATERNAL_SEPSIS_2023"
@@ -14259,7 +14259,7 @@
           "scenario_id": "pregnancy_or_mdr_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "fever_infection_sepsis_special_population_review_endpoint",
-          "expected_active_branch": "Treatment/disposition changes because pregnancy/postpartum status, immunocompromise/neutropenia, MDR colonization/prior infection, renal/hepatic dysfunction, antimicrobial allergy, device infection, or institutional protocol applies",
+          "expected_active_branch": "Pregnancy/postpartum status, immunocompromise/neutropenia, MDR colonization/prior infection, renal/hepatic dysfunction, antimicrobial allergy, device infection, or institutional protocol changes antimicrobials, source control, dosing, monitoring, or care location",
           "expected_path_node_ids": [
             "root",
             "fever_infection_sepsis_initial_assessment_bundle",

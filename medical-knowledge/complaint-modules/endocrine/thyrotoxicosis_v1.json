@@ -3185,7 +3185,7 @@
         "thyrotoxicosis_treatment_bundle": {
           "rule_id": "thyrotoxicosis_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Start Thyrotoxicosis treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
+          "description": "Use this Thyrotoxicosis management branch when Use beta-blocker symptom control when not contraindicated for adrenergic symptoms or tachycardia; Use antithyroid drugs for Graves/toxic nodular hyperthyroidism when appropriate; Choose radioactive iodine; Low uptake changes management away from antithyroid drugs toward thyroiditis/supportive pathway; discordant endocrine tests need correct timing; Overt thyrotoxicosis biochemistry applies and patient-specific safety modifiers have been checked.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3343,7 +3343,7 @@
         "thyrotoxicosis_review_endpoint": {
           "rule_id": "thyrotoxicosis_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Thyrotoxicosis treatment or disposition depends on Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum; Low uptake changes management away from antithyroid drugs toward thyroiditis/supportive pathway.",
+          "description": "Use reviewer handoff when Thyrotoxicosis management changes because of Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum; Low uptake changes management away from antithyroid drugs toward thyroiditis/supportive pathway.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3756,7 +3756,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Screen for high-acuity findings; classify with TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; then choose emergency, treatment/disposition, review, mimic, monitoring, de-escalation, or follow-up branch.",
+        "action": "Send unstable patients to urgent care; compare TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; choose active management from Use beta-blocker symptom control when not contraindicated for adrenergic symptoms or tachycardia; Use antithyroid drugs for Graves/toxic nodular hyperthyroidism when appropriate; Choose radioactive iodine; Low uptake changes management away from antithyroid drugs toward thyroiditis/supportive pathway; discordant endocrine tests need correct timing; Overt thyrotoxicosis biochemistry; switch to competing diagnosis better explains the presentation when it fits better.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3824,8 +3824,8 @@
           {
             "id": "thyrotoxicosis_concurrent_data_bundle",
             "type": "action",
-            "label": "Thyrotoxicosis triage inputs",
-            "edgeLabel": "Assessment bundle: TSH, free T4, T3; TRAb/TSI; RAIU: high uptake suggests overproduction; ESR/CRP if painful thyroid; TSH; free T4",
+            "label": "Thyrotoxicosis data: TSH, free T4, T3; TRAb/TSI; TSH",
+            "edgeLabel": "Thyrotoxicosis data: TSH, free T4, T3; TRAb/TSI; RAIU: high uptake suggests overproduction; ESR/CRP if painful thyroid; TSH; free T4",
             "source_ids": [
               "ATA_HYPERTHYROIDISM_2016",
               "AHRQ_CALIBRATE_DX"
@@ -3854,8 +3854,8 @@
               {
                 "id": "thyrotoxicosis_classification_decision",
                 "type": "decision",
-                "label": "Thyrotoxicosis severity thresholds",
-                "edgeLabel": "Classify using TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L",
+                "label": "Thyrotoxicosis decision: Overt thyrotoxicosis biochemistry; TSH below LLN",
+                "edgeLabel": "Threshold route: TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L",
                 "source_ids": [
                   "ATA_HYPERTHYROIDISM_2016",
                   "AHRQ_CALIBRATE_DX"
@@ -3952,7 +3952,7 @@
                     }
                   ]
                 },
-                "action": "Match current patient data to TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
+                "action": "Compare current patient data with TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; route to urgent findings, active management, specialist-input modifier, or a named alternate diagnosis.",
                 "children": [
                   {
                     "id": "thyrotoxicosis_missing_cutoff_data_endpoint",
@@ -4056,8 +4056,8 @@
                   {
                     "id": "thyrotoxicosis_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Thyrotoxicosis emergency criteria",
-                    "edgeLabel": "Escalate: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; TSH below LLN; free T4 above ULN",
+                    "label": "Thyrotoxicosis urgent: TSH below LLN",
+                    "edgeLabel": "Urgent findings: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; TSH below LLN; free T4 above ULN",
                     "source_ids": [
                       "ATA_HYPERTHYROIDISM_2016",
                       "AHRQ_CALIBRATE_DX"
@@ -4229,8 +4229,8 @@
                   {
                     "id": "thyrotoxicosis_treatment_bundle",
                     "type": "action",
-                    "label": "Thyrotoxicosis treatment/disposition",
-                    "edgeLabel": "Treat/dispose using confirmed category and safety data",
+                    "label": "Thyrotoxicosis management plan",
+                    "edgeLabel": "Thyrotoxicosis management: Use beta-blocker symptom control when not contraindicated for adrenergic symptoms or tachycardia; Use antithyroid drugs for Graves/toxic nodular hyperthyroidism when appropriate; Choose radioactive iodine",
                     "source_ids": [
                       "ATA_HYPERTHYROIDISM_2016",
                       "AHRQ_CALIBRATE_DX"
@@ -4238,7 +4238,7 @@
                     "criteria": {
                       "rule_id": "thyrotoxicosis_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Start Thyrotoxicosis treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
+                      "description": "Use this Thyrotoxicosis management branch when Use beta-blocker symptom control when not contraindicated for adrenergic symptoms or tachycardia; Use antithyroid drugs for Graves/toxic nodular hyperthyroidism when appropriate; Choose radioactive iodine; Low uptake changes management away from antithyroid drugs toward thyroiditis/supportive pathway; discordant endocrine tests need correct timing; Overt thyrotoxicosis biochemistry applies and patient-specific safety modifiers have been checked.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4331,8 +4331,8 @@
                       {
                         "id": "thyrotoxicosis_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Thyrotoxicosis contraindication screen",
-                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
+                        "label": "Thyrotoxicosis safety: Overt thyrotoxicosis biochemistry",
+                        "edgeLabel": "Therapy modifier: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum",
                         "source_ids": [
                           "ATA_HYPERTHYROIDISM_2016",
                           "AHRQ_CALIBRATE_DX"
@@ -4409,8 +4409,8 @@
                           {
                             "id": "thyrotoxicosis_review_endpoint",
                             "type": "endpoint",
-                            "label": "Thyrotoxicosis clinician review",
-                            "edgeLabel": "Review modifier: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum",
+                            "label": "Thyrotoxicosis consult: Overt thyrotoxicosis biochemistry",
+                            "edgeLabel": "Specialist input: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum",
                             "source_ids": [
                               "ATA_HYPERTHYROIDISM_2016",
                               "AHRQ_CALIBRATE_DX"
@@ -4418,7 +4418,7 @@
                             "criteria": {
                               "rule_id": "thyrotoxicosis_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Thyrotoxicosis treatment or disposition depends on Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum; Low uptake changes management away from antithyroid drugs toward thyroiditis/supportive pathway.",
+                              "description": "Use reviewer handoff when Thyrotoxicosis management changes because of Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum; Low uptake changes management away from antithyroid drugs toward thyroiditis/supportive pathway.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4441,8 +4441,8 @@
                           {
                             "id": "thyrotoxicosis_monitoring_bundle",
                             "type": "action",
-                            "label": "Thyrotoxicosis response monitoring",
-                            "edgeLabel": "Monitor: TSH below LLN; free T4 above ULN; TSH, free T4, T3; TRAb/TSI; treatment response",
+                            "label": "Thyrotoxicosis trend: TSH below LLN; TSH, free T4, T3",
+                            "edgeLabel": "Thyrotoxicosis trend: TSH below LLN; free T4 above ULN; TSH, free T4, T3; TRAb/TSI; treatment response",
                             "source_ids": [
                               "ATA_HYPERTHYROIDISM_2016",
                               "AHRQ_CALIBRATE_DX"
@@ -4541,8 +4541,8 @@
                               {
                                 "id": "thyrotoxicosis_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Thyrotoxicosis deterioration criteria",
-                                "edgeLabel": "Escalate if reassessment worsens: TSH below LLN; free T4 above ULN; TSH, free T4, T3; worsening symptoms or treatment intolerance",
+                                "label": "Thyrotoxicosis worse: TSH below LLN",
+                                "edgeLabel": "Worsening finding: TSH below LLN; free T4 above ULN; TSH, free T4, T3; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "ATA_HYPERTHYROIDISM_2016",
                                   "AHRQ_CALIBRATE_DX"
@@ -4714,8 +4714,8 @@
                               {
                                 "id": "thyrotoxicosis_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Thyrotoxicosis stop/narrow criteria",
-                                "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
+                                "label": "Thyrotoxicosis de-escalate: TSH below LLN",
+                                "edgeLabel": "De-escalate when response, safety, and diagnostic certainty support it",
                                 "source_ids": [
                                   "ATA_HYPERTHYROIDISM_2016",
                                   "AHRQ_CALIBRATE_DX"
@@ -4887,8 +4887,8 @@
                               {
                                 "id": "thyrotoxicosis_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Thyrotoxicosis follow-up and safety-net",
-                                "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
+                                "label": "Thyrotoxicosis return: return precautions",
+                                "edgeLabel": "Closure: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ATA_HYPERTHYROIDISM_2016",
                                   "AHRQ_CALIBRATE_DX"
@@ -5088,7 +5088,7 @@
                   {
                     "id": "thyrotoxicosis_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Thyrotoxicosis mimic/exclusion",
+                    "label": "Thyrotoxicosis alternate route",
                     "edgeLabel": "Alternate diagnosis: competing diagnosis better explains the presentation",
                     "source_ids": [
                       "ATA_HYPERTHYROIDISM_2016",
@@ -5480,7 +5480,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "thyrotoxicosis_urgent_endpoint",
-          "expected_active_branch": "Escalate: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; TSH below LLN; free T4 above ULN",
+          "expected_active_branch": "Urgent findings: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; TSH below LLN; free T4 above ULN",
           "expected_path_node_ids": [
             "root",
             "thyrotoxicosis_concurrent_data_bundle",
@@ -5508,7 +5508,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "thyrotoxicosis_review_endpoint",
-          "expected_active_branch": "Review modifier: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum",
+          "expected_active_branch": "Specialist input: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum",
           "expected_path_node_ids": [
             "root",
             "thyrotoxicosis_concurrent_data_bundle",
@@ -5524,7 +5524,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "thyrotoxicosis_worsening_endpoint",
-          "expected_active_branch": "Escalate if reassessment worsens: TSH below LLN; free T4 above ULN; TSH, free T4, T3; worsening symptoms or treatment intolerance",
+          "expected_active_branch": "Worsening finding: TSH below LLN; free T4 above ULN; TSH, free T4, T3; worsening symptoms or treatment intolerance",
           "expected_path_node_ids": [
             "root",
             "thyrotoxicosis_concurrent_data_bundle",
@@ -5541,7 +5541,7 @@
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "thyrotoxicosis_deescalate_endpoint",
-          "expected_active_branch": "Narrow/stop when response and diagnosis certainty support it",
+          "expected_active_branch": "De-escalate when response, safety, and diagnostic certainty support it",
           "expected_path_node_ids": [
             "root",
             "thyrotoxicosis_concurrent_data_bundle",
@@ -5558,7 +5558,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "thyrotoxicosis_followup_endpoint",
-          "expected_active_branch": "Follow-up ready: result owner, interval, and return precautions",
+          "expected_active_branch": "Closure: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "thyrotoxicosis_concurrent_data_bundle",

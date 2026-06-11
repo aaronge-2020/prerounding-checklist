@@ -2843,7 +2843,7 @@
         "pediatric_hematology_anemia_bleeding_treatment_bundle": {
           "rule_id": "pediatric_hematology_anemia_bleeding_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Start Pediatric pallor, anemia, bruising, bleeding, or petechiae treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
+          "description": "Use this Pediatric pallor, anemia, bruising, bleeding, or petechiae management branch when Active bleeding with shock or altered state; Emergency stabilization route; RBC transfusion threshold route; Iron therapy and diet route applies and patient-specific safety modifiers have been checked.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2961,7 +2961,7 @@
         "pediatric_hematology_anemia_bleeding_review_endpoint": {
           "rule_id": "pediatric_hematology_anemia_bleeding_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Pediatric pallor, anemia, bruising, bleeding, or petechiae treatment or disposition depends on Emergency stabilization route; RBC transfusion threshold route; Pediatric pallor, anemia, bruising, bleeding, or petechiae.",
+          "description": "Use reviewer handoff when Pediatric pallor, anemia, bruising, bleeding, or petechiae management changes because of Emergency stabilization route; RBC transfusion threshold route; Pediatric pallor, anemia, bruising, bleeding, or petechiae.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3406,7 +3406,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Screen for high-acuity findings; classify with 90 g/L; 95 g/L; 105 g/L; 115 g/L; then choose emergency, treatment/disposition, review, mimic, monitoring, de-escalation, or follow-up branch.",
+        "action": "Send unstable patients to urgent care; compare 90 g/L; 95 g/L; 105 g/L; 115 g/L; choose active management from Active bleeding with shock or altered state; Emergency stabilization route; RBC transfusion threshold route; Iron therapy and diet route; switch to Pediatric anemia or pallor; Pediatric bruising, petechiae, purpura, thrombocytopenia, or ITP pattern; Possible leukemia or lymphoma when it fits better.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3474,8 +3474,8 @@
           {
             "id": "pediatric_hematology_anemia_bleeding_concurrent_data_bundle",
             "type": "action",
-            "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae triage inputs",
-            "edgeLabel": "Assessment bundle: Full blood examination film and reticulocyte count; Ferritin and iron deficiency assessment; Coagulation and fibrinogen tests; Group screen and crossmatch when transfusion possible; age; sex for >12 years",
+            "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae diagnostic data",
+            "edgeLabel": "Pediatric pallor, anemia, bruising, bleeding, or petechiae data: Full blood examination film and reticulocyte count; Ferritin and iron deficiency assessment; Coagulation and fibrinogen tests; Group screen and crossmatch when transfusion possible; age; sex for >12 years",
             "source_ids": [
               "RCH_ANAEMIA_CHILD",
               "RCH_IRON_DEFICIENCY_CHILD",
@@ -3514,8 +3514,8 @@
               {
                 "id": "pediatric_hematology_anemia_bleeding_classification_decision",
                 "type": "decision",
-                "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae severity thresholds",
-                "edgeLabel": "Classify using 90 g/L; 95 g/L; 105 g/L; 115 g/L",
+                "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae threshold decision",
+                "edgeLabel": "Threshold route: 90 g/L; 95 g/L; 105 g/L; 115 g/L",
                 "source_ids": [
                   "RCH_ANAEMIA_CHILD",
                   "RCH_IRON_DEFICIENCY_CHILD",
@@ -3620,7 +3620,7 @@
                     }
                   ]
                 },
-                "action": "Match current patient data to 90 g/L; 95 g/L; 105 g/L; 115 g/L; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
+                "action": "Compare current patient data with 90 g/L; 95 g/L; 105 g/L; 115 g/L; route to urgent findings, active management, specialist-input modifier, or a named alternate diagnosis.",
                 "children": [
                   {
                     "id": "pediatric_hematology_anemia_bleeding_missing_cutoff_data_endpoint",
@@ -3728,8 +3728,8 @@
                   {
                     "id": "pediatric_hematology_anemia_bleeding_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae emergency criteria",
-                    "edgeLabel": "Escalate: Active bleeding with shock or altered state; Petechiae or purpura with fever or unwell appearance; Unexplained petechiae bruising pallor fatigue fever infection or bone pain; Pediatric anemia is Hb below age cutoff",
+                    "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae urgent: 90 g/L",
+                    "edgeLabel": "Urgent findings: Active bleeding with shock or altered state; Petechiae or purpura with fever or unwell appearance; Unexplained petechiae bruising pallor fatigue fever infection or bone pain; Pediatric anemia is Hb below age cutoff",
                     "source_ids": [
                       "RCH_BLOOD_PRODUCT_CHILD",
                       "RCH_PETECHIAE_PURPURA_CHILD",
@@ -3907,8 +3907,8 @@
                   {
                     "id": "pediatric_hematology_anemia_bleeding_treatment_bundle",
                     "type": "action",
-                    "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae treatment/disposition",
-                    "edgeLabel": "Treat/dispose using confirmed category and safety data",
+                    "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae management plan",
+                    "edgeLabel": "Pediatric pallor, anemia, bruising, bleeding, or petechiae management: Active bleeding with shock or altered state; Emergency stabilization route; RBC transfusion threshold route; Iron therapy and diet route",
                     "source_ids": [
                       "RCH_PETECHIAE_PURPURA_CHILD",
                       "RCH_BLOOD_PRODUCT_CHILD",
@@ -3921,7 +3921,7 @@
                     "criteria": {
                       "rule_id": "pediatric_hematology_anemia_bleeding_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Start Pediatric pallor, anemia, bruising, bleeding, or petechiae treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
+                      "description": "Use this Pediatric pallor, anemia, bruising, bleeding, or petechiae management branch when Active bleeding with shock or altered state; Emergency stabilization route; RBC transfusion threshold route; Iron therapy and diet route applies and patient-specific safety modifiers have been checked.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4017,8 +4017,8 @@
                       {
                         "id": "pediatric_hematology_anemia_bleeding_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Pediatric pallor, anemia, bruising, bleeding, or contraindication screen",
-                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
+                        "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae therapy safety",
+                        "edgeLabel": "Therapy modifier: Emergency stabilization route; RBC transfusion threshold route; Active bleeding with shock or altered state",
                         "source_ids": [
                           "RCH_ANAEMIA_CHILD",
                           "RCH_IRON_DEFICIENCY_CHILD",
@@ -4057,8 +4057,8 @@
                           {
                             "id": "pediatric_hematology_anemia_bleeding_review_endpoint",
                             "type": "endpoint",
-                            "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae clinician review",
-                            "edgeLabel": "Review modifier: Emergency stabilization route; RBC transfusion threshold route; Active bleeding with shock or altered state",
+                            "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae specialist review",
+                            "edgeLabel": "Specialist input: Emergency stabilization route; RBC transfusion threshold route; Active bleeding with shock or altered state",
                             "source_ids": [
                               "RCH_ANAEMIA_CHILD",
                               "RCH_IRON_DEFICIENCY_CHILD",
@@ -4071,7 +4071,7 @@
                             "criteria": {
                               "rule_id": "pediatric_hematology_anemia_bleeding_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Pediatric pallor, anemia, bruising, bleeding, or petechiae treatment or disposition depends on Emergency stabilization route; RBC transfusion threshold route; Pediatric pallor, anemia, bruising, bleeding, or petechiae.",
+                              "description": "Use reviewer handoff when Pediatric pallor, anemia, bruising, bleeding, or petechiae management changes because of Emergency stabilization route; RBC transfusion threshold route; Pediatric pallor, anemia, bruising, bleeding, or petechiae.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4099,8 +4099,8 @@
                           {
                             "id": "pediatric_hematology_anemia_bleeding_monitoring_bundle",
                             "type": "action",
-                            "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae response monitoring",
-                            "edgeLabel": "Monitor: 90 g/L; 95 g/L; Full blood examination film and reticulocyte count; Ferritin and iron deficiency assessment; treatment response",
+                            "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae trend: 90 g/L",
+                            "edgeLabel": "Pediatric pallor, anemia, bruising, bleeding, or petechiae trend: 90 g/L; 95 g/L; Full blood examination film and reticulocyte count; Ferritin and iron deficiency assessment; treatment response",
                             "source_ids": [
                               "RCH_PETECHIAE_PURPURA_CHILD",
                               "RCH_BLOOD_PRODUCT_CHILD",
@@ -4207,8 +4207,8 @@
                               {
                                 "id": "pediatric_hematology_anemia_bleeding_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Pediatric pallor, anemia, bruising, bleeding, or deterioration criteria",
-                                "edgeLabel": "Escalate if reassessment worsens: Active bleeding with shock or altered state; Petechiae or purpura with fever or unwell appearance; 90 g/L; 95 g/L; Full blood examination film and reticulocyte count",
+                                "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae worse: 90 g/L",
+                                "edgeLabel": "Worsening finding: Active bleeding with shock or altered state; Petechiae or purpura with fever or unwell appearance; 90 g/L; 95 g/L; Full blood examination film and reticulocyte count",
                                 "source_ids": [
                                   "RCH_BLOOD_PRODUCT_CHILD",
                                   "RCH_PETECHIAE_PURPURA_CHILD",
@@ -4386,8 +4386,8 @@
                               {
                                 "id": "pediatric_hematology_anemia_bleeding_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae stop/narrow criteria",
-                                "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
+                                "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae de-escalate: 90 g/L",
+                                "edgeLabel": "De-escalate when response, safety, and diagnostic certainty support it",
                                 "source_ids": [
                                   "RCH_PETECHIAE_PURPURA_CHILD",
                                   "RCH_BLOOD_PRODUCT_CHILD",
@@ -4565,8 +4565,8 @@
                               {
                                 "id": "pediatric_hematology_anemia_bleeding_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Pediatric pallor, anemia, bruising, bleeding, or follow-up and safety-net",
-                                "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
+                                "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae return precautions",
+                                "edgeLabel": "Closure: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "RCH_PETECHIAE_PURPURA_CHILD",
                                   "RCH_BLOOD_PRODUCT_CHILD",
@@ -4769,7 +4769,7 @@
                   {
                     "id": "pediatric_hematology_anemia_bleeding_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae mimic/exclusion",
+                    "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae alternate route",
                     "edgeLabel": "Alternate diagnosis: Pediatric anemia or pallor; Pediatric bruising, petechiae, purpura, thrombocytopenia, or ITP pattern; Possible leukemia or lymphoma",
                     "source_ids": [
                       "RCH_ANAEMIA_CHILD",
@@ -5160,7 +5160,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "pediatric_hematology_anemia_bleeding_urgent_endpoint",
-          "expected_active_branch": "Escalate: Active bleeding with shock or altered state; Petechiae or purpura with fever or unwell appearance; Unexplained petechiae bruising pallor fatigue fever infection or bone pain; Pediatric anemia is Hb below age cutoff",
+          "expected_active_branch": "Urgent findings: Active bleeding with shock or altered state; Petechiae or purpura with fever or unwell appearance; Unexplained petechiae bruising pallor fatigue fever infection or bone pain; Pediatric anemia is Hb below age cutoff",
           "expected_path_node_ids": [
             "root",
             "pediatric_hematology_anemia_bleeding_concurrent_data_bundle",
@@ -5188,7 +5188,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "pediatric_hematology_anemia_bleeding_review_endpoint",
-          "expected_active_branch": "Review modifier: Emergency stabilization route; RBC transfusion threshold route; Active bleeding with shock or altered state",
+          "expected_active_branch": "Specialist input: Emergency stabilization route; RBC transfusion threshold route; Active bleeding with shock or altered state",
           "expected_path_node_ids": [
             "root",
             "pediatric_hematology_anemia_bleeding_concurrent_data_bundle",
@@ -5204,7 +5204,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "pediatric_hematology_anemia_bleeding_worsening_endpoint",
-          "expected_active_branch": "Escalate if reassessment worsens: Active bleeding with shock or altered state; Petechiae or purpura with fever or unwell appearance; 90 g/L; 95 g/L; Full blood examination film and reticulocyte count",
+          "expected_active_branch": "Worsening finding: Active bleeding with shock or altered state; Petechiae or purpura with fever or unwell appearance; 90 g/L; 95 g/L; Full blood examination film and reticulocyte count",
           "expected_path_node_ids": [
             "root",
             "pediatric_hematology_anemia_bleeding_concurrent_data_bundle",
@@ -5221,7 +5221,7 @@
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "pediatric_hematology_anemia_bleeding_deescalate_endpoint",
-          "expected_active_branch": "Narrow/stop when response and diagnosis certainty support it",
+          "expected_active_branch": "De-escalate when response, safety, and diagnostic certainty support it",
           "expected_path_node_ids": [
             "root",
             "pediatric_hematology_anemia_bleeding_concurrent_data_bundle",
@@ -5238,7 +5238,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "pediatric_hematology_anemia_bleeding_followup_endpoint",
-          "expected_active_branch": "Follow-up ready: result owner, interval, and return precautions",
+          "expected_active_branch": "Closure: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "pediatric_hematology_anemia_bleeding_concurrent_data_bundle",

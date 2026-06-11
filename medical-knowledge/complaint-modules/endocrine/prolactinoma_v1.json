@@ -2877,7 +2877,7 @@
         "prolactinoma_treatment_bundle": {
           "rule_id": "prolactinoma_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Start Prolactinoma (Benign pituitary tumor) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
+          "description": "Use this Prolactinoma management branch when Use dopamine agonist therapy; Monitor prolactin response, tumor size, vision, gonadal recovery, and medication tolerance; Use surgery or radiation when medication is not tolerated; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement; discordant endocrine tests need correct timing; Hyperprolactinemia diagnosis applies and patient-specific safety modifiers have been checked.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2963,7 +2963,7 @@
         "prolactinoma_review_endpoint": {
           "rule_id": "prolactinoma_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Prolactinoma (Benign pituitary tumor) treatment or disposition depends on Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement; discordant endocrine tests need correct timing; Use dopamine agonist therapy.",
+          "description": "Use reviewer handoff when Prolactinoma (Benign pituitary tumor) management changes because of Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement; discordant endocrine tests need correct timing; Use dopamine agonist therapy.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3280,7 +3280,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Screen for high-acuity findings; classify with >ULN; <25 ug/L; >250 ug/L; >500 ug/L; then choose emergency, treatment/disposition, review, mimic, monitoring, de-escalation, or follow-up branch.",
+        "action": "Send unstable patients to urgent care; compare >ULN; <25 ug/L; >250 ug/L; >500 ug/L; choose active management from Use dopamine agonist therapy; Monitor prolactin response, tumor size, vision, gonadal recovery, and medication tolerance; Use surgery or radiation when medication is not tolerated; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement; discordant endocrine tests need correct timing; Hyperprolactinemia diagnosis; switch to competing diagnosis better explains the presentation when it fits better.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3348,8 +3348,8 @@
           {
             "id": "prolactinoma_concurrent_data_bundle",
             "type": "action",
-            "label": "Prolactinoma triage inputs",
-            "edgeLabel": "Assessment bundle: Serum prolactin; Pregnancy test, TSH/free T4, renal function; Pituitary MRI after persistent unexplained elevation or mass symptoms; Prolactin/pituitary mass safety tests; serum prolactin; assay ULN",
+            "label": "Prolactinoma data: Serum prolactin; Pregnancy test, TSH/free T4, renal function",
+            "edgeLabel": "Prolactinoma data: Serum prolactin; Pregnancy test, TSH/free T4, renal function; Pituitary MRI after persistent unexplained elevation or mass symptoms; Prolactin/pituitary mass safety tests; serum prolactin; assay ULN",
             "source_ids": [
               "PITUITARY_PROLACTINOMA_2023",
               "ES_HYPERPROLACTINEMIA_2011",
@@ -3380,8 +3380,8 @@
               {
                 "id": "prolactinoma_classification_decision",
                 "type": "decision",
-                "label": "Prolactinoma severity thresholds",
-                "edgeLabel": "Classify using >ULN; <25 ug/L; >250 ug/L; >500 ug/L",
+                "label": "Prolactinoma decision: Hyperprolactinemia diagnosis; >ULN; <25 ug/L",
+                "edgeLabel": "Threshold route: >ULN; <25 ug/L; >250 ug/L; >500 ug/L",
                 "source_ids": [
                   "ES_HYPERPROLACTINEMIA_2011",
                   "PITUITARY_PROLACTINOMA_2023",
@@ -3454,7 +3454,7 @@
                     }
                   ]
                 },
-                "action": "Match current patient data to >ULN; <25 ug/L; >250 ug/L; >500 ug/L; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
+                "action": "Compare current patient data with >ULN; <25 ug/L; >250 ug/L; >500 ug/L; route to urgent findings, active management, specialist-input modifier, or a named alternate diagnosis.",
                 "children": [
                   {
                     "id": "prolactinoma_missing_cutoff_data_endpoint",
@@ -3544,8 +3544,8 @@
                   {
                     "id": "prolactinoma_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Prolactinoma emergency criteria",
-                    "edgeLabel": "Escalate: Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; >ULN; <25 ug/L",
+                    "label": "Prolactinoma urgent: >ULN",
+                    "edgeLabel": "Urgent findings: Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; >ULN; <25 ug/L",
                     "source_ids": [
                       "PITUITARY_PROLACTINOMA_2023",
                       "ES_HYPERPROLACTINEMIA_2011",
@@ -3667,8 +3667,8 @@
                   {
                     "id": "prolactinoma_treatment_bundle",
                     "type": "action",
-                    "label": "Prolactinoma treatment/disposition",
-                    "edgeLabel": "Treat/dispose using confirmed category and safety data",
+                    "label": "Prolactinoma plan: Use dopamine agonist therapy; Monitor prolactin response",
+                    "edgeLabel": "Prolactinoma management: Use dopamine agonist therapy; Monitor prolactin response, tumor size, vision, gonadal recovery, and medication tolerance; Use surgery or radiation when medication is not tolerated",
                     "source_ids": [
                       "PITUITARY_PROLACTINOMA_2023",
                       "ES_HYPERPROLACTINEMIA_2011",
@@ -3677,7 +3677,7 @@
                     "criteria": {
                       "rule_id": "prolactinoma_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Start Prolactinoma (Benign pituitary tumor) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
+                      "description": "Use this Prolactinoma management branch when Use dopamine agonist therapy; Monitor prolactin response, tumor size, vision, gonadal recovery, and medication tolerance; Use surgery or radiation when medication is not tolerated; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement; discordant endocrine tests need correct timing; Hyperprolactinemia diagnosis applies and patient-specific safety modifiers have been checked.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -3745,8 +3745,8 @@
                       {
                         "id": "prolactinoma_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Prolactinoma contraindication screen",
-                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
+                        "label": "Prolactinoma safety: Hyperprolactinemia diagnosis",
+                        "edgeLabel": "Therapy modifier: Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement; discordant endocrine tests need correct timing",
                         "source_ids": [
                           "ES_HYPERPROLACTINEMIA_2011",
                           "PITUITARY_PROLACTINOMA_2023",
@@ -3777,8 +3777,8 @@
                           {
                             "id": "prolactinoma_review_endpoint",
                             "type": "endpoint",
-                            "label": "Prolactinoma clinician review",
-                            "edgeLabel": "Review modifier: Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement; discordant endocrine tests need correct timing",
+                            "label": "Prolactinoma consult: Hyperprolactinemia diagnosis",
+                            "edgeLabel": "Specialist input: Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement; discordant endocrine tests need correct timing",
                             "source_ids": [
                               "ES_HYPERPROLACTINEMIA_2011",
                               "PITUITARY_PROLACTINOMA_2023",
@@ -3787,7 +3787,7 @@
                             "criteria": {
                               "rule_id": "prolactinoma_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Prolactinoma (Benign pituitary tumor) treatment or disposition depends on Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement; discordant endocrine tests need correct timing; Use dopamine agonist therapy.",
+                              "description": "Use reviewer handoff when Prolactinoma (Benign pituitary tumor) management changes because of Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement; discordant endocrine tests need correct timing; Use dopamine agonist therapy.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -3811,8 +3811,8 @@
                           {
                             "id": "prolactinoma_monitoring_bundle",
                             "type": "action",
-                            "label": "Prolactinoma response monitoring",
-                            "edgeLabel": "Monitor: >ULN; <25 ug/L; Serum prolactin; Pregnancy test, TSH/free T4, renal function; treatment response",
+                            "label": "Prolactinoma trend: >ULN; Serum prolactin",
+                            "edgeLabel": "Prolactinoma trend: >ULN; <25 ug/L; Serum prolactin; Pregnancy test, TSH/free T4, renal function; treatment response",
                             "source_ids": [
                               "PITUITARY_PROLACTINOMA_2023",
                               "ES_HYPERPROLACTINEMIA_2011",
@@ -3887,8 +3887,8 @@
                               {
                                 "id": "prolactinoma_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Prolactinoma deterioration criteria",
-                                "edgeLabel": "Escalate if reassessment worsens: >ULN; <25 ug/L; Serum prolactin; worsening symptoms or treatment intolerance",
+                                "label": "Prolactinoma worse: >ULN",
+                                "edgeLabel": "Worsening finding: >ULN; <25 ug/L; Serum prolactin; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "PITUITARY_PROLACTINOMA_2023",
                                   "ES_HYPERPROLACTINEMIA_2011",
@@ -4010,8 +4010,8 @@
                               {
                                 "id": "prolactinoma_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Prolactinoma stop/narrow criteria",
-                                "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
+                                "label": "Prolactinoma de-escalate: >ULN; Use dopamine agonist therapy",
+                                "edgeLabel": "De-escalate when response, safety, and diagnostic certainty support it",
                                 "source_ids": [
                                   "PITUITARY_PROLACTINOMA_2023",
                                   "ES_HYPERPROLACTINEMIA_2011",
@@ -4133,8 +4133,8 @@
                               {
                                 "id": "prolactinoma_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Prolactinoma follow-up and safety-net",
-                                "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
+                                "label": "Prolactinoma return: return precautions",
+                                "edgeLabel": "Closure: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "PITUITARY_PROLACTINOMA_2023",
                                   "ES_HYPERPROLACTINEMIA_2011",
@@ -4283,7 +4283,7 @@
                   {
                     "id": "prolactinoma_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Prolactinoma mimic/exclusion",
+                    "label": "Prolactinoma alternate route",
                     "edgeLabel": "Alternate diagnosis: competing diagnosis better explains the presentation",
                     "source_ids": [
                       "PITUITARY_PROLACTINOMA_2023",
@@ -4564,7 +4564,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "prolactinoma_urgent_endpoint",
-          "expected_active_branch": "Escalate: Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; >ULN; <25 ug/L",
+          "expected_active_branch": "Urgent findings: Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; >ULN; <25 ug/L",
           "expected_path_node_ids": [
             "root",
             "prolactinoma_concurrent_data_bundle",
@@ -4592,7 +4592,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "prolactinoma_review_endpoint",
-          "expected_active_branch": "Review modifier: Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement; discordant endocrine tests need correct timing",
+          "expected_active_branch": "Specialist input: Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement; discordant endocrine tests need correct timing",
           "expected_path_node_ids": [
             "root",
             "prolactinoma_concurrent_data_bundle",
@@ -4608,7 +4608,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "prolactinoma_worsening_endpoint",
-          "expected_active_branch": "Escalate if reassessment worsens: >ULN; <25 ug/L; Serum prolactin; worsening symptoms or treatment intolerance",
+          "expected_active_branch": "Worsening finding: >ULN; <25 ug/L; Serum prolactin; worsening symptoms or treatment intolerance",
           "expected_path_node_ids": [
             "root",
             "prolactinoma_concurrent_data_bundle",
@@ -4625,7 +4625,7 @@
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "prolactinoma_deescalate_endpoint",
-          "expected_active_branch": "Narrow/stop when response and diagnosis certainty support it",
+          "expected_active_branch": "De-escalate when response, safety, and diagnostic certainty support it",
           "expected_path_node_ids": [
             "root",
             "prolactinoma_concurrent_data_bundle",
@@ -4642,7 +4642,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "prolactinoma_followup_endpoint",
-          "expected_active_branch": "Follow-up ready: result owner, interval, and return precautions",
+          "expected_active_branch": "Closure: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "prolactinoma_concurrent_data_bundle",

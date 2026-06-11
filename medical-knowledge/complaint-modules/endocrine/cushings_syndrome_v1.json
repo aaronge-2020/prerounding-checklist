@@ -3129,7 +3129,7 @@
         "cushings_syndrome_treatment_bundle": {
           "rule_id": "cushings_syndrome_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Start Cushing's Syndrome treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
+          "description": "Use this Cushing's Syndrome management branch when Treat the cause when feasible; Control severe hypercortisolism complications urgently; Use steroidogenesis inhibitors; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; discordant endocrine tests need correct timing; Cushing initial testing applies and patient-specific safety modifiers have been checked.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3265,7 +3265,7 @@
         "cushings_syndrome_review_endpoint": {
           "rule_id": "cushings_syndrome_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Cushing's Syndrome treatment or disposition depends on Cushing initial testing; Cushing positive biochemical screen; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; discordant endocrine tests need correct timing; Treat the cause when feasible.",
+          "description": "Use reviewer handoff when Cushing's Syndrome management changes because of Cushing initial testing; Cushing positive biochemical screen; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; discordant endocrine tests need correct timing; Treat the cause when feasible.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3598,7 +3598,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Screen for high-acuity findings; classify with at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; then choose emergency, treatment/disposition, review, mimic, monitoring, de-escalation, or follow-up branch.",
+        "action": "Send unstable patients to urgent care; compare at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; choose active management from Treat the cause when feasible; Control severe hypercortisolism complications urgently; Use steroidogenesis inhibitors; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; discordant endocrine tests need correct timing; Cushing initial testing; switch to DST, late-night salivary cortisol, and UFC cutoffs are assay-specific when it fits better.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3666,8 +3666,8 @@
           {
             "id": "cushings_syndrome_concurrent_data_bundle",
             "type": "action",
-            "label": "Cushing's Syndrome triage inputs",
-            "edgeLabel": "Assessment bundle: Exclude exogenous steroids; 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff; Late-night salivary cortisol, often two samples; 24-hour urinary free cortisol, at least two collections; UFC collection count",
+            "label": "Cushing's Syndrome data: Exclude exogenous steroids; 1-mg overnight DST",
+            "edgeLabel": "Cushing's Syndrome data: Exclude exogenous steroids; 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff; Late-night salivary cortisol, often two samples; 24-hour urinary free cortisol, at least two collections; UFC collection count",
             "source_ids": [
               "ES_CUSHING_DX_2008",
               "ES_CUSHING_TREATMENT_2015",
@@ -3700,8 +3700,8 @@
               {
                 "id": "cushings_syndrome_classification_decision",
                 "type": "decision",
-                "label": "Cushing's Syndrome severity thresholds",
-                "edgeLabel": "Classify using at least 2 measurements; 2 measurements; 1 mg; 2 mg/day",
+                "label": "Cushing's Syndrome decision: Cushing initial testing; at least 2 measurements",
+                "edgeLabel": "Threshold route: at least 2 measurements; 2 measurements; 1 mg; 2 mg/day",
                 "source_ids": [
                   "ES_CUSHING_DX_2008",
                   "ES_CUSHING_TREATMENT_2015",
@@ -3778,7 +3778,7 @@
                     }
                   ]
                 },
-                "action": "Match current patient data to at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
+                "action": "Compare current patient data with at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; route to urgent findings, active management, specialist-input modifier, or a named alternate diagnosis.",
                 "children": [
                   {
                     "id": "cushings_syndrome_missing_cutoff_data_endpoint",
@@ -3880,8 +3880,8 @@
                   {
                     "id": "cushings_syndrome_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Cushing's Syndrome emergency criteria",
-                    "edgeLabel": "Escalate: Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE; Cushing initial testing; Cushing positive biochemical screen; at least 2 measurements; 2 measurements",
+                    "label": "Cushing's Syndrome urgent: at least 2 measurements",
+                    "edgeLabel": "Urgent findings: Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE; Cushing initial testing; Cushing positive biochemical screen; at least 2 measurements; 2 measurements",
                     "source_ids": [
                       "ES_CUSHING_DX_2008",
                       "ES_CUSHING_TREATMENT_2015",
@@ -4009,8 +4009,8 @@
                   {
                     "id": "cushings_syndrome_treatment_bundle",
                     "type": "action",
-                    "label": "Cushing's Syndrome treatment/disposition",
-                    "edgeLabel": "Treat/dispose using confirmed category and safety data",
+                    "label": "Cushing's Syndrome plan: Treat the cause when feasible",
+                    "edgeLabel": "Cushing's Syndrome management: Treat the cause when feasible; Control severe hypercortisolism complications urgently; Use steroidogenesis inhibitors; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway",
                     "source_ids": [
                       "ES_CUSHING_DX_2008",
                       "ES_CUSHING_TREATMENT_2015",
@@ -4020,7 +4020,7 @@
                     "criteria": {
                       "rule_id": "cushings_syndrome_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Start Cushing's Syndrome treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
+                      "description": "Use this Cushing's Syndrome management branch when Treat the cause when feasible; Control severe hypercortisolism complications urgently; Use steroidogenesis inhibitors; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; discordant endocrine tests need correct timing; Cushing initial testing applies and patient-specific safety modifiers have been checked.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4091,8 +4091,8 @@
                       {
                         "id": "cushings_syndrome_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Cushing's Syndrome contraindication screen",
-                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
+                        "label": "Cushing's Syndrome safety: Cushing initial testing",
+                        "edgeLabel": "Therapy modifier: Cushing initial testing; Cushing positive biochemical screen; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; discordant endocrine tests need correct timing",
                         "source_ids": [
                           "ES_CUSHING_DX_2008",
                           "ES_CUSHING_TREATMENT_2015",
@@ -4171,8 +4171,8 @@
                           {
                             "id": "cushings_syndrome_review_endpoint",
                             "type": "endpoint",
-                            "label": "Cushing's Syndrome clinician review",
-                            "edgeLabel": "Review modifier: Cushing initial testing; Cushing positive biochemical screen; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; discordant endocrine tests need correct timing",
+                            "label": "Cushing's Syndrome consult: Cushing initial testing",
+                            "edgeLabel": "Specialist input: Cushing initial testing; Cushing positive biochemical screen; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; discordant endocrine tests need correct timing",
                             "source_ids": [
                               "ES_CUSHING_DX_2008",
                               "ES_CUSHING_TREATMENT_2015",
@@ -4182,7 +4182,7 @@
                             "criteria": {
                               "rule_id": "cushings_syndrome_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Cushing's Syndrome treatment or disposition depends on Cushing initial testing; Cushing positive biochemical screen; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; discordant endocrine tests need correct timing; Treat the cause when feasible.",
+                              "description": "Use reviewer handoff when Cushing's Syndrome management changes because of Cushing initial testing; Cushing positive biochemical screen; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; discordant endocrine tests need correct timing; Treat the cause when feasible.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4207,8 +4207,8 @@
                           {
                             "id": "cushings_syndrome_monitoring_bundle",
                             "type": "action",
-                            "label": "Cushing's Syndrome response monitoring",
-                            "edgeLabel": "Monitor: at least 2 measurements; 2 measurements; Exclude exogenous steroids; 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff; treatment response",
+                            "label": "Cushing's Syndrome trend: at least 2 measurements; Exclude exogenous steroids",
+                            "edgeLabel": "Cushing's Syndrome trend: at least 2 measurements; 2 measurements; Exclude exogenous steroids; 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff; treatment response",
                             "source_ids": [
                               "ES_CUSHING_DX_2008",
                               "ES_CUSHING_TREATMENT_2015",
@@ -4287,8 +4287,8 @@
                               {
                                 "id": "cushings_syndrome_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Cushing's Syndrome deterioration criteria",
-                                "edgeLabel": "Escalate if reassessment worsens: Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE; at least 2 measurements; 2 measurements; Exclude exogenous steroids; worsening symptoms or treatment intolerance",
+                                "label": "Cushing's Syndrome worse: at least 2 measurements",
+                                "edgeLabel": "Worsening finding: Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE; at least 2 measurements; 2 measurements; Exclude exogenous steroids; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "ES_CUSHING_DX_2008",
                                   "ES_CUSHING_TREATMENT_2015",
@@ -4416,8 +4416,8 @@
                               {
                                 "id": "cushings_syndrome_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Cushing's Syndrome stop/narrow criteria",
-                                "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
+                                "label": "Cushing's Syndrome de-escalate: at least 2 measurements",
+                                "edgeLabel": "De-escalate when response, safety, and diagnostic certainty support it",
                                 "source_ids": [
                                   "ES_CUSHING_DX_2008",
                                   "ES_CUSHING_TREATMENT_2015",
@@ -4545,8 +4545,8 @@
                               {
                                 "id": "cushings_syndrome_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Cushing's Syndrome follow-up and safety-net",
-                                "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
+                                "label": "Cushing's Syndrome return: ACTH directs adrenal vs ACTH-dependent workup",
+                                "edgeLabel": "Closure: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ES_CUSHING_DX_2008",
                                   "ES_CUSHING_TREATMENT_2015",
@@ -4701,7 +4701,7 @@
                   {
                     "id": "cushings_syndrome_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Cushing's Syndrome mimic/exclusion",
+                    "label": "Cushing's Syndrome alternate: abnormal screening generally needs confirmation",
                     "edgeLabel": "Alternate diagnosis: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific",
                     "source_ids": [
                       "ES_CUSHING_DX_2008",
@@ -4998,7 +4998,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "cushings_syndrome_urgent_endpoint",
-          "expected_active_branch": "Escalate: Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE; Cushing initial testing; Cushing positive biochemical screen; at least 2 measurements; 2 measurements",
+          "expected_active_branch": "Urgent findings: Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE; Cushing initial testing; Cushing positive biochemical screen; at least 2 measurements; 2 measurements",
           "expected_path_node_ids": [
             "root",
             "cushings_syndrome_concurrent_data_bundle",
@@ -5026,7 +5026,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "cushings_syndrome_review_endpoint",
-          "expected_active_branch": "Review modifier: Cushing initial testing; Cushing positive biochemical screen; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; discordant endocrine tests need correct timing",
+          "expected_active_branch": "Specialist input: Cushing initial testing; Cushing positive biochemical screen; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; discordant endocrine tests need correct timing",
           "expected_path_node_ids": [
             "root",
             "cushings_syndrome_concurrent_data_bundle",
@@ -5042,7 +5042,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "cushings_syndrome_worsening_endpoint",
-          "expected_active_branch": "Escalate if reassessment worsens: Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE; at least 2 measurements; 2 measurements; Exclude exogenous steroids; worsening symptoms or treatment intolerance",
+          "expected_active_branch": "Worsening finding: Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE; at least 2 measurements; 2 measurements; Exclude exogenous steroids; worsening symptoms or treatment intolerance",
           "expected_path_node_ids": [
             "root",
             "cushings_syndrome_concurrent_data_bundle",
@@ -5059,7 +5059,7 @@
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "cushings_syndrome_deescalate_endpoint",
-          "expected_active_branch": "Narrow/stop when response and diagnosis certainty support it",
+          "expected_active_branch": "De-escalate when response, safety, and diagnostic certainty support it",
           "expected_path_node_ids": [
             "root",
             "cushings_syndrome_concurrent_data_bundle",
@@ -5076,7 +5076,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "cushings_syndrome_followup_endpoint",
-          "expected_active_branch": "Follow-up ready: result owner, interval, and return precautions",
+          "expected_active_branch": "Closure: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "cushings_syndrome_concurrent_data_bundle",

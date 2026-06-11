@@ -2855,7 +2855,7 @@
         "vitamin_d_deficiency_osteomalacia_treatment_bundle": {
           "rule_id": "vitamin_d_deficiency_osteomalacia_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Start Vitamin D Deficiency / Osteomalacia treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
+          "description": "Use this Vitamin D Deficiency / Osteomalacia management branch when Replete vitamin D and calcium intake when deficiency is clinically relevant; Treat osteomalacia with vitamin D repletion; Use age/risk-appropriate empiric supplementation only where guideline groups support it; discordant endocrine tests need correct timing; Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific applies and patient-specific safety modifiers have been checked.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3079,7 +3079,7 @@
         "vitamin_d_deficiency_osteomalacia_review_endpoint": {
           "rule_id": "vitamin_d_deficiency_osteomalacia_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Vitamin D Deficiency / Osteomalacia treatment or disposition depends on Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; DXA T-score; 25D thresholds vary; discordant endocrine tests need correct timing.",
+          "description": "Use reviewer handoff when Vitamin D Deficiency / Osteomalacia management changes because of Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; DXA T-score; 25D thresholds vary; discordant endocrine tests need correct timing.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3584,7 +3584,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Screen for high-acuity findings; classify with 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; then choose emergency, treatment/disposition, review, mimic, monitoring, de-escalation, or follow-up branch.",
+        "action": "Send unstable patients to urgent care; compare 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; choose active management from Replete vitamin D and calcium intake when deficiency is clinically relevant; Treat osteomalacia with vitamin D repletion; Use age/risk-appropriate empiric supplementation only where guideline groups support it; discordant endocrine tests need correct timing; Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; switch to Corrected calcium often about 8.5-10.5 mg/dL when it fits better.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3652,8 +3652,8 @@
           {
             "id": "vitamin_d_deficiency_osteomalacia_concurrent_data_bundle",
             "type": "action",
-            "label": "Vitamin D Deficiency / Osteomalacia triage inputs",
-            "edgeLabel": "Assessment bundle: 25D; Calcium, phosphorus, alkaline phosphatase, PTH, creatinine/eGFR; DXA/vertebral imaging or validated fracture-risk tool; 24-hour urine calcium and renal imaging when calcium-stone risk is relevant; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
+            "label": "Vitamin D Deficiency / Osteomalacia data: 25D; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
+            "edgeLabel": "Vitamin D Deficiency / Osteomalacia data: 25D; Calcium, phosphorus, alkaline phosphatase, PTH, creatinine/eGFR; DXA/vertebral imaging or validated fracture-risk tool; 24-hour urine calcium and renal imaging when calcium-stone risk is relevant; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
             "source_ids": [
               "ENDO_VITD_2024",
               "NIH_VITD_FACTSHEET",
@@ -3684,8 +3684,8 @@
               {
                 "id": "vitamin_d_deficiency_osteomalacia_classification_decision",
                 "type": "decision",
-                "label": "Vitamin D Deficiency / Osteomalacia severity thresholds",
-                "edgeLabel": "Classify using 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0",
+                "label": "Vitamin D Deficiency / Osteomalacia decision: use local lab; 8.5-10.5 mg/dL",
+                "edgeLabel": "Threshold route: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0",
                 "source_ids": [
                   "NIH_VITD_FACTSHEET",
                   "ENDO_VITD_2024",
@@ -3805,7 +3805,7 @@
                     }
                   ]
                 },
-                "action": "Match current patient data to 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
+                "action": "Compare current patient data with 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; route to urgent findings, active management, specialist-input modifier, or a named alternate diagnosis.",
                 "children": [
                   {
                     "id": "vitamin_d_deficiency_osteomalacia_missing_cutoff_data_endpoint",
@@ -3883,8 +3883,8 @@
                   {
                     "id": "vitamin_d_deficiency_osteomalacia_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Vitamin D Deficiency / Osteomalacia emergency criteria",
-                    "edgeLabel": "Escalate: Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state; Corrected calcium often about 8.5-10.5 mg/dL; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
+                    "label": "Vitamin D Deficiency / Osteomalacia urgent: Severe hypocalcemia symptoms",
+                    "edgeLabel": "Urgent findings: Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state; Corrected calcium often about 8.5-10.5 mg/dL; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
                     "source_ids": [
                       "ENDO_VITD_2024",
                       "NIH_VITD_FACTSHEET",
@@ -4100,8 +4100,8 @@
                   {
                     "id": "vitamin_d_deficiency_osteomalacia_treatment_bundle",
                     "type": "action",
-                    "label": "Vitamin D Deficiency / Osteomalacia treatment/disposition",
-                    "edgeLabel": "Treat/dispose using confirmed category and safety data",
+                    "label": "Vitamin D Deficiency / Osteomalacia management plan",
+                    "edgeLabel": "Vitamin D Deficiency / Osteomalacia management: Replete vitamin D and calcium intake when deficiency is clinically relevant; Treat osteomalacia with vitamin D repletion; Use age/risk-appropriate empiric supplementation only where guideline groups support it",
                     "source_ids": [
                       "ENDO_VITD_2024",
                       "NIH_VITD_FACTSHEET",
@@ -4110,7 +4110,7 @@
                     "criteria": {
                       "rule_id": "vitamin_d_deficiency_osteomalacia_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Start Vitamin D Deficiency / Osteomalacia treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
+                      "description": "Use this Vitamin D Deficiency / Osteomalacia management branch when Replete vitamin D and calcium intake when deficiency is clinically relevant; Treat osteomalacia with vitamin D repletion; Use age/risk-appropriate empiric supplementation only where guideline groups support it; discordant endocrine tests need correct timing; Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific applies and patient-specific safety modifiers have been checked.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4225,8 +4225,8 @@
                       {
                         "id": "vitamin_d_deficiency_osteomalacia_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Vitamin D Deficiency / Osteomalacia contraindication screen",
-                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
+                        "label": "Vitamin D Deficiency / Osteomalacia safety: use local lab",
+                        "edgeLabel": "Therapy modifier: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; discordant endocrine tests need correct timing",
                         "source_ids": [
                           "NIH_VITD_FACTSHEET",
                           "ENDO_VITD_2024",
@@ -4348,8 +4348,8 @@
                           {
                             "id": "vitamin_d_deficiency_osteomalacia_review_endpoint",
                             "type": "endpoint",
-                            "label": "Vitamin D Deficiency / Osteomalacia clinician review",
-                            "edgeLabel": "Review modifier: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; discordant endocrine tests need correct timing",
+                            "label": "Vitamin D Deficiency / Osteomalacia consult: use local lab",
+                            "edgeLabel": "Specialist input: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; discordant endocrine tests need correct timing",
                             "source_ids": [
                               "NIH_VITD_FACTSHEET",
                               "ENDO_VITD_2024",
@@ -4358,7 +4358,7 @@
                             "criteria": {
                               "rule_id": "vitamin_d_deficiency_osteomalacia_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Vitamin D Deficiency / Osteomalacia treatment or disposition depends on Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; DXA T-score; 25D thresholds vary; discordant endocrine tests need correct timing.",
+                              "description": "Use reviewer handoff when Vitamin D Deficiency / Osteomalacia management changes because of Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; DXA T-score; 25D thresholds vary; discordant endocrine tests need correct timing.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4382,8 +4382,8 @@
                           {
                             "id": "vitamin_d_deficiency_osteomalacia_monitoring_bundle",
                             "type": "action",
-                            "label": "Vitamin D Deficiency / Osteomalacia response monitoring",
-                            "edgeLabel": "Monitor: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 25D; Calcium, phosphorus, alkaline phosphatase, PTH, creatinine/eGFR; treatment response",
+                            "label": "Vitamin D Deficiency / Osteomalacia trend: 8.5-10.5 mg/dL; 25D",
+                            "edgeLabel": "Vitamin D Deficiency / Osteomalacia trend: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 25D; Calcium, phosphorus, alkaline phosphatase, PTH, creatinine/eGFR; treatment response",
                             "source_ids": [
                               "ENDO_VITD_2024",
                               "NIH_VITD_FACTSHEET",
@@ -4505,8 +4505,8 @@
                               {
                                 "id": "vitamin_d_deficiency_osteomalacia_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Vitamin D Deficiency / Osteomalacia deterioration criteria",
-                                "edgeLabel": "Escalate if reassessment worsens: Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 25D; worsening symptoms or treatment intolerance",
+                                "label": "Vitamin D Deficiency / Osteomalacia worse: Severe hypocalcemia symptoms",
+                                "edgeLabel": "Worsening finding: Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 25D; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "ENDO_VITD_2024",
                                   "NIH_VITD_FACTSHEET",
@@ -4722,8 +4722,8 @@
                               {
                                 "id": "vitamin_d_deficiency_osteomalacia_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Vitamin D Deficiency / Osteomalacia stop/narrow criteria",
-                                "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
+                                "label": "Vitamin D Deficiency / Osteomalacia de-escalate: 8.5-10.5 mg/dL",
+                                "edgeLabel": "De-escalate when response, safety, and diagnostic certainty support it",
                                 "source_ids": [
                                   "ENDO_VITD_2024",
                                   "NIH_VITD_FACTSHEET",
@@ -4939,8 +4939,8 @@
                               {
                                 "id": "vitamin_d_deficiency_osteomalacia_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Vitamin D Deficiency / Osteomalacia follow-up and safety-net",
-                                "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
+                                "label": "Vitamin D Deficiency / Osteomalacia return: return precautions",
+                                "edgeLabel": "Closure: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ENDO_VITD_2024",
                                   "NIH_VITD_FACTSHEET",
@@ -5186,7 +5186,7 @@
                   {
                     "id": "vitamin_d_deficiency_osteomalacia_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Vitamin D Deficiency / Osteomalacia mimic/exclusion",
+                    "label": "Vitamin D Deficiency / Osteomalacia alternate: use local lab",
                     "edgeLabel": "Alternate diagnosis: Corrected calcium often about 8.5-10.5 mg/dL",
                     "source_ids": [
                       "ENDO_VITD_2024",
@@ -5647,7 +5647,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "vitamin_d_deficiency_osteomalacia_urgent_endpoint",
-          "expected_active_branch": "Escalate: Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state; Corrected calcium often about 8.5-10.5 mg/dL; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
+          "expected_active_branch": "Urgent findings: Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state; Corrected calcium often about 8.5-10.5 mg/dL; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
           "expected_path_node_ids": [
             "root",
             "vitamin_d_deficiency_osteomalacia_concurrent_data_bundle",
@@ -5675,7 +5675,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "vitamin_d_deficiency_osteomalacia_review_endpoint",
-          "expected_active_branch": "Review modifier: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; discordant endocrine tests need correct timing",
+          "expected_active_branch": "Specialist input: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; discordant endocrine tests need correct timing",
           "expected_path_node_ids": [
             "root",
             "vitamin_d_deficiency_osteomalacia_concurrent_data_bundle",
@@ -5691,7 +5691,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "vitamin_d_deficiency_osteomalacia_worsening_endpoint",
-          "expected_active_branch": "Escalate if reassessment worsens: Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 25D; worsening symptoms or treatment intolerance",
+          "expected_active_branch": "Worsening finding: Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 25D; worsening symptoms or treatment intolerance",
           "expected_path_node_ids": [
             "root",
             "vitamin_d_deficiency_osteomalacia_concurrent_data_bundle",
@@ -5708,7 +5708,7 @@
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "vitamin_d_deficiency_osteomalacia_deescalate_endpoint",
-          "expected_active_branch": "Narrow/stop when response and diagnosis certainty support it",
+          "expected_active_branch": "De-escalate when response, safety, and diagnostic certainty support it",
           "expected_path_node_ids": [
             "root",
             "vitamin_d_deficiency_osteomalacia_concurrent_data_bundle",
@@ -5725,7 +5725,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "vitamin_d_deficiency_osteomalacia_followup_endpoint",
-          "expected_active_branch": "Follow-up ready: result owner, interval, and return precautions",
+          "expected_active_branch": "Closure: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "vitamin_d_deficiency_osteomalacia_concurrent_data_bundle",

@@ -3340,7 +3340,7 @@
         "thyroid_cancer_treatment_bundle": {
           "rule_id": "thyroid_cancer_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Start Thyroid Cancer (Papillary, Follicular, Medullary) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
+          "description": "Use this Thyroid Cancer management branch when Choose lobectomy versus total thyroidectomy; For medullary thyroid cancer; discordant endocrine tests need correct timing; Hypothyroid LT4 titration applies and patient-specific safety modifiers have been checked.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3490,7 +3490,7 @@
         "thyroid_cancer_review_endpoint": {
           "rule_id": "thyroid_cancer_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Thyroid Cancer (Papillary, Follicular, Medullary) treatment or disposition depends on Hypothyroid LT4 titration; discordant endocrine tests need correct timing; Choose lobectomy versus total thyroidectomy.",
+          "description": "Use reviewer handoff when Thyroid Cancer (Papillary, Follicular, Medullary) management changes because of Hypothyroid LT4 titration; discordant endocrine tests need correct timing; Choose lobectomy versus total thyroidectomy.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3970,7 +3970,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Screen for high-acuity findings; classify with >=1 cm; >=1.5 cm; >=2 cm; <1%; then choose emergency, treatment/disposition, review, mimic, monitoring, de-escalation, or follow-up branch.",
+        "action": "Send unstable patients to urgent care; compare >=1 cm; >=1.5 cm; >=2 cm; <1%; choose active management from Choose lobectomy versus total thyroidectomy; For medullary thyroid cancer; discordant endocrine tests need correct timing; Hypothyroid LT4 titration; switch to competing diagnosis better explains the presentation when it fits better.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -4038,8 +4038,8 @@
           {
             "id": "thyroid_cancer_concurrent_data_bundle",
             "type": "action",
-            "label": "Thyroid Cancer triage inputs",
-            "edgeLabel": "Assessment bundle: Neck ultrasound and nodal mapping; FNA cytology with Bethesda category; TSH/free T4; Calcitonin and CEA when medullary thyroid cancer suspected/confirmed; thyroid ultrasound pattern; largest nodule dimension",
+            "label": "Thyroid Cancer data: Neck ultrasound and nodal mapping",
+            "edgeLabel": "Thyroid Cancer data: Neck ultrasound and nodal mapping; FNA cytology with Bethesda category; TSH/free T4; Calcitonin and CEA when medullary thyroid cancer suspected/confirmed; thyroid ultrasound pattern; largest nodule dimension",
             "source_ids": [
               "ATA_THYROID_CANCER_2025",
               "ATA_THYROID_NODULE_DTC_2015",
@@ -4072,8 +4072,8 @@
               {
                 "id": "thyroid_cancer_classification_decision",
                 "type": "decision",
-                "label": "Thyroid Cancer severity thresholds",
-                "edgeLabel": "Classify using >=1 cm; >=1.5 cm; >=2 cm; <1%",
+                "label": "Thyroid Cancer decision: ATA thyroid nodule FNA; >=1 cm; >=1.5 cm",
+                "edgeLabel": "Threshold route: >=1 cm; >=1.5 cm; >=2 cm; <1%",
                 "source_ids": [
                   "ATA_THYROID_NODULE_DTC_2015",
                   "ATA_HYPOTHYROIDISM_2014",
@@ -4188,7 +4188,7 @@
                     }
                   ]
                 },
-                "action": "Match current patient data to >=1 cm; >=1.5 cm; >=2 cm; <1%; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
+                "action": "Compare current patient data with >=1 cm; >=1.5 cm; >=2 cm; <1%; route to urgent findings, active management, specialist-input modifier, or a named alternate diagnosis.",
                 "children": [
                   {
                     "id": "thyroid_cancer_missing_cutoff_data_endpoint",
@@ -4292,8 +4292,8 @@
                   {
                     "id": "thyroid_cancer_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Thyroid Cancer emergency criteria",
-                    "edgeLabel": "Escalate: ATA thyroid nodule FNA; >=1 cm; >=1.5 cm",
+                    "label": "Thyroid Cancer urgent: >=1 cm",
+                    "edgeLabel": "Urgent findings: ATA thyroid nodule FNA; >=1 cm; >=1.5 cm",
                     "source_ids": [
                       "ATA_THYROID_CANCER_2025",
                       "ATA_THYROID_NODULE_DTC_2015",
@@ -4493,8 +4493,8 @@
                   {
                     "id": "thyroid_cancer_treatment_bundle",
                     "type": "action",
-                    "label": "Thyroid Cancer treatment/disposition",
-                    "edgeLabel": "Treat/dispose using confirmed category and safety data",
+                    "label": "Thyroid Cancer plan: Choose lobectomy versus total thyroidectomy",
+                    "edgeLabel": "Thyroid Cancer management: Choose lobectomy versus total thyroidectomy; For medullary thyroid cancer; discordant endocrine tests need correct timing; Hypothyroid LT4 titration",
                     "source_ids": [
                       "ATA_THYROID_CANCER_2025",
                       "ATA_THYROID_NODULE_DTC_2015",
@@ -4504,7 +4504,7 @@
                     "criteria": {
                       "rule_id": "thyroid_cancer_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Start Thyroid Cancer (Papillary, Follicular, Medullary) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
+                      "description": "Use this Thyroid Cancer management branch when Choose lobectomy versus total thyroidectomy; For medullary thyroid cancer; discordant endocrine tests need correct timing; Hypothyroid LT4 titration applies and patient-specific safety modifiers have been checked.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4611,8 +4611,8 @@
                       {
                         "id": "thyroid_cancer_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Thyroid Cancer contraindication screen",
-                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
+                        "label": "Thyroid Cancer safety: Hypothyroid LT4 titration",
+                        "edgeLabel": "Therapy modifier: Hypothyroid LT4 titration; discordant endocrine tests need correct timing; Choose lobectomy versus total thyroidectomy",
                         "source_ids": [
                           "ATA_THYROID_NODULE_DTC_2015",
                           "ATA_HYPOTHYROIDISM_2014",
@@ -4670,8 +4670,8 @@
                           {
                             "id": "thyroid_cancer_review_endpoint",
                             "type": "endpoint",
-                            "label": "Thyroid Cancer clinician review",
-                            "edgeLabel": "Review modifier: Hypothyroid LT4 titration; discordant endocrine tests need correct timing; Choose lobectomy versus total thyroidectomy",
+                            "label": "Thyroid Cancer consult: Hypothyroid LT4 titration",
+                            "edgeLabel": "Specialist input: Hypothyroid LT4 titration; discordant endocrine tests need correct timing; Choose lobectomy versus total thyroidectomy",
                             "source_ids": [
                               "ATA_THYROID_NODULE_DTC_2015",
                               "ATA_HYPOTHYROIDISM_2014",
@@ -4682,7 +4682,7 @@
                             "criteria": {
                               "rule_id": "thyroid_cancer_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Thyroid Cancer (Papillary, Follicular, Medullary) treatment or disposition depends on Hypothyroid LT4 titration; discordant endocrine tests need correct timing; Choose lobectomy versus total thyroidectomy.",
+                              "description": "Use reviewer handoff when Thyroid Cancer (Papillary, Follicular, Medullary) management changes because of Hypothyroid LT4 titration; discordant endocrine tests need correct timing; Choose lobectomy versus total thyroidectomy.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4708,8 +4708,8 @@
                           {
                             "id": "thyroid_cancer_monitoring_bundle",
                             "type": "action",
-                            "label": "Thyroid Cancer response monitoring",
-                            "edgeLabel": "Monitor: >=1 cm; >=1.5 cm; Neck ultrasound and nodal mapping; FNA cytology with Bethesda category; treatment response",
+                            "label": "Thyroid Cancer trend: >=1 cm; Neck ultrasound and nodal mapping",
+                            "edgeLabel": "Thyroid Cancer trend: >=1 cm; >=1.5 cm; Neck ultrasound and nodal mapping; FNA cytology with Bethesda category; treatment response",
                             "source_ids": [
                               "ATA_THYROID_CANCER_2025",
                               "ATA_THYROID_NODULE_DTC_2015",
@@ -4824,8 +4824,8 @@
                               {
                                 "id": "thyroid_cancer_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Thyroid Cancer deterioration criteria",
-                                "edgeLabel": "Escalate if reassessment worsens: >=1 cm; >=1.5 cm; Neck ultrasound and nodal mapping; worsening symptoms or treatment intolerance",
+                                "label": "Thyroid Cancer worse: >=1 cm",
+                                "edgeLabel": "Worsening finding: >=1 cm; >=1.5 cm; Neck ultrasound and nodal mapping; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "ATA_THYROID_CANCER_2025",
                                   "ATA_THYROID_NODULE_DTC_2015",
@@ -5025,8 +5025,8 @@
                               {
                                 "id": "thyroid_cancer_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Thyroid Cancer stop/narrow criteria",
-                                "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
+                                "label": "Thyroid Cancer de-escalate: >=1 cm",
+                                "edgeLabel": "De-escalate when response, safety, and diagnostic certainty support it",
                                 "source_ids": [
                                   "ATA_THYROID_CANCER_2025",
                                   "ATA_THYROID_NODULE_DTC_2015",
@@ -5226,8 +5226,8 @@
                               {
                                 "id": "thyroid_cancer_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Thyroid Cancer follow-up and safety-net",
-                                "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
+                                "label": "Thyroid Cancer return: return precautions",
+                                "edgeLabel": "Closure: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ATA_THYROID_CANCER_2025",
                                   "ATA_THYROID_NODULE_DTC_2015",
@@ -5453,7 +5453,7 @@
                   {
                     "id": "thyroid_cancer_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Thyroid Cancer mimic/exclusion",
+                    "label": "Thyroid Cancer alternate route",
                     "edgeLabel": "Alternate diagnosis: competing diagnosis better explains the presentation",
                     "source_ids": [
                       "ATA_THYROID_CANCER_2025",
@@ -5893,7 +5893,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "thyroid_cancer_urgent_endpoint",
-          "expected_active_branch": "Escalate: ATA thyroid nodule FNA; >=1 cm; >=1.5 cm",
+          "expected_active_branch": "Urgent findings: ATA thyroid nodule FNA; >=1 cm; >=1.5 cm",
           "expected_path_node_ids": [
             "root",
             "thyroid_cancer_concurrent_data_bundle",
@@ -5921,7 +5921,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "thyroid_cancer_review_endpoint",
-          "expected_active_branch": "Review modifier: Hypothyroid LT4 titration; discordant endocrine tests need correct timing; Choose lobectomy versus total thyroidectomy",
+          "expected_active_branch": "Specialist input: Hypothyroid LT4 titration; discordant endocrine tests need correct timing; Choose lobectomy versus total thyroidectomy",
           "expected_path_node_ids": [
             "root",
             "thyroid_cancer_concurrent_data_bundle",
@@ -5937,7 +5937,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "thyroid_cancer_worsening_endpoint",
-          "expected_active_branch": "Escalate if reassessment worsens: >=1 cm; >=1.5 cm; Neck ultrasound and nodal mapping; worsening symptoms or treatment intolerance",
+          "expected_active_branch": "Worsening finding: >=1 cm; >=1.5 cm; Neck ultrasound and nodal mapping; worsening symptoms or treatment intolerance",
           "expected_path_node_ids": [
             "root",
             "thyroid_cancer_concurrent_data_bundle",
@@ -5954,7 +5954,7 @@
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "thyroid_cancer_deescalate_endpoint",
-          "expected_active_branch": "Narrow/stop when response and diagnosis certainty support it",
+          "expected_active_branch": "De-escalate when response, safety, and diagnostic certainty support it",
           "expected_path_node_ids": [
             "root",
             "thyroid_cancer_concurrent_data_bundle",
@@ -5971,7 +5971,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "thyroid_cancer_followup_endpoint",
-          "expected_active_branch": "Follow-up ready: result owner, interval, and return precautions",
+          "expected_active_branch": "Closure: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "thyroid_cancer_concurrent_data_bundle",

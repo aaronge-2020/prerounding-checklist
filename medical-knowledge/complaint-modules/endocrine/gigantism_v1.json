@@ -4405,7 +4405,7 @@
         "gigantism_treatment_action": {
           "rule_id": "gigantism_treatment_action_criteria",
           "source": "criteria",
-          "description": "Route Gigantism therapy by resectability, mass effect, comorbidities, medication/radiation safety, pregnancy or pediatric context, response monitoring, and patient preference.",
+          "description": "Select Gigantism therapy using resectability, mass effect, comorbidities, medication/radiation safety, pregnancy or pediatric context, biochemical/tumor trend, and patient preference.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -9570,7 +9570,7 @@
                     "criteria": {
                       "rule_id": "gigantism_treatment_action_criteria",
                       "source": "criteria",
-                      "description": "Route Gigantism therapy by resectability, mass effect, comorbidities, medication/radiation safety, pregnancy or pediatric context, response monitoring, and patient preference.",
+                      "description": "Select Gigantism therapy using resectability, mass effect, comorbidities, medication/radiation safety, pregnancy or pediatric context, biochemical/tumor trend, and patient preference.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",

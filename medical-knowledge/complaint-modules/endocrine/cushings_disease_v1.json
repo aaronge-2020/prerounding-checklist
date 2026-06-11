@@ -2933,7 +2933,7 @@
         "cushings_disease_treatment_bundle": {
           "rule_id": "cushings_disease_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Start Cushing's Disease (Pituitary-dependent Cushing's) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
+          "description": "Use this Cushing's Disease management branch when Treat the cause when feasible; Control severe hypercortisolism complications urgently; Use steroidogenesis inhibitors; discordance triggers IPSS; discordant endocrine tests need correct timing; Cushing initial testing applies and patient-specific safety modifiers have been checked.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3069,7 +3069,7 @@
         "cushings_disease_review_endpoint": {
           "rule_id": "cushings_disease_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Cushing's Disease (Pituitary-dependent Cushing's) treatment or disposition depends on Cushing initial testing; Cushing positive biochemical screen; discordance triggers IPSS; discordant endocrine tests need correct timing; Treat the cause when feasible.",
+          "description": "Use reviewer handoff when Cushing's Disease (Pituitary-dependent Cushing's) management changes because of Cushing initial testing; Cushing positive biochemical screen; discordance triggers IPSS; discordant endocrine tests need correct timing; Treat the cause when feasible.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3402,7 +3402,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Screen for high-acuity findings; classify with at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; then choose emergency, treatment/disposition, review, mimic, monitoring, de-escalation, or follow-up branch.",
+        "action": "Send unstable patients to urgent care; compare at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; choose active management from Treat the cause when feasible; Control severe hypercortisolism complications urgently; Use steroidogenesis inhibitors; discordance triggers IPSS; discordant endocrine tests need correct timing; Cushing initial testing; switch to Post-1 mg DST cortisol >1.8 ug/dL is a sensitive abnormal screen when it fits better.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3470,8 +3470,8 @@
           {
             "id": "cushings_disease_concurrent_data_bundle",
             "type": "action",
-            "label": "Cushing's Disease triage inputs",
-            "edgeLabel": "Assessment bundle: First confirm endogenous Cushing with UFC; ACTH: normal/high supports ACTH-dependent disease; Pituitary MRI; Inferior petrosal sinus sampling when MRI equivocal/discordant; UFC collection count; late-night salivary cortisol count",
+            "label": "Cushing's Disease data: First confirm endogenous Cushing with UFC",
+            "edgeLabel": "Cushing's Disease data: First confirm endogenous Cushing with UFC; ACTH: normal/high supports ACTH-dependent disease; Pituitary MRI; Inferior petrosal sinus sampling when MRI equivocal/discordant; UFC collection count; late-night salivary cortisol count",
             "source_ids": [
               "ES_CUSHING_DX_2008",
               "ES_CUSHING_TREATMENT_2015",
@@ -3504,8 +3504,8 @@
               {
                 "id": "cushings_disease_classification_decision",
                 "type": "decision",
-                "label": "Cushing's Disease severity thresholds",
-                "edgeLabel": "Classify using at least 2 measurements; 2 measurements; 1 mg; 2 mg/day",
+                "label": "Cushing's Disease decision: Cushing initial testing; at least 2 measurements",
+                "edgeLabel": "Threshold route: at least 2 measurements; 2 measurements; 1 mg; 2 mg/day",
                 "source_ids": [
                   "ES_CUSHING_DX_2008",
                   "ES_CUSHING_TREATMENT_2015",
@@ -3582,7 +3582,7 @@
                     }
                   ]
                 },
-                "action": "Match current patient data to at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
+                "action": "Compare current patient data with at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; route to urgent findings, active management, specialist-input modifier, or a named alternate diagnosis.",
                 "children": [
                   {
                     "id": "cushings_disease_missing_cutoff_data_endpoint",
@@ -3682,8 +3682,8 @@
                   {
                     "id": "cushings_disease_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Cushing's Disease emergency criteria",
-                    "edgeLabel": "Escalate: Severe hypercortisolism with infection; Cushing initial testing; Cushing positive biochemical screen; at least 2 measurements; 2 measurements",
+                    "label": "Cushing's Disease urgent: Severe hypercortisolism with infection",
+                    "edgeLabel": "Urgent findings: Severe hypercortisolism with infection; Cushing initial testing; Cushing positive biochemical screen; at least 2 measurements; 2 measurements",
                     "source_ids": [
                       "ES_CUSHING_DX_2008",
                       "ES_CUSHING_TREATMENT_2015",
@@ -3811,8 +3811,8 @@
                   {
                     "id": "cushings_disease_treatment_bundle",
                     "type": "action",
-                    "label": "Cushing's Disease treatment/disposition",
-                    "edgeLabel": "Treat/dispose using confirmed category and safety data",
+                    "label": "Cushing's Disease plan: Treat the cause when feasible",
+                    "edgeLabel": "Cushing's Disease management: Treat the cause when feasible; Control severe hypercortisolism complications urgently; Use steroidogenesis inhibitors; discordance triggers IPSS",
                     "source_ids": [
                       "ES_CUSHING_DX_2008",
                       "ES_CUSHING_TREATMENT_2015",
@@ -3822,7 +3822,7 @@
                     "criteria": {
                       "rule_id": "cushings_disease_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Start Cushing's Disease (Pituitary-dependent Cushing's) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
+                      "description": "Use this Cushing's Disease management branch when Treat the cause when feasible; Control severe hypercortisolism complications urgently; Use steroidogenesis inhibitors; discordance triggers IPSS; discordant endocrine tests need correct timing; Cushing initial testing applies and patient-specific safety modifiers have been checked.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -3893,8 +3893,8 @@
                       {
                         "id": "cushings_disease_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Cushing's Disease contraindication screen",
-                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
+                        "label": "Cushing's Disease safety: Cushing initial testing",
+                        "edgeLabel": "Therapy modifier: Cushing initial testing; Cushing positive biochemical screen; discordance triggers IPSS; discordant endocrine tests need correct timing; Treat the cause when feasible",
                         "source_ids": [
                           "ES_CUSHING_DX_2008",
                           "ES_CUSHING_TREATMENT_2015",
@@ -3973,8 +3973,8 @@
                           {
                             "id": "cushings_disease_review_endpoint",
                             "type": "endpoint",
-                            "label": "Cushing's Disease clinician review",
-                            "edgeLabel": "Review modifier: Cushing initial testing; Cushing positive biochemical screen; discordance triggers IPSS; discordant endocrine tests need correct timing; Treat the cause when feasible",
+                            "label": "Cushing's Disease consult: Cushing initial testing",
+                            "edgeLabel": "Specialist input: Cushing initial testing; Cushing positive biochemical screen; discordance triggers IPSS; discordant endocrine tests need correct timing; Treat the cause when feasible",
                             "source_ids": [
                               "ES_CUSHING_DX_2008",
                               "ES_CUSHING_TREATMENT_2015",
@@ -3984,7 +3984,7 @@
                             "criteria": {
                               "rule_id": "cushings_disease_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Cushing's Disease (Pituitary-dependent Cushing's) treatment or disposition depends on Cushing initial testing; Cushing positive biochemical screen; discordance triggers IPSS; discordant endocrine tests need correct timing; Treat the cause when feasible.",
+                              "description": "Use reviewer handoff when Cushing's Disease (Pituitary-dependent Cushing's) management changes because of Cushing initial testing; Cushing positive biochemical screen; discordance triggers IPSS; discordant endocrine tests need correct timing; Treat the cause when feasible.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4009,8 +4009,8 @@
                           {
                             "id": "cushings_disease_monitoring_bundle",
                             "type": "action",
-                            "label": "Cushing's Disease response monitoring",
-                            "edgeLabel": "Monitor: at least 2 measurements; 2 measurements; First confirm endogenous Cushing with UFC; ACTH: normal/high supports ACTH-dependent disease; treatment response",
+                            "label": "Cushing's Disease trend: at least 2 measurements",
+                            "edgeLabel": "Cushing's Disease trend: at least 2 measurements; 2 measurements; First confirm endogenous Cushing with UFC; ACTH: normal/high supports ACTH-dependent disease; treatment response",
                             "source_ids": [
                               "ES_CUSHING_DX_2008",
                               "ES_CUSHING_TREATMENT_2015",
@@ -4089,8 +4089,8 @@
                               {
                                 "id": "cushings_disease_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Cushing's Disease deterioration criteria",
-                                "edgeLabel": "Escalate if reassessment worsens: Severe hypercortisolism with infection; at least 2 measurements; 2 measurements; First confirm endogenous Cushing with UFC; worsening symptoms or treatment intolerance",
+                                "label": "Cushing's Disease worse: Severe hypercortisolism with infection",
+                                "edgeLabel": "Worsening finding: Severe hypercortisolism with infection; at least 2 measurements; 2 measurements; First confirm endogenous Cushing with UFC; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "ES_CUSHING_DX_2008",
                                   "ES_CUSHING_TREATMENT_2015",
@@ -4218,8 +4218,8 @@
                               {
                                 "id": "cushings_disease_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Cushing's Disease stop/narrow criteria",
-                                "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
+                                "label": "Cushing's Disease de-escalate: at least 2 measurements",
+                                "edgeLabel": "De-escalate when response, safety, and diagnostic certainty support it",
                                 "source_ids": [
                                   "ES_CUSHING_DX_2008",
                                   "ES_CUSHING_TREATMENT_2015",
@@ -4347,8 +4347,8 @@
                               {
                                 "id": "cushings_disease_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Cushing's Disease follow-up and safety-net",
-                                "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
+                                "label": "Cushing's Disease return: discordance triggers IPSS; return precautions",
+                                "edgeLabel": "Closure: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ES_CUSHING_DX_2008",
                                   "ES_CUSHING_TREATMENT_2015",
@@ -4503,7 +4503,7 @@
                   {
                     "id": "cushings_disease_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Cushing's Disease mimic/exclusion",
+                    "label": "Cushing's Disease alternate route",
                     "edgeLabel": "Alternate diagnosis: Post-1 mg DST cortisol >1.8 ug/dL is a sensitive abnormal screen",
                     "source_ids": [
                       "ES_CUSHING_DX_2008",
@@ -4799,7 +4799,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "cushings_disease_urgent_endpoint",
-          "expected_active_branch": "Escalate: Severe hypercortisolism with infection; Cushing initial testing; Cushing positive biochemical screen; at least 2 measurements; 2 measurements",
+          "expected_active_branch": "Urgent findings: Severe hypercortisolism with infection; Cushing initial testing; Cushing positive biochemical screen; at least 2 measurements; 2 measurements",
           "expected_path_node_ids": [
             "root",
             "cushings_disease_concurrent_data_bundle",
@@ -4827,7 +4827,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "cushings_disease_review_endpoint",
-          "expected_active_branch": "Review modifier: Cushing initial testing; Cushing positive biochemical screen; discordance triggers IPSS; discordant endocrine tests need correct timing; Treat the cause when feasible",
+          "expected_active_branch": "Specialist input: Cushing initial testing; Cushing positive biochemical screen; discordance triggers IPSS; discordant endocrine tests need correct timing; Treat the cause when feasible",
           "expected_path_node_ids": [
             "root",
             "cushings_disease_concurrent_data_bundle",
@@ -4843,7 +4843,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "cushings_disease_worsening_endpoint",
-          "expected_active_branch": "Escalate if reassessment worsens: Severe hypercortisolism with infection; at least 2 measurements; 2 measurements; First confirm endogenous Cushing with UFC; worsening symptoms or treatment intolerance",
+          "expected_active_branch": "Worsening finding: Severe hypercortisolism with infection; at least 2 measurements; 2 measurements; First confirm endogenous Cushing with UFC; worsening symptoms or treatment intolerance",
           "expected_path_node_ids": [
             "root",
             "cushings_disease_concurrent_data_bundle",
@@ -4860,7 +4860,7 @@
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "cushings_disease_deescalate_endpoint",
-          "expected_active_branch": "Narrow/stop when response and diagnosis certainty support it",
+          "expected_active_branch": "De-escalate when response, safety, and diagnostic certainty support it",
           "expected_path_node_ids": [
             "root",
             "cushings_disease_concurrent_data_bundle",
@@ -4877,7 +4877,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "cushings_disease_followup_endpoint",
-          "expected_active_branch": "Follow-up ready: result owner, interval, and return precautions",
+          "expected_active_branch": "Closure: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "cushings_disease_concurrent_data_bundle",

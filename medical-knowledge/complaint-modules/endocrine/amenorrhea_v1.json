@@ -3699,7 +3699,7 @@
         "amenorrhea_treatment_bundle": {
           "rule_id": "amenorrhea_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Start Amenorrhea (Absence of menstruation) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
+          "description": "Use this Amenorrhea management branch when Treat the cause; For functional hypothalamic amenorrhea; discordant endocrine tests need correct timing; Amenorrhea evaluation timing; Amenorrhea initial labs; Amenorrhea pituitary branch applies and patient-specific safety modifiers have been checked.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3969,7 +3969,7 @@
         "amenorrhea_review_endpoint": {
           "rule_id": "amenorrhea_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Amenorrhea (Absence of menstruation) treatment or disposition depends on Amenorrhea evaluation timing; Amenorrhea initial labs; Amenorrhea pituitary branch; Amenorrhea hormone pattern; Primary amenorrhea anatomic/DSD branch.",
+          "description": "Use reviewer handoff when Amenorrhea (Absence of menstruation) management changes because of Amenorrhea evaluation timing; Amenorrhea initial labs; Amenorrhea pituitary branch; Amenorrhea hormone pattern; Primary amenorrhea anatomic/DSD branch.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -4705,7 +4705,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Screen for high-acuity findings; classify with age 15; 5 years after breast development; age 10; age 13; then choose emergency, treatment/disposition, review, mimic, monitoring, de-escalation, or follow-up branch.",
+        "action": "Send unstable patients to urgent care; compare age 15; 5 years after breast development; age 10; age 13; choose active management from Treat the cause; For functional hypothalamic amenorrhea; discordant endocrine tests need correct timing; Amenorrhea evaluation timing; Amenorrhea initial labs; Amenorrhea pituitary branch; switch to competing diagnosis better explains the presentation when it fits better.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -4773,8 +4773,8 @@
           {
             "id": "amenorrhea_concurrent_data_bundle",
             "type": "action",
-            "label": "Amenorrhea triage inputs",
-            "edgeLabel": "Assessment bundle: Pregnancy test first; TSH and prolactin; FSH and estradiol; Androgen testing when hyperandrogenism: testosterone, DHEAS, 17-OHP; age; menarche status",
+            "label": "Amenorrhea data: Pregnancy test first; TSH and prolactin; age",
+            "edgeLabel": "Amenorrhea data: Pregnancy test first; TSH and prolactin; FSH and estradiol; Androgen testing when hyperandrogenism: testosterone, DHEAS, 17-OHP; age; menarche status",
             "source_ids": [
               "ASRM_AMENORRHEA_2024",
               "AHRQ_CALIBRATE_DX"
@@ -4803,8 +4803,8 @@
               {
                 "id": "amenorrhea_classification_decision",
                 "type": "decision",
-                "label": "Amenorrhea severity thresholds",
-                "edgeLabel": "Classify using age 15; 5 years after breast development; age 10; age 13",
+                "label": "Amenorrhea decision: Amenorrhea evaluation timing; age 15",
+                "edgeLabel": "Threshold route: age 15; 5 years after breast development; age 10; age 13",
                 "source_ids": [
                   "ASRM_AMENORRHEA_2024",
                   "ESHRE_POI_2024",
@@ -4983,7 +4983,7 @@
                     }
                   ]
                 },
-                "action": "Match current patient data to age 15; 5 years after breast development; age 10; age 13; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
+                "action": "Compare current patient data with age 15; 5 years after breast development; age 10; age 13; route to urgent findings, active management, specialist-input modifier, or a named alternate diagnosis.",
                 "children": [
                   {
                     "id": "amenorrhea_missing_cutoff_data_endpoint",
@@ -5089,8 +5089,8 @@
                   {
                     "id": "amenorrhea_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Amenorrhea emergency criteria",
-                    "edgeLabel": "Escalate: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; Amenorrhea evaluation timing; Amenorrhea initial labs; age 15; 5 years after breast development",
+                    "label": "Amenorrhea urgent: pregnancy-critical pain/bleeding; age 15",
+                    "edgeLabel": "Urgent findings: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; Amenorrhea evaluation timing; Amenorrhea initial labs; age 15; 5 years after breast development",
                     "source_ids": [
                       "ASRM_AMENORRHEA_2024",
                       "AHRQ_CALIBRATE_DX"
@@ -5422,8 +5422,8 @@
                   {
                     "id": "amenorrhea_treatment_bundle",
                     "type": "action",
-                    "label": "Amenorrhea treatment/disposition",
-                    "edgeLabel": "Treat/dispose using confirmed category and safety data",
+                    "label": "Amenorrhea plan: Treat the cause; For functional hypothalamic amenorrhea",
+                    "edgeLabel": "Amenorrhea management: Treat the cause; For functional hypothalamic amenorrhea; discordant endocrine tests need correct timing; Amenorrhea evaluation timing",
                     "source_ids": [
                       "ASRM_AMENORRHEA_2024",
                       "AHRQ_CALIBRATE_DX"
@@ -5431,7 +5431,7 @@
                     "criteria": {
                       "rule_id": "amenorrhea_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Start Amenorrhea (Absence of menstruation) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
+                      "description": "Use this Amenorrhea management branch when Treat the cause; For functional hypothalamic amenorrhea; discordant endocrine tests need correct timing; Amenorrhea evaluation timing; Amenorrhea initial labs; Amenorrhea pituitary branch applies and patient-specific safety modifiers have been checked.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5604,8 +5604,8 @@
                       {
                         "id": "amenorrhea_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Amenorrhea contraindication screen",
-                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
+                        "label": "Amenorrhea safety: Amenorrhea evaluation timing",
+                        "edgeLabel": "Therapy modifier: Amenorrhea evaluation timing; Amenorrhea initial labs; Amenorrhea pituitary branch; discordant endocrine tests need correct timing; Treat the cause",
                         "source_ids": [
                           "ASRM_AMENORRHEA_2024",
                           "ESHRE_POI_2024",
@@ -5715,8 +5715,8 @@
                           {
                             "id": "amenorrhea_review_endpoint",
                             "type": "endpoint",
-                            "label": "Amenorrhea clinician review",
-                            "edgeLabel": "Review modifier: Amenorrhea evaluation timing; Amenorrhea initial labs; Amenorrhea pituitary branch; discordant endocrine tests need correct timing; Treat the cause",
+                            "label": "Amenorrhea consult: Amenorrhea evaluation timing; Amenorrhea initial labs",
+                            "edgeLabel": "Specialist input: Amenorrhea evaluation timing; Amenorrhea initial labs; Amenorrhea pituitary branch; discordant endocrine tests need correct timing; Treat the cause",
                             "source_ids": [
                               "ASRM_AMENORRHEA_2024",
                               "ESHRE_POI_2024",
@@ -5725,7 +5725,7 @@
                             "criteria": {
                               "rule_id": "amenorrhea_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Amenorrhea (Absence of menstruation) treatment or disposition depends on Amenorrhea evaluation timing; Amenorrhea initial labs; Amenorrhea pituitary branch; Amenorrhea hormone pattern; Primary amenorrhea anatomic/DSD branch.",
+                              "description": "Use reviewer handoff when Amenorrhea (Absence of menstruation) management changes because of Amenorrhea evaluation timing; Amenorrhea initial labs; Amenorrhea pituitary branch; Amenorrhea hormone pattern; Primary amenorrhea anatomic/DSD branch.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -5749,8 +5749,8 @@
                           {
                             "id": "amenorrhea_monitoring_bundle",
                             "type": "action",
-                            "label": "Amenorrhea response monitoring",
-                            "edgeLabel": "Monitor: age 15; 5 years after breast development; Pregnancy test first; TSH and prolactin; treatment response",
+                            "label": "Amenorrhea trend: age 15; Pregnancy test first",
+                            "edgeLabel": "Amenorrhea trend: age 15; 5 years after breast development; Pregnancy test first; TSH and prolactin; treatment response",
                             "source_ids": [
                               "ASRM_AMENORRHEA_2024",
                               "AHRQ_CALIBRATE_DX"
@@ -5929,8 +5929,8 @@
                               {
                                 "id": "amenorrhea_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Amenorrhea deterioration criteria",
-                                "edgeLabel": "Escalate if reassessment worsens: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; age 15; 5 years after breast development; Pregnancy test first; worsening symptoms or treatment intolerance",
+                                "label": "Amenorrhea worse: pregnancy-critical pain/bleeding; age 15",
+                                "edgeLabel": "Worsening finding: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; age 15; 5 years after breast development; Pregnancy test first; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "ASRM_AMENORRHEA_2024",
                                   "AHRQ_CALIBRATE_DX"
@@ -6262,8 +6262,8 @@
                               {
                                 "id": "amenorrhea_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Amenorrhea stop/narrow criteria",
-                                "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
+                                "label": "Amenorrhea de-escalate: age 15; Treat the cause",
+                                "edgeLabel": "De-escalate when response, safety, and diagnostic certainty support it",
                                 "source_ids": [
                                   "ASRM_AMENORRHEA_2024",
                                   "AHRQ_CALIBRATE_DX"
@@ -6595,8 +6595,8 @@
                               {
                                 "id": "amenorrhea_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Amenorrhea follow-up and safety-net",
-                                "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
+                                "label": "Amenorrhea return: return precautions",
+                                "edgeLabel": "Closure: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ASRM_AMENORRHEA_2024",
                                   "AHRQ_CALIBRATE_DX"
@@ -6958,7 +6958,7 @@
                   {
                     "id": "amenorrhea_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Amenorrhea mimic/exclusion",
+                    "label": "Amenorrhea alternate route",
                     "edgeLabel": "Alternate diagnosis: competing diagnosis better explains the presentation",
                     "source_ids": [
                       "ASRM_AMENORRHEA_2024",
@@ -7670,7 +7670,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "amenorrhea_urgent_endpoint",
-          "expected_active_branch": "Escalate: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; Amenorrhea evaluation timing; Amenorrhea initial labs; age 15; 5 years after breast development",
+          "expected_active_branch": "Urgent findings: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; Amenorrhea evaluation timing; Amenorrhea initial labs; age 15; 5 years after breast development",
           "expected_path_node_ids": [
             "root",
             "amenorrhea_concurrent_data_bundle",
@@ -7698,7 +7698,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "amenorrhea_review_endpoint",
-          "expected_active_branch": "Review modifier: Amenorrhea evaluation timing; Amenorrhea initial labs; Amenorrhea pituitary branch; discordant endocrine tests need correct timing; Treat the cause",
+          "expected_active_branch": "Specialist input: Amenorrhea evaluation timing; Amenorrhea initial labs; Amenorrhea pituitary branch; discordant endocrine tests need correct timing; Treat the cause",
           "expected_path_node_ids": [
             "root",
             "amenorrhea_concurrent_data_bundle",
@@ -7714,7 +7714,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "amenorrhea_worsening_endpoint",
-          "expected_active_branch": "Escalate if reassessment worsens: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; age 15; 5 years after breast development; Pregnancy test first; worsening symptoms or treatment intolerance",
+          "expected_active_branch": "Worsening finding: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; age 15; 5 years after breast development; Pregnancy test first; worsening symptoms or treatment intolerance",
           "expected_path_node_ids": [
             "root",
             "amenorrhea_concurrent_data_bundle",
@@ -7731,7 +7731,7 @@
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "amenorrhea_deescalate_endpoint",
-          "expected_active_branch": "Narrow/stop when response and diagnosis certainty support it",
+          "expected_active_branch": "De-escalate when response, safety, and diagnostic certainty support it",
           "expected_path_node_ids": [
             "root",
             "amenorrhea_concurrent_data_bundle",
@@ -7748,7 +7748,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "amenorrhea_followup_endpoint",
-          "expected_active_branch": "Follow-up ready: result owner, interval, and return precautions",
+          "expected_active_branch": "Closure: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "amenorrhea_concurrent_data_bundle",

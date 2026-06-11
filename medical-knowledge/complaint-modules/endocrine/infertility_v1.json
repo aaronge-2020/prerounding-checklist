@@ -3662,7 +3662,7 @@
         "infertility_treatment_bundle": {
           "rule_id": "infertility_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Start Infertility (Hormonal causes) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
+          "description": "Use this Infertility management branch when discordant endocrine tests need correct timing; Infertility evaluation timing; Infertility endocrine redirection applies and patient-specific safety modifiers have been checked.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3837,7 +3837,7 @@
         "infertility_review_endpoint": {
           "rule_id": "infertility_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Infertility (Hormonal causes) treatment or disposition depends on Infertility evaluation timing; Infertility endocrine redirection; discordant endocrine tests need correct timing.",
+          "description": "Use reviewer handoff when Infertility (Hormonal causes) management changes because of Infertility evaluation timing; Infertility endocrine redirection; discordant endocrine tests need correct timing.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -4293,7 +4293,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Screen for high-acuity findings; classify with >=12 months; age <35; 6 months; age >=35; then choose emergency, treatment/disposition, review, mimic, monitoring, de-escalation, or follow-up branch.",
+        "action": "Send unstable patients to urgent care; compare >=12 months; age <35; 6 months; age >=35; choose active management from discordant endocrine tests need correct timing; Infertility evaluation timing; Infertility endocrine redirection; switch to competing diagnosis better explains the presentation when it fits better.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -4361,8 +4361,8 @@
           {
             "id": "infertility_concurrent_data_bundle",
             "type": "action",
-            "label": "Infertility triage inputs",
-            "edgeLabel": "Assessment bundle: Pregnancy test if amenorrhea; TSH/prolactin; FSH/estradiol/AMH/antral follicle count; PCOS and androgen labs; age; duration of attempts",
+            "label": "Infertility data: Pregnancy test if amenorrhea; TSH/prolactin; age",
+            "edgeLabel": "Infertility data: Pregnancy test if amenorrhea; TSH/prolactin; FSH/estradiol/AMH/antral follicle count; PCOS and androgen labs; age; duration of attempts",
             "source_ids": [
               "ASRM_AMENORRHEA_2024",
               "PCOS_GUIDELINE_2023",
@@ -4395,8 +4395,8 @@
               {
                 "id": "infertility_classification_decision",
                 "type": "decision",
-                "label": "Infertility severity thresholds",
-                "edgeLabel": "Classify using >=12 months; age <35; 6 months; age >=35",
+                "label": "Infertility decision: Infertility evaluation timing; >=12 months; age <35",
+                "edgeLabel": "Threshold route: >=12 months; age <35; 6 months; age >=35",
                 "source_ids": [
                   "ASRM_INFERTILITY_EVALUATION_2021",
                   "ASRM_AMENORRHEA_2024",
@@ -4505,7 +4505,7 @@
                     }
                   ]
                 },
-                "action": "Match current patient data to >=12 months; age <35; 6 months; age >=35; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
+                "action": "Compare current patient data with >=12 months; age <35; 6 months; age >=35; route to urgent findings, active management, specialist-input modifier, or a named alternate diagnosis.",
                 "children": [
                   {
                     "id": "infertility_missing_cutoff_data_endpoint",
@@ -4615,8 +4615,8 @@
                   {
                     "id": "infertility_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Infertility emergency criteria",
-                    "edgeLabel": "Escalate: Amenorrhea with visual symptoms; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; Infertility evaluation timing; Ovulation branch; >=12 months",
+                    "label": "Infertility urgent: Amenorrhea with visual symptoms",
+                    "edgeLabel": "Urgent findings: Amenorrhea with visual symptoms; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; Infertility evaluation timing; Ovulation branch; >=12 months",
                     "source_ids": [
                       "ASRM_AMENORRHEA_2024",
                       "PCOS_GUIDELINE_2023",
@@ -4804,8 +4804,8 @@
                   {
                     "id": "infertility_treatment_bundle",
                     "type": "action",
-                    "label": "Infertility treatment/disposition",
-                    "edgeLabel": "Treat/dispose using confirmed category and safety data",
+                    "label": "Infertility management plan",
+                    "edgeLabel": "Infertility management: discordant endocrine tests need correct timing; Infertility evaluation timing; Infertility endocrine redirection",
                     "source_ids": [
                       "ASRM_AMENORRHEA_2024",
                       "PCOS_GUIDELINE_2023",
@@ -4815,7 +4815,7 @@
                     "criteria": {
                       "rule_id": "infertility_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Start Infertility (Hormonal causes) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
+                      "description": "Use this Infertility management branch when discordant endocrine tests need correct timing; Infertility evaluation timing; Infertility endocrine redirection applies and patient-specific safety modifiers have been checked.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4916,8 +4916,8 @@
                       {
                         "id": "infertility_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Infertility contraindication screen",
-                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
+                        "label": "Infertility safety: Infertility evaluation timing",
+                        "edgeLabel": "Therapy modifier: Infertility evaluation timing; Infertility endocrine redirection; discordant endocrine tests need correct timing",
                         "source_ids": [
                           "ASRM_INFERTILITY_EVALUATION_2021",
                           "ASRM_AMENORRHEA_2024",
@@ -5006,8 +5006,8 @@
                           {
                             "id": "infertility_review_endpoint",
                             "type": "endpoint",
-                            "label": "Infertility clinician review",
-                            "edgeLabel": "Review modifier: Infertility evaluation timing; Infertility endocrine redirection; discordant endocrine tests need correct timing",
+                            "label": "Infertility consult: Infertility evaluation timing",
+                            "edgeLabel": "Specialist input: Infertility evaluation timing; Infertility endocrine redirection; discordant endocrine tests need correct timing",
                             "source_ids": [
                               "ASRM_INFERTILITY_EVALUATION_2021",
                               "ASRM_AMENORRHEA_2024",
@@ -5018,7 +5018,7 @@
                             "criteria": {
                               "rule_id": "infertility_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Infertility (Hormonal causes) treatment or disposition depends on Infertility evaluation timing; Infertility endocrine redirection; discordant endocrine tests need correct timing.",
+                              "description": "Use reviewer handoff when Infertility (Hormonal causes) management changes because of Infertility evaluation timing; Infertility endocrine redirection; discordant endocrine tests need correct timing.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -5044,8 +5044,8 @@
                           {
                             "id": "infertility_monitoring_bundle",
                             "type": "action",
-                            "label": "Infertility response monitoring",
-                            "edgeLabel": "Monitor: >=12 months; age <35; Pregnancy test if amenorrhea; TSH/prolactin; treatment response",
+                            "label": "Infertility trend: >=12 months; Pregnancy test if amenorrhea",
+                            "edgeLabel": "Infertility trend: >=12 months; age <35; Pregnancy test if amenorrhea; TSH/prolactin; treatment response",
                             "source_ids": [
                               "ASRM_AMENORRHEA_2024",
                               "PCOS_GUIDELINE_2023",
@@ -5154,8 +5154,8 @@
                               {
                                 "id": "infertility_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Infertility deterioration criteria",
-                                "edgeLabel": "Escalate if reassessment worsens: Amenorrhea with visual symptoms; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; >=12 months; age <35; Pregnancy test if amenorrhea",
+                                "label": "Infertility worse: Amenorrhea with visual symptoms; >=12 months",
+                                "edgeLabel": "Worsening finding: Amenorrhea with visual symptoms; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; >=12 months; age <35; Pregnancy test if amenorrhea",
                                 "source_ids": [
                                   "ASRM_AMENORRHEA_2024",
                                   "PCOS_GUIDELINE_2023",
@@ -5343,8 +5343,8 @@
                               {
                                 "id": "infertility_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Infertility stop/narrow criteria",
-                                "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
+                                "label": "Infertility de-escalate: >=12 months",
+                                "edgeLabel": "De-escalate when response, safety, and diagnostic certainty support it",
                                 "source_ids": [
                                   "ASRM_AMENORRHEA_2024",
                                   "PCOS_GUIDELINE_2023",
@@ -5532,8 +5532,8 @@
                               {
                                 "id": "infertility_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Infertility follow-up and safety-net",
-                                "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
+                                "label": "Infertility return: return precautions",
+                                "edgeLabel": "Closure: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ASRM_AMENORRHEA_2024",
                                   "PCOS_GUIDELINE_2023",
@@ -5748,7 +5748,7 @@
                   {
                     "id": "infertility_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Infertility mimic/exclusion",
+                    "label": "Infertility alternate route",
                     "edgeLabel": "Alternate diagnosis: competing diagnosis better explains the presentation",
                     "source_ids": [
                       "ASRM_AMENORRHEA_2024",
@@ -6168,7 +6168,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "infertility_urgent_endpoint",
-          "expected_active_branch": "Escalate: Amenorrhea with visual symptoms; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; Infertility evaluation timing; Ovulation branch; >=12 months",
+          "expected_active_branch": "Urgent findings: Amenorrhea with visual symptoms; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; Infertility evaluation timing; Ovulation branch; >=12 months",
           "expected_path_node_ids": [
             "root",
             "infertility_concurrent_data_bundle",
@@ -6196,7 +6196,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "infertility_review_endpoint",
-          "expected_active_branch": "Review modifier: Infertility evaluation timing; Infertility endocrine redirection; discordant endocrine tests need correct timing",
+          "expected_active_branch": "Specialist input: Infertility evaluation timing; Infertility endocrine redirection; discordant endocrine tests need correct timing",
           "expected_path_node_ids": [
             "root",
             "infertility_concurrent_data_bundle",
@@ -6212,7 +6212,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "infertility_worsening_endpoint",
-          "expected_active_branch": "Escalate if reassessment worsens: Amenorrhea with visual symptoms; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; >=12 months; age <35; Pregnancy test if amenorrhea",
+          "expected_active_branch": "Worsening finding: Amenorrhea with visual symptoms; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; >=12 months; age <35; Pregnancy test if amenorrhea",
           "expected_path_node_ids": [
             "root",
             "infertility_concurrent_data_bundle",
@@ -6229,7 +6229,7 @@
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "infertility_deescalate_endpoint",
-          "expected_active_branch": "Narrow/stop when response and diagnosis certainty support it",
+          "expected_active_branch": "De-escalate when response, safety, and diagnostic certainty support it",
           "expected_path_node_ids": [
             "root",
             "infertility_concurrent_data_bundle",
@@ -6246,7 +6246,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "infertility_followup_endpoint",
-          "expected_active_branch": "Follow-up ready: result owner, interval, and return precautions",
+          "expected_active_branch": "Closure: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "infertility_concurrent_data_bundle",

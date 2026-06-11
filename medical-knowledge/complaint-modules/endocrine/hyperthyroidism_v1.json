@@ -3112,7 +3112,7 @@
         "hyperthyroidism_treatment_bundle": {
           "rule_id": "hyperthyroidism_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Start Hyperthyroidism (Overactive Thyroid) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
+          "description": "Use this Hyperthyroidism management branch when Use beta-blocker symptom control when not contraindicated for adrenergic symptoms or tachycardia; Use antithyroid drugs for Graves/toxic nodular hyperthyroidism when appropriate; Choose radioactive iodine; Suppressed TSH plus high FT4/T3 confirms overt hyperthyroidism; TRAb or uptake pattern changes etiology-specific treatment; Overt thyrotoxicosis biochemistry applies and patient-specific safety modifiers have been checked.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3270,7 +3270,7 @@
         "hyperthyroidism_review_endpoint": {
           "rule_id": "hyperthyroidism_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Hyperthyroidism (Overactive Thyroid) treatment or disposition depends on Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum; Suppressed TSH plus high FT4/T3 confirms overt hyperthyroidism.",
+          "description": "Use reviewer handoff when Hyperthyroidism (Overactive Thyroid) management changes because of Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum; Suppressed TSH plus high FT4/T3 confirms overt hyperthyroidism.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3683,7 +3683,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Screen for high-acuity findings; classify with TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; then choose emergency, treatment/disposition, review, mimic, monitoring, de-escalation, or follow-up branch.",
+        "action": "Send unstable patients to urgent care; compare TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; choose active management from Use beta-blocker symptom control when not contraindicated for adrenergic symptoms or tachycardia; Use antithyroid drugs for Graves/toxic nodular hyperthyroidism when appropriate; Choose radioactive iodine; Suppressed TSH plus high FT4/T3 confirms overt hyperthyroidism; TRAb or uptake pattern changes etiology-specific treatment; Overt thyrotoxicosis biochemistry; switch to competing diagnosis better explains the presentation when it fits better.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3751,8 +3751,8 @@
           {
             "id": "hyperthyroidism_concurrent_data_bundle",
             "type": "action",
-            "label": "Hyperthyroidism triage inputs",
-            "edgeLabel": "Assessment bundle: TSH, free T4, total/free T3; TRAb/TSI; RAIU or Doppler ultrasound when etiology unclear; Thyrotoxicosis safety data; TSH; free T4",
+            "label": "Hyperthyroidism data: TSH, free T4, total/free T3; TRAb/TSI; TSH",
+            "edgeLabel": "Hyperthyroidism data: TSH, free T4, total/free T3; TRAb/TSI; RAIU or Doppler ultrasound when etiology unclear; Thyrotoxicosis safety data; TSH; free T4",
             "source_ids": [
               "ATA_HYPERTHYROIDISM_2016",
               "AHRQ_CALIBRATE_DX"
@@ -3781,8 +3781,8 @@
               {
                 "id": "hyperthyroidism_classification_decision",
                 "type": "decision",
-                "label": "Hyperthyroidism severity thresholds",
-                "edgeLabel": "Classify using TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L",
+                "label": "Hyperthyroidism decision: Overt thyrotoxicosis biochemistry; TSH below LLN",
+                "edgeLabel": "Threshold route: TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L",
                 "source_ids": [
                   "ATA_HYPERTHYROIDISM_2016",
                   "AHRQ_CALIBRATE_DX"
@@ -3879,7 +3879,7 @@
                     }
                   ]
                 },
-                "action": "Match current patient data to TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
+                "action": "Compare current patient data with TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; route to urgent findings, active management, specialist-input modifier, or a named alternate diagnosis.",
                 "children": [
                   {
                     "id": "hyperthyroidism_missing_cutoff_data_endpoint",
@@ -3981,8 +3981,8 @@
                   {
                     "id": "hyperthyroidism_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Hyperthyroidism emergency criteria",
-                    "edgeLabel": "Escalate: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; TSH below LLN; free T4 above ULN",
+                    "label": "Hyperthyroidism urgent: TSH below LLN",
+                    "edgeLabel": "Urgent findings: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; TSH below LLN; free T4 above ULN",
                     "source_ids": [
                       "ATA_HYPERTHYROIDISM_2016",
                       "AHRQ_CALIBRATE_DX"
@@ -4154,8 +4154,8 @@
                   {
                     "id": "hyperthyroidism_treatment_bundle",
                     "type": "action",
-                    "label": "Hyperthyroidism treatment/disposition",
-                    "edgeLabel": "Treat/dispose using confirmed category and safety data",
+                    "label": "Hyperthyroidism management plan",
+                    "edgeLabel": "Hyperthyroidism management: Use beta-blocker symptom control when not contraindicated for adrenergic symptoms or tachycardia; Use antithyroid drugs for Graves/toxic nodular hyperthyroidism when appropriate; Choose radioactive iodine",
                     "source_ids": [
                       "ATA_HYPERTHYROIDISM_2016",
                       "AHRQ_CALIBRATE_DX"
@@ -4163,7 +4163,7 @@
                     "criteria": {
                       "rule_id": "hyperthyroidism_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Start Hyperthyroidism (Overactive Thyroid) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
+                      "description": "Use this Hyperthyroidism management branch when Use beta-blocker symptom control when not contraindicated for adrenergic symptoms or tachycardia; Use antithyroid drugs for Graves/toxic nodular hyperthyroidism when appropriate; Choose radioactive iodine; Suppressed TSH plus high FT4/T3 confirms overt hyperthyroidism; TRAb or uptake pattern changes etiology-specific treatment; Overt thyrotoxicosis biochemistry applies and patient-specific safety modifiers have been checked.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4256,8 +4256,8 @@
                       {
                         "id": "hyperthyroidism_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Hyperthyroidism contraindication screen",
-                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
+                        "label": "Hyperthyroidism safety: Overt thyrotoxicosis biochemistry",
+                        "edgeLabel": "Therapy modifier: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum; Suppressed TSH plus high FT4/T3 confirms overt hyperthyroidism",
                         "source_ids": [
                           "ATA_HYPERTHYROIDISM_2016",
                           "AHRQ_CALIBRATE_DX"
@@ -4334,8 +4334,8 @@
                           {
                             "id": "hyperthyroidism_review_endpoint",
                             "type": "endpoint",
-                            "label": "Hyperthyroidism clinician review",
-                            "edgeLabel": "Review modifier: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum; Suppressed TSH plus high FT4/T3 confirms overt hyperthyroidism",
+                            "label": "Hyperthyroidism consult: Overt thyrotoxicosis biochemistry",
+                            "edgeLabel": "Specialist input: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum; Suppressed TSH plus high FT4/T3 confirms overt hyperthyroidism",
                             "source_ids": [
                               "ATA_HYPERTHYROIDISM_2016",
                               "AHRQ_CALIBRATE_DX"
@@ -4343,7 +4343,7 @@
                             "criteria": {
                               "rule_id": "hyperthyroidism_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Hyperthyroidism (Overactive Thyroid) treatment or disposition depends on Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum; Suppressed TSH plus high FT4/T3 confirms overt hyperthyroidism.",
+                              "description": "Use reviewer handoff when Hyperthyroidism (Overactive Thyroid) management changes because of Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum; Suppressed TSH plus high FT4/T3 confirms overt hyperthyroidism.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4366,8 +4366,8 @@
                           {
                             "id": "hyperthyroidism_monitoring_bundle",
                             "type": "action",
-                            "label": "Hyperthyroidism response monitoring",
-                            "edgeLabel": "Monitor: TSH below LLN; free T4 above ULN; TSH, free T4, total/free T3; TRAb/TSI; treatment response",
+                            "label": "Hyperthyroidism trend: TSH below LLN; TSH, free T4, total/free T3",
+                            "edgeLabel": "Hyperthyroidism trend: TSH below LLN; free T4 above ULN; TSH, free T4, total/free T3; TRAb/TSI; treatment response",
                             "source_ids": [
                               "ATA_HYPERTHYROIDISM_2016",
                               "AHRQ_CALIBRATE_DX"
@@ -4466,8 +4466,8 @@
                               {
                                 "id": "hyperthyroidism_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Hyperthyroidism deterioration criteria",
-                                "edgeLabel": "Escalate if reassessment worsens: TSH below LLN; free T4 above ULN; TSH, free T4, total/free T3; worsening symptoms or treatment intolerance",
+                                "label": "Hyperthyroidism worse: TSH below LLN",
+                                "edgeLabel": "Worsening finding: TSH below LLN; free T4 above ULN; TSH, free T4, total/free T3; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "ATA_HYPERTHYROIDISM_2016",
                                   "AHRQ_CALIBRATE_DX"
@@ -4639,8 +4639,8 @@
                               {
                                 "id": "hyperthyroidism_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Hyperthyroidism stop/narrow criteria",
-                                "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
+                                "label": "Hyperthyroidism de-escalate: TSH below LLN",
+                                "edgeLabel": "De-escalate when response, safety, and diagnostic certainty support it",
                                 "source_ids": [
                                   "ATA_HYPERTHYROIDISM_2016",
                                   "AHRQ_CALIBRATE_DX"
@@ -4812,8 +4812,8 @@
                               {
                                 "id": "hyperthyroidism_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Hyperthyroidism follow-up and safety-net",
-                                "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
+                                "label": "Hyperthyroidism return: return precautions",
+                                "edgeLabel": "Closure: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ATA_HYPERTHYROIDISM_2016",
                                   "AHRQ_CALIBRATE_DX"
@@ -5013,7 +5013,7 @@
                   {
                     "id": "hyperthyroidism_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Hyperthyroidism mimic/exclusion",
+                    "label": "Hyperthyroidism alternate route",
                     "edgeLabel": "Alternate diagnosis: competing diagnosis better explains the presentation",
                     "source_ids": [
                       "ATA_HYPERTHYROIDISM_2016",
@@ -5404,7 +5404,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "hyperthyroidism_urgent_endpoint",
-          "expected_active_branch": "Escalate: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; TSH below LLN; free T4 above ULN",
+          "expected_active_branch": "Urgent findings: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; TSH below LLN; free T4 above ULN",
           "expected_path_node_ids": [
             "root",
             "hyperthyroidism_concurrent_data_bundle",
@@ -5432,7 +5432,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "hyperthyroidism_review_endpoint",
-          "expected_active_branch": "Review modifier: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum; Suppressed TSH plus high FT4/T3 confirms overt hyperthyroidism",
+          "expected_active_branch": "Specialist input: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum; Suppressed TSH plus high FT4/T3 confirms overt hyperthyroidism",
           "expected_path_node_ids": [
             "root",
             "hyperthyroidism_concurrent_data_bundle",
@@ -5448,7 +5448,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "hyperthyroidism_worsening_endpoint",
-          "expected_active_branch": "Escalate if reassessment worsens: TSH below LLN; free T4 above ULN; TSH, free T4, total/free T3; worsening symptoms or treatment intolerance",
+          "expected_active_branch": "Worsening finding: TSH below LLN; free T4 above ULN; TSH, free T4, total/free T3; worsening symptoms or treatment intolerance",
           "expected_path_node_ids": [
             "root",
             "hyperthyroidism_concurrent_data_bundle",
@@ -5465,7 +5465,7 @@
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "hyperthyroidism_deescalate_endpoint",
-          "expected_active_branch": "Narrow/stop when response and diagnosis certainty support it",
+          "expected_active_branch": "De-escalate when response, safety, and diagnostic certainty support it",
           "expected_path_node_ids": [
             "root",
             "hyperthyroidism_concurrent_data_bundle",
@@ -5482,7 +5482,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "hyperthyroidism_followup_endpoint",
-          "expected_active_branch": "Follow-up ready: result owner, interval, and return precautions",
+          "expected_active_branch": "Closure: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "hyperthyroidism_concurrent_data_bundle",

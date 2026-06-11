@@ -3168,7 +3168,7 @@
         "graves_disease_treatment_bundle": {
           "rule_id": "graves_disease_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Start Graves' Disease treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
+          "description": "Use this Graves' Disease management branch when Use beta-blocker symptom control when not contraindicated for adrenergic symptoms or tachycardia; Use antithyroid drugs for Graves/toxic nodular hyperthyroidism when appropriate; Choose radioactive iodine; TRAb-positive biochemical hyperthyroidism supports Graves; Orbitopathy changes radioactive iodine risk and ophthalmology urgency; Overt thyrotoxicosis biochemistry applies and patient-specific safety modifiers have been checked.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3326,7 +3326,7 @@
         "graves_disease_review_endpoint": {
           "rule_id": "graves_disease_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Graves' Disease treatment or disposition depends on Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum; TRAb-positive biochemical hyperthyroidism supports Graves.",
+          "description": "Use reviewer handoff when Graves' Disease management changes because of Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum; TRAb-positive biochemical hyperthyroidism supports Graves.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3739,7 +3739,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Screen for high-acuity findings; classify with TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; then choose emergency, treatment/disposition, review, mimic, monitoring, de-escalation, or follow-up branch.",
+        "action": "Send unstable patients to urgent care; compare TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; choose active management from Use beta-blocker symptom control when not contraindicated for adrenergic symptoms or tachycardia; Use antithyroid drugs for Graves/toxic nodular hyperthyroidism when appropriate; Choose radioactive iodine; TRAb-positive biochemical hyperthyroidism supports Graves; Orbitopathy changes radioactive iodine risk and ophthalmology urgency; Overt thyrotoxicosis biochemistry; switch to competing diagnosis better explains the presentation when it fits better.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3807,8 +3807,8 @@
           {
             "id": "graves_disease_concurrent_data_bundle",
             "type": "action",
-            "label": "Graves' Disease triage inputs",
-            "edgeLabel": "Assessment bundle: TSH, free T4, T3; TRAb/TSI; RAIU if TRAb negative, nodular, or unclear; Thyrotoxicosis safety data; TSH; free T4",
+            "label": "Graves' Disease data: TSH, free T4, T3; TRAb/TSI; TSH",
+            "edgeLabel": "Graves' Disease data: TSH, free T4, T3; TRAb/TSI; RAIU if TRAb negative, nodular, or unclear; Thyrotoxicosis safety data; TSH; free T4",
             "source_ids": [
               "ATA_HYPERTHYROIDISM_2016",
               "AHRQ_CALIBRATE_DX"
@@ -3837,8 +3837,8 @@
               {
                 "id": "graves_disease_classification_decision",
                 "type": "decision",
-                "label": "Graves' Disease severity thresholds",
-                "edgeLabel": "Classify using TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L",
+                "label": "Graves' Disease decision: Overt thyrotoxicosis biochemistry; TSH below LLN",
+                "edgeLabel": "Threshold route: TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L",
                 "source_ids": [
                   "ATA_HYPERTHYROIDISM_2016",
                   "AHRQ_CALIBRATE_DX"
@@ -3935,7 +3935,7 @@
                     }
                   ]
                 },
-                "action": "Match current patient data to TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
+                "action": "Compare current patient data with TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; route to urgent findings, active management, specialist-input modifier, or a named alternate diagnosis.",
                 "children": [
                   {
                     "id": "graves_disease_missing_cutoff_data_endpoint",
@@ -4037,8 +4037,8 @@
                   {
                     "id": "graves_disease_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Graves' Disease emergency criteria",
-                    "edgeLabel": "Escalate: Thyroid storm, vision-threatening orbitopathy, pregnancy with uncontrolled hyperthyroidism; Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; TSH below LLN; free T4 above ULN",
+                    "label": "Graves' Disease urgent: TSH below LLN",
+                    "edgeLabel": "Urgent findings: Thyroid storm, vision-threatening orbitopathy, pregnancy with uncontrolled hyperthyroidism; Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; TSH below LLN; free T4 above ULN",
                     "source_ids": [
                       "ATA_HYPERTHYROIDISM_2016",
                       "AHRQ_CALIBRATE_DX"
@@ -4210,8 +4210,8 @@
                   {
                     "id": "graves_disease_treatment_bundle",
                     "type": "action",
-                    "label": "Graves' Disease treatment/disposition",
-                    "edgeLabel": "Treat/dispose using confirmed category and safety data",
+                    "label": "Graves' Disease plan: TRAb-positive biochemical hyperthyroidism supports Graves",
+                    "edgeLabel": "Graves' Disease management: Use beta-blocker symptom control when not contraindicated for adrenergic symptoms or tachycardia; Use antithyroid drugs for Graves/toxic nodular hyperthyroidism when appropriate; Choose radioactive iodine",
                     "source_ids": [
                       "ATA_HYPERTHYROIDISM_2016",
                       "AHRQ_CALIBRATE_DX"
@@ -4219,7 +4219,7 @@
                     "criteria": {
                       "rule_id": "graves_disease_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Start Graves' Disease treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
+                      "description": "Use this Graves' Disease management branch when Use beta-blocker symptom control when not contraindicated for adrenergic symptoms or tachycardia; Use antithyroid drugs for Graves/toxic nodular hyperthyroidism when appropriate; Choose radioactive iodine; TRAb-positive biochemical hyperthyroidism supports Graves; Orbitopathy changes radioactive iodine risk and ophthalmology urgency; Overt thyrotoxicosis biochemistry applies and patient-specific safety modifiers have been checked.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4312,8 +4312,8 @@
                       {
                         "id": "graves_disease_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Graves' Disease contraindication screen",
-                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
+                        "label": "Graves' Disease safety: Overt thyrotoxicosis biochemistry",
+                        "edgeLabel": "Therapy modifier: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum; TRAb-positive biochemical hyperthyroidism supports Graves",
                         "source_ids": [
                           "ATA_HYPERTHYROIDISM_2016",
                           "AHRQ_CALIBRATE_DX"
@@ -4390,8 +4390,8 @@
                           {
                             "id": "graves_disease_review_endpoint",
                             "type": "endpoint",
-                            "label": "Graves' Disease clinician review",
-                            "edgeLabel": "Review modifier: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum; TRAb-positive biochemical hyperthyroidism supports Graves",
+                            "label": "Graves' Disease consult: Overt thyrotoxicosis biochemistry",
+                            "edgeLabel": "Specialist input: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum; TRAb-positive biochemical hyperthyroidism supports Graves",
                             "source_ids": [
                               "ATA_HYPERTHYROIDISM_2016",
                               "AHRQ_CALIBRATE_DX"
@@ -4399,7 +4399,7 @@
                             "criteria": {
                               "rule_id": "graves_disease_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Graves' Disease treatment or disposition depends on Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum; TRAb-positive biochemical hyperthyroidism supports Graves.",
+                              "description": "Use reviewer handoff when Graves' Disease management changes because of Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum; TRAb-positive biochemical hyperthyroidism supports Graves.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4422,8 +4422,8 @@
                           {
                             "id": "graves_disease_monitoring_bundle",
                             "type": "action",
-                            "label": "Graves' Disease response monitoring",
-                            "edgeLabel": "Monitor: TSH below LLN; free T4 above ULN; TSH, free T4, T3; TRAb/TSI; treatment response",
+                            "label": "Graves' Disease trend: TSH below LLN; TSH, free T4, T3",
+                            "edgeLabel": "Graves' Disease trend: TSH below LLN; free T4 above ULN; TSH, free T4, T3; TRAb/TSI; treatment response",
                             "source_ids": [
                               "ATA_HYPERTHYROIDISM_2016",
                               "AHRQ_CALIBRATE_DX"
@@ -4522,8 +4522,8 @@
                               {
                                 "id": "graves_disease_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Graves' Disease deterioration criteria",
-                                "edgeLabel": "Escalate if reassessment worsens: Thyroid storm, vision-threatening orbitopathy, pregnancy with uncontrolled hyperthyroidism; TSH below LLN; free T4 above ULN; TSH, free T4, T3; worsening symptoms or treatment intolerance",
+                                "label": "Graves' Disease worse: TSH below LLN",
+                                "edgeLabel": "Worsening finding: Thyroid storm, vision-threatening orbitopathy, pregnancy with uncontrolled hyperthyroidism; TSH below LLN; free T4 above ULN; TSH, free T4, T3; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "ATA_HYPERTHYROIDISM_2016",
                                   "AHRQ_CALIBRATE_DX"
@@ -4695,8 +4695,8 @@
                               {
                                 "id": "graves_disease_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Graves' Disease stop/narrow criteria",
-                                "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
+                                "label": "Graves' Disease de-escalate: TSH below LLN",
+                                "edgeLabel": "De-escalate when response, safety, and diagnostic certainty support it",
                                 "source_ids": [
                                   "ATA_HYPERTHYROIDISM_2016",
                                   "AHRQ_CALIBRATE_DX"
@@ -4868,8 +4868,8 @@
                               {
                                 "id": "graves_disease_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Graves' Disease follow-up and safety-net",
-                                "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
+                                "label": "Graves' Disease return: return precautions",
+                                "edgeLabel": "Closure: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ATA_HYPERTHYROIDISM_2016",
                                   "AHRQ_CALIBRATE_DX"
@@ -5069,7 +5069,7 @@
                   {
                     "id": "graves_disease_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Graves' Disease mimic/exclusion",
+                    "label": "Graves' Disease alternate route",
                     "edgeLabel": "Alternate diagnosis: competing diagnosis better explains the presentation",
                     "source_ids": [
                       "ATA_HYPERTHYROIDISM_2016",
@@ -5460,7 +5460,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "graves_disease_urgent_endpoint",
-          "expected_active_branch": "Escalate: Thyroid storm, vision-threatening orbitopathy, pregnancy with uncontrolled hyperthyroidism; Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; TSH below LLN; free T4 above ULN",
+          "expected_active_branch": "Urgent findings: Thyroid storm, vision-threatening orbitopathy, pregnancy with uncontrolled hyperthyroidism; Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; TSH below LLN; free T4 above ULN",
           "expected_path_node_ids": [
             "root",
             "graves_disease_concurrent_data_bundle",
@@ -5488,7 +5488,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "graves_disease_review_endpoint",
-          "expected_active_branch": "Review modifier: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum; TRAb-positive biochemical hyperthyroidism supports Graves",
+          "expected_active_branch": "Specialist input: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum; TRAb-positive biochemical hyperthyroidism supports Graves",
           "expected_path_node_ids": [
             "root",
             "graves_disease_concurrent_data_bundle",
@@ -5504,7 +5504,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "graves_disease_worsening_endpoint",
-          "expected_active_branch": "Escalate if reassessment worsens: Thyroid storm, vision-threatening orbitopathy, pregnancy with uncontrolled hyperthyroidism; TSH below LLN; free T4 above ULN; TSH, free T4, T3; worsening symptoms or treatment intolerance",
+          "expected_active_branch": "Worsening finding: Thyroid storm, vision-threatening orbitopathy, pregnancy with uncontrolled hyperthyroidism; TSH below LLN; free T4 above ULN; TSH, free T4, T3; worsening symptoms or treatment intolerance",
           "expected_path_node_ids": [
             "root",
             "graves_disease_concurrent_data_bundle",
@@ -5521,7 +5521,7 @@
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "graves_disease_deescalate_endpoint",
-          "expected_active_branch": "Narrow/stop when response and diagnosis certainty support it",
+          "expected_active_branch": "De-escalate when response, safety, and diagnostic certainty support it",
           "expected_path_node_ids": [
             "root",
             "graves_disease_concurrent_data_bundle",
@@ -5538,7 +5538,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "graves_disease_followup_endpoint",
-          "expected_active_branch": "Follow-up ready: result owner, interval, and return precautions",
+          "expected_active_branch": "Closure: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "graves_disease_concurrent_data_bundle",

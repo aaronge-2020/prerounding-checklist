@@ -3596,7 +3596,7 @@
         "adult_chest_pain_acs_emergency_endpoint": {
           "rule_id": "adult_chest_pain_acs_emergency_criteria",
           "source": "criteria",
-          "description": "Use when acute coronary syndrome, myocardial injury, unstable physiology, or high-risk structured criteria require emergency treatment/disposition rather than outpatient testing.",
+          "description": "Use when acute coronary syndrome, myocardial injury, unstable physiology, or high-risk structured criteria require monitored emergency care, cardiology evaluation, admission, or local ACS protocol rather than outpatient testing.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4806,7 +4806,7 @@
                     "criteria": {
                       "rule_id": "adult_chest_pain_acs_emergency_criteria",
                       "source": "criteria",
-                      "description": "Use when acute coronary syndrome, myocardial injury, unstable physiology, or high-risk structured criteria require emergency treatment/disposition rather than outpatient testing.",
+                      "description": "Use when acute coronary syndrome, myocardial injury, unstable physiology, or high-risk structured criteria require monitored emergency care, cardiology evaluation, admission, or local ACS protocol rather than outpatient testing.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",

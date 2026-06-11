@@ -2914,7 +2914,7 @@
         "diabetes_insipidus_treatment_bundle": {
           "rule_id": "diabetes_insipidus_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Start Diabetes Insipidus treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
+          "description": "Use this Diabetes Insipidus management branch when Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway; discordant endocrine tests need correct timing; Serum sodium normal about 135-145 mmol/L; Confirm hypotonic polyuria; Urine osmolality <300 mOsm/kg is hypotonic applies and patient-specific safety modifiers have been checked.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3162,7 +3162,7 @@
         "diabetes_insipidus_review_endpoint": {
           "rule_id": "diabetes_insipidus_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Diabetes Insipidus treatment or disposition depends on Serum sodium normal about 135-145 mmol/L; Confirm hypotonic polyuria; Urine osmolality <300 mOsm/kg is hypotonic; Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway.",
+          "description": "Use reviewer handoff when Diabetes Insipidus management changes because of Serum sodium normal about 135-145 mmol/L; Confirm hypotonic polyuria; Urine osmolality <300 mOsm/kg is hypotonic; Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3715,7 +3715,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Screen for high-acuity findings; classify with adult urine volume often >3; L/day or >40; 50 mL/kg; day with urine osmolality often <300 mOsm/kg; then choose emergency, treatment/disposition, review, mimic, monitoring, de-escalation, or follow-up branch.",
+        "action": "Send unstable patients to urgent care; compare adult urine volume often >3; L/day or >40; 50 mL/kg; day with urine osmolality often <300 mOsm/kg; choose active management from Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway; discordant endocrine tests need correct timing; Serum sodium normal about 135-145 mmol/L; Confirm hypotonic polyuria; Urine osmolality <300 mOsm/kg is hypotonic; switch to Serum sodium normal about 135-145 mmol/L when it fits better.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3783,8 +3783,8 @@
           {
             "id": "diabetes_insipidus_concurrent_data_bundle",
             "type": "action",
-            "label": "Diabetes Insipidus triage inputs",
-            "edgeLabel": "Assessment bundle: Confirm hypotonic polyuria; Serum sodium/plasma osmolality; Exclude osmotic diuresis: glucose, calcium, potassium, renal function; Water deprivation/desmopressin or copeptin-based test; adult urine volume often >3; L/day or >40",
+            "label": "Diabetes Insipidus data: Confirm hypotonic polyuria",
+            "edgeLabel": "Diabetes Insipidus data: Confirm hypotonic polyuria; Serum sodium/plasma osmolality; Exclude osmotic diuresis: glucose, calcium, potassium, renal function; Water deprivation/desmopressin or copeptin-based test; adult urine volume often >3; L/day or >40",
             "source_ids": [
               "ENDOTEXT_DI_2026",
               "SFE_CDI_2018",
@@ -3815,8 +3815,8 @@
               {
                 "id": "diabetes_insipidus_classification_decision",
                 "type": "decision",
-                "label": "Diabetes Insipidus severity thresholds",
-                "edgeLabel": "Classify using adult urine volume often >3; L/day or >40; 50 mL/kg; day with urine osmolality often <300 mOsm/kg",
+                "label": "Diabetes Insipidus decision: Diabetes Insipidus; adult urine volume often >3",
+                "edgeLabel": "Threshold route: adult urine volume often >3; L/day or >40; 50 mL/kg; day with urine osmolality often <300 mOsm/kg",
                 "source_ids": [
                   "ENDOTEXT_DI_2026",
                   "SFE_CDI_2018",
@@ -3948,7 +3948,7 @@
                     }
                   ]
                 },
-                "action": "Match current patient data to adult urine volume often >3; L/day or >40; 50 mL/kg; day with urine osmolality often <300 mOsm/kg; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
+                "action": "Compare current patient data with adult urine volume often >3; L/day or >40; 50 mL/kg; day with urine osmolality often <300 mOsm/kg; route to urgent findings, active management, specialist-input modifier, or a named alternate diagnosis.",
                 "children": [
                   {
                     "id": "diabetes_insipidus_missing_cutoff_data_endpoint",
@@ -4028,8 +4028,8 @@
                   {
                     "id": "diabetes_insipidus_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Diabetes Insipidus emergency criteria",
-                    "edgeLabel": "Escalate: Diabetes Insipidus; Serum sodium normal about 135-145 mmol/L; adult urine volume often >3; L/day or >40",
+                    "label": "Diabetes Insipidus urgent: adult urine volume often >3",
+                    "edgeLabel": "Urgent findings: Diabetes Insipidus; Serum sodium normal about 135-145 mmol/L; adult urine volume often >3; L/day or >40",
                     "source_ids": [
                       "ENDOTEXT_DI_2026",
                       "SFE_CDI_2018",
@@ -4269,8 +4269,8 @@
                   {
                     "id": "diabetes_insipidus_treatment_bundle",
                     "type": "action",
-                    "label": "Diabetes Insipidus treatment/disposition",
-                    "edgeLabel": "Treat/dispose using confirmed category and safety data",
+                    "label": "Diabetes Insipidus management plan",
+                    "edgeLabel": "Diabetes Insipidus management: Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway; discordant endocrine tests need correct timing; Serum sodium normal about 135-145 mmol/L; Confirm hypotonic polyuria",
                     "source_ids": [
                       "ENDOTEXT_DI_2026",
                       "SFE_CDI_2018",
@@ -4279,7 +4279,7 @@
                     "criteria": {
                       "rule_id": "diabetes_insipidus_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Start Diabetes Insipidus treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
+                      "description": "Use this Diabetes Insipidus management branch when Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway; discordant endocrine tests need correct timing; Serum sodium normal about 135-145 mmol/L; Confirm hypotonic polyuria; Urine osmolality <300 mOsm/kg is hypotonic applies and patient-specific safety modifiers have been checked.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4406,8 +4406,8 @@
                       {
                         "id": "diabetes_insipidus_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Diabetes Insipidus contraindication screen",
-                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
+                        "label": "Diabetes Insipidus safety: Serum sodium normal about 135-145 mmol/L",
+                        "edgeLabel": "Therapy modifier: Serum sodium normal about 135-145 mmol/L; Confirm hypotonic polyuria; Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway; discordant endocrine tests need correct timing",
                         "source_ids": [
                           "ENDOTEXT_DI_2026",
                           "SFE_CDI_2018",
@@ -4541,8 +4541,8 @@
                           {
                             "id": "diabetes_insipidus_review_endpoint",
                             "type": "endpoint",
-                            "label": "Diabetes Insipidus clinician review",
-                            "edgeLabel": "Review modifier: Serum sodium normal about 135-145 mmol/L; Confirm hypotonic polyuria; Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway; discordant endocrine tests need correct timing",
+                            "label": "Diabetes Insipidus consult: Serum sodium normal about 135-145 mmol/L",
+                            "edgeLabel": "Specialist input: Serum sodium normal about 135-145 mmol/L; Confirm hypotonic polyuria; Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway; discordant endocrine tests need correct timing",
                             "source_ids": [
                               "ENDOTEXT_DI_2026",
                               "SFE_CDI_2018",
@@ -4551,7 +4551,7 @@
                             "criteria": {
                               "rule_id": "diabetes_insipidus_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Diabetes Insipidus treatment or disposition depends on Serum sodium normal about 135-145 mmol/L; Confirm hypotonic polyuria; Urine osmolality <300 mOsm/kg is hypotonic; Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway.",
+                              "description": "Use reviewer handoff when Diabetes Insipidus management changes because of Serum sodium normal about 135-145 mmol/L; Confirm hypotonic polyuria; Urine osmolality <300 mOsm/kg is hypotonic; Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4575,8 +4575,8 @@
                           {
                             "id": "diabetes_insipidus_monitoring_bundle",
                             "type": "action",
-                            "label": "Diabetes Insipidus response monitoring",
-                            "edgeLabel": "Monitor: adult urine volume often >3; L/day or >40; Confirm hypotonic polyuria; Serum sodium/plasma osmolality; treatment response",
+                            "label": "Diabetes Insipidus trend: adult urine volume often >3",
+                            "edgeLabel": "Diabetes Insipidus trend: adult urine volume often >3; L/day or >40; Confirm hypotonic polyuria; Serum sodium/plasma osmolality; treatment response",
                             "source_ids": [
                               "ENDOTEXT_DI_2026",
                               "SFE_CDI_2018",
@@ -4710,8 +4710,8 @@
                               {
                                 "id": "diabetes_insipidus_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Diabetes Insipidus deterioration criteria",
-                                "edgeLabel": "Escalate if reassessment worsens: adult urine volume often >3; L/day or >40; Confirm hypotonic polyuria; worsening symptoms or treatment intolerance",
+                                "label": "Diabetes Insipidus worse: adult urine volume often >3",
+                                "edgeLabel": "Worsening finding: adult urine volume often >3; L/day or >40; Confirm hypotonic polyuria; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "ENDOTEXT_DI_2026",
                                   "SFE_CDI_2018",
@@ -4951,8 +4951,8 @@
                               {
                                 "id": "diabetes_insipidus_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Diabetes Insipidus stop/narrow criteria",
-                                "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
+                                "label": "Diabetes Insipidus de-escalate: adult urine volume often >3",
+                                "edgeLabel": "De-escalate when response, safety, and diagnostic certainty support it",
                                 "source_ids": [
                                   "ENDOTEXT_DI_2026",
                                   "SFE_CDI_2018",
@@ -5192,8 +5192,8 @@
                               {
                                 "id": "diabetes_insipidus_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Diabetes Insipidus follow-up and safety-net",
-                                "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
+                                "label": "Diabetes Insipidus return: return precautions",
+                                "edgeLabel": "Closure: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ENDOTEXT_DI_2026",
                                   "SFE_CDI_2018",
@@ -5461,7 +5461,7 @@
                   {
                     "id": "diabetes_insipidus_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Diabetes Insipidus mimic/exclusion",
+                    "label": "Diabetes Insipidus alternate: Serum sodium normal about 135-145 mmol/L",
                     "edgeLabel": "Alternate diagnosis: Serum sodium normal about 135-145 mmol/L",
                     "source_ids": [
                       "ENDOTEXT_DI_2026",
@@ -5974,7 +5974,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "diabetes_insipidus_urgent_endpoint",
-          "expected_active_branch": "Escalate: Diabetes Insipidus; Serum sodium normal about 135-145 mmol/L; adult urine volume often >3; L/day or >40",
+          "expected_active_branch": "Urgent findings: Diabetes Insipidus; Serum sodium normal about 135-145 mmol/L; adult urine volume often >3; L/day or >40",
           "expected_path_node_ids": [
             "root",
             "diabetes_insipidus_concurrent_data_bundle",
@@ -6002,7 +6002,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "diabetes_insipidus_review_endpoint",
-          "expected_active_branch": "Review modifier: Serum sodium normal about 135-145 mmol/L; Confirm hypotonic polyuria; Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway; discordant endocrine tests need correct timing",
+          "expected_active_branch": "Specialist input: Serum sodium normal about 135-145 mmol/L; Confirm hypotonic polyuria; Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway; discordant endocrine tests need correct timing",
           "expected_path_node_ids": [
             "root",
             "diabetes_insipidus_concurrent_data_bundle",
@@ -6018,7 +6018,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "diabetes_insipidus_worsening_endpoint",
-          "expected_active_branch": "Escalate if reassessment worsens: adult urine volume often >3; L/day or >40; Confirm hypotonic polyuria; worsening symptoms or treatment intolerance",
+          "expected_active_branch": "Worsening finding: adult urine volume often >3; L/day or >40; Confirm hypotonic polyuria; worsening symptoms or treatment intolerance",
           "expected_path_node_ids": [
             "root",
             "diabetes_insipidus_concurrent_data_bundle",
@@ -6035,7 +6035,7 @@
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "diabetes_insipidus_deescalate_endpoint",
-          "expected_active_branch": "Narrow/stop when response and diagnosis certainty support it",
+          "expected_active_branch": "De-escalate when response, safety, and diagnostic certainty support it",
           "expected_path_node_ids": [
             "root",
             "diabetes_insipidus_concurrent_data_bundle",
@@ -6052,7 +6052,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "diabetes_insipidus_followup_endpoint",
-          "expected_active_branch": "Follow-up ready: result owner, interval, and return precautions",
+          "expected_active_branch": "Closure: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "diabetes_insipidus_concurrent_data_bundle",

@@ -2875,7 +2875,7 @@
         "hypogonadism_treatment_bundle": {
           "rule_id": "hypogonadism_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Start Hypogonadism (Low Testosterone in Men) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
+          "description": "Use this Hypogonadism management branch when Treat reversible causes such as obesity; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing; Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review applies and patient-specific safety modifiers have been checked.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2985,7 +2985,7 @@
         "hypogonadism_review_endpoint": {
           "rule_id": "hypogonadism_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Hypogonadism (Low Testosterone in Men) treatment or disposition depends on Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing; Treat reversible causes such as obesity.",
+          "description": "Use reviewer handoff when Hypogonadism (Low Testosterone in Men) management changes because of Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing; Treat reversible causes such as obesity.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3302,7 +3302,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Screen for high-acuity findings; classify with <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%; then choose emergency, treatment/disposition, review, mimic, monitoring, de-escalation, or follow-up branch.",
+        "action": "Send unstable patients to urgent care; compare <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%; choose active management from Treat reversible causes such as obesity; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing; Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; switch to competing diagnosis better explains the presentation when it fits better.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3370,8 +3370,8 @@
           {
             "id": "hypogonadism_concurrent_data_bundle",
             "type": "action",
-            "label": "Hypogonadism triage inputs",
-            "edgeLabel": "Assessment bundle: Morning total testosterone on two occasions; Free testosterone if SHBG altered or total near lower limit; LH/FSH; Prolactin, iron studies, pituitary evaluation when secondary; testosterone; prolactin",
+            "label": "Hypogonadism data: Morning total testosterone on two occasions",
+            "edgeLabel": "Hypogonadism data: Morning total testosterone on two occasions; Free testosterone if SHBG altered or total near lower limit; LH/FSH; Prolactin, iron studies, pituitary evaluation when secondary; testosterone; prolactin",
             "source_ids": [
               "ES_TESTOSTERONE_2018",
               "AUA_TESTOSTERONE_2024",
@@ -3402,8 +3402,8 @@
               {
                 "id": "hypogonadism_classification_decision",
                 "type": "decision",
-                "label": "Hypogonadism severity thresholds",
-                "edgeLabel": "Classify using <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%",
+                "label": "Hypogonadism decision: Male hypogonadism pituitary imaging trigger; <150 ng/dL",
+                "edgeLabel": "Threshold route: <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%",
                 "source_ids": [
                   "ES_TESTOSTERONE_2018",
                   "AUA_TESTOSTERONE_2024",
@@ -3476,7 +3476,7 @@
                     }
                   ]
                 },
-                "action": "Match current patient data to <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
+                "action": "Compare current patient data with <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%; route to urgent findings, active management, specialist-input modifier, or a named alternate diagnosis.",
                 "children": [
                   {
                     "id": "hypogonadism_missing_cutoff_data_endpoint",
@@ -3572,8 +3572,8 @@
                   {
                     "id": "hypogonadism_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Hypogonadism emergency criteria",
-                    "edgeLabel": "Escalate: New severe headache/vision loss; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; <150 ng/dL",
+                    "label": "Hypogonadism urgent: New severe headache/vision loss",
+                    "edgeLabel": "Urgent findings: New severe headache/vision loss; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; <150 ng/dL",
                     "source_ids": [
                       "ES_TESTOSTERONE_2018",
                       "AUA_TESTOSTERONE_2024",
@@ -3695,8 +3695,8 @@
                   {
                     "id": "hypogonadism_treatment_bundle",
                     "type": "action",
-                    "label": "Hypogonadism treatment/disposition",
-                    "edgeLabel": "Treat/dispose using confirmed category and safety data",
+                    "label": "Hypogonadism plan: Treat reversible causes such as obesity",
+                    "edgeLabel": "Hypogonadism management: Treat reversible causes such as obesity; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing; Male hypogonadism pituitary imaging trigger",
                     "source_ids": [
                       "ES_TESTOSTERONE_2018",
                       "AUA_TESTOSTERONE_2024",
@@ -3705,7 +3705,7 @@
                     "criteria": {
                       "rule_id": "hypogonadism_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Start Hypogonadism (Low Testosterone in Men) treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.",
+                      "description": "Use this Hypogonadism management branch when Treat reversible causes such as obesity; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing; Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review applies and patient-specific safety modifiers have been checked.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -3773,8 +3773,8 @@
                       {
                         "id": "hypogonadism_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Hypogonadism contraindication screen",
-                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
+                        "label": "Hypogonadism safety: Male hypogonadism pituitary imaging trigger",
+                        "edgeLabel": "Therapy modifier: Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing",
                         "source_ids": [
                           "ES_TESTOSTERONE_2018",
                           "AUA_TESTOSTERONE_2024",
@@ -3829,8 +3829,8 @@
                           {
                             "id": "hypogonadism_review_endpoint",
                             "type": "endpoint",
-                            "label": "Hypogonadism clinician review",
-                            "edgeLabel": "Review modifier: Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing",
+                            "label": "Hypogonadism consult: Male hypogonadism pituitary imaging trigger",
+                            "edgeLabel": "Specialist input: Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing",
                             "source_ids": [
                               "ES_TESTOSTERONE_2018",
                               "AUA_TESTOSTERONE_2024",
@@ -3839,7 +3839,7 @@
                             "criteria": {
                               "rule_id": "hypogonadism_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Hypogonadism (Low Testosterone in Men) treatment or disposition depends on Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing; Treat reversible causes such as obesity.",
+                              "description": "Use reviewer handoff when Hypogonadism (Low Testosterone in Men) management changes because of Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing; Treat reversible causes such as obesity.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -3863,8 +3863,8 @@
                           {
                             "id": "hypogonadism_monitoring_bundle",
                             "type": "action",
-                            "label": "Hypogonadism response monitoring",
-                            "edgeLabel": "Monitor: <150 ng/dL; >4 ng/mL; Morning total testosterone on two occasions; Free testosterone if SHBG altered or total near lower limit; treatment response",
+                            "label": "Hypogonadism trend: <150 ng/dL; Morning total testosterone on two occasions",
+                            "edgeLabel": "Hypogonadism trend: <150 ng/dL; >4 ng/mL; Morning total testosterone on two occasions; Free testosterone if SHBG altered or total near lower limit; treatment response",
                             "source_ids": [
                               "ES_TESTOSTERONE_2018",
                               "AUA_TESTOSTERONE_2024",
@@ -3939,8 +3939,8 @@
                               {
                                 "id": "hypogonadism_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Hypogonadism deterioration criteria",
-                                "edgeLabel": "Escalate if reassessment worsens: New severe headache/vision loss; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; <150 ng/dL; >4 ng/mL; Morning total testosterone on two occasions",
+                                "label": "Hypogonadism worse: New severe headache/vision loss; <150 ng/dL",
+                                "edgeLabel": "Worsening finding: New severe headache/vision loss; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; <150 ng/dL; >4 ng/mL; Morning total testosterone on two occasions",
                                 "source_ids": [
                                   "ES_TESTOSTERONE_2018",
                                   "AUA_TESTOSTERONE_2024",
@@ -4062,8 +4062,8 @@
                               {
                                 "id": "hypogonadism_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Hypogonadism stop/narrow criteria",
-                                "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
+                                "label": "Hypogonadism de-escalate: <150 ng/dL",
+                                "edgeLabel": "De-escalate when response, safety, and diagnostic certainty support it",
                                 "source_ids": [
                                   "ES_TESTOSTERONE_2018",
                                   "AUA_TESTOSTERONE_2024",
@@ -4185,8 +4185,8 @@
                               {
                                 "id": "hypogonadism_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Hypogonadism follow-up and safety-net",
-                                "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
+                                "label": "Hypogonadism return: Fertility plans change away from exogenous testosterone",
+                                "edgeLabel": "Closure: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ES_TESTOSTERONE_2018",
                                   "AUA_TESTOSTERONE_2024",
@@ -4335,7 +4335,7 @@
                   {
                     "id": "hypogonadism_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Hypogonadism mimic/exclusion",
+                    "label": "Hypogonadism alternate route",
                     "edgeLabel": "Alternate diagnosis: competing diagnosis better explains the presentation",
                     "source_ids": [
                       "ES_TESTOSTERONE_2018",
@@ -4620,7 +4620,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "hypogonadism_urgent_endpoint",
-          "expected_active_branch": "Escalate: New severe headache/vision loss; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; <150 ng/dL",
+          "expected_active_branch": "Urgent findings: New severe headache/vision loss; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; <150 ng/dL",
           "expected_path_node_ids": [
             "root",
             "hypogonadism_concurrent_data_bundle",
@@ -4648,7 +4648,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "hypogonadism_review_endpoint",
-          "expected_active_branch": "Review modifier: Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing",
+          "expected_active_branch": "Specialist input: Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing",
           "expected_path_node_ids": [
             "root",
             "hypogonadism_concurrent_data_bundle",
@@ -4664,7 +4664,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "hypogonadism_worsening_endpoint",
-          "expected_active_branch": "Escalate if reassessment worsens: New severe headache/vision loss; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; <150 ng/dL; >4 ng/mL; Morning total testosterone on two occasions",
+          "expected_active_branch": "Worsening finding: New severe headache/vision loss; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; <150 ng/dL; >4 ng/mL; Morning total testosterone on two occasions",
           "expected_path_node_ids": [
             "root",
             "hypogonadism_concurrent_data_bundle",
@@ -4681,7 +4681,7 @@
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "hypogonadism_deescalate_endpoint",
-          "expected_active_branch": "Narrow/stop when response and diagnosis certainty support it",
+          "expected_active_branch": "De-escalate when response, safety, and diagnostic certainty support it",
           "expected_path_node_ids": [
             "root",
             "hypogonadism_concurrent_data_bundle",
@@ -4698,7 +4698,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "hypogonadism_followup_endpoint",
-          "expected_active_branch": "Follow-up ready: result owner, interval, and return precautions",
+          "expected_active_branch": "Closure: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "hypogonadism_concurrent_data_bundle",
