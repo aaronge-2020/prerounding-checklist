@@ -6528,7 +6528,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Gigantism: route GH excess by IGF-1/GH cutoffs, pituitary mass effect, treatment eligibility, comorbidities, and pediatric growth status",
+        "label": "Gigantism pathway",
         "edgeLabel": "",
         "source_ids": [
           "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
@@ -6638,7 +6638,7 @@
           {
             "id": "gigantism_initial_assessment",
             "type": "action",
-            "label": "Gigantism assessment: phenotype/growth pattern, IGF-1/ULN, OGTT GH, pituitary MRI, visual fields, comorbidities, medication, and growth-plate status",
+            "label": "Initial gigantism assessment",
             "edgeLabel": "Possible gigantism: rapid linear growth, tall stature beyond family/puberty trajectory, coarse/acral features, headaches/visual symptoms, pituitary mass, or clinician-chosen pediatric GH-excess evaluation",
             "source_ids": [
               "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
@@ -7011,7 +7011,7 @@
               {
                 "id": "gigantism_classification_decision",
                 "type": "decision",
-                "label": "Gigantism classification: missing biochemical data, urgent mass-effect/comorbidity risk, confirmed GH excess, mimic/confounder, or treatment pathway",
+                "label": "Choose GH-excess branch",
                 "edgeLabel": "Gigantism phenotype, IGF-1/ULN, OGTT GH nadir when needed, MRI/visual fields, comorbidities, medication, pregnancy or growth-plate context, and treatment history are available",
                 "source_ids": [
                   "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
@@ -7440,7 +7440,7 @@
                   {
                     "id": "gigantism_urgent_mass_effect_endpoint",
                     "type": "endpoint",
-                    "label": "Gigantism urgent escalation: apoplexy, visual loss, cranial nerve palsy, airway/OSA risk, cardiomyopathy, arrhythmia, severe glucose problem, or adrenal crisis",
+                    "label": "Urgent mass-effect or comorbidity risk",
                     "edgeLabel": "Emergency branch: acute severe headache, visual field loss, cranial nerve palsy, altered mental status, macroadenoma pregnancy symptoms, severe OSA/airway concern, high-output heart failure/cardiomyopathy, arrhythmia, uncontrolled diabetes, severe electrolyte/glucose abnormality, or adrenal crisis",
                     "source_ids": [
                       "ES_ACROMEGALY_2014",
@@ -8150,7 +8150,7 @@
                   {
                     "id": "gigantism_diagnostic_confirmation_endpoint",
                     "type": "endpoint",
-                    "label": "Gigantism diagnostic confirmation: IGF-1 >1.3 x ULN, OGTT suppression rule, pituitary MRI, and visual-field routing",
+                    "label": "Confirm GH excess biochemically",
                     "edgeLabel": "Diagnostic branch: typical Gigantism phenotype or rapid growth before epiphyseal closure with IGF-1 >1.3 x ULN, elevated/equivocal IGF-1 needing OGTT, or pituitary mass needing GH-excess exclusion",
                     "source_ids": [
                       "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
@@ -8850,7 +8850,7 @@
                   {
                     "id": "gigantism_mimic_or_confounded_endpoint",
                     "type": "endpoint",
-                    "label": "Gigantism mimic/confounder: normal IGF-1, physiologic variant, diabetes, organ failure, hypothyroidism, malnutrition, infection, estrogen, or pseudoacromegaly",
+                    "label": "Mimic or confounded GH/IGF-1 result",
                     "edgeLabel": "Alternate branch: IGF-1 normal for age/puberty, OGTT suppresses GH, phenotype is explained by adolescence/pregnancy or insulin-mediated pseudoacromegaly, or IGF-1/GH is confounded by diabetes, renal/hepatic disease, hypothyroidism, malnutrition, severe infection, oral estrogen, assay mismatch, or medication effect",
                     "source_ids": [
                       "ES_ACROMEGALY_2014",
@@ -9558,7 +9558,7 @@
                   {
                     "id": "gigantism_treatment_action",
                     "type": "action",
-                    "label": "Gigantism treatment: surgery first when resectable; medical/radiation or special-population review when needed",
+                    "label": "Choose GH-excess treatment route",
                     "edgeLabel": "Treatment branch: biochemical Gigantism is confirmed or highly likely, MRI/surgical candidacy and comorbidity modifiers are available, and acute instability is absent",
                     "source_ids": [
                       "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
@@ -9931,7 +9931,7 @@
                       {
                         "id": "gigantism_surgery_endpoint",
                         "type": "endpoint",
-                        "label": "Gigantism first-line pituitary treatment: transsphenoidal surgery, selective pre-op SRL for severe OSA/airway or high-output heart failure, and >=12-week postoperative testing",
+                        "label": "First-line pituitary surgery plan",
                         "edgeLabel": "Surgery branch: biochemical Gigantism diagnosis with resectable pituitary adenoma, no overriding contraindication, mass-effect plan known, and neurosurgical/pituitary-center pathway available",
                         "source_ids": [
                           "ES_ACROMEGALY_2014"
@@ -10637,7 +10637,7 @@
                       {
                         "id": "gigantism_medical_radiation_endpoint",
                         "type": "endpoint",
-                        "label": "Gigantism persistent/unresectable disease: SRL, pegvisomant, cabergoline, combination therapy, or radiotherapy with safety monitoring",
+                        "label": "Persistent or unresectable GH excess",
                         "edgeLabel": "Medical/radiation branch: persistent active Gigantism after surgery, unresectable/cavernous sinus disease without chiasmal compression, poor surgical candidate, recurrent disease, medication sequencing need, or residual mass with failed/unavailable/not tolerated medical therapy",
                         "source_ids": [
                           "ES_ACROMEGALY_2014",
@@ -11347,7 +11347,7 @@
                       {
                         "id": "gigantism_special_population_endpoint",
                         "type": "endpoint",
-                        "label": "Pediatric gigantism: rapid growth before epiphyseal closure needs pediatric endocrinology, pituitary MRI, genetic/syndromic review, and adult GH-excess targets",
+                        "label": "Pediatric gigantism specialist review",
                         "edgeLabel": "Special-population branch: GH excess begins before epiphyseal closure, rapid height acceleration or tall stature crosses expected family/puberty trajectory, pediatric pituitary mass is present, or syndromic/genetic risk changes care",
                         "source_ids": [
                           "ES_ACROMEGALY_2014"
@@ -12046,7 +12046,7 @@
                       {
                         "id": "gigantism_monitoring_endpoint",
                         "type": "endpoint",
-                        "label": "Gigantism monitoring/remission: age-normalized IGF-1, random GH <1 ug/L, MRI, pituitary axes, comorbidities, and medication toxicity",
+                        "label": "GH-excess monitoring and remission",
                         "edgeLabel": "Monitoring branch: treatment has occurred or is ongoing, biochemical response, tumor size, pituitary deficits, comorbidities, medication toxicity, or radiation effects need reassessment",
                         "source_ids": [
                           "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
@@ -12760,7 +12760,7 @@
                       {
                         "id": "gigantism_followup_safety_endpoint",
                         "type": "endpoint",
-                        "label": "Gigantism follow-up and safety-net: remission, recurrence, medication toxicity, mass-effect symptoms, comorbidity owners, and specialty follow-up",
+                        "label": "GH-excess follow-up and safety-net",
                         "edgeLabel": "Disposition branch: no acute mass effect, active treatment or remission plan documented, pending tests owned, pituitary-center follow-up scheduled, and return precautions reviewed",
                         "source_ids": [
                           "ACROMEGALY_DIAGNOSIS_REMISSION_2024",

@@ -5600,8 +5600,8 @@ function buildGrowthHormoneExcessClinicalPathwayTree(module, sourceById, growthM
     ? ["height velocity", "height SDS/percentile", "mid-parental target height", "pubertal stage", "bone age", "epiphyseal/growth-plate status"]
     : ["acral/facial feature progression", "ring/shoe/hat size change", "jaw spacing", "carpal tunnel", "hyperhidrosis", "skin tags"];
   const specialLabel = isGigantism
-    ? "Pediatric gigantism: rapid growth before epiphyseal closure needs pediatric endocrinology, pituitary MRI, genetic/syndromic review, and adult GH-excess targets"
-    : "Acromegaly pregnancy/fertility: stop long-acting SRL or pegvisomant about 2 months before conception and monitor macroadenoma visual fields";
+    ? "Pediatric gigantism specialist review"
+    : "Pregnancy or fertility GH-excess review";
   const specialAction = isGigantism
     ? "For GH excess before epiphyseal closure, treat urgently with a pediatric pituitary team: document height velocity, height SDS/percentile, pubertal stage, bone age, epiphyseal status, visual field risk, pituitary MRI, family history and syndromic/genetic clues, and then normalize GH/IGF-1 using the same surgery/medical/radiation framework while protecting growth, puberty, and school/function follow-up."
     : "For planned pregnancy, stop long-acting SRL formulations and pegvisomant about 2 months before attempts to conceive; during pregnancy withhold medical therapy unless tumor growth or headache control requires treatment, use serial visual field testing for macroadenomas, and do not use GH or IGF-1 levels for pregnancy monitoring.";
@@ -5772,7 +5772,7 @@ function buildGrowthHormoneExcessClinicalPathwayTree(module, sourceById, growthM
 
   const urgentEndpoint = endpoint({
     id: `${prefix}_urgent_mass_effect_endpoint`,
-    label: `${label} urgent escalation: apoplexy, visual loss, cranial nerve palsy, airway/OSA risk, cardiomyopathy, arrhythmia, severe glucose problem, or adrenal crisis`,
+    label: "Urgent mass-effect or comorbidity risk",
     edgeLabel: `Emergency branch: acute severe headache, visual field loss, cranial nerve palsy, altered mental status, macroadenoma pregnancy symptoms, severe OSA/airway concern, high-output heart failure/cardiomyopathy, arrhythmia, uncontrolled diabetes, severe electrolyte/glucose abnormality, or adrenal crisis`,
     sourceIds: unique([...es, ...complications]),
     criteria: criteria(`${prefix}_urgent_criteria`, `Escalate ${label} before routine endocrine sequencing when pituitary mass effect, apoplexy, cardiopulmonary/sleep, glucose, adrenal, pregnancy, or pediatric growth-threatening risk is present.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "pregnancy_status", "workup_findings"], unique([...es, ...complications]), { criteria_options: criteriaRows }),
@@ -5784,7 +5784,7 @@ function buildGrowthHormoneExcessClinicalPathwayTree(module, sourceById, growthM
 
   const diagnosticEndpoint = endpoint({
     id: `${prefix}_diagnostic_confirmation_endpoint`,
-    label: `${label} diagnostic confirmation: IGF-1 >1.3 x ULN, OGTT suppression rule, pituitary MRI, and visual-field routing`,
+    label: "Confirm GH excess biochemically",
     edgeLabel: `Diagnostic branch: typical ${label} phenotype or ${isGigantism ? "rapid growth before epiphyseal closure" : "acral/facial feature progression"} with IGF-1 >1.3 x ULN, elevated/equivocal IGF-1 needing OGTT, or pituitary mass needing GH-excess exclusion`,
     sourceIds: unique([...diagnosis, ...es]),
     criteria: criteria(`${prefix}_diagnostic_confirmation_criteria`, `Use when ${label} biochemical and imaging data can establish or exclude GH excess.`, ["symptoms", "exam", "labs", "imaging_results", "demographics", "workup_findings"], unique([...diagnosis, ...es]), { criteria_options: criteriaRows }),
@@ -5795,7 +5795,7 @@ function buildGrowthHormoneExcessClinicalPathwayTree(module, sourceById, growthM
 
   const mimicEndpoint = endpoint({
     id: `${prefix}_mimic_or_confounded_endpoint`,
-    label: `${label} mimic/confounder: normal IGF-1, physiologic variant, diabetes, organ failure, hypothyroidism, malnutrition, infection, estrogen, or pseudoacromegaly`,
+    label: "Mimic or confounded GH/IGF-1 result",
     edgeLabel: `Alternate branch: IGF-1 normal for age/puberty, OGTT suppresses GH, phenotype is explained by adolescence/pregnancy or insulin-mediated pseudoacromegaly, or IGF-1/GH is confounded by diabetes, renal/hepatic disease, hypothyroidism, malnutrition, severe infection, oral estrogen, assay mismatch, or medication effect`,
     sourceIds: sourceIdsForItems(differentials, sourceIds),
     criteria: criteria(`${prefix}_mimic_criteria`, `Use when ${label} criteria are absent or biochemical/imaging data are confounded by another diagnosis.`, ["symptoms", "exam", "labs", "medications", "comorbidities", "pregnancy_status", "workup_findings"], sourceIdsForItems(differentials, sourceIds), { criteria_options: criteriaRows }),
@@ -5807,7 +5807,7 @@ function buildGrowthHormoneExcessClinicalPathwayTree(module, sourceById, growthM
 
   const surgeryEndpoint = endpoint({
     id: `${prefix}_surgery_endpoint`,
-    label: `${label} first-line pituitary treatment: transsphenoidal surgery, selective pre-op SRL for severe OSA/airway or high-output heart failure, and >=12-week postoperative testing`,
+    label: "First-line pituitary surgery plan",
     edgeLabel: `Surgery branch: biochemical ${label} diagnosis with resectable pituitary adenoma, no overriding contraindication, mass-effect plan known, and neurosurgical/pituitary-center pathway available`,
     sourceIds: es,
     criteria: criteria(`${prefix}_surgery_criteria`, `Use when ${label} is biochemically confirmed and pituitary surgery is appropriate or needs specialist review.`, ["labs", "imaging_results", "comorbidities", "pregnancy_status", "workup_findings"], es, { criteria_options: criteriaRows }),
@@ -5819,7 +5819,7 @@ function buildGrowthHormoneExcessClinicalPathwayTree(module, sourceById, growthM
 
   const medicalEndpoint = endpoint({
     id: `${prefix}_medical_radiation_endpoint`,
-    label: `${label} persistent/unresectable disease: SRL, pegvisomant, cabergoline, combination therapy, or radiotherapy with safety monitoring`,
+    label: "Persistent or unresectable GH excess",
     edgeLabel: `Medical/radiation branch: persistent active ${label} after surgery, unresectable/cavernous sinus disease without chiasmal compression, poor surgical candidate, recurrent disease, medication sequencing need, or residual mass with failed/unavailable/not tolerated medical therapy`,
     sourceIds: unique([...es, ...pituitary]),
     criteria: criteria(`${prefix}_medical_radiation_criteria`, `Use when ${label} requires nonoperative or adjuvant therapy.`, ["labs", "imaging_results", "medications", "comorbidities", "pregnancy_status", "workup_findings"], unique([...es, ...pituitary]), { criteria_options: criteriaRows }),
@@ -5848,7 +5848,7 @@ function buildGrowthHormoneExcessClinicalPathwayTree(module, sourceById, growthM
 
   const monitoringEndpoint = endpoint({
     id: `${prefix}_monitoring_endpoint`,
-    label: `${label} monitoring/remission: age-normalized IGF-1, random GH <1 ug/L, MRI, pituitary axes, comorbidities, and medication toxicity`,
+    label: "GH-excess monitoring and remission",
     edgeLabel: `Monitoring branch: treatment has occurred or is ongoing, biochemical response, tumor size, pituitary deficits, comorbidities, medication toxicity, or radiation effects need reassessment`,
     sourceIds: unique([...diagnosis, ...es, ...complications]),
     criteria: criteria(`${prefix}_monitoring_criteria`, `Use after surgery, medical therapy, or radiation to decide response, escalation, or remission follow-up for ${label}.`, ["symptoms", "vitals", "labs", "imaging_results", "medications", "comorbidities", "workup_findings"], unique([...diagnosis, ...es, ...complications]), { criteria_options: criteriaRows }),
@@ -5860,7 +5860,7 @@ function buildGrowthHormoneExcessClinicalPathwayTree(module, sourceById, growthM
 
   const followupEndpoint = endpoint({
     id: `${prefix}_followup_safety_endpoint`,
-    label: `${label} follow-up and safety-net: remission, recurrence, medication toxicity, mass-effect symptoms, comorbidity owners, and specialty follow-up`,
+    label: "GH-excess follow-up and safety-net",
     edgeLabel: `Disposition branch: no acute mass effect, active treatment or remission plan documented, pending tests owned, pituitary-center follow-up scheduled, and return precautions reviewed`,
     sourceIds,
     criteria: criteria(`${prefix}_followup_safety_criteria`, `Use when ${label} has a stable outpatient or post-treatment plan with pending data and safety-net ownership.`, ["symptoms", "vitals", "labs", "imaging_results", "medications", "follow_up_access", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
@@ -5872,7 +5872,7 @@ function buildGrowthHormoneExcessClinicalPathwayTree(module, sourceById, growthM
 
   const treatmentAction = actionNode({
     id: `${prefix}_treatment_action`,
-    label: `${label} treatment: surgery first when resectable; medical/radiation or special-population review when needed`,
+    label: "Choose GH-excess treatment route",
     edgeLabel: `Treatment branch: biochemical ${label} is confirmed or highly likely, MRI/surgical candidacy and comorbidity modifiers are available, and acute instability is absent`,
     sourceIds,
     criteria: criteria(`${prefix}_treatment_action_criteria`, `Route ${label} therapy by resectability, mass effect, comorbidities, medication/radiation safety, pregnancy or pediatric context, response monitoring, and patient preference.`, contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -5884,7 +5884,7 @@ function buildGrowthHormoneExcessClinicalPathwayTree(module, sourceById, growthM
 
   const classificationDecision = decision({
     id: `${prefix}_classification_decision`,
-    label: `${label} classification: missing biochemical data, urgent mass-effect/comorbidity risk, confirmed GH excess, mimic/confounder, or treatment pathway`,
+    label: "Choose GH-excess branch",
     edgeLabel: `${label} phenotype, IGF-1/ULN, OGTT GH nadir when needed, MRI/visual fields, comorbidities, medication, pregnancy or growth-plate context, and treatment history are available`,
     sourceIds,
     criteria: criteria(`${prefix}_classification_criteria`, `Classify ${label} by GH-excess confirmation, urgent risk, mimic/confounder review, surgery/medical/radiation eligibility, special-population modifiers, and monitoring needs.`, contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -5896,7 +5896,7 @@ function buildGrowthHormoneExcessClinicalPathwayTree(module, sourceById, growthM
 
   const initialAssessment = actionNode({
     id: `${prefix}_initial_assessment`,
-    label: `${label} assessment: phenotype/growth pattern, IGF-1/ULN, OGTT GH, pituitary MRI, visual fields, comorbidities, medication, and ${isGigantism ? "growth-plate status" : "pregnancy/fertility status"}`,
+    label: isGigantism ? "Initial gigantism assessment" : "Initial acromegaly assessment",
     edgeLabel: isGigantism
       ? "Possible gigantism: rapid linear growth, tall stature beyond family/puberty trajectory, coarse/acral features, headaches/visual symptoms, pituitary mass, or clinician-chosen pediatric GH-excess evaluation"
       : "Possible acromegaly: acral/facial feature progression, pituitary mass, sleep apnea, diabetes, arthritis, carpal tunnel, hyperhidrosis, hypertension, headaches/visual symptoms, or clinician-chosen adult GH-excess evaluation",
@@ -5911,7 +5911,7 @@ function buildGrowthHormoneExcessClinicalPathwayTree(module, sourceById, growthM
 
   const root = decision({
     id: "root",
-    label: `${label}: route GH excess by IGF-1/GH cutoffs, pituitary mass effect, treatment eligibility, comorbidities, and ${isGigantism ? "pediatric growth status" : "adult pregnancy/fertility modifiers"}`,
+    label: isGigantism ? "Gigantism pathway" : "Acromegaly pathway",
     sourceIds,
     criteria: criteria(`${prefix}_activate`, `Activate for ${isGigantism ? "rapid growth/tall stature before epiphyseal closure, pediatric GH-excess phenotype, pituitary mass, or clinician-chosen gigantism evaluation" : "adult acromegaly phenotype, pituitary mass, associated comorbidity cluster, or clinician-chosen acromegaly evaluation"}.`, ["clinician_chosen_module", "symptoms", "exam", "labs", "imaging_results", "problem_list_or_diagnosis"], sourceIds),
     action: `Route ${label} through missing-data, urgent mass-effect/comorbidity escalation, IGF-1/OGTT diagnostic confirmation, mimic review, surgery, medical/radiation therapy, special-population review, monitoring/remission, follow-up, and safety-net endpoints.`,
@@ -7085,7 +7085,7 @@ function buildPediatricMskLimpHotJointClinicalPathwayTree(module, sourceById) {
 
   const sepsisEndpoint = endpoint({
     id: `${prefix}_sepsis_instability_endpoint`,
-    label: "Unstable pediatric limp or hot joint: sepsis, shock, toxic appearance, poor perfusion, altered mental status, or limb-threatening injury",
+    label: "Unstable limp or limb-threatening injury",
     edgeLabel: "Instability branch: shock, toxic appearance, altered mental status, hypoxemia, poor perfusion, rapidly worsening illness, limb-threatening trauma, neurovascular compromise, or severe disseminated infection features override routine limp workup",
     sourceIds: unique([...rchBji, ...chqBji, ...rchLimp]),
     criteria: criteria(`${prefix}_sepsis_instability_criteria`, "Use when abnormal physiology or limb-threatening findings require immediate escalation before a routine limp differential is completed.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "comorbidities", "workup_findings"], unique([...rchBji, ...chqBji, ...rchLimp]), { criteria_options: criteriaRows }),
@@ -7096,7 +7096,7 @@ function buildPediatricMskLimpHotJointClinicalPathwayTree(module, sourceById) {
 
   const septicArthritisEndpoint = endpoint({
     id: `${prefix}_septic_arthritis_emergency_endpoint`,
-    label: "Suspected pediatric septic arthritis: urgent orthopaedics, aspiration or washout, cultures, and antibiotics without treatment delay",
+    label: "Suspected septic arthritis",
     edgeLabel: "Septic arthritis branch: fever >38.5 C, hot/swollen joint, severe passive-motion pain, reduced ROM, refusal to weight bear, CRP >=20 mg/L, ESR >=40 mm/hr, WBC >12.0 x10^9/L, ultrasound effusion >=7 mm, purulent aspirate, positive Gram stain/culture, or high clinical suspicion",
     sourceIds: unique([...rchLimp, ...rchBji, ...chqBji, ...kocher, ...caird]),
     criteria: criteria(`${prefix}_septic_arthritis_criteria`, "Use when fever, non-weight-bearing, joint restriction, inflammatory markers, effusion, aspiration findings, or clinician concern make septic arthritis possible.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], unique([...rchLimp, ...rchBji, ...chqBji, ...kocher, ...caird]), { criteria_options: criteriaRows }),
@@ -7107,7 +7107,7 @@ function buildPediatricMskLimpHotJointClinicalPathwayTree(module, sourceById) {
 
   const boneInfectionEndpoint = endpoint({
     id: `${prefix}_bone_infection_admission_endpoint`,
-    label: "Suspected pediatric osteomyelitis, myositis, discitis, abscess, or bone/joint infection: admit for cultures, imaging, IV antibiotics, and orthopaedic/ID plan",
+    label: "Suspected bone or joint infection",
     edgeLabel: "Bone infection branch: fever or systemic symptoms plus focal bone pain/tenderness, limited limb use, elevated CRP/ESR/WBC, bacteremia, wound/puncture source, MRI concern, X-ray that may be normal for 7-10 days, abscess, myositis, discitis, or osteomyelitis concern",
     sourceIds: unique([...rchBji, ...chqBji, ...rchLimp]),
     criteria: criteria(`${prefix}_bone_infection_criteria`, "Use when pediatric limp or limb pain suggests osteomyelitis, deep infection, abscess, myositis, discitis, bacteremia, or complicated bone/joint infection.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "workup_findings"], unique([...rchBji, ...chqBji, ...rchLimp]), { criteria_options: criteriaRows }),
@@ -7118,7 +7118,7 @@ function buildPediatricMskLimpHotJointClinicalPathwayTree(module, sourceById) {
 
   const fractureSafeguardingEndpoint = endpoint({
     id: `${prefix}_fracture_safeguarding_endpoint`,
-    label: "Pediatric localized injury, occult fracture, toddler fracture, growth-plate injury, or safeguarding concern",
+    label: "Injury, occult fracture, or safeguarding concern",
     edgeLabel: "Injury/safeguarding branch: focal tenderness, trauma, deformity, swelling, persistent non-weight-bearing, negative initial X-ray with ongoing toddler-fracture concern, developmentally implausible story, delay, recurrent injury, bruising pattern, or unsafe discharge context",
     sourceIds: unique([...rchLimp, ...acr]),
     criteria: criteria(`${prefix}_fracture_safeguarding_criteria`, "Use when localized pain or history points to fracture, occult injury, growth-plate injury, dislocation, or inflicted injury rather than benign transient synovitis.", ["symptoms", "exam", "vitals", "imaging_results", "demographics", "workup_findings"], unique([...rchLimp, ...acr]), { criteria_options: criteriaRows }),
@@ -7129,7 +7129,7 @@ function buildPediatricMskLimpHotJointClinicalPathwayTree(module, sourceById) {
 
   const ageSpecificHipEndpoint = endpoint({
     id: `${prefix}_sufe_perthes_hip_endpoint`,
-    label: "Pediatric age-specific hip disease: SUFE, Perthes disease, DDH, apophysitis, stress injury, or referred knee pain",
+    label: "Age-specific hip disease",
     edgeLabel: "Age-specific hip branch: adolescent hip/groin/thigh/knee pain, weight >90th percentile, endocrine/puberty risk, painful limited internal rotation, frog-leg/pelvic X-ray concern, suspected SUFE with non-weight-bearing, male age 3-10 years with persistent limp, or early Perthes with possible normal X-ray",
     sourceIds: unique([...rchLimp, ...chqLimp]),
     criteria: criteria(`${prefix}_sufe_perthes_criteria`, "Use when age, sex, pain location, weight percentile, hip exam, or radiographs suggest SUFE, Perthes disease, DDH, apophysitis, stress injury, or referred hip disease.", ["symptoms", "exam", "vitals", "imaging_results", "demographics", "comorbidities", "workup_findings"], unique([...rchLimp, ...chqLimp]), { criteria_options: criteriaRows }),
@@ -7140,7 +7140,7 @@ function buildPediatricMskLimpHotJointClinicalPathwayTree(module, sourceById) {
 
   const systemicMimicEndpoint = endpoint({
     id: `${prefix}_systemic_mimic_endpoint`,
-    label: "Pediatric limp systemic mimic: malignancy, inflammatory arthritis, ARF, neurologic, abdominal, GU, hematologic, or referred pain",
+    label: "Systemic mimic or referred pain",
     edgeLabel: "Systemic mimic branch: night pain, weight loss, pallor, bruising, bleeding, recurrent fever, morning stiffness, rash, CRP >30 with ARF context, ECG conduction abnormality, neurologic deficit, abdominal/scrotal/GU symptoms, sickle/hemophilia pain, or recurrent/persistent unexplained limp",
     sourceIds: unique([...rchLimp, ...chqLimp]),
     criteria: criteria(`${prefix}_systemic_mimic_criteria`, "Use when the limp is not explained by isolated injury, transient synovitis, or focal infection and systemic, inflammatory, hematologic, neurologic, abdominal, or GU disease remains possible.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "comorbidities", "demographics", "workup_findings"], unique([...rchLimp, ...chqLimp]), { criteria_options: criteriaRows }),
@@ -7151,7 +7151,7 @@ function buildPediatricMskLimpHotJointClinicalPathwayTree(module, sourceById) {
 
   const lowRiskEndpoint = endpoint({
     id: `${prefix}_low_risk_limp_endpoint`,
-    label: "Low-risk pediatric limp or transient synovitis: no routine tests only after red flags are absent and the child walks comfortably with follow-up",
+    label: "Low-risk limp or transient synovitis",
     edgeLabel: "Low-risk branch: systemically well, no fever or only low-grade temperature <38.5 C consistent with transient synovitis, no red flags, mild or no discomfort after simple analgesia, able to walk or weight bear, high-risk diagnoses unlikely, working diagnosis documented, and review plan within 7 days if symptoms persist",
     sourceIds: unique([...rchLimp, ...chqLimp]),
     criteria: criteria(`${prefix}_low_risk_limp_criteria`, "Use low-risk pediatric limp care only when serious infection, fracture, SUFE/Perthes, systemic disease, safeguarding concern, and follow-up gaps are absent.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "follow_up_access", "workup_findings"], unique([...rchLimp, ...chqLimp]), { criteria_options: criteriaRows }),
@@ -7162,7 +7162,7 @@ function buildPediatricMskLimpHotJointClinicalPathwayTree(module, sourceById) {
 
   const specialReviewEndpoint = endpoint({
     id: `${prefix}_special_population_review_endpoint`,
-    label: "Pediatric limp special review: neonate, immunocompromise, sickle cell/hemophilia, MRSA/Pseudomonas risk, postoperative limb, pregnancy, or safeguarding",
+    label: "Special-population or safeguarding review",
     edgeLabel: "Special-population branch: neonate, age <3 months, immunocompromise, sickle cell/hemophilia, hardware/postoperative limb, puncture/water exposure, MRSA/Pseudomonas risk, pregnancy, safeguarding, or local transfer/formulary rule",
     sourceIds: unique([...rchBji, ...chqBji, ...rchLimp, ...chqLimp]),
     criteria: criteria(`${prefix}_special_population_review_criteria`, "Use when host factors, organism risk, wound context, pregnancy, postoperative status, or local child-safety/antimicrobial policy changes routine pediatric limp management.", ["demographics", "pregnancy_status", "medications", "comorbidities", "labs", "imaging_results", "local_policy", "workup_findings"], unique([...rchBji, ...chqBji, ...rchLimp, ...chqLimp]), { criteria_options: criteriaRows }),
@@ -7173,8 +7173,8 @@ function buildPediatricMskLimpHotJointClinicalPathwayTree(module, sourceById) {
 
   const worseningEndpoint = endpoint({
     id: `${prefix}_worsening_endpoint`,
-    label: "Pediatric limp reassessment escalation: fever, worsening pain, persistent non-weight-bearing, rising CRP/ESR/WBC, positive culture, new effusion, or abnormal MRI",
-    edgeLabel: "Worsening branch: fever appears or persists, nocturnal/worsening pain, refusal to weight bear despite analgesia, toxic appearance, CRP/ESR/WBC rise or fail to improve, blood or aspirate culture positive, ultrasound effusion or MRI infection concern emerges, or low-risk diagnosis no longer fits",
+    label: "Escalate worsening limp or infection markers",
+    edgeLabel: "Worsening: fever, night/worsening pain, non-weight-bearing, toxic appearance, CRP/ESR/WBC not improving, positive culture, effusion/MRI concern, or low-risk diagnosis no longer fits",
     sourceIds,
     criteria: criteria(`${prefix}_worsening_criteria`, "Escalate pediatric limp management when reassessment contradicts the low-risk, fracture-only, or improving infection branch.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
     action: "Repeat vitals and focused exam, recheck ability to weight bear after analgesia, repeat or obtain CRP/ESR/WBC and cultures as indicated, review X-ray/ultrasound/MRI or obtain MRI when infection/occult fracture remains possible, move to septic arthritis, bone infection, fracture/safeguarding, systemic mimic, admission, or transfer branch according to the new finding, and stop low-risk discharge planning.",
@@ -7184,8 +7184,8 @@ function buildPediatricMskLimpHotJointClinicalPathwayTree(module, sourceById) {
 
   const deescalateEndpoint = endpoint({
     id: `${prefix}_deescalation_endpoint`,
-    label: "Pediatric bone/joint infection de-escalation: oral switch or stopping only with clinical improvement, afebrile window, CRP response, oral tolerance, and specialist plan",
-    edgeLabel: "De-escalation branch: uncomplicated infection improving after IV therapy, afebrile at least 24 hours, IV minimum 48 hours or 2-3 days depending local guideline, CRP <20 mg/L or down >2/3 from peak, tolerating oral intake, cultures reviewed, and total duration plan 3-4 weeks osteomyelitis or 2-3 weeks septic arthritis",
+    label: "Bone/joint infection oral-switch criteria",
+    edgeLabel: "De-escalation: improved after IV therapy, afebrile >=24 hours, IV >=48 hours or 2-3 days, CRP <20 mg/L or down >2/3, oral intake tolerated, cultures reviewed, and total duration planned",
     sourceIds: unique([...rchBji, ...chqBji]),
     criteria: criteria(`${prefix}_deescalation_criteria`, "Use when pediatric bone/joint infection has improved enough for oral switch, narrowing, or treatment stopping under the cited guideline criteria.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "follow_up_access", "workup_findings"], unique([...rchBji, ...chqBji]), { criteria_options: criteriaRows }),
     action: "Switch from IV to oral therapy, narrow antibiotics, or stop treatment only when the treating team confirms uncomplicated disease, clinical improvement, afebrile status, oral tolerance, improving markers, culture/organism review, and follow-up. Use local dosing and stewardship, recheck CRP one week after oral switch and before stopping when following CHQ logic, and extend or seek ID review for complicated disease, neonates, immunocompromise, Pseudomonas, relapse, persistent bacteremia, or inadequate response.",
@@ -7195,8 +7195,8 @@ function buildPediatricMskLimpHotJointClinicalPathwayTree(module, sourceById) {
 
   const followupEndpoint = endpoint({
     id: `${prefix}_followup_safety_endpoint`,
-    label: "Pediatric limp follow-up and safety-net: review access, pending-result owner, weight-bearing plan, return precautions, and specialty handoff",
-    edgeLabel: "Disposition branch: cause managed or serious causes addressed, weight-bearing plan documented, pending results assigned, specialty follow-up scheduled, and return precautions given",
+    label: "Follow-up and safety-net for pediatric limp",
+    edgeLabel: "Disposition: cause managed, serious causes addressed, weight-bearing plan documented, pending results assigned, follow-up scheduled, and return precautions given",
     sourceIds: unique([...rchLimp, ...rchBji, ...chqLimp, ...chqBji, ...acr]),
     criteria: criteria(`${prefix}_followup_safety_criteria`, "Use when pediatric limp or bone/joint infection is stable enough for discharge, outpatient review, or lower-acuity follow-up with explicit safety-net instructions.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "follow_up_access", "workup_findings"], unique([...rchLimp, ...rchBji, ...chqLimp, ...chqBji, ...acr]), { criteria_options: criteriaRows }),
     action: "Document diagnosis or working diagnosis, red flags screened, ability to walk or weight-bear status, analgesia/rest/activity or non-weight-bearing plan, antibiotic plan if used, responsible service for pending cultures/labs/imaging, specialty follow-up clinician/service, and return precautions for fever, systemic illness, worsening or night pain, refusal to weight bear despite analgesia, new swelling/redness, neurovascular symptoms, no improvement after 3 days, persistence beyond 14 days, lethargy, or inability to access follow-up.",
@@ -7206,8 +7206,8 @@ function buildPediatricMskLimpHotJointClinicalPathwayTree(module, sourceById) {
 
   const monitoringBundle = actionNode({
     id: `${prefix}_monitoring_bundle`,
-    label: "Pediatric limp monitoring: pain, weight-bearing, fever, ROM, neurovascular status, cultures, CRP/ESR/WBC, imaging, antibiotic response, and discharge readiness",
-    edgeLabel: "Monitoring branch after pediatric limp classification: trend post-analgesia walking, pain/night pain, temperature, perfusion, range of motion, swelling, neurovascular findings, culture status, CRP/ESR/WBC, imaging evolution, antibiotic tolerance, oral switch readiness, follow-up access, and return precautions",
+    label: "Monitor response and discharge readiness",
+    edgeLabel: "Monitoring: trend walking, pain, fever/perfusion, ROM, swelling, neurovascular findings, cultures, CRP/ESR/WBC, imaging, antibiotics, oral-switch readiness, and return precautions",
     sourceIds,
     criteria: criteria(`${prefix}_monitoring_bundle_criteria`, "Monitor pediatric limp or hot-joint management by reassessing weight bearing, pain, temperature, joint exam, CRP/ESR/WBC, cultures, imaging, antibiotic response, and discharge readiness.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "follow_up_access", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
     action: "Reassess pain control, night pain, ability to walk or weight bear, fever/systemic signs, joint motion, swelling/warmth, neurovascular status, blood culture/aspiration/imaging results, CRP/ESR/WBC trend when obtained, antibiotic response and adverse effects, operative drainage need, oral switch criteria, and disposition readiness before closing the pathway.",
@@ -7218,8 +7218,8 @@ function buildPediatricMskLimpHotJointClinicalPathwayTree(module, sourceById) {
 
   const classificationDecision = decision({
     id: `${prefix}_classification_decision`,
-    label: "Pediatric limp/hot joint: classify instability, septic arthritis, bone infection, injury/safeguarding, SUFE/Perthes, systemic mimic, low-risk limp, or special-population review",
-    edgeLabel: "Pediatric limp branch ready: age/development, trauma/safeguarding story, post-analgesia weight-bearing, temperature/vitals, pain localization, ROM, red flags, infection labs/cultures when indicated, imaging/aspiration status, host factors, and follow-up access are available",
+    label: "Choose limp or hot-joint branch",
+    edgeLabel: "Branch data ready: weight-bearing, fever/vitals, pain site, ROM, red flags, infection labs/cultures, imaging/aspiration, host risks, and follow-up access",
     sourceIds,
     criteria: criteria(`${prefix}_classification_criteria`, "Classify pediatric limp or hot-joint presentations using instability findings, septic hip predictors, infection labs/imaging, injury localization, age-specific hip rules, systemic mimics, and low-risk discharge criteria.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
     action: "Select the active pediatric branch: instability/sepsis escalation, septic arthritis emergency, osteomyelitis or bone/joint infection admission, localized injury or safeguarding, SUFE/Perthes or other age-specific hip disease, systemic/referred mimic, low-risk transient synovitis/no-test care, special-population clinician review, or monitoring/follow-up.",
@@ -7230,8 +7230,8 @@ function buildPediatricMskLimpHotJointClinicalPathwayTree(module, sourceById) {
 
   const initialAssessment = actionNode({
     id: `${prefix}_initial_assessment_bundle`,
-    label: "Pediatric limp bedside assessment: age, duration, trauma/safeguarding, post-analgesia weight-bearing, fever/vitals, localization, ROM, labs/imaging, and follow-up",
-    edgeLabel: "Pediatric limp assessment: age, duration, trauma/safeguarding, post-analgesia weight-bearing, fever/vitals, localization, ROM, labs/imaging, and follow-up",
+    label: "Initial limp assessment",
+    edgeLabel: "Initial data: age, duration, trauma/safeguarding, weight-bearing, fever/vitals, exam, targeted tests, and follow-up access",
     sourceIds,
     criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial pediatric limp assessment requires age/development, duration, injury and safeguarding history, weight-bearing after analgesia, fever/vitals, focused MSK exam, infection/fracture/hip/systemic screen, targeted testing, and follow-up constraints.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
     action: "Assess age/developmental walking baseline, duration and trajectory, trauma mechanism and safeguarding consistency, fever/systemic illness, analgesia response, ability to walk or weight bear, pain localization including referred knee/thigh/groin pain, gait, look/feel/move exam, joint above and below, passive ROM and severe pain with motion, neurovascular status, skin/wound source, night pain/weight loss/pallor/bruising, abdominal/GU/neurologic symptoms, high-risk host factors, targeted FBE/WBC/ESR/CRP/culture/aspiration when infection is possible, site-specific X-ray, hip ultrasound, MRI when osteomyelitis/deep infection or persistent unexplained limp remains possible, and follow-up or transfer access.",
@@ -7243,10 +7243,10 @@ function buildPediatricMskLimpHotJointClinicalPathwayTree(module, sourceById) {
 
   const root = decision({
     id: "root",
-    label: "Pediatric limp/hot joint: route by instability, septic arthritis predictors, bone infection, injury, age-specific hip disease, systemic mimics, low-risk criteria, and safety-net needs",
+    label: "Pediatric limp or hot joint",
     sourceIds,
     criteria: criteria(`${prefix}_activate`, "Activate for child or adolescent with limp, refusal to walk, non-weight-bearing, hot/swollen joint, suspected septic arthritis or osteomyelitis, limb pain, localized injury, hip/groin/thigh/knee pain, persistent limp, or clinician-chosen pediatric MSK evaluation.", ["clinician_chosen_module", "symptoms", "exam", "vitals", "labs", "imaging_results", "problem_list_or_diagnosis"], sourceIds),
-    action: "Route pediatric limp and hot-joint presentations through missing-data, instability, septic arthritis, bone infection, fracture/safeguarding, SUFE/Perthes, systemic mimic, low-risk/no-test care, special-population review, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+    action: "Route by instability, septic arthritis predictors, bone infection, injury/safeguarding, SUFE/Perthes, systemic mimic, low-risk criteria, monitoring, and safety-net needs.",
     children: [missingContextEndpoint, initialAssessment]
   });
 

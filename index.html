@@ -11812,8 +11812,8 @@
     function renderStudioPathwayEditor(module) {
       const graph = studioSectionPayload(module, "clinical_pathway_tree_v1");
       elements.workupStudioItemList.innerHTML = "";
-      const nodes = graph?.root ? flattenDecisionTree(graph.root) : [];
-      nodes.slice(0, 60).forEach(({ node }, index) => {
+      const nodes = graph?.root ? visibleDecisionTreeFlatNodes(graph.root) : [];
+      nodes.slice(0, 60).forEach((node, index) => {
         const button = document.createElement("button");
         button.type = "button";
         button.className = "studio-item-button";
@@ -11842,7 +11842,7 @@
       $("#workupStudioRootLabelInput").value = rootLabel;
       const summary = $("#workupStudioPathwaySummary");
       for (const line of [
-        `${nodes.length} pathway node${nodes.length === 1 ? "" : "s"}`,
+        `${nodes.length} clinical pathway node${nodes.length === 1 ? "" : "s"}`,
         graph?.source_ids?.length ? `${graph.source_ids.length} declared tree source IDs` : "Source IDs inferred from section content",
         graph?.activationRules ? `${Object.keys(graph.activationRules).length} activation rule${Object.keys(graph.activationRules).length === 1 ? "" : "s"}` : "No activation rules"
       ]) {
@@ -12125,8 +12125,8 @@
           return null;
         }
         if (elements.workupStudioDiffPreview) {
-          const count = flattenDecisionTree(graph.root).length;
-          elements.workupStudioDiffPreview.innerHTML = `<strong>Pathway import ready</strong><div>${count} node${count === 1 ? "" : "s"} will replace only clinical_pathway_tree_v1 for ${moduleLabel(module)}.</div>`;
+          const count = visibleDecisionTreeFlatNodes(graph.root).length;
+          elements.workupStudioDiffPreview.innerHTML = `<strong>Pathway import ready</strong><div>${count} clinical node${count === 1 ? "" : "s"} will replace only clinical_pathway_tree_v1 for ${moduleLabel(module)}.</div>`;
         }
         return graph;
       } catch (error) {
@@ -13776,12 +13776,12 @@
         || flat.find((node) => node.state === "warning" && node.endpoint_type === "missing_data_needed")
         || null;
       const missingData = Array.isArray(missingEndpoint?.missing_data_needed)
-        ? missingEndpoint.missing_data_needed.slice(0, 3)
+        ? missingEndpoint.missing_data_needed
         : [];
       return {
         activeBranch: activeNode?.edgeLabel || activeNode?.label || "No active branch identified",
         missingDataNeeded: missingData,
-        terminalEndpoint: terminalEndpoint?.label || (missingData.length ? "Clinical endpoint not selected yet" : "No terminal endpoint reached yet")
+        terminalEndpoint: terminalEndpoint?.label || (missingData.length ? "Pending clinical branch criteria" : "No terminal endpoint reached yet")
       };
     }
 
@@ -13875,8 +13875,7 @@
         node.edgeLabel ? `Criteria: ${node.edgeLabel}` : "",
         cutoffText ? `Cutoffs: ${cutoffText}` : "",
         bundleText,
-        node.endpoint_type ? `Endpoint: ${node.endpoint_type.replace(/_/g, " ")}` : "",
-        Array.isArray(node.missing_data_needed) && node.missing_data_needed.length ? `Needed: ${node.missing_data_needed.slice(0, 3).join("; ")}` : ""
+        node.endpoint_type ? `Endpoint: ${node.endpoint_type.replace(/_/g, " ")}` : ""
       ].filter(Boolean);
       return detailParts.join(" | ") || (node.children?.length ? "Decision step" : "Terminal endpoint");
     }
@@ -14274,8 +14273,8 @@
       try {
         const graph = parseClinicalPathwayGraph(clean);
         if (!graph) return { status: "error", graph: null, message: "No valid JSON object detected." };
-        const count = flattenDecisionTree(graph.root).length;
-        return { status: "ready", graph, message: `${count} node${count === 1 ? "" : "s"} ready for ${graph.title}.` };
+        const count = visibleDecisionTreeFlatNodes(graph.root).length;
+        return { status: "ready", graph, message: `${count} clinical node${count === 1 ? "" : "s"} ready for ${graph.title}.` };
       } catch (error) {
         return { status: "error", graph: null, message: error instanceof Error ? error.message : "Decision tree JSON could not be parsed." };
       }

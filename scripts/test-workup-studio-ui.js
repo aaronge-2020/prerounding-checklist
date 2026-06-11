@@ -152,6 +152,14 @@ try {
       type: "decision",
       children: [
         {
+          id: "studio_missing_labs",
+          edgeLabel: "Missing data needed: glucose and ketones",
+          label: "Missing data needed: glucose and ketones",
+          type: "endpoint",
+          endpoint_type: "missing_data_needed",
+          missing_data_needed: ["glucose", "ketones"]
+        },
+        {
           id: "studio_ketones",
           edgeLabel: "DKA concern",
           label: "Classify DKA/HHS with serum beta-hydroxybutyrate, venous pH, bicarbonate, anion gap, potassium, sodium-corrected osmolality, creatinine, and mental status.",
@@ -164,9 +172,12 @@ try {
 
   await page.fill("#workupStudioImportInput", JSON.stringify(graph, null, 2));
   await page.click("#workupStudioPreviewImportButton");
-  await page.waitForFunction(() => /Pathway import ready/.test(document.querySelector("#workupStudioDiffPreview")?.textContent || ""));
+  await page.waitForFunction(() => /2 clinical nodes will replace only clinical_pathway_tree_v1/.test(document.querySelector("#workupStudioDiffPreview")?.textContent || ""));
   await page.click("#workupStudioAcceptImportButton");
   await page.waitForFunction(() => Number(document.querySelector("#workupStudioDraftCount")?.textContent || "0") >= 1);
+  await page.waitForFunction(() => /Classify DKA\/HHS/.test(document.querySelector("#workupStudioItemList")?.textContent || ""));
+  const pathwayItemListText = await page.textContent("#workupStudioItemList");
+  assert.doesNotMatch(pathwayItemListText || "", /Missing data needed/i, "Workup Studio should hide internal missing-data guards from the pathway outline.");
   await page.waitForFunction(() => /Supabase synced/.test(document.querySelector("#workupStudioDiffPreview")?.textContent || ""));
   await waitForCondition(() => supabaseRequests.postedRows.length >= 1, "Supabase draft insert");
   assert.equal(supabaseRequests.postedRows[0].author_id, fakeUserId);

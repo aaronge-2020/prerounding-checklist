@@ -6579,7 +6579,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Acromegaly: route GH excess by IGF-1/GH cutoffs, pituitary mass effect, treatment eligibility, comorbidities, and adult pregnancy/fertility modifiers",
+        "label": "Acromegaly pathway",
         "edgeLabel": "",
         "source_ids": [
           "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
@@ -6689,7 +6689,7 @@
           {
             "id": "acromegaly_initial_assessment",
             "type": "action",
-            "label": "Acromegaly assessment: phenotype/growth pattern, IGF-1/ULN, OGTT GH, pituitary MRI, visual fields, comorbidities, medication, and pregnancy/fertility status",
+            "label": "Initial acromegaly assessment",
             "edgeLabel": "Possible acromegaly: acral/facial feature progression, pituitary mass, sleep apnea, diabetes, arthritis, carpal tunnel, hyperhidrosis, hypertension, headaches/visual symptoms, or clinician-chosen adult GH-excess evaluation",
             "source_ids": [
               "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
@@ -7060,7 +7060,7 @@
               {
                 "id": "acromegaly_classification_decision",
                 "type": "decision",
-                "label": "Acromegaly classification: missing biochemical data, urgent mass-effect/comorbidity risk, confirmed GH excess, mimic/confounder, or treatment pathway",
+                "label": "Choose GH-excess branch",
                 "edgeLabel": "Acromegaly phenotype, IGF-1/ULN, OGTT GH nadir when needed, MRI/visual fields, comorbidities, medication, pregnancy or growth-plate context, and treatment history are available",
                 "source_ids": [
                   "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
@@ -7487,7 +7487,7 @@
                   {
                     "id": "acromegaly_urgent_mass_effect_endpoint",
                     "type": "endpoint",
-                    "label": "Acromegaly urgent escalation: apoplexy, visual loss, cranial nerve palsy, airway/OSA risk, cardiomyopathy, arrhythmia, severe glucose problem, or adrenal crisis",
+                    "label": "Urgent mass-effect or comorbidity risk",
                     "edgeLabel": "Emergency branch: acute severe headache, visual field loss, cranial nerve palsy, altered mental status, macroadenoma pregnancy symptoms, severe OSA/airway concern, high-output heart failure/cardiomyopathy, arrhythmia, uncontrolled diabetes, severe electrolyte/glucose abnormality, or adrenal crisis",
                     "source_ids": [
                       "ES_ACROMEGALY_2014",
@@ -8193,7 +8193,7 @@
                   {
                     "id": "acromegaly_diagnostic_confirmation_endpoint",
                     "type": "endpoint",
-                    "label": "Acromegaly diagnostic confirmation: IGF-1 >1.3 x ULN, OGTT suppression rule, pituitary MRI, and visual-field routing",
+                    "label": "Confirm GH excess biochemically",
                     "edgeLabel": "Diagnostic branch: typical Acromegaly phenotype or acral/facial feature progression with IGF-1 >1.3 x ULN, elevated/equivocal IGF-1 needing OGTT, or pituitary mass needing GH-excess exclusion",
                     "source_ids": [
                       "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
@@ -8889,7 +8889,7 @@
                   {
                     "id": "acromegaly_mimic_or_confounded_endpoint",
                     "type": "endpoint",
-                    "label": "Acromegaly mimic/confounder: normal IGF-1, physiologic variant, diabetes, organ failure, hypothyroidism, malnutrition, infection, estrogen, or pseudoacromegaly",
+                    "label": "Mimic or confounded GH/IGF-1 result",
                     "edgeLabel": "Alternate branch: IGF-1 normal for age/puberty, OGTT suppresses GH, phenotype is explained by adolescence/pregnancy or insulin-mediated pseudoacromegaly, or IGF-1/GH is confounded by diabetes, renal/hepatic disease, hypothyroidism, malnutrition, severe infection, oral estrogen, assay mismatch, or medication effect",
                     "source_ids": [
                       "ES_ACROMEGALY_2014",
@@ -9593,7 +9593,7 @@
                   {
                     "id": "acromegaly_treatment_action",
                     "type": "action",
-                    "label": "Acromegaly treatment: surgery first when resectable; medical/radiation or special-population review when needed",
+                    "label": "Choose GH-excess treatment route",
                     "edgeLabel": "Treatment branch: biochemical Acromegaly is confirmed or highly likely, MRI/surgical candidacy and comorbidity modifiers are available, and acute instability is absent",
                     "source_ids": [
                       "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
@@ -9964,7 +9964,7 @@
                       {
                         "id": "acromegaly_surgery_endpoint",
                         "type": "endpoint",
-                        "label": "Acromegaly first-line pituitary treatment: transsphenoidal surgery, selective pre-op SRL for severe OSA/airway or high-output heart failure, and >=12-week postoperative testing",
+                        "label": "First-line pituitary surgery plan",
                         "edgeLabel": "Surgery branch: biochemical Acromegaly diagnosis with resectable pituitary adenoma, no overriding contraindication, mass-effect plan known, and neurosurgical/pituitary-center pathway available",
                         "source_ids": [
                           "ES_ACROMEGALY_2014"
@@ -10666,7 +10666,7 @@
                       {
                         "id": "acromegaly_medical_radiation_endpoint",
                         "type": "endpoint",
-                        "label": "Acromegaly persistent/unresectable disease: SRL, pegvisomant, cabergoline, combination therapy, or radiotherapy with safety monitoring",
+                        "label": "Persistent or unresectable GH excess",
                         "edgeLabel": "Medical/radiation branch: persistent active Acromegaly after surgery, unresectable/cavernous sinus disease without chiasmal compression, poor surgical candidate, recurrent disease, medication sequencing need, or residual mass with failed/unavailable/not tolerated medical therapy",
                         "source_ids": [
                           "ES_ACROMEGALY_2014",
@@ -11372,7 +11372,7 @@
                       {
                         "id": "acromegaly_special_population_endpoint",
                         "type": "endpoint",
-                        "label": "Acromegaly pregnancy/fertility: stop long-acting SRL or pegvisomant about 2 months before conception and monitor macroadenoma visual fields",
+                        "label": "Pregnancy or fertility GH-excess review",
                         "edgeLabel": "Special-population branch: pregnancy is planned/current, macroadenoma is present, fertility treatment is relevant, or acromegaly medication must be changed for conception/pregnancy",
                         "source_ids": [
                           "ES_ACROMEGALY_2014"
@@ -12067,7 +12067,7 @@
                       {
                         "id": "acromegaly_monitoring_endpoint",
                         "type": "endpoint",
-                        "label": "Acromegaly monitoring/remission: age-normalized IGF-1, random GH <1 ug/L, MRI, pituitary axes, comorbidities, and medication toxicity",
+                        "label": "GH-excess monitoring and remission",
                         "edgeLabel": "Monitoring branch: treatment has occurred or is ongoing, biochemical response, tumor size, pituitary deficits, comorbidities, medication toxicity, or radiation effects need reassessment",
                         "source_ids": [
                           "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
@@ -12777,7 +12777,7 @@
                       {
                         "id": "acromegaly_followup_safety_endpoint",
                         "type": "endpoint",
-                        "label": "Acromegaly follow-up and safety-net: remission, recurrence, medication toxicity, mass-effect symptoms, comorbidity owners, and specialty follow-up",
+                        "label": "GH-excess follow-up and safety-net",
                         "edgeLabel": "Disposition branch: no acute mass effect, active treatment or remission plan documented, pending tests owned, pituitary-center follow-up scheduled, and return precautions reviewed",
                         "source_ids": [
                           "ACROMEGALY_DIAGNOSIS_REMISSION_2024",

@@ -7488,7 +7488,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Pediatric limp/hot joint: use instability, septic arthritis predictors, bone infection, injury, age-specific hip disease, systemic mimics, low-risk criteria, and safety-net needs",
+        "label": "Pediatric limp or hot joint",
         "edgeLabel": "",
         "source_ids": [
           "RCH_LIMPING_CHILD",
@@ -7524,7 +7524,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route pediatric limp and hot-joint presentations through missing-data, instability, septic arthritis, bone infection, fracture/safeguarding, SUFE/Perthes, systemic mimic, low-risk/no-test care, special-population review, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+        "action": "use instability, septic arthritis predictors, bone infection, injury/safeguarding, SUFE/Perthes, systemic mimic, low-risk criteria, monitoring, and safety-net needs.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -7612,8 +7612,8 @@
           {
             "id": "pediatric_msk_limp_hot_joint_initial_assessment_bundle",
             "type": "action",
-            "label": "Pediatric limp bedside assessment: age, duration, trauma/safeguarding, post-analgesia weight-bearing, fever/vitals, localization, ROM, labs/imaging, and follow-up",
-            "edgeLabel": "Pediatric limp assessment: age, duration, trauma/safeguarding, post-analgesia weight-bearing, fever/vitals, localization, ROM, labs/imaging, and follow-up",
+            "label": "Initial limp assessment",
+            "edgeLabel": "Initial data: age, duration, trauma/safeguarding, weight-bearing, fever/vitals, exam, focused tests, and follow-up access",
             "source_ids": [
               "RCH_LIMPING_CHILD",
               "RCH_BONE_JOINT_INFECTION",
@@ -7972,8 +7972,8 @@
               {
                 "id": "pediatric_msk_limp_hot_joint_classification_decision",
                 "type": "decision",
-                "label": "Pediatric limp/hot joint: classify instability, septic arthritis, bone infection, injury/safeguarding, SUFE/Perthes, systemic mimic, low-risk limp, or special-population review",
-                "edgeLabel": "Pediatric limp branch ready: age/development, trauma/safeguarding story, post-analgesia weight-bearing, temperature/vitals, pain localization, ROM, red flags, infection labs/cultures, imaging/aspiration status, host factors, and follow-up access are available",
+                "label": "Choose limp or hot-joint branch",
+                "edgeLabel": "Branch data ready: weight-bearing, fever/vitals, pain site, ROM, red flags, infection labs/cultures, imaging/aspiration, host risks, and follow-up access",
                 "source_ids": [
                   "RCH_LIMPING_CHILD",
                   "RCH_BONE_JOINT_INFECTION",
@@ -8410,7 +8410,7 @@
                   {
                     "id": "pediatric_msk_limp_hot_joint_sepsis_instability_endpoint",
                     "type": "endpoint",
-                    "label": "Unstable pediatric limp or hot joint: sepsis, shock, toxic appearance, poor perfusion, altered mental status, or limb-threatening injury",
+                    "label": "Unstable limp or limb-threatening injury",
                     "edgeLabel": "Instability branch: shock, toxic appearance, altered mental status, hypoxemia, poor perfusion, rapidly worsening illness, limb-threatening trauma, neurovascular compromise, or severe disseminated infection features override routine limp workup",
                     "source_ids": [
                       "RCH_BONE_JOINT_INFECTION",
@@ -9075,7 +9075,7 @@
                   {
                     "id": "pediatric_msk_limp_hot_joint_septic_arthritis_emergency_endpoint",
                     "type": "endpoint",
-                    "label": "Suspected pediatric septic arthritis: urgent orthopaedics, aspiration or washout, cultures, and antibiotics without treatment delay",
+                    "label": "Suspected septic arthritis",
                     "edgeLabel": "Septic arthritis branch: fever >38.5 C, hot/swollen joint, severe passive-motion pain, reduced ROM, refusal to weight bear, CRP >=20 mg/L, ESR >=40 mm/hr, WBC >12.0 x10^9/L, ultrasound effusion >=7 mm, purulent aspirate, positive Gram stain/culture, or high clinical suspicion",
                     "source_ids": [
                       "RCH_LIMPING_CHILD",
@@ -9744,7 +9744,7 @@
                   {
                     "id": "pediatric_msk_limp_hot_joint_bone_infection_admission_endpoint",
                     "type": "endpoint",
-                    "label": "Suspected pediatric osteomyelitis, myositis, discitis, abscess, or bone/joint infection: admit for cultures, imaging, IV antibiotics, and orthopaedic/ID plan",
+                    "label": "Suspected bone or joint infection",
                     "edgeLabel": "Bone infection branch: fever or systemic symptoms plus focal bone pain/tenderness, limited limb use, elevated CRP/ESR/WBC, bacteremia, wound/puncture source, MRI concern, X-ray that may be normal for 7-10 days, abscess, myositis, discitis, or osteomyelitis concern",
                     "source_ids": [
                       "RCH_BONE_JOINT_INFECTION",
@@ -10410,7 +10410,7 @@
                   {
                     "id": "pediatric_msk_limp_hot_joint_fracture_safeguarding_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric localized injury, occult fracture, toddler fracture, growth-plate injury, or safeguarding concern",
+                    "label": "Injury, occult fracture, or safeguarding concern",
                     "edgeLabel": "Injury/safeguarding branch: focal tenderness, trauma, deformity, swelling, persistent non-weight-bearing, negative initial X-ray with ongoing toddler-fracture concern, developmentally implausible story, delay, recurrent injury, bruising pattern, or unsafe discharge context",
                     "source_ids": [
                       "RCH_LIMPING_CHILD",
@@ -11072,7 +11072,7 @@
                   {
                     "id": "pediatric_msk_limp_hot_joint_sufe_perthes_hip_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric age-specific hip disease: SUFE, Perthes disease, DDH, apophysitis, stress injury, or referred knee pain",
+                    "label": "Age-specific hip disease",
                     "edgeLabel": "Age-specific hip branch: adolescent hip/groin/thigh/knee pain, weight >90th percentile, endocrine/puberty risk, painful limited internal rotation, frog-leg/pelvic X-ray concern, suspected SUFE with non-weight-bearing, male age 3-10 years with persistent limp, or early Perthes with possible normal X-ray",
                     "source_ids": [
                       "RCH_LIMPING_CHILD",
@@ -11735,7 +11735,7 @@
                   {
                     "id": "pediatric_msk_limp_hot_joint_systemic_mimic_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric limp systemic mimic: malignancy, inflammatory arthritis, ARF, neurologic, abdominal, GU, hematologic, or referred pain",
+                    "label": "Systemic mimic or referred pain",
                     "edgeLabel": "Systemic mimic branch: night pain, weight loss, pallor, bruising, bleeding, recurrent fever, morning stiffness, rash, CRP >30 with ARF context, ECG conduction abnormality, neurologic deficit, abdominal/scrotal/GU symptoms, sickle/hemophilia pain, or recurrent/persistent unexplained limp",
                     "source_ids": [
                       "RCH_LIMPING_CHILD",
@@ -12399,7 +12399,7 @@
                   {
                     "id": "pediatric_msk_limp_hot_joint_low_risk_limp_endpoint",
                     "type": "endpoint",
-                    "label": "Low-risk pediatric limp or transient synovitis: no routine tests only after red flags are absent and the child walks comfortably with follow-up",
+                    "label": "Low-risk limp or transient synovitis",
                     "edgeLabel": "Low-risk branch: systemically well, no fever or only low-grade temperature <38.5 C consistent with transient synovitis, no red flags, mild or no discomfort after simple analgesia, able to walk or weight bear, high-risk diagnoses unlikely, working diagnosis documented, and review plan within 7 days if symptoms persist",
                     "source_ids": [
                       "RCH_LIMPING_CHILD",
@@ -13063,7 +13063,7 @@
                   {
                     "id": "pediatric_msk_limp_hot_joint_special_population_review_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric limp special review: neonate, immunocompromise, sickle cell/hemophilia, MRSA/Pseudomonas risk, postoperative limb, pregnancy, or safeguarding",
+                    "label": "Special-population or safeguarding review",
                     "edgeLabel": "Special-population branch: neonate, age <3 months, immunocompromise, sickle cell/hemophilia, hardware/postoperative limb, puncture/water exposure, MRSA/Pseudomonas risk, pregnancy, safeguarding, or local transfer/formulary rule",
                     "source_ids": [
                       "RCH_BONE_JOINT_INFECTION",
@@ -13416,8 +13416,8 @@
                   {
                     "id": "pediatric_msk_limp_hot_joint_monitoring_bundle",
                     "type": "action",
-                    "label": "Pediatric limp monitoring: pain, weight-bearing, fever, ROM, neurovascular status, cultures, CRP/ESR/WBC, imaging, antibiotic response, and discharge readiness",
-                    "edgeLabel": "Monitoring branch after pediatric limp classification: trend post-analgesia walking, pain/night pain, temperature, perfusion, range of motion, swelling, neurovascular findings, culture status, CRP/ESR/WBC, imaging evolution, antibiotic tolerance, oral switch readiness, follow-up access, and return precautions",
+                    "label": "Monitor response and discharge readiness",
+                    "edgeLabel": "Monitoring: trend walking, pain, fever/perfusion, ROM, swelling, neurovascular findings, cultures, CRP/ESR/WBC, imaging, antibiotics, oral-switch readiness, and return precautions",
                     "source_ids": [
                       "RCH_LIMPING_CHILD",
                       "RCH_BONE_JOINT_INFECTION",
@@ -13774,8 +13774,8 @@
                       {
                         "id": "pediatric_msk_limp_hot_joint_worsening_endpoint",
                         "type": "endpoint",
-                        "label": "Pediatric limp reassessment escalation: fever, worsening pain, persistent non-weight-bearing, rising CRP/ESR/WBC, positive culture, new effusion, or abnormal MRI",
-                        "edgeLabel": "Worsening branch: fever appears or persists, nocturnal/worsening pain, refusal to weight bear despite analgesia, toxic appearance, CRP/ESR/WBC rise or fail to improve, blood or aspirate culture positive, ultrasound effusion or MRI infection concern emerges, or low-risk diagnosis no longer fits",
+                        "label": "Escalate worsening limp or infection markers",
+                        "edgeLabel": "Worsening: fever, night/worsening pain, non-weight-bearing, toxic appearance, CRP/ESR/WBC not improving, positive culture, effusion/MRI concern, or low-risk diagnosis no longer fits",
                         "source_ids": [
                           "RCH_LIMPING_CHILD",
                           "RCH_BONE_JOINT_INFECTION",
@@ -14449,8 +14449,8 @@
                       {
                         "id": "pediatric_msk_limp_hot_joint_deescalation_endpoint",
                         "type": "endpoint",
-                        "label": "Pediatric bone/joint infection de-escalation: oral switch or stopping only with clinical improvement, afebrile window, CRP response, oral tolerance, and specialist plan",
-                        "edgeLabel": "De-escalation branch: uncomplicated infection improving after IV therapy, afebrile at least 24 hours, IV minimum 48 hours or 2-3 days depending local guideline, CRP <20 mg/L or down >2/3 from peak, tolerating oral intake, cultures reviewed, and total duration plan 3-4 weeks osteomyelitis or 2-3 weeks septic arthritis",
+                        "label": "Bone/joint infection oral-switch criteria",
+                        "edgeLabel": "De-escalation: improved after IV therapy, afebrile >=24 hours, IV >=48 hours or 2-3 days, CRP <20 mg/L or down >2/3, oral intake tolerated, cultures reviewed, and total duration planned",
                         "source_ids": [
                           "RCH_BONE_JOINT_INFECTION",
                           "CHQ_BONE_JOINT_INFECTION_2025"
@@ -15113,8 +15113,8 @@
                       {
                         "id": "pediatric_msk_limp_hot_joint_followup_safety_endpoint",
                         "type": "endpoint",
-                        "label": "Pediatric limp follow-up and safety-net: review access, pending-result owner, weight-bearing plan, return precautions, and specialty handoff",
-                        "edgeLabel": "Disposition branch: cause managed or serious causes addressed, weight-bearing plan documented, pending results assigned, specialty follow-up scheduled, and return precautions given",
+                        "label": "Follow-up and safety-net for pediatric limp",
+                        "edgeLabel": "Disposition: cause managed, serious causes addressed, weight-bearing plan documented, pending results assigned, follow-up scheduled, and return precautions given",
                         "source_ids": [
                           "RCH_LIMPING_CHILD",
                           "RCH_BONE_JOINT_INFECTION",
@@ -16922,7 +16922,7 @@
           "scenario_id": "worsening_after_low_risk_or_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "pediatric_msk_limp_hot_joint_worsening_endpoint",
-          "expected_active_branch": "Worsening branch: fever appears or persists, nocturnal/worsening pain, refusal to weight bear despite analgesia, toxic appearance, CRP/ESR/WBC rise or fail to improve, blood or aspirate culture positive, ultrasound effusion or MRI infection concern emerges, or low-risk diagnosis no longer fits",
+          "expected_active_branch": "Worsening: fever, night/worsening pain, non-weight-bearing, toxic appearance, CRP/ESR/WBC not improving, positive culture, effusion/MRI concern, or low-risk diagnosis no longer fits",
           "expected_path_node_ids": [
             "root",
             "pediatric_msk_limp_hot_joint_initial_assessment_bundle",
@@ -16937,7 +16937,7 @@
           "scenario_id": "infection_oral_switch_stop_criteria",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "pediatric_msk_limp_hot_joint_deescalation_endpoint",
-          "expected_active_branch": "De-escalation branch: uncomplicated infection improving after IV therapy, afebrile at least 24 hours, IV minimum 48 hours or 2-3 days depending local guideline, CRP <20 mg/L or down >2/3 from peak, tolerating oral intake, cultures reviewed, and total duration plan 3-4 weeks osteomyelitis or 2-3 weeks septic arthritis",
+          "expected_active_branch": "De-escalation: improved after IV therapy, afebrile >=24 hours, IV >=48 hours or 2-3 days, CRP <20 mg/L or down >2/3, oral intake tolerated, cultures reviewed, and total duration planned",
           "expected_path_node_ids": [
             "root",
             "pediatric_msk_limp_hot_joint_initial_assessment_bundle",
@@ -16952,7 +16952,7 @@
           "scenario_id": "followup_and_return_precautions",
           "major_pathway": "follow_up_safety_netting",
           "expected_endpoint_id": "pediatric_msk_limp_hot_joint_followup_safety_endpoint",
-          "expected_active_branch": "Disposition branch: cause managed or serious causes addressed, weight-bearing plan documented, pending results assigned, specialty follow-up scheduled, and return precautions given",
+          "expected_active_branch": "Disposition: cause managed, serious causes addressed, weight-bearing plan documented, pending results assigned, follow-up scheduled, and return precautions given",
           "expected_path_node_ids": [
             "root",
             "pediatric_msk_limp_hot_joint_initial_assessment_bundle",
