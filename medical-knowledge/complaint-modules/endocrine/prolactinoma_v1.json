@@ -2703,7 +2703,7 @@
         "prolactinoma_classification_decision": {
           "rule_id": "prolactinoma_classification_criteria",
           "source": "criteria",
-          "description": "Classify Prolactinoma (Benign pituitary tumor) using cited thresholds: Hyperprolactinemia diagnosis: >ULN, <25 ug/L | Prolactinoma probability by prolactin level: >250 ug/L, >500 ug/L, >10 mm",
+          "description": "Classify Prolactinoma (Benign pituitary tumor) using cited thresholds and branch-specific criteria.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2963,7 +2963,7 @@
         "prolactinoma_review_endpoint": {
           "rule_id": "prolactinoma_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Prolactinoma (Benign pituitary tumor) treatment or disposition depends on Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Use dopamine agonist therapy, usually cabergoline when appropriate, for most symptomatic prolactinomas or macroadenomas.; Monitor prolactin response, tumor size, vision, gonadal recovery, and medication tolerance..",
+          "description": "Use reviewer handoff when Prolactinoma (Benign pituitary tumor) treatment or disposition depends on Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement; discordant endocrine tests need correct timing; Use dopamine agonist therapy.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3193,7 +3193,7 @@
         "prolactinoma_alternate_endpoint": {
           "rule_id": "prolactinoma_alternate_criteria",
           "source": "criteria",
-          "description": "Use an alternate pathway when Prolactinoma (Benign pituitary tumor) criteria are absent, competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics better explains the presentation, or measured result data contradict this workup.",
+          "description": "Use an alternate pathway when Prolactinoma (Benign pituitary tumor) criteria are absent, Prolactinoma mimics or exclusions listed in the module differential better explains the presentation, or measured result data contradict this workup.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3257,7 +3257,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Prolactinoma: Visual field deficit, severe headache/apoplexy, cranial nerve palsy, pregnancy with macroadenoma symptoms.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; >ULN; <25 ug/L; >250 ug/L; Use dopamine agonist therapy, usually cabergoline when appropriate, for most symptomatic prolactinomas or macroadenomas.; Monitor prolactin response, tumor size, vision, gonadal recovery, and medication tolerance.",
+        "label": "Route: Prolactinoma",
         "edgeLabel": "",
         "source_ids": [
           "ES_HYPERPROLACTINEMIA_2011",
@@ -3280,7 +3280,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Check Visual field deficit, severe headache/apoplexy, cranial nerve palsy, pregnancy with macroadenoma symptoms.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy. and >ULN; <25 ug/L; >250 ug/L; >500 ug/L; >10 mm; use the listed assessment bundle to choose emergency care, treatment/disposition, reviewer handoff, alternate diagnosis, reassessment, de-escalation, or follow-up.",
+        "action": "Screen for high-acuity findings; classify with >ULN; <25 ug/L; >250 ug/L; >500 ug/L; then choose emergency, treatment/disposition, review, mimic, monitoring, de-escalation, or follow-up branch.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3348,8 +3348,8 @@
           {
             "id": "prolactinoma_concurrent_data_bundle",
             "type": "action",
-            "label": "Prolactinoma: assessment, thresholds, and treatment-safety inputs",
-            "edgeLabel": "Collect Prolactinoma: Serum prolactin; repeat/macroprolactin if mild/discordant.; Pregnancy test, TSH/free T4, renal function.; Pituitary MRI after persistent unexplained elevation or mass symptoms.; Prolactin/pituitary mass safety tests: repeat fasting prolactin with macroprolactin, medication, pregnancy, TSH, and renal context, obtain pituitary MRI for persistent or mass-effect concern, and check gonadal/adrenal/thyroid axes for macroadenoma.; >ULN; <25 ug/L; >250 ug/L",
+            "label": "Collect: Serum prolactin; Pregnancy test, TSH/free T4, renal function",
+            "edgeLabel": "Assessment bundle: Serum prolactin; Pregnancy test, TSH/free T4, renal function; Pituitary MRI after persistent unexplained elevation or mass symptoms; Prolactin/pituitary mass safety tests; serum prolactin; assay ULN",
             "source_ids": [
               "PITUITARY_PROLACTINOMA_2023",
               "ES_HYPERPROLACTINEMIA_2011",
@@ -3375,13 +3375,13 @@
                 "AHRQ_CALIBRATE_DX"
               ]
             },
-            "action": "Obtain together: Serum prolactin; repeat/macroprolactin if mild/discordant.; Pregnancy test, TSH/free T4, renal function.; Pituitary MRI after persistent unexplained elevation or mass symptoms.; Prolactin/pituitary mass safety tests: repeat fasting prolactin with macroprolactin, medication, pregnancy, TSH, and renal context, obtain pituitary MRI for persistent or mass-effect concern, and check gonadal/adrenal/thyroid axes for macroadenoma.; Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing.; serum prolactin; assay ULN; venipuncture stress; pregnancy/lactation status; medication list; prolactin; pituitary MRI size; drug causes such as risperidone/metoclopramide.",
+            "action": "Obtain together: Serum prolactin; Pregnancy test, TSH/free T4, renal function; Pituitary MRI after persistent unexplained elevation or mass symptoms; Prolactin/pituitary mass safety tests; serum prolactin; assay ULN.",
             "children": [
               {
                 "id": "prolactinoma_classification_decision",
                 "type": "decision",
-                "label": "Prolactinoma: classify thresholds, acuity, mimics, and disposition",
-                "edgeLabel": "Classify Prolactinoma with available result(s): >ULN; <25 ug/L; >250 ug/L; >500 ug/L",
+                "label": "Classify by: Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; >ULN",
+                "edgeLabel": "Classify using >ULN; <25 ug/L; >250 ug/L; >500 ug/L",
                 "source_ids": [
                   "ES_HYPERPROLACTINEMIA_2011",
                   "PITUITARY_PROLACTINOMA_2023",
@@ -3390,7 +3390,7 @@
                 "criteria": {
                   "rule_id": "prolactinoma_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Prolactinoma (Benign pituitary tumor) using cited thresholds: Hyperprolactinemia diagnosis: >ULN, <25 ug/L | Prolactinoma probability by prolactin level: >250 ug/L, >500 ug/L, >10 mm",
+                  "description": "Classify Prolactinoma (Benign pituitary tumor) using cited thresholds and branch-specific criteria.",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -3454,7 +3454,7 @@
                     }
                   ]
                 },
-                "action": "Match current patient data to >ULN; <25 ug/L; >250 ug/L; >500 ug/L; >10 mm; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
+                "action": "Match current patient data to >ULN; <25 ug/L; >250 ug/L; >500 ug/L; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
                 "children": [
                   {
                     "id": "prolactinoma_missing_cutoff_data_endpoint",
@@ -3544,8 +3544,8 @@
                   {
                     "id": "prolactinoma_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Prolactinoma: emergency or monitored-care disposition",
-                    "edgeLabel": "High-acuity threshold or monitored-care result present: Visual field deficit, severe headache/apoplexy, cranial nerve palsy, pregnancy with macroadenoma symptoms.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; >ULN; <25 ug/L",
+                    "label": "Escalate for: Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; >ULN",
+                    "edgeLabel": "Escalate: Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; >ULN; <25 ug/L",
                     "source_ids": [
                       "PITUITARY_PROLACTINOMA_2023",
                       "ES_HYPERPROLACTINEMIA_2011",
@@ -3615,7 +3615,7 @@
                         }
                       ]
                     },
-                    "action": "Send to ED, admission, or monitored specialty care for Visual field deficit, severe headache/apoplexy, cranial nerve palsy, pregnancy with macroadenoma symptoms.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; >ULN; <25 ug/L; >250 ug/L; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement.; unstable physiology or dangerous electrolyte/glucose abnormality; start stabilization and diagnosis-specific emergency treatment before routine outpatient management.",
+                    "action": "Send to ED, admission, or monitored specialty care for Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; >ULN; <25 ug/L; start stabilization and diagnosis-specific emergency treatment before routine outpatient management.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -3667,8 +3667,8 @@
                   {
                     "id": "prolactinoma_treatment_bundle",
                     "type": "action",
-                    "label": "Prolactinoma: treatment and disposition branch",
-                    "edgeLabel": "Confirmed/high-risk Prolactinoma branch has treatment-safety data available",
+                    "label": "Choose treatment: Use dopamine agonist therapy; Monitor prolactin response",
+                    "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "PITUITARY_PROLACTINOMA_2023",
                       "ES_HYPERPROLACTINEMIA_2011",
@@ -3740,12 +3740,12 @@
                         }
                       ]
                     },
-                    "action": "Use dopamine agonist therapy, usually cabergoline when appropriate, for most symptomatic prolactinomas or macroadenomas.; Monitor prolactin response, tumor size, vision, gonadal recovery, and medication tolerance.; Use surgery or radiation when medication is not tolerated, ineffective, or urgent decompression is required.; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level",
+                    "action": "Use dopamine agonist therapy; Monitor prolactin response, tumor size, vision, gonadal recovery, and medication tolerance; Use surgery or radiation when medication is not tolerated; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement; discordant endocrine tests need correct timing; Hyperprolactinemia diagnosis",
                     "children": [
                       {
                         "id": "prolactinoma_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Prolactinoma: contraindications, dosing, pregnancy, and comorbidity modifiers",
+                        "label": "Check safety: Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "ES_HYPERPROLACTINEMIA_2011",
@@ -3777,8 +3777,8 @@
                           {
                             "id": "prolactinoma_review_endpoint",
                             "type": "endpoint",
-                            "label": "Prolactinoma: review Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Use dopamine agonist therapy, usually cabergoline when appropriate, for most symptomatic prolactinomas or macroadenomas.; Monitor prolactin response, tumor size, vision, gonadal recovery, and medication tolerance.",
-                            "edgeLabel": "Prolactinoma modifier needing review: Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Use dopamine agonist therapy, usually cabergoline when appropriate, for most symptomatic prolactinomas or macroadenomas.; Monitor prolactin response, tumor size, vision, gonadal recovery, and medication tolerance.",
+                            "label": "Review modifiers: Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level",
+                            "edgeLabel": "Review modifier: Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement; discordant endocrine tests need correct timing",
                             "source_ids": [
                               "ES_HYPERPROLACTINEMIA_2011",
                               "PITUITARY_PROLACTINOMA_2023",
@@ -3787,7 +3787,7 @@
                             "criteria": {
                               "rule_id": "prolactinoma_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Prolactinoma (Benign pituitary tumor) treatment or disposition depends on Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Use dopamine agonist therapy, usually cabergoline when appropriate, for most symptomatic prolactinomas or macroadenomas.; Monitor prolactin response, tumor size, vision, gonadal recovery, and medication tolerance..",
+                              "description": "Use reviewer handoff when Prolactinoma (Benign pituitary tumor) treatment or disposition depends on Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement; discordant endocrine tests need correct timing; Use dopamine agonist therapy.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -3806,13 +3806,13 @@
                             "action": "Resolve the named Prolactinoma modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
-                            "review_needed_reason": "Prolactinoma management changes when Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Use dopamine agonist therapy, usually cabergoline when appropriate, for most symptomatic prolactinomas or macroadenomas.; Monitor prolactin response, tumor size, vision, gonadal recovery, and medication tolerance.; document the exact modifier and reviewer input needed."
+                            "review_needed_reason": "Prolactinoma management changes when Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement; discordant endocrine tests need correct timing; Use dopamine agonist therapy; document the exact modifier and reviewer input needed."
                           },
                           {
                             "id": "prolactinoma_monitoring_bundle",
                             "type": "action",
-                            "label": "Prolactinoma: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Prolactinoma: >ULN; <25 ug/L; >250 ug/L; >500 ug/L; Serum prolactin; repeat/macroprolactin if mild/discordant.; Pregnancy test, TSH/free T4, renal function.; Pituitary MRI after persistent unexplained elevation or mass symptoms.; Measure blood pressure",
+                            "label": "Monitor: >ULN; <25 ug/L; Serum prolactin",
+                            "edgeLabel": "Monitor: >ULN; <25 ug/L; Serum prolactin; Pregnancy test, TSH/free T4, renal function; treatment response",
                             "source_ids": [
                               "PITUITARY_PROLACTINOMA_2023",
                               "ES_HYPERPROLACTINEMIA_2011",
@@ -3887,8 +3887,8 @@
                               {
                                 "id": "prolactinoma_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Prolactinoma: reassessment escalation",
-                                "edgeLabel": "Prolactinoma reassessment worsens or Visual field deficit, severe headache/apoplexy, cranial nerve palsy, pregnancy with macroadenoma symptoms.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; >ULN; <25 ug/L; >250 ug/L; >500 ug/L; Serum prolactin; repeat/macroprolactin if mild/discordant.; Pregnancy test, TSH/free T4, renal function. no longer fit the documented Prolactinoma branch",
+                                "label": "Escalate if worse: >ULN; <25 ug/L; Serum prolactin",
+                                "edgeLabel": "Escalate if reassessment worsens: >ULN; <25 ug/L; Serum prolactin; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "PITUITARY_PROLACTINOMA_2023",
                                   "ES_HYPERPROLACTINEMIA_2011",
@@ -3958,7 +3958,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Repeat or review Visual field deficit, severe headache/apoplexy, cranial nerve palsy, pregnancy with macroadenoma symptoms.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; >ULN; <25 ug/L; >250 ug/L; >500 ug/L; Serum prolactin; repeat/macroprolactin if mild/discordant.; Pregnancy test, TSH/free T4, renal function.; reassess mimics and complications; move to ED, admission, or specialty review when that specific trend, vital sign, imaging/ECG/procedure finding, or treatment-response pattern requires escalation.",
+                                "action": "Review >ULN; <25 ug/L; Serum prolactin; worsening symptoms or treatment intolerance; reassess mimics and complications; move to ED, admission, or specialty review when the cited trend or finding worsens.",
                                 "children": [],
                                 "endpoint_type": "escalation_disposition",
                                 "guideline_cutoffs": [
@@ -4010,8 +4010,8 @@
                               {
                                 "id": "prolactinoma_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Prolactinoma: de-escalate, stop, or narrow",
-                                "edgeLabel": "Measured response supports narrowing, stopping, tapering, or continuing Prolactinoma care",
+                                "label": "Narrow/stop by: >ULN; <25 ug/L; objective response",
+                                "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "PITUITARY_PROLACTINOMA_2023",
                                   "ES_HYPERPROLACTINEMIA_2011",
@@ -4133,8 +4133,8 @@
                               {
                                 "id": "prolactinoma_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Prolactinoma: follow-up and safety-net",
-                                "edgeLabel": "Prolactinoma stable enough for owned follow-up, pending results, and safety-netting",
+                                "label": "Close loop: result owner, follow-up, return precautions",
+                                "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "PITUITARY_PROLACTINOMA_2023",
                                   "ES_HYPERPROLACTINEMIA_2011",
@@ -4283,8 +4283,8 @@
                   {
                     "id": "prolactinoma_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Prolactinoma: alternate diagnosis pathway",
-                    "edgeLabel": "Mimic or alternate pathway favored: competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+                    "label": "Use alternate diagnosis pathway",
+                    "edgeLabel": "Alternate diagnosis: competing diagnosis better explains the presentation",
                     "source_ids": [
                       "PITUITARY_PROLACTINOMA_2023",
                       "ES_HYPERPROLACTINEMIA_2011",
@@ -4293,7 +4293,7 @@
                     "criteria": {
                       "rule_id": "prolactinoma_alternate_criteria",
                       "source": "criteria",
-                      "description": "Use an alternate pathway when Prolactinoma (Benign pituitary tumor) criteria are absent, competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics better explains the presentation, or measured result data contradict this workup.",
+                      "description": "Use an alternate pathway when Prolactinoma (Benign pituitary tumor) criteria are absent, Prolactinoma mimics or exclusions listed in the module differential better explains the presentation, or measured result data contradict this workup.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4353,10 +4353,10 @@
                         }
                       ]
                     },
-                    "action": "Name the competing diagnosis or exclusion for Prolactinoma, such as competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics; route to the corresponding workup or specialty pathway and document why the Prolactinoma branch is not used.",
+                    "action": "Name the competing diagnosis or exclusion for Prolactinoma, such as competing diagnosis better explains the presentation; route to the corresponding workup or specialty pathway and document why this branch is not used.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Prolactinoma criteria are absent or contradicted by competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics; competing diagnosis must be named before closure."
+                    "review_needed_reason": "Prolactinoma criteria are absent or contradicted by Prolactinoma mimics or exclusions listed in the module differential; competing diagnosis must be named before closure."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -4462,9 +4462,7 @@
               "venipuncture stress",
               "pregnancy/lactation status",
               "medication list",
-              "prolactin",
-              "pituitary MRI size",
-              "drug causes such as risperidone/metoclopramide"
+              "prolactin"
             ],
             "required_data": [
               "serum prolactin",
@@ -4566,7 +4564,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "prolactinoma_urgent_endpoint",
-          "expected_active_branch": "High-acuity threshold or monitored-care result present: Visual field deficit, severe headache/apoplexy, cranial nerve palsy, pregnancy with macroadenoma symptoms.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; >ULN; <25 ug/L",
+          "expected_active_branch": "Escalate: Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; >ULN; <25 ug/L",
           "expected_path_node_ids": [
             "root",
             "prolactinoma_concurrent_data_bundle",
@@ -4580,7 +4578,7 @@
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "prolactinoma_alternate_endpoint",
-          "expected_active_branch": "Mimic or alternate pathway favored: competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+          "expected_active_branch": "Alternate diagnosis: competing diagnosis better explains the presentation",
           "expected_path_node_ids": [
             "root",
             "prolactinoma_concurrent_data_bundle",
@@ -4594,7 +4592,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "prolactinoma_review_endpoint",
-          "expected_active_branch": "Prolactinoma modifier needing review: Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Use dopamine agonist therapy, usually cabergoline when appropriate, for most symptomatic prolactinomas or macroadenomas.; Monitor prolactin response, tumor size, vision, gonadal recovery, and medication tolerance.",
+          "expected_active_branch": "Review modifier: Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement; discordant endocrine tests need correct timing",
           "expected_path_node_ids": [
             "root",
             "prolactinoma_concurrent_data_bundle",
@@ -4610,7 +4608,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "prolactinoma_worsening_endpoint",
-          "expected_active_branch": "Prolactinoma reassessment worsens or Visual field deficit, severe headache/apoplexy, cranial nerve palsy, pregnancy with macroadenoma symptoms.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; >ULN; <25 ug/L; >250 ug/L; >500 ug/L; Serum prolactin; repeat/macroprolactin if mild/discordant.; Pregnancy test, TSH/free T4, renal function. no longer fit the documented Prolactinoma branch",
+          "expected_active_branch": "Escalate if reassessment worsens: >ULN; <25 ug/L; Serum prolactin; worsening symptoms or treatment intolerance",
           "expected_path_node_ids": [
             "root",
             "prolactinoma_concurrent_data_bundle",
@@ -4627,7 +4625,7 @@
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "prolactinoma_deescalate_endpoint",
-          "expected_active_branch": "Measured response supports narrowing, stopping, tapering, or continuing Prolactinoma care",
+          "expected_active_branch": "Narrow/stop when response and diagnosis certainty support it",
           "expected_path_node_ids": [
             "root",
             "prolactinoma_concurrent_data_bundle",
@@ -4644,7 +4642,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "prolactinoma_followup_endpoint",
-          "expected_active_branch": "Prolactinoma stable enough for owned follow-up, pending results, and safety-netting",
+          "expected_active_branch": "Follow-up ready: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "prolactinoma_concurrent_data_bundle",

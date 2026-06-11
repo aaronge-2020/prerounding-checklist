@@ -67,6 +67,7 @@ const evidenceGroups = [
 ];
 
 const genericPattern = /\b(?:any red flag, unstable vital sign, or emergency feature|required diagnostic data available|initial assessment: stabilize|collect source-directed confirmation|severity or disposition-changing risk present|diagnostic criteria met or treatment cannot wait|source-backed|selected workup|first-line management only|use the high-risk or confirmed-pathway management option|lower-risk, outpatient, supportive, or safety-net pathway only|clinician review flagged|local policy and patient-specific clinician review flagged|explicit guideline cutoffs|cutoff-bearing|cutoff criteria|trigger present|enough context|gather objective data|repeat critical [^.]+ objective data|(?:the|an) abnormal cutoff|using the abnormal cutoff|according to the abnormal cutoff|danger features?|crisis labs|obtain targeted tests|targeted tests and cultures|concurrent data bundle obtained|criteria match|does patient context support this workup|treatment modifier unresolved|treatment started or diagnostic plan active|worsening or discordant reassessment|stopping or de-escalation criteria met|stable for follow-up with safety net|diagnosis\/risk branch selected|threshold\/result data missing|Missing data needed|Missing data:|Missing context:|Cannot distinguish|Cannot classify|cannot [^.;]+ until [^.;]+ known|branch-specific criteria in this node apply|criterion-defining results|documented disease branch|source-directed|route by findings|route by|compact evidence-cited management pathway|treatment branch only when the cited diagnostic\/severity criteria match|key thresholds and interpretation caveats|guideline-sourced endocrine workup|threshold-defined branch|presenting trigger|assessment and key results|key labs\/results|key results|threshold labs\/results|threshold results|classify risk and disposition|treatment safety resolved|clinician review modifier|local protocol dependency|objective findings favor|active branch|Interpret with local lab ranges|Reference anchors|Patient-specific contraindication, special population|Competing diagnosis or exclusion changes the active pathway)\b/i;
+const lowSignalPathwayLabelPattern = /:\s*(?:assessment, thresholds, and treatment-safety inputs|classify thresholds, acuity, mimics, and disposition|emergency or monitored-care disposition|treatment and disposition branch|contraindications, dosing, pregnancy, and comorbidity modifiers|monitoring and disposition readiness|reassessment escalation|de-escalate, stop, or narrow|follow-up and safety-net|alternate diagnosis pathway)\s*$/i;
 const generatedEvidencePattern = /\b(?:diagnostic frame from guideline-sourced endocrine workup|key thresholds and interpretation caveats|source-backed criteria|source-backed management route|use the high-risk or confirmed-pathway management option|lower-risk, outpatient, supportive, or safety-net pathway|stabilize or escalate before routine treatment|screen for immediate danger or disposition-changing findings|order focused first-line studies and interpret them in sequence|apply source-backed decision steps|does patient context support this workup|criteria match|concurrent data bundle)\b/i;
 const shallowGeneratedPrefixPattern = /^(?:use the high-risk or confirmed-pathway management option when criteria are met|use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied|stabilize or escalate before routine treatment when danger criteria are present|screen for immediate danger or disposition-changing findings before routine workup|order focused first-line studies and interpret them in sequence|apply source-backed decision steps)\s*:\s*/i;
 const cutoffUnits = "(?:mg/dL|mg/L|g/L|mmol/L|mEq/L|mIU/L|mU/L|ng/mL|pg/mL|ug/L|mg/g|mcg/mg|mm Hg|mL/kg|mg/kg|g/kg|kg/m2|mL/min(?:/1\\.73\\s*m2)?|mL|hours?|days?|weeks?|months?|years?|cm|mm|ms|seconds?|minutes?|breaths/minute|x10\\^9/L|%|(?:deg\\s*C|degrees?\\s*C|C(?![a-z]))|ULN|LLN|mOsm/kg|bpm|IU/L|U/L|mcg/dL|ug/dL|mcg/day|mcg|g|mg|kg|cycles/year|measurements?|collections?|samples?|percent|percentile)";
@@ -200,6 +201,55 @@ function pathList(root) {
   return paths;
 }
 
+function isInternalTraversalGuard(node = {}) {
+  return node.internal_traversal_guard === true
+    && node.display?.visible_in_pathway === false
+    && node.display?.visible_in_graph === false
+    && node.display?.visible_in_outline === false;
+}
+
+function textSegments(value = "") {
+  return String(value || "")
+    .replace(/\s+/g, " ")
+    .split(/\s+\|\s+|;\s*|(?<=[.!?])\s+/)
+    .map((segment) => segment.trim())
+    .filter((segment) => segment.length >= 18);
+}
+
+function repeatedSegments(value = "") {
+  const seen = new Set();
+  const repeats = [];
+  for (const segment of textSegments(value)) {
+    const key = normalize(segment);
+    if (!key || key.length < 18) continue;
+    if (seen.has(key)) repeats.push(segment);
+    seen.add(key);
+  }
+  return unique(repeats);
+}
+
+function visibleTextIssues(node = {}) {
+  if (isInternalTraversalGuard(node)) return [];
+  const issues = [];
+  const checks = [
+    ["label", node.label, 180],
+    ["edgeLabel", node.edgeLabel, 320],
+    ["action", node.action, 720],
+    ["criteria.description", node.criteria?.description, 860]
+  ];
+  checks.forEach(([field, value, maxLength]) => {
+    const text = String(value || "").replace(/\s+/g, " ").trim();
+    if (!text) return;
+    if (text.length > maxLength) issues.push(`${field} too long for readable pathway display (${text.length} > ${maxLength})`);
+    const repeats = repeatedSegments(text);
+    if (repeats.length) issues.push(`${field} repeats content: ${repeats.slice(0, 2).join(" | ")}`);
+  });
+  if (node.endpoint_type === "missing_data_needed") {
+    issues.push("missing-data endpoint is visible; this must be an internal traversal guard, not a clinical pathway endpoint");
+  }
+  return issues;
+}
+
 function genericTreeStringFindings(value, path = "$", out = []) {
   if (value && typeof value === "object") {
     if (Array.isArray(value)) {
@@ -324,6 +374,7 @@ function auditModule({ file, module, sourceIds }) {
   const ids = nodes.map((node) => node.id).filter(Boolean);
   const duplicateIds = ids.filter((id, index) => ids.indexOf(id) !== index);
   const leaves = nodes.filter((node) => !Array.isArray(node.children) || node.children.length === 0);
+  const visibleLeaves = leaves.filter((node) => !isInternalTraversalGuard(node));
   const decisions = nodes.filter((node) => node.type === "decision");
   const branches = entries.filter((entry) => entry.parent).length;
   const paths = pathList(tree.root);
@@ -356,9 +407,14 @@ function auditModule({ file, module, sourceIds }) {
   }
 
   entries.forEach(({ node, parent }) => {
+    const internalGuard = isInternalTraversalGuard(node);
     if (!node.id) issues.push(`node missing id: ${node.label || "unlabeled"}`);
     if (!["action", "decision", "endpoint"].includes(node.type)) issues.push(`${node.id}: invalid node type ${node.type}`);
     if (!node.label || String(node.label).trim().length < 5) issues.push(`${node.id}: missing interpretable label`);
+    if (!internalGuard && lowSignalPathwayLabelPattern.test(String(node.label || ""))) {
+      issues.push(`${node.id}: label repeats the workup title plus a low-signal branch name`);
+    }
+    visibleTextIssues(node).forEach((issue) => issues.push(`${node.id}: ${issue}`));
     if (parent && !node.edgeLabel) issues.push(`${node.id}: branch edgeLabel missing`);
     if (!Array.isArray(node.source_ids) || !node.source_ids.length) issues.push(`${node.id}: missing source_ids`);
     if (!node.criteria || !node.criteria.description || !Array.isArray(node.criteria.evaluable_from) || !node.criteria.evaluable_from.length) {
@@ -380,11 +436,7 @@ function auditModule({ file, module, sourceIds }) {
         issues.push(`${node.id}: missing-data endpoint must name exact data needed`);
       }
       if (node.endpoint_type === "missing_data_needed") {
-        const hiddenFromPathway = node.internal_traversal_guard === true
-          && node.display?.visible_in_pathway === false
-          && node.display?.visible_in_graph === false
-          && node.display?.visible_in_outline === false;
-        if (!hiddenFromPathway) {
+        if (!internalGuard) {
           issues.push(`${node.id}: missing-data endpoint must be an internal hidden traversal guard`);
         }
       }
@@ -479,16 +531,19 @@ function auditModule({ file, module, sourceIds }) {
       issues.push(`${scenarioId}: traversal_status is ${scenario.traversal_status}; expected reaches_expected_endpoint`);
     }
   });
-  const uncoveredEndpoints = leaves.filter((node) => !scenarioEndpointIds.has(node.id));
+  const uncoveredEndpoints = visibleLeaves.filter((node) => !scenarioEndpointIds.has(node.id));
   if (uncoveredEndpoints.length) {
     issues.push(`synthetic scenarios do not cover terminal endpoints: ${uncoveredEndpoints.map((node) => node.id).join(", ")}`);
   }
 
   const missingDataEndpoints = leaves.filter((node) => node.endpoint_type === "missing_data_needed");
-  if (!missingDataEndpoints.length) issues.push("no missing-data endpoint present");
+  const hiddenMissingDataEndpoints = missingDataEndpoints.filter(isInternalTraversalGuard);
+  const visibleMissingDataEndpoints = missingDataEndpoints.filter((node) => !isInternalTraversalGuard(node));
+  if (!hiddenMissingDataEndpoints.length) issues.push("no hidden internal missing-data traversal guard present");
   if (missingDataEndpoints.length > 2) issues.push(`too many missing-data endpoints: ${missingDataEndpoints.length}; bundle missing symptoms/exam/vitals/labs/imaging/medications into at most 2 endpoints`);
-  const actionableLeaves = leaves.filter(endpointIsActionable).length;
-  if (actionableLeaves !== leaves.length) issues.push(`only ${actionableLeaves}/${leaves.length} paths terminate in actionable endpoints`);
+  if (visibleMissingDataEndpoints.length) issues.push(`visible missing-data endpoints found: ${visibleMissingDataEndpoints.map((node) => node.id).join(", ")}`);
+  const actionableVisibleLeaves = visibleLeaves.filter(endpointIsActionable).length;
+  if (actionableVisibleLeaves !== visibleLeaves.length) issues.push(`only ${actionableVisibleLeaves}/${visibleLeaves.length} visible paths terminate in actionable clinical endpoints`);
 
   return resultRecord(file, module, tree, issues, blockers, reviewNeeds, {
     nodeCount: nodes.length,
@@ -502,7 +557,7 @@ function auditModule({ file, module, sourceIds }) {
     evidenceCoverage,
     thresholdAudit,
     syntheticScenarioCount: scenarios.length,
-    scenarioCoverage: leaves.length ? (leaves.length - uncoveredEndpoints.length) / leaves.length : 0,
+    scenarioCoverage: visibleLeaves.length ? (visibleLeaves.length - uncoveredEndpoints.length) / visibleLeaves.length : 0,
     majorPathwayCoverage: requiredScenarioPathways.filter((pathway) => scenarioPathways.has(pathway)).length / requiredScenarioPathways.length
   });
 }

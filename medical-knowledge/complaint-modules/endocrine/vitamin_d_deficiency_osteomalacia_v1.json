@@ -2593,7 +2593,7 @@
         "vitamin_d_deficiency_osteomalacia_classification_decision": {
           "rule_id": "vitamin_d_deficiency_osteomalacia_classification_criteria",
           "source": "criteria",
-          "description": "Classify Vitamin D Deficiency / Osteomalacia using cited thresholds: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L, 10-65 pg/mL | Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L | Intact PTH often about 10-65 pg/mL but assay-specific.: 10-65 pg/mL | DXA T-score: normal >= -1.0, osteoporosis <= -2.5 | 25D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.: many labs flag <20 ng/mL, as low and <12 ng/mL",
+          "description": "Classify Vitamin D Deficiency / Osteomalacia using cited thresholds and branch-specific criteria.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3079,7 +3079,7 @@
         "vitamin_d_deficiency_osteomalacia_review_endpoint": {
           "rule_id": "vitamin_d_deficiency_osteomalacia_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Vitamin D Deficiency / Osteomalacia treatment or disposition depends on Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.; Intact PTH often about 10-65 pg/mL but assay-specific.; DXA T-score; 25D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.; Low 25(OH)D with symptoms or osteomalacia labs changes from prevention advice to treatment and etiology evaluation.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context.",
+          "description": "Use reviewer handoff when Vitamin D Deficiency / Osteomalacia treatment or disposition depends on Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; DXA T-score; 25D thresholds vary; discordant endocrine tests need correct timing.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3450,7 +3450,7 @@
         "vitamin_d_deficiency_osteomalacia_alternate_endpoint": {
           "rule_id": "vitamin_d_deficiency_osteomalacia_alternate_criteria",
           "source": "criteria",
-          "description": "Use an alternate pathway when Vitamin D Deficiency / Osteomalacia criteria are absent, Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics better explains the presentation, or measured result data contradict this workup.",
+          "description": "Use an alternate pathway when Vitamin D Deficiency / Osteomalacia criteria are absent, Corrected calcium often about 8.5-10.5 mg/dL better explains the presentation, or measured result data contradict this workup.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3561,7 +3561,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Vitamin D Deficiency / Osteomalacia: Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state.; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; Replete vitamin D and calcium intake when deficiency is clinically relevant, using local dosing protocols and malabsorption/obesity/medication adjustments.; Treat osteomalacia with vitamin D repletion, calcium/phosphate strategy, and cause-specific therapy for malabsorption, renal phosphate wasting, or medication effects.",
+        "label": "Route: Vitamin D Deficiency / Osteomalacia",
         "edgeLabel": "",
         "source_ids": [
           "NIH_VITD_FACTSHEET",
@@ -3584,7 +3584,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Check Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state.; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia. and 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; osteoporosis <= -2.5; many labs flag <20 ng/mL; use the listed assessment bundle to choose emergency care, treatment/disposition, reviewer handoff, alternate diagnosis, reassessment, de-escalation, or follow-up.",
+        "action": "Screen for high-acuity findings; classify with 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; then choose emergency, treatment/disposition, review, mimic, monitoring, de-escalation, or follow-up branch.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3652,8 +3652,8 @@
           {
             "id": "vitamin_d_deficiency_osteomalacia_concurrent_data_bundle",
             "type": "action",
-            "label": "Vitamin D Deficiency / Osteomalacia: assessment, thresholds, and treatment-safety inputs",
-            "edgeLabel": "Collect Vitamin D Deficiency / Osteomalacia: 25(OH)D.; Calcium, phosphorus, alkaline phosphatase, PTH, creatinine/eGFR.; DXA/vertebral imaging or validated fracture-risk tool; 24-hour urine calcium and renal imaging when calcium-stone risk is relevant; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL",
+            "label": "Collect: 25D; Calcium, phosphorus, alkaline phosphatase, PTH, creatinine/eGFR",
+            "edgeLabel": "Assessment bundle: 25D; Calcium, phosphorus, alkaline phosphatase, PTH, creatinine/eGFR; DXA/vertebral imaging or validated fracture-risk tool; 24-hour urine calcium and renal imaging when calcium-stone risk is relevant; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
             "source_ids": [
               "ENDO_VITD_2024",
               "NIH_VITD_FACTSHEET",
@@ -3679,13 +3679,13 @@
                 "AHRQ_CALIBRATE_DX"
               ]
             },
-            "action": "Obtain together: 25(OH)D.; Calcium, phosphorus, alkaline phosphatase, PTH, creatinine/eGFR.; DXA/vertebral imaging or validated fracture-risk tool; 24-hour urine calcium and renal imaging when calcium-stone risk is relevant; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.; Intact PTH often about 10-65 pg/mL but assay-specific.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; osteoporosis <= -2.5.",
+            "action": "Obtain together: 25D; Calcium, phosphorus, alkaline phosphatase, PTH, creatinine/eGFR; DXA/vertebral imaging or validated fracture-risk tool; 24-hour urine calcium and renal imaging when calcium-stone risk is relevant; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L.",
             "children": [
               {
                 "id": "vitamin_d_deficiency_osteomalacia_classification_decision",
                 "type": "decision",
-                "label": "Vitamin D Deficiency / Osteomalacia: classify thresholds, acuity, mimics, and disposition",
-                "edgeLabel": "Classify Vitamin D Deficiency / Osteomalacia with available result(s): 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0",
+                "label": "Classify by: Corrected calcium often about 8.5-10.5 mg/dL; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
+                "edgeLabel": "Classify using 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0",
                 "source_ids": [
                   "NIH_VITD_FACTSHEET",
                   "ENDO_VITD_2024",
@@ -3694,7 +3694,7 @@
                 "criteria": {
                   "rule_id": "vitamin_d_deficiency_osteomalacia_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Vitamin D Deficiency / Osteomalacia using cited thresholds: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L, 10-65 pg/mL | Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L | Intact PTH often about 10-65 pg/mL but assay-specific.: 10-65 pg/mL | DXA T-score: normal >= -1.0, osteoporosis <= -2.5 | 25D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.: many labs flag <20 ng/mL, as low and <12 ng/mL",
+                  "description": "Classify Vitamin D Deficiency / Osteomalacia using cited thresholds and branch-specific criteria.",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -3805,7 +3805,7 @@
                     }
                   ]
                 },
-                "action": "Match current patient data to 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; osteoporosis <= -2.5; many labs flag <20 ng/mL; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
+                "action": "Match current patient data to 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
                 "children": [
                   {
                     "id": "vitamin_d_deficiency_osteomalacia_missing_cutoff_data_endpoint",
@@ -3883,8 +3883,8 @@
                   {
                     "id": "vitamin_d_deficiency_osteomalacia_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Vitamin D Deficiency / Osteomalacia: emergency or monitored-care disposition",
-                    "edgeLabel": "High-acuity threshold or monitored-care result present: Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state.; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
+                    "label": "Escalate for: Severe hypocalcemia symptoms; Corrected calcium often about 8.5-10.5 mg/dL",
+                    "edgeLabel": "Escalate: Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state; Corrected calcium often about 8.5-10.5 mg/dL; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
                     "source_ids": [
                       "ENDO_VITD_2024",
                       "NIH_VITD_FACTSHEET",
@@ -4001,7 +4001,7 @@
                         }
                       ]
                     },
-                    "action": "Send to ED, admission, or monitored specialty care for Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state.; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; Low 25(OH)D with symptoms or osteomalacia labs changes from prevention advice to treatment and etiology evaluation.; unstable physiology or dangerous electrolyte/glucose abnormality; start stabilization and diagnosis-specific emergency treatment before routine outpatient management.",
+                    "action": "Send to ED, admission, or monitored specialty care for Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state; Corrected calcium often about 8.5-10.5 mg/dL; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; start stabilization and diagnosis-specific emergency treatment before routine outpatient management.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -4100,8 +4100,8 @@
                   {
                     "id": "vitamin_d_deficiency_osteomalacia_treatment_bundle",
                     "type": "action",
-                    "label": "Vitamin D Deficiency / Osteomalacia: treatment and disposition branch",
-                    "edgeLabel": "Confirmed/high-risk Vitamin D Deficiency / Osteomalacia branch has treatment-safety data available",
+                    "label": "Choose treatment: Replete vitamin D and calcium intake when deficiency is clinically relevant",
+                    "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "ENDO_VITD_2024",
                       "NIH_VITD_FACTSHEET",
@@ -4220,12 +4220,12 @@
                         }
                       ]
                     },
-                    "action": "Replete vitamin D and calcium intake when deficiency is clinically relevant, using local dosing protocols and malabsorption/obesity/medication adjustments.; Treat osteomalacia with vitamin D repletion, calcium/phosphate strategy, and cause-specific therapy for malabsorption, renal phosphate wasting, or medication effects.; Use age/risk-appropriate empiric supplementation only where guideline groups support it; otherwise follow dietary reference intake.; Low 25(OH)D with symptoms or osteomalacia labs changes from prevention advice to treatment and etiology evaluation.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.",
+                    "action": "Replete vitamin D and calcium intake when deficiency is clinically relevant; Treat osteomalacia with vitamin D repletion; Use age/risk-appropriate empiric supplementation only where guideline groups support it; discordant endocrine tests need correct timing; Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific",
                     "children": [
                       {
                         "id": "vitamin_d_deficiency_osteomalacia_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Vitamin D Deficiency / Osteomalacia: contraindications, dosing, pregnancy, and comorbidity modifiers",
+                        "label": "Check safety: Corrected calcium often about 8.5-10.5 mg/dL; allergy or drug interaction",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "NIH_VITD_FACTSHEET",
@@ -4348,8 +4348,8 @@
                           {
                             "id": "vitamin_d_deficiency_osteomalacia_review_endpoint",
                             "type": "endpoint",
-                            "label": "Vitamin D Deficiency / Osteomalacia: review Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.; Intact PTH often about 10-65 pg/mL but assay-specific.; DXA T-score; 25D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.; Low 25(OH)D with symptoms or osteomalacia labs changes from prevention advice to treatment and etiology evaluation.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context",
-                            "edgeLabel": "Vitamin D Deficiency / Osteomalacia modifier needing review: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.; Intact PTH often about 10-65 pg/mL but assay-specific.; DXA T-score; 25D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.; Low 25(OH)D with symptoms or osteomalacia labs changes from prevention advice to treatment and etiology evaluation.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context",
+                            "label": "Review modifiers: Corrected calcium often about 8.5-10.5 mg/dL",
+                            "edgeLabel": "Review modifier: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; discordant endocrine tests need correct timing",
                             "source_ids": [
                               "NIH_VITD_FACTSHEET",
                               "ENDO_VITD_2024",
@@ -4358,7 +4358,7 @@
                             "criteria": {
                               "rule_id": "vitamin_d_deficiency_osteomalacia_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Vitamin D Deficiency / Osteomalacia treatment or disposition depends on Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.; Intact PTH often about 10-65 pg/mL but assay-specific.; DXA T-score; 25D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.; Low 25(OH)D with symptoms or osteomalacia labs changes from prevention advice to treatment and etiology evaluation.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context.",
+                              "description": "Use reviewer handoff when Vitamin D Deficiency / Osteomalacia treatment or disposition depends on Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; DXA T-score; 25D thresholds vary; discordant endocrine tests need correct timing.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4377,13 +4377,13 @@
                             "action": "Resolve the named Vitamin D Deficiency / Osteomalacia modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
-                            "review_needed_reason": "Vitamin D Deficiency / Osteomalacia management changes when Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.; Intact PTH often about 10-65 pg/mL but assay-specific.; DXA T-score; 25D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.; Low 25(OH)D with symptoms or osteomalacia labs changes from prevention advice to treatment and etiology evaluation.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; document the exact modifier and reviewer input needed."
+                            "review_needed_reason": "Vitamin D Deficiency / Osteomalacia management changes when Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; DXA T-score; 25D thresholds vary; discordant endocrine tests need correct timing; document the exact modifier and reviewer input needed."
                           },
                           {
                             "id": "vitamin_d_deficiency_osteomalacia_monitoring_bundle",
                             "type": "action",
-                            "label": "Vitamin D Deficiency / Osteomalacia: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Vitamin D Deficiency / Osteomalacia: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; 25(OH)D.; Calcium, phosphorus, alkaline phosphatase, PTH, creatinine/eGFR.; DXA/vertebral imaging or validated fracture-risk tool; Measure blood pressure",
+                            "label": "Monitor: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 25D",
+                            "edgeLabel": "Monitor: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 25D; Calcium, phosphorus, alkaline phosphatase, PTH, creatinine/eGFR; treatment response",
                             "source_ids": [
                               "ENDO_VITD_2024",
                               "NIH_VITD_FACTSHEET",
@@ -4505,8 +4505,8 @@
                               {
                                 "id": "vitamin_d_deficiency_osteomalacia_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Vitamin D Deficiency / Osteomalacia: reassessment escalation",
-                                "edgeLabel": "Vitamin D Deficiency / Osteomalacia reassessment worsens or Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; 25(OH)D.; Calcium, phosphorus, alkaline phosphatase, PTH, creatinine/eGFR. no longer fit the documented Vitamin D Deficiency / Osteomalacia branch",
+                                "label": "Escalate if worse: Severe hypocalcemia symptoms; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
+                                "edgeLabel": "Escalate if reassessment worsens: Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 25D; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "ENDO_VITD_2024",
                                   "NIH_VITD_FACTSHEET",
@@ -4623,7 +4623,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Repeat or review Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; 25(OH)D.; Calcium, phosphorus, alkaline phosphatase, PTH, creatinine/eGFR.; reassess mimics and complications; move to ED, admission, or specialty review when that specific trend, vital sign, imaging/ECG/procedure finding, or treatment-response pattern requires escalation.",
+                                "action": "Review Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 25D; worsening symptoms or treatment intolerance; reassess mimics and complications; move to ED, admission, or specialty review when the cited trend or finding worsens.",
                                 "children": [],
                                 "endpoint_type": "escalation_disposition",
                                 "guideline_cutoffs": [
@@ -4722,8 +4722,8 @@
                               {
                                 "id": "vitamin_d_deficiency_osteomalacia_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Vitamin D Deficiency / Osteomalacia: de-escalate, stop, or narrow",
-                                "edgeLabel": "Measured response supports narrowing, stopping, tapering, or continuing Vitamin D Deficiency / Osteomalacia care",
+                                "label": "Narrow/stop by: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; objective response",
+                                "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "ENDO_VITD_2024",
                                   "NIH_VITD_FACTSHEET",
@@ -4939,8 +4939,8 @@
                               {
                                 "id": "vitamin_d_deficiency_osteomalacia_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Vitamin D Deficiency / Osteomalacia: follow-up and safety-net",
-                                "edgeLabel": "Vitamin D Deficiency / Osteomalacia stable enough for owned follow-up, pending results, and safety-netting",
+                                "label": "Close loop: result owner, follow-up, return precautions",
+                                "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ENDO_VITD_2024",
                                   "NIH_VITD_FACTSHEET",
@@ -5186,8 +5186,8 @@
                   {
                     "id": "vitamin_d_deficiency_osteomalacia_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Vitamin D Deficiency / Osteomalacia: alternate diagnosis pathway",
-                    "edgeLabel": "Mimic or alternate pathway favored: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+                    "label": "Alternate diagnosis: Corrected calcium often about 8.5-10.5 mg/dL",
+                    "edgeLabel": "Alternate diagnosis: Corrected calcium often about 8.5-10.5 mg/dL",
                     "source_ids": [
                       "ENDO_VITD_2024",
                       "NIH_VITD_FACTSHEET",
@@ -5196,7 +5196,7 @@
                     "criteria": {
                       "rule_id": "vitamin_d_deficiency_osteomalacia_alternate_criteria",
                       "source": "criteria",
-                      "description": "Use an alternate pathway when Vitamin D Deficiency / Osteomalacia criteria are absent, Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics better explains the presentation, or measured result data contradict this workup.",
+                      "description": "Use an alternate pathway when Vitamin D Deficiency / Osteomalacia criteria are absent, Corrected calcium often about 8.5-10.5 mg/dL better explains the presentation, or measured result data contradict this workup.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5303,10 +5303,10 @@
                         }
                       ]
                     },
-                    "action": "Name the competing diagnosis or exclusion for Vitamin D Deficiency / Osteomalacia, such as Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics; route to the corresponding workup or specialty pathway and document why the Vitamin D Deficiency / Osteomalacia branch is not used.",
+                    "action": "Name the competing diagnosis or exclusion for Vitamin D Deficiency / Osteomalacia, such as Corrected calcium often about 8.5-10.5 mg/dL; route to the corresponding workup or specialty pathway and document why this branch is not used.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Vitamin D Deficiency / Osteomalacia criteria are absent or contradicted by Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics; competing diagnosis must be named before closure."
+                    "review_needed_reason": "Vitamin D Deficiency / Osteomalacia criteria are absent or contradicted by Corrected calcium often about 8.5-10.5 mg/dL; competing diagnosis must be named before closure."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -5504,9 +5504,7 @@
               "Intact PTH often about 10-65 pg/mL but assay-specific.",
               "8.5-10.5 mg/dL",
               "1.12-1.32 mmol/L",
-              "10-65 pg/mL",
-              "normal >= -1.0",
-              "osteoporosis <= -2.5"
+              "10-65 pg/mL"
             ],
             "required_data": [
               "8.5-10.5 mg/dL",
@@ -5649,7 +5647,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "vitamin_d_deficiency_osteomalacia_urgent_endpoint",
-          "expected_active_branch": "High-acuity threshold or monitored-care result present: Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state.; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
+          "expected_active_branch": "Escalate: Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state; Corrected calcium often about 8.5-10.5 mg/dL; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
           "expected_path_node_ids": [
             "root",
             "vitamin_d_deficiency_osteomalacia_concurrent_data_bundle",
@@ -5663,7 +5661,7 @@
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "vitamin_d_deficiency_osteomalacia_alternate_endpoint",
-          "expected_active_branch": "Mimic or alternate pathway favored: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+          "expected_active_branch": "Alternate diagnosis: Corrected calcium often about 8.5-10.5 mg/dL",
           "expected_path_node_ids": [
             "root",
             "vitamin_d_deficiency_osteomalacia_concurrent_data_bundle",
@@ -5677,7 +5675,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "vitamin_d_deficiency_osteomalacia_review_endpoint",
-          "expected_active_branch": "Vitamin D Deficiency / Osteomalacia modifier needing review: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.; Intact PTH often about 10-65 pg/mL but assay-specific.; DXA T-score; 25D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.; Low 25(OH)D with symptoms or osteomalacia labs changes from prevention advice to treatment and etiology evaluation.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context",
+          "expected_active_branch": "Review modifier: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; discordant endocrine tests need correct timing",
           "expected_path_node_ids": [
             "root",
             "vitamin_d_deficiency_osteomalacia_concurrent_data_bundle",
@@ -5693,7 +5691,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "vitamin_d_deficiency_osteomalacia_worsening_endpoint",
-          "expected_active_branch": "Vitamin D Deficiency / Osteomalacia reassessment worsens or Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; 25(OH)D.; Calcium, phosphorus, alkaline phosphatase, PTH, creatinine/eGFR. no longer fit the documented Vitamin D Deficiency / Osteomalacia branch",
+          "expected_active_branch": "Escalate if reassessment worsens: Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 25D; worsening symptoms or treatment intolerance",
           "expected_path_node_ids": [
             "root",
             "vitamin_d_deficiency_osteomalacia_concurrent_data_bundle",
@@ -5710,7 +5708,7 @@
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "vitamin_d_deficiency_osteomalacia_deescalate_endpoint",
-          "expected_active_branch": "Measured response supports narrowing, stopping, tapering, or continuing Vitamin D Deficiency / Osteomalacia care",
+          "expected_active_branch": "Narrow/stop when response and diagnosis certainty support it",
           "expected_path_node_ids": [
             "root",
             "vitamin_d_deficiency_osteomalacia_concurrent_data_bundle",
@@ -5727,7 +5725,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "vitamin_d_deficiency_osteomalacia_followup_endpoint",
-          "expected_active_branch": "Vitamin D Deficiency / Osteomalacia stable enough for owned follow-up, pending results, and safety-netting",
+          "expected_active_branch": "Follow-up ready: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "vitamin_d_deficiency_osteomalacia_concurrent_data_bundle",

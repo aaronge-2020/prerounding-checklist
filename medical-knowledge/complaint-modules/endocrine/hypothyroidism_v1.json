@@ -2824,7 +2824,7 @@
         "hypothyroidism_classification_decision": {
           "rule_id": "hypothyroidism_classification_criteria",
           "source": "criteria",
-          "description": "Classify Hypothyroidism (Underactive Thyroid) using cited thresholds: Hypothyroid LT4 titration: 0.5 to 3.5 mIU/L, 4 mIU/L, 4-6 weeks | Hypothyroid LT4 adjustment: 12.5-25 mcg/day, 4-6 weeks, 4-6 months | Hypothyroid overtreatment safety: TSH <0.1 mIU/L, 4-6 mIU/L, age >70-80 years",
+          "description": "Classify Hypothyroidism (Underactive Thyroid) using cited thresholds and branch-specific criteria.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3225,7 +3225,7 @@
         "hypothyroidism_review_endpoint": {
           "rule_id": "hypothyroidism_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Hypothyroidism (Underactive Thyroid) treatment or disposition depends on Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; High TSH plus low FT4 confirms overt primary hypothyroidism.; Low FT4 with low/normal TSH triggers central hypothyroidism/pituitary pathway.; Treat overt primary hypothyroidism with levothyroxine, adjusted for age, cardiac disease, pregnancy, weight, adherence, and interacting medications.; For subclinical hypothyroidism, individualize treatment by TSH level, symptoms, antibodies, pregnancy/fertility context, goiter, and cardiovascular risk..",
+          "description": "Use reviewer handoff when Hypothyroidism (Underactive Thyroid) treatment or disposition depends on Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; High TSH plus low FT4 confirms overt primary hypothyroidism; Low FT4 with low/normal TSH triggers central hypothyroidism/pituitary pathway.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3524,7 +3524,7 @@
         "hypothyroidism_alternate_endpoint": {
           "rule_id": "hypothyroidism_alternate_criteria",
           "source": "criteria",
-          "description": "Use an alternate pathway when Hypothyroidism (Underactive Thyroid) criteria are absent, competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics better explains the presentation, or measured result data contradict this workup.",
+          "description": "Use an alternate pathway when Hypothyroidism (Underactive Thyroid) criteria are absent, Hypothyroidism mimics or exclusions listed in the module differential better explains the presentation, or measured result data contradict this workup.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3611,7 +3611,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Hypothyroidism: Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; Treat overt primary hypothyroidism with levothyroxine, adjusted for age, cardiac disease, pregnancy, weight, adherence, and interacting medications.; For subclinical hypothyroidism, individualize treatment by TSH level, symptoms, antibodies, pregnancy/fertility context, goiter, and cardiovascular risk.; High TSH plus low FT4 confirms overt primary hypothyroidism.",
+        "label": "Route: Hypothyroidism",
         "edgeLabel": "",
         "source_ids": [
           "ATA_HYPOTHYROIDISM_2014",
@@ -3634,7 +3634,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Check Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes. and 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day; 4-6 months; TSH <0.1 mIU/L; use the listed assessment bundle to choose emergency care, treatment/disposition, reviewer handoff, alternate diagnosis, reassessment, de-escalation, or follow-up.",
+        "action": "Screen for high-acuity findings; classify with 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day; then choose emergency, treatment/disposition, review, mimic, monitoring, de-escalation, or follow-up branch.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3702,8 +3702,8 @@
           {
             "id": "hypothyroidism_concurrent_data_bundle",
             "type": "action",
-            "label": "Hypothyroidism: assessment, thresholds, and treatment-safety inputs",
-            "edgeLabel": "Collect Hypothyroidism: TSH and free T4.; TPO antibody for autoimmune etiology.; Pregnancy test if pregnancy is possible; pituitary/adrenal evaluation if central pattern.; Hypothyroid safety data: check TSH/free T4 with TPO antibody when autoimmune disease matters, sodium/CK/lipids if severe or symptomatic, ECG/cardiac context for older or cardiac patients, and pregnancy-specific targets when pregnant or fertility planning.; 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks",
+            "label": "Collect: TSH and free T4; TPO antibody for autoimmune etiology",
+            "edgeLabel": "Assessment bundle: TSH and free T4; TPO antibody for autoimmune etiology; Pregnancy test if pregnancy is possible; Hypothyroid safety data; TSH; LT4 dose",
             "source_ids": [
               "ATA_HYPOTHYROIDISM_2014",
               "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -3729,13 +3729,13 @@
                 "AHRQ_CALIBRATE_DX"
               ]
             },
-            "action": "Obtain together: TSH and free T4.; TPO antibody for autoimmune etiology.; Pregnancy test if pregnancy is possible; pituitary/adrenal evaluation if central pattern.; Hypothyroid safety data: check TSH/free T4 with TPO antibody when autoimmune disease matters, sodium/CK/lipids if severe or symptomatic, ECG/cardiac context for older or cardiac patients, and pregnancy-specific targets when pregnant or fertility planning.; TSH with free T4; add T3 for thyrotoxicosis, TPO Ab for autoimmune hypothyroidism, TRAb/TSI for Graves, and thyroid ultrasound/FNA pathway for nodules.; Hold high-dose biotin before susceptible assays when feasible and interpret thyroid labs with pregnancy, acute illness, and central hypothyroidism context.; TSH; LT4 dose; dose-change date; adherence/absorption interactions; pregnancy/age/comorbidity context; current LT4 dose; TSH trend; weight/age/pregnancy changes.",
+            "action": "Obtain together: TSH and free T4; TPO antibody for autoimmune etiology; Pregnancy test if pregnancy is possible; Hypothyroid safety data; TSH; LT4 dose.",
             "children": [
               {
                 "id": "hypothyroidism_classification_decision",
                 "type": "decision",
-                "label": "Hypothyroidism: classify thresholds, acuity, mimics, and disposition",
-                "edgeLabel": "Classify Hypothyroidism with available result(s): 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day",
+                "label": "Classify by: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; 0.5 to 3.5 mIU/L",
+                "edgeLabel": "Classify using 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day",
                 "source_ids": [
                   "ATA_HYPOTHYROIDISM_2014",
                   "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -3744,7 +3744,7 @@
                 "criteria": {
                   "rule_id": "hypothyroidism_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Hypothyroidism (Underactive Thyroid) using cited thresholds: Hypothyroid LT4 titration: 0.5 to 3.5 mIU/L, 4 mIU/L, 4-6 weeks | Hypothyroid LT4 adjustment: 12.5-25 mcg/day, 4-6 weeks, 4-6 months | Hypothyroid overtreatment safety: TSH <0.1 mIU/L, 4-6 mIU/L, age >70-80 years",
+                  "description": "Classify Hypothyroidism (Underactive Thyroid) using cited thresholds and branch-specific criteria.",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -3831,7 +3831,7 @@
                     }
                   ]
                 },
-                "action": "Match current patient data to 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day; 4-6 months; TSH <0.1 mIU/L; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
+                "action": "Match current patient data to 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
                 "children": [
                   {
                     "id": "hypothyroidism_missing_cutoff_data_endpoint",
@@ -3931,8 +3931,8 @@
                   {
                     "id": "hypothyroidism_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Hypothyroidism: emergency or monitored-care disposition",
-                    "edgeLabel": "High-acuity threshold or monitored-care result present: Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; 0.5 to 3.5 mIU/L; 4 mIU/L",
+                    "label": "Escalate for: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; 0.5 to 3.5 mIU/L",
+                    "edgeLabel": "Escalate: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; 0.5 to 3.5 mIU/L; 4 mIU/L",
                     "source_ids": [
                       "ATA_HYPOTHYROIDISM_2014",
                       "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -4025,7 +4025,7 @@
                         }
                       ]
                     },
-                    "action": "Send to ED, admission, or monitored specialty care for Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; High TSH plus low FT4 confirms overt primary hypothyroidism.; Low FT4 with low/normal TSH triggers central hypothyroidism/pituitary pathway.; start stabilization and diagnosis-specific emergency treatment before routine outpatient management.",
+                    "action": "Send to ED, admission, or monitored specialty care for Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; 0.5 to 3.5 mIU/L; 4 mIU/L; start stabilization and diagnosis-specific emergency treatment before routine outpatient management.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -4100,8 +4100,8 @@
                   {
                     "id": "hypothyroidism_treatment_bundle",
                     "type": "action",
-                    "label": "Hypothyroidism: treatment and disposition branch",
-                    "edgeLabel": "Confirmed/high-risk Hypothyroidism branch has treatment-safety data available",
+                    "label": "Choose treatment: Treat overt primary hypothyroidism with levothyroxine",
+                    "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "ATA_HYPOTHYROIDISM_2014",
                       "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -4196,12 +4196,12 @@
                         }
                       ]
                     },
-                    "action": "Treat overt primary hypothyroidism with levothyroxine, adjusted for age, cardiac disease, pregnancy, weight, adherence, and interacting medications.; For subclinical hypothyroidism, individualize treatment by TSH level, symptoms, antibodies, pregnancy/fertility context, goiter, and cardiovascular risk.; Use free T4 rather than TSH to titrate central hypothyroidism, after adrenal status is safe.; High TSH plus low FT4 confirms overt primary hypothyroidism.; Low FT4 with low/normal TSH triggers central hypothyroidism/pituitary pathway.; Hypothyroid LT4 titration; Hypothyroid LT4 adjustment",
+                    "action": "Treat overt primary hypothyroidism with levothyroxine; For subclinical hypothyroidism; Use free T4 rather than TSH to titrate central hypothyroidism, after adrenal status is safe; High TSH plus low FT4 confirms overt primary hypothyroidism; Low FT4 with low/normal TSH triggers central hypothyroidism/pituitary pathway; Hypothyroid LT4 titration",
                     "children": [
                       {
                         "id": "hypothyroidism_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Hypothyroidism: contraindications, dosing, pregnancy, and comorbidity modifiers",
+                        "label": "Check safety: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "ATA_HYPOTHYROIDISM_2014",
@@ -4300,8 +4300,8 @@
                           {
                             "id": "hypothyroidism_review_endpoint",
                             "type": "endpoint",
-                            "label": "Hypothyroidism: review Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; High TSH plus low FT4 confirms overt primary hypothyroidism.; Low FT4 with low/normal TSH triggers central hypothyroidism/pituitary pathway.; Treat overt primary hypothyroidism with levothyroxine, adjusted for age, cardiac disease, pregnancy, weight, adherence, and interacting medications.; For subclinical hypothyroidism, individualize treatment by TSH level, symptoms, antibodies, pregnancy/fertility context, goiter, and cardiovascular risk.",
-                            "edgeLabel": "Hypothyroidism modifier needing review: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; High TSH plus low FT4 confirms overt primary hypothyroidism.; Low FT4 with low/normal TSH triggers central hypothyroidism/pituitary pathway.; Treat overt primary hypothyroidism with levothyroxine, adjusted for age, cardiac disease, pregnancy, weight, adherence, and interacting medications.; For subclinical hypothyroidism, individualize treatment by TSH level, symptoms, antibodies, pregnancy/fertility context, goiter, and cardiovascular risk.",
+                            "label": "Review modifiers: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment",
+                            "edgeLabel": "Review modifier: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; High TSH plus low FT4 confirms overt primary hypothyroidism",
                             "source_ids": [
                               "ATA_HYPOTHYROIDISM_2014",
                               "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -4310,7 +4310,7 @@
                             "criteria": {
                               "rule_id": "hypothyroidism_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Hypothyroidism (Underactive Thyroid) treatment or disposition depends on Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; High TSH plus low FT4 confirms overt primary hypothyroidism.; Low FT4 with low/normal TSH triggers central hypothyroidism/pituitary pathway.; Treat overt primary hypothyroidism with levothyroxine, adjusted for age, cardiac disease, pregnancy, weight, adherence, and interacting medications.; For subclinical hypothyroidism, individualize treatment by TSH level, symptoms, antibodies, pregnancy/fertility context, goiter, and cardiovascular risk..",
+                              "description": "Use reviewer handoff when Hypothyroidism (Underactive Thyroid) treatment or disposition depends on Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; High TSH plus low FT4 confirms overt primary hypothyroidism; Low FT4 with low/normal TSH triggers central hypothyroidism/pituitary pathway.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4329,13 +4329,13 @@
                             "action": "Resolve the named Hypothyroidism modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
-                            "review_needed_reason": "Hypothyroidism management changes when Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; High TSH plus low FT4 confirms overt primary hypothyroidism.; Low FT4 with low/normal TSH triggers central hypothyroidism/pituitary pathway.; Treat overt primary hypothyroidism with levothyroxine, adjusted for age, cardiac disease, pregnancy, weight, adherence, and interacting medications.; For subclinical hypothyroidism, individualize treatment by TSH level, symptoms, antibodies, pregnancy/fertility context, goiter, and cardiovascular risk.; document the exact modifier and reviewer input needed."
+                            "review_needed_reason": "Hypothyroidism management changes when Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; High TSH plus low FT4 confirms overt primary hypothyroidism; Low FT4 with low/normal TSH triggers central hypothyroidism/pituitary pathway; document the exact modifier and reviewer input needed."
                           },
                           {
                             "id": "hypothyroidism_monitoring_bundle",
                             "type": "action",
-                            "label": "Hypothyroidism: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Hypothyroidism: 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day; TSH and free T4.; TPO antibody for autoimmune etiology.; Pregnancy test if pregnancy is possible; pituitary/adrenal evaluation if central pattern.; Measure blood pressure",
+                            "label": "Monitor: 0.5 to 3.5 mIU/L; 4 mIU/L; TSH and free T4",
+                            "edgeLabel": "Monitor: 0.5 to 3.5 mIU/L; 4 mIU/L; TSH and free T4; TPO antibody for autoimmune etiology; treatment response",
                             "source_ids": [
                               "ATA_HYPOTHYROIDISM_2014",
                               "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -4433,8 +4433,8 @@
                               {
                                 "id": "hypothyroidism_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Hypothyroidism: reassessment escalation",
-                                "edgeLabel": "Hypothyroidism reassessment worsens or Myxedema coma features: hypothermia, bradycardia, hypotension, hypoventilation, hyponatremia, altered mental status.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day; TSH and free T4.; TPO antibody for autoimmune etiology. no longer fit the documented Hypothyroidism branch",
+                                "label": "Escalate if worse: 0.5 to 3.5 mIU/L; 4 mIU/L; TSH and free T4",
+                                "edgeLabel": "Escalate if reassessment worsens: 0.5 to 3.5 mIU/L; 4 mIU/L; TSH and free T4; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "ATA_HYPOTHYROIDISM_2014",
                                   "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -4527,7 +4527,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Repeat or review Myxedema coma features: hypothermia, bradycardia, hypotension, hypoventilation, hyponatremia, altered mental status.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day; TSH and free T4.; TPO antibody for autoimmune etiology.; reassess mimics and complications; move to ED, admission, or specialty review when that specific trend, vital sign, imaging/ECG/procedure finding, or treatment-response pattern requires escalation.",
+                                "action": "Review 0.5 to 3.5 mIU/L; 4 mIU/L; TSH and free T4; worsening symptoms or treatment intolerance; reassess mimics and complications; move to ED, admission, or specialty review when the cited trend or finding worsens.",
                                 "children": [],
                                 "endpoint_type": "escalation_disposition",
                                 "guideline_cutoffs": [
@@ -4602,8 +4602,8 @@
                               {
                                 "id": "hypothyroidism_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Hypothyroidism: de-escalate, stop, or narrow",
-                                "edgeLabel": "Measured response supports narrowing, stopping, tapering, or continuing Hypothyroidism care",
+                                "label": "Narrow/stop by: 0.5 to 3.5 mIU/L; 4 mIU/L; objective response",
+                                "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "ATA_HYPOTHYROIDISM_2014",
                                   "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -4771,8 +4771,8 @@
                               {
                                 "id": "hypothyroidism_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Hypothyroidism: follow-up and safety-net",
-                                "edgeLabel": "Hypothyroidism stable enough for owned follow-up, pending results, and safety-netting",
+                                "label": "Close loop: result owner, follow-up, return precautions",
+                                "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ATA_HYPOTHYROIDISM_2014",
                                   "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -4968,8 +4968,8 @@
                   {
                     "id": "hypothyroidism_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Hypothyroidism: alternate diagnosis pathway",
-                    "edgeLabel": "Mimic or alternate pathway favored: competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+                    "label": "Use alternate diagnosis pathway",
+                    "edgeLabel": "Alternate diagnosis: competing diagnosis better explains the presentation",
                     "source_ids": [
                       "ATA_HYPOTHYROIDISM_2014",
                       "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -4978,7 +4978,7 @@
                     "criteria": {
                       "rule_id": "hypothyroidism_alternate_criteria",
                       "source": "criteria",
-                      "description": "Use an alternate pathway when Hypothyroidism (Underactive Thyroid) criteria are absent, competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics better explains the presentation, or measured result data contradict this workup.",
+                      "description": "Use an alternate pathway when Hypothyroidism (Underactive Thyroid) criteria are absent, Hypothyroidism mimics or exclusions listed in the module differential better explains the presentation, or measured result data contradict this workup.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5061,10 +5061,10 @@
                         }
                       ]
                     },
-                    "action": "Name the competing diagnosis or exclusion for Hypothyroidism, such as competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics; route to the corresponding workup or specialty pathway and document why the Hypothyroidism branch is not used.",
+                    "action": "Name the competing diagnosis or exclusion for Hypothyroidism, such as competing diagnosis better explains the presentation; route to the corresponding workup or specialty pathway and document why this branch is not used.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Hypothyroidism criteria are absent or contradicted by competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics; competing diagnosis must be named before closure."
+                    "review_needed_reason": "Hypothyroidism criteria are absent or contradicted by Hypothyroidism mimics or exclusions listed in the module differential; competing diagnosis must be named before closure."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -5217,9 +5217,7 @@
               "dose-change date",
               "adherence/absorption interactions",
               "pregnancy/age/comorbidity context",
-              "current LT4 dose",
-              "TSH trend",
-              "weight/age/pregnancy changes"
+              "current LT4 dose"
             ],
             "required_data": [
               "TSH",
@@ -5349,7 +5347,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "hypothyroidism_urgent_endpoint",
-          "expected_active_branch": "High-acuity threshold or monitored-care result present: Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; 0.5 to 3.5 mIU/L; 4 mIU/L",
+          "expected_active_branch": "Escalate: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; 0.5 to 3.5 mIU/L; 4 mIU/L",
           "expected_path_node_ids": [
             "root",
             "hypothyroidism_concurrent_data_bundle",
@@ -5363,7 +5361,7 @@
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "hypothyroidism_alternate_endpoint",
-          "expected_active_branch": "Mimic or alternate pathway favored: competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+          "expected_active_branch": "Alternate diagnosis: competing diagnosis better explains the presentation",
           "expected_path_node_ids": [
             "root",
             "hypothyroidism_concurrent_data_bundle",
@@ -5377,7 +5375,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "hypothyroidism_review_endpoint",
-          "expected_active_branch": "Hypothyroidism modifier needing review: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; High TSH plus low FT4 confirms overt primary hypothyroidism.; Low FT4 with low/normal TSH triggers central hypothyroidism/pituitary pathway.; Treat overt primary hypothyroidism with levothyroxine, adjusted for age, cardiac disease, pregnancy, weight, adherence, and interacting medications.; For subclinical hypothyroidism, individualize treatment by TSH level, symptoms, antibodies, pregnancy/fertility context, goiter, and cardiovascular risk.",
+          "expected_active_branch": "Review modifier: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; High TSH plus low FT4 confirms overt primary hypothyroidism",
           "expected_path_node_ids": [
             "root",
             "hypothyroidism_concurrent_data_bundle",
@@ -5393,7 +5391,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "hypothyroidism_worsening_endpoint",
-          "expected_active_branch": "Hypothyroidism reassessment worsens or Myxedema coma features: hypothermia, bradycardia, hypotension, hypoventilation, hyponatremia, altered mental status.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day; TSH and free T4.; TPO antibody for autoimmune etiology. no longer fit the documented Hypothyroidism branch",
+          "expected_active_branch": "Escalate if reassessment worsens: 0.5 to 3.5 mIU/L; 4 mIU/L; TSH and free T4; worsening symptoms or treatment intolerance",
           "expected_path_node_ids": [
             "root",
             "hypothyroidism_concurrent_data_bundle",
@@ -5410,7 +5408,7 @@
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "hypothyroidism_deescalate_endpoint",
-          "expected_active_branch": "Measured response supports narrowing, stopping, tapering, or continuing Hypothyroidism care",
+          "expected_active_branch": "Narrow/stop when response and diagnosis certainty support it",
           "expected_path_node_ids": [
             "root",
             "hypothyroidism_concurrent_data_bundle",
@@ -5427,7 +5425,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "hypothyroidism_followup_endpoint",
-          "expected_active_branch": "Hypothyroidism stable enough for owned follow-up, pending results, and safety-netting",
+          "expected_active_branch": "Follow-up ready: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "hypothyroidism_concurrent_data_bundle",

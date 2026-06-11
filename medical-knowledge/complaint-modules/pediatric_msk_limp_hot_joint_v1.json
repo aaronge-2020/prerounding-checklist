@@ -7613,7 +7613,7 @@
             "id": "pediatric_msk_limp_hot_joint_initial_assessment_bundle",
             "type": "action",
             "label": "Pediatric limp bedside assessment: age, duration, trauma/safeguarding, post-analgesia weight-bearing, fever/vitals, localization, ROM, labs/imaging, and follow-up",
-            "edgeLabel": "Pediatric limp assessment bundle: No routine tests for low-risk comfortable limp; X-ray localized pain or injury area; Infection labs and blood culture route; Ultrasound hip effusion route; MRI for osteomyelitis localization; Unable to walk or weight bear; Fever with hot swollen limited joint; Systemically unwell or sepsis physiology; Night pain weight loss pallor bruising; Safeguarding concern or inconsistent injury; Measure temperature; Measure heart rate; Measure respiratory rate; Immediate orthopedic route for septic arthritis; Bone infection admission and antibiotic route; Low-risk discharge only when walking comfortably; Persistent limp or negative X-ray route; Referred or systemic cause route; Escalate acute inability to walk or weight bear until serious infection, fracture, neurologic disease, systemic disease, or unsafe discharge is unlikely.; Treat suspected septic arthritis as an orthopaedic emergency requiring urgent review, aspiration or washout planning, cultures, and IV antibiotics.; Admit suspected bone or joint infection for cultures, imaging, IV antibiotics, and orthopaedic or infectious diseases management.",
+            "edgeLabel": "Pediatric limp assessment: age, duration, trauma/safeguarding, post-analgesia weight-bearing, fever/vitals, localization, ROM, labs/imaging, and follow-up",
             "source_ids": [
               "RCH_LIMPING_CHILD",
               "RCH_BONE_JOINT_INFECTION",
@@ -13063,8 +13063,8 @@
                   {
                     "id": "pediatric_msk_limp_hot_joint_special_population_review_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric limp special-population or local-policy review: neonate, age <3 months, immunocompromise, sickle cell, hemophilia, MRSA/Pseudomonas risk, puncture wound, postoperative limb, pregnancy, or safeguarding",
-                    "edgeLabel": "Special-population branch: neonate or age <3 months, immunocompromise, sickle cell, hemophilia, renal disease, postoperative orthopaedics, prosthesis/hardware, puncture/contaminated wound or water exposure, MRSA/Pseudomonas risk, relapse/persistent bacteremia, pregnancy-relevant adolescent imaging/medications, or child-safety policy requirement",
+                    "label": "Pediatric limp special review: neonate, immunocompromise, sickle cell/hemophilia, MRSA/Pseudomonas risk, postoperative limb, pregnancy, or safeguarding",
+                    "edgeLabel": "Special-population branch: neonate, age <3 months, immunocompromise, sickle cell/hemophilia, hardware/postoperative limb, puncture/water exposure, MRSA/Pseudomonas risk, pregnancy, safeguarding, or local transfer/formulary rule",
                     "source_ids": [
                       "RCH_BONE_JOINT_INFECTION",
                       "CHQ_BONE_JOINT_INFECTION_2025",
@@ -15114,7 +15114,7 @@
                         "id": "pediatric_msk_limp_hot_joint_followup_safety_endpoint",
                         "type": "endpoint",
                         "label": "Pediatric limp follow-up and safety-net: review access, pending-result owner, weight-bearing plan, return precautions, and specialty handoff",
-                        "edgeLabel": "Disposition branch: cause identified and managed or serious causes addressed, walking/weight-bearing plan documented, pending labs/cultures/imaging assigned, orthopaedic/pediatric/ID follow-up scheduled when needed, and family return precautions include fever, worsening/nocturnal pain, refusal to weight bear, no improvement after 3 days, persistence >14 days, lethargy, or unwell appearance",
+                        "edgeLabel": "Disposition branch: cause managed or serious causes addressed, weight-bearing plan documented, pending results assigned, specialty follow-up scheduled, and return precautions given",
                         "source_ids": [
                           "RCH_LIMPING_CHILD",
                           "RCH_BONE_JOINT_INFECTION",
@@ -15480,7 +15480,8 @@
                       "trend CRP/ESR/WBC when infection is being treated",
                       "track blood culture and aspirate results",
                       "review X-ray/ultrasound/MRI result owner",
-                      "confirm antibiotic route/duration or no-test rationale"
+                      "confirm antibiotic route/duration or no-test rationale",
+                      "host, pregnancy, medication, antimicrobial, and follow-up modifiers"
                     ],
                     "guideline_cutoffs": [
                       {
@@ -16435,9 +16436,9 @@
               }
             ],
             "parallel_actions": [
-              "No routine tests for low-risk comfortable limp; X-ray localized pain or injury area; Infection labs and blood culture route; Ultrasound hip effusion route; MRI for osteomyelitis localization",
-              "Unable to walk or weight bear; Fever with hot swollen limited joint; Systemically unwell or sepsis physiology; Night pain weight loss pallor bruising; Safeguarding concern or inconsistent injury; Measure temperature; Measure heart rate; Measure respiratory rate",
-              "Immediate orthopedic route for septic arthritis; Bone infection admission and antibiotic route; Low-risk discharge only when walking comfortably; Persistent limp or negative X-ray route; Referred or systemic cause route; Escalate acute inability to walk or weight bear until serious infection, fracture, neurologic disease, systemic disease, or unsafe discharge is unlikely.; Treat suspected septic arthritis as an orthopaedic emergency requiring urgent review, aspiration or washout planning, cultures, and IV antibiotics.; Admit suspected bone or joint infection for cultures, imaging, IV antibiotics, and orthopaedic or infectious diseases management.",
+              "No routine tests for low-risk comfortable limp; X-ray localized pain or injury area; Infection labs and blood culture route; Ultrasound hip effusion route",
+              "Unable to walk or weight bear; Fever with hot swollen limited joint; Systemically unwell or sepsis physiology; Night pain weight loss pallor bruising",
+              "Immediate orthopedic route for septic arthritis; Bone infection admission and antibiotic route; Low-risk discharge only when walking comfortably; Persistent limp or negative X-ray route",
               "post-analgesia weight-bearing assessment",
               "temperature and full vital signs",
               "passive joint range of motion",
@@ -16907,7 +16908,7 @@
           "scenario_id": "neonate_immunocompromised_mrsa_puncture",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "pediatric_msk_limp_hot_joint_special_population_review_endpoint",
-          "expected_active_branch": "Special-population branch: neonate or age <3 months, immunocompromise, sickle cell, hemophilia, renal disease, postoperative orthopaedics, prosthesis/hardware, puncture/contaminated wound or water exposure, MRSA/Pseudomonas risk, relapse/persistent bacteremia, pregnancy-relevant adolescent imaging/medications, or child-safety policy requirement",
+          "expected_active_branch": "Special-population branch: neonate, age <3 months, immunocompromise, sickle cell/hemophilia, hardware/postoperative limb, puncture/water exposure, MRSA/Pseudomonas risk, pregnancy, safeguarding, or local transfer/formulary rule",
           "expected_path_node_ids": [
             "root",
             "pediatric_msk_limp_hot_joint_initial_assessment_bundle",
@@ -16951,7 +16952,7 @@
           "scenario_id": "followup_and_return_precautions",
           "major_pathway": "follow_up_safety_netting",
           "expected_endpoint_id": "pediatric_msk_limp_hot_joint_followup_safety_endpoint",
-          "expected_active_branch": "Disposition branch: cause identified and managed or serious causes addressed, walking/weight-bearing plan documented, pending labs/cultures/imaging assigned, orthopaedic/pediatric/ID follow-up scheduled when needed, and family return precautions include fever, worsening/nocturnal pain, refusal to weight bear, no improvement after 3 days, persistence >14 days, lethargy, or unwell appearance",
+          "expected_active_branch": "Disposition branch: cause managed or serious causes addressed, weight-bearing plan documented, pending results assigned, specialty follow-up scheduled, and return precautions given",
           "expected_path_node_ids": [
             "root",
             "pediatric_msk_limp_hot_joint_initial_assessment_bundle",

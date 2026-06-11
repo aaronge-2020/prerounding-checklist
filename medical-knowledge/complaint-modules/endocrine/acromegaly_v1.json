@@ -8889,7 +8889,7 @@
                   {
                     "id": "acromegaly_mimic_or_confounded_endpoint",
                     "type": "endpoint",
-                    "label": "Acromegaly mimic/confounder route: normal IGF-1, adolescence/pregnancy, uncontrolled diabetes, renal/hepatic failure, hypothyroidism, malnutrition, severe infection, oral estrogen, or pseudoacromegaly",
+                    "label": "Acromegaly mimic/confounder: normal IGF-1, physiologic variant, diabetes, organ failure, hypothyroidism, malnutrition, infection, estrogen, or pseudoacromegaly",
                     "edgeLabel": "Alternate branch: IGF-1 normal for age/puberty, OGTT suppresses GH, phenotype is explained by adolescence/pregnancy or insulin-mediated pseudoacromegaly, or IGF-1/GH is confounded by diabetes, renal/hepatic disease, hypothyroidism, malnutrition, severe infection, oral estrogen, assay mismatch, or medication effect",
                     "source_ids": [
                       "ES_ACROMEGALY_2014",
@@ -9593,7 +9593,7 @@
                   {
                     "id": "acromegaly_treatment_action",
                     "type": "action",
-                    "label": "Acromegaly treatment selection: surgery first when resectable, medical/radiation when persistent or nonsurgical, special-population review when pregnancy or growth plates change care",
+                    "label": "Acromegaly treatment: surgery first when resectable; medical/radiation or special-population review when needed",
                     "edgeLabel": "Treatment branch: biochemical Acromegaly is confirmed or highly likely, MRI/surgical candidacy and comorbidity modifiers are available, and acute instability is absent",
                     "source_ids": [
                       "ACROMEGALY_DIAGNOSIS_REMISSION_2024",

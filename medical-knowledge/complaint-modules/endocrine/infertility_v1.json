@@ -3411,7 +3411,7 @@
         "infertility_classification_decision": {
           "rule_id": "infertility_classification_criteria",
           "source": "criteria",
-          "description": "Classify Infertility (Hormonal causes) using cited thresholds: Infertility evaluation timing: >=12 months, age <35, 6 months, age >=35, age >40 | Ovulation branch: 21-35 days, >3 ng/mL, 1 week | Infertility endocrine redirection: <25 days, >35 days, >200 ng/dL",
+          "description": "Classify Infertility (Hormonal causes) using cited thresholds and branch-specific criteria.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3837,7 +3837,7 @@
         "infertility_review_endpoint": {
           "rule_id": "infertility_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Infertility (Hormonal causes) treatment or disposition depends on Infertility evaluation timing; Infertility endocrine redirection; Anovulation, thyroid/prolactin abnormality, POI pattern, or male factor changes treatment/referral.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Treat thyroid disease, hyperprolactinemia, PCOS/anovulation, hypogonadism, or POI according to cause and pregnancy safety.; Use ovulation induction, typically letrozole for PCOS-related anovulation, in the appropriate reproductive pathway..",
+          "description": "Use reviewer handoff when Infertility (Hormonal causes) treatment or disposition depends on Infertility evaluation timing; Infertility endocrine redirection; discordant endocrine tests need correct timing.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -4169,7 +4169,7 @@
         "infertility_alternate_endpoint": {
           "rule_id": "infertility_alternate_criteria",
           "source": "criteria",
-          "description": "Use an alternate pathway when Infertility (Hormonal causes) criteria are absent, competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics better explains the presentation, or measured result data contradict this workup.",
+          "description": "Use an alternate pathway when Infertility (Hormonal causes) criteria are absent, Infertility mimics or exclusions listed in the module differential better explains the presentation, or measured result data contradict this workup.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4266,7 +4266,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Infertility: Amenorrhea with visual symptoms, POI <40, severe hyperandrogenism, recurrent pregnancy loss needing specialist workup.; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; >=12 months; age <35; 6 months; Treat thyroid disease, hyperprolactinemia, PCOS/anovulation, hypogonadism, or POI according to cause and pregnancy safety.; Use ovulation induction, typically letrozole for PCOS-related anovulation, in the appropriate reproductive pathway.",
+        "label": "Route: Infertility",
         "edgeLabel": "",
         "source_ids": [
           "ASRM_INFERTILITY_EVALUATION_2021",
@@ -4293,7 +4293,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Check Amenorrhea with visual symptoms, POI <40, severe hyperandrogenism, recurrent pregnancy loss needing specialist workup.; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism and >=12 months; age <35; 6 months; age >=35; age >40; 21-35 days; use the listed assessment bundle to choose emergency care, treatment/disposition, reviewer handoff, alternate diagnosis, reassessment, de-escalation, or follow-up.",
+        "action": "Screen for high-acuity findings; classify with >=12 months; age <35; 6 months; age >=35; then choose emergency, treatment/disposition, review, mimic, monitoring, de-escalation, or follow-up branch.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -4361,8 +4361,8 @@
           {
             "id": "infertility_concurrent_data_bundle",
             "type": "action",
-            "label": "Infertility: assessment, thresholds, and treatment-safety inputs",
-            "edgeLabel": "Collect Infertility: Pregnancy test if amenorrhea.; TSH/prolactin.; FSH/estradiol/AMH/antral follicle count.; PCOS and androgen labs.; >=12 months; age <35; 6 months",
+            "label": "Collect: Pregnancy test if amenorrhea; TSH/prolactin; FSH/estradiol/AMH/antral follicle count",
+            "edgeLabel": "Assessment bundle: Pregnancy test if amenorrhea; TSH/prolactin; FSH/estradiol/AMH/antral follicle count; PCOS and androgen labs; age; duration of attempts",
             "source_ids": [
               "ASRM_AMENORRHEA_2024",
               "PCOS_GUIDELINE_2023",
@@ -4390,13 +4390,13 @@
                 "AHRQ_CALIBRATE_DX"
               ]
             },
-            "action": "Obtain together: Pregnancy test if amenorrhea.; TSH/prolactin.; FSH/estradiol/AMH/antral follicle count.; PCOS and androgen labs.; Semen analysis; male morning testosterone/LH/FSH if indicated.; Infertility hormone safety tests: Pregnancy test if pregnancy is possible, ovulatory timing, TSH/prolactin, LH/FSH with estradiol or testosterone, AMH/ovarian reserve or semen analysis as appropriate, and urgent ectopic/red-flag testing for pain or bleeding.; Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.; age; duration of attempts; intercourse/insemination exposure; known uterine/tubal/peritoneal/endometriosis risk; known male factor; donor sperm/ART indication; prior chemo/radiation/FMR1 risk; cycle length range.",
+            "action": "Obtain together: Pregnancy test if amenorrhea; TSH/prolactin; FSH/estradiol/AMH/antral follicle count; PCOS and androgen labs; age; duration of attempts.",
             "children": [
               {
                 "id": "infertility_classification_decision",
                 "type": "decision",
-                "label": "Infertility: classify thresholds, acuity, mimics, and disposition",
-                "edgeLabel": "Classify Infertility with available result(s): >=12 months; age <35; 6 months; age >=35",
+                "label": "Classify by: Infertility evaluation timing; Ovulation branch; >=12 months",
+                "edgeLabel": "Classify using >=12 months; age <35; 6 months; age >=35",
                 "source_ids": [
                   "ASRM_INFERTILITY_EVALUATION_2021",
                   "ASRM_AMENORRHEA_2024",
@@ -4407,7 +4407,7 @@
                 "criteria": {
                   "rule_id": "infertility_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Infertility (Hormonal causes) using cited thresholds: Infertility evaluation timing: >=12 months, age <35, 6 months, age >=35, age >40 | Ovulation branch: 21-35 days, >3 ng/mL, 1 week | Infertility endocrine redirection: <25 days, >35 days, >200 ng/dL",
+                  "description": "Classify Infertility (Hormonal causes) using cited thresholds and branch-specific criteria.",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -4505,7 +4505,7 @@
                     }
                   ]
                 },
-                "action": "Match current patient data to >=12 months; age <35; 6 months; age >=35; age >40; 21-35 days; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
+                "action": "Match current patient data to >=12 months; age <35; 6 months; age >=35; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
                 "children": [
                   {
                     "id": "infertility_missing_cutoff_data_endpoint",
@@ -4615,8 +4615,8 @@
                   {
                     "id": "infertility_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Infertility: emergency or monitored-care disposition",
-                    "edgeLabel": "High-acuity threshold or monitored-care result present: Amenorrhea with visual symptoms, POI <40, severe hyperandrogenism, recurrent pregnancy loss needing specialist workup.; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; >=12 months; age <35",
+                    "label": "Escalate for: Amenorrhea with visual symptoms",
+                    "edgeLabel": "Escalate: Amenorrhea with visual symptoms; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; Infertility evaluation timing; Ovulation branch; >=12 months",
                     "source_ids": [
                       "ASRM_AMENORRHEA_2024",
                       "PCOS_GUIDELINE_2023",
@@ -4720,7 +4720,7 @@
                         }
                       ]
                     },
-                    "action": "Send to ED, admission, or monitored specialty care for Amenorrhea with visual symptoms, POI <40, severe hyperandrogenism, recurrent pregnancy loss needing specialist workup.; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; >=12 months; age <35; 6 months; Anovulation, thyroid/prolactin abnormality, POI pattern, or male factor changes treatment/referral.; unstable physiology or dangerous electrolyte/glucose abnormality; start stabilization and diagnosis-specific emergency treatment before routine outpatient management.",
+                    "action": "Send to ED, admission, or monitored specialty care for Amenorrhea with visual symptoms; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; Infertility evaluation timing; Ovulation branch; >=12 months; start stabilization and diagnosis-specific emergency treatment before routine outpatient management.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -4804,8 +4804,8 @@
                   {
                     "id": "infertility_treatment_bundle",
                     "type": "action",
-                    "label": "Infertility: treatment and disposition branch",
-                    "edgeLabel": "Confirmed/high-risk Infertility branch has treatment-safety data available",
+                    "label": "Choose treatment: discordant endocrine tests need correct timing; Infertility evaluation timing",
+                    "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "ASRM_AMENORRHEA_2024",
                       "PCOS_GUIDELINE_2023",
@@ -4911,12 +4911,12 @@
                         }
                       ]
                     },
-                    "action": "Treat thyroid disease, hyperprolactinemia, PCOS/anovulation, hypogonadism, or POI according to cause and pregnancy safety.; Use ovulation induction, typically letrozole for PCOS-related anovulation, in the appropriate reproductive pathway.; Use gonadotropins, dopamine agonists, surgery, ART, or male-factor treatment according to etiology and specialist guidance.; Anovulation, thyroid/prolactin abnormality, POI pattern, or male factor changes treatment/referral.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Infertility evaluation timing; Infertility endocrine redirection",
+                    "action": "discordant endocrine tests need correct timing; Infertility evaluation timing; Infertility endocrine redirection",
                     "children": [
                       {
                         "id": "infertility_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Infertility: contraindications, dosing, pregnancy, and comorbidity modifiers",
+                        "label": "Check safety: Infertility evaluation timing; Infertility endocrine redirection",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "ASRM_INFERTILITY_EVALUATION_2021",
@@ -5006,8 +5006,8 @@
                           {
                             "id": "infertility_review_endpoint",
                             "type": "endpoint",
-                            "label": "Infertility: review Infertility evaluation timing; Infertility endocrine redirection; Anovulation, thyroid/prolactin abnormality, POI pattern, or male factor changes treatment/referral.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Treat thyroid disease, hyperprolactinemia, PCOS/anovulation, hypogonadism, or POI according to cause and pregnancy safety.; Use ovulation induction, typically letrozole for PCOS-related anovulation, in the appropriate reproductive pathway.",
-                            "edgeLabel": "Infertility modifier needing review: Infertility evaluation timing; Infertility endocrine redirection; Anovulation, thyroid/prolactin abnormality, POI pattern, or male factor changes treatment/referral.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Treat thyroid disease, hyperprolactinemia, PCOS/anovulation, hypogonadism, or POI according to cause and pregnancy safety.; Use ovulation induction, typically letrozole for PCOS-related anovulation, in the appropriate reproductive pathway.",
+                            "label": "Review modifiers: Infertility evaluation timing; Infertility endocrine redirection",
+                            "edgeLabel": "Review modifier: Infertility evaluation timing; Infertility endocrine redirection; discordant endocrine tests need correct timing",
                             "source_ids": [
                               "ASRM_INFERTILITY_EVALUATION_2021",
                               "ASRM_AMENORRHEA_2024",
@@ -5018,7 +5018,7 @@
                             "criteria": {
                               "rule_id": "infertility_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Infertility (Hormonal causes) treatment or disposition depends on Infertility evaluation timing; Infertility endocrine redirection; Anovulation, thyroid/prolactin abnormality, POI pattern, or male factor changes treatment/referral.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Treat thyroid disease, hyperprolactinemia, PCOS/anovulation, hypogonadism, or POI according to cause and pregnancy safety.; Use ovulation induction, typically letrozole for PCOS-related anovulation, in the appropriate reproductive pathway..",
+                              "description": "Use reviewer handoff when Infertility (Hormonal causes) treatment or disposition depends on Infertility evaluation timing; Infertility endocrine redirection; discordant endocrine tests need correct timing.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -5039,13 +5039,13 @@
                             "action": "Resolve the named Infertility modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
-                            "review_needed_reason": "Infertility management changes when Infertility evaluation timing; Infertility endocrine redirection; Anovulation, thyroid/prolactin abnormality, POI pattern, or male factor changes treatment/referral.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Treat thyroid disease, hyperprolactinemia, PCOS/anovulation, hypogonadism, or POI according to cause and pregnancy safety.; Use ovulation induction, typically letrozole for PCOS-related anovulation, in the appropriate reproductive pathway.; document the exact modifier and reviewer input needed."
+                            "review_needed_reason": "Infertility management changes when Infertility evaluation timing; Infertility endocrine redirection; discordant endocrine tests need correct timing; document the exact modifier and reviewer input needed."
                           },
                           {
                             "id": "infertility_monitoring_bundle",
                             "type": "action",
-                            "label": "Infertility: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Infertility: >=12 months; age <35; 6 months; age >=35; Pregnancy test if amenorrhea.; TSH/prolactin.; FSH/estradiol/AMH/antral follicle count.; Measure blood pressure",
+                            "label": "Monitor: >=12 months; age <35; Pregnancy test if amenorrhea",
+                            "edgeLabel": "Monitor: >=12 months; age <35; Pregnancy test if amenorrhea; TSH/prolactin; treatment response",
                             "source_ids": [
                               "ASRM_AMENORRHEA_2024",
                               "PCOS_GUIDELINE_2023",
@@ -5154,8 +5154,8 @@
                               {
                                 "id": "infertility_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Infertility: reassessment escalation",
-                                "edgeLabel": "Infertility reassessment worsens or Amenorrhea with visual symptoms, POI <40, severe hyperandrogenism, recurrent pregnancy loss needing specialist workup.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; >=12 months; age <35; 6 months; age >=35; Pregnancy test if amenorrhea.; TSH/prolactin. no longer fit the documented Infertility branch",
+                                "label": "Escalate if worse: Amenorrhea with visual symptoms",
+                                "edgeLabel": "Escalate if reassessment worsens: Amenorrhea with visual symptoms; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; >=12 months; age <35; Pregnancy test if amenorrhea",
                                 "source_ids": [
                                   "ASRM_AMENORRHEA_2024",
                                   "PCOS_GUIDELINE_2023",
@@ -5259,7 +5259,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Repeat or review Amenorrhea with visual symptoms, POI <40, severe hyperandrogenism, recurrent pregnancy loss needing specialist workup.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; >=12 months; age <35; 6 months; age >=35; Pregnancy test if amenorrhea.; TSH/prolactin.; reassess mimics and complications; move to ED, admission, or specialty review when that specific trend, vital sign, imaging/ECG/procedure finding, or treatment-response pattern requires escalation.",
+                                "action": "Review Amenorrhea with visual symptoms; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; >=12 months; age <35; Pregnancy test if amenorrhea; reassess mimics and complications; move to ED, admission, or specialty review when the cited trend or finding worsens.",
                                 "children": [],
                                 "endpoint_type": "escalation_disposition",
                                 "guideline_cutoffs": [
@@ -5343,8 +5343,8 @@
                               {
                                 "id": "infertility_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Infertility: de-escalate, stop, or narrow",
-                                "edgeLabel": "Measured response supports narrowing, stopping, tapering, or continuing Infertility care",
+                                "label": "Narrow/stop by: >=12 months; age <35; objective response",
+                                "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "ASRM_AMENORRHEA_2024",
                                   "PCOS_GUIDELINE_2023",
@@ -5532,8 +5532,8 @@
                               {
                                 "id": "infertility_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Infertility: follow-up and safety-net",
-                                "edgeLabel": "Infertility stable enough for owned follow-up, pending results, and safety-netting",
+                                "label": "Close loop: result owner, follow-up, return precautions",
+                                "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ASRM_AMENORRHEA_2024",
                                   "PCOS_GUIDELINE_2023",
@@ -5748,8 +5748,8 @@
                   {
                     "id": "infertility_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Infertility: alternate diagnosis pathway",
-                    "edgeLabel": "Mimic or alternate pathway favored: competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+                    "label": "Use alternate diagnosis pathway",
+                    "edgeLabel": "Alternate diagnosis: competing diagnosis better explains the presentation",
                     "source_ids": [
                       "ASRM_AMENORRHEA_2024",
                       "PCOS_GUIDELINE_2023",
@@ -5759,7 +5759,7 @@
                     "criteria": {
                       "rule_id": "infertility_alternate_criteria",
                       "source": "criteria",
-                      "description": "Use an alternate pathway when Infertility (Hormonal causes) criteria are absent, competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics better explains the presentation, or measured result data contradict this workup.",
+                      "description": "Use an alternate pathway when Infertility (Hormonal causes) criteria are absent, Infertility mimics or exclusions listed in the module differential better explains the presentation, or measured result data contradict this workup.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5852,10 +5852,10 @@
                         }
                       ]
                     },
-                    "action": "Name the competing diagnosis or exclusion for Infertility, such as competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics; route to the corresponding workup or specialty pathway and document why the Infertility branch is not used.",
+                    "action": "Name the competing diagnosis or exclusion for Infertility, such as competing diagnosis better explains the presentation; route to the corresponding workup or specialty pathway and document why this branch is not used.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Infertility criteria are absent or contradicted by competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics; competing diagnosis must be named before closure."
+                    "review_needed_reason": "Infertility criteria are absent or contradicted by Infertility mimics or exclusions listed in the module differential; competing diagnosis must be named before closure."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -6021,15 +6021,12 @@
               "PCOS and androgen labs.",
               "Semen analysis; male morning testosterone/LH/FSH if indicated.",
               "Infertility hormone safety tests: Pregnancy test if pregnancy is possible, ovulatory timing, TSH/prolactin, LH/FSH with estradiol or testosterone, AMH/ovarian reserve or semen analysis as appropriate, and urgent ectopic/red-flag testing for pain or bleeding.",
-              "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
               "age",
               "duration of attempts",
               "intercourse/insemination exposure",
               "known uterine/tubal/peritoneal/endometriosis risk",
               "known male factor",
-              "donor sperm/ART indication",
-              "prior chemo/radiation/FMR1 risk",
-              "cycle length range"
+              "donor sperm/ART indication"
             ],
             "required_data": [
               "age",
@@ -6171,7 +6168,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "infertility_urgent_endpoint",
-          "expected_active_branch": "High-acuity threshold or monitored-care result present: Amenorrhea with visual symptoms, POI <40, severe hyperandrogenism, recurrent pregnancy loss needing specialist workup.; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; >=12 months; age <35",
+          "expected_active_branch": "Escalate: Amenorrhea with visual symptoms; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; Infertility evaluation timing; Ovulation branch; >=12 months",
           "expected_path_node_ids": [
             "root",
             "infertility_concurrent_data_bundle",
@@ -6185,7 +6182,7 @@
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "infertility_alternate_endpoint",
-          "expected_active_branch": "Mimic or alternate pathway favored: competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+          "expected_active_branch": "Alternate diagnosis: competing diagnosis better explains the presentation",
           "expected_path_node_ids": [
             "root",
             "infertility_concurrent_data_bundle",
@@ -6199,7 +6196,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "infertility_review_endpoint",
-          "expected_active_branch": "Infertility modifier needing review: Infertility evaluation timing; Infertility endocrine redirection; Anovulation, thyroid/prolactin abnormality, POI pattern, or male factor changes treatment/referral.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Treat thyroid disease, hyperprolactinemia, PCOS/anovulation, hypogonadism, or POI according to cause and pregnancy safety.; Use ovulation induction, typically letrozole for PCOS-related anovulation, in the appropriate reproductive pathway.",
+          "expected_active_branch": "Review modifier: Infertility evaluation timing; Infertility endocrine redirection; discordant endocrine tests need correct timing",
           "expected_path_node_ids": [
             "root",
             "infertility_concurrent_data_bundle",
@@ -6215,7 +6212,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "infertility_worsening_endpoint",
-          "expected_active_branch": "Infertility reassessment worsens or Amenorrhea with visual symptoms, POI <40, severe hyperandrogenism, recurrent pregnancy loss needing specialist workup.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; >=12 months; age <35; 6 months; age >=35; Pregnancy test if amenorrhea.; TSH/prolactin. no longer fit the documented Infertility branch",
+          "expected_active_branch": "Escalate if reassessment worsens: Amenorrhea with visual symptoms; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; >=12 months; age <35; Pregnancy test if amenorrhea",
           "expected_path_node_ids": [
             "root",
             "infertility_concurrent_data_bundle",
@@ -6232,7 +6229,7 @@
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "infertility_deescalate_endpoint",
-          "expected_active_branch": "Measured response supports narrowing, stopping, tapering, or continuing Infertility care",
+          "expected_active_branch": "Narrow/stop when response and diagnosis certainty support it",
           "expected_path_node_ids": [
             "root",
             "infertility_concurrent_data_bundle",
@@ -6249,7 +6246,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "infertility_followup_endpoint",
-          "expected_active_branch": "Infertility stable enough for owned follow-up, pending results, and safety-netting",
+          "expected_active_branch": "Follow-up ready: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "infertility_concurrent_data_bundle",

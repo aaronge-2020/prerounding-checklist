@@ -11517,7 +11517,7 @@
                         }
                       ]
                     },
-                    "action": "For patients 18 months or younger, schedule close follow-up during the first 3 months of life and every 3 months thereafter; after 18 months, evaluate about every 4 months while growing. Track growth velocity, weight, blood pressure, physical virilization or Cushingoid features, sodium, potassium, renin, and hormones drawn at consistent times relative to medication. Adults need at least annual physical examination with blood pressure, BMI, Cushingoid features, and biochemical monitoring. Use local endocrine policy for testicular adrenal rest tumor ultrasound because published interval summaries differ. Escalate urgently for vomiting, dehydration, hypoglycemia, electrolyte instability, or inability to take steroids.",
+                    "action": "For patients 18 months or younger, schedule close follow-up during the first 3 months and every 3 months thereafter; after 18 months, evaluate about every 4 months while growing. Track growth velocity, weight, BP, virilization or Cushingoid features, sodium, potassium, renin, and timed hormones. Adults need at least annual exam with BP/BMI and biochemical monitoring. Use local endocrine policy for testicular adrenal rest tumor ultrasound. Escalate urgently for vomiting, dehydration, hypoglycemia, electrolyte instability, or inability to take steroids.",
                     "children": [],
                     "endpoint_type": "monitoring_reassessment",
                     "guideline_cutoffs": [
@@ -12671,7 +12671,7 @@
                         }
                       ]
                     },
-                    "action": "Document the disposition: ED/admission/ICU for crisis or unstable electrolytes/glucose; urgent pediatric endocrine follow-up for newborn positives or unclear classification; outpatient endocrine follow-up for stable chronic CAH when medications and monitoring are secure. Provide written sick-day dosing rules, teach parenteral hydrocortisone injection, confirm an emergency injection kit, medical alert ID or steroid card, medication refills, pending-result owner, and return precautions for fever over 38.5 C, vomiting, diarrhea/dehydration, syncope, severe weakness, confusion, hypoglycemia symptoms, inability to keep medications down, trauma, surgery, labor, throat tightness/rash/angioedema on crinecerfont, or worsening virilization/poor growth.",
+                    "action": "Document ED/admission/ICU for crisis or unstable electrolytes/glucose, urgent pediatric endocrine follow-up for newborn positives or unclear classification, or outpatient endocrine follow-up when meds and monitoring are secure. Provide written sick-day rules, teach parenteral hydrocortisone injection, confirm emergency kit, medical alert ID/steroid card, refills, pending-result owner, and return precautions for fever >38.5 C, vomiting, dehydration, syncope, severe weakness, confusion, hypoglycemia, inability to keep steroids down, trauma, surgery, labor, crinecerfont hypersensitivity, worsening virilization, or poor growth.",
                     "children": [],
                     "endpoint_type": "safety_net_instruction",
                     "guideline_cutoffs": [

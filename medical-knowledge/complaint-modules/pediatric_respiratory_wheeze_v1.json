@@ -2036,7 +2036,7 @@
         "pediatric_respiratory_wheeze_classification_decision": {
           "rule_id": "pediatric_respiratory_wheeze_classification_criteria",
           "source": "criteria",
-          "description": "Classify Pediatric respiratory distress, wheeze, or bronchiolitis using cited thresholds: Bronchiolitis frame: <2 years, 3-6 months, 3-5 days, 90%, 3 weeks | Bronchiolitis referral/admission: >60 breaths/minute, >70 breaths/minute, 50% to 75%, <92%, <90% | Bronchiolitis discharge oxygen: >90%, 4 hours, >=6 weeks, >92%, <6 weeks",
+          "description": "Classify Pediatric respiratory distress, wheeze, or bronchiolitis using cited thresholds and branch-specific criteria.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2409,7 +2409,7 @@
         "pediatric_respiratory_wheeze_review_endpoint": {
           "rule_id": "pediatric_respiratory_wheeze_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Pediatric respiratory distress, wheeze, or bronchiolitis treatment or disposition depends on Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Pediatric respiratory distress, wheeze, or bronchiolitis: immediate stabilization or escalation trigger: Apnea or central cyanosis.; Pediatric respiratory distress, wheeze, or bronchiolitis: treatment or disposition for high-risk or confirmed disease: Emergency pediatric respiratory escalation..",
+          "description": "Use reviewer handoff when Pediatric respiratory distress, wheeze, or bronchiolitis treatment or disposition depends on Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Pediatric respiratory distress, wheeze, or bronchiolitis.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -2748,7 +2748,7 @@
         "pediatric_respiratory_wheeze_alternate_endpoint": {
           "rule_id": "pediatric_respiratory_wheeze_alternate_criteria",
           "source": "criteria",
-          "description": "Use an alternate pathway when Pediatric respiratory distress, wheeze, or bronchiolitis criteria are absent, Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles; Asthma exacerbation or viral-induced wheeze with recurrent episodes, atopy, prior asthma plan, or older-child wheeze pattern; Pneumonia, sepsis, aspiration, foreign body, anaphylaxis, cardiac disease, or other dangerous mimic of wheeze better explains the presentation, or measured result data contradict this workup.",
+          "description": "Use an alternate pathway when Pediatric respiratory distress, wheeze, or bronchiolitis criteria are absent, Bronchiolitis in a child under 2 years with coryzal prodrome; Asthma exacerbation or viral-induced wheeze with recurrent episodes better explains the presentation, or measured result data contradict this workup.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2847,7 +2847,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: Apnea or central cyanosis; Exhaustion or poor respiratory effort; <2 years; 3-6 months; 3-5 days; Pediatric respiratory distress, wheeze, or bronchiolitis: immediate stabilization or escalation trigger: Apnea or central cyanosis.; Pediatric respiratory distress, wheeze, or bronchiolitis: treatment or disposition for high-risk or confirmed disease: Emergency pediatric respiratory escalation.",
+        "label": "Route: Pediatric respiratory distress, wheeze, or bronchiolitis",
         "edgeLabel": "",
         "source_ids": [
           "NICE_BRONCHIOLITIS_NG9",
@@ -2874,7 +2874,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Check Apnea or central cyanosis; Exhaustion or poor respiratory effort and <2 years; 3-6 months; 3-5 days; 90%; 3 weeks; >60 breaths/minute; use the listed assessment bundle to choose emergency care, treatment/disposition, reviewer handoff, alternate diagnosis, reassessment, de-escalation, or follow-up.",
+        "action": "Screen for high-acuity findings; classify with <2 years; 3-6 months; 3-5 days; 90%; then choose emergency, treatment/disposition, review, mimic, monitoring, de-escalation, or follow-up branch.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -2942,8 +2942,8 @@
           {
             "id": "pediatric_respiratory_wheeze_concurrent_data_bundle",
             "type": "action",
-            "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: assessment, thresholds, and treatment-safety inputs",
-            "edgeLabel": "Collect Pediatric respiratory distress, wheeze, or bronchiolitis: Bronchiolitis testing limits; Chest imaging when focal or severe; Asthma response reassessment; Controller and trigger review; <2 years; 3-6 months; 3-5 days",
+            "label": "Collect: Bronchiolitis testing limits; Chest imaging when focal or severe",
+            "edgeLabel": "Assessment bundle: Bronchiolitis testing limits; Chest imaging when focal or severe; Asthma response reassessment; Controller and trigger review; age; illness day",
             "source_ids": [
               "NICE_BRONCHIOLITIS_NG9",
               "GINA_ASTHMA_2025",
@@ -2973,13 +2973,13 @@
                 "AHRQ_CALIBRATE_DX"
               ]
             },
-            "action": "Obtain together: Bronchiolitis testing limits; Chest imaging when focal or severe; Asthma response reassessment; Controller and trigger review; age; illness day; coryzal prodrome; cough; wheeze/crackles; work of breathing; respiratory rate; oxygen saturation in air.",
+            "action": "Obtain together: Bronchiolitis testing limits; Chest imaging when focal or severe; Asthma response reassessment; Controller and trigger review; age; illness day.",
             "children": [
               {
                 "id": "pediatric_respiratory_wheeze_classification_decision",
                 "type": "decision",
-                "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: classify thresholds, acuity, mimics, and disposition",
-                "edgeLabel": "Classify Pediatric respiratory distress, wheeze, or bronchiolitis with available result(s): <2 years; 3-6 months; 3-5 days; 90%",
+                "label": "Classify by: Bronchiolitis frame; Bronchiolitis referral/admission; <2 years",
+                "edgeLabel": "Classify using <2 years; 3-6 months; 3-5 days; 90%",
                 "source_ids": [
                   "NICE_BRONCHIOLITIS_NG9",
                   "GINA_ASTHMA_2025",
@@ -2990,7 +2990,7 @@
                 "criteria": {
                   "rule_id": "pediatric_respiratory_wheeze_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Pediatric respiratory distress, wheeze, or bronchiolitis using cited thresholds: Bronchiolitis frame: <2 years, 3-6 months, 3-5 days, 90%, 3 weeks | Bronchiolitis referral/admission: >60 breaths/minute, >70 breaths/minute, 50% to 75%, <92%, <90% | Bronchiolitis discharge oxygen: >90%, 4 hours, >=6 weeks, >92%, <6 weeks",
+                  "description": "Classify Pediatric respiratory distress, wheeze, or bronchiolitis using cited thresholds and branch-specific criteria.",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -3089,7 +3089,7 @@
                     }
                   ]
                 },
-                "action": "Match current patient data to <2 years; 3-6 months; 3-5 days; 90%; 3 weeks; >60 breaths/minute; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
+                "action": "Match current patient data to <2 years; 3-6 months; 3-5 days; 90%; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
                 "children": [
                   {
                     "id": "pediatric_respiratory_wheeze_missing_cutoff_data_endpoint",
@@ -3191,8 +3191,8 @@
                   {
                     "id": "pediatric_respiratory_wheeze_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: emergency or monitored-care disposition",
-                    "edgeLabel": "High-acuity threshold or monitored-care result present: Apnea or central cyanosis; Exhaustion or poor respiratory effort; Severe respiratory distress; <2 years; 3-6 months",
+                    "label": "Escalate for: Apnea or central cyanosis; Exhaustion or poor respiratory effort",
+                    "edgeLabel": "Escalate: Apnea or central cyanosis; Exhaustion or poor respiratory effort; Severe respiratory distress; Bronchiolitis frame; Bronchiolitis referral/admission",
                     "source_ids": [
                       "NICE_BRONCHIOLITIS_NG9",
                       "GINA_ASTHMA_2025",
@@ -3299,7 +3299,7 @@
                         }
                       ]
                     },
-                    "action": "Send to ED, admission, or monitored specialty care for Apnea or central cyanosis; Exhaustion or poor respiratory effort; Severe respiratory distress; Poor intake or no urine; <2 years; 3-6 months; 3-5 days; Emergency pediatric respiratory escalation; start stabilization and diagnosis-specific emergency treatment before routine outpatient management.",
+                    "action": "Send to ED, admission, or monitored specialty care for Apnea or central cyanosis; Exhaustion or poor respiratory effort; Severe respiratory distress; Bronchiolitis frame; Bronchiolitis referral/admission; start stabilization and diagnosis-specific emergency treatment before routine outpatient management.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -3384,8 +3384,8 @@
                   {
                     "id": "pediatric_respiratory_wheeze_treatment_bundle",
                     "type": "action",
-                    "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: treatment and disposition branch",
-                    "edgeLabel": "Confirmed/high-risk Pediatric respiratory distress, wheeze, or bronchiolitis branch has treatment-safety data available",
+                    "label": "Choose treatment: Apnea or central cyanosis; Emergency pediatric respiratory escalation",
+                    "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "NICE_BRONCHIOLITIS_NG9",
                       "GINA_ASTHMA_2025",
@@ -3494,12 +3494,12 @@
                         }
                       ]
                     },
-                    "action": "Pediatric respiratory distress, wheeze, or bronchiolitis: immediate stabilization or escalation trigger: Apnea or central cyanosis.; Pediatric respiratory distress, wheeze, or bronchiolitis: treatment or disposition for high-risk or confirmed disease: Emergency pediatric respiratory escalation.; Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Asthma acute plan",
+                    "action": "Apnea or central cyanosis; Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Asthma acute plan",
                     "children": [
                       {
                         "id": "pediatric_respiratory_wheeze_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: contraindications, dosing, pregnancy, and comorbidity modifiers",
+                        "label": "Check safety: allergy or drug interaction; weight/renal dosing",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "NICE_BRONCHIOLITIS_NG9",
@@ -3535,8 +3535,8 @@
                           {
                             "id": "pediatric_respiratory_wheeze_review_endpoint",
                             "type": "endpoint",
-                            "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: review Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Pediatric respiratory distress, wheeze, or bronchiolitis: immediate stabilization or escalation trigger: Apnea or central cyanosis.; Pediatric respiratory distress, wheeze, or bronchiolitis: treatment or disposition for high-risk or confirmed disease: Emergency pediatric respiratory escalation.",
-                            "edgeLabel": "Pediatric respiratory distress, wheeze, or bronchiolitis modifier needing review: Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Pediatric respiratory distress, wheeze, or bronchiolitis: immediate stabilization or escalation trigger: Apnea or central cyanosis.; Pediatric respiratory distress, wheeze, or bronchiolitis: treatment or disposition for high-risk or confirmed disease: Emergency pediatric respiratory escalation.",
+                            "label": "Review modifiers: Emergency pediatric respiratory escalation; Apnea or central cyanosis",
+                            "edgeLabel": "Review modifier: Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Apnea or central cyanosis",
                             "source_ids": [
                               "NICE_BRONCHIOLITIS_NG9",
                               "GINA_ASTHMA_2025",
@@ -3547,7 +3547,7 @@
                             "criteria": {
                               "rule_id": "pediatric_respiratory_wheeze_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Pediatric respiratory distress, wheeze, or bronchiolitis treatment or disposition depends on Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Pediatric respiratory distress, wheeze, or bronchiolitis: immediate stabilization or escalation trigger: Apnea or central cyanosis.; Pediatric respiratory distress, wheeze, or bronchiolitis: treatment or disposition for high-risk or confirmed disease: Emergency pediatric respiratory escalation..",
+                              "description": "Use reviewer handoff when Pediatric respiratory distress, wheeze, or bronchiolitis treatment or disposition depends on Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Pediatric respiratory distress, wheeze, or bronchiolitis.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -3568,13 +3568,13 @@
                             "action": "Resolve the named Pediatric respiratory distress, wheeze, or bronchiolitis modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
-                            "review_needed_reason": "Pediatric respiratory distress, wheeze, or bronchiolitis management changes when Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Pediatric respiratory distress, wheeze, or bronchiolitis: immediate stabilization or escalation trigger: Apnea or central cyanosis.; Pediatric respiratory distress, wheeze, or bronchiolitis: treatment or disposition for high-risk or confirmed disease: Emergency pediatric respiratory escalation.; document the exact modifier and reviewer input needed."
+                            "review_needed_reason": "Pediatric respiratory distress, wheeze, or bronchiolitis management changes when Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Pediatric respiratory distress, wheeze, or bronchiolitis; document the exact modifier and reviewer input needed."
                           },
                           {
                             "id": "pediatric_respiratory_wheeze_monitoring_bundle",
                             "type": "action",
-                            "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Pediatric respiratory distress, wheeze, or bronchiolitis: <2 years; 3-6 months; 3-5 days; 90%; Bronchiolitis testing limits; Chest imaging when focal or severe; Asthma response reassessment; Measure oxygen saturation",
+                            "label": "Monitor: <2 years; 3-6 months; Bronchiolitis testing limits",
+                            "edgeLabel": "Monitor: <2 years; 3-6 months; Bronchiolitis testing limits; Chest imaging when focal or severe; treatment response",
                             "source_ids": [
                               "NICE_BRONCHIOLITIS_NG9",
                               "GINA_ASTHMA_2025",
@@ -3686,8 +3686,8 @@
                               {
                                 "id": "pediatric_respiratory_wheeze_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: reassessment escalation",
-                                "edgeLabel": "Pediatric respiratory distress, wheeze, or bronchiolitis reassessment worsens or Apnea or central cyanosis; Exhaustion or poor respiratory effort; Severe respiratory distress; <2 years; 3-6 months; 3-5 days; 90%; Bronchiolitis testing limits; Chest imaging when focal or severe no longer fit the documented Pediatric respiratory distress, wheeze, or bronchiolitis branch",
+                                "label": "Escalate if worse: Apnea or central cyanosis; Exhaustion or poor respiratory effort; <2 years",
+                                "edgeLabel": "Escalate if reassessment worsens: Apnea or central cyanosis; Exhaustion or poor respiratory effort; <2 years; 3-6 months; Bronchiolitis testing limits",
                                 "source_ids": [
                                   "NICE_BRONCHIOLITIS_NG9",
                                   "GINA_ASTHMA_2025",
@@ -3794,7 +3794,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Repeat or review Apnea or central cyanosis; Exhaustion or poor respiratory effort; Severe respiratory distress; <2 years; 3-6 months; 3-5 days; 90%; Bronchiolitis testing limits; Chest imaging when focal or severe; reassess mimics and complications; move to ED, admission, or specialty review when that specific trend, vital sign, imaging/ECG/procedure finding, or treatment-response pattern requires escalation.",
+                                "action": "Review Apnea or central cyanosis; Exhaustion or poor respiratory effort; <2 years; 3-6 months; Bronchiolitis testing limits; reassess mimics and complications; move to ED, admission, or specialty review when the cited trend or finding worsens.",
                                 "children": [],
                                 "endpoint_type": "escalation_disposition",
                                 "guideline_cutoffs": [
@@ -3879,8 +3879,8 @@
                               {
                                 "id": "pediatric_respiratory_wheeze_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: de-escalate, stop, or narrow",
-                                "edgeLabel": "Measured response supports narrowing, stopping, tapering, or continuing Pediatric respiratory distress, wheeze, or bronchiolitis care",
+                                "label": "Narrow/stop by: <2 years; 3-6 months; objective response",
+                                "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "NICE_BRONCHIOLITIS_NG9",
                                   "GINA_ASTHMA_2025",
@@ -4072,8 +4072,8 @@
                               {
                                 "id": "pediatric_respiratory_wheeze_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: follow-up and safety-net",
-                                "edgeLabel": "Pediatric respiratory distress, wheeze, or bronchiolitis stable enough for owned follow-up, pending results, and safety-netting",
+                                "label": "Close loop: result owner, follow-up, return precautions",
+                                "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "NICE_BRONCHIOLITIS_NG9",
                                   "GINA_ASTHMA_2025",
@@ -4290,8 +4290,8 @@
                   {
                     "id": "pediatric_respiratory_wheeze_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: alternate diagnosis pathway",
-                    "edgeLabel": "Mimic or alternate pathway favored: Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles; Asthma exacerbation or viral-induced wheeze with recurrent episodes, atopy, prior asthma plan, or older-child wheeze pattern; Pneumonia, sepsis, aspiration, foreign body, anaphylaxis, cardiac disease, or other dangerous mimic of wheeze",
+                    "label": "Alternate diagnosis: Bronchiolitis in a child under 2 years with coryzal prodrome",
+                    "edgeLabel": "Alternate diagnosis: Bronchiolitis in a child under 2 years with coryzal prodrome; Asthma exacerbation or viral-induced wheeze with recurrent episodes",
                     "source_ids": [
                       "NICE_BRONCHIOLITIS_NG9",
                       "GINA_ASTHMA_2025",
@@ -4302,7 +4302,7 @@
                     "criteria": {
                       "rule_id": "pediatric_respiratory_wheeze_alternate_criteria",
                       "source": "criteria",
-                      "description": "Use an alternate pathway when Pediatric respiratory distress, wheeze, or bronchiolitis criteria are absent, Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles; Asthma exacerbation or viral-induced wheeze with recurrent episodes, atopy, prior asthma plan, or older-child wheeze pattern; Pneumonia, sepsis, aspiration, foreign body, anaphylaxis, cardiac disease, or other dangerous mimic of wheeze better explains the presentation, or measured result data contradict this workup.",
+                      "description": "Use an alternate pathway when Pediatric respiratory distress, wheeze, or bronchiolitis criteria are absent, Bronchiolitis in a child under 2 years with coryzal prodrome; Asthma exacerbation or viral-induced wheeze with recurrent episodes better explains the presentation, or measured result data contradict this workup.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4397,10 +4397,10 @@
                         }
                       ]
                     },
-                    "action": "Name the competing diagnosis or exclusion for Pediatric respiratory distress, wheeze, or bronchiolitis, such as Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles; Asthma exacerbation or viral-induced wheeze with recurrent episodes, atopy, prior asthma plan, or older-child wheeze pattern; Pneumonia, sepsis, aspiration, foreign body, anaphylaxis, cardiac disease, or other dangerous mimic of wheeze; route to the corresponding workup or specialty pathway and document why the Pediatric respiratory distress, wheeze, or bronchiolitis branch is not used.",
+                    "action": "Name the competing diagnosis or exclusion for Pediatric respiratory distress, wheeze, or bronchiolitis, such as Bronchiolitis in a child under 2 years with coryzal prodrome; Asthma exacerbation or viral-induced wheeze with recurrent episodes; route to the corresponding workup or specialty pathway and document why this branch is not used.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Pediatric respiratory distress, wheeze, or bronchiolitis criteria are absent or contradicted by Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles; Asthma exacerbation or viral-induced wheeze with recurrent episodes, atopy, prior asthma plan, or older-child wheeze pattern; Pneumonia, sepsis, aspiration, foreign body, anaphylaxis, cardiac disease, or other dangerous mimic of wheeze; competing diagnosis must be named before closure."
+                    "review_needed_reason": "Pediatric respiratory distress, wheeze, or bronchiolitis criteria are absent or contradicted by Bronchiolitis in a child under 2 years with coryzal prodrome; Asthma exacerbation or viral-induced wheeze with recurrent episodes; competing diagnosis must be named before closure."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -4571,9 +4571,7 @@
               "coryzal prodrome",
               "cough",
               "wheeze/crackles",
-              "work of breathing",
-              "respiratory rate",
-              "oxygen saturation in air"
+              "work of breathing"
             ],
             "required_data": [
               "age",
@@ -4712,7 +4710,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "pediatric_respiratory_wheeze_urgent_endpoint",
-          "expected_active_branch": "High-acuity threshold or monitored-care result present: Apnea or central cyanosis; Exhaustion or poor respiratory effort; Severe respiratory distress; <2 years; 3-6 months",
+          "expected_active_branch": "Escalate: Apnea or central cyanosis; Exhaustion or poor respiratory effort; Severe respiratory distress; Bronchiolitis frame; Bronchiolitis referral/admission",
           "expected_path_node_ids": [
             "root",
             "pediatric_respiratory_wheeze_concurrent_data_bundle",
@@ -4726,7 +4724,7 @@
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "pediatric_respiratory_wheeze_alternate_endpoint",
-          "expected_active_branch": "Mimic or alternate pathway favored: Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles; Asthma exacerbation or viral-induced wheeze with recurrent episodes, atopy, prior asthma plan, or older-child wheeze pattern; Pneumonia, sepsis, aspiration, foreign body, anaphylaxis, cardiac disease, or other dangerous mimic of wheeze",
+          "expected_active_branch": "Alternate diagnosis: Bronchiolitis in a child under 2 years with coryzal prodrome; Asthma exacerbation or viral-induced wheeze with recurrent episodes",
           "expected_path_node_ids": [
             "root",
             "pediatric_respiratory_wheeze_concurrent_data_bundle",
@@ -4740,7 +4738,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "pediatric_respiratory_wheeze_review_endpoint",
-          "expected_active_branch": "Pediatric respiratory distress, wheeze, or bronchiolitis modifier needing review: Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Pediatric respiratory distress, wheeze, or bronchiolitis: immediate stabilization or escalation trigger: Apnea or central cyanosis.; Pediatric respiratory distress, wheeze, or bronchiolitis: treatment or disposition for high-risk or confirmed disease: Emergency pediatric respiratory escalation.",
+          "expected_active_branch": "Review modifier: Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Apnea or central cyanosis",
           "expected_path_node_ids": [
             "root",
             "pediatric_respiratory_wheeze_concurrent_data_bundle",
@@ -4756,7 +4754,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "pediatric_respiratory_wheeze_worsening_endpoint",
-          "expected_active_branch": "Pediatric respiratory distress, wheeze, or bronchiolitis reassessment worsens or Apnea or central cyanosis; Exhaustion or poor respiratory effort; Severe respiratory distress; <2 years; 3-6 months; 3-5 days; 90%; Bronchiolitis testing limits; Chest imaging when focal or severe no longer fit the documented Pediatric respiratory distress, wheeze, or bronchiolitis branch",
+          "expected_active_branch": "Escalate if reassessment worsens: Apnea or central cyanosis; Exhaustion or poor respiratory effort; <2 years; 3-6 months; Bronchiolitis testing limits",
           "expected_path_node_ids": [
             "root",
             "pediatric_respiratory_wheeze_concurrent_data_bundle",
@@ -4773,7 +4771,7 @@
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "pediatric_respiratory_wheeze_deescalate_endpoint",
-          "expected_active_branch": "Measured response supports narrowing, stopping, tapering, or continuing Pediatric respiratory distress, wheeze, or bronchiolitis care",
+          "expected_active_branch": "Narrow/stop when response and diagnosis certainty support it",
           "expected_path_node_ids": [
             "root",
             "pediatric_respiratory_wheeze_concurrent_data_bundle",
@@ -4790,7 +4788,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "pediatric_respiratory_wheeze_followup_endpoint",
-          "expected_active_branch": "Pediatric respiratory distress, wheeze, or bronchiolitis stable enough for owned follow-up, pending results, and safety-netting",
+          "expected_active_branch": "Follow-up ready: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "pediatric_respiratory_wheeze_concurrent_data_bundle",

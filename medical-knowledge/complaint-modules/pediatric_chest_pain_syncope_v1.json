@@ -4253,7 +4253,7 @@
             "id": "pediatric_chest_syncope_initial_assessment_bundle",
             "type": "action",
             "label": "Pediatric chest pain/syncope bedside assessment: age, exertion, syncope/palpitations, family history, vitals/orthostatics, cardiac/respiratory exam, and focused ECG/testing",
-            "edgeLabel": "Pediatric chest/syncope assessment bundle: ECG when cardiac risk or syncope is present; Chest X-ray only; Troponin and inflammatory labs; Syncope ECG glucose anemia and pregnancy tests; Echo Holter or exercise testing after review; Exertional chest pain or syncope; Abnormal cardiac exam or poor perfusion; Family history of early sudden death or cardiomyopathy; Hypoxia respiratory distress or hemoptysis; Abnormal pediatric ECG; Emergency pediatric cardiology escalation; Low-risk chest pain testing restraint; Syncope consultation and discharge route; Respiratory or PE route; Activity restriction and return precautions; Pediatric chest pain, syncope, or palpitations: immediate stabilization or escalation trigger: Exertional chest pain or syncope.; Pediatric chest pain, syncope, or palpitations: treatment or disposition for high-risk or confirmed disease: Emergency pediatric cardiology escalation.; Pediatric chest pain, syncope, or palpitations: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Low-risk chest pain testing restraint.",
+            "edgeLabel": "Pediatric chest/syncope assessment: age, exertion, syncope/palpitations, family history, vitals/orthostatics, cardiac/respiratory exam, and focused ECG/testing",
             "source_ids": [
               "RCH_CHEST_PAIN_CHILD",
               "RCH_SYNCOPE_CHILD",
@@ -4639,7 +4639,7 @@
                     "id": "pediatric_chest_syncope_cardiac_escalation_endpoint",
                     "type": "endpoint",
                     "label": "Pediatric cardiac escalation: exertional chest pain/syncope, palpitations with syncope, abnormal exam/perfusion, abnormal ECG, cardiac history, or family sudden-death risk",
-                    "edgeLabel": "Cardiac risk branch: Exertional chest pain or syncope; Abnormal cardiac exam or poor perfusion; Family history of early sudden death or cardiomyopathy; Hypoxia respiratory distress or hemoptysis; Abnormal pediatric ECG; QRS >0.12 seconds, QTc <=340 ms or >450 ms, ST shift >2 mm, WPW, long QT, wide-complex tachycardia, hypertrophic cardiomyopathy pattern, or syncope during exercise/chest pain/palpitations",
+                    "edgeLabel": "Cardiac risk: exertional pain/syncope, palpitations with syncope, poor perfusion, abnormal cardiac exam, family sudden-death risk, QRS >0.12 sec, QTc <=340 or >450 ms, ST shift >2 mm, WPW/long QT/wide-complex rhythm, or HCM pattern",
                     "source_ids": [
                       "RCH_CHEST_PAIN_CHILD",
                       "RCH_SYNCOPE_CHILD",
@@ -4916,7 +4916,7 @@
                     "id": "pediatric_chest_syncope_respiratory_pe_endpoint",
                     "type": "endpoint",
                     "label": "Pediatric respiratory, PE, pneumothorax, pneumonia, asthma, trauma, or foreign-body chest pain route",
-                    "edgeLabel": "Respiratory/PE branch: hypoxia, respiratory distress, hemoptysis, pleuritic pain, fever/cough, wheeze, unilateral decreased air entry, trauma, PE risk, or foreign-body concern; Cardiac chest pain or syncope risk with exertional symptoms, syncope, palpitations, abnormal cardiac exam, abnormal ECG, cardiac history, or family history of early sudden death; Respiratory, pulmonary embolus, pneumothorax, asthma, pneumonia, or hypoxemic cause of pediatric chest pain; Musculoskeletal pain, costochondritis, precordial catch, anxiety, reflux, or other self-limited cause after serious features are absent; Vasovagal, orthostatic, POTS, seizure mimic, hypoglycemia, toxin, or cardiogenic syncope pattern",
+                    "edgeLabel": "Respiratory/PE branch: hypoxia, respiratory distress, hemoptysis, pleuritic pain, fever/cough, wheeze, unilateral decreased air entry, trauma, PE risk, or foreign-body concern",
                     "source_ids": [
                       "RCH_CHEST_PAIN_CHILD"
                     ],
@@ -6005,7 +6005,7 @@
                   {
                     "id": "pediatric_chest_syncope_special_population_review_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric chest/syncope clinician review: pregnancy/postpartum adolescent, stimulant/toxin exposure, anticoagulation/VTE risk, congenital heart disease, known arrhythmia, or local cardiology pathway",
+                    "label": "Pediatric chest/syncope review: pregnancy/postpartum, stimulant/toxin, VTE risk, congenital heart disease, arrhythmia, or cardiology policy",
                     "edgeLabel": "Special-population branch: pregnant/recently postpartum adolescent, PE/VTE risk, stimulant/toxin exposure, congenital/acquired heart disease, known arrhythmia/cardiomyopathy, prior cardiac surgery, abnormal ECG needing cardiology, or local sports-return policy applies",
                     "source_ids": [
                       "RCH_CHEST_PAIN_CHILD",
@@ -6597,7 +6597,7 @@
                       {
                         "id": "pediatric_chest_syncope_deescalation_endpoint",
                         "type": "endpoint",
-                        "label": "Pediatric chest/syncope de-escalation: stop cardiac/respiratory escalation only when red flags remain absent and ECG, vitals, oxygenation, and event pattern support benign or autonomic care",
+                        "label": "Pediatric chest/syncope de-escalation: red flags absent and ECG, vitals, oxygenation, and event pattern support benign/autonomic care",
                         "edgeLabel": "De-escalation branch: normal vitals/perfusion, no exertional symptoms, no concerning family history, normal ECG if obtained, no hypoxia/respiratory distress, orthostatic/autonomic pattern stable, and follow-up/safety-net access documented",
                         "source_ids": [
                           "RCH_CHEST_PAIN_CHILD",
@@ -6877,7 +6877,7 @@
                         "id": "pediatric_chest_syncope_followup_safety_endpoint",
                         "type": "endpoint",
                         "label": "Pediatric chest/syncope follow-up and safety-net: activity restriction, result ownership, recurrent syncope plan, and return precautions",
-                        "edgeLabel": "Disposition branch: Emergency pediatric cardiology escalation; Low-risk chest pain testing restraint; Syncope consultation and discharge route; Respiratory or PE route; Activity restriction and return precautions; Pediatric chest pain, syncope, or palpitations: immediate stabilization or escalation trigger: Exertional chest pain or syncope.; Pediatric chest pain, syncope, or palpitations: treatment or disposition for high-risk or confirmed disease: Emergency pediatric cardiology escalation.; Pediatric chest pain, syncope, or palpitations: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Low-risk chest pain testing restraint.; cause identified or serious causes addressed, follow-up arranged, exercise/activity advice documented, pending ECG/CXR/lab/imaging owners assigned, and family return precautions given",
+                        "edgeLabel": "Disposition branch: cause identified or serious causes addressed, follow-up arranged, activity advice documented, pending results assigned, and family return precautions given",
                         "source_ids": [
                           "RCH_CHEST_PAIN_CHILD",
                           "RCH_SYNCOPE_CHILD",
@@ -7043,7 +7043,8 @@
                       "repeat oxygen saturation/work of breathing",
                       "review ECG QRS/QTc/ST findings",
                       "repeat orthostatic BP/HR when syncope/orthostatic symptoms persist",
-                      "confirm activity restriction and follow-up"
+                      "confirm activity restriction and follow-up",
+                      "medication, pregnancy, and access modifiers"
                     ],
                     "guideline_cutoffs": [
                       {
@@ -7416,9 +7417,9 @@
               }
             ],
             "parallel_actions": [
-              "ECG when cardiac risk or syncope is present; Chest X-ray only; Troponin and inflammatory labs; Syncope ECG glucose anemia and pregnancy tests; Echo Holter or exercise testing after review",
-              "Exertional chest pain or syncope; Abnormal cardiac exam or poor perfusion; Family history of early sudden death or cardiomyopathy; Hypoxia respiratory distress or hemoptysis; Abnormal pediatric ECG",
-              "Emergency pediatric cardiology escalation; Low-risk chest pain testing restraint; Syncope consultation and discharge route; Respiratory or PE route; Activity restriction and return precautions; Pediatric chest pain, syncope, or palpitations: immediate stabilization or escalation trigger: Exertional chest pain or syncope.; Pediatric chest pain, syncope, or palpitations: treatment or disposition for high-risk or confirmed disease: Emergency pediatric cardiology escalation.; Pediatric chest pain, syncope, or palpitations: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Low-risk chest pain testing restraint.",
+              "ECG when cardiac risk or syncope is present; Chest X-ray only; Troponin and inflammatory labs; Syncope ECG glucose anemia and pregnancy tests",
+              "Exertional chest pain or syncope; Abnormal cardiac exam or poor perfusion; Family history of early sudden death or cardiomyopathy; Hypoxia respiratory distress or hemoptysis",
+              "Emergency pediatric cardiology escalation; Low-risk chest pain testing restraint; Syncope consultation and discharge route; Respiratory or PE route",
               "orthostatic blood pressure and heart rate when syncope",
               "ECG at least once for syncope",
               "manual QRS/QTc/ST review",
@@ -7592,7 +7593,7 @@
           "scenario_id": "exertional_syncope_abnormal_ecg",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "pediatric_chest_syncope_cardiac_escalation_endpoint",
-          "expected_active_branch": "Cardiac risk branch: Exertional chest pain or syncope; Abnormal cardiac exam or poor perfusion; Family history of early sudden death or cardiomyopathy; Hypoxia respiratory distress or hemoptysis; Abnormal pediatric ECG; QRS >0.12 seconds, QTc <=340 ms or >450 ms, ST shift >2 mm, WPW, long QT, wide-complex tachycardia, hypertrophic cardiomyopathy pattern, or syncope during exercise/chest pain/palpitations",
+          "expected_active_branch": "Cardiac risk: exertional pain/syncope, palpitations with syncope, poor perfusion, abnormal cardiac exam, family sudden-death risk, QRS >0.12 sec, QTc <=340 or >450 ms, ST shift >2 mm, WPW/long QT/wide-complex rhythm, or HCM pattern",
           "expected_path_node_ids": [
             "root",
             "pediatric_chest_syncope_initial_assessment_bundle",
@@ -7606,7 +7607,7 @@
           "scenario_id": "respiratory_pe_pneumothorax",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "pediatric_chest_syncope_respiratory_pe_endpoint",
-          "expected_active_branch": "Respiratory/PE branch: hypoxia, respiratory distress, hemoptysis, pleuritic pain, fever/cough, wheeze, unilateral decreased air entry, trauma, PE risk, or foreign-body concern; Cardiac chest pain or syncope risk with exertional symptoms, syncope, palpitations, abnormal cardiac exam, abnormal ECG, cardiac history, or family history of early sudden death; Respiratory, pulmonary embolus, pneumothorax, asthma, pneumonia, or hypoxemic cause of pediatric chest pain; Musculoskeletal pain, costochondritis, precordial catch, anxiety, reflux, or other self-limited cause after serious features are absent; Vasovagal, orthostatic, POTS, seizure mimic, hypoglycemia, toxin, or cardiogenic syncope pattern",
+          "expected_active_branch": "Respiratory/PE branch: hypoxia, respiratory distress, hemoptysis, pleuritic pain, fever/cough, wheeze, unilateral decreased air entry, trauma, PE risk, or foreign-body concern",
           "expected_path_node_ids": [
             "root",
             "pediatric_chest_syncope_initial_assessment_bundle",
@@ -7706,7 +7707,7 @@
           "scenario_id": "endpoint_pediatric_chest_syncope_followup_safety_endp_coverage",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "pediatric_chest_syncope_followup_safety_endpoint",
-          "expected_active_branch": "Disposition branch: Emergency pediatric cardiology escalation; Low-risk chest pain testing restraint; Syncope consultation and discharge route; Respiratory or PE route; Activity restriction and return precautions; Pediatric chest pain, syncope, or palpitations: immediate stabilization or escalation trigger: Exertional chest pain or syncope.; Pediatric chest pain, syncope, or palpitations: treatment or disposition for high-risk or confirmed disease: Emergency pediatric cardiology escalation.; Pediatric chest pain, syncope, or palpitations: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Low-risk chest pain testing restraint.; cause identified or serious causes addressed, follow-up arranged, exercise/activity advice documented, pending ECG/CXR/lab/imaging owners assigned, and family return precautions given",
+          "expected_active_branch": "Disposition branch: cause identified or serious causes addressed, follow-up arranged, activity advice documented, pending results assigned, and family return precautions given",
           "expected_path_node_ids": [
             "root",
             "pediatric_chest_syncope_initial_assessment_bundle",
@@ -7729,7 +7730,7 @@
               "pregnancy_status",
               "workup_findings"
             ],
-            "branch_trigger": "Disposition branch: Emergency pediatric cardiology escalation; Low-risk chest pain testing restraint; Syncope consultation and discharge route; Respiratory or PE route; Activity restriction and return precautions; Pediatric chest pain, syncope, or palpitations: immediate stabilization or escalation trigger: Exertional chest pain or syncope.; Pediatric chest pain, syncope, or palpitations: treatment or disposition for high-risk or confirmed disease: Emergency pediatric cardiology escalation.; Pediatric chest pain, syncope, or palpitations: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Low-risk chest pain testing restraint.; cause identified or serious causes addressed, follow-up arranged, exercise/activity advice documented, pending ECG/CXR/lab/imaging owners assigned, and family return precautions given",
+            "branch_trigger": "Disposition branch: cause identified or serious causes addressed, follow-up arranged, activity advice documented, pending results assigned, and family return precautions given",
             "expected_terminal_endpoint_type": "follow_up",
             "missing_data_needed": []
           },

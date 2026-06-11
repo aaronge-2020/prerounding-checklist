@@ -8486,7 +8486,7 @@
                 }
               ]
             },
-            "action": "Assess exact age, gestational/corrected age, temperature value/method/duration, caregiver concern, behavior/social response, mental state, work of breathing, SpO2 and oxygen delivery, RR/HR/BP, capillary refill, pulses/extremity temperature, urine output or last void, hydration, rash blanching/purpura, meningitis/HSV features, respiratory/urinary/GI/skin/CNS/joint/travel/line source, immunization and recent vaccine timing, prematurity/chronic illness/immunocompromise, pregnancy status, current medications/allergies, weight, blood culture/lactate timing when probable sepsis or shock is possible, UA/urine culture, ANC/CRP/procalcitonin and CSF decision for infants, antibiotics already given, and follow-up reliability.",
+            "action": "Assess age, corrected age, temperature value/method/duration, caregiver concern, behavior, mental state, work of breathing, SpO2/oxygen, RR/HR/BP, perfusion, urine output, hydration, rash, meningitis/HSV features, respiratory/urinary/GI/skin/CNS/joint/travel/line source, immunization/recent vaccine timing, prematurity/chronic illness/immunocompromise, pregnancy status, meds/allergies, weight, culture/lactate timing when sepsis is possible, infant UA/culture/ANC/CRP/procalcitonin/CSF decision, antibiotics already given, and follow-up reliability.",
             "children": [
               {
                 "id": "pediatric_fever_sepsis_classification_decision",
@@ -9309,7 +9309,7 @@
                         }
                       ]
                     },
-                    "action": "Escalate immediately to emergency pediatric/critical-care or transfer pathway. Measure lactate, obtain blood cultures before antibiotics if this will not substantially delay treatment, give broad-spectrum antibiotics ideally within 1 hour for suspected septic shock, begin glucose-free crystalloid boluses 10-20 mL/kg with reassessment after each bolus, stop boluses if shock resolves or overload develops, use NICE maximum 250 mL bolus logic for under-16 resuscitation when applicable, add vasoactive medication through peripheral venous access rather than delaying for central access when shock persists, seek source control, avoid etomidate for intubation, and after resuscitation target SpO2 88-92% unless another condition requires a different target.",
+                    "action": "Escalate immediately to emergency pediatric critical care or transfer. Measure lactate, obtain blood cultures before antibiotics if this will not substantially delay treatment, give broad-spectrum antibiotics ideally within 1 hour, give glucose-free crystalloid 10-20 mL/kg with reassessment after each bolus, stop for resolution or overload, use vasoactive medication via peripheral IV rather than delaying for central access when shock persists, seek source control, avoid etomidate, and after resuscitation target SpO2 88-92% unless another condition requires a different target.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -11399,7 +11399,7 @@
                         }
                       ]
                     },
-                    "action": "For 0-21 days, obtain blood, urine, and CSF analysis/cultures and hospitalize with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending. For 22-28 days, obtain blood culture, inflammatory markers, UA and urine culture if UA positive; elevated inflammatory markers, positive UA, or concerning CSF routes to CSF evaluation, admission, and IV antibiotics, while outpatient observation requires normal urine/CSF/inflammatory markers, broad-spectrum antibiotic plan when used, reliable communication/transport, and reevaluation within 24 hours. For 29-60 days, obtain UA with urine culture if positive, blood culture, ANC/CRP/procalcitonin, defer CSF only when low-risk logic permits, treat presumed UTI with oral antibiotics only when low-risk discharge criteria are met, and assign culture follow-up through final result.",
+                    "action": "For 0-21 days, obtain blood, urine, and CSF studies/cultures and hospitalize with empiric broad-spectrum antibiotics for 24-48 hours while cultures are pending. For 22-28 days, obtain blood culture, inflammatory markers, UA and urine culture if UA positive; abnormal markers, positive UA, or concerning CSF route to CSF evaluation, admission, and IV antibiotics, while outpatient observation requires normal urine/CSF/markers, reliable communication/transport, and reevaluation within 24 hours. For 29-60 days, obtain UA/culture if positive, blood culture, ANC/CRP/procalcitonin, defer CSF only when low-risk logic permits, and assign culture follow-up through final result.",
                     "children": [],
                     "endpoint_type": "diagnostic_step",
                     "guideline_cutoffs": [

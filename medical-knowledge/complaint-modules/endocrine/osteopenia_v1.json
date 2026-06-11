@@ -2590,7 +2590,7 @@
         "osteopenia_classification_decision": {
           "rule_id": "osteopenia_classification_criteria",
           "source": "criteria",
-          "description": "Classify Osteopenia using cited thresholds: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L, 10-65 pg/mL | Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L | Intact PTH often about 10-65 pg/mL but assay-specific.: 10-65 pg/mL | DXA T-score: normal >= -1.0, osteoporosis <= -2.5 | 25D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.: many labs flag <20 ng/mL, as low and <12 ng/mL",
+          "description": "Classify Osteopenia using cited thresholds and branch-specific criteria.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3076,7 +3076,7 @@
         "osteopenia_review_endpoint": {
           "rule_id": "osteopenia_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Osteopenia treatment or disposition depends on Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.; Intact PTH often about 10-65 pg/mL but assay-specific.; DXA T-score; 25D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context.",
+          "description": "Use reviewer handoff when Osteopenia treatment or disposition depends on Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; DXA T-score; 25D thresholds vary; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3447,7 +3447,7 @@
         "osteopenia_alternate_endpoint": {
           "rule_id": "osteopenia_alternate_criteria",
           "source": "criteria",
-          "description": "Use an alternate pathway when Osteopenia criteria are absent, Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics better explains the presentation, or measured result data contradict this workup.",
+          "description": "Use an alternate pathway when Osteopenia criteria are absent, Corrected calcium often about 8.5-10.5 mg/dL better explains the presentation, or measured result data contradict this workup.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3558,7 +3558,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Osteopenia: Fragility fracture despite osteopenic T-score, rapid bone loss, secondary cause signs.; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; Use lifestyle, fall prevention, weight-bearing/resistance exercise, protein, calcium/vitamin D adequacy, and medication/alcohol/tobacco review.; Start osteoporosis pharmacotherapy if FRAX/local risk threshold, fragility fracture, or progression to osteoporosis occurs.",
+        "label": "Route: Osteopenia",
         "edgeLabel": "",
         "source_ids": [
           "AACE_OSTEOPOROSIS_2020",
@@ -3581,7 +3581,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Check Fragility fracture despite osteopenic T-score, rapid bone loss, secondary cause signs.; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia. and 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; osteoporosis <= -2.5; many labs flag <20 ng/mL; use the listed assessment bundle to choose emergency care, treatment/disposition, reviewer handoff, alternate diagnosis, reassessment, de-escalation, or follow-up.",
+        "action": "Screen for high-acuity findings; classify with 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; then choose emergency, treatment/disposition, review, mimic, monitoring, de-escalation, or follow-up branch.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3649,8 +3649,8 @@
           {
             "id": "osteopenia_concurrent_data_bundle",
             "type": "action",
-            "label": "Osteopenia: assessment, thresholds, and treatment-safety inputs",
-            "edgeLabel": "Collect Osteopenia: DXA.; FRAX or validated fracture-risk tool.; Calcium, creatinine/eGFR, 25(OH)D, and secondary-cause labs.; DXA/vertebral imaging or validated fracture-risk tool; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL",
+            "label": "Collect: DXA; FRAX or validated fracture-risk tool",
+            "edgeLabel": "Assessment bundle: DXA; FRAX or validated fracture-risk tool; Calcium, creatinine/eGFR, 25D, and secondary-cause labs; DXA/vertebral imaging or validated fracture-risk tool; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
             "source_ids": [
               "ENDO_OSTEOPOROSIS_2020",
               "AACE_OSTEOPOROSIS_2020",
@@ -3676,13 +3676,13 @@
                 "AHRQ_CALIBRATE_DX"
               ]
             },
-            "action": "Obtain together: DXA.; FRAX or validated fracture-risk tool.; Calcium, creatinine/eGFR, 25(OH)D, and secondary-cause labs.; DXA/vertebral imaging or validated fracture-risk tool; 24-hour urine calcium and renal imaging when calcium-stone risk is relevant; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; osteoporosis <= -2.5.",
+            "action": "Obtain together: DXA; FRAX or validated fracture-risk tool; Calcium, creatinine/eGFR, 25D, and secondary-cause labs; DXA/vertebral imaging or validated fracture-risk tool; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L.",
             "children": [
               {
                 "id": "osteopenia_classification_decision",
                 "type": "decision",
-                "label": "Osteopenia: classify thresholds, acuity, mimics, and disposition",
-                "edgeLabel": "Classify Osteopenia with available result(s): 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0",
+                "label": "Classify by: Corrected calcium often about 8.5-10.5 mg/dL; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
+                "edgeLabel": "Classify using 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0",
                 "source_ids": [
                   "AACE_OSTEOPOROSIS_2020",
                   "ENDO_OSTEOPOROSIS_2020",
@@ -3691,7 +3691,7 @@
                 "criteria": {
                   "rule_id": "osteopenia_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Osteopenia using cited thresholds: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L, 10-65 pg/mL | Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L | Intact PTH often about 10-65 pg/mL but assay-specific.: 10-65 pg/mL | DXA T-score: normal >= -1.0, osteoporosis <= -2.5 | 25D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.: many labs flag <20 ng/mL, as low and <12 ng/mL",
+                  "description": "Classify Osteopenia using cited thresholds and branch-specific criteria.",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -3802,7 +3802,7 @@
                     }
                   ]
                 },
-                "action": "Match current patient data to 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; osteoporosis <= -2.5; many labs flag <20 ng/mL; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
+                "action": "Match current patient data to 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
                 "children": [
                   {
                     "id": "osteopenia_missing_cutoff_data_endpoint",
@@ -3880,8 +3880,8 @@
                   {
                     "id": "osteopenia_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Osteopenia: emergency or monitored-care disposition",
-                    "edgeLabel": "High-acuity threshold or monitored-care result present: Fragility fracture despite osteopenic T-score, rapid bone loss, secondary cause signs.; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
+                    "label": "Escalate for: Fragility fracture despite osteopenic T-score",
+                    "edgeLabel": "Escalate: Fragility fracture despite osteopenic T-score, rapid bone loss, secondary cause signs; Corrected calcium often about 8.5-10.5 mg/dL; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
                     "source_ids": [
                       "ENDO_OSTEOPOROSIS_2020",
                       "AACE_OSTEOPOROSIS_2020",
@@ -3998,7 +3998,7 @@
                         }
                       ]
                     },
-                    "action": "Send to ED, admission, or monitored specialty care for Fragility fracture despite osteopenic T-score, rapid bone loss, secondary cause signs.; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy.; unstable physiology or dangerous electrolyte/glucose abnormality; start stabilization and diagnosis-specific emergency treatment before routine outpatient management.",
+                    "action": "Send to ED, admission, or monitored specialty care for Fragility fracture despite osteopenic T-score, rapid bone loss, secondary cause signs; Corrected calcium often about 8.5-10.5 mg/dL; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; start stabilization and diagnosis-specific emergency treatment before routine outpatient management.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -4097,8 +4097,8 @@
                   {
                     "id": "osteopenia_treatment_bundle",
                     "type": "action",
-                    "label": "Osteopenia: treatment and disposition branch",
-                    "edgeLabel": "Confirmed/high-risk Osteopenia branch has treatment-safety data available",
+                    "label": "Choose treatment: Start osteoporosis pharmacotherapy if FRAX/local risk threshold",
+                    "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "ENDO_OSTEOPOROSIS_2020",
                       "AACE_OSTEOPOROSIS_2020",
@@ -4217,12 +4217,12 @@
                         }
                       ]
                     },
-                    "action": "Use lifestyle, fall prevention, weight-bearing/resistance exercise, protein, calcium/vitamin D adequacy, and medication/alcohol/tobacco review.; Start osteoporosis pharmacotherapy if FRAX/local risk threshold, fragility fracture, or progression to osteoporosis occurs.; Treat reversible secondary causes such as hyperthyroidism, hyperparathyroidism, vitamin D deficiency, hypogonadism, malabsorption, or glucocorticoid exposure.; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.",
+                    "action": "Start osteoporosis pharmacotherapy if FRAX/local risk threshold; Treat reversible secondary causes such as hyperthyroidism; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy; discordant endocrine tests need correct timing; Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific",
                     "children": [
                       {
                         "id": "osteopenia_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Osteopenia: contraindications, dosing, pregnancy, and comorbidity modifiers",
+                        "label": "Check safety: Corrected calcium often about 8.5-10.5 mg/dL; allergy or drug interaction",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "AACE_OSTEOPOROSIS_2020",
@@ -4345,8 +4345,8 @@
                           {
                             "id": "osteopenia_review_endpoint",
                             "type": "endpoint",
-                            "label": "Osteopenia: review Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.; Intact PTH often about 10-65 pg/mL but assay-specific.; DXA T-score; 25D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context",
-                            "edgeLabel": "Osteopenia modifier needing review: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.; Intact PTH often about 10-65 pg/mL but assay-specific.; DXA T-score; 25D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context",
+                            "label": "Review modifiers: Corrected calcium often about 8.5-10.5 mg/dL",
+                            "edgeLabel": "Review modifier: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy",
                             "source_ids": [
                               "AACE_OSTEOPOROSIS_2020",
                               "ENDO_OSTEOPOROSIS_2020",
@@ -4355,7 +4355,7 @@
                             "criteria": {
                               "rule_id": "osteopenia_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Osteopenia treatment or disposition depends on Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.; Intact PTH often about 10-65 pg/mL but assay-specific.; DXA T-score; 25D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context.",
+                              "description": "Use reviewer handoff when Osteopenia treatment or disposition depends on Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; DXA T-score; 25D thresholds vary; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4374,13 +4374,13 @@
                             "action": "Resolve the named Osteopenia modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
-                            "review_needed_reason": "Osteopenia management changes when Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.; Intact PTH often about 10-65 pg/mL but assay-specific.; DXA T-score; 25D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; document the exact modifier and reviewer input needed."
+                            "review_needed_reason": "Osteopenia management changes when Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; DXA T-score; 25D thresholds vary; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy; document the exact modifier and reviewer input needed."
                           },
                           {
                             "id": "osteopenia_monitoring_bundle",
                             "type": "action",
-                            "label": "Osteopenia: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Osteopenia: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; DXA.; FRAX or validated fracture-risk tool.; Calcium, creatinine/eGFR, 25(OH)D, and secondary-cause labs.; Measure blood pressure",
+                            "label": "Monitor: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; DXA",
+                            "edgeLabel": "Monitor: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; DXA; FRAX or validated fracture-risk tool; treatment response",
                             "source_ids": [
                               "ENDO_OSTEOPOROSIS_2020",
                               "AACE_OSTEOPOROSIS_2020",
@@ -4502,8 +4502,8 @@
                               {
                                 "id": "osteopenia_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Osteopenia: reassessment escalation",
-                                "edgeLabel": "Osteopenia reassessment worsens or Fragility fracture despite osteopenic T-score, rapid bone loss, secondary cause signs.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; DXA.; FRAX or validated fracture-risk tool. no longer fit the documented Osteopenia branch",
+                                "label": "Escalate if worse: Fragility fracture despite osteopenic T-score; 8.5-10.5 mg/dL",
+                                "edgeLabel": "Escalate if reassessment worsens: Fragility fracture despite osteopenic T-score, rapid bone loss, secondary cause signs; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; DXA; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "ENDO_OSTEOPOROSIS_2020",
                                   "AACE_OSTEOPOROSIS_2020",
@@ -4620,7 +4620,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Repeat or review Fragility fracture despite osteopenic T-score, rapid bone loss, secondary cause signs.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; DXA.; FRAX or validated fracture-risk tool.; reassess mimics and complications; move to ED, admission, or specialty review when that specific trend, vital sign, imaging/ECG/procedure finding, or treatment-response pattern requires escalation.",
+                                "action": "Review Fragility fracture despite osteopenic T-score, rapid bone loss, secondary cause signs; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; DXA; worsening symptoms or treatment intolerance; reassess mimics and complications; move to ED, admission, or specialty review when the cited trend or finding worsens.",
                                 "children": [],
                                 "endpoint_type": "escalation_disposition",
                                 "guideline_cutoffs": [
@@ -4719,8 +4719,8 @@
                               {
                                 "id": "osteopenia_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Osteopenia: de-escalate, stop, or narrow",
-                                "edgeLabel": "Measured response supports narrowing, stopping, tapering, or continuing Osteopenia care",
+                                "label": "Narrow/stop by: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; objective response",
+                                "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "ENDO_OSTEOPOROSIS_2020",
                                   "AACE_OSTEOPOROSIS_2020",
@@ -4936,8 +4936,8 @@
                               {
                                 "id": "osteopenia_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Osteopenia: follow-up and safety-net",
-                                "edgeLabel": "Osteopenia stable enough for owned follow-up, pending results, and safety-netting",
+                                "label": "Close loop: result owner, follow-up, return precautions",
+                                "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ENDO_OSTEOPOROSIS_2020",
                                   "AACE_OSTEOPOROSIS_2020",
@@ -5183,8 +5183,8 @@
                   {
                     "id": "osteopenia_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Osteopenia: alternate diagnosis pathway",
-                    "edgeLabel": "Mimic or alternate pathway favored: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+                    "label": "Alternate diagnosis: Corrected calcium often about 8.5-10.5 mg/dL",
+                    "edgeLabel": "Alternate diagnosis: Corrected calcium often about 8.5-10.5 mg/dL",
                     "source_ids": [
                       "ENDO_OSTEOPOROSIS_2020",
                       "AACE_OSTEOPOROSIS_2020",
@@ -5193,7 +5193,7 @@
                     "criteria": {
                       "rule_id": "osteopenia_alternate_criteria",
                       "source": "criteria",
-                      "description": "Use an alternate pathway when Osteopenia criteria are absent, Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics better explains the presentation, or measured result data contradict this workup.",
+                      "description": "Use an alternate pathway when Osteopenia criteria are absent, Corrected calcium often about 8.5-10.5 mg/dL better explains the presentation, or measured result data contradict this workup.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5300,10 +5300,10 @@
                         }
                       ]
                     },
-                    "action": "Name the competing diagnosis or exclusion for Osteopenia, such as Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics; route to the corresponding workup or specialty pathway and document why the Osteopenia branch is not used.",
+                    "action": "Name the competing diagnosis or exclusion for Osteopenia, such as Corrected calcium often about 8.5-10.5 mg/dL; route to the corresponding workup or specialty pathway and document why this branch is not used.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Osteopenia criteria are absent or contradicted by Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics; competing diagnosis must be named before closure."
+                    "review_needed_reason": "Osteopenia criteria are absent or contradicted by Corrected calcium often about 8.5-10.5 mg/dL; competing diagnosis must be named before closure."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -5501,9 +5501,7 @@
               "Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.",
               "8.5-10.5 mg/dL",
               "1.12-1.32 mmol/L",
-              "10-65 pg/mL",
-              "normal >= -1.0",
-              "osteoporosis <= -2.5"
+              "10-65 pg/mL"
             ],
             "required_data": [
               "8.5-10.5 mg/dL",
@@ -5646,7 +5644,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "osteopenia_urgent_endpoint",
-          "expected_active_branch": "High-acuity threshold or monitored-care result present: Fragility fracture despite osteopenic T-score, rapid bone loss, secondary cause signs.; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
+          "expected_active_branch": "Escalate: Fragility fracture despite osteopenic T-score, rapid bone loss, secondary cause signs; Corrected calcium often about 8.5-10.5 mg/dL; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
           "expected_path_node_ids": [
             "root",
             "osteopenia_concurrent_data_bundle",
@@ -5660,7 +5658,7 @@
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "osteopenia_alternate_endpoint",
-          "expected_active_branch": "Mimic or alternate pathway favored: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+          "expected_active_branch": "Alternate diagnosis: Corrected calcium often about 8.5-10.5 mg/dL",
           "expected_path_node_ids": [
             "root",
             "osteopenia_concurrent_data_bundle",
@@ -5674,7 +5672,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "osteopenia_review_endpoint",
-          "expected_active_branch": "Osteopenia modifier needing review: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.; Intact PTH often about 10-65 pg/mL but assay-specific.; DXA T-score; 25D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context",
+          "expected_active_branch": "Review modifier: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy",
           "expected_path_node_ids": [
             "root",
             "osteopenia_concurrent_data_bundle",
@@ -5690,7 +5688,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "osteopenia_worsening_endpoint",
-          "expected_active_branch": "Osteopenia reassessment worsens or Fragility fracture despite osteopenic T-score, rapid bone loss, secondary cause signs.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; DXA.; FRAX or validated fracture-risk tool. no longer fit the documented Osteopenia branch",
+          "expected_active_branch": "Escalate if reassessment worsens: Fragility fracture despite osteopenic T-score, rapid bone loss, secondary cause signs; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; DXA; worsening symptoms or treatment intolerance",
           "expected_path_node_ids": [
             "root",
             "osteopenia_concurrent_data_bundle",
@@ -5707,7 +5705,7 @@
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "osteopenia_deescalate_endpoint",
-          "expected_active_branch": "Measured response supports narrowing, stopping, tapering, or continuing Osteopenia care",
+          "expected_active_branch": "Narrow/stop when response and diagnosis certainty support it",
           "expected_path_node_ids": [
             "root",
             "osteopenia_concurrent_data_bundle",
@@ -5724,7 +5722,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "osteopenia_followup_endpoint",
-          "expected_active_branch": "Osteopenia stable enough for owned follow-up, pending results, and safety-netting",
+          "expected_active_branch": "Follow-up ready: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "osteopenia_concurrent_data_bundle",

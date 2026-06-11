@@ -5269,7 +5269,7 @@
           {
             "id": "type_1_diabetes_initial_assessment",
             "type": "action",
-            "label": "Type 1 Diabetes Mellitus: collect A1c/glucose, ketone or acidosis data when symptomatic, diabetes type evidence, medication safety, vitals, weight, kidney/cardiovascular data, and access barriers",
+            "label": "Type 1 Diabetes Mellitus: collect glucose/A1c, ketone-acidosis data when ill, diabetes type evidence, safety labs, meds, and access",
             "edgeLabel": "Type 1 Diabetes Mellitus evaluation: diabetes-range test, hyperglycemia symptoms, abnormal glucose pattern, ketosis risk, hypoglycemia, medication adjustment need, complication concern, or clinician-chosen diabetes workup",
             "source_ids": [
               "ADA_DIAGNOSIS_2026",
@@ -6353,7 +6353,7 @@
                         }
                       ]
                     },
-                    "action": "Use diagnostic classification, treatment intensity, medication/device safety, kidney/cardiovascular risk, hypoglycemia prevention, and follow-up as one plan. Local evidence reminders: A1c/glucose criteria plus ketones/acid-base if symptomatic.; Beta-hydroxybutyrate, BMP, venous/arterial pH, bicarbonate, anion gap.; Islet autoantibodies: GAD65, IA-2, ZnT8, insulin Ab if needed; C-peptide with concurrent glucose.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; Diabetes safety tests: review POC/plasma glucose trend, BMP with potassium/bicarbonate/anion gap and creatinine, beta-hydroxybutyrate or urine ketones when acutely ill, and UACR/lipids for complication-directed therapy.; A1c or plasma glucose criteria for diagnosis/classification, plus CGM/glucometer pattern when available.; CMP/eGFR, urine albumin-creatinine ratio, lipids, and ketones/anion gap/beta-hydroxybutyrate when acute symptoms or insulin deficiency are possible.; A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%.; Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126.; 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200.; Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis.; DKA: diabetes/hyperglycemia plus ketosis plus metabolic acidosis; glucose may be lower in euglycemic DKA..",
+                    "action": "Use diagnostic classification, treatment intensity, medication/device safety, kidney/cardiovascular risk, hypoglycemia prevention, and follow-up as one plan.",
                     "children": [
                       {
                         "id": "type_1_diabetes_diagnosis_classification_endpoint",

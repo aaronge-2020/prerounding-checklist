@@ -2603,7 +2603,7 @@
         "osteoporosis_classification_decision": {
           "rule_id": "osteoporosis_classification_criteria",
           "source": "criteria",
-          "description": "Classify Osteoporosis using cited thresholds: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L, 10-65 pg/mL | Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L | Intact PTH often about 10-65 pg/mL but assay-specific.: 10-65 pg/mL | DXA T-score: normal >= -1.0, osteoporosis <= -2.5 | 25D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.: many labs flag <20 ng/mL, as low and <12 ng/mL",
+          "description": "Classify Osteoporosis using cited thresholds and branch-specific criteria.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3154,7 +3154,7 @@
         "osteoporosis_review_endpoint": {
           "rule_id": "osteoporosis_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff when Osteoporosis treatment or disposition depends on Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.; Intact PTH often about 10-65 pg/mL but assay-specific.; DXA T-score; 25D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.; T-score <= -2.5 or fragility fracture confirms osteoporosis.; Hip/vertebral fracture or very low T-score changes to high/very-high-risk pathway..",
+          "description": "Use reviewer handoff when Osteoporosis treatment or disposition depends on Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; DXA T-score; 25D thresholds vary; T-score <= -2.5 or fragility fracture confirms osteoporosis.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3573,7 +3573,7 @@
         "osteoporosis_alternate_endpoint": {
           "rule_id": "osteoporosis_alternate_criteria",
           "source": "criteria",
-          "description": "Use an alternate pathway when Osteoporosis criteria are absent, Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics better explains the presentation, or measured result data contradict this workup.",
+          "description": "Use an alternate pathway when Osteoporosis criteria are absent, Corrected calcium often about 8.5-10.5 mg/dL better explains the presentation, or measured result data contradict this workup.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3700,7 +3700,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Osteoporosis: New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures.; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; Use bisphosphonate first-line for many high-risk patients when renal function, esophageal risk, and adherence permit.; Use anabolic therapy such as teriparatide, abaloparatide, or romosozumab for very-high-risk patients, then follow with antiresorptive therapy.",
+        "label": "Route: Osteoporosis",
         "edgeLabel": "",
         "source_ids": [
           "AACE_OSTEOPOROSIS_2020",
@@ -3723,7 +3723,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Check New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures.; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia. and 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; osteoporosis <= -2.5; many labs flag <20 ng/mL; use the listed assessment bundle to choose emergency care, treatment/disposition, reviewer handoff, alternate diagnosis, reassessment, de-escalation, or follow-up.",
+        "action": "Screen for high-acuity findings; classify with 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; then choose emergency, treatment/disposition, review, mimic, monitoring, de-escalation, or follow-up branch.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3791,8 +3791,8 @@
           {
             "id": "osteoporosis_concurrent_data_bundle",
             "type": "action",
-            "label": "Osteoporosis: assessment, thresholds, and treatment-safety inputs",
-            "edgeLabel": "Collect Osteoporosis: DXA and vertebral imaging.; Calcium, phosphorus, creatinine/eGFR, alkaline phosphatase, 25(OH)D, PTH, TSH/CBC/CMP and secondary-cause labs.; DXA/vertebral imaging or validated fracture-risk tool; 24-hour urine calcium and renal imaging when calcium-stone risk is relevant; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL",
+            "label": "Collect: DXA and vertebral imaging; DXA/vertebral imaging or validated fracture-risk tool",
+            "edgeLabel": "Assessment bundle: DXA and vertebral imaging; DXA/vertebral imaging or validated fracture-risk tool; 24-hour urine calcium and renal imaging when calcium-stone risk is relevant; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL",
             "source_ids": [
               "ENDO_OSTEOPOROSIS_2020",
               "AACE_OSTEOPOROSIS_2020",
@@ -3818,13 +3818,13 @@
                 "AHRQ_CALIBRATE_DX"
               ]
             },
-            "action": "Obtain together: DXA and vertebral imaging.; Calcium, phosphorus, creatinine/eGFR, alkaline phosphatase, 25(OH)D, PTH, TSH/CBC/CMP and secondary-cause labs.; DXA/vertebral imaging or validated fracture-risk tool; 24-hour urine calcium and renal imaging when calcium-stone risk is relevant; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.; Intact PTH often about 10-65 pg/mL but assay-specific.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; osteoporosis <= -2.5.",
+            "action": "Obtain together: DXA and vertebral imaging; DXA/vertebral imaging or validated fracture-risk tool; 24-hour urine calcium and renal imaging when calcium-stone risk is relevant; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL.",
             "children": [
               {
                 "id": "osteoporosis_classification_decision",
                 "type": "decision",
-                "label": "Osteoporosis: classify thresholds, acuity, mimics, and disposition",
-                "edgeLabel": "Classify Osteoporosis with available result(s): 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0",
+                "label": "Classify by: Corrected calcium often about 8.5-10.5 mg/dL; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
+                "edgeLabel": "Classify using 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0",
                 "source_ids": [
                   "AACE_OSTEOPOROSIS_2020",
                   "ENDO_OSTEOPOROSIS_2020",
@@ -3833,7 +3833,7 @@
                 "criteria": {
                   "rule_id": "osteoporosis_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Osteoporosis using cited thresholds: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L, 10-65 pg/mL | Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L | Intact PTH often about 10-65 pg/mL but assay-specific.: 10-65 pg/mL | DXA T-score: normal >= -1.0, osteoporosis <= -2.5 | 25D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.: many labs flag <20 ng/mL, as low and <12 ng/mL",
+                  "description": "Classify Osteoporosis using cited thresholds and branch-specific criteria.",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -3960,7 +3960,7 @@
                     }
                   ]
                 },
-                "action": "Match current patient data to 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; osteoporosis <= -2.5; many labs flag <20 ng/mL; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
+                "action": "Match current patient data to 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; then choose emergency care, treatment/disposition, reviewer handoff, or alternate-diagnosis branch.",
                 "children": [
                   {
                     "id": "osteoporosis_missing_cutoff_data_endpoint",
@@ -4040,8 +4040,8 @@
                   {
                     "id": "osteoporosis_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Osteoporosis: emergency or monitored-care disposition",
-                    "edgeLabel": "High-acuity threshold or monitored-care result present: New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures.; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
+                    "label": "Escalate for: Corrected calcium often about 8.5-10.5 mg/dL; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
+                    "edgeLabel": "Escalate: New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures; Corrected calcium often about 8.5-10.5 mg/dL; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
                     "source_ids": [
                       "ENDO_OSTEOPOROSIS_2020",
                       "AACE_OSTEOPOROSIS_2020",
@@ -4174,7 +4174,7 @@
                         }
                       ]
                     },
-                    "action": "Send to ED, admission, or monitored specialty care for New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures.; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; T-score <= -2.5 or fragility fracture confirms osteoporosis.; Hip/vertebral fracture or very low T-score changes to high/very-high-risk pathway.; start stabilization and diagnosis-specific emergency treatment before routine outpatient management.",
+                    "action": "Send to ED, admission, or monitored specialty care for New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures; Corrected calcium often about 8.5-10.5 mg/dL; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; start stabilization and diagnosis-specific emergency treatment before routine outpatient management.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -4289,8 +4289,8 @@
                   {
                     "id": "osteoporosis_treatment_bundle",
                     "type": "action",
-                    "label": "Osteoporosis: treatment and disposition branch",
-                    "edgeLabel": "Confirmed/high-risk Osteoporosis branch has treatment-safety data available",
+                    "label": "Choose treatment: Use bisphosphonate first-line for many high-risk patients when renal function",
+                    "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "ENDO_OSTEOPOROSIS_2020",
                       "AACE_OSTEOPOROSIS_2020",
@@ -4425,12 +4425,12 @@
                         }
                       ]
                     },
-                    "action": "Use bisphosphonate first-line for many high-risk patients when renal function, esophageal risk, and adherence permit.; Use anabolic therapy such as teriparatide, abaloparatide, or romosozumab for very-high-risk patients, then follow with antiresorptive therapy.; Use denosumab when appropriate, but plan transition therapy if stopping to avoid rebound vertebral fracture risk.; T-score <= -2.5 or fragility fracture confirms osteoporosis.; Hip/vertebral fracture or very low T-score changes to high/very-high-risk pathway.; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.",
+                    "action": "Use bisphosphonate first-line for many high-risk patients when renal function; Use anabolic therapy such as teriparatide; Use denosumab when appropriate; T-score <= -2.5 or fragility fracture confirms osteoporosis; Hip/vertebral fracture or very low T-score changes to high/very-high-risk pathway; Corrected calcium often about 8.5-10.5 mg/dL",
                     "children": [
                       {
                         "id": "osteoporosis_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Osteoporosis: contraindications, dosing, pregnancy, and comorbidity modifiers",
+                        "label": "Check safety: Corrected calcium often about 8.5-10.5 mg/dL; allergy or drug interaction",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "AACE_OSTEOPOROSIS_2020",
@@ -4569,8 +4569,8 @@
                           {
                             "id": "osteoporosis_review_endpoint",
                             "type": "endpoint",
-                            "label": "Osteoporosis: review Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.; Intact PTH often about 10-65 pg/mL but assay-specific.; DXA T-score; 25D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.; T-score <= -2.5 or fragility fracture confirms osteoporosis.; Hip/vertebral fracture or very low T-score changes to high/very-high-risk pathway.",
-                            "edgeLabel": "Osteoporosis modifier needing review: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.; Intact PTH often about 10-65 pg/mL but assay-specific.; DXA T-score; 25D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.; T-score <= -2.5 or fragility fracture confirms osteoporosis.; Hip/vertebral fracture or very low T-score changes to high/very-high-risk pathway.",
+                            "label": "Review modifiers: Corrected calcium often about 8.5-10.5 mg/dL",
+                            "edgeLabel": "Review modifier: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; T-score <= -2.5 or fragility fracture confirms osteoporosis",
                             "source_ids": [
                               "AACE_OSTEOPOROSIS_2020",
                               "ENDO_OSTEOPOROSIS_2020",
@@ -4579,7 +4579,7 @@
                             "criteria": {
                               "rule_id": "osteoporosis_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff when Osteoporosis treatment or disposition depends on Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.; Intact PTH often about 10-65 pg/mL but assay-specific.; DXA T-score; 25D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.; T-score <= -2.5 or fragility fracture confirms osteoporosis.; Hip/vertebral fracture or very low T-score changes to high/very-high-risk pathway..",
+                              "description": "Use reviewer handoff when Osteoporosis treatment or disposition depends on Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; DXA T-score; 25D thresholds vary; T-score <= -2.5 or fragility fracture confirms osteoporosis.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4598,13 +4598,13 @@
                             "action": "Resolve the named Osteoporosis modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
-                            "review_needed_reason": "Osteoporosis management changes when Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.; Intact PTH often about 10-65 pg/mL but assay-specific.; DXA T-score; 25D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.; T-score <= -2.5 or fragility fracture confirms osteoporosis.; Hip/vertebral fracture or very low T-score changes to high/very-high-risk pathway.; document the exact modifier and reviewer input needed."
+                            "review_needed_reason": "Osteoporosis management changes when Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; DXA T-score; 25D thresholds vary; T-score <= -2.5 or fragility fracture confirms osteoporosis; document the exact modifier and reviewer input needed."
                           },
                           {
                             "id": "osteoporosis_monitoring_bundle",
                             "type": "action",
-                            "label": "Osteoporosis: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Osteoporosis: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; DXA and vertebral imaging.; Calcium, phosphorus, creatinine/eGFR, alkaline phosphatase, 25(OH)D, PTH, TSH/CBC/CMP and secondary-cause labs.; DXA/vertebral imaging or validated fracture-risk tool; Measure blood pressure",
+                            "label": "Monitor: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; DXA and vertebral imaging",
+                            "edgeLabel": "Monitor: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; DXA and vertebral imaging; treatment response; adverse effects",
                             "source_ids": [
                               "ENDO_OSTEOPOROSIS_2020",
                               "AACE_OSTEOPOROSIS_2020",
@@ -4742,8 +4742,8 @@
                               {
                                 "id": "osteoporosis_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Osteoporosis: reassessment escalation",
-                                "edgeLabel": "Osteoporosis reassessment worsens or New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; DXA and vertebral imaging.; Calcium, phosphorus, creatinine/eGFR, alkaline phosphatase, 25(OH)D, PTH, TSH/CBC/CMP and secondary-cause labs. no longer fit the documented Osteoporosis branch",
+                                "label": "Escalate if worse: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; DXA and vertebral imaging",
+                                "edgeLabel": "Escalate if reassessment worsens: New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; DXA and vertebral imaging; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "ENDO_OSTEOPOROSIS_2020",
                                   "AACE_OSTEOPOROSIS_2020",
@@ -4876,7 +4876,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Repeat or review New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; DXA and vertebral imaging.; Calcium, phosphorus, creatinine/eGFR, alkaline phosphatase, 25(OH)D, PTH, TSH/CBC/CMP and secondary-cause labs.; reassess mimics and complications; move to ED, admission, or specialty review when that specific trend, vital sign, imaging/ECG/procedure finding, or treatment-response pattern requires escalation.",
+                                "action": "Review New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; DXA and vertebral imaging; worsening symptoms or treatment intolerance; reassess mimics and complications; move to ED, admission, or specialty review when the cited trend or finding worsens.",
                                 "children": [],
                                 "endpoint_type": "escalation_disposition",
                                 "guideline_cutoffs": [
@@ -4991,8 +4991,8 @@
                               {
                                 "id": "osteoporosis_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Osteoporosis: de-escalate, stop, or narrow",
-                                "edgeLabel": "Measured response supports narrowing, stopping, tapering, or continuing Osteoporosis care",
+                                "label": "Narrow/stop by: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; objective response",
+                                "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "ENDO_OSTEOPOROSIS_2020",
                                   "AACE_OSTEOPOROSIS_2020",
@@ -5240,8 +5240,8 @@
                               {
                                 "id": "osteoporosis_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Osteoporosis: follow-up and safety-net",
-                                "edgeLabel": "Osteoporosis stable enough for owned follow-up, pending results, and safety-netting",
+                                "label": "Close loop: result owner, follow-up, return precautions",
+                                "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ENDO_OSTEOPOROSIS_2020",
                                   "AACE_OSTEOPOROSIS_2020",
@@ -5519,8 +5519,8 @@
                   {
                     "id": "osteoporosis_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Osteoporosis: alternate diagnosis pathway",
-                    "edgeLabel": "Mimic or alternate pathway favored: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+                    "label": "Alternate diagnosis: Corrected calcium often about 8.5-10.5 mg/dL",
+                    "edgeLabel": "Alternate diagnosis: Corrected calcium often about 8.5-10.5 mg/dL",
                     "source_ids": [
                       "ENDO_OSTEOPOROSIS_2020",
                       "AACE_OSTEOPOROSIS_2020",
@@ -5529,7 +5529,7 @@
                     "criteria": {
                       "rule_id": "osteoporosis_alternate_criteria",
                       "source": "criteria",
-                      "description": "Use an alternate pathway when Osteoporosis criteria are absent, Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics better explains the presentation, or measured result data contradict this workup.",
+                      "description": "Use an alternate pathway when Osteoporosis criteria are absent, Corrected calcium often about 8.5-10.5 mg/dL better explains the presentation, or measured result data contradict this workup.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5652,10 +5652,10 @@
                         }
                       ]
                     },
-                    "action": "Name the competing diagnosis or exclusion for Osteoporosis, such as Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics; route to the corresponding workup or specialty pathway and document why the Osteoporosis branch is not used.",
+                    "action": "Name the competing diagnosis or exclusion for Osteoporosis, such as Corrected calcium often about 8.5-10.5 mg/dL; route to the corresponding workup or specialty pathway and document why this branch is not used.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Osteoporosis criteria are absent or contradicted by Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics; competing diagnosis must be named before closure."
+                    "review_needed_reason": "Osteoporosis criteria are absent or contradicted by Corrected calcium often about 8.5-10.5 mg/dL; competing diagnosis must be named before closure."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -5885,9 +5885,7 @@
               "Intact PTH often about 10-65 pg/mL but assay-specific.",
               "8.5-10.5 mg/dL",
               "1.12-1.32 mmol/L",
-              "10-65 pg/mL",
-              "normal >= -1.0",
-              "osteoporosis <= -2.5"
+              "10-65 pg/mL"
             ],
             "required_data": [
               "8.5-10.5 mg/dL",
@@ -6047,7 +6045,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "osteoporosis_urgent_endpoint",
-          "expected_active_branch": "High-acuity threshold or monitored-care result present: New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures.; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
+          "expected_active_branch": "Escalate: New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures; Corrected calcium often about 8.5-10.5 mg/dL; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
           "expected_path_node_ids": [
             "root",
             "osteoporosis_concurrent_data_bundle",
@@ -6061,7 +6059,7 @@
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "osteoporosis_alternate_endpoint",
-          "expected_active_branch": "Mimic or alternate pathway favored: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+          "expected_active_branch": "Alternate diagnosis: Corrected calcium often about 8.5-10.5 mg/dL",
           "expected_path_node_ids": [
             "root",
             "osteoporosis_concurrent_data_bundle",
@@ -6075,7 +6073,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "osteoporosis_review_endpoint",
-          "expected_active_branch": "Osteoporosis modifier needing review: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.; Intact PTH often about 10-65 pg/mL but assay-specific.; DXA T-score; 25D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.; T-score <= -2.5 or fragility fracture confirms osteoporosis.; Hip/vertebral fracture or very low T-score changes to high/very-high-risk pathway.",
+          "expected_active_branch": "Review modifier: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; T-score <= -2.5 or fragility fracture confirms osteoporosis",
           "expected_path_node_ids": [
             "root",
             "osteoporosis_concurrent_data_bundle",
@@ -6091,7 +6089,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "osteoporosis_worsening_endpoint",
-          "expected_active_branch": "Osteoporosis reassessment worsens or New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; DXA and vertebral imaging.; Calcium, phosphorus, creatinine/eGFR, alkaline phosphatase, 25(OH)D, PTH, TSH/CBC/CMP and secondary-cause labs. no longer fit the documented Osteoporosis branch",
+          "expected_active_branch": "Escalate if reassessment worsens: New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; DXA and vertebral imaging; worsening symptoms or treatment intolerance",
           "expected_path_node_ids": [
             "root",
             "osteoporosis_concurrent_data_bundle",
@@ -6108,7 +6106,7 @@
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "osteoporosis_deescalate_endpoint",
-          "expected_active_branch": "Measured response supports narrowing, stopping, tapering, or continuing Osteoporosis care",
+          "expected_active_branch": "Narrow/stop when response and diagnosis certainty support it",
           "expected_path_node_ids": [
             "root",
             "osteoporosis_concurrent_data_bundle",
@@ -6125,7 +6123,7 @@
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "osteoporosis_followup_endpoint",
-          "expected_active_branch": "Osteoporosis stable enough for owned follow-up, pending results, and safety-netting",
+          "expected_active_branch": "Follow-up ready: result owner, interval, and return precautions",
           "expected_path_node_ids": [
             "root",
             "osteoporosis_concurrent_data_bundle",
