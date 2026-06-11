@@ -2022,7 +2022,7 @@
           "review_status": "source_backed"
         },
         {
-          "threshold": "3 months",
+          "threshold": "age 3",
           "evidence_item_id": "dispositionRules_peds_uti_uncomplicated_outpatient_route",
           "label": "Uncomplicated outpatient UTI route",
           "source_ids": [
@@ -2031,7 +2031,7 @@
           "review_status": "source_backed"
         },
         {
-          "threshold": "48 hours",
+          "threshold": "24 to 48 hours",
           "evidence_item_id": "dispositionRules_peds_uti_return_precautions_and_prevention",
           "label": "Culture follow-up, return precautions, and recurrence prevention",
           "source_ids": [
@@ -2310,7 +2310,7 @@
         "pediatric_urinary_uti_pyelonephritis_classification_decision": {
           "rule_id": "pediatric_urinary_uti_pyelonephritis_classification_criteria",
           "source": "criteria",
-          "description": "Classify Pediatric urinary symptoms, UTI, or pyelonephritis against explicit cited cutoffs: Atypical/recurrent UTI: failure to respond within 48 hours, non-E. coli, or recurrent pattern of 2 upper UTIs, 1 upper plus lower, or 3 lower UTIs: 48 hours, 2 or more, 1 or more, 3 or more | UTI imaging schedule: <6 months first UTI ultrasound within 6 weeks; atypical UTI ultrasound during acute infection; DMSA 4-6 months when indicated: <6 months, 6 weeks, 4 to 6 months | When MCUG is done, give oral prophylactic antibiotics for 3 days with MCUG on day 2: 3 days, day 2 | Infant UTI, fever without focus, or sepsi...",
+          "description": "Classify Pediatric urinary symptoms, UTI, or pyelonephritis against cited thresholds and condition-specific rules: Atypical/recurrent UTI: failure to respond within 48 hours, non-E. coli, or recurrent pattern of 2 upper UTIs, 1 upper plus lower, or 3 lower UTIs: 48 hours, 2 or more, 1 or more, 3 or more | UTI imaging schedule: <6 months first UTI ultrasound within 6 weeks; atypical UTI ultrasound during acute infection; DMSA 4-6 months when indicated: <6 months, 6 weeks, 4 to 6 months | When MCUG is done, give oral prophylactic antibiotics for 3 days with MCUG on day 2: 3 days, day 2 | Infant UTI, fever without focus, or sepsis-risk urinary source: 3 months | Age-based UTI imaging schedule: 6 weeks, 6 months",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2465,10 +2465,10 @@
               "label": "Uncomplicated outpatient UTI route",
               "criteria_text": "Uncomplicated outpatient UTI route For relatively well children age 3 months or older who tolerate oral fluids/antibiotics and lack sepsis, upper-tract, complex, atypical, or failed-treatment features, use oral therapy per local guideline with 24- to 48-hour culture review and safety net. Changes from broad admission/testing to oral therapy, GP/clinical follow-up, culture check, recurrence prevention, and return precautions. Uncomplicated lower UTI/cystitis in a stable child. Most uncomplicated pediatric UTIs can be managed without broad labs, IV antibiotics, admission, or routine imaging when follow-up is reliable.",
               "cutoffs": [
-                "3 months"
+                "age 3"
               ],
               "data_needed": [
-                "3 months"
+                "age 3"
               ],
               "source_ids": [
                 "RCH_UTI_CHILD"
@@ -2481,10 +2481,10 @@
               "label": "Culture follow-up, return precautions, and recurrence prevention",
               "criteria_text": "Culture follow-up, return precautions, and recurrence prevention Document culture follow-up within 24 to 48 hours, reassessment if not improving, urgent return for fever/toxic signs/vomiting/flank pain/poor intake/no urine, and prevention counseling for hydration, constipation, and not delaying voiding. Changes follow-up ownership, antibiotic adjustment, urgent reassessment, recurrence prevention, and handoff quality. Culture-confirmed UTI, resistance, failed outpatient treatment, recurrent UTI, dehydration, or upper-tract progression. UTI management is unsafe without culture review and clear return precautions because resistance, contamination, upper-tract disease, and deterioration can emerge after discharge.",
               "cutoffs": [
-                "48 hours"
+                "24 to 48 hours"
               ],
               "data_needed": [
-                "48 hours"
+                "24 to 48 hours"
               ],
               "source_ids": [
                 "CHQ_PEDS_UTI_2024"
@@ -2497,7 +2497,7 @@
         "pediatric_urinary_uti_pyelonephritis_missing_cutoff_data_endpoint": {
           "rule_id": "pediatric_urinary_uti_pyelonephritis_missing_cutoff_data_criteria",
           "source": "criteria",
-          "description": "Route here when Pediatric urinary symptoms, UTI, or pyelonephritis cannot be classified because exact cutoff-bearing data are missing.",
+          "description": "Route here when Pediatric urinary symptoms, UTI, or pyelonephritis cannot be classified because exact threshold/result data are missing.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2699,10 +2699,10 @@
               "label": "Uncomplicated outpatient UTI route",
               "criteria_text": "Uncomplicated outpatient UTI route For relatively well children age 3 months or older who tolerate oral fluids/antibiotics and lack sepsis, upper-tract, complex, atypical, or failed-treatment features, use oral therapy per local guideline with 24- to 48-hour culture review and safety net. Changes from broad admission/testing to oral therapy, GP/clinical follow-up, culture check, recurrence prevention, and return precautions. Uncomplicated lower UTI/cystitis in a stable child. Most uncomplicated pediatric UTIs can be managed without broad labs, IV antibiotics, admission, or routine imaging when follow-up is reliable.",
               "cutoffs": [
-                "3 months"
+                "age 3"
               ],
               "data_needed": [
-                "3 months"
+                "age 3"
               ],
               "source_ids": [
                 "RCH_UTI_CHILD"
@@ -2715,10 +2715,10 @@
               "label": "Culture follow-up, return precautions, and recurrence prevention",
               "criteria_text": "Culture follow-up, return precautions, and recurrence prevention Document culture follow-up within 24 to 48 hours, reassessment if not improving, urgent return for fever/toxic signs/vomiting/flank pain/poor intake/no urine, and prevention counseling for hydration, constipation, and not delaying voiding. Changes follow-up ownership, antibiotic adjustment, urgent reassessment, recurrence prevention, and handoff quality. Culture-confirmed UTI, resistance, failed outpatient treatment, recurrent UTI, dehydration, or upper-tract progression. UTI management is unsafe without culture review and clear return precautions because resistance, contamination, upper-tract disease, and deterioration can emerge after discharge.",
               "cutoffs": [
-                "48 hours"
+                "24 to 48 hours"
               ],
               "data_needed": [
-                "48 hours"
+                "24 to 48 hours"
               ],
               "source_ids": [
                 "CHQ_PEDS_UTI_2024"
@@ -2885,10 +2885,10 @@
               "label": "Uncomplicated outpatient UTI route",
               "criteria_text": "Uncomplicated outpatient UTI route For relatively well children age 3 months or older who tolerate oral fluids/antibiotics and lack sepsis, upper-tract, complex, atypical, or failed-treatment features, use oral therapy per local guideline with 24- to 48-hour culture review and safety net. Changes from broad admission/testing to oral therapy, GP/clinical follow-up, culture check, recurrence prevention, and return precautions. Uncomplicated lower UTI/cystitis in a stable child. Most uncomplicated pediatric UTIs can be managed without broad labs, IV antibiotics, admission, or routine imaging when follow-up is reliable.",
               "cutoffs": [
-                "3 months"
+                "age 3"
               ],
               "data_needed": [
-                "3 months"
+                "age 3"
               ],
               "source_ids": [
                 "RCH_UTI_CHILD"
@@ -2901,10 +2901,10 @@
               "label": "Culture follow-up, return precautions, and recurrence prevention",
               "criteria_text": "Culture follow-up, return precautions, and recurrence prevention Document culture follow-up within 24 to 48 hours, reassessment if not improving, urgent return for fever/toxic signs/vomiting/flank pain/poor intake/no urine, and prevention counseling for hydration, constipation, and not delaying voiding. Changes follow-up ownership, antibiotic adjustment, urgent reassessment, recurrence prevention, and handoff quality. Culture-confirmed UTI, resistance, failed outpatient treatment, recurrent UTI, dehydration, or upper-tract progression. UTI management is unsafe without culture review and clear return precautions because resistance, contamination, upper-tract disease, and deterioration can emerge after discharge.",
               "cutoffs": [
-                "48 hours"
+                "24 to 48 hours"
               ],
               "data_needed": [
-                "48 hours"
+                "24 to 48 hours"
               ],
               "source_ids": [
                 "CHQ_PEDS_UTI_2024"
@@ -2979,10 +2979,10 @@
               "label": "Uncomplicated outpatient UTI route",
               "criteria_text": "Uncomplicated outpatient UTI route For relatively well children age 3 months or older who tolerate oral fluids/antibiotics and lack sepsis, upper-tract, complex, atypical, or failed-treatment features, use oral therapy per local guideline with 24- to 48-hour culture review and safety net. Changes from broad admission/testing to oral therapy, GP/clinical follow-up, culture check, recurrence prevention, and return precautions. Uncomplicated lower UTI/cystitis in a stable child. Most uncomplicated pediatric UTIs can be managed without broad labs, IV antibiotics, admission, or routine imaging when follow-up is reliable.",
               "cutoffs": [
-                "3 months"
+                "age 3"
               ],
               "data_needed": [
-                "3 months"
+                "age 3"
               ],
               "source_ids": [
                 "RCH_UTI_CHILD"
@@ -2995,10 +2995,10 @@
               "label": "Culture follow-up, return precautions, and recurrence prevention",
               "criteria_text": "Culture follow-up, return precautions, and recurrence prevention Document culture follow-up within 24 to 48 hours, reassessment if not improving, urgent return for fever/toxic signs/vomiting/flank pain/poor intake/no urine, and prevention counseling for hydration, constipation, and not delaying voiding. Changes follow-up ownership, antibiotic adjustment, urgent reassessment, recurrence prevention, and handoff quality. Culture-confirmed UTI, resistance, failed outpatient treatment, recurrent UTI, dehydration, or upper-tract progression. UTI management is unsafe without culture review and clear return precautions because resistance, contamination, upper-tract disease, and deterioration can emerge after discharge.",
               "cutoffs": [
-                "48 hours"
+                "24 to 48 hours"
               ],
               "data_needed": [
-                "48 hours"
+                "24 to 48 hours"
               ],
               "source_ids": [
                 "CHQ_PEDS_UTI_2024"
@@ -3031,7 +3031,7 @@
         "pediatric_urinary_uti_pyelonephritis_monitoring_bundle": {
           "rule_id": "pediatric_urinary_uti_pyelonephritis_monitoring_criteria",
           "source": "criteria",
-          "description": "Monitor Pediatric urinary symptoms, UTI, or pyelonephritis by trending the same cutoff-bearing findings that selected the branch, plus medication adverse effects and disposition constraints.",
+          "description": "Monitor Pediatric urinary symptoms, UTI, or pyelonephritis by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3183,10 +3183,10 @@
               "label": "Uncomplicated outpatient UTI route",
               "criteria_text": "Uncomplicated outpatient UTI route For relatively well children age 3 months or older who tolerate oral fluids/antibiotics and lack sepsis, upper-tract, complex, atypical, or failed-treatment features, use oral therapy per local guideline with 24- to 48-hour culture review and safety net. Changes from broad admission/testing to oral therapy, GP/clinical follow-up, culture check, recurrence prevention, and return precautions. Uncomplicated lower UTI/cystitis in a stable child. Most uncomplicated pediatric UTIs can be managed without broad labs, IV antibiotics, admission, or routine imaging when follow-up is reliable.",
               "cutoffs": [
-                "3 months"
+                "age 3"
               ],
               "data_needed": [
-                "3 months"
+                "age 3"
               ],
               "source_ids": [
                 "RCH_UTI_CHILD"
@@ -3199,7 +3199,7 @@
         "pediatric_urinary_uti_pyelonephritis_worsening_endpoint": {
           "rule_id": "pediatric_urinary_uti_pyelonephritis_worsening_criteria",
           "source": "criteria",
-          "description": "Escalate Pediatric urinary symptoms, UTI, or pyelonephritis if symptoms, vitals, critical cutoffs, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+          "description": "Escalate Pediatric urinary symptoms, UTI, or pyelonephritis if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3351,10 +3351,10 @@
               "label": "Uncomplicated outpatient UTI route",
               "criteria_text": "Uncomplicated outpatient UTI route For relatively well children age 3 months or older who tolerate oral fluids/antibiotics and lack sepsis, upper-tract, complex, atypical, or failed-treatment features, use oral therapy per local guideline with 24- to 48-hour culture review and safety net. Changes from broad admission/testing to oral therapy, GP/clinical follow-up, culture check, recurrence prevention, and return precautions. Uncomplicated lower UTI/cystitis in a stable child. Most uncomplicated pediatric UTIs can be managed without broad labs, IV antibiotics, admission, or routine imaging when follow-up is reliable.",
               "cutoffs": [
-                "3 months"
+                "age 3"
               ],
               "data_needed": [
-                "3 months"
+                "age 3"
               ],
               "source_ids": [
                 "RCH_UTI_CHILD"
@@ -3519,10 +3519,10 @@
               "label": "Uncomplicated outpatient UTI route",
               "criteria_text": "Uncomplicated outpatient UTI route For relatively well children age 3 months or older who tolerate oral fluids/antibiotics and lack sepsis, upper-tract, complex, atypical, or failed-treatment features, use oral therapy per local guideline with 24- to 48-hour culture review and safety net. Changes from broad admission/testing to oral therapy, GP/clinical follow-up, culture check, recurrence prevention, and return precautions. Uncomplicated lower UTI/cystitis in a stable child. Most uncomplicated pediatric UTIs can be managed without broad labs, IV antibiotics, admission, or routine imaging when follow-up is reliable.",
               "cutoffs": [
-                "3 months"
+                "age 3"
               ],
               "data_needed": [
-                "3 months"
+                "age 3"
               ],
               "source_ids": [
                 "RCH_UTI_CHILD"
@@ -3555,7 +3555,7 @@
         "pediatric_urinary_uti_pyelonephritis_alternate_endpoint": {
           "rule_id": "pediatric_urinary_uti_pyelonephritis_alternate_criteria",
           "source": "criteria",
-          "description": "Use an alternate pathway when Pediatric urinary symptoms, UTI, or pyelonephritis criteria are absent, a cited mimic better explains the presentation, or cutoff data contradict this workup.",
+          "description": "Use an alternate pathway when Pediatric urinary symptoms, UTI, or pyelonephritis criteria are absent, a cited mimic better explains the presentation, or objective result data contradict this workup.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3706,10 +3706,10 @@
               "label": "Uncomplicated outpatient UTI route",
               "criteria_text": "Uncomplicated outpatient UTI route For relatively well children age 3 months or older who tolerate oral fluids/antibiotics and lack sepsis, upper-tract, complex, atypical, or failed-treatment features, use oral therapy per local guideline with 24- to 48-hour culture review and safety net. Changes from broad admission/testing to oral therapy, GP/clinical follow-up, culture check, recurrence prevention, and return precautions. Uncomplicated lower UTI/cystitis in a stable child. Most uncomplicated pediatric UTIs can be managed without broad labs, IV antibiotics, admission, or routine imaging when follow-up is reliable.",
               "cutoffs": [
-                "3 months"
+                "age 3"
               ],
               "data_needed": [
-                "3 months"
+                "age 3"
               ],
               "source_ids": [
                 "RCH_UTI_CHILD"
@@ -3748,7 +3748,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Pediatric urinary symptoms, UTI, or pyelonephritis using cutoff-bearing diagnostic criteria, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+        "action": "Route Pediatric urinary symptoms, UTI, or pyelonephritis using cited diagnostic thresholds/rules, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3790,7 +3790,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Before choosing a non-emergency Pediatric urinary symptoms, UTI, or pyelonephritis branch, document: presenting trigger, onset/trajectory, focused exam, vital signs, cutoff-bearing labs/results, medication/allergy context, comorbidities, demographics, pregnancy/applicability status, and current workup findings.",
+            "action": "Before choosing a non-emergency Pediatric urinary symptoms, UTI, or pyelonephritis branch, document: presenting trigger, onset/trajectory, focused exam, vital signs, threshold labs/results, medication/allergy context, comorbidities, demographics, pregnancy/applicability status, and current workup findings.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "missing_data_needed": [
@@ -3843,7 +3843,7 @@
               {
                 "id": "pediatric_urinary_uti_pyelonephritis_classification_decision",
                 "type": "decision",
-                "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: classify using explicit guideline cutoffs",
+                "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: classify by Atypical/recurrent UTI: failure to respond within 48 hours, non-E. coli, or recurrent pattern of 2 upper UTIs, 1 upper plus lower, or 3 lower UTIs: 48 hours, 2 or more, 1 or more, 3 or more | UTI imaging schedule: <6 months first UTI ultrasound within 6 weeks; atypical UTI ultrasound during acute infection; DMSA 4-6 months when indicated: <6 months, 6 weeks, 4 to 6 months | When MCUG is done, give oral prophylactic antibiotics for 3 days with MCUG on day 2: 3 days, day 2 | Infant UTI, fever without focus, or sepsis-risk urinary source: 3 months | Age-based UTI imaging schedule: 6 weeks, 6 months",
                 "edgeLabel": "Concurrent data bundle obtained",
                 "source_ids": [
                   "NICE_UTI_UNDER16_NG224",
@@ -3854,7 +3854,7 @@
                 "criteria": {
                   "rule_id": "pediatric_urinary_uti_pyelonephritis_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Pediatric urinary symptoms, UTI, or pyelonephritis against explicit cited cutoffs: Atypical/recurrent UTI: failure to respond within 48 hours, non-E. coli, or recurrent pattern of 2 upper UTIs, 1 upper plus lower, or 3 lower UTIs: 48 hours, 2 or more, 1 or more, 3 or more | UTI imaging schedule: <6 months first UTI ultrasound within 6 weeks; atypical UTI ultrasound during acute infection; DMSA 4-6 months when indicated: <6 months, 6 weeks, 4 to 6 months | When MCUG is done, give oral prophylactic antibiotics for 3 days with MCUG on day 2: 3 days, day 2 | Infant UTI, fever without focus, or sepsi...",
+                  "description": "Classify Pediatric urinary symptoms, UTI, or pyelonephritis against cited thresholds and condition-specific rules: Atypical/recurrent UTI: failure to respond within 48 hours, non-E. coli, or recurrent pattern of 2 upper UTIs, 1 upper plus lower, or 3 lower UTIs: 48 hours, 2 or more, 1 or more, 3 or more | UTI imaging schedule: <6 months first UTI ultrasound within 6 weeks; atypical UTI ultrasound during acute infection; DMSA 4-6 months when indicated: <6 months, 6 weeks, 4 to 6 months | When MCUG is done, give oral prophylactic antibiotics for 3 days with MCUG on day 2: 3 days, day 2 | Infant UTI, fever without focus, or sepsis-risk urinary source: 3 months | Age-based UTI imaging schedule: 6 weeks, 6 months",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -4009,10 +4009,10 @@
                       "label": "Uncomplicated outpatient UTI route",
                       "criteria_text": "Uncomplicated outpatient UTI route For relatively well children age 3 months or older who tolerate oral fluids/antibiotics and lack sepsis, upper-tract, complex, atypical, or failed-treatment features, use oral therapy per local guideline with 24- to 48-hour culture review and safety net. Changes from broad admission/testing to oral therapy, GP/clinical follow-up, culture check, recurrence prevention, and return precautions. Uncomplicated lower UTI/cystitis in a stable child. Most uncomplicated pediatric UTIs can be managed without broad labs, IV antibiotics, admission, or routine imaging when follow-up is reliable.",
                       "cutoffs": [
-                        "3 months"
+                        "age 3"
                       ],
                       "data_needed": [
-                        "3 months"
+                        "age 3"
                       ],
                       "source_ids": [
                         "RCH_UTI_CHILD"
@@ -4025,10 +4025,10 @@
                       "label": "Culture follow-up, return precautions, and recurrence prevention",
                       "criteria_text": "Culture follow-up, return precautions, and recurrence prevention Document culture follow-up within 24 to 48 hours, reassessment if not improving, urgent return for fever/toxic signs/vomiting/flank pain/poor intake/no urine, and prevention counseling for hydration, constipation, and not delaying voiding. Changes follow-up ownership, antibiotic adjustment, urgent reassessment, recurrence prevention, and handoff quality. Culture-confirmed UTI, resistance, failed outpatient treatment, recurrent UTI, dehydration, or upper-tract progression. UTI management is unsafe without culture review and clear return precautions because resistance, contamination, upper-tract disease, and deterioration can emerge after discharge.",
                       "cutoffs": [
-                        "48 hours"
+                        "24 to 48 hours"
                       ],
                       "data_needed": [
-                        "48 hours"
+                        "24 to 48 hours"
                       ],
                       "source_ids": [
                         "CHQ_PEDS_UTI_2024"
@@ -4038,13 +4038,13 @@
                     }
                   ]
                 },
-                "action": "Choose the active Pediatric urinary symptoms, UTI, or pyelonephritis branch by matching patient data to the cited cutoffs and condition-specific criteria.",
+                "action": "Choose the active Pediatric urinary symptoms, UTI, or pyelonephritis branch by matching patient data to: Atypical/recurrent UTI: failure to respond within 48 hours, non-E. coli, or recurrent pattern of 2 upper UTIs, 1 upper plus lower, or 3 lower UTIs: 48 hours, 2 or more, 1 or more, 3 or more | UTI imaging schedule: <6 months first UTI ultrasound within 6 weeks; atypical UTI ultrasound during acute infection; DMSA 4-6 months when indicated: <6 months, 6 weeks, 4 to 6 months | When MCUG is done, give oral prophylactic antibiotics for 3 days with MCUG on day 2: 3 days, day 2 | Infant UTI, fever without focus, or sepsis-risk urinary source: 3 months | Age-based UTI imaging schedule: 6 weeks, 6 months.",
                 "children": [
                   {
                     "id": "pediatric_urinary_uti_pyelonephritis_missing_cutoff_data_endpoint",
                     "type": "endpoint",
-                    "label": "Missing data needed: Pediatric urinary symptoms, UTI, or pyelonephritis cutoff-bearing results",
-                    "edgeLabel": "Cutoff data missing",
+                    "label": "Missing data needed: Pediatric urinary symptoms, UTI, or pyelonephritis threshold/results",
+                    "edgeLabel": "Threshold/result data missing",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "NICE_UTI_UNDER16_NG224",
@@ -4054,7 +4054,7 @@
                     "criteria": {
                       "rule_id": "pediatric_urinary_uti_pyelonephritis_missing_cutoff_data_criteria",
                       "source": "criteria",
-                      "description": "Route here when Pediatric urinary symptoms, UTI, or pyelonephritis cannot be classified because exact cutoff-bearing data are missing.",
+                      "description": "Route here when Pediatric urinary symptoms, UTI, or pyelonephritis cannot be classified because exact threshold/result data are missing.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4101,7 +4101,7 @@
                         "3 days"
                       ]
                     },
-                    "action": "Obtain the exact Pediatric urinary symptoms, UTI, or pyelonephritis data needed for cutoff-based routing: organism; time on antibiotic; clinical response; upper/lower UTI history count; age; first/recurrent UTI status; atypical features; response within 48 hours; imaging history; MCUG indication; antibiotic allergies; local prophylaxis choice; Urine sample before antibiotics when feasible; Dipstick microscopy and culture interpretation; Upper-tract labs and renal ultrasound when indicated; Age-based UTI imaging schedule....",
+                    "action": "Obtain the exact Pediatric urinary symptoms, UTI, or pyelonephritis data needed for threshold-based routing: organism; time on antibiotic; clinical response; upper/lower UTI history count; age; first/recurrent UTI status; atypical features; response within 48 hours; imaging history; MCUG indication; antibiotic allergies; local prophylaxis choice; Urine sample before antibiotics when feasible; Dipstick microscopy and culture interpretation; Upper-tract labs and renal ultrasound when indicated; Age-based UTI imaging schedule; Adolescent STI and pregnancy tests when indicated; 48 hours; 2 or more; 1 or more; 3 or more; <6 months; 6 weeks; 4 to 6 months; 3 days.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "missing_data_needed": [
@@ -4135,7 +4135,7 @@
                   {
                     "id": "pediatric_urinary_uti_pyelonephritis_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: emergency escalation or monitored-care disposition when danger cutoffs are met",
+                    "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: emergency escalation or monitored-care disposition when danger thresholds are met",
                     "edgeLabel": "Emergency or high-risk criteria met",
                     "source_ids": [
                       "NICE_UTI_UNDER16_NG224",
@@ -4298,10 +4298,10 @@
                           "label": "Uncomplicated outpatient UTI route",
                           "criteria_text": "Uncomplicated outpatient UTI route For relatively well children age 3 months or older who tolerate oral fluids/antibiotics and lack sepsis, upper-tract, complex, atypical, or failed-treatment features, use oral therapy per local guideline with 24- to 48-hour culture review and safety net. Changes from broad admission/testing to oral therapy, GP/clinical follow-up, culture check, recurrence prevention, and return precautions. Uncomplicated lower UTI/cystitis in a stable child. Most uncomplicated pediatric UTIs can be managed without broad labs, IV antibiotics, admission, or routine imaging when follow-up is reliable.",
                           "cutoffs": [
-                            "3 months"
+                            "age 3"
                           ],
                           "data_needed": [
-                            "3 months"
+                            "age 3"
                           ],
                           "source_ids": [
                             "RCH_UTI_CHILD"
@@ -4314,10 +4314,10 @@
                           "label": "Culture follow-up, return precautions, and recurrence prevention",
                           "criteria_text": "Culture follow-up, return precautions, and recurrence prevention Document culture follow-up within 24 to 48 hours, reassessment if not improving, urgent return for fever/toxic signs/vomiting/flank pain/poor intake/no urine, and prevention counseling for hydration, constipation, and not delaying voiding. Changes follow-up ownership, antibiotic adjustment, urgent reassessment, recurrence prevention, and handoff quality. Culture-confirmed UTI, resistance, failed outpatient treatment, recurrent UTI, dehydration, or upper-tract progression. UTI management is unsafe without culture review and clear return precautions because resistance, contamination, upper-tract disease, and deterioration can emerge after discharge.",
                           "cutoffs": [
-                            "48 hours"
+                            "24 to 48 hours"
                           ],
                           "data_needed": [
-                            "48 hours"
+                            "24 to 48 hours"
                           ],
                           "source_ids": [
                             "CHQ_PEDS_UTI_2024"
@@ -4327,7 +4327,7 @@
                         }
                       ]
                     },
-                    "action": "Suspected UTI in baby under 3 months; Toxic appearance or sepsis physiology; Upper UTI or pyelonephritis features; Atypical or recurrent UTI. Monitor treatment response, complications, and need for reassessment with: Urine sample before antibiotics when feasible.; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route; Infant or sepsis escala...",
+                    "action": "Suspected UTI in baby under 3 months; Toxic appearance or sepsis physiology; Upper UTI or pyelonephritis features; Atypical or recurrent UTI. Monitor treatment response, complications, and need for reassessment with: Urine sample before antibiotics when feasible.; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -4466,10 +4466,10 @@
                         "label": "Uncomplicated outpatient UTI route",
                         "criteria_text": "Uncomplicated outpatient UTI route For relatively well children age 3 months or older who tolerate oral fluids/antibiotics and lack sepsis, upper-tract, complex, atypical, or failed-treatment features, use oral therapy per local guideline with 24- to 48-hour culture review and safety net. Changes from broad admission/testing to oral therapy, GP/clinical follow-up, culture check, recurrence prevention, and return precautions. Uncomplicated lower UTI/cystitis in a stable child. Most uncomplicated pediatric UTIs can be managed without broad labs, IV antibiotics, admission, or routine imaging when follow-up is reliable.",
                         "cutoffs": [
-                          "3 months"
+                          "age 3"
                         ],
                         "data_needed": [
-                          "3 months"
+                          "age 3"
                         ],
                         "source_ids": [
                           "RCH_UTI_CHILD"
@@ -4482,10 +4482,10 @@
                         "label": "Culture follow-up, return precautions, and recurrence prevention",
                         "criteria_text": "Culture follow-up, return precautions, and recurrence prevention Document culture follow-up within 24 to 48 hours, reassessment if not improving, urgent return for fever/toxic signs/vomiting/flank pain/poor intake/no urine, and prevention counseling for hydration, constipation, and not delaying voiding. Changes follow-up ownership, antibiotic adjustment, urgent reassessment, recurrence prevention, and handoff quality. Culture-confirmed UTI, resistance, failed outpatient treatment, recurrent UTI, dehydration, or upper-tract progression. UTI management is unsafe without culture review and clear return precautions because resistance, contamination, upper-tract disease, and deterioration can emerge after discharge.",
                         "cutoffs": [
-                          "48 hours"
+                          "24 to 48 hours"
                         ],
                         "data_needed": [
-                          "48 hours"
+                          "24 to 48 hours"
                         ],
                         "source_ids": [
                           "CHQ_PEDS_UTI_2024"
@@ -4498,8 +4498,8 @@
                   {
                     "id": "pediatric_urinary_uti_pyelonephritis_treatment_bundle",
                     "type": "action",
-                    "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: start the indicated treatment/disposition bundle when cutoff criteria match",
-                    "edgeLabel": "Criteria match Pediatric urinary symptoms, UTI, or pyelonephritis or treatment cannot safely wait",
+                    "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: start treatment/disposition when Atypical/recurrent UTI: failure to respond within 48 hours, non-E. coli, or recurrent pattern of 2 upper UTIs, 1 upper plus lower, or 3 lower UTIs: 48 hours, 2 or more, 1 or more, 3 or more | UTI imaging schedule: <6 months first UTI ultrasound within 6 weeks; atypical UTI ultrasound during acute infection; DMSA 4-6 months when indicated: <6 months, 6 weeks, 4 to 6 months | When MCUG is done, give oral prophylactic antibiotics for 3 days with MCUG on day 2: 3 days, day 2 | Infant UTI, fever without focus, or sepsis-risk urinary source: 3 months | Age-based UTI imaging schedule: 6 weeks, 6 months matches",
+                    "edgeLabel": "Pediatric urinary symptoms, UTI, or pyelonephritis criteria match or treatment cannot safely wait",
                     "source_ids": [
                       "CHQ_PEDS_UTI_2024",
                       "RCH_UTI_CHILD",
@@ -4663,10 +4663,10 @@
                           "label": "Uncomplicated outpatient UTI route",
                           "criteria_text": "Uncomplicated outpatient UTI route For relatively well children age 3 months or older who tolerate oral fluids/antibiotics and lack sepsis, upper-tract, complex, atypical, or failed-treatment features, use oral therapy per local guideline with 24- to 48-hour culture review and safety net. Changes from broad admission/testing to oral therapy, GP/clinical follow-up, culture check, recurrence prevention, and return precautions. Uncomplicated lower UTI/cystitis in a stable child. Most uncomplicated pediatric UTIs can be managed without broad labs, IV antibiotics, admission, or routine imaging when follow-up is reliable.",
                           "cutoffs": [
-                            "3 months"
+                            "age 3"
                           ],
                           "data_needed": [
-                            "3 months"
+                            "age 3"
                           ],
                           "source_ids": [
                             "RCH_UTI_CHILD"
@@ -4679,10 +4679,10 @@
                           "label": "Culture follow-up, return precautions, and recurrence prevention",
                           "criteria_text": "Culture follow-up, return precautions, and recurrence prevention Document culture follow-up within 24 to 48 hours, reassessment if not improving, urgent return for fever/toxic signs/vomiting/flank pain/poor intake/no urine, and prevention counseling for hydration, constipation, and not delaying voiding. Changes follow-up ownership, antibiotic adjustment, urgent reassessment, recurrence prevention, and handoff quality. Culture-confirmed UTI, resistance, failed outpatient treatment, recurrent UTI, dehydration, or upper-tract progression. UTI management is unsafe without culture review and clear return precautions because resistance, contamination, upper-tract disease, and deterioration can emerge after discharge.",
                           "cutoffs": [
-                            "48 hours"
+                            "24 to 48 hours"
                           ],
                           "data_needed": [
-                            "48 hours"
+                            "24 to 48 hours"
                           ],
                           "source_ids": [
                             "CHQ_PEDS_UTI_2024"
@@ -4697,7 +4697,7 @@
                       {
                         "id": "pediatric_urinary_uti_pyelonephritis_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: medication/procedure safety and special-population cutoffs resolved?",
+                        "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: medication/procedure safety and special-population thresholds resolved?",
                         "edgeLabel": "Diagnosis/risk branch selected",
                         "source_ids": [
                           "NICE_UTI_UNDER16_NG224",
@@ -4770,10 +4770,10 @@
                               "label": "Uncomplicated outpatient UTI route",
                               "criteria_text": "Uncomplicated outpatient UTI route For relatively well children age 3 months or older who tolerate oral fluids/antibiotics and lack sepsis, upper-tract, complex, atypical, or failed-treatment features, use oral therapy per local guideline with 24- to 48-hour culture review and safety net. Changes from broad admission/testing to oral therapy, GP/clinical follow-up, culture check, recurrence prevention, and return precautions. Uncomplicated lower UTI/cystitis in a stable child. Most uncomplicated pediatric UTIs can be managed without broad labs, IV antibiotics, admission, or routine imaging when follow-up is reliable.",
                               "cutoffs": [
-                                "3 months"
+                                "age 3"
                               ],
                               "data_needed": [
-                                "3 months"
+                                "age 3"
                               ],
                               "source_ids": [
                                 "RCH_UTI_CHILD"
@@ -4786,10 +4786,10 @@
                               "label": "Culture follow-up, return precautions, and recurrence prevention",
                               "criteria_text": "Culture follow-up, return precautions, and recurrence prevention Document culture follow-up within 24 to 48 hours, reassessment if not improving, urgent return for fever/toxic signs/vomiting/flank pain/poor intake/no urine, and prevention counseling for hydration, constipation, and not delaying voiding. Changes follow-up ownership, antibiotic adjustment, urgent reassessment, recurrence prevention, and handoff quality. Culture-confirmed UTI, resistance, failed outpatient treatment, recurrent UTI, dehydration, or upper-tract progression. UTI management is unsafe without culture review and clear return precautions because resistance, contamination, upper-tract disease, and deterioration can emerge after discharge.",
                               "cutoffs": [
-                                "48 hours"
+                                "24 to 48 hours"
                               ],
                               "data_needed": [
-                                "48 hours"
+                                "24 to 48 hours"
                               ],
                               "source_ids": [
                                 "CHQ_PEDS_UTI_2024"
@@ -4851,7 +4851,7 @@
                             "criteria": {
                               "rule_id": "pediatric_urinary_uti_pyelonephritis_monitoring_criteria",
                               "source": "criteria",
-                              "description": "Monitor Pediatric urinary symptoms, UTI, or pyelonephritis by trending the same cutoff-bearing findings that selected the branch, plus medication adverse effects and disposition constraints.",
+                              "description": "Monitor Pediatric urinary symptoms, UTI, or pyelonephritis by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
                               "evaluable_from": [
                                 "symptoms",
                                 "exam",
@@ -5003,10 +5003,10 @@
                                   "label": "Uncomplicated outpatient UTI route",
                                   "criteria_text": "Uncomplicated outpatient UTI route For relatively well children age 3 months or older who tolerate oral fluids/antibiotics and lack sepsis, upper-tract, complex, atypical, or failed-treatment features, use oral therapy per local guideline with 24- to 48-hour culture review and safety net. Changes from broad admission/testing to oral therapy, GP/clinical follow-up, culture check, recurrence prevention, and return precautions. Uncomplicated lower UTI/cystitis in a stable child. Most uncomplicated pediatric UTIs can be managed without broad labs, IV antibiotics, admission, or routine imaging when follow-up is reliable.",
                                   "cutoffs": [
-                                    "3 months"
+                                    "age 3"
                                   ],
                                   "data_needed": [
-                                    "3 months"
+                                    "age 3"
                                   ],
                                   "source_ids": [
                                     "RCH_UTI_CHILD"
@@ -5016,7 +5016,7 @@
                                 }
                               ]
                             },
-                            "action": "Reassess Pediatric urinary symptoms, UTI, or pyelonephritis using the active cutoffs and clinical course; do not close the pathway until response, adverse effects, pending data, and disposition are owned.",
+                            "action": "Reassess Pediatric urinary symptoms, UTI, or pyelonephritis using the active thresholds and clinical course; do not close the pathway until response, adverse effects, pending data, and disposition are owned.",
                             "children": [
                               {
                                 "id": "pediatric_urinary_uti_pyelonephritis_worsening_endpoint",
@@ -5032,7 +5032,7 @@
                                 "criteria": {
                                   "rule_id": "pediatric_urinary_uti_pyelonephritis_worsening_criteria",
                                   "source": "criteria",
-                                  "description": "Escalate Pediatric urinary symptoms, UTI, or pyelonephritis if symptoms, vitals, critical cutoffs, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+                                  "description": "Escalate Pediatric urinary symptoms, UTI, or pyelonephritis if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
                                   "evaluable_from": [
                                     "symptoms",
                                     "exam",
@@ -5184,10 +5184,10 @@
                                       "label": "Uncomplicated outpatient UTI route",
                                       "criteria_text": "Uncomplicated outpatient UTI route For relatively well children age 3 months or older who tolerate oral fluids/antibiotics and lack sepsis, upper-tract, complex, atypical, or failed-treatment features, use oral therapy per local guideline with 24- to 48-hour culture review and safety net. Changes from broad admission/testing to oral therapy, GP/clinical follow-up, culture check, recurrence prevention, and return precautions. Uncomplicated lower UTI/cystitis in a stable child. Most uncomplicated pediatric UTIs can be managed without broad labs, IV antibiotics, admission, or routine imaging when follow-up is reliable.",
                                       "cutoffs": [
-                                        "3 months"
+                                        "age 3"
                                       ],
                                       "data_needed": [
-                                        "3 months"
+                                        "age 3"
                                       ],
                                       "source_ids": [
                                         "RCH_UTI_CHILD"
@@ -5336,10 +5336,10 @@
                                     "label": "Uncomplicated outpatient UTI route",
                                     "criteria_text": "Uncomplicated outpatient UTI route For relatively well children age 3 months or older who tolerate oral fluids/antibiotics and lack sepsis, upper-tract, complex, atypical, or failed-treatment features, use oral therapy per local guideline with 24- to 48-hour culture review and safety net. Changes from broad admission/testing to oral therapy, GP/clinical follow-up, culture check, recurrence prevention, and return precautions. Uncomplicated lower UTI/cystitis in a stable child. Most uncomplicated pediatric UTIs can be managed without broad labs, IV antibiotics, admission, or routine imaging when follow-up is reliable.",
                                     "cutoffs": [
-                                      "3 months"
+                                      "age 3"
                                     ],
                                     "data_needed": [
-                                      "3 months"
+                                      "age 3"
                                     ],
                                     "source_ids": [
                                       "RCH_UTI_CHILD"
@@ -5352,10 +5352,10 @@
                                     "label": "Culture follow-up, return precautions, and recurrence prevention",
                                     "criteria_text": "Culture follow-up, return precautions, and recurrence prevention Document culture follow-up within 24 to 48 hours, reassessment if not improving, urgent return for fever/toxic signs/vomiting/flank pain/poor intake/no urine, and prevention counseling for hydration, constipation, and not delaying voiding. Changes follow-up ownership, antibiotic adjustment, urgent reassessment, recurrence prevention, and handoff quality. Culture-confirmed UTI, resistance, failed outpatient treatment, recurrent UTI, dehydration, or upper-tract progression. UTI management is unsafe without culture review and clear return precautions because resistance, contamination, upper-tract disease, and deterioration can emerge after discharge.",
                                     "cutoffs": [
-                                      "48 hours"
+                                      "24 to 48 hours"
                                     ],
                                     "data_needed": [
-                                      "48 hours"
+                                      "24 to 48 hours"
                                     ],
                                     "source_ids": [
                                       "CHQ_PEDS_UTI_2024"
@@ -5531,10 +5531,10 @@
                                       "label": "Uncomplicated outpatient UTI route",
                                       "criteria_text": "Uncomplicated outpatient UTI route For relatively well children age 3 months or older who tolerate oral fluids/antibiotics and lack sepsis, upper-tract, complex, atypical, or failed-treatment features, use oral therapy per local guideline with 24- to 48-hour culture review and safety net. Changes from broad admission/testing to oral therapy, GP/clinical follow-up, culture check, recurrence prevention, and return precautions. Uncomplicated lower UTI/cystitis in a stable child. Most uncomplicated pediatric UTIs can be managed without broad labs, IV antibiotics, admission, or routine imaging when follow-up is reliable.",
                                       "cutoffs": [
-                                        "3 months"
+                                        "age 3"
                                       ],
                                       "data_needed": [
-                                        "3 months"
+                                        "age 3"
                                       ],
                                       "source_ids": [
                                         "RCH_UTI_CHILD"
@@ -5544,7 +5544,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Use the active Pediatric urinary symptoms, UTI, or pyelonephritis cutoff criteria and response trend to stop, narrow, taper, or continue treatment; document what cutoff or finding changed.",
+                                "action": "Use the active Pediatric urinary symptoms, UTI, or pyelonephritis objective criteria and response trend (48 hours; 2 or more; 1 or more; 3 or more; <6 months; 6 weeks; 4 to 6 months; 3 days; day 2; 3 months) to stop, narrow, taper, or continue treatment; document what threshold or finding changed.",
                                 "children": [],
                                 "endpoint_type": "deescalation_stopping",
                                 "guideline_cutoffs": [
@@ -5683,10 +5683,10 @@
                                     "label": "Uncomplicated outpatient UTI route",
                                     "criteria_text": "Uncomplicated outpatient UTI route For relatively well children age 3 months or older who tolerate oral fluids/antibiotics and lack sepsis, upper-tract, complex, atypical, or failed-treatment features, use oral therapy per local guideline with 24- to 48-hour culture review and safety net. Changes from broad admission/testing to oral therapy, GP/clinical follow-up, culture check, recurrence prevention, and return precautions. Uncomplicated lower UTI/cystitis in a stable child. Most uncomplicated pediatric UTIs can be managed without broad labs, IV antibiotics, admission, or routine imaging when follow-up is reliable.",
                                     "cutoffs": [
-                                      "3 months"
+                                      "age 3"
                                     ],
                                     "data_needed": [
-                                      "3 months"
+                                      "age 3"
                                     ],
                                     "source_ids": [
                                       "RCH_UTI_CHILD"
@@ -5699,10 +5699,10 @@
                                     "label": "Culture follow-up, return precautions, and recurrence prevention",
                                     "criteria_text": "Culture follow-up, return precautions, and recurrence prevention Document culture follow-up within 24 to 48 hours, reassessment if not improving, urgent return for fever/toxic signs/vomiting/flank pain/poor intake/no urine, and prevention counseling for hydration, constipation, and not delaying voiding. Changes follow-up ownership, antibiotic adjustment, urgent reassessment, recurrence prevention, and handoff quality. Culture-confirmed UTI, resistance, failed outpatient treatment, recurrent UTI, dehydration, or upper-tract progression. UTI management is unsafe without culture review and clear return precautions because resistance, contamination, upper-tract disease, and deterioration can emerge after discharge.",
                                     "cutoffs": [
-                                      "48 hours"
+                                      "24 to 48 hours"
                                     ],
                                     "data_needed": [
-                                      "48 hours"
+                                      "24 to 48 hours"
                                     ],
                                     "source_ids": [
                                       "CHQ_PEDS_UTI_2024"
@@ -5756,7 +5756,7 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend cutoff-bearing labs/results",
+                              "trend objective labs/results",
                               "review treatment response/adverse effects",
                               "confirm disposition and follow-up owner",
                               "Measure temperature",
@@ -5901,10 +5901,10 @@
                                 "label": "Uncomplicated outpatient UTI route",
                                 "criteria_text": "Uncomplicated outpatient UTI route For relatively well children age 3 months or older who tolerate oral fluids/antibiotics and lack sepsis, upper-tract, complex, atypical, or failed-treatment features, use oral therapy per local guideline with 24- to 48-hour culture review and safety net. Changes from broad admission/testing to oral therapy, GP/clinical follow-up, culture check, recurrence prevention, and return precautions. Uncomplicated lower UTI/cystitis in a stable child. Most uncomplicated pediatric UTIs can be managed without broad labs, IV antibiotics, admission, or routine imaging when follow-up is reliable.",
                                 "cutoffs": [
-                                  "3 months"
+                                  "age 3"
                                 ],
                                 "data_needed": [
-                                  "3 months"
+                                  "age 3"
                                 ],
                                 "source_ids": [
                                   "RCH_UTI_CHILD"
@@ -5917,10 +5917,10 @@
                                 "label": "Culture follow-up, return precautions, and recurrence prevention",
                                 "criteria_text": "Culture follow-up, return precautions, and recurrence prevention Document culture follow-up within 24 to 48 hours, reassessment if not improving, urgent return for fever/toxic signs/vomiting/flank pain/poor intake/no urine, and prevention counseling for hydration, constipation, and not delaying voiding. Changes follow-up ownership, antibiotic adjustment, urgent reassessment, recurrence prevention, and handoff quality. Culture-confirmed UTI, resistance, failed outpatient treatment, recurrent UTI, dehydration, or upper-tract progression. UTI management is unsafe without culture review and clear return precautions because resistance, contamination, upper-tract disease, and deterioration can emerge after discharge.",
                                 "cutoffs": [
-                                  "48 hours"
+                                  "24 to 48 hours"
                                 ],
                                 "data_needed": [
-                                  "48 hours"
+                                  "24 to 48 hours"
                                 ],
                                 "source_ids": [
                                   "CHQ_PEDS_UTI_2024"
@@ -6076,10 +6076,10 @@
                         "label": "Uncomplicated outpatient UTI route",
                         "criteria_text": "Uncomplicated outpatient UTI route For relatively well children age 3 months or older who tolerate oral fluids/antibiotics and lack sepsis, upper-tract, complex, atypical, or failed-treatment features, use oral therapy per local guideline with 24- to 48-hour culture review and safety net. Changes from broad admission/testing to oral therapy, GP/clinical follow-up, culture check, recurrence prevention, and return precautions. Uncomplicated lower UTI/cystitis in a stable child. Most uncomplicated pediatric UTIs can be managed without broad labs, IV antibiotics, admission, or routine imaging when follow-up is reliable.",
                         "cutoffs": [
-                          "3 months"
+                          "age 3"
                         ],
                         "data_needed": [
-                          "3 months"
+                          "age 3"
                         ],
                         "source_ids": [
                           "RCH_UTI_CHILD"
@@ -6092,10 +6092,10 @@
                         "label": "Culture follow-up, return precautions, and recurrence prevention",
                         "criteria_text": "Culture follow-up, return precautions, and recurrence prevention Document culture follow-up within 24 to 48 hours, reassessment if not improving, urgent return for fever/toxic signs/vomiting/flank pain/poor intake/no urine, and prevention counseling for hydration, constipation, and not delaying voiding. Changes follow-up ownership, antibiotic adjustment, urgent reassessment, recurrence prevention, and handoff quality. Culture-confirmed UTI, resistance, failed outpatient treatment, recurrent UTI, dehydration, or upper-tract progression. UTI management is unsafe without culture review and clear return precautions because resistance, contamination, upper-tract disease, and deterioration can emerge after discharge.",
                         "cutoffs": [
-                          "48 hours"
+                          "24 to 48 hours"
                         ],
                         "data_needed": [
-                          "48 hours"
+                          "24 to 48 hours"
                         ],
                         "source_ids": [
                           "CHQ_PEDS_UTI_2024"
@@ -6108,7 +6108,7 @@
                   {
                     "id": "pediatric_urinary_uti_pyelonephritis_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: switch to mimic/alternate pathway when cutoff criteria do not fit",
+                    "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: switch to mimic/alternate pathway when threshold/result criteria do not fit",
                     "edgeLabel": "Criteria favor mimic or alternate pathway",
                     "source_ids": [
                       "NICE_UTI_UNDER16_NG224",
@@ -6119,7 +6119,7 @@
                     "criteria": {
                       "rule_id": "pediatric_urinary_uti_pyelonephritis_alternate_criteria",
                       "source": "criteria",
-                      "description": "Use an alternate pathway when Pediatric urinary symptoms, UTI, or pyelonephritis criteria are absent, a cited mimic better explains the presentation, or cutoff data contradict this workup.",
+                      "description": "Use an alternate pathway when Pediatric urinary symptoms, UTI, or pyelonephritis criteria are absent, a cited mimic better explains the presentation, or objective result data contradict this workup.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -6270,10 +6270,10 @@
                           "label": "Uncomplicated outpatient UTI route",
                           "criteria_text": "Uncomplicated outpatient UTI route For relatively well children age 3 months or older who tolerate oral fluids/antibiotics and lack sepsis, upper-tract, complex, atypical, or failed-treatment features, use oral therapy per local guideline with 24- to 48-hour culture review and safety net. Changes from broad admission/testing to oral therapy, GP/clinical follow-up, culture check, recurrence prevention, and return precautions. Uncomplicated lower UTI/cystitis in a stable child. Most uncomplicated pediatric UTIs can be managed without broad labs, IV antibiotics, admission, or routine imaging when follow-up is reliable.",
                           "cutoffs": [
-                            "3 months"
+                            "age 3"
                           ],
                           "data_needed": [
-                            "3 months"
+                            "age 3"
                           ],
                           "source_ids": [
                             "RCH_UTI_CHILD"
@@ -6283,7 +6283,7 @@
                         }
                       ]
                     },
-                    "action": "Document why Pediatric urinary symptoms, UTI, or pyelonephritis is not the active pathway and route to the competing diagnosis: Lower UTI or cystitis pattern with dysuria, urinary frequency, urgency, new wetting, suprapubic discomfort, malodorous/cloudy urine, or hematuria; Upper UTI, pyelonephritis, or perinephric abscess pattern with fever, rigors, vomiting, malaise, loin/flank pain, renal-angle tenderness, or systemic illness; Infant UTI, f....",
+                    "action": "Document why Pediatric urinary symptoms, UTI, or pyelonephritis is not the active pathway and route to the competing diagnosis: Lower UTI or cystitis pattern with dysuria, urinary frequency, urgency, new wetting, suprapubic discomfort, malodorous/cloudy urine, or hematuria; Upper UTI, pyelonephritis, or perinephric abscess pattern with fever, rigors, vomiting, malaise, loin/flank pain, renal-angle tenderness, or systemic illness; Infant UTI, fever without focus, or sepsis-risk urinary source; Complex urinary tract, recurrent UTI, catheter/anomaly, STI, pregnancy, renal stone, vulvovaginitis/urethritis, appendicitis, or contamination mimic.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
                     "review_needed_reason": "Competing diagnosis or exclusion changes the active pathway."
@@ -6425,10 +6425,10 @@
                     "label": "Uncomplicated outpatient UTI route",
                     "criteria_text": "Uncomplicated outpatient UTI route For relatively well children age 3 months or older who tolerate oral fluids/antibiotics and lack sepsis, upper-tract, complex, atypical, or failed-treatment features, use oral therapy per local guideline with 24- to 48-hour culture review and safety net. Changes from broad admission/testing to oral therapy, GP/clinical follow-up, culture check, recurrence prevention, and return precautions. Uncomplicated lower UTI/cystitis in a stable child. Most uncomplicated pediatric UTIs can be managed without broad labs, IV antibiotics, admission, or routine imaging when follow-up is reliable.",
                     "cutoffs": [
-                      "3 months"
+                      "age 3"
                     ],
                     "data_needed": [
-                      "3 months"
+                      "age 3"
                     ],
                     "source_ids": [
                       "RCH_UTI_CHILD"
@@ -6441,10 +6441,10 @@
                     "label": "Culture follow-up, return precautions, and recurrence prevention",
                     "criteria_text": "Culture follow-up, return precautions, and recurrence prevention Document culture follow-up within 24 to 48 hours, reassessment if not improving, urgent return for fever/toxic signs/vomiting/flank pain/poor intake/no urine, and prevention counseling for hydration, constipation, and not delaying voiding. Changes follow-up ownership, antibiotic adjustment, urgent reassessment, recurrence prevention, and handoff quality. Culture-confirmed UTI, resistance, failed outpatient treatment, recurrent UTI, dehydration, or upper-tract progression. UTI management is unsafe without culture review and clear return precautions because resistance, contamination, upper-tract disease, and deterioration can emerge after discharge.",
                     "cutoffs": [
-                      "48 hours"
+                      "24 to 48 hours"
                     ],
                     "data_needed": [
-                      "48 hours"
+                      "24 to 48 hours"
                     ],
                     "source_ids": [
                       "CHQ_PEDS_UTI_2024"
@@ -6589,10 +6589,10 @@
                     "label": "Uncomplicated outpatient UTI route",
                     "criteria_text": "Uncomplicated outpatient UTI route For relatively well children age 3 months or older who tolerate oral fluids/antibiotics and lack sepsis, upper-tract, complex, atypical, or failed-treatment features, use oral therapy per local guideline with 24- to 48-hour culture review and safety net. Changes from broad admission/testing to oral therapy, GP/clinical follow-up, culture check, recurrence prevention, and return precautions. Uncomplicated lower UTI/cystitis in a stable child. Most uncomplicated pediatric UTIs can be managed without broad labs, IV antibiotics, admission, or routine imaging when follow-up is reliable.",
                     "cutoffs": [
-                      "3 months"
+                      "age 3"
                     ],
                     "data_needed": [
-                      "3 months"
+                      "age 3"
                     ],
                     "source_ids": [
                       "RCH_UTI_CHILD"
@@ -6605,10 +6605,10 @@
                     "label": "Culture follow-up, return precautions, and recurrence prevention",
                     "criteria_text": "Culture follow-up, return precautions, and recurrence prevention Document culture follow-up within 24 to 48 hours, reassessment if not improving, urgent return for fever/toxic signs/vomiting/flank pain/poor intake/no urine, and prevention counseling for hydration, constipation, and not delaying voiding. Changes follow-up ownership, antibiotic adjustment, urgent reassessment, recurrence prevention, and handoff quality. Culture-confirmed UTI, resistance, failed outpatient treatment, recurrent UTI, dehydration, or upper-tract progression. UTI management is unsafe without culture review and clear return precautions because resistance, contamination, upper-tract disease, and deterioration can emerge after discharge.",
                     "cutoffs": [
-                      "48 hours"
+                      "24 to 48 hours"
                     ],
                     "data_needed": [
-                      "48 hours"
+                      "24 to 48 hours"
                     ],
                     "source_ids": [
                       "CHQ_PEDS_UTI_2024"
@@ -6802,10 +6802,10 @@
                 "label": "Uncomplicated outpatient UTI route",
                 "criteria_text": "Uncomplicated outpatient UTI route For relatively well children age 3 months or older who tolerate oral fluids/antibiotics and lack sepsis, upper-tract, complex, atypical, or failed-treatment features, use oral therapy per local guideline with 24- to 48-hour culture review and safety net. Changes from broad admission/testing to oral therapy, GP/clinical follow-up, culture check, recurrence prevention, and return precautions. Uncomplicated lower UTI/cystitis in a stable child. Most uncomplicated pediatric UTIs can be managed without broad labs, IV antibiotics, admission, or routine imaging when follow-up is reliable.",
                 "cutoffs": [
-                  "3 months"
+                  "age 3"
                 ],
                 "data_needed": [
-                  "3 months"
+                  "age 3"
                 ],
                 "source_ids": [
                   "RCH_UTI_CHILD"
@@ -6818,10 +6818,10 @@
                 "label": "Culture follow-up, return precautions, and recurrence prevention",
                 "criteria_text": "Culture follow-up, return precautions, and recurrence prevention Document culture follow-up within 24 to 48 hours, reassessment if not improving, urgent return for fever/toxic signs/vomiting/flank pain/poor intake/no urine, and prevention counseling for hydration, constipation, and not delaying voiding. Changes follow-up ownership, antibiotic adjustment, urgent reassessment, recurrence prevention, and handoff quality. Culture-confirmed UTI, resistance, failed outpatient treatment, recurrent UTI, dehydration, or upper-tract progression. UTI management is unsafe without culture review and clear return precautions because resistance, contamination, upper-tract disease, and deterioration can emerge after discharge.",
                 "cutoffs": [
-                  "48 hours"
+                  "24 to 48 hours"
                 ],
                 "data_needed": [
-                  "48 hours"
+                  "24 to 48 hours"
                 ],
                 "source_ids": [
                   "CHQ_PEDS_UTI_2024"
@@ -6844,7 +6844,7 @@
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "pediatric_urinary_uti_pyelonephritis_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Cutoff data missing"
+          "expected_active_branch": "Threshold/result data missing"
         },
         {
           "scenario_id": "urgent_or_high_risk",
@@ -6902,7 +6902,7 @@
         "compact_tree_requirements": [
           "no prohibited generic node labels",
           "concurrent diagnostic/treatment bundles instead of long one-step chains",
-          "cutoff-bearing criteria visible in classification and endpoint nodes",
+          "cited thresholds/rules visible in classification and endpoint nodes",
           "all endpoints cite evidence or state needs_clinical_review",
           "missing-data endpoints name exact data needed"
         ]

@@ -2117,15 +2117,6 @@
           "review_status": "source_backed"
         },
         {
-          "threshold": "2 to 2.5",
-          "evidence_item_id": "peds_kawasaki_echo_risk_cutoffs",
-          "label": "Kawasaki echo/high-risk cutoffs: coronary aneurysm Z-score >=2.5; EF <55%; fractional shortening <28%; coronary dilation Z-score 2 to 2.5",
-          "source_ids": [
-            "RCH_KAWASAKI_DISEASE"
-          ],
-          "review_status": "source_backed"
-        },
-        {
           "threshold": "<=6 months",
           "evidence_item_id": "peds_kawasaki_echo_risk_cutoffs",
           "label": "Kawasaki echo/high-risk cutoffs: coronary aneurysm Z-score >=2.5; EF <55%; fractional shortening <28%; coronary dilation Z-score 2 to 2.5",
@@ -2225,16 +2216,7 @@
           "review_status": "source_backed"
         },
         {
-          "threshold": "lactate",
-          "evidence_item_id": "initialTests_peds_rash_petechiae_sepsis_tests",
-          "label": "Non-blanching rash senior-review tests",
-          "source_ids": [
-            "RCH_PETECHIAE_PURPURA_CHILD"
-          ],
-          "review_status": "source_backed"
-        },
-        {
-          "threshold": "5 days",
+          "threshold": "4 to 5 days",
           "evidence_item_id": "redFlags_peds_rash_redflag_kawasaki",
           "label": "Prolonged fever with Kawasaki features",
           "source_ids": [
@@ -2536,7 +2518,7 @@
         "pediatric_rash_skin_classification_decision": {
           "rule_id": "pediatric_rash_skin_classification_criteria",
           "source": "criteria",
-          "description": "Classify Pediatric rash, urticaria, petechiae, or skin infection against explicit cited cutoffs: Kawasaki disease: fever >=4 days plus at least 4 principal clinical features; cervical node criterion >=1.5 cm: >=4 days, 4 principal clinical features, >=1.5 cm | Kawasaki echo/high-risk cutoffs: coronary aneurysm Z-score >=2.5; EF <55%; fractional shortening <28%; coronary dilation Z-score 2 to 2.5: >=2.5, <55%, <28%, 2 to 2.5, <=6 months, >=2 | Kawasaki treatment: IVIG 2 g/kg over 8-12 hours plus aspirin 5 mg/kg daily until cardiology review around 6 weeks: 2 g/kg, 8-12 hours, 5 mg/kg, 6 weeks | Non-blanching r...",
+          "description": "Classify Pediatric rash, urticaria, petechiae, or skin infection against cited thresholds and condition-specific rules: Kawasaki disease: fever >=4 days plus at least 4 principal clinical features; cervical node criterion >=1.5 cm: >=4 days, 4 principal clinical features, >=1.5 cm | Kawasaki echo/high-risk cutoffs: coronary aneurysm Z-score >=2.5; EF <55%; fractional shortening <28%; coronary dilation Z-score 2 to 2.5: >=2.5, <55%, <28%, <=6 months, >=2, >=10 days | Kawasaki treatment: IVIG 2 g/kg over 8-12 hours plus aspirin 5 mg/kg daily until cardiology review around 6 weeks: 2 g/kg, 8-12 hours, 5 mg/kg, 6 weeks | Prolonged fever with Kawasaki features: 4 to 5 days",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2590,7 +2572,6 @@
                 ">=2.5",
                 "<55%",
                 "<28%",
-                "2 to 2.5",
                 "<=6 months",
                 ">=2",
                 ">=10 days",
@@ -2637,30 +2618,14 @@
               "review_status": "source_backed"
             },
             {
-              "id": "initialTests_peds_rash_petechiae_sepsis_tests",
-              "label": "Non-blanching rash senior-review tests",
-              "criteria_text": "Non-blanching rash senior-review tests For fever or unwell child with petechiae/purpura, use senior pediatric review to decide CBC with film, blood culture, inflammatory markers, coagulation studies, glucose/lactate or sepsis labs, and empiric antibiotics without delaying urgent treatment. Results and clinical status change antibiotics, admission/transfer, observation duration, hematology review, and discharge safety. Serious bacterial infection, meningococcal disease, DIC, hematologic disease, or low-risk non-blanching rash after assessment. Non-blanching rash with fever or unwell appearance can signal serious bacterial infection; testing and antibiotics depend on clinical risk and local pathway.",
-              "cutoffs": [
-                "lactate"
-              ],
-              "data_needed": [
-                "lactate"
-              ],
-              "source_ids": [
-                "RCH_PETECHIAE_PURPURA_CHILD"
-              ],
-              "source_section": "management and flowchart principles for petechiae/purpura",
-              "review_status": "source_backed"
-            },
-            {
               "id": "redFlags_peds_rash_redflag_kawasaki",
               "label": "Prolonged fever with Kawasaki features",
               "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
               "cutoffs": [
-                "5 days"
+                "4 to 5 days"
               ],
               "data_needed": [
-                "5 days"
+                "4 to 5 days"
               ],
               "source_ids": [
                 "RCH_KAWASAKI_DISEASE"
@@ -2673,7 +2638,7 @@
         "pediatric_rash_skin_missing_cutoff_data_endpoint": {
           "rule_id": "pediatric_rash_skin_missing_cutoff_data_criteria",
           "source": "criteria",
-          "description": "Route here when Pediatric rash, urticaria, petechiae, or skin infection cannot be classified because exact cutoff-bearing data are missing.",
+          "description": "Route here when Pediatric rash, urticaria, petechiae, or skin infection cannot be classified because exact threshold/result data are missing.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2718,8 +2683,8 @@
             ">=2.5",
             "<55%",
             "<28%",
-            "2 to 2.5",
-            "<=6 months"
+            "<=6 months",
+            ">=2"
           ]
         },
         "pediatric_rash_skin_urgent_endpoint": {
@@ -2776,7 +2741,6 @@
                 ">=2.5",
                 "<55%",
                 "<28%",
-                "2 to 2.5",
                 "<=6 months",
                 ">=2",
                 ">=10 days",
@@ -2823,30 +2787,14 @@
               "review_status": "source_backed"
             },
             {
-              "id": "initialTests_peds_rash_petechiae_sepsis_tests",
-              "label": "Non-blanching rash senior-review tests",
-              "criteria_text": "Non-blanching rash senior-review tests For fever or unwell child with petechiae/purpura, use senior pediatric review to decide CBC with film, blood culture, inflammatory markers, coagulation studies, glucose/lactate or sepsis labs, and empiric antibiotics without delaying urgent treatment. Results and clinical status change antibiotics, admission/transfer, observation duration, hematology review, and discharge safety. Serious bacterial infection, meningococcal disease, DIC, hematologic disease, or low-risk non-blanching rash after assessment. Non-blanching rash with fever or unwell appearance can signal serious bacterial infection; testing and antibiotics depend on clinical risk and local pathway.",
-              "cutoffs": [
-                "lactate"
-              ],
-              "data_needed": [
-                "lactate"
-              ],
-              "source_ids": [
-                "RCH_PETECHIAE_PURPURA_CHILD"
-              ],
-              "source_section": "management and flowchart principles for petechiae/purpura",
-              "review_status": "source_backed"
-            },
-            {
               "id": "redFlags_peds_rash_redflag_kawasaki",
               "label": "Prolonged fever with Kawasaki features",
               "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
               "cutoffs": [
-                "5 days"
+                "4 to 5 days"
               ],
               "data_needed": [
-                "5 days"
+                "4 to 5 days"
               ],
               "source_ids": [
                 "RCH_KAWASAKI_DISEASE"
@@ -2912,7 +2860,6 @@
                 ">=2.5",
                 "<55%",
                 "<28%",
-                "2 to 2.5",
                 "<=6 months",
                 ">=2",
                 ">=10 days",
@@ -2959,30 +2906,14 @@
               "review_status": "source_backed"
             },
             {
-              "id": "initialTests_peds_rash_petechiae_sepsis_tests",
-              "label": "Non-blanching rash senior-review tests",
-              "criteria_text": "Non-blanching rash senior-review tests For fever or unwell child with petechiae/purpura, use senior pediatric review to decide CBC with film, blood culture, inflammatory markers, coagulation studies, glucose/lactate or sepsis labs, and empiric antibiotics without delaying urgent treatment. Results and clinical status change antibiotics, admission/transfer, observation duration, hematology review, and discharge safety. Serious bacterial infection, meningococcal disease, DIC, hematologic disease, or low-risk non-blanching rash after assessment. Non-blanching rash with fever or unwell appearance can signal serious bacterial infection; testing and antibiotics depend on clinical risk and local pathway.",
-              "cutoffs": [
-                "lactate"
-              ],
-              "data_needed": [
-                "lactate"
-              ],
-              "source_ids": [
-                "RCH_PETECHIAE_PURPURA_CHILD"
-              ],
-              "source_section": "management and flowchart principles for petechiae/purpura",
-              "review_status": "source_backed"
-            },
-            {
               "id": "redFlags_peds_rash_redflag_kawasaki",
               "label": "Prolonged fever with Kawasaki features",
               "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
               "cutoffs": [
-                "5 days"
+                "4 to 5 days"
               ],
               "data_needed": [
-                "5 days"
+                "4 to 5 days"
               ],
               "source_ids": [
                 "RCH_KAWASAKI_DISEASE"
@@ -3022,7 +2953,6 @@
                 ">=2.5",
                 "<55%",
                 "<28%",
-                "2 to 2.5",
                 "<=6 months",
                 ">=2",
                 ">=10 days",
@@ -3066,22 +2996,6 @@
                 "RCH_KAWASAKI_DISEASE"
               ],
               "source_section": "Treatment",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "initialTests_peds_rash_petechiae_sepsis_tests",
-              "label": "Non-blanching rash senior-review tests",
-              "criteria_text": "Non-blanching rash senior-review tests For fever or unwell child with petechiae/purpura, use senior pediatric review to decide CBC with film, blood culture, inflammatory markers, coagulation studies, glucose/lactate or sepsis labs, and empiric antibiotics without delaying urgent treatment. Results and clinical status change antibiotics, admission/transfer, observation duration, hematology review, and discharge safety. Serious bacterial infection, meningococcal disease, DIC, hematologic disease, or low-risk non-blanching rash after assessment. Non-blanching rash with fever or unwell appearance can signal serious bacterial infection; testing and antibiotics depend on clinical risk and local pathway.",
-              "cutoffs": [
-                "lactate"
-              ],
-              "data_needed": [
-                "lactate"
-              ],
-              "source_ids": [
-                "RCH_PETECHIAE_PURPURA_CHILD"
-              ],
-              "source_section": "management and flowchart principles for petechiae/purpura",
               "review_status": "source_backed"
             }
           ]
@@ -3111,7 +3025,7 @@
         "pediatric_rash_skin_monitoring_bundle": {
           "rule_id": "pediatric_rash_skin_monitoring_criteria",
           "source": "criteria",
-          "description": "Monitor Pediatric rash, urticaria, petechiae, or skin infection by trending the same cutoff-bearing findings that selected the branch, plus medication adverse effects and disposition constraints.",
+          "description": "Monitor Pediatric rash, urticaria, petechiae, or skin infection by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3162,7 +3076,6 @@
                 ">=2.5",
                 "<55%",
                 "<28%",
-                "2 to 2.5",
                 "<=6 months",
                 ">=2",
                 ">=10 days",
@@ -3209,30 +3122,14 @@
               "review_status": "source_backed"
             },
             {
-              "id": "initialTests_peds_rash_petechiae_sepsis_tests",
-              "label": "Non-blanching rash senior-review tests",
-              "criteria_text": "Non-blanching rash senior-review tests For fever or unwell child with petechiae/purpura, use senior pediatric review to decide CBC with film, blood culture, inflammatory markers, coagulation studies, glucose/lactate or sepsis labs, and empiric antibiotics without delaying urgent treatment. Results and clinical status change antibiotics, admission/transfer, observation duration, hematology review, and discharge safety. Serious bacterial infection, meningococcal disease, DIC, hematologic disease, or low-risk non-blanching rash after assessment. Non-blanching rash with fever or unwell appearance can signal serious bacterial infection; testing and antibiotics depend on clinical risk and local pathway.",
-              "cutoffs": [
-                "lactate"
-              ],
-              "data_needed": [
-                "lactate"
-              ],
-              "source_ids": [
-                "RCH_PETECHIAE_PURPURA_CHILD"
-              ],
-              "source_section": "management and flowchart principles for petechiae/purpura",
-              "review_status": "source_backed"
-            },
-            {
               "id": "redFlags_peds_rash_redflag_kawasaki",
               "label": "Prolonged fever with Kawasaki features",
               "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
               "cutoffs": [
-                "5 days"
+                "4 to 5 days"
               ],
               "data_needed": [
-                "5 days"
+                "4 to 5 days"
               ],
               "source_ids": [
                 "RCH_KAWASAKI_DISEASE"
@@ -3245,7 +3142,7 @@
         "pediatric_rash_skin_worsening_endpoint": {
           "rule_id": "pediatric_rash_skin_worsening_criteria",
           "source": "criteria",
-          "description": "Escalate Pediatric rash, urticaria, petechiae, or skin infection if symptoms, vitals, critical cutoffs, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+          "description": "Escalate Pediatric rash, urticaria, petechiae, or skin infection if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3296,7 +3193,6 @@
                 ">=2.5",
                 "<55%",
                 "<28%",
-                "2 to 2.5",
                 "<=6 months",
                 ">=2",
                 ">=10 days",
@@ -3343,30 +3239,14 @@
               "review_status": "source_backed"
             },
             {
-              "id": "initialTests_peds_rash_petechiae_sepsis_tests",
-              "label": "Non-blanching rash senior-review tests",
-              "criteria_text": "Non-blanching rash senior-review tests For fever or unwell child with petechiae/purpura, use senior pediatric review to decide CBC with film, blood culture, inflammatory markers, coagulation studies, glucose/lactate or sepsis labs, and empiric antibiotics without delaying urgent treatment. Results and clinical status change antibiotics, admission/transfer, observation duration, hematology review, and discharge safety. Serious bacterial infection, meningococcal disease, DIC, hematologic disease, or low-risk non-blanching rash after assessment. Non-blanching rash with fever or unwell appearance can signal serious bacterial infection; testing and antibiotics depend on clinical risk and local pathway.",
-              "cutoffs": [
-                "lactate"
-              ],
-              "data_needed": [
-                "lactate"
-              ],
-              "source_ids": [
-                "RCH_PETECHIAE_PURPURA_CHILD"
-              ],
-              "source_section": "management and flowchart principles for petechiae/purpura",
-              "review_status": "source_backed"
-            },
-            {
               "id": "redFlags_peds_rash_redflag_kawasaki",
               "label": "Prolonged fever with Kawasaki features",
               "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
               "cutoffs": [
-                "5 days"
+                "4 to 5 days"
               ],
               "data_needed": [
-                "5 days"
+                "4 to 5 days"
               ],
               "source_ids": [
                 "RCH_KAWASAKI_DISEASE"
@@ -3430,7 +3310,6 @@
                 ">=2.5",
                 "<55%",
                 "<28%",
-                "2 to 2.5",
                 "<=6 months",
                 ">=2",
                 ">=10 days",
@@ -3477,30 +3356,14 @@
               "review_status": "source_backed"
             },
             {
-              "id": "initialTests_peds_rash_petechiae_sepsis_tests",
-              "label": "Non-blanching rash senior-review tests",
-              "criteria_text": "Non-blanching rash senior-review tests For fever or unwell child with petechiae/purpura, use senior pediatric review to decide CBC with film, blood culture, inflammatory markers, coagulation studies, glucose/lactate or sepsis labs, and empiric antibiotics without delaying urgent treatment. Results and clinical status change antibiotics, admission/transfer, observation duration, hematology review, and discharge safety. Serious bacterial infection, meningococcal disease, DIC, hematologic disease, or low-risk non-blanching rash after assessment. Non-blanching rash with fever or unwell appearance can signal serious bacterial infection; testing and antibiotics depend on clinical risk and local pathway.",
-              "cutoffs": [
-                "lactate"
-              ],
-              "data_needed": [
-                "lactate"
-              ],
-              "source_ids": [
-                "RCH_PETECHIAE_PURPURA_CHILD"
-              ],
-              "source_section": "management and flowchart principles for petechiae/purpura",
-              "review_status": "source_backed"
-            },
-            {
               "id": "redFlags_peds_rash_redflag_kawasaki",
               "label": "Prolonged fever with Kawasaki features",
               "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
               "cutoffs": [
-                "5 days"
+                "4 to 5 days"
               ],
               "data_needed": [
-                "5 days"
+                "4 to 5 days"
               ],
               "source_ids": [
                 "RCH_KAWASAKI_DISEASE"
@@ -3535,7 +3398,7 @@
         "pediatric_rash_skin_alternate_endpoint": {
           "rule_id": "pediatric_rash_skin_alternate_criteria",
           "source": "criteria",
-          "description": "Use an alternate pathway when Pediatric rash, urticaria, petechiae, or skin infection criteria are absent, a cited mimic better explains the presentation, or cutoff data contradict this workup.",
+          "description": "Use an alternate pathway when Pediatric rash, urticaria, petechiae, or skin infection criteria are absent, a cited mimic better explains the presentation, or objective result data contradict this workup.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3585,7 +3448,6 @@
                 ">=2.5",
                 "<55%",
                 "<28%",
-                "2 to 2.5",
                 "<=6 months",
                 ">=2",
                 ">=10 days",
@@ -3632,30 +3494,14 @@
               "review_status": "source_backed"
             },
             {
-              "id": "initialTests_peds_rash_petechiae_sepsis_tests",
-              "label": "Non-blanching rash senior-review tests",
-              "criteria_text": "Non-blanching rash senior-review tests For fever or unwell child with petechiae/purpura, use senior pediatric review to decide CBC with film, blood culture, inflammatory markers, coagulation studies, glucose/lactate or sepsis labs, and empiric antibiotics without delaying urgent treatment. Results and clinical status change antibiotics, admission/transfer, observation duration, hematology review, and discharge safety. Serious bacterial infection, meningococcal disease, DIC, hematologic disease, or low-risk non-blanching rash after assessment. Non-blanching rash with fever or unwell appearance can signal serious bacterial infection; testing and antibiotics depend on clinical risk and local pathway.",
-              "cutoffs": [
-                "lactate"
-              ],
-              "data_needed": [
-                "lactate"
-              ],
-              "source_ids": [
-                "RCH_PETECHIAE_PURPURA_CHILD"
-              ],
-              "source_section": "management and flowchart principles for petechiae/purpura",
-              "review_status": "source_backed"
-            },
-            {
               "id": "redFlags_peds_rash_redflag_kawasaki",
               "label": "Prolonged fever with Kawasaki features",
               "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
               "cutoffs": [
-                "5 days"
+                "4 to 5 days"
               ],
               "data_needed": [
-                "5 days"
+                "4 to 5 days"
               ],
               "source_ids": [
                 "RCH_KAWASAKI_DISEASE"
@@ -3698,7 +3544,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Pediatric rash, urticaria, petechiae, or skin infection using cutoff-bearing diagnostic criteria, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+        "action": "Route Pediatric rash, urticaria, petechiae, or skin infection using cited diagnostic thresholds/rules, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3740,7 +3586,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Before choosing a non-emergency Pediatric rash, urticaria, petechiae, or skin infection branch, document: presenting trigger, onset/trajectory, focused exam, vital signs, cutoff-bearing labs/results, medication/allergy context, comorbidities, demographics, pregnancy/applicability status, and current workup findings.",
+            "action": "Before choosing a non-emergency Pediatric rash, urticaria, petechiae, or skin infection branch, document: presenting trigger, onset/trajectory, focused exam, vital signs, threshold labs/results, medication/allergy context, comorbidities, demographics, pregnancy/applicability status, and current workup findings.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "missing_data_needed": [
@@ -3797,7 +3643,7 @@
               {
                 "id": "pediatric_rash_skin_classification_decision",
                 "type": "decision",
-                "label": "Pediatric rash, urticaria, petechiae, or skin infection: classify using explicit guideline cutoffs",
+                "label": "Pediatric rash, urticaria, petechiae, or skin infection: classify by Kawasaki disease: fever >=4 days plus at least 4 principal clinical features; cervical node criterion >=1.5 cm: >=4 days, 4 principal clinical features, >=1.5 cm | Kawasaki echo/high-risk cutoffs: coronary aneurysm Z-score >=2.5; EF <55%; fractional shortening <28%; coronary dilation Z-score 2 to 2.5: >=2.5, <55%, <28%, <=6 months, >=2, >=10 days | Kawasaki treatment: IVIG 2 g/kg over 8-12 hours plus aspirin 5 mg/kg daily until cardiology review around 6 weeks: 2 g/kg, 8-12 hours, 5 mg/kg, 6 weeks | Prolonged fever with Kawasaki features: 4 to 5 days",
                 "edgeLabel": "Concurrent data bundle obtained",
                 "source_ids": [
                   "RCH_KAWASAKI_DISEASE",
@@ -3810,7 +3656,7 @@
                 "criteria": {
                   "rule_id": "pediatric_rash_skin_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Pediatric rash, urticaria, petechiae, or skin infection against explicit cited cutoffs: Kawasaki disease: fever >=4 days plus at least 4 principal clinical features; cervical node criterion >=1.5 cm: >=4 days, 4 principal clinical features, >=1.5 cm | Kawasaki echo/high-risk cutoffs: coronary aneurysm Z-score >=2.5; EF <55%; fractional shortening <28%; coronary dilation Z-score 2 to 2.5: >=2.5, <55%, <28%, 2 to 2.5, <=6 months, >=2 | Kawasaki treatment: IVIG 2 g/kg over 8-12 hours plus aspirin 5 mg/kg daily until cardiology review around 6 weeks: 2 g/kg, 8-12 hours, 5 mg/kg, 6 weeks | Non-blanching r...",
+                  "description": "Classify Pediatric rash, urticaria, petechiae, or skin infection against cited thresholds and condition-specific rules: Kawasaki disease: fever >=4 days plus at least 4 principal clinical features; cervical node criterion >=1.5 cm: >=4 days, 4 principal clinical features, >=1.5 cm | Kawasaki echo/high-risk cutoffs: coronary aneurysm Z-score >=2.5; EF <55%; fractional shortening <28%; coronary dilation Z-score 2 to 2.5: >=2.5, <55%, <28%, <=6 months, >=2, >=10 days | Kawasaki treatment: IVIG 2 g/kg over 8-12 hours plus aspirin 5 mg/kg daily until cardiology review around 6 weeks: 2 g/kg, 8-12 hours, 5 mg/kg, 6 weeks | Prolonged fever with Kawasaki features: 4 to 5 days",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -3864,7 +3710,6 @@
                         ">=2.5",
                         "<55%",
                         "<28%",
-                        "2 to 2.5",
                         "<=6 months",
                         ">=2",
                         ">=10 days",
@@ -3911,30 +3756,14 @@
                       "review_status": "source_backed"
                     },
                     {
-                      "id": "initialTests_peds_rash_petechiae_sepsis_tests",
-                      "label": "Non-blanching rash senior-review tests",
-                      "criteria_text": "Non-blanching rash senior-review tests For fever or unwell child with petechiae/purpura, use senior pediatric review to decide CBC with film, blood culture, inflammatory markers, coagulation studies, glucose/lactate or sepsis labs, and empiric antibiotics without delaying urgent treatment. Results and clinical status change antibiotics, admission/transfer, observation duration, hematology review, and discharge safety. Serious bacterial infection, meningococcal disease, DIC, hematologic disease, or low-risk non-blanching rash after assessment. Non-blanching rash with fever or unwell appearance can signal serious bacterial infection; testing and antibiotics depend on clinical risk and local pathway.",
-                      "cutoffs": [
-                        "lactate"
-                      ],
-                      "data_needed": [
-                        "lactate"
-                      ],
-                      "source_ids": [
-                        "RCH_PETECHIAE_PURPURA_CHILD"
-                      ],
-                      "source_section": "management and flowchart principles for petechiae/purpura",
-                      "review_status": "source_backed"
-                    },
-                    {
                       "id": "redFlags_peds_rash_redflag_kawasaki",
                       "label": "Prolonged fever with Kawasaki features",
                       "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
                       "cutoffs": [
-                        "5 days"
+                        "4 to 5 days"
                       ],
                       "data_needed": [
-                        "5 days"
+                        "4 to 5 days"
                       ],
                       "source_ids": [
                         "RCH_KAWASAKI_DISEASE"
@@ -3944,13 +3773,13 @@
                     }
                   ]
                 },
-                "action": "Choose the active Pediatric rash, urticaria, petechiae, or skin infection branch by matching patient data to the cited cutoffs and condition-specific criteria.",
+                "action": "Choose the active Pediatric rash, urticaria, petechiae, or skin infection branch by matching patient data to: Kawasaki disease: fever >=4 days plus at least 4 principal clinical features; cervical node criterion >=1.5 cm: >=4 days, 4 principal clinical features, >=1.5 cm | Kawasaki echo/high-risk cutoffs: coronary aneurysm Z-score >=2.5; EF <55%; fractional shortening <28%; coronary dilation Z-score 2 to 2.5: >=2.5, <55%, <28%, <=6 months, >=2, >=10 days | Kawasaki treatment: IVIG 2 g/kg over 8-12 hours plus aspirin 5 mg/kg daily until cardiology review around 6 weeks: 2 g/kg, 8-12 hours, 5 mg/kg, 6 weeks | Prolonged fever with Kawasaki features: 4 to 5 days.",
                 "children": [
                   {
                     "id": "pediatric_rash_skin_missing_cutoff_data_endpoint",
                     "type": "endpoint",
-                    "label": "Missing data needed: Pediatric rash, urticaria, petechiae, or skin infection cutoff-bearing results",
-                    "edgeLabel": "Cutoff data missing",
+                    "label": "Missing data needed: Pediatric rash, urticaria, petechiae, or skin infection threshold/results",
+                    "edgeLabel": "Threshold/result data missing",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "RCH_KAWASAKI_DISEASE",
@@ -3962,7 +3791,7 @@
                     "criteria": {
                       "rule_id": "pediatric_rash_skin_missing_cutoff_data_criteria",
                       "source": "criteria",
-                      "description": "Route here when Pediatric rash, urticaria, petechiae, or skin infection cannot be classified because exact cutoff-bearing data are missing.",
+                      "description": "Route here when Pediatric rash, urticaria, petechiae, or skin infection cannot be classified because exact threshold/result data are missing.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4007,11 +3836,11 @@
                         ">=2.5",
                         "<55%",
                         "<28%",
-                        "2 to 2.5",
-                        "<=6 months"
+                        "<=6 months",
+                        ">=2"
                       ]
                     },
-                    "action": "Obtain the exact Pediatric rash, urticaria, petechiae, or skin infection data needed for cutoff-based routing: fever day count; conjunctivitis; rash; extremity changes; cervical node size; mucosal changes; alternative diagnosis review; echocardiogram Z-scores; age; fever onset date; temperature after IVIG; platelets; Non-blanching rash senior-review tests; Kawasaki labs ECG and echocardiography route; SSTI culture imaging and source control route; Anaphylaxis immediate treatment route; Bleeding vasculitis and hematology scre....",
+                    "action": "Obtain the exact Pediatric rash, urticaria, petechiae, or skin infection data needed for threshold-based routing: fever day count; conjunctivitis; rash; extremity changes; cervical node size; mucosal changes; alternative diagnosis review; echocardiogram Z-scores; age; fever onset date; temperature after IVIG; platelets; Non-blanching rash senior-review tests; Kawasaki labs ECG and echocardiography route; SSTI culture imaging and source control route; Anaphylaxis immediate treatment route; Bleeding vasculitis and hematology screen; >=4 days; 4 principal clinical features; >=1.5 cm; >=2.5; <55%; <28%; <=6 months; >=2.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "missing_data_needed": [
@@ -4038,14 +3867,14 @@
                       ">=2.5",
                       "<55%",
                       "<28%",
-                      "2 to 2.5",
-                      "<=6 months"
+                      "<=6 months",
+                      ">=2"
                     ]
                   },
                   {
                     "id": "pediatric_rash_skin_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric rash, urticaria, petechiae, or skin infection: emergency escalation or monitored-care disposition when danger cutoffs are met",
+                    "label": "Pediatric rash, urticaria, petechiae, or skin infection: emergency escalation or monitored-care disposition when danger thresholds are met",
                     "edgeLabel": "Emergency or high-risk criteria met",
                     "source_ids": [
                       "RCH_PETECHIAE_PURPURA_CHILD",
@@ -4109,7 +3938,6 @@
                             ">=2.5",
                             "<55%",
                             "<28%",
-                            "2 to 2.5",
                             "<=6 months",
                             ">=2",
                             ">=10 days",
@@ -4156,30 +3984,14 @@
                           "review_status": "source_backed"
                         },
                         {
-                          "id": "initialTests_peds_rash_petechiae_sepsis_tests",
-                          "label": "Non-blanching rash senior-review tests",
-                          "criteria_text": "Non-blanching rash senior-review tests For fever or unwell child with petechiae/purpura, use senior pediatric review to decide CBC with film, blood culture, inflammatory markers, coagulation studies, glucose/lactate or sepsis labs, and empiric antibiotics without delaying urgent treatment. Results and clinical status change antibiotics, admission/transfer, observation duration, hematology review, and discharge safety. Serious bacterial infection, meningococcal disease, DIC, hematologic disease, or low-risk non-blanching rash after assessment. Non-blanching rash with fever or unwell appearance can signal serious bacterial infection; testing and antibiotics depend on clinical risk and local pathway.",
-                          "cutoffs": [
-                            "lactate"
-                          ],
-                          "data_needed": [
-                            "lactate"
-                          ],
-                          "source_ids": [
-                            "RCH_PETECHIAE_PURPURA_CHILD"
-                          ],
-                          "source_section": "management and flowchart principles for petechiae/purpura",
-                          "review_status": "source_backed"
-                        },
-                        {
                           "id": "redFlags_peds_rash_redflag_kawasaki",
                           "label": "Prolonged fever with Kawasaki features",
                           "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
                           "cutoffs": [
-                            "5 days"
+                            "4 to 5 days"
                           ],
                           "data_needed": [
-                            "5 days"
+                            "4 to 5 days"
                           ],
                           "source_ids": [
                             "RCH_KAWASAKI_DISEASE"
@@ -4189,7 +4001,7 @@
                         }
                       ]
                     },
-                    "action": "Non-blanching rash with fever or unwell child; Urticaria with airway breathing circulation or GI symptoms; Prolonged fever with Kawasaki features; Severe skin infection or necrotizing features. Monitor treatment response, complications, and need for reassessment with: Non-blanching rash senior-review tests.; Immediate sepsis or meningococcal route; Anaphylaxis observation and discharge route; Kawasaki senior review and cardiac ro...",
+                    "action": "Non-blanching rash with fever or unwell child; Urticaria with airway breathing circulation or GI symptoms; Prolonged fever with Kawasaki features; Severe skin infection or necrotizing features. Monitor treatment response, complications, and need for reassessment with: Non-blanching rash senior-review tests.; Immediate sepsis or meningococcal route; Anaphylaxis observation and discharge route; Kawasaki senior review and cardiac route; Immediate sepsis or meningococcal route; Anaphylaxis observation and discharge route; Kawasaki senior review and cardiac route",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -4225,7 +4037,6 @@
                           ">=2.5",
                           "<55%",
                           "<28%",
-                          "2 to 2.5",
                           "<=6 months",
                           ">=2",
                           ">=10 days",
@@ -4272,30 +4083,14 @@
                         "review_status": "source_backed"
                       },
                       {
-                        "id": "initialTests_peds_rash_petechiae_sepsis_tests",
-                        "label": "Non-blanching rash senior-review tests",
-                        "criteria_text": "Non-blanching rash senior-review tests For fever or unwell child with petechiae/purpura, use senior pediatric review to decide CBC with film, blood culture, inflammatory markers, coagulation studies, glucose/lactate or sepsis labs, and empiric antibiotics without delaying urgent treatment. Results and clinical status change antibiotics, admission/transfer, observation duration, hematology review, and discharge safety. Serious bacterial infection, meningococcal disease, DIC, hematologic disease, or low-risk non-blanching rash after assessment. Non-blanching rash with fever or unwell appearance can signal serious bacterial infection; testing and antibiotics depend on clinical risk and local pathway.",
-                        "cutoffs": [
-                          "lactate"
-                        ],
-                        "data_needed": [
-                          "lactate"
-                        ],
-                        "source_ids": [
-                          "RCH_PETECHIAE_PURPURA_CHILD"
-                        ],
-                        "source_section": "management and flowchart principles for petechiae/purpura",
-                        "review_status": "source_backed"
-                      },
-                      {
                         "id": "redFlags_peds_rash_redflag_kawasaki",
                         "label": "Prolonged fever with Kawasaki features",
                         "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
                         "cutoffs": [
-                          "5 days"
+                          "4 to 5 days"
                         ],
                         "data_needed": [
-                          "5 days"
+                          "4 to 5 days"
                         ],
                         "source_ids": [
                           "RCH_KAWASAKI_DISEASE"
@@ -4308,8 +4103,8 @@
                   {
                     "id": "pediatric_rash_skin_treatment_bundle",
                     "type": "action",
-                    "label": "Pediatric rash, urticaria, petechiae, or skin infection: start the indicated treatment/disposition bundle when cutoff criteria match",
-                    "edgeLabel": "Criteria match Pediatric rash, urticaria, petechiae, or skin infection or treatment cannot safely wait",
+                    "label": "Pediatric rash, urticaria, petechiae, or skin infection: start treatment/disposition when Kawasaki disease: fever >=4 days plus at least 4 principal clinical features; cervical node criterion >=1.5 cm: >=4 days, 4 principal clinical features, >=1.5 cm | Kawasaki echo/high-risk cutoffs: coronary aneurysm Z-score >=2.5; EF <55%; fractional shortening <28%; coronary dilation Z-score 2 to 2.5: >=2.5, <55%, <28%, <=6 months, >=2, >=10 days | Kawasaki treatment: IVIG 2 g/kg over 8-12 hours plus aspirin 5 mg/kg daily until cardiology review around 6 weeks: 2 g/kg, 8-12 hours, 5 mg/kg, 6 weeks | Prolonged fever with Kawasaki features: 4 to 5 days matches",
+                    "edgeLabel": "Pediatric rash, urticaria, petechiae, or skin infection criteria match or treatment cannot safely wait",
                     "source_ids": [
                       "RCH_PETECHIAE_PURPURA_CHILD",
                       "RCH_URTICARIA_CHILD",
@@ -4374,7 +4169,6 @@
                             ">=2.5",
                             "<55%",
                             "<28%",
-                            "2 to 2.5",
                             "<=6 months",
                             ">=2",
                             ">=10 days",
@@ -4421,30 +4215,14 @@
                           "review_status": "source_backed"
                         },
                         {
-                          "id": "initialTests_peds_rash_petechiae_sepsis_tests",
-                          "label": "Non-blanching rash senior-review tests",
-                          "criteria_text": "Non-blanching rash senior-review tests For fever or unwell child with petechiae/purpura, use senior pediatric review to decide CBC with film, blood culture, inflammatory markers, coagulation studies, glucose/lactate or sepsis labs, and empiric antibiotics without delaying urgent treatment. Results and clinical status change antibiotics, admission/transfer, observation duration, hematology review, and discharge safety. Serious bacterial infection, meningococcal disease, DIC, hematologic disease, or low-risk non-blanching rash after assessment. Non-blanching rash with fever or unwell appearance can signal serious bacterial infection; testing and antibiotics depend on clinical risk and local pathway.",
-                          "cutoffs": [
-                            "lactate"
-                          ],
-                          "data_needed": [
-                            "lactate"
-                          ],
-                          "source_ids": [
-                            "RCH_PETECHIAE_PURPURA_CHILD"
-                          ],
-                          "source_section": "management and flowchart principles for petechiae/purpura",
-                          "review_status": "source_backed"
-                        },
-                        {
                           "id": "redFlags_peds_rash_redflag_kawasaki",
                           "label": "Prolonged fever with Kawasaki features",
                           "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
                           "cutoffs": [
-                            "5 days"
+                            "4 to 5 days"
                           ],
                           "data_needed": [
-                            "5 days"
+                            "4 to 5 days"
                           ],
                           "source_ids": [
                             "RCH_KAWASAKI_DISEASE"
@@ -4459,7 +4237,7 @@
                       {
                         "id": "pediatric_rash_skin_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Pediatric rash, urticaria, petechiae, or skin infection: medication/procedure safety and special-population cutoffs resolved?",
+                        "label": "Pediatric rash, urticaria, petechiae, or skin infection: medication/procedure safety and special-population thresholds resolved?",
                         "edgeLabel": "Diagnosis/risk branch selected",
                         "source_ids": [
                           "RCH_KAWASAKI_DISEASE",
@@ -4499,7 +4277,6 @@
                                 ">=2.5",
                                 "<55%",
                                 "<28%",
-                                "2 to 2.5",
                                 "<=6 months",
                                 ">=2",
                                 ">=10 days",
@@ -4543,22 +4320,6 @@
                                 "RCH_KAWASAKI_DISEASE"
                               ],
                               "source_section": "Treatment",
-                              "review_status": "source_backed"
-                            },
-                            {
-                              "id": "initialTests_peds_rash_petechiae_sepsis_tests",
-                              "label": "Non-blanching rash senior-review tests",
-                              "criteria_text": "Non-blanching rash senior-review tests For fever or unwell child with petechiae/purpura, use senior pediatric review to decide CBC with film, blood culture, inflammatory markers, coagulation studies, glucose/lactate or sepsis labs, and empiric antibiotics without delaying urgent treatment. Results and clinical status change antibiotics, admission/transfer, observation duration, hematology review, and discharge safety. Serious bacterial infection, meningococcal disease, DIC, hematologic disease, or low-risk non-blanching rash after assessment. Non-blanching rash with fever or unwell appearance can signal serious bacterial infection; testing and antibiotics depend on clinical risk and local pathway.",
-                              "cutoffs": [
-                                "lactate"
-                              ],
-                              "data_needed": [
-                                "lactate"
-                              ],
-                              "source_ids": [
-                                "RCH_PETECHIAE_PURPURA_CHILD"
-                              ],
-                              "source_section": "management and flowchart principles for petechiae/purpura",
                               "review_status": "source_backed"
                             }
                           ]
@@ -4621,7 +4382,7 @@
                             "criteria": {
                               "rule_id": "pediatric_rash_skin_monitoring_criteria",
                               "source": "criteria",
-                              "description": "Monitor Pediatric rash, urticaria, petechiae, or skin infection by trending the same cutoff-bearing findings that selected the branch, plus medication adverse effects and disposition constraints.",
+                              "description": "Monitor Pediatric rash, urticaria, petechiae, or skin infection by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
                               "evaluable_from": [
                                 "symptoms",
                                 "exam",
@@ -4672,7 +4433,6 @@
                                     ">=2.5",
                                     "<55%",
                                     "<28%",
-                                    "2 to 2.5",
                                     "<=6 months",
                                     ">=2",
                                     ">=10 days",
@@ -4719,30 +4479,14 @@
                                   "review_status": "source_backed"
                                 },
                                 {
-                                  "id": "initialTests_peds_rash_petechiae_sepsis_tests",
-                                  "label": "Non-blanching rash senior-review tests",
-                                  "criteria_text": "Non-blanching rash senior-review tests For fever or unwell child with petechiae/purpura, use senior pediatric review to decide CBC with film, blood culture, inflammatory markers, coagulation studies, glucose/lactate or sepsis labs, and empiric antibiotics without delaying urgent treatment. Results and clinical status change antibiotics, admission/transfer, observation duration, hematology review, and discharge safety. Serious bacterial infection, meningococcal disease, DIC, hematologic disease, or low-risk non-blanching rash after assessment. Non-blanching rash with fever or unwell appearance can signal serious bacterial infection; testing and antibiotics depend on clinical risk and local pathway.",
-                                  "cutoffs": [
-                                    "lactate"
-                                  ],
-                                  "data_needed": [
-                                    "lactate"
-                                  ],
-                                  "source_ids": [
-                                    "RCH_PETECHIAE_PURPURA_CHILD"
-                                  ],
-                                  "source_section": "management and flowchart principles for petechiae/purpura",
-                                  "review_status": "source_backed"
-                                },
-                                {
                                   "id": "redFlags_peds_rash_redflag_kawasaki",
                                   "label": "Prolonged fever with Kawasaki features",
                                   "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
                                   "cutoffs": [
-                                    "5 days"
+                                    "4 to 5 days"
                                   ],
                                   "data_needed": [
-                                    "5 days"
+                                    "4 to 5 days"
                                   ],
                                   "source_ids": [
                                     "RCH_KAWASAKI_DISEASE"
@@ -4752,7 +4496,7 @@
                                 }
                               ]
                             },
-                            "action": "Reassess Pediatric rash, urticaria, petechiae, or skin infection using the active cutoffs and clinical course; do not close the pathway until response, adverse effects, pending data, and disposition are owned.",
+                            "action": "Reassess Pediatric rash, urticaria, petechiae, or skin infection using the active thresholds and clinical course; do not close the pathway until response, adverse effects, pending data, and disposition are owned.",
                             "children": [
                               {
                                 "id": "pediatric_rash_skin_worsening_endpoint",
@@ -4770,7 +4514,7 @@
                                 "criteria": {
                                   "rule_id": "pediatric_rash_skin_worsening_criteria",
                                   "source": "criteria",
-                                  "description": "Escalate Pediatric rash, urticaria, petechiae, or skin infection if symptoms, vitals, critical cutoffs, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+                                  "description": "Escalate Pediatric rash, urticaria, petechiae, or skin infection if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
                                   "evaluable_from": [
                                     "symptoms",
                                     "exam",
@@ -4821,7 +4565,6 @@
                                         ">=2.5",
                                         "<55%",
                                         "<28%",
-                                        "2 to 2.5",
                                         "<=6 months",
                                         ">=2",
                                         ">=10 days",
@@ -4868,30 +4611,14 @@
                                       "review_status": "source_backed"
                                     },
                                     {
-                                      "id": "initialTests_peds_rash_petechiae_sepsis_tests",
-                                      "label": "Non-blanching rash senior-review tests",
-                                      "criteria_text": "Non-blanching rash senior-review tests For fever or unwell child with petechiae/purpura, use senior pediatric review to decide CBC with film, blood culture, inflammatory markers, coagulation studies, glucose/lactate or sepsis labs, and empiric antibiotics without delaying urgent treatment. Results and clinical status change antibiotics, admission/transfer, observation duration, hematology review, and discharge safety. Serious bacterial infection, meningococcal disease, DIC, hematologic disease, or low-risk non-blanching rash after assessment. Non-blanching rash with fever or unwell appearance can signal serious bacterial infection; testing and antibiotics depend on clinical risk and local pathway.",
-                                      "cutoffs": [
-                                        "lactate"
-                                      ],
-                                      "data_needed": [
-                                        "lactate"
-                                      ],
-                                      "source_ids": [
-                                        "RCH_PETECHIAE_PURPURA_CHILD"
-                                      ],
-                                      "source_section": "management and flowchart principles for petechiae/purpura",
-                                      "review_status": "source_backed"
-                                    },
-                                    {
                                       "id": "redFlags_peds_rash_redflag_kawasaki",
                                       "label": "Prolonged fever with Kawasaki features",
                                       "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
                                       "cutoffs": [
-                                        "5 days"
+                                        "4 to 5 days"
                                       ],
                                       "data_needed": [
-                                        "5 days"
+                                        "4 to 5 days"
                                       ],
                                       "source_ids": [
                                         "RCH_KAWASAKI_DISEASE"
@@ -4937,7 +4664,6 @@
                                       ">=2.5",
                                       "<55%",
                                       "<28%",
-                                      "2 to 2.5",
                                       "<=6 months",
                                       ">=2",
                                       ">=10 days",
@@ -4984,30 +4710,14 @@
                                     "review_status": "source_backed"
                                   },
                                   {
-                                    "id": "initialTests_peds_rash_petechiae_sepsis_tests",
-                                    "label": "Non-blanching rash senior-review tests",
-                                    "criteria_text": "Non-blanching rash senior-review tests For fever or unwell child with petechiae/purpura, use senior pediatric review to decide CBC with film, blood culture, inflammatory markers, coagulation studies, glucose/lactate or sepsis labs, and empiric antibiotics without delaying urgent treatment. Results and clinical status change antibiotics, admission/transfer, observation duration, hematology review, and discharge safety. Serious bacterial infection, meningococcal disease, DIC, hematologic disease, or low-risk non-blanching rash after assessment. Non-blanching rash with fever or unwell appearance can signal serious bacterial infection; testing and antibiotics depend on clinical risk and local pathway.",
-                                    "cutoffs": [
-                                      "lactate"
-                                    ],
-                                    "data_needed": [
-                                      "lactate"
-                                    ],
-                                    "source_ids": [
-                                      "RCH_PETECHIAE_PURPURA_CHILD"
-                                    ],
-                                    "source_section": "management and flowchart principles for petechiae/purpura",
-                                    "review_status": "source_backed"
-                                  },
-                                  {
                                     "id": "redFlags_peds_rash_redflag_kawasaki",
                                     "label": "Prolonged fever with Kawasaki features",
                                     "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
                                     "cutoffs": [
-                                      "5 days"
+                                      "4 to 5 days"
                                     ],
                                     "data_needed": [
-                                      "5 days"
+                                      "4 to 5 days"
                                     ],
                                     "source_ids": [
                                       "RCH_KAWASAKI_DISEASE"
@@ -5084,7 +4794,6 @@
                                         ">=2.5",
                                         "<55%",
                                         "<28%",
-                                        "2 to 2.5",
                                         "<=6 months",
                                         ">=2",
                                         ">=10 days",
@@ -5131,30 +4840,14 @@
                                       "review_status": "source_backed"
                                     },
                                     {
-                                      "id": "initialTests_peds_rash_petechiae_sepsis_tests",
-                                      "label": "Non-blanching rash senior-review tests",
-                                      "criteria_text": "Non-blanching rash senior-review tests For fever or unwell child with petechiae/purpura, use senior pediatric review to decide CBC with film, blood culture, inflammatory markers, coagulation studies, glucose/lactate or sepsis labs, and empiric antibiotics without delaying urgent treatment. Results and clinical status change antibiotics, admission/transfer, observation duration, hematology review, and discharge safety. Serious bacterial infection, meningococcal disease, DIC, hematologic disease, or low-risk non-blanching rash after assessment. Non-blanching rash with fever or unwell appearance can signal serious bacterial infection; testing and antibiotics depend on clinical risk and local pathway.",
-                                      "cutoffs": [
-                                        "lactate"
-                                      ],
-                                      "data_needed": [
-                                        "lactate"
-                                      ],
-                                      "source_ids": [
-                                        "RCH_PETECHIAE_PURPURA_CHILD"
-                                      ],
-                                      "source_section": "management and flowchart principles for petechiae/purpura",
-                                      "review_status": "source_backed"
-                                    },
-                                    {
                                       "id": "redFlags_peds_rash_redflag_kawasaki",
                                       "label": "Prolonged fever with Kawasaki features",
                                       "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
                                       "cutoffs": [
-                                        "5 days"
+                                        "4 to 5 days"
                                       ],
                                       "data_needed": [
-                                        "5 days"
+                                        "4 to 5 days"
                                       ],
                                       "source_ids": [
                                         "RCH_KAWASAKI_DISEASE"
@@ -5164,7 +4857,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Use the active Pediatric rash, urticaria, petechiae, or skin infection cutoff criteria and response trend to stop, narrow, taper, or continue treatment; document what cutoff or finding changed.",
+                                "action": "Use the active Pediatric rash, urticaria, petechiae, or skin infection objective criteria and response trend (>=4 days; 4 principal clinical features; >=1.5 cm; >=2.5; <55%; <28%; <=6 months; >=2; >=10 days; >=38 C) to stop, narrow, taper, or continue treatment; document what threshold or finding changed.",
                                 "children": [],
                                 "endpoint_type": "deescalation_stopping",
                                 "guideline_cutoffs": [
@@ -5200,7 +4893,6 @@
                                       ">=2.5",
                                       "<55%",
                                       "<28%",
-                                      "2 to 2.5",
                                       "<=6 months",
                                       ">=2",
                                       ">=10 days",
@@ -5247,30 +4939,14 @@
                                     "review_status": "source_backed"
                                   },
                                   {
-                                    "id": "initialTests_peds_rash_petechiae_sepsis_tests",
-                                    "label": "Non-blanching rash senior-review tests",
-                                    "criteria_text": "Non-blanching rash senior-review tests For fever or unwell child with petechiae/purpura, use senior pediatric review to decide CBC with film, blood culture, inflammatory markers, coagulation studies, glucose/lactate or sepsis labs, and empiric antibiotics without delaying urgent treatment. Results and clinical status change antibiotics, admission/transfer, observation duration, hematology review, and discharge safety. Serious bacterial infection, meningococcal disease, DIC, hematologic disease, or low-risk non-blanching rash after assessment. Non-blanching rash with fever or unwell appearance can signal serious bacterial infection; testing and antibiotics depend on clinical risk and local pathway.",
-                                    "cutoffs": [
-                                      "lactate"
-                                    ],
-                                    "data_needed": [
-                                      "lactate"
-                                    ],
-                                    "source_ids": [
-                                      "RCH_PETECHIAE_PURPURA_CHILD"
-                                    ],
-                                    "source_section": "management and flowchart principles for petechiae/purpura",
-                                    "review_status": "source_backed"
-                                  },
-                                  {
                                     "id": "redFlags_peds_rash_redflag_kawasaki",
                                     "label": "Prolonged fever with Kawasaki features",
                                     "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
                                     "cutoffs": [
-                                      "5 days"
+                                      "4 to 5 days"
                                     ],
                                     "data_needed": [
-                                      "5 days"
+                                      "4 to 5 days"
                                     ],
                                     "source_ids": [
                                       "RCH_KAWASAKI_DISEASE"
@@ -5328,7 +5004,7 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend cutoff-bearing labs/results",
+                              "trend objective labs/results",
                               "review treatment response/adverse effects",
                               "confirm disposition and follow-up owner",
                               "Measure temperature",
@@ -5370,7 +5046,6 @@
                                   ">=2.5",
                                   "<55%",
                                   "<28%",
-                                  "2 to 2.5",
                                   "<=6 months",
                                   ">=2",
                                   ">=10 days",
@@ -5417,30 +5092,14 @@
                                 "review_status": "source_backed"
                               },
                               {
-                                "id": "initialTests_peds_rash_petechiae_sepsis_tests",
-                                "label": "Non-blanching rash senior-review tests",
-                                "criteria_text": "Non-blanching rash senior-review tests For fever or unwell child with petechiae/purpura, use senior pediatric review to decide CBC with film, blood culture, inflammatory markers, coagulation studies, glucose/lactate or sepsis labs, and empiric antibiotics without delaying urgent treatment. Results and clinical status change antibiotics, admission/transfer, observation duration, hematology review, and discharge safety. Serious bacterial infection, meningococcal disease, DIC, hematologic disease, or low-risk non-blanching rash after assessment. Non-blanching rash with fever or unwell appearance can signal serious bacterial infection; testing and antibiotics depend on clinical risk and local pathway.",
-                                "cutoffs": [
-                                  "lactate"
-                                ],
-                                "data_needed": [
-                                  "lactate"
-                                ],
-                                "source_ids": [
-                                  "RCH_PETECHIAE_PURPURA_CHILD"
-                                ],
-                                "source_section": "management and flowchart principles for petechiae/purpura",
-                                "review_status": "source_backed"
-                              },
-                              {
                                 "id": "redFlags_peds_rash_redflag_kawasaki",
                                 "label": "Prolonged fever with Kawasaki features",
                                 "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
                                 "cutoffs": [
-                                  "5 days"
+                                  "4 to 5 days"
                                 ],
                                 "data_needed": [
-                                  "5 days"
+                                  "4 to 5 days"
                                 ],
                                 "source_ids": [
                                   "RCH_KAWASAKI_DISEASE"
@@ -5493,7 +5152,6 @@
                           ">=2.5",
                           "<55%",
                           "<28%",
-                          "2 to 2.5",
                           "<=6 months",
                           ">=2",
                           ">=10 days",
@@ -5540,30 +5198,14 @@
                         "review_status": "source_backed"
                       },
                       {
-                        "id": "initialTests_peds_rash_petechiae_sepsis_tests",
-                        "label": "Non-blanching rash senior-review tests",
-                        "criteria_text": "Non-blanching rash senior-review tests For fever or unwell child with petechiae/purpura, use senior pediatric review to decide CBC with film, blood culture, inflammatory markers, coagulation studies, glucose/lactate or sepsis labs, and empiric antibiotics without delaying urgent treatment. Results and clinical status change antibiotics, admission/transfer, observation duration, hematology review, and discharge safety. Serious bacterial infection, meningococcal disease, DIC, hematologic disease, or low-risk non-blanching rash after assessment. Non-blanching rash with fever or unwell appearance can signal serious bacterial infection; testing and antibiotics depend on clinical risk and local pathway.",
-                        "cutoffs": [
-                          "lactate"
-                        ],
-                        "data_needed": [
-                          "lactate"
-                        ],
-                        "source_ids": [
-                          "RCH_PETECHIAE_PURPURA_CHILD"
-                        ],
-                        "source_section": "management and flowchart principles for petechiae/purpura",
-                        "review_status": "source_backed"
-                      },
-                      {
                         "id": "redFlags_peds_rash_redflag_kawasaki",
                         "label": "Prolonged fever with Kawasaki features",
                         "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
                         "cutoffs": [
-                          "5 days"
+                          "4 to 5 days"
                         ],
                         "data_needed": [
-                          "5 days"
+                          "4 to 5 days"
                         ],
                         "source_ids": [
                           "RCH_KAWASAKI_DISEASE"
@@ -5576,7 +5218,7 @@
                   {
                     "id": "pediatric_rash_skin_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric rash, urticaria, petechiae, or skin infection: switch to mimic/alternate pathway when cutoff criteria do not fit",
+                    "label": "Pediatric rash, urticaria, petechiae, or skin infection: switch to mimic/alternate pathway when threshold/result criteria do not fit",
                     "edgeLabel": "Criteria favor mimic or alternate pathway",
                     "source_ids": [
                       "RCH_PETECHIAE_PURPURA_CHILD",
@@ -5589,7 +5231,7 @@
                     "criteria": {
                       "rule_id": "pediatric_rash_skin_alternate_criteria",
                       "source": "criteria",
-                      "description": "Use an alternate pathway when Pediatric rash, urticaria, petechiae, or skin infection criteria are absent, a cited mimic better explains the presentation, or cutoff data contradict this workup.",
+                      "description": "Use an alternate pathway when Pediatric rash, urticaria, petechiae, or skin infection criteria are absent, a cited mimic better explains the presentation, or objective result data contradict this workup.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5639,7 +5281,6 @@
                             ">=2.5",
                             "<55%",
                             "<28%",
-                            "2 to 2.5",
                             "<=6 months",
                             ">=2",
                             ">=10 days",
@@ -5686,30 +5327,14 @@
                           "review_status": "source_backed"
                         },
                         {
-                          "id": "initialTests_peds_rash_petechiae_sepsis_tests",
-                          "label": "Non-blanching rash senior-review tests",
-                          "criteria_text": "Non-blanching rash senior-review tests For fever or unwell child with petechiae/purpura, use senior pediatric review to decide CBC with film, blood culture, inflammatory markers, coagulation studies, glucose/lactate or sepsis labs, and empiric antibiotics without delaying urgent treatment. Results and clinical status change antibiotics, admission/transfer, observation duration, hematology review, and discharge safety. Serious bacterial infection, meningococcal disease, DIC, hematologic disease, or low-risk non-blanching rash after assessment. Non-blanching rash with fever or unwell appearance can signal serious bacterial infection; testing and antibiotics depend on clinical risk and local pathway.",
-                          "cutoffs": [
-                            "lactate"
-                          ],
-                          "data_needed": [
-                            "lactate"
-                          ],
-                          "source_ids": [
-                            "RCH_PETECHIAE_PURPURA_CHILD"
-                          ],
-                          "source_section": "management and flowchart principles for petechiae/purpura",
-                          "review_status": "source_backed"
-                        },
-                        {
                           "id": "redFlags_peds_rash_redflag_kawasaki",
                           "label": "Prolonged fever with Kawasaki features",
                           "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
                           "cutoffs": [
-                            "5 days"
+                            "4 to 5 days"
                           ],
                           "data_needed": [
-                            "5 days"
+                            "4 to 5 days"
                           ],
                           "source_ids": [
                             "RCH_KAWASAKI_DISEASE"
@@ -5719,7 +5344,7 @@
                         }
                       ]
                     },
-                    "action": "Document why Pediatric rash, urticaria, petechiae, or skin infection is not the active pathway and route to the competing diagnosis: Non-blanching petechiae or purpura with fever, rapid progression, or unwell appearance; Prolonged fever with Kawasaki disease or inflammatory rash features; Urticaria or angioedema with or without anaphylaxis features; Cellulitis, abscess, impetigo, or skin and soft tissue infection; Lower-risk viral exanthem, contact....",
+                    "action": "Document why Pediatric rash, urticaria, petechiae, or skin infection is not the active pathway and route to the competing diagnosis: Non-blanching petechiae or purpura with fever, rapid progression, or unwell appearance; Prolonged fever with Kawasaki disease or inflammatory rash features; Urticaria or angioedema with or without anaphylaxis features; Cellulitis, abscess, impetigo, or skin and soft tissue infection; Lower-risk viral exanthem, contact dermatitis, eczema flare, or benign rash pattern.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
                     "review_needed_reason": "Competing diagnosis or exclusion changes the active pathway."
@@ -5758,7 +5383,6 @@
                       ">=2.5",
                       "<55%",
                       "<28%",
-                      "2 to 2.5",
                       "<=6 months",
                       ">=2",
                       ">=10 days",
@@ -5805,30 +5429,14 @@
                     "review_status": "source_backed"
                   },
                   {
-                    "id": "initialTests_peds_rash_petechiae_sepsis_tests",
-                    "label": "Non-blanching rash senior-review tests",
-                    "criteria_text": "Non-blanching rash senior-review tests For fever or unwell child with petechiae/purpura, use senior pediatric review to decide CBC with film, blood culture, inflammatory markers, coagulation studies, glucose/lactate or sepsis labs, and empiric antibiotics without delaying urgent treatment. Results and clinical status change antibiotics, admission/transfer, observation duration, hematology review, and discharge safety. Serious bacterial infection, meningococcal disease, DIC, hematologic disease, or low-risk non-blanching rash after assessment. Non-blanching rash with fever or unwell appearance can signal serious bacterial infection; testing and antibiotics depend on clinical risk and local pathway.",
-                    "cutoffs": [
-                      "lactate"
-                    ],
-                    "data_needed": [
-                      "lactate"
-                    ],
-                    "source_ids": [
-                      "RCH_PETECHIAE_PURPURA_CHILD"
-                    ],
-                    "source_section": "management and flowchart principles for petechiae/purpura",
-                    "review_status": "source_backed"
-                  },
-                  {
                     "id": "redFlags_peds_rash_redflag_kawasaki",
                     "label": "Prolonged fever with Kawasaki features",
                     "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
                     "cutoffs": [
-                      "5 days"
+                      "4 to 5 days"
                     ],
                     "data_needed": [
-                      "5 days"
+                      "4 to 5 days"
                     ],
                     "source_ids": [
                       "RCH_KAWASAKI_DISEASE"
@@ -5870,7 +5478,6 @@
                       ">=2.5",
                       "<55%",
                       "<28%",
-                      "2 to 2.5",
                       "<=6 months",
                       ">=2",
                       ">=10 days",
@@ -5917,30 +5524,14 @@
                     "review_status": "source_backed"
                   },
                   {
-                    "id": "initialTests_peds_rash_petechiae_sepsis_tests",
-                    "label": "Non-blanching rash senior-review tests",
-                    "criteria_text": "Non-blanching rash senior-review tests For fever or unwell child with petechiae/purpura, use senior pediatric review to decide CBC with film, blood culture, inflammatory markers, coagulation studies, glucose/lactate or sepsis labs, and empiric antibiotics without delaying urgent treatment. Results and clinical status change antibiotics, admission/transfer, observation duration, hematology review, and discharge safety. Serious bacterial infection, meningococcal disease, DIC, hematologic disease, or low-risk non-blanching rash after assessment. Non-blanching rash with fever or unwell appearance can signal serious bacterial infection; testing and antibiotics depend on clinical risk and local pathway.",
-                    "cutoffs": [
-                      "lactate"
-                    ],
-                    "data_needed": [
-                      "lactate"
-                    ],
-                    "source_ids": [
-                      "RCH_PETECHIAE_PURPURA_CHILD"
-                    ],
-                    "source_section": "management and flowchart principles for petechiae/purpura",
-                    "review_status": "source_backed"
-                  },
-                  {
                     "id": "redFlags_peds_rash_redflag_kawasaki",
                     "label": "Prolonged fever with Kawasaki features",
                     "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
                     "cutoffs": [
-                      "5 days"
+                      "4 to 5 days"
                     ],
                     "data_needed": [
-                      "5 days"
+                      "4 to 5 days"
                     ],
                     "source_ids": [
                       "RCH_KAWASAKI_DISEASE"
@@ -5995,8 +5586,8 @@
               ">=2.5",
               "<55%",
               "<28%",
-              "2 to 2.5",
-              "<=6 months"
+              "<=6 months",
+              ">=2"
             ],
             "guideline_cutoffs": [
               {
@@ -6031,7 +5622,6 @@
                   ">=2.5",
                   "<55%",
                   "<28%",
-                  "2 to 2.5",
                   "<=6 months",
                   ">=2",
                   ">=10 days",
@@ -6078,30 +5668,14 @@
                 "review_status": "source_backed"
               },
               {
-                "id": "initialTests_peds_rash_petechiae_sepsis_tests",
-                "label": "Non-blanching rash senior-review tests",
-                "criteria_text": "Non-blanching rash senior-review tests For fever or unwell child with petechiae/purpura, use senior pediatric review to decide CBC with film, blood culture, inflammatory markers, coagulation studies, glucose/lactate or sepsis labs, and empiric antibiotics without delaying urgent treatment. Results and clinical status change antibiotics, admission/transfer, observation duration, hematology review, and discharge safety. Serious bacterial infection, meningococcal disease, DIC, hematologic disease, or low-risk non-blanching rash after assessment. Non-blanching rash with fever or unwell appearance can signal serious bacterial infection; testing and antibiotics depend on clinical risk and local pathway.",
-                "cutoffs": [
-                  "lactate"
-                ],
-                "data_needed": [
-                  "lactate"
-                ],
-                "source_ids": [
-                  "RCH_PETECHIAE_PURPURA_CHILD"
-                ],
-                "source_section": "management and flowchart principles for petechiae/purpura",
-                "review_status": "source_backed"
-              },
-              {
                 "id": "redFlags_peds_rash_redflag_kawasaki",
                 "label": "Prolonged fever with Kawasaki features",
                 "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
                 "cutoffs": [
-                  "5 days"
+                  "4 to 5 days"
                 ],
                 "data_needed": [
-                  "5 days"
+                  "4 to 5 days"
                 ],
                 "source_ids": [
                   "RCH_KAWASAKI_DISEASE"
@@ -6124,7 +5698,7 @@
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "pediatric_rash_skin_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Cutoff data missing"
+          "expected_active_branch": "Threshold/result data missing"
         },
         {
           "scenario_id": "urgent_or_high_risk",
@@ -6182,7 +5756,7 @@
         "compact_tree_requirements": [
           "no prohibited generic node labels",
           "concurrent diagnostic/treatment bundles instead of long one-step chains",
-          "cutoff-bearing criteria visible in classification and endpoint nodes",
+          "cited thresholds/rules visible in classification and endpoint nodes",
           "all endpoints cite evidence or state needs_clinical_review",
           "missing-data endpoints name exact data needed"
         ]
@@ -6221,7 +5795,6 @@
           ">=2.5",
           "<55%",
           "<28%",
-          "2 to 2.5",
           "<=6 months",
           ">=2",
           ">=10 days",

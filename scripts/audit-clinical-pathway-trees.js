@@ -66,8 +66,24 @@ const evidenceGroups = [
   "safetyChecks"
 ];
 
-const genericPattern = /\b(?:any red flag, unstable vital sign, or emergency feature|required diagnostic data available|initial assessment: stabilize|collect source-directed confirmation|severity or disposition-changing risk present|diagnostic criteria met or treatment cannot wait|source-backed|selected workup|first-line management only|use the high-risk or confirmed-pathway management option|lower-risk, outpatient, supportive, or safety-net pathway only|clinician review flagged|local policy and patient-specific clinician review flagged)\b/i;
+const genericPattern = /\b(?:any red flag, unstable vital sign, or emergency feature|required diagnostic data available|initial assessment: stabilize|collect source-directed confirmation|severity or disposition-changing risk present|diagnostic criteria met or treatment cannot wait|source-backed|selected workup|first-line management only|use the high-risk or confirmed-pathway management option|lower-risk, outpatient, supportive, or safety-net pathway only|clinician review flagged|local policy and patient-specific clinician review flagged|explicit guideline cutoffs|cutoff-bearing|cutoff criteria)\b/i;
 const shallowGeneratedPrefixPattern = /^(?:use the high-risk or confirmed-pathway management option when criteria are met|use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied|stabilize or escalate before routine treatment when danger criteria are present|screen for immediate danger or disposition-changing findings before routine workup|order focused first-line studies and interpret them in sequence|apply source-backed decision steps)\s*:\s*/i;
+const cutoffUnits = "(?:mg/dL|mg/L|g/L|mmol/L|mEq/L|mIU/L|mU/L|ng/mL|pg/mL|ug/L|mg/g|mcg/mg|mm Hg|mL/kg|mg/kg|g/kg|kg/m2|mL/min(?:/1\\.73\\s*m2)?|mL|hours?|days?|weeks?|months?|years?|cm|mm|ms|seconds?|minutes?|breaths/minute|x10\\^9/L|%|C|ULN|LLN|mOsm/kg|bpm|IU/L|U/L|mcg/dL|ug/dL|mcg/day|mcg|g|mg|kg|cycles/year|measurements?|collections?|samples?|percent|percentile)";
+const strictThresholdPattern = new RegExp([
+  "(?:(?:>=|<=|>|<|=)|(?:above|below|exceeds?))\\s*(?:the\\s+)?(?:assay\\s+)?(?:ULN|LLN|upper limit of normal|lower limit of normal|reference range)",
+  "\\b\\d+(?:\\.\\d+)?\\s*(?:x|times|fold|-fold)\\s*(?:ULN|upper limit of normal)",
+  "\\b[A-Z][A-Za-z0-9+/ -]{0,30}\\s*(?:score\\s*)?(?:>=|<=|>|<|=)\\s*-?\\d+(?:\\.\\d+)?\\s*" + cutoffUnits + "?",
+  "(?:>=|<=|>|<|=)\\s*-?\\d+(?:\\.\\d+)?\\s*" + cutoffUnits + "?",
+  "\\b\\d+(?:\\.\\d+)?\\s*" + cutoffUnits + "\\s*(?:-|to)\\s*\\d+(?:\\.\\d+)?\\s*" + cutoffUnits + "?",
+  "\\b\\d+(?:\\.\\d+)?\\s*(?:-|to)\\s*\\d+(?:\\.\\d+)?\\s*" + cutoffUnits,
+  "\\b\\d+(?:\\.\\d+)?\\s*" + cutoffUnits,
+  "\\b(?:at least|at most|more than|less than|maximum|max|min(?:imum)?|up to)\\s+\\d+(?:\\.\\d+)?\\b",
+  "\\b\\d+\\s+or\\s+(?:more|fewer|less)\\b",
+  "\\bday\\s+\\d+\\b",
+  "\\bage\\s+\\d+\\b",
+  "\\b\\d+\\s+(?:principal clinical features|features|benzodiazepine doses|upper UTIs?|lower UTIs?)\\b"
+].join("|"), "gi");
+const bareMarkerPattern = /\b(?:A1c|HbA1c|pH|bicarbonate|anion gap|osmolality|lactate|MAP|TSH|free T4|FT4|T3|PTH|calcium|cortisol|ACTH|aldosterone|renin|eGFR|UACR|glucose|troponin)\b/i;
 
 function parseArgs(argv) {
   const args = {
@@ -131,6 +147,13 @@ function itemSearchText(item = {}) {
     item.diagnostic_target,
     item.rationale
   ].filter(Boolean).join(" ");
+}
+
+function hasRealThreshold(value = "") {
+  const text = String(value || "").replace(/\s+/g, " ").trim();
+  if (/(?:(?:>=|<=|>|<|=)|(?:above|below|exceeds?))\s*(?:the\s+)?(?:assay\s+)?(?:ULN|LLN|upper limit of normal|lower limit of normal|reference range)/i.test(text)) return true;
+  if (!/\d/.test(text)) return false;
+  return new RegExp(strictThresholdPattern.source, "i").test(text);
 }
 
 function importantTokens(value = "") {
@@ -244,11 +267,17 @@ function thresholdCoverage(module, treeText) {
     .flatMap((group) => Array.isArray(module[group]) ? module[group] : [])
     .map((item) => itemSearchText(item))
     .join(" ");
-  const thresholdPattern = /(?:>=|<=|>|<|=)\s*-?\d+(?:\.\d+)?|\b\d+(?:\.\d+)?\s*(?:mg\/dL|mg\/L|g\/L|mmol\/L|mEq\/L|mIU\/L|ng\/mL|pg\/mL|mm Hg|mL\/kg|mg\/kg|g\/kg|kg|kg\/m2|mL|hours?|days?|weeks?|months?|years?|cm|mm|ms|seconds?|minutes?|breaths\/minute|x10\^9\/L|%|C|ULN|mOsm\/kg|bpm|IU\/L|U\/L|mcg\/dL|ug\/dL)\b|\bA1c\b|\bpH\b|\bbicarbonate\b|\banion gap\b|\bosmolality\b|\blactate\b|\bMAP\b/gi;
-  const thresholds = unique((sourceText.match(thresholdPattern) || []).map((item) => item.replace(/\s+/g, " ").trim()));
+  const thresholds = unique((sourceText.match(strictThresholdPattern) || []).map((item) => item.replace(/\s+/g, " ").trim()).filter(hasRealThreshold));
   const normalizedTree = normalize(treeText);
-  const included = thresholds.filter((threshold) => normalizedTree.includes(normalize(threshold)) || /^(?:a1c|ph|map|uln)$/i.test(threshold));
-  return { available: thresholds.length, included: included.length, examples: included.slice(0, 8), pass: thresholds.length < 2 || included.length >= Math.min(4, thresholds.length) };
+  const included = thresholds.filter((threshold) => normalizedTree.includes(normalize(threshold)));
+  const markerOnly = bareMarkerPattern.test(sourceText) && thresholds.length === 0;
+  return {
+    available: thresholds.length,
+    included: included.length,
+    examples: included.slice(0, 8),
+    marker_only: markerOnly,
+    pass: !markerOnly && (thresholds.length < 2 || included.length >= Math.min(4, thresholds.length))
+  };
 }
 
 function auditModule({ file, module, sourceIds }) {
@@ -362,6 +391,9 @@ function auditModule({ file, module, sourceIds }) {
     if (!row.pass) issues.push(`${group}: tree references ${row.hits.length}/${row.available} source evidence rows; expected ${row.required}`);
   });
   const thresholdAudit = thresholdCoverage(module, treeText);
+  if (thresholdAudit.marker_only) {
+    issues.push("threshold coverage invalid: source evidence mentions lab/result markers but no numeric or ordinal guideline thresholds were extracted");
+  }
   if (!thresholdAudit.pass) {
     issues.push(`threshold coverage incomplete: ${thresholdAudit.included}/${thresholdAudit.available} source thresholds visible in tree`);
   }

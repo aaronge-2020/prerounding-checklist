@@ -2056,6 +2056,15 @@
             "RCH_LIMPING_CHILD"
           ],
           "review_status": "source_backed"
+        },
+        {
+          "threshold": "age 5",
+          "evidence_item_id": "initialTests_peds_msk_xray_localized_pain",
+          "label": "X-ray localized pain or injury area",
+          "source_ids": [
+            "ACR_ACUTELY_LIMPING_CHILD_2018"
+          ],
+          "review_status": "source_backed"
         }
       ],
       "traversable_context": {
@@ -2352,7 +2361,7 @@
         "pediatric_msk_limp_hot_joint_classification_decision": {
           "rule_id": "pediatric_msk_limp_hot_joint_classification_criteria",
           "source": "criteria",
-          "description": "Classify Pediatric limp, hot joint, injury, or non-weight bearing against explicit cited cutoffs: Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset: 7 days | Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern: >7 days | Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis: >=20 mg/L, >=7 mm",
+          "description": "Classify Pediatric limp, hot joint, injury, or non-weight bearing against cited thresholds and condition-specific rules: Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset: 7 days | Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern: >7 days | Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis: >=20 mg/L, >=7 mm | X-ray localized pain or injury area: age 5",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2433,13 +2442,29 @@
               ],
               "source_section": "Reference list and investigations",
               "review_status": "source_backed"
+            },
+            {
+              "id": "initialTests_peds_msk_xray_localized_pain",
+              "label": "X-ray localized pain or injury area",
+              "criteria_text": "X-ray localized pain or injury area Order radiography of the localized area of concern when pain, trauma, deformity, focal tenderness, or persistent inability to bear weight localizes a fracture or bone lesion concern. Positive or concerning imaging changes immobilization, orthopaedic referral, activity restriction, admission, or specialty workup. Fracture, dislocation, bone lesion, slipped hip pathology, or tumor causing localized pediatric limp. ACR rates radiography of the localized lower-extremity area as usually appropriate in a child up to age 5 with localized acute limp and no infection concern; RCH uses X-ray to exclude fracture or tumor.",
+              "cutoffs": [
+                "age 5"
+              ],
+              "data_needed": [
+                "age 5"
+              ],
+              "source_ids": [
+                "ACR_ACUTELY_LIMPING_CHILD_2018"
+              ],
+              "source_section": "variant 2 localized symptoms without infection and RCH X-ray comments",
+              "review_status": "source_backed"
             }
           ]
         },
         "pediatric_msk_limp_hot_joint_missing_cutoff_data_endpoint": {
           "rule_id": "pediatric_msk_limp_hot_joint_missing_cutoff_data_criteria",
           "source": "criteria",
-          "description": "Route here when Pediatric limp, hot joint, injury, or non-weight bearing cannot be classified because exact cutoff-bearing data are missing.",
+          "description": "Route here when Pediatric limp, hot joint, injury, or non-weight bearing cannot be classified because exact threshold/result data are missing.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2481,7 +2506,8 @@
             "7 days",
             ">7 days",
             ">=20 mg/L",
-            ">=7 mm"
+            ">=7 mm",
+            "age 5"
           ]
         },
         "pediatric_msk_limp_hot_joint_urgent_endpoint": {
@@ -2564,6 +2590,22 @@
                 "RCH_LIMPING_CHILD"
               ],
               "source_section": "Reference list and investigations",
+              "review_status": "source_backed"
+            },
+            {
+              "id": "initialTests_peds_msk_xray_localized_pain",
+              "label": "X-ray localized pain or injury area",
+              "criteria_text": "X-ray localized pain or injury area Order radiography of the localized area of concern when pain, trauma, deformity, focal tenderness, or persistent inability to bear weight localizes a fracture or bone lesion concern. Positive or concerning imaging changes immobilization, orthopaedic referral, activity restriction, admission, or specialty workup. Fracture, dislocation, bone lesion, slipped hip pathology, or tumor causing localized pediatric limp. ACR rates radiography of the localized lower-extremity area as usually appropriate in a child up to age 5 with localized acute limp and no infection concern; RCH uses X-ray to exclude fracture or tumor.",
+              "cutoffs": [
+                "age 5"
+              ],
+              "data_needed": [
+                "age 5"
+              ],
+              "source_ids": [
+                "ACR_ACUTELY_LIMPING_CHILD_2018"
+              ],
+              "source_section": "variant 2 localized symptoms without infection and RCH X-ray comments",
               "review_status": "source_backed"
             }
           ]
@@ -2651,6 +2693,22 @@
               ],
               "source_section": "Reference list and investigations",
               "review_status": "source_backed"
+            },
+            {
+              "id": "initialTests_peds_msk_xray_localized_pain",
+              "label": "X-ray localized pain or injury area",
+              "criteria_text": "X-ray localized pain or injury area Order radiography of the localized area of concern when pain, trauma, deformity, focal tenderness, or persistent inability to bear weight localizes a fracture or bone lesion concern. Positive or concerning imaging changes immobilization, orthopaedic referral, activity restriction, admission, or specialty workup. Fracture, dislocation, bone lesion, slipped hip pathology, or tumor causing localized pediatric limp. ACR rates radiography of the localized lower-extremity area as usually appropriate in a child up to age 5 with localized acute limp and no infection concern; RCH uses X-ray to exclude fracture or tumor.",
+              "cutoffs": [
+                "age 5"
+              ],
+              "data_needed": [
+                "age 5"
+              ],
+              "source_ids": [
+                "ACR_ACUTELY_LIMPING_CHILD_2018"
+              ],
+              "source_section": "variant 2 localized symptoms without infection and RCH X-ray comments",
+              "review_status": "source_backed"
             }
           ]
         },
@@ -2724,7 +2782,7 @@
         "pediatric_msk_limp_hot_joint_monitoring_bundle": {
           "rule_id": "pediatric_msk_limp_hot_joint_monitoring_criteria",
           "source": "criteria",
-          "description": "Monitor Pediatric limp, hot joint, injury, or non-weight bearing by trending the same cutoff-bearing findings that selected the branch, plus medication adverse effects and disposition constraints.",
+          "description": "Monitor Pediatric limp, hot joint, injury, or non-weight bearing by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2802,13 +2860,29 @@
               ],
               "source_section": "Reference list and investigations",
               "review_status": "source_backed"
+            },
+            {
+              "id": "initialTests_peds_msk_xray_localized_pain",
+              "label": "X-ray localized pain or injury area",
+              "criteria_text": "X-ray localized pain or injury area Order radiography of the localized area of concern when pain, trauma, deformity, focal tenderness, or persistent inability to bear weight localizes a fracture or bone lesion concern. Positive or concerning imaging changes immobilization, orthopaedic referral, activity restriction, admission, or specialty workup. Fracture, dislocation, bone lesion, slipped hip pathology, or tumor causing localized pediatric limp. ACR rates radiography of the localized lower-extremity area as usually appropriate in a child up to age 5 with localized acute limp and no infection concern; RCH uses X-ray to exclude fracture or tumor.",
+              "cutoffs": [
+                "age 5"
+              ],
+              "data_needed": [
+                "age 5"
+              ],
+              "source_ids": [
+                "ACR_ACUTELY_LIMPING_CHILD_2018"
+              ],
+              "source_section": "variant 2 localized symptoms without infection and RCH X-ray comments",
+              "review_status": "source_backed"
             }
           ]
         },
         "pediatric_msk_limp_hot_joint_worsening_endpoint": {
           "rule_id": "pediatric_msk_limp_hot_joint_worsening_criteria",
           "source": "criteria",
-          "description": "Escalate Pediatric limp, hot joint, injury, or non-weight bearing if symptoms, vitals, critical cutoffs, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+          "description": "Escalate Pediatric limp, hot joint, injury, or non-weight bearing if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2885,6 +2959,22 @@
                 "RCH_LIMPING_CHILD"
               ],
               "source_section": "Reference list and investigations",
+              "review_status": "source_backed"
+            },
+            {
+              "id": "initialTests_peds_msk_xray_localized_pain",
+              "label": "X-ray localized pain or injury area",
+              "criteria_text": "X-ray localized pain or injury area Order radiography of the localized area of concern when pain, trauma, deformity, focal tenderness, or persistent inability to bear weight localizes a fracture or bone lesion concern. Positive or concerning imaging changes immobilization, orthopaedic referral, activity restriction, admission, or specialty workup. Fracture, dislocation, bone lesion, slipped hip pathology, or tumor causing localized pediatric limp. ACR rates radiography of the localized lower-extremity area as usually appropriate in a child up to age 5 with localized acute limp and no infection concern; RCH uses X-ray to exclude fracture or tumor.",
+              "cutoffs": [
+                "age 5"
+              ],
+              "data_needed": [
+                "age 5"
+              ],
+              "source_ids": [
+                "ACR_ACUTELY_LIMPING_CHILD_2018"
+              ],
+              "source_section": "variant 2 localized symptoms without infection and RCH X-ray comments",
               "review_status": "source_backed"
             }
           ]
@@ -2970,6 +3060,22 @@
               ],
               "source_section": "Reference list and investigations",
               "review_status": "source_backed"
+            },
+            {
+              "id": "initialTests_peds_msk_xray_localized_pain",
+              "label": "X-ray localized pain or injury area",
+              "criteria_text": "X-ray localized pain or injury area Order radiography of the localized area of concern when pain, trauma, deformity, focal tenderness, or persistent inability to bear weight localizes a fracture or bone lesion concern. Positive or concerning imaging changes immobilization, orthopaedic referral, activity restriction, admission, or specialty workup. Fracture, dislocation, bone lesion, slipped hip pathology, or tumor causing localized pediatric limp. ACR rates radiography of the localized lower-extremity area as usually appropriate in a child up to age 5 with localized acute limp and no infection concern; RCH uses X-ray to exclude fracture or tumor.",
+              "cutoffs": [
+                "age 5"
+              ],
+              "data_needed": [
+                "age 5"
+              ],
+              "source_ids": [
+                "ACR_ACUTELY_LIMPING_CHILD_2018"
+              ],
+              "source_section": "variant 2 localized symptoms without infection and RCH X-ray comments",
+              "review_status": "source_backed"
             }
           ]
         },
@@ -2998,7 +3104,7 @@
         "pediatric_msk_limp_hot_joint_alternate_endpoint": {
           "rule_id": "pediatric_msk_limp_hot_joint_alternate_criteria",
           "source": "criteria",
-          "description": "Use an alternate pathway when Pediatric limp, hot joint, injury, or non-weight bearing criteria are absent, a cited mimic better explains the presentation, or cutoff data contradict this workup.",
+          "description": "Use an alternate pathway when Pediatric limp, hot joint, injury, or non-weight bearing criteria are absent, a cited mimic better explains the presentation, or objective result data contradict this workup.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3074,6 +3180,22 @@
               ],
               "source_section": "Reference list and investigations",
               "review_status": "source_backed"
+            },
+            {
+              "id": "initialTests_peds_msk_xray_localized_pain",
+              "label": "X-ray localized pain or injury area",
+              "criteria_text": "X-ray localized pain or injury area Order radiography of the localized area of concern when pain, trauma, deformity, focal tenderness, or persistent inability to bear weight localizes a fracture or bone lesion concern. Positive or concerning imaging changes immobilization, orthopaedic referral, activity restriction, admission, or specialty workup. Fracture, dislocation, bone lesion, slipped hip pathology, or tumor causing localized pediatric limp. ACR rates radiography of the localized lower-extremity area as usually appropriate in a child up to age 5 with localized acute limp and no infection concern; RCH uses X-ray to exclude fracture or tumor.",
+              "cutoffs": [
+                "age 5"
+              ],
+              "data_needed": [
+                "age 5"
+              ],
+              "source_ids": [
+                "ACR_ACUTELY_LIMPING_CHILD_2018"
+              ],
+              "source_section": "variant 2 localized symptoms without infection and RCH X-ray comments",
+              "review_status": "source_backed"
             }
           ]
         }
@@ -3110,7 +3232,7 @@
             "CHQ_BONE_JOINT_INFECTION_2025"
           ]
         },
-        "action": "Route Pediatric limp, hot joint, injury, or non-weight bearing using cutoff-bearing diagnostic criteria, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+        "action": "Route Pediatric limp, hot joint, injury, or non-weight bearing using cited diagnostic thresholds/rules, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -3152,7 +3274,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Before choosing a non-emergency Pediatric limp, hot joint, injury, or non-weight bearing branch, document: presenting trigger, onset/trajectory, focused exam, vital signs, cutoff-bearing labs/results, medication/allergy context, comorbidities, demographics, pregnancy/applicability status, and current workup findings.",
+            "action": "Before choosing a non-emergency Pediatric limp, hot joint, injury, or non-weight bearing branch, document: presenting trigger, onset/trajectory, focused exam, vital signs, threshold labs/results, medication/allergy context, comorbidities, demographics, pregnancy/applicability status, and current workup findings.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "missing_data_needed": [
@@ -3207,7 +3329,7 @@
               {
                 "id": "pediatric_msk_limp_hot_joint_classification_decision",
                 "type": "decision",
-                "label": "Pediatric limp, hot joint, injury, or non-weight bearing: classify using explicit guideline cutoffs",
+                "label": "Pediatric limp, hot joint, injury, or non-weight bearing: classify by Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset: 7 days | Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern: >7 days | Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis: >=20 mg/L, >=7 mm | X-ray localized pain or injury area: age 5",
                 "edgeLabel": "Concurrent data bundle obtained",
                 "source_ids": [
                   "RCH_LIMPING_CHILD",
@@ -3220,7 +3342,7 @@
                 "criteria": {
                   "rule_id": "pediatric_msk_limp_hot_joint_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Pediatric limp, hot joint, injury, or non-weight bearing against explicit cited cutoffs: Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset: 7 days | Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern: >7 days | Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis: >=20 mg/L, >=7 mm",
+                  "description": "Classify Pediatric limp, hot joint, injury, or non-weight bearing against cited thresholds and condition-specific rules: Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset: 7 days | Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern: >7 days | Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis: >=20 mg/L, >=7 mm | X-ray localized pain or injury area: age 5",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -3301,16 +3423,32 @@
                       ],
                       "source_section": "Reference list and investigations",
                       "review_status": "source_backed"
+                    },
+                    {
+                      "id": "initialTests_peds_msk_xray_localized_pain",
+                      "label": "X-ray localized pain or injury area",
+                      "criteria_text": "X-ray localized pain or injury area Order radiography of the localized area of concern when pain, trauma, deformity, focal tenderness, or persistent inability to bear weight localizes a fracture or bone lesion concern. Positive or concerning imaging changes immobilization, orthopaedic referral, activity restriction, admission, or specialty workup. Fracture, dislocation, bone lesion, slipped hip pathology, or tumor causing localized pediatric limp. ACR rates radiography of the localized lower-extremity area as usually appropriate in a child up to age 5 with localized acute limp and no infection concern; RCH uses X-ray to exclude fracture or tumor.",
+                      "cutoffs": [
+                        "age 5"
+                      ],
+                      "data_needed": [
+                        "age 5"
+                      ],
+                      "source_ids": [
+                        "ACR_ACUTELY_LIMPING_CHILD_2018"
+                      ],
+                      "source_section": "variant 2 localized symptoms without infection and RCH X-ray comments",
+                      "review_status": "source_backed"
                     }
                   ]
                 },
-                "action": "Choose the active Pediatric limp, hot joint, injury, or non-weight bearing branch by matching patient data to the cited cutoffs and condition-specific criteria.",
+                "action": "Choose the active Pediatric limp, hot joint, injury, or non-weight bearing branch by matching patient data to: Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset: 7 days | Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern: >7 days | Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis: >=20 mg/L, >=7 mm | X-ray localized pain or injury area: age 5.",
                 "children": [
                   {
                     "id": "pediatric_msk_limp_hot_joint_missing_cutoff_data_endpoint",
                     "type": "endpoint",
-                    "label": "Missing data needed: Pediatric limp, hot joint, injury, or non-weight bearing cutoff-bearing results",
-                    "edgeLabel": "Cutoff data missing",
+                    "label": "Missing data needed: Pediatric limp, hot joint, injury, or non-weight bearing threshold/results",
+                    "edgeLabel": "Threshold/result data missing",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "RCH_LIMPING_CHILD",
@@ -3322,7 +3460,7 @@
                     "criteria": {
                       "rule_id": "pediatric_msk_limp_hot_joint_missing_cutoff_data_criteria",
                       "source": "criteria",
-                      "description": "Route here when Pediatric limp, hot joint, injury, or non-weight bearing cannot be classified because exact cutoff-bearing data are missing.",
+                      "description": "Route here when Pediatric limp, hot joint, injury, or non-weight bearing cannot be classified because exact threshold/result data are missing.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -3364,10 +3502,11 @@
                         "7 days",
                         ">7 days",
                         ">=20 mg/L",
-                        ">=7 mm"
+                        ">=7 mm",
+                        "age 5"
                       ]
                     },
-                    "action": "Obtain the exact Pediatric limp, hot joint, injury, or non-weight bearing data needed for cutoff-based routing: duration of limp; red-flag screen; ability to weight bear after analgesia; review access; symptom duration; weight-bearing status; range of motion after analgesia; temperature/systemic features; CRP/ESR/WCC if obtained; CRP; hip ultrasound effusion measurement; fever/systemic illness; No routine tests for low-risk comfortable limp; X-ray localized pain or injury area; Infection labs and blood culture route; Ultrasou....",
+                    "action": "Obtain the exact Pediatric limp, hot joint, injury, or non-weight bearing data needed for threshold-based routing: duration of limp; red-flag screen; ability to weight bear after analgesia; review access; symptom duration; weight-bearing status; range of motion after analgesia; temperature/systemic features; CRP/ESR/WCC if obtained; CRP; hip ultrasound effusion measurement; fever/systemic illness; No routine tests for low-risk comfortable limp; X-ray localized pain or injury area; Infection labs and blood culture route; Ultrasound hip effusion route; MRI for osteomyelitis localization; 7 days; >7 days; >=20 mg/L; >=7 mm; age 5.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "missing_data_needed": [
@@ -3391,13 +3530,14 @@
                       "7 days",
                       ">7 days",
                       ">=20 mg/L",
-                      ">=7 mm"
+                      ">=7 mm",
+                      "age 5"
                     ]
                   },
                   {
                     "id": "pediatric_msk_limp_hot_joint_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric limp, hot joint, injury, or non-weight bearing: emergency escalation or monitored-care disposition when danger cutoffs are met",
+                    "label": "Pediatric limp, hot joint, injury, or non-weight bearing: emergency escalation or monitored-care disposition when danger thresholds are met",
                     "edgeLabel": "Emergency or high-risk criteria met",
                     "source_ids": [
                       "RCH_LIMPING_CHILD",
@@ -3488,10 +3628,26 @@
                           ],
                           "source_section": "Reference list and investigations",
                           "review_status": "source_backed"
+                        },
+                        {
+                          "id": "initialTests_peds_msk_xray_localized_pain",
+                          "label": "X-ray localized pain or injury area",
+                          "criteria_text": "X-ray localized pain or injury area Order radiography of the localized area of concern when pain, trauma, deformity, focal tenderness, or persistent inability to bear weight localizes a fracture or bone lesion concern. Positive or concerning imaging changes immobilization, orthopaedic referral, activity restriction, admission, or specialty workup. Fracture, dislocation, bone lesion, slipped hip pathology, or tumor causing localized pediatric limp. ACR rates radiography of the localized lower-extremity area as usually appropriate in a child up to age 5 with localized acute limp and no infection concern; RCH uses X-ray to exclude fracture or tumor.",
+                          "cutoffs": [
+                            "age 5"
+                          ],
+                          "data_needed": [
+                            "age 5"
+                          ],
+                          "source_ids": [
+                            "ACR_ACUTELY_LIMPING_CHILD_2018"
+                          ],
+                          "source_section": "variant 2 localized symptoms without infection and RCH X-ray comments",
+                          "review_status": "source_backed"
                         }
                       ]
                     },
-                    "action": "Unable to walk or weight bear; Fever with hot swollen limited joint; Systemically unwell or sepsis physiology; Night pain weight loss pallor bruising. Monitor treatment response, complications, and need for reassessment with: No routine tests for low-risk comfortable limp.; Immediate orthopedic route for septic arthritis; Bone infection admission and antibiotic route; Low-risk discharge...",
+                    "action": "Unable to walk or weight bear; Fever with hot swollen limited joint; Systemically unwell or sepsis physiology; Night pain weight loss pallor bruising. Monitor treatment response, complications, and need for reassessment with: No routine tests for low-risk comfortable limp.; Immediate orthopedic route for septic arthritis; Bone infection admission and antibiotic route; Low-risk discharge only when walking comfortably; Immediate orthopedic route for septic arthritis; Bone infection admission and antibiotic route; Low-risk discharge only when walking comfortably",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -3554,14 +3710,30 @@
                         ],
                         "source_section": "Reference list and investigations",
                         "review_status": "source_backed"
+                      },
+                      {
+                        "id": "initialTests_peds_msk_xray_localized_pain",
+                        "label": "X-ray localized pain or injury area",
+                        "criteria_text": "X-ray localized pain or injury area Order radiography of the localized area of concern when pain, trauma, deformity, focal tenderness, or persistent inability to bear weight localizes a fracture or bone lesion concern. Positive or concerning imaging changes immobilization, orthopaedic referral, activity restriction, admission, or specialty workup. Fracture, dislocation, bone lesion, slipped hip pathology, or tumor causing localized pediatric limp. ACR rates radiography of the localized lower-extremity area as usually appropriate in a child up to age 5 with localized acute limp and no infection concern; RCH uses X-ray to exclude fracture or tumor.",
+                        "cutoffs": [
+                          "age 5"
+                        ],
+                        "data_needed": [
+                          "age 5"
+                        ],
+                        "source_ids": [
+                          "ACR_ACUTELY_LIMPING_CHILD_2018"
+                        ],
+                        "source_section": "variant 2 localized symptoms without infection and RCH X-ray comments",
+                        "review_status": "source_backed"
                       }
                     ]
                   },
                   {
                     "id": "pediatric_msk_limp_hot_joint_treatment_bundle",
                     "type": "action",
-                    "label": "Pediatric limp, hot joint, injury, or non-weight bearing: start the indicated treatment/disposition bundle when cutoff criteria match",
-                    "edgeLabel": "Criteria match Pediatric limp, hot joint, injury, or non-weight bearing or treatment cannot safely wait",
+                    "label": "Pediatric limp, hot joint, injury, or non-weight bearing: start treatment/disposition when Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset: 7 days | Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern: >7 days | Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis: >=20 mg/L, >=7 mm | X-ray localized pain or injury area: age 5 matches",
+                    "edgeLabel": "Pediatric limp, hot joint, injury, or non-weight bearing criteria match or treatment cannot safely wait",
                     "source_ids": [
                       "RCH_BONE_JOINT_INFECTION",
                       "CHQ_BONE_JOINT_INFECTION_2025",
@@ -3653,6 +3825,22 @@
                           ],
                           "source_section": "Reference list and investigations",
                           "review_status": "source_backed"
+                        },
+                        {
+                          "id": "initialTests_peds_msk_xray_localized_pain",
+                          "label": "X-ray localized pain or injury area",
+                          "criteria_text": "X-ray localized pain or injury area Order radiography of the localized area of concern when pain, trauma, deformity, focal tenderness, or persistent inability to bear weight localizes a fracture or bone lesion concern. Positive or concerning imaging changes immobilization, orthopaedic referral, activity restriction, admission, or specialty workup. Fracture, dislocation, bone lesion, slipped hip pathology, or tumor causing localized pediatric limp. ACR rates radiography of the localized lower-extremity area as usually appropriate in a child up to age 5 with localized acute limp and no infection concern; RCH uses X-ray to exclude fracture or tumor.",
+                          "cutoffs": [
+                            "age 5"
+                          ],
+                          "data_needed": [
+                            "age 5"
+                          ],
+                          "source_ids": [
+                            "ACR_ACUTELY_LIMPING_CHILD_2018"
+                          ],
+                          "source_section": "variant 2 localized symptoms without infection and RCH X-ray comments",
+                          "review_status": "source_backed"
                         }
                       ]
                     },
@@ -3661,7 +3849,7 @@
                       {
                         "id": "pediatric_msk_limp_hot_joint_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Pediatric limp, hot joint, injury, or non-weight bearing: medication/procedure safety and special-population cutoffs resolved?",
+                        "label": "Pediatric limp, hot joint, injury, or non-weight bearing: medication/procedure safety and special-population thresholds resolved?",
                         "edgeLabel": "Diagnosis/risk branch selected",
                         "source_ids": [
                           "RCH_LIMPING_CHILD",
@@ -3774,7 +3962,7 @@
                             "criteria": {
                               "rule_id": "pediatric_msk_limp_hot_joint_monitoring_criteria",
                               "source": "criteria",
-                              "description": "Monitor Pediatric limp, hot joint, injury, or non-weight bearing by trending the same cutoff-bearing findings that selected the branch, plus medication adverse effects and disposition constraints.",
+                              "description": "Monitor Pediatric limp, hot joint, injury, or non-weight bearing by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
                               "evaluable_from": [
                                 "symptoms",
                                 "exam",
@@ -3852,10 +4040,26 @@
                                   ],
                                   "source_section": "Reference list and investigations",
                                   "review_status": "source_backed"
+                                },
+                                {
+                                  "id": "initialTests_peds_msk_xray_localized_pain",
+                                  "label": "X-ray localized pain or injury area",
+                                  "criteria_text": "X-ray localized pain or injury area Order radiography of the localized area of concern when pain, trauma, deformity, focal tenderness, or persistent inability to bear weight localizes a fracture or bone lesion concern. Positive or concerning imaging changes immobilization, orthopaedic referral, activity restriction, admission, or specialty workup. Fracture, dislocation, bone lesion, slipped hip pathology, or tumor causing localized pediatric limp. ACR rates radiography of the localized lower-extremity area as usually appropriate in a child up to age 5 with localized acute limp and no infection concern; RCH uses X-ray to exclude fracture or tumor.",
+                                  "cutoffs": [
+                                    "age 5"
+                                  ],
+                                  "data_needed": [
+                                    "age 5"
+                                  ],
+                                  "source_ids": [
+                                    "ACR_ACUTELY_LIMPING_CHILD_2018"
+                                  ],
+                                  "source_section": "variant 2 localized symptoms without infection and RCH X-ray comments",
+                                  "review_status": "source_backed"
                                 }
                               ]
                             },
-                            "action": "Reassess Pediatric limp, hot joint, injury, or non-weight bearing using the active cutoffs and clinical course; do not close the pathway until response, adverse effects, pending data, and disposition are owned.",
+                            "action": "Reassess Pediatric limp, hot joint, injury, or non-weight bearing using the active thresholds and clinical course; do not close the pathway until response, adverse effects, pending data, and disposition are owned.",
                             "children": [
                               {
                                 "id": "pediatric_msk_limp_hot_joint_worsening_endpoint",
@@ -3873,7 +4077,7 @@
                                 "criteria": {
                                   "rule_id": "pediatric_msk_limp_hot_joint_worsening_criteria",
                                   "source": "criteria",
-                                  "description": "Escalate Pediatric limp, hot joint, injury, or non-weight bearing if symptoms, vitals, critical cutoffs, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+                                  "description": "Escalate Pediatric limp, hot joint, injury, or non-weight bearing if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
                                   "evaluable_from": [
                                     "symptoms",
                                     "exam",
@@ -3951,6 +4155,22 @@
                                       ],
                                       "source_section": "Reference list and investigations",
                                       "review_status": "source_backed"
+                                    },
+                                    {
+                                      "id": "initialTests_peds_msk_xray_localized_pain",
+                                      "label": "X-ray localized pain or injury area",
+                                      "criteria_text": "X-ray localized pain or injury area Order radiography of the localized area of concern when pain, trauma, deformity, focal tenderness, or persistent inability to bear weight localizes a fracture or bone lesion concern. Positive or concerning imaging changes immobilization, orthopaedic referral, activity restriction, admission, or specialty workup. Fracture, dislocation, bone lesion, slipped hip pathology, or tumor causing localized pediatric limp. ACR rates radiography of the localized lower-extremity area as usually appropriate in a child up to age 5 with localized acute limp and no infection concern; RCH uses X-ray to exclude fracture or tumor.",
+                                      "cutoffs": [
+                                        "age 5"
+                                      ],
+                                      "data_needed": [
+                                        "age 5"
+                                      ],
+                                      "source_ids": [
+                                        "ACR_ACUTELY_LIMPING_CHILD_2018"
+                                      ],
+                                      "source_section": "variant 2 localized symptoms without infection and RCH X-ray comments",
+                                      "review_status": "source_backed"
                                     }
                                   ]
                                 },
@@ -4016,6 +4236,22 @@
                                       "RCH_LIMPING_CHILD"
                                     ],
                                     "source_section": "Reference list and investigations",
+                                    "review_status": "source_backed"
+                                  },
+                                  {
+                                    "id": "initialTests_peds_msk_xray_localized_pain",
+                                    "label": "X-ray localized pain or injury area",
+                                    "criteria_text": "X-ray localized pain or injury area Order radiography of the localized area of concern when pain, trauma, deformity, focal tenderness, or persistent inability to bear weight localizes a fracture or bone lesion concern. Positive or concerning imaging changes immobilization, orthopaedic referral, activity restriction, admission, or specialty workup. Fracture, dislocation, bone lesion, slipped hip pathology, or tumor causing localized pediatric limp. ACR rates radiography of the localized lower-extremity area as usually appropriate in a child up to age 5 with localized acute limp and no infection concern; RCH uses X-ray to exclude fracture or tumor.",
+                                    "cutoffs": [
+                                      "age 5"
+                                    ],
+                                    "data_needed": [
+                                      "age 5"
+                                    ],
+                                    "source_ids": [
+                                      "ACR_ACUTELY_LIMPING_CHILD_2018"
+                                    ],
+                                    "source_section": "variant 2 localized symptoms without infection and RCH X-ray comments",
                                     "review_status": "source_backed"
                                   }
                                 ]
@@ -4114,10 +4350,26 @@
                                       ],
                                       "source_section": "Reference list and investigations",
                                       "review_status": "source_backed"
+                                    },
+                                    {
+                                      "id": "initialTests_peds_msk_xray_localized_pain",
+                                      "label": "X-ray localized pain or injury area",
+                                      "criteria_text": "X-ray localized pain or injury area Order radiography of the localized area of concern when pain, trauma, deformity, focal tenderness, or persistent inability to bear weight localizes a fracture or bone lesion concern. Positive or concerning imaging changes immobilization, orthopaedic referral, activity restriction, admission, or specialty workup. Fracture, dislocation, bone lesion, slipped hip pathology, or tumor causing localized pediatric limp. ACR rates radiography of the localized lower-extremity area as usually appropriate in a child up to age 5 with localized acute limp and no infection concern; RCH uses X-ray to exclude fracture or tumor.",
+                                      "cutoffs": [
+                                        "age 5"
+                                      ],
+                                      "data_needed": [
+                                        "age 5"
+                                      ],
+                                      "source_ids": [
+                                        "ACR_ACUTELY_LIMPING_CHILD_2018"
+                                      ],
+                                      "source_section": "variant 2 localized symptoms without infection and RCH X-ray comments",
+                                      "review_status": "source_backed"
                                     }
                                   ]
                                 },
-                                "action": "Use the active Pediatric limp, hot joint, injury, or non-weight bearing cutoff criteria and response trend to stop, narrow, taper, or continue treatment; document what cutoff or finding changed.",
+                                "action": "Use the active Pediatric limp, hot joint, injury, or non-weight bearing objective criteria and response trend (7 days; >7 days; >=20 mg/L; >=7 mm; age 5) to stop, narrow, taper, or continue treatment; document what threshold or finding changed.",
                                 "children": [],
                                 "endpoint_type": "deescalation_stopping",
                                 "guideline_cutoffs": [
@@ -4180,6 +4432,22 @@
                                     ],
                                     "source_section": "Reference list and investigations",
                                     "review_status": "source_backed"
+                                  },
+                                  {
+                                    "id": "initialTests_peds_msk_xray_localized_pain",
+                                    "label": "X-ray localized pain or injury area",
+                                    "criteria_text": "X-ray localized pain or injury area Order radiography of the localized area of concern when pain, trauma, deformity, focal tenderness, or persistent inability to bear weight localizes a fracture or bone lesion concern. Positive or concerning imaging changes immobilization, orthopaedic referral, activity restriction, admission, or specialty workup. Fracture, dislocation, bone lesion, slipped hip pathology, or tumor causing localized pediatric limp. ACR rates radiography of the localized lower-extremity area as usually appropriate in a child up to age 5 with localized acute limp and no infection concern; RCH uses X-ray to exclude fracture or tumor.",
+                                    "cutoffs": [
+                                      "age 5"
+                                    ],
+                                    "data_needed": [
+                                      "age 5"
+                                    ],
+                                    "source_ids": [
+                                      "ACR_ACUTELY_LIMPING_CHILD_2018"
+                                    ],
+                                    "source_section": "variant 2 localized symptoms without infection and RCH X-ray comments",
+                                    "review_status": "source_backed"
                                   }
                                 ]
                               },
@@ -4231,7 +4499,7 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend cutoff-bearing labs/results",
+                              "trend objective labs/results",
                               "review treatment response/adverse effects",
                               "confirm disposition and follow-up owner",
                               "Measure temperature",
@@ -4299,6 +4567,22 @@
                                   "RCH_LIMPING_CHILD"
                                 ],
                                 "source_section": "Reference list and investigations",
+                                "review_status": "source_backed"
+                              },
+                              {
+                                "id": "initialTests_peds_msk_xray_localized_pain",
+                                "label": "X-ray localized pain or injury area",
+                                "criteria_text": "X-ray localized pain or injury area Order radiography of the localized area of concern when pain, trauma, deformity, focal tenderness, or persistent inability to bear weight localizes a fracture or bone lesion concern. Positive or concerning imaging changes immobilization, orthopaedic referral, activity restriction, admission, or specialty workup. Fracture, dislocation, bone lesion, slipped hip pathology, or tumor causing localized pediatric limp. ACR rates radiography of the localized lower-extremity area as usually appropriate in a child up to age 5 with localized acute limp and no infection concern; RCH uses X-ray to exclude fracture or tumor.",
+                                "cutoffs": [
+                                  "age 5"
+                                ],
+                                "data_needed": [
+                                  "age 5"
+                                ],
+                                "source_ids": [
+                                  "ACR_ACUTELY_LIMPING_CHILD_2018"
+                                ],
+                                "source_section": "variant 2 localized symptoms without infection and RCH X-ray comments",
                                 "review_status": "source_backed"
                               }
                             ]
@@ -4373,13 +4657,29 @@
                         ],
                         "source_section": "Reference list and investigations",
                         "review_status": "source_backed"
+                      },
+                      {
+                        "id": "initialTests_peds_msk_xray_localized_pain",
+                        "label": "X-ray localized pain or injury area",
+                        "criteria_text": "X-ray localized pain or injury area Order radiography of the localized area of concern when pain, trauma, deformity, focal tenderness, or persistent inability to bear weight localizes a fracture or bone lesion concern. Positive or concerning imaging changes immobilization, orthopaedic referral, activity restriction, admission, or specialty workup. Fracture, dislocation, bone lesion, slipped hip pathology, or tumor causing localized pediatric limp. ACR rates radiography of the localized lower-extremity area as usually appropriate in a child up to age 5 with localized acute limp and no infection concern; RCH uses X-ray to exclude fracture or tumor.",
+                        "cutoffs": [
+                          "age 5"
+                        ],
+                        "data_needed": [
+                          "age 5"
+                        ],
+                        "source_ids": [
+                          "ACR_ACUTELY_LIMPING_CHILD_2018"
+                        ],
+                        "source_section": "variant 2 localized symptoms without infection and RCH X-ray comments",
+                        "review_status": "source_backed"
                       }
                     ]
                   },
                   {
                     "id": "pediatric_msk_limp_hot_joint_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric limp, hot joint, injury, or non-weight bearing: switch to mimic/alternate pathway when cutoff criteria do not fit",
+                    "label": "Pediatric limp, hot joint, injury, or non-weight bearing: switch to mimic/alternate pathway when threshold/result criteria do not fit",
                     "edgeLabel": "Criteria favor mimic or alternate pathway",
                     "source_ids": [
                       "RCH_BONE_JOINT_INFECTION",
@@ -4391,7 +4691,7 @@
                     "criteria": {
                       "rule_id": "pediatric_msk_limp_hot_joint_alternate_criteria",
                       "source": "criteria",
-                      "description": "Use an alternate pathway when Pediatric limp, hot joint, injury, or non-weight bearing criteria are absent, a cited mimic better explains the presentation, or cutoff data contradict this workup.",
+                      "description": "Use an alternate pathway when Pediatric limp, hot joint, injury, or non-weight bearing criteria are absent, a cited mimic better explains the presentation, or objective result data contradict this workup.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4467,6 +4767,22 @@
                           ],
                           "source_section": "Reference list and investigations",
                           "review_status": "source_backed"
+                        },
+                        {
+                          "id": "initialTests_peds_msk_xray_localized_pain",
+                          "label": "X-ray localized pain or injury area",
+                          "criteria_text": "X-ray localized pain or injury area Order radiography of the localized area of concern when pain, trauma, deformity, focal tenderness, or persistent inability to bear weight localizes a fracture or bone lesion concern. Positive or concerning imaging changes immobilization, orthopaedic referral, activity restriction, admission, or specialty workup. Fracture, dislocation, bone lesion, slipped hip pathology, or tumor causing localized pediatric limp. ACR rates radiography of the localized lower-extremity area as usually appropriate in a child up to age 5 with localized acute limp and no infection concern; RCH uses X-ray to exclude fracture or tumor.",
+                          "cutoffs": [
+                            "age 5"
+                          ],
+                          "data_needed": [
+                            "age 5"
+                          ],
+                          "source_ids": [
+                            "ACR_ACUTELY_LIMPING_CHILD_2018"
+                          ],
+                          "source_section": "variant 2 localized symptoms without infection and RCH X-ray comments",
+                          "review_status": "source_backed"
                         }
                       ]
                     },
@@ -4536,6 +4852,22 @@
                     ],
                     "source_section": "Reference list and investigations",
                     "review_status": "source_backed"
+                  },
+                  {
+                    "id": "initialTests_peds_msk_xray_localized_pain",
+                    "label": "X-ray localized pain or injury area",
+                    "criteria_text": "X-ray localized pain or injury area Order radiography of the localized area of concern when pain, trauma, deformity, focal tenderness, or persistent inability to bear weight localizes a fracture or bone lesion concern. Positive or concerning imaging changes immobilization, orthopaedic referral, activity restriction, admission, or specialty workup. Fracture, dislocation, bone lesion, slipped hip pathology, or tumor causing localized pediatric limp. ACR rates radiography of the localized lower-extremity area as usually appropriate in a child up to age 5 with localized acute limp and no infection concern; RCH uses X-ray to exclude fracture or tumor.",
+                    "cutoffs": [
+                      "age 5"
+                    ],
+                    "data_needed": [
+                      "age 5"
+                    ],
+                    "source_ids": [
+                      "ACR_ACUTELY_LIMPING_CHILD_2018"
+                    ],
+                    "source_section": "variant 2 localized symptoms without infection and RCH X-ray comments",
+                    "review_status": "source_backed"
                   }
                 ],
                 "clinical_criteria": [
@@ -4598,6 +4930,22 @@
                     ],
                     "source_section": "Reference list and investigations",
                     "review_status": "source_backed"
+                  },
+                  {
+                    "id": "initialTests_peds_msk_xray_localized_pain",
+                    "label": "X-ray localized pain or injury area",
+                    "criteria_text": "X-ray localized pain or injury area Order radiography of the localized area of concern when pain, trauma, deformity, focal tenderness, or persistent inability to bear weight localizes a fracture or bone lesion concern. Positive or concerning imaging changes immobilization, orthopaedic referral, activity restriction, admission, or specialty workup. Fracture, dislocation, bone lesion, slipped hip pathology, or tumor causing localized pediatric limp. ACR rates radiography of the localized lower-extremity area as usually appropriate in a child up to age 5 with localized acute limp and no infection concern; RCH uses X-ray to exclude fracture or tumor.",
+                    "cutoffs": [
+                      "age 5"
+                    ],
+                    "data_needed": [
+                      "age 5"
+                    ],
+                    "source_ids": [
+                      "ACR_ACUTELY_LIMPING_CHILD_2018"
+                    ],
+                    "source_section": "variant 2 localized symptoms without infection and RCH X-ray comments",
+                    "review_status": "source_backed"
                   }
                 ]
               }
@@ -4643,7 +4991,8 @@
               "7 days",
               ">7 days",
               ">=20 mg/L",
-              ">=7 mm"
+              ">=7 mm",
+              "age 5"
             ],
             "guideline_cutoffs": [
               {
@@ -4705,6 +5054,22 @@
                 ],
                 "source_section": "Reference list and investigations",
                 "review_status": "source_backed"
+              },
+              {
+                "id": "initialTests_peds_msk_xray_localized_pain",
+                "label": "X-ray localized pain or injury area",
+                "criteria_text": "X-ray localized pain or injury area Order radiography of the localized area of concern when pain, trauma, deformity, focal tenderness, or persistent inability to bear weight localizes a fracture or bone lesion concern. Positive or concerning imaging changes immobilization, orthopaedic referral, activity restriction, admission, or specialty workup. Fracture, dislocation, bone lesion, slipped hip pathology, or tumor causing localized pediatric limp. ACR rates radiography of the localized lower-extremity area as usually appropriate in a child up to age 5 with localized acute limp and no infection concern; RCH uses X-ray to exclude fracture or tumor.",
+                "cutoffs": [
+                  "age 5"
+                ],
+                "data_needed": [
+                  "age 5"
+                ],
+                "source_ids": [
+                  "ACR_ACUTELY_LIMPING_CHILD_2018"
+                ],
+                "source_section": "variant 2 localized symptoms without infection and RCH X-ray comments",
+                "review_status": "source_backed"
               }
             ]
           }
@@ -4721,7 +5086,7 @@
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "pediatric_msk_limp_hot_joint_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Cutoff data missing"
+          "expected_active_branch": "Threshold/result data missing"
         },
         {
           "scenario_id": "urgent_or_high_risk",
@@ -4779,7 +5144,7 @@
         "compact_tree_requirements": [
           "no prohibited generic node labels",
           "concurrent diagnostic/treatment bundles instead of long one-step chains",
-          "cutoff-bearing criteria visible in classification and endpoint nodes",
+          "cited thresholds/rules visible in classification and endpoint nodes",
           "all endpoints cite evidence or state needs_clinical_review",
           "missing-data endpoints name exact data needed"
         ]

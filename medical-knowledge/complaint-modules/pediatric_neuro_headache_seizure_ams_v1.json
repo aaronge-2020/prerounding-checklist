@@ -2197,20 +2197,11 @@
           "review_status": "source_backed"
         },
         {
-          "threshold": "5 minutes",
+          "threshold": "more than 5",
           "evidence_item_id": "differentialBuckets_peds_neuro_seizure_status_epilepticus",
           "label": "Seizure, status epilepticus, or post-ictal neurologic risk",
           "source_ids": [
             "CHQ_STATUS_EPILEPTICUS_CHILD"
-          ],
-          "review_status": "source_backed"
-        },
-        {
-          "threshold": "calcium",
-          "evidence_item_id": "initialTests_peds_neuro_seizure_labs_when_indicated",
-          "label": "Seizure metabolic labs when indicated",
-          "source_ids": [
-            "RCH_SEIZURES_ACUTE_2025"
           ],
           "review_status": "source_backed"
         },
@@ -2252,6 +2243,15 @@
         },
         {
           "threshold": "5 minutes",
+          "evidence_item_id": "redFlags_peds_neuro_status_epilepticus_red_flag",
+          "label": "Seizure over 5 minutes or repeated without recovery",
+          "source_ids": [
+            "CHQ_STATUS_EPILEPTICUS_CHILD"
+          ],
+          "review_status": "source_backed"
+        },
+        {
+          "threshold": "more than 5",
           "evidence_item_id": "redFlags_peds_neuro_status_epilepticus_red_flag",
           "label": "Seizure over 5 minutes or repeated without recovery",
           "source_ids": [
@@ -2576,7 +2576,7 @@
         "pediatric_neuro_headache_seizure_ams_classification_decision": {
           "rule_id": "pediatric_neuro_headache_seizure_ams_classification_criteria",
           "source": "criteria",
-          "description": "Classify Pediatric headache, seizure, altered mental status, or focal neurologic concern against explicit cited cutoffs: Headache imaging/escalation triggers include age <4 years, early-morning/sleep-waking/positional/sudden severe/occipital headache, vomiting, seizure, focal neurologic signs, or progressive pattern: <4 years | Active seizure treatment starts when total seizure duration is >=5 minutes or unknown; include prehospital benzodiazepines: >=5 minutes, 2 benzodiazepine doses | Seizure dosing: midazolam 0.15 mg/kg IV/IM/IO or 0.3 mg/kg buccal/IN max 10 mg; phenytoin 20 mg/kg max 2 g; levetiracetam 40-60 mg/kg max 4.5 g: 0.1...",
+          "description": "Classify Pediatric headache, seizure, altered mental status, or focal neurologic concern against cited thresholds and condition-specific rules: Headache imaging/escalation triggers include age <4 years, early-morning/sleep-waking/positional/sudden severe/occipital headache, vomiting, seizure, focal neurologic signs, or progressive pattern: <4 years | Active seizure treatment starts when total seizure duration is >=5 minutes or unknown; include prehospital benzodiazepines: >=5 minutes, 2 benzodiazepine doses | Seizure dosing: midazolam 0.15 mg/kg IV/IM/IO or 0.3 mg/kg buccal/IN max 10 mg; phenytoin 20 mg/kg max 2 g; levetiracetam 40-60 mg/kg max 4.5 g: 0.15 mg/kg, 0.3 mg/kg, 10 mg, 20 mg/kg, 2 g, 40-60 mg/kg | Secondary headache, raised intracranial pressure, infection, or head injury: 4 years | Seizure, status epilepticus, or post-ictal neurologic risk: 12 months, more than 5",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2688,11 +2688,11 @@
               "criteria_text": "Seizure, status epilepticus, or post-ictal neurologic risk Determine whether the child is actively seizing, has had repeated seizures without return to baseline, had a first afebrile seizure, has focal features, is under 12 months, has metabolic or toxicologic risk, or has not returned to baseline. Changes airway support, benzodiazepine and second-line therapy timing, glucose testing, labs, ECG, neuroimaging, EEG/referral timing, admission, and transfer threshold. Status epilepticus, first afebrile seizure, complex febrile seizure, focal seizure, metabolic seizure, toxicologic seizure, epilepsy syndrome, or seizure mimic. RCH and CHQ treat seizure lasting more than 5 minutes or repeated seizures without recovery as status epilepticus and a neurologic emergency.",
               "cutoffs": [
                 "12 months",
-                "5 minutes"
+                "more than 5"
               ],
               "data_needed": [
                 "12 months",
-                "5 minutes"
+                "more than 5"
               ],
               "source_ids": [
                 "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -2705,11 +2705,9 @@
               "label": "Seizure metabolic labs when indicated",
               "criteria_text": "Seizure metabolic labs when indicated Order electrolytes, calcium, venous gas, renal/liver function, and other metabolic labs guided by seizure or altered-conscious-state context. Results change electrolyte/glucose/metabolic correction, DKA/toxin pathway, admission, ICU/transfer, and specialty consultation. Electrolyte disturbance, hypocalcemia, acid-base disorder, renal/hepatic dysfunction, dehydration, diabetes-related metabolic crisis, or toxin/metabolic seizure trigger. RCH recommends considering electrolytes, calcium, and venous gas when seizure requires a second-line agent, child is under 12 months, comorbidity exists, dehydration/toxidrome is possible, or baseline has not returned.",
               "cutoffs": [
-                "calcium",
                 "12 months"
               ],
               "data_needed": [
-                "calcium",
                 "12 months"
               ],
               "source_ids": [
@@ -2757,10 +2755,12 @@
               "label": "Seizure over 5 minutes or repeated without recovery",
               "criteria_text": "Seizure over 5 minutes or repeated without recovery Treat active seizure lasting more than 5 minutes or repeated seizures without full recovery as status epilepticus until controlled. Changes airway/breathing/circulation priority, glucose check, benzodiazepine timing, second-line therapy, senior/PICU/retrieval escalation, and transfer. Status epilepticus or refractory seizure. CHQ defines status epilepticus this way and notes it is a neurologic emergency with rising refractory risk as seizure duration increases.",
               "cutoffs": [
-                "5 minutes"
+                "5 minutes",
+                "more than 5"
               ],
               "data_needed": [
-                "5 minutes"
+                "5 minutes",
+                "more than 5"
               ],
               "source_ids": [
                 "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -2789,7 +2789,7 @@
         "pediatric_neuro_headache_seizure_ams_missing_cutoff_data_endpoint": {
           "rule_id": "pediatric_neuro_headache_seizure_ams_missing_cutoff_data_criteria",
           "source": "criteria",
-          "description": "Route here when Pediatric headache, seizure, altered mental status, or focal neurologic concern cannot be classified because exact cutoff-bearing data are missing.",
+          "description": "Route here when Pediatric headache, seizure, altered mental status, or focal neurologic concern cannot be classified because exact threshold/result data are missing.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2952,11 +2952,11 @@
               "criteria_text": "Seizure, status epilepticus, or post-ictal neurologic risk Determine whether the child is actively seizing, has had repeated seizures without return to baseline, had a first afebrile seizure, has focal features, is under 12 months, has metabolic or toxicologic risk, or has not returned to baseline. Changes airway support, benzodiazepine and second-line therapy timing, glucose testing, labs, ECG, neuroimaging, EEG/referral timing, admission, and transfer threshold. Status epilepticus, first afebrile seizure, complex febrile seizure, focal seizure, metabolic seizure, toxicologic seizure, epilepsy syndrome, or seizure mimic. RCH and CHQ treat seizure lasting more than 5 minutes or repeated seizures without recovery as status epilepticus and a neurologic emergency.",
               "cutoffs": [
                 "12 months",
-                "5 minutes"
+                "more than 5"
               ],
               "data_needed": [
                 "12 months",
-                "5 minutes"
+                "more than 5"
               ],
               "source_ids": [
                 "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -2969,11 +2969,9 @@
               "label": "Seizure metabolic labs when indicated",
               "criteria_text": "Seizure metabolic labs when indicated Order electrolytes, calcium, venous gas, renal/liver function, and other metabolic labs guided by seizure or altered-conscious-state context. Results change electrolyte/glucose/metabolic correction, DKA/toxin pathway, admission, ICU/transfer, and specialty consultation. Electrolyte disturbance, hypocalcemia, acid-base disorder, renal/hepatic dysfunction, dehydration, diabetes-related metabolic crisis, or toxin/metabolic seizure trigger. RCH recommends considering electrolytes, calcium, and venous gas when seizure requires a second-line agent, child is under 12 months, comorbidity exists, dehydration/toxidrome is possible, or baseline has not returned.",
               "cutoffs": [
-                "calcium",
                 "12 months"
               ],
               "data_needed": [
-                "calcium",
                 "12 months"
               ],
               "source_ids": [
@@ -3021,10 +3019,12 @@
               "label": "Seizure over 5 minutes or repeated without recovery",
               "criteria_text": "Seizure over 5 minutes or repeated without recovery Treat active seizure lasting more than 5 minutes or repeated seizures without full recovery as status epilepticus until controlled. Changes airway/breathing/circulation priority, glucose check, benzodiazepine timing, second-line therapy, senior/PICU/retrieval escalation, and transfer. Status epilepticus or refractory seizure. CHQ defines status epilepticus this way and notes it is a neurologic emergency with rising refractory risk as seizure duration increases.",
               "cutoffs": [
-                "5 minutes"
+                "5 minutes",
+                "more than 5"
               ],
               "data_needed": [
-                "5 minutes"
+                "5 minutes",
+                "more than 5"
               ],
               "source_ids": [
                 "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -3164,11 +3164,11 @@
               "criteria_text": "Seizure, status epilepticus, or post-ictal neurologic risk Determine whether the child is actively seizing, has had repeated seizures without return to baseline, had a first afebrile seizure, has focal features, is under 12 months, has metabolic or toxicologic risk, or has not returned to baseline. Changes airway support, benzodiazepine and second-line therapy timing, glucose testing, labs, ECG, neuroimaging, EEG/referral timing, admission, and transfer threshold. Status epilepticus, first afebrile seizure, complex febrile seizure, focal seizure, metabolic seizure, toxicologic seizure, epilepsy syndrome, or seizure mimic. RCH and CHQ treat seizure lasting more than 5 minutes or repeated seizures without recovery as status epilepticus and a neurologic emergency.",
               "cutoffs": [
                 "12 months",
-                "5 minutes"
+                "more than 5"
               ],
               "data_needed": [
                 "12 months",
-                "5 minutes"
+                "more than 5"
               ],
               "source_ids": [
                 "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -3181,11 +3181,9 @@
               "label": "Seizure metabolic labs when indicated",
               "criteria_text": "Seizure metabolic labs when indicated Order electrolytes, calcium, venous gas, renal/liver function, and other metabolic labs guided by seizure or altered-conscious-state context. Results change electrolyte/glucose/metabolic correction, DKA/toxin pathway, admission, ICU/transfer, and specialty consultation. Electrolyte disturbance, hypocalcemia, acid-base disorder, renal/hepatic dysfunction, dehydration, diabetes-related metabolic crisis, or toxin/metabolic seizure trigger. RCH recommends considering electrolytes, calcium, and venous gas when seizure requires a second-line agent, child is under 12 months, comorbidity exists, dehydration/toxidrome is possible, or baseline has not returned.",
               "cutoffs": [
-                "calcium",
                 "12 months"
               ],
               "data_needed": [
-                "calcium",
                 "12 months"
               ],
               "source_ids": [
@@ -3233,10 +3231,12 @@
               "label": "Seizure over 5 minutes or repeated without recovery",
               "criteria_text": "Seizure over 5 minutes or repeated without recovery Treat active seizure lasting more than 5 minutes or repeated seizures without full recovery as status epilepticus until controlled. Changes airway/breathing/circulation priority, glucose check, benzodiazepine timing, second-line therapy, senior/PICU/retrieval escalation, and transfer. Status epilepticus or refractory seizure. CHQ defines status epilepticus this way and notes it is a neurologic emergency with rising refractory risk as seizure duration increases.",
               "cutoffs": [
-                "5 minutes"
+                "5 minutes",
+                "more than 5"
               ],
               "data_needed": [
-                "5 minutes"
+                "5 minutes",
+                "more than 5"
               ],
               "source_ids": [
                 "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -3337,11 +3337,11 @@
               "criteria_text": "Seizure, status epilepticus, or post-ictal neurologic risk Determine whether the child is actively seizing, has had repeated seizures without return to baseline, had a first afebrile seizure, has focal features, is under 12 months, has metabolic or toxicologic risk, or has not returned to baseline. Changes airway support, benzodiazepine and second-line therapy timing, glucose testing, labs, ECG, neuroimaging, EEG/referral timing, admission, and transfer threshold. Status epilepticus, first afebrile seizure, complex febrile seizure, focal seizure, metabolic seizure, toxicologic seizure, epilepsy syndrome, or seizure mimic. RCH and CHQ treat seizure lasting more than 5 minutes or repeated seizures without recovery as status epilepticus and a neurologic emergency.",
               "cutoffs": [
                 "12 months",
-                "5 minutes"
+                "more than 5"
               ],
               "data_needed": [
                 "12 months",
-                "5 minutes"
+                "more than 5"
               ],
               "source_ids": [
                 "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -3354,11 +3354,9 @@
               "label": "Seizure metabolic labs when indicated",
               "criteria_text": "Seizure metabolic labs when indicated Order electrolytes, calcium, venous gas, renal/liver function, and other metabolic labs guided by seizure or altered-conscious-state context. Results change electrolyte/glucose/metabolic correction, DKA/toxin pathway, admission, ICU/transfer, and specialty consultation. Electrolyte disturbance, hypocalcemia, acid-base disorder, renal/hepatic dysfunction, dehydration, diabetes-related metabolic crisis, or toxin/metabolic seizure trigger. RCH recommends considering electrolytes, calcium, and venous gas when seizure requires a second-line agent, child is under 12 months, comorbidity exists, dehydration/toxidrome is possible, or baseline has not returned.",
               "cutoffs": [
-                "calcium",
                 "12 months"
               ],
               "data_needed": [
-                "calcium",
                 "12 months"
               ],
               "source_ids": [
@@ -3372,10 +3370,12 @@
               "label": "Seizure over 5 minutes or repeated without recovery",
               "criteria_text": "Seizure over 5 minutes or repeated without recovery Treat active seizure lasting more than 5 minutes or repeated seizures without full recovery as status epilepticus until controlled. Changes airway/breathing/circulation priority, glucose check, benzodiazepine timing, second-line therapy, senior/PICU/retrieval escalation, and transfer. Status epilepticus or refractory seizure. CHQ defines status epilepticus this way and notes it is a neurologic emergency with rising refractory risk as seizure duration increases.",
               "cutoffs": [
-                "5 minutes"
+                "5 minutes",
+                "more than 5"
               ],
               "data_needed": [
-                "5 minutes"
+                "5 minutes",
+                "more than 5"
               ],
               "source_ids": [
                 "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -3411,7 +3411,7 @@
         "pediatric_neuro_headache_seizure_ams_monitoring_bundle": {
           "rule_id": "pediatric_neuro_headache_seizure_ams_monitoring_criteria",
           "source": "criteria",
-          "description": "Monitor Pediatric headache, seizure, altered mental status, or focal neurologic concern by trending the same cutoff-bearing findings that selected the branch, plus medication adverse effects and disposition constraints.",
+          "description": "Monitor Pediatric headache, seizure, altered mental status, or focal neurologic concern by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3520,11 +3520,11 @@
               "criteria_text": "Seizure, status epilepticus, or post-ictal neurologic risk Determine whether the child is actively seizing, has had repeated seizures without return to baseline, had a first afebrile seizure, has focal features, is under 12 months, has metabolic or toxicologic risk, or has not returned to baseline. Changes airway support, benzodiazepine and second-line therapy timing, glucose testing, labs, ECG, neuroimaging, EEG/referral timing, admission, and transfer threshold. Status epilepticus, first afebrile seizure, complex febrile seizure, focal seizure, metabolic seizure, toxicologic seizure, epilepsy syndrome, or seizure mimic. RCH and CHQ treat seizure lasting more than 5 minutes or repeated seizures without recovery as status epilepticus and a neurologic emergency.",
               "cutoffs": [
                 "12 months",
-                "5 minutes"
+                "more than 5"
               ],
               "data_needed": [
                 "12 months",
-                "5 minutes"
+                "more than 5"
               ],
               "source_ids": [
                 "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -3537,11 +3537,9 @@
               "label": "Seizure metabolic labs when indicated",
               "criteria_text": "Seizure metabolic labs when indicated Order electrolytes, calcium, venous gas, renal/liver function, and other metabolic labs guided by seizure or altered-conscious-state context. Results change electrolyte/glucose/metabolic correction, DKA/toxin pathway, admission, ICU/transfer, and specialty consultation. Electrolyte disturbance, hypocalcemia, acid-base disorder, renal/hepatic dysfunction, dehydration, diabetes-related metabolic crisis, or toxin/metabolic seizure trigger. RCH recommends considering electrolytes, calcium, and venous gas when seizure requires a second-line agent, child is under 12 months, comorbidity exists, dehydration/toxidrome is possible, or baseline has not returned.",
               "cutoffs": [
-                "calcium",
                 "12 months"
               ],
               "data_needed": [
-                "calcium",
                 "12 months"
               ],
               "source_ids": [
@@ -3589,7 +3587,7 @@
         "pediatric_neuro_headache_seizure_ams_worsening_endpoint": {
           "rule_id": "pediatric_neuro_headache_seizure_ams_worsening_criteria",
           "source": "criteria",
-          "description": "Escalate Pediatric headache, seizure, altered mental status, or focal neurologic concern if symptoms, vitals, critical cutoffs, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+          "description": "Escalate Pediatric headache, seizure, altered mental status, or focal neurologic concern if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3698,11 +3696,11 @@
               "criteria_text": "Seizure, status epilepticus, or post-ictal neurologic risk Determine whether the child is actively seizing, has had repeated seizures without return to baseline, had a first afebrile seizure, has focal features, is under 12 months, has metabolic or toxicologic risk, or has not returned to baseline. Changes airway support, benzodiazepine and second-line therapy timing, glucose testing, labs, ECG, neuroimaging, EEG/referral timing, admission, and transfer threshold. Status epilepticus, first afebrile seizure, complex febrile seizure, focal seizure, metabolic seizure, toxicologic seizure, epilepsy syndrome, or seizure mimic. RCH and CHQ treat seizure lasting more than 5 minutes or repeated seizures without recovery as status epilepticus and a neurologic emergency.",
               "cutoffs": [
                 "12 months",
-                "5 minutes"
+                "more than 5"
               ],
               "data_needed": [
                 "12 months",
-                "5 minutes"
+                "more than 5"
               ],
               "source_ids": [
                 "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -3715,11 +3713,9 @@
               "label": "Seizure metabolic labs when indicated",
               "criteria_text": "Seizure metabolic labs when indicated Order electrolytes, calcium, venous gas, renal/liver function, and other metabolic labs guided by seizure or altered-conscious-state context. Results change electrolyte/glucose/metabolic correction, DKA/toxin pathway, admission, ICU/transfer, and specialty consultation. Electrolyte disturbance, hypocalcemia, acid-base disorder, renal/hepatic dysfunction, dehydration, diabetes-related metabolic crisis, or toxin/metabolic seizure trigger. RCH recommends considering electrolytes, calcium, and venous gas when seizure requires a second-line agent, child is under 12 months, comorbidity exists, dehydration/toxidrome is possible, or baseline has not returned.",
               "cutoffs": [
-                "calcium",
                 "12 months"
               ],
               "data_needed": [
-                "calcium",
                 "12 months"
               ],
               "source_ids": [
@@ -3876,11 +3872,11 @@
               "criteria_text": "Seizure, status epilepticus, or post-ictal neurologic risk Determine whether the child is actively seizing, has had repeated seizures without return to baseline, had a first afebrile seizure, has focal features, is under 12 months, has metabolic or toxicologic risk, or has not returned to baseline. Changes airway support, benzodiazepine and second-line therapy timing, glucose testing, labs, ECG, neuroimaging, EEG/referral timing, admission, and transfer threshold. Status epilepticus, first afebrile seizure, complex febrile seizure, focal seizure, metabolic seizure, toxicologic seizure, epilepsy syndrome, or seizure mimic. RCH and CHQ treat seizure lasting more than 5 minutes or repeated seizures without recovery as status epilepticus and a neurologic emergency.",
               "cutoffs": [
                 "12 months",
-                "5 minutes"
+                "more than 5"
               ],
               "data_needed": [
                 "12 months",
-                "5 minutes"
+                "more than 5"
               ],
               "source_ids": [
                 "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -3893,11 +3889,9 @@
               "label": "Seizure metabolic labs when indicated",
               "criteria_text": "Seizure metabolic labs when indicated Order electrolytes, calcium, venous gas, renal/liver function, and other metabolic labs guided by seizure or altered-conscious-state context. Results change electrolyte/glucose/metabolic correction, DKA/toxin pathway, admission, ICU/transfer, and specialty consultation. Electrolyte disturbance, hypocalcemia, acid-base disorder, renal/hepatic dysfunction, dehydration, diabetes-related metabolic crisis, or toxin/metabolic seizure trigger. RCH recommends considering electrolytes, calcium, and venous gas when seizure requires a second-line agent, child is under 12 months, comorbidity exists, dehydration/toxidrome is possible, or baseline has not returned.",
               "cutoffs": [
-                "calcium",
                 "12 months"
               ],
               "data_needed": [
-                "calcium",
                 "12 months"
               ],
               "source_ids": [
@@ -3968,7 +3962,7 @@
         "pediatric_neuro_headache_seizure_ams_alternate_endpoint": {
           "rule_id": "pediatric_neuro_headache_seizure_ams_alternate_criteria",
           "source": "criteria",
-          "description": "Use an alternate pathway when Pediatric headache, seizure, altered mental status, or focal neurologic concern criteria are absent, a cited mimic better explains the presentation, or cutoff data contradict this workup.",
+          "description": "Use an alternate pathway when Pediatric headache, seizure, altered mental status, or focal neurologic concern criteria are absent, a cited mimic better explains the presentation, or objective result data contradict this workup.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4076,11 +4070,11 @@
               "criteria_text": "Seizure, status epilepticus, or post-ictal neurologic risk Determine whether the child is actively seizing, has had repeated seizures without return to baseline, had a first afebrile seizure, has focal features, is under 12 months, has metabolic or toxicologic risk, or has not returned to baseline. Changes airway support, benzodiazepine and second-line therapy timing, glucose testing, labs, ECG, neuroimaging, EEG/referral timing, admission, and transfer threshold. Status epilepticus, first afebrile seizure, complex febrile seizure, focal seizure, metabolic seizure, toxicologic seizure, epilepsy syndrome, or seizure mimic. RCH and CHQ treat seizure lasting more than 5 minutes or repeated seizures without recovery as status epilepticus and a neurologic emergency.",
               "cutoffs": [
                 "12 months",
-                "5 minutes"
+                "more than 5"
               ],
               "data_needed": [
                 "12 months",
-                "5 minutes"
+                "more than 5"
               ],
               "source_ids": [
                 "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -4093,11 +4087,9 @@
               "label": "Seizure metabolic labs when indicated",
               "criteria_text": "Seizure metabolic labs when indicated Order electrolytes, calcium, venous gas, renal/liver function, and other metabolic labs guided by seizure or altered-conscious-state context. Results change electrolyte/glucose/metabolic correction, DKA/toxin pathway, admission, ICU/transfer, and specialty consultation. Electrolyte disturbance, hypocalcemia, acid-base disorder, renal/hepatic dysfunction, dehydration, diabetes-related metabolic crisis, or toxin/metabolic seizure trigger. RCH recommends considering electrolytes, calcium, and venous gas when seizure requires a second-line agent, child is under 12 months, comorbidity exists, dehydration/toxidrome is possible, or baseline has not returned.",
               "cutoffs": [
-                "calcium",
                 "12 months"
               ],
               "data_needed": [
-                "calcium",
                 "12 months"
               ],
               "source_ids": [
@@ -4177,7 +4169,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Pediatric headache, seizure, altered mental status, or focal neurologic concern using cutoff-bearing diagnostic criteria, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+        "action": "Route Pediatric headache, seizure, altered mental status, or focal neurologic concern using cited diagnostic thresholds/rules, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -4219,7 +4211,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Before choosing a non-emergency Pediatric headache, seizure, altered mental status, or focal neurologic concern branch, document: presenting trigger, onset/trajectory, focused exam, vital signs, cutoff-bearing labs/results, medication/allergy context, comorbidities, demographics, pregnancy/applicability status, and current workup findings.",
+            "action": "Before choosing a non-emergency Pediatric headache, seizure, altered mental status, or focal neurologic concern branch, document: presenting trigger, onset/trajectory, focused exam, vital signs, threshold labs/results, medication/allergy context, comorbidities, demographics, pregnancy/applicability status, and current workup findings.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "missing_data_needed": [
@@ -4273,12 +4265,12 @@
                 "AHRQ_CALIBRATE_DX"
               ]
             },
-            "action": "Obtain together: Do not order routine tests for low-risk headache; Point-of-care glucose; Seizure metabolic labs when indicated; 12-lead ECG when seizure mimic or first seizure assessment; Neuroimaging when indicated; EEG and urgent first-seizure referral; CNS infection testing with LP safety check; Measure temperature; Measure heart rate; Measure respiratory rate; Measure blood pressure; Measure oxygen saturation; age; headache pattern; vomiting; neurologic exam; seizure history; BP/conscious state; seizure start time; prehospita....",
+            "action": "Obtain together: Do not order routine tests for low-risk headache; Point-of-care glucose; Seizure metabolic labs when indicated; 12-lead ECG when seizure mimic or first seizure assessment; Neuroimaging when indicated; EEG and urgent first-seizure referral; CNS infection testing with LP safety check; Measure temperature; Measure heart rate; Measure respiratory rate; Measure blood pressure; Measure oxygen saturation; age; headache pattern; vomiting; neurologic exam; seizure history; BP/conscious state; seizure start time; prehospital medication doses.",
             "children": [
               {
                 "id": "pediatric_neuro_headache_seizure_ams_classification_decision",
                 "type": "decision",
-                "label": "Pediatric headache, seizure, altered mental status, or focal neurologic concern: classify using explicit guideline cutoffs",
+                "label": "Pediatric headache, seizure, altered mental status, or focal neurologic concern: classify by Headache imaging/escalation triggers include age <4 years, early-morning/sleep-waking/positional/sudden severe/occipital headache, vomiting, seizure, focal neurologic signs, or progressive pattern: <4 years | Active seizure treatment starts when total seizure duration is >=5 minutes or unknown; include prehospital benzodiazepines: >=5 minutes, 2 benzodiazepine doses | Seizure dosing: midazolam 0.15 mg/kg IV/IM/IO or 0.3 mg/kg buccal/IN max 10 mg; phenytoin 20 mg/kg max 2 g; levetiracetam 40-60 mg/kg max 4.5 g: 0.15 mg/kg, 0.3 mg/kg, 10 mg, 20 mg/kg, 2 g, 40-60 mg/kg | Secondary headache, raised intracranial pressure, infection, or head injury: 4 years | Seizure, status epilepticus, or post-ictal neurologic risk: 12 months, more than 5",
                 "edgeLabel": "Concurrent data bundle obtained",
                 "source_ids": [
                   "RCH_HEADACHE_CHILD",
@@ -4292,7 +4284,7 @@
                 "criteria": {
                   "rule_id": "pediatric_neuro_headache_seizure_ams_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Pediatric headache, seizure, altered mental status, or focal neurologic concern against explicit cited cutoffs: Headache imaging/escalation triggers include age <4 years, early-morning/sleep-waking/positional/sudden severe/occipital headache, vomiting, seizure, focal neurologic signs, or progressive pattern: <4 years | Active seizure treatment starts when total seizure duration is >=5 minutes or unknown; include prehospital benzodiazepines: >=5 minutes, 2 benzodiazepine doses | Seizure dosing: midazolam 0.15 mg/kg IV/IM/IO or 0.3 mg/kg buccal/IN max 10 mg; phenytoin 20 mg/kg max 2 g; levetiracetam 40-60 mg/kg max 4.5 g: 0.1...",
+                  "description": "Classify Pediatric headache, seizure, altered mental status, or focal neurologic concern against cited thresholds and condition-specific rules: Headache imaging/escalation triggers include age <4 years, early-morning/sleep-waking/positional/sudden severe/occipital headache, vomiting, seizure, focal neurologic signs, or progressive pattern: <4 years | Active seizure treatment starts when total seizure duration is >=5 minutes or unknown; include prehospital benzodiazepines: >=5 minutes, 2 benzodiazepine doses | Seizure dosing: midazolam 0.15 mg/kg IV/IM/IO or 0.3 mg/kg buccal/IN max 10 mg; phenytoin 20 mg/kg max 2 g; levetiracetam 40-60 mg/kg max 4.5 g: 0.15 mg/kg, 0.3 mg/kg, 10 mg, 20 mg/kg, 2 g, 40-60 mg/kg | Secondary headache, raised intracranial pressure, infection, or head injury: 4 years | Seizure, status epilepticus, or post-ictal neurologic risk: 12 months, more than 5",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -4404,11 +4396,11 @@
                       "criteria_text": "Seizure, status epilepticus, or post-ictal neurologic risk Determine whether the child is actively seizing, has had repeated seizures without return to baseline, had a first afebrile seizure, has focal features, is under 12 months, has metabolic or toxicologic risk, or has not returned to baseline. Changes airway support, benzodiazepine and second-line therapy timing, glucose testing, labs, ECG, neuroimaging, EEG/referral timing, admission, and transfer threshold. Status epilepticus, first afebrile seizure, complex febrile seizure, focal seizure, metabolic seizure, toxicologic seizure, epilepsy syndrome, or seizure mimic. RCH and CHQ treat seizure lasting more than 5 minutes or repeated seizures without recovery as status epilepticus and a neurologic emergency.",
                       "cutoffs": [
                         "12 months",
-                        "5 minutes"
+                        "more than 5"
                       ],
                       "data_needed": [
                         "12 months",
-                        "5 minutes"
+                        "more than 5"
                       ],
                       "source_ids": [
                         "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -4421,11 +4413,9 @@
                       "label": "Seizure metabolic labs when indicated",
                       "criteria_text": "Seizure metabolic labs when indicated Order electrolytes, calcium, venous gas, renal/liver function, and other metabolic labs guided by seizure or altered-conscious-state context. Results change electrolyte/glucose/metabolic correction, DKA/toxin pathway, admission, ICU/transfer, and specialty consultation. Electrolyte disturbance, hypocalcemia, acid-base disorder, renal/hepatic dysfunction, dehydration, diabetes-related metabolic crisis, or toxin/metabolic seizure trigger. RCH recommends considering electrolytes, calcium, and venous gas when seizure requires a second-line agent, child is under 12 months, comorbidity exists, dehydration/toxidrome is possible, or baseline has not returned.",
                       "cutoffs": [
-                        "calcium",
                         "12 months"
                       ],
                       "data_needed": [
-                        "calcium",
                         "12 months"
                       ],
                       "source_ids": [
@@ -4473,10 +4463,12 @@
                       "label": "Seizure over 5 minutes or repeated without recovery",
                       "criteria_text": "Seizure over 5 minutes or repeated without recovery Treat active seizure lasting more than 5 minutes or repeated seizures without full recovery as status epilepticus until controlled. Changes airway/breathing/circulation priority, glucose check, benzodiazepine timing, second-line therapy, senior/PICU/retrieval escalation, and transfer. Status epilepticus or refractory seizure. CHQ defines status epilepticus this way and notes it is a neurologic emergency with rising refractory risk as seizure duration increases.",
                       "cutoffs": [
-                        "5 minutes"
+                        "5 minutes",
+                        "more than 5"
                       ],
                       "data_needed": [
-                        "5 minutes"
+                        "5 minutes",
+                        "more than 5"
                       ],
                       "source_ids": [
                         "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -4502,13 +4494,13 @@
                     }
                   ]
                 },
-                "action": "Choose the active Pediatric headache, seizure, altered mental status, or focal neurologic concern branch by matching patient data to the cited cutoffs and condition-specific criteria.",
+                "action": "Choose the active Pediatric headache, seizure, altered mental status, or focal neurologic concern branch by matching patient data to: Headache imaging/escalation triggers include age <4 years, early-morning/sleep-waking/positional/sudden severe/occipital headache, vomiting, seizure, focal neurologic signs, or progressive pattern: <4 years | Active seizure treatment starts when total seizure duration is >=5 minutes or unknown; include prehospital benzodiazepines: >=5 minutes, 2 benzodiazepine doses | Seizure dosing: midazolam 0.15 mg/kg IV/IM/IO or 0.3 mg/kg buccal/IN max 10 mg; phenytoin 20 mg/kg max 2 g; levetiracetam 40-60 mg/kg max 4.5 g: 0.15 mg/kg, 0.3 mg/kg, 10 mg, 20 mg/kg, 2 g, 40-60 mg/kg | Secondary headache, raised intracranial pressure, infection, or head injury: 4 years | Seizure, status epilepticus, or post-ictal neurologic risk: 12 months, more than 5.",
                 "children": [
                   {
                     "id": "pediatric_neuro_headache_seizure_ams_missing_cutoff_data_endpoint",
                     "type": "endpoint",
-                    "label": "Missing data needed: Pediatric headache, seizure, altered mental status, or focal neurologic concern cutoff-bearing results",
-                    "edgeLabel": "Cutoff data missing",
+                    "label": "Missing data needed: Pediatric headache, seizure, altered mental status, or focal neurologic concern threshold/results",
+                    "edgeLabel": "Threshold/result data missing",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "RCH_HEADACHE_CHILD",
@@ -4521,7 +4513,7 @@
                     "criteria": {
                       "rule_id": "pediatric_neuro_headache_seizure_ams_missing_cutoff_data_criteria",
                       "source": "criteria",
-                      "description": "Route here when Pediatric headache, seizure, altered mental status, or focal neurologic concern cannot be classified because exact cutoff-bearing data are missing.",
+                      "description": "Route here when Pediatric headache, seizure, altered mental status, or focal neurologic concern cannot be classified because exact threshold/result data are missing.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4572,7 +4564,7 @@
                         "2 g"
                       ]
                     },
-                    "action": "Obtain the exact Pediatric headache, seizure, altered mental status, or focal neurologic concern data needed for cutoff-based routing: age; headache pattern; vomiting; neurologic exam; seizure history; BP/conscious state; seizure start time; prehospital medication doses; airway/breathing/circulation status; weight; route availability; Do not order routine tests for low-risk headache; Point-of-care glucose; Seizure metabolic labs when indicated; 12-lead ECG when seizure mimic or first seizure assessment; Neuroimaging when indicated; EEG and urgent f....",
+                    "action": "Obtain the exact Pediatric headache, seizure, altered mental status, or focal neurologic concern data needed for threshold-based routing: age; headache pattern; vomiting; neurologic exam; seizure history; BP/conscious state; seizure start time; prehospital medication doses; airway/breathing/circulation status; weight; route availability; Do not order routine tests for low-risk headache; Point-of-care glucose; Seizure metabolic labs when indicated; 12-lead ECG when seizure mimic or first seizure assessment; Neuroimaging when indicated; EEG and urgent first-seizure referral; CNS infection testing with LP safety check; <4 years; >=5 minutes; 2 benzodiazepine doses; 0.15 mg/kg; 0.3 mg/kg; 10 mg; 20 mg/kg; 2 g.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "missing_data_needed": [
@@ -4607,7 +4599,7 @@
                   {
                     "id": "pediatric_neuro_headache_seizure_ams_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric headache, seizure, altered mental status, or focal neurologic concern: emergency escalation or monitored-care disposition when danger cutoffs are met",
+                    "label": "Pediatric headache, seizure, altered mental status, or focal neurologic concern: emergency escalation or monitored-care disposition when danger thresholds are met",
                     "edgeLabel": "Emergency or high-risk criteria met",
                     "source_ids": [
                       "CHQ_STATUS_EPILEPTICUS_CHILD",
@@ -4730,11 +4722,11 @@
                           "criteria_text": "Seizure, status epilepticus, or post-ictal neurologic risk Determine whether the child is actively seizing, has had repeated seizures without return to baseline, had a first afebrile seizure, has focal features, is under 12 months, has metabolic or toxicologic risk, or has not returned to baseline. Changes airway support, benzodiazepine and second-line therapy timing, glucose testing, labs, ECG, neuroimaging, EEG/referral timing, admission, and transfer threshold. Status epilepticus, first afebrile seizure, complex febrile seizure, focal seizure, metabolic seizure, toxicologic seizure, epilepsy syndrome, or seizure mimic. RCH and CHQ treat seizure lasting more than 5 minutes or repeated seizures without recovery as status epilepticus and a neurologic emergency.",
                           "cutoffs": [
                             "12 months",
-                            "5 minutes"
+                            "more than 5"
                           ],
                           "data_needed": [
                             "12 months",
-                            "5 minutes"
+                            "more than 5"
                           ],
                           "source_ids": [
                             "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -4747,11 +4739,9 @@
                           "label": "Seizure metabolic labs when indicated",
                           "criteria_text": "Seizure metabolic labs when indicated Order electrolytes, calcium, venous gas, renal/liver function, and other metabolic labs guided by seizure or altered-conscious-state context. Results change electrolyte/glucose/metabolic correction, DKA/toxin pathway, admission, ICU/transfer, and specialty consultation. Electrolyte disturbance, hypocalcemia, acid-base disorder, renal/hepatic dysfunction, dehydration, diabetes-related metabolic crisis, or toxin/metabolic seizure trigger. RCH recommends considering electrolytes, calcium, and venous gas when seizure requires a second-line agent, child is under 12 months, comorbidity exists, dehydration/toxidrome is possible, or baseline has not returned.",
                           "cutoffs": [
-                            "calcium",
                             "12 months"
                           ],
                           "data_needed": [
-                            "calcium",
                             "12 months"
                           ],
                           "source_ids": [
@@ -4799,10 +4789,12 @@
                           "label": "Seizure over 5 minutes or repeated without recovery",
                           "criteria_text": "Seizure over 5 minutes or repeated without recovery Treat active seizure lasting more than 5 minutes or repeated seizures without full recovery as status epilepticus until controlled. Changes airway/breathing/circulation priority, glucose check, benzodiazepine timing, second-line therapy, senior/PICU/retrieval escalation, and transfer. Status epilepticus or refractory seizure. CHQ defines status epilepticus this way and notes it is a neurologic emergency with rising refractory risk as seizure duration increases.",
                           "cutoffs": [
-                            "5 minutes"
+                            "5 minutes",
+                            "more than 5"
                           ],
                           "data_needed": [
-                            "5 minutes"
+                            "5 minutes",
+                            "more than 5"
                           ],
                           "source_ids": [
                             "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -4828,7 +4820,7 @@
                         }
                       ]
                     },
-                    "action": "Seizure over 5 minutes or repeated without recovery; Persistent altered conscious state; Pediatric headache red flags; Focal deficit, papilledema, or raised-ICP signs. Monitor treatment response, complications, and need for reassessment with: Do not order routine tests for low-risk headache.; Active seizure emergency route; Persistent altered conscious state admission or transfer; Headache red flag senio...",
+                    "action": "Seizure over 5 minutes or repeated without recovery; Persistent altered conscious state; Pediatric headache red flags; Focal deficit, papilledema, or raised-ICP signs. Monitor treatment response, complications, and need for reassessment with: Do not order routine tests for low-risk headache.; Active seizure emergency route; Persistent altered conscious state admission or transfer; Headache red flag senior review route; Active seizure emergency route; Persistent altered conscious state admission or transfer; Headache red flag senior review route",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -4921,11 +4913,11 @@
                         "criteria_text": "Seizure, status epilepticus, or post-ictal neurologic risk Determine whether the child is actively seizing, has had repeated seizures without return to baseline, had a first afebrile seizure, has focal features, is under 12 months, has metabolic or toxicologic risk, or has not returned to baseline. Changes airway support, benzodiazepine and second-line therapy timing, glucose testing, labs, ECG, neuroimaging, EEG/referral timing, admission, and transfer threshold. Status epilepticus, first afebrile seizure, complex febrile seizure, focal seizure, metabolic seizure, toxicologic seizure, epilepsy syndrome, or seizure mimic. RCH and CHQ treat seizure lasting more than 5 minutes or repeated seizures without recovery as status epilepticus and a neurologic emergency.",
                         "cutoffs": [
                           "12 months",
-                          "5 minutes"
+                          "more than 5"
                         ],
                         "data_needed": [
                           "12 months",
-                          "5 minutes"
+                          "more than 5"
                         ],
                         "source_ids": [
                           "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -4938,11 +4930,9 @@
                         "label": "Seizure metabolic labs when indicated",
                         "criteria_text": "Seizure metabolic labs when indicated Order electrolytes, calcium, venous gas, renal/liver function, and other metabolic labs guided by seizure or altered-conscious-state context. Results change electrolyte/glucose/metabolic correction, DKA/toxin pathway, admission, ICU/transfer, and specialty consultation. Electrolyte disturbance, hypocalcemia, acid-base disorder, renal/hepatic dysfunction, dehydration, diabetes-related metabolic crisis, or toxin/metabolic seizure trigger. RCH recommends considering electrolytes, calcium, and venous gas when seizure requires a second-line agent, child is under 12 months, comorbidity exists, dehydration/toxidrome is possible, or baseline has not returned.",
                         "cutoffs": [
-                          "calcium",
                           "12 months"
                         ],
                         "data_needed": [
-                          "calcium",
                           "12 months"
                         ],
                         "source_ids": [
@@ -4990,10 +4980,12 @@
                         "label": "Seizure over 5 minutes or repeated without recovery",
                         "criteria_text": "Seizure over 5 minutes or repeated without recovery Treat active seizure lasting more than 5 minutes or repeated seizures without full recovery as status epilepticus until controlled. Changes airway/breathing/circulation priority, glucose check, benzodiazepine timing, second-line therapy, senior/PICU/retrieval escalation, and transfer. Status epilepticus or refractory seizure. CHQ defines status epilepticus this way and notes it is a neurologic emergency with rising refractory risk as seizure duration increases.",
                         "cutoffs": [
-                          "5 minutes"
+                          "5 minutes",
+                          "more than 5"
                         ],
                         "data_needed": [
-                          "5 minutes"
+                          "5 minutes",
+                          "more than 5"
                         ],
                         "source_ids": [
                           "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -5022,8 +5014,8 @@
                   {
                     "id": "pediatric_neuro_headache_seizure_ams_treatment_bundle",
                     "type": "action",
-                    "label": "Pediatric headache, seizure, altered mental status, or focal neurologic concern: start the indicated treatment/disposition bundle when cutoff criteria match",
-                    "edgeLabel": "Criteria match Pediatric headache, seizure, altered mental status, or focal neurologic concern or treatment cannot safely wait",
+                    "label": "Pediatric headache, seizure, altered mental status, or focal neurologic concern: start treatment/disposition when Headache imaging/escalation triggers include age <4 years, early-morning/sleep-waking/positional/sudden severe/occipital headache, vomiting, seizure, focal neurologic signs, or progressive pattern: <4 years | Active seizure treatment starts when total seizure duration is >=5 minutes or unknown; include prehospital benzodiazepines: >=5 minutes, 2 benzodiazepine doses | Seizure dosing: midazolam 0.15 mg/kg IV/IM/IO or 0.3 mg/kg buccal/IN max 10 mg; phenytoin 20 mg/kg max 2 g; levetiracetam 40-60 mg/kg max 4.5 g: 0.15 mg/kg, 0.3 mg/kg, 10 mg, 20 mg/kg, 2 g, 40-60 mg/kg | Secondary headache, raised intracranial pressure, infection, or head injury: 4 years | Seizure, status epilepticus, or post-ictal neurologic risk: 12 months, more than 5 matches",
+                    "edgeLabel": "Pediatric headache, seizure, altered mental status, or focal neurologic concern criteria match or treatment cannot safely wait",
                     "source_ids": [
                       "CHQ_STATUS_EPILEPTICUS_CHILD",
                       "RCH_ALTERED_CONSCIOUS_STATE_2022",
@@ -5147,11 +5139,11 @@
                           "criteria_text": "Seizure, status epilepticus, or post-ictal neurologic risk Determine whether the child is actively seizing, has had repeated seizures without return to baseline, had a first afebrile seizure, has focal features, is under 12 months, has metabolic or toxicologic risk, or has not returned to baseline. Changes airway support, benzodiazepine and second-line therapy timing, glucose testing, labs, ECG, neuroimaging, EEG/referral timing, admission, and transfer threshold. Status epilepticus, first afebrile seizure, complex febrile seizure, focal seizure, metabolic seizure, toxicologic seizure, epilepsy syndrome, or seizure mimic. RCH and CHQ treat seizure lasting more than 5 minutes or repeated seizures without recovery as status epilepticus and a neurologic emergency.",
                           "cutoffs": [
                             "12 months",
-                            "5 minutes"
+                            "more than 5"
                           ],
                           "data_needed": [
                             "12 months",
-                            "5 minutes"
+                            "more than 5"
                           ],
                           "source_ids": [
                             "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -5164,11 +5156,9 @@
                           "label": "Seizure metabolic labs when indicated",
                           "criteria_text": "Seizure metabolic labs when indicated Order electrolytes, calcium, venous gas, renal/liver function, and other metabolic labs guided by seizure or altered-conscious-state context. Results change electrolyte/glucose/metabolic correction, DKA/toxin pathway, admission, ICU/transfer, and specialty consultation. Electrolyte disturbance, hypocalcemia, acid-base disorder, renal/hepatic dysfunction, dehydration, diabetes-related metabolic crisis, or toxin/metabolic seizure trigger. RCH recommends considering electrolytes, calcium, and venous gas when seizure requires a second-line agent, child is under 12 months, comorbidity exists, dehydration/toxidrome is possible, or baseline has not returned.",
                           "cutoffs": [
-                            "calcium",
                             "12 months"
                           ],
                           "data_needed": [
-                            "calcium",
                             "12 months"
                           ],
                           "source_ids": [
@@ -5216,10 +5206,12 @@
                           "label": "Seizure over 5 minutes or repeated without recovery",
                           "criteria_text": "Seizure over 5 minutes or repeated without recovery Treat active seizure lasting more than 5 minutes or repeated seizures without full recovery as status epilepticus until controlled. Changes airway/breathing/circulation priority, glucose check, benzodiazepine timing, second-line therapy, senior/PICU/retrieval escalation, and transfer. Status epilepticus or refractory seizure. CHQ defines status epilepticus this way and notes it is a neurologic emergency with rising refractory risk as seizure duration increases.",
                           "cutoffs": [
-                            "5 minutes"
+                            "5 minutes",
+                            "more than 5"
                           ],
                           "data_needed": [
-                            "5 minutes"
+                            "5 minutes",
+                            "more than 5"
                           ],
                           "source_ids": [
                             "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -5250,7 +5242,7 @@
                       {
                         "id": "pediatric_neuro_headache_seizure_ams_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Pediatric headache, seizure, altered mental status, or focal neurologic concern: medication/procedure safety and special-population cutoffs resolved?",
+                        "label": "Pediatric headache, seizure, altered mental status, or focal neurologic concern: medication/procedure safety and special-population thresholds resolved?",
                         "edgeLabel": "Diagnosis/risk branch selected",
                         "source_ids": [
                           "RCH_HEADACHE_CHILD",
@@ -5336,11 +5328,11 @@
                               "criteria_text": "Seizure, status epilepticus, or post-ictal neurologic risk Determine whether the child is actively seizing, has had repeated seizures without return to baseline, had a first afebrile seizure, has focal features, is under 12 months, has metabolic or toxicologic risk, or has not returned to baseline. Changes airway support, benzodiazepine and second-line therapy timing, glucose testing, labs, ECG, neuroimaging, EEG/referral timing, admission, and transfer threshold. Status epilepticus, first afebrile seizure, complex febrile seizure, focal seizure, metabolic seizure, toxicologic seizure, epilepsy syndrome, or seizure mimic. RCH and CHQ treat seizure lasting more than 5 minutes or repeated seizures without recovery as status epilepticus and a neurologic emergency.",
                               "cutoffs": [
                                 "12 months",
-                                "5 minutes"
+                                "more than 5"
                               ],
                               "data_needed": [
                                 "12 months",
-                                "5 minutes"
+                                "more than 5"
                               ],
                               "source_ids": [
                                 "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -5353,11 +5345,9 @@
                               "label": "Seizure metabolic labs when indicated",
                               "criteria_text": "Seizure metabolic labs when indicated Order electrolytes, calcium, venous gas, renal/liver function, and other metabolic labs guided by seizure or altered-conscious-state context. Results change electrolyte/glucose/metabolic correction, DKA/toxin pathway, admission, ICU/transfer, and specialty consultation. Electrolyte disturbance, hypocalcemia, acid-base disorder, renal/hepatic dysfunction, dehydration, diabetes-related metabolic crisis, or toxin/metabolic seizure trigger. RCH recommends considering electrolytes, calcium, and venous gas when seizure requires a second-line agent, child is under 12 months, comorbidity exists, dehydration/toxidrome is possible, or baseline has not returned.",
                               "cutoffs": [
-                                "calcium",
                                 "12 months"
                               ],
                               "data_needed": [
-                                "calcium",
                                 "12 months"
                               ],
                               "source_ids": [
@@ -5371,10 +5361,12 @@
                               "label": "Seizure over 5 minutes or repeated without recovery",
                               "criteria_text": "Seizure over 5 minutes or repeated without recovery Treat active seizure lasting more than 5 minutes or repeated seizures without full recovery as status epilepticus until controlled. Changes airway/breathing/circulation priority, glucose check, benzodiazepine timing, second-line therapy, senior/PICU/retrieval escalation, and transfer. Status epilepticus or refractory seizure. CHQ defines status epilepticus this way and notes it is a neurologic emergency with rising refractory risk as seizure duration increases.",
                               "cutoffs": [
-                                "5 minutes"
+                                "5 minutes",
+                                "more than 5"
                               ],
                               "data_needed": [
-                                "5 minutes"
+                                "5 minutes",
+                                "more than 5"
                               ],
                               "source_ids": [
                                 "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -5445,7 +5437,7 @@
                             "criteria": {
                               "rule_id": "pediatric_neuro_headache_seizure_ams_monitoring_criteria",
                               "source": "criteria",
-                              "description": "Monitor Pediatric headache, seizure, altered mental status, or focal neurologic concern by trending the same cutoff-bearing findings that selected the branch, plus medication adverse effects and disposition constraints.",
+                              "description": "Monitor Pediatric headache, seizure, altered mental status, or focal neurologic concern by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
                               "evaluable_from": [
                                 "symptoms",
                                 "exam",
@@ -5554,11 +5546,11 @@
                                   "criteria_text": "Seizure, status epilepticus, or post-ictal neurologic risk Determine whether the child is actively seizing, has had repeated seizures without return to baseline, had a first afebrile seizure, has focal features, is under 12 months, has metabolic or toxicologic risk, or has not returned to baseline. Changes airway support, benzodiazepine and second-line therapy timing, glucose testing, labs, ECG, neuroimaging, EEG/referral timing, admission, and transfer threshold. Status epilepticus, first afebrile seizure, complex febrile seizure, focal seizure, metabolic seizure, toxicologic seizure, epilepsy syndrome, or seizure mimic. RCH and CHQ treat seizure lasting more than 5 minutes or repeated seizures without recovery as status epilepticus and a neurologic emergency.",
                                   "cutoffs": [
                                     "12 months",
-                                    "5 minutes"
+                                    "more than 5"
                                   ],
                                   "data_needed": [
                                     "12 months",
-                                    "5 minutes"
+                                    "more than 5"
                                   ],
                                   "source_ids": [
                                     "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -5571,11 +5563,9 @@
                                   "label": "Seizure metabolic labs when indicated",
                                   "criteria_text": "Seizure metabolic labs when indicated Order electrolytes, calcium, venous gas, renal/liver function, and other metabolic labs guided by seizure or altered-conscious-state context. Results change electrolyte/glucose/metabolic correction, DKA/toxin pathway, admission, ICU/transfer, and specialty consultation. Electrolyte disturbance, hypocalcemia, acid-base disorder, renal/hepatic dysfunction, dehydration, diabetes-related metabolic crisis, or toxin/metabolic seizure trigger. RCH recommends considering electrolytes, calcium, and venous gas when seizure requires a second-line agent, child is under 12 months, comorbidity exists, dehydration/toxidrome is possible, or baseline has not returned.",
                                   "cutoffs": [
-                                    "calcium",
                                     "12 months"
                                   ],
                                   "data_needed": [
-                                    "calcium",
                                     "12 months"
                                   ],
                                   "source_ids": [
@@ -5620,7 +5610,7 @@
                                 }
                               ]
                             },
-                            "action": "Reassess Pediatric headache, seizure, altered mental status, or focal neurologic concern using the active cutoffs and clinical course; do not close the pathway until response, adverse effects, pending data, and disposition are owned.",
+                            "action": "Reassess Pediatric headache, seizure, altered mental status, or focal neurologic concern using the active thresholds and clinical course; do not close the pathway until response, adverse effects, pending data, and disposition are owned.",
                             "children": [
                               {
                                 "id": "pediatric_neuro_headache_seizure_ams_worsening_endpoint",
@@ -5639,7 +5629,7 @@
                                 "criteria": {
                                   "rule_id": "pediatric_neuro_headache_seizure_ams_worsening_criteria",
                                   "source": "criteria",
-                                  "description": "Escalate Pediatric headache, seizure, altered mental status, or focal neurologic concern if symptoms, vitals, critical cutoffs, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+                                  "description": "Escalate Pediatric headache, seizure, altered mental status, or focal neurologic concern if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
                                   "evaluable_from": [
                                     "symptoms",
                                     "exam",
@@ -5748,11 +5738,11 @@
                                       "criteria_text": "Seizure, status epilepticus, or post-ictal neurologic risk Determine whether the child is actively seizing, has had repeated seizures without return to baseline, had a first afebrile seizure, has focal features, is under 12 months, has metabolic or toxicologic risk, or has not returned to baseline. Changes airway support, benzodiazepine and second-line therapy timing, glucose testing, labs, ECG, neuroimaging, EEG/referral timing, admission, and transfer threshold. Status epilepticus, first afebrile seizure, complex febrile seizure, focal seizure, metabolic seizure, toxicologic seizure, epilepsy syndrome, or seizure mimic. RCH and CHQ treat seizure lasting more than 5 minutes or repeated seizures without recovery as status epilepticus and a neurologic emergency.",
                                       "cutoffs": [
                                         "12 months",
-                                        "5 minutes"
+                                        "more than 5"
                                       ],
                                       "data_needed": [
                                         "12 months",
-                                        "5 minutes"
+                                        "more than 5"
                                       ],
                                       "source_ids": [
                                         "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -5765,11 +5755,9 @@
                                       "label": "Seizure metabolic labs when indicated",
                                       "criteria_text": "Seizure metabolic labs when indicated Order electrolytes, calcium, venous gas, renal/liver function, and other metabolic labs guided by seizure or altered-conscious-state context. Results change electrolyte/glucose/metabolic correction, DKA/toxin pathway, admission, ICU/transfer, and specialty consultation. Electrolyte disturbance, hypocalcemia, acid-base disorder, renal/hepatic dysfunction, dehydration, diabetes-related metabolic crisis, or toxin/metabolic seizure trigger. RCH recommends considering electrolytes, calcium, and venous gas when seizure requires a second-line agent, child is under 12 months, comorbidity exists, dehydration/toxidrome is possible, or baseline has not returned.",
                                       "cutoffs": [
-                                        "calcium",
                                         "12 months"
                                       ],
                                       "data_needed": [
-                                        "calcium",
                                         "12 months"
                                       ],
                                       "source_ids": [
@@ -5907,11 +5895,11 @@
                                     "criteria_text": "Seizure, status epilepticus, or post-ictal neurologic risk Determine whether the child is actively seizing, has had repeated seizures without return to baseline, had a first afebrile seizure, has focal features, is under 12 months, has metabolic or toxicologic risk, or has not returned to baseline. Changes airway support, benzodiazepine and second-line therapy timing, glucose testing, labs, ECG, neuroimaging, EEG/referral timing, admission, and transfer threshold. Status epilepticus, first afebrile seizure, complex febrile seizure, focal seizure, metabolic seizure, toxicologic seizure, epilepsy syndrome, or seizure mimic. RCH and CHQ treat seizure lasting more than 5 minutes or repeated seizures without recovery as status epilepticus and a neurologic emergency.",
                                     "cutoffs": [
                                       "12 months",
-                                      "5 minutes"
+                                      "more than 5"
                                     ],
                                     "data_needed": [
                                       "12 months",
-                                      "5 minutes"
+                                      "more than 5"
                                     ],
                                     "source_ids": [
                                       "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -5924,11 +5912,9 @@
                                     "label": "Seizure metabolic labs when indicated",
                                     "criteria_text": "Seizure metabolic labs when indicated Order electrolytes, calcium, venous gas, renal/liver function, and other metabolic labs guided by seizure or altered-conscious-state context. Results change electrolyte/glucose/metabolic correction, DKA/toxin pathway, admission, ICU/transfer, and specialty consultation. Electrolyte disturbance, hypocalcemia, acid-base disorder, renal/hepatic dysfunction, dehydration, diabetes-related metabolic crisis, or toxin/metabolic seizure trigger. RCH recommends considering electrolytes, calcium, and venous gas when seizure requires a second-line agent, child is under 12 months, comorbidity exists, dehydration/toxidrome is possible, or baseline has not returned.",
                                     "cutoffs": [
-                                      "calcium",
                                       "12 months"
                                     ],
                                     "data_needed": [
-                                      "calcium",
                                       "12 months"
                                     ],
                                     "source_ids": [
@@ -5976,10 +5962,12 @@
                                     "label": "Seizure over 5 minutes or repeated without recovery",
                                     "criteria_text": "Seizure over 5 minutes or repeated without recovery Treat active seizure lasting more than 5 minutes or repeated seizures without full recovery as status epilepticus until controlled. Changes airway/breathing/circulation priority, glucose check, benzodiazepine timing, second-line therapy, senior/PICU/retrieval escalation, and transfer. Status epilepticus or refractory seizure. CHQ defines status epilepticus this way and notes it is a neurologic emergency with rising refractory risk as seizure duration increases.",
                                     "cutoffs": [
-                                      "5 minutes"
+                                      "5 minutes",
+                                      "more than 5"
                                     ],
                                     "data_needed": [
-                                      "5 minutes"
+                                      "5 minutes",
+                                      "more than 5"
                                     ],
                                     "source_ids": [
                                       "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -6131,11 +6119,11 @@
                                       "criteria_text": "Seizure, status epilepticus, or post-ictal neurologic risk Determine whether the child is actively seizing, has had repeated seizures without return to baseline, had a first afebrile seizure, has focal features, is under 12 months, has metabolic or toxicologic risk, or has not returned to baseline. Changes airway support, benzodiazepine and second-line therapy timing, glucose testing, labs, ECG, neuroimaging, EEG/referral timing, admission, and transfer threshold. Status epilepticus, first afebrile seizure, complex febrile seizure, focal seizure, metabolic seizure, toxicologic seizure, epilepsy syndrome, or seizure mimic. RCH and CHQ treat seizure lasting more than 5 minutes or repeated seizures without recovery as status epilepticus and a neurologic emergency.",
                                       "cutoffs": [
                                         "12 months",
-                                        "5 minutes"
+                                        "more than 5"
                                       ],
                                       "data_needed": [
                                         "12 months",
-                                        "5 minutes"
+                                        "more than 5"
                                       ],
                                       "source_ids": [
                                         "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -6148,11 +6136,9 @@
                                       "label": "Seizure metabolic labs when indicated",
                                       "criteria_text": "Seizure metabolic labs when indicated Order electrolytes, calcium, venous gas, renal/liver function, and other metabolic labs guided by seizure or altered-conscious-state context. Results change electrolyte/glucose/metabolic correction, DKA/toxin pathway, admission, ICU/transfer, and specialty consultation. Electrolyte disturbance, hypocalcemia, acid-base disorder, renal/hepatic dysfunction, dehydration, diabetes-related metabolic crisis, or toxin/metabolic seizure trigger. RCH recommends considering electrolytes, calcium, and venous gas when seizure requires a second-line agent, child is under 12 months, comorbidity exists, dehydration/toxidrome is possible, or baseline has not returned.",
                                       "cutoffs": [
-                                        "calcium",
                                         "12 months"
                                       ],
                                       "data_needed": [
-                                        "calcium",
                                         "12 months"
                                       ],
                                       "source_ids": [
@@ -6197,7 +6183,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Use the active Pediatric headache, seizure, altered mental status, or focal neurologic concern cutoff criteria and response trend to stop, narrow, taper, or continue treatment; document what cutoff or finding changed.",
+                                "action": "Use the active Pediatric headache, seizure, altered mental status, or focal neurologic concern objective criteria and response trend (<4 years; >=5 minutes; 2 benzodiazepine doses; 0.15 mg/kg; 0.3 mg/kg; 10 mg; 20 mg/kg; 2 g; 40-60 mg/kg; 4.5 g) to stop, narrow, taper, or continue treatment; document what threshold or finding changed.",
                                 "children": [],
                                 "endpoint_type": "deescalation_stopping",
                                 "guideline_cutoffs": [
@@ -6290,11 +6276,11 @@
                                     "criteria_text": "Seizure, status epilepticus, or post-ictal neurologic risk Determine whether the child is actively seizing, has had repeated seizures without return to baseline, had a first afebrile seizure, has focal features, is under 12 months, has metabolic or toxicologic risk, or has not returned to baseline. Changes airway support, benzodiazepine and second-line therapy timing, glucose testing, labs, ECG, neuroimaging, EEG/referral timing, admission, and transfer threshold. Status epilepticus, first afebrile seizure, complex febrile seizure, focal seizure, metabolic seizure, toxicologic seizure, epilepsy syndrome, or seizure mimic. RCH and CHQ treat seizure lasting more than 5 minutes or repeated seizures without recovery as status epilepticus and a neurologic emergency.",
                                     "cutoffs": [
                                       "12 months",
-                                      "5 minutes"
+                                      "more than 5"
                                     ],
                                     "data_needed": [
                                       "12 months",
-                                      "5 minutes"
+                                      "more than 5"
                                     ],
                                     "source_ids": [
                                       "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -6307,11 +6293,9 @@
                                     "label": "Seizure metabolic labs when indicated",
                                     "criteria_text": "Seizure metabolic labs when indicated Order electrolytes, calcium, venous gas, renal/liver function, and other metabolic labs guided by seizure or altered-conscious-state context. Results change electrolyte/glucose/metabolic correction, DKA/toxin pathway, admission, ICU/transfer, and specialty consultation. Electrolyte disturbance, hypocalcemia, acid-base disorder, renal/hepatic dysfunction, dehydration, diabetes-related metabolic crisis, or toxin/metabolic seizure trigger. RCH recommends considering electrolytes, calcium, and venous gas when seizure requires a second-line agent, child is under 12 months, comorbidity exists, dehydration/toxidrome is possible, or baseline has not returned.",
                                     "cutoffs": [
-                                      "calcium",
                                       "12 months"
                                     ],
                                     "data_needed": [
-                                      "calcium",
                                       "12 months"
                                     ],
                                     "source_ids": [
@@ -6359,10 +6343,12 @@
                                     "label": "Seizure over 5 minutes or repeated without recovery",
                                     "criteria_text": "Seizure over 5 minutes or repeated without recovery Treat active seizure lasting more than 5 minutes or repeated seizures without full recovery as status epilepticus until controlled. Changes airway/breathing/circulation priority, glucose check, benzodiazepine timing, second-line therapy, senior/PICU/retrieval escalation, and transfer. Status epilepticus or refractory seizure. CHQ defines status epilepticus this way and notes it is a neurologic emergency with rising refractory risk as seizure duration increases.",
                                     "cutoffs": [
-                                      "5 minutes"
+                                      "5 minutes",
+                                      "more than 5"
                                     ],
                                     "data_needed": [
-                                      "5 minutes"
+                                      "5 minutes",
+                                      "more than 5"
                                     ],
                                     "source_ids": [
                                       "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -6438,7 +6424,7 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend cutoff-bearing labs/results",
+                              "trend objective labs/results",
                               "review treatment response/adverse effects",
                               "confirm disposition and follow-up owner",
                               "Measure temperature",
@@ -6537,11 +6523,11 @@
                                 "criteria_text": "Seizure, status epilepticus, or post-ictal neurologic risk Determine whether the child is actively seizing, has had repeated seizures without return to baseline, had a first afebrile seizure, has focal features, is under 12 months, has metabolic or toxicologic risk, or has not returned to baseline. Changes airway support, benzodiazepine and second-line therapy timing, glucose testing, labs, ECG, neuroimaging, EEG/referral timing, admission, and transfer threshold. Status epilepticus, first afebrile seizure, complex febrile seizure, focal seizure, metabolic seizure, toxicologic seizure, epilepsy syndrome, or seizure mimic. RCH and CHQ treat seizure lasting more than 5 minutes or repeated seizures without recovery as status epilepticus and a neurologic emergency.",
                                 "cutoffs": [
                                   "12 months",
-                                  "5 minutes"
+                                  "more than 5"
                                 ],
                                 "data_needed": [
                                   "12 months",
-                                  "5 minutes"
+                                  "more than 5"
                                 ],
                                 "source_ids": [
                                   "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -6554,11 +6540,9 @@
                                 "label": "Seizure metabolic labs when indicated",
                                 "criteria_text": "Seizure metabolic labs when indicated Order electrolytes, calcium, venous gas, renal/liver function, and other metabolic labs guided by seizure or altered-conscious-state context. Results change electrolyte/glucose/metabolic correction, DKA/toxin pathway, admission, ICU/transfer, and specialty consultation. Electrolyte disturbance, hypocalcemia, acid-base disorder, renal/hepatic dysfunction, dehydration, diabetes-related metabolic crisis, or toxin/metabolic seizure trigger. RCH recommends considering electrolytes, calcium, and venous gas when seizure requires a second-line agent, child is under 12 months, comorbidity exists, dehydration/toxidrome is possible, or baseline has not returned.",
                                 "cutoffs": [
-                                  "calcium",
                                   "12 months"
                                 ],
                                 "data_needed": [
-                                  "calcium",
                                   "12 months"
                                 ],
                                 "source_ids": [
@@ -6606,10 +6590,12 @@
                                 "label": "Seizure over 5 minutes or repeated without recovery",
                                 "criteria_text": "Seizure over 5 minutes or repeated without recovery Treat active seizure lasting more than 5 minutes or repeated seizures without full recovery as status epilepticus until controlled. Changes airway/breathing/circulation priority, glucose check, benzodiazepine timing, second-line therapy, senior/PICU/retrieval escalation, and transfer. Status epilepticus or refractory seizure. CHQ defines status epilepticus this way and notes it is a neurologic emergency with rising refractory risk as seizure duration increases.",
                                 "cutoffs": [
-                                  "5 minutes"
+                                  "5 minutes",
+                                  "more than 5"
                                 ],
                                 "data_needed": [
-                                  "5 minutes"
+                                  "5 minutes",
+                                  "more than 5"
                                 ],
                                 "source_ids": [
                                   "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -6735,11 +6721,11 @@
                         "criteria_text": "Seizure, status epilepticus, or post-ictal neurologic risk Determine whether the child is actively seizing, has had repeated seizures without return to baseline, had a first afebrile seizure, has focal features, is under 12 months, has metabolic or toxicologic risk, or has not returned to baseline. Changes airway support, benzodiazepine and second-line therapy timing, glucose testing, labs, ECG, neuroimaging, EEG/referral timing, admission, and transfer threshold. Status epilepticus, first afebrile seizure, complex febrile seizure, focal seizure, metabolic seizure, toxicologic seizure, epilepsy syndrome, or seizure mimic. RCH and CHQ treat seizure lasting more than 5 minutes or repeated seizures without recovery as status epilepticus and a neurologic emergency.",
                         "cutoffs": [
                           "12 months",
-                          "5 minutes"
+                          "more than 5"
                         ],
                         "data_needed": [
                           "12 months",
-                          "5 minutes"
+                          "more than 5"
                         ],
                         "source_ids": [
                           "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -6752,11 +6738,9 @@
                         "label": "Seizure metabolic labs when indicated",
                         "criteria_text": "Seizure metabolic labs when indicated Order electrolytes, calcium, venous gas, renal/liver function, and other metabolic labs guided by seizure or altered-conscious-state context. Results change electrolyte/glucose/metabolic correction, DKA/toxin pathway, admission, ICU/transfer, and specialty consultation. Electrolyte disturbance, hypocalcemia, acid-base disorder, renal/hepatic dysfunction, dehydration, diabetes-related metabolic crisis, or toxin/metabolic seizure trigger. RCH recommends considering electrolytes, calcium, and venous gas when seizure requires a second-line agent, child is under 12 months, comorbidity exists, dehydration/toxidrome is possible, or baseline has not returned.",
                         "cutoffs": [
-                          "calcium",
                           "12 months"
                         ],
                         "data_needed": [
-                          "calcium",
                           "12 months"
                         ],
                         "source_ids": [
@@ -6804,10 +6788,12 @@
                         "label": "Seizure over 5 minutes or repeated without recovery",
                         "criteria_text": "Seizure over 5 minutes or repeated without recovery Treat active seizure lasting more than 5 minutes or repeated seizures without full recovery as status epilepticus until controlled. Changes airway/breathing/circulation priority, glucose check, benzodiazepine timing, second-line therapy, senior/PICU/retrieval escalation, and transfer. Status epilepticus or refractory seizure. CHQ defines status epilepticus this way and notes it is a neurologic emergency with rising refractory risk as seizure duration increases.",
                         "cutoffs": [
-                          "5 minutes"
+                          "5 minutes",
+                          "more than 5"
                         ],
                         "data_needed": [
-                          "5 minutes"
+                          "5 minutes",
+                          "more than 5"
                         ],
                         "source_ids": [
                           "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -6836,7 +6822,7 @@
                   {
                     "id": "pediatric_neuro_headache_seizure_ams_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric headache, seizure, altered mental status, or focal neurologic concern: switch to mimic/alternate pathway when cutoff criteria do not fit",
+                    "label": "Pediatric headache, seizure, altered mental status, or focal neurologic concern: switch to mimic/alternate pathway when threshold/result criteria do not fit",
                     "edgeLabel": "Criteria favor mimic or alternate pathway",
                     "source_ids": [
                       "RCH_HEADACHE_CHILD",
@@ -6850,7 +6836,7 @@
                     "criteria": {
                       "rule_id": "pediatric_neuro_headache_seizure_ams_alternate_criteria",
                       "source": "criteria",
-                      "description": "Use an alternate pathway when Pediatric headache, seizure, altered mental status, or focal neurologic concern criteria are absent, a cited mimic better explains the presentation, or cutoff data contradict this workup.",
+                      "description": "Use an alternate pathway when Pediatric headache, seizure, altered mental status, or focal neurologic concern criteria are absent, a cited mimic better explains the presentation, or objective result data contradict this workup.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -6958,11 +6944,11 @@
                           "criteria_text": "Seizure, status epilepticus, or post-ictal neurologic risk Determine whether the child is actively seizing, has had repeated seizures without return to baseline, had a first afebrile seizure, has focal features, is under 12 months, has metabolic or toxicologic risk, or has not returned to baseline. Changes airway support, benzodiazepine and second-line therapy timing, glucose testing, labs, ECG, neuroimaging, EEG/referral timing, admission, and transfer threshold. Status epilepticus, first afebrile seizure, complex febrile seizure, focal seizure, metabolic seizure, toxicologic seizure, epilepsy syndrome, or seizure mimic. RCH and CHQ treat seizure lasting more than 5 minutes or repeated seizures without recovery as status epilepticus and a neurologic emergency.",
                           "cutoffs": [
                             "12 months",
-                            "5 minutes"
+                            "more than 5"
                           ],
                           "data_needed": [
                             "12 months",
-                            "5 minutes"
+                            "more than 5"
                           ],
                           "source_ids": [
                             "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -6975,11 +6961,9 @@
                           "label": "Seizure metabolic labs when indicated",
                           "criteria_text": "Seizure metabolic labs when indicated Order electrolytes, calcium, venous gas, renal/liver function, and other metabolic labs guided by seizure or altered-conscious-state context. Results change electrolyte/glucose/metabolic correction, DKA/toxin pathway, admission, ICU/transfer, and specialty consultation. Electrolyte disturbance, hypocalcemia, acid-base disorder, renal/hepatic dysfunction, dehydration, diabetes-related metabolic crisis, or toxin/metabolic seizure trigger. RCH recommends considering electrolytes, calcium, and venous gas when seizure requires a second-line agent, child is under 12 months, comorbidity exists, dehydration/toxidrome is possible, or baseline has not returned.",
                           "cutoffs": [
-                            "calcium",
                             "12 months"
                           ],
                           "data_needed": [
-                            "calcium",
                             "12 months"
                           ],
                           "source_ids": [
@@ -7024,7 +7008,7 @@
                         }
                       ]
                     },
-                    "action": "Document why Pediatric headache, seizure, altered mental status, or focal neurologic concern is not the active pathway and route to the competing diagnosis: Primary headache or migraine only after pediatric red flags are absent; Secondary headache, raised intracranial pressure, infection, or head injury; Seizure, status epilepticus, or post-ictal neurologic risk; Altered conscious state from trauma, infection, metabolic, toxic, seizure, or hypoxic cause; Focal neurologic....",
+                    "action": "Document why Pediatric headache, seizure, altered mental status, or focal neurologic concern is not the active pathway and route to the competing diagnosis: Primary headache or migraine only after pediatric red flags are absent; Secondary headache, raised intracranial pressure, infection, or head injury; Seizure, status epilepticus, or post-ictal neurologic risk; Altered conscious state from trauma, infection, metabolic, toxic, seizure, or hypoxic cause; Focal neurologic deficit, stroke mimic, or pediatric stroke concern.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
                     "review_needed_reason": "Competing diagnosis or exclusion changes the active pathway."
@@ -7120,11 +7104,11 @@
                     "criteria_text": "Seizure, status epilepticus, or post-ictal neurologic risk Determine whether the child is actively seizing, has had repeated seizures without return to baseline, had a first afebrile seizure, has focal features, is under 12 months, has metabolic or toxicologic risk, or has not returned to baseline. Changes airway support, benzodiazepine and second-line therapy timing, glucose testing, labs, ECG, neuroimaging, EEG/referral timing, admission, and transfer threshold. Status epilepticus, first afebrile seizure, complex febrile seizure, focal seizure, metabolic seizure, toxicologic seizure, epilepsy syndrome, or seizure mimic. RCH and CHQ treat seizure lasting more than 5 minutes or repeated seizures without recovery as status epilepticus and a neurologic emergency.",
                     "cutoffs": [
                       "12 months",
-                      "5 minutes"
+                      "more than 5"
                     ],
                     "data_needed": [
                       "12 months",
-                      "5 minutes"
+                      "more than 5"
                     ],
                     "source_ids": [
                       "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -7137,11 +7121,9 @@
                     "label": "Seizure metabolic labs when indicated",
                     "criteria_text": "Seizure metabolic labs when indicated Order electrolytes, calcium, venous gas, renal/liver function, and other metabolic labs guided by seizure or altered-conscious-state context. Results change electrolyte/glucose/metabolic correction, DKA/toxin pathway, admission, ICU/transfer, and specialty consultation. Electrolyte disturbance, hypocalcemia, acid-base disorder, renal/hepatic dysfunction, dehydration, diabetes-related metabolic crisis, or toxin/metabolic seizure trigger. RCH recommends considering electrolytes, calcium, and venous gas when seizure requires a second-line agent, child is under 12 months, comorbidity exists, dehydration/toxidrome is possible, or baseline has not returned.",
                     "cutoffs": [
-                      "calcium",
                       "12 months"
                     ],
                     "data_needed": [
-                      "calcium",
                       "12 months"
                     ],
                     "source_ids": [
@@ -7189,10 +7171,12 @@
                     "label": "Seizure over 5 minutes or repeated without recovery",
                     "criteria_text": "Seizure over 5 minutes or repeated without recovery Treat active seizure lasting more than 5 minutes or repeated seizures without full recovery as status epilepticus until controlled. Changes airway/breathing/circulation priority, glucose check, benzodiazepine timing, second-line therapy, senior/PICU/retrieval escalation, and transfer. Status epilepticus or refractory seizure. CHQ defines status epilepticus this way and notes it is a neurologic emergency with rising refractory risk as seizure duration increases.",
                     "cutoffs": [
-                      "5 minutes"
+                      "5 minutes",
+                      "more than 5"
                     ],
                     "data_needed": [
-                      "5 minutes"
+                      "5 minutes",
+                      "more than 5"
                     ],
                     "source_ids": [
                       "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -7307,11 +7291,11 @@
                     "criteria_text": "Seizure, status epilepticus, or post-ictal neurologic risk Determine whether the child is actively seizing, has had repeated seizures without return to baseline, had a first afebrile seizure, has focal features, is under 12 months, has metabolic or toxicologic risk, or has not returned to baseline. Changes airway support, benzodiazepine and second-line therapy timing, glucose testing, labs, ECG, neuroimaging, EEG/referral timing, admission, and transfer threshold. Status epilepticus, first afebrile seizure, complex febrile seizure, focal seizure, metabolic seizure, toxicologic seizure, epilepsy syndrome, or seizure mimic. RCH and CHQ treat seizure lasting more than 5 minutes or repeated seizures without recovery as status epilepticus and a neurologic emergency.",
                     "cutoffs": [
                       "12 months",
-                      "5 minutes"
+                      "more than 5"
                     ],
                     "data_needed": [
                       "12 months",
-                      "5 minutes"
+                      "more than 5"
                     ],
                     "source_ids": [
                       "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -7324,11 +7308,9 @@
                     "label": "Seizure metabolic labs when indicated",
                     "criteria_text": "Seizure metabolic labs when indicated Order electrolytes, calcium, venous gas, renal/liver function, and other metabolic labs guided by seizure or altered-conscious-state context. Results change electrolyte/glucose/metabolic correction, DKA/toxin pathway, admission, ICU/transfer, and specialty consultation. Electrolyte disturbance, hypocalcemia, acid-base disorder, renal/hepatic dysfunction, dehydration, diabetes-related metabolic crisis, or toxin/metabolic seizure trigger. RCH recommends considering electrolytes, calcium, and venous gas when seizure requires a second-line agent, child is under 12 months, comorbidity exists, dehydration/toxidrome is possible, or baseline has not returned.",
                     "cutoffs": [
-                      "calcium",
                       "12 months"
                     ],
                     "data_needed": [
-                      "calcium",
                       "12 months"
                     ],
                     "source_ids": [
@@ -7376,10 +7358,12 @@
                     "label": "Seizure over 5 minutes or repeated without recovery",
                     "criteria_text": "Seizure over 5 minutes or repeated without recovery Treat active seizure lasting more than 5 minutes or repeated seizures without full recovery as status epilepticus until controlled. Changes airway/breathing/circulation priority, glucose check, benzodiazepine timing, second-line therapy, senior/PICU/retrieval escalation, and transfer. Status epilepticus or refractory seizure. CHQ defines status epilepticus this way and notes it is a neurologic emergency with rising refractory risk as seizure duration increases.",
                     "cutoffs": [
-                      "5 minutes"
+                      "5 minutes",
+                      "more than 5"
                     ],
                     "data_needed": [
-                      "5 minutes"
+                      "5 minutes",
+                      "more than 5"
                     ],
                     "source_ids": [
                       "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -7546,11 +7530,11 @@
                 "criteria_text": "Seizure, status epilepticus, or post-ictal neurologic risk Determine whether the child is actively seizing, has had repeated seizures without return to baseline, had a first afebrile seizure, has focal features, is under 12 months, has metabolic or toxicologic risk, or has not returned to baseline. Changes airway support, benzodiazepine and second-line therapy timing, glucose testing, labs, ECG, neuroimaging, EEG/referral timing, admission, and transfer threshold. Status epilepticus, first afebrile seizure, complex febrile seizure, focal seizure, metabolic seizure, toxicologic seizure, epilepsy syndrome, or seizure mimic. RCH and CHQ treat seizure lasting more than 5 minutes or repeated seizures without recovery as status epilepticus and a neurologic emergency.",
                 "cutoffs": [
                   "12 months",
-                  "5 minutes"
+                  "more than 5"
                 ],
                 "data_needed": [
                   "12 months",
-                  "5 minutes"
+                  "more than 5"
                 ],
                 "source_ids": [
                   "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -7563,11 +7547,9 @@
                 "label": "Seizure metabolic labs when indicated",
                 "criteria_text": "Seizure metabolic labs when indicated Order electrolytes, calcium, venous gas, renal/liver function, and other metabolic labs guided by seizure or altered-conscious-state context. Results change electrolyte/glucose/metabolic correction, DKA/toxin pathway, admission, ICU/transfer, and specialty consultation. Electrolyte disturbance, hypocalcemia, acid-base disorder, renal/hepatic dysfunction, dehydration, diabetes-related metabolic crisis, or toxin/metabolic seizure trigger. RCH recommends considering electrolytes, calcium, and venous gas when seizure requires a second-line agent, child is under 12 months, comorbidity exists, dehydration/toxidrome is possible, or baseline has not returned.",
                 "cutoffs": [
-                  "calcium",
                   "12 months"
                 ],
                 "data_needed": [
-                  "calcium",
                   "12 months"
                 ],
                 "source_ids": [
@@ -7615,10 +7597,12 @@
                 "label": "Seizure over 5 minutes or repeated without recovery",
                 "criteria_text": "Seizure over 5 minutes or repeated without recovery Treat active seizure lasting more than 5 minutes or repeated seizures without full recovery as status epilepticus until controlled. Changes airway/breathing/circulation priority, glucose check, benzodiazepine timing, second-line therapy, senior/PICU/retrieval escalation, and transfer. Status epilepticus or refractory seizure. CHQ defines status epilepticus this way and notes it is a neurologic emergency with rising refractory risk as seizure duration increases.",
                 "cutoffs": [
-                  "5 minutes"
+                  "5 minutes",
+                  "more than 5"
                 ],
                 "data_needed": [
-                  "5 minutes"
+                  "5 minutes",
+                  "more than 5"
                 ],
                 "source_ids": [
                   "CHQ_STATUS_EPILEPTICUS_CHILD"
@@ -7657,7 +7641,7 @@
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "pediatric_neuro_headache_seizure_ams_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Cutoff data missing"
+          "expected_active_branch": "Threshold/result data missing"
         },
         {
           "scenario_id": "urgent_or_high_risk",
@@ -7715,7 +7699,7 @@
         "compact_tree_requirements": [
           "no prohibited generic node labels",
           "concurrent diagnostic/treatment bundles instead of long one-step chains",
-          "cutoff-bearing criteria visible in classification and endpoint nodes",
+          "cited thresholds/rules visible in classification and endpoint nodes",
           "all endpoints cite evidence or state needs_clinical_review",
           "missing-data endpoints name exact data needed"
         ]

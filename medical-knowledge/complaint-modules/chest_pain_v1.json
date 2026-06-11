@@ -2910,15 +2910,6 @@
           "review_status": "source_backed"
         },
         {
-          "threshold": "99th percentile",
-          "evidence_item_id": "adult_chest_pain_low_risk_discharge",
-          "label": "Low-risk chest pain: 30-day death/MACE risk <1%, HEART <3 or EDACS <16 with serial troponins below 99th percentile",
-          "source_ids": [
-            "AHA_ACC_CHEST_PAIN_2021"
-          ],
-          "review_status": "source_backed"
-        },
-        {
           "threshold": ">80% probability",
           "evidence_item_id": "adult_chest_pain_aortic_dissection_probability",
           "label": "Aortic dissection concern: abrupt severe/ripping pain plus pulse differential plus widened mediastinum gives >80% probability",
@@ -3184,7 +3175,7 @@
         "chest_pain_classification_decision": {
           "rule_id": "chest_pain_classification_criteria",
           "source": "criteria",
-          "description": "Classify Chest pain against explicit cited cutoffs: Acute chest pain ACS screen: 12-lead ECG reviewed within 10 minutes; cardiac troponin measured as soon as possible: 10 minutes | Serial troponin rule-out/rule-in timing: hs-cTn repeat at 1-3 hours; conventional cTn repeat at 3-6 hours: 1 to 3 hours, 3 to 6 hours | Low-risk chest pain: 30-day death/MACE risk <1%, HEART <3 or EDACS <16 with serial troponins below 99th percentile: <1%, HEART <3, EDACS <16, 99th percentile | Aortic dissection concern: abrupt severe/ripping pain plus pulse differential plus widened med...",
+          "description": "Classify Chest pain against cited thresholds and condition-specific rules: Acute chest pain ACS screen: 12-lead ECG reviewed within 10 minutes; cardiac troponin measured as soon as possible: 10 minutes | Serial troponin rule-out/rule-in timing: hs-cTn repeat at 1-3 hours; conventional cTn repeat at 3-6 hours: 1 to 3 hours, 3 to 6 hours | Low-risk chest pain: 30-day death/MACE risk <1%, HEART <3 or EDACS <16 with serial troponins below 99th percentile: <1%, HEART <3, EDACS <16 | Aortic dissection concern: abrupt severe/ripping pain plus pulse differential plus widened mediastinum gives >80% probability: >80% probability | 12-lead ECG immediately for acute chest pain, ideally within 10 minutes in emergency evaluation: 10 minutes",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3247,8 +3238,7 @@
               "cutoffs": [
                 "<1%",
                 "HEART <3",
-                "EDACS <16",
-                "99th percentile"
+                "EDACS <16"
               ],
               "data_needed": [
                 "structured chest pain risk score",
@@ -3302,7 +3292,7 @@
         "chest_pain_missing_cutoff_data_endpoint": {
           "rule_id": "chest_pain_missing_cutoff_data_criteria",
           "source": "criteria",
-          "description": "Route here when Chest pain cannot be classified because exact cutoff-bearing data are missing.",
+          "description": "Route here when Chest pain cannot be classified because exact threshold/result data are missing.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3344,7 +3334,6 @@
             "<1%",
             "HEART <3",
             "EDACS <16",
-            "99th percentile",
             ">80% probability"
           ]
         },
@@ -3411,8 +3400,7 @@
               "cutoffs": [
                 "<1%",
                 "HEART <3",
-                "EDACS <16",
-                "99th percentile"
+                "EDACS <16"
               ],
               "data_needed": [
                 "structured chest pain risk score",
@@ -3528,8 +3516,7 @@
               "cutoffs": [
                 "<1%",
                 "HEART <3",
-                "EDACS <16",
-                "99th percentile"
+                "EDACS <16"
               ],
               "data_needed": [
                 "structured chest pain risk score",
@@ -3620,7 +3607,7 @@
         "chest_pain_monitoring_bundle": {
           "rule_id": "chest_pain_monitoring_criteria",
           "source": "criteria",
-          "description": "Monitor Chest pain by trending the same cutoff-bearing findings that selected the branch, plus medication adverse effects and disposition constraints.",
+          "description": "Monitor Chest pain by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3680,8 +3667,7 @@
               "cutoffs": [
                 "<1%",
                 "HEART <3",
-                "EDACS <16",
-                "99th percentile"
+                "EDACS <16"
               ],
               "data_needed": [
                 "structured chest pain risk score",
@@ -3735,7 +3721,7 @@
         "chest_pain_worsening_endpoint": {
           "rule_id": "chest_pain_worsening_criteria",
           "source": "criteria",
-          "description": "Escalate Chest pain if symptoms, vitals, critical cutoffs, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+          "description": "Escalate Chest pain if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3795,8 +3781,7 @@
               "cutoffs": [
                 "<1%",
                 "HEART <3",
-                "EDACS <16",
-                "99th percentile"
+                "EDACS <16"
               ],
               "data_needed": [
                 "structured chest pain risk score",
@@ -3910,8 +3895,7 @@
               "cutoffs": [
                 "<1%",
                 "HEART <3",
-                "EDACS <16",
-                "99th percentile"
+                "EDACS <16"
               ],
               "data_needed": [
                 "structured chest pain risk score",
@@ -3983,7 +3967,7 @@
         "chest_pain_alternate_endpoint": {
           "rule_id": "chest_pain_alternate_criteria",
           "source": "criteria",
-          "description": "Use an alternate pathway when Chest pain criteria are absent, a cited mimic better explains the presentation, or cutoff data contradict this workup.",
+          "description": "Use an alternate pathway when Chest pain criteria are absent, a cited mimic better explains the presentation, or objective result data contradict this workup.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4042,8 +4026,7 @@
               "cutoffs": [
                 "<1%",
                 "HEART <3",
-                "EDACS <16",
-                "99th percentile"
+                "EDACS <16"
               ],
               "data_needed": [
                 "structured chest pain risk score",
@@ -4119,7 +4102,7 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Chest pain using cutoff-bearing diagnostic criteria, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+        "action": "Route Chest pain using cited diagnostic thresholds/rules, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.",
         "children": [
           {
             "id": "endpoint_missing_context",
@@ -4161,7 +4144,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Before choosing a non-emergency Chest pain branch, document: presenting trigger, onset/trajectory, focused exam, vital signs, cutoff-bearing labs/results, medication/allergy context, comorbidities, demographics, pregnancy/applicability status, and current workup findings.",
+            "action": "Before choosing a non-emergency Chest pain branch, document: presenting trigger, onset/trajectory, focused exam, vital signs, threshold labs/results, medication/allergy context, comorbidities, demographics, pregnancy/applicability status, and current workup findings.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "missing_data_needed": [
@@ -4205,12 +4188,12 @@
                 "AHRQ_CALIBRATE_DX"
               ]
             },
-            "action": "Obtain together: 12-lead ECG immediately for acute chest pain, ideally within 10 minutes in emergency evaluation; High-sensitivity troponin pathway with serial testing per local protocol; Cardiac monitor, IV access, and repeat vitals if acute or unstable; Chest X-ray when pulmonary, pneumothorax, mediastinal, or heart failure features are possible; If PE concern persists, use local PE pathway for D-dimer or CT pulmonary angiography; Pregnancy test when pregnancy is possible and testing/imaging decisions depend on it; Measure blood....",
+            "action": "Obtain together: 12-lead ECG immediately for acute chest pain, ideally within 10 minutes in emergency evaluation; High-sensitivity troponin pathway with serial testing per local protocol; Cardiac monitor, IV access, and repeat vitals if acute or unstable; Chest X-ray when pulmonary, pneumothorax, mediastinal, or heart failure features are possible; If PE concern persists, use local PE pathway for D-dimer or CT pulmonary angiography; Pregnancy test when pregnancy is possible and testing/imaging decisions depend on it; Measure blood pressure; Measure heart rate; Measure respiratory rate; Measure oxygen saturation; Observe general appearance; arrival time; 12-lead ECG; cardiac troponin assay and collection time; troponin assay type; time-zero troponin; repeat troponin time; delta troponin; structured chest pain risk score.",
             "children": [
               {
                 "id": "chest_pain_classification_decision",
                 "type": "decision",
-                "label": "Chest pain: classify using explicit guideline cutoffs",
+                "label": "Chest pain: classify by Acute chest pain ACS screen: 12-lead ECG reviewed within 10 minutes; cardiac troponin measured as soon as possible: 10 minutes | Serial troponin rule-out/rule-in timing: hs-cTn repeat at 1-3 hours; conventional cTn repeat at 3-6 hours: 1 to 3 hours, 3 to 6 hours | Low-risk chest pain: 30-day death/MACE risk <1%, HEART <3 or EDACS <16 with serial troponins below 99th percentile: <1%, HEART <3, EDACS <16 | Aortic dissection concern: abrupt severe/ripping pain plus pulse differential plus widened mediastinum gives >80% probability: >80% probability | 12-lead ECG immediately for acute chest pain, ideally within 10 minutes in emergency evaluation: 10 minutes",
                 "edgeLabel": "Concurrent data bundle obtained",
                 "source_ids": [
                   "AHA_ACC_CHEST_PAIN_2021",
@@ -4219,7 +4202,7 @@
                 "criteria": {
                   "rule_id": "chest_pain_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Chest pain against explicit cited cutoffs: Acute chest pain ACS screen: 12-lead ECG reviewed within 10 minutes; cardiac troponin measured as soon as possible: 10 minutes | Serial troponin rule-out/rule-in timing: hs-cTn repeat at 1-3 hours; conventional cTn repeat at 3-6 hours: 1 to 3 hours, 3 to 6 hours | Low-risk chest pain: 30-day death/MACE risk <1%, HEART <3 or EDACS <16 with serial troponins below 99th percentile: <1%, HEART <3, EDACS <16, 99th percentile | Aortic dissection concern: abrupt severe/ripping pain plus pulse differential plus widened med...",
+                  "description": "Classify Chest pain against cited thresholds and condition-specific rules: Acute chest pain ACS screen: 12-lead ECG reviewed within 10 minutes; cardiac troponin measured as soon as possible: 10 minutes | Serial troponin rule-out/rule-in timing: hs-cTn repeat at 1-3 hours; conventional cTn repeat at 3-6 hours: 1 to 3 hours, 3 to 6 hours | Low-risk chest pain: 30-day death/MACE risk <1%, HEART <3 or EDACS <16 with serial troponins below 99th percentile: <1%, HEART <3, EDACS <16 | Aortic dissection concern: abrupt severe/ripping pain plus pulse differential plus widened mediastinum gives >80% probability: >80% probability | 12-lead ECG immediately for acute chest pain, ideally within 10 minutes in emergency evaluation: 10 minutes",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -4282,8 +4265,7 @@
                       "cutoffs": [
                         "<1%",
                         "HEART <3",
-                        "EDACS <16",
-                        "99th percentile"
+                        "EDACS <16"
                       ],
                       "data_needed": [
                         "structured chest pain risk score",
@@ -4334,13 +4316,13 @@
                     }
                   ]
                 },
-                "action": "Choose the active Chest pain branch by matching patient data to the cited cutoffs and condition-specific criteria.",
+                "action": "Choose the active Chest pain branch by matching patient data to: Acute chest pain ACS screen: 12-lead ECG reviewed within 10 minutes; cardiac troponin measured as soon as possible: 10 minutes | Serial troponin rule-out/rule-in timing: hs-cTn repeat at 1-3 hours; conventional cTn repeat at 3-6 hours: 1 to 3 hours, 3 to 6 hours | Low-risk chest pain: 30-day death/MACE risk <1%, HEART <3 or EDACS <16 with serial troponins below 99th percentile: <1%, HEART <3, EDACS <16 | Aortic dissection concern: abrupt severe/ripping pain plus pulse differential plus widened mediastinum gives >80% probability: >80% probability | 12-lead ECG immediately for acute chest pain, ideally within 10 minutes in emergency evaluation: 10 minutes.",
                 "children": [
                   {
                     "id": "chest_pain_missing_cutoff_data_endpoint",
                     "type": "endpoint",
-                    "label": "Missing data needed: Chest pain cutoff-bearing results",
-                    "edgeLabel": "Cutoff data missing",
+                    "label": "Missing data needed: Chest pain threshold/results",
+                    "edgeLabel": "Threshold/result data missing",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "AHA_ACC_CHEST_PAIN_2021"
@@ -4348,7 +4330,7 @@
                     "criteria": {
                       "rule_id": "chest_pain_missing_cutoff_data_criteria",
                       "source": "criteria",
-                      "description": "Route here when Chest pain cannot be classified because exact cutoff-bearing data are missing.",
+                      "description": "Route here when Chest pain cannot be classified because exact threshold/result data are missing.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4390,11 +4372,10 @@
                         "<1%",
                         "HEART <3",
                         "EDACS <16",
-                        "99th percentile",
                         ">80% probability"
                       ]
                     },
-                    "action": "Obtain the exact Chest pain data needed for cutoff-based routing: arrival time; 12-lead ECG; cardiac troponin assay and collection time; troponin assay type; time-zero troponin; repeat troponin time; delta troponin; structured chest pain risk score; ECG ischemia assessment; initial and serial troponins; assay 99th percentile; pain onset/quality/radiation; 12-lead ECG immediately for acute chest pain, ideally within 10 minutes in emergency evaluation; High-sensitivity troponin path....",
+                    "action": "Obtain the exact Chest pain data needed for threshold-based routing: arrival time; 12-lead ECG; cardiac troponin assay and collection time; troponin assay type; time-zero troponin; repeat troponin time; delta troponin; structured chest pain risk score; ECG ischemia assessment; initial and serial troponins; assay 99th percentile; pain onset/quality/radiation; 12-lead ECG immediately for acute chest pain, ideally within 10 minutes in emergency evaluation; High-sensitivity troponin pathway with serial testing per local protocol; Cardiac monitor, IV access, and repeat vitals if acute or unstable; Chest X-ray when pulmonary, pneumothorax, mediastinal, or heart failure features are possible; If PE concern persists, use local PE pathway for D-dimer or CT pulmonary angiography; Pregnancy test when pregnancy is possible and testing/imaging decisions depend on it; 10 minutes; 1 to 3 hours; 3 to 6 hours; <1%; HEART <3; EDACS <16; >80% probability.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "missing_data_needed": [
@@ -4422,14 +4403,13 @@
                       "<1%",
                       "HEART <3",
                       "EDACS <16",
-                      "99th percentile",
                       ">80% probability"
                     ]
                   },
                   {
                     "id": "chest_pain_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Chest pain: emergency escalation or monitored-care disposition when danger cutoffs are met",
+                    "label": "Chest pain: emergency escalation or monitored-care disposition when danger thresholds are met",
                     "edgeLabel": "Emergency or high-risk criteria met",
                     "source_ids": [
                       "AHA_ACC_CHEST_PAIN_2021",
@@ -4498,8 +4478,7 @@
                           "cutoffs": [
                             "<1%",
                             "HEART <3",
-                            "EDACS <16",
-                            "99th percentile"
+                            "EDACS <16"
                           ],
                           "data_needed": [
                             "structured chest pain risk score",
@@ -4550,7 +4529,7 @@
                         }
                       ]
                     },
-                    "action": "Unstable vitals or shock physiology; Syncope, new neurologic deficit, or severe sudden pain; Dissection pattern: tearing/ripping pain, back radiation, pulse/BP differential, neuro symptoms; Measure blood pressure. Monitor treatment response, complications, and need for reassessment with: 12-lead ECG immediately for acute chest pain, ideally within 10 minutes in emergency evaluation.; Acute chest pain with red flags belongs in emergency/monitored eva...",
+                    "action": "Unstable vitals or shock physiology; Syncope, new neurologic deficit, or severe sudden pain; Dissection pattern: tearing/ripping pain, back radiation, pulse/BP differential, neuro symptoms; Measure blood pressure. Monitor treatment response, complications, and need for reassessment with: 12-lead ECG immediately for acute chest pain, ideally within 10 minutes in emergency evaluation.; Acute chest pain with red flags belongs in emergency/monitored evaluation, not routine outpatient workup.; Use a structured chest pain clinical decision pathway and risk stratification rather than gestalt alone.; Acute chest pain with red flags belongs in emergency/monitored evaluation, not routine outpatient workup.; Use a structured chest pain clinical decision pathway and risk stratification rather than gestalt alone.; Monitor treatment response, complications, and need for reassessment with: 12-lead ECG immediately for acute chest pain, ideally within 10 minutes in emergency evaluation.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -4599,8 +4578,7 @@
                         "cutoffs": [
                           "<1%",
                           "HEART <3",
-                          "EDACS <16",
-                          "99th percentile"
+                          "EDACS <16"
                         ],
                         "data_needed": [
                           "structured chest pain risk score",
@@ -4654,8 +4632,8 @@
                   {
                     "id": "chest_pain_treatment_bundle",
                     "type": "action",
-                    "label": "Chest pain: start the indicated treatment/disposition bundle when cutoff criteria match",
-                    "edgeLabel": "Criteria match Chest pain or treatment cannot safely wait",
+                    "label": "Chest pain: start treatment/disposition when Acute chest pain ACS screen: 12-lead ECG reviewed within 10 minutes; cardiac troponin measured as soon as possible: 10 minutes | Serial troponin rule-out/rule-in timing: hs-cTn repeat at 1-3 hours; conventional cTn repeat at 3-6 hours: 1 to 3 hours, 3 to 6 hours | Low-risk chest pain: 30-day death/MACE risk <1%, HEART <3 or EDACS <16 with serial troponins below 99th percentile: <1%, HEART <3, EDACS <16 | Aortic dissection concern: abrupt severe/ripping pain plus pulse differential plus widened mediastinum gives >80% probability: >80% probability | 12-lead ECG immediately for acute chest pain, ideally within 10 minutes in emergency evaluation: 10 minutes matches",
+                    "edgeLabel": "Chest pain criteria match or treatment cannot safely wait",
                     "source_ids": [
                       "AHA_ACC_CHEST_PAIN_2021",
                       "AHRQ_CALIBRATE_DX"
@@ -4725,8 +4703,7 @@
                           "cutoffs": [
                             "<1%",
                             "HEART <3",
-                            "EDACS <16",
-                            "99th percentile"
+                            "EDACS <16"
                           ],
                           "data_needed": [
                             "structured chest pain risk score",
@@ -4782,7 +4759,7 @@
                       {
                         "id": "chest_pain_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Chest pain: medication/procedure safety and special-population cutoffs resolved?",
+                        "label": "Chest pain: medication/procedure safety and special-population thresholds resolved?",
                         "edgeLabel": "Diagnosis/risk branch selected",
                         "source_ids": [
                           "AHA_ACC_CHEST_PAIN_2021",
@@ -4853,7 +4830,7 @@
                             "criteria": {
                               "rule_id": "chest_pain_monitoring_criteria",
                               "source": "criteria",
-                              "description": "Monitor Chest pain by trending the same cutoff-bearing findings that selected the branch, plus medication adverse effects and disposition constraints.",
+                              "description": "Monitor Chest pain by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.",
                               "evaluable_from": [
                                 "symptoms",
                                 "exam",
@@ -4913,8 +4890,7 @@
                                   "cutoffs": [
                                     "<1%",
                                     "HEART <3",
-                                    "EDACS <16",
-                                    "99th percentile"
+                                    "EDACS <16"
                                   ],
                                   "data_needed": [
                                     "structured chest pain risk score",
@@ -4965,7 +4941,7 @@
                                 }
                               ]
                             },
-                            "action": "Reassess Chest pain using the active cutoffs and clinical course; do not close the pathway until response, adverse effects, pending data, and disposition are owned.",
+                            "action": "Reassess Chest pain using the active thresholds and clinical course; do not close the pathway until response, adverse effects, pending data, and disposition are owned.",
                             "children": [
                               {
                                 "id": "chest_pain_worsening_endpoint",
@@ -4979,7 +4955,7 @@
                                 "criteria": {
                                   "rule_id": "chest_pain_worsening_criteria",
                                   "source": "criteria",
-                                  "description": "Escalate Chest pain if symptoms, vitals, critical cutoffs, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
+                                  "description": "Escalate Chest pain if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.",
                                   "evaluable_from": [
                                     "symptoms",
                                     "exam",
@@ -5039,8 +5015,7 @@
                                       "cutoffs": [
                                         "<1%",
                                         "HEART <3",
-                                        "EDACS <16",
-                                        "99th percentile"
+                                        "EDACS <16"
                                       ],
                                       "data_needed": [
                                         "structured chest pain risk score",
@@ -5140,8 +5115,7 @@
                                     "cutoffs": [
                                       "<1%",
                                       "HEART <3",
-                                      "EDACS <16",
-                                      "99th percentile"
+                                      "EDACS <16"
                                     ],
                                     "data_needed": [
                                       "structured chest pain risk score",
@@ -5264,8 +5238,7 @@
                                       "cutoffs": [
                                         "<1%",
                                         "HEART <3",
-                                        "EDACS <16",
-                                        "99th percentile"
+                                        "EDACS <16"
                                       ],
                                       "data_needed": [
                                         "structured chest pain risk score",
@@ -5316,7 +5289,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Use the active Chest pain cutoff criteria and response trend to stop, narrow, taper, or continue treatment; document what cutoff or finding changed.",
+                                "action": "Use the active Chest pain objective criteria and response trend (10 minutes; 1 to 3 hours; 3 to 6 hours; <1%; HEART <3; EDACS <16; >80% probability) to stop, narrow, taper, or continue treatment; document what threshold or finding changed.",
                                 "children": [],
                                 "endpoint_type": "deescalation_stopping",
                                 "guideline_cutoffs": [
@@ -5365,8 +5338,7 @@
                                     "cutoffs": [
                                       "<1%",
                                       "HEART <3",
-                                      "EDACS <16",
-                                      "99th percentile"
+                                      "EDACS <16"
                                     ],
                                     "data_needed": [
                                       "structured chest pain risk score",
@@ -5457,7 +5429,7 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend cutoff-bearing labs/results",
+                              "trend objective labs/results",
                               "review treatment response/adverse effects",
                               "confirm disposition and follow-up owner",
                               "Measure blood pressure",
@@ -5512,8 +5484,7 @@
                                 "cutoffs": [
                                   "<1%",
                                   "HEART <3",
-                                  "EDACS <16",
-                                  "99th percentile"
+                                  "EDACS <16"
                                 ],
                                 "data_needed": [
                                   "structured chest pain risk score",
@@ -5618,8 +5589,7 @@
                         "cutoffs": [
                           "<1%",
                           "HEART <3",
-                          "EDACS <16",
-                          "99th percentile"
+                          "EDACS <16"
                         ],
                         "data_needed": [
                           "structured chest pain risk score",
@@ -5673,7 +5643,7 @@
                   {
                     "id": "chest_pain_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Chest pain: switch to mimic/alternate pathway when cutoff criteria do not fit",
+                    "label": "Chest pain: switch to mimic/alternate pathway when threshold/result criteria do not fit",
                     "edgeLabel": "Criteria favor mimic or alternate pathway",
                     "source_ids": [
                       "AHA_ACC_CHEST_PAIN_2021",
@@ -5682,7 +5652,7 @@
                     "criteria": {
                       "rule_id": "chest_pain_alternate_criteria",
                       "source": "criteria",
-                      "description": "Use an alternate pathway when Chest pain criteria are absent, a cited mimic better explains the presentation, or cutoff data contradict this workup.",
+                      "description": "Use an alternate pathway when Chest pain criteria are absent, a cited mimic better explains the presentation, or objective result data contradict this workup.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5741,8 +5711,7 @@
                           "cutoffs": [
                             "<1%",
                             "HEART <3",
-                            "EDACS <16",
-                            "99th percentile"
+                            "EDACS <16"
                           ],
                           "data_needed": [
                             "structured chest pain risk score",
@@ -5845,8 +5814,7 @@
                     "cutoffs": [
                       "<1%",
                       "HEART <3",
-                      "EDACS <16",
-                      "99th percentile"
+                      "EDACS <16"
                     ],
                     "data_needed": [
                       "structured chest pain risk score",
@@ -5942,8 +5910,7 @@
                     "cutoffs": [
                       "<1%",
                       "HEART <3",
-                      "EDACS <16",
-                      "99th percentile"
+                      "EDACS <16"
                     ],
                     "data_needed": [
                       "structured chest pain risk score",
@@ -6041,7 +6008,6 @@
               "<1%",
               "HEART <3",
               "EDACS <16",
-              "99th percentile",
               ">80% probability"
             ],
             "guideline_cutoffs": [
@@ -6090,8 +6056,7 @@
                 "cutoffs": [
                   "<1%",
                   "HEART <3",
-                  "EDACS <16",
-                  "99th percentile"
+                  "EDACS <16"
                 ],
                 "data_needed": [
                   "structured chest pain risk score",
@@ -6155,7 +6120,7 @@
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "chest_pain_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Cutoff data missing"
+          "expected_active_branch": "Threshold/result data missing"
         },
         {
           "scenario_id": "urgent_or_high_risk",
@@ -6213,7 +6178,7 @@
         "compact_tree_requirements": [
           "no prohibited generic node labels",
           "concurrent diagnostic/treatment bundles instead of long one-step chains",
-          "cutoff-bearing criteria visible in classification and endpoint nodes",
+          "cited thresholds/rules visible in classification and endpoint nodes",
           "all endpoints cite evidence or state needs_clinical_review",
           "missing-data endpoints name exact data needed"
         ]
@@ -6265,8 +6230,7 @@
         "cutoffs": [
           "<1%",
           "HEART <3",
-          "EDACS <16",
-          "99th percentile"
+          "EDACS <16"
         ],
         "data_needed": [
           "structured chest pain risk score",

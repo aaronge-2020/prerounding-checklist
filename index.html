@@ -12365,7 +12365,7 @@
       };
     }
 
-    function wrapTreeText(text = "", maxChars = 28, maxLines = Infinity) {
+    function wrapTreeText(text = "", maxChars = 28, _maxLines = Infinity) {
       const words = String(text || "").split(/\s+/).filter(Boolean);
       const lines = [];
       let line = "";
@@ -12384,14 +12384,9 @@
           } else {
             line = next;
           }
-          if (lines.length >= maxLines) break;
         }
-        if (lines.length >= maxLines) break;
       }
-      if (line && lines.length < maxLines) lines.push(line);
-      if (Number.isFinite(maxLines) && lines.length === maxLines && words.join(" ").length > lines.join(" ").length) {
-        lines[lines.length - 1] = `${lines[lines.length - 1].replace(/\.+$/g, "")}...`;
-      }
+      if (line) lines.push(line);
       return lines.length ? lines : [""];
     }
 

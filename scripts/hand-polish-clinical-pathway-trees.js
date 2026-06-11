@@ -48,10 +48,362 @@ const contextDomains = [
   "workup_findings"
 ];
 
-const cutoffPattern = /(?:>=|<=|>|<|=)\s*-?\d+(?:\.\d+)?|\b\d+(?:\.\d+)?\s*(?:mg\/dL|mg\/L|g\/L|mmol\/L|mEq\/L|mIU\/L|ng\/mL|pg\/mL|mm Hg|mL\/kg|mg\/kg|g\/kg|kg|kg\/m2|mL|hours?|days?|weeks?|months?|years?|cm|mm|ms|seconds?|minutes?|breaths\/minute|x10\^9\/L|%|C|ULN|mOsm\/kg|bpm|IU\/L|U\/L|mcg\/dL|ug\/dL)\b|\b(?:A1c|HbA1c|pH|bicarbonate|anion gap|osmolality|lactate|MAP|TSH|free T4|FT4|T3|PTH|calcium|cortisol|ACTH|aldosterone|renin)\b/gi;
+const cutoffUnits = "(?:mg/dL|mg/L|g/L|mmol/L|mEq/L|mIU/L|mU/L|ng/mL|pg/mL|ug/L|mg/g|mcg/mg|mm Hg|mL/kg|mg/kg|g/kg|kg/m2|mL/min(?:/1\\.73\\s*m2)?|mL|hours?|days?|weeks?|months?|years?|cm|mm|ms|seconds?|minutes?|breaths/minute|x10\\^9/L|%|C|ULN|LLN|mOsm/kg|bpm|IU/L|U/L|mcg/dL|ug/dL|mcg/day|mcg|g|mg|kg|cycles/year|measurements?|collections?|samples?|percent|percentile)";
+const cutoffPattern = new RegExp([
+  "(?:(?:>=|<=|>|<|=)|(?:above|below|exceeds?))\\s*(?:the\\s+)?(?:assay\\s+)?(?:ULN|LLN|upper limit of normal|lower limit of normal|reference range)",
+  "\\b\\d+(?:\\.\\d+)?\\s*(?:x|times|fold|-fold)\\s*(?:ULN|upper limit of normal)",
+  "\\b[A-Z][A-Za-z0-9+/ -]{0,30}\\s*(?:score\\s*)?(?:>=|<=|>|<|=)\\s*-?\\d+(?:\\.\\d+)?\\s*" + cutoffUnits + "?",
+  "(?:>=|<=|>|<|=)\\s*-?\\d+(?:\\.\\d+)?\\s*" + cutoffUnits + "?",
+  "\\b\\d+(?:\\.\\d+)?\\s*" + cutoffUnits + "\\s*(?:-|to)\\s*\\d+(?:\\.\\d+)?\\s*" + cutoffUnits + "?",
+  "\\b\\d+(?:\\.\\d+)?\\s*(?:-|to)\\s*\\d+(?:\\.\\d+)?\\s*" + cutoffUnits,
+  "\\b\\d+(?:\\.\\d+)?\\s*" + cutoffUnits,
+  "\\b(?:at least|at most|more than|less than|maximum|max|min(?:imum)?|up to)\\s+\\d+(?:\\.\\d+)?\\b",
+  "\\b\\d+\\s+or\\s+(?:more|fewer|less)\\b",
+  "\\bday\\s+\\d+\\b",
+  "\\bage\\s+\\d+\\b",
+  "\\b\\d+\\s+(?:principal clinical features|features|benzodiazepine doses|upper UTIs?|lower UTIs?)\\b"
+].join("|"), "gi");
 const shallowGeneratedItemPattern = /\b(?:source-backed criteria|use the high-risk or confirmed-pathway management option|lower-risk, outpatient, supportive, or safety-net pathway|stabilize or escalate before routine treatment|screen for immediate danger or disposition-changing findings|order focused first-line studies and interpret them in sequence|apply source-backed decision steps)\b/i;
 
+const cahCutoffCriteria = [
+  {
+    id: "cah_17ohp_reference_range_confirmation",
+    label: "CAH diagnostic confirmation: positive newborn screen or symptomatic patient needs 17-OHP above reference range with gestational-age/assay context and cosyntropin profile when borderline",
+    criteria_text: "Endocrine Society recommends gestational-age-stratified 17-hydroxyprogesterone screening, early-morning baseline 17-OHP by LC-MS/MS after infancy, and cosyntropin adrenocortical profile when 17-OHP is borderline or first-tier immunoassay screening is positive.",
+    cutoffs: ["17-OHP above reference range"],
+    data_needed: ["newborn screen result", "gestational age", "assay method", "baseline 17-OHP", "cosyntropin stimulated steroid profile when borderline"],
+    source_ids: ["ES_CAH_2018"],
+    source_section: "Diagnosis of congenital adrenal hyperplasia recommendations 1.2, 1.3, 3.1-3.3"
+  },
+  {
+    id: "cah_stress_dose_fever_cutoff",
+    label: "CAH stress-dose trigger: febrile illness temperature >38.5 C, dehydration gastroenteritis, major surgery with anesthesia, or major trauma",
+    criteria_text: "Increase glucocorticoid dosing in CAH patients who require glucocorticoids for febrile illness >38.5 C, gastroenteritis with dehydration, major surgery with general anesthesia, or major trauma; do not increase for everyday emotional stress or minor illness.",
+    cutoffs: [">38.5 C"],
+    data_needed: ["temperature", "dehydration/vomiting/diarrhea", "major surgery or anesthesia", "major trauma", "current glucocorticoid plan"],
+    source_ids: ["ES_CAH_2018"],
+    source_section: "Stress dosing recommendations 4.7-4.11"
+  },
+  {
+    id: "cah_nonclassic_stress_cortisol_response",
+    label: "Nonclassic CAH major-stress hydrocortisone only if cosyntropin cortisol response is suboptimal <14-18 ug/dL (<400-500 nmol/L) or iatrogenic suppression exists",
+    criteria_text: "For nonclassic CAH, hydrocortisone stress dosing for major surgery, trauma, or childbirth is suggested only when cosyntropin cortisol response is suboptimal (<14 to 18 ug/dL or <400 to 500 nmol/L) or iatrogenic adrenal suppression is present.",
+    cutoffs: ["<14-18 ug/dL", "<400-500 nmol/L"],
+    data_needed: ["cosyntropin peak cortisol", "assay-specific cortisol cutoff", "major surgery/trauma/childbirth status", "iatrogenic glucocorticoid suppression"],
+    source_ids: ["ES_CAH_2018"],
+    source_section: "Nonclassic congenital adrenal hyperplasia recommendation 5.6"
+  },
+  {
+    id: "cah_monitoring_age_intervals",
+    label: "CAH pediatric monitoring: age <=18 months monitor first 3 months of life and every 3 months thereafter; age >18 months evaluate every 4 months",
+    criteria_text: "For CAH patients <=18 months, monitor closely in the first 3 months of life and every 3 months thereafter; after 18 months, evaluate every 4 months, with pediatric growth, weight, blood pressure, exam, and biochemical measurements.",
+    cutoffs: ["<=18 months", "3 months", ">18 months", "4 months"],
+    data_needed: ["age", "last endocrine visit date", "growth velocity", "weight", "blood pressure", "timed hormones"],
+    source_ids: ["ES_CAH_2018"],
+    source_section: "Monitoring therapy recommendations 4.12-4.16"
+  }
+];
+
+const acromegalyGigantismCutoffCriteria = [
+  {
+    id: "gh_excess_igf1_uln_diagnosis",
+    label: "GH excess diagnosis: typical phenotype with IGF-1 >1.3 x ULN for age confirms acromegaly/gigantism spectrum",
+    criteria_text: "The 2024 Acromegaly Consensus Group states that in a patient with typical features, IGF-1 >1.3 times the upper limit of normal for age confirms the diagnosis; repeat IGF-1 or OGTT is used when results are equivocal.",
+    cutoffs: [">1.3 x ULN"],
+    data_needed: ["age/sex/puberty-adjusted IGF-1", "assay ULN", "typical GH-excess features", "repeat IGF-1 if equivocal"],
+    source_ids: ["ACROMEGALY_DIAGNOSIS_REMISSION_2024"],
+    source_section: "Consensus diagnosis criteria"
+  },
+  {
+    id: "gh_excess_ogtt_suppression_cutoffs",
+    label: "GH excess OGTT: failure to suppress GH to <1 ng/mL, or <0.4 ng/mL with ultrasensitive assays, supports active disease when IGF-1 is high/equivocal",
+    criteria_text: "When IGF-1 results are equivocal, oral glucose tolerance testing can be used; historical Endocrine Society criteria use GH nadir <1 ng/mL for suppression, with lower <0.4 ng/mL cutoffs used by more sensitive assays.",
+    cutoffs: ["GH nadir <1 ng/mL", "GH nadir <0.4 ng/mL"],
+    data_needed: ["75-g OGTT GH nadir", "GH assay sensitivity", "IGF-1 result", "puberty/diabetes status"],
+    source_ids: ["ES_ACROMEGALY_2014", "ACROMEGALY_DIAGNOSIS_REMISSION_2024"],
+    source_section: "Biochemical diagnosis and remission criteria"
+  }
+];
+
+const cushingDiagnosisCutoffCriteria = [
+  {
+    id: "cushing_initial_test_collection_count",
+    label: "Cushing initial testing: use UFC at least 2 measurements, late-night salivary cortisol 2 measurements, 1-mg overnight DST, or 2 mg/day for 48 hours DST",
+    criteria_text: "Endocrine Society recommends one high-accuracy initial test: UFC at least two measurements, late-night salivary cortisol two measurements, 1-mg overnight DST, or longer low-dose DST 2 mg/day for 48 hours.",
+    cutoffs: ["at least 2 measurements", "2 measurements", "1 mg", "2 mg/day", "48 hours"],
+    data_needed: ["UFC collection count", "late-night salivary cortisol count", "dexamethasone dose and timing", "renal function", "pregnancy/antiepileptic context"],
+    source_ids: ["ES_CUSHING_DX_2008"],
+    source_section: "Initial testing recommendations 3.4.1-3.4.4"
+  },
+  {
+    id: "cushing_dst_lnsf_ufc_positive_cutoffs",
+    label: "Cushing positive biochemical screen: UFC > assay ULN, post-1 mg DST cortisol >1.8 ug/dL (50 nmol/L), or late-night salivary cortisol >145 ng/dL (4 nmol/L)",
+    criteria_text: "Diagnostic criteria suggesting Cushing syndrome include UFC greater than the assay normal range, serum cortisol >1.8 ug/dL (50 nmol/L) after 1-mg DST, and late-night salivary cortisol >145 ng/dL (4 nmol/L).",
+    cutoffs: [">ULN", ">1.8 ug/dL", "50 nmol/L", ">145 ng/dL", "4 nmol/L"],
+    data_needed: ["24-hour UFC with assay ULN", "post-DST cortisol", "late-night salivary cortisol", "dexamethasone adherence/interactions"],
+    source_ids: ["ES_CUSHING_DX_2008"],
+    source_section: "Figure 1 diagnostic criteria"
+  }
+];
+
+const adultSepsisCutoffCriteria = [
+  {
+    id: "adult_sepsis_shock_hemodynamic_cutoffs",
+    label: "Adult septic shock physiology: vasopressors to maintain MAP >=65 mm Hg with lactate >2 mmol/L after adequate fluids",
+    criteria_text: "Route suspected infection to septic shock/monitored-care escalation when vasopressors are needed to maintain MAP >=65 mm Hg and lactate remains >2 mmol/L after adequate fluid resuscitation.",
+    cutoffs: ["MAP >=65 mm Hg", "lactate >2 mmol/L"],
+    data_needed: ["MAP", "vasopressor requirement", "lactate", "fluid resuscitation status", "infection suspicion"],
+    source_ids: ["SSC_SEPSIS_2026"],
+    source_section: "Adult sepsis and septic shock hemodynamic targets"
+  },
+  {
+    id: "adult_sepsis_resuscitation_and_lactate_cutoffs",
+    label: "Adult sepsis resuscitation: lactate >=4 mmol/L or sepsis-induced hypoperfusion supports immediate resuscitation; initial crystalloid often 30 mL/kg",
+    criteria_text: "For suspected sepsis with hypoperfusion or markedly elevated lactate, use immediate resuscitation and reassessment; SSC materials retain 30 mL/kg crystalloid as an initial reference volume for sepsis-induced hypoperfusion/septic shock.",
+    cutoffs: ["lactate >=4 mmol/L", "30 mL/kg"],
+    data_needed: ["lactate", "blood pressure/perfusion", "weight", "heart failure/renal contraindications", "fluid response"],
+    source_ids: ["SSC_SEPSIS_2026"],
+    source_section: "Initial resuscitation and lactate-guided reassessment"
+  }
+];
+
+const thyroidHyperCutoffCriteria = [
+  {
+    id: "thyrotoxicosis_overt_biochemistry",
+    label: "Overt thyrotoxicosis biochemistry: TSH below LLN with free T4 and/or T3 above assay ULN",
+    criteria_text: "Classify overt thyrotoxicosis when TSH is below the assay lower limit and free T4 and/or T3 are above the assay upper limit; then determine cause with TRAb, uptake/scan, ultrasound, medication, or thyroiditis context.",
+    cutoffs: ["TSH below LLN", "free T4 above ULN", "T3 above ULN"],
+    data_needed: ["TSH", "free T4", "total/free T3", "assay reference intervals", "TRAb/TSI or uptake pattern when needed"],
+    source_ids: ["ATA_HYPERTHYROIDISM_2016"],
+    source_section: "Diagnosis and management of thyrotoxicosis"
+  },
+  {
+    id: "subclinical_hyperthyroid_tsh_suppressed",
+    label: "Subclinical hyperthyroidism high-risk stratum: persistent TSH <0.1 mU/L over 3 to 6 months; treat age >65 or cardiac/osteoporosis/symptomatic risk",
+    criteria_text: "ATA considers TSH <0.1 mU/L on repeated measurement over 3 to 6 months persistent; treatment is recommended/considered based on age >65 years, cardiac disease, osteoporosis, menopausal status, symptoms, and risk.",
+    cutoffs: ["TSH <0.1 mU/L", "3 to 6 months", "age >65 years"],
+    data_needed: ["repeat TSH dates", "age", "cardiac disease", "osteoporosis/fracture risk", "symptoms", "thyroiditis/drug exclusion"],
+    source_ids: ["ATA_HYPERTHYROIDISM_2016"],
+    source_section: "Subclinical hyperthyroidism recommendations 73-76"
+  },
+  {
+    id: "subclinical_hyperthyroid_tsh_low_detectable",
+    label: "Subclinical hyperthyroidism low-detectable stratum: persistent TSH 0.1-0.4 mU/L; consider treatment age >=65 or cardiac/osteoporosis/symptoms, otherwise monitor 6-12 months",
+    criteria_text: "ATA describes low but detectable TSH 0.1-0.4 mU/L; treatment is considered for age >=65 years or risk factors, while asymptomatic age <65 without cardiac disease/osteoporosis can be observed with 6-12 month monitoring.",
+    cutoffs: ["TSH 0.1-0.4 mU/L", "age >=65 years", "age <65 years", "6-12 months"],
+    data_needed: ["repeat TSH", "age", "cardiac disease", "osteoporosis", "hyperthyroid symptoms", "follow-up access"],
+    source_ids: ["ATA_HYPERTHYROIDISM_2016"],
+    source_section: "Subclinical hyperthyroidism recommendations 75-76 and Table 10"
+  }
+];
+
+const thyroidHypoCutoffCriteria = [
+  {
+    id: "hypothyroid_replacement_tsh_target",
+    label: "Hypothyroid LT4 titration: target TSH typically 0.5 to 3.5 or 4 mIU/L; recheck 4-6 weeks after dose changes",
+    criteria_text: "ATA hypothyroidism guideline uses serum TSH to titrate levothyroxine in primary hypothyroidism, with a typical target TSH 0.5 to 3.5 or 4 mIU/L and reassessment 4-6 weeks after dose initiation or change.",
+    cutoffs: ["0.5 to 3.5 mIU/L", "4 mIU/L", "4-6 weeks"],
+    data_needed: ["TSH", "LT4 dose", "dose-change date", "adherence/absorption interactions", "pregnancy/age/comorbidity context"],
+    source_ids: ["ATA_HYPOTHYROIDISM_2014"],
+    source_section: "Levothyroxine dosage and TSH target"
+  },
+  {
+    id: "hypothyroid_lt4_adjustment_increment",
+    label: "Hypothyroid LT4 adjustment: change by 12.5-25 mcg/day increments and repeat TSH 4-6 weeks; once stable check 4-6 months then yearly",
+    criteria_text: "ATA describes dose adjustments of 12.5-25 mcg/day up or down based on TSH, repeat testing in 4-6 weeks until target, then TSH in 4-6 months and yearly once stable.",
+    cutoffs: ["12.5-25 mcg/day", "4-6 weeks", "4-6 months"],
+    data_needed: ["current LT4 dose", "TSH trend", "weight/age/pregnancy changes", "drug interactions", "last stable TSH date"],
+    source_ids: ["ATA_HYPOTHYROIDISM_2014"],
+    source_section: "Levothyroxine dosage adjustment"
+  },
+  {
+    id: "hypothyroid_overtreatment_elderly_targets",
+    label: "Hypothyroid overtreatment safety: avoid TSH <0.1 mIU/L; consider higher TSH target 4-6 mIU/L in age >70-80 years",
+    criteria_text: "ATA recommends avoiding thyroid hormone excess, particularly TSH <0.1 mIU/L in older/postmenopausal patients; in persons >70-80 years, a TSH target of 4-6 mIU/L may be reasonable.",
+    cutoffs: ["TSH <0.1 mIU/L", "4-6 mIU/L", "age >70-80 years"],
+    data_needed: ["TSH", "age", "postmenopausal status", "atrial fibrillation/osteoporosis risk", "LT4 dose"],
+    source_ids: ["ATA_HYPOTHYROIDISM_2014"],
+    source_section: "Avoiding iatrogenic thyrotoxicosis and elderly targets"
+  }
+];
+
+const thyroidNoduleCutoffCriteria = [
+  {
+    id: "thyroid_nodule_ata_fna_high_intermediate",
+    label: "ATA thyroid nodule FNA: high-suspicion or intermediate-suspicion ultrasound pattern meets FNA threshold at >=1 cm",
+    criteria_text: "ATA 2015 recommends diagnostic FNA for thyroid nodules >=1 cm with high-suspicion sonographic pattern and >=1 cm with intermediate-suspicion pattern.",
+    cutoffs: [">=1 cm"],
+    data_needed: ["thyroid ultrasound pattern", "largest nodule dimension", "extrathyroidal extension features", "microcalcifications/margins/shape", "lymph node findings"],
+    source_ids: ["ATA_THYROID_NODULE_DTC_2015"],
+    source_section: "Recommendation 8 and Table 6"
+  },
+  {
+    id: "thyroid_nodule_ata_fna_low_very_low",
+    label: "ATA thyroid nodule FNA: low-suspicion pattern >=1.5 cm; very-low-suspicion/spongiform pattern consider FNA >=2 cm or observe",
+    criteria_text: "ATA 2015 recommends FNA at >=1.5 cm for low-suspicion nodules and considers FNA at >=2 cm for very-low-suspicion or spongiform nodules, with observation also reasonable.",
+    cutoffs: [">=1.5 cm", ">=2 cm"],
+    data_needed: ["thyroid ultrasound pattern", "largest nodule dimension", "spongiform/partially cystic status", "patient preference/follow-up access"],
+    source_ids: ["ATA_THYROID_NODULE_DTC_2015"],
+    source_section: "Recommendation 8 and Table 6"
+  },
+  {
+    id: "thyroid_nodule_ata_no_fna_cystic",
+    label: "ATA thyroid nodule no-biopsy branch: pure cystic nodules have <1% malignancy risk and no FNA unless symptomatic/cosmetic drainage is needed",
+    criteria_text: "ATA 2015 Table 6 lists purely cystic nodules as benign pattern with estimated malignancy risk <1% and states no biopsy is required; aspiration may be considered for symptoms or cosmetic drainage.",
+    cutoffs: ["<1%"],
+    data_needed: ["pure cystic status", "solid component absent", "compressive/cosmetic symptoms", "ultrasound confirmation"],
+    source_ids: ["ATA_THYROID_NODULE_DTC_2015"],
+    source_section: "Recommendation 8 and Table 6"
+  }
+];
+
+const testosteroneCutoffCriteria = [
+  {
+    id: "male_hypogonadism_total_testosterone_cutoffs",
+    label: "Male hypogonadism confirmation: symptoms plus repeat fasting morning total testosterone below harmonized 264 ng/dL lower limit; free T if TT 200-400 ng/dL or SHBG altered",
+    criteria_text: "Endocrine Society recommends diagnosing hypogonadism only with symptoms/signs and consistently low morning testosterone; CDC-harmonized lower limit is 264 ng/dL, and free testosterone is recommended when TT is near the lower limit such as 200-400 ng/dL or SHBG is altered.",
+    cutoffs: ["264 ng/dL", "200-400 ng/dL"],
+    data_needed: ["symptoms/signs", "two fasting morning total testosterone values", "SHBG/albumin when indicated", "assay certification/reference range"],
+    source_ids: ["ES_TESTOSTERONE_2018"],
+    source_section: "Diagnosis of hypogonadism and Figure 1"
+  },
+  {
+    id: "male_hypogonadism_pituitary_imaging_cutoff",
+    label: "Male hypogonadism pituitary imaging trigger: severe secondary hypogonadism with serum testosterone <150 ng/dL, persistent hyperprolactinemia, panhypopituitarism, or mass effect",
+    criteria_text: "Endocrine Society suggests pituitary imaging when severe secondary hypogonadism is present, for example serum testosterone <150 ng/dL, or with panhypopituitarism, persistent hyperprolactinemia, or headache/visual field mass effect.",
+    cutoffs: ["<150 ng/dL"],
+    data_needed: ["testosterone", "LH/FSH", "prolactin", "other pituitary hormones", "headache/visual symptoms"],
+    source_ids: ["ES_TESTOSTERONE_2018"],
+    source_section: "Figure 1 diagnostic evaluation"
+  },
+  {
+    id: "testosterone_therapy_safety_cutoffs",
+    label: "Testosterone therapy safety stop/review: PSA >4 ng/mL, PSA >3 ng/mL in high-risk men without urology review, hematocrit >54%, or MI/stroke within last 6 months",
+    criteria_text: "Endocrine Society recommends against starting testosterone therapy with prostate cancer risk findings including PSA >4 ng/mL or >3 ng/mL in high-risk men without urologic evaluation, elevated hematocrit; trials defined erythrocytosis as hematocrit >54%, and MI/stroke within 6 months is a contraindication.",
+    cutoffs: [">4 ng/mL", ">3 ng/mL", ">54%", "6 months"],
+    data_needed: ["PSA", "prostate exam/risk", "hematocrit", "recent MI/stroke history", "fertility plans"],
+    source_ids: ["ES_TESTOSTERONE_2018"],
+    source_section: "Treatment contraindications and systematic review harms"
+  }
+];
+
+const hirsutismCutoffCriteria = [
+  {
+    id: "hirsutism_abnormal_score_androgen_testing",
+    label: "Hirsutism workup trigger: abnormal hirsutism score warrants androgen testing; eumenorrheic local hair growth without abnormal score should not trigger broad testing",
+    criteria_text: "Endocrine Society suggests androgen testing in all women with an abnormal hirsutism score and suggests against androgen testing for eumenorrheic unwanted local hair growth in the absence of an abnormal hirsutism score.",
+    cutoffs: ["above reference range"],
+    data_needed: ["modified Ferriman-Gallwey or local hirsutism score", "ethnicity-specific scoring threshold", "menstrual pattern", "androgen assay"],
+    source_ids: ["ES_HIRSUTISM_2018"],
+    source_section: "Diagnosis recommendations 1.1 and 1.3"
+  },
+  {
+    id: "hirsutism_vte_risk_ocp_cutoff",
+    label: "Hirsutism OCP choice modifier: age >39 years or obesity/VTE risk favors lowest effective ethinyl estradiol dose, usually 20 mcg, with low-risk progestin",
+    criteria_text: "For hirsute women at higher VTE risk, such as obesity or age over 39 years, Endocrine Society suggests an oral contraceptive with the lowest effective ethinyl estradiol dose, usually 20 mcg, and a low-risk progestin.",
+    cutoffs: ["age >39 years", "20 mcg"],
+    data_needed: ["age", "BMI/VTE risk factors", "contraception need", "OCP contraindications", "pregnancy status"],
+    source_ids: ["ES_HIRSUTISM_2018"],
+    source_section: "Pharmacological treatment recommendation 3.4"
+  },
+  {
+    id: "hirsutism_response_interval",
+    label: "Hirsutism treatment response: trial pharmacologic therapy for at least 6 months before changing dose, switching, or adding antiandrogen",
+    criteria_text: "Endocrine Society suggests a trial of at least 6 months for pharmacologic hirsutism therapy before dose change, switching medication, or adding medication; antiandrogen addition is suggested if patient-important hirsutism remains after 6 months of OCP monotherapy.",
+    cutoffs: ["at least 6 months", "6 months"],
+    data_needed: ["therapy start date", "OCP/antiandrogen use", "contraception status", "patient-important symptom response", "adverse effects"],
+    source_ids: ["ES_HIRSUTISM_2018"],
+    source_section: "Pharmacological treatment recommendations 3.5 and 3.7"
+  }
+];
+
+const prolactinomaCutoffCriteria = [
+  {
+    id: "hyperprolactinemia_assay_uln_and_normal_anchor",
+    label: "Hyperprolactinemia diagnosis: single prolactin above assay ULN confirms when drawn without excessive venipuncture stress; normal values are generally <25 ug/L",
+    criteria_text: "Endocrine Society recommends a single prolactin measurement above the assay upper limit to diagnose hyperprolactinemia if venipuncture stress is avoided; normal values are generally lower than 25 ug/L.",
+    cutoffs: [">ULN", "<25 ug/L"],
+    data_needed: ["serum prolactin", "assay ULN", "venipuncture stress", "pregnancy/lactation status", "medication list"],
+    source_ids: ["ES_HYPERPROLACTINEMIA_2011"],
+    source_section: "Recommendation 1.1"
+  },
+  {
+    id: "prolactinoma_level_size_cutoffs",
+    label: "Prolactinoma probability by prolactin level: >250 ug/L usually indicates prolactinoma; >500 ug/L is diagnostic of macroprolactinoma; macroadenoma >10 mm",
+    criteria_text: "Endocrine Society notes prolactin >250 ug/L usually indicates prolactinoma and >500 ug/L is diagnostic of macroprolactinoma; macroprolactinomas are >10 mm and usually have prolactin >250 ug/L.",
+    cutoffs: [">250 ug/L", ">500 ug/L", ">10 mm"],
+    data_needed: ["prolactin", "pituitary MRI size", "drug causes such as risperidone/metoclopramide", "renal/thyroid status"],
+    source_ids: ["ES_HYPERPROLACTINEMIA_2011", "PITUITARY_PROLACTINOMA_2023"],
+    source_section: "Diagnosis recommendation 1.1 evidence and Pituitary Society diagnostic algorithm"
+  },
+  {
+    id: "prolactinoma_hook_effect_dilution",
+    label: "Hook-effect exclusion: large pituitary tumor with unexpectedly mild prolactin elevation needs repeat assay after 1:100 dilution",
+    criteria_text: "When a large macroadenoma has normal or only mildly elevated prolactin, Endocrine Society recommends serial dilution; a 1:100 serum dilution can overcome the hook effect.",
+    cutoffs: ["100-fold dilution"],
+    data_needed: ["pituitary tumor size", "prolactin level", "assay dilution performed", "visual symptoms/mass effect"],
+    source_ids: ["ES_HYPERPROLACTINEMIA_2011"],
+    source_section: "Recommendation 1.3"
+  }
+];
+
+const pheochromocytomaCutoffCriteria = [
+  {
+    id: "pheo_biochemical_metanephrine_cutoff",
+    label: "PPGL biochemical confirmation: plasma free or urinary fractionated metanephrines above assay ULN need follow-up; values about 3-fold ULN are high probability",
+    criteria_text: "Endocrine Society recommends plasma free or urinary fractionated metanephrines for initial PPGL testing, with follow-up based on extent of increase and clinical presentation; large elevations such as 3-fold ULN are high probability while borderline results require preanalytical review.",
+    cutoffs: [">ULN", "3-fold ULN"],
+    data_needed: ["plasma free or urinary fractionated metanephrines", "assay ULN", "supine sampling status", "interfering medications", "clinical presentation"],
+    source_ids: ["ES_PHEO_PPGL_2014"],
+    source_section: "Biochemical testing recommendations 1.1-1.4"
+  },
+  {
+    id: "pheo_preop_blockade_timing",
+    label: "PPGL pre-op preparation: functional tumor needs alpha blockade and high-sodium/fluid preparation for 7 to 14 days before surgery",
+    criteria_text: "Endocrine Society recommends preoperative blockade for hormonally functional PPGL and medical treatment for 7 to 14 days to normalize blood pressure/heart rate, with high-sodium diet and fluid intake to prevent postoperative hypotension.",
+    cutoffs: ["7 to 14 days"],
+    data_needed: ["functional PPGL status", "blood pressure", "heart rate", "alpha blockade start date", "volume/sodium plan"],
+    source_ids: ["ES_PHEO_PPGL_2014"],
+    source_section: "Perioperative medical management recommendations 4.1-4.2"
+  },
+  {
+    id: "pheo_open_surgery_size_cutoff",
+    label: "PPGL surgery approach: open resection for large pheochromocytoma >6 cm or invasive disease; minimally invasive adrenalectomy for most smaller adrenal tumors",
+    criteria_text: "Endocrine Society recommends minimally invasive adrenalectomy for most adrenal pheochromocytomas and open resection for large, for example >6 cm, or invasive pheochromocytomas.",
+    cutoffs: [">6 cm"],
+    data_needed: ["tumor size", "invasion features", "adrenal vs paraganglioma site", "multifocal/metastatic risk", "surgical expertise"],
+    source_ids: ["ES_PHEO_PPGL_2014"],
+    source_section: "Surgery recommendation 5.1"
+  },
+  {
+    id: "pheo_postop_followup_cutoff",
+    label: "PPGL follow-up: biochemical testing 2-4 weeks after surgery and lifelong annual metanephrine testing for recurrence/metastatic disease",
+    criteria_text: "Endocrine Society remarks that biochemical testing to document successful removal should occur after recovery, for example 2-4 weeks after surgery, and recommends lifelong annual biochemical testing for recurrent or metastatic PPGL.",
+    cutoffs: ["2-4 weeks", "annual"],
+    data_needed: ["surgery date", "postoperative recovery status", "metanephrine level", "genetic/metastatic risk", "follow-up owner"],
+    source_ids: ["ES_PHEO_PPGL_2014"],
+    source_section: "Follow-up recommendation 4.4 remarks"
+  }
+];
+
 const curatedCutoffCriteria = {
+  congenital_adrenal_hyperplasia_v1: cahCutoffCriteria,
+  gigantism_v1: acromegalyGigantismCutoffCriteria,
+  cushings_disease_v1: cushingDiagnosisCutoffCriteria,
+  cushings_syndrome_v1: cushingDiagnosisCutoffCriteria,
+  fever_infection_sepsis_v1: adultSepsisCutoffCriteria,
+  graves_disease_v1: thyroidHyperCutoffCriteria,
+  hyperthyroidism_v1: thyroidHyperCutoffCriteria,
+  thyrotoxicosis_v1: thyroidHyperCutoffCriteria,
+  hashimotos_thyroiditis_v1: thyroidHypoCutoffCriteria,
+  hypothyroidism_v1: thyroidHypoCutoffCriteria,
+  thyroid_cancer_v1: [...thyroidNoduleCutoffCriteria, ...thyroidHypoCutoffCriteria.slice(0, 1)],
+  thyroid_nodules_v1: thyroidNoduleCutoffCriteria,
+  gynecomastia_v1: testosteroneCutoffCriteria,
+  hypogonadism_v1: testosteroneCutoffCriteria,
+  hirsutism_v1: hirsutismCutoffCriteria,
+  prolactinoma_v1: prolactinomaCutoffCriteria,
+  pheochromocytoma_v1: pheochromocytomaCutoffCriteria,
   chest_pain_v1: [
     {
       id: "adult_chest_pain_ecg_troponin_timing",
@@ -133,7 +485,7 @@ const curatedCutoffCriteria = {
       id: "peds_chest_syncope_ecg_required_once",
       label: "Pediatric syncope: obtain an ECG at least once; urgent referral for exertional syncope, chest pain/palpitations, abnormal ECG, or family history",
       criteria_text: "An ECG should be obtained in all children with syncope at least once; cardiac syncope concern includes exercise association, no prodrome, chest pain/palpitations, past cardiac disease, or family history of early cardiac death/arrhythmia/sudden death.",
-      cutoffs: ["at least once"],
+      cutoffs: [],
       data_needed: ["syncope timing/activity", "prodrome", "palpitations/chest pain", "family history", "ECG"],
       source_ids: ["RCH_SYNCOPE_CHILD"],
       source_section: "Investigations and consultation"
@@ -249,7 +601,7 @@ const curatedCutoffCriteria = {
       id: "peds_kawasaki_echo_risk_cutoffs",
       label: "Kawasaki echo/high-risk cutoffs: coronary aneurysm Z-score >=2.5; EF <55%; fractional shortening <28%; coronary dilation Z-score 2 to 2.5",
       criteria_text: "Incomplete Kawasaki support includes coronary aneurysm Z-score >=2.5 or at least 3 echo features; high-risk includes age <=6 months, right CA/LAD Z-score >=2.5, coronary Z-score >=2, IVIG delay >=10 days, IVIG resistance fever >=38 C at >=36 hours, platelets >=450 x10^9/L, or CRP >=130 mg/L.",
-      cutoffs: [">=2.5", "<55%", "<28%", "2 to 2.5", "<=6 months", ">=2", ">=10 days", ">=38 C", ">=36 hours", ">=450 x10^9/L", ">=130 mg/L"],
+      cutoffs: [">=2.5", "<55%", "<28%", "Z-score 2 to 2.5", "<=6 months", ">=2", ">=10 days", ">=38 C", ">=36 hours", ">=450 x10^9/L", ">=130 mg/L"],
       data_needed: ["echocardiogram Z-scores", "age", "fever onset date", "temperature after IVIG", "platelets", "CRP"],
       source_ids: ["RCH_KAWASAKI_DISEASE"],
       source_section: "Incomplete Kawasaki diagnosis and risk stratification"
@@ -336,7 +688,7 @@ const curatedCutoffCriteria = {
       id: "pcos_ultrasound_adult_cutoffs",
       label: "Adult PCOM ultrasound: ovarian volume >=10 mL or follicle number per section >=10 in at least one ovary when follicle count quality is insufficient",
       criteria_text: "For adult PCOM using older technology or insufficient image quality, ovarian volume >=10 mL or follicle number per section >=10 in at least one ovary is the threshold; ultrasound is not recommended for PCOM diagnosis in adolescents.",
-      cutoffs: [">=10 mL", ">=10", "adolescents not recommended"],
+      cutoffs: [">=10 mL", ">=10"],
       data_needed: ["age/adolescent status", "ultrasound route", "ovarian volume", "follicle number per section", "dominant follicle/cyst context"],
       source_ids: ["PCOS_GUIDELINE_2023"],
       source_section: "Ultrasound and polycystic ovarian morphology"
@@ -377,10 +729,15 @@ function cleanText(value = "") {
   return String(value || "").replace(/\s+/g, " ").replace(/\s+([,.;:])/g, "$1").trim();
 }
 
-function shortText(value = "", max = 280) {
-  const clean = cleanText(value);
-  if (clean.length <= max) return clean;
-  return `${clean.slice(0, max - 1).replace(/[;:,.\s]+$/g, "")}...`;
+function hasRealCutoff(value = "") {
+  const text = cleanText(value);
+  if (/(?:(?:>=|<=|>|<|=)|(?:above|below|exceeds?))\s*(?:the\s+)?(?:assay\s+)?(?:ULN|LLN|upper limit of normal|lower limit of normal|reference range)/i.test(text)) return true;
+  if (!/\d/.test(text)) return false;
+  return new RegExp(cutoffPattern.source, "i").test(text);
+}
+
+function shortText(value = "", _max = 280) {
+  return cleanText(value);
 }
 
 function slug(value = "") {
@@ -459,11 +816,12 @@ function sourceRowsForTree(sourceIds = [], sourceById = new Map()) {
 }
 
 function criterion({ id, label, criteria_text, cutoffs = [], data_needed = [], source_ids = [], source_section = "", needs_clinical_review = false, reviewer_input_needed = "" }) {
+  const realCutoffs = unique(cutoffs).filter(hasRealCutoff);
   return {
     id,
     label: cleanText(label),
     criteria_text: cleanText(criteria_text || label),
-    cutoffs: unique(cutoffs),
+    cutoffs: realCutoffs,
     data_needed: unique(data_needed),
     source_ids: unique(source_ids),
     source_section: cleanText(source_section),
@@ -544,7 +902,7 @@ function extractedCutoffCriteria(module) {
     const items = Array.isArray(module[group]) ? module[group] : [];
     items.forEach((item) => {
       const text = evidenceText(item);
-      const cutoffs = unique(text.match(cutoffPattern) || []);
+      const cutoffs = unique(text.match(new RegExp(cutoffPattern.source, "gi")) || []).filter(hasRealCutoff);
       if (!cutoffs.length) return;
       rows.push(criterion({
         id: `${group}_${item.id || slug(itemLabel(item))}`,
@@ -564,7 +922,7 @@ function cutoffCriteriaForModule(module) {
   return [
     ...(Array.isArray(module.clinical_cutoff_criteria) ? module.clinical_cutoff_criteria.map(criterion) : []),
     ...extractedCutoffCriteria(module)
-  ].filter((row) => row.source_ids?.length);
+  ].filter((row) => row.source_ids?.length && ((row.cutoffs || []).length || row.needs_clinical_review));
 }
 
 function sourceThresholdsFromCriteria(rows = []) {
@@ -605,7 +963,7 @@ function buildTraversableContext(module, sourceIds, tests, criteriaRows) {
 function buildSyntheticScenarios(prefix) {
   return [
     { scenario_id: "missing_context", major_pathway: "missing_data_needed", expected_endpoint_id: "endpoint_missing_context", expected_active_branch: "Missing context" },
-    { scenario_id: "missing_cutoff_data", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: `${prefix}_missing_cutoff_data_endpoint`, expected_active_branch: "Cutoff data missing" },
+    { scenario_id: "missing_cutoff_data", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: `${prefix}_missing_cutoff_data_endpoint`, expected_active_branch: "Threshold/result data missing" },
     { scenario_id: "urgent_or_high_risk", major_pathway: "escalation_emergency_actions", expected_endpoint_id: `${prefix}_urgent_endpoint`, expected_active_branch: "Emergency or high-risk criteria met" },
     { scenario_id: "alternate_pathway", major_pathway: "mimics_exclusions", expected_endpoint_id: `${prefix}_alternate_endpoint`, expected_active_branch: "Criteria favor mimic or alternate pathway" },
     { scenario_id: "special_population_review", major_pathway: "contraindications_special_populations", expected_endpoint_id: `${prefix}_review_endpoint`, expected_active_branch: "Treatment modifier unresolved" },
@@ -635,7 +993,10 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     ...listLabels(tests, 8),
     ...criteriaRows.flatMap((row) => row.cutoffs || []).slice(0, 8)
   ]);
+  const thresholdExamples = unique(criteriaRows.flatMap((row) => row.cutoffs || [])).slice(0, 10);
   const cutoffSummary = criteriaRows.slice(0, 5).map((row) => `${row.label}: ${(row.cutoffs || []).slice(0, 6).join(", ")}`).join(" | ");
+  const thresholdSummary = cutoffSummary || thresholdExamples.join("; ") || "documented diagnostic criteria with clinician review when numeric thresholds are unavailable";
+  const shortThresholdSummary = shortText(thresholdSummary, 180);
   const redFlagSummary = listLabels(redFlags, 4).join("; ");
   const safetySummary = listLabels(safetyChecks, 5);
   const treatmentSummary = [...listLabels(treatments, 4), ...listLabels(dispositions, 3)].filter(Boolean).join("; ");
@@ -657,7 +1018,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     edgeLabel: "Stopping or de-escalation criteria met",
     sourceIds: managementSources,
     criteria: criteria(`${prefix}_deescalate_criteria`, `Stop, narrow, taper, or de-escalate ${label} treatment only when objective response, diagnosis certainty, and cited stopping criteria support it.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], managementSources, { criteria_options: criteriaRows.slice(0, 8) }),
-    action: `Use the active ${label} cutoff criteria and response trend to stop, narrow, taper, or continue treatment; document what cutoff or finding changed.`,
+    action: `Use the active ${label} objective criteria and response trend (${shortText(thresholdExamples.join("; "), 220)}) to stop, narrow, taper, or continue treatment; document what threshold or finding changed.`,
     endpointType: "deescalation_stopping",
     guidelineCutoffs: criteriaRows
   });
@@ -667,7 +1028,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     label: `${label}: escalate when reassessment worsens or contradicts expected course`,
     edgeLabel: "Worsening or discordant reassessment",
     sourceIds: unique([...redFlagSources, ...managementSources]),
-    criteria: criteria(`${prefix}_worsening_criteria`, `Escalate ${label} if symptoms, vitals, critical cutoffs, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], unique([...redFlagSources, ...managementSources]), { criteria_options: criteriaRows.slice(0, 8) }),
+    criteria: criteria(`${prefix}_worsening_criteria`, `Escalate ${label} if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], unique([...redFlagSources, ...managementSources]), { criteria_options: criteriaRows.slice(0, 8) }),
     action: `Repeat critical ${label} objective data, reassess mimics/complications, and move to ED/admission/specialty review according to the abnormal cutoff or danger feature.`,
     endpointType: "escalation_disposition",
     guidelineCutoffs: criteriaRows
@@ -678,9 +1039,9 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     label: `${label}: concurrent monitoring, response checks, and disposition readiness`,
     edgeLabel: "Treatment started or diagnostic plan active",
     sourceIds: managementSources,
-    criteria: criteria(`${prefix}_monitoring_criteria`, `Monitor ${label} by trending the same cutoff-bearing findings that selected the branch, plus medication adverse effects and disposition constraints.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], managementSources, { criteria_options: criteriaRows.slice(0, 8) }),
-    action: `Reassess ${label} using the active cutoffs and clinical course; do not close the pathway until response, adverse effects, pending data, and disposition are owned.`,
-    parallelActions: unique(["repeat vital signs", "trend cutoff-bearing labs/results", "review treatment response/adverse effects", "confirm disposition and follow-up owner", ...safetySummary]),
+    criteria: criteria(`${prefix}_monitoring_criteria`, `Monitor ${label} by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], managementSources, { criteria_options: criteriaRows.slice(0, 8) }),
+    action: `Reassess ${label} using the active thresholds and clinical course; do not close the pathway until response, adverse effects, pending data, and disposition are owned.`,
+    parallelActions: unique(["repeat vital signs", "trend objective labs/results", "review treatment response/adverse effects", "confirm disposition and follow-up owner", ...safetySummary]),
     guidelineCutoffs: criteriaRows,
     children: [worseningEndpoint, deescalateEndpoint, followupEndpoint]
   });
@@ -698,7 +1059,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
 
   const safetyDecision = decision({
     id: `${prefix}_treatment_safety_decision`,
-    label: `${label}: medication/procedure safety and special-population cutoffs resolved?`,
+    label: `${label}: medication/procedure safety and special-population thresholds resolved?`,
     edgeLabel: "Diagnosis/risk branch selected",
     sourceIds: cutoffSources,
     criteria: criteria(`${prefix}_safety_decision_criteria`, `Route ${label} management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.`, ["medications", "allergies", "pregnancy_status", "demographics", "comorbidities", "labs", "workup_findings"], cutoffSources, { criteria_options: criteriaRows.filter((row) => /treat|dose|mg|kg|pregnan|bmi|renal|contra/i.test(`${row.label} ${row.criteria_text}`)).slice(0, 8) }),
@@ -708,11 +1069,11 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
 
   const treatmentBundle = actionNode({
     id: `${prefix}_treatment_bundle`,
-    label: `${label}: start the indicated treatment/disposition bundle when cutoff criteria match`,
-    edgeLabel: `Criteria match ${label} or treatment cannot safely wait`,
+    label: `${label}: start treatment/disposition when ${shortThresholdSummary} matches`,
+    edgeLabel: `${label} criteria match or treatment cannot safely wait`,
     sourceIds: managementSources,
     criteria: criteria(`${prefix}_treatment_bundle_criteria`, `Use the ${label} treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "pregnancy_status", "workup_findings"], managementSources, { criteria_options: criteriaRows.slice(0, 10) }),
-    action: treatmentSummary || `Treat ${label} according to the active cutoff-defined branch and documented severity.`,
+    action: treatmentSummary || `Treat ${label} according to the active threshold-defined branch and documented severity.`,
     parallelActions: unique([...listLabels(treatments, 5), ...listLabels(dispositions, 3)]),
     guidelineCutoffs: criteriaRows,
     children: [safetyDecision]
@@ -720,10 +1081,10 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
 
   const alternateEndpoint = endpoint({
     id: `${prefix}_alternate_endpoint`,
-    label: `${label}: switch to mimic/alternate pathway when cutoff criteria do not fit`,
+    label: `${label}: switch to mimic/alternate pathway when threshold/result criteria do not fit`,
     edgeLabel: "Criteria favor mimic or alternate pathway",
     sourceIds: differentialSources,
-    criteria: criteria(`${prefix}_alternate_criteria`, `Use an alternate pathway when ${label} criteria are absent, a cited mimic better explains the presentation, or cutoff data contradict this workup.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "workup_findings"], differentialSources, { criteria_options: criteriaRows.slice(0, 8) }),
+    criteria: criteria(`${prefix}_alternate_criteria`, `Use an alternate pathway when ${label} criteria are absent, a cited mimic better explains the presentation, or objective result data contradict this workup.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "workup_findings"], differentialSources, { criteria_options: criteriaRows.slice(0, 8) }),
     action: `Document why ${label} is not the active pathway and route to the competing diagnosis: ${shortText(listLabels(differentials, 5).join("; "), 320)}.`,
     endpointType: "clinician_review_handoff",
     reviewNeededReason: "Competing diagnosis or exclusion changes the active pathway."
@@ -731,7 +1092,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
 
   const urgentEndpoint = endpoint({
     id: `${prefix}_urgent_endpoint`,
-    label: `${label}: emergency escalation or monitored-care disposition when danger cutoffs are met`,
+    label: `${label}: emergency escalation or monitored-care disposition when danger thresholds are met`,
     edgeLabel: "Emergency or high-risk criteria met",
     sourceIds: unique([...redFlagSources, ...managementSources]),
     criteria: criteria(`${prefix}_urgent_criteria`, `Escalate ${label} when any condition-specific danger feature, high-risk cutoff, unstable physiology, or monitored-care disposition rule is present.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "mental_status", "workup_findings"], unique([...redFlagSources, ...managementSources]), { criteria_options: criteriaRows.slice(0, 10) }),
@@ -742,22 +1103,22 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
 
   const missingCutoffEndpoint = endpoint({
     id: `${prefix}_missing_cutoff_data_endpoint`,
-    label: `Missing data needed: ${label} cutoff-bearing results`,
-    edgeLabel: "Cutoff data missing",
+    label: `Missing data needed: ${label} threshold/results`,
+    edgeLabel: "Threshold/result data missing",
     sourceIds: unique([...genericSourceIds, ...cutoffSources]),
-    criteria: criteria(`${prefix}_missing_cutoff_data_criteria`, `Route here when ${label} cannot be classified because exact cutoff-bearing data are missing.`, contextDomains, unique([...genericSourceIds, ...cutoffSources]), { missing_any: exactDiagnosticData }),
-    action: `Obtain the exact ${label} data needed for cutoff-based routing: ${shortText(exactDiagnosticData.join("; "), 420)}.`,
+    criteria: criteria(`${prefix}_missing_cutoff_data_criteria`, `Route here when ${label} cannot be classified because exact threshold/result data are missing.`, contextDomains, unique([...genericSourceIds, ...cutoffSources]), { missing_any: exactDiagnosticData }),
+    action: `Obtain the exact ${label} data needed for threshold-based routing: ${shortText(exactDiagnosticData.join("; "), 420)}.`,
     endpointType: "missing_data_needed",
     missingDataNeeded: exactDiagnosticData
   });
 
   const classificationDecision = decision({
     id: `${prefix}_classification_decision`,
-    label: `${label}: classify using explicit guideline cutoffs`,
+    label: `${label}: classify by ${shortThresholdSummary}`,
     edgeLabel: "Concurrent data bundle obtained",
     sourceIds: cutoffSources,
-    criteria: criteria(`${prefix}_classification_criteria`, `Classify ${label} against explicit cited cutoffs: ${shortText(cutoffSummary, 520)}`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "demographics", "pregnancy_status", "workup_findings"], cutoffSources, { criteria_options: criteriaRows }),
-    action: `Choose the active ${label} branch by matching patient data to the cited cutoffs and condition-specific criteria.`,
+    criteria: criteria(`${prefix}_classification_criteria`, `Classify ${label} against cited thresholds and condition-specific rules: ${shortText(thresholdSummary, 520)}`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "demographics", "pregnancy_status", "workup_findings"], cutoffSources, { criteria_options: criteriaRows }),
+    action: `Choose the active ${label} branch by matching patient data to: ${shortText(thresholdSummary, 520)}.`,
     clinicalCriteria: criteriaRows,
     guidelineCutoffs: criteriaRows,
     children: [missingCutoffEndpoint, urgentEndpoint, treatmentBundle, alternateEndpoint]
@@ -782,7 +1143,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     edgeLabel: "Missing context",
     sourceIds: genericSourceIds,
     criteria: criteria("missing_context_criteria", `Route here when the patient context needed to activate ${label} is absent or cannot be extracted.`, contextDomains, genericSourceIds, { missing_any: contextDomains }),
-    action: `Before choosing a non-emergency ${label} branch, document: presenting trigger, onset/trajectory, focused exam, vital signs, cutoff-bearing labs/results, medication/allergy context, comorbidities, demographics, pregnancy/applicability status, and current workup findings.`,
+    action: `Before choosing a non-emergency ${label} branch, document: presenting trigger, onset/trajectory, focused exam, vital signs, threshold labs/results, medication/allergy context, comorbidities, demographics, pregnancy/applicability status, and current workup findings.`,
     endpointType: "missing_data_needed",
     missingDataNeeded: contextDomains
   });
@@ -792,7 +1153,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     label: `${label}: compact evidence-cited management pathway`,
     sourceIds: cutoffSources,
     criteria: criteria("activate_workup", `Activate when structured or extractable context matches ${label} triggers or the clinician selects workup ${module.id}.`, ["selected_workup_id", "presenting_symptoms", "problem_list_or_diagnosis", "clinician_selected_module"], cutoffSources),
-    action: `Route ${label} using cutoff-bearing diagnostic criteria, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.`,
+    action: `Route ${label} using cited diagnostic thresholds/rules, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.`,
     children: [missingContextEndpoint, dataBundle]
   });
 
@@ -833,7 +1194,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
       compact_tree_requirements: [
         "no prohibited generic node labels",
         "concurrent diagnostic/treatment bundles instead of long one-step chains",
-        "cutoff-bearing criteria visible in classification and endpoint nodes",
+        "cited thresholds/rules visible in classification and endpoint nodes",
         "all endpoints cite evidence or state needs_clinical_review",
         "missing-data endpoints name exact data needed"
       ]

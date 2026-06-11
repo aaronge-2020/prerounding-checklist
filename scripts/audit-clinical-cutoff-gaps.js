@@ -30,14 +30,36 @@ const prohibitedGenericNodePatterns = [
   /diagnostic criteria met or treatment cannot wait/i,
   /high-risk or confirmed .* management/i,
   /lower-risk .* management/i,
-  /source-backed criteria/i
+  /source-backed criteria/i,
+  /explicit guideline cutoffs/i,
+  /cutoff-bearing/i,
+  /cutoff criteria/i
 ];
 
+const cutoffUnits = "(?:mg/dL|mg/L|g/L|mmol/L|mEq/L|mIU/L|mU/L|ng/mL|pg/mL|ug/L|mg/g|mcg/mg|mm Hg|mL/kg|mg/kg|g/kg|kg/m2|mL/min(?:/1\\.73\\s*m2)?|mL|hours?|days?|weeks?|months?|years?|cm|mm|ms|seconds?|minutes?|breaths/minute|x10\\^9/L|%|C|ULN|LLN|mOsm/kg|bpm|IU/L|U/L|mcg/dL|ug/dL|mcg/day|mcg|g|mg|kg|cycles/year|measurements?|collections?|samples?|percent|percentile)";
 const cutoffPattern = new RegExp([
-  "(?:>=|<=|>|<|=)\\s*-?\\d+(?:\\.\\d+)?",
-  "\\b\\d+(?:\\.\\d+)?\\s*(?:mg/dL|mg/L|g/L|mmol/L|mEq/L|mIU/L|ng/mL|pg/mL|mm Hg|mL/kg|mg/kg|g/kg|kg|kg/m2|mL|hours?|days?|weeks?|months?|years?|cm|mm|ms|seconds?|minutes?|breaths/minute|x10\\^9/L|%|C|ULN|mOsm/kg|bpm|IU/L|U/L|mcg/dL|ug/dL)\\b",
-  "\\b(?:A1c|HbA1c|pH|bicarbonate|anion gap|osmolality|lactate|MAP|TSH|free T4|FT4|T3|PTH|calcium|cortisol|ACTH|aldosterone|renin)\\b"
+  "(?:(?:>=|<=|>|<|=)|(?:above|below|exceeds?))\\s*(?:the\\s+)?(?:assay\\s+)?(?:ULN|LLN|upper limit of normal|lower limit of normal|reference range)",
+  "\\b\\d+(?:\\.\\d+)?\\s*(?:x|times|fold|-fold)\\s*(?:ULN|upper limit of normal)",
+  "\\b[A-Z][A-Za-z0-9+/ -]{0,30}\\s*(?:score\\s*)?(?:>=|<=|>|<|=)\\s*-?\\d+(?:\\.\\d+)?\\s*" + cutoffUnits + "?",
+  "(?:>=|<=|>|<|=)\\s*-?\\d+(?:\\.\\d+)?\\s*" + cutoffUnits + "?",
+  "\\b\\d+(?:\\.\\d+)?\\s*" + cutoffUnits + "\\s*(?:-|to)\\s*\\d+(?:\\.\\d+)?\\s*" + cutoffUnits + "?",
+  "\\b\\d+(?:\\.\\d+)?\\s*(?:-|to)\\s*\\d+(?:\\.\\d+)?\\s*" + cutoffUnits,
+  "\\b\\d+(?:\\.\\d+)?\\s*" + cutoffUnits,
+  "\\b(?:at least|at most|more than|less than|maximum|max|min(?:imum)?|up to)\\s+\\d+(?:\\.\\d+)?\\b",
+  "\\b\\d+\\s+or\\s+(?:more|fewer|less)\\b",
+  "\\bday\\s+\\d+\\b",
+  "\\bage\\s+\\d+\\b",
+  "\\b\\d+\\s+(?:principal clinical features|features|benzodiazepine doses|upper UTIs?|lower UTIs?)\\b"
 ].join("|"), "gi");
+
+const bareMarkerPattern = /\b(?:A1c|HbA1c|pH|bicarbonate|anion gap|osmolality|lactate|MAP|TSH|free T4|FT4|T3|PTH|calcium|cortisol|ACTH|aldosterone|renin|eGFR|UACR|glucose|troponin)\b/i;
+
+function hasRealCutoff(value = "") {
+  const text = cleanText(value);
+  if (/(?:(?:>=|<=|>|<|=)|(?:above|below|exceeds?))\s*(?:the\s+)?(?:assay\s+)?(?:ULN|LLN|upper limit of normal|lower limit of normal|reference range)/i.test(text)) return true;
+  if (!/\d/.test(text)) return false;
+  return new RegExp(cutoffPattern.source, "i").test(text);
+}
 
 function parseArgs(argv) {
   const args = { json: defaultJsonOut, out: defaultMdOut };
@@ -105,11 +127,31 @@ function sourceIds(item = {}) {
 
 function cutoffRows(module = {}) {
   const rows = [];
+  const markerOnlyRows = [];
+  const fakeCutoffRows = [];
   for (const group of evidenceGroups) {
     const items = Array.isArray(module[group]) ? module[group] : [];
     items.forEach((item) => {
       const text = itemText(item);
-      const cutoffs = unique(text.match(new RegExp(cutoffPattern.source, "gi")) || []);
+      const explicitCutoffs = Array.isArray(item.cutoffs) ? item.cutoffs : [];
+      const fakeCutoffs = explicitCutoffs.filter((cutoff) => !hasRealCutoff(cutoff));
+      if (fakeCutoffs.length) {
+        fakeCutoffRows.push({
+          group,
+          item_id: item.id || "",
+          label: cleanText(item.label || item.text || item.action || item.id || ""),
+          fake_cutoffs: unique(fakeCutoffs)
+        });
+      }
+      if (bareMarkerPattern.test(text) && !hasRealCutoff(text)) {
+        markerOnlyRows.push({
+          group,
+          item_id: item.id || "",
+          label: cleanText(item.label || item.text || item.action || item.id || ""),
+          marker_only_terms: unique(text.match(bareMarkerPattern) || [])
+        });
+      }
+      const cutoffs = unique(text.match(new RegExp(cutoffPattern.source, "gi")) || []).filter(hasRealCutoff);
       if (!cutoffs.length) return;
       rows.push({
         group,
@@ -120,6 +162,8 @@ function cutoffRows(module = {}) {
       });
     });
   }
+  rows.markerOnlyRows = markerOnlyRows;
+  rows.fakeCutoffRows = fakeCutoffRows;
   return rows;
 }
 
@@ -143,6 +187,8 @@ function moduleRecord(file) {
   const tree = module.clinical_pathway_tree_v1 || {};
   const treeNodes = walk(tree.root || null);
   const rows = cutoffRows(module);
+  const markerOnlyRows = rows.markerOnlyRows || [];
+  const fakeCutoffRows = rows.fakeCutoffRows || [];
   const treeText = JSON.stringify(tree);
   const cutoffValues = unique(rows.flatMap((row) => row.cutoffs));
   const visibleCutoffs = cutoffValues.filter((cutoff) => treeText.toLowerCase().includes(String(cutoff).toLowerCase()));
@@ -157,11 +203,15 @@ function moduleRecord(file) {
     tree_visible_cutoff_count: visibleCutoffs.length,
     tree_visible_cutoff_examples: visibleCutoffs.slice(0, 12),
     cutoff_row_count: rows.length,
+    marker_only_row_count: markerOnlyRows.length,
+    marker_only_rows: markerOnlyRows.slice(0, 12),
+    fake_cutoff_row_count: fakeCutoffRows.length,
+    fake_cutoff_rows: fakeCutoffRows.slice(0, 12),
     cutoff_rows_without_sources: missingSourceCutoffRows.length,
     tree_node_count: treeNodes.length,
     prohibited_generic_nodes: genericFindings,
     needs_cutoff_enrichment: cutoffValues.length < 3,
-    needs_tree_rewrite: genericFindings.length > 0 || treeNodes.length > 36 || visibleCutoffs.length < Math.min(3, cutoffValues.length)
+    needs_tree_rewrite: genericFindings.length > 0 || fakeCutoffRows.length > 0 || treeNodes.length > 36 || visibleCutoffs.length < Math.min(3, cutoffValues.length)
   };
 }
 
@@ -173,9 +223,11 @@ function markdown(report) {
   lines.push(`Need cutoff enrichment: ${report.summary.need_cutoff_enrichment_count}`);
   lines.push(`Need tree rewrite: ${report.summary.need_tree_rewrite_count}`);
   lines.push(`Prohibited generic node findings: ${report.summary.prohibited_generic_node_count}`);
+  lines.push(`Marker-only pseudo-cutoff rows: ${report.summary.marker_only_row_count}`);
+  lines.push(`Fake explicit cutoff rows: ${report.summary.fake_cutoff_row_count}`);
   lines.push("");
-  lines.push("| Workup | Evidence cutoffs | Visible in tree | Nodes | Needs cutoff enrichment | Needs tree rewrite | Generic findings | Examples |");
-  lines.push("|---|---:|---:|---:|---:|---:|---:|---|");
+  lines.push("| Workup | Evidence cutoffs | Visible in tree | Nodes | Needs cutoff enrichment | Needs tree rewrite | Generic findings | Fake cutoff rows | Marker-only rows | Examples |");
+  lines.push("|---|---:|---:|---:|---:|---:|---:|---:|---:|---|");
   report.results.forEach((row) => {
     lines.push([
       `| ${row.workup_id}`,
@@ -185,6 +237,8 @@ function markdown(report) {
       row.needs_cutoff_enrichment ? "yes" : "no",
       row.needs_tree_rewrite ? "yes" : "no",
       row.prohibited_generic_nodes.length,
+      row.fake_cutoff_row_count,
+      row.marker_only_row_count,
       row.evidence_cutoff_examples.slice(0, 6).join("; ").replace(/\|/g, "/")
     ].join(" | ") + " |");
   });
@@ -221,7 +275,9 @@ function main() {
       module_count: results.length,
       need_cutoff_enrichment_count: results.filter((row) => row.needs_cutoff_enrichment).length,
       need_tree_rewrite_count: results.filter((row) => row.needs_tree_rewrite).length,
-      prohibited_generic_node_count: results.reduce((sum, row) => sum + row.prohibited_generic_nodes.length, 0)
+      prohibited_generic_node_count: results.reduce((sum, row) => sum + row.prohibited_generic_nodes.length, 0),
+      marker_only_row_count: results.reduce((sum, row) => sum + row.marker_only_row_count, 0),
+      fake_cutoff_row_count: results.reduce((sum, row) => sum + row.fake_cutoff_row_count, 0)
     },
     results
   };
