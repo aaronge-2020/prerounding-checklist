@@ -4363,6 +4363,381 @@ function buildPheochromocytomaClinicalPathwayTree(module, sourceById) {
   });
 }
 
+function buildGrowthHormoneExcessClinicalPathwayTree(module, sourceById, growthMode) {
+  const isGigantism = growthMode === "gigantism";
+  const label = module.label || (isGigantism ? "Gigantism" : "Acromegaly");
+  const prefix = isGigantism ? "gigantism" : "acromegaly";
+  const es = ["ES_ACROMEGALY_2014"];
+  const pituitary = ["PITUITARY_ACROMEGALY_2021"];
+  const diagnosis = ["ACROMEGALY_DIAGNOSIS_REMISSION_2024"];
+  const complications = ["ACROMEGALY_COMPLICATIONS_2026"];
+  const sourceIds = unique([...diagnosis, ...es, ...pituitary, ...complications, ...genericSourceIds]);
+  const tests = firstItems(module, "initialTests", 12);
+  const redFlags = firstItems(module, "redFlags", 8, ["safetyChecks"]);
+  const differentials = firstItems(module, "differentialBuckets", 8);
+  const dispositions = firstItems(module, "dispositionRules", 8, ["treatmentOptions"]);
+
+  const phenotypeData = isGigantism
+    ? ["height velocity", "height SDS/percentile", "mid-parental target height", "pubertal stage", "bone age", "epiphyseal/growth-plate status"]
+    : ["acral/facial feature progression", "ring/shoe/hat size change", "jaw spacing", "carpal tunnel", "hyperhidrosis", "skin tags"];
+  const specialLabel = isGigantism
+    ? "Pediatric gigantism: rapid growth before epiphyseal closure needs pediatric endocrinology, pituitary MRI, genetic/syndromic review, and adult GH-excess targets"
+    : "Acromegaly pregnancy/fertility: stop long-acting SRL or pegvisomant about 2 months before conception and monitor macroadenoma visual fields";
+  const specialAction = isGigantism
+    ? "For GH excess before epiphyseal closure, treat urgently with a pediatric pituitary team: document height velocity, height SDS/percentile, pubertal stage, bone age, epiphyseal status, visual field risk, pituitary MRI, family history and syndromic/genetic clues, and then normalize GH/IGF-1 using the same surgery/medical/radiation framework while protecting growth, puberty, and school/function follow-up."
+    : "For planned pregnancy, stop long-acting SRL formulations and pegvisomant about 2 months before attempts to conceive; during pregnancy withhold medical therapy unless tumor growth or headache control requires treatment, use serial visual field testing for macroadenomas, and do not use GH or IGF-1 levels for pregnancy monitoring.";
+
+  const criteriaRows = [
+    criterion({
+      id: `${prefix}_igf1_screening_population`,
+      label: `${label} screening: measure age-adjusted IGF-1 for typical phenotype, pituitary mass, or multiple associated comorbidities`,
+      criteria_text: "Endocrine Society recommends IGF-1 testing for typical acromegaly manifestations, pituitary mass, and consideration when several associated conditions coexist such as sleep apnea, type 2 diabetes, debilitating arthritis, carpal tunnel syndrome, hyperhidrosis, or hypertension.",
+      cutoffs: [],
+      data_needed: unique([...phenotypeData, "pituitary mass", "sleep apnea", "type 2 diabetes", "arthritis", "carpal tunnel", "hyperhidrosis", "hypertension", "age-adjusted IGF-1"]),
+      source_ids: es,
+      source_section: "Diagnosis recommendations 1.1-1.3"
+    }),
+    criterion({
+      id: `${prefix}_igf1_1_3_uln_confirmation`,
+      label: `${label} confirmation: typical phenotype with IGF-1 >1.3 x ULN for age confirms GH excess spectrum`,
+      criteria_text: "The 2024 Acromegaly Consensus Group states that in a patient with typical features, IGF-1 >1.3 times the upper limit of normal for age confirms acromegaly; equivocal results should be repeated using the same validated assay and may need OGTT.",
+      cutoffs: [">1.3 x ULN"],
+      data_needed: unique([...phenotypeData, "age-adjusted IGF-1", "assay ULN", "same-assay repeat IGF-1 when equivocal", "clinical phenotype"]),
+      source_ids: diagnosis,
+      source_section: "Consensus diagnosis criteria"
+    }),
+    criterion({
+      id: `${prefix}_ogtt_gh_suppression_cutoffs`,
+      label: `${label} OGTT: failure to suppress GH to <1 ng/mL (<1 ug/L) after 75-g glucose, or <0.4 ng/mL (<0.4 ug/L) with sufficiently accurate assays, supports active disease when IGF-1 is high/equivocal`,
+      criteria_text: "Endocrine Society recommends confirming elevated/equivocal IGF-1 by lack of GH suppression to <1 ug/L after documented hyperglycemia during an oral glucose load; historical Society criteria use GH nadir <1 ng/mL for suppression, with lower <0.4 ng/mL cutoffs used by sensitive assays. A nadir GH <1 ug/L within 2 hours after 75-g glucose usually excludes acromegaly, and <0.4 ug/L has been considered with sensitive assays.",
+      cutoffs: ["75 g", "GH nadir <1 ng/mL", "GH nadir <1 ug/L", "2 hours", "GH nadir <0.4 ng/mL", "GH nadir <0.4 ug/L"],
+      data_needed: ["75-g OGTT", "GH nadir", "glucose before/after load", "GH assay sensitivity", "IGF-1 result", "diabetes/glucose tolerance status"],
+      source_ids: unique([...es, ...diagnosis]),
+      source_section: "Diagnosis recommendation 1.5 and 2024 equivocal-testing consensus"
+    }),
+    criterion({
+      id: `${prefix}_random_gh_not_diagnostic`,
+      label: `${label} random GH: do not diagnose by random GH alone; random GH <0.4 ug/L with normal IGF-1 helps exclude GH excess`,
+      criteria_text: "Endocrine Society recommends against relying on random GH to diagnose acromegaly; the 2024 consensus notes random fasting GH can inform prognosis but is not required for diagnosis, and prior consensus criteria excluded acromegaly when random GH was <0.4 ug/L with normal IGF-1.",
+      cutoffs: ["<0.4 ug/L"],
+      data_needed: ["random fasting GH", "age/sex-adjusted IGF-1", "assay reference interval", "clinical phenotype"],
+      source_ids: unique([...es, ...diagnosis]),
+      source_section: "Diagnosis recommendation 1.4 and 2024 consensus background"
+    }),
+    criterion({
+      id: `${prefix}_mri_visual_field_cutoffs`,
+      label: `${label} imaging: pituitary MRI after biochemical diagnosis; formal visual fields if tumor abuts optic chiasm`,
+      criteria_text: "Endocrine Society recommends pituitary imaging after biochemical diagnosis, MRI as preferred imaging, CT only when MRI is contraindicated/unavailable, and formal visual field testing when tumor abuts the optic chiasm.",
+      cutoffs: [],
+      data_needed: ["biochemical diagnosis", "pituitary MRI", "MRI contraindication", "CT if MRI unavailable", "optic chiasm contact", "formal visual field test"],
+      source_ids: es,
+      source_section: "Diagnosis recommendations 1.6-1.7"
+    }),
+    criterion({
+      id: `${prefix}_comorbidity_screening`,
+      label: `${label} comorbidity screen: BP, diabetes, cardiovascular disease, osteoarthritis, sleep apnea, colonoscopy at diagnosis, thyroid ultrasound for palpable nodules, hypopituitarism`,
+      criteria_text: "Endocrine Society recommends evaluating all patients with acromegaly for hypertension, diabetes mellitus, cardiovascular disease, osteoarthritis, sleep apnea, colon neoplasia with colonoscopy at diagnosis, thyroid ultrasound if palpable thyroid nodularity exists, and hypopituitarism with hormone replacement when deficits are present.",
+      cutoffs: [],
+      data_needed: ["blood pressure", "fasting glucose or A1c", "cardiovascular assessment", "sleep apnea symptoms/testing", "joint/fracture symptoms", "colonoscopy status", "thyroid exam", "pituitary axes"],
+      source_ids: unique([...es, ...complications]),
+      source_section: "Comorbidity recommendations 2.1-2.5 and 2026 complications update"
+    }),
+    criterion({
+      id: `${prefix}_urgent_mass_effect_and_metabolic_risk`,
+      label: `${label} urgent route: pituitary apoplexy, acute severe headache, visual field loss, cranial nerve palsy, airway/OSA risk, cardiomyopathy, arrhythmia, uncontrolled diabetes, adrenal crisis, or macroadenoma pregnancy symptoms`,
+      criteria_text: "Acromegaly/GH-excess workup should escalate for pituitary apoplexy or mass effect, severe cardiopulmonary or sleep-apnea risk, uncontrolled glucose/cardiac complications, adrenal crisis, or macroadenoma symptoms during pregnancy before routine outpatient endocrine sequencing.",
+      cutoffs: [],
+      data_needed: ["headache onset/severity", "visual field symptoms", "cranial nerve palsy", "mental status", "airway/OSA symptoms", "heart failure/cardiomyopathy", "arrhythmia", "glucose/A1c", "cortisol/adrenal status", "pregnancy status"],
+      source_ids: unique([...es, ...complications]),
+      source_section: "Mass effect, comorbidity, and pregnancy recommendations"
+    }),
+    criterion({
+      id: `${prefix}_treatment_goals`,
+      label: `${label} treatment goals: age-normalized IGF-1 and random GH <1.0 ug/L, tracked with the same assay when possible`,
+      criteria_text: "Endocrine Society suggests age-normalized IGF-1 as the biochemical target and random GH <1.0 ug/L as a therapeutic goal, with the same GH and IGF-1 assay used longitudinally in the same patient.",
+      cutoffs: ["random GH <1.0 ug/L"],
+      data_needed: ["age-normalized IGF-1", "random GH", "assay method", "symptoms", "tumor size"],
+      source_ids: es,
+      source_section: "Goals of management recommendations 3.1-3.3"
+    }),
+    criterion({
+      id: `${prefix}_surgery_postop_timing`,
+      label: `${label} surgery: transsphenoidal surgery primary for most; post-op IGF-1/random GH and MRI at >=12 weeks, OGTT if GH >1 ug/L`,
+      criteria_text: "Endocrine Society recommends transsphenoidal surgery as primary therapy for most patients, considers repeat surgery for residual intrasellar disease, and recommends/suggests postoperative IGF-1 and random GH at 12 weeks or later, OGTT nadir GH when GH is >1 ug/L, and MRI at least 12 weeks after surgery.",
+      cutoffs: [">=12 weeks", ">1 ug/L"],
+      data_needed: ["surgical candidacy", "pituitary MRI", "optic chiasm/mass effect", "postoperative date", "postoperative IGF-1", "postoperative random GH", "postoperative MRI", "OGTT GH nadir if GH >1"],
+      source_ids: es,
+      source_section: "Surgery recommendations 4.1, 4.2, 4.6, and 4.7"
+    }),
+    criterion({
+      id: `${prefix}_preop_srl_and_debulking`,
+      label: `${label} surgical modifier: pre-op SRL only for severe pharyngeal thickness/sleep apnea or high-output heart failure; debulk parasellar disease when cure unlikely`,
+      criteria_text: "Endocrine Society suggests against routine preoperative medical therapy, but suggests SRL preoperatively when severe pharyngeal thickness/sleep apnea or high-output heart failure raises surgical risk, and suggests debulking parasellar disease when total resection is unlikely to improve response to medical therapy.",
+      cutoffs: [],
+      data_needed: ["sleep apnea severity", "pharyngeal thickness/airway risk", "high-output heart failure", "parasellar/cavernous sinus disease", "surgical cure likelihood"],
+      source_ids: es,
+      source_section: "Surgery recommendations 4.3-4.5"
+    }),
+    criterion({
+      id: `${prefix}_medical_radiation_rules`,
+      label: `${label} medical/radiation therapy: persistent disease after surgery, significant symptoms use SRL or pegvisomant, mild/modest IGF-1 may use cabergoline, RT if residual mass and drugs unavailable/failed/not tolerated`,
+      criteria_text: "Endocrine Society recommends medical therapy for persistent disease after surgery; suggests SRL or pegvisomant for significant disease without local mass effects, cabergoline for mild signs and modest IGF-1 elevation, primary SRL when surgery cannot cure, and radiation for residual tumor mass when medical therapy is unavailable, unsuccessful, or not tolerated.",
+      cutoffs: [],
+      data_needed: ["postoperative IGF-1/GH", "symptom severity", "mass effect", "cavernous sinus invasion", "surgery candidacy", "cabergoline/SRL/pegvisomant contraindications", "radiation proximity to optic chiasm"],
+      source_ids: unique([...es, ...pituitary]),
+      source_section: "Medical therapy recommendations 5.1-5.8 and radiotherapy recommendations 6.1-6.2",
+      needs_clinical_review: true,
+      reviewer_input_needed: "Endocrine Society uses qualitative 'mild/modest' and 'significant' disease wording for medical-therapy selection; local pituitary program should define numeric IGF-1 and tumor-response thresholds for medication sequencing."
+    }),
+    criterion({
+      id: `${prefix}_pegvisomant_lft_cutoffs`,
+      label: `${label} pegvisomant safety: LFTs monthly for first 6 months, then every 6 months; consider stopping if transaminases >3-fold elevated`,
+      criteria_text: "Endocrine Society suggests monthly liver function testing for the first 6 months and then every 6 months for pegvisomant, with consideration of discontinuation if transaminases are greater than 3-fold elevated.",
+      cutoffs: ["monthly", "6 months", "every 6 months", ">3-fold"],
+      data_needed: ["pegvisomant use", "ALT/AST", "baseline liver disease", "last LFT date", "tumor MRI plan"],
+      source_ids: es,
+      source_section: "Medical therapy recommendation 5.6"
+    }),
+    criterion({
+      id: `${prefix}_radiation_followup_cutoffs`,
+      label: `${label} radiation: prefer stereotactic RT unless optic chiasm exposure would exceed 8 Gy; check GH/IGF-1 and pituitary hormones annually`,
+      criteria_text: "Endocrine Society suggests stereotactic radiotherapy over conventional radiotherapy unless unavailable, residual tumor burden is significant, or the tumor is too close to the optic chiasm causing exposure >8 Gy; after radiation, reassess GH/IGF-1 annually after medication withdrawal and test annually for hypopituitarism and delayed effects.",
+      cutoffs: [">8 Gy", "annual"],
+      data_needed: ["residual tumor size/location", "optic chiasm distance/dose estimate", "radiotherapy modality availability", "annual GH/IGF-1", "annual pituitary hormone testing"],
+      source_ids: es,
+      source_section: "Radiotherapy recommendations 6.2-6.4"
+    }),
+    criterion({
+      id: `${prefix}_pregnancy_cutoffs`,
+      label: "Acromegaly pregnancy: stop long-acting SRL/pegvisomant about 2 months before conception attempts; serial visual fields for macroadenomas; avoid GH/IGF-1 monitoring during pregnancy",
+      criteria_text: "Endocrine Society suggests discontinuing long-acting SRL formulations and pegvisomant approximately 2 months before attempts to conceive, withholding medical therapy during pregnancy except for tumor/headache control, using serial visual field testing in macroadenomas, and not monitoring GH/IGF-1 during pregnancy.",
+      cutoffs: ["approximately 2 months"],
+      data_needed: ["pregnancy intent", "current SRL/pegvisomant", "macroadenoma status", "headache/tumor symptoms", "visual field plan"],
+      source_ids: es,
+      source_section: "Pregnancy recommendations 7.2-7.5"
+    }),
+    criterion({
+      id: `${prefix}_gigantism_standard_targets`,
+      label: "Gigantism: before epiphyseal closure use standard GH/IGF-1 normalizing approach plus pediatric growth/puberty/bone-age data",
+      criteria_text: "Endocrine Society recommends standard approaches to normalizing GH and IGF-1 hypersecretion in patients with rare presentation of gigantism; pediatric application requires growth, pubertal, bone-age, genetic/syndromic, and family context.",
+      cutoffs: [],
+      data_needed: ["epiphyseal/growth-plate status", "height velocity", "height SDS/percentile", "pubertal stage", "bone age", "IGF-1 age/puberty reference interval", "family history/genetic clues"],
+      source_ids: es,
+      source_section: "Gigantism recommendation 7.1",
+      needs_clinical_review: true,
+      reviewer_input_needed: "Pediatric endocrinology should define age/puberty-specific growth-velocity and IGF-1 assay cutoffs for local pediatric gigantism workflows."
+    })
+  ];
+
+  const missingContextEndpoint = endpoint({
+    id: "endpoint_missing_context",
+    label: `Missing data needed: ${label} symptoms, IGF-1/GH, glucose-load, pituitary imaging, comorbidity, and special-population context`,
+    edgeLabel: `Missing ${label} data: phenotype/growth pattern, age/puberty context, age-adjusted IGF-1, assay ULN, OGTT GH nadir if needed, pituitary MRI/visual fields, comorbidities, medications, pregnancy or epiphyseal status, and treatment history`,
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_context_criteria`, `Route here when ${label} cannot be evaluated because key GH-excess data are unavailable.`, contextDomains, sourceIds, { missing_any: contextDomains }),
+    action: `Document ${phenotypeData.join(", ")}, age/sex/puberty context, IGF-1 with ULN, random GH and OGTT GH nadir when needed, glucose before/after OGTT, pituitary MRI and visual field status, BP/glucose/A1c/OSA/cardiac/colon/thyroid/pituitary-axis status, medication and pregnancy/fertility context, ${isGigantism ? "bone age and epiphyseal status" : "prior surgery/medical/radiation history"}, and follow-up access.`,
+    endpointType: "missing_data_needed",
+    missingDataNeeded: unique([...phenotypeData, "age-adjusted IGF-1 and assay ULN", "OGTT GH nadir and glucose values when needed", "pituitary MRI", "optic chiasm/visual field status", "BP and glucose/A1c", "sleep apnea/cardiac/colon/thyroid/pituitary-axis status", "medication history", isGigantism ? "bone age and epiphyseal status" : "pregnancy/fertility status", "treatment history and follow-up access"])
+  });
+
+  const missingBiochemicalEndpoint = endpoint({
+    id: `${prefix}_missing_biochemical_endpoint`,
+    label: `Missing data needed: ${label} IGF-1 ULN, same-assay repeat, OGTT GH nadir, or glucose verification`,
+    edgeLabel: `Cannot classify ${label} until IGF-1 with age/puberty reference range, assay ULN, same-assay repeat if equivocal, and OGTT GH nadir with documented hyperglycemia are known when indicated`,
+    sourceIds: unique([...diagnosis, ...es]),
+    criteria: criteria(`${prefix}_missing_biochemical_criteria`, `Route here when ${label} biochemical confirmation data are incomplete.`, contextDomains, unique([...diagnosis, ...es]), { missing_any: ["age-adjusted IGF-1", "assay ULN", "same-assay repeat IGF-1 if equivocal", "OGTT GH nadir", "OGTT glucose values"] }),
+    action: "Obtain or repeat age/sex/puberty-adjusted IGF-1 using the same validated assay when equivocal; if IGF-1 is elevated or equivocal and diagnosis remains uncertain, perform 75-g OGTT with GH nadir and glucose documentation to verify hyperglycemia and apply the <1 ug/L or assay-specific <0.4 ug/L suppression rule.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["age/sex/puberty-adjusted IGF-1", "assay ULN", "same-assay repeat IGF-1 if equivocal", "75-g OGTT GH nadir", "glucose before/after OGTT", "clinical phenotype"]
+  });
+
+  const urgentEndpoint = endpoint({
+    id: `${prefix}_urgent_mass_effect_endpoint`,
+    label: `${label} urgent escalation: apoplexy, visual loss, cranial nerve palsy, airway/OSA risk, cardiomyopathy, arrhythmia, severe glucose problem, or adrenal crisis`,
+    edgeLabel: `Emergency branch: acute severe headache, visual field loss, cranial nerve palsy, altered mental status, macroadenoma pregnancy symptoms, severe OSA/airway concern, high-output heart failure/cardiomyopathy, arrhythmia, uncontrolled diabetes, severe electrolyte/glucose abnormality, or adrenal crisis`,
+    sourceIds: unique([...es, ...complications]),
+    criteria: criteria(`${prefix}_urgent_criteria`, `Escalate ${label} before routine endocrine sequencing when pituitary mass effect, apoplexy, cardiopulmonary/sleep, glucose, adrenal, pregnancy, or pediatric growth-threatening risk is present.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "pregnancy_status", "workup_findings"], unique([...es, ...complications]), { criteria_options: criteriaRows }),
+    action: "Send for urgent endocrine/neurosurgical/ophthalmologic or monitored-care evaluation as appropriate. Check neuro-ophthalmic status, cortisol/adrenal risk, glucose/ketones if ill, ECG/cardiac/OSA/airway risk, pituitary MRI urgency, pregnancy or pediatric status, and stabilize the dangerous problem before elective GH-excess treatment planning.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["mental status/headache", "visual fields/cranial nerves", "cortisol/adrenal crisis risk", "glucose/A1c/ketones when ill", "BP/heart rhythm/heart failure", "OSA/airway risk", "pituitary MRI urgency"]
+  });
+
+  const diagnosticEndpoint = endpoint({
+    id: `${prefix}_diagnostic_confirmation_endpoint`,
+    label: `${label} diagnostic confirmation: IGF-1 >1.3 x ULN, OGTT suppression rule, pituitary MRI, and visual-field routing`,
+    edgeLabel: `Diagnostic branch: typical ${label} phenotype or ${isGigantism ? "rapid growth before epiphyseal closure" : "acral/facial feature progression"} with IGF-1 >1.3 x ULN, elevated/equivocal IGF-1 needing OGTT, or pituitary mass needing GH-excess exclusion`,
+    sourceIds: unique([...diagnosis, ...es]),
+    criteria: criteria(`${prefix}_diagnostic_confirmation_criteria`, `Use when ${label} biochemical and imaging data can establish or exclude GH excess.`, ["symptoms", "exam", "labs", "imaging_results", "demographics", "workup_findings"], unique([...diagnosis, ...es]), { criteria_options: criteriaRows }),
+    action: "Confirm GH excess when typical features and IGF-1 >1.3 x ULN for age are present. If IGF-1 is elevated/equivocal, repeat IGF-1 with the same validated assay and use 75-g OGTT when needed; GH suppression to <1 ug/L usually excludes active disease, while <0.4 ug/L may be used only with sufficiently accurate assays. After biochemical diagnosis, obtain pituitary MRI and formal visual fields if the tumor abuts the optic chiasm.",
+    endpointType: "diagnostic_step",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const mimicEndpoint = endpoint({
+    id: `${prefix}_mimic_or_confounded_endpoint`,
+    label: `${label} mimic/confounder route: normal IGF-1, adolescence/pregnancy, uncontrolled diabetes, renal/hepatic failure, hypothyroidism, malnutrition, severe infection, oral estrogen, or pseudoacromegaly`,
+    edgeLabel: `Alternate branch: IGF-1 normal for age/puberty, OGTT suppresses GH, phenotype is explained by adolescence/pregnancy or insulin-mediated pseudoacromegaly, or IGF-1/GH is confounded by diabetes, renal/hepatic disease, hypothyroidism, malnutrition, severe infection, oral estrogen, assay mismatch, or medication effect`,
+    sourceIds: sourceIdsForItems(differentials, sourceIds),
+    criteria: criteria(`${prefix}_mimic_criteria`, `Use when ${label} criteria are absent or biochemical/imaging data are confounded by another diagnosis.`, ["symptoms", "exam", "labs", "medications", "comorbidities", "pregnancy_status", "workup_findings"], sourceIdsForItems(differentials, sourceIds), { criteria_options: criteriaRows }),
+    action: "Do not route to pituitary GH-excess treatment until the confounder is corrected or the alternate diagnosis is resolved. Repeat same-assay IGF-1 after reversible illness or medication confounding when suspicion persists, and route to pregnancy/adolescence normal variant, pseudoacromegaly, uncontrolled diabetes, renal/hepatic disease, hypothyroidism, malnutrition, severe infection, oral-estrogen effect, medication effect, or another sellar/parasellar pathway as appropriate.",
+    endpointType: "clinician_review_handoff",
+    reviewNeededReason: "Biochemical or phenotype data are absent, normal, equivocal, assay-confounded, or better explained by another diagnosis.",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const surgeryEndpoint = endpoint({
+    id: `${prefix}_surgery_endpoint`,
+    label: `${label} first-line pituitary treatment: transsphenoidal surgery, selective pre-op SRL for severe OSA/airway or high-output heart failure, and >=12-week postoperative testing`,
+    edgeLabel: `Surgery branch: biochemical ${label} diagnosis with resectable pituitary adenoma, no overriding contraindication, mass-effect plan known, and neurosurgical/pituitary-center pathway available`,
+    sourceIds: es,
+    criteria: criteria(`${prefix}_surgery_criteria`, `Use when ${label} is biochemically confirmed and pituitary surgery is appropriate or needs specialist review.`, ["labs", "imaging_results", "comorbidities", "pregnancy_status", "workup_findings"], es, { criteria_options: criteriaRows }),
+    action: "Refer to an experienced pituitary neurosurgery team for transsphenoidal surgery as primary therapy for most patients. Avoid routine pre-op medical therapy, but consider SRL preoperatively for severe pharyngeal thickness/sleep apnea or high-output heart failure; consider debulking parasellar disease when total resection is unlikely. At 12 weeks or later after surgery, measure IGF-1 and random GH, perform OGTT if GH remains >1 ug/L, and obtain MRI at least 12 weeks postoperatively.",
+    endpointType: "treatment",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["pituitary MRI anatomy", "visual fields when chiasm involved", "surgical candidacy", "pre-op OSA/heart failure risk", "post-op IGF-1/GH >=12 weeks", "post-op MRI >=12 weeks", "pituitary hormone deficits"]
+  });
+
+  const medicalEndpoint = endpoint({
+    id: `${prefix}_medical_radiation_endpoint`,
+    label: `${label} persistent/unresectable disease: SRL, pegvisomant, cabergoline, combination therapy, or radiotherapy with safety monitoring`,
+    edgeLabel: `Medical/radiation branch: persistent active ${label} after surgery, unresectable/cavernous sinus disease without chiasmal compression, poor surgical candidate, recurrent disease, medication sequencing need, or residual mass with failed/unavailable/not tolerated medical therapy`,
+    sourceIds: unique([...es, ...pituitary]),
+    criteria: criteria(`${prefix}_medical_radiation_criteria`, `Use when ${label} requires nonoperative or adjuvant therapy.`, ["labs", "imaging_results", "medications", "comorbidities", "pregnancy_status", "workup_findings"], unique([...es, ...pituitary]), { criteria_options: criteriaRows }),
+    action: "For persistent disease after surgery, use medical therapy. For significant symptoms without local mass effect, select SRL or pegvisomant; for mild symptoms with modest IGF-1 elevation, cabergoline may be tried, but the exact local definition of modest IGF-1 elevation needs endocrine review. Use primary SRL when surgery is unlikely to cure because of extensive cavernous sinus invasion, no chiasmal compression, or poor surgical candidacy. Use radiotherapy for residual tumor mass when medical therapy is unavailable, unsuccessful, or not tolerated; prefer stereotactic RT unless unavailable, tumor burden is significant, or optic-chiasm exposure would exceed 8 Gy.",
+    endpointType: "treatment",
+    reviewNeededReason: "Medication sequencing, cabergoline eligibility, pasireotide hyperglycemia risk, and radiation technique require pituitary-center protocol and patient preference.",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["IGF-1 and random GH", "tumor MRI", "glucose/A1c when SRL/pasireotide considered", "pegvisomant LFTs", "gallstone symptoms on SRL", "radiation optic-chiasm dose", "annual pituitary axes after RT"]
+  });
+
+  const specialEndpoint = endpoint({
+    id: `${prefix}_special_population_endpoint`,
+    label: specialLabel,
+    edgeLabel: isGigantism
+      ? "Special-population branch: GH excess begins before epiphyseal closure, rapid height acceleration or tall stature crosses expected family/puberty trajectory, pediatric pituitary mass is present, or syndromic/genetic risk changes care"
+      : "Special-population branch: pregnancy is planned/current, macroadenoma is present, fertility treatment is relevant, or acromegaly medication must be changed for conception/pregnancy",
+    sourceIds: es,
+    criteria: criteria(`${prefix}_special_population_criteria`, `Use when ${label} management changes because of ${isGigantism ? "pediatric growth/puberty/bone-age and genetic context" : "pregnancy, fertility intent, or macroadenoma monitoring"}.`, ["demographics", "pregnancy_status", "labs", "imaging_results", "medications", "workup_findings"], es, { criteria_options: criteriaRows }),
+    action: specialAction,
+    endpointType: "clinician_review_handoff",
+    reviewNeededReason: isGigantism
+      ? "Pediatric gigantism needs pediatric endocrinology, neurosurgery, growth/puberty expertise, and local genetic-testing governance."
+      : "Acromegaly pregnancy medication and tumor monitoring require endocrinology, obstetric, and pituitary-center review.",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const monitoringEndpoint = endpoint({
+    id: `${prefix}_monitoring_endpoint`,
+    label: `${label} monitoring/remission: age-normalized IGF-1, random GH <1 ug/L, MRI, pituitary axes, comorbidities, and medication toxicity`,
+    edgeLabel: `Monitoring branch: treatment has occurred or is ongoing, biochemical response, tumor size, pituitary deficits, comorbidities, medication toxicity, or radiation effects need reassessment`,
+    sourceIds: unique([...diagnosis, ...es, ...complications]),
+    criteria: criteria(`${prefix}_monitoring_criteria`, `Use after surgery, medical therapy, or radiation to decide response, escalation, or remission follow-up for ${label}.`, ["symptoms", "vitals", "labs", "imaging_results", "medications", "comorbidities", "workup_findings"], unique([...diagnosis, ...es, ...complications]), { criteria_options: criteriaRows }),
+    action: "Trend age-normalized IGF-1, random GH goal <1 ug/L, symptoms, pituitary MRI, visual fields when relevant, pituitary hormone deficits, BP, fasting glucose/A1c, sleep apnea, cardiovascular disease, joint/bone disease, colon surveillance, thyroid nodules, SRL gallstone symptoms, pegvisomant liver tests monthly for 6 months then every 6 months, and annual GH/IGF-1 plus pituitary axes after radiotherapy.",
+    endpointType: "monitoring_reassessment",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["age-normalized IGF-1", "random GH <1 ug/L", "post-op >=12 week labs/MRI", "same assay over time", "pituitary MRI/visual fields", "pituitary axes", "BP/glucose/A1c/OSA/cardiac/colon/thyroid/bone", "pegvisomant LFTs", "annual post-RT endocrine testing"]
+  });
+
+  const followupEndpoint = endpoint({
+    id: `${prefix}_followup_safety_endpoint`,
+    label: `${label} follow-up and safety-net: remission, recurrence, medication toxicity, mass-effect symptoms, comorbidity owners, and specialty follow-up`,
+    edgeLabel: `Disposition branch: no acute mass effect, active treatment or remission plan documented, pending tests owned, pituitary-center follow-up scheduled, and return precautions reviewed`,
+    sourceIds,
+    criteria: criteria(`${prefix}_followup_safety_criteria`, `Use when ${label} has a stable outpatient or post-treatment plan with pending data and safety-net ownership.`, ["symptoms", "vitals", "labs", "imaging_results", "medications", "follow_up_access", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
+    action: "Assign pituitary-endocrinology follow-up, pending IGF-1/GH/MRI/visual-field/pituitary-axis owners, comorbidity owners for BP/glucose/OSA/cardiac/colon/thyroid/bone/joint disease, medication toxicity monitoring, and return precautions for sudden severe headache, vision change, diplopia, confusion, vomiting, adrenal-crisis symptoms, chest pain, dyspnea, syncope, severe hyperglycemia, airway/OSA worsening, pregnancy macroadenoma symptoms, or pediatric rapid growth progression.",
+    endpointType: "safety_net_instruction",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["pituitary endocrine follow-up", "pending result owner", "visual and headache safety-net", "glucose/cardiac/OSA safety-net", "medication toxicity checks", "recurrence surveillance", "access barriers"]
+  });
+
+  const treatmentAction = actionNode({
+    id: `${prefix}_treatment_action`,
+    label: `${label} treatment selection: surgery first when resectable, medical/radiation when persistent or nonsurgical, special-population review when pregnancy or growth plates change care`,
+    edgeLabel: `Treatment branch: biochemical ${label} is confirmed or highly likely, MRI/surgical candidacy and comorbidity modifiers are available, and acute danger features are absent`,
+    sourceIds,
+    criteria: criteria(`${prefix}_treatment_action_criteria`, `Route ${label} therapy by resectability, mass effect, comorbidities, medication/radiation safety, pregnancy or pediatric context, response monitoring, and patient preference.`, contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Choose the active treatment path: transsphenoidal surgery for most resectable pituitary adenomas; medical/radiation pathway for persistent, unresectable, recurrent, or nonsurgical disease; special-population review for pregnancy/fertility or pediatric gigantism; monitoring and safety-net follow-up for response, remission, recurrence, and toxicity.",
+    parallelActions: ["pituitary surgery referral", "medical/radiation eligibility", isGigantism ? "pediatric growth/puberty/bone-age review" : "pregnancy/fertility medication review", "comorbidity treatment", "response/remission monitoring", "safety-net follow-up"],
+    guidelineCutoffs: criteriaRows,
+    children: [surgeryEndpoint, medicalEndpoint, specialEndpoint, monitoringEndpoint, followupEndpoint]
+  });
+
+  const classificationDecision = decision({
+    id: `${prefix}_classification_decision`,
+    label: `${label} classification: missing biochemical data, urgent mass-effect/comorbidity risk, confirmed GH excess, mimic/confounder, or treatment pathway`,
+    edgeLabel: `${label} phenotype, IGF-1/ULN, OGTT GH nadir when needed, MRI/visual fields, comorbidities, medication, pregnancy or growth-plate context, and treatment history are available`,
+    sourceIds,
+    criteria: criteria(`${prefix}_classification_criteria`, `Classify ${label} by GH-excess confirmation, urgent risk, mimic/confounder review, surgery/medical/radiation eligibility, special-population modifiers, and monitoring needs.`, contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: `Choose missing-data, urgent escalation, diagnostic confirmation, mimic/confounder, or treatment/monitoring branch for ${label}.`,
+    clinicalCriteria: criteriaRows,
+    guidelineCutoffs: criteriaRows,
+    children: [missingBiochemicalEndpoint, urgentEndpoint, diagnosticEndpoint, mimicEndpoint, treatmentAction]
+  });
+
+  const initialAssessment = actionNode({
+    id: `${prefix}_initial_assessment`,
+    label: `${label} assessment: phenotype/growth pattern, IGF-1/ULN, OGTT GH, pituitary MRI, visual fields, comorbidities, medication, and ${isGigantism ? "growth-plate status" : "pregnancy/fertility status"}`,
+    edgeLabel: isGigantism
+      ? "Possible gigantism: rapid linear growth, tall stature beyond family/puberty trajectory, coarse/acral features, headaches/visual symptoms, pituitary mass, or clinician-chosen pediatric GH-excess evaluation"
+      : "Possible acromegaly: acral/facial feature progression, pituitary mass, sleep apnea, diabetes, arthritis, carpal tunnel, hyperhidrosis, hypertension, headaches/visual symptoms, or clinician-chosen adult GH-excess evaluation",
+    sourceIds,
+    criteria: criteria(`${prefix}_initial_assessment_criteria`, `Initial ${label} assessment requires phenotype, biochemical, imaging, comorbidity, medication, and special-population data together.`, contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: `Measure BP, heart rate, weight/BMI, mental status, and visual symptoms. Document ${phenotypeData.join(", ")}, IGF-1 with age/sex/puberty ULN, same-assay repeat status, random GH, 75-g OGTT GH nadir/glucose when needed, pituitary MRI and optic chiasm relationship, visual fields, pituitary axes, glucose/A1c, sleep apnea/cardiac/colon/thyroid/bone/joint comorbidities, current acromegaly medicines, ${isGigantism ? "bone age, epiphyseal status, pubertal stage, family/genetic context" : "pregnancy/fertility context"}, and prior surgery/radiation.`,
+    parallelActions: ["phenotype/growth documentation", "IGF-1 with ULN", "same-assay repeat or OGTT when equivocal", "pituitary MRI and visual fields", "pituitary axes", "BP/glucose/A1c", "OSA/cardiac/colon/thyroid/bone/joint screen", "medication and prior treatment review", isGigantism ? "bone age/puberty/genetic review" : "pregnancy/fertility review"],
+    requiredData: unique(criteriaRows.flatMap((row) => row.data_needed || [])),
+    guidelineCutoffs: criteriaRows,
+    children: [classificationDecision]
+  });
+
+  const root = decision({
+    id: "root",
+    label: `${label}: route GH excess by IGF-1/GH cutoffs, pituitary mass effect, treatment eligibility, comorbidities, and ${isGigantism ? "pediatric growth status" : "adult pregnancy/fertility modifiers"}`,
+    sourceIds,
+    criteria: criteria(`${prefix}_activate`, `Activate for ${isGigantism ? "rapid growth/tall stature before epiphyseal closure, pediatric GH-excess phenotype, pituitary mass, or clinician-chosen gigantism evaluation" : "adult acromegaly phenotype, pituitary mass, associated comorbidity cluster, or clinician-chosen acromegaly evaluation"}.`, ["clinician_chosen_module", "symptoms", "exam", "labs", "imaging_results", "problem_list_or_diagnosis"], sourceIds),
+    action: `Route ${label} through missing-data, urgent mass-effect/comorbidity escalation, IGF-1/OGTT diagnostic confirmation, mimic review, surgery, medical/radiation therapy, special-population review, monitoring/remission, follow-up, and safety-net endpoints.`,
+    children: [missingContextEndpoint, initialAssessment]
+  });
+
+  return finalizeClinicalPathwayTree({
+    module,
+    sourceById,
+    label,
+    version: "4.0.0",
+    status: isGigantism ? "hand_polished_gigantism_pathway_needs_clinician_review" : "hand_polished_acromegaly_pathway_needs_clinician_review",
+    sourceIds,
+    criteriaRows,
+    tests,
+    redFlags,
+    differentials,
+    dispositions,
+    root,
+    sourceMaterial: "Endocrine Society Acromegaly Guideline 2014, Pituitary Society Acromegaly Management Update 2021, Acromegaly Consensus Group diagnosis/remission criteria 2024, Acromegaly Consensus Group complications update 2026, and local module evidence rows",
+    reviewNote: `${label} tree is threshold-cited and patient-traversable; GH/IGF-1 assay selection, pediatric growth/puberty cutoffs, medication sequencing, cabergoline eligibility, radiation dose planning, pregnancy/fertility management, and local pituitary-center workflows require clinician governance.`,
+    syntheticScenarios: [
+      { scenario_id: "missing_context", major_pathway: "missing_data_needed", expected_endpoint_id: missingContextEndpoint.id, expected_active_branch: missingContextEndpoint.edgeLabel },
+      { scenario_id: "missing_igf1_or_ogtt", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: missingBiochemicalEndpoint.id, expected_active_branch: missingBiochemicalEndpoint.edgeLabel },
+      { scenario_id: "mass_effect_or_metabolic_urgent", major_pathway: "escalation_emergency_actions", expected_endpoint_id: urgentEndpoint.id, expected_active_branch: urgentEndpoint.edgeLabel },
+      { scenario_id: "igf1_positive_diagnosis", major_pathway: "diagnostic_confirmation", expected_endpoint_id: diagnosticEndpoint.id, expected_active_branch: diagnosticEndpoint.edgeLabel },
+      { scenario_id: "ogtt_or_normal_igf1_exclusion", major_pathway: "mimics_exclusions", expected_endpoint_id: mimicEndpoint.id, expected_active_branch: mimicEndpoint.edgeLabel },
+      { scenario_id: "pituitary_surgery_first_line", major_pathway: "first_line_management", expected_endpoint_id: surgeryEndpoint.id, expected_active_branch: surgeryEndpoint.edgeLabel },
+      { scenario_id: "persistent_or_unresectable_disease", major_pathway: "severity_risk_stratification", expected_endpoint_id: medicalEndpoint.id, expected_active_branch: medicalEndpoint.edgeLabel },
+      { scenario_id: isGigantism ? "pediatric_growth_plate_review" : "pregnancy_fertility_review", major_pathway: "contraindications_special_populations", expected_endpoint_id: specialEndpoint.id, expected_active_branch: specialEndpoint.edgeLabel },
+      { scenario_id: "response_and_toxicity_monitoring", major_pathway: "monitoring_reassessment_escalation", expected_endpoint_id: monitoringEndpoint.id, expected_active_branch: monitoringEndpoint.edgeLabel },
+      { scenario_id: "remission_or_radiation_deescalation", major_pathway: "deescalation_stopping_criteria", expected_endpoint_id: monitoringEndpoint.id, expected_active_branch: monitoringEndpoint.edgeLabel },
+      { scenario_id: "followup_safety_net", major_pathway: "disposition_followup_safety_netting", expected_endpoint_id: followupEndpoint.id, expected_active_branch: followupEndpoint.edgeLabel }
+    ],
+    handPolishRequirements: [
+      "diagnostic branch includes IGF-1 >1.3 x ULN for age and OGTT GH nadir <1 ug/L, with <0.4 ug/L only when assay accuracy supports it",
+      "imaging branch requires pituitary MRI after biochemical diagnosis and formal visual fields if tumor abuts optic chiasm",
+      "first-line treatment branch uses transsphenoidal surgery for most and selective pre-op SRL for severe OSA/pharyngeal thickness or high-output heart failure",
+      "postoperative monitoring includes IGF-1/random GH at >=12 weeks, MRI at >=12 weeks, OGTT if GH >1 ug/L, and treatment goals of age-normalized IGF-1 plus random GH <1 ug/L",
+      "medical/radiation branch includes pegvisomant LFT monthly for 6 months then every 6 months with >3-fold transaminase review and stereotactic RT avoided when optic chiasm exposure would exceed 8 Gy",
+      isGigantism ? "pediatric branch includes epiphyseal status, height velocity, pubertal stage, bone age, and genetic/syndromic review" : "pregnancy branch includes stopping long-acting SRL/pegvisomant approximately 2 months before conception attempts and serial visual fields for macroadenomas"
+    ]
+  });
+}
+
 function finalizeClinicalPathwayTree({
   module,
   sourceById,
@@ -4474,7 +4849,11 @@ function main() {
                         ? buildPrimaryAldosteronismClinicalPathwayTree(module, sourceById)
                         : module.id === "pheochromocytoma_v1"
                           ? buildPheochromocytomaClinicalPathwayTree(module, sourceById)
-                          : buildCompactClinicalPathwayTree(module, sourceById);
+                          : module.id === "acromegaly_v1"
+                            ? buildGrowthHormoneExcessClinicalPathwayTree(module, sourceById, "acromegaly")
+                            : module.id === "gigantism_v1"
+                              ? buildGrowthHormoneExcessClinicalPathwayTree(module, sourceById, "gigantism")
+                              : buildCompactClinicalPathwayTree(module, sourceById);
     const nextModule = { ...module, clinical_pathway_tree_v1: clinicalPathway };
     const nextRaw = raw.module ? { ...raw, module: nextModule } : nextModule;
     const next = `${JSON.stringify(nextRaw, null, 2)}\n`;
