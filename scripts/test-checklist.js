@@ -887,7 +887,13 @@ assert.ok(appHtml.includes("patientWorkupSelections"), "patient workup selection
 assert.ok(appHtml.includes("patientObjectiveData"), "patient objective workup data should persist locally per selected workup");
 assert.ok(appHtml.includes('id="patientObjectiveDataPanel"'), "patient context should expose structured workup data fields");
 assert.ok(appHtml.includes('id="patientObjectiveSummaryPanel"'), "patient summary should expose entered and missing objective workup data");
-assert.ok(appHtml.includes('id="patientGuidelineSnapshot"') && appHtml.includes('id="workupGuidelineSnapshot"'), "workup views should show decision-tree and management snapshots before detailed evidence rows");
+assert.ok(
+  appHtml.includes('id="patientWorkupOrdersPanel"')
+    && appHtml.includes('id="patientDecisionTreePanel"')
+    && appHtml.includes('id="workupOrdersPanel"')
+    && appHtml.includes('id="decisionTreePanel"'),
+  "workup views should show orders/results panels and a live decision-tree visualization"
+);
 assert.ok(
   appHtml.includes("betaHydroxybutyrate")
     && appHtml.includes("anionGap")
@@ -903,7 +909,8 @@ const sampleContextToken = "SAMPLE" + "_CONTEXT";
 assert.ok(!appHtml.includes(`state.scrubbedText || ${sampleContextToken}`), "patient evidence handoffs should not fall back directly to the DKA sample context");
 assert.ok(appHtml.includes("Validated intent"), "workflow should explicitly show the selected validated diagnosis/workup");
 assert.ok(appHtml.includes('id="buildChecklistButton"'), "workflow should expose local guideline/workup generation before checklist build");
-assert.ok(appHtml.includes('id="workupRows"'), "workflow should show selected local workup/guideline detail inline");
+assert.ok(!appHtml.includes('id="workupRows"'), "workflow should not show the removed full-workup row drilldown");
+assert.ok(appHtml.includes("decision-tree-node"), "workflow should render the decision pathway as visible tree nodes");
 assert.ok(appHtml.includes("resolveUiComplaintModule"), "UI workup generation should resolve an explicit local module before checklist build");
 assert.ok(appHtml.includes("evaluateUiComplaintCds"), "UI workup generation should use a guarded complaint-CDS path");
 assert.ok(!appHtml.includes("Paste the initial rounds prompt into OpenEvidence first so"), "main guided flow should not make OpenEvidence the prerequisite before local checklist build");
@@ -934,17 +941,20 @@ assert.ok(
   "desktop-to-phone checklist handoff should be explicit and local-first"
 );
 assert.ok(
-  appHtml.includes('"Task boundary:"')
-    && appHtml.includes('"Output contract:"')
-    && appHtml.includes('"Context preview:"'),
-  "desktop OpenEvidence handoff should show a readable prompt preview while preserving copied prompt length metadata"
+  appHtml.includes("Editable smart-phrase template")
+    && appHtml.includes('id="promptVariableBar"')
+    && appHtml.includes("promptTemplatesByTaskId")
+    && appHtml.includes("resolvePromptTemplate"),
+  "desktop OpenEvidence handoff should show smart-phrase prompt templates while resolving patient variables only on copy"
 );
 assert.ok(
-  appHtml.includes('id="evidenceTaskStrip"')
+  !appHtml.includes('id="evidenceTaskStrip"')
+    && appHtml.includes('id="sharedPromptWorkbench"')
+    && appHtml.includes('id="patientEvidenceTaskStrip"')
     && appHtml.includes("renderTaskStrip")
     && appHtml.includes("taskLabel")
     && appHtml.includes("taskDescription"),
-  "desktop OpenEvidence handoff should render task progress and card status from real task state rather than static concept chrome"
+  "desktop OpenEvidence handoff should use the single patient workbench task list instead of a duplicate global board"
 );
 assert.ok(
   appHtml.includes('data-patient-tab="checklist"')
@@ -957,6 +967,14 @@ assert.ok(
     && appHtml.includes('id="patientEvidencePromptPreview"')
     && appHtml.includes("renderTaskStrip(elements.patientEvidenceTaskStrip"),
   "desktop patient workspace should expose OpenEvidence prompts as a first-class patient tab"
+);
+assert.ok(
+  appHtml.includes("decisionTreeGraphsByModuleId")
+    && appHtml.includes("clinical_pathway_tree_v1")
+    && appHtml.includes('id="decisionTreeJsonInput"')
+    && appHtml.includes('id="saveDecisionTreeLocalFileButton"')
+    && appHtml.includes("./vendor/d3.v7.min.js"),
+  "patient workup should support persisted editable D3 decision-tree pathways"
 );
 assert.ok(
   appHtml.includes('id="workspaceFindingsGateNotice"')
