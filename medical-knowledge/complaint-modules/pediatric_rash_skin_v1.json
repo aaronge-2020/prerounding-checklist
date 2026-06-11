@@ -2059,13 +2059,13 @@
         "generated_at": "2026-06-11T00:00:00.000Z",
         "update_scope": "clinical_pathway_tree_v1 plus explicit clinical_cutoff_criteria enrichment where needed",
         "source_material": "Local module evidence rows, source registry metadata, and targeted guideline/literature review for cutoff gaps",
-        "review_note": "Compact tree is cutoff-cited and traversable but requires clinician review for local policy, patient-specific contraindications, and source conflicts."
+        "review_note": "Tree is cutoff-cited and traversable; clinician governance is reserved for explicitly flagged protocol, contraindication, pregnancy, organ-function, or evidence-conflict modifiers."
       },
       "source_thresholds": [
         {
           "threshold": ">=4 days",
           "evidence_item_id": "peds_kawasaki_complete_criteria",
-          "label": "Kawasaki disease: fever >=4 days plus at least 4 principal clinical features; cervical node criterion >=1.5 cm",
+          "label": "Kawasaki disease",
           "source_ids": [
             "RCH_KAWASAKI_DISEASE"
           ],
@@ -2074,7 +2074,7 @@
         {
           "threshold": "4 principal clinical features",
           "evidence_item_id": "peds_kawasaki_complete_criteria",
-          "label": "Kawasaki disease: fever >=4 days plus at least 4 principal clinical features; cervical node criterion >=1.5 cm",
+          "label": "Kawasaki disease",
           "source_ids": [
             "RCH_KAWASAKI_DISEASE"
           ],
@@ -2083,7 +2083,7 @@
         {
           "threshold": ">=1.5 cm",
           "evidence_item_id": "peds_kawasaki_complete_criteria",
-          "label": "Kawasaki disease: fever >=4 days plus at least 4 principal clinical features; cervical node criterion >=1.5 cm",
+          "label": "Kawasaki disease",
           "source_ids": [
             "RCH_KAWASAKI_DISEASE"
           ],
@@ -2092,7 +2092,7 @@
         {
           "threshold": ">=2.5",
           "evidence_item_id": "peds_kawasaki_echo_risk_cutoffs",
-          "label": "Kawasaki echo/high-risk cutoffs: coronary aneurysm Z-score >=2.5; EF <55%; fractional shortening <28%; coronary dilation Z-score 2 to 2.5",
+          "label": "Kawasaki echo/high-risk cutoffs",
           "source_ids": [
             "RCH_KAWASAKI_DISEASE"
           ],
@@ -2101,7 +2101,7 @@
         {
           "threshold": "<55%",
           "evidence_item_id": "peds_kawasaki_echo_risk_cutoffs",
-          "label": "Kawasaki echo/high-risk cutoffs: coronary aneurysm Z-score >=2.5; EF <55%; fractional shortening <28%; coronary dilation Z-score 2 to 2.5",
+          "label": "Kawasaki echo/high-risk cutoffs",
           "source_ids": [
             "RCH_KAWASAKI_DISEASE"
           ],
@@ -2110,7 +2110,7 @@
         {
           "threshold": "<28%",
           "evidence_item_id": "peds_kawasaki_echo_risk_cutoffs",
-          "label": "Kawasaki echo/high-risk cutoffs: coronary aneurysm Z-score >=2.5; EF <55%; fractional shortening <28%; coronary dilation Z-score 2 to 2.5",
+          "label": "Kawasaki echo/high-risk cutoffs",
           "source_ids": [
             "RCH_KAWASAKI_DISEASE"
           ],
@@ -2119,7 +2119,7 @@
         {
           "threshold": "<=6 months",
           "evidence_item_id": "peds_kawasaki_echo_risk_cutoffs",
-          "label": "Kawasaki echo/high-risk cutoffs: coronary aneurysm Z-score >=2.5; EF <55%; fractional shortening <28%; coronary dilation Z-score 2 to 2.5",
+          "label": "Kawasaki echo/high-risk cutoffs",
           "source_ids": [
             "RCH_KAWASAKI_DISEASE"
           ],
@@ -2128,7 +2128,7 @@
         {
           "threshold": ">=2",
           "evidence_item_id": "peds_kawasaki_echo_risk_cutoffs",
-          "label": "Kawasaki echo/high-risk cutoffs: coronary aneurysm Z-score >=2.5; EF <55%; fractional shortening <28%; coronary dilation Z-score 2 to 2.5",
+          "label": "Kawasaki echo/high-risk cutoffs",
           "source_ids": [
             "RCH_KAWASAKI_DISEASE"
           ],
@@ -2137,7 +2137,7 @@
         {
           "threshold": ">=10 days",
           "evidence_item_id": "peds_kawasaki_echo_risk_cutoffs",
-          "label": "Kawasaki echo/high-risk cutoffs: coronary aneurysm Z-score >=2.5; EF <55%; fractional shortening <28%; coronary dilation Z-score 2 to 2.5",
+          "label": "Kawasaki echo/high-risk cutoffs",
           "source_ids": [
             "RCH_KAWASAKI_DISEASE"
           ],
@@ -2146,7 +2146,7 @@
         {
           "threshold": ">=38 C",
           "evidence_item_id": "peds_kawasaki_echo_risk_cutoffs",
-          "label": "Kawasaki echo/high-risk cutoffs: coronary aneurysm Z-score >=2.5; EF <55%; fractional shortening <28%; coronary dilation Z-score 2 to 2.5",
+          "label": "Kawasaki echo/high-risk cutoffs",
           "source_ids": [
             "RCH_KAWASAKI_DISEASE"
           ],
@@ -2155,7 +2155,7 @@
         {
           "threshold": ">=36 hours",
           "evidence_item_id": "peds_kawasaki_echo_risk_cutoffs",
-          "label": "Kawasaki echo/high-risk cutoffs: coronary aneurysm Z-score >=2.5; EF <55%; fractional shortening <28%; coronary dilation Z-score 2 to 2.5",
+          "label": "Kawasaki echo/high-risk cutoffs",
           "source_ids": [
             "RCH_KAWASAKI_DISEASE"
           ],
@@ -2164,7 +2164,7 @@
         {
           "threshold": ">=450 x10^9/L",
           "evidence_item_id": "peds_kawasaki_echo_risk_cutoffs",
-          "label": "Kawasaki echo/high-risk cutoffs: coronary aneurysm Z-score >=2.5; EF <55%; fractional shortening <28%; coronary dilation Z-score 2 to 2.5",
+          "label": "Kawasaki echo/high-risk cutoffs",
           "source_ids": [
             "RCH_KAWASAKI_DISEASE"
           ],
@@ -2173,7 +2173,7 @@
         {
           "threshold": ">=130 mg/L",
           "evidence_item_id": "peds_kawasaki_echo_risk_cutoffs",
-          "label": "Kawasaki echo/high-risk cutoffs: coronary aneurysm Z-score >=2.5; EF <55%; fractional shortening <28%; coronary dilation Z-score 2 to 2.5",
+          "label": "Kawasaki echo/high-risk cutoffs",
           "source_ids": [
             "RCH_KAWASAKI_DISEASE"
           ],
@@ -2182,7 +2182,7 @@
         {
           "threshold": "2 g/kg",
           "evidence_item_id": "peds_kawasaki_treatment_cutoffs",
-          "label": "Kawasaki treatment: IVIG 2 g/kg over 8-12 hours plus aspirin 5 mg/kg daily until cardiology review around 6 weeks",
+          "label": "Kawasaki treatment",
           "source_ids": [
             "RCH_KAWASAKI_DISEASE"
           ],
@@ -2191,7 +2191,7 @@
         {
           "threshold": "8-12 hours",
           "evidence_item_id": "peds_kawasaki_treatment_cutoffs",
-          "label": "Kawasaki treatment: IVIG 2 g/kg over 8-12 hours plus aspirin 5 mg/kg daily until cardiology review around 6 weeks",
+          "label": "Kawasaki treatment",
           "source_ids": [
             "RCH_KAWASAKI_DISEASE"
           ],
@@ -2200,7 +2200,7 @@
         {
           "threshold": "5 mg/kg",
           "evidence_item_id": "peds_kawasaki_treatment_cutoffs",
-          "label": "Kawasaki treatment: IVIG 2 g/kg over 8-12 hours plus aspirin 5 mg/kg daily until cardiology review around 6 weeks",
+          "label": "Kawasaki treatment",
           "source_ids": [
             "RCH_KAWASAKI_DISEASE"
           ],
@@ -2209,16 +2209,7 @@
         {
           "threshold": "6 weeks",
           "evidence_item_id": "peds_kawasaki_treatment_cutoffs",
-          "label": "Kawasaki treatment: IVIG 2 g/kg over 8-12 hours plus aspirin 5 mg/kg daily until cardiology review around 6 weeks",
-          "source_ids": [
-            "RCH_KAWASAKI_DISEASE"
-          ],
-          "review_status": "source_backed"
-        },
-        {
-          "threshold": "4 to 5 days",
-          "evidence_item_id": "redFlags_peds_rash_redflag_kawasaki",
-          "label": "Prolonged fever with Kawasaki features",
+          "label": "Kawasaki treatment",
           "source_ids": [
             "RCH_KAWASAKI_DISEASE"
           ],
@@ -2327,7 +2318,7 @@
           {
             "domain": "imaging_results",
             "exact_data_needed": [
-              "source-directed imaging/ECG/procedure results when indicated",
+              "imaging, ECG, culture, pathology, or procedure result required by the chosen branch",
               "Kawasaki labs ECG and echocardiography route",
               "SSTI culture imaging and source control route"
             ],
@@ -2518,7 +2509,7 @@
         "pediatric_rash_skin_classification_decision": {
           "rule_id": "pediatric_rash_skin_classification_criteria",
           "source": "criteria",
-          "description": "Classify Pediatric rash, urticaria, petechiae, or skin infection against cited thresholds and condition-specific rules: Kawasaki disease: >=4 days, 4 principal clinical features, >=1.5 cm | Kawasaki echo/high-risk cutoffs: >=2.5, <55%, <28%, <=6 months, >=2 | Kawasaki treatment: 2 g/kg, 8-12 hours, 5 mg/kg, 6 weeks | Prolonged fever with Kawasaki features: 4 to 5 days",
+          "description": "Classify Pediatric rash, urticaria, petechiae, or skin infection against cited thresholds and condition-specific rules: Kawasaki disease: >=4 days, 4 principal clinical features, >=1.5 cm | Kawasaki echo/high-risk cutoffs: >=2.5, <55%, <28%, <=6 months, >=2 | Kawasaki treatment: 2 g/kg, 8-12 hours, 5 mg/kg, 6 weeks",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2615,22 +2606,6 @@
                 "RCH_KAWASAKI_DISEASE"
               ],
               "source_section": "Treatment",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "redFlags_peds_rash_redflag_kawasaki",
-              "label": "Prolonged fever with Kawasaki features",
-              "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
-              "cutoffs": [
-                "4 to 5 days"
-              ],
-              "data_needed": [
-                "4 to 5 days"
-              ],
-              "source_ids": [
-                "RCH_KAWASAKI_DISEASE"
-              ],
-              "source_section": "key points and clinical features",
               "review_status": "source_backed"
             }
           ]
@@ -2785,22 +2760,6 @@
               ],
               "source_section": "Treatment",
               "review_status": "source_backed"
-            },
-            {
-              "id": "redFlags_peds_rash_redflag_kawasaki",
-              "label": "Prolonged fever with Kawasaki features",
-              "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
-              "cutoffs": [
-                "4 to 5 days"
-              ],
-              "data_needed": [
-                "4 to 5 days"
-              ],
-              "source_ids": [
-                "RCH_KAWASAKI_DISEASE"
-              ],
-              "source_section": "key points and clinical features",
-              "review_status": "source_backed"
             }
           ]
         },
@@ -2904,22 +2863,6 @@
               ],
               "source_section": "Treatment",
               "review_status": "source_backed"
-            },
-            {
-              "id": "redFlags_peds_rash_redflag_kawasaki",
-              "label": "Prolonged fever with Kawasaki features",
-              "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
-              "cutoffs": [
-                "4 to 5 days"
-              ],
-              "data_needed": [
-                "4 to 5 days"
-              ],
-              "source_ids": [
-                "RCH_KAWASAKI_DISEASE"
-              ],
-              "source_section": "key points and clinical features",
-              "review_status": "source_backed"
             }
           ]
         },
@@ -3003,7 +2946,7 @@
         "pediatric_rash_skin_review_endpoint": {
           "rule_id": "pediatric_rash_skin_review_criteria",
           "source": "criteria",
-          "description": "Use clinician review when Pediatric rash, urticaria, petechiae, or skin infection treatment/disposition depends on pregnancy/postpartum status, pediatric/adult applicability, renal/hepatic/cardiac disease, allergy, drug interaction, procedural risk, guideline conflict, or local protocol.",
+          "description": "Use reviewer handoff when Pediatric rash, urticaria, petechiae, or skin infection treatment or disposition depends on Kawasaki disease; Kawasaki treatment; Immediate sepsis or meningococcal route; Anaphylaxis observation and discharge route; Pediatric rash, urticaria, petechiae, or skin infection: immediate stabilization or escalation trigger: Non-blanching rash with fever or unwell child.; Pediatric rash, urticaria, petechiae, or skin infection: treatment or disposition for high-risk or confirmed disease: Immediate sepsis or meningococcal route..",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3120,22 +3063,6 @@
               ],
               "source_section": "Treatment",
               "review_status": "source_backed"
-            },
-            {
-              "id": "redFlags_peds_rash_redflag_kawasaki",
-              "label": "Prolonged fever with Kawasaki features",
-              "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
-              "cutoffs": [
-                "4 to 5 days"
-              ],
-              "data_needed": [
-                "4 to 5 days"
-              ],
-              "source_ids": [
-                "RCH_KAWASAKI_DISEASE"
-              ],
-              "source_section": "key points and clinical features",
-              "review_status": "source_backed"
             }
           ]
         },
@@ -3236,22 +3163,6 @@
                 "RCH_KAWASAKI_DISEASE"
               ],
               "source_section": "Treatment",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "redFlags_peds_rash_redflag_kawasaki",
-              "label": "Prolonged fever with Kawasaki features",
-              "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
-              "cutoffs": [
-                "4 to 5 days"
-              ],
-              "data_needed": [
-                "4 to 5 days"
-              ],
-              "source_ids": [
-                "RCH_KAWASAKI_DISEASE"
-              ],
-              "source_section": "key points and clinical features",
               "review_status": "source_backed"
             }
           ]
@@ -3354,22 +3265,6 @@
               ],
               "source_section": "Treatment",
               "review_status": "source_backed"
-            },
-            {
-              "id": "redFlags_peds_rash_redflag_kawasaki",
-              "label": "Prolonged fever with Kawasaki features",
-              "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
-              "cutoffs": [
-                "4 to 5 days"
-              ],
-              "data_needed": [
-                "4 to 5 days"
-              ],
-              "source_ids": [
-                "RCH_KAWASAKI_DISEASE"
-              ],
-              "source_section": "key points and clinical features",
-              "review_status": "source_backed"
             }
           ]
         },
@@ -3398,7 +3293,7 @@
         "pediatric_rash_skin_alternate_endpoint": {
           "rule_id": "pediatric_rash_skin_alternate_criteria",
           "source": "criteria",
-          "description": "Use an alternate pathway when Pediatric rash, urticaria, petechiae, or skin infection criteria are absent, a cited mimic better explains the presentation, or objective result data contradict this workup.",
+          "description": "Use an alternate pathway when Pediatric rash, urticaria, petechiae, or skin infection criteria are absent, Non-blanching petechiae or purpura with fever, rapid progression, or unwell appearance; Prolonged fever with Kawasaki disease or inflammatory rash features; Urticaria or angioedema with or without anaphylaxis features; Cellulitis, abscess, impetigo, or skin and soft tissue infection; Lower-risk viral exanthem, contact dermatitis, eczema flare, or benign rash pattern better explains the presentation, or measured result data contradict this workup.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3492,22 +3387,6 @@
               ],
               "source_section": "Treatment",
               "review_status": "source_backed"
-            },
-            {
-              "id": "redFlags_peds_rash_redflag_kawasaki",
-              "label": "Prolonged fever with Kawasaki features",
-              "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
-              "cutoffs": [
-                "4 to 5 days"
-              ],
-              "data_needed": [
-                "4 to 5 days"
-              ],
-              "source_ids": [
-                "RCH_KAWASAKI_DISEASE"
-              ],
-              "source_section": "key points and clinical features",
-              "review_status": "source_backed"
             }
           ]
         }
@@ -3549,8 +3428,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal data-availability guard",
-            "edgeLabel": "Internal data-availability guard",
+            "label": "Internal traversal guard",
+            "edgeLabel": "Internal traversal guard",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -3586,7 +3465,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -3594,7 +3473,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
             },
             "missing_data_needed": [
               "symptoms",
@@ -3613,7 +3492,7 @@
             "id": "pediatric_rash_skin_concurrent_data_bundle",
             "type": "action",
             "label": "Pediatric rash, urticaria, petechiae, or skin infection: assessment, thresholds, and treatment-safety inputs",
-            "edgeLabel": "Collect Pediatric rash, urticaria, petechiae, or skin infection: Non-blanching rash senior-review tests; Kawasaki labs ECG and echocardiography route; SSTI culture imaging and source control route; Anaphylaxis immediate treatment route; >=4 days; 4 principal clinical features; >=1.5 cm; Measure temperature",
+            "edgeLabel": "Collect Pediatric rash, urticaria, petechiae, or skin infection: Non-blanching rash senior-review tests; Kawasaki labs ECG and echocardiography route; SSTI culture imaging and source control route; Anaphylaxis immediate treatment route; >=4 days; 4 principal clinical features; >=1.5 cm",
             "source_ids": [
               "RCH_PETECHIAE_PURPURA_CHILD",
               "RCH_KAWASAKI_DISEASE",
@@ -3645,7 +3524,7 @@
                 "AHRQ_CALIBRATE_DX"
               ]
             },
-            "action": "Obtain together: Non-blanching rash senior-review tests; Kawasaki labs ECG and echocardiography route; SSTI culture imaging and source control route; Anaphylaxis immediate treatment route; Bleeding vasculitis and hematology screen; Measure temperature; Measure heart rate; Measure respiratory rate; Measure oxygen saturation; Measure blood pressure; fever day count; conjunctivitis; rash; extremity changes; cervical node size; mucosal changes; alternative diagnosis review; echocardiogram Z-scores.",
+            "action": "Obtain together: Non-blanching rash senior-review tests; Kawasaki labs ECG and echocardiography route; SSTI culture imaging and source control route; Anaphylaxis immediate treatment route; Bleeding vasculitis and hematology screen; fever day count; conjunctivitis; rash; extremity changes; cervical node size; mucosal changes; alternative diagnosis review; echocardiogram Z-scores.",
             "children": [
               {
                 "id": "pediatric_rash_skin_classification_decision",
@@ -3663,7 +3542,7 @@
                 "criteria": {
                   "rule_id": "pediatric_rash_skin_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Pediatric rash, urticaria, petechiae, or skin infection against cited thresholds and condition-specific rules: Kawasaki disease: >=4 days, 4 principal clinical features, >=1.5 cm | Kawasaki echo/high-risk cutoffs: >=2.5, <55%, <28%, <=6 months, >=2 | Kawasaki treatment: 2 g/kg, 8-12 hours, 5 mg/kg, 6 weeks | Prolonged fever with Kawasaki features: 4 to 5 days",
+                  "description": "Classify Pediatric rash, urticaria, petechiae, or skin infection against cited thresholds and condition-specific rules: Kawasaki disease: >=4 days, 4 principal clinical features, >=1.5 cm | Kawasaki echo/high-risk cutoffs: >=2.5, <55%, <28%, <=6 months, >=2 | Kawasaki treatment: 2 g/kg, 8-12 hours, 5 mg/kg, 6 weeks",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -3761,22 +3640,6 @@
                       ],
                       "source_section": "Treatment",
                       "review_status": "source_backed"
-                    },
-                    {
-                      "id": "redFlags_peds_rash_redflag_kawasaki",
-                      "label": "Prolonged fever with Kawasaki features",
-                      "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
-                      "cutoffs": [
-                        "4 to 5 days"
-                      ],
-                      "data_needed": [
-                        "4 to 5 days"
-                      ],
-                      "source_ids": [
-                        "RCH_KAWASAKI_DISEASE"
-                      ],
-                      "source_section": "key points and clinical features",
-                      "review_status": "source_backed"
                     }
                   ]
                 },
@@ -3785,8 +3648,8 @@
                   {
                     "id": "pediatric_rash_skin_missing_cutoff_data_endpoint",
                     "type": "endpoint",
-                    "label": "Internal data-availability guard",
-                    "edgeLabel": "Internal data-availability guard",
+                    "label": "Internal traversal guard",
+                    "edgeLabel": "Internal traversal guard",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "RCH_KAWASAKI_DISEASE",
@@ -3847,7 +3710,7 @@
                         ">=2"
                       ]
                     },
-                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -3855,7 +3718,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
                     },
                     "missing_data_needed": [
                       "fever day count",
@@ -3996,22 +3859,6 @@
                           ],
                           "source_section": "Treatment",
                           "review_status": "source_backed"
-                        },
-                        {
-                          "id": "redFlags_peds_rash_redflag_kawasaki",
-                          "label": "Prolonged fever with Kawasaki features",
-                          "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
-                          "cutoffs": [
-                            "4 to 5 days"
-                          ],
-                          "data_needed": [
-                            "4 to 5 days"
-                          ],
-                          "source_ids": [
-                            "RCH_KAWASAKI_DISEASE"
-                          ],
-                          "source_section": "key points and clinical features",
-                          "review_status": "source_backed"
                         }
                       ]
                     },
@@ -4094,22 +3941,6 @@
                           "RCH_KAWASAKI_DISEASE"
                         ],
                         "source_section": "Treatment",
-                        "review_status": "source_backed"
-                      },
-                      {
-                        "id": "redFlags_peds_rash_redflag_kawasaki",
-                        "label": "Prolonged fever with Kawasaki features",
-                        "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
-                        "cutoffs": [
-                          "4 to 5 days"
-                        ],
-                        "data_needed": [
-                          "4 to 5 days"
-                        ],
-                        "source_ids": [
-                          "RCH_KAWASAKI_DISEASE"
-                        ],
-                        "source_section": "key points and clinical features",
                         "review_status": "source_backed"
                       }
                     ]
@@ -4227,26 +4058,10 @@
                           ],
                           "source_section": "Treatment",
                           "review_status": "source_backed"
-                        },
-                        {
-                          "id": "redFlags_peds_rash_redflag_kawasaki",
-                          "label": "Prolonged fever with Kawasaki features",
-                          "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
-                          "cutoffs": [
-                            "4 to 5 days"
-                          ],
-                          "data_needed": [
-                            "4 to 5 days"
-                          ],
-                          "source_ids": [
-                            "RCH_KAWASAKI_DISEASE"
-                          ],
-                          "source_section": "key points and clinical features",
-                          "review_status": "source_backed"
                         }
                       ]
                     },
-                    "action": "Pediatric rash, urticaria, petechiae, or skin infection: immediate stabilization or escalation trigger: Non-blanching rash with fever or unwell child.; Pediatric rash, urticaria, petechiae, or skin infection: treatment or disposition for high-risk or confirmed disease: Immediate sepsis or meningococcal route.; Pediatric rash, urticaria, petechiae, or skin infection: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Anaphylaxis observation and discharge route.; Immediate sepsis or meningococcal route; Anaphylaxis observation and discharge route",
+                    "action": "Pediatric rash, urticaria, petechiae, or skin infection: immediate stabilization or escalation trigger: Non-blanching rash with fever or unwell child.; Pediatric rash, urticaria, petechiae, or skin infection: treatment or disposition for high-risk or confirmed disease: Immediate sepsis or meningococcal route.; Immediate sepsis or meningococcal route; Anaphylaxis observation and discharge route; Kawasaki senior review and cardiac route; Kawasaki disease; Kawasaki treatment",
                     "children": [
                       {
                         "id": "pediatric_rash_skin_treatment_safety_decision",
@@ -4343,8 +4158,8 @@
                           {
                             "id": "pediatric_rash_skin_review_endpoint",
                             "type": "endpoint",
-                            "label": "Pediatric rash, urticaria, petechiae, or skin infection: reviewer handoff for contraindication or special population",
-                            "edgeLabel": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
+                            "label": "Pediatric rash, urticaria, petechiae, or skin infection: review Kawasaki disease; Kawasaki treatment; Immediate sepsis or meningococcal route; Anaphylaxis observation and discharge route; Pediatric rash, urticaria, petechiae, or skin infection: immediate stabilization or escalation trigger: Non-blanching rash with fever or unwell child.; Pediatric rash, urticaria, petechiae, or skin infection: treatment or disposition for high-risk or confirmed disease: Immediate sepsis or meningococcal route.",
+                            "edgeLabel": "Pediatric rash, urticaria, petechiae, or skin infection modifier needing review: Kawasaki disease; Kawasaki treatment; Immediate sepsis or meningococcal route; Anaphylaxis observation and discharge route; Pediatric rash, urticaria, petechiae, or skin infection: immediate stabilization or escalation trigger: Non-blanching rash with fever or unwell child.; Pediatric rash, urticaria, petechiae, or skin infection: treatment or disposition for high-risk or confirmed disease: Immediate sepsis or meningococcal route.",
                             "source_ids": [
                               "RCH_KAWASAKI_DISEASE",
                               "RCH_PETECHIAE_PURPURA_CHILD",
@@ -4356,7 +4171,7 @@
                             "criteria": {
                               "rule_id": "pediatric_rash_skin_review_criteria",
                               "source": "criteria",
-                              "description": "Use clinician review when Pediatric rash, urticaria, petechiae, or skin infection treatment/disposition depends on pregnancy/postpartum status, pediatric/adult applicability, renal/hepatic/cardiac disease, allergy, drug interaction, procedural risk, guideline conflict, or local protocol.",
+                              "description": "Use reviewer handoff when Pediatric rash, urticaria, petechiae, or skin infection treatment or disposition depends on Kawasaki disease; Kawasaki treatment; Immediate sepsis or meningococcal route; Anaphylaxis observation and discharge route; Pediatric rash, urticaria, petechiae, or skin infection: immediate stabilization or escalation trigger: Non-blanching rash with fever or unwell child.; Pediatric rash, urticaria, petechiae, or skin infection: treatment or disposition for high-risk or confirmed disease: Immediate sepsis or meningococcal route..",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4375,16 +4190,16 @@
                                 "AHRQ_CALIBRATE_DX"
                               ]
                             },
-                            "action": "Pause non-emergent Pediatric rash, urticaria, petechiae, or skin infection treatment choices until the modifier is resolved and the reviewer documents the applicable guideline or local cutoff.",
+                            "action": "Resolve the named Pediatric rash, urticaria, petechiae, or skin infection modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
-                            "review_needed_reason": "Patient-specific contraindication, special population, guideline conflict, or local policy affects treatment or disposition."
+                            "review_needed_reason": "Pediatric rash, urticaria, petechiae, or skin infection management changes when Kawasaki disease; Kawasaki treatment; Immediate sepsis or meningococcal route; Anaphylaxis observation and discharge route; Pediatric rash, urticaria, petechiae, or skin infection: immediate stabilization or escalation trigger: Non-blanching rash with fever or unwell child.; Pediatric rash, urticaria, petechiae, or skin infection: treatment or disposition for high-risk or confirmed disease: Immediate sepsis or meningococcal route.; document the exact modifier and reviewer input needed."
                           },
                           {
                             "id": "pediatric_rash_skin_monitoring_bundle",
                             "type": "action",
                             "label": "Pediatric rash, urticaria, petechiae, or skin infection: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Pediatric rash, urticaria, petechiae, or skin infection symptoms, vital signs, threshold labs/results, treatment response, adverse effects, and disposition readiness",
+                            "edgeLabel": "Trend Pediatric rash, urticaria, petechiae, or skin infection symptoms, vital signs, criterion-defining results, treatment response, adverse effects, and disposition readiness",
                             "source_ids": [
                               "RCH_PETECHIAE_PURPURA_CHILD",
                               "RCH_URTICARIA_CHILD",
@@ -4491,22 +4306,6 @@
                                   ],
                                   "source_section": "Treatment",
                                   "review_status": "source_backed"
-                                },
-                                {
-                                  "id": "redFlags_peds_rash_redflag_kawasaki",
-                                  "label": "Prolonged fever with Kawasaki features",
-                                  "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
-                                  "cutoffs": [
-                                    "4 to 5 days"
-                                  ],
-                                  "data_needed": [
-                                    "4 to 5 days"
-                                  ],
-                                  "source_ids": [
-                                    "RCH_KAWASAKI_DISEASE"
-                                  ],
-                                  "source_section": "key points and clinical features",
-                                  "review_status": "source_backed"
                                 }
                               ]
                             },
@@ -4516,7 +4315,7 @@
                                 "id": "pediatric_rash_skin_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Pediatric rash, urticaria, petechiae, or skin infection: reassessment escalation",
-                                "edgeLabel": "Pediatric rash, urticaria, petechiae, or skin infection reassessment worsens or Non-blanching rash with fever or unwell child; Urticaria with airway breathing circulation or GI symptoms; Prolonged fever with Kawasaki features; >=4 days; 4 principal clinical features; >=1.5 cm; >=2.5; Non-blanching rash senior-review tests; Kawasaki labs ECG and echocardiography route no longer fit the selected pathway",
+                                "edgeLabel": "Pediatric rash, urticaria, petechiae, or skin infection reassessment worsens or Non-blanching rash with fever or unwell child; Urticaria with airway breathing circulation or GI symptoms; Prolonged fever with Kawasaki features; >=4 days; 4 principal clinical features; >=1.5 cm; >=2.5; Non-blanching rash senior-review tests; Kawasaki labs ECG and echocardiography route no longer fit the documented Pediatric rash, urticaria, petechiae, or skin infection branch",
                                 "source_ids": [
                                   "RCH_PETECHIAE_PURPURA_CHILD",
                                   "RCH_URTICARIA_CHILD",
@@ -4623,22 +4422,6 @@
                                       ],
                                       "source_section": "Treatment",
                                       "review_status": "source_backed"
-                                    },
-                                    {
-                                      "id": "redFlags_peds_rash_redflag_kawasaki",
-                                      "label": "Prolonged fever with Kawasaki features",
-                                      "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
-                                      "cutoffs": [
-                                        "4 to 5 days"
-                                      ],
-                                      "data_needed": [
-                                        "4 to 5 days"
-                                      ],
-                                      "source_ids": [
-                                        "RCH_KAWASAKI_DISEASE"
-                                      ],
-                                      "source_section": "key points and clinical features",
-                                      "review_status": "source_backed"
                                     }
                                   ]
                                 },
@@ -4721,22 +4504,6 @@
                                       "RCH_KAWASAKI_DISEASE"
                                     ],
                                     "source_section": "Treatment",
-                                    "review_status": "source_backed"
-                                  },
-                                  {
-                                    "id": "redFlags_peds_rash_redflag_kawasaki",
-                                    "label": "Prolonged fever with Kawasaki features",
-                                    "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
-                                    "cutoffs": [
-                                      "4 to 5 days"
-                                    ],
-                                    "data_needed": [
-                                      "4 to 5 days"
-                                    ],
-                                    "source_ids": [
-                                      "RCH_KAWASAKI_DISEASE"
-                                    ],
-                                    "source_section": "key points and clinical features",
                                     "review_status": "source_backed"
                                   }
                                 ]
@@ -4852,22 +4619,6 @@
                                       ],
                                       "source_section": "Treatment",
                                       "review_status": "source_backed"
-                                    },
-                                    {
-                                      "id": "redFlags_peds_rash_redflag_kawasaki",
-                                      "label": "Prolonged fever with Kawasaki features",
-                                      "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
-                                      "cutoffs": [
-                                        "4 to 5 days"
-                                      ],
-                                      "data_needed": [
-                                        "4 to 5 days"
-                                      ],
-                                      "source_ids": [
-                                        "RCH_KAWASAKI_DISEASE"
-                                      ],
-                                      "source_section": "key points and clinical features",
-                                      "review_status": "source_backed"
                                     }
                                   ]
                                 },
@@ -4951,22 +4702,6 @@
                                     ],
                                     "source_section": "Treatment",
                                     "review_status": "source_backed"
-                                  },
-                                  {
-                                    "id": "redFlags_peds_rash_redflag_kawasaki",
-                                    "label": "Prolonged fever with Kawasaki features",
-                                    "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
-                                    "cutoffs": [
-                                      "4 to 5 days"
-                                    ],
-                                    "data_needed": [
-                                      "4 to 5 days"
-                                    ],
-                                    "source_ids": [
-                                      "RCH_KAWASAKI_DISEASE"
-                                    ],
-                                    "source_section": "key points and clinical features",
-                                    "review_status": "source_backed"
                                   }
                                 ]
                               },
@@ -5018,14 +4753,9 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend threshold labs/results",
+                              "trend criterion-defining results",
                               "review treatment response and adverse effects",
-                              "assign disposition and follow-up clinician/service",
-                              "Measure temperature",
-                              "Measure heart rate",
-                              "Measure respiratory rate",
-                              "Measure oxygen saturation",
-                              "Measure blood pressure"
+                              "assign disposition and follow-up clinician/service"
                             ],
                             "guideline_cutoffs": [
                               {
@@ -5104,22 +4834,6 @@
                                 ],
                                 "source_section": "Treatment",
                                 "review_status": "source_backed"
-                              },
-                              {
-                                "id": "redFlags_peds_rash_redflag_kawasaki",
-                                "label": "Prolonged fever with Kawasaki features",
-                                "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
-                                "cutoffs": [
-                                  "4 to 5 days"
-                                ],
-                                "data_needed": [
-                                  "4 to 5 days"
-                                ],
-                                "source_ids": [
-                                  "RCH_KAWASAKI_DISEASE"
-                                ],
-                                "source_section": "key points and clinical features",
-                                "review_status": "source_backed"
                               }
                             ]
                           }
@@ -5129,11 +4843,11 @@
                     "parallel_actions": [
                       "Pediatric rash, urticaria, petechiae, or skin infection: immediate stabilization or escalation trigger: Non-blanching rash with fever or unwell child.",
                       "Pediatric rash, urticaria, petechiae, or skin infection: treatment or disposition for high-risk or confirmed disease: Immediate sepsis or meningococcal route.",
-                      "Pediatric rash, urticaria, petechiae, or skin infection: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Anaphylaxis observation and discharge route.",
-                      "Pediatric rash, urticaria, petechiae, or skin infection: monitoring data for response, complications, and reassessment: Non-blanching rash senior-review tests.",
                       "Immediate sepsis or meningococcal route",
                       "Anaphylaxis observation and discharge route",
-                      "Kawasaki senior review and cardiac route"
+                      "Kawasaki senior review and cardiac route",
+                      "Kawasaki disease",
+                      "Kawasaki treatment"
                     ],
                     "guideline_cutoffs": [
                       {
@@ -5212,22 +4926,6 @@
                         ],
                         "source_section": "Treatment",
                         "review_status": "source_backed"
-                      },
-                      {
-                        "id": "redFlags_peds_rash_redflag_kawasaki",
-                        "label": "Prolonged fever with Kawasaki features",
-                        "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
-                        "cutoffs": [
-                          "4 to 5 days"
-                        ],
-                        "data_needed": [
-                          "4 to 5 days"
-                        ],
-                        "source_ids": [
-                          "RCH_KAWASAKI_DISEASE"
-                        ],
-                        "source_section": "key points and clinical features",
-                        "review_status": "source_backed"
                       }
                     ]
                   },
@@ -5247,7 +4945,7 @@
                     "criteria": {
                       "rule_id": "pediatric_rash_skin_alternate_criteria",
                       "source": "criteria",
-                      "description": "Use an alternate pathway when Pediatric rash, urticaria, petechiae, or skin infection criteria are absent, a cited mimic better explains the presentation, or objective result data contradict this workup.",
+                      "description": "Use an alternate pathway when Pediatric rash, urticaria, petechiae, or skin infection criteria are absent, Non-blanching petechiae or purpura with fever, rapid progression, or unwell appearance; Prolonged fever with Kawasaki disease or inflammatory rash features; Urticaria or angioedema with or without anaphylaxis features; Cellulitis, abscess, impetigo, or skin and soft tissue infection; Lower-risk viral exanthem, contact dermatitis, eczema flare, or benign rash pattern better explains the presentation, or measured result data contradict this workup.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5341,29 +5039,13 @@
                           ],
                           "source_section": "Treatment",
                           "review_status": "source_backed"
-                        },
-                        {
-                          "id": "redFlags_peds_rash_redflag_kawasaki",
-                          "label": "Prolonged fever with Kawasaki features",
-                          "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
-                          "cutoffs": [
-                            "4 to 5 days"
-                          ],
-                          "data_needed": [
-                            "4 to 5 days"
-                          ],
-                          "source_ids": [
-                            "RCH_KAWASAKI_DISEASE"
-                          ],
-                          "source_section": "key points and clinical features",
-                          "review_status": "source_backed"
                         }
                       ]
                     },
-                    "action": "Document why Pediatric rash, urticaria, petechiae, or skin infection is not the active pathway, name the competing diagnosis or exclusion, and route to the appropriate workup rather than reassurance alone.",
+                    "action": "Name the competing diagnosis or exclusion for Pediatric rash, urticaria, petechiae, or skin infection, such as Non-blanching petechiae or purpura with fever, rapid progression, or unwell appearance; Prolonged fever with Kawasaki disease or inflammatory rash features; Urticaria or angioedema with or without anaphylaxis features; Cellulitis, abscess, impetigo, or skin and soft tissue infection; Lower-risk viral exanthem, contact dermatitis, eczema flare, or benign rash pattern; route to the corresponding workup or specialty pathway and document why the Pediatric rash, urticaria, petechiae, or skin infection branch is not used.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Competing diagnosis or exclusion changes the active pathway."
+                    "review_needed_reason": "Pediatric rash, urticaria, petechiae, or skin infection criteria are absent or contradicted by Non-blanching petechiae or purpura with fever, rapid progression, or unwell appearance; Prolonged fever with Kawasaki disease or inflammatory rash features; Urticaria or angioedema with or without anaphylaxis features; Cellulitis, abscess, impetigo, or skin and soft tissue infection; Lower-risk viral exanthem, contact dermatitis, eczema flare, or benign rash pattern; competing diagnosis must be named before closure."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -5442,22 +5124,6 @@
                       "RCH_KAWASAKI_DISEASE"
                     ],
                     "source_section": "Treatment",
-                    "review_status": "source_backed"
-                  },
-                  {
-                    "id": "redFlags_peds_rash_redflag_kawasaki",
-                    "label": "Prolonged fever with Kawasaki features",
-                    "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
-                    "cutoffs": [
-                      "4 to 5 days"
-                    ],
-                    "data_needed": [
-                      "4 to 5 days"
-                    ],
-                    "source_ids": [
-                      "RCH_KAWASAKI_DISEASE"
-                    ],
-                    "source_section": "key points and clinical features",
                     "review_status": "source_backed"
                   }
                 ],
@@ -5538,22 +5204,6 @@
                     ],
                     "source_section": "Treatment",
                     "review_status": "source_backed"
-                  },
-                  {
-                    "id": "redFlags_peds_rash_redflag_kawasaki",
-                    "label": "Prolonged fever with Kawasaki features",
-                    "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
-                    "cutoffs": [
-                      "4 to 5 days"
-                    ],
-                    "data_needed": [
-                      "4 to 5 days"
-                    ],
-                    "source_ids": [
-                      "RCH_KAWASAKI_DISEASE"
-                    ],
-                    "source_section": "key points and clinical features",
-                    "review_status": "source_backed"
                   }
                 ]
               }
@@ -5564,11 +5214,6 @@
               "SSTI culture imaging and source control route",
               "Anaphylaxis immediate treatment route",
               "Bleeding vasculitis and hematology screen",
-              "Measure temperature",
-              "Measure heart rate",
-              "Measure respiratory rate",
-              "Measure oxygen saturation",
-              "Measure blood pressure",
               "fever day count",
               "conjunctivitis",
               "rash",
@@ -5682,22 +5327,6 @@
                 ],
                 "source_section": "Treatment",
                 "review_status": "source_backed"
-              },
-              {
-                "id": "redFlags_peds_rash_redflag_kawasaki",
-                "label": "Prolonged fever with Kawasaki features",
-                "criteria_text": "Prolonged fever with Kawasaki features Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation. Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up. Complete or incomplete Kawasaki disease with coronary artery aneurysm risk. Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
-                "cutoffs": [
-                  "4 to 5 days"
-                ],
-                "data_needed": [
-                  "4 to 5 days"
-                ],
-                "source_ids": [
-                  "RCH_KAWASAKI_DISEASE"
-                ],
-                "source_section": "key points and clinical features",
-                "review_status": "source_backed"
               }
             ]
           }
@@ -5705,10 +5334,10 @@
       },
       "synthetic_patient_scenarios": [
         {
-          "scenario_id": "missing_context",
+          "scenario_id": "internal_context_guard",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing Pediatric rash, urticaria, petechiae, or skin infection: onset/trajectory, focused exam, vitals, threshold labs/results, meds, comorbidities, pregnancy/applicability, or follow-up access",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -5717,10 +5346,10 @@
           "traversal_status": "reaches_expected_endpoint"
         },
         {
-          "scenario_id": "missing_cutoff_data",
+          "scenario_id": "internal_threshold_guard",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "pediatric_rash_skin_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Missing Pediatric rash, urticaria, petechiae, or skin infection result(s): fever day count; conjunctivitis; rash; extremity changes; cervical node size; mucosal changes",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "pediatric_rash_skin_concurrent_data_bundle",
@@ -5762,7 +5391,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "pediatric_rash_skin_review_endpoint",
-          "expected_active_branch": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
+          "expected_active_branch": "Pediatric rash, urticaria, petechiae, or skin infection modifier needing review: Kawasaki disease; Kawasaki treatment; Immediate sepsis or meningococcal route; Anaphylaxis observation and discharge route; Pediatric rash, urticaria, petechiae, or skin infection: immediate stabilization or escalation trigger: Non-blanching rash with fever or unwell child.; Pediatric rash, urticaria, petechiae, or skin infection: treatment or disposition for high-risk or confirmed disease: Immediate sepsis or meningococcal route.",
           "expected_path_node_ids": [
             "root",
             "pediatric_rash_skin_concurrent_data_bundle",
@@ -5778,7 +5407,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "pediatric_rash_skin_worsening_endpoint",
-          "expected_active_branch": "Pediatric rash, urticaria, petechiae, or skin infection reassessment worsens or Non-blanching rash with fever or unwell child; Urticaria with airway breathing circulation or GI symptoms; Prolonged fever with Kawasaki features; >=4 days; 4 principal clinical features; >=1.5 cm; >=2.5; Non-blanching rash senior-review tests; Kawasaki labs ECG and echocardiography route no longer fit the selected pathway",
+          "expected_active_branch": "Pediatric rash, urticaria, petechiae, or skin infection reassessment worsens or Non-blanching rash with fever or unwell child; Urticaria with airway breathing circulation or GI symptoms; Prolonged fever with Kawasaki features; >=4 days; 4 principal clinical features; >=1.5 cm; >=2.5; Non-blanching rash senior-review tests; Kawasaki labs ECG and echocardiography route no longer fit the documented Pediatric rash, urticaria, petechiae, or skin infection branch",
           "expected_path_node_ids": [
             "root",
             "pediatric_rash_skin_concurrent_data_bundle",
@@ -5847,7 +5476,7 @@
           "concurrent diagnostic/treatment bundles instead of long one-step chains",
           "cited thresholds/rules visible in classification and endpoint nodes",
           "all endpoints cite evidence or state needs_clinical_review",
-          "missing-data endpoints name exact data needed"
+          "internal data guards keep exact unavailable fields in structured metadata"
         ]
       }
     },

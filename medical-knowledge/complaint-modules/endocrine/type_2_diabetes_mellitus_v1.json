@@ -2872,7 +2872,7 @@
         {
           "threshold": "A1c >=6.5%",
           "evidence_item_id": "type_2_diabetes_diabetes_diagnostic_thresholds",
-          "label": "Diabetes diagnosis: A1c >=6.5%, fasting glucose >=126 mg/dL, 2-hour OGTT >=200 mg/dL, or random glucose >=200 mg/dL with symptoms",
+          "label": "Diabetes diagnosis",
           "source_ids": [
             "ADA_DIAGNOSIS_2026",
             "CDC_DIABETES_TESTING_2024"
@@ -2882,7 +2882,7 @@
         {
           "threshold": "fasting glucose >=126 mg/dL",
           "evidence_item_id": "type_2_diabetes_diabetes_diagnostic_thresholds",
-          "label": "Diabetes diagnosis: A1c >=6.5%, fasting glucose >=126 mg/dL, 2-hour OGTT >=200 mg/dL, or random glucose >=200 mg/dL with symptoms",
+          "label": "Diabetes diagnosis",
           "source_ids": [
             "ADA_DIAGNOSIS_2026",
             "CDC_DIABETES_TESTING_2024"
@@ -2892,7 +2892,7 @@
         {
           "threshold": "2-hour OGTT >=200 mg/dL",
           "evidence_item_id": "type_2_diabetes_diabetes_diagnostic_thresholds",
-          "label": "Diabetes diagnosis: A1c >=6.5%, fasting glucose >=126 mg/dL, 2-hour OGTT >=200 mg/dL, or random glucose >=200 mg/dL with symptoms",
+          "label": "Diabetes diagnosis",
           "source_ids": [
             "ADA_DIAGNOSIS_2026",
             "CDC_DIABETES_TESTING_2024"
@@ -2902,7 +2902,7 @@
         {
           "threshold": "random glucose >=200 mg/dL",
           "evidence_item_id": "type_2_diabetes_diabetes_diagnostic_thresholds",
-          "label": "Diabetes diagnosis: A1c >=6.5%, fasting glucose >=126 mg/dL, 2-hour OGTT >=200 mg/dL, or random glucose >=200 mg/dL with symptoms",
+          "label": "Diabetes diagnosis",
           "source_ids": [
             "ADA_DIAGNOSIS_2026",
             "CDC_DIABETES_TESTING_2024"
@@ -2912,7 +2912,7 @@
         {
           "threshold": "A1c 5.7-6.4%",
           "evidence_item_id": "type_2_diabetes_prediabetes_thresholds_for_mimic",
-          "label": "Prediabetes range is not diabetes: A1c 5.7-6.4%, fasting glucose 100-125 mg/dL, or 2-hour OGTT 140-199 mg/dL",
+          "label": "Prediabetes range is not diabetes",
           "source_ids": [
             "ADA_DIAGNOSIS_2026",
             "CDC_DIABETES_TESTING_2024"
@@ -2922,7 +2922,7 @@
         {
           "threshold": "fasting glucose 100-125 mg/dL",
           "evidence_item_id": "type_2_diabetes_prediabetes_thresholds_for_mimic",
-          "label": "Prediabetes range is not diabetes: A1c 5.7-6.4%, fasting glucose 100-125 mg/dL, or 2-hour OGTT 140-199 mg/dL",
+          "label": "Prediabetes range is not diabetes",
           "source_ids": [
             "ADA_DIAGNOSIS_2026",
             "CDC_DIABETES_TESTING_2024"
@@ -2932,7 +2932,7 @@
         {
           "threshold": "2-hour OGTT 140-199 mg/dL",
           "evidence_item_id": "type_2_diabetes_prediabetes_thresholds_for_mimic",
-          "label": "Prediabetes range is not diabetes: A1c 5.7-6.4%, fasting glucose 100-125 mg/dL, or 2-hour OGTT 140-199 mg/dL",
+          "label": "Prediabetes range is not diabetes",
           "source_ids": [
             "ADA_DIAGNOSIS_2026",
             "CDC_DIABETES_TESTING_2024"
@@ -2942,7 +2942,7 @@
         {
           "threshold": "beta-hydroxybutyrate >=3.0 mmol/L",
           "evidence_item_id": "type_2_diabetes_dka_hhs_red_flags",
-          "label": "Hyperglycemic crisis check: DKA has ketosis plus pH <7.3 or bicarbonate <18 mmol/L; beta-hydroxybutyrate often >=3.0 mmol/L",
+          "label": "Hyperglycemic crisis check",
           "source_ids": [
             "ADA_HYPERGLYCEMIC_CRISES_2024",
             "ADA_STANDARDS_HOSPITAL_2026"
@@ -2952,7 +2952,7 @@
         {
           "threshold": "pH <7.3",
           "evidence_item_id": "type_2_diabetes_dka_hhs_red_flags",
-          "label": "Hyperglycemic crisis check: DKA has ketosis plus pH <7.3 or bicarbonate <18 mmol/L; beta-hydroxybutyrate often >=3.0 mmol/L",
+          "label": "Hyperglycemic crisis check",
           "source_ids": [
             "ADA_HYPERGLYCEMIC_CRISES_2024",
             "ADA_STANDARDS_HOSPITAL_2026"
@@ -2962,7 +2962,7 @@
         {
           "threshold": "bicarbonate <18 mmol/L",
           "evidence_item_id": "type_2_diabetes_dka_hhs_red_flags",
-          "label": "Hyperglycemic crisis check: DKA has ketosis plus pH <7.3 or bicarbonate <18 mmol/L; beta-hydroxybutyrate often >=3.0 mmol/L",
+          "label": "Hyperglycemic crisis check",
           "source_ids": [
             "ADA_HYPERGLYCEMIC_CRISES_2024",
             "ADA_STANDARDS_HOSPITAL_2026"
@@ -2972,7 +2972,7 @@
         {
           "threshold": "A1c <7%",
           "evidence_item_id": "type_2_diabetes_glycemic_goals_and_hypoglycemia",
-          "label": "Most nonpregnant adults: A1c goal <7%; hypoglycemia level 1 <70 mg/dL and level 2 <54 mg/dL require treatment-plan review",
+          "label": "Most nonpregnant adults",
           "source_ids": [
             "ADA_SOC_2026"
           ],
@@ -2981,7 +2981,7 @@
         {
           "threshold": "glucose <70 mg/dL",
           "evidence_item_id": "type_2_diabetes_glycemic_goals_and_hypoglycemia",
-          "label": "Most nonpregnant adults: A1c goal <7%; hypoglycemia level 1 <70 mg/dL and level 2 <54 mg/dL require treatment-plan review",
+          "label": "Most nonpregnant adults",
           "source_ids": [
             "ADA_SOC_2026"
           ],
@@ -2990,7 +2990,7 @@
         {
           "threshold": "glucose <54 mg/dL",
           "evidence_item_id": "type_2_diabetes_glycemic_goals_and_hypoglycemia",
-          "label": "Most nonpregnant adults: A1c goal <7%; hypoglycemia level 1 <70 mg/dL and level 2 <54 mg/dL require treatment-plan review",
+          "label": "Most nonpregnant adults",
           "source_ids": [
             "ADA_SOC_2026"
           ],
@@ -2999,7 +2999,7 @@
         {
           "threshold": "UACR >=30 mg/g",
           "evidence_item_id": "type_2_diabetes_kidney_albuminuria_thresholds",
-          "label": "Kidney risk: UACR >=30 mg/g or eGFR <60 mL/min/1.73 m2 changes kidney-protective therapy and follow-up",
+          "label": "Kidney risk",
           "source_ids": [
             "ADA_SOC_2026"
           ],
@@ -3008,7 +3008,7 @@
         {
           "threshold": "eGFR <60 mL/min/1.73 m2",
           "evidence_item_id": "type_2_diabetes_kidney_albuminuria_thresholds",
-          "label": "Kidney risk: UACR >=30 mg/g or eGFR <60 mL/min/1.73 m2 changes kidney-protective therapy and follow-up",
+          "label": "Kidney risk",
           "source_ids": [
             "ADA_SOC_2026"
           ],
@@ -3017,7 +3017,7 @@
         {
           "threshold": "A1c >10%",
           "evidence_item_id": "type2_initial_insulin_thresholds",
-          "label": "Type 2 diabetes severe hyperglycemia: consider insulin when A1c >10%, glucose >=300 mg/dL, catabolism, symptoms, or ketosis are present",
+          "label": "Type 2 diabetes severe hyperglycemia",
           "source_ids": [
             "ADA_SOC_2026",
             "ADA_HYPERGLYCEMIC_CRISES_2024",
@@ -3028,7 +3028,7 @@
         {
           "threshold": "glucose >=300 mg/dL",
           "evidence_item_id": "type2_initial_insulin_thresholds",
-          "label": "Type 2 diabetes severe hyperglycemia: consider insulin when A1c >10%, glucose >=300 mg/dL, catabolism, symptoms, or ketosis are present",
+          "label": "Type 2 diabetes severe hyperglycemia",
           "source_ids": [
             "ADA_SOC_2026",
             "ADA_HYPERGLYCEMIC_CRISES_2024",
@@ -3039,7 +3039,7 @@
         {
           "threshold": "UACR >=30 mg/g",
           "evidence_item_id": "type2_cardiorenal_medication_selection",
-          "label": "Type 2 diabetes cardiorenal branch: ASCVD, heart failure, CKD, UACR >=30 mg/g, or eGFR <60 changes GLP-1/SGLT2 and ACEi/ARB decisions",
+          "label": "Type 2 diabetes cardiorenal branch",
           "source_ids": [
             "ADA_SOC_2026"
           ],
@@ -3048,7 +3048,7 @@
         {
           "threshold": "eGFR <60 mL/min/1.73 m2",
           "evidence_item_id": "type2_cardiorenal_medication_selection",
-          "label": "Type 2 diabetes cardiorenal branch: ASCVD, heart failure, CKD, UACR >=30 mg/g, or eGFR <60 changes GLP-1/SGLT2 and ACEi/ARB decisions",
+          "label": "Type 2 diabetes cardiorenal branch",
           "source_ids": [
             "ADA_SOC_2026"
           ],
@@ -3057,7 +3057,7 @@
         {
           "threshold": "eGFR >=20 mL/min/1.73 m2",
           "evidence_item_id": "type2_cardiorenal_medication_selection",
-          "label": "Type 2 diabetes cardiorenal branch: ASCVD, heart failure, CKD, UACR >=30 mg/g, or eGFR <60 changes GLP-1/SGLT2 and ACEi/ARB decisions",
+          "label": "Type 2 diabetes cardiorenal branch",
           "source_ids": [
             "ADA_SOC_2026"
           ],
@@ -3165,7 +3165,7 @@
           {
             "domain": "imaging_results",
             "exact_data_needed": [
-              "source-directed imaging/ECG/procedure results when indicated",
+              "imaging, ECG, culture, pathology, or procedure result required by the chosen branch",
               "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
               "Diabetes safety tests: review POC/plasma glucose trend, BMP with potassium/bicarbonate/anion gap and creatinine, beta-hydroxybutyrate or urine ketones when acutely ill, and UACR/lipids for complication-directed therapy."
             ],
@@ -5145,8 +5145,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal data-availability guard",
-            "edgeLabel": "Internal data-availability guard",
+            "label": "Internal traversal guard",
+            "edgeLabel": "Internal traversal guard",
             "source_ids": [
               "ADA_DIAGNOSIS_2026",
               "CDC_DIABETES_TESTING_2024",
@@ -5192,7 +5192,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -5200,7 +5200,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
             },
             "missing_data_needed": [
               "A1c and plasma glucose data",
@@ -5644,8 +5644,8 @@
                   {
                     "id": "type_2_diabetes_missing_diabetes_data_endpoint",
                     "type": "endpoint",
-                    "label": "Internal data-availability guard",
-                    "edgeLabel": "Internal data-availability guard",
+                    "label": "Internal traversal guard",
+                    "edgeLabel": "Internal traversal guard",
                     "source_ids": [
                       "ADA_DIAGNOSIS_2026",
                       "CDC_DIABETES_TESTING_2024",
@@ -5688,7 +5688,7 @@
                         "hypoglycemia history"
                       ]
                     },
-                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -5696,7 +5696,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
                     },
                     "missing_data_needed": [
                       "A1c",
@@ -8225,10 +8225,10 @@
                         }
                       ]
                     },
-                    "action": "Document which diabetes thresholds or type-classification findings are absent, then route to the appropriate alternate pathway: Type 2 Diabetes Mellitus: diagnostic assessment; A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics.",
+                    "action": "Document which diabetes thresholds or type-classification findings are absent, then route to the appropriate alternate pathway: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Glucose thresholds, diabetes type, medication effect, pregnancy, or another endocrine/acute illness cause changes the active pathway."
+                    "review_needed_reason": "Glucose thresholds, diabetes type, medication effect, pregnancy, or another endocrine/acute illness cause changes the documented disease branch."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -8810,7 +8810,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Internal data-availability guard",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -8822,7 +8822,7 @@
           "scenario_id": "missing_diabetes_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "type_2_diabetes_missing_diabetes_data_endpoint",
-          "expected_active_branch": "Internal data-availability guard",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "type_2_diabetes_initial_assessment",

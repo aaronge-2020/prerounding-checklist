@@ -2583,7 +2583,7 @@
         {
           "threshold": "0.25 mg",
           "evidence_item_id": "cah_cosyntropin_confirmation_profile",
-          "label": "CAH cosyntropin profile: 0.25 mg IV cosyntropin, 0.125 mg in very-low-birth-weight infants, baseline and 60-minute steroids after the first 24-48 hours of life",
+          "label": "CAH cosyntropin profile",
           "source_ids": [
             "ES_CAH_2018"
           ],
@@ -2592,7 +2592,7 @@
         {
           "threshold": "0.125 mg",
           "evidence_item_id": "cah_cosyntropin_confirmation_profile",
-          "label": "CAH cosyntropin profile: 0.25 mg IV cosyntropin, 0.125 mg in very-low-birth-weight infants, baseline and 60-minute steroids after the first 24-48 hours of life",
+          "label": "CAH cosyntropin profile",
           "source_ids": [
             "ES_CAH_2018"
           ],
@@ -2601,7 +2601,7 @@
         {
           "threshold": "60 minutes",
           "evidence_item_id": "cah_cosyntropin_confirmation_profile",
-          "label": "CAH cosyntropin profile: 0.25 mg IV cosyntropin, 0.125 mg in very-low-birth-weight infants, baseline and 60-minute steroids after the first 24-48 hours of life",
+          "label": "CAH cosyntropin profile",
           "source_ids": [
             "ES_CAH_2018"
           ],
@@ -2610,7 +2610,7 @@
         {
           "threshold": "24-48 hours",
           "evidence_item_id": "cah_cosyntropin_confirmation_profile",
-          "label": "CAH cosyntropin profile: 0.25 mg IV cosyntropin, 0.125 mg in very-low-birth-weight infants, baseline and 60-minute steroids after the first 24-48 hours of life",
+          "label": "CAH cosyntropin profile",
           "source_ids": [
             "ES_CAH_2018"
           ],
@@ -2619,7 +2619,7 @@
         {
           "threshold": "17-OHP >10,000 ng/dL",
           "evidence_item_id": "cah_after_infancy_17ohp_cutoffs",
-          "label": "After infancy 17-OHP cutoffs: classic CAH >10,000 ng/dL; nonclassic baseline 200-10,000 ng/dL and ACTH-stimulated 1,000-10,000 ng/dL",
+          "label": "After infancy 17-OHP cutoffs",
           "source_ids": [
             "GENEREVIEWS_CAH_21OHD_2016",
             "ES_CAH_2018"
@@ -2629,7 +2629,7 @@
         {
           "threshold": "baseline 17-OHP <200 ng/dL",
           "evidence_item_id": "cah_after_infancy_17ohp_cutoffs",
-          "label": "After infancy 17-OHP cutoffs: classic CAH >10,000 ng/dL; nonclassic baseline 200-10,000 ng/dL and ACTH-stimulated 1,000-10,000 ng/dL",
+          "label": "After infancy 17-OHP cutoffs",
           "source_ids": [
             "GENEREVIEWS_CAH_21OHD_2016",
             "ES_CAH_2018"
@@ -2639,7 +2639,7 @@
         {
           "threshold": "ACTH-stimulated 17-OHP <1,000 ng/dL",
           "evidence_item_id": "cah_after_infancy_17ohp_cutoffs",
-          "label": "After infancy 17-OHP cutoffs: classic CAH >10,000 ng/dL; nonclassic baseline 200-10,000 ng/dL and ACTH-stimulated 1,000-10,000 ng/dL",
+          "label": "After infancy 17-OHP cutoffs",
           "source_ids": [
             "GENEREVIEWS_CAH_21OHD_2016",
             "ES_CAH_2018"
@@ -2649,7 +2649,7 @@
         {
           "threshold": "first 4 weeks",
           "evidence_item_id": "cah_salt_wasting_crisis_pattern",
-          "label": "Salt-wasting CAH emergency: infant in first 4 weeks with dehydration, vomiting, shock, low sodium/chloride/CO2, high potassium, hypoglycemia, or inappropriately high urine sodium",
+          "label": "Salt-wasting CAH emergency",
           "source_ids": [
             "GENEREVIEWS_CAH_21OHD_2016",
             "ES_CAH_2018"
@@ -2659,7 +2659,7 @@
         {
           "threshold": "sodium below reference range",
           "evidence_item_id": "cah_salt_wasting_crisis_pattern",
-          "label": "Salt-wasting CAH emergency: infant in first 4 weeks with dehydration, vomiting, shock, low sodium/chloride/CO2, high potassium, hypoglycemia, or inappropriately high urine sodium",
+          "label": "Salt-wasting CAH emergency",
           "source_ids": [
             "GENEREVIEWS_CAH_21OHD_2016",
             "ES_CAH_2018"
@@ -2669,7 +2669,7 @@
         {
           "threshold": "potassium above reference range",
           "evidence_item_id": "cah_salt_wasting_crisis_pattern",
-          "label": "Salt-wasting CAH emergency: infant in first 4 weeks with dehydration, vomiting, shock, low sodium/chloride/CO2, high potassium, hypoglycemia, or inappropriately high urine sodium",
+          "label": "Salt-wasting CAH emergency",
           "source_ids": [
             "GENEREVIEWS_CAH_21OHD_2016",
             "ES_CAH_2018"
@@ -2679,7 +2679,7 @@
         {
           "threshold": "CO2 below reference range",
           "evidence_item_id": "cah_salt_wasting_crisis_pattern",
-          "label": "Salt-wasting CAH emergency: infant in first 4 weeks with dehydration, vomiting, shock, low sodium/chloride/CO2, high potassium, hypoglycemia, or inappropriately high urine sodium",
+          "label": "Salt-wasting CAH emergency",
           "source_ids": [
             "GENEREVIEWS_CAH_21OHD_2016",
             "ES_CAH_2018"
@@ -2689,7 +2689,7 @@
         {
           "threshold": ">38.5 C",
           "evidence_item_id": "cah_stress_dose_fever_cutoff",
-          "label": "CAH stress-dose trigger: febrile illness temperature >38.5 C, dehydration gastroenteritis, major surgery with anesthesia, or major trauma",
+          "label": "CAH stress-dose trigger",
           "source_ids": [
             "ES_CAH_2018"
           ],
@@ -2698,7 +2698,7 @@
         {
           "threshold": "25 mg",
           "evidence_item_id": "cah_adrenal_crisis_hydrocortisone_doses",
-          "label": "CAH adrenal crisis injection: hydrocortisone 25 mg infants/preschool, 50 mg school-age children, 100 mg adults; then one-quarter dose every 6 hours",
+          "label": "CAH adrenal crisis injection",
           "source_ids": [
             "ES_CAH_2018"
           ],
@@ -2707,7 +2707,7 @@
         {
           "threshold": "50 mg",
           "evidence_item_id": "cah_adrenal_crisis_hydrocortisone_doses",
-          "label": "CAH adrenal crisis injection: hydrocortisone 25 mg infants/preschool, 50 mg school-age children, 100 mg adults; then one-quarter dose every 6 hours",
+          "label": "CAH adrenal crisis injection",
           "source_ids": [
             "ES_CAH_2018"
           ],
@@ -2716,7 +2716,7 @@
         {
           "threshold": "100 mg",
           "evidence_item_id": "cah_adrenal_crisis_hydrocortisone_doses",
-          "label": "CAH adrenal crisis injection: hydrocortisone 25 mg infants/preschool, 50 mg school-age children, 100 mg adults; then one-quarter dose every 6 hours",
+          "label": "CAH adrenal crisis injection",
           "source_ids": [
             "ES_CAH_2018"
           ],
@@ -2725,7 +2725,7 @@
         {
           "threshold": "every 6 hours",
           "evidence_item_id": "cah_adrenal_crisis_hydrocortisone_doses",
-          "label": "CAH adrenal crisis injection: hydrocortisone 25 mg infants/preschool, 50 mg school-age children, 100 mg adults; then one-quarter dose every 6 hours",
+          "label": "CAH adrenal crisis injection",
           "source_ids": [
             "ES_CAH_2018"
           ],
@@ -2734,7 +2734,7 @@
         {
           "threshold": "10-15 mg/m2/day",
           "evidence_item_id": "cah_growing_classic_maintenance_doses",
-          "label": "Growing classic CAH maintenance: hydrocortisone 10-15 mg/m2/day three times daily, fludrocortisone 0.05-0.2 mg/day, and infancy sodium chloride 1-2 g/day",
+          "label": "Growing classic CAH maintenance",
           "source_ids": [
             "ES_CAH_2018"
           ],
@@ -2743,7 +2743,7 @@
         {
           "threshold": "0.05-0.2 mg/day",
           "evidence_item_id": "cah_growing_classic_maintenance_doses",
-          "label": "Growing classic CAH maintenance: hydrocortisone 10-15 mg/m2/day three times daily, fludrocortisone 0.05-0.2 mg/day, and infancy sodium chloride 1-2 g/day",
+          "label": "Growing classic CAH maintenance",
           "source_ids": [
             "ES_CAH_2018"
           ],
@@ -2752,7 +2752,7 @@
         {
           "threshold": "1-2 g/day",
           "evidence_item_id": "cah_growing_classic_maintenance_doses",
-          "label": "Growing classic CAH maintenance: hydrocortisone 10-15 mg/m2/day three times daily, fludrocortisone 0.05-0.2 mg/day, and infancy sodium chloride 1-2 g/day",
+          "label": "Growing classic CAH maintenance",
           "source_ids": [
             "ES_CAH_2018"
           ],
@@ -2761,7 +2761,7 @@
         {
           "threshold": "15-25 mg/day",
           "evidence_item_id": "cah_adult_classic_maintenance_doses",
-          "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when indicated",
+          "label": "Adult classic CAH maintenance",
           "source_ids": [
             "ES_CAH_2018"
           ],
@@ -2770,7 +2770,7 @@
         {
           "threshold": "5-7.5 mg/day",
           "evidence_item_id": "cah_adult_classic_maintenance_doses",
-          "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when indicated",
+          "label": "Adult classic CAH maintenance",
           "source_ids": [
             "ES_CAH_2018"
           ],
@@ -2779,7 +2779,7 @@
         {
           "threshold": "4-6 mg/day",
           "evidence_item_id": "cah_adult_classic_maintenance_doses",
-          "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when indicated",
+          "label": "Adult classic CAH maintenance",
           "source_ids": [
             "ES_CAH_2018"
           ],
@@ -2788,7 +2788,7 @@
         {
           "threshold": "0.25-0.5 mg/day",
           "evidence_item_id": "cah_adult_classic_maintenance_doses",
-          "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when indicated",
+          "label": "Adult classic CAH maintenance",
           "source_ids": [
             "ES_CAH_2018"
           ],
@@ -2797,7 +2797,7 @@
         {
           "threshold": "0.05-0.2 mg/day",
           "evidence_item_id": "cah_adult_classic_maintenance_doses",
-          "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when indicated",
+          "label": "Adult classic CAH maintenance",
           "source_ids": [
             "ES_CAH_2018"
           ],
@@ -2806,7 +2806,7 @@
         {
           "threshold": "<14-18 ug/dL",
           "evidence_item_id": "cah_nonclassic_stress_cortisol_response",
-          "label": "Nonclassic CAH major-stress hydrocortisone only if cosyntropin cortisol response is suboptimal <14-18 ug/dL (<400-500 nmol/L) or iatrogenic suppression exists",
+          "label": "Nonclassic CAH major-stress hydrocortisone only if cosyntropin cortisol response is suboptimal <14-18 ug/dL or iatrogenic suppression exists",
           "source_ids": [
             "ES_CAH_2018"
           ],
@@ -2815,7 +2815,7 @@
         {
           "threshold": "<400-500 nmol/L",
           "evidence_item_id": "cah_nonclassic_stress_cortisol_response",
-          "label": "Nonclassic CAH major-stress hydrocortisone only if cosyntropin cortisol response is suboptimal <14-18 ug/dL (<400-500 nmol/L) or iatrogenic suppression exists",
+          "label": "Nonclassic CAH major-stress hydrocortisone only if cosyntropin cortisol response is suboptimal <14-18 ug/dL or iatrogenic suppression exists",
           "source_ids": [
             "ES_CAH_2018"
           ],
@@ -2824,7 +2824,7 @@
         {
           "threshold": "<=18 months",
           "evidence_item_id": "cah_monitoring_age_intervals",
-          "label": "CAH pediatric monitoring: age <=18 months monitor first 3 months of life and every 3 months thereafter; age >18 months evaluate every 4 months",
+          "label": "CAH pediatric monitoring",
           "source_ids": [
             "ES_CAH_2018"
           ],
@@ -2833,7 +2833,7 @@
         {
           "threshold": "3 months",
           "evidence_item_id": "cah_monitoring_age_intervals",
-          "label": "CAH pediatric monitoring: age <=18 months monitor first 3 months of life and every 3 months thereafter; age >18 months evaluate every 4 months",
+          "label": "CAH pediatric monitoring",
           "source_ids": [
             "ES_CAH_2018"
           ],
@@ -2842,7 +2842,7 @@
         {
           "threshold": ">18 months",
           "evidence_item_id": "cah_monitoring_age_intervals",
-          "label": "CAH pediatric monitoring: age <=18 months monitor first 3 months of life and every 3 months thereafter; age >18 months evaluate every 4 months",
+          "label": "CAH pediatric monitoring",
           "source_ids": [
             "ES_CAH_2018"
           ],
@@ -2851,7 +2851,7 @@
         {
           "threshold": "4 months",
           "evidence_item_id": "cah_monitoring_age_intervals",
-          "label": "CAH pediatric monitoring: age <=18 months monitor first 3 months of life and every 3 months thereafter; age >18 months evaluate every 4 months",
+          "label": "CAH pediatric monitoring",
           "source_ids": [
             "ES_CAH_2018"
           ],
@@ -2860,7 +2860,7 @@
         {
           "threshold": "progesterone <0.6 ng/mL",
           "evidence_item_id": "cah_monitoring_targets_and_overtreatment",
-          "label": "CAH monitoring targets: time hormones consistently; normal 17-OHP suggests overtreatment; follicular progesterone target <0.6 ng/mL when trying to conceive",
+          "label": "CAH monitoring targets",
           "source_ids": [
             "ES_CAH_2018"
           ],
@@ -2869,7 +2869,7 @@
         {
           "threshold": "androstenedione/testosterone ratio <0.5",
           "evidence_item_id": "cah_monitoring_targets_and_overtreatment",
-          "label": "CAH monitoring targets: time hormones consistently; normal 17-OHP suggests overtreatment; follicular progesterone target <0.6 ng/mL when trying to conceive",
+          "label": "CAH monitoring targets",
           "source_ids": [
             "ES_CAH_2018"
           ],
@@ -2878,7 +2878,7 @@
         {
           "threshold": "androstenedione/testosterone ratio >2",
           "evidence_item_id": "cah_monitoring_targets_and_overtreatment",
-          "label": "CAH monitoring targets: time hormones consistently; normal 17-OHP suggests overtreatment; follicular progesterone target <0.6 ng/mL when trying to conceive",
+          "label": "CAH monitoring targets",
           "source_ids": [
             "ES_CAH_2018"
           ],
@@ -2887,7 +2887,7 @@
         {
           "threshold": "1-2 years",
           "evidence_item_id": "cah_long_term_surveillance_intervals",
-          "label": "CAH long-term surveillance: adults need annual exam; TART ultrasound interval differs by source and should use local endocrine policy",
+          "label": "CAH long-term surveillance",
           "source_ids": [
             "ES_CAH_2018",
             "GENEREVIEWS_CAH_21OHD_2016"
@@ -2897,7 +2897,7 @@
         {
           "threshold": "3-5 years",
           "evidence_item_id": "cah_long_term_surveillance_intervals",
-          "label": "CAH long-term surveillance: adults need annual exam; TART ultrasound interval differs by source and should use local endocrine policy",
+          "label": "CAH long-term surveillance",
           "source_ids": [
             "ES_CAH_2018",
             "GENEREVIEWS_CAH_21OHD_2016"
@@ -2907,7 +2907,7 @@
         {
           "threshold": "age >=4 years",
           "evidence_item_id": "cah_crinecerfont_dosing_and_safety",
-          "label": "Crinecerfont adjunct: classic CAH age >=4 years; adults 100 mg twice daily; pediatric doses 25/50/100 mg twice daily by 10-<20, 20-<55, or >=55 kg",
+          "label": "Crinecerfont adjunct",
           "source_ids": [
             "DAILYMED_CRENESSITY_CRINECERFONT_2024"
           ],
@@ -2916,7 +2916,7 @@
         {
           "threshold": "100 mg twice daily",
           "evidence_item_id": "cah_crinecerfont_dosing_and_safety",
-          "label": "Crinecerfont adjunct: classic CAH age >=4 years; adults 100 mg twice daily; pediatric doses 25/50/100 mg twice daily by 10-<20, 20-<55, or >=55 kg",
+          "label": "Crinecerfont adjunct",
           "source_ids": [
             "DAILYMED_CRENESSITY_CRINECERFONT_2024"
           ],
@@ -2925,7 +2925,7 @@
         {
           "threshold": "10 kg to <20 kg",
           "evidence_item_id": "cah_crinecerfont_dosing_and_safety",
-          "label": "Crinecerfont adjunct: classic CAH age >=4 years; adults 100 mg twice daily; pediatric doses 25/50/100 mg twice daily by 10-<20, 20-<55, or >=55 kg",
+          "label": "Crinecerfont adjunct",
           "source_ids": [
             "DAILYMED_CRENESSITY_CRINECERFONT_2024"
           ],
@@ -2934,7 +2934,7 @@
         {
           "threshold": "25 mg twice daily",
           "evidence_item_id": "cah_crinecerfont_dosing_and_safety",
-          "label": "Crinecerfont adjunct: classic CAH age >=4 years; adults 100 mg twice daily; pediatric doses 25/50/100 mg twice daily by 10-<20, 20-<55, or >=55 kg",
+          "label": "Crinecerfont adjunct",
           "source_ids": [
             "DAILYMED_CRENESSITY_CRINECERFONT_2024"
           ],
@@ -2943,7 +2943,7 @@
         {
           "threshold": "20 kg to <55 kg",
           "evidence_item_id": "cah_crinecerfont_dosing_and_safety",
-          "label": "Crinecerfont adjunct: classic CAH age >=4 years; adults 100 mg twice daily; pediatric doses 25/50/100 mg twice daily by 10-<20, 20-<55, or >=55 kg",
+          "label": "Crinecerfont adjunct",
           "source_ids": [
             "DAILYMED_CRENESSITY_CRINECERFONT_2024"
           ],
@@ -2952,7 +2952,7 @@
         {
           "threshold": "50 mg twice daily",
           "evidence_item_id": "cah_crinecerfont_dosing_and_safety",
-          "label": "Crinecerfont adjunct: classic CAH age >=4 years; adults 100 mg twice daily; pediatric doses 25/50/100 mg twice daily by 10-<20, 20-<55, or >=55 kg",
+          "label": "Crinecerfont adjunct",
           "source_ids": [
             "DAILYMED_CRENESSITY_CRINECERFONT_2024"
           ],
@@ -2961,7 +2961,7 @@
         {
           "threshold": ">=55 kg",
           "evidence_item_id": "cah_crinecerfont_dosing_and_safety",
-          "label": "Crinecerfont adjunct: classic CAH age >=4 years; adults 100 mg twice daily; pediatric doses 25/50/100 mg twice daily by 10-<20, 20-<55, or >=55 kg",
+          "label": "Crinecerfont adjunct",
           "source_ids": [
             "DAILYMED_CRENESSITY_CRINECERFONT_2024"
           ],
@@ -2970,7 +2970,7 @@
         {
           "threshold": "4 weeks",
           "evidence_item_id": "cah_crinecerfont_dosing_and_safety",
-          "label": "Crinecerfont adjunct: classic CAH age >=4 years; adults 100 mg twice daily; pediatric doses 25/50/100 mg twice daily by 10-<20, 20-<55, or >=55 kg",
+          "label": "Crinecerfont adjunct",
           "source_ids": [
             "DAILYMED_CRENESSITY_CRINECERFONT_2024"
           ],
@@ -2979,7 +2979,7 @@
         {
           "threshold": "200 mg twice daily",
           "evidence_item_id": "cah_crinecerfont_contraindications_interactions",
-          "label": "Crinecerfont safety: discontinue for clinically significant hypersensitivity, avoid severe renal impairment/ESRD, and double doses for CYP3A4 inducers per label",
+          "label": "Crinecerfont safety",
           "source_ids": [
             "DAILYMED_CRENESSITY_CRINECERFONT_2024"
           ],
@@ -3058,7 +3058,7 @@
             "exact_data_needed": [
               "17-hydroxyprogesterone, often with cosyntropin stimulation.",
               "Electrolytes, glucose, renin/aldosterone.",
-              "Androgens: testosterone, androstenedione, DHEAS as indicated.",
+              "Androgens: testosterone, androstenedione, DHEAS when the branch-specific criteria in this node apply.",
               "CYP21A2 genetic testing when diagnosis/family planning unclear.",
               "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
               "Adrenal insufficiency safety labs: check sodium, potassium, glucose, bicarbonate, creatinine, morning cortisol/ACTH or cosyntropin testing when stable, and renin/aldosterone or 17-OHP context for mineralocorticoid/CAH decisions; do not delay stress-dose steroids in shock.",
@@ -3081,7 +3081,7 @@
           {
             "domain": "imaging_results",
             "exact_data_needed": [
-              "source-directed imaging/ECG/procedure results when indicated",
+              "imaging, ECG, culture, pathology, or procedure result required by the chosen branch",
               "Electrolytes, glucose, renin/aldosterone.",
               "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
               "Adrenal insufficiency safety labs: check sodium, potassium, glucose, bicarbonate, creatinine, morning cortisol/ACTH or cosyntropin testing when stable, and renin/aldosterone or 17-OHP context for mineralocorticoid/CAH decisions; do not delay stress-dose steroids in shock.",
@@ -3167,7 +3167,7 @@
               "treatment response",
               "disposition constraints",
               "Congenital Adrenal Hyperplasia (CAH): diagnostic assessment",
-              "17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+              "17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening.",
               "Important mimics/exclusions: exogenous glucocorticoid exposure or withdrawal, primary versus central adrenal insufficiency, adrenal incidentaloma, medication-altered renin/aldosterone testing, catecholamine excess, severe illness, infection, and electrolyte mimics.",
               "Electrolyte crisis or vomiting changes to emergency steroid/fluid pathway.",
               "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
@@ -3442,8 +3442,8 @@
             },
             {
               "id": "cah_adult_classic_maintenance_doses",
-              "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when indicated",
-              "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when clinically indicated.",
+              "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when the branch-specific criteria in this node apply",
+              "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when the branch-specific criteria in this node apply.",
               "cutoffs": [
                 "15-25 mg/day",
                 "5-7.5 mg/day",
@@ -3915,8 +3915,8 @@
             },
             {
               "id": "cah_adult_classic_maintenance_doses",
-              "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when indicated",
-              "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when clinically indicated.",
+              "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when the branch-specific criteria in this node apply",
+              "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when the branch-specific criteria in this node apply.",
               "cutoffs": [
                 "15-25 mg/day",
                 "5-7.5 mg/day",
@@ -4564,8 +4564,8 @@
             },
             {
               "id": "cah_adult_classic_maintenance_doses",
-              "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when indicated",
-              "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when clinically indicated.",
+              "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when the branch-specific criteria in this node apply",
+              "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when the branch-specific criteria in this node apply.",
               "cutoffs": [
                 "15-25 mg/day",
                 "5-7.5 mg/day",
@@ -5279,8 +5279,8 @@
             },
             {
               "id": "cah_adult_classic_maintenance_doses",
-              "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when indicated",
-              "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when clinically indicated.",
+              "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when the branch-specific criteria in this node apply",
+              "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when the branch-specific criteria in this node apply.",
               "cutoffs": [
                 "15-25 mg/day",
                 "5-7.5 mg/day",
@@ -5779,8 +5779,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal data-availability guard",
-            "edgeLabel": "Internal data-availability guard",
+            "label": "Internal traversal guard",
+            "edgeLabel": "Internal traversal guard",
             "source_ids": [
               "ES_CAH_2018",
               "GENEREVIEWS_CAH_21OHD_2016",
@@ -5822,7 +5822,7 @@
                 "pregnancy or fertility intent when relevant"
               ]
             },
-            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -5830,7 +5830,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
             },
             "missing_data_needed": [
               "age in days/months/years",
@@ -6060,8 +6060,8 @@
                 },
                 {
                   "id": "cah_adult_classic_maintenance_doses",
-                  "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when indicated",
-                  "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when clinically indicated.",
+                  "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when the branch-specific criteria in this node apply",
+                  "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when the branch-specific criteria in this node apply.",
                   "cutoffs": [
                     "15-25 mg/day",
                     "5-7.5 mg/day",
@@ -6546,8 +6546,8 @@
                     },
                     {
                       "id": "cah_adult_classic_maintenance_doses",
-                      "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when indicated",
-                      "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when clinically indicated.",
+                      "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when the branch-specific criteria in this node apply",
+                      "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when the branch-specific criteria in this node apply.",
                       "cutoffs": [
                         "15-25 mg/day",
                         "5-7.5 mg/day",
@@ -6823,8 +6823,8 @@
                   {
                     "id": "congenital_adrenal_hyperplasia_missing_diagnostic_data_endpoint",
                     "type": "endpoint",
-                    "label": "Internal data-availability guard",
-                    "edgeLabel": "Internal data-availability guard",
+                    "label": "Internal traversal guard",
+                    "edgeLabel": "Internal traversal guard",
                     "source_ids": [
                       "ES_CAH_2018",
                       "GENEREVIEWS_CAH_21OHD_2016"
@@ -6855,7 +6855,7 @@
                         "CYP21A2 testing or family variant when diagnosis remains equivocal"
                       ]
                     },
-                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -6863,7 +6863,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
                     },
                     "missing_data_needed": [
                       "17-OHP value, timing, and assay",
@@ -7202,8 +7202,8 @@
                       },
                       {
                         "id": "cah_adult_classic_maintenance_doses",
-                        "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when indicated",
-                        "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when clinically indicated.",
+                        "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when the branch-specific criteria in this node apply",
+                        "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when the branch-specific criteria in this node apply.",
                         "cutoffs": [
                           "15-25 mg/day",
                           "5-7.5 mg/day",
@@ -7774,8 +7774,8 @@
                       },
                       {
                         "id": "cah_adult_classic_maintenance_doses",
-                        "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when indicated",
-                        "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when clinically indicated.",
+                        "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when the branch-specific criteria in this node apply",
+                        "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when the branch-specific criteria in this node apply.",
                         "cutoffs": [
                           "15-25 mg/day",
                           "5-7.5 mg/day",
@@ -8319,8 +8319,8 @@
                       },
                       {
                         "id": "cah_adult_classic_maintenance_doses",
-                        "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when indicated",
-                        "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when clinically indicated.",
+                        "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when the branch-specific criteria in this node apply",
+                        "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when the branch-specific criteria in this node apply.",
                         "cutoffs": [
                           "15-25 mg/day",
                           "5-7.5 mg/day",
@@ -8653,8 +8653,8 @@
                         },
                         {
                           "id": "cah_adult_classic_maintenance_doses",
-                          "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when indicated",
-                          "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when clinically indicated.",
+                          "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when the branch-specific criteria in this node apply",
+                          "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when the branch-specific criteria in this node apply.",
                           "cutoffs": [
                             "15-25 mg/day",
                             "5-7.5 mg/day",
@@ -8734,7 +8734,7 @@
                         }
                       ]
                     },
-                    "action": "For growing classic CAH, use hydrocortisone tablets 10-15 mg/m2/day divided three times daily, avoid oral hydrocortisone suspension and chronic long-acting potent glucocorticoids, add fludrocortisone 0.05-0.2 mg/day, and add sodium chloride 1-2 g/day (17-34 mEq/day) during infancy when salt-wasting risk applies. For fully grown adults, use an endocrine-supervised regimen such as hydrocortisone 15-25 mg/day in 2-3 doses or a selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when indicated. Do not drive 17-OHP into the normal range just to normalize labs because that suggests overtreatment.",
+                    "action": "For growing classic CAH, use hydrocortisone tablets 10-15 mg/m2/day divided three times daily, avoid oral hydrocortisone suspension and chronic long-acting potent glucocorticoids, add fludrocortisone 0.05-0.2 mg/day, and add sodium chloride 1-2 g/day (17-34 mEq/day) during infancy when salt-wasting risk applies. For fully grown adults, use an endocrine-supervised regimen such as hydrocortisone 15-25 mg/day in 2-3 doses or a selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when the branch-specific criteria in this node apply. Do not drive 17-OHP into the normal range just to normalize labs because that suggests overtreatment.",
                     "children": [],
                     "endpoint_type": "treatment",
                     "guideline_cutoffs": [
@@ -8916,8 +8916,8 @@
                       },
                       {
                         "id": "cah_adult_classic_maintenance_doses",
-                        "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when indicated",
-                        "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when clinically indicated.",
+                        "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when the branch-specific criteria in this node apply",
+                        "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when the branch-specific criteria in this node apply.",
                         "cutoffs": [
                           "15-25 mg/day",
                           "5-7.5 mg/day",
@@ -9449,8 +9449,8 @@
                       },
                       {
                         "id": "cah_adult_classic_maintenance_doses",
-                        "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when indicated",
-                        "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when clinically indicated.",
+                        "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when the branch-specific criteria in this node apply",
+                        "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when the branch-specific criteria in this node apply.",
                         "cutoffs": [
                           "15-25 mg/day",
                           "5-7.5 mg/day",
@@ -9980,8 +9980,8 @@
                       },
                       {
                         "id": "cah_adult_classic_maintenance_doses",
-                        "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when indicated",
-                        "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when clinically indicated.",
+                        "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when the branch-specific criteria in this node apply",
+                        "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when the branch-specific criteria in this node apply.",
                         "cutoffs": [
                           "15-25 mg/day",
                           "5-7.5 mg/day",
@@ -10522,8 +10522,8 @@
                       },
                       {
                         "id": "cah_adult_classic_maintenance_doses",
-                        "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when indicated",
-                        "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when clinically indicated.",
+                        "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when the branch-specific criteria in this node apply",
+                        "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when the branch-specific criteria in this node apply.",
                         "cutoffs": [
                           "15-25 mg/day",
                           "5-7.5 mg/day",
@@ -11077,8 +11077,8 @@
                       },
                       {
                         "id": "cah_adult_classic_maintenance_doses",
-                        "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when indicated",
-                        "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when clinically indicated.",
+                        "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when the branch-specific criteria in this node apply",
+                        "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when the branch-specific criteria in this node apply.",
                         "cutoffs": [
                           "15-25 mg/day",
                           "5-7.5 mg/day",
@@ -11699,8 +11699,8 @@
                       },
                       {
                         "id": "cah_adult_classic_maintenance_doses",
-                        "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when indicated",
-                        "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when clinically indicated.",
+                        "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when the branch-specific criteria in this node apply",
+                        "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when the branch-specific criteria in this node apply.",
                         "cutoffs": [
                           "15-25 mg/day",
                           "5-7.5 mg/day",
@@ -12194,8 +12194,8 @@
                         },
                         {
                           "id": "cah_adult_classic_maintenance_doses",
-                          "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when indicated",
-                          "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when clinically indicated.",
+                          "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when the branch-specific criteria in this node apply",
+                          "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when the branch-specific criteria in this node apply.",
                           "cutoffs": [
                             "15-25 mg/day",
                             "5-7.5 mg/day",
@@ -12853,8 +12853,8 @@
                       },
                       {
                         "id": "cah_adult_classic_maintenance_doses",
-                        "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when indicated",
-                        "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when clinically indicated.",
+                        "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when the branch-specific criteria in this node apply",
+                        "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when the branch-specific criteria in this node apply.",
                         "cutoffs": [
                           "15-25 mg/day",
                           "5-7.5 mg/day",
@@ -13315,8 +13315,8 @@
                   },
                   {
                     "id": "cah_adult_classic_maintenance_doses",
-                    "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when indicated",
-                    "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when clinically indicated.",
+                    "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when the branch-specific criteria in this node apply",
+                    "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when the branch-specific criteria in this node apply.",
                     "cutoffs": [
                       "15-25 mg/day",
                       "5-7.5 mg/day",
@@ -13765,8 +13765,8 @@
                   },
                   {
                     "id": "cah_adult_classic_maintenance_doses",
-                    "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when indicated",
-                    "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when clinically indicated.",
+                    "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when the branch-specific criteria in this node apply",
+                    "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when the branch-specific criteria in this node apply.",
                     "cutoffs": [
                       "15-25 mg/day",
                       "5-7.5 mg/day",
@@ -14353,8 +14353,8 @@
               },
               {
                 "id": "cah_adult_classic_maintenance_doses",
-                "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when indicated",
-                "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when clinically indicated.",
+                "label": "Adult classic CAH maintenance: hydrocortisone 15-25 mg/day or selected long-acting glucocorticoid plus fludrocortisone 0.05-0.2 mg/day when the branch-specific criteria in this node apply",
+                "criteria_text": "Endocrine Society Table 3 suggests adult classic CAH maintenance options: hydrocortisone 15-25 mg/day in 2-3 doses, prednisone 5-7.5 mg/day in 2 doses, prednisolone 4-6 mg/day in 2 doses, methylprednisolone 4-6 mg/day in 2 doses, dexamethasone 0.25-0.5 mg/day once daily, and fludrocortisone 0.05-0.2 mg/day in 1-2 doses when the branch-specific criteria in this node apply.",
                 "cutoffs": [
                   "15-25 mg/day",
                   "5-7.5 mg/day",
@@ -14632,7 +14632,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Internal data-availability guard",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -14644,7 +14644,7 @@
           "scenario_id": "missing_diagnostic_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "congenital_adrenal_hyperplasia_missing_diagnostic_data_endpoint",
-          "expected_active_branch": "Internal data-availability guard",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "congenital_adrenal_hyperplasia_initial_assessment",

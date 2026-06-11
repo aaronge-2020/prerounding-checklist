@@ -1048,6 +1048,165 @@ const curatedCutoffCriteria = {
       source_section: "Imaging tests"
     }
   ],
+  amenorrhea_v1: [
+    {
+      id: "amenorrhea_primary_secondary_timing",
+      label: "Amenorrhea evaluation timing: no menses by age 15 with secondary sexual development, no breast development by age 13, >3 months absent menses after regular cycles, or 6 months after irregular cycles",
+      criteria_text: "ASRM 2024 recommends evaluation for primary amenorrhea when menses have not occurred by age 15 with normal secondary sexual development, within 5 years after breast development if that began before age 10, or when breast development has not begun by age 13. Secondary amenorrhea requires investigation after >3 months without menses in previously regular cycles or 6 months in previously irregular cycles; pregnancy may need exclusion after as little as 1 week of delayed menses.",
+      cutoffs: ["age 15", "5 years after breast development", "age 10", "age 13", ">3 months", "6 months", "1 week"],
+      data_needed: ["age", "menarche status", "breast development/thelarche timing", "last menstrual period", "prior cycle regularity", "pregnancy possibility"],
+      source_ids: ["ASRM_AMENORRHEA_2024"],
+      source_section: "Definitions and timing of evaluation"
+    },
+    {
+      id: "amenorrhea_initial_lab_sequence",
+      label: "Amenorrhea initial labs: pregnancy test first, then TSH/prolactin/FSH/estradiol; prolactin <15-20 ng/mL usually excludes hyperprolactinemia and 20-40 ng/mL should be repeated",
+      criteria_text: "ASRM 2024 places pregnancy exclusion first, followed by TSH, prolactin, and gonadotropin/estradiol testing. Prolactin <15-20 ng/mL in most labs excludes hyperprolactinemia; mild elevations of 20-40 ng/mL should be repeated and confirmed, with macroprolactin considered when mild/asymptomatic.",
+      cutoffs: ["<15-20 ng/mL", "20-40 ng/mL"],
+      data_needed: ["pregnancy test", "TSH", "prolactin", "FSH", "estradiol", "macroprolactin if persistent mild elevation", "medications/lactation/exercise/stress context"],
+      source_ids: ["ASRM_AMENORRHEA_2024"],
+      source_section: "Initial workup, prolactin, and thyroid function"
+    },
+    {
+      id: "amenorrhea_pituitary_imaging_prolactin",
+      label: "Amenorrhea pituitary branch: persistent prolactin elevation merits pituitary MRI; pituitary tumor prevalence is 50-60% in persistent hyperprolactinemia",
+      criteria_text: "ASRM 2024 recommends pituitary imaging, preferably MRI, whenever prolactin remains persistently elevated after confirming the result and excluding common reversible causes; pituitary tumors are identified in about 50-60% of persistent hyperprolactinemia cases.",
+      cutoffs: ["50-60%"],
+      data_needed: ["repeat prolactin", "macroprolactin when mild/asymptomatic", "TSH/free T4", "pregnancy/lactation status", "dopamine antagonist/opioid/estrogen medication exposure", "headache/visual symptoms", "pituitary MRI result"],
+      source_ids: ["ASRM_AMENORRHEA_2024"],
+      source_section: "Pituitary imaging for persistent hyperprolactinemia"
+    },
+    {
+      id: "amenorrhea_hypogonadism_poi_fha_pattern",
+      label: "Amenorrhea hormone pattern: estradiol 30-50 pg/mL early follicular and 150-300 pg/mL preovulatory; FHA often has estradiol <30 pg/mL with low/normal gonadotropins",
+      criteria_text: "ASRM 2024 uses FSH and estradiol to separate ovarian reserve exhaustion/POI from central or functional hypothalamic causes. Estradiol is often 30-50 pg/mL in the early follicular phase and 150-300 pg/mL preovulatory; functional hypothalamic amenorrhea usually has estradiol in the menopausal range, <30 pg/mL, with normal-to-low gonadotropins.",
+      cutoffs: ["30-50 pg/mL", "150-300 pg/mL", "<30 pg/mL"],
+      data_needed: ["FSH", "LH", "estradiol", "cycle timing if known", "weight/BMI", "exercise/nutrition/stress history", "chronic illness/eating disorder screen"],
+      source_ids: ["ASRM_AMENORRHEA_2024"],
+      source_section: "Gonadotropins, estradiol, and FHA pattern"
+    },
+    {
+      id: "amenorrhea_primary_anatomic_dsd_branch",
+      label: "Primary amenorrhea anatomic/DSD branch: absent uterus/vagina needs pelvic imaging, testosterone/karyotype; CAIS cancer risk 14-22% and Y-chromosome gonadal dysgenesis tumor risk <=25%",
+      criteria_text: "ASRM 2024 directs primary amenorrhea with absent/blind vagina or absent uterus to pelvic imaging and testosterone/karyotype to distinguish Mullerian agenesis, complete androgen insensitivity, and gonadal dysgenesis. Complete androgen insensitivity has gonadal malignancy risk 14-22% but rarely before age 20; Y-chromosome gonadal dysgenesis has gonadal tumor risk up to 25%.",
+      cutoffs: ["14-22%", "age 20", "<=25%"],
+      data_needed: ["pelvic exam or ultrasound/MRI uterus status", "vagina/cervix findings", "testosterone", "karyotype", "pubic hair", "inguinal mass", "renal anomaly screen", "patient-centered gonadectomy/endocrine plan"],
+      source_ids: ["ASRM_AMENORRHEA_2024"],
+      source_section: "Primary amenorrhea anatomic defects and DSD"
+    },
+    {
+      id: "amenorrhea_poi_confirmation_and_management",
+      label: "POI within amenorrhea: age <40 with >=4 months oligo/amenorrhea and FSH >25 IU/L; repeat FSH in 4-6 weeks if uncertain; offer HT until usual menopause age 45-55",
+      criteria_text: "ESHRE 2024 defines POI by ovarian function loss before age 40 with menstrual disturbance for at least 4 months and biochemical confirmation; FSH >25 IU/L with oligo/amenorrhea makes the diagnosis, repeat FSH in 4-6 weeks if uncertain, and offer hormone therapy until the usual menopause age, generally 45-55 years, unless contraindicated.",
+      cutoffs: ["age <40", ">=4 months", "FSH >25 IU/L", "4-6 weeks", "45-55 years"],
+      data_needed: ["age", "duration of oligo/amenorrhea", "FSH", "estradiol", "hormonal contraception effect", "pregnancy test", "contraindications to HT", "fertility goals"],
+      source_ids: ["ESHRE_POI_2024", "ASRM_AMENORRHEA_2024"],
+      source_section: "POI diagnosis and hormone therapy"
+    }
+  ],
+  infertility_v1: [
+    {
+      id: "infertility_evaluation_timing",
+      label: "Infertility evaluation timing: start at >=12 months if age <35, at 6 months if age >=35, immediately if age >40 or known infertility risk",
+      criteria_text: "ASRM 2021 defines infertility as failure to achieve pregnancy after at least 12 months of regular unprotected intercourse; evaluation and treatment may start at 12 months for women <35, at 6 months for women >=35, and more immediately for women >40 or when a known infertility-associated condition is present.",
+      cutoffs: [">=12 months", "age <35", "6 months", "age >=35", "age >40"],
+      data_needed: ["age", "duration of attempts", "intercourse/insemination exposure", "known uterine/tubal/peritoneal/endometriosis risk", "known male factor", "donor sperm/ART indication", "prior chemo/radiation/FMR1 risk"],
+      source_ids: ["ASRM_INFERTILITY_EVALUATION_2021"],
+      source_section: "Definition and timing of evaluation"
+    },
+    {
+      id: "infertility_ovulatory_function",
+      label: "Ovulation branch: regular cycles 21-35 days usually need no ovulation test; luteal progesterone >3 ng/mL about 1 week before expected menses confirms recent ovulation",
+      criteria_text: "ASRM 2021 states women with regular cycles between 21 and 35 days do not need additional ovulation confirmation unless hirsutism is present. When menstrual history is indeterminate, serum progesterone about 1 week before expected menses, not a fixed day 21, with progesterone >3 ng/mL confirms recent ovulation.",
+      cutoffs: ["21-35 days", ">3 ng/mL", "1 week"],
+      data_needed: ["cycle length range", "hirsutism/androgen signs", "expected next menses date", "serum progesterone timing/result", "oligo/amenorrhea history"],
+      source_ids: ["ASRM_INFERTILITY_EVALUATION_2021"],
+      source_section: "Ovulatory function"
+    },
+    {
+      id: "infertility_parallel_partner_tubal_uterine_workup",
+      label: "Infertility core workup: evaluate ovulation, uterine cavity, tubal patency with HSG/SHG, and semen analysis in parallel when sperm contributor exists",
+      criteria_text: "ASRM 2021 concludes the infertility evaluation should include ovulatory status, reproductive tract structure and patency, and semen evaluation of the male partner when applicable; HSG or SHG are recommended tubal patency tests, and the male partner should have at least one semen analysis at the onset of evaluation.",
+      cutoffs: ["at least one semen analysis"],
+      data_needed: ["ovulatory status", "uterine cavity imaging", "HSG or SHG tubal patency result", "semen analysis", "partner/sperm-source status", "PID/STI/endometriosis/tubal surgery history"],
+      source_ids: ["ASRM_INFERTILITY_EVALUATION_2021"],
+      source_section: "Conclusion and partner evaluation"
+    },
+    {
+      id: "infertility_endocrine_redirection",
+      label: "Infertility endocrine redirection: cycle <25 or >35 days, oligo/amenorrhea, hirsutism, galactorrhea, visual symptoms, testosterone >200 ng/dL, or 17-OHP >200 ng/dL changes testing",
+      criteria_text: "ASRM 2021 routes abnormal menstrual intervals, oligo/amenorrhea, hyperandrogenism, galactorrhea, visual field defects, thyroid symptoms, and stress/exercise/nutrition history into endocrine testing. If testosterone is >200 ng/dL, ovarian ultrasound and adrenal CT are used to exclude androgen-secreting neoplasm; if 17-OHP is >200 ng/dL, ACTH stimulation testing is used to exclude nonclassic CAH.",
+      cutoffs: ["<25 days", ">35 days", ">200 ng/dL"],
+      data_needed: ["cycle interval", "amenorrhea/oligomenorrhea", "hirsutism/acne/alopecia", "galactorrhea", "visual symptoms", "TSH/free T4", "prolactin", "total/free testosterone", "17-OHP", "ovarian ultrasound/adrenal CT or ACTH stimulation status"],
+      source_ids: ["ASRM_INFERTILITY_EVALUATION_2021"],
+      source_section: "History, physical examination, and endocrine systems"
+    },
+    {
+      id: "infertility_low_value_testing_stop",
+      label: "Infertility low-value testing stop: do not order laparoscopy, advanced sperm function, postcoital, thrombophilia, immunologic, karyotype, endometrial biopsy, or prolactin routinely without an indication",
+      criteria_text: "ASRM 2021 lists laparoscopy, advanced sperm function testing, postcoital testing, thrombophilia testing, immunologic testing, karyotype, endometrial biopsy, and serum prolactin as not recommended in the routine infertility evaluation unless clinical indications exist.",
+      cutoffs: [],
+      data_needed: ["specific indication for advanced testing", "pelvic pain/endometriosis concern", "recurrent pregnancy loss/genetic indication", "galactorrhea or oligo/amenorrhea for prolactin", "patient preference/cost/access constraints"],
+      source_ids: ["ASRM_INFERTILITY_EVALUATION_2021"],
+      source_section: "Conclusion"
+    }
+  ],
+  menopause_premature_ovarian_insufficiency_v1: [
+    {
+      id: "poi_diagnostic_confirmation",
+      label: "POI diagnosis: age <40 with oligo/amenorrhea for at least 4 months plus FSH >25 IU/L; repeat FSH in 4-6 weeks if first result is uncertain",
+      criteria_text: "ESHRE 2024 diagnoses POI in women aged <40 with spontaneous amenorrhea or irregular cycles and biochemical confirmation. The HCP toolkit states menstrual disturbance for at least 4 months plus FSH >25 IU/L establishes the diagnosis; repeat FSH in 4-6 weeks if the diagnosis is uncertain.",
+      cutoffs: ["age <40", "at least 4 months", "FSH >25 IU/L", "4-6 weeks"],
+      data_needed: ["age", "menstrual disturbance duration", "FSH", "pregnancy test", "hormonal therapy/contraceptive suppression", "repeat FSH when uncertain", "estradiol as supportive hypoestrogenism marker"],
+      source_ids: ["ESHRE_POI_2024"],
+      source_section: "Diagnosis of POI"
+    },
+    {
+      id: "poi_not_amh_primary_test",
+      label: "POI test selection: AMH is not the primary diagnostic test; use only when FSH is inconclusive, interpreted with fertility-preservation context",
+      criteria_text: "ESHRE 2024 states AMH should not be used as the primary diagnostic test for POI; it may help confirm POI when FSH results are inconclusive and should be interpreted in clinical context, with fertility preservation considered if AMH remains detectable.",
+      cutoffs: [],
+      data_needed: ["FSH certainty", "AMH if FSH inconclusive", "fertility preservation goals", "hormonal therapy effect", "age and menstrual pattern"],
+      source_ids: ["ESHRE_POI_2024"],
+      source_section: "Diagnosis of POI and AMH"
+    },
+    {
+      id: "poi_etiology_testing",
+      label: "POI etiology tests: FMR1 premutation in all diagnosed POI, chromosomal analysis for non-iatrogenic POI, 21-hydroxylase antibodies for autoimmune adrenal risk; do not use anti-ovarian antibodies",
+      criteria_text: "ESHRE 2024 recommends identifying POI causes with genetic and autoimmune assessment where appropriate. The HCP toolkit states FMR1 premutation testing is indicated in all diagnosed POI, chromosomal analysis is part of non-iatrogenic POI evaluation, 21-hydroxylase antibodies have the highest diagnostic accuracy for autoimmune POI, and anti-ovarian antibodies should not be used for autoimmune POI diagnosis.",
+      cutoffs: [],
+      data_needed: ["iatrogenic versus non-iatrogenic context", "FMR1 premutation result", "chromosomal analysis", "21-hydroxylase antibodies", "TSH/thyroid disease screen", "autoimmune history", "genetic counseling access"],
+      source_ids: ["ESHRE_POI_2024"],
+      source_section: "Identifying the cause of POI"
+    },
+    {
+      id: "poi_hormone_therapy_until_menopause_age",
+      label: "POI hormone therapy: offer systemic HT until usual menopause age 45-55 for morbidity/mortality, bone, cardiovascular, neurologic, and symptom prevention unless contraindicated",
+      criteria_text: "ESHRE 2024 recommends shared decision making for hormone therapy and recommends HT for women with POI until the usual age of menopause to reduce morbidity and mortality, whether or not estrogen-deficiency symptoms are present. The toolkit states usual menopause is 45-55 years and notes estrogen therapy benefit for skeletal and cardiovascular health.",
+      cutoffs: ["45-55 years"],
+      data_needed: ["current age", "uterus status/progestogen need", "vasomotor/GSM symptoms", "bone density/fracture risk", "cardiovascular risk", "migraine/VTE/breast cancer/liver contraindications", "contraception need", "patient preference"],
+      source_ids: ["ESHRE_POI_2024"],
+      source_section: "Hormone therapy"
+    },
+    {
+      id: "poi_low_estrogen_coc_warning",
+      label: "POI combined-pill caution: continuous/extended regimen if COC chosen; COCs with 1.5 mg estradiol or 20 mcg ethinyl estradiol may be inadequate for bone health",
+      criteria_text: "ESHRE 2024 recommends continuous or extended COC regimens when COCs are used for POI to provide continuous estrogen therapy and avoid bone loss; the HCP toolkit cautions that COCs containing 1.5 mg estradiol or 20 mcg ethinyl estradiol may be inadequate for bone health.",
+      cutoffs: ["1.5 mg estradiol", "20 mcg ethinyl estradiol"],
+      data_needed: ["chosen hormone formulation", "contraceptive need", "bone density/fracture risk", "COC contraindications", "uterus/progestogen need"],
+      source_ids: ["ESHRE_POI_2024"],
+      source_section: "Systemic HT prescribing"
+    },
+    {
+      id: "poi_fertility_counseling",
+      label: "POI fertility counseling: no intervention reliably increases ovarian activity or natural conception; natural conception may occur in <5-15%; HRT does not prevent conception",
+      criteria_text: "ESHRE 2024 advises that no intervention has been reliably shown to increase ovarian activity or natural conception rates in POI. The HCP toolkit states natural conception may occur in <5-15%, HRT does not prevent natural conception, contraception should be offered if desired, and pre-pregnancy evaluation is essential for donor-oocyte/embryo donation pregnancy.",
+      cutoffs: ["<5-15%"],
+      data_needed: ["fertility goals", "evidence of ovarian activity", "AMH/FSH trend if relevant", "HRT use", "contraception desire", "donor oocyte/embryo counseling", "pregnancy risk assessment"],
+      source_ids: ["ESHRE_POI_2024"],
+      source_section: "Fertility treatment and pregnancy"
+    }
+  ],
   polycystic_ovary_syndrome_v1: [
     {
       id: "pcos_irregular_cycle_cutoffs",
@@ -1118,6 +1277,10 @@ function dedupeSentences(text = "") {
 function cleanGeneratedScaffoldText(value = "", fallback = "") {
   let text = cleanText(value);
   text = text
+    .replace(/\bInterpret with local lab ranges\.\s*Reference anchors:.*?(?:medication effects\.?|clinical interpretation\.?)/gi, "")
+    .replace(/\bReference anchors:[^.?!]*(?:[.?!]|$)/gi, "")
+    .replace(/\bUse local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects\.?/gi, "")
+    .replace(/\bInterpret with local lab ranges\.?/gi, "")
     .replace(/\bkey thresholds and interpretation caveats:\s*/gi, "")
     .replace(/\bdiagnostic frame from guideline-sourced endocrine workup\b/gi, "diagnostic assessment")
     .replace(/\bsource-backed criteria\b/gi, "cited criteria")
@@ -1134,8 +1297,15 @@ function cleanGeneratedScaffoldText(value = "", fallback = "") {
     .replace(/\bobjective data\b/gi, "measured findings")
     .replace(/\bobjective findings\b/gi, "measured findings")
     .replace(/\bdanger features?\b/gi, "high-risk findings")
-    .replace(/\bkey labs\/results\b/gi, "threshold labs/results")
-    .replace(/\bkey results\b/gi, "threshold results")
+    .replace(/\bkey labs\/results\b/gi, "criterion-defining results")
+    .replace(/\bthreshold labs\/results\b/gi, "criterion-defining results")
+    .replace(/\bkey results\b/gi, "criterion-defining results")
+    .replace(/\bthreshold results\b/gi, "criterion-defining results")
+    .replace(/\bactive pathway\b/gi, "documented disease branch")
+    .replace(/\bselected pathway\b/gi, "documented disease branch")
+    .replace(/\bwhen clinically indicated\b/gi, "when the branch-specific criteria in this node apply")
+    .replace(/\bwhen indicated\b/gi, "when the branch-specific criteria in this node apply")
+    .replace(/\bas indicated\b/gi, "when the branch-specific criteria in this node apply")
     .replace(/\btargeted\b/gi, "focused")
     .replace(/\btraditional abnormal cutoff\b/gi, "traditional abnormal threshold");
   return dedupeSentences(text) || cleanText(fallback);
@@ -1204,6 +1374,8 @@ function displayWorkupLabel(value = "") {
 function visibleEvidenceLabel(item = {}) {
   const text = itemLabel(item);
   if (!text) return "";
+  if (/diagnostic assessment/i.test(text)) return "";
+  if (/Prolactin upper limit often|Male total testosterone should|TSH typical adult range|Free T4 typical adult range/i.test(text)) return "";
   if (/diagnostic frame from guideline-sourced endocrine workup/i.test(text)) return "";
   if (/^key thresholds and interpretation caveats/i.test(text)) return "";
   if (/^important mimics\/exclusions/i.test(text)) return "competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics";
@@ -1283,12 +1455,16 @@ function criteria(ruleId, description, evaluableFrom, sourceIds, extra = {}) {
   return {
     rule_id: ruleId,
     source: "criteria",
-    description: cleanText(description),
+    description: cleanGeneratedScaffoldText(description, ruleId),
     evaluable_from: unique(evaluableFrom),
     source_ids: unique(sourceIds),
     ...extra
   };
 }
+
+const internalTraversalGuardLabel = "Internal traversal guard";
+const internalTraversalGuardAction = "Internal structured traversal guard; hidden from the clinical pathway outline and graph.";
+const internalTraversalGuardReason = "Internal traversal guard; exact unavailable fields remain in missing_data_needed.";
 
 function node({
   id,
@@ -1311,28 +1487,28 @@ function node({
   const entry = {
     id,
     type,
-    label: shortText(label || id, 260),
-    edgeLabel: cleanText(edgeLabel),
+    label: shortText(cleanGeneratedScaffoldText(label || id, id), 260),
+    edgeLabel: cleanGeneratedScaffoldText(edgeLabel),
     source_ids: unique(sourceIds),
     criteria: rule || criteria(`${id}_criteria`, `Use this ${type} when the cited condition-specific rule, cutoff, or patient-data route is satisfied.`, contextDomains, sourceIds),
-    action: cleanText(action || label || id),
+    action: cleanGeneratedScaffoldText(action || label || id, label || id),
     children
   };
   if (endpointType) entry.endpoint_type = endpointType;
   if (endpointType === "missing_data_needed") {
-    entry.label = "Internal data-availability guard";
-    entry.edgeLabel = "Internal data-availability guard";
-    entry.action = "Internal traversal guard for data completeness; hidden from the clinical pathway display.";
+    entry.label = internalTraversalGuardLabel;
+    entry.edgeLabel = internalTraversalGuardLabel;
+    entry.action = internalTraversalGuardAction;
     entry.internal_traversal_guard = true;
     entry.display = {
       visible_in_pathway: false,
       visible_in_graph: false,
       visible_in_outline: false,
-      reason: "Internal traversal guard; exact missing fields remain in missing_data_needed."
+      reason: internalTraversalGuardReason
     };
   }
   if (missingDataNeeded.length) entry.missing_data_needed = unique(missingDataNeeded);
-  if (reviewNeededReason) entry.review_needed_reason = cleanText(reviewNeededReason);
+  if (reviewNeededReason) entry.review_needed_reason = cleanGeneratedScaffoldText(reviewNeededReason);
   if (parallelActions.length) entry.parallel_actions = parallelActions;
   if (requiredData.length) entry.required_data = unique(requiredData);
   if (guidelineCutoffs.length) entry.guideline_cutoffs = guidelineCutoffs;
@@ -1384,17 +1560,23 @@ function extractedCutoffCriteria(module) {
 }
 
 function cutoffCriteriaForModule(module) {
-  return [
+  const curatedById = new Map([
     ...(Array.isArray(module.clinical_cutoff_criteria) ? module.clinical_cutoff_criteria.map(criterion) : []),
-    ...extractedCutoffCriteria(module)
-  ].filter((row) => row.source_ids?.length && ((row.cutoffs || []).length || row.needs_clinical_review));
+    ...((curatedCutoffCriteria[module.id] || []).map(criterion))
+  ].map((row) => [row.id, row]));
+  const curatedRows = [...curatedById.values()];
+  if (curatedRows.length) {
+    return curatedRows.filter((row) => row.source_ids?.length && ((row.cutoffs || []).length || row.needs_clinical_review));
+  }
+  const extractedRows = extractedCutoffCriteria(module);
+  return extractedRows.filter((row) => row.source_ids?.length && ((row.cutoffs || []).length || row.needs_clinical_review));
 }
 
 function sourceThresholdsFromCriteria(rows = []) {
   return rows.flatMap((row) => (row.cutoffs || []).map((cutoff) => ({
     threshold: cutoff,
     evidence_item_id: row.id,
-    label: row.label,
+    label: displayCriterionLabel(row),
     source_ids: row.source_ids,
     review_status: row.review_status || "source_backed"
   })));
@@ -1414,7 +1596,7 @@ function buildTraversableContext(module, sourceIds, tests, criteriaRows) {
       { domain: "exam", exact_data_needed: unique(["condition-specific focused exam", ...listLabels(exam, 4)]), source_ids: sourceIdsForItems(exam, sourceIds) },
       { domain: "vitals", exact_data_needed: unique(["blood pressure", "heart rate", "respiratory rate", "oxygen saturation", "temperature", "mental status", "weight when dosing depends on it", ...listLabels(redFlags, 2)]), source_ids: sourceIdsForItems(redFlags, sourceIds) },
       { domain: "labs", exact_data_needed: unique([...listLabels(tests, 6), ...criteriaRows.flatMap((row) => row.data_needed || []).slice(0, 8)]), source_ids: sourceIdsForItems(tests, sourceIds) },
-      { domain: "imaging_results", exact_data_needed: unique(["source-directed imaging/ECG/procedure results when indicated", ...listLabels(tests.filter((item) => /imaging|ultrasound|ct|mri|x-ray|ecg|echo|culture|pathology|scan/i.test(itemLabel(item))), 5)]), source_ids: sourceIdsForItems(tests, sourceIds) },
+      { domain: "imaging_results", exact_data_needed: unique(["imaging, ECG, culture, pathology, or procedure result required by the chosen branch", ...listLabels(tests.filter((item) => /imaging|ultrasound|ct|mri|x-ray|ecg|echo|culture|pathology|scan/i.test(itemLabel(item))), 5)]), source_ids: sourceIdsForItems(tests, sourceIds) },
       { domain: "medications", exact_data_needed: ["current medication list", "recent changes/missed doses", "allergies", "contraindications", "drug interactions", "adherence/access barriers"], source_ids: sourceIds },
       { domain: "comorbidities", exact_data_needed: ["major comorbidities", "renal/hepatic/cardiac disease", "immunocompromise/high-risk host factors", "frailty/function", "prior relevant disease/procedure"], source_ids: sourceIds },
       { domain: "demographics", exact_data_needed: ["age band", "pediatric/adult pathway fit", "sex/reproductive context", "weight when dose-based", "pathway applicability"], source_ids: sourceIds },
@@ -1427,8 +1609,8 @@ function buildTraversableContext(module, sourceIds, tests, criteriaRows) {
 
 function buildSyntheticScenarios(prefix, edgeLabels = {}) {
   return [
-    { scenario_id: "missing_context", major_pathway: "missing_data_needed", expected_endpoint_id: "endpoint_missing_context", expected_active_branch: edgeLabels.missingContext },
-    { scenario_id: "missing_cutoff_data", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: `${prefix}_missing_cutoff_data_endpoint`, expected_active_branch: edgeLabels.missingCutoff },
+    { scenario_id: "internal_context_guard", major_pathway: "missing_data_needed", expected_endpoint_id: "endpoint_missing_context", expected_active_branch: internalTraversalGuardLabel },
+    { scenario_id: "internal_threshold_guard", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: `${prefix}_missing_cutoff_data_endpoint`, expected_active_branch: internalTraversalGuardLabel },
     { scenario_id: "urgent_or_high_risk", major_pathway: "escalation_emergency_actions", expected_endpoint_id: `${prefix}_urgent_endpoint`, expected_active_branch: edgeLabels.urgent },
     { scenario_id: "alternate_pathway", major_pathway: "mimics_exclusions", expected_endpoint_id: `${prefix}_alternate_endpoint`, expected_active_branch: edgeLabels.alternate },
     { scenario_id: "special_population_review", major_pathway: "contraindications_special_populations", expected_endpoint_id: `${prefix}_review_endpoint`, expected_active_branch: edgeLabels.review },
@@ -1468,7 +1650,7 @@ function terminalEndpoints(root) {
   const visit = (node) => {
     if (!node) return;
     if (!Array.isArray(node.children) || !node.children.length) {
-      if (node.type === "endpoint") leaves.push(node);
+      if (node.type === "endpoint" && !node.internal_traversal_guard) leaves.push(node);
       return;
     }
     node.children.forEach(visit);
@@ -1554,19 +1736,43 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
   const shortThresholdSummary = arrayText(thresholdExamples, thresholdSummary, 6);
   const redFlagSummary = visibleListLabels(redFlags, 3).join("; ");
   const safetySummary = visibleListLabels(safetyChecks, 5);
+  const treatmentSummary = [...visibleListLabels(treatments, 3), ...visibleListLabels(dispositions, 2)].filter(Boolean).join("; ");
+  const clinicalSafetySummary = safetySummary.filter((label) => !/^(Measure|Document)\b|blood pressure|heart rate|body mass index|mental status/i.test(label));
+  const dispositionModifierLabels = visibleListLabels(dispositions, 3).filter((label) => !/unstable physiology|dangerous electrolyte|Measure|Document/i.test(label));
+  const treatmentModifierLabels = visibleListLabels(treatments, 3).filter((label) => !/unstable physiology|dangerous electrolyte|Measure|Document/i.test(label));
+  const diseaseModifierLabels = criteriaRows
+    .filter((row) => /pregnan|fertil|renal|hepatic|cardiac|allerg|drug|contra|dose|surg|proced|imaging|assay|tumor|therapy|hormone|insulin|antibiotic|pituitary|gonad|ovarian|uter|tubal|semen|POI|FSH|prolactin|testosterone|estradiol/i.test(`${row.label} ${row.criteria_text}`))
+    .map(displayCriterionLabel)
+    .filter((label) => !/^(Measure|Document)\b|blood pressure|heart rate|body mass index|mental status/i.test(label));
+  const modifierSummary = arrayText([
+    ...diseaseModifierLabels.slice(0, 5),
+    ...dispositionModifierLabels.slice(0, 2),
+    ...treatmentModifierLabels.slice(0, 2),
+    ...clinicalSafetySummary.slice(0, 2)
+  ], `${displayLabel} pregnancy, medication, comorbidity, procedure, assay, and treatment-safety modifiers`, 7);
+  const managementActionSummary = arrayText([
+    ...treatmentModifierLabels,
+    ...dispositionModifierLabels,
+    ...diseaseModifierLabels.slice(0, 5),
+    ...clinicalSafetySummary
+  ], treatmentSummary, 7);
+  const mimicSummary = arrayText(
+    visibleListLabels(differentials, 5),
+    `${displayLabel} mimics or exclusions listed in the module differential`,
+    5
+  );
   const compactRouteSummary = arrayText([
     ...visibleListLabels(redFlags, 2),
     ...thresholdExamples.slice(0, 3),
     ...visibleListLabels(treatments, 2),
     ...visibleListLabels(dispositions, 2)
   ], `${displayLabel} diagnostic thresholds, acuity, medication safety, and disposition`, 7);
-  const treatmentSummary = [...visibleListLabels(treatments, 3), ...visibleListLabels(dispositions, 2)].filter(Boolean).join("; ");
   const activationItems = firstItems(module, "requiredQuestions", 4, ["conditionalQuestions", "requiredExam"]);
   const activationSummary = arrayText([
     ...visibleListLabels(activationItems, 4),
     ...visibleListLabels(redFlags, 2),
     ...visibleListLabels(tests, 2)
-  ], `${displayLabel} symptoms, exam, vitals, and threshold results`, 7);
+  ], `${displayLabel} symptoms, exam, vitals, and criterion-defining results`, 7);
   const diagnosticDataSummary = arrayText([
     ...visibleListLabels(tests, 5),
     ...criteriaRows.flatMap((row) => row.data_needed || []).slice(0, 6),
@@ -1609,17 +1815,17 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     ...visibleListLabels(dispositions, 3)
   ], `${displayLabel} follow-up ownership and safety net`, 6);
   const edgeLabels = {
-    missingContext: `Missing ${displayLabel}: onset/trajectory, focused exam, vitals, threshold labs/results, meds, comorbidities, pregnancy/applicability, or follow-up access`,
-    diagnosticData: `Collect ${displayLabel}: ${arrayText([...visibleListLabels(tests, 4), ...thresholdExamples.slice(0, 3), ...safetySummary.slice(0, 2)], `${displayLabel} symptoms, exam, vitals, threshold labs/results, medication safety, and major cutoffs`, 8)}`,
+    missingContext: `Missing ${displayLabel}: onset/trajectory, focused exam, vitals, criterion-defining results, meds, comorbidities, pregnancy/applicability, or follow-up access`,
+    diagnosticData: `Collect ${displayLabel}: ${arrayText([...visibleListLabels(tests, 4), ...thresholdExamples.slice(0, 3), ...clinicalSafetySummary.slice(0, 2)], `${displayLabel} symptoms, exam, vitals, criterion-defining results, medication safety, and major cutoffs`, 8)}`,
     classification: `Classify ${displayLabel} with available result(s): ${arrayText(thresholdExamples.slice(0, 4), diagnosticDataSummary, 4)}`,
     missingCutoff: `Missing ${displayLabel} result(s): ${arrayText(exactDiagnosticData, `${displayLabel} threshold/result data`, 6)}`,
     urgent: `High-acuity threshold or monitored-care result present: ${arrayText([redFlagSummary, ...thresholdExamples.slice(0, 2)], redFlagBranchSummary, 4)}`,
     treatment: `Confirmed/high-risk ${displayLabel} branch has treatment-safety data available`,
     alternate: `Mimic or alternate pathway favored: ${alternateBranchSummary}`,
     safetySelected: `Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan`,
-    review: `Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care`,
-    monitoring: `Trend ${displayLabel} symptoms, vital signs, threshold labs/results, treatment response, adverse effects, and disposition readiness`,
-    worsening: `${displayLabel} reassessment worsens or ${reassessmentSummary} no longer fit the selected pathway`,
+    review: `${displayLabel} modifier needing review: ${modifierSummary}`,
+    monitoring: `Trend ${displayLabel} symptoms, vital signs, criterion-defining results, treatment response, adverse effects, and disposition readiness`,
+    worsening: `${displayLabel} reassessment worsens or ${reassessmentSummary} no longer fit the documented ${displayLabel} branch`,
     deescalate: `Measured response supports narrowing, stopping, tapering, or continuing ${displayLabel} care`,
     followup: `${displayLabel} stable enough for owned follow-up, pending results, and safety-netting`
   };
@@ -1664,20 +1870,20 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     sourceIds: managementSources,
     criteria: criteria(`${prefix}_monitoring_criteria`, `Monitor ${label} by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], managementSources, { criteria_options: criteriaRows.slice(0, 8) }),
     action: `Reassess ${displayLabel} using the active thresholds and clinical course; do not close the pathway until response, adverse effects, pending data, and disposition are owned.`,
-    parallelActions: unique(["repeat vital signs", "trend threshold labs/results", "review treatment response and adverse effects", "assign disposition and follow-up clinician/service", ...safetySummary]),
+    parallelActions: unique(["repeat vital signs", "trend criterion-defining results", "review treatment response and adverse effects", "assign disposition and follow-up clinician/service", ...clinicalSafetySummary]),
     guidelineCutoffs: criteriaRows,
     children: [worseningEndpoint, deescalateEndpoint, followupEndpoint]
   });
 
   const reviewEndpoint = endpoint({
     id: `${prefix}_review_endpoint`,
-    label: `${displayLabel}: reviewer handoff for contraindication or special population`,
+    label: `${displayLabel}: review ${shortText(modifierSummary, 180)}`,
     edgeLabel: edgeLabels.review,
     sourceIds: cutoffSources,
-    criteria: criteria(`${prefix}_review_criteria`, `Use clinician review when ${label} treatment/disposition depends on pregnancy/postpartum status, pediatric/adult applicability, renal/hepatic/cardiac disease, allergy, drug interaction, procedural risk, guideline conflict, or local protocol.`, ["pregnancy_status", "demographics", "medications", "comorbidities", "allergies", "local_policy", "workup_findings"], cutoffSources),
-    action: `Pause non-emergent ${displayLabel} treatment choices until the modifier is resolved and the reviewer documents the applicable guideline or local cutoff.`,
+    criteria: criteria(`${prefix}_review_criteria`, `Use reviewer handoff when ${label} treatment or disposition depends on ${modifierSummary}.`, ["pregnancy_status", "demographics", "medications", "comorbidities", "allergies", "local_policy", "workup_findings"], cutoffSources),
+    action: `Resolve the named ${displayLabel} modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.`,
     endpointType: "clinician_review_handoff",
-    reviewNeededReason: "Patient-specific contraindication, special population, guideline conflict, or local policy affects treatment or disposition."
+    reviewNeededReason: `${displayLabel} management changes when ${modifierSummary}; document the exact modifier and reviewer input needed.`
   });
 
   const safetyDecision = decision({
@@ -1696,8 +1902,8 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     edgeLabel: edgeLabels.treatment,
     sourceIds: managementSources,
     criteria: criteria(`${prefix}_treatment_bundle_criteria`, `Start ${label} treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "pregnancy_status", "workup_findings"], managementSources, { criteria_options: criteriaRows.slice(0, 10) }),
-    action: treatmentSummary || `Treat ${displayLabel} according to the selected pathway, documented severity, and patient-specific safety data.`,
-    parallelActions: unique([...visibleListLabels(treatments, 5), ...visibleListLabels(dispositions, 3)]),
+    action: managementActionSummary || `Treat ${displayLabel} according to the documented disease branch, severity, and patient-specific safety data.`,
+    parallelActions: unique([...treatmentModifierLabels, ...dispositionModifierLabels, ...diseaseModifierLabels.slice(0, 5)]),
     guidelineCutoffs: criteriaRows,
     children: [safetyDecision]
   });
@@ -1707,10 +1913,10 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     label: `${displayLabel}: alternate diagnosis pathway`,
     edgeLabel: edgeLabels.alternate,
     sourceIds: differentialSources,
-    criteria: criteria(`${prefix}_alternate_criteria`, `Use an alternate pathway when ${label} criteria are absent, a cited mimic better explains the presentation, or objective result data contradict this workup.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "workup_findings"], differentialSources, { criteria_options: criteriaRows.slice(0, 8) }),
-    action: `Document why ${displayLabel} is not the active pathway, name the competing diagnosis or exclusion, and route to the appropriate workup rather than reassurance alone.`,
+    criteria: criteria(`${prefix}_alternate_criteria`, `Use an alternate pathway when ${label} criteria are absent, ${mimicSummary} better explains the presentation, or measured result data contradict this workup.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "workup_findings"], differentialSources, { criteria_options: criteriaRows.slice(0, 8) }),
+    action: `Name the competing diagnosis or exclusion for ${displayLabel}, such as ${mimicSummary}; route to the corresponding workup or specialty pathway and document why the ${displayLabel} branch is not used.`,
     endpointType: "clinician_review_handoff",
-    reviewNeededReason: "Competing diagnosis or exclusion changes the active pathway."
+    reviewNeededReason: `${displayLabel} criteria are absent or contradicted by ${mimicSummary}; competing diagnosis must be named before closure.`
   });
 
   const urgentEndpoint = endpoint({
@@ -1726,11 +1932,11 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
 
   const missingCutoffEndpoint = endpoint({
     id: `${prefix}_missing_cutoff_data_endpoint`,
-    label: `Missing data: ${displayLabel} results`,
-    edgeLabel: edgeLabels.missingCutoff,
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds: unique([...genericSourceIds, ...cutoffSources]),
     criteria: criteria(`${prefix}_missing_cutoff_data_criteria`, `Route here when ${label} cannot be classified because exact threshold/result data are missing.`, contextDomains, unique([...genericSourceIds, ...cutoffSources]), { missing_any: exactDiagnosticData }),
-    action: `Obtain the exact ${displayLabel} data needed for routing: ${exactDiagnosticData.slice(0, 10).join("; ")}.`,
+    action: internalTraversalGuardAction,
     endpointType: "missing_data_needed",
     missingDataNeeded: exactDiagnosticData
   });
@@ -1753,8 +1959,8 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     edgeLabel: edgeLabels.diagnosticData,
     sourceIds: testSources,
     criteria: criteria(`${prefix}_data_bundle_criteria`, `Obtain ${label} diagnostic/severity/treatment-safety data together rather than as a one-step chain.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "pregnancy_status"], testSources),
-    action: `Obtain together: ${[...visibleListLabels(tests, 8), ...safetySummary, ...criteriaRows.flatMap((row) => row.data_needed || []).slice(0, 8)].join("; ")}.`,
-    parallelActions: unique([...visibleListLabels(tests, 8), ...safetySummary, ...criteriaRows.flatMap((row) => row.data_needed || []).slice(0, 8)]),
+    action: `Obtain together: ${[...visibleListLabels(tests, 8), ...clinicalSafetySummary, ...criteriaRows.flatMap((row) => row.data_needed || []).slice(0, 8)].join("; ")}.`,
+    parallelActions: unique([...visibleListLabels(tests, 8), ...clinicalSafetySummary, ...criteriaRows.flatMap((row) => row.data_needed || []).slice(0, 8)]),
     requiredData: exactDiagnosticData,
     guidelineCutoffs: criteriaRows,
     children: [classificationDecision]
@@ -1762,11 +1968,11 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
 
   const missingContextEndpoint = endpoint({
     id: "endpoint_missing_context",
-    label: `Missing context: ${displayLabel}`,
-    edgeLabel: edgeLabels.missingContext,
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds: genericSourceIds,
     criteria: criteria("missing_context_criteria", `Route here when the patient context needed to activate ${label} is absent or cannot be extracted.`, contextDomains, genericSourceIds, { missing_any: contextDomains }),
-    action: `Before choosing a non-emergency ${displayLabel} branch, document the presenting concern, onset/trajectory, focused exam, vital signs, threshold labs/results, medication/allergy context, comorbidities, demographics, pregnancy/applicability status, current findings, and follow-up access.`,
+    action: internalTraversalGuardAction,
     endpointType: "missing_data_needed",
     missingDataNeeded: contextDomains
   });
@@ -1805,7 +2011,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
       generated_at: `${auditDate}T00:00:00.000Z`,
       update_scope: "clinical_pathway_tree_v1 plus explicit clinical_cutoff_criteria enrichment where needed",
       source_material: "Local module evidence rows, source registry metadata, and targeted guideline/literature review for cutoff gaps",
-      review_note: "Compact tree is cutoff-cited and traversable but requires clinician review for local policy, patient-specific contraindications, and source conflicts."
+      review_note: "Tree is cutoff-cited and traversable; clinician governance is reserved for explicitly flagged protocol, contraindication, pregnancy, organ-function, or evidence-conflict modifiers."
     },
     source_thresholds: sourceThresholds,
     traversable_context: buildTraversableContext(module, finalSourceIds, tests, criteriaRows),
@@ -1819,7 +2025,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
         "concurrent diagnostic/treatment bundles instead of long one-step chains",
         "cited thresholds/rules visible in classification and endpoint nodes",
         "all endpoints cite evidence or state needs_clinical_review",
-        "missing-data endpoints name exact data needed"
+        "internal data guards keep exact unavailable fields in structured metadata"
       ]
     }
   };
@@ -1832,7 +2038,7 @@ function buildAdultSepsisClinicalPathwayTree(module, sourceById) {
   const maternal = ["SMFM_MATERNAL_SEPSIS_2023"];
   const sourceIds = unique([...ssc, ...maternal, ...genericSourceIds]);
   const tests = firstItems(module, "initialTests", 8);
-  const redFlags = firstItems(module, "redFlags", 8, ["safetyChecks"]);
+  const redFlags = firstItems(module, "redFlags", 8);
   const differentials = firstItems(module, "differentialBuckets", 8);
   const dispositions = firstItems(module, "dispositionRules", 5, ["treatmentOptions"]);
 
@@ -1940,8 +2146,8 @@ function buildAdultSepsisClinicalPathwayTree(module, sourceById) {
 
   const missingContextEndpoint = endpoint({
     id: "endpoint_missing_context",
-    label: "Missing data needed: adult fever/sepsis pathway context",
-    edgeLabel: "Missing exact infection/sepsis context: source symptoms, onset, vitals, mental status, perfusion, oxygenation, medications/allergies, comorbidities, immune status, pregnancy/postpartum status, and current workup findings",
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds,
     criteria: criteria("adult_sepsis_missing_context_criteria", "Route here when the data needed to decide infection likelihood, shock physiology, source, or disposition cannot be extracted.", contextDomains, sourceIds, { missing_any: contextDomains }),
     action: "Obtain and document fever/source symptoms, onset and trajectory, full vital signs, mental status, perfusion/urine output, oxygenation/work of breathing, allergies/recent antimicrobials, immune status, pregnancy/postpartum status, comorbidities, and available labs/imaging before choosing a non-emergency branch.",
@@ -1951,8 +2157,8 @@ function buildAdultSepsisClinicalPathwayTree(module, sourceById) {
 
   const missingSepsisDataEndpoint = endpoint({
     id: `${prefix}_missing_lactate_culture_source_endpoint`,
-    label: "Missing data needed: lactate, cultures, source, perfusion, or organ dysfunction",
-    edgeLabel: "Cannot classify sepsis urgency until lactate, MAP/BP, perfusion, mental status, oxygenation, organ dysfunction, culture timing, and likely source are known",
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds: ssc,
     criteria: criteria(`${prefix}_missing_sepsis_data_criteria`, "Route here when suspected infection is present but exact data needed for sepsis/shock, antibiotic timing, source control, or disposition are missing.", contextDomains, ssc, { missing_any: ["blood pressure/MAP", "lactate", "mental status", "perfusion/capillary refill/urine output", "oxygenation", "suspected source", "blood culture timing", "antimicrobial timing"] }),
     action: "Measure lactate, obtain blood cultures as soon as possible and ideally before antimicrobials if this does not delay therapy, repeat vital signs/MAP, assess perfusion and mental status, identify likely source, and document whether shock/probable sepsis/possible sepsis criteria apply.",
@@ -2296,8 +2502,8 @@ function buildAdultDkaHhsClinicalPathwayTree(module, sourceById) {
 
   const missingContextEndpoint = endpoint({
     id: "endpoint_missing_context",
-    label: "Missing data needed: adult hyperglycemic-crisis context",
-    edgeLabel: "Missing adult DKA/HHS context: diabetes history, recent insulin/SGLT2 exposure, symptoms, full vitals, hydration/perfusion, mental status, pregnancy status, comorbid fluid risk, and available workup findings",
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds,
     criteria: criteria(`${prefix}_missing_context_criteria`, "Route here when adult hyperglycemic-crisis pathway activation cannot be determined from extractable patient context.", contextDomains, sourceIds, { missing_any: contextDomains }),
     action: "Document diabetes type/history, last insulin and pump/CGM status, SGLT2 inhibitor use, pregnancy/fasting/poor intake, polyuria/polydipsia/vomiting/abdominal pain, full vitals, hydration/perfusion, mental status, renal/cardiac disease, and current glucose/ketone/acid-base/osmolality results before selecting a non-emergency branch.",
@@ -2307,8 +2513,8 @@ function buildAdultDkaHhsClinicalPathwayTree(module, sourceById) {
 
   const missingCrisisDataEndpoint = endpoint({
     id: `${prefix}_missing_crisis_labs_endpoint`,
-    label: "Missing data needed: glucose, ketones, pH/bicarbonate, potassium, renal function, and osmolality",
-    edgeLabel: "Cannot distinguish DKA, HHS, mixed crisis, euglycemic DKA, potassium hazard, or non-crisis hyperglycemia until glucose, beta-hydroxybutyrate/ketones, pH, bicarbonate, potassium, creatinine, sodium, osmolality, and mental status are known",
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds: adaCrisis,
     criteria: criteria(`${prefix}_missing_crisis_labs_criteria`, "Route here when adult hyperglycemia is present but the exact results needed for DKA/HHS classification or insulin safety are unavailable.", contextDomains, adaCrisis, { missing_any: ["glucose", "beta-hydroxybutyrate or urine ketones", "venous pH", "bicarbonate", "potassium", "creatinine/eGFR", "sodium/corrected sodium", "effective or total osmolality", "mental status"] }),
     action: "Obtain point-of-care glucose, serum/capillary beta-hydroxybutyrate or urine ketones, BMP with corrected sodium/potassium/creatinine/bicarbonate/anion gap, venous pH, osmolality when HHS or altered mental status is possible, ECG if potassium risk exists, and precipitant testing guided by symptoms.",
@@ -2607,8 +2813,8 @@ function buildPediatricDkaHhsClinicalPathwayTree(module, sourceById) {
 
   const missingContextEndpoint = endpoint({
     id: "endpoint_missing_context",
-    label: "Missing data needed: pediatric DKA/HHS context",
-    edgeLabel: "Missing pediatric DKA/HHS context: age, weight, diabetes history, insulin/pump access, symptoms, vitals, hydration/perfusion, mental status, pregnancy/SGLT2 exposure when relevant, and current workup findings",
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds,
     criteria: criteria(`${prefix}_missing_context_criteria`, "Route here when pediatric hyperglycemic-crisis activation cannot be determined from extractable context.", contextDomains, sourceIds, { missing_any: contextDomains }),
     action: "Document age, weight, diabetes history, insulin/pump/CGM and access barriers, vomiting/intake/dehydration trajectory, full vital signs, hydration/perfusion, AVPU or modified GCS, pregnancy/SGLT2 exposure when relevant, and current glucose/ketone/pH/bicarbonate/potassium/osmolality data before selecting a non-emergency branch.",
@@ -2618,8 +2824,8 @@ function buildPediatricDkaHhsClinicalPathwayTree(module, sourceById) {
 
   const missingDataEndpoint = endpoint({
     id: `${prefix}_missing_crisis_data_endpoint`,
-    label: "Missing data needed: pediatric glucose, ketones, acid-base, electrolytes, osmolality, neuro status, or weight",
-    edgeLabel: "Cannot classify pediatric DKA, HHS, cerebral edema risk, shock route, potassium safety, or transition readiness until glucose, ketones, pH, bicarbonate, potassium, sodium/osmolality, weight, fluid balance, and neuro status are known",
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds,
     criteria: criteria(`${prefix}_missing_data_criteria`, "Route here when the exact data needed for pediatric DKA/HHS classification or treatment safety are unavailable.", contextDomains, sourceIds, { missing_any: ["age", "weight", "glucose", "blood or urine ketones", "venous pH", "bicarbonate", "potassium", "sodium/effective osmolality", "fluid boluses", "mental status"] }),
     action: "Obtain bedside glucose and blood ketones, venous pH/bicarbonate, electrolytes/urea/creatinine with sodium and potassium, effective osmolality when HHS/mixed crisis is possible, weight, strict fluid balance, AVPU/modified GCS, ECG/cardiac monitoring when potassium risk exists, and senior pediatric/endocrine advice.",
@@ -2840,8 +3046,8 @@ function buildCongenitalAdrenalHyperplasiaClinicalPathwayTree(module, sourceById
 
   const missingContextEndpoint = endpoint({
     id: "endpoint_missing_context",
-    label: "Missing data needed: CAH age band, crisis signs, 17-OHP profile, electrolytes, and steroid plan",
-    edgeLabel: "Missing exact CAH data: age/gestation, newborn screen or 17-OHP timing, sodium/potassium/glucose/CO2, crisis symptoms, current glucocorticoid/mineralocorticoid/crinecerfont use, pregnancy/fertility status, or follow-up access",
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds,
     criteria: criteria(`${prefix}_missing_context_criteria`, "Route here when the chart does not contain enough CAH-specific data to distinguish salt-wasting emergency, diagnostic confirmation, classic treatment, nonclassic treatment, pregnancy/DSD review, or routine follow-up.", contextDomains, sourceIds, { missing_any: ["age in days/months/years", "gestational age or birth weight when newborn", "newborn screen or early morning 17-OHP", "sodium", "potassium", "glucose", "CO2/bicarbonate", "vomiting/dehydration/shock status", "current glucocorticoid/mineralocorticoid/crinecerfont plan", "pregnancy or fertility intent when relevant"] }),
     action: "Before choosing a CAH branch, document age and gestational-age context, newborn screen result or early morning 17-OHP with assay method, cosyntropin timing/result if needed, sodium, potassium, glucose, CO2/bicarbonate, hydration and perfusion, vomiting or ability to keep steroids down, current hydrocortisone/prednisone/fludrocortisone/salt/crinecerfont use, pregnancy or fertility intent, CYP21A2/genetic counseling status, and reliable follow-up access.",
@@ -2851,8 +3057,8 @@ function buildCongenitalAdrenalHyperplasiaClinicalPathwayTree(module, sourceById
 
   const missingDiagnosticEndpoint = endpoint({
     id: `${prefix}_missing_diagnostic_data_endpoint`,
-    label: "Missing data needed: cannot classify classic, nonclassic, salt-wasting, or mimic",
-    edgeLabel: "CAH phenotype cannot be assigned until 17-OHP timing/assay, cosyntropin steroid profile, electrolytes, glucocorticoid exposure, and CYP21A2/family context are known",
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds: unique([...esCah, ...geneReviews]),
     criteria: criteria(`${prefix}_missing_diagnostic_data_criteria`, "Route here when a patient has possible CAH but the exact diagnostic thresholds or exclusion data are unavailable.", ["demographics", "symptoms", "exam", "labs", "medications", "workup_findings"], unique([...esCah, ...geneReviews]), { missing_any: ["early morning 17-OHP", "assay method", "age/gestational age", "baseline and 60-minute cosyntropin steroid profile when borderline", "sodium/potassium/glucose/CO2", "current glucocorticoid exposure", "CYP21A2 testing or family variant when diagnosis remains equivocal"] }),
     action: "Complete CAH confirmation before labeling severity: repeat newborn screen or send serum 17-OHP with gestational-age and assay context, use LC-MS/MS when available, defer cosyntropin until after 24-48 hours of life when applicable, send baseline and 60-minute cortisol/17-OHP plus adrenal steroid profile for borderline results, check sodium, potassium, glucose, CO2/bicarbonate, renin/aldosterone when salt wasting is possible, and use CYP21A2 testing for equivocal profiles or genetic counseling.",
@@ -3188,8 +3394,8 @@ function buildAdrenalInsufficiencyClinicalPathwayTree(module, sourceById) {
 
   const missingContextEndpoint = endpoint({
     id: "endpoint_missing_context",
-    label: `Missing data needed: ${label} crisis risk and diagnostic context`,
-    edgeLabel: "Missing exact adrenal data: vitals, volume status, glucose, sodium, potassium, cortisol/ACTH testing, steroid exposure, illness stress, pregnancy status, and current replacement plan",
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds,
     criteria: criteria(`${prefix}_missing_context_criteria`, "Route here when adrenal crisis risk, diagnostic status, medication exposure, or replacement-safety information cannot be extracted.", contextDomains, sourceIds, { missing_any: contextDomains }),
     action: "Document full vital signs including postural blood pressure when safe, mental status, hydration/perfusion, glucose, sodium, potassium, bicarbonate/renal function, cortisol/ACTH or cosyntropin status, renin/aldosterone when primary disease is possible, exogenous steroid exposure, acute illness or surgery stress, pregnancy status, and current steroid/mineralocorticoid access.",
@@ -3199,8 +3405,8 @@ function buildAdrenalInsufficiencyClinicalPathwayTree(module, sourceById) {
 
   const missingAdrenalDataEndpoint = endpoint({
     id: `${prefix}_missing_adrenal_testing_endpoint`,
-    label: "Missing data needed: cortisol, ACTH, cosyntropin, electrolytes, or steroid exposure",
-    edgeLabel: "Cannot separate crisis, primary adrenal insufficiency, central adrenal insufficiency, steroid withdrawal, or mimic until cortisol/ACTH timing, cosyntropin result, Na/K/glucose, and recent glucocorticoid exposure are known",
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds,
     criteria: criteria(`${prefix}_missing_adrenal_testing_criteria`, "Route here when adrenal insufficiency cannot be classified because exact endocrine or safety data are unavailable.", contextDomains, sourceIds, { missing_any: ["8 AM or morning cortisol", "ACTH", "cosyntropin dose and 30/60-minute cortisol", "sodium", "potassium", "glucose", "recent glucocorticoid exposure"] }),
     action: "Obtain paired morning cortisol and ACTH when stable, perform 250 mcg cosyntropin testing with 30- and/or 60-minute cortisol when circumstances allow, check sodium, potassium, glucose, bicarbonate, creatinine, current and recent glucocorticoids, and add renin/aldosterone and 21-hydroxylase antibody testing when primary adrenal insufficiency is suspected.",
@@ -3482,8 +3688,8 @@ function buildHypopituitarismClinicalPathwayTree(module, sourceById) {
 
   const missingContextEndpoint = endpoint({
     id: "endpoint_missing_context",
-    label: "Missing data needed: pituitary axis, mass-effect, adrenal, thyroid, sodium, and medication context",
-    edgeLabel: "Missing exact hypopituitarism data: headache/vision/cranial nerves, 8-9 AM cortisol, free T4/TSH, sodium/osmolality/urine output, prolactin, IGF-1, LH/FSH/sex steroid, MRI/visual fields, surgery/radiation history, pregnancy status, and current replacement therapy",
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds,
     criteria: criteria(`${prefix}_missing_context_criteria`, "Route here when pituitary mass-effect risk, adrenal reserve, thyroid status, water balance, gonadal/GH/prolactin axis, or medication history cannot be extracted.", contextDomains, sourceIds, { missing_any: contextDomains }),
     action: "Document headache timing, visual acuity/fields, diplopia or cranial nerve palsy, mental status, vitals, 8-9 AM cortisol, sodium, glucose, serum/urine osmolality and urine output if DI is possible, free T4/TSH, prolactin, IGF-1, LH/FSH with testosterone or estradiol as applicable, pituitary MRI/visual-field status, pregnancy/fertility context, prior surgery/radiation, and current glucocorticoid/thyroid/DDAVP/GH/sex-steroid therapy.",
@@ -3493,8 +3699,8 @@ function buildHypopituitarismClinicalPathwayTree(module, sourceById) {
 
   const missingPituitaryDataEndpoint = endpoint({
     id: `${prefix}_missing_axis_data_endpoint`,
-    label: "Missing data needed: adrenal-first endocrine panel, DI safety data, or pituitary imaging",
-    edgeLabel: "Cannot route adrenal crisis, central hypothyroidism, DI, gonadal/GH deficiency, apoplexy, or tumor monitoring until axis labs, sodium/water-balance data, and sellar imaging/visual data are known",
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds,
     criteria: criteria(`${prefix}_missing_axis_data_criteria`, "Route here when the exact endocrine axis or mass-effect data needed for safe sequencing are unavailable.", contextDomains, sourceIds, { missing_any: ["8-9 AM cortisol", "free T4", "TSH", "serum sodium", "urine output/osmolality when DI possible", "prolactin", "IGF-1", "LH/FSH and sex steroid", "pituitary MRI/visual fields"] }),
     action: "Obtain 8-9 AM cortisol before thyroid escalation when stable, sodium and glucose, free T4/TSH, serum/urine osmolality and urine output if DI is possible, prolactin, IGF-1, LH/FSH plus testosterone or estradiol, pregnancy test when relevant, pituitary MRI, formal visual fields when optic chiasm risk exists, and medication history including glucocorticoids, opioids, dopamine agents, immune checkpoint inhibitors, and estrogen.",
@@ -3790,8 +3996,8 @@ function buildGestationalDiabetesClinicalPathwayTree(module, sourceById) {
 
   const missingContextEndpoint = endpoint({
     id: "endpoint_missing_context",
-    label: "Missing data needed: gestational age, glucose strategy, obstetric symptoms, vitals, and postpartum status",
-    edgeLabel: "Missing exact pregnancy diabetes data: gestational age, prior diabetes status, one-step or two-step strategy, OGTT values, home glucose log, ketones/acid-base status when ill, blood pressure, fetal symptoms, medications, and postpartum timing",
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds,
     criteria: criteria(`${prefix}_missing_context_criteria`, "Route here when the pregnancy diabetes context needed to choose screening, treatment, escalation, or postpartum follow-up is unavailable.", contextDomains, sourceIds, { missing_any: contextDomains }),
     action: "Document gestational age, prior diabetes status, early pregnancy A1c/glucose if high risk, local one-step or two-step strategy, exact OGTT values, home fasting and postprandial glucose log, current weight and blood pressure, ketones/electrolytes/anion gap when vomiting or severely hyperglycemic, fetal movement or obstetric symptoms, current medications, delivery date if postpartum, and follow-up access.",
@@ -3801,8 +4007,8 @@ function buildGestationalDiabetesClinicalPathwayTree(module, sourceById) {
 
   const missingOgttEndpoint = endpoint({
     id: `${prefix}_missing_ogtt_log_endpoint`,
-    label: "Missing data needed: OGTT values, home glucose log, ketones, blood pressure, or postpartum OGTT timing",
-    edgeLabel: "Cannot classify GDM, overt diabetes, medication escalation, urgent pregnancy risk, or postpartum follow-up until OGTT values, glucose log, ketones/acid-base status when ill, BP, and postpartum timing are known",
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds,
     criteria: criteria(`${prefix}_missing_ogtt_criteria`, "Route here when exact GDM diagnostic or treatment-routing data are missing.", contextDomains, sourceIds, { missing_any: ["gestational age", "75-g or 100-g OGTT values", "50-g screen result if two-step strategy", "fasting and postprandial glucose log", "ketones/acid-base data when ill", "blood pressure", "postpartum OGTT date"] }),
     action: "Obtain the local screening strategy result: 75-g fasting/1-hour/2-hour values, or 50-g screen threshold plus 100-g fasting/1-hour/2-hour/3-hour values; add home fasting and postprandial glucose logs, ketones/electrolytes/anion gap if symptomatic or vomiting, blood pressure and preeclampsia symptom screen, and postpartum 75-g OGTT timing if delivered.",
@@ -4053,8 +4259,8 @@ function buildDiabetesMellitusClinicalPathwayTree(module, sourceById, diabetesTy
 
   const missingContextEndpoint = endpoint({
     id: "endpoint_missing_context",
-    label: `Missing data needed: ${label} diagnosis, crisis screen, medication safety, kidney/cardiovascular risk, and follow-up context`,
-    edgeLabel: `Missing exact ${label} data: A1c/glucose criteria, symptoms, ketones/acid-base status when ill, diabetes type evidence, medications/insulin access, kidney/cardiovascular risk, pregnancy status, vitals, and follow-up access`,
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds,
     criteria: criteria(`${prefix}_missing_context_criteria`, `Route here when the data needed to safely classify and manage ${label} cannot be extracted.`, contextDomains, sourceIds, { missing_any: contextDomains }),
     action: `Document A1c, fasting or random glucose, 2-hour OGTT if used, symptoms, glucose/CGM pattern, ketones, bicarbonate/pH/anion gap when ill, kidney function, UACR, lipids, blood pressure, heart rate, weight, mental status, current medications including insulin/SGLT2 use, hypoglycemia history, pregnancy status, diabetes type evidence, complication screen, medication access, and follow-up access.`,
@@ -4064,8 +4270,8 @@ function buildDiabetesMellitusClinicalPathwayTree(module, sourceById, diabetesTy
 
   const missingDiabetesDataEndpoint = endpoint({
     id: `${prefix}_missing_diabetes_data_endpoint`,
-    label: "Missing data needed: diagnostic thresholds, ketones/acid-base, medication access, kidney risk, or hypoglycemia history",
-    edgeLabel: "Cannot choose confirmed diabetes, crisis, insulin/medication, kidney/cardiovascular, mimic, or follow-up branch until exact glucose/A1c, ketone/acid-base, medication, kidney, and safety data are known",
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds,
     criteria: criteria(`${prefix}_missing_diabetes_data_criteria`, `Route here when exact ${label} threshold or treatment-safety data are unavailable.`, contextDomains, sourceIds, { missing_any: ["A1c", "fasting/random glucose or OGTT", "ketones/anion gap/pH/bicarbonate when symptomatic", "current medication and insulin access", "eGFR", "UACR", "hypoglycemia history"] }),
     action: "Obtain A1c and plasma glucose criteria, repeat confirmatory test if asymptomatic, check beta-hydroxybutyrate or urine ketones plus bicarbonate/pH/anion gap when vomiting, dehydrated, losing weight, using SGLT2 inhibitors, or acutely ill, and document eGFR, UACR, BP, lipids, current medications, pregnancy status, hypoglycemia episodes, and access barriers.",
@@ -4315,8 +4521,8 @@ function buildPrediabetesClinicalPathwayTree(module, sourceById) {
 
   const missingContextEndpoint = endpoint({
     id: "endpoint_missing_context",
-    label: "Missing data needed: prediabetes thresholds, BMI/waist/BP, pregnancy status, medication risk, and prevention access",
-    edgeLabel: "Missing exact prediabetes data: A1c/FPG/OGTT, symptoms, BMI/weight/waist, BP/lipids, pregnancy status, prior GDM, diabetes-range exclusion, medication causes, and lifestyle/metformin eligibility",
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds,
     criteria: criteria(`${prefix}_missing_context_criteria`, "Route here when glycemic classification or prevention eligibility cannot be determined.", contextDomains, sourceIds, { missing_any: contextDomains }),
     action: "Document A1c, fasting glucose or 2-hour OGTT, classic symptoms, current weight/BMI and waist circumference, blood pressure, lipids, pregnancy status, prior GDM, medications such as glucocorticoids, kidney/liver context, activity level, nutrition access, DPP availability, metformin contraindications, and follow-up access.",
@@ -4326,8 +4532,8 @@ function buildPrediabetesClinicalPathwayTree(module, sourceById) {
 
   const missingGlycemiaEndpoint = endpoint({
     id: `${prefix}_missing_glycemia_endpoint`,
-    label: "Missing data needed: A1c/FPG/OGTT, diabetes symptoms, BMI, pregnancy status, or DPP/metformin eligibility",
-    edgeLabel: "Cannot separate normal, prediabetes, diabetes, pregnancy hyperglycemia, medication effect, or prevention intensity until glycemic and risk data are known",
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds,
     criteria: criteria(`${prefix}_missing_glycemia_criteria`, "Route here when exact prediabetes or diabetes-range data are unavailable.", contextDomains, sourceIds, { missing_any: ["A1c", "fasting glucose", "2-hour OGTT", "symptoms", "BMI", "pregnancy status", "prior GDM", "DPP/metformin eligibility"] }),
     action: "Obtain A1c, fasting plasma glucose or 75-g 2-hour OGTT when needed, repeat discordant/asymptomatic results, check symptoms, BMI/weight, waist, BP/lipids, pregnancy status, prior GDM, medication causes, and data for DPP eligibility or metformin prevention.",
@@ -4557,8 +4763,8 @@ function buildMetabolicSyndromeClinicalPathwayTree(module, sourceById) {
 
   const missingContextEndpoint = endpoint({
     id: "endpoint_missing_context",
-    label: "Missing data needed: waist, BP, fasting glucose/A1c, HDL, triglycerides, medications, symptoms, and risk context",
-    edgeLabel: "Missing exact metabolic-syndrome data: waist/sex/race context, BP, fasting glucose or A1c, HDL, triglycerides, medication treatment status, BMI/weight, pregnancy status, ASCVD symptoms, and follow-up access",
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds,
     criteria: criteria(`${prefix}_missing_context_criteria`, "Route here when the five metabolic syndrome criteria or escalation context cannot be extracted.", contextDomains, sourceIds, { missing_any: contextDomains }),
     action: "Document waist circumference with sex and race/ethnicity context, blood pressure, fasting glucose and/or A1c, HDL, triglycerides, medication treatment for BP/lipids/glucose, BMI/current weight, heart rate and mental status, pregnancy status, ASCVD symptoms, sleep apnea/fatty-liver/PCOS context, current medications, and follow-up access.",
@@ -4568,8 +4774,8 @@ function buildMetabolicSyndromeClinicalPathwayTree(module, sourceById) {
 
   const missingCriteriaEndpoint = endpoint({
     id: `${prefix}_missing_criteria_endpoint`,
-    label: "Missing data needed: the five metabolic syndrome criteria and emergency exclusions",
-    edgeLabel: "Cannot count criteria or route urgent diabetes/BP/ASCVD risks until waist, BP, fasting glucose, HDL, triglycerides, treatment status, symptoms, and pregnancy context are known",
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds,
     criteria: criteria(`${prefix}_missing_criteria_criteria`, "Route here when exact metabolic syndrome criteria or escalation exclusions are unavailable.", contextDomains, sourceIds, { missing_any: ["waist circumference", "blood pressure", "fasting glucose", "HDL cholesterol", "triglycerides", "medication treatment status", "ASCVD symptoms", "pregnancy status"] }),
     action: "Measure waist circumference, blood pressure, heart rate, weight/BMI, and mental status; obtain fasting glucose or A1c, HDL, triglycerides, medication treatment history, ASCVD symptom screen, pregnancy status, and prior diabetes/prediabetes history before counting criteria.",
@@ -4805,8 +5011,8 @@ function buildPrimaryAldosteronismClinicalPathwayTree(module, sourceById) {
 
   const missingContextEndpoint = endpoint({
     id: "endpoint_missing_context",
-    label: "Missing data needed: PA pathway context",
-    edgeLabel: "Missing PA context: BP pattern, potassium, aldosterone, renin, ARR units, medication interference, renal function, pregnancy status, adrenal imaging, surgery preference, or follow-up access",
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds,
     criteria: criteria(`${prefix}_missing_context_criteria`, "Route here when PA routing data cannot be extracted.", contextDomains, sourceIds, { missing_any: contextDomains }),
     action: "Document sustained or resistant hypertension status, BP readings and symptoms, potassium, aldosterone with assay method, PRA or DRC, ARR and units, current antihypertensives including MRA/ENaC inhibitor/diuretic/ACEi/ARB/beta-blocker/central alpha-2 use, renal function, pregnancy status, adrenal CT/AVS status if known, surgery preference, and follow-up access.",
@@ -4816,8 +5022,8 @@ function buildPrimaryAldosteronismClinicalPathwayTree(module, sourceById) {
 
   const missingScreenEndpoint = endpoint({
     id: `${prefix}_missing_screen_endpoint`,
-    label: "Missing data needed: aldosterone, renin, ARR units, potassium, assay method, or interfering medications",
-    edgeLabel: "Cannot classify PA until aldosterone, PRA or DRC, ARR units, potassium, assay method, BP treatment count, and medication-interference status are available",
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds: pa,
     criteria: criteria(`${prefix}_missing_screen_criteria`, "Route here when PA screening or confirmation cannot be interpreted because exact lab or medication data are absent.", contextDomains, pa, { missing_any: ["aldosterone", "PRA or DRC", "ARR units", "potassium", "aldosterone assay method", "medication interference"] }),
     action: "Obtain morning seated aldosterone, PRA or DRC, ARR with units, potassium collected and processed correctly, BP readings and medication count, renal function, and the medication-interference timeline before choosing PA confirmation, repeat testing, or treatment.",
@@ -5034,8 +5240,8 @@ function buildPheochromocytomaClinicalPathwayTree(module, sourceById) {
 
   const missingContextEndpoint = endpoint({
     id: "endpoint_missing_context",
-    label: "Missing data needed: PPGL pathway context",
-    edgeLabel: "Missing PPGL context: paroxysmal symptoms, BP/HR pattern, metanephrine values and ULN, sampling position, medication triggers, adrenal or extra-adrenal imaging, pregnancy/genetic risk, or surgery status",
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds,
     criteria: criteria(`${prefix}_missing_context_criteria`, "Route here when PPGL routing data cannot be extracted.", contextDomains, sourceIds, { missing_any: contextDomains }),
     action: "Document episodic headache, sweating, palpitations, panic-like spells, sustained/paroxysmal BP and heart rate, plasma free or urinary fractionated metanephrines with assay ULN, sampling position and reference interval, medication/diet triggers, adrenal incidentaloma or imaging findings, pregnancy status, prior PPGL or hereditary syndrome risk, and surgery/follow-up status.",
@@ -5045,8 +5251,8 @@ function buildPheochromocytomaClinicalPathwayTree(module, sourceById) {
 
   const missingMetanephrineEndpoint = endpoint({
     id: `${prefix}_missing_metanephrine_endpoint`,
-    label: "Missing data needed: plasma free or urinary fractionated metanephrines, ULN, sampling position, and medication triggers",
-    edgeLabel: "Cannot classify PPGL probability until plasma free or urinary fractionated metanephrines, assay ULN, sampling position, medication/diet confounders, BP/HR, and imaging context are available",
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds: ppgl,
     criteria: criteria(`${prefix}_missing_metanephrine_criteria`, "Route here when PPGL biochemical probability cannot be interpreted because exact metanephrine or sampling data are absent.", contextDomains, ppgl, { missing_any: ["metanephrine value", "assay ULN", "sampling position", "interfering medications", "BP/HR", "imaging context"] }),
     action: "Obtain plasma free metanephrines or urinary fractionated metanephrines with assay ULN, note whether plasma sampling was supine with matching reference interval, review interfering medications and catecholamine-provoking drugs, document BP/HR pattern and symptoms, and add adrenal/extra-adrenal imaging only after clear biochemical evidence unless emergent imaging is needed for another diagnosis.",
@@ -5366,8 +5572,8 @@ function buildGrowthHormoneExcessClinicalPathwayTree(module, sourceById, growthM
 
   const missingContextEndpoint = endpoint({
     id: "endpoint_missing_context",
-    label: `Missing data needed: ${label} symptoms, IGF-1/GH, glucose-load, pituitary imaging, comorbidity, and special-population context`,
-    edgeLabel: `Missing ${label} data: phenotype/growth pattern, age/puberty context, age-adjusted IGF-1, assay ULN, OGTT GH nadir if needed, pituitary MRI/visual fields, comorbidities, medications, pregnancy or epiphyseal status, and treatment history`,
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds,
     criteria: criteria(`${prefix}_missing_context_criteria`, `Route here when ${label} cannot be evaluated because key GH-excess data are unavailable.`, contextDomains, sourceIds, { missing_any: contextDomains }),
     action: `Document ${phenotypeData.join(", ")}, age/sex/puberty context, IGF-1 with ULN, random GH and OGTT GH nadir when needed, glucose before/after OGTT, pituitary MRI and visual field status, BP/glucose/A1c/OSA/cardiac/colon/thyroid/pituitary-axis status, medication and pregnancy/fertility context, ${isGigantism ? "bone age and epiphyseal status" : "prior surgery/medical/radiation history"}, and follow-up access.`,
@@ -5377,8 +5583,8 @@ function buildGrowthHormoneExcessClinicalPathwayTree(module, sourceById, growthM
 
   const missingBiochemicalEndpoint = endpoint({
     id: `${prefix}_missing_biochemical_endpoint`,
-    label: `Missing data needed: ${label} IGF-1 ULN, same-assay repeat, OGTT GH nadir, or glucose verification`,
-    edgeLabel: `Cannot classify ${label} until IGF-1 with age/puberty reference range, assay ULN, same-assay repeat if equivocal, and OGTT GH nadir with documented hyperglycemia are known when indicated`,
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds: unique([...diagnosis, ...es]),
     criteria: criteria(`${prefix}_missing_biochemical_criteria`, `Route here when ${label} biochemical confirmation data are incomplete.`, contextDomains, unique([...diagnosis, ...es]), { missing_any: ["age-adjusted IGF-1", "assay ULN", "same-assay repeat IGF-1 if equivocal", "OGTT GH nadir", "OGTT glucose values"] }),
     action: "Obtain or repeat age/sex/puberty-adjusted IGF-1 using the same validated assay when equivocal; if IGF-1 is elevated or equivocal and diagnosis remains uncertain, perform 75-g OGTT with GH nadir and glucose documentation to verify hyperglycemia and apply the <1 ug/L or assay-specific <0.4 ug/L suppression rule.",
@@ -5597,7 +5803,7 @@ function buildErectileDysfunctionClinicalPathwayTree(module, sourceById) {
   const missingContextEndpoint = endpoint({
     id: "endpoint_missing_context",
     label: "Missing ED context",
-    edgeLabel: "Missing duration, erection pattern, CV symptoms, meds, BP/pulses, genital exam, testosterone, A1c/glucose/lipids, or prolactin/TSH when indicated",
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds,
     criteria: criteria(`${prefix}_missing_context_criteria`, "Use when ED cannot be routed because key history, exam, cardiovascular, metabolic, endocrine, medication, or treatment-safety data are unavailable.", contextDomains, sourceIds, { missing_any: contextDomains }),
     action: "Document erectile symptom duration, rigidity/maintenance pattern, libido, morning/nocturnal erections, ejaculation/orgasm symptoms, partner/psych context, chest pain or claudication, exercise tolerance, BP/HR/pulses, genital/testicular and focused neuro exam, meds/substances including nitrates/alpha-blockers/CYP3A4 inhibitors, A1c or glucose, lipids, kidney function, two fasting morning testosterone values when low testosterone is possible, prolactin/TSH when libido, gynecomastia, infertility, or pituitary symptoms fit, fertility intent, pregnancy status when relevant, and follow-up access.",
@@ -5608,7 +5814,7 @@ function buildErectileDysfunctionClinicalPathwayTree(module, sourceById) {
   const missingObjectiveEndpoint = endpoint({
     id: `${prefix}_missing_objective_endpoint`,
     label: "Missing ED diagnostic and treatment-safety data",
-    edgeLabel: "Missing A1c/glucose/lipids, BP/pulses, two fasting morning testosterone values, LH/FSH, prolactin, TSH, PSA/Hct safety data, or nitrate/PDE5 medication review",
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds,
     criteria: criteria(`${prefix}_missing_objective_criteria`, "Use when ED branch selection depends on an absent cardiovascular, endocrine, metabolic, or medication-safety result.", ["symptoms", "exam", "vitals", "labs", "medications", "comorbidities", "workup_findings"], sourceIds, { missing_any: ["blood pressure", "peripheral pulses", "A1c", "fasting glucose", "lipids", "two fasting morning total testosterone values", "LH", "FSH", "prolactin", "TSH/free T4", "nitrate/riociguat exposure", "alpha-blocker timing", "PSA", "hematocrit"] }),
     action: "Before routine ED treatment, obtain the specific missing data: BP/HR and pulses, A1c or fasting glucose plus lipids, kidney function, repeat fasting morning testosterone when low testosterone is suspected, LH/FSH for low testosterone, prolactin and TSH for low libido/gynecomastia/infertility/pituitary symptoms, nitrate/riociguat and alpha-blocker timing, and PSA/hematocrit/prostate history before testosterone therapy.",
@@ -5910,8 +6116,8 @@ function buildAdultChestPainClinicalPathwayTree(module, sourceById) {
 
   const missingContextEndpoint = endpoint({
     id: "endpoint_missing_context",
-    label: "Missing data needed: adult chest pain context",
-    edgeLabel: "Missing onset, vitals, ECG, troponin timing/value, emergency-mimic screen, medication risks, pregnancy status, comorbidities, or follow-up access",
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds,
     criteria: criteria(`${prefix}_missing_context_criteria`, "Route here when adult chest pain cannot be evaluated because the patient context needed for ACS, aortic, PE, respiratory, GI, musculoskeletal, or safety disposition is unavailable.", contextDomains, sourceIds, { missing_any: contextDomains }),
     action: "Document onset, quality/radiation/exertion, dyspnea/diaphoresis/syncope/neuro symptoms, vitals/SpO2, focused CV/pulmonary exam, ECG time/result, troponin assay/timing/value, aortic/PE screen, medication/allergy/contrast risks, pregnancy status, comorbidities, and follow-up access.",
@@ -5922,7 +6128,7 @@ function buildAdultChestPainClinicalPathwayTree(module, sourceById) {
   const missingAcsDataEndpoint = endpoint({
     id: `${prefix}_missing_acs_data_endpoint`,
     label: "Missing ACS data: ECG, troponin assay/timing, risk score, or aortic/PE danger screen",
-    edgeLabel: "Missing ECG within 10 minutes, hs-cTn 1-3 hour or conventional 3-6 hour repeat plan, 99th percentile/delta, HEART/EDACS, or dissection/PE screen",
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds: aha,
     criteria: criteria(`${prefix}_missing_acs_data_criteria`, "Route here when the exact ACS/aortic risk data needed for disposition are unavailable.", contextDomains, aha, { missing_any: ["arrival time", "12-lead ECG", "cardiac troponin assay and collection time", "troponin assay type", "time-zero troponin", "repeat troponin time", "delta troponin", "assay 99th percentile", "structured risk score", "bilateral arm BP/pulse differential when dissection possible"], criteria_options: ecgTroponinRows }),
     action: "Obtain clinician-interpreted ECG, time-zero troponin with assay 99th percentile, repeat hs-cTn at 1-3 hours or conventional cTn at 3-6 hours if needed, HEART/EDACS or local score, CXR/CTA when aortic or pulmonary emergency remains possible, and follow-up access.",
@@ -6138,7 +6344,7 @@ function buildPediatricFeverSepsisClinicalPathwayTree(module, sourceById) {
   const missingContextEndpoint = endpoint({
     id: "endpoint_missing_context",
     label: "Missing core fever/sepsis context",
-    edgeLabel: "Missing age, fever method, vitals, perfusion, source, infant risk, or follow-up access",
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds,
     criteria: criteria(`${prefix}_missing_context_criteria`, "Use this endpoint when pediatric fever or suspected sepsis cannot be routed because essential age, fever, vital-sign, perfusion, source, infant-risk, treatment-safety, or disposition data are unavailable.", contextDomains, sourceIds, { missing_any: contextDomains }),
     action: "Before choosing a routine or outpatient branch, document exact age in days for infants and years for older children, temperature value/method and duration, full vital signs, oxygen requirement, mental state, capillary refill, urine output or last void, rash blanching/purpura, meningitis/HSV features, respiratory/urinary/skin/GI/CNS/joint/travel or line source symptoms, focused exam, immunization and prematurity/chronic illness status, recent immunization 24-48 hours, antibiotics already given, medication allergies, pregnancy or recent postpartum status in adolescents, caregiver concern, communication/transportation reliability, and pending result owner.",
@@ -6149,7 +6355,7 @@ function buildPediatricFeverSepsisClinicalPathwayTree(module, sourceById) {
   const missingObjectiveEndpoint = endpoint({
     id: `${prefix}_missing_objective_endpoint`,
     label: "Missing branch-critical vitals or labs",
-    edgeLabel: "Missing age-banded vitals, perfusion, cultures/lactate, UA, CSF, or infant markers",
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds,
     criteria: criteria(`${prefix}_missing_objective_criteria`, "Use this endpoint when branch selection depends on objective values that are absent, including NICE age-banded vital thresholds, SSC shock data, or febrile-infant inflammatory markers and cultures.", ["demographics", "vitals", "exam", "labs", "imaging_results", "workup_findings"], sourceIds, { missing_any: ["age band", "temperature method", "SpO2", "oxygen requirement", "respiratory rate", "heart rate", "blood pressure", "mental state", "capillary refill time", "urine output", "rash blanching", "lactate", "blood culture", "urinalysis", "urine culture", "ANC", "CRP", "procalcitonin", "CSF when indicated"] }),
     action: "Obtain or document the missing values before assigning a non-emergent endpoint: exact age band, fever method, SpO2 in air and oxygen delivery, respiratory rate, heart rate, systolic BP, mental state, CRT, urine timing or catheter mL/kg/hour, non-blanching rash assessment, lactate and blood culture when probable sepsis or shock is possible, UA/urine culture for infant or urinary-source fever, ANC/CRP/procalcitonin for febrile infants, CSF data when age or CNS rules require it, and weight for antibiotic/fluid dosing.",
@@ -6385,16 +6591,18 @@ function buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById) {
   const rchEcg = ["RCH_PEDIATRIC_ECG"];
   const sourceIds = unique([...rchChest, ...rchSyncope, ...rchEcg, ...genericSourceIds]);
   const tests = firstItems(module, "initialTests", 8);
-  const redFlags = firstItems(module, "redFlags", 8, ["safetyChecks"]);
+  const redFlags = firstItems(module, "redFlags", 8);
   const differentials = firstItems(module, "differentialBuckets", 8);
   const dispositions = firstItems(module, "dispositionRules", 8, ["treatmentOptions"]);
   const safetyChecks = firstItems(module, "safetyChecks", 8);
+  const visibleSafetyLabels = visibleListLabels(safetyChecks, 8)
+    .filter((text) => !/^(Measure|Document)\b|blood pressure|heart rate|respiratory rate|oxygen saturation|temperature|pain score/i.test(text));
   const evidenceLabels = {
-    tests: listLabels(tests, 8).join("; "),
-    redFlags: listLabels(redFlags, 8).join("; "),
-    differentials: listLabels(differentials, 8).join("; "),
-    dispositions: listLabels(dispositions, 8).join("; "),
-    safety: listLabels(safetyChecks, 8).join("; ")
+    tests: visibleListLabels(tests, 8).join("; "),
+    redFlags: visibleListLabels(redFlags, 8).join("; "),
+    differentials: visibleListLabels(differentials, 8).join("; "),
+    dispositions: visibleListLabels(dispositions, 8).join("; "),
+    safety: visibleSafetyLabels.join("; ")
   };
   const criteriaRows = [
     criterion({
@@ -6446,8 +6654,8 @@ function buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById) {
 
   const missingContextEndpoint = endpoint({
     id: "endpoint_missing_context",
-    label: "Missing data needed: pediatric chest pain, syncope, or palpitations context",
-    edgeLabel: "Missing pediatric chest/syncope context: age, chest pain quality/onset/exertion, syncope/palpitations event details, family history, vitals including orthostatics when syncope, exam/perfusion, ECG, respiratory findings, medications/stimulants, pregnancy possibility, and follow-up access",
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds,
     criteria: criteria(`${prefix}_missing_context_criteria`, "Route here when pediatric chest pain, syncope, or palpitations cannot be evaluated because key history, vitals, exam, ECG, or disposition data are unavailable.", contextDomains, sourceIds, { missing_any: contextDomains }),
     action: "Document age, onset/duration/site/quality/radiation/reproducibility, exertional or sleep association, syncope/presyncope/palpitations event details, prodrome and recovery, chest pain with palpitations, family history of early sudden death/cardiomyopathy/arrhythmia, full vitals, oxygenation, orthostatic heart rate and BP when syncope, cardiac/pulmonary/neurologic exam, ECG when syncope or cardiac risk is present, respiratory/PE/trauma features, stimulant/toxin/medication use, adolescent pregnancy possibility, and follow-up access.",
@@ -6457,8 +6665,8 @@ function buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById) {
 
   const missingObjectiveEndpoint = endpoint({
     id: `${prefix}_missing_objective_endpoint`,
-    label: "Missing data needed: pediatric ECG, orthostatic vitals, oxygenation, respiratory exam, or family-history risk",
-    edgeLabel: "Cannot classify pediatric chest pain/syncope until ECG is obtained at least once for syncope or cardiac risk, QRS/QTc/ST findings are known when ECG is done, orthostatic BP/HR are measured when syncope/orthostatic intolerance is present, oxygenation and respiratory exam are documented, and family/cardiac history is known",
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds,
     criteria: criteria(`${prefix}_missing_objective_criteria`, "Route here when pediatric cardiac/respiratory/syncope risk cannot be classified because required ECG, orthostatic vital sign, oxygenation, respiratory, family-history, or cardiac-exam data are missing.", contextDomains, sourceIds, { missing_any: ["ECG", "QRS duration", "QTc", "ST shift", "orthostatic BP/HR", "oxygen saturation", "respiratory exam", "family history", "cardiac exam"] }),
     action: "Obtain ECG at least once for syncope or cardiac concern, manual QRS/QTc/ST interpretation, full vitals including oxygen saturation, orthostatic BP/HR if syncope or orthostatic intolerance is present, cardiac/pulmonary/neurologic exam, BGL shortly after an event when indicated, FBE when anemia is suspected, pregnancy testing when relevant, and senior review before echo/Holter/exercise testing/CTPA.",
@@ -6664,19 +6872,21 @@ function buildPediatricMskLimpHotJointClinicalPathwayTree(module, sourceById) {
   const differentials = firstItems(module, "differentialBuckets", 8);
   const dispositions = firstItems(module, "dispositionRules", 8, ["treatmentOptions"]);
   const safetyChecks = firstItems(module, "safetyChecks", 8);
+  const visibleSafetyLabels = visibleListLabels(safetyChecks, 8)
+    .filter((text) => !/^(Measure|Document)\b|blood pressure|heart rate|respiratory rate|oxygen saturation|temperature|pain score/i.test(text));
   const evidenceLabels = {
-    tests: listLabels(tests, 8).join("; "),
-    redFlags: listLabels(redFlags, 8).join("; "),
-    differentials: listLabels(differentials, 8).join("; "),
-    dispositions: listLabels(dispositions, 8).join("; "),
-    safety: listLabels(safetyChecks, 8).join("; ")
+    tests: visibleListLabels(tests, 8).join("; "),
+    redFlags: visibleListLabels(redFlags, 8).join("; "),
+    differentials: visibleListLabels(differentials, 8).join("; "),
+    dispositions: visibleListLabels(dispositions, 8).join("; "),
+    safety: visibleSafetyLabels.join("; ")
   };
   const criteriaRows = cutoffCriteriaForModule(module);
 
   const missingContextEndpoint = endpoint({
     id: "endpoint_missing_context",
-    label: "Missing data needed: pediatric limp, hot joint, injury, or non-weight-bearing context",
-    edgeLabel: "Missing pediatric limp context: age, onset/duration, trauma/safeguarding history, ability to weight bear after analgesia, fever/systemic symptoms, joint range of motion, full vitals, pain location, labs/imaging when indicated, medication/allergy context, comorbidities, and follow-up access",
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds,
     criteria: criteria(`${prefix}_missing_context_criteria`, "Route here when pediatric limp or hot-joint management cannot be classified because core history, exam, vitals, objective results, comorbidity, or follow-up data are unavailable.", contextDomains, sourceIds, { missing_any: contextDomains }),
     action: "Document age/developmental baseline, symptom onset and duration, trauma mechanism and safeguarding consistency, current and post-analgesia weight-bearing, pain site including hip/groin/thigh/knee referral, fever and systemic symptoms, full vital signs, gait, look/feel/move exam, joint above and below, passive range of motion, neurovascular status, skin/wound source, immunocompromise/sickle cell/hemophilia or postoperative context, analgesics/antibiotic exposure/allergies, pregnancy possibility in adolescents when treatment or imaging depends on it, labs/cultures/imaging if indicated, and reliable follow-up.",
@@ -6686,8 +6896,8 @@ function buildPediatricMskLimpHotJointClinicalPathwayTree(module, sourceById) {
 
   const missingObjectiveEndpoint = endpoint({
     id: `${prefix}_missing_objective_endpoint`,
-    label: "Missing data needed: weight-bearing after analgesia, temperature, inflammatory markers, culture, aspiration, X-ray, ultrasound, MRI, or follow-up plan",
-    edgeLabel: "Cannot choose low-risk, infection, fracture, SUFE/Perthes, systemic-mimic, or admission branch until post-analgesia weight-bearing, temperature, ROM, pain localization, red flags, CRP/ESR/WBC/culture when infection is possible, and imaging/aspiration status are known",
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
     sourceIds,
     criteria: criteria(`${prefix}_missing_objective_criteria`, "Route here when the patient has a pediatric limp or hot-joint presentation but weight-bearing, temperature, joint exam, inflammatory marker, culture, imaging/aspiration, or follow-up data needed for guideline branch selection are missing.", contextDomains, sourceIds, { missing_any: ["weight-bearing after analgesia", "temperature", "focused range of motion", "pain localization", "CRP/ESR/WBC when infection possible", "blood culture before antibiotics when feasible", "X-ray/ultrasound/MRI/aspiration status when indicated", "follow-up plan"] }),
     action: "Complete the branch-critical data: repeat analgesia-supported walking assessment, measure temperature and full vitals, document passive joint motion and severe pain with movement, localize hip versus knee/thigh/bone pain, obtain FBE/WBC, ESR, CRP, blood culture before antibiotics when infection is possible, discuss aspiration for suspected septic arthritis without delaying antibiotics, obtain localized X-ray for injury or hip disease, ultrasound for suspected hip effusion, MRI with contrast when osteomyelitis or deep infection remains possible, and document follow-up or transfer access before discharge.",
@@ -6963,20 +7173,7 @@ function finalizeClinicalPathwayTree({
 }
 
 function enrichModule(module) {
-  const curatedRows = curatedCutoffCriteria[module.id] || [];
-  if (!curatedRows.length) return module;
-  const existing = Array.isArray(module.clinical_cutoff_criteria) ? module.clinical_cutoff_criteria : [];
-  const byId = new Map(existing.map((row) => [row.id, row]));
-  curatedRows.forEach((row) => byId.set(row.id, criterion(row)));
-  return {
-    ...module,
-    clinical_cutoff_criteria: [...byId.values()],
-    clinical_cutoff_review: {
-      status: "source_backed_cutoff_enrichment_added",
-      reviewed_on: auditDate,
-      review_note: "Cutoff rows were added because the prior module evidence did not expose enough explicit guideline thresholds for pathway traversal."
-    }
-  };
+  return module;
 }
 
 function main() {

@@ -2016,7 +2016,7 @@
         {
           "threshold": "1%",
           "evidence_item_id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-          "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+          "label": "Pediatric chest pain testing is focused",
           "source_ids": [
             "RCH_CHEST_PAIN_CHILD"
           ],
@@ -2025,7 +2025,7 @@
         {
           "threshold": ">0.12 seconds",
           "evidence_item_id": "peds_ecg_high_risk_intervals",
-          "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc outside >340 ms and <=450 ms normal range, and ST shift >2 mm in precordial leads",
+          "label": "Pediatric ECG high-risk cutoffs",
           "source_ids": [
             "RCH_PEDIATRIC_ECG"
           ],
@@ -2034,7 +2034,7 @@
         {
           "threshold": ">340 ms",
           "evidence_item_id": "peds_ecg_high_risk_intervals",
-          "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc outside >340 ms and <=450 ms normal range, and ST shift >2 mm in precordial leads",
+          "label": "Pediatric ECG high-risk cutoffs",
           "source_ids": [
             "RCH_PEDIATRIC_ECG"
           ],
@@ -2043,7 +2043,7 @@
         {
           "threshold": "<=450 ms",
           "evidence_item_id": "peds_ecg_high_risk_intervals",
-          "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc outside >340 ms and <=450 ms normal range, and ST shift >2 mm in precordial leads",
+          "label": "Pediatric ECG high-risk cutoffs",
           "source_ids": [
             "RCH_PEDIATRIC_ECG"
           ],
@@ -2052,7 +2052,7 @@
         {
           "threshold": "QTc >450 ms",
           "evidence_item_id": "peds_ecg_high_risk_intervals",
-          "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc outside >340 ms and <=450 ms normal range, and ST shift >2 mm in precordial leads",
+          "label": "Pediatric ECG high-risk cutoffs",
           "source_ids": [
             "RCH_PEDIATRIC_ECG"
           ],
@@ -2061,7 +2061,7 @@
         {
           "threshold": "QTc <=340 ms",
           "evidence_item_id": "peds_ecg_high_risk_intervals",
-          "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc outside >340 ms and <=450 ms normal range, and ST shift >2 mm in precordial leads",
+          "label": "Pediatric ECG high-risk cutoffs",
           "source_ids": [
             "RCH_PEDIATRIC_ECG"
           ],
@@ -2070,7 +2070,7 @@
         {
           "threshold": ">2 mm",
           "evidence_item_id": "peds_ecg_high_risk_intervals",
-          "label": "Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc outside >340 ms and <=450 ms normal range, and ST shift >2 mm in precordial leads",
+          "label": "Pediatric ECG high-risk cutoffs",
           "source_ids": [
             "RCH_PEDIATRIC_ECG"
           ],
@@ -2079,7 +2079,7 @@
         {
           "threshold": "2-3 minutes",
           "evidence_item_id": "pediatric_chest_syncope_orthostatic_pots_cutoffs",
-          "label": "Pediatric orthostatic syncope/POTS: within 2-3 minutes upright, systolic BP drop >20 mmHg or diastolic drop >10 mmHg; within 5-10 minutes upright, HR rise >40 bpm or >30 bpm without postural hypotension",
+          "label": "Pediatric orthostatic syncope/POTS",
           "source_ids": [
             "RCH_SYNCOPE_CHILD"
           ],
@@ -2088,7 +2088,7 @@
         {
           "threshold": "systolic blood pressure >20 mmHg",
           "evidence_item_id": "pediatric_chest_syncope_orthostatic_pots_cutoffs",
-          "label": "Pediatric orthostatic syncope/POTS: within 2-3 minutes upright, systolic BP drop >20 mmHg or diastolic drop >10 mmHg; within 5-10 minutes upright, HR rise >40 bpm or >30 bpm without postural hypotension",
+          "label": "Pediatric orthostatic syncope/POTS",
           "source_ids": [
             "RCH_SYNCOPE_CHILD"
           ],
@@ -2097,7 +2097,7 @@
         {
           "threshold": "diastolic blood pressure >10 mmHg",
           "evidence_item_id": "pediatric_chest_syncope_orthostatic_pots_cutoffs",
-          "label": "Pediatric orthostatic syncope/POTS: within 2-3 minutes upright, systolic BP drop >20 mmHg or diastolic drop >10 mmHg; within 5-10 minutes upright, HR rise >40 bpm or >30 bpm without postural hypotension",
+          "label": "Pediatric orthostatic syncope/POTS",
           "source_ids": [
             "RCH_SYNCOPE_CHILD"
           ],
@@ -2106,7 +2106,7 @@
         {
           "threshold": "5-10 minutes",
           "evidence_item_id": "pediatric_chest_syncope_orthostatic_pots_cutoffs",
-          "label": "Pediatric orthostatic syncope/POTS: within 2-3 minutes upright, systolic BP drop >20 mmHg or diastolic drop >10 mmHg; within 5-10 minutes upright, HR rise >40 bpm or >30 bpm without postural hypotension",
+          "label": "Pediatric orthostatic syncope/POTS",
           "source_ids": [
             "RCH_SYNCOPE_CHILD"
           ],
@@ -2115,7 +2115,7 @@
         {
           "threshold": "HR increase >40 bpm",
           "evidence_item_id": "pediatric_chest_syncope_orthostatic_pots_cutoffs",
-          "label": "Pediatric orthostatic syncope/POTS: within 2-3 minutes upright, systolic BP drop >20 mmHg or diastolic drop >10 mmHg; within 5-10 minutes upright, HR rise >40 bpm or >30 bpm without postural hypotension",
+          "label": "Pediatric orthostatic syncope/POTS",
           "source_ids": [
             "RCH_SYNCOPE_CHILD"
           ],
@@ -2124,7 +2124,7 @@
         {
           "threshold": "HR increase >30 bpm",
           "evidence_item_id": "pediatric_chest_syncope_orthostatic_pots_cutoffs",
-          "label": "Pediatric orthostatic syncope/POTS: within 2-3 minutes upright, systolic BP drop >20 mmHg or diastolic drop >10 mmHg; within 5-10 minutes upright, HR rise >40 bpm or >30 bpm without postural hypotension",
+          "label": "Pediatric orthostatic syncope/POTS",
           "source_ids": [
             "RCH_SYNCOPE_CHILD"
           ],
@@ -2133,7 +2133,7 @@
         {
           "threshold": "30 seconds to 3 minutes",
           "evidence_item_id": "pediatric_chest_syncope_precordial_catch_low_risk",
-          "label": "Precordial catch pattern: sudden sharp pain at left lower sternal border/cardiac apex, not during sleep, brief 30 seconds to 3 minutes, normal exam, and no special investigations",
+          "label": "Precordial catch pattern",
           "source_ids": [
             "RCH_CHEST_PAIN_CHILD"
           ],
@@ -2217,8 +2217,8 @@
             "domain": "labs",
             "exact_data_needed": [
               "ECG when cardiac risk or syncope is present",
-              "Chest X-ray only when indicated",
-              "Troponin and inflammatory labs when indicated",
+              "Chest X-ray only when the branch-specific criteria in this node apply",
+              "Troponin and inflammatory labs when the branch-specific criteria in this node apply",
               "Syncope ECG glucose anemia and pregnancy tests",
               "Echo Holter or exercise testing after review",
               "age",
@@ -2242,9 +2242,9 @@
           {
             "domain": "imaging_results",
             "exact_data_needed": [
-              "source-directed imaging/ECG/procedure results when indicated",
+              "imaging, ECG, culture, pathology, or procedure result required by the chosen branch",
               "ECG when cardiac risk or syncope is present",
-              "Chest X-ray only when indicated",
+              "Chest X-ray only when the branch-specific criteria in this node apply",
               "Syncope ECG glucose anemia and pregnancy tests",
               "Echo Holter or exercise testing after review"
             ],
@@ -2416,7 +2416,7 @@
         "pediatric_chest_syncope_initial_assessment_bundle": {
           "rule_id": "pediatric_chest_syncope_initial_assessment_criteria",
           "source": "criteria",
-          "description": "Initial pediatric chest pain/syncope assessment requires age, symptom pattern, exertion/syncope/palpitations, family history, vitals including orthostatics when indicated, cardiac/respiratory/neurologic exam, targeted ECG/testing, and disposition constraints.",
+          "description": "Initial pediatric chest pain/syncope assessment requires age, symptom pattern, exertion/syncope/palpitations, family history, vitals including orthostatics when the branch-specific criteria in this node apply, cardiac/respiratory/neurologic exam, focused ECG/testing, and disposition constraints.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4179,8 +4179,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal data-availability guard",
-            "edgeLabel": "Internal data-availability guard",
+            "label": "Internal traversal guard",
+            "edgeLabel": "Internal traversal guard",
             "source_ids": [
               "RCH_CHEST_PAIN_CHILD",
               "RCH_SYNCOPE_CHILD",
@@ -4222,7 +4222,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -4230,7 +4230,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
             },
             "missing_data_needed": [
               "age",
@@ -4252,8 +4252,8 @@
           {
             "id": "pediatric_chest_syncope_initial_assessment_bundle",
             "type": "action",
-            "label": "Pediatric chest pain/syncope bedside assessment: age, exertion, syncope/palpitations, family history, vitals/orthostatics, cardiac/respiratory exam, and targeted ECG/testing",
-            "edgeLabel": "Pediatric chest/syncope assessment bundle: ECG when cardiac risk or syncope is present; Chest X-ray only when indicated; Troponin and inflammatory labs when indicated; Syncope ECG glucose anemia and pregnancy tests; Echo Holter or exercise testing after review; Exertional chest pain or syncope; Abnormal cardiac exam or poor perfusion; Family history of early sudden death or cardiomyopathy; Hypoxia respiratory distress or hemoptysis; Abnormal pediatric ECG; Measure blood pressure; Measure heart rate; Measure respiratory rate; Emergency pediatric cardiology escalation; Low-risk chest pain testing restraint; Syncope consultation and discharge route; Respiratory or PE route; Activity restriction and return precautions; Pediatric chest pain, syncope, or palpitations: immediate stabilization or escalation trigger: Exertional chest pain or syncope.; Pediatric chest pain, syncope, or palpitations: treatment or disposition for high-risk or confirmed disease: Emergency pediatric cardiology escalation.; Pediatric chest pain, syncope, or palpitations: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Low-risk chest pain testing restraint.",
+            "label": "Pediatric chest pain/syncope bedside assessment: age, exertion, syncope/palpitations, family history, vitals/orthostatics, cardiac/respiratory exam, and focused ECG/testing",
+            "edgeLabel": "Pediatric chest/syncope assessment bundle: ECG when cardiac risk or syncope is present; Chest X-ray only when the branch-specific criteria in this node apply; Troponin and inflammatory labs when the branch-specific criteria in this node apply; Syncope ECG glucose anemia and pregnancy tests; Echo Holter or exercise testing after review; Exertional chest pain or syncope; Abnormal cardiac exam or poor perfusion; Family history of early sudden death or cardiomyopathy; Hypoxia respiratory distress or hemoptysis; Abnormal pediatric ECG; Emergency pediatric cardiology escalation; Low-risk chest pain testing restraint; Syncope consultation and discharge route; Respiratory or PE route; Activity restriction and return precautions; Pediatric chest pain, syncope, or palpitations: immediate stabilization or escalation trigger: Exertional chest pain or syncope.; Pediatric chest pain, syncope, or palpitations: treatment or disposition for high-risk or confirmed disease: Emergency pediatric cardiology escalation.; Pediatric chest pain, syncope, or palpitations: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Low-risk chest pain testing restraint.",
             "source_ids": [
               "RCH_CHEST_PAIN_CHILD",
               "RCH_SYNCOPE_CHILD",
@@ -4263,7 +4263,7 @@
             "criteria": {
               "rule_id": "pediatric_chest_syncope_initial_assessment_criteria",
               "source": "criteria",
-              "description": "Initial pediatric chest pain/syncope assessment requires age, symptom pattern, exertion/syncope/palpitations, family history, vitals including orthostatics when indicated, cardiac/respiratory/neurologic exam, targeted ECG/testing, and disposition constraints.",
+              "description": "Initial pediatric chest pain/syncope assessment requires age, symptom pattern, exertion/syncope/palpitations, family history, vitals including orthostatics when the branch-specific criteria in this node apply, cardiac/respiratory/neurologic exam, focused ECG/testing, and disposition constraints.",
               "evaluable_from": [
                 "symptoms",
                 "exam",
@@ -4411,7 +4411,7 @@
                 "id": "pediatric_chest_syncope_classification_decision",
                 "type": "decision",
                 "label": "Pediatric chest pain/syncope: classify cardiac risk, respiratory risk, autonomic syncope, low-risk chest pain, mimic, or clinician-review modifier",
-                "edgeLabel": "Pediatric chest/syncope branch ready: history, family history, vitals, orthostatics when indicated, exam/perfusion, oxygenation, ECG when indicated, and respiratory or syncope mimic features are available",
+                "edgeLabel": "Pediatric chest/syncope branch ready: history, family history, vitals, orthostatics when the branch-specific criteria in this node apply, exam/perfusion, oxygenation, ECG when the branch-specific criteria in this node apply, and respiratory or syncope mimic features are available",
                 "source_ids": [
                   "RCH_CHEST_PAIN_CHILD",
                   "RCH_SYNCOPE_CHILD",
@@ -4568,8 +4568,8 @@
                   {
                     "id": "pediatric_chest_syncope_missing_objective_endpoint",
                     "type": "endpoint",
-                    "label": "Internal data-availability guard",
-                    "edgeLabel": "Internal data-availability guard",
+                    "label": "Internal traversal guard",
+                    "edgeLabel": "Internal traversal guard",
                     "source_ids": [
                       "RCH_CHEST_PAIN_CHILD",
                       "RCH_SYNCOPE_CHILD",
@@ -4610,7 +4610,7 @@
                         "cardiac exam"
                       ]
                     },
-                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -4618,7 +4618,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
                     },
                     "missing_data_needed": [
                       "ECG",
@@ -4639,7 +4639,7 @@
                     "id": "pediatric_chest_syncope_cardiac_escalation_endpoint",
                     "type": "endpoint",
                     "label": "Pediatric cardiac escalation: exertional chest pain/syncope, palpitations with syncope, abnormal exam/perfusion, abnormal ECG, cardiac history, or family sudden-death risk",
-                    "edgeLabel": "Cardiac risk branch: Exertional chest pain or syncope; Abnormal cardiac exam or poor perfusion; Family history of early sudden death or cardiomyopathy; Hypoxia respiratory distress or hemoptysis; Abnormal pediatric ECG; Measure blood pressure; Measure heart rate; Measure respiratory rate; QRS >0.12 seconds, QTc <=340 ms or >450 ms, ST shift >2 mm, WPW, long QT, wide-complex tachycardia, hypertrophic cardiomyopathy pattern, or syncope during exercise/chest pain/palpitations",
+                    "edgeLabel": "Cardiac risk branch: Exertional chest pain or syncope; Abnormal cardiac exam or poor perfusion; Family history of early sudden death or cardiomyopathy; Hypoxia respiratory distress or hemoptysis; Abnormal pediatric ECG; QRS >0.12 seconds, QTc <=340 ms or >450 ms, ST shift >2 mm, WPW, long QT, wide-complex tachycardia, hypertrophic cardiomyopathy pattern, or syncope during exercise/chest pain/palpitations",
                     "source_ids": [
                       "RCH_CHEST_PAIN_CHILD",
                       "RCH_SYNCOPE_CHILD",
@@ -5059,7 +5059,7 @@
                         }
                       ]
                     },
-                    "action": "Route to the respiratory/PE/pneumothorax/trauma pathway: give oxygen if hypoxemic, obtain CXR when indicated, discuss CTPA/advanced imaging with a senior clinician when PE risk exists, and escalate for respiratory distress, hemoptysis, stridor, unilateral absent breath sounds, or ongoing hypoxia.",
+                    "action": "Route to the respiratory/PE/pneumothorax/trauma pathway: give oxygen if hypoxemic, obtain CXR when the branch-specific criteria in this node apply, discuss CTPA/advanced imaging with a senior clinician when PE risk exists, and escalate for respiratory distress, hemoptysis, stridor, unilateral absent breath sounds, or ongoing hypoxia.",
                     "children": [],
                     "endpoint_type": "diagnostic_step",
                     "guideline_cutoffs": [
@@ -5876,7 +5876,7 @@
                         }
                       ]
                     },
-                    "action": "Check BGL shortly after the event when indicated, FBE if anemia is suspected, pregnancy testing when relevant, toxin/stimulant exposure, and neurologic features; refer seizure-suspicious presentations to pediatric/neurology rather than labeling as benign syncope.",
+                    "action": "Check BGL shortly after the event when the branch-specific criteria in this node apply, FBE if anemia is suspected, pregnancy testing when relevant, toxin/stimulant exposure, and neurologic features; refer seizure-suspicious presentations to pediatric/neurology rather than labeling as benign syncope.",
                     "children": [],
                     "endpoint_type": "diagnostic_step",
                     "guideline_cutoffs": [
@@ -7026,7 +7026,7 @@
                             }
                           ]
                         },
-                        "action": "Document diagnosis, red flags screened, activity restriction if cardiac review is pending, pending result owners, follow-up with pediatrician/cardiology/neurology/respiratory as indicated, hydration/salt plan for autonomic syncope when appropriate, and return precautions for exertional chest pain/syncope, palpitations with syncope, abnormal breathing, hypoxia, hemoptysis, fever, worsening pain, poor perfusion, or recurrent events.",
+                        "action": "Document diagnosis, red flags screened, activity restriction if cardiac review is pending, pending result owners, follow-up with pediatrician/cardiology/neurology/respiratory when the branch-specific criteria in this node apply, hydration/salt plan for autonomic syncope when appropriate, and return precautions for exertional chest pain/syncope, palpitations with syncope, abnormal breathing, hypoxia, hemoptysis, fever, worsening pain, poor perfusion, or recurrent events.",
                         "children": [],
                         "endpoint_type": "follow_up",
                         "monitoring_plan": [
@@ -7043,8 +7043,7 @@
                       "repeat oxygen saturation/work of breathing",
                       "review ECG QRS/QTc/ST findings",
                       "repeat orthostatic BP/HR when syncope/orthostatic symptoms persist",
-                      "confirm activity restriction and follow-up",
-                      "Measure blood pressure; Measure heart rate; Measure respiratory rate; Measure oxygen saturation; Measure temperature; Measure orthostatic blood pressure; Measure pain score"
+                      "confirm activity restriction and follow-up"
                     ],
                     "guideline_cutoffs": [
                       {
@@ -7417,8 +7416,8 @@
               }
             ],
             "parallel_actions": [
-              "ECG when cardiac risk or syncope is present; Chest X-ray only when indicated; Troponin and inflammatory labs when indicated; Syncope ECG glucose anemia and pregnancy tests; Echo Holter or exercise testing after review",
-              "Exertional chest pain or syncope; Abnormal cardiac exam or poor perfusion; Family history of early sudden death or cardiomyopathy; Hypoxia respiratory distress or hemoptysis; Abnormal pediatric ECG; Measure blood pressure; Measure heart rate; Measure respiratory rate",
+              "ECG when cardiac risk or syncope is present; Chest X-ray only when the branch-specific criteria in this node apply; Troponin and inflammatory labs when the branch-specific criteria in this node apply; Syncope ECG glucose anemia and pregnancy tests; Echo Holter or exercise testing after review",
+              "Exertional chest pain or syncope; Abnormal cardiac exam or poor perfusion; Family history of early sudden death or cardiomyopathy; Hypoxia respiratory distress or hemoptysis; Abnormal pediatric ECG",
               "Emergency pediatric cardiology escalation; Low-risk chest pain testing restraint; Syncope consultation and discharge route; Respiratory or PE route; Activity restriction and return precautions; Pediatric chest pain, syncope, or palpitations: immediate stabilization or escalation trigger: Exertional chest pain or syncope.; Pediatric chest pain, syncope, or palpitations: treatment or disposition for high-risk or confirmed disease: Emergency pediatric cardiology escalation.; Pediatric chest pain, syncope, or palpitations: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Low-risk chest pain testing restraint.",
               "orthostatic blood pressure and heart rate when syncope",
               "ECG at least once for syncope",
@@ -7567,7 +7566,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Internal data-availability guard",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -7579,7 +7578,7 @@
           "scenario_id": "missing_ecg_orthostatics",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "pediatric_chest_syncope_missing_objective_endpoint",
-          "expected_active_branch": "Internal data-availability guard",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "pediatric_chest_syncope_initial_assessment_bundle",
@@ -7593,7 +7592,7 @@
           "scenario_id": "exertional_syncope_abnormal_ecg",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "pediatric_chest_syncope_cardiac_escalation_endpoint",
-          "expected_active_branch": "Cardiac risk branch: Exertional chest pain or syncope; Abnormal cardiac exam or poor perfusion; Family history of early sudden death or cardiomyopathy; Hypoxia respiratory distress or hemoptysis; Abnormal pediatric ECG; Measure blood pressure; Measure heart rate; Measure respiratory rate; QRS >0.12 seconds, QTc <=340 ms or >450 ms, ST shift >2 mm, WPW, long QT, wide-complex tachycardia, hypertrophic cardiomyopathy pattern, or syncope during exercise/chest pain/palpitations",
+          "expected_active_branch": "Cardiac risk branch: Exertional chest pain or syncope; Abnormal cardiac exam or poor perfusion; Family history of early sudden death or cardiomyopathy; Hypoxia respiratory distress or hemoptysis; Abnormal pediatric ECG; QRS >0.12 seconds, QTc <=340 ms or >450 ms, ST shift >2 mm, WPW, long QT, wide-complex tachycardia, hypertrophic cardiomyopathy pattern, or syncope during exercise/chest pain/palpitations",
           "expected_path_node_ids": [
             "root",
             "pediatric_chest_syncope_initial_assessment_bundle",

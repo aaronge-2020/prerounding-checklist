@@ -2623,7 +2623,7 @@
         {
           "threshold": "6 months",
           "evidence_item_id": "ed_definition_and_cv_screen",
-          "label": "ED evaluation: persistent inability to achieve or maintain erection; assess CV risk because ED can precede CAD/MI/stroke by up to 5 years",
+          "label": "ED evaluation",
           "source_ids": [
             "STATPEARLS_ED_2024",
             "ENDOTEXT_ED_2022"
@@ -2633,7 +2633,7 @@
         {
           "threshold": "up to 5 years",
           "evidence_item_id": "ed_definition_and_cv_screen",
-          "label": "ED evaluation: persistent inability to achieve or maintain erection; assess CV risk because ED can precede CAD/MI/stroke by up to 5 years",
+          "label": "ED evaluation",
           "source_ids": [
             "STATPEARLS_ED_2024",
             "ENDOTEXT_ED_2022"
@@ -2643,7 +2643,7 @@
         {
           "threshold": "A1c 5.7-6.4%",
           "evidence_item_id": "ed_initial_labs_metabolic_cutoffs",
-          "label": "ED metabolic screen: A1c 5.7-6.4% is prediabetes; A1c >=6.5%, fasting glucose >=126 mg/dL, 2-hour OGTT >=200 mg/dL, or random glucose >=200 mg/dL with symptoms diagnoses diabetes",
+          "label": "ED metabolic screen",
           "source_ids": [
             "ADA_DIAGNOSIS_2026",
             "ENDOTEXT_ED_2022",
@@ -2654,7 +2654,7 @@
         {
           "threshold": "A1c >=6.5%",
           "evidence_item_id": "ed_initial_labs_metabolic_cutoffs",
-          "label": "ED metabolic screen: A1c 5.7-6.4% is prediabetes; A1c >=6.5%, fasting glucose >=126 mg/dL, 2-hour OGTT >=200 mg/dL, or random glucose >=200 mg/dL with symptoms diagnoses diabetes",
+          "label": "ED metabolic screen",
           "source_ids": [
             "ADA_DIAGNOSIS_2026",
             "ENDOTEXT_ED_2022",
@@ -2665,7 +2665,7 @@
         {
           "threshold": "fasting glucose 100-125 mg/dL",
           "evidence_item_id": "ed_initial_labs_metabolic_cutoffs",
-          "label": "ED metabolic screen: A1c 5.7-6.4% is prediabetes; A1c >=6.5%, fasting glucose >=126 mg/dL, 2-hour OGTT >=200 mg/dL, or random glucose >=200 mg/dL with symptoms diagnoses diabetes",
+          "label": "ED metabolic screen",
           "source_ids": [
             "ADA_DIAGNOSIS_2026",
             "ENDOTEXT_ED_2022",
@@ -2676,7 +2676,7 @@
         {
           "threshold": "fasting glucose >=126 mg/dL",
           "evidence_item_id": "ed_initial_labs_metabolic_cutoffs",
-          "label": "ED metabolic screen: A1c 5.7-6.4% is prediabetes; A1c >=6.5%, fasting glucose >=126 mg/dL, 2-hour OGTT >=200 mg/dL, or random glucose >=200 mg/dL with symptoms diagnoses diabetes",
+          "label": "ED metabolic screen",
           "source_ids": [
             "ADA_DIAGNOSIS_2026",
             "ENDOTEXT_ED_2022",
@@ -2687,7 +2687,7 @@
         {
           "threshold": "2-hour OGTT 140-199 mg/dL",
           "evidence_item_id": "ed_initial_labs_metabolic_cutoffs",
-          "label": "ED metabolic screen: A1c 5.7-6.4% is prediabetes; A1c >=6.5%, fasting glucose >=126 mg/dL, 2-hour OGTT >=200 mg/dL, or random glucose >=200 mg/dL with symptoms diagnoses diabetes",
+          "label": "ED metabolic screen",
           "source_ids": [
             "ADA_DIAGNOSIS_2026",
             "ENDOTEXT_ED_2022",
@@ -2698,7 +2698,7 @@
         {
           "threshold": "2-hour OGTT >=200 mg/dL",
           "evidence_item_id": "ed_initial_labs_metabolic_cutoffs",
-          "label": "ED metabolic screen: A1c 5.7-6.4% is prediabetes; A1c >=6.5%, fasting glucose >=126 mg/dL, 2-hour OGTT >=200 mg/dL, or random glucose >=200 mg/dL with symptoms diagnoses diabetes",
+          "label": "ED metabolic screen",
           "source_ids": [
             "ADA_DIAGNOSIS_2026",
             "ENDOTEXT_ED_2022",
@@ -2709,7 +2709,7 @@
         {
           "threshold": "random glucose >=200 mg/dL",
           "evidence_item_id": "ed_initial_labs_metabolic_cutoffs",
-          "label": "ED metabolic screen: A1c 5.7-6.4% is prediabetes; A1c >=6.5%, fasting glucose >=126 mg/dL, 2-hour OGTT >=200 mg/dL, or random glucose >=200 mg/dL with symptoms diagnoses diabetes",
+          "label": "ED metabolic screen",
           "source_ids": [
             "ADA_DIAGNOSIS_2026",
             "ENDOTEXT_ED_2022",
@@ -2720,7 +2720,7 @@
         {
           "threshold": "testosterone <150 ng/dL",
           "evidence_item_id": "ed_pituitary_prolactin_cutoffs",
-          "label": "Pituitary ED branch: testosterone <150 ng/dL, persistent hyperprolactinemia, prolactin >250 ug/L, prolactin >500 ug/L, macroadenoma >10 mm, or 1:100 dilution hook-effect concern",
+          "label": "Pituitary ED branch",
           "source_ids": [
             "ES_TESTOSTERONE_2018",
             "ES_HYPERPROLACTINEMIA_2011"
@@ -2730,7 +2730,7 @@
         {
           "threshold": "prolactin >ULN",
           "evidence_item_id": "ed_pituitary_prolactin_cutoffs",
-          "label": "Pituitary ED branch: testosterone <150 ng/dL, persistent hyperprolactinemia, prolactin >250 ug/L, prolactin >500 ug/L, macroadenoma >10 mm, or 1:100 dilution hook-effect concern",
+          "label": "Pituitary ED branch",
           "source_ids": [
             "ES_TESTOSTERONE_2018",
             "ES_HYPERPROLACTINEMIA_2011"
@@ -2740,7 +2740,7 @@
         {
           "threshold": "prolactin <25 ug/L",
           "evidence_item_id": "ed_pituitary_prolactin_cutoffs",
-          "label": "Pituitary ED branch: testosterone <150 ng/dL, persistent hyperprolactinemia, prolactin >250 ug/L, prolactin >500 ug/L, macroadenoma >10 mm, or 1:100 dilution hook-effect concern",
+          "label": "Pituitary ED branch",
           "source_ids": [
             "ES_TESTOSTERONE_2018",
             "ES_HYPERPROLACTINEMIA_2011"
@@ -2750,7 +2750,7 @@
         {
           "threshold": "prolactin >250 ug/L",
           "evidence_item_id": "ed_pituitary_prolactin_cutoffs",
-          "label": "Pituitary ED branch: testosterone <150 ng/dL, persistent hyperprolactinemia, prolactin >250 ug/L, prolactin >500 ug/L, macroadenoma >10 mm, or 1:100 dilution hook-effect concern",
+          "label": "Pituitary ED branch",
           "source_ids": [
             "ES_TESTOSTERONE_2018",
             "ES_HYPERPROLACTINEMIA_2011"
@@ -2760,7 +2760,7 @@
         {
           "threshold": "prolactin >500 ug/L",
           "evidence_item_id": "ed_pituitary_prolactin_cutoffs",
-          "label": "Pituitary ED branch: testosterone <150 ng/dL, persistent hyperprolactinemia, prolactin >250 ug/L, prolactin >500 ug/L, macroadenoma >10 mm, or 1:100 dilution hook-effect concern",
+          "label": "Pituitary ED branch",
           "source_ids": [
             "ES_TESTOSTERONE_2018",
             "ES_HYPERPROLACTINEMIA_2011"
@@ -2770,7 +2770,7 @@
         {
           "threshold": "macroadenoma >10 mm",
           "evidence_item_id": "ed_pituitary_prolactin_cutoffs",
-          "label": "Pituitary ED branch: testosterone <150 ng/dL, persistent hyperprolactinemia, prolactin >250 ug/L, prolactin >500 ug/L, macroadenoma >10 mm, or 1:100 dilution hook-effect concern",
+          "label": "Pituitary ED branch",
           "source_ids": [
             "ES_TESTOSTERONE_2018",
             "ES_HYPERPROLACTINEMIA_2011"
@@ -2780,7 +2780,7 @@
         {
           "threshold": "sildenafil 50 mg",
           "evidence_item_id": "ed_pde5_safety_dosing_cutoffs",
-          "label": "PDE5 inhibitor branch: contraindicated with nitrates; high-risk CV status needs stabilization; sildenafil starts 50 mg 1 hour before sex max daily, lower 25 mg in older/renal/CYP3A4 risk",
+          "label": "PDE5 inhibitor branch",
           "source_ids": [
             "ENDOTEXT_ED_2022"
           ],
@@ -2789,7 +2789,7 @@
         {
           "threshold": "1 hour",
           "evidence_item_id": "ed_pde5_safety_dosing_cutoffs",
-          "label": "PDE5 inhibitor branch: contraindicated with nitrates; high-risk CV status needs stabilization; sildenafil starts 50 mg 1 hour before sex max daily, lower 25 mg in older/renal/CYP3A4 risk",
+          "label": "PDE5 inhibitor branch",
           "source_ids": [
             "ENDOTEXT_ED_2022"
           ],
@@ -2798,7 +2798,7 @@
         {
           "threshold": "sildenafil 25 mg",
           "evidence_item_id": "ed_pde5_safety_dosing_cutoffs",
-          "label": "PDE5 inhibitor branch: contraindicated with nitrates; high-risk CV status needs stabilization; sildenafil starts 50 mg 1 hour before sex max daily, lower 25 mg in older/renal/CYP3A4 risk",
+          "label": "PDE5 inhibitor branch",
           "source_ids": [
             "ENDOTEXT_ED_2022"
           ],
@@ -2807,7 +2807,7 @@
         {
           "threshold": "tadalafil 5 mg",
           "evidence_item_id": "ed_pde5_safety_dosing_cutoffs",
-          "label": "PDE5 inhibitor branch: contraindicated with nitrates; high-risk CV status needs stabilization; sildenafil starts 50 mg 1 hour before sex max daily, lower 25 mg in older/renal/CYP3A4 risk",
+          "label": "PDE5 inhibitor branch",
           "source_ids": [
             "ENDOTEXT_ED_2022"
           ],
@@ -2816,7 +2816,7 @@
         {
           "threshold": "vardenafil 5 mg",
           "evidence_item_id": "ed_pde5_safety_dosing_cutoffs",
-          "label": "PDE5 inhibitor branch: contraindicated with nitrates; high-risk CV status needs stabilization; sildenafil starts 50 mg 1 hour before sex max daily, lower 25 mg in older/renal/CYP3A4 risk",
+          "label": "PDE5 inhibitor branch",
           "source_ids": [
             "ENDOTEXT_ED_2022"
           ],
@@ -2825,7 +2825,7 @@
         {
           "threshold": "age >65 years",
           "evidence_item_id": "ed_pde5_safety_dosing_cutoffs",
-          "label": "PDE5 inhibitor branch: contraindicated with nitrates; high-risk CV status needs stabilization; sildenafil starts 50 mg 1 hour before sex max daily, lower 25 mg in older/renal/CYP3A4 risk",
+          "label": "PDE5 inhibitor branch",
           "source_ids": [
             "ENDOTEXT_ED_2022"
           ],
@@ -2834,7 +2834,7 @@
         {
           "threshold": "4 hours",
           "evidence_item_id": "ed_pde5_safety_dosing_cutoffs",
-          "label": "PDE5 inhibitor branch: contraindicated with nitrates; high-risk CV status needs stabilization; sildenafil starts 50 mg 1 hour before sex max daily, lower 25 mg in older/renal/CYP3A4 risk",
+          "label": "PDE5 inhibitor branch",
           "source_ids": [
             "ENDOTEXT_ED_2022"
           ],
@@ -2843,7 +2843,7 @@
         {
           "threshold": "PSA >4 ng/mL",
           "evidence_item_id": "ed_testosterone_therapy_safety_cutoffs",
-          "label": "Testosterone therapy safety: avoid/hold for fertility intent, prostate/breast cancer, PSA >4 ng/mL, PSA >3 ng/mL high-risk without urology review, hematocrit >54%, untreated severe OSA, uncontrolled HF, or MI/stroke within 6 months",
+          "label": "Testosterone therapy safety",
           "source_ids": [
             "ES_TESTOSTERONE_2018"
           ],
@@ -2852,7 +2852,7 @@
         {
           "threshold": "PSA >3 ng/mL",
           "evidence_item_id": "ed_testosterone_therapy_safety_cutoffs",
-          "label": "Testosterone therapy safety: avoid/hold for fertility intent, prostate/breast cancer, PSA >4 ng/mL, PSA >3 ng/mL high-risk without urology review, hematocrit >54%, untreated severe OSA, uncontrolled HF, or MI/stroke within 6 months",
+          "label": "Testosterone therapy safety",
           "source_ids": [
             "ES_TESTOSTERONE_2018"
           ],
@@ -2861,7 +2861,7 @@
         {
           "threshold": "hematocrit >54%",
           "evidence_item_id": "ed_testosterone_therapy_safety_cutoffs",
-          "label": "Testosterone therapy safety: avoid/hold for fertility intent, prostate/breast cancer, PSA >4 ng/mL, PSA >3 ng/mL high-risk without urology review, hematocrit >54%, untreated severe OSA, uncontrolled HF, or MI/stroke within 6 months",
+          "label": "Testosterone therapy safety",
           "source_ids": [
             "ES_TESTOSTERONE_2018"
           ],
@@ -2870,7 +2870,7 @@
         {
           "threshold": "3-6 months",
           "evidence_item_id": "ed_testosterone_therapy_safety_cutoffs",
-          "label": "Testosterone therapy safety: avoid/hold for fertility intent, prostate/breast cancer, PSA >4 ng/mL, PSA >3 ng/mL high-risk without urology review, hematocrit >54%, untreated severe OSA, uncontrolled HF, or MI/stroke within 6 months",
+          "label": "Testosterone therapy safety",
           "source_ids": [
             "ES_TESTOSTERONE_2018"
           ],
@@ -2879,7 +2879,7 @@
         {
           "threshold": "MI or stroke within 6 months",
           "evidence_item_id": "ed_testosterone_therapy_safety_cutoffs",
-          "label": "Testosterone therapy safety: avoid/hold for fertility intent, prostate/breast cancer, PSA >4 ng/mL, PSA >3 ng/mL high-risk without urology review, hematocrit >54%, untreated severe OSA, uncontrolled HF, or MI/stroke within 6 months",
+          "label": "Testosterone therapy safety",
           "source_ids": [
             "ES_TESTOSTERONE_2018"
           ],
@@ -2888,7 +2888,7 @@
         {
           "threshold": "PSA increase >1.4 ng/mL within 12 months",
           "evidence_item_id": "ed_testosterone_therapy_safety_cutoffs",
-          "label": "Testosterone therapy safety: avoid/hold for fertility intent, prostate/breast cancer, PSA >4 ng/mL, PSA >3 ng/mL high-risk without urology review, hematocrit >54%, untreated severe OSA, uncontrolled HF, or MI/stroke within 6 months",
+          "label": "Testosterone therapy safety",
           "source_ids": [
             "ES_TESTOSTERONE_2018"
           ],
@@ -2897,7 +2897,7 @@
         {
           "threshold": "confirmed PSA >4 ng/mL",
           "evidence_item_id": "ed_testosterone_therapy_safety_cutoffs",
-          "label": "Testosterone therapy safety: avoid/hold for fertility intent, prostate/breast cancer, PSA >4 ng/mL, PSA >3 ng/mL high-risk without urology review, hematocrit >54%, untreated severe OSA, uncontrolled HF, or MI/stroke within 6 months",
+          "label": "Testosterone therapy safety",
           "source_ids": [
             "ES_TESTOSTERONE_2018"
           ],
@@ -2906,7 +2906,7 @@
         {
           "threshold": "45-90 minutes",
           "evidence_item_id": "ed_injection_priapism_safety_cutoffs",
-          "label": "Injection/priapism safety: intracavernosal therapy after PDE5 failure needs training; erection lasting >4 hours is emergency care",
+          "label": "Injection/priapism safety",
           "source_ids": [
             "STATPEARLS_ED_2024",
             "ENDOTEXT_ED_2022"
@@ -2916,7 +2916,7 @@
         {
           "threshold": ">4 hours",
           "evidence_item_id": "ed_injection_priapism_safety_cutoffs",
-          "label": "Injection/priapism safety: intracavernosal therapy after PDE5 failure needs training; erection lasting >4 hours is emergency care",
+          "label": "Injection/priapism safety",
           "source_ids": [
             "STATPEARLS_ED_2024",
             "ENDOTEXT_ED_2022"
@@ -3035,7 +3035,7 @@
           {
             "domain": "imaging_results",
             "exact_data_needed": [
-              "source-directed imaging/ECG/procedure results when indicated",
+              "imaging, ECG, culture, pathology, or procedure result required by the chosen branch",
               "TSH/prolactin when low libido, gynecomastia, infertility, or pituitary symptoms.",
               "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
               "Gonadal axis safety tests: pregnancy test when possible, prolactin/TSH, LH/FSH with estradiol or repeated early-morning testosterone, and focused androgen, semen, bone, or metabolic testing based on syndrome and fertility goals.",
@@ -4903,8 +4903,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal data-availability guard",
-            "edgeLabel": "Internal data-availability guard",
+            "label": "Internal traversal guard",
+            "edgeLabel": "Internal traversal guard",
             "source_ids": [
               "ENDOTEXT_ED_2022",
               "STATPEARLS_ED_2024",
@@ -4950,7 +4950,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -4958,7 +4958,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
             },
             "missing_data_needed": [
               "erectile symptom duration",
@@ -4980,7 +4980,7 @@
             "id": "erectile_dysfunction_initial_assessment",
             "type": "action",
             "label": "ED intake, exam, labs, and safety screen",
-            "edgeLabel": "Assess erection pattern, libido, CV symptoms/exercise tolerance, meds/substances, BP/HR/pulses, genital/testicular/neuro exam, A1c/glucose/lipids, and testosterone/prolactin/TSH when indicated",
+            "edgeLabel": "Assess erection pattern, libido, CV symptoms/exercise tolerance, meds/substances, BP/HR/pulses, genital/testicular/neuro exam, A1c/glucose/lipids, and testosterone/prolactin/TSH when the branch-specific criteria in this node apply",
             "source_ids": [
               "ENDOTEXT_ED_2022",
               "STATPEARLS_ED_2024",
@@ -5162,7 +5162,7 @@
                 "id": "erectile_dysfunction_risk_decision",
                 "type": "decision",
                 "label": "Classify ED by danger, endocrine, metabolic, and medication safety",
-                "edgeLabel": "History, exam, vitals, metabolic labs, testosterone/prolactin/TSH when indicated, medication review, and therapy-safety data are available",
+                "edgeLabel": "History, exam, vitals, metabolic labs, testosterone/prolactin/TSH when the branch-specific criteria in this node apply, medication review, and therapy-safety data are available",
                 "source_ids": [
                   "ENDOTEXT_ED_2022",
                   "STATPEARLS_ED_2024",
@@ -5399,8 +5399,8 @@
                   {
                     "id": "erectile_dysfunction_missing_objective_endpoint",
                     "type": "endpoint",
-                    "label": "Internal data-availability guard",
-                    "edgeLabel": "Internal data-availability guard",
+                    "label": "Internal traversal guard",
+                    "edgeLabel": "Internal traversal guard",
                     "source_ids": [
                       "ENDOTEXT_ED_2022",
                       "STATPEARLS_ED_2024",
@@ -5447,7 +5447,7 @@
                         "hematocrit"
                       ]
                     },
-                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -5455,7 +5455,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
                     },
                     "missing_data_needed": [
                       "blood pressure and heart rate",
@@ -6971,7 +6971,7 @@
                                 }
                               ]
                             },
-                            "action": "Escalate to ED/cardiology/urology/endocrinology as indicated, stop the unsafe ED medication, repeat abnormal vitals, exam, glucose/A1c/lipid, testosterone/prolactin/TSH, PSA/hematocrit, or vascular findings as relevant, reassess mimics, verify PDE5 timing and adequate trials before labeling failure, and route priapism >4 hours, visual/hearing loss, chest pain, neurologic deficit, or pituitary mass-effect symptoms urgently.",
+                            "action": "Escalate to ED/cardiology/urology/endocrinology when the branch-specific criteria in this node apply, stop the unsafe ED medication, repeat abnormal vitals, exam, glucose/A1c/lipid, testosterone/prolactin/TSH, PSA/hematocrit, or vascular findings as relevant, reassess mimics, verify PDE5 timing and adequate trials before labeling failure, and route priapism >4 hours, visual/hearing loss, chest pain, neurologic deficit, or pituitary mass-effect symptoms urgently.",
                             "children": [],
                             "endpoint_type": "escalation_disposition",
                             "guideline_cutoffs": [
@@ -8059,7 +8059,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Internal data-availability guard",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -8071,7 +8071,7 @@
           "scenario_id": "missing_labs_medication_safety",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "erectile_dysfunction_missing_objective_endpoint",
-          "expected_active_branch": "Internal data-availability guard",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "erectile_dysfunction_initial_assessment",

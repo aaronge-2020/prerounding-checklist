@@ -2714,7 +2714,7 @@
         {
           "threshold": "cortisol <3 ug/dL",
           "evidence_item_id": "central_ai_morning_cortisol_bands",
-          "label": "Central adrenal insufficiency: 8-9 AM cortisol below 3 ug/dL supports diagnosis; above 15 ug/dL usually excludes it",
+          "label": "Central adrenal insufficiency",
           "source_ids": [
             "ES_HYPOPITUITARISM_2016"
           ],
@@ -2723,7 +2723,7 @@
         {
           "threshold": "cortisol >15 ug/dL",
           "evidence_item_id": "central_ai_morning_cortisol_bands",
-          "label": "Central adrenal insufficiency: 8-9 AM cortisol below 3 ug/dL supports diagnosis; above 15 ug/dL usually excludes it",
+          "label": "Central adrenal insufficiency",
           "source_ids": [
             "ES_HYPOPITUITARISM_2016"
           ],
@@ -2732,7 +2732,7 @@
         {
           "threshold": "3-15 ug/dL",
           "evidence_item_id": "central_ai_stimulation_indeterminate",
-          "label": "Central adrenal insufficiency: dynamic testing when morning cortisol is 3-15 ug/dL",
+          "label": "Central adrenal insufficiency",
           "source_ids": [
             "ES_HYPOPITUITARISM_2016"
           ],
@@ -2741,7 +2741,7 @@
         {
           "threshold": "peak cortisol <18.1 ug/dL",
           "evidence_item_id": "central_ai_stimulation_indeterminate",
-          "label": "Central adrenal insufficiency: dynamic testing when morning cortisol is 3-15 ug/dL",
+          "label": "Central adrenal insufficiency",
           "source_ids": [
             "ES_HYPOPITUITARISM_2016"
           ],
@@ -2750,7 +2750,7 @@
         {
           "threshold": "30 minutes",
           "evidence_item_id": "central_ai_stimulation_indeterminate",
-          "label": "Central adrenal insufficiency: dynamic testing when morning cortisol is 3-15 ug/dL",
+          "label": "Central adrenal insufficiency",
           "source_ids": [
             "ES_HYPOPITUITARISM_2016"
           ],
@@ -2759,7 +2759,7 @@
         {
           "threshold": "60 minutes",
           "evidence_item_id": "central_ai_stimulation_indeterminate",
-          "label": "Central adrenal insufficiency: dynamic testing when morning cortisol is 3-15 ug/dL",
+          "label": "Central adrenal insufficiency",
           "source_ids": [
             "ES_HYPOPITUITARISM_2016"
           ],
@@ -2768,7 +2768,7 @@
         {
           "threshold": "50-100 mg",
           "evidence_item_id": "suspected_secondary_adrenal_crisis",
-          "label": "Suspected secondary adrenal crisis: immediate hydrocortisone 50-100 mg",
+          "label": "Suspected secondary adrenal crisis",
           "source_ids": [
             "ES_HYPOPITUITARISM_2016"
           ],
@@ -2777,7 +2777,7 @@
         {
           "threshold": "free T4 below reference range",
           "evidence_item_id": "central_hypothyroidism_free_t4_sequence",
-          "label": "Central hypothyroidism: evaluate adrenal insufficiency before levothyroxine and titrate by free T4, not TSH",
+          "label": "Central hypothyroidism",
           "source_ids": [
             "ES_HYPOPITUITARISM_2016"
           ],
@@ -2786,7 +2786,7 @@
         {
           "threshold": "0.2-0.4 mg/day",
           "evidence_item_id": "growth_hormone_replacement_starting_doses",
-          "label": "Adult GH deficiency replacement: start 0.2-0.4 mg/day if age below 60 and 0.1-0.2 mg/day if age above 60",
+          "label": "Adult GH deficiency replacement",
           "source_ids": [
             "ES_HYPOPITUITARISM_2016"
           ],
@@ -2795,7 +2795,7 @@
         {
           "threshold": "age <60 years",
           "evidence_item_id": "growth_hormone_replacement_starting_doses",
-          "label": "Adult GH deficiency replacement: start 0.2-0.4 mg/day if age below 60 and 0.1-0.2 mg/day if age above 60",
+          "label": "Adult GH deficiency replacement",
           "source_ids": [
             "ES_HYPOPITUITARISM_2016"
           ],
@@ -2804,7 +2804,7 @@
         {
           "threshold": "0.1-0.2 mg/day",
           "evidence_item_id": "growth_hormone_replacement_starting_doses",
-          "label": "Adult GH deficiency replacement: start 0.2-0.4 mg/day if age below 60 and 0.1-0.2 mg/day if age above 60",
+          "label": "Adult GH deficiency replacement",
           "source_ids": [
             "ES_HYPOPITUITARISM_2016"
           ],
@@ -2813,7 +2813,7 @@
         {
           "threshold": "age >60 years",
           "evidence_item_id": "growth_hormone_replacement_starting_doses",
-          "label": "Adult GH deficiency replacement: start 0.2-0.4 mg/day if age below 60 and 0.1-0.2 mg/day if age above 60",
+          "label": "Adult GH deficiency replacement",
           "source_ids": [
             "ES_HYPOPITUITARISM_2016"
           ],
@@ -2822,7 +2822,7 @@
         {
           "threshold": "IGF-1 below ULN",
           "evidence_item_id": "growth_hormone_replacement_starting_doses",
-          "label": "Adult GH deficiency replacement: start 0.2-0.4 mg/day if age below 60 and 0.1-0.2 mg/day if age above 60",
+          "label": "Adult GH deficiency replacement",
           "source_ids": [
             "ES_HYPOPITUITARISM_2016"
           ],
@@ -2831,7 +2831,7 @@
         {
           "threshold": "free T4 below reference range",
           "evidence_item_id": "pituitary_replacement_interactions",
-          "label": "Hormone interaction safety: GH can unmask central hypothyroidism and glucocorticoids can unmask DI",
+          "label": "Hormone interaction safety",
           "source_ids": [
             "ES_HYPOPITUITARISM_2016"
           ],
@@ -2908,7 +2908,7 @@
               "8 AM cortisol +/- ACTH stimulation.",
               "Free T4 with TSH.",
               "LH/FSH with testosterone or estradiol.",
-              "Prolactin, IGF-1 and dynamic GH testing when indicated.",
+              "Prolactin, IGF-1 and dynamic GH testing when the branch-specific criteria in this node apply.",
               "Pituitary MRI.",
               "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
               "8-9 AM cortisol",
@@ -2928,9 +2928,9 @@
           {
             "domain": "imaging_results",
             "exact_data_needed": [
-              "source-directed imaging/ECG/procedure results when indicated",
+              "imaging, ECG, culture, pathology, or procedure result required by the chosen branch",
               "8 AM cortisol +/- ACTH stimulation.",
-              "Prolactin, IGF-1 and dynamic GH testing when indicated.",
+              "Prolactin, IGF-1 and dynamic GH testing when the branch-specific criteria in this node apply.",
               "Pituitary MRI.",
               "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
               "Pituitary safety tests: check 8 AM cortisol/ACTH before thyroid replacement decisions, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, sodium/osmolality, and MRI/visual-field pathway when mass effect is possible."
@@ -5300,8 +5300,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal data-availability guard",
-            "edgeLabel": "Internal data-availability guard",
+            "label": "Internal traversal guard",
+            "edgeLabel": "Internal traversal guard",
             "source_ids": [
               "ES_HYPOPITUITARISM_2016",
               "ES_ADRENAL_INSUFFICIENCY_2016",
@@ -5341,7 +5341,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -5349,7 +5349,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
             },
             "missing_data_needed": [
               "headache/vision/cranial nerve findings",
@@ -5791,8 +5791,8 @@
                   {
                     "id": "hypopituitarism_missing_axis_data_endpoint",
                     "type": "endpoint",
-                    "label": "Internal data-availability guard",
-                    "edgeLabel": "Internal data-availability guard",
+                    "label": "Internal traversal guard",
+                    "edgeLabel": "Internal traversal guard",
                     "source_ids": [
                       "ES_HYPOPITUITARISM_2016",
                       "ES_ADRENAL_INSUFFICIENCY_2016",
@@ -5831,7 +5831,7 @@
                         "pituitary MRI/visual fields"
                       ]
                     },
-                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -5839,7 +5839,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
                     },
                     "missing_data_needed": [
                       "8-9 AM cortisol",
@@ -7834,7 +7834,7 @@
                             }
                           ]
                         },
-                        "action": "Evaluate LH/FSH with testosterone or estradiol, prolactin, IGF-1 and dynamic GH testing when indicated, pregnancy/fertility goals, tumor status, contraindications, and cardiometabolic or bone risk; if proven adult GH deficiency has no contraindication, start GH 0.2-0.4 mg/day when age is below 60 years or 0.1-0.2 mg/day when age is above 60 years, then titrate to keep IGF-1 below ULN and reduce for side effects.",
+                        "action": "Evaluate LH/FSH with testosterone or estradiol, prolactin, IGF-1 and dynamic GH testing when the branch-specific criteria in this node apply, pregnancy/fertility goals, tumor status, contraindications, and cardiometabolic or bone risk; if proven adult GH deficiency has no contraindication, start GH 0.2-0.4 mg/day when age is below 60 years or 0.1-0.2 mg/day when age is above 60 years, then titrate to keep IGF-1 below ULN and reduce for side effects.",
                         "children": [],
                         "endpoint_type": "clinician_review_handoff",
                         "review_needed_reason": "Sex-steroid, fertility, GH, tumor, and prolactin management depends on reproductive goals, tumor type/activity, contraindications, and local endocrine protocols.",
@@ -9208,7 +9208,7 @@
                     "action": "Document which pituitary axis or imaging findings argue against hypopituitarism, treat emergency adrenal risk if still uncertain, then route to the competing primary endocrine, medication, renal/osmotic, pregnancy/lactation, inflammatory, infectious, malignant, or other sellar pathway.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Primary gland disease, medication effect, physiologic state, or nonpituitary sellar pathology changes the active pathway."
+                    "review_needed_reason": "Primary gland disease, medication effect, physiologic state, or nonpituitary sellar pathology changes the documented disease branch."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -9817,7 +9817,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Internal data-availability guard",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -9829,7 +9829,7 @@
           "scenario_id": "missing_axis_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "hypopituitarism_missing_axis_data_endpoint",
-          "expected_active_branch": "Internal data-availability guard",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "hypopituitarism_initial_assessment",

@@ -2134,9 +2134,9 @@
       "status": "hand_polished_compact_pathway_needs_clinician_review",
       "source_ids": [
         "RCH_ANAEMIA_CHILD",
-        "RCH_BLOOD_PRODUCT_CHILD",
         "RCH_IRON_DEFICIENCY_CHILD",
         "RCH_ITP_CHILD",
+        "RCH_BLOOD_PRODUCT_CHILD",
         "RCH_PETECHIAE_PURPURA_CHILD",
         "NICE_NG12_SUSPECTED_CANCER_2026",
         "AHRQ_CALIBRATE_DX"
@@ -2151,17 +2151,6 @@
           "access_date": "2026-06-09",
           "date_accessed": "2026-06-09",
           "citation_text": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Anaemia.",
-          "review_status": "reviewed_current_for_scope"
-        },
-        {
-          "source_id": "RCH_BLOOD_PRODUCT_CHILD",
-          "title": "Royal Children's Hospital Clinical Practice Guideline: Blood Product Prescription",
-          "url": "https://www.rch.org.au/clinicalguide/guideline_index/Blood_product_prescription/",
-          "url_or_doi": "https://www.rch.org.au/clinicalguide/guideline_index/Blood_product_prescription/",
-          "year": "2026",
-          "access_date": "2026-06-09",
-          "date_accessed": "2026-06-09",
-          "citation_text": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Blood product prescription.",
           "review_status": "reviewed_current_for_scope"
         },
         {
@@ -2184,6 +2173,17 @@
           "access_date": "2026-06-09",
           "date_accessed": "2026-06-09",
           "citation_text": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Immune thrombocytopenic purpura.",
+          "review_status": "reviewed_current_for_scope"
+        },
+        {
+          "source_id": "RCH_BLOOD_PRODUCT_CHILD",
+          "title": "Royal Children's Hospital Clinical Practice Guideline: Blood Product Prescription",
+          "url": "https://www.rch.org.au/clinicalguide/guideline_index/Blood_product_prescription/",
+          "url_or_doi": "https://www.rch.org.au/clinicalguide/guideline_index/Blood_product_prescription/",
+          "year": "2026",
+          "access_date": "2026-06-09",
+          "date_accessed": "2026-06-09",
+          "citation_text": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Blood product prescription.",
           "review_status": "reviewed_current_for_scope"
         },
         {
@@ -2225,13 +2225,13 @@
         "generated_at": "2026-06-11T00:00:00.000Z",
         "update_scope": "clinical_pathway_tree_v1 plus explicit clinical_cutoff_criteria enrichment where needed",
         "source_material": "Local module evidence rows, source registry metadata, and targeted guideline/literature review for cutoff gaps",
-        "review_note": "Compact tree is cutoff-cited and traversable but requires clinician review for local policy, patient-specific contraindications, and source conflicts."
+        "review_note": "Tree is cutoff-cited and traversable; clinician governance is reserved for explicitly flagged protocol, contraindication, pregnancy, organ-function, or evidence-conflict modifiers."
       },
       "source_thresholds": [
         {
           "threshold": "90 g/L",
           "evidence_item_id": "peds_anemia_age_hb_cutoffs",
-          "label": "Pediatric anemia is Hb below age cutoff: 2 mo <90 g/L; 2-6 mo <95; 6-24 mo <105; 2-11 y <115; >12 y female <120, male <130",
+          "label": "Pediatric anemia is Hb below age cutoff",
           "source_ids": [
             "RCH_ANAEMIA_CHILD"
           ],
@@ -2240,7 +2240,7 @@
         {
           "threshold": "95 g/L",
           "evidence_item_id": "peds_anemia_age_hb_cutoffs",
-          "label": "Pediatric anemia is Hb below age cutoff: 2 mo <90 g/L; 2-6 mo <95; 6-24 mo <105; 2-11 y <115; >12 y female <120, male <130",
+          "label": "Pediatric anemia is Hb below age cutoff",
           "source_ids": [
             "RCH_ANAEMIA_CHILD"
           ],
@@ -2249,7 +2249,7 @@
         {
           "threshold": "105 g/L",
           "evidence_item_id": "peds_anemia_age_hb_cutoffs",
-          "label": "Pediatric anemia is Hb below age cutoff: 2 mo <90 g/L; 2-6 mo <95; 6-24 mo <105; 2-11 y <115; >12 y female <120, male <130",
+          "label": "Pediatric anemia is Hb below age cutoff",
           "source_ids": [
             "RCH_ANAEMIA_CHILD"
           ],
@@ -2258,7 +2258,7 @@
         {
           "threshold": "115 g/L",
           "evidence_item_id": "peds_anemia_age_hb_cutoffs",
-          "label": "Pediatric anemia is Hb below age cutoff: 2 mo <90 g/L; 2-6 mo <95; 6-24 mo <105; 2-11 y <115; >12 y female <120, male <130",
+          "label": "Pediatric anemia is Hb below age cutoff",
           "source_ids": [
             "RCH_ANAEMIA_CHILD"
           ],
@@ -2267,7 +2267,7 @@
         {
           "threshold": "120 g/L",
           "evidence_item_id": "peds_anemia_age_hb_cutoffs",
-          "label": "Pediatric anemia is Hb below age cutoff: 2 mo <90 g/L; 2-6 mo <95; 6-24 mo <105; 2-11 y <115; >12 y female <120, male <130",
+          "label": "Pediatric anemia is Hb below age cutoff",
           "source_ids": [
             "RCH_ANAEMIA_CHILD"
           ],
@@ -2276,7 +2276,7 @@
         {
           "threshold": "130 g/L",
           "evidence_item_id": "peds_anemia_age_hb_cutoffs",
-          "label": "Pediatric anemia is Hb below age cutoff: 2 mo <90 g/L; 2-6 mo <95; 6-24 mo <105; 2-11 y <115; >12 y female <120, male <130",
+          "label": "Pediatric anemia is Hb below age cutoff",
           "source_ids": [
             "RCH_ANAEMIA_CHILD"
           ],
@@ -2285,7 +2285,7 @@
         {
           "threshold": "<60 g/L",
           "evidence_item_id": "peds_anemia_admission_cutoff",
-          "label": "Pediatric anemia red-flag admission: Hb <60 g/L or tachycardia/murmur/heart failure, hemolysis, reticulocytopenia, nucleated RBCs, thrombocytopenia/neutropenia",
+          "label": "Pediatric anemia red-flag admission",
           "source_ids": [
             "RCH_ANAEMIA_CHILD"
           ],
@@ -2294,81 +2294,9 @@
         {
           "threshold": ">3.5%",
           "evidence_item_id": "peds_thalassemia_hba2_cutoff",
-          "label": "Microcytosis mimic: beta-thalassemia trait supported by HbA2 >3.5% on electrophoresis/HPLC after iron deficiency addressed",
+          "label": "Microcytosis mimic",
           "source_ids": [
             "RCH_ANAEMIA_CHILD"
-          ],
-          "review_status": "source_backed"
-        },
-        {
-          "threshold": "70 g/L",
-          "evidence_item_id": "differentialBuckets_peds_heme_transfusion_iron_frame",
-          "label": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity",
-          "source_ids": [
-            "RCH_BLOOD_PRODUCT_CHILD"
-          ],
-          "review_status": "source_backed"
-        },
-        {
-          "threshold": "70 to 90 g/L",
-          "evidence_item_id": "differentialBuckets_peds_heme_transfusion_iron_frame",
-          "label": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity",
-          "source_ids": [
-            "RCH_BLOOD_PRODUCT_CHILD"
-          ],
-          "review_status": "source_backed"
-        },
-        {
-          "threshold": "90 g/L",
-          "evidence_item_id": "differentialBuckets_peds_heme_transfusion_iron_frame",
-          "label": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity",
-          "source_ids": [
-            "RCH_BLOOD_PRODUCT_CHILD"
-          ],
-          "review_status": "source_backed"
-        },
-        {
-          "threshold": "70 g/L",
-          "evidence_item_id": "redFlags_peds_heme_redflag_severe_anemia_threshold",
-          "label": "Severe anemia or symptomatic Hb below transfusion range",
-          "source_ids": [
-            "RCH_BLOOD_PRODUCT_CHILD"
-          ],
-          "review_status": "source_backed"
-        },
-        {
-          "threshold": "70 to 90 g/L",
-          "evidence_item_id": "redFlags_peds_heme_redflag_severe_anemia_threshold",
-          "label": "Severe anemia or symptomatic Hb below transfusion range",
-          "source_ids": [
-            "RCH_BLOOD_PRODUCT_CHILD"
-          ],
-          "review_status": "source_backed"
-        },
-        {
-          "threshold": "70 g/L",
-          "evidence_item_id": "dispositionRules_peds_heme_management_rbc_transfusion_threshold",
-          "label": "RBC transfusion threshold route",
-          "source_ids": [
-            "RCH_BLOOD_PRODUCT_CHILD"
-          ],
-          "review_status": "source_backed"
-        },
-        {
-          "threshold": "70 to 90 g/L",
-          "evidence_item_id": "dispositionRules_peds_heme_management_rbc_transfusion_threshold",
-          "label": "RBC transfusion threshold route",
-          "source_ids": [
-            "RCH_BLOOD_PRODUCT_CHILD"
-          ],
-          "review_status": "source_backed"
-        },
-        {
-          "threshold": "90 g/L",
-          "evidence_item_id": "dispositionRules_peds_heme_management_rbc_transfusion_threshold",
-          "label": "RBC transfusion threshold route",
-          "source_ids": [
-            "RCH_BLOOD_PRODUCT_CHILD"
           ],
           "review_status": "source_backed"
         }
@@ -2421,8 +2349,8 @@
               "RCH_PETECHIAE_PURPURA_CHILD",
               "RCH_ITP_CHILD",
               "NICE_NG12_SUSPECTED_CANCER_2026",
-              "RCH_BLOOD_PRODUCT_CHILD",
               "RCH_IRON_DEFICIENCY_CHILD",
+              "RCH_BLOOD_PRODUCT_CHILD",
               "AHRQ_CALIBRATE_DX"
             ]
           },
@@ -2457,7 +2385,7 @@
               "Coagulation and fibrinogen tests",
               "Group screen and crossmatch when transfusion possible",
               "Hemolysis bilirubin LDH haptoglobin DAT and urine tests",
-              "B12 folate renal liver and inflammatory tests when indicated",
+              "B12 folate renal liver and inflammatory tests when the branch-specific criteria in this node apply",
               "age",
               "sex for >12 years",
               "hemoglobin",
@@ -2479,7 +2407,7 @@
           {
             "domain": "imaging_results",
             "exact_data_needed": [
-              "source-directed imaging/ECG/procedure results when indicated"
+              "imaging, ECG, culture, pathology, or procedure result required by the chosen branch"
             ],
             "source_ids": [
               "RCH_ANAEMIA_CHILD",
@@ -2503,9 +2431,9 @@
             ],
             "source_ids": [
               "RCH_ANAEMIA_CHILD",
-              "RCH_BLOOD_PRODUCT_CHILD",
               "RCH_IRON_DEFICIENCY_CHILD",
               "RCH_ITP_CHILD",
+              "RCH_BLOOD_PRODUCT_CHILD",
               "RCH_PETECHIAE_PURPURA_CHILD",
               "NICE_NG12_SUSPECTED_CANCER_2026",
               "AHRQ_CALIBRATE_DX"
@@ -2522,9 +2450,9 @@
             ],
             "source_ids": [
               "RCH_ANAEMIA_CHILD",
-              "RCH_BLOOD_PRODUCT_CHILD",
               "RCH_IRON_DEFICIENCY_CHILD",
               "RCH_ITP_CHILD",
+              "RCH_BLOOD_PRODUCT_CHILD",
               "RCH_PETECHIAE_PURPURA_CHILD",
               "NICE_NG12_SUSPECTED_CANCER_2026",
               "AHRQ_CALIBRATE_DX"
@@ -2541,9 +2469,9 @@
             ],
             "source_ids": [
               "RCH_ANAEMIA_CHILD",
-              "RCH_BLOOD_PRODUCT_CHILD",
               "RCH_IRON_DEFICIENCY_CHILD",
               "RCH_ITP_CHILD",
+              "RCH_BLOOD_PRODUCT_CHILD",
               "RCH_PETECHIAE_PURPURA_CHILD",
               "NICE_NG12_SUSPECTED_CANCER_2026",
               "AHRQ_CALIBRATE_DX"
@@ -2558,9 +2486,9 @@
             ],
             "source_ids": [
               "RCH_ANAEMIA_CHILD",
-              "RCH_BLOOD_PRODUCT_CHILD",
               "RCH_IRON_DEFICIENCY_CHILD",
               "RCH_ITP_CHILD",
+              "RCH_BLOOD_PRODUCT_CHILD",
               "RCH_PETECHIAE_PURPURA_CHILD",
               "NICE_NG12_SUSPECTED_CANCER_2026",
               "AHRQ_CALIBRATE_DX"
@@ -2585,9 +2513,9 @@
             ],
             "source_ids": [
               "RCH_ANAEMIA_CHILD",
-              "RCH_BLOOD_PRODUCT_CHILD",
               "RCH_IRON_DEFICIENCY_CHILD",
               "RCH_ITP_CHILD",
+              "RCH_BLOOD_PRODUCT_CHILD",
               "RCH_PETECHIAE_PURPURA_CHILD",
               "NICE_NG12_SUSPECTED_CANCER_2026",
               "AHRQ_CALIBRATE_DX"
@@ -2609,9 +2537,9 @@
           ],
           "source_ids": [
             "RCH_ANAEMIA_CHILD",
-            "RCH_BLOOD_PRODUCT_CHILD",
             "RCH_IRON_DEFICIENCY_CHILD",
             "RCH_ITP_CHILD",
+            "RCH_BLOOD_PRODUCT_CHILD",
             "RCH_PETECHIAE_PURPURA_CHILD",
             "NICE_NG12_SUSPECTED_CANCER_2026",
             "AHRQ_CALIBRATE_DX"
@@ -2676,7 +2604,7 @@
         "pediatric_hematology_anemia_bleeding_classification_decision": {
           "rule_id": "pediatric_hematology_anemia_bleeding_classification_criteria",
           "source": "criteria",
-          "description": "Classify Pediatric pallor, anemia, bruising, bleeding, or petechiae against cited thresholds and condition-specific rules: Pediatric anemia is Hb below age cutoff: 90 g/L, 95 g/L, 105 g/L, 115 g/L, 120 g/L | Pediatric anemia red-flag admission: <60 g/L | Microcytosis mimic: >3.5% | Pediatric treatment frame: 70 g/L, 70 to 90 g/L, 90 g/L | Severe anemia or symptomatic Hb below transfusion range: 70 g/L, 70 to 90 g/L",
+          "description": "Classify Pediatric pallor, anemia, bruising, bleeding, or petechiae against cited thresholds and condition-specific rules: Pediatric anemia is Hb below age cutoff: 90 g/L, 95 g/L, 105 g/L, 115 g/L, 120 g/L | Pediatric anemia red-flag admission: <60 g/L | Microcytosis mimic: >3.5%",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2691,9 +2619,9 @@
           ],
           "source_ids": [
             "RCH_ANAEMIA_CHILD",
-            "RCH_BLOOD_PRODUCT_CHILD",
             "RCH_IRON_DEFICIENCY_CHILD",
             "RCH_ITP_CHILD",
+            "RCH_BLOOD_PRODUCT_CHILD",
             "RCH_PETECHIAE_PURPURA_CHILD",
             "NICE_NG12_SUSPECTED_CANCER_2026",
             "AHRQ_CALIBRATE_DX"
@@ -2765,64 +2693,6 @@
               ],
               "source_section": "Microcytic hypochromic anemia",
               "review_status": "source_backed"
-            },
-            {
-              "id": "differentialBuckets_peds_heme_transfusion_iron_frame",
-              "label": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity",
-              "criteria_text": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity Use Hb threshold, symptoms, bleeding/hemolysis, chronic disease, hemoglobinopathy, iron deficiency, and local blood-product procedures to decide transfusion, iron therapy, consultation, and follow-up. Positive thresholds or symptoms change admission, IV access, group and screen, transfusion discussion, iron dose selection, and repeat lab timing. Transfusion need, iron deficiency treatment, specialty handoff, and follow-up safety. RCH blood product guidance often indicates RBC transfusion below 70 g/L, may indicate transfusion at 70 to 90 g/L depending on clinical setting and anemia symptoms, and often avoids transfusion above 90 g/L; RCH iron deficiency guidance treats most children with oral iron and diet change.",
-              "cutoffs": [
-                "70 g/L",
-                "70 to 90 g/L",
-                "90 g/L"
-              ],
-              "data_needed": [
-                "70 g/L",
-                "70 to 90 g/L",
-                "90 g/L"
-              ],
-              "source_ids": [
-                "RCH_BLOOD_PRODUCT_CHILD"
-              ],
-              "source_section": "indications for red blood cell transfusion",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "redFlags_peds_heme_redflag_severe_anemia_threshold",
-              "label": "Severe anemia or symptomatic Hb below transfusion range",
-              "criteria_text": "Severe anemia or symptomatic Hb below transfusion range Escalate when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, clinical anemia symptoms, cardiac disease, or other high-risk setting. Changes admission, IV access, type and screen, transfusion discussion, monitoring, and specialist consultation. Severe anemia, acute blood loss, hemolysis, symptomatic chronic anemia, or transfusion need. RCH blood product guidance says RBC transfusion is often indicated below 70 g/L and may be indicated at 70 to 90 g/L depending on clinical setting and symptoms.",
-              "cutoffs": [
-                "70 g/L",
-                "70 to 90 g/L"
-              ],
-              "data_needed": [
-                "70 g/L",
-                "70 to 90 g/L"
-              ],
-              "source_ids": [
-                "RCH_BLOOD_PRODUCT_CHILD"
-              ],
-              "source_section": "RBC transfusion indications",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "dispositionRules_peds_heme_management_rbc_transfusion_threshold",
-              "label": "RBC transfusion threshold route",
-              "criteria_text": "RBC transfusion threshold route Discuss RBC transfusion when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, symptomatic anemia, cardiac disease, or another high-risk setting; avoid routine transfusion above 90 g/L unless a specific situation warrants it. Changes group and screen, consent, product ordering, monitoring, admission, and hematology or critical-care consultation. Transfusion need in pediatric severe anemia, acute bleeding, hemolysis, chronic anemia, cardiac disease, or hemoglobinopathy. RCH blood product guidance gives pediatric Hb ranges and emphasizes clinical features and setting.",
-              "cutoffs": [
-                "70 g/L",
-                "70 to 90 g/L",
-                "90 g/L"
-              ],
-              "data_needed": [
-                "70 g/L",
-                "70 to 90 g/L",
-                "90 g/L"
-              ],
-              "source_ids": [
-                "RCH_BLOOD_PRODUCT_CHILD"
-              ],
-              "source_section": "indications for red blood cell transfusion",
-              "review_status": "source_backed"
             }
           ]
         },
@@ -2845,9 +2715,9 @@
           "source_ids": [
             "AHRQ_CALIBRATE_DX",
             "RCH_ANAEMIA_CHILD",
-            "RCH_BLOOD_PRODUCT_CHILD",
             "RCH_IRON_DEFICIENCY_CHILD",
             "RCH_ITP_CHILD",
+            "RCH_BLOOD_PRODUCT_CHILD",
             "RCH_PETECHIAE_PURPURA_CHILD",
             "NICE_NG12_SUSPECTED_CANCER_2026"
           ],
@@ -2866,7 +2736,7 @@
             "Coagulation and fibrinogen tests",
             "Group screen and crossmatch when transfusion possible",
             "Hemolysis bilirubin LDH haptoglobin DAT and urine tests",
-            "B12 folate renal liver and inflammatory tests when indicated",
+            "B12 folate renal liver and inflammatory tests when the branch-specific criteria in this node apply",
             "Pregnancy test when adolescent bleeding or anemia context applies",
             "90 g/L",
             "95 g/L",
@@ -2967,64 +2837,6 @@
               ],
               "source_section": "Microcytic hypochromic anemia",
               "review_status": "source_backed"
-            },
-            {
-              "id": "differentialBuckets_peds_heme_transfusion_iron_frame",
-              "label": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity",
-              "criteria_text": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity Use Hb threshold, symptoms, bleeding/hemolysis, chronic disease, hemoglobinopathy, iron deficiency, and local blood-product procedures to decide transfusion, iron therapy, consultation, and follow-up. Positive thresholds or symptoms change admission, IV access, group and screen, transfusion discussion, iron dose selection, and repeat lab timing. Transfusion need, iron deficiency treatment, specialty handoff, and follow-up safety. RCH blood product guidance often indicates RBC transfusion below 70 g/L, may indicate transfusion at 70 to 90 g/L depending on clinical setting and anemia symptoms, and often avoids transfusion above 90 g/L; RCH iron deficiency guidance treats most children with oral iron and diet change.",
-              "cutoffs": [
-                "70 g/L",
-                "70 to 90 g/L",
-                "90 g/L"
-              ],
-              "data_needed": [
-                "70 g/L",
-                "70 to 90 g/L",
-                "90 g/L"
-              ],
-              "source_ids": [
-                "RCH_BLOOD_PRODUCT_CHILD"
-              ],
-              "source_section": "indications for red blood cell transfusion",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "redFlags_peds_heme_redflag_severe_anemia_threshold",
-              "label": "Severe anemia or symptomatic Hb below transfusion range",
-              "criteria_text": "Severe anemia or symptomatic Hb below transfusion range Escalate when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, clinical anemia symptoms, cardiac disease, or other high-risk setting. Changes admission, IV access, type and screen, transfusion discussion, monitoring, and specialist consultation. Severe anemia, acute blood loss, hemolysis, symptomatic chronic anemia, or transfusion need. RCH blood product guidance says RBC transfusion is often indicated below 70 g/L and may be indicated at 70 to 90 g/L depending on clinical setting and symptoms.",
-              "cutoffs": [
-                "70 g/L",
-                "70 to 90 g/L"
-              ],
-              "data_needed": [
-                "70 g/L",
-                "70 to 90 g/L"
-              ],
-              "source_ids": [
-                "RCH_BLOOD_PRODUCT_CHILD"
-              ],
-              "source_section": "RBC transfusion indications",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "dispositionRules_peds_heme_management_rbc_transfusion_threshold",
-              "label": "RBC transfusion threshold route",
-              "criteria_text": "RBC transfusion threshold route Discuss RBC transfusion when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, symptomatic anemia, cardiac disease, or another high-risk setting; avoid routine transfusion above 90 g/L unless a specific situation warrants it. Changes group and screen, consent, product ordering, monitoring, admission, and hematology or critical-care consultation. Transfusion need in pediatric severe anemia, acute bleeding, hemolysis, chronic anemia, cardiac disease, or hemoglobinopathy. RCH blood product guidance gives pediatric Hb ranges and emphasizes clinical features and setting.",
-              "cutoffs": [
-                "70 g/L",
-                "70 to 90 g/L",
-                "90 g/L"
-              ],
-              "data_needed": [
-                "70 g/L",
-                "70 to 90 g/L",
-                "90 g/L"
-              ],
-              "source_ids": [
-                "RCH_BLOOD_PRODUCT_CHILD"
-              ],
-              "source_section": "indications for red blood cell transfusion",
-              "review_status": "source_backed"
             }
           ]
         },
@@ -3119,64 +2931,6 @@
               ],
               "source_section": "Microcytic hypochromic anemia",
               "review_status": "source_backed"
-            },
-            {
-              "id": "differentialBuckets_peds_heme_transfusion_iron_frame",
-              "label": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity",
-              "criteria_text": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity Use Hb threshold, symptoms, bleeding/hemolysis, chronic disease, hemoglobinopathy, iron deficiency, and local blood-product procedures to decide transfusion, iron therapy, consultation, and follow-up. Positive thresholds or symptoms change admission, IV access, group and screen, transfusion discussion, iron dose selection, and repeat lab timing. Transfusion need, iron deficiency treatment, specialty handoff, and follow-up safety. RCH blood product guidance often indicates RBC transfusion below 70 g/L, may indicate transfusion at 70 to 90 g/L depending on clinical setting and anemia symptoms, and often avoids transfusion above 90 g/L; RCH iron deficiency guidance treats most children with oral iron and diet change.",
-              "cutoffs": [
-                "70 g/L",
-                "70 to 90 g/L",
-                "90 g/L"
-              ],
-              "data_needed": [
-                "70 g/L",
-                "70 to 90 g/L",
-                "90 g/L"
-              ],
-              "source_ids": [
-                "RCH_BLOOD_PRODUCT_CHILD"
-              ],
-              "source_section": "indications for red blood cell transfusion",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "redFlags_peds_heme_redflag_severe_anemia_threshold",
-              "label": "Severe anemia or symptomatic Hb below transfusion range",
-              "criteria_text": "Severe anemia or symptomatic Hb below transfusion range Escalate when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, clinical anemia symptoms, cardiac disease, or other high-risk setting. Changes admission, IV access, type and screen, transfusion discussion, monitoring, and specialist consultation. Severe anemia, acute blood loss, hemolysis, symptomatic chronic anemia, or transfusion need. RCH blood product guidance says RBC transfusion is often indicated below 70 g/L and may be indicated at 70 to 90 g/L depending on clinical setting and symptoms.",
-              "cutoffs": [
-                "70 g/L",
-                "70 to 90 g/L"
-              ],
-              "data_needed": [
-                "70 g/L",
-                "70 to 90 g/L"
-              ],
-              "source_ids": [
-                "RCH_BLOOD_PRODUCT_CHILD"
-              ],
-              "source_section": "RBC transfusion indications",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "dispositionRules_peds_heme_management_rbc_transfusion_threshold",
-              "label": "RBC transfusion threshold route",
-              "criteria_text": "RBC transfusion threshold route Discuss RBC transfusion when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, symptomatic anemia, cardiac disease, or another high-risk setting; avoid routine transfusion above 90 g/L unless a specific situation warrants it. Changes group and screen, consent, product ordering, monitoring, admission, and hematology or critical-care consultation. Transfusion need in pediatric severe anemia, acute bleeding, hemolysis, chronic anemia, cardiac disease, or hemoglobinopathy. RCH blood product guidance gives pediatric Hb ranges and emphasizes clinical features and setting.",
-              "cutoffs": [
-                "70 g/L",
-                "70 to 90 g/L",
-                "90 g/L"
-              ],
-              "data_needed": [
-                "70 g/L",
-                "70 to 90 g/L",
-                "90 g/L"
-              ],
-              "source_ids": [
-                "RCH_BLOOD_PRODUCT_CHILD"
-              ],
-              "source_section": "indications for red blood cell transfusion",
-              "review_status": "source_backed"
             }
           ]
         },
@@ -3195,40 +2949,19 @@
           ],
           "source_ids": [
             "RCH_ANAEMIA_CHILD",
-            "RCH_BLOOD_PRODUCT_CHILD",
             "RCH_IRON_DEFICIENCY_CHILD",
             "RCH_ITP_CHILD",
+            "RCH_BLOOD_PRODUCT_CHILD",
             "RCH_PETECHIAE_PURPURA_CHILD",
             "NICE_NG12_SUSPECTED_CANCER_2026",
             "AHRQ_CALIBRATE_DX"
           ],
-          "criteria_options": [
-            {
-              "id": "differentialBuckets_peds_heme_transfusion_iron_frame",
-              "label": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity",
-              "criteria_text": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity Use Hb threshold, symptoms, bleeding/hemolysis, chronic disease, hemoglobinopathy, iron deficiency, and local blood-product procedures to decide transfusion, iron therapy, consultation, and follow-up. Positive thresholds or symptoms change admission, IV access, group and screen, transfusion discussion, iron dose selection, and repeat lab timing. Transfusion need, iron deficiency treatment, specialty handoff, and follow-up safety. RCH blood product guidance often indicates RBC transfusion below 70 g/L, may indicate transfusion at 70 to 90 g/L depending on clinical setting and anemia symptoms, and often avoids transfusion above 90 g/L; RCH iron deficiency guidance treats most children with oral iron and diet change.",
-              "cutoffs": [
-                "70 g/L",
-                "70 to 90 g/L",
-                "90 g/L"
-              ],
-              "data_needed": [
-                "70 g/L",
-                "70 to 90 g/L",
-                "90 g/L"
-              ],
-              "source_ids": [
-                "RCH_BLOOD_PRODUCT_CHILD"
-              ],
-              "source_section": "indications for red blood cell transfusion",
-              "review_status": "source_backed"
-            }
-          ]
+          "criteria_options": []
         },
         "pediatric_hematology_anemia_bleeding_review_endpoint": {
           "rule_id": "pediatric_hematology_anemia_bleeding_review_criteria",
           "source": "criteria",
-          "description": "Use clinician review when Pediatric pallor, anemia, bruising, bleeding, or petechiae treatment/disposition depends on pregnancy/postpartum status, pediatric/adult applicability, renal/hepatic/cardiac disease, allergy, drug interaction, procedural risk, guideline conflict, or local protocol.",
+          "description": "Use reviewer handoff when Pediatric pallor, anemia, bruising, bleeding, or petechiae treatment or disposition depends on Emergency stabilization route; RBC transfusion threshold route; Pediatric pallor, anemia, bruising, bleeding, or petechiae: immediate stabilization or escalation trigger: Active bleeding with shock or altered state.; Pediatric pallor, anemia, bruising, bleeding, or petechiae: treatment or disposition for high-risk or confirmed disease: Emergency stabilization route..",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3240,9 +2973,9 @@
           ],
           "source_ids": [
             "RCH_ANAEMIA_CHILD",
-            "RCH_BLOOD_PRODUCT_CHILD",
             "RCH_IRON_DEFICIENCY_CHILD",
             "RCH_ITP_CHILD",
+            "RCH_BLOOD_PRODUCT_CHILD",
             "RCH_PETECHIAE_PURPURA_CHILD",
             "NICE_NG12_SUSPECTED_CANCER_2026",
             "AHRQ_CALIBRATE_DX"
@@ -3337,64 +3070,6 @@
               ],
               "source_section": "Microcytic hypochromic anemia",
               "review_status": "source_backed"
-            },
-            {
-              "id": "differentialBuckets_peds_heme_transfusion_iron_frame",
-              "label": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity",
-              "criteria_text": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity Use Hb threshold, symptoms, bleeding/hemolysis, chronic disease, hemoglobinopathy, iron deficiency, and local blood-product procedures to decide transfusion, iron therapy, consultation, and follow-up. Positive thresholds or symptoms change admission, IV access, group and screen, transfusion discussion, iron dose selection, and repeat lab timing. Transfusion need, iron deficiency treatment, specialty handoff, and follow-up safety. RCH blood product guidance often indicates RBC transfusion below 70 g/L, may indicate transfusion at 70 to 90 g/L depending on clinical setting and anemia symptoms, and often avoids transfusion above 90 g/L; RCH iron deficiency guidance treats most children with oral iron and diet change.",
-              "cutoffs": [
-                "70 g/L",
-                "70 to 90 g/L",
-                "90 g/L"
-              ],
-              "data_needed": [
-                "70 g/L",
-                "70 to 90 g/L",
-                "90 g/L"
-              ],
-              "source_ids": [
-                "RCH_BLOOD_PRODUCT_CHILD"
-              ],
-              "source_section": "indications for red blood cell transfusion",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "redFlags_peds_heme_redflag_severe_anemia_threshold",
-              "label": "Severe anemia or symptomatic Hb below transfusion range",
-              "criteria_text": "Severe anemia or symptomatic Hb below transfusion range Escalate when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, clinical anemia symptoms, cardiac disease, or other high-risk setting. Changes admission, IV access, type and screen, transfusion discussion, monitoring, and specialist consultation. Severe anemia, acute blood loss, hemolysis, symptomatic chronic anemia, or transfusion need. RCH blood product guidance says RBC transfusion is often indicated below 70 g/L and may be indicated at 70 to 90 g/L depending on clinical setting and symptoms.",
-              "cutoffs": [
-                "70 g/L",
-                "70 to 90 g/L"
-              ],
-              "data_needed": [
-                "70 g/L",
-                "70 to 90 g/L"
-              ],
-              "source_ids": [
-                "RCH_BLOOD_PRODUCT_CHILD"
-              ],
-              "source_section": "RBC transfusion indications",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "dispositionRules_peds_heme_management_rbc_transfusion_threshold",
-              "label": "RBC transfusion threshold route",
-              "criteria_text": "RBC transfusion threshold route Discuss RBC transfusion when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, symptomatic anemia, cardiac disease, or another high-risk setting; avoid routine transfusion above 90 g/L unless a specific situation warrants it. Changes group and screen, consent, product ordering, monitoring, admission, and hematology or critical-care consultation. Transfusion need in pediatric severe anemia, acute bleeding, hemolysis, chronic anemia, cardiac disease, or hemoglobinopathy. RCH blood product guidance gives pediatric Hb ranges and emphasizes clinical features and setting.",
-              "cutoffs": [
-                "70 g/L",
-                "70 to 90 g/L",
-                "90 g/L"
-              ],
-              "data_needed": [
-                "70 g/L",
-                "70 to 90 g/L",
-                "90 g/L"
-              ],
-              "source_ids": [
-                "RCH_BLOOD_PRODUCT_CHILD"
-              ],
-              "source_section": "indications for red blood cell transfusion",
-              "review_status": "source_backed"
             }
           ]
         },
@@ -3486,64 +3161,6 @@
                 "RCH_ANAEMIA_CHILD"
               ],
               "source_section": "Microcytic hypochromic anemia",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "differentialBuckets_peds_heme_transfusion_iron_frame",
-              "label": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity",
-              "criteria_text": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity Use Hb threshold, symptoms, bleeding/hemolysis, chronic disease, hemoglobinopathy, iron deficiency, and local blood-product procedures to decide transfusion, iron therapy, consultation, and follow-up. Positive thresholds or symptoms change admission, IV access, group and screen, transfusion discussion, iron dose selection, and repeat lab timing. Transfusion need, iron deficiency treatment, specialty handoff, and follow-up safety. RCH blood product guidance often indicates RBC transfusion below 70 g/L, may indicate transfusion at 70 to 90 g/L depending on clinical setting and anemia symptoms, and often avoids transfusion above 90 g/L; RCH iron deficiency guidance treats most children with oral iron and diet change.",
-              "cutoffs": [
-                "70 g/L",
-                "70 to 90 g/L",
-                "90 g/L"
-              ],
-              "data_needed": [
-                "70 g/L",
-                "70 to 90 g/L",
-                "90 g/L"
-              ],
-              "source_ids": [
-                "RCH_BLOOD_PRODUCT_CHILD"
-              ],
-              "source_section": "indications for red blood cell transfusion",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "redFlags_peds_heme_redflag_severe_anemia_threshold",
-              "label": "Severe anemia or symptomatic Hb below transfusion range",
-              "criteria_text": "Severe anemia or symptomatic Hb below transfusion range Escalate when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, clinical anemia symptoms, cardiac disease, or other high-risk setting. Changes admission, IV access, type and screen, transfusion discussion, monitoring, and specialist consultation. Severe anemia, acute blood loss, hemolysis, symptomatic chronic anemia, or transfusion need. RCH blood product guidance says RBC transfusion is often indicated below 70 g/L and may be indicated at 70 to 90 g/L depending on clinical setting and symptoms.",
-              "cutoffs": [
-                "70 g/L",
-                "70 to 90 g/L"
-              ],
-              "data_needed": [
-                "70 g/L",
-                "70 to 90 g/L"
-              ],
-              "source_ids": [
-                "RCH_BLOOD_PRODUCT_CHILD"
-              ],
-              "source_section": "RBC transfusion indications",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "dispositionRules_peds_heme_management_rbc_transfusion_threshold",
-              "label": "RBC transfusion threshold route",
-              "criteria_text": "RBC transfusion threshold route Discuss RBC transfusion when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, symptomatic anemia, cardiac disease, or another high-risk setting; avoid routine transfusion above 90 g/L unless a specific situation warrants it. Changes group and screen, consent, product ordering, monitoring, admission, and hematology or critical-care consultation. Transfusion need in pediatric severe anemia, acute bleeding, hemolysis, chronic anemia, cardiac disease, or hemoglobinopathy. RCH blood product guidance gives pediatric Hb ranges and emphasizes clinical features and setting.",
-              "cutoffs": [
-                "70 g/L",
-                "70 to 90 g/L",
-                "90 g/L"
-              ],
-              "data_needed": [
-                "70 g/L",
-                "70 to 90 g/L",
-                "90 g/L"
-              ],
-              "source_ids": [
-                "RCH_BLOOD_PRODUCT_CHILD"
-              ],
-              "source_section": "indications for red blood cell transfusion",
               "review_status": "source_backed"
             }
           ]
@@ -3637,64 +3254,6 @@
               ],
               "source_section": "Microcytic hypochromic anemia",
               "review_status": "source_backed"
-            },
-            {
-              "id": "differentialBuckets_peds_heme_transfusion_iron_frame",
-              "label": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity",
-              "criteria_text": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity Use Hb threshold, symptoms, bleeding/hemolysis, chronic disease, hemoglobinopathy, iron deficiency, and local blood-product procedures to decide transfusion, iron therapy, consultation, and follow-up. Positive thresholds or symptoms change admission, IV access, group and screen, transfusion discussion, iron dose selection, and repeat lab timing. Transfusion need, iron deficiency treatment, specialty handoff, and follow-up safety. RCH blood product guidance often indicates RBC transfusion below 70 g/L, may indicate transfusion at 70 to 90 g/L depending on clinical setting and anemia symptoms, and often avoids transfusion above 90 g/L; RCH iron deficiency guidance treats most children with oral iron and diet change.",
-              "cutoffs": [
-                "70 g/L",
-                "70 to 90 g/L",
-                "90 g/L"
-              ],
-              "data_needed": [
-                "70 g/L",
-                "70 to 90 g/L",
-                "90 g/L"
-              ],
-              "source_ids": [
-                "RCH_BLOOD_PRODUCT_CHILD"
-              ],
-              "source_section": "indications for red blood cell transfusion",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "redFlags_peds_heme_redflag_severe_anemia_threshold",
-              "label": "Severe anemia or symptomatic Hb below transfusion range",
-              "criteria_text": "Severe anemia or symptomatic Hb below transfusion range Escalate when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, clinical anemia symptoms, cardiac disease, or other high-risk setting. Changes admission, IV access, type and screen, transfusion discussion, monitoring, and specialist consultation. Severe anemia, acute blood loss, hemolysis, symptomatic chronic anemia, or transfusion need. RCH blood product guidance says RBC transfusion is often indicated below 70 g/L and may be indicated at 70 to 90 g/L depending on clinical setting and symptoms.",
-              "cutoffs": [
-                "70 g/L",
-                "70 to 90 g/L"
-              ],
-              "data_needed": [
-                "70 g/L",
-                "70 to 90 g/L"
-              ],
-              "source_ids": [
-                "RCH_BLOOD_PRODUCT_CHILD"
-              ],
-              "source_section": "RBC transfusion indications",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "dispositionRules_peds_heme_management_rbc_transfusion_threshold",
-              "label": "RBC transfusion threshold route",
-              "criteria_text": "RBC transfusion threshold route Discuss RBC transfusion when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, symptomatic anemia, cardiac disease, or another high-risk setting; avoid routine transfusion above 90 g/L unless a specific situation warrants it. Changes group and screen, consent, product ordering, monitoring, admission, and hematology or critical-care consultation. Transfusion need in pediatric severe anemia, acute bleeding, hemolysis, chronic anemia, cardiac disease, or hemoglobinopathy. RCH blood product guidance gives pediatric Hb ranges and emphasizes clinical features and setting.",
-              "cutoffs": [
-                "70 g/L",
-                "70 to 90 g/L",
-                "90 g/L"
-              ],
-              "data_needed": [
-                "70 g/L",
-                "70 to 90 g/L",
-                "90 g/L"
-              ],
-              "source_ids": [
-                "RCH_BLOOD_PRODUCT_CHILD"
-              ],
-              "source_section": "indications for red blood cell transfusion",
-              "review_status": "source_backed"
             }
           ]
         },
@@ -3724,7 +3283,7 @@
         "pediatric_hematology_anemia_bleeding_alternate_endpoint": {
           "rule_id": "pediatric_hematology_anemia_bleeding_alternate_criteria",
           "source": "criteria",
-          "description": "Use an alternate pathway when Pediatric pallor, anemia, bruising, bleeding, or petechiae criteria are absent, a cited mimic better explains the presentation, or objective result data contradict this workup.",
+          "description": "Use an alternate pathway when Pediatric pallor, anemia, bruising, bleeding, or petechiae criteria are absent, Pediatric anemia or pallor: classify severity, symptom burden, production failure, blood loss, hemolysis, iron deficiency, B12 or folate deficiency, chronic disease, hemoglobinopathy, or malignancy pattern; Pediatric bruising, petechiae, purpura, thrombocytopenia, or ITP pattern; Possible leukemia or lymphoma: unexplained petechiae, bruising, pallor, persistent fatigue, fever, infections, bone pain, lymphadenopathy, splenomegaly, or weight loss; Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity better explains the presentation, or measured result data contradict this workup.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3809,64 +3368,6 @@
               ],
               "source_section": "Microcytic hypochromic anemia",
               "review_status": "source_backed"
-            },
-            {
-              "id": "differentialBuckets_peds_heme_transfusion_iron_frame",
-              "label": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity",
-              "criteria_text": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity Use Hb threshold, symptoms, bleeding/hemolysis, chronic disease, hemoglobinopathy, iron deficiency, and local blood-product procedures to decide transfusion, iron therapy, consultation, and follow-up. Positive thresholds or symptoms change admission, IV access, group and screen, transfusion discussion, iron dose selection, and repeat lab timing. Transfusion need, iron deficiency treatment, specialty handoff, and follow-up safety. RCH blood product guidance often indicates RBC transfusion below 70 g/L, may indicate transfusion at 70 to 90 g/L depending on clinical setting and anemia symptoms, and often avoids transfusion above 90 g/L; RCH iron deficiency guidance treats most children with oral iron and diet change.",
-              "cutoffs": [
-                "70 g/L",
-                "70 to 90 g/L",
-                "90 g/L"
-              ],
-              "data_needed": [
-                "70 g/L",
-                "70 to 90 g/L",
-                "90 g/L"
-              ],
-              "source_ids": [
-                "RCH_BLOOD_PRODUCT_CHILD"
-              ],
-              "source_section": "indications for red blood cell transfusion",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "redFlags_peds_heme_redflag_severe_anemia_threshold",
-              "label": "Severe anemia or symptomatic Hb below transfusion range",
-              "criteria_text": "Severe anemia or symptomatic Hb below transfusion range Escalate when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, clinical anemia symptoms, cardiac disease, or other high-risk setting. Changes admission, IV access, type and screen, transfusion discussion, monitoring, and specialist consultation. Severe anemia, acute blood loss, hemolysis, symptomatic chronic anemia, or transfusion need. RCH blood product guidance says RBC transfusion is often indicated below 70 g/L and may be indicated at 70 to 90 g/L depending on clinical setting and symptoms.",
-              "cutoffs": [
-                "70 g/L",
-                "70 to 90 g/L"
-              ],
-              "data_needed": [
-                "70 g/L",
-                "70 to 90 g/L"
-              ],
-              "source_ids": [
-                "RCH_BLOOD_PRODUCT_CHILD"
-              ],
-              "source_section": "RBC transfusion indications",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "dispositionRules_peds_heme_management_rbc_transfusion_threshold",
-              "label": "RBC transfusion threshold route",
-              "criteria_text": "RBC transfusion threshold route Discuss RBC transfusion when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, symptomatic anemia, cardiac disease, or another high-risk setting; avoid routine transfusion above 90 g/L unless a specific situation warrants it. Changes group and screen, consent, product ordering, monitoring, admission, and hematology or critical-care consultation. Transfusion need in pediatric severe anemia, acute bleeding, hemolysis, chronic anemia, cardiac disease, or hemoglobinopathy. RCH blood product guidance gives pediatric Hb ranges and emphasizes clinical features and setting.",
-              "cutoffs": [
-                "70 g/L",
-                "70 to 90 g/L",
-                "90 g/L"
-              ],
-              "data_needed": [
-                "70 g/L",
-                "70 to 90 g/L",
-                "90 g/L"
-              ],
-              "source_ids": [
-                "RCH_BLOOD_PRODUCT_CHILD"
-              ],
-              "source_section": "indications for red blood cell transfusion",
-              "review_status": "source_backed"
             }
           ]
         }
@@ -3878,9 +3379,9 @@
         "edgeLabel": "",
         "source_ids": [
           "RCH_ANAEMIA_CHILD",
-          "RCH_BLOOD_PRODUCT_CHILD",
           "RCH_IRON_DEFICIENCY_CHILD",
           "RCH_ITP_CHILD",
+          "RCH_BLOOD_PRODUCT_CHILD",
           "RCH_PETECHIAE_PURPURA_CHILD",
           "NICE_NG12_SUSPECTED_CANCER_2026",
           "AHRQ_CALIBRATE_DX"
@@ -3897,9 +3398,9 @@
           ],
           "source_ids": [
             "RCH_ANAEMIA_CHILD",
-            "RCH_BLOOD_PRODUCT_CHILD",
             "RCH_IRON_DEFICIENCY_CHILD",
             "RCH_ITP_CHILD",
+            "RCH_BLOOD_PRODUCT_CHILD",
             "RCH_PETECHIAE_PURPURA_CHILD",
             "NICE_NG12_SUSPECTED_CANCER_2026",
             "AHRQ_CALIBRATE_DX"
@@ -3910,8 +3411,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal data-availability guard",
-            "edgeLabel": "Internal data-availability guard",
+            "label": "Internal traversal guard",
+            "edgeLabel": "Internal traversal guard",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -3947,7 +3448,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -3955,7 +3456,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
             },
             "missing_data_needed": [
               "symptoms",
@@ -3974,7 +3475,7 @@
             "id": "pediatric_hematology_anemia_bleeding_concurrent_data_bundle",
             "type": "action",
             "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: assessment, thresholds, and treatment-safety inputs",
-            "edgeLabel": "Collect Pediatric pallor, anemia, bruising, bleeding, or petechiae: Full blood examination film and reticulocyte count; Ferritin and iron deficiency assessment; Coagulation and fibrinogen tests; Group screen and crossmatch when transfusion possible; 90 g/L; 95 g/L; 105 g/L; Measure temperature",
+            "edgeLabel": "Collect Pediatric pallor, anemia, bruising, bleeding, or petechiae: Full blood examination film and reticulocyte count; Ferritin and iron deficiency assessment; Coagulation and fibrinogen tests; Group screen and crossmatch when transfusion possible; 90 g/L; 95 g/L; 105 g/L",
             "source_ids": [
               "RCH_ANAEMIA_CHILD",
               "RCH_IRON_DEFICIENCY_CHILD",
@@ -4008,7 +3509,7 @@
                 "AHRQ_CALIBRATE_DX"
               ]
             },
-            "action": "Obtain together: Full blood examination film and reticulocyte count; Ferritin and iron deficiency assessment; Coagulation and fibrinogen tests; Group screen and crossmatch when transfusion possible; Hemolysis bilirubin LDH haptoglobin DAT and urine tests; B12 folate renal liver and inflammatory tests when indicated; Pregnancy test when adolescent bleeding or anemia context applies; Measure temperature; Measure heart rate and blood pressure; Measure respiratory rate and oxygen saturation; Measure current weight; Document active bleeding burden and mental status; age; sex for >12 years; hemoglobin; MCV; reticulocyte count; blood film; hemoglobin; heart rate.",
+            "action": "Obtain together: Full blood examination film and reticulocyte count; Ferritin and iron deficiency assessment; Coagulation and fibrinogen tests; Group screen and crossmatch when transfusion possible; Hemolysis bilirubin LDH haptoglobin DAT and urine tests; B12 folate renal liver and inflammatory tests when the branch-specific criteria in this node apply; Pregnancy test when adolescent bleeding or anemia context applies; age; sex for >12 years; hemoglobin; MCV; reticulocyte count; blood film; hemoglobin; heart rate.",
             "children": [
               {
                 "id": "pediatric_hematology_anemia_bleeding_classification_decision",
@@ -4017,9 +3518,9 @@
                 "edgeLabel": "Classify Pediatric pallor, anemia, bruising, bleeding, or petechiae with available result(s): 90 g/L; 95 g/L; 105 g/L; 115 g/L",
                 "source_ids": [
                   "RCH_ANAEMIA_CHILD",
-                  "RCH_BLOOD_PRODUCT_CHILD",
                   "RCH_IRON_DEFICIENCY_CHILD",
                   "RCH_ITP_CHILD",
+                  "RCH_BLOOD_PRODUCT_CHILD",
                   "RCH_PETECHIAE_PURPURA_CHILD",
                   "NICE_NG12_SUSPECTED_CANCER_2026",
                   "AHRQ_CALIBRATE_DX"
@@ -4027,7 +3528,7 @@
                 "criteria": {
                   "rule_id": "pediatric_hematology_anemia_bleeding_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Pediatric pallor, anemia, bruising, bleeding, or petechiae against cited thresholds and condition-specific rules: Pediatric anemia is Hb below age cutoff: 90 g/L, 95 g/L, 105 g/L, 115 g/L, 120 g/L | Pediatric anemia red-flag admission: <60 g/L | Microcytosis mimic: >3.5% | Pediatric treatment frame: 70 g/L, 70 to 90 g/L, 90 g/L | Severe anemia or symptomatic Hb below transfusion range: 70 g/L, 70 to 90 g/L",
+                  "description": "Classify Pediatric pallor, anemia, bruising, bleeding, or petechiae against cited thresholds and condition-specific rules: Pediatric anemia is Hb below age cutoff: 90 g/L, 95 g/L, 105 g/L, 115 g/L, 120 g/L | Pediatric anemia red-flag admission: <60 g/L | Microcytosis mimic: >3.5%",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -4042,9 +3543,9 @@
                   ],
                   "source_ids": [
                     "RCH_ANAEMIA_CHILD",
-                    "RCH_BLOOD_PRODUCT_CHILD",
                     "RCH_IRON_DEFICIENCY_CHILD",
                     "RCH_ITP_CHILD",
+                    "RCH_BLOOD_PRODUCT_CHILD",
                     "RCH_PETECHIAE_PURPURA_CHILD",
                     "NICE_NG12_SUSPECTED_CANCER_2026",
                     "AHRQ_CALIBRATE_DX"
@@ -4116,64 +3617,6 @@
                       ],
                       "source_section": "Microcytic hypochromic anemia",
                       "review_status": "source_backed"
-                    },
-                    {
-                      "id": "differentialBuckets_peds_heme_transfusion_iron_frame",
-                      "label": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity",
-                      "criteria_text": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity Use Hb threshold, symptoms, bleeding/hemolysis, chronic disease, hemoglobinopathy, iron deficiency, and local blood-product procedures to decide transfusion, iron therapy, consultation, and follow-up. Positive thresholds or symptoms change admission, IV access, group and screen, transfusion discussion, iron dose selection, and repeat lab timing. Transfusion need, iron deficiency treatment, specialty handoff, and follow-up safety. RCH blood product guidance often indicates RBC transfusion below 70 g/L, may indicate transfusion at 70 to 90 g/L depending on clinical setting and anemia symptoms, and often avoids transfusion above 90 g/L; RCH iron deficiency guidance treats most children with oral iron and diet change.",
-                      "cutoffs": [
-                        "70 g/L",
-                        "70 to 90 g/L",
-                        "90 g/L"
-                      ],
-                      "data_needed": [
-                        "70 g/L",
-                        "70 to 90 g/L",
-                        "90 g/L"
-                      ],
-                      "source_ids": [
-                        "RCH_BLOOD_PRODUCT_CHILD"
-                      ],
-                      "source_section": "indications for red blood cell transfusion",
-                      "review_status": "source_backed"
-                    },
-                    {
-                      "id": "redFlags_peds_heme_redflag_severe_anemia_threshold",
-                      "label": "Severe anemia or symptomatic Hb below transfusion range",
-                      "criteria_text": "Severe anemia or symptomatic Hb below transfusion range Escalate when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, clinical anemia symptoms, cardiac disease, or other high-risk setting. Changes admission, IV access, type and screen, transfusion discussion, monitoring, and specialist consultation. Severe anemia, acute blood loss, hemolysis, symptomatic chronic anemia, or transfusion need. RCH blood product guidance says RBC transfusion is often indicated below 70 g/L and may be indicated at 70 to 90 g/L depending on clinical setting and symptoms.",
-                      "cutoffs": [
-                        "70 g/L",
-                        "70 to 90 g/L"
-                      ],
-                      "data_needed": [
-                        "70 g/L",
-                        "70 to 90 g/L"
-                      ],
-                      "source_ids": [
-                        "RCH_BLOOD_PRODUCT_CHILD"
-                      ],
-                      "source_section": "RBC transfusion indications",
-                      "review_status": "source_backed"
-                    },
-                    {
-                      "id": "dispositionRules_peds_heme_management_rbc_transfusion_threshold",
-                      "label": "RBC transfusion threshold route",
-                      "criteria_text": "RBC transfusion threshold route Discuss RBC transfusion when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, symptomatic anemia, cardiac disease, or another high-risk setting; avoid routine transfusion above 90 g/L unless a specific situation warrants it. Changes group and screen, consent, product ordering, monitoring, admission, and hematology or critical-care consultation. Transfusion need in pediatric severe anemia, acute bleeding, hemolysis, chronic anemia, cardiac disease, or hemoglobinopathy. RCH blood product guidance gives pediatric Hb ranges and emphasizes clinical features and setting.",
-                      "cutoffs": [
-                        "70 g/L",
-                        "70 to 90 g/L",
-                        "90 g/L"
-                      ],
-                      "data_needed": [
-                        "70 g/L",
-                        "70 to 90 g/L",
-                        "90 g/L"
-                      ],
-                      "source_ids": [
-                        "RCH_BLOOD_PRODUCT_CHILD"
-                      ],
-                      "source_section": "indications for red blood cell transfusion",
-                      "review_status": "source_backed"
                     }
                   ]
                 },
@@ -4182,14 +3625,14 @@
                   {
                     "id": "pediatric_hematology_anemia_bleeding_missing_cutoff_data_endpoint",
                     "type": "endpoint",
-                    "label": "Internal data-availability guard",
-                    "edgeLabel": "Internal data-availability guard",
+                    "label": "Internal traversal guard",
+                    "edgeLabel": "Internal traversal guard",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "RCH_ANAEMIA_CHILD",
-                      "RCH_BLOOD_PRODUCT_CHILD",
                       "RCH_IRON_DEFICIENCY_CHILD",
                       "RCH_ITP_CHILD",
+                      "RCH_BLOOD_PRODUCT_CHILD",
                       "RCH_PETECHIAE_PURPURA_CHILD",
                       "NICE_NG12_SUSPECTED_CANCER_2026"
                     ],
@@ -4212,9 +3655,9 @@
                       "source_ids": [
                         "AHRQ_CALIBRATE_DX",
                         "RCH_ANAEMIA_CHILD",
-                        "RCH_BLOOD_PRODUCT_CHILD",
                         "RCH_IRON_DEFICIENCY_CHILD",
                         "RCH_ITP_CHILD",
+                        "RCH_BLOOD_PRODUCT_CHILD",
                         "RCH_PETECHIAE_PURPURA_CHILD",
                         "NICE_NG12_SUSPECTED_CANCER_2026"
                       ],
@@ -4233,7 +3676,7 @@
                         "Coagulation and fibrinogen tests",
                         "Group screen and crossmatch when transfusion possible",
                         "Hemolysis bilirubin LDH haptoglobin DAT and urine tests",
-                        "B12 folate renal liver and inflammatory tests when indicated",
+                        "B12 folate renal liver and inflammatory tests when the branch-specific criteria in this node apply",
                         "Pregnancy test when adolescent bleeding or anemia context applies",
                         "90 g/L",
                         "95 g/L",
@@ -4245,7 +3688,7 @@
                         ">3.5%"
                       ]
                     },
-                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -4253,7 +3696,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
                     },
                     "missing_data_needed": [
                       "age",
@@ -4270,7 +3713,7 @@
                       "Coagulation and fibrinogen tests",
                       "Group screen and crossmatch when transfusion possible",
                       "Hemolysis bilirubin LDH haptoglobin DAT and urine tests",
-                      "B12 folate renal liver and inflammatory tests when indicated",
+                      "B12 folate renal liver and inflammatory tests when the branch-specific criteria in this node apply",
                       "Pregnancy test when adolescent bleeding or anemia context applies",
                       "90 g/L",
                       "95 g/L",
@@ -4385,64 +3828,6 @@
                           ],
                           "source_section": "Microcytic hypochromic anemia",
                           "review_status": "source_backed"
-                        },
-                        {
-                          "id": "differentialBuckets_peds_heme_transfusion_iron_frame",
-                          "label": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity",
-                          "criteria_text": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity Use Hb threshold, symptoms, bleeding/hemolysis, chronic disease, hemoglobinopathy, iron deficiency, and local blood-product procedures to decide transfusion, iron therapy, consultation, and follow-up. Positive thresholds or symptoms change admission, IV access, group and screen, transfusion discussion, iron dose selection, and repeat lab timing. Transfusion need, iron deficiency treatment, specialty handoff, and follow-up safety. RCH blood product guidance often indicates RBC transfusion below 70 g/L, may indicate transfusion at 70 to 90 g/L depending on clinical setting and anemia symptoms, and often avoids transfusion above 90 g/L; RCH iron deficiency guidance treats most children with oral iron and diet change.",
-                          "cutoffs": [
-                            "70 g/L",
-                            "70 to 90 g/L",
-                            "90 g/L"
-                          ],
-                          "data_needed": [
-                            "70 g/L",
-                            "70 to 90 g/L",
-                            "90 g/L"
-                          ],
-                          "source_ids": [
-                            "RCH_BLOOD_PRODUCT_CHILD"
-                          ],
-                          "source_section": "indications for red blood cell transfusion",
-                          "review_status": "source_backed"
-                        },
-                        {
-                          "id": "redFlags_peds_heme_redflag_severe_anemia_threshold",
-                          "label": "Severe anemia or symptomatic Hb below transfusion range",
-                          "criteria_text": "Severe anemia or symptomatic Hb below transfusion range Escalate when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, clinical anemia symptoms, cardiac disease, or other high-risk setting. Changes admission, IV access, type and screen, transfusion discussion, monitoring, and specialist consultation. Severe anemia, acute blood loss, hemolysis, symptomatic chronic anemia, or transfusion need. RCH blood product guidance says RBC transfusion is often indicated below 70 g/L and may be indicated at 70 to 90 g/L depending on clinical setting and symptoms.",
-                          "cutoffs": [
-                            "70 g/L",
-                            "70 to 90 g/L"
-                          ],
-                          "data_needed": [
-                            "70 g/L",
-                            "70 to 90 g/L"
-                          ],
-                          "source_ids": [
-                            "RCH_BLOOD_PRODUCT_CHILD"
-                          ],
-                          "source_section": "RBC transfusion indications",
-                          "review_status": "source_backed"
-                        },
-                        {
-                          "id": "dispositionRules_peds_heme_management_rbc_transfusion_threshold",
-                          "label": "RBC transfusion threshold route",
-                          "criteria_text": "RBC transfusion threshold route Discuss RBC transfusion when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, symptomatic anemia, cardiac disease, or another high-risk setting; avoid routine transfusion above 90 g/L unless a specific situation warrants it. Changes group and screen, consent, product ordering, monitoring, admission, and hematology or critical-care consultation. Transfusion need in pediatric severe anemia, acute bleeding, hemolysis, chronic anemia, cardiac disease, or hemoglobinopathy. RCH blood product guidance gives pediatric Hb ranges and emphasizes clinical features and setting.",
-                          "cutoffs": [
-                            "70 g/L",
-                            "70 to 90 g/L",
-                            "90 g/L"
-                          ],
-                          "data_needed": [
-                            "70 g/L",
-                            "70 to 90 g/L",
-                            "90 g/L"
-                          ],
-                          "source_ids": [
-                            "RCH_BLOOD_PRODUCT_CHILD"
-                          ],
-                          "source_section": "indications for red blood cell transfusion",
-                          "review_status": "source_backed"
                         }
                       ]
                     },
@@ -4515,64 +3900,6 @@
                           "RCH_ANAEMIA_CHILD"
                         ],
                         "source_section": "Microcytic hypochromic anemia",
-                        "review_status": "source_backed"
-                      },
-                      {
-                        "id": "differentialBuckets_peds_heme_transfusion_iron_frame",
-                        "label": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity",
-                        "criteria_text": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity Use Hb threshold, symptoms, bleeding/hemolysis, chronic disease, hemoglobinopathy, iron deficiency, and local blood-product procedures to decide transfusion, iron therapy, consultation, and follow-up. Positive thresholds or symptoms change admission, IV access, group and screen, transfusion discussion, iron dose selection, and repeat lab timing. Transfusion need, iron deficiency treatment, specialty handoff, and follow-up safety. RCH blood product guidance often indicates RBC transfusion below 70 g/L, may indicate transfusion at 70 to 90 g/L depending on clinical setting and anemia symptoms, and often avoids transfusion above 90 g/L; RCH iron deficiency guidance treats most children with oral iron and diet change.",
-                        "cutoffs": [
-                          "70 g/L",
-                          "70 to 90 g/L",
-                          "90 g/L"
-                        ],
-                        "data_needed": [
-                          "70 g/L",
-                          "70 to 90 g/L",
-                          "90 g/L"
-                        ],
-                        "source_ids": [
-                          "RCH_BLOOD_PRODUCT_CHILD"
-                        ],
-                        "source_section": "indications for red blood cell transfusion",
-                        "review_status": "source_backed"
-                      },
-                      {
-                        "id": "redFlags_peds_heme_redflag_severe_anemia_threshold",
-                        "label": "Severe anemia or symptomatic Hb below transfusion range",
-                        "criteria_text": "Severe anemia or symptomatic Hb below transfusion range Escalate when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, clinical anemia symptoms, cardiac disease, or other high-risk setting. Changes admission, IV access, type and screen, transfusion discussion, monitoring, and specialist consultation. Severe anemia, acute blood loss, hemolysis, symptomatic chronic anemia, or transfusion need. RCH blood product guidance says RBC transfusion is often indicated below 70 g/L and may be indicated at 70 to 90 g/L depending on clinical setting and symptoms.",
-                        "cutoffs": [
-                          "70 g/L",
-                          "70 to 90 g/L"
-                        ],
-                        "data_needed": [
-                          "70 g/L",
-                          "70 to 90 g/L"
-                        ],
-                        "source_ids": [
-                          "RCH_BLOOD_PRODUCT_CHILD"
-                        ],
-                        "source_section": "RBC transfusion indications",
-                        "review_status": "source_backed"
-                      },
-                      {
-                        "id": "dispositionRules_peds_heme_management_rbc_transfusion_threshold",
-                        "label": "RBC transfusion threshold route",
-                        "criteria_text": "RBC transfusion threshold route Discuss RBC transfusion when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, symptomatic anemia, cardiac disease, or another high-risk setting; avoid routine transfusion above 90 g/L unless a specific situation warrants it. Changes group and screen, consent, product ordering, monitoring, admission, and hematology or critical-care consultation. Transfusion need in pediatric severe anemia, acute bleeding, hemolysis, chronic anemia, cardiac disease, or hemoglobinopathy. RCH blood product guidance gives pediatric Hb ranges and emphasizes clinical features and setting.",
-                        "cutoffs": [
-                          "70 g/L",
-                          "70 to 90 g/L",
-                          "90 g/L"
-                        ],
-                        "data_needed": [
-                          "70 g/L",
-                          "70 to 90 g/L",
-                          "90 g/L"
-                        ],
-                        "source_ids": [
-                          "RCH_BLOOD_PRODUCT_CHILD"
-                        ],
-                        "source_section": "indications for red blood cell transfusion",
                         "review_status": "source_backed"
                       }
                     ]
@@ -4682,68 +4009,10 @@
                           ],
                           "source_section": "Microcytic hypochromic anemia",
                           "review_status": "source_backed"
-                        },
-                        {
-                          "id": "differentialBuckets_peds_heme_transfusion_iron_frame",
-                          "label": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity",
-                          "criteria_text": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity Use Hb threshold, symptoms, bleeding/hemolysis, chronic disease, hemoglobinopathy, iron deficiency, and local blood-product procedures to decide transfusion, iron therapy, consultation, and follow-up. Positive thresholds or symptoms change admission, IV access, group and screen, transfusion discussion, iron dose selection, and repeat lab timing. Transfusion need, iron deficiency treatment, specialty handoff, and follow-up safety. RCH blood product guidance often indicates RBC transfusion below 70 g/L, may indicate transfusion at 70 to 90 g/L depending on clinical setting and anemia symptoms, and often avoids transfusion above 90 g/L; RCH iron deficiency guidance treats most children with oral iron and diet change.",
-                          "cutoffs": [
-                            "70 g/L",
-                            "70 to 90 g/L",
-                            "90 g/L"
-                          ],
-                          "data_needed": [
-                            "70 g/L",
-                            "70 to 90 g/L",
-                            "90 g/L"
-                          ],
-                          "source_ids": [
-                            "RCH_BLOOD_PRODUCT_CHILD"
-                          ],
-                          "source_section": "indications for red blood cell transfusion",
-                          "review_status": "source_backed"
-                        },
-                        {
-                          "id": "redFlags_peds_heme_redflag_severe_anemia_threshold",
-                          "label": "Severe anemia or symptomatic Hb below transfusion range",
-                          "criteria_text": "Severe anemia or symptomatic Hb below transfusion range Escalate when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, clinical anemia symptoms, cardiac disease, or other high-risk setting. Changes admission, IV access, type and screen, transfusion discussion, monitoring, and specialist consultation. Severe anemia, acute blood loss, hemolysis, symptomatic chronic anemia, or transfusion need. RCH blood product guidance says RBC transfusion is often indicated below 70 g/L and may be indicated at 70 to 90 g/L depending on clinical setting and symptoms.",
-                          "cutoffs": [
-                            "70 g/L",
-                            "70 to 90 g/L"
-                          ],
-                          "data_needed": [
-                            "70 g/L",
-                            "70 to 90 g/L"
-                          ],
-                          "source_ids": [
-                            "RCH_BLOOD_PRODUCT_CHILD"
-                          ],
-                          "source_section": "RBC transfusion indications",
-                          "review_status": "source_backed"
-                        },
-                        {
-                          "id": "dispositionRules_peds_heme_management_rbc_transfusion_threshold",
-                          "label": "RBC transfusion threshold route",
-                          "criteria_text": "RBC transfusion threshold route Discuss RBC transfusion when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, symptomatic anemia, cardiac disease, or another high-risk setting; avoid routine transfusion above 90 g/L unless a specific situation warrants it. Changes group and screen, consent, product ordering, monitoring, admission, and hematology or critical-care consultation. Transfusion need in pediatric severe anemia, acute bleeding, hemolysis, chronic anemia, cardiac disease, or hemoglobinopathy. RCH blood product guidance gives pediatric Hb ranges and emphasizes clinical features and setting.",
-                          "cutoffs": [
-                            "70 g/L",
-                            "70 to 90 g/L",
-                            "90 g/L"
-                          ],
-                          "data_needed": [
-                            "70 g/L",
-                            "70 to 90 g/L",
-                            "90 g/L"
-                          ],
-                          "source_ids": [
-                            "RCH_BLOOD_PRODUCT_CHILD"
-                          ],
-                          "source_section": "indications for red blood cell transfusion",
-                          "review_status": "source_backed"
                         }
                       ]
                     },
-                    "action": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: immediate stabilization or escalation trigger: Active bleeding with shock or altered state.; Pediatric pallor, anemia, bruising, bleeding, or petechiae: treatment or disposition for high-risk or confirmed disease: Emergency stabilization route.; Pediatric pallor, anemia, bruising, bleeding, or petechiae: outpatient or safety-net route after exclusion criteria and follow-up access are documented: RBC transfusion threshold route.; Emergency stabilization route; RBC transfusion threshold route",
+                    "action": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: immediate stabilization or escalation trigger: Active bleeding with shock or altered state.; Pediatric pallor, anemia, bruising, bleeding, or petechiae: treatment or disposition for high-risk or confirmed disease: Emergency stabilization route.; Emergency stabilization route; RBC transfusion threshold route; Iron therapy and diet route",
                     "children": [
                       {
                         "id": "pediatric_hematology_anemia_bleeding_treatment_safety_decision",
@@ -4752,9 +4021,9 @@
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan",
                         "source_ids": [
                           "RCH_ANAEMIA_CHILD",
-                          "RCH_BLOOD_PRODUCT_CHILD",
                           "RCH_IRON_DEFICIENCY_CHILD",
                           "RCH_ITP_CHILD",
+                          "RCH_BLOOD_PRODUCT_CHILD",
                           "RCH_PETECHIAE_PURPURA_CHILD",
                           "NICE_NG12_SUSPECTED_CANCER_2026",
                           "AHRQ_CALIBRATE_DX"
@@ -4774,48 +4043,27 @@
                           ],
                           "source_ids": [
                             "RCH_ANAEMIA_CHILD",
-                            "RCH_BLOOD_PRODUCT_CHILD",
                             "RCH_IRON_DEFICIENCY_CHILD",
                             "RCH_ITP_CHILD",
+                            "RCH_BLOOD_PRODUCT_CHILD",
                             "RCH_PETECHIAE_PURPURA_CHILD",
                             "NICE_NG12_SUSPECTED_CANCER_2026",
                             "AHRQ_CALIBRATE_DX"
                           ],
-                          "criteria_options": [
-                            {
-                              "id": "differentialBuckets_peds_heme_transfusion_iron_frame",
-                              "label": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity",
-                              "criteria_text": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity Use Hb threshold, symptoms, bleeding/hemolysis, chronic disease, hemoglobinopathy, iron deficiency, and local blood-product procedures to decide transfusion, iron therapy, consultation, and follow-up. Positive thresholds or symptoms change admission, IV access, group and screen, transfusion discussion, iron dose selection, and repeat lab timing. Transfusion need, iron deficiency treatment, specialty handoff, and follow-up safety. RCH blood product guidance often indicates RBC transfusion below 70 g/L, may indicate transfusion at 70 to 90 g/L depending on clinical setting and anemia symptoms, and often avoids transfusion above 90 g/L; RCH iron deficiency guidance treats most children with oral iron and diet change.",
-                              "cutoffs": [
-                                "70 g/L",
-                                "70 to 90 g/L",
-                                "90 g/L"
-                              ],
-                              "data_needed": [
-                                "70 g/L",
-                                "70 to 90 g/L",
-                                "90 g/L"
-                              ],
-                              "source_ids": [
-                                "RCH_BLOOD_PRODUCT_CHILD"
-                              ],
-                              "source_section": "indications for red blood cell transfusion",
-                              "review_status": "source_backed"
-                            }
-                          ]
+                          "criteria_options": []
                         },
                         "action": "Apply Pediatric pallor, anemia, bruising, bleeding, or petechiae-specific safety modifiers before final treatment or disposition.",
                         "children": [
                           {
                             "id": "pediatric_hematology_anemia_bleeding_review_endpoint",
                             "type": "endpoint",
-                            "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: reviewer handoff for contraindication or special population",
-                            "edgeLabel": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
+                            "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: review Emergency stabilization route; RBC transfusion threshold route; Pediatric pallor, anemia, bruising, bleeding, or petechiae: immediate stabilization or escalation trigger: Active bleeding with shock or altered state.; Pediatric pallor, anemia, bruising, bleeding, or petechiae: treatment or disposition for high-risk or confirmed disease: Emergency stabilization route.",
+                            "edgeLabel": "Pediatric pallor, anemia, bruising, bleeding, or petechiae modifier needing review: Emergency stabilization route; RBC transfusion threshold route; Pediatric pallor, anemia, bruising, bleeding, or petechiae: immediate stabilization or escalation trigger: Active bleeding with shock or altered state.; Pediatric pallor, anemia, bruising, bleeding, or petechiae: treatment or disposition for high-risk or confirmed disease: Emergency stabilization route.",
                             "source_ids": [
                               "RCH_ANAEMIA_CHILD",
-                              "RCH_BLOOD_PRODUCT_CHILD",
                               "RCH_IRON_DEFICIENCY_CHILD",
                               "RCH_ITP_CHILD",
+                              "RCH_BLOOD_PRODUCT_CHILD",
                               "RCH_PETECHIAE_PURPURA_CHILD",
                               "NICE_NG12_SUSPECTED_CANCER_2026",
                               "AHRQ_CALIBRATE_DX"
@@ -4823,7 +4071,7 @@
                             "criteria": {
                               "rule_id": "pediatric_hematology_anemia_bleeding_review_criteria",
                               "source": "criteria",
-                              "description": "Use clinician review when Pediatric pallor, anemia, bruising, bleeding, or petechiae treatment/disposition depends on pregnancy/postpartum status, pediatric/adult applicability, renal/hepatic/cardiac disease, allergy, drug interaction, procedural risk, guideline conflict, or local protocol.",
+                              "description": "Use reviewer handoff when Pediatric pallor, anemia, bruising, bleeding, or petechiae treatment or disposition depends on Emergency stabilization route; RBC transfusion threshold route; Pediatric pallor, anemia, bruising, bleeding, or petechiae: immediate stabilization or escalation trigger: Active bleeding with shock or altered state.; Pediatric pallor, anemia, bruising, bleeding, or petechiae: treatment or disposition for high-risk or confirmed disease: Emergency stabilization route..",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4835,24 +4083,24 @@
                               ],
                               "source_ids": [
                                 "RCH_ANAEMIA_CHILD",
-                                "RCH_BLOOD_PRODUCT_CHILD",
                                 "RCH_IRON_DEFICIENCY_CHILD",
                                 "RCH_ITP_CHILD",
+                                "RCH_BLOOD_PRODUCT_CHILD",
                                 "RCH_PETECHIAE_PURPURA_CHILD",
                                 "NICE_NG12_SUSPECTED_CANCER_2026",
                                 "AHRQ_CALIBRATE_DX"
                               ]
                             },
-                            "action": "Pause non-emergent Pediatric pallor, anemia, bruising, bleeding, or petechiae treatment choices until the modifier is resolved and the reviewer documents the applicable guideline or local cutoff.",
+                            "action": "Resolve the named Pediatric pallor, anemia, bruising, bleeding, or petechiae modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
-                            "review_needed_reason": "Patient-specific contraindication, special population, guideline conflict, or local policy affects treatment or disposition."
+                            "review_needed_reason": "Pediatric pallor, anemia, bruising, bleeding, or petechiae management changes when Emergency stabilization route; RBC transfusion threshold route; Pediatric pallor, anemia, bruising, bleeding, or petechiae: immediate stabilization or escalation trigger: Active bleeding with shock or altered state.; Pediatric pallor, anemia, bruising, bleeding, or petechiae: treatment or disposition for high-risk or confirmed disease: Emergency stabilization route.; document the exact modifier and reviewer input needed."
                           },
                           {
                             "id": "pediatric_hematology_anemia_bleeding_monitoring_bundle",
                             "type": "action",
                             "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Pediatric pallor, anemia, bruising, bleeding, or petechiae symptoms, vital signs, threshold labs/results, treatment response, adverse effects, and disposition readiness",
+                            "edgeLabel": "Trend Pediatric pallor, anemia, bruising, bleeding, or petechiae symptoms, vital signs, criterion-defining results, treatment response, adverse effects, and disposition readiness",
                             "source_ids": [
                               "RCH_PETECHIAE_PURPURA_CHILD",
                               "RCH_BLOOD_PRODUCT_CHILD",
@@ -4951,64 +4199,6 @@
                                   ],
                                   "source_section": "Microcytic hypochromic anemia",
                                   "review_status": "source_backed"
-                                },
-                                {
-                                  "id": "differentialBuckets_peds_heme_transfusion_iron_frame",
-                                  "label": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity",
-                                  "criteria_text": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity Use Hb threshold, symptoms, bleeding/hemolysis, chronic disease, hemoglobinopathy, iron deficiency, and local blood-product procedures to decide transfusion, iron therapy, consultation, and follow-up. Positive thresholds or symptoms change admission, IV access, group and screen, transfusion discussion, iron dose selection, and repeat lab timing. Transfusion need, iron deficiency treatment, specialty handoff, and follow-up safety. RCH blood product guidance often indicates RBC transfusion below 70 g/L, may indicate transfusion at 70 to 90 g/L depending on clinical setting and anemia symptoms, and often avoids transfusion above 90 g/L; RCH iron deficiency guidance treats most children with oral iron and diet change.",
-                                  "cutoffs": [
-                                    "70 g/L",
-                                    "70 to 90 g/L",
-                                    "90 g/L"
-                                  ],
-                                  "data_needed": [
-                                    "70 g/L",
-                                    "70 to 90 g/L",
-                                    "90 g/L"
-                                  ],
-                                  "source_ids": [
-                                    "RCH_BLOOD_PRODUCT_CHILD"
-                                  ],
-                                  "source_section": "indications for red blood cell transfusion",
-                                  "review_status": "source_backed"
-                                },
-                                {
-                                  "id": "redFlags_peds_heme_redflag_severe_anemia_threshold",
-                                  "label": "Severe anemia or symptomatic Hb below transfusion range",
-                                  "criteria_text": "Severe anemia or symptomatic Hb below transfusion range Escalate when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, clinical anemia symptoms, cardiac disease, or other high-risk setting. Changes admission, IV access, type and screen, transfusion discussion, monitoring, and specialist consultation. Severe anemia, acute blood loss, hemolysis, symptomatic chronic anemia, or transfusion need. RCH blood product guidance says RBC transfusion is often indicated below 70 g/L and may be indicated at 70 to 90 g/L depending on clinical setting and symptoms.",
-                                  "cutoffs": [
-                                    "70 g/L",
-                                    "70 to 90 g/L"
-                                  ],
-                                  "data_needed": [
-                                    "70 g/L",
-                                    "70 to 90 g/L"
-                                  ],
-                                  "source_ids": [
-                                    "RCH_BLOOD_PRODUCT_CHILD"
-                                  ],
-                                  "source_section": "RBC transfusion indications",
-                                  "review_status": "source_backed"
-                                },
-                                {
-                                  "id": "dispositionRules_peds_heme_management_rbc_transfusion_threshold",
-                                  "label": "RBC transfusion threshold route",
-                                  "criteria_text": "RBC transfusion threshold route Discuss RBC transfusion when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, symptomatic anemia, cardiac disease, or another high-risk setting; avoid routine transfusion above 90 g/L unless a specific situation warrants it. Changes group and screen, consent, product ordering, monitoring, admission, and hematology or critical-care consultation. Transfusion need in pediatric severe anemia, acute bleeding, hemolysis, chronic anemia, cardiac disease, or hemoglobinopathy. RCH blood product guidance gives pediatric Hb ranges and emphasizes clinical features and setting.",
-                                  "cutoffs": [
-                                    "70 g/L",
-                                    "70 to 90 g/L",
-                                    "90 g/L"
-                                  ],
-                                  "data_needed": [
-                                    "70 g/L",
-                                    "70 to 90 g/L",
-                                    "90 g/L"
-                                  ],
-                                  "source_ids": [
-                                    "RCH_BLOOD_PRODUCT_CHILD"
-                                  ],
-                                  "source_section": "indications for red blood cell transfusion",
-                                  "review_status": "source_backed"
                                 }
                               ]
                             },
@@ -5018,7 +4208,7 @@
                                 "id": "pediatric_hematology_anemia_bleeding_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: reassessment escalation",
-                                "edgeLabel": "Pediatric pallor, anemia, bruising, bleeding, or petechiae reassessment worsens or Active bleeding with shock or altered state; Petechiae or purpura with fever or unwell appearance; Unexplained petechiae bruising pallor fatigue fever infection or bone pain; 90 g/L; 95 g/L; 105 g/L; 115 g/L; Full blood examination film and reticulocyte count; Ferritin and iron deficiency assessment no longer fit the selected pathway",
+                                "edgeLabel": "Pediatric pallor, anemia, bruising, bleeding, or petechiae reassessment worsens or Active bleeding with shock or altered state; Petechiae or purpura with fever or unwell appearance; Unexplained petechiae bruising pallor fatigue fever infection or bone pain; 90 g/L; 95 g/L; 105 g/L; 115 g/L; Full blood examination film and reticulocyte count; Ferritin and iron deficiency assessment no longer fit the documented Pediatric pallor, anemia, bruising, bleeding, or petechiae branch",
                                 "source_ids": [
                                   "RCH_BLOOD_PRODUCT_CHILD",
                                   "RCH_PETECHIAE_PURPURA_CHILD",
@@ -5117,64 +4307,6 @@
                                       ],
                                       "source_section": "Microcytic hypochromic anemia",
                                       "review_status": "source_backed"
-                                    },
-                                    {
-                                      "id": "differentialBuckets_peds_heme_transfusion_iron_frame",
-                                      "label": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity",
-                                      "criteria_text": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity Use Hb threshold, symptoms, bleeding/hemolysis, chronic disease, hemoglobinopathy, iron deficiency, and local blood-product procedures to decide transfusion, iron therapy, consultation, and follow-up. Positive thresholds or symptoms change admission, IV access, group and screen, transfusion discussion, iron dose selection, and repeat lab timing. Transfusion need, iron deficiency treatment, specialty handoff, and follow-up safety. RCH blood product guidance often indicates RBC transfusion below 70 g/L, may indicate transfusion at 70 to 90 g/L depending on clinical setting and anemia symptoms, and often avoids transfusion above 90 g/L; RCH iron deficiency guidance treats most children with oral iron and diet change.",
-                                      "cutoffs": [
-                                        "70 g/L",
-                                        "70 to 90 g/L",
-                                        "90 g/L"
-                                      ],
-                                      "data_needed": [
-                                        "70 g/L",
-                                        "70 to 90 g/L",
-                                        "90 g/L"
-                                      ],
-                                      "source_ids": [
-                                        "RCH_BLOOD_PRODUCT_CHILD"
-                                      ],
-                                      "source_section": "indications for red blood cell transfusion",
-                                      "review_status": "source_backed"
-                                    },
-                                    {
-                                      "id": "redFlags_peds_heme_redflag_severe_anemia_threshold",
-                                      "label": "Severe anemia or symptomatic Hb below transfusion range",
-                                      "criteria_text": "Severe anemia or symptomatic Hb below transfusion range Escalate when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, clinical anemia symptoms, cardiac disease, or other high-risk setting. Changes admission, IV access, type and screen, transfusion discussion, monitoring, and specialist consultation. Severe anemia, acute blood loss, hemolysis, symptomatic chronic anemia, or transfusion need. RCH blood product guidance says RBC transfusion is often indicated below 70 g/L and may be indicated at 70 to 90 g/L depending on clinical setting and symptoms.",
-                                      "cutoffs": [
-                                        "70 g/L",
-                                        "70 to 90 g/L"
-                                      ],
-                                      "data_needed": [
-                                        "70 g/L",
-                                        "70 to 90 g/L"
-                                      ],
-                                      "source_ids": [
-                                        "RCH_BLOOD_PRODUCT_CHILD"
-                                      ],
-                                      "source_section": "RBC transfusion indications",
-                                      "review_status": "source_backed"
-                                    },
-                                    {
-                                      "id": "dispositionRules_peds_heme_management_rbc_transfusion_threshold",
-                                      "label": "RBC transfusion threshold route",
-                                      "criteria_text": "RBC transfusion threshold route Discuss RBC transfusion when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, symptomatic anemia, cardiac disease, or another high-risk setting; avoid routine transfusion above 90 g/L unless a specific situation warrants it. Changes group and screen, consent, product ordering, monitoring, admission, and hematology or critical-care consultation. Transfusion need in pediatric severe anemia, acute bleeding, hemolysis, chronic anemia, cardiac disease, or hemoglobinopathy. RCH blood product guidance gives pediatric Hb ranges and emphasizes clinical features and setting.",
-                                      "cutoffs": [
-                                        "70 g/L",
-                                        "70 to 90 g/L",
-                                        "90 g/L"
-                                      ],
-                                      "data_needed": [
-                                        "70 g/L",
-                                        "70 to 90 g/L",
-                                        "90 g/L"
-                                      ],
-                                      "source_ids": [
-                                        "RCH_BLOOD_PRODUCT_CHILD"
-                                      ],
-                                      "source_section": "indications for red blood cell transfusion",
-                                      "review_status": "source_backed"
                                     }
                                   ]
                                 },
@@ -5247,64 +4379,6 @@
                                       "RCH_ANAEMIA_CHILD"
                                     ],
                                     "source_section": "Microcytic hypochromic anemia",
-                                    "review_status": "source_backed"
-                                  },
-                                  {
-                                    "id": "differentialBuckets_peds_heme_transfusion_iron_frame",
-                                    "label": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity",
-                                    "criteria_text": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity Use Hb threshold, symptoms, bleeding/hemolysis, chronic disease, hemoglobinopathy, iron deficiency, and local blood-product procedures to decide transfusion, iron therapy, consultation, and follow-up. Positive thresholds or symptoms change admission, IV access, group and screen, transfusion discussion, iron dose selection, and repeat lab timing. Transfusion need, iron deficiency treatment, specialty handoff, and follow-up safety. RCH blood product guidance often indicates RBC transfusion below 70 g/L, may indicate transfusion at 70 to 90 g/L depending on clinical setting and anemia symptoms, and often avoids transfusion above 90 g/L; RCH iron deficiency guidance treats most children with oral iron and diet change.",
-                                    "cutoffs": [
-                                      "70 g/L",
-                                      "70 to 90 g/L",
-                                      "90 g/L"
-                                    ],
-                                    "data_needed": [
-                                      "70 g/L",
-                                      "70 to 90 g/L",
-                                      "90 g/L"
-                                    ],
-                                    "source_ids": [
-                                      "RCH_BLOOD_PRODUCT_CHILD"
-                                    ],
-                                    "source_section": "indications for red blood cell transfusion",
-                                    "review_status": "source_backed"
-                                  },
-                                  {
-                                    "id": "redFlags_peds_heme_redflag_severe_anemia_threshold",
-                                    "label": "Severe anemia or symptomatic Hb below transfusion range",
-                                    "criteria_text": "Severe anemia or symptomatic Hb below transfusion range Escalate when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, clinical anemia symptoms, cardiac disease, or other high-risk setting. Changes admission, IV access, type and screen, transfusion discussion, monitoring, and specialist consultation. Severe anemia, acute blood loss, hemolysis, symptomatic chronic anemia, or transfusion need. RCH blood product guidance says RBC transfusion is often indicated below 70 g/L and may be indicated at 70 to 90 g/L depending on clinical setting and symptoms.",
-                                    "cutoffs": [
-                                      "70 g/L",
-                                      "70 to 90 g/L"
-                                    ],
-                                    "data_needed": [
-                                      "70 g/L",
-                                      "70 to 90 g/L"
-                                    ],
-                                    "source_ids": [
-                                      "RCH_BLOOD_PRODUCT_CHILD"
-                                    ],
-                                    "source_section": "RBC transfusion indications",
-                                    "review_status": "source_backed"
-                                  },
-                                  {
-                                    "id": "dispositionRules_peds_heme_management_rbc_transfusion_threshold",
-                                    "label": "RBC transfusion threshold route",
-                                    "criteria_text": "RBC transfusion threshold route Discuss RBC transfusion when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, symptomatic anemia, cardiac disease, or another high-risk setting; avoid routine transfusion above 90 g/L unless a specific situation warrants it. Changes group and screen, consent, product ordering, monitoring, admission, and hematology or critical-care consultation. Transfusion need in pediatric severe anemia, acute bleeding, hemolysis, chronic anemia, cardiac disease, or hemoglobinopathy. RCH blood product guidance gives pediatric Hb ranges and emphasizes clinical features and setting.",
-                                    "cutoffs": [
-                                      "70 g/L",
-                                      "70 to 90 g/L",
-                                      "90 g/L"
-                                    ],
-                                    "data_needed": [
-                                      "70 g/L",
-                                      "70 to 90 g/L",
-                                      "90 g/L"
-                                    ],
-                                    "source_ids": [
-                                      "RCH_BLOOD_PRODUCT_CHILD"
-                                    ],
-                                    "source_section": "indications for red blood cell transfusion",
                                     "review_status": "source_backed"
                                   }
                                 ]
@@ -5412,64 +4486,6 @@
                                       ],
                                       "source_section": "Microcytic hypochromic anemia",
                                       "review_status": "source_backed"
-                                    },
-                                    {
-                                      "id": "differentialBuckets_peds_heme_transfusion_iron_frame",
-                                      "label": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity",
-                                      "criteria_text": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity Use Hb threshold, symptoms, bleeding/hemolysis, chronic disease, hemoglobinopathy, iron deficiency, and local blood-product procedures to decide transfusion, iron therapy, consultation, and follow-up. Positive thresholds or symptoms change admission, IV access, group and screen, transfusion discussion, iron dose selection, and repeat lab timing. Transfusion need, iron deficiency treatment, specialty handoff, and follow-up safety. RCH blood product guidance often indicates RBC transfusion below 70 g/L, may indicate transfusion at 70 to 90 g/L depending on clinical setting and anemia symptoms, and often avoids transfusion above 90 g/L; RCH iron deficiency guidance treats most children with oral iron and diet change.",
-                                      "cutoffs": [
-                                        "70 g/L",
-                                        "70 to 90 g/L",
-                                        "90 g/L"
-                                      ],
-                                      "data_needed": [
-                                        "70 g/L",
-                                        "70 to 90 g/L",
-                                        "90 g/L"
-                                      ],
-                                      "source_ids": [
-                                        "RCH_BLOOD_PRODUCT_CHILD"
-                                      ],
-                                      "source_section": "indications for red blood cell transfusion",
-                                      "review_status": "source_backed"
-                                    },
-                                    {
-                                      "id": "redFlags_peds_heme_redflag_severe_anemia_threshold",
-                                      "label": "Severe anemia or symptomatic Hb below transfusion range",
-                                      "criteria_text": "Severe anemia or symptomatic Hb below transfusion range Escalate when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, clinical anemia symptoms, cardiac disease, or other high-risk setting. Changes admission, IV access, type and screen, transfusion discussion, monitoring, and specialist consultation. Severe anemia, acute blood loss, hemolysis, symptomatic chronic anemia, or transfusion need. RCH blood product guidance says RBC transfusion is often indicated below 70 g/L and may be indicated at 70 to 90 g/L depending on clinical setting and symptoms.",
-                                      "cutoffs": [
-                                        "70 g/L",
-                                        "70 to 90 g/L"
-                                      ],
-                                      "data_needed": [
-                                        "70 g/L",
-                                        "70 to 90 g/L"
-                                      ],
-                                      "source_ids": [
-                                        "RCH_BLOOD_PRODUCT_CHILD"
-                                      ],
-                                      "source_section": "RBC transfusion indications",
-                                      "review_status": "source_backed"
-                                    },
-                                    {
-                                      "id": "dispositionRules_peds_heme_management_rbc_transfusion_threshold",
-                                      "label": "RBC transfusion threshold route",
-                                      "criteria_text": "RBC transfusion threshold route Discuss RBC transfusion when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, symptomatic anemia, cardiac disease, or another high-risk setting; avoid routine transfusion above 90 g/L unless a specific situation warrants it. Changes group and screen, consent, product ordering, monitoring, admission, and hematology or critical-care consultation. Transfusion need in pediatric severe anemia, acute bleeding, hemolysis, chronic anemia, cardiac disease, or hemoglobinopathy. RCH blood product guidance gives pediatric Hb ranges and emphasizes clinical features and setting.",
-                                      "cutoffs": [
-                                        "70 g/L",
-                                        "70 to 90 g/L",
-                                        "90 g/L"
-                                      ],
-                                      "data_needed": [
-                                        "70 g/L",
-                                        "70 to 90 g/L",
-                                        "90 g/L"
-                                      ],
-                                      "source_ids": [
-                                        "RCH_BLOOD_PRODUCT_CHILD"
-                                      ],
-                                      "source_section": "indications for red blood cell transfusion",
-                                      "review_status": "source_backed"
                                     }
                                   ]
                                 },
@@ -5543,64 +4559,6 @@
                                     ],
                                     "source_section": "Microcytic hypochromic anemia",
                                     "review_status": "source_backed"
-                                  },
-                                  {
-                                    "id": "differentialBuckets_peds_heme_transfusion_iron_frame",
-                                    "label": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity",
-                                    "criteria_text": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity Use Hb threshold, symptoms, bleeding/hemolysis, chronic disease, hemoglobinopathy, iron deficiency, and local blood-product procedures to decide transfusion, iron therapy, consultation, and follow-up. Positive thresholds or symptoms change admission, IV access, group and screen, transfusion discussion, iron dose selection, and repeat lab timing. Transfusion need, iron deficiency treatment, specialty handoff, and follow-up safety. RCH blood product guidance often indicates RBC transfusion below 70 g/L, may indicate transfusion at 70 to 90 g/L depending on clinical setting and anemia symptoms, and often avoids transfusion above 90 g/L; RCH iron deficiency guidance treats most children with oral iron and diet change.",
-                                    "cutoffs": [
-                                      "70 g/L",
-                                      "70 to 90 g/L",
-                                      "90 g/L"
-                                    ],
-                                    "data_needed": [
-                                      "70 g/L",
-                                      "70 to 90 g/L",
-                                      "90 g/L"
-                                    ],
-                                    "source_ids": [
-                                      "RCH_BLOOD_PRODUCT_CHILD"
-                                    ],
-                                    "source_section": "indications for red blood cell transfusion",
-                                    "review_status": "source_backed"
-                                  },
-                                  {
-                                    "id": "redFlags_peds_heme_redflag_severe_anemia_threshold",
-                                    "label": "Severe anemia or symptomatic Hb below transfusion range",
-                                    "criteria_text": "Severe anemia or symptomatic Hb below transfusion range Escalate when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, clinical anemia symptoms, cardiac disease, or other high-risk setting. Changes admission, IV access, type and screen, transfusion discussion, monitoring, and specialist consultation. Severe anemia, acute blood loss, hemolysis, symptomatic chronic anemia, or transfusion need. RCH blood product guidance says RBC transfusion is often indicated below 70 g/L and may be indicated at 70 to 90 g/L depending on clinical setting and symptoms.",
-                                    "cutoffs": [
-                                      "70 g/L",
-                                      "70 to 90 g/L"
-                                    ],
-                                    "data_needed": [
-                                      "70 g/L",
-                                      "70 to 90 g/L"
-                                    ],
-                                    "source_ids": [
-                                      "RCH_BLOOD_PRODUCT_CHILD"
-                                    ],
-                                    "source_section": "RBC transfusion indications",
-                                    "review_status": "source_backed"
-                                  },
-                                  {
-                                    "id": "dispositionRules_peds_heme_management_rbc_transfusion_threshold",
-                                    "label": "RBC transfusion threshold route",
-                                    "criteria_text": "RBC transfusion threshold route Discuss RBC transfusion when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, symptomatic anemia, cardiac disease, or another high-risk setting; avoid routine transfusion above 90 g/L unless a specific situation warrants it. Changes group and screen, consent, product ordering, monitoring, admission, and hematology or critical-care consultation. Transfusion need in pediatric severe anemia, acute bleeding, hemolysis, chronic anemia, cardiac disease, or hemoglobinopathy. RCH blood product guidance gives pediatric Hb ranges and emphasizes clinical features and setting.",
-                                    "cutoffs": [
-                                      "70 g/L",
-                                      "70 to 90 g/L",
-                                      "90 g/L"
-                                    ],
-                                    "data_needed": [
-                                      "70 g/L",
-                                      "70 to 90 g/L",
-                                      "90 g/L"
-                                    ],
-                                    "source_ids": [
-                                      "RCH_BLOOD_PRODUCT_CHILD"
-                                    ],
-                                    "source_section": "indications for red blood cell transfusion",
-                                    "review_status": "source_backed"
                                   }
                                 ]
                               },
@@ -5654,14 +4612,9 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend threshold labs/results",
+                              "trend criterion-defining results",
                               "review treatment response and adverse effects",
-                              "assign disposition and follow-up clinician/service",
-                              "Measure temperature",
-                              "Measure heart rate and blood pressure",
-                              "Measure respiratory rate and oxygen saturation",
-                              "Measure current weight",
-                              "Document active bleeding burden and mental status"
+                              "assign disposition and follow-up clinician/service"
                             ],
                             "guideline_cutoffs": [
                               {
@@ -5730,64 +4683,6 @@
                                 ],
                                 "source_section": "Microcytic hypochromic anemia",
                                 "review_status": "source_backed"
-                              },
-                              {
-                                "id": "differentialBuckets_peds_heme_transfusion_iron_frame",
-                                "label": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity",
-                                "criteria_text": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity Use Hb threshold, symptoms, bleeding/hemolysis, chronic disease, hemoglobinopathy, iron deficiency, and local blood-product procedures to decide transfusion, iron therapy, consultation, and follow-up. Positive thresholds or symptoms change admission, IV access, group and screen, transfusion discussion, iron dose selection, and repeat lab timing. Transfusion need, iron deficiency treatment, specialty handoff, and follow-up safety. RCH blood product guidance often indicates RBC transfusion below 70 g/L, may indicate transfusion at 70 to 90 g/L depending on clinical setting and anemia symptoms, and often avoids transfusion above 90 g/L; RCH iron deficiency guidance treats most children with oral iron and diet change.",
-                                "cutoffs": [
-                                  "70 g/L",
-                                  "70 to 90 g/L",
-                                  "90 g/L"
-                                ],
-                                "data_needed": [
-                                  "70 g/L",
-                                  "70 to 90 g/L",
-                                  "90 g/L"
-                                ],
-                                "source_ids": [
-                                  "RCH_BLOOD_PRODUCT_CHILD"
-                                ],
-                                "source_section": "indications for red blood cell transfusion",
-                                "review_status": "source_backed"
-                              },
-                              {
-                                "id": "redFlags_peds_heme_redflag_severe_anemia_threshold",
-                                "label": "Severe anemia or symptomatic Hb below transfusion range",
-                                "criteria_text": "Severe anemia or symptomatic Hb below transfusion range Escalate when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, clinical anemia symptoms, cardiac disease, or other high-risk setting. Changes admission, IV access, type and screen, transfusion discussion, monitoring, and specialist consultation. Severe anemia, acute blood loss, hemolysis, symptomatic chronic anemia, or transfusion need. RCH blood product guidance says RBC transfusion is often indicated below 70 g/L and may be indicated at 70 to 90 g/L depending on clinical setting and symptoms.",
-                                "cutoffs": [
-                                  "70 g/L",
-                                  "70 to 90 g/L"
-                                ],
-                                "data_needed": [
-                                  "70 g/L",
-                                  "70 to 90 g/L"
-                                ],
-                                "source_ids": [
-                                  "RCH_BLOOD_PRODUCT_CHILD"
-                                ],
-                                "source_section": "RBC transfusion indications",
-                                "review_status": "source_backed"
-                              },
-                              {
-                                "id": "dispositionRules_peds_heme_management_rbc_transfusion_threshold",
-                                "label": "RBC transfusion threshold route",
-                                "criteria_text": "RBC transfusion threshold route Discuss RBC transfusion when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, symptomatic anemia, cardiac disease, or another high-risk setting; avoid routine transfusion above 90 g/L unless a specific situation warrants it. Changes group and screen, consent, product ordering, monitoring, admission, and hematology or critical-care consultation. Transfusion need in pediatric severe anemia, acute bleeding, hemolysis, chronic anemia, cardiac disease, or hemoglobinopathy. RCH blood product guidance gives pediatric Hb ranges and emphasizes clinical features and setting.",
-                                "cutoffs": [
-                                  "70 g/L",
-                                  "70 to 90 g/L",
-                                  "90 g/L"
-                                ],
-                                "data_needed": [
-                                  "70 g/L",
-                                  "70 to 90 g/L",
-                                  "90 g/L"
-                                ],
-                                "source_ids": [
-                                  "RCH_BLOOD_PRODUCT_CHILD"
-                                ],
-                                "source_section": "indications for red blood cell transfusion",
-                                "review_status": "source_backed"
                               }
                             ]
                           }
@@ -5797,8 +4692,6 @@
                     "parallel_actions": [
                       "Pediatric pallor, anemia, bruising, bleeding, or petechiae: immediate stabilization or escalation trigger: Active bleeding with shock or altered state.",
                       "Pediatric pallor, anemia, bruising, bleeding, or petechiae: treatment or disposition for high-risk or confirmed disease: Emergency stabilization route.",
-                      "Pediatric pallor, anemia, bruising, bleeding, or petechiae: outpatient or safety-net route after exclusion criteria and follow-up access are documented: RBC transfusion threshold route.",
-                      "Pediatric pallor, anemia, bruising, bleeding, or petechiae: monitoring data for response, complications, and reassessment: Full blood examination film and reticulocyte count.",
                       "Emergency stabilization route",
                       "RBC transfusion threshold route",
                       "Iron therapy and diet route"
@@ -5870,64 +4763,6 @@
                         ],
                         "source_section": "Microcytic hypochromic anemia",
                         "review_status": "source_backed"
-                      },
-                      {
-                        "id": "differentialBuckets_peds_heme_transfusion_iron_frame",
-                        "label": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity",
-                        "criteria_text": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity Use Hb threshold, symptoms, bleeding/hemolysis, chronic disease, hemoglobinopathy, iron deficiency, and local blood-product procedures to decide transfusion, iron therapy, consultation, and follow-up. Positive thresholds or symptoms change admission, IV access, group and screen, transfusion discussion, iron dose selection, and repeat lab timing. Transfusion need, iron deficiency treatment, specialty handoff, and follow-up safety. RCH blood product guidance often indicates RBC transfusion below 70 g/L, may indicate transfusion at 70 to 90 g/L depending on clinical setting and anemia symptoms, and often avoids transfusion above 90 g/L; RCH iron deficiency guidance treats most children with oral iron and diet change.",
-                        "cutoffs": [
-                          "70 g/L",
-                          "70 to 90 g/L",
-                          "90 g/L"
-                        ],
-                        "data_needed": [
-                          "70 g/L",
-                          "70 to 90 g/L",
-                          "90 g/L"
-                        ],
-                        "source_ids": [
-                          "RCH_BLOOD_PRODUCT_CHILD"
-                        ],
-                        "source_section": "indications for red blood cell transfusion",
-                        "review_status": "source_backed"
-                      },
-                      {
-                        "id": "redFlags_peds_heme_redflag_severe_anemia_threshold",
-                        "label": "Severe anemia or symptomatic Hb below transfusion range",
-                        "criteria_text": "Severe anemia or symptomatic Hb below transfusion range Escalate when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, clinical anemia symptoms, cardiac disease, or other high-risk setting. Changes admission, IV access, type and screen, transfusion discussion, monitoring, and specialist consultation. Severe anemia, acute blood loss, hemolysis, symptomatic chronic anemia, or transfusion need. RCH blood product guidance says RBC transfusion is often indicated below 70 g/L and may be indicated at 70 to 90 g/L depending on clinical setting and symptoms.",
-                        "cutoffs": [
-                          "70 g/L",
-                          "70 to 90 g/L"
-                        ],
-                        "data_needed": [
-                          "70 g/L",
-                          "70 to 90 g/L"
-                        ],
-                        "source_ids": [
-                          "RCH_BLOOD_PRODUCT_CHILD"
-                        ],
-                        "source_section": "RBC transfusion indications",
-                        "review_status": "source_backed"
-                      },
-                      {
-                        "id": "dispositionRules_peds_heme_management_rbc_transfusion_threshold",
-                        "label": "RBC transfusion threshold route",
-                        "criteria_text": "RBC transfusion threshold route Discuss RBC transfusion when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, symptomatic anemia, cardiac disease, or another high-risk setting; avoid routine transfusion above 90 g/L unless a specific situation warrants it. Changes group and screen, consent, product ordering, monitoring, admission, and hematology or critical-care consultation. Transfusion need in pediatric severe anemia, acute bleeding, hemolysis, chronic anemia, cardiac disease, or hemoglobinopathy. RCH blood product guidance gives pediatric Hb ranges and emphasizes clinical features and setting.",
-                        "cutoffs": [
-                          "70 g/L",
-                          "70 to 90 g/L",
-                          "90 g/L"
-                        ],
-                        "data_needed": [
-                          "70 g/L",
-                          "70 to 90 g/L",
-                          "90 g/L"
-                        ],
-                        "source_ids": [
-                          "RCH_BLOOD_PRODUCT_CHILD"
-                        ],
-                        "source_section": "indications for red blood cell transfusion",
-                        "review_status": "source_backed"
                       }
                     ]
                   },
@@ -5948,7 +4783,7 @@
                     "criteria": {
                       "rule_id": "pediatric_hematology_anemia_bleeding_alternate_criteria",
                       "source": "criteria",
-                      "description": "Use an alternate pathway when Pediatric pallor, anemia, bruising, bleeding, or petechiae criteria are absent, a cited mimic better explains the presentation, or objective result data contradict this workup.",
+                      "description": "Use an alternate pathway when Pediatric pallor, anemia, bruising, bleeding, or petechiae criteria are absent, Pediatric anemia or pallor: classify severity, symptom burden, production failure, blood loss, hemolysis, iron deficiency, B12 or folate deficiency, chronic disease, hemoglobinopathy, or malignancy pattern; Pediatric bruising, petechiae, purpura, thrombocytopenia, or ITP pattern; Possible leukemia or lymphoma: unexplained petechiae, bruising, pallor, persistent fatigue, fever, infections, bone pain, lymphadenopathy, splenomegaly, or weight loss; Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity better explains the presentation, or measured result data contradict this workup.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -6033,71 +4868,13 @@
                           ],
                           "source_section": "Microcytic hypochromic anemia",
                           "review_status": "source_backed"
-                        },
-                        {
-                          "id": "differentialBuckets_peds_heme_transfusion_iron_frame",
-                          "label": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity",
-                          "criteria_text": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity Use Hb threshold, symptoms, bleeding/hemolysis, chronic disease, hemoglobinopathy, iron deficiency, and local blood-product procedures to decide transfusion, iron therapy, consultation, and follow-up. Positive thresholds or symptoms change admission, IV access, group and screen, transfusion discussion, iron dose selection, and repeat lab timing. Transfusion need, iron deficiency treatment, specialty handoff, and follow-up safety. RCH blood product guidance often indicates RBC transfusion below 70 g/L, may indicate transfusion at 70 to 90 g/L depending on clinical setting and anemia symptoms, and often avoids transfusion above 90 g/L; RCH iron deficiency guidance treats most children with oral iron and diet change.",
-                          "cutoffs": [
-                            "70 g/L",
-                            "70 to 90 g/L",
-                            "90 g/L"
-                          ],
-                          "data_needed": [
-                            "70 g/L",
-                            "70 to 90 g/L",
-                            "90 g/L"
-                          ],
-                          "source_ids": [
-                            "RCH_BLOOD_PRODUCT_CHILD"
-                          ],
-                          "source_section": "indications for red blood cell transfusion",
-                          "review_status": "source_backed"
-                        },
-                        {
-                          "id": "redFlags_peds_heme_redflag_severe_anemia_threshold",
-                          "label": "Severe anemia or symptomatic Hb below transfusion range",
-                          "criteria_text": "Severe anemia or symptomatic Hb below transfusion range Escalate when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, clinical anemia symptoms, cardiac disease, or other high-risk setting. Changes admission, IV access, type and screen, transfusion discussion, monitoring, and specialist consultation. Severe anemia, acute blood loss, hemolysis, symptomatic chronic anemia, or transfusion need. RCH blood product guidance says RBC transfusion is often indicated below 70 g/L and may be indicated at 70 to 90 g/L depending on clinical setting and symptoms.",
-                          "cutoffs": [
-                            "70 g/L",
-                            "70 to 90 g/L"
-                          ],
-                          "data_needed": [
-                            "70 g/L",
-                            "70 to 90 g/L"
-                          ],
-                          "source_ids": [
-                            "RCH_BLOOD_PRODUCT_CHILD"
-                          ],
-                          "source_section": "RBC transfusion indications",
-                          "review_status": "source_backed"
-                        },
-                        {
-                          "id": "dispositionRules_peds_heme_management_rbc_transfusion_threshold",
-                          "label": "RBC transfusion threshold route",
-                          "criteria_text": "RBC transfusion threshold route Discuss RBC transfusion when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, symptomatic anemia, cardiac disease, or another high-risk setting; avoid routine transfusion above 90 g/L unless a specific situation warrants it. Changes group and screen, consent, product ordering, monitoring, admission, and hematology or critical-care consultation. Transfusion need in pediatric severe anemia, acute bleeding, hemolysis, chronic anemia, cardiac disease, or hemoglobinopathy. RCH blood product guidance gives pediatric Hb ranges and emphasizes clinical features and setting.",
-                          "cutoffs": [
-                            "70 g/L",
-                            "70 to 90 g/L",
-                            "90 g/L"
-                          ],
-                          "data_needed": [
-                            "70 g/L",
-                            "70 to 90 g/L",
-                            "90 g/L"
-                          ],
-                          "source_ids": [
-                            "RCH_BLOOD_PRODUCT_CHILD"
-                          ],
-                          "source_section": "indications for red blood cell transfusion",
-                          "review_status": "source_backed"
                         }
                       ]
                     },
-                    "action": "Document why Pediatric pallor, anemia, bruising, bleeding, or petechiae is not the active pathway, name the competing diagnosis or exclusion, and route to the appropriate workup rather than reassurance alone.",
+                    "action": "Name the competing diagnosis or exclusion for Pediatric pallor, anemia, bruising, bleeding, or petechiae, such as Pediatric anemia or pallor: classify severity, symptom burden, production failure, blood loss, hemolysis, iron deficiency, B12 or folate deficiency, chronic disease, hemoglobinopathy, or malignancy pattern; Pediatric bruising, petechiae, purpura, thrombocytopenia, or ITP pattern; Possible leukemia or lymphoma: unexplained petechiae, bruising, pallor, persistent fatigue, fever, infections, bone pain, lymphadenopathy, splenomegaly, or weight loss; Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity; route to the corresponding workup or specialty pathway and document why the Pediatric pallor, anemia, bruising, bleeding, or petechiae branch is not used.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Competing diagnosis or exclusion changes the active pathway."
+                    "review_needed_reason": "Pediatric pallor, anemia, bruising, bleeding, or petechiae criteria are absent or contradicted by Pediatric anemia or pallor: classify severity, symptom burden, production failure, blood loss, hemolysis, iron deficiency, B12 or folate deficiency, chronic disease, hemoglobinopathy, or malignancy pattern; Pediatric bruising, petechiae, purpura, thrombocytopenia, or ITP pattern; Possible leukemia or lymphoma: unexplained petechiae, bruising, pallor, persistent fatigue, fever, infections, bone pain, lymphadenopathy, splenomegaly, or weight loss; Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity; competing diagnosis must be named before closure."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -6166,64 +4943,6 @@
                       "RCH_ANAEMIA_CHILD"
                     ],
                     "source_section": "Microcytic hypochromic anemia",
-                    "review_status": "source_backed"
-                  },
-                  {
-                    "id": "differentialBuckets_peds_heme_transfusion_iron_frame",
-                    "label": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity",
-                    "criteria_text": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity Use Hb threshold, symptoms, bleeding/hemolysis, chronic disease, hemoglobinopathy, iron deficiency, and local blood-product procedures to decide transfusion, iron therapy, consultation, and follow-up. Positive thresholds or symptoms change admission, IV access, group and screen, transfusion discussion, iron dose selection, and repeat lab timing. Transfusion need, iron deficiency treatment, specialty handoff, and follow-up safety. RCH blood product guidance often indicates RBC transfusion below 70 g/L, may indicate transfusion at 70 to 90 g/L depending on clinical setting and anemia symptoms, and often avoids transfusion above 90 g/L; RCH iron deficiency guidance treats most children with oral iron and diet change.",
-                    "cutoffs": [
-                      "70 g/L",
-                      "70 to 90 g/L",
-                      "90 g/L"
-                    ],
-                    "data_needed": [
-                      "70 g/L",
-                      "70 to 90 g/L",
-                      "90 g/L"
-                    ],
-                    "source_ids": [
-                      "RCH_BLOOD_PRODUCT_CHILD"
-                    ],
-                    "source_section": "indications for red blood cell transfusion",
-                    "review_status": "source_backed"
-                  },
-                  {
-                    "id": "redFlags_peds_heme_redflag_severe_anemia_threshold",
-                    "label": "Severe anemia or symptomatic Hb below transfusion range",
-                    "criteria_text": "Severe anemia or symptomatic Hb below transfusion range Escalate when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, clinical anemia symptoms, cardiac disease, or other high-risk setting. Changes admission, IV access, type and screen, transfusion discussion, monitoring, and specialist consultation. Severe anemia, acute blood loss, hemolysis, symptomatic chronic anemia, or transfusion need. RCH blood product guidance says RBC transfusion is often indicated below 70 g/L and may be indicated at 70 to 90 g/L depending on clinical setting and symptoms.",
-                    "cutoffs": [
-                      "70 g/L",
-                      "70 to 90 g/L"
-                    ],
-                    "data_needed": [
-                      "70 g/L",
-                      "70 to 90 g/L"
-                    ],
-                    "source_ids": [
-                      "RCH_BLOOD_PRODUCT_CHILD"
-                    ],
-                    "source_section": "RBC transfusion indications",
-                    "review_status": "source_backed"
-                  },
-                  {
-                    "id": "dispositionRules_peds_heme_management_rbc_transfusion_threshold",
-                    "label": "RBC transfusion threshold route",
-                    "criteria_text": "RBC transfusion threshold route Discuss RBC transfusion when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, symptomatic anemia, cardiac disease, or another high-risk setting; avoid routine transfusion above 90 g/L unless a specific situation warrants it. Changes group and screen, consent, product ordering, monitoring, admission, and hematology or critical-care consultation. Transfusion need in pediatric severe anemia, acute bleeding, hemolysis, chronic anemia, cardiac disease, or hemoglobinopathy. RCH blood product guidance gives pediatric Hb ranges and emphasizes clinical features and setting.",
-                    "cutoffs": [
-                      "70 g/L",
-                      "70 to 90 g/L",
-                      "90 g/L"
-                    ],
-                    "data_needed": [
-                      "70 g/L",
-                      "70 to 90 g/L",
-                      "90 g/L"
-                    ],
-                    "source_ids": [
-                      "RCH_BLOOD_PRODUCT_CHILD"
-                    ],
-                    "source_section": "indications for red blood cell transfusion",
                     "review_status": "source_backed"
                   }
                 ],
@@ -6294,64 +5013,6 @@
                     ],
                     "source_section": "Microcytic hypochromic anemia",
                     "review_status": "source_backed"
-                  },
-                  {
-                    "id": "differentialBuckets_peds_heme_transfusion_iron_frame",
-                    "label": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity",
-                    "criteria_text": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity Use Hb threshold, symptoms, bleeding/hemolysis, chronic disease, hemoglobinopathy, iron deficiency, and local blood-product procedures to decide transfusion, iron therapy, consultation, and follow-up. Positive thresholds or symptoms change admission, IV access, group and screen, transfusion discussion, iron dose selection, and repeat lab timing. Transfusion need, iron deficiency treatment, specialty handoff, and follow-up safety. RCH blood product guidance often indicates RBC transfusion below 70 g/L, may indicate transfusion at 70 to 90 g/L depending on clinical setting and anemia symptoms, and often avoids transfusion above 90 g/L; RCH iron deficiency guidance treats most children with oral iron and diet change.",
-                    "cutoffs": [
-                      "70 g/L",
-                      "70 to 90 g/L",
-                      "90 g/L"
-                    ],
-                    "data_needed": [
-                      "70 g/L",
-                      "70 to 90 g/L",
-                      "90 g/L"
-                    ],
-                    "source_ids": [
-                      "RCH_BLOOD_PRODUCT_CHILD"
-                    ],
-                    "source_section": "indications for red blood cell transfusion",
-                    "review_status": "source_backed"
-                  },
-                  {
-                    "id": "redFlags_peds_heme_redflag_severe_anemia_threshold",
-                    "label": "Severe anemia or symptomatic Hb below transfusion range",
-                    "criteria_text": "Severe anemia or symptomatic Hb below transfusion range Escalate when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, clinical anemia symptoms, cardiac disease, or other high-risk setting. Changes admission, IV access, type and screen, transfusion discussion, monitoring, and specialist consultation. Severe anemia, acute blood loss, hemolysis, symptomatic chronic anemia, or transfusion need. RCH blood product guidance says RBC transfusion is often indicated below 70 g/L and may be indicated at 70 to 90 g/L depending on clinical setting and symptoms.",
-                    "cutoffs": [
-                      "70 g/L",
-                      "70 to 90 g/L"
-                    ],
-                    "data_needed": [
-                      "70 g/L",
-                      "70 to 90 g/L"
-                    ],
-                    "source_ids": [
-                      "RCH_BLOOD_PRODUCT_CHILD"
-                    ],
-                    "source_section": "RBC transfusion indications",
-                    "review_status": "source_backed"
-                  },
-                  {
-                    "id": "dispositionRules_peds_heme_management_rbc_transfusion_threshold",
-                    "label": "RBC transfusion threshold route",
-                    "criteria_text": "RBC transfusion threshold route Discuss RBC transfusion when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, symptomatic anemia, cardiac disease, or another high-risk setting; avoid routine transfusion above 90 g/L unless a specific situation warrants it. Changes group and screen, consent, product ordering, monitoring, admission, and hematology or critical-care consultation. Transfusion need in pediatric severe anemia, acute bleeding, hemolysis, chronic anemia, cardiac disease, or hemoglobinopathy. RCH blood product guidance gives pediatric Hb ranges and emphasizes clinical features and setting.",
-                    "cutoffs": [
-                      "70 g/L",
-                      "70 to 90 g/L",
-                      "90 g/L"
-                    ],
-                    "data_needed": [
-                      "70 g/L",
-                      "70 to 90 g/L",
-                      "90 g/L"
-                    ],
-                    "source_ids": [
-                      "RCH_BLOOD_PRODUCT_CHILD"
-                    ],
-                    "source_section": "indications for red blood cell transfusion",
-                    "review_status": "source_backed"
                   }
                 ]
               }
@@ -6362,13 +5023,8 @@
               "Coagulation and fibrinogen tests",
               "Group screen and crossmatch when transfusion possible",
               "Hemolysis bilirubin LDH haptoglobin DAT and urine tests",
-              "B12 folate renal liver and inflammatory tests when indicated",
+              "B12 folate renal liver and inflammatory tests when the branch-specific criteria in this node apply",
               "Pregnancy test when adolescent bleeding or anemia context applies",
-              "Measure temperature",
-              "Measure heart rate and blood pressure",
-              "Measure respiratory rate and oxygen saturation",
-              "Measure current weight",
-              "Document active bleeding burden and mental status",
               "age",
               "sex for >12 years",
               "hemoglobin",
@@ -6392,7 +5048,7 @@
               "Coagulation and fibrinogen tests",
               "Group screen and crossmatch when transfusion possible",
               "Hemolysis bilirubin LDH haptoglobin DAT and urine tests",
-              "B12 folate renal liver and inflammatory tests when indicated",
+              "B12 folate renal liver and inflammatory tests when the branch-specific criteria in this node apply",
               "Pregnancy test when adolescent bleeding or anemia context applies",
               "90 g/L",
               "95 g/L",
@@ -6470,64 +5126,6 @@
                 ],
                 "source_section": "Microcytic hypochromic anemia",
                 "review_status": "source_backed"
-              },
-              {
-                "id": "differentialBuckets_peds_heme_transfusion_iron_frame",
-                "label": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity",
-                "criteria_text": "Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity Use Hb threshold, symptoms, bleeding/hemolysis, chronic disease, hemoglobinopathy, iron deficiency, and local blood-product procedures to decide transfusion, iron therapy, consultation, and follow-up. Positive thresholds or symptoms change admission, IV access, group and screen, transfusion discussion, iron dose selection, and repeat lab timing. Transfusion need, iron deficiency treatment, specialty handoff, and follow-up safety. RCH blood product guidance often indicates RBC transfusion below 70 g/L, may indicate transfusion at 70 to 90 g/L depending on clinical setting and anemia symptoms, and often avoids transfusion above 90 g/L; RCH iron deficiency guidance treats most children with oral iron and diet change.",
-                "cutoffs": [
-                  "70 g/L",
-                  "70 to 90 g/L",
-                  "90 g/L"
-                ],
-                "data_needed": [
-                  "70 g/L",
-                  "70 to 90 g/L",
-                  "90 g/L"
-                ],
-                "source_ids": [
-                  "RCH_BLOOD_PRODUCT_CHILD"
-                ],
-                "source_section": "indications for red blood cell transfusion",
-                "review_status": "source_backed"
-              },
-              {
-                "id": "redFlags_peds_heme_redflag_severe_anemia_threshold",
-                "label": "Severe anemia or symptomatic Hb below transfusion range",
-                "criteria_text": "Severe anemia or symptomatic Hb below transfusion range Escalate when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, clinical anemia symptoms, cardiac disease, or other high-risk setting. Changes admission, IV access, type and screen, transfusion discussion, monitoring, and specialist consultation. Severe anemia, acute blood loss, hemolysis, symptomatic chronic anemia, or transfusion need. RCH blood product guidance says RBC transfusion is often indicated below 70 g/L and may be indicated at 70 to 90 g/L depending on clinical setting and symptoms.",
-                "cutoffs": [
-                  "70 g/L",
-                  "70 to 90 g/L"
-                ],
-                "data_needed": [
-                  "70 g/L",
-                  "70 to 90 g/L"
-                ],
-                "source_ids": [
-                  "RCH_BLOOD_PRODUCT_CHILD"
-                ],
-                "source_section": "RBC transfusion indications",
-                "review_status": "source_backed"
-              },
-              {
-                "id": "dispositionRules_peds_heme_management_rbc_transfusion_threshold",
-                "label": "RBC transfusion threshold route",
-                "criteria_text": "RBC transfusion threshold route Discuss RBC transfusion when Hb is below 70 g/L, or Hb is 70 to 90 g/L with bleeding, hemolysis, symptomatic anemia, cardiac disease, or another high-risk setting; avoid routine transfusion above 90 g/L unless a specific situation warrants it. Changes group and screen, consent, product ordering, monitoring, admission, and hematology or critical-care consultation. Transfusion need in pediatric severe anemia, acute bleeding, hemolysis, chronic anemia, cardiac disease, or hemoglobinopathy. RCH blood product guidance gives pediatric Hb ranges and emphasizes clinical features and setting.",
-                "cutoffs": [
-                  "70 g/L",
-                  "70 to 90 g/L",
-                  "90 g/L"
-                ],
-                "data_needed": [
-                  "70 g/L",
-                  "70 to 90 g/L",
-                  "90 g/L"
-                ],
-                "source_ids": [
-                  "RCH_BLOOD_PRODUCT_CHILD"
-                ],
-                "source_section": "indications for red blood cell transfusion",
-                "review_status": "source_backed"
               }
             ]
           }
@@ -6535,10 +5133,10 @@
       },
       "synthetic_patient_scenarios": [
         {
-          "scenario_id": "missing_context",
+          "scenario_id": "internal_context_guard",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing Pediatric pallor, anemia, bruising, bleeding, or petechiae: onset/trajectory, focused exam, vitals, threshold labs/results, meds, comorbidities, pregnancy/applicability, or follow-up access",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -6547,10 +5145,10 @@
           "traversal_status": "reaches_expected_endpoint"
         },
         {
-          "scenario_id": "missing_cutoff_data",
+          "scenario_id": "internal_threshold_guard",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "pediatric_hematology_anemia_bleeding_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Missing Pediatric pallor, anemia, bruising, bleeding, or petechiae result(s): age; sex for >12 years; hemoglobin; MCV; reticulocyte count; blood film",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "pediatric_hematology_anemia_bleeding_concurrent_data_bundle",
@@ -6592,7 +5190,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "pediatric_hematology_anemia_bleeding_review_endpoint",
-          "expected_active_branch": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
+          "expected_active_branch": "Pediatric pallor, anemia, bruising, bleeding, or petechiae modifier needing review: Emergency stabilization route; RBC transfusion threshold route; Pediatric pallor, anemia, bruising, bleeding, or petechiae: immediate stabilization or escalation trigger: Active bleeding with shock or altered state.; Pediatric pallor, anemia, bruising, bleeding, or petechiae: treatment or disposition for high-risk or confirmed disease: Emergency stabilization route.",
           "expected_path_node_ids": [
             "root",
             "pediatric_hematology_anemia_bleeding_concurrent_data_bundle",
@@ -6608,7 +5206,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "pediatric_hematology_anemia_bleeding_worsening_endpoint",
-          "expected_active_branch": "Pediatric pallor, anemia, bruising, bleeding, or petechiae reassessment worsens or Active bleeding with shock or altered state; Petechiae or purpura with fever or unwell appearance; Unexplained petechiae bruising pallor fatigue fever infection or bone pain; 90 g/L; 95 g/L; 105 g/L; 115 g/L; Full blood examination film and reticulocyte count; Ferritin and iron deficiency assessment no longer fit the selected pathway",
+          "expected_active_branch": "Pediatric pallor, anemia, bruising, bleeding, or petechiae reassessment worsens or Active bleeding with shock or altered state; Petechiae or purpura with fever or unwell appearance; Unexplained petechiae bruising pallor fatigue fever infection or bone pain; 90 g/L; 95 g/L; 105 g/L; 115 g/L; Full blood examination film and reticulocyte count; Ferritin and iron deficiency assessment no longer fit the documented Pediatric pallor, anemia, bruising, bleeding, or petechiae branch",
           "expected_path_node_ids": [
             "root",
             "pediatric_hematology_anemia_bleeding_concurrent_data_bundle",
@@ -6677,7 +5275,7 @@
           "concurrent diagnostic/treatment bundles instead of long one-step chains",
           "cited thresholds/rules visible in classification and endpoint nodes",
           "all endpoints cite evidence or state needs_clinical_review",
-          "missing-data endpoints name exact data needed"
+          "internal data guards keep exact unavailable fields in structured metadata"
         ]
       }
     },

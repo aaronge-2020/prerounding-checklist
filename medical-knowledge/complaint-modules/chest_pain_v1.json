@@ -2859,7 +2859,7 @@
         {
           "threshold": "10 minutes",
           "evidence_item_id": "adult_chest_pain_ecg_troponin_timing",
-          "label": "Acute chest pain ACS screen: 12-lead ECG reviewed within 10 minutes; cardiac troponin measured as soon as possible",
+          "label": "Acute chest pain ACS screen",
           "source_ids": [
             "AHA_ACC_CHEST_PAIN_2021"
           ],
@@ -2868,7 +2868,7 @@
         {
           "threshold": "1 to 3 hours",
           "evidence_item_id": "adult_chest_pain_serial_troponin_intervals",
-          "label": "Serial troponin rule-out/rule-in timing: hs-cTn repeat at 1-3 hours; conventional cTn repeat at 3-6 hours",
+          "label": "Serial troponin rule-out/rule-in timing",
           "source_ids": [
             "AHA_ACC_CHEST_PAIN_2021"
           ],
@@ -2877,7 +2877,7 @@
         {
           "threshold": "3 to 6 hours",
           "evidence_item_id": "adult_chest_pain_serial_troponin_intervals",
-          "label": "Serial troponin rule-out/rule-in timing: hs-cTn repeat at 1-3 hours; conventional cTn repeat at 3-6 hours",
+          "label": "Serial troponin rule-out/rule-in timing",
           "source_ids": [
             "AHA_ACC_CHEST_PAIN_2021"
           ],
@@ -2886,7 +2886,7 @@
         {
           "threshold": "30-day death/MACE risk <1%",
           "evidence_item_id": "adult_chest_pain_low_risk_discharge",
-          "label": "Low-risk chest pain: 30-day death/MACE risk <1%, HEART <3 or EDACS <16 with serial troponins below 99th percentile",
+          "label": "Low-risk chest pain",
           "source_ids": [
             "AHA_ACC_CHEST_PAIN_2021"
           ],
@@ -2895,7 +2895,7 @@
         {
           "threshold": "HEART score <3",
           "evidence_item_id": "adult_chest_pain_low_risk_discharge",
-          "label": "Low-risk chest pain: 30-day death/MACE risk <1%, HEART <3 or EDACS <16 with serial troponins below 99th percentile",
+          "label": "Low-risk chest pain",
           "source_ids": [
             "AHA_ACC_CHEST_PAIN_2021"
           ],
@@ -2904,7 +2904,7 @@
         {
           "threshold": "EDACS score <16",
           "evidence_item_id": "adult_chest_pain_low_risk_discharge",
-          "label": "Low-risk chest pain: 30-day death/MACE risk <1%, HEART <3 or EDACS <16 with serial troponins below 99th percentile",
+          "label": "Low-risk chest pain",
           "source_ids": [
             "AHA_ACC_CHEST_PAIN_2021"
           ],
@@ -2913,7 +2913,7 @@
         {
           "threshold": ">80% probability",
           "evidence_item_id": "adult_chest_pain_aortic_dissection_probability",
-          "label": "Aortic dissection concern: abrupt severe/ripping pain plus pulse differential plus widened mediastinum gives >80% probability",
+          "label": "Aortic dissection concern",
           "source_ids": [
             "AHA_ACC_CHEST_PAIN_2021"
           ],
@@ -2931,7 +2931,7 @@
         {
           "threshold": "AMI <2 days",
           "evidence_item_id": "adult_chest_pain_stress_ccta_safety_cutoffs",
-          "label": "Testing safety cutoffs: active ACS or AMI <2 days, BP >=200/110, SBP <90 for vasodilators, eGFR <30 for selected contrast tests, caffeine within 12 hours",
+          "label": "Testing safety cutoffs",
           "source_ids": [
             "AHA_ACC_CHEST_PAIN_2021"
           ],
@@ -2940,7 +2940,7 @@
         {
           "threshold": ">=200/110 mm Hg",
           "evidence_item_id": "adult_chest_pain_stress_ccta_safety_cutoffs",
-          "label": "Testing safety cutoffs: active ACS or AMI <2 days, BP >=200/110, SBP <90 for vasodilators, eGFR <30 for selected contrast tests, caffeine within 12 hours",
+          "label": "Testing safety cutoffs",
           "source_ids": [
             "AHA_ACC_CHEST_PAIN_2021"
           ],
@@ -2949,7 +2949,7 @@
         {
           "threshold": "SBP <90 mm Hg",
           "evidence_item_id": "adult_chest_pain_stress_ccta_safety_cutoffs",
-          "label": "Testing safety cutoffs: active ACS or AMI <2 days, BP >=200/110, SBP <90 for vasodilators, eGFR <30 for selected contrast tests, caffeine within 12 hours",
+          "label": "Testing safety cutoffs",
           "source_ids": [
             "AHA_ACC_CHEST_PAIN_2021"
           ],
@@ -2958,7 +2958,7 @@
         {
           "threshold": "GFR <30 mL/min/1.73 m2",
           "evidence_item_id": "adult_chest_pain_stress_ccta_safety_cutoffs",
-          "label": "Testing safety cutoffs: active ACS or AMI <2 days, BP >=200/110, SBP <90 for vasodilators, eGFR <30 for selected contrast tests, caffeine within 12 hours",
+          "label": "Testing safety cutoffs",
           "source_ids": [
             "AHA_ACC_CHEST_PAIN_2021"
           ],
@@ -2967,7 +2967,7 @@
         {
           "threshold": "12 hours",
           "evidence_item_id": "adult_chest_pain_stress_ccta_safety_cutoffs",
-          "label": "Testing safety cutoffs: active ACS or AMI <2 days, BP >=200/110, SBP <90 for vasodilators, eGFR <30 for selected contrast tests, caffeine within 12 hours",
+          "label": "Testing safety cutoffs",
           "source_ids": [
             "AHA_ACC_CHEST_PAIN_2021"
           ],
@@ -2976,7 +2976,7 @@
         {
           "threshold": "GRACE <140",
           "evidence_item_id": "adult_chest_pain_intermediate_high_risk_thresholds",
-          "label": "Risk strata: HEART 4-6 intermediate, HEART 7-10 high, GRACE <140 only in selected low-risk protocols, hs-cTn bands require local assay approval",
+          "label": "Risk strata",
           "source_ids": [
             "AHA_ACC_CHEST_PAIN_2021"
           ],
@@ -2985,7 +2985,7 @@
         {
           "threshold": "T0 hs-cTn >52 ng/L",
           "evidence_item_id": "adult_chest_pain_intermediate_high_risk_thresholds",
-          "label": "Risk strata: HEART 4-6 intermediate, HEART 7-10 high, GRACE <140 only in selected low-risk protocols, hs-cTn bands require local assay approval",
+          "label": "Risk strata",
           "source_ids": [
             "AHA_ACC_CHEST_PAIN_2021"
           ],
@@ -2994,7 +2994,7 @@
         {
           "threshold": "delta >5 ng/L",
           "evidence_item_id": "adult_chest_pain_intermediate_high_risk_thresholds",
-          "label": "Risk strata: HEART 4-6 intermediate, HEART 7-10 high, GRACE <140 only in selected low-risk protocols, hs-cTn bands require local assay approval",
+          "label": "Risk strata",
           "source_ids": [
             "AHA_ACC_CHEST_PAIN_2021"
           ],
@@ -3088,7 +3088,7 @@
           {
             "domain": "imaging_results",
             "exact_data_needed": [
-              "source-directed imaging/ECG/procedure results when indicated",
+              "imaging, ECG, culture, pathology, or procedure result required by the chosen branch",
               "12-lead ECG immediately for acute chest pain, ideally within 10 minutes in emergency evaluation",
               "Chest X-ray when pulmonary, pneumothorax, mediastinal, or heart failure features are possible",
               "If PE concern persists, use local PE pathway for D-dimer or CT pulmonary angiography",
@@ -4315,8 +4315,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal data-availability guard",
-            "edgeLabel": "Internal data-availability guard",
+            "label": "Internal traversal guard",
+            "edgeLabel": "Internal traversal guard",
             "source_ids": [
               "AHA_ACC_CHEST_PAIN_2021",
               "AHRQ_CALIBRATE_DX"
@@ -4354,7 +4354,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -4362,7 +4362,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
             },
             "missing_data_needed": [
               "symptom onset and duration",
@@ -4688,8 +4688,8 @@
                   {
                     "id": "adult_chest_pain_missing_acs_data_endpoint",
                     "type": "endpoint",
-                    "label": "Internal data-availability guard",
-                    "edgeLabel": "Internal data-availability guard",
+                    "label": "Internal traversal guard",
+                    "edgeLabel": "Internal traversal guard",
                     "source_ids": [
                       "AHA_ACC_CHEST_PAIN_2021"
                     ],
@@ -4770,7 +4770,7 @@
                         }
                       ]
                     },
-                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -4778,7 +4778,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
                     },
                     "missing_data_needed": [
                       "arrival time",
@@ -6454,7 +6454,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Internal data-availability guard",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -6466,7 +6466,7 @@
           "scenario_id": "missing_ecg_troponin",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "adult_chest_pain_missing_acs_data_endpoint",
-          "expected_active_branch": "Internal data-availability guard",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "adult_chest_pain_initial_assessment_bundle",

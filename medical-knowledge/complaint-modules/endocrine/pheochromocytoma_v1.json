@@ -2538,7 +2538,7 @@
         {
           "threshold": ">ULN",
           "evidence_item_id": "pheo_biochemical_metanephrine_cutoff",
-          "label": "PPGL biochemical confirmation: plasma free or urinary fractionated metanephrines above assay ULN need follow-up; values about 3-fold ULN are high probability",
+          "label": "PPGL biochemical confirmation",
           "source_ids": [
             "ES_PHEO_PPGL_2014"
           ],
@@ -2547,7 +2547,7 @@
         {
           "threshold": "3-fold ULN",
           "evidence_item_id": "pheo_biochemical_metanephrine_cutoff",
-          "label": "PPGL biochemical confirmation: plasma free or urinary fractionated metanephrines above assay ULN need follow-up; values about 3-fold ULN are high probability",
+          "label": "PPGL biochemical confirmation",
           "source_ids": [
             "ES_PHEO_PPGL_2014"
           ],
@@ -2556,7 +2556,7 @@
         {
           "threshold": "7 to 14 days",
           "evidence_item_id": "pheo_preop_blockade_timing",
-          "label": "PPGL pre-op preparation: functional tumor needs alpha blockade and high-sodium/fluid preparation for 7 to 14 days before surgery",
+          "label": "PPGL pre-op preparation",
           "source_ids": [
             "ES_PHEO_PPGL_2014"
           ],
@@ -2565,7 +2565,7 @@
         {
           "threshold": ">6 cm",
           "evidence_item_id": "pheo_open_surgery_size_cutoff",
-          "label": "PPGL surgery approach: open resection for large pheochromocytoma >6 cm or invasive disease; minimally invasive adrenalectomy for most smaller adrenal tumors",
+          "label": "PPGL surgery approach",
           "source_ids": [
             "ES_PHEO_PPGL_2014"
           ],
@@ -2574,7 +2574,7 @@
         {
           "threshold": "2-4 weeks",
           "evidence_item_id": "pheo_postop_followup_cutoff",
-          "label": "PPGL follow-up: biochemical testing 2-4 weeks after surgery and lifelong annual metanephrine testing for recurrence/metastatic disease",
+          "label": "PPGL follow-up",
           "source_ids": [
             "ES_PHEO_PPGL_2014"
           ],
@@ -2583,7 +2583,7 @@
         {
           "threshold": ">ULN",
           "evidence_item_id": "ppgl_supine_sampling_and_borderline_repeat",
-          "label": "PPGL sampling: plasma metanephrines should be drawn supine using supine reference intervals; borderline elevations need preanalytical and medication review",
+          "label": "PPGL sampling",
           "source_ids": [
             "ES_PHEO_PPGL_2014"
           ],
@@ -2592,7 +2592,7 @@
         {
           "threshold": "7-14 days",
           "evidence_item_id": "ppgl_preop_alpha_beta_targets",
-          "label": "PPGL pre-op BP/HR goals: alpha blockade 7-14 days; consider BP <130/80 seated and SBP >90 standing with HR 60-70 seated and 70-80 standing; beta only after alpha blockade",
+          "label": "PPGL pre-op BP/HR goals",
           "source_ids": [
             "ES_PHEO_PPGL_2014"
           ],
@@ -2601,7 +2601,7 @@
         {
           "threshold": "<130/80 mm Hg",
           "evidence_item_id": "ppgl_preop_alpha_beta_targets",
-          "label": "PPGL pre-op BP/HR goals: alpha blockade 7-14 days; consider BP <130/80 seated and SBP >90 standing with HR 60-70 seated and 70-80 standing; beta only after alpha blockade",
+          "label": "PPGL pre-op BP/HR goals",
           "source_ids": [
             "ES_PHEO_PPGL_2014"
           ],
@@ -2610,7 +2610,7 @@
         {
           "threshold": ">90 mm Hg",
           "evidence_item_id": "ppgl_preop_alpha_beta_targets",
-          "label": "PPGL pre-op BP/HR goals: alpha blockade 7-14 days; consider BP <130/80 seated and SBP >90 standing with HR 60-70 seated and 70-80 standing; beta only after alpha blockade",
+          "label": "PPGL pre-op BP/HR goals",
           "source_ids": [
             "ES_PHEO_PPGL_2014"
           ],
@@ -2619,7 +2619,7 @@
         {
           "threshold": "60-70 bpm",
           "evidence_item_id": "ppgl_preop_alpha_beta_targets",
-          "label": "PPGL pre-op BP/HR goals: alpha blockade 7-14 days; consider BP <130/80 seated and SBP >90 standing with HR 60-70 seated and 70-80 standing; beta only after alpha blockade",
+          "label": "PPGL pre-op BP/HR goals",
           "source_ids": [
             "ES_PHEO_PPGL_2014"
           ],
@@ -2628,7 +2628,7 @@
         {
           "threshold": "70-80 bpm",
           "evidence_item_id": "ppgl_preop_alpha_beta_targets",
-          "label": "PPGL pre-op BP/HR goals: alpha blockade 7-14 days; consider BP <130/80 seated and SBP >90 standing with HR 60-70 seated and 70-80 standing; beta only after alpha blockade",
+          "label": "PPGL pre-op BP/HR goals",
           "source_ids": [
             "ES_PHEO_PPGL_2014"
           ],
@@ -2637,7 +2637,7 @@
         {
           "threshold": "10 mg twice daily",
           "evidence_item_id": "ppgl_alpha_blocker_starting_doses",
-          "label": "PPGL alpha blockade options: phenoxybenzamine commonly starts 10 mg twice daily or selective alpha-1 blocker such as doxazosin 2 mg daily, then titrate",
+          "label": "PPGL alpha blockade options",
           "source_ids": [
             "ES_PHEO_PPGL_2014"
           ],
@@ -2646,7 +2646,7 @@
         {
           "threshold": "2 mg daily",
           "evidence_item_id": "ppgl_alpha_blocker_starting_doses",
-          "label": "PPGL alpha blockade options: phenoxybenzamine commonly starts 10 mg twice daily or selective alpha-1 blocker such as doxazosin 2 mg daily, then titrate",
+          "label": "PPGL alpha blockade options",
           "source_ids": [
             "ES_PHEO_PPGL_2014"
           ],
@@ -2655,7 +2655,7 @@
         {
           "threshold": ">=180/120 mm Hg",
           "evidence_item_id": "ppgl_hypertensive_emergency_cutoffs",
-          "label": "PPGL hypertensive emergency: BP >=180/120 mm Hg with acute target-organ damage needs monitored IV therapy; avoid unopposed beta blockade when PPGL is possible",
+          "label": "PPGL hypertensive emergency",
           "source_ids": [
             "MSD_HYPERTENSIVE_EMERGENCY_2026",
             "ES_PHEO_PPGL_2014"
@@ -2665,7 +2665,7 @@
         {
           "threshold": "20-25%",
           "evidence_item_id": "ppgl_hypertensive_emergency_cutoffs",
-          "label": "PPGL hypertensive emergency: BP >=180/120 mm Hg with acute target-organ damage needs monitored IV therapy; avoid unopposed beta blockade when PPGL is possible",
+          "label": "PPGL hypertensive emergency",
           "source_ids": [
             "MSD_HYPERTENSIVE_EMERGENCY_2026",
             "ES_PHEO_PPGL_2014"
@@ -2675,7 +2675,7 @@
         {
           "threshold": "1-2 hours",
           "evidence_item_id": "ppgl_hypertensive_emergency_cutoffs",
-          "label": "PPGL hypertensive emergency: BP >=180/120 mm Hg with acute target-organ damage needs monitored IV therapy; avoid unopposed beta blockade when PPGL is possible",
+          "label": "PPGL hypertensive emergency",
           "source_ids": [
             "MSD_HYPERTENSIVE_EMERGENCY_2026",
             "ES_PHEO_PPGL_2014"
@@ -2778,7 +2778,7 @@
           {
             "domain": "imaging_results",
             "exact_data_needed": [
-              "source-directed imaging/ECG/procedure results when indicated",
+              "imaging, ECG, culture, pathology, or procedure result required by the chosen branch",
               "Plasma free metanephrines or urinary fractionated metanephrines.",
               "CT/MRI only after biochemical evidence.",
               "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
@@ -2864,7 +2864,7 @@
               "treatment response",
               "disposition constraints",
               "Pheochromocytoma: diagnostic assessment",
-              "Metanephrine intervals are lab and sampling-position-specific; >3x ULN is highly suggestive. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+              "Metanephrine intervals are lab and sampling-position-specific; >3x ULN is highly suggestive.",
               "Important mimics/exclusions: exogenous glucocorticoid exposure or withdrawal, primary versus central adrenal insufficiency, adrenal incidentaloma, medication-altered renin/aldosterone testing, catecholamine excess, severe illness, infection, and electrolyte mimics.",
               ">3x ULN metanephrines changes to localization/genetic/preoperative alpha-blockade pathway.",
               "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
@@ -4566,8 +4566,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal data-availability guard",
-            "edgeLabel": "Internal data-availability guard",
+            "label": "Internal traversal guard",
+            "edgeLabel": "Internal traversal guard",
             "source_ids": [
               "ES_PHEO_PPGL_2014",
               "MSD_HYPERTENSIVE_EMERGENCY_2026",
@@ -4607,7 +4607,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -4615,7 +4615,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
             },
             "missing_data_needed": [
               "paroxysmal symptoms",
@@ -4838,7 +4838,7 @@
                 }
               ]
             },
-            "action": "Measure repeat BP, orthostatic BP when safe, heart rate, rhythm, oxygenation, and mental status. Obtain plasma free or urinary fractionated metanephrines with ULN, sampling position and reference interval, medication/diet triggers, renal function, glucose if ill or post-op, pregnancy status, adrenal/extra-adrenal imaging context, hereditary syndrome/family history, and surgery or surveillance status. Local evidence reminders: Plasma free metanephrines or urinary fractionated metanephrines.; Use proper sampling conditions; supine rest for plasma when possible.; CT/MRI only after biochemical evidence.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; PPGL safety tests: obtain plasma free or urine fractionated metanephrines under appropriate collection conditions, add ECG/cardiac injury testing for crisis symptoms, and reserve imaging/genetic pathway for biochemical framing unless emergency stabilization is needed.; Morning cortisol/ACTH or cosyntropin for adrenal insufficiency; aldosterone-renin ratio with potassium correction for primary aldosteronism; metanephrines for PPGL.; Cushing screening with 1-mg DST, late-night salivary cortisol, or 24-hour UFC after excluding exogenous steroids; adrenal imaging follows biochemical framing except emergency/known incidentaloma context.; Metanephrine intervals are lab and sampling-position-specific; >3x ULN is highly suggestive.; Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.; Hypertensive crisis, arrhythmia, ACS/stroke symptoms, planned surgery without alpha blockade..",
+            "action": "Measure repeat BP, orthostatic BP when safe, heart rate, rhythm, oxygenation, and mental status. Obtain plasma free or urinary fractionated metanephrines with ULN, sampling position and reference interval, medication/diet triggers, renal function, glucose if ill or post-op, pregnancy status, adrenal/extra-adrenal imaging context, hereditary syndrome/family history, and surgery or surveillance status. Local evidence reminders: Plasma free metanephrines or urinary fractionated metanephrines.; Use proper sampling conditions; supine rest for plasma when possible.; CT/MRI only after biochemical evidence.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; PPGL safety tests: obtain plasma free or urine fractionated metanephrines under appropriate collection conditions, add ECG/cardiac injury testing for crisis symptoms, and reserve imaging/genetic pathway for biochemical framing unless emergency stabilization is needed.; Morning cortisol/ACTH or cosyntropin for adrenal insufficiency; aldosterone-renin ratio with potassium correction for primary aldosteronism; metanephrines for PPGL.; Cushing screening with 1-mg DST, late-night salivary cortisol, or 24-hour UFC after excluding exogenous steroids; adrenal imaging follows biochemical framing except emergency/known incidentaloma context.; Metanephrine intervals are lab and sampling-position-specific; >3x ULN is highly suggestive.; Hypertensive crisis, arrhythmia, ACS/stroke symptoms, planned surgery without alpha blockade..",
             "children": [
               {
                 "id": "pheochromocytoma_classification_decision",
@@ -5054,8 +5054,8 @@
                   {
                     "id": "pheochromocytoma_missing_metanephrine_endpoint",
                     "type": "endpoint",
-                    "label": "Internal data-availability guard",
-                    "edgeLabel": "Internal data-availability guard",
+                    "label": "Internal traversal guard",
+                    "edgeLabel": "Internal traversal guard",
                     "source_ids": [
                       "ES_PHEO_PPGL_2014"
                     ],
@@ -5087,7 +5087,7 @@
                         "imaging context"
                       ]
                     },
-                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -5095,7 +5095,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
                     },
                     "missing_data_needed": [
                       "plasma free or urinary fractionated metanephrines",
@@ -8057,7 +8057,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Internal data-availability guard",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -8069,7 +8069,7 @@
           "scenario_id": "missing_metanephrine_uln",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "pheochromocytoma_missing_metanephrine_endpoint",
-          "expected_active_branch": "Internal data-availability guard",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "pheochromocytoma_initial_assessment",

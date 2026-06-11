@@ -2424,7 +2424,7 @@
         {
           "threshold": "100 mg",
           "evidence_item_id": "adrenal_crisis_immediate_hydrocortisone",
-          "label": "Adrenal crisis or severe suspected adrenal insufficiency: give hydrocortisone before laboratory confirmation",
+          "label": "Adrenal crisis or severe suspected adrenal insufficiency",
           "source_ids": [
             "ES_ADRENAL_INSUFFICIENCY_2016"
           ],
@@ -2433,7 +2433,7 @@
         {
           "threshold": "200 mg/24 hours",
           "evidence_item_id": "adrenal_crisis_immediate_hydrocortisone",
-          "label": "Adrenal crisis or severe suspected adrenal insufficiency: give hydrocortisone before laboratory confirmation",
+          "label": "Adrenal crisis or severe suspected adrenal insufficiency",
           "source_ids": [
             "ES_ADRENAL_INSUFFICIENCY_2016"
           ],
@@ -2442,7 +2442,7 @@
         {
           "threshold": "50 mg/m2",
           "evidence_item_id": "adrenal_crisis_immediate_hydrocortisone",
-          "label": "Adrenal crisis or severe suspected adrenal insufficiency: give hydrocortisone before laboratory confirmation",
+          "label": "Adrenal crisis or severe suspected adrenal insufficiency",
           "source_ids": [
             "ES_ADRENAL_INSUFFICIENCY_2016"
           ],
@@ -2451,7 +2451,7 @@
         {
           "threshold": "50-100 mg/m2",
           "evidence_item_id": "adrenal_crisis_immediate_hydrocortisone",
-          "label": "Adrenal crisis or severe suspected adrenal insufficiency: give hydrocortisone before laboratory confirmation",
+          "label": "Adrenal crisis or severe suspected adrenal insufficiency",
           "source_ids": [
             "ES_ADRENAL_INSUFFICIENCY_2016"
           ],
@@ -2460,7 +2460,7 @@
         {
           "threshold": "250 mcg",
           "evidence_item_id": "cosyntropin_confirmation_primary_ai",
-          "label": "Confirm adrenal insufficiency when stable: 250 mcg cosyntropin with peak cortisol below 18 ug/dL at 30 or 60 minutes",
+          "label": "Confirm adrenal insufficiency when stable",
           "source_ids": [
             "ES_ADRENAL_INSUFFICIENCY_2016"
           ],
@@ -2469,7 +2469,7 @@
         {
           "threshold": "age >=2 years",
           "evidence_item_id": "cosyntropin_confirmation_primary_ai",
-          "label": "Confirm adrenal insufficiency when stable: 250 mcg cosyntropin with peak cortisol below 18 ug/dL at 30 or 60 minutes",
+          "label": "Confirm adrenal insufficiency when stable",
           "source_ids": [
             "ES_ADRENAL_INSUFFICIENCY_2016"
           ],
@@ -2478,7 +2478,7 @@
         {
           "threshold": "peak cortisol <18 ug/dL",
           "evidence_item_id": "cosyntropin_confirmation_primary_ai",
-          "label": "Confirm adrenal insufficiency when stable: 250 mcg cosyntropin with peak cortisol below 18 ug/dL at 30 or 60 minutes",
+          "label": "Confirm adrenal insufficiency when stable",
           "source_ids": [
             "ES_ADRENAL_INSUFFICIENCY_2016"
           ],
@@ -2487,7 +2487,7 @@
         {
           "threshold": "30 minutes",
           "evidence_item_id": "cosyntropin_confirmation_primary_ai",
-          "label": "Confirm adrenal insufficiency when stable: 250 mcg cosyntropin with peak cortisol below 18 ug/dL at 30 or 60 minutes",
+          "label": "Confirm adrenal insufficiency when stable",
           "source_ids": [
             "ES_ADRENAL_INSUFFICIENCY_2016"
           ],
@@ -2496,7 +2496,7 @@
         {
           "threshold": "60 minutes",
           "evidence_item_id": "cosyntropin_confirmation_primary_ai",
-          "label": "Confirm adrenal insufficiency when stable: 250 mcg cosyntropin with peak cortisol below 18 ug/dL at 30 or 60 minutes",
+          "label": "Confirm adrenal insufficiency when stable",
           "source_ids": [
             "ES_ADRENAL_INSUFFICIENCY_2016"
           ],
@@ -2505,7 +2505,7 @@
         {
           "threshold": "morning cortisol <5 ug/dL",
           "evidence_item_id": "morning_cortisol_acth_preliminary_primary_ai",
-          "label": "If cosyntropin cannot be done: morning cortisol below 5 ug/dL with ACTH supports preliminary adrenal insufficiency diagnosis",
+          "label": "If cosyntropin cannot be done",
           "source_ids": [
             "ES_ADRENAL_INSUFFICIENCY_2016"
           ],
@@ -2514,7 +2514,7 @@
         {
           "threshold": "ACTH >2-fold ULN",
           "evidence_item_id": "primary_ai_acth_renin_aldosterone",
-          "label": "Primary adrenal insufficiency pattern: confirmed cortisol deficiency plus ACTH greater than 2-fold ULN and mineralocorticoid assessment",
+          "label": "Primary adrenal insufficiency pattern",
           "source_ids": [
             "ES_ADRENAL_INSUFFICIENCY_2016"
           ],
@@ -2523,7 +2523,7 @@
         {
           "threshold": "15-25 mg",
           "evidence_item_id": "adult_glucocorticoid_replacement_range",
-          "label": "Adult chronic glucocorticoid replacement: hydrocortisone 15-25 mg/day or prednisolone 3-5 mg/day",
+          "label": "Adult chronic glucocorticoid replacement",
           "source_ids": [
             "ES_ADRENAL_INSUFFICIENCY_2016"
           ],
@@ -2532,7 +2532,7 @@
         {
           "threshold": "20-35 mg",
           "evidence_item_id": "adult_glucocorticoid_replacement_range",
-          "label": "Adult chronic glucocorticoid replacement: hydrocortisone 15-25 mg/day or prednisolone 3-5 mg/day",
+          "label": "Adult chronic glucocorticoid replacement",
           "source_ids": [
             "ES_ADRENAL_INSUFFICIENCY_2016"
           ],
@@ -2541,7 +2541,7 @@
         {
           "threshold": "3-5 mg/day",
           "evidence_item_id": "adult_glucocorticoid_replacement_range",
-          "label": "Adult chronic glucocorticoid replacement: hydrocortisone 15-25 mg/day or prednisolone 3-5 mg/day",
+          "label": "Adult chronic glucocorticoid replacement",
           "source_ids": [
             "ES_ADRENAL_INSUFFICIENCY_2016"
           ],
@@ -2550,7 +2550,7 @@
         {
           "threshold": "50-100 mcg/day",
           "evidence_item_id": "adult_mineralocorticoid_replacement_range",
-          "label": "Confirmed aldosterone deficiency: fludrocortisone 50-100 mcg/day and do not restrict salt",
+          "label": "Confirmed aldosterone deficiency",
           "source_ids": [
             "ES_ADRENAL_INSUFFICIENCY_2016"
           ],
@@ -2595,7 +2595,7 @@
         {
           "threshold": "3 to 4 months",
           "evidence_item_id": "adrenal_followup_and_emergency_prevention",
-          "label": "Crisis prevention: sick-day education, steroid emergency card, medical alert ID, injection kit, and endocrine follow-up at least annually",
+          "label": "Crisis prevention",
           "source_ids": [
             "ES_ADRENAL_INSUFFICIENCY_2016"
           ],
@@ -2689,7 +2689,7 @@
           {
             "domain": "imaging_results",
             "exact_data_needed": [
-              "source-directed imaging/ECG/procedure results when indicated",
+              "imaging, ECG, culture, pathology, or procedure result required by the chosen branch",
               "8 AM cortisol and ACTH.",
               "BMP/glucose; renin/aldosterone and 21-hydroxylase Ab if primary suspected.",
               "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
@@ -4963,8 +4963,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal data-availability guard",
-            "edgeLabel": "Internal data-availability guard",
+            "label": "Internal traversal guard",
+            "edgeLabel": "Internal traversal guard",
             "source_ids": [
               "ES_ADRENAL_INSUFFICIENCY_2016",
               "AHRQ_CALIBRATE_DX"
@@ -5002,7 +5002,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -5010,7 +5010,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
             },
             "missing_data_needed": [
               "blood pressure and postural symptoms",
@@ -5471,8 +5471,8 @@
                   {
                     "id": "adrenal_insufficiency_missing_adrenal_testing_endpoint",
                     "type": "endpoint",
-                    "label": "Internal data-availability guard",
-                    "edgeLabel": "Internal data-availability guard",
+                    "label": "Internal traversal guard",
+                    "edgeLabel": "Internal traversal guard",
                     "source_ids": [
                       "ES_ADRENAL_INSUFFICIENCY_2016",
                       "AHRQ_CALIBRATE_DX"
@@ -5507,7 +5507,7 @@
                         "recent glucocorticoid exposure"
                       ]
                     },
-                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -5515,7 +5515,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
                     },
                     "missing_data_needed": [
                       "8 AM or morning cortisol",
@@ -9295,7 +9295,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Internal data-availability guard",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -9307,7 +9307,7 @@
           "scenario_id": "missing_adrenal_testing",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "adrenal_insufficiency_missing_adrenal_testing_endpoint",
-          "expected_active_branch": "Internal data-availability guard",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "adrenal_insufficiency_initial_assessment",

@@ -2177,11 +2177,11 @@
       "status": "hand_polished_compact_pathway_needs_clinician_review",
       "source_ids": [
         "RCH_VOMITING_CHILD",
-        "NICE_GASTROENTERITIS_UNDER5_CG84",
         "IDSA_APPENDICITIS_IMAGING_2024",
         "ACEP_APPENDICITIS_2023",
         "NICE_UTI_UNDER16_NG224",
         "NICE_ECTOPIC_MISCARRIAGE_NG126",
+        "NICE_GASTROENTERITIS_UNDER5_CG84",
         "RCH_ACUTE_ABDOMINAL_PAIN",
         "NICE_SEPSIS_UNDER16_2025",
         "AHRQ_CALIBRATE_DX"
@@ -2196,17 +2196,6 @@
           "access_date": "2026-06-09",
           "date_accessed": "2026-06-09",
           "citation_text": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Vomiting.",
-          "review_status": "reviewed_current_for_scope"
-        },
-        {
-          "source_id": "NICE_GASTROENTERITIS_UNDER5_CG84",
-          "title": "NICE Diarrhoea and Vomiting Caused by Gastroenteritis in Under 5s",
-          "url": "https://www.nice.org.uk/guidance/cg84/chapter/Recommendations",
-          "url_or_doi": "https://www.nice.org.uk/guidance/cg84/chapter/Recommendations",
-          "year": "current",
-          "access_date": "2026-06-09",
-          "date_accessed": "2026-06-09",
-          "citation_text": "National Institute for Health and Care Excellence. Diarrhoea and vomiting caused by gastroenteritis in under 5s. CG84.",
           "review_status": "reviewed_current_for_scope"
         },
         {
@@ -2254,6 +2243,17 @@
           "review_status": "reviewed_current_for_scope"
         },
         {
+          "source_id": "NICE_GASTROENTERITIS_UNDER5_CG84",
+          "title": "NICE Diarrhoea and Vomiting Caused by Gastroenteritis in Under 5s",
+          "url": "https://www.nice.org.uk/guidance/cg84/chapter/Recommendations",
+          "url_or_doi": "https://www.nice.org.uk/guidance/cg84/chapter/Recommendations",
+          "year": "current",
+          "access_date": "2026-06-09",
+          "date_accessed": "2026-06-09",
+          "citation_text": "National Institute for Health and Care Excellence. Diarrhoea and vomiting caused by gastroenteritis in under 5s. CG84.",
+          "review_status": "reviewed_current_for_scope"
+        },
+        {
           "source_id": "RCH_ACUTE_ABDOMINAL_PAIN",
           "title": "Royal Children's Hospital Clinical Practice Guideline: Abdominal Pain - Acute",
           "url": "https://www.rch.org.au/clinicalguide/guideline_index/Abdominal_pain/",
@@ -2292,13 +2292,13 @@
         "generated_at": "2026-06-11T00:00:00.000Z",
         "update_scope": "clinical_pathway_tree_v1 plus explicit clinical_cutoff_criteria enrichment where needed",
         "source_material": "Local module evidence rows, source registry metadata, and targeted guideline/literature review for cutoff gaps",
-        "review_note": "Compact tree is cutoff-cited and traversable but requires clinician review for local policy, patient-specific contraindications, and source conflicts."
+        "review_note": "Tree is cutoff-cited and traversable; clinician governance is reserved for explicitly flagged protocol, contraindication, pregnancy, organ-function, or evidence-conflict modifiers."
       },
       "source_thresholds": [
         {
           "threshold": "<3 mmol/L",
           "evidence_item_id": "peds_vomiting_glucose_ketone_thresholds",
-          "label": "Vomiting metabolic screen: check glucose/ketones when BGL <3 mmol/L or >11 mmol/L; treat hypoglycemia when BGL <2.6 mmol/L",
+          "label": "Vomiting metabolic screen",
           "source_ids": [
             "RCH_VOMITING_CHILD"
           ],
@@ -2307,7 +2307,7 @@
         {
           "threshold": ">11 mmol/L",
           "evidence_item_id": "peds_vomiting_glucose_ketone_thresholds",
-          "label": "Vomiting metabolic screen: check glucose/ketones when BGL <3 mmol/L or >11 mmol/L; treat hypoglycemia when BGL <2.6 mmol/L",
+          "label": "Vomiting metabolic screen",
           "source_ids": [
             "RCH_VOMITING_CHILD"
           ],
@@ -2316,7 +2316,7 @@
         {
           "threshold": "<2.6 mmol/L",
           "evidence_item_id": "peds_vomiting_glucose_ketone_thresholds",
-          "label": "Vomiting metabolic screen: check glucose/ketones when BGL <3 mmol/L or >11 mmol/L; treat hypoglycemia when BGL <2.6 mmol/L",
+          "label": "Vomiting metabolic screen",
           "source_ids": [
             "RCH_VOMITING_CHILD"
           ],
@@ -2325,7 +2325,7 @@
         {
           "threshold": "10-20 mL/kg",
           "evidence_item_id": "peds_vomiting_fluid_resuscitation",
-          "label": "Vomiting shock resuscitation: sodium chloride 0.9% bolus 10-20 mL/kg",
+          "label": "Vomiting shock resuscitation",
           "source_ids": [
             "RCH_VOMITING_CHILD"
           ],
@@ -2334,7 +2334,7 @@
         {
           "threshold": ">6 months",
           "evidence_item_id": "peds_vomiting_ondansetron_weight_doses",
-          "label": "Ondansetron support if age >6 months: 8-15 kg 2 mg, 15-30 kg 4 mg, >30 kg 8 mg",
+          "label": "Ondansetron support if age >6 months",
           "source_ids": [
             "RCH_VOMITING_CHILD"
           ],
@@ -2343,7 +2343,7 @@
         {
           "threshold": "8-15 kg",
           "evidence_item_id": "peds_vomiting_ondansetron_weight_doses",
-          "label": "Ondansetron support if age >6 months: 8-15 kg 2 mg, 15-30 kg 4 mg, >30 kg 8 mg",
+          "label": "Ondansetron support if age >6 months",
           "source_ids": [
             "RCH_VOMITING_CHILD"
           ],
@@ -2352,7 +2352,7 @@
         {
           "threshold": "2 mg",
           "evidence_item_id": "peds_vomiting_ondansetron_weight_doses",
-          "label": "Ondansetron support if age >6 months: 8-15 kg 2 mg, 15-30 kg 4 mg, >30 kg 8 mg",
+          "label": "Ondansetron support if age >6 months",
           "source_ids": [
             "RCH_VOMITING_CHILD"
           ],
@@ -2361,7 +2361,7 @@
         {
           "threshold": "15-30 kg",
           "evidence_item_id": "peds_vomiting_ondansetron_weight_doses",
-          "label": "Ondansetron support if age >6 months: 8-15 kg 2 mg, 15-30 kg 4 mg, >30 kg 8 mg",
+          "label": "Ondansetron support if age >6 months",
           "source_ids": [
             "RCH_VOMITING_CHILD"
           ],
@@ -2370,7 +2370,7 @@
         {
           "threshold": "4 mg",
           "evidence_item_id": "peds_vomiting_ondansetron_weight_doses",
-          "label": "Ondansetron support if age >6 months: 8-15 kg 2 mg, 15-30 kg 4 mg, >30 kg 8 mg",
+          "label": "Ondansetron support if age >6 months",
           "source_ids": [
             "RCH_VOMITING_CHILD"
           ],
@@ -2379,7 +2379,7 @@
         {
           "threshold": ">30 kg",
           "evidence_item_id": "peds_vomiting_ondansetron_weight_doses",
-          "label": "Ondansetron support if age >6 months: 8-15 kg 2 mg, 15-30 kg 4 mg, >30 kg 8 mg",
+          "label": "Ondansetron support if age >6 months",
           "source_ids": [
             "RCH_VOMITING_CHILD"
           ],
@@ -2388,45 +2388,9 @@
         {
           "threshold": "8 mg",
           "evidence_item_id": "peds_vomiting_ondansetron_weight_doses",
-          "label": "Ondansetron support if age >6 months: 8-15 kg 2 mg, 15-30 kg 4 mg, >30 kg 8 mg",
+          "label": "Ondansetron support if age >6 months",
           "source_ids": [
             "RCH_VOMITING_CHILD"
-          ],
-          "review_status": "source_backed"
-        },
-        {
-          "threshold": "day 7",
-          "evidence_item_id": "initialTests_peds_abd_stool_microbiology",
-          "label": "Stool microbiology when indicated",
-          "source_ids": [
-            "NICE_GASTROENTERITIS_UNDER5_CG84"
-          ],
-          "review_status": "source_backed"
-        },
-        {
-          "threshold": "50 mL/kg",
-          "evidence_item_id": "initialTests_peds_abd_ors_rehydration_threshold",
-          "label": "Oral rehydration therapy threshold",
-          "source_ids": [
-            "NICE_GASTROENTERITIS_UNDER5_CG84"
-          ],
-          "review_status": "source_backed"
-        },
-        {
-          "threshold": "4 hours",
-          "evidence_item_id": "initialTests_peds_abd_ors_rehydration_threshold",
-          "label": "Oral rehydration therapy threshold",
-          "source_ids": [
-            "NICE_GASTROENTERITIS_UNDER5_CG84"
-          ],
-          "review_status": "source_backed"
-        },
-        {
-          "threshold": "3 seconds",
-          "evidence_item_id": "redFlags_peds_abd_shock_dehydration_red_flag",
-          "label": "Shock dehydration or altered mental status",
-          "source_ids": [
-            "NICE_GASTROENTERITIS_UNDER5_CG84"
           ],
           "review_status": "source_backed"
         }
@@ -2520,7 +2484,7 @@
               "Equivocal ultrasound appendicitis pathway",
               "Urinalysis with urine culture",
               "Pregnancy test for pregnancy-capable adolescent",
-              "Stool microbiology when indicated",
+              "Stool microbiology when the branch-specific criteria in this node apply",
               "Oral rehydration therapy threshold",
               "point-of-care glucose",
               "blood or urine ketones",
@@ -2546,7 +2510,7 @@
           {
             "domain": "imaging_results",
             "exact_data_needed": [
-              "source-directed imaging/ECG/procedure results when indicated",
+              "imaging, ECG, culture, pathology, or procedure result required by the chosen branch",
               "Right lower quadrant ultrasound first",
               "Equivocal ultrasound appendicitis pathway",
               "Urinalysis with urine culture"
@@ -2575,11 +2539,11 @@
             ],
             "source_ids": [
               "RCH_VOMITING_CHILD",
-              "NICE_GASTROENTERITIS_UNDER5_CG84",
               "IDSA_APPENDICITIS_IMAGING_2024",
               "ACEP_APPENDICITIS_2023",
               "NICE_UTI_UNDER16_NG224",
               "NICE_ECTOPIC_MISCARRIAGE_NG126",
+              "NICE_GASTROENTERITIS_UNDER5_CG84",
               "RCH_ACUTE_ABDOMINAL_PAIN",
               "NICE_SEPSIS_UNDER16_2025",
               "AHRQ_CALIBRATE_DX"
@@ -2596,11 +2560,11 @@
             ],
             "source_ids": [
               "RCH_VOMITING_CHILD",
-              "NICE_GASTROENTERITIS_UNDER5_CG84",
               "IDSA_APPENDICITIS_IMAGING_2024",
               "ACEP_APPENDICITIS_2023",
               "NICE_UTI_UNDER16_NG224",
               "NICE_ECTOPIC_MISCARRIAGE_NG126",
+              "NICE_GASTROENTERITIS_UNDER5_CG84",
               "RCH_ACUTE_ABDOMINAL_PAIN",
               "NICE_SEPSIS_UNDER16_2025",
               "AHRQ_CALIBRATE_DX"
@@ -2617,11 +2581,11 @@
             ],
             "source_ids": [
               "RCH_VOMITING_CHILD",
-              "NICE_GASTROENTERITIS_UNDER5_CG84",
               "IDSA_APPENDICITIS_IMAGING_2024",
               "ACEP_APPENDICITIS_2023",
               "NICE_UTI_UNDER16_NG224",
               "NICE_ECTOPIC_MISCARRIAGE_NG126",
+              "NICE_GASTROENTERITIS_UNDER5_CG84",
               "RCH_ACUTE_ABDOMINAL_PAIN",
               "NICE_SEPSIS_UNDER16_2025",
               "AHRQ_CALIBRATE_DX"
@@ -2636,11 +2600,11 @@
             ],
             "source_ids": [
               "RCH_VOMITING_CHILD",
-              "NICE_GASTROENTERITIS_UNDER5_CG84",
               "IDSA_APPENDICITIS_IMAGING_2024",
               "ACEP_APPENDICITIS_2023",
               "NICE_UTI_UNDER16_NG224",
               "NICE_ECTOPIC_MISCARRIAGE_NG126",
+              "NICE_GASTROENTERITIS_UNDER5_CG84",
               "RCH_ACUTE_ABDOMINAL_PAIN",
               "NICE_SEPSIS_UNDER16_2025",
               "AHRQ_CALIBRATE_DX"
@@ -2665,11 +2629,11 @@
             ],
             "source_ids": [
               "RCH_VOMITING_CHILD",
-              "NICE_GASTROENTERITIS_UNDER5_CG84",
               "IDSA_APPENDICITIS_IMAGING_2024",
               "ACEP_APPENDICITIS_2023",
               "NICE_UTI_UNDER16_NG224",
               "NICE_ECTOPIC_MISCARRIAGE_NG126",
+              "NICE_GASTROENTERITIS_UNDER5_CG84",
               "RCH_ACUTE_ABDOMINAL_PAIN",
               "NICE_SEPSIS_UNDER16_2025",
               "AHRQ_CALIBRATE_DX"
@@ -2691,11 +2655,11 @@
           ],
           "source_ids": [
             "RCH_VOMITING_CHILD",
-            "NICE_GASTROENTERITIS_UNDER5_CG84",
             "IDSA_APPENDICITIS_IMAGING_2024",
             "ACEP_APPENDICITIS_2023",
             "NICE_UTI_UNDER16_NG224",
             "NICE_ECTOPIC_MISCARRIAGE_NG126",
+            "NICE_GASTROENTERITIS_UNDER5_CG84",
             "RCH_ACUTE_ABDOMINAL_PAIN",
             "NICE_SEPSIS_UNDER16_2025",
             "AHRQ_CALIBRATE_DX"
@@ -2761,7 +2725,7 @@
         "pediatric_abdominal_pain_vomiting_classification_decision": {
           "rule_id": "pediatric_abdominal_pain_vomiting_classification_criteria",
           "source": "criteria",
-          "description": "Classify Pediatric abdominal pain, vomiting, or acute abdomen against cited thresholds and condition-specific rules: Vomiting metabolic screen: <3 mmol/L, >11 mmol/L, <2.6 mmol/L | Vomiting shock resuscitation: 10-20 mL/kg | Ondansetron support if age >6 months: >6 months, 8-15 kg, 2 mg, 15-30 kg, 4 mg | Stool microbiology when indicated: day 7 | Oral rehydration therapy threshold: 50 mL/kg, 4 hours",
+          "description": "Classify Pediatric abdominal pain, vomiting, or acute abdomen against cited thresholds and condition-specific rules: Vomiting metabolic screen: <3 mmol/L, >11 mmol/L, <2.6 mmol/L | Vomiting shock resuscitation: 10-20 mL/kg | Ondansetron support if age >6 months: >6 months, 8-15 kg, 2 mg, 15-30 kg, 4 mg",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2776,11 +2740,11 @@
           ],
           "source_ids": [
             "RCH_VOMITING_CHILD",
-            "NICE_GASTROENTERITIS_UNDER5_CG84",
             "IDSA_APPENDICITIS_IMAGING_2024",
             "ACEP_APPENDICITIS_2023",
             "NICE_UTI_UNDER16_NG224",
             "NICE_ECTOPIC_MISCARRIAGE_NG126",
+            "NICE_GASTROENTERITIS_UNDER5_CG84",
             "RCH_ACUTE_ABDOMINAL_PAIN",
             "NICE_SEPSIS_UNDER16_2025",
             "AHRQ_CALIBRATE_DX"
@@ -2851,56 +2815,6 @@
               ],
               "source_section": "Antiemetics",
               "review_status": "source_backed"
-            },
-            {
-              "id": "initialTests_peds_abd_stool_microbiology",
-              "label": "Stool microbiology when indicated",
-              "criteria_text": "Stool microbiology when indicated Order stool microbiology when there is blood or mucus in stool, suspected septicemia, immunocompromise, recent foreign travel, no improvement by day 7, diagnostic uncertainty, or outbreak/public-health concern. Positive or indicated stool testing changes isolation, public health notification, antimicrobial decisions, follow-up, and return precautions. Bacterial, parasitic, outbreak-related, or severe enteric infection. Routine stool testing is not needed for every gastroenteritis case, but focused testing changes infection control and treatment.",
-              "cutoffs": [
-                "day 7"
-              ],
-              "data_needed": [
-                "day 7"
-              ],
-              "source_ids": [
-                "NICE_GASTROENTERITIS_UNDER5_CG84"
-              ],
-              "source_section": "stool microbiology indications and public health notification",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "initialTests_peds_abd_ors_rehydration_threshold",
-              "label": "Oral rehydration therapy threshold",
-              "criteria_text": "Oral rehydration therapy threshold If clinical dehydration is present and shock is absent, give oral rehydration solution 50 mL/kg over 4 hours with small frequent amounts, continuing breastfeeding when applicable. Clinical dehydration changes to weight-based ORS, observation, reassessment, and escalation if oral route fails. Clinical dehydration without shock. Guideline-based ORS can prevent unnecessary IV fluids while ensuring children with clinical dehydration receive a concrete volume and reassessment plan.",
-              "cutoffs": [
-                "50 mL/kg",
-                "4 hours"
-              ],
-              "data_needed": [
-                "50 mL/kg",
-                "4 hours"
-              ],
-              "source_ids": [
-                "NICE_GASTROENTERITIS_UNDER5_CG84"
-              ],
-              "source_section": "oral rehydration for clinical dehydration",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "redFlags_peds_abd_shock_dehydration_red_flag",
-              "label": "Shock dehydration or altered mental status",
-              "criteria_text": "Shock dehydration or altered mental status Escalate immediately when altered responsiveness, cold or mottled extremities, capillary refill over 3 seconds, hypotension, no urine, inability to tolerate fluids, or severe dehydration is present. Changes to supervised ORS, NG/IV fluids, bolus/resuscitation pathway, sepsis screening, admission, and transfer. Hypovolemic shock, septic shock, severe dehydration, metabolic crisis, or high-acuity abdominal illness. Shock or severe dehydration changes immediate fluids, monitoring, sepsis screening, and disposition.",
-              "cutoffs": [
-                "3 seconds"
-              ],
-              "data_needed": [
-                "3 seconds"
-              ],
-              "source_ids": [
-                "NICE_GASTROENTERITIS_UNDER5_CG84"
-              ],
-              "source_section": "clinical dehydration, shock, reduced urine output, and rehydration",
-              "review_status": "source_backed"
             }
           ]
         },
@@ -2923,11 +2837,11 @@
           "source_ids": [
             "AHRQ_CALIBRATE_DX",
             "RCH_VOMITING_CHILD",
-            "NICE_GASTROENTERITIS_UNDER5_CG84",
             "IDSA_APPENDICITIS_IMAGING_2024",
             "ACEP_APPENDICITIS_2023",
             "NICE_UTI_UNDER16_NG224",
             "NICE_ECTOPIC_MISCARRIAGE_NG126",
+            "NICE_GASTROENTERITIS_UNDER5_CG84",
             "RCH_ACUTE_ABDOMINAL_PAIN",
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -2947,7 +2861,7 @@
             "Equivocal ultrasound appendicitis pathway",
             "Urinalysis with urine culture",
             "Pregnancy test for pregnancy-capable adolescent",
-            "Stool microbiology when indicated",
+            "Stool microbiology when the branch-specific criteria in this node apply",
             "Oral rehydration therapy threshold",
             "Avoid routine low-risk abdominal testing",
             "<3 mmol/L",
@@ -3050,56 +2964,6 @@
               ],
               "source_section": "Antiemetics",
               "review_status": "source_backed"
-            },
-            {
-              "id": "initialTests_peds_abd_stool_microbiology",
-              "label": "Stool microbiology when indicated",
-              "criteria_text": "Stool microbiology when indicated Order stool microbiology when there is blood or mucus in stool, suspected septicemia, immunocompromise, recent foreign travel, no improvement by day 7, diagnostic uncertainty, or outbreak/public-health concern. Positive or indicated stool testing changes isolation, public health notification, antimicrobial decisions, follow-up, and return precautions. Bacterial, parasitic, outbreak-related, or severe enteric infection. Routine stool testing is not needed for every gastroenteritis case, but focused testing changes infection control and treatment.",
-              "cutoffs": [
-                "day 7"
-              ],
-              "data_needed": [
-                "day 7"
-              ],
-              "source_ids": [
-                "NICE_GASTROENTERITIS_UNDER5_CG84"
-              ],
-              "source_section": "stool microbiology indications and public health notification",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "initialTests_peds_abd_ors_rehydration_threshold",
-              "label": "Oral rehydration therapy threshold",
-              "criteria_text": "Oral rehydration therapy threshold If clinical dehydration is present and shock is absent, give oral rehydration solution 50 mL/kg over 4 hours with small frequent amounts, continuing breastfeeding when applicable. Clinical dehydration changes to weight-based ORS, observation, reassessment, and escalation if oral route fails. Clinical dehydration without shock. Guideline-based ORS can prevent unnecessary IV fluids while ensuring children with clinical dehydration receive a concrete volume and reassessment plan.",
-              "cutoffs": [
-                "50 mL/kg",
-                "4 hours"
-              ],
-              "data_needed": [
-                "50 mL/kg",
-                "4 hours"
-              ],
-              "source_ids": [
-                "NICE_GASTROENTERITIS_UNDER5_CG84"
-              ],
-              "source_section": "oral rehydration for clinical dehydration",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "redFlags_peds_abd_shock_dehydration_red_flag",
-              "label": "Shock dehydration or altered mental status",
-              "criteria_text": "Shock dehydration or altered mental status Escalate immediately when altered responsiveness, cold or mottled extremities, capillary refill over 3 seconds, hypotension, no urine, inability to tolerate fluids, or severe dehydration is present. Changes to supervised ORS, NG/IV fluids, bolus/resuscitation pathway, sepsis screening, admission, and transfer. Hypovolemic shock, septic shock, severe dehydration, metabolic crisis, or high-acuity abdominal illness. Shock or severe dehydration changes immediate fluids, monitoring, sepsis screening, and disposition.",
-              "cutoffs": [
-                "3 seconds"
-              ],
-              "data_needed": [
-                "3 seconds"
-              ],
-              "source_ids": [
-                "NICE_GASTROENTERITIS_UNDER5_CG84"
-              ],
-              "source_section": "clinical dehydration, shock, reduced urine output, and rehydration",
-              "review_status": "source_backed"
             }
           ]
         },
@@ -3195,56 +3059,6 @@
               ],
               "source_section": "Antiemetics",
               "review_status": "source_backed"
-            },
-            {
-              "id": "initialTests_peds_abd_stool_microbiology",
-              "label": "Stool microbiology when indicated",
-              "criteria_text": "Stool microbiology when indicated Order stool microbiology when there is blood or mucus in stool, suspected septicemia, immunocompromise, recent foreign travel, no improvement by day 7, diagnostic uncertainty, or outbreak/public-health concern. Positive or indicated stool testing changes isolation, public health notification, antimicrobial decisions, follow-up, and return precautions. Bacterial, parasitic, outbreak-related, or severe enteric infection. Routine stool testing is not needed for every gastroenteritis case, but focused testing changes infection control and treatment.",
-              "cutoffs": [
-                "day 7"
-              ],
-              "data_needed": [
-                "day 7"
-              ],
-              "source_ids": [
-                "NICE_GASTROENTERITIS_UNDER5_CG84"
-              ],
-              "source_section": "stool microbiology indications and public health notification",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "initialTests_peds_abd_ors_rehydration_threshold",
-              "label": "Oral rehydration therapy threshold",
-              "criteria_text": "Oral rehydration therapy threshold If clinical dehydration is present and shock is absent, give oral rehydration solution 50 mL/kg over 4 hours with small frequent amounts, continuing breastfeeding when applicable. Clinical dehydration changes to weight-based ORS, observation, reassessment, and escalation if oral route fails. Clinical dehydration without shock. Guideline-based ORS can prevent unnecessary IV fluids while ensuring children with clinical dehydration receive a concrete volume and reassessment plan.",
-              "cutoffs": [
-                "50 mL/kg",
-                "4 hours"
-              ],
-              "data_needed": [
-                "50 mL/kg",
-                "4 hours"
-              ],
-              "source_ids": [
-                "NICE_GASTROENTERITIS_UNDER5_CG84"
-              ],
-              "source_section": "oral rehydration for clinical dehydration",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "redFlags_peds_abd_shock_dehydration_red_flag",
-              "label": "Shock dehydration or altered mental status",
-              "criteria_text": "Shock dehydration or altered mental status Escalate immediately when altered responsiveness, cold or mottled extremities, capillary refill over 3 seconds, hypotension, no urine, inability to tolerate fluids, or severe dehydration is present. Changes to supervised ORS, NG/IV fluids, bolus/resuscitation pathway, sepsis screening, admission, and transfer. Hypovolemic shock, septic shock, severe dehydration, metabolic crisis, or high-acuity abdominal illness. Shock or severe dehydration changes immediate fluids, monitoring, sepsis screening, and disposition.",
-              "cutoffs": [
-                "3 seconds"
-              ],
-              "data_needed": [
-                "3 seconds"
-              ],
-              "source_ids": [
-                "NICE_GASTROENTERITIS_UNDER5_CG84"
-              ],
-              "source_section": "clinical dehydration, shock, reduced urine output, and rehydration",
-              "review_status": "source_backed"
             }
           ]
         },
@@ -3263,11 +3077,11 @@
           ],
           "source_ids": [
             "RCH_VOMITING_CHILD",
-            "NICE_GASTROENTERITIS_UNDER5_CG84",
             "IDSA_APPENDICITIS_IMAGING_2024",
             "ACEP_APPENDICITIS_2023",
             "NICE_UTI_UNDER16_NG224",
             "NICE_ECTOPIC_MISCARRIAGE_NG126",
+            "NICE_GASTROENTERITIS_UNDER5_CG84",
             "RCH_ACUTE_ABDOMINAL_PAIN",
             "NICE_SEPSIS_UNDER16_2025",
             "AHRQ_CALIBRATE_DX"
@@ -3338,47 +3152,13 @@
               ],
               "source_section": "Antiemetics",
               "review_status": "source_backed"
-            },
-            {
-              "id": "initialTests_peds_abd_stool_microbiology",
-              "label": "Stool microbiology when indicated",
-              "criteria_text": "Stool microbiology when indicated Order stool microbiology when there is blood or mucus in stool, suspected septicemia, immunocompromise, recent foreign travel, no improvement by day 7, diagnostic uncertainty, or outbreak/public-health concern. Positive or indicated stool testing changes isolation, public health notification, antimicrobial decisions, follow-up, and return precautions. Bacterial, parasitic, outbreak-related, or severe enteric infection. Routine stool testing is not needed for every gastroenteritis case, but focused testing changes infection control and treatment.",
-              "cutoffs": [
-                "day 7"
-              ],
-              "data_needed": [
-                "day 7"
-              ],
-              "source_ids": [
-                "NICE_GASTROENTERITIS_UNDER5_CG84"
-              ],
-              "source_section": "stool microbiology indications and public health notification",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "initialTests_peds_abd_ors_rehydration_threshold",
-              "label": "Oral rehydration therapy threshold",
-              "criteria_text": "Oral rehydration therapy threshold If clinical dehydration is present and shock is absent, give oral rehydration solution 50 mL/kg over 4 hours with small frequent amounts, continuing breastfeeding when applicable. Clinical dehydration changes to weight-based ORS, observation, reassessment, and escalation if oral route fails. Clinical dehydration without shock. Guideline-based ORS can prevent unnecessary IV fluids while ensuring children with clinical dehydration receive a concrete volume and reassessment plan.",
-              "cutoffs": [
-                "50 mL/kg",
-                "4 hours"
-              ],
-              "data_needed": [
-                "50 mL/kg",
-                "4 hours"
-              ],
-              "source_ids": [
-                "NICE_GASTROENTERITIS_UNDER5_CG84"
-              ],
-              "source_section": "oral rehydration for clinical dehydration",
-              "review_status": "source_backed"
             }
           ]
         },
         "pediatric_abdominal_pain_vomiting_review_endpoint": {
           "rule_id": "pediatric_abdominal_pain_vomiting_review_criteria",
           "source": "criteria",
-          "description": "Use clinician review when Pediatric abdominal pain, vomiting, or acute abdomen treatment/disposition depends on pregnancy/postpartum status, pediatric/adult applicability, renal/hepatic/cardiac disease, allergy, drug interaction, procedural risk, guideline conflict, or local protocol.",
+          "description": "Use reviewer handoff when Pediatric abdominal pain, vomiting, or acute abdomen treatment or disposition depends on Ondansetron support if age >6 months; Surgical or ED escalation; Appendicitis imaging disposition; Pediatric abdominal pain, vomiting, or acute abdomen: immediate stabilization or escalation trigger: Bilious green vomiting or obstruction concern.; Pediatric abdominal pain, vomiting, or acute abdomen: treatment or disposition for high-risk or confirmed disease: Surgical or ED escalation..",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3390,11 +3170,11 @@
           ],
           "source_ids": [
             "RCH_VOMITING_CHILD",
-            "NICE_GASTROENTERITIS_UNDER5_CG84",
             "IDSA_APPENDICITIS_IMAGING_2024",
             "ACEP_APPENDICITIS_2023",
             "NICE_UTI_UNDER16_NG224",
             "NICE_ECTOPIC_MISCARRIAGE_NG126",
+            "NICE_GASTROENTERITIS_UNDER5_CG84",
             "RCH_ACUTE_ABDOMINAL_PAIN",
             "NICE_SEPSIS_UNDER16_2025",
             "AHRQ_CALIBRATE_DX"
@@ -3490,56 +3270,6 @@
               ],
               "source_section": "Antiemetics",
               "review_status": "source_backed"
-            },
-            {
-              "id": "initialTests_peds_abd_stool_microbiology",
-              "label": "Stool microbiology when indicated",
-              "criteria_text": "Stool microbiology when indicated Order stool microbiology when there is blood or mucus in stool, suspected septicemia, immunocompromise, recent foreign travel, no improvement by day 7, diagnostic uncertainty, or outbreak/public-health concern. Positive or indicated stool testing changes isolation, public health notification, antimicrobial decisions, follow-up, and return precautions. Bacterial, parasitic, outbreak-related, or severe enteric infection. Routine stool testing is not needed for every gastroenteritis case, but focused testing changes infection control and treatment.",
-              "cutoffs": [
-                "day 7"
-              ],
-              "data_needed": [
-                "day 7"
-              ],
-              "source_ids": [
-                "NICE_GASTROENTERITIS_UNDER5_CG84"
-              ],
-              "source_section": "stool microbiology indications and public health notification",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "initialTests_peds_abd_ors_rehydration_threshold",
-              "label": "Oral rehydration therapy threshold",
-              "criteria_text": "Oral rehydration therapy threshold If clinical dehydration is present and shock is absent, give oral rehydration solution 50 mL/kg over 4 hours with small frequent amounts, continuing breastfeeding when applicable. Clinical dehydration changes to weight-based ORS, observation, reassessment, and escalation if oral route fails. Clinical dehydration without shock. Guideline-based ORS can prevent unnecessary IV fluids while ensuring children with clinical dehydration receive a concrete volume and reassessment plan.",
-              "cutoffs": [
-                "50 mL/kg",
-                "4 hours"
-              ],
-              "data_needed": [
-                "50 mL/kg",
-                "4 hours"
-              ],
-              "source_ids": [
-                "NICE_GASTROENTERITIS_UNDER5_CG84"
-              ],
-              "source_section": "oral rehydration for clinical dehydration",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "redFlags_peds_abd_shock_dehydration_red_flag",
-              "label": "Shock dehydration or altered mental status",
-              "criteria_text": "Shock dehydration or altered mental status Escalate immediately when altered responsiveness, cold or mottled extremities, capillary refill over 3 seconds, hypotension, no urine, inability to tolerate fluids, or severe dehydration is present. Changes to supervised ORS, NG/IV fluids, bolus/resuscitation pathway, sepsis screening, admission, and transfer. Hypovolemic shock, septic shock, severe dehydration, metabolic crisis, or high-acuity abdominal illness. Shock or severe dehydration changes immediate fluids, monitoring, sepsis screening, and disposition.",
-              "cutoffs": [
-                "3 seconds"
-              ],
-              "data_needed": [
-                "3 seconds"
-              ],
-              "source_ids": [
-                "NICE_GASTROENTERITIS_UNDER5_CG84"
-              ],
-              "source_section": "clinical dehydration, shock, reduced urine output, and rehydration",
-              "review_status": "source_backed"
             }
           ]
         },
@@ -3632,56 +3362,6 @@
                 "RCH_VOMITING_CHILD"
               ],
               "source_section": "Antiemetics",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "initialTests_peds_abd_stool_microbiology",
-              "label": "Stool microbiology when indicated",
-              "criteria_text": "Stool microbiology when indicated Order stool microbiology when there is blood or mucus in stool, suspected septicemia, immunocompromise, recent foreign travel, no improvement by day 7, diagnostic uncertainty, or outbreak/public-health concern. Positive or indicated stool testing changes isolation, public health notification, antimicrobial decisions, follow-up, and return precautions. Bacterial, parasitic, outbreak-related, or severe enteric infection. Routine stool testing is not needed for every gastroenteritis case, but focused testing changes infection control and treatment.",
-              "cutoffs": [
-                "day 7"
-              ],
-              "data_needed": [
-                "day 7"
-              ],
-              "source_ids": [
-                "NICE_GASTROENTERITIS_UNDER5_CG84"
-              ],
-              "source_section": "stool microbiology indications and public health notification",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "initialTests_peds_abd_ors_rehydration_threshold",
-              "label": "Oral rehydration therapy threshold",
-              "criteria_text": "Oral rehydration therapy threshold If clinical dehydration is present and shock is absent, give oral rehydration solution 50 mL/kg over 4 hours with small frequent amounts, continuing breastfeeding when applicable. Clinical dehydration changes to weight-based ORS, observation, reassessment, and escalation if oral route fails. Clinical dehydration without shock. Guideline-based ORS can prevent unnecessary IV fluids while ensuring children with clinical dehydration receive a concrete volume and reassessment plan.",
-              "cutoffs": [
-                "50 mL/kg",
-                "4 hours"
-              ],
-              "data_needed": [
-                "50 mL/kg",
-                "4 hours"
-              ],
-              "source_ids": [
-                "NICE_GASTROENTERITIS_UNDER5_CG84"
-              ],
-              "source_section": "oral rehydration for clinical dehydration",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "redFlags_peds_abd_shock_dehydration_red_flag",
-              "label": "Shock dehydration or altered mental status",
-              "criteria_text": "Shock dehydration or altered mental status Escalate immediately when altered responsiveness, cold or mottled extremities, capillary refill over 3 seconds, hypotension, no urine, inability to tolerate fluids, or severe dehydration is present. Changes to supervised ORS, NG/IV fluids, bolus/resuscitation pathway, sepsis screening, admission, and transfer. Hypovolemic shock, septic shock, severe dehydration, metabolic crisis, or high-acuity abdominal illness. Shock or severe dehydration changes immediate fluids, monitoring, sepsis screening, and disposition.",
-              "cutoffs": [
-                "3 seconds"
-              ],
-              "data_needed": [
-                "3 seconds"
-              ],
-              "source_ids": [
-                "NICE_GASTROENTERITIS_UNDER5_CG84"
-              ],
-              "source_section": "clinical dehydration, shock, reduced urine output, and rehydration",
               "review_status": "source_backed"
             }
           ]
@@ -3776,56 +3456,6 @@
               ],
               "source_section": "Antiemetics",
               "review_status": "source_backed"
-            },
-            {
-              "id": "initialTests_peds_abd_stool_microbiology",
-              "label": "Stool microbiology when indicated",
-              "criteria_text": "Stool microbiology when indicated Order stool microbiology when there is blood or mucus in stool, suspected septicemia, immunocompromise, recent foreign travel, no improvement by day 7, diagnostic uncertainty, or outbreak/public-health concern. Positive or indicated stool testing changes isolation, public health notification, antimicrobial decisions, follow-up, and return precautions. Bacterial, parasitic, outbreak-related, or severe enteric infection. Routine stool testing is not needed for every gastroenteritis case, but focused testing changes infection control and treatment.",
-              "cutoffs": [
-                "day 7"
-              ],
-              "data_needed": [
-                "day 7"
-              ],
-              "source_ids": [
-                "NICE_GASTROENTERITIS_UNDER5_CG84"
-              ],
-              "source_section": "stool microbiology indications and public health notification",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "initialTests_peds_abd_ors_rehydration_threshold",
-              "label": "Oral rehydration therapy threshold",
-              "criteria_text": "Oral rehydration therapy threshold If clinical dehydration is present and shock is absent, give oral rehydration solution 50 mL/kg over 4 hours with small frequent amounts, continuing breastfeeding when applicable. Clinical dehydration changes to weight-based ORS, observation, reassessment, and escalation if oral route fails. Clinical dehydration without shock. Guideline-based ORS can prevent unnecessary IV fluids while ensuring children with clinical dehydration receive a concrete volume and reassessment plan.",
-              "cutoffs": [
-                "50 mL/kg",
-                "4 hours"
-              ],
-              "data_needed": [
-                "50 mL/kg",
-                "4 hours"
-              ],
-              "source_ids": [
-                "NICE_GASTROENTERITIS_UNDER5_CG84"
-              ],
-              "source_section": "oral rehydration for clinical dehydration",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "redFlags_peds_abd_shock_dehydration_red_flag",
-              "label": "Shock dehydration or altered mental status",
-              "criteria_text": "Shock dehydration or altered mental status Escalate immediately when altered responsiveness, cold or mottled extremities, capillary refill over 3 seconds, hypotension, no urine, inability to tolerate fluids, or severe dehydration is present. Changes to supervised ORS, NG/IV fluids, bolus/resuscitation pathway, sepsis screening, admission, and transfer. Hypovolemic shock, septic shock, severe dehydration, metabolic crisis, or high-acuity abdominal illness. Shock or severe dehydration changes immediate fluids, monitoring, sepsis screening, and disposition.",
-              "cutoffs": [
-                "3 seconds"
-              ],
-              "data_needed": [
-                "3 seconds"
-              ],
-              "source_ids": [
-                "NICE_GASTROENTERITIS_UNDER5_CG84"
-              ],
-              "source_section": "clinical dehydration, shock, reduced urine output, and rehydration",
-              "review_status": "source_backed"
             }
           ]
         },
@@ -3857,7 +3487,7 @@
         "pediatric_abdominal_pain_vomiting_alternate_endpoint": {
           "rule_id": "pediatric_abdominal_pain_vomiting_alternate_criteria",
           "source": "criteria",
-          "description": "Use an alternate pathway when Pediatric abdominal pain, vomiting, or acute abdomen criteria are absent, a cited mimic better explains the presentation, or objective result data contradict this workup.",
+          "description": "Use an alternate pathway when Pediatric abdominal pain, vomiting, or acute abdomen criteria are absent, Appendicitis or surgical acute abdomen with localized or progressive abdominal pain, peritoneal signs, obstruction features, or persistent focal tenderness; Gastroenteritis or dehydration with vomiting, diarrhea, intake decline, reduced urine output, or exposure/travel clues; UTI, pyelonephritis, or urinary source with dysuria, frequency, malodorous urine, hematuria, flank pain, suprapubic tenderness, fever, or prior UTI; Pregnancy-related emergency or ectopic pregnancy in a pregnancy-capable adolescent with lower abdominal or pelvic pain, bleeding, syncope, shoulder-tip pain, or GI symptoms; Testicular torsion or acute scrotum presenting with abdominal pain, vomiting, testicular pain, swelling, high-riding testis, or absent cremasteric reflex better explains the presentation, or measured result data contradict this workup.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3943,56 +3573,6 @@
               ],
               "source_section": "Antiemetics",
               "review_status": "source_backed"
-            },
-            {
-              "id": "initialTests_peds_abd_stool_microbiology",
-              "label": "Stool microbiology when indicated",
-              "criteria_text": "Stool microbiology when indicated Order stool microbiology when there is blood or mucus in stool, suspected septicemia, immunocompromise, recent foreign travel, no improvement by day 7, diagnostic uncertainty, or outbreak/public-health concern. Positive or indicated stool testing changes isolation, public health notification, antimicrobial decisions, follow-up, and return precautions. Bacterial, parasitic, outbreak-related, or severe enteric infection. Routine stool testing is not needed for every gastroenteritis case, but focused testing changes infection control and treatment.",
-              "cutoffs": [
-                "day 7"
-              ],
-              "data_needed": [
-                "day 7"
-              ],
-              "source_ids": [
-                "NICE_GASTROENTERITIS_UNDER5_CG84"
-              ],
-              "source_section": "stool microbiology indications and public health notification",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "initialTests_peds_abd_ors_rehydration_threshold",
-              "label": "Oral rehydration therapy threshold",
-              "criteria_text": "Oral rehydration therapy threshold If clinical dehydration is present and shock is absent, give oral rehydration solution 50 mL/kg over 4 hours with small frequent amounts, continuing breastfeeding when applicable. Clinical dehydration changes to weight-based ORS, observation, reassessment, and escalation if oral route fails. Clinical dehydration without shock. Guideline-based ORS can prevent unnecessary IV fluids while ensuring children with clinical dehydration receive a concrete volume and reassessment plan.",
-              "cutoffs": [
-                "50 mL/kg",
-                "4 hours"
-              ],
-              "data_needed": [
-                "50 mL/kg",
-                "4 hours"
-              ],
-              "source_ids": [
-                "NICE_GASTROENTERITIS_UNDER5_CG84"
-              ],
-              "source_section": "oral rehydration for clinical dehydration",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "redFlags_peds_abd_shock_dehydration_red_flag",
-              "label": "Shock dehydration or altered mental status",
-              "criteria_text": "Shock dehydration or altered mental status Escalate immediately when altered responsiveness, cold or mottled extremities, capillary refill over 3 seconds, hypotension, no urine, inability to tolerate fluids, or severe dehydration is present. Changes to supervised ORS, NG/IV fluids, bolus/resuscitation pathway, sepsis screening, admission, and transfer. Hypovolemic shock, septic shock, severe dehydration, metabolic crisis, or high-acuity abdominal illness. Shock or severe dehydration changes immediate fluids, monitoring, sepsis screening, and disposition.",
-              "cutoffs": [
-                "3 seconds"
-              ],
-              "data_needed": [
-                "3 seconds"
-              ],
-              "source_ids": [
-                "NICE_GASTROENTERITIS_UNDER5_CG84"
-              ],
-              "source_section": "clinical dehydration, shock, reduced urine output, and rehydration",
-              "review_status": "source_backed"
             }
           ]
         }
@@ -4004,11 +3584,11 @@
         "edgeLabel": "",
         "source_ids": [
           "RCH_VOMITING_CHILD",
-          "NICE_GASTROENTERITIS_UNDER5_CG84",
           "IDSA_APPENDICITIS_IMAGING_2024",
           "ACEP_APPENDICITIS_2023",
           "NICE_UTI_UNDER16_NG224",
           "NICE_ECTOPIC_MISCARRIAGE_NG126",
+          "NICE_GASTROENTERITIS_UNDER5_CG84",
           "RCH_ACUTE_ABDOMINAL_PAIN",
           "NICE_SEPSIS_UNDER16_2025",
           "AHRQ_CALIBRATE_DX"
@@ -4025,11 +3605,11 @@
           ],
           "source_ids": [
             "RCH_VOMITING_CHILD",
-            "NICE_GASTROENTERITIS_UNDER5_CG84",
             "IDSA_APPENDICITIS_IMAGING_2024",
             "ACEP_APPENDICITIS_2023",
             "NICE_UTI_UNDER16_NG224",
             "NICE_ECTOPIC_MISCARRIAGE_NG126",
+            "NICE_GASTROENTERITIS_UNDER5_CG84",
             "RCH_ACUTE_ABDOMINAL_PAIN",
             "NICE_SEPSIS_UNDER16_2025",
             "AHRQ_CALIBRATE_DX"
@@ -4040,8 +3620,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal data-availability guard",
-            "edgeLabel": "Internal data-availability guard",
+            "label": "Internal traversal guard",
+            "edgeLabel": "Internal traversal guard",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -4077,7 +3657,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -4085,7 +3665,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
             },
             "missing_data_needed": [
               "symptoms",
@@ -4104,7 +3684,7 @@
             "id": "pediatric_abdominal_pain_vomiting_concurrent_data_bundle",
             "type": "action",
             "label": "Pediatric abdominal pain, vomiting, or acute abdomen: assessment, thresholds, and treatment-safety inputs",
-            "edgeLabel": "Collect Pediatric abdominal pain, vomiting, or acute abdomen: Right lower quadrant ultrasound first; Equivocal ultrasound appendicitis pathway; Urinalysis with urine culture; Pregnancy test for pregnancy-capable adolescent; <3 mmol/L; >11 mmol/L; <2.6 mmol/L; Measure blood pressure",
+            "edgeLabel": "Collect Pediatric abdominal pain, vomiting, or acute abdomen: Right lower quadrant ultrasound first; Equivocal ultrasound appendicitis pathway; Urinalysis with urine culture; Pregnancy test for pregnancy-capable adolescent; <3 mmol/L; >11 mmol/L; <2.6 mmol/L",
             "source_ids": [
               "IDSA_APPENDICITIS_IMAGING_2024",
               "ACEP_APPENDICITIS_2023",
@@ -4140,7 +3720,7 @@
                 "AHRQ_CALIBRATE_DX"
               ]
             },
-            "action": "Obtain together: Right lower quadrant ultrasound first; Equivocal ultrasound appendicitis pathway; Urinalysis with urine culture; Pregnancy test for pregnancy-capable adolescent; Stool microbiology when indicated; Oral rehydration therapy threshold; Avoid routine low-risk abdominal testing; Measure blood pressure; Measure heart rate; Measure respiratory rate; Measure temperature; Measure current weight; point-of-care glucose; blood or urine ketones; hydration/perfusion status; weight; perfusion signs; blood pressure; heart rate; fluid contraindications.",
+            "action": "Obtain together: Right lower quadrant ultrasound first; Equivocal ultrasound appendicitis pathway; Urinalysis with urine culture; Pregnancy test for pregnancy-capable adolescent; Stool microbiology when the branch-specific criteria in this node apply; Oral rehydration therapy threshold; Avoid routine low-risk abdominal testing; point-of-care glucose; blood or urine ketones; hydration/perfusion status; weight; perfusion signs; blood pressure; heart rate; fluid contraindications.",
             "children": [
               {
                 "id": "pediatric_abdominal_pain_vomiting_classification_decision",
@@ -4149,11 +3729,11 @@
                 "edgeLabel": "Classify Pediatric abdominal pain, vomiting, or acute abdomen with available result(s): <3 mmol/L; >11 mmol/L; <2.6 mmol/L; 10-20 mL/kg",
                 "source_ids": [
                   "RCH_VOMITING_CHILD",
-                  "NICE_GASTROENTERITIS_UNDER5_CG84",
                   "IDSA_APPENDICITIS_IMAGING_2024",
                   "ACEP_APPENDICITIS_2023",
                   "NICE_UTI_UNDER16_NG224",
                   "NICE_ECTOPIC_MISCARRIAGE_NG126",
+                  "NICE_GASTROENTERITIS_UNDER5_CG84",
                   "RCH_ACUTE_ABDOMINAL_PAIN",
                   "NICE_SEPSIS_UNDER16_2025",
                   "AHRQ_CALIBRATE_DX"
@@ -4161,7 +3741,7 @@
                 "criteria": {
                   "rule_id": "pediatric_abdominal_pain_vomiting_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Pediatric abdominal pain, vomiting, or acute abdomen against cited thresholds and condition-specific rules: Vomiting metabolic screen: <3 mmol/L, >11 mmol/L, <2.6 mmol/L | Vomiting shock resuscitation: 10-20 mL/kg | Ondansetron support if age >6 months: >6 months, 8-15 kg, 2 mg, 15-30 kg, 4 mg | Stool microbiology when indicated: day 7 | Oral rehydration therapy threshold: 50 mL/kg, 4 hours",
+                  "description": "Classify Pediatric abdominal pain, vomiting, or acute abdomen against cited thresholds and condition-specific rules: Vomiting metabolic screen: <3 mmol/L, >11 mmol/L, <2.6 mmol/L | Vomiting shock resuscitation: 10-20 mL/kg | Ondansetron support if age >6 months: >6 months, 8-15 kg, 2 mg, 15-30 kg, 4 mg",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -4176,11 +3756,11 @@
                   ],
                   "source_ids": [
                     "RCH_VOMITING_CHILD",
-                    "NICE_GASTROENTERITIS_UNDER5_CG84",
                     "IDSA_APPENDICITIS_IMAGING_2024",
                     "ACEP_APPENDICITIS_2023",
                     "NICE_UTI_UNDER16_NG224",
                     "NICE_ECTOPIC_MISCARRIAGE_NG126",
+                    "NICE_GASTROENTERITIS_UNDER5_CG84",
                     "RCH_ACUTE_ABDOMINAL_PAIN",
                     "NICE_SEPSIS_UNDER16_2025",
                     "AHRQ_CALIBRATE_DX"
@@ -4251,56 +3831,6 @@
                       ],
                       "source_section": "Antiemetics",
                       "review_status": "source_backed"
-                    },
-                    {
-                      "id": "initialTests_peds_abd_stool_microbiology",
-                      "label": "Stool microbiology when indicated",
-                      "criteria_text": "Stool microbiology when indicated Order stool microbiology when there is blood or mucus in stool, suspected septicemia, immunocompromise, recent foreign travel, no improvement by day 7, diagnostic uncertainty, or outbreak/public-health concern. Positive or indicated stool testing changes isolation, public health notification, antimicrobial decisions, follow-up, and return precautions. Bacterial, parasitic, outbreak-related, or severe enteric infection. Routine stool testing is not needed for every gastroenteritis case, but focused testing changes infection control and treatment.",
-                      "cutoffs": [
-                        "day 7"
-                      ],
-                      "data_needed": [
-                        "day 7"
-                      ],
-                      "source_ids": [
-                        "NICE_GASTROENTERITIS_UNDER5_CG84"
-                      ],
-                      "source_section": "stool microbiology indications and public health notification",
-                      "review_status": "source_backed"
-                    },
-                    {
-                      "id": "initialTests_peds_abd_ors_rehydration_threshold",
-                      "label": "Oral rehydration therapy threshold",
-                      "criteria_text": "Oral rehydration therapy threshold If clinical dehydration is present and shock is absent, give oral rehydration solution 50 mL/kg over 4 hours with small frequent amounts, continuing breastfeeding when applicable. Clinical dehydration changes to weight-based ORS, observation, reassessment, and escalation if oral route fails. Clinical dehydration without shock. Guideline-based ORS can prevent unnecessary IV fluids while ensuring children with clinical dehydration receive a concrete volume and reassessment plan.",
-                      "cutoffs": [
-                        "50 mL/kg",
-                        "4 hours"
-                      ],
-                      "data_needed": [
-                        "50 mL/kg",
-                        "4 hours"
-                      ],
-                      "source_ids": [
-                        "NICE_GASTROENTERITIS_UNDER5_CG84"
-                      ],
-                      "source_section": "oral rehydration for clinical dehydration",
-                      "review_status": "source_backed"
-                    },
-                    {
-                      "id": "redFlags_peds_abd_shock_dehydration_red_flag",
-                      "label": "Shock dehydration or altered mental status",
-                      "criteria_text": "Shock dehydration or altered mental status Escalate immediately when altered responsiveness, cold or mottled extremities, capillary refill over 3 seconds, hypotension, no urine, inability to tolerate fluids, or severe dehydration is present. Changes to supervised ORS, NG/IV fluids, bolus/resuscitation pathway, sepsis screening, admission, and transfer. Hypovolemic shock, septic shock, severe dehydration, metabolic crisis, or high-acuity abdominal illness. Shock or severe dehydration changes immediate fluids, monitoring, sepsis screening, and disposition.",
-                      "cutoffs": [
-                        "3 seconds"
-                      ],
-                      "data_needed": [
-                        "3 seconds"
-                      ],
-                      "source_ids": [
-                        "NICE_GASTROENTERITIS_UNDER5_CG84"
-                      ],
-                      "source_section": "clinical dehydration, shock, reduced urine output, and rehydration",
-                      "review_status": "source_backed"
                     }
                   ]
                 },
@@ -4309,16 +3839,16 @@
                   {
                     "id": "pediatric_abdominal_pain_vomiting_missing_cutoff_data_endpoint",
                     "type": "endpoint",
-                    "label": "Internal data-availability guard",
-                    "edgeLabel": "Internal data-availability guard",
+                    "label": "Internal traversal guard",
+                    "edgeLabel": "Internal traversal guard",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "RCH_VOMITING_CHILD",
-                      "NICE_GASTROENTERITIS_UNDER5_CG84",
                       "IDSA_APPENDICITIS_IMAGING_2024",
                       "ACEP_APPENDICITIS_2023",
                       "NICE_UTI_UNDER16_NG224",
                       "NICE_ECTOPIC_MISCARRIAGE_NG126",
+                      "NICE_GASTROENTERITIS_UNDER5_CG84",
                       "RCH_ACUTE_ABDOMINAL_PAIN",
                       "NICE_SEPSIS_UNDER16_2025"
                     ],
@@ -4341,11 +3871,11 @@
                       "source_ids": [
                         "AHRQ_CALIBRATE_DX",
                         "RCH_VOMITING_CHILD",
-                        "NICE_GASTROENTERITIS_UNDER5_CG84",
                         "IDSA_APPENDICITIS_IMAGING_2024",
                         "ACEP_APPENDICITIS_2023",
                         "NICE_UTI_UNDER16_NG224",
                         "NICE_ECTOPIC_MISCARRIAGE_NG126",
+                        "NICE_GASTROENTERITIS_UNDER5_CG84",
                         "RCH_ACUTE_ABDOMINAL_PAIN",
                         "NICE_SEPSIS_UNDER16_2025"
                       ],
@@ -4365,7 +3895,7 @@
                         "Equivocal ultrasound appendicitis pathway",
                         "Urinalysis with urine culture",
                         "Pregnancy test for pregnancy-capable adolescent",
-                        "Stool microbiology when indicated",
+                        "Stool microbiology when the branch-specific criteria in this node apply",
                         "Oral rehydration therapy threshold",
                         "Avoid routine low-risk abdominal testing",
                         "<3 mmol/L",
@@ -4378,7 +3908,7 @@
                         "15-30 kg"
                       ]
                     },
-                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -4386,7 +3916,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
                     },
                     "missing_data_needed": [
                       "point-of-care glucose",
@@ -4404,7 +3934,7 @@
                       "Equivocal ultrasound appendicitis pathway",
                       "Urinalysis with urine culture",
                       "Pregnancy test for pregnancy-capable adolescent",
-                      "Stool microbiology when indicated",
+                      "Stool microbiology when the branch-specific criteria in this node apply",
                       "Oral rehydration therapy threshold",
                       "Avoid routine low-risk abdominal testing",
                       "<3 mmol/L",
@@ -4523,56 +4053,6 @@
                           ],
                           "source_section": "Antiemetics",
                           "review_status": "source_backed"
-                        },
-                        {
-                          "id": "initialTests_peds_abd_stool_microbiology",
-                          "label": "Stool microbiology when indicated",
-                          "criteria_text": "Stool microbiology when indicated Order stool microbiology when there is blood or mucus in stool, suspected septicemia, immunocompromise, recent foreign travel, no improvement by day 7, diagnostic uncertainty, or outbreak/public-health concern. Positive or indicated stool testing changes isolation, public health notification, antimicrobial decisions, follow-up, and return precautions. Bacterial, parasitic, outbreak-related, or severe enteric infection. Routine stool testing is not needed for every gastroenteritis case, but focused testing changes infection control and treatment.",
-                          "cutoffs": [
-                            "day 7"
-                          ],
-                          "data_needed": [
-                            "day 7"
-                          ],
-                          "source_ids": [
-                            "NICE_GASTROENTERITIS_UNDER5_CG84"
-                          ],
-                          "source_section": "stool microbiology indications and public health notification",
-                          "review_status": "source_backed"
-                        },
-                        {
-                          "id": "initialTests_peds_abd_ors_rehydration_threshold",
-                          "label": "Oral rehydration therapy threshold",
-                          "criteria_text": "Oral rehydration therapy threshold If clinical dehydration is present and shock is absent, give oral rehydration solution 50 mL/kg over 4 hours with small frequent amounts, continuing breastfeeding when applicable. Clinical dehydration changes to weight-based ORS, observation, reassessment, and escalation if oral route fails. Clinical dehydration without shock. Guideline-based ORS can prevent unnecessary IV fluids while ensuring children with clinical dehydration receive a concrete volume and reassessment plan.",
-                          "cutoffs": [
-                            "50 mL/kg",
-                            "4 hours"
-                          ],
-                          "data_needed": [
-                            "50 mL/kg",
-                            "4 hours"
-                          ],
-                          "source_ids": [
-                            "NICE_GASTROENTERITIS_UNDER5_CG84"
-                          ],
-                          "source_section": "oral rehydration for clinical dehydration",
-                          "review_status": "source_backed"
-                        },
-                        {
-                          "id": "redFlags_peds_abd_shock_dehydration_red_flag",
-                          "label": "Shock dehydration or altered mental status",
-                          "criteria_text": "Shock dehydration or altered mental status Escalate immediately when altered responsiveness, cold or mottled extremities, capillary refill over 3 seconds, hypotension, no urine, inability to tolerate fluids, or severe dehydration is present. Changes to supervised ORS, NG/IV fluids, bolus/resuscitation pathway, sepsis screening, admission, and transfer. Hypovolemic shock, septic shock, severe dehydration, metabolic crisis, or high-acuity abdominal illness. Shock or severe dehydration changes immediate fluids, monitoring, sepsis screening, and disposition.",
-                          "cutoffs": [
-                            "3 seconds"
-                          ],
-                          "data_needed": [
-                            "3 seconds"
-                          ],
-                          "source_ids": [
-                            "NICE_GASTROENTERITIS_UNDER5_CG84"
-                          ],
-                          "source_section": "clinical dehydration, shock, reduced urine output, and rehydration",
-                          "review_status": "source_backed"
                         }
                       ]
                     },
@@ -4644,56 +4124,6 @@
                           "RCH_VOMITING_CHILD"
                         ],
                         "source_section": "Antiemetics",
-                        "review_status": "source_backed"
-                      },
-                      {
-                        "id": "initialTests_peds_abd_stool_microbiology",
-                        "label": "Stool microbiology when indicated",
-                        "criteria_text": "Stool microbiology when indicated Order stool microbiology when there is blood or mucus in stool, suspected septicemia, immunocompromise, recent foreign travel, no improvement by day 7, diagnostic uncertainty, or outbreak/public-health concern. Positive or indicated stool testing changes isolation, public health notification, antimicrobial decisions, follow-up, and return precautions. Bacterial, parasitic, outbreak-related, or severe enteric infection. Routine stool testing is not needed for every gastroenteritis case, but focused testing changes infection control and treatment.",
-                        "cutoffs": [
-                          "day 7"
-                        ],
-                        "data_needed": [
-                          "day 7"
-                        ],
-                        "source_ids": [
-                          "NICE_GASTROENTERITIS_UNDER5_CG84"
-                        ],
-                        "source_section": "stool microbiology indications and public health notification",
-                        "review_status": "source_backed"
-                      },
-                      {
-                        "id": "initialTests_peds_abd_ors_rehydration_threshold",
-                        "label": "Oral rehydration therapy threshold",
-                        "criteria_text": "Oral rehydration therapy threshold If clinical dehydration is present and shock is absent, give oral rehydration solution 50 mL/kg over 4 hours with small frequent amounts, continuing breastfeeding when applicable. Clinical dehydration changes to weight-based ORS, observation, reassessment, and escalation if oral route fails. Clinical dehydration without shock. Guideline-based ORS can prevent unnecessary IV fluids while ensuring children with clinical dehydration receive a concrete volume and reassessment plan.",
-                        "cutoffs": [
-                          "50 mL/kg",
-                          "4 hours"
-                        ],
-                        "data_needed": [
-                          "50 mL/kg",
-                          "4 hours"
-                        ],
-                        "source_ids": [
-                          "NICE_GASTROENTERITIS_UNDER5_CG84"
-                        ],
-                        "source_section": "oral rehydration for clinical dehydration",
-                        "review_status": "source_backed"
-                      },
-                      {
-                        "id": "redFlags_peds_abd_shock_dehydration_red_flag",
-                        "label": "Shock dehydration or altered mental status",
-                        "criteria_text": "Shock dehydration or altered mental status Escalate immediately when altered responsiveness, cold or mottled extremities, capillary refill over 3 seconds, hypotension, no urine, inability to tolerate fluids, or severe dehydration is present. Changes to supervised ORS, NG/IV fluids, bolus/resuscitation pathway, sepsis screening, admission, and transfer. Hypovolemic shock, septic shock, severe dehydration, metabolic crisis, or high-acuity abdominal illness. Shock or severe dehydration changes immediate fluids, monitoring, sepsis screening, and disposition.",
-                        "cutoffs": [
-                          "3 seconds"
-                        ],
-                        "data_needed": [
-                          "3 seconds"
-                        ],
-                        "source_ids": [
-                          "NICE_GASTROENTERITIS_UNDER5_CG84"
-                        ],
-                        "source_section": "clinical dehydration, shock, reduced urine output, and rehydration",
                         "review_status": "source_backed"
                       }
                     ]
@@ -4806,60 +4236,10 @@
                           ],
                           "source_section": "Antiemetics",
                           "review_status": "source_backed"
-                        },
-                        {
-                          "id": "initialTests_peds_abd_stool_microbiology",
-                          "label": "Stool microbiology when indicated",
-                          "criteria_text": "Stool microbiology when indicated Order stool microbiology when there is blood or mucus in stool, suspected septicemia, immunocompromise, recent foreign travel, no improvement by day 7, diagnostic uncertainty, or outbreak/public-health concern. Positive or indicated stool testing changes isolation, public health notification, antimicrobial decisions, follow-up, and return precautions. Bacterial, parasitic, outbreak-related, or severe enteric infection. Routine stool testing is not needed for every gastroenteritis case, but focused testing changes infection control and treatment.",
-                          "cutoffs": [
-                            "day 7"
-                          ],
-                          "data_needed": [
-                            "day 7"
-                          ],
-                          "source_ids": [
-                            "NICE_GASTROENTERITIS_UNDER5_CG84"
-                          ],
-                          "source_section": "stool microbiology indications and public health notification",
-                          "review_status": "source_backed"
-                        },
-                        {
-                          "id": "initialTests_peds_abd_ors_rehydration_threshold",
-                          "label": "Oral rehydration therapy threshold",
-                          "criteria_text": "Oral rehydration therapy threshold If clinical dehydration is present and shock is absent, give oral rehydration solution 50 mL/kg over 4 hours with small frequent amounts, continuing breastfeeding when applicable. Clinical dehydration changes to weight-based ORS, observation, reassessment, and escalation if oral route fails. Clinical dehydration without shock. Guideline-based ORS can prevent unnecessary IV fluids while ensuring children with clinical dehydration receive a concrete volume and reassessment plan.",
-                          "cutoffs": [
-                            "50 mL/kg",
-                            "4 hours"
-                          ],
-                          "data_needed": [
-                            "50 mL/kg",
-                            "4 hours"
-                          ],
-                          "source_ids": [
-                            "NICE_GASTROENTERITIS_UNDER5_CG84"
-                          ],
-                          "source_section": "oral rehydration for clinical dehydration",
-                          "review_status": "source_backed"
-                        },
-                        {
-                          "id": "redFlags_peds_abd_shock_dehydration_red_flag",
-                          "label": "Shock dehydration or altered mental status",
-                          "criteria_text": "Shock dehydration or altered mental status Escalate immediately when altered responsiveness, cold or mottled extremities, capillary refill over 3 seconds, hypotension, no urine, inability to tolerate fluids, or severe dehydration is present. Changes to supervised ORS, NG/IV fluids, bolus/resuscitation pathway, sepsis screening, admission, and transfer. Hypovolemic shock, septic shock, severe dehydration, metabolic crisis, or high-acuity abdominal illness. Shock or severe dehydration changes immediate fluids, monitoring, sepsis screening, and disposition.",
-                          "cutoffs": [
-                            "3 seconds"
-                          ],
-                          "data_needed": [
-                            "3 seconds"
-                          ],
-                          "source_ids": [
-                            "NICE_GASTROENTERITIS_UNDER5_CG84"
-                          ],
-                          "source_section": "clinical dehydration, shock, reduced urine output, and rehydration",
-                          "review_status": "source_backed"
                         }
                       ]
                     },
-                    "action": "Pediatric abdominal pain, vomiting, or acute abdomen: immediate stabilization or escalation trigger: Bilious green vomiting or obstruction concern.; Pediatric abdominal pain, vomiting, or acute abdomen: treatment or disposition for high-risk or confirmed disease: Surgical or ED escalation.; Pediatric abdominal pain, vomiting, or acute abdomen: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Appendicitis imaging disposition.; Surgical or ED escalation; Appendicitis imaging disposition",
+                    "action": "Pediatric abdominal pain, vomiting, or acute abdomen: immediate stabilization or escalation trigger: Bilious green vomiting or obstruction concern.; Pediatric abdominal pain, vomiting, or acute abdomen: treatment or disposition for high-risk or confirmed disease: Surgical or ED escalation.; Surgical or ED escalation; Appendicitis imaging disposition; Gastroenteritis oral rehydration safety net; Ondansetron support if age >6 months",
                     "children": [
                       {
                         "id": "pediatric_abdominal_pain_vomiting_treatment_safety_decision",
@@ -4868,11 +4248,11 @@
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan",
                         "source_ids": [
                           "RCH_VOMITING_CHILD",
-                          "NICE_GASTROENTERITIS_UNDER5_CG84",
                           "IDSA_APPENDICITIS_IMAGING_2024",
                           "ACEP_APPENDICITIS_2023",
                           "NICE_UTI_UNDER16_NG224",
                           "NICE_ECTOPIC_MISCARRIAGE_NG126",
+                          "NICE_GASTROENTERITIS_UNDER5_CG84",
                           "RCH_ACUTE_ABDOMINAL_PAIN",
                           "NICE_SEPSIS_UNDER16_2025",
                           "AHRQ_CALIBRATE_DX"
@@ -4892,11 +4272,11 @@
                           ],
                           "source_ids": [
                             "RCH_VOMITING_CHILD",
-                            "NICE_GASTROENTERITIS_UNDER5_CG84",
                             "IDSA_APPENDICITIS_IMAGING_2024",
                             "ACEP_APPENDICITIS_2023",
                             "NICE_UTI_UNDER16_NG224",
                             "NICE_ECTOPIC_MISCARRIAGE_NG126",
+                            "NICE_GASTROENTERITIS_UNDER5_CG84",
                             "RCH_ACUTE_ABDOMINAL_PAIN",
                             "NICE_SEPSIS_UNDER16_2025",
                             "AHRQ_CALIBRATE_DX"
@@ -4967,40 +4347,6 @@
                               ],
                               "source_section": "Antiemetics",
                               "review_status": "source_backed"
-                            },
-                            {
-                              "id": "initialTests_peds_abd_stool_microbiology",
-                              "label": "Stool microbiology when indicated",
-                              "criteria_text": "Stool microbiology when indicated Order stool microbiology when there is blood or mucus in stool, suspected septicemia, immunocompromise, recent foreign travel, no improvement by day 7, diagnostic uncertainty, or outbreak/public-health concern. Positive or indicated stool testing changes isolation, public health notification, antimicrobial decisions, follow-up, and return precautions. Bacterial, parasitic, outbreak-related, or severe enteric infection. Routine stool testing is not needed for every gastroenteritis case, but focused testing changes infection control and treatment.",
-                              "cutoffs": [
-                                "day 7"
-                              ],
-                              "data_needed": [
-                                "day 7"
-                              ],
-                              "source_ids": [
-                                "NICE_GASTROENTERITIS_UNDER5_CG84"
-                              ],
-                              "source_section": "stool microbiology indications and public health notification",
-                              "review_status": "source_backed"
-                            },
-                            {
-                              "id": "initialTests_peds_abd_ors_rehydration_threshold",
-                              "label": "Oral rehydration therapy threshold",
-                              "criteria_text": "Oral rehydration therapy threshold If clinical dehydration is present and shock is absent, give oral rehydration solution 50 mL/kg over 4 hours with small frequent amounts, continuing breastfeeding when applicable. Clinical dehydration changes to weight-based ORS, observation, reassessment, and escalation if oral route fails. Clinical dehydration without shock. Guideline-based ORS can prevent unnecessary IV fluids while ensuring children with clinical dehydration receive a concrete volume and reassessment plan.",
-                              "cutoffs": [
-                                "50 mL/kg",
-                                "4 hours"
-                              ],
-                              "data_needed": [
-                                "50 mL/kg",
-                                "4 hours"
-                              ],
-                              "source_ids": [
-                                "NICE_GASTROENTERITIS_UNDER5_CG84"
-                              ],
-                              "source_section": "oral rehydration for clinical dehydration",
-                              "review_status": "source_backed"
                             }
                           ]
                         },
@@ -5009,15 +4355,15 @@
                           {
                             "id": "pediatric_abdominal_pain_vomiting_review_endpoint",
                             "type": "endpoint",
-                            "label": "Pediatric abdominal pain, vomiting, or acute abdomen: reviewer handoff for contraindication or special population",
-                            "edgeLabel": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
+                            "label": "Pediatric abdominal pain, vomiting, or acute abdomen: review Ondansetron support if age >6 months; Surgical or ED escalation; Appendicitis imaging disposition; Pediatric abdominal pain, vomiting, or acute abdomen: immediate stabilization or escalation trigger: Bilious green vomiting or obstruction concern.; Pediatric abdominal pain, vomiting, or acute abdomen: treatment or disposition for high-risk or confirmed disease: Surgical or ED escalation.",
+                            "edgeLabel": "Pediatric abdominal pain, vomiting, or acute abdomen modifier needing review: Ondansetron support if age >6 months; Surgical or ED escalation; Appendicitis imaging disposition; Pediatric abdominal pain, vomiting, or acute abdomen: immediate stabilization or escalation trigger: Bilious green vomiting or obstruction concern.; Pediatric abdominal pain, vomiting, or acute abdomen: treatment or disposition for high-risk or confirmed disease: Surgical or ED escalation.",
                             "source_ids": [
                               "RCH_VOMITING_CHILD",
-                              "NICE_GASTROENTERITIS_UNDER5_CG84",
                               "IDSA_APPENDICITIS_IMAGING_2024",
                               "ACEP_APPENDICITIS_2023",
                               "NICE_UTI_UNDER16_NG224",
                               "NICE_ECTOPIC_MISCARRIAGE_NG126",
+                              "NICE_GASTROENTERITIS_UNDER5_CG84",
                               "RCH_ACUTE_ABDOMINAL_PAIN",
                               "NICE_SEPSIS_UNDER16_2025",
                               "AHRQ_CALIBRATE_DX"
@@ -5025,7 +4371,7 @@
                             "criteria": {
                               "rule_id": "pediatric_abdominal_pain_vomiting_review_criteria",
                               "source": "criteria",
-                              "description": "Use clinician review when Pediatric abdominal pain, vomiting, or acute abdomen treatment/disposition depends on pregnancy/postpartum status, pediatric/adult applicability, renal/hepatic/cardiac disease, allergy, drug interaction, procedural risk, guideline conflict, or local protocol.",
+                              "description": "Use reviewer handoff when Pediatric abdominal pain, vomiting, or acute abdomen treatment or disposition depends on Ondansetron support if age >6 months; Surgical or ED escalation; Appendicitis imaging disposition; Pediatric abdominal pain, vomiting, or acute abdomen: immediate stabilization or escalation trigger: Bilious green vomiting or obstruction concern.; Pediatric abdominal pain, vomiting, or acute abdomen: treatment or disposition for high-risk or confirmed disease: Surgical or ED escalation..",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -5037,26 +4383,26 @@
                               ],
                               "source_ids": [
                                 "RCH_VOMITING_CHILD",
-                                "NICE_GASTROENTERITIS_UNDER5_CG84",
                                 "IDSA_APPENDICITIS_IMAGING_2024",
                                 "ACEP_APPENDICITIS_2023",
                                 "NICE_UTI_UNDER16_NG224",
                                 "NICE_ECTOPIC_MISCARRIAGE_NG126",
+                                "NICE_GASTROENTERITIS_UNDER5_CG84",
                                 "RCH_ACUTE_ABDOMINAL_PAIN",
                                 "NICE_SEPSIS_UNDER16_2025",
                                 "AHRQ_CALIBRATE_DX"
                               ]
                             },
-                            "action": "Pause non-emergent Pediatric abdominal pain, vomiting, or acute abdomen treatment choices until the modifier is resolved and the reviewer documents the applicable guideline or local cutoff.",
+                            "action": "Resolve the named Pediatric abdominal pain, vomiting, or acute abdomen modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
-                            "review_needed_reason": "Patient-specific contraindication, special population, guideline conflict, or local policy affects treatment or disposition."
+                            "review_needed_reason": "Pediatric abdominal pain, vomiting, or acute abdomen management changes when Ondansetron support if age >6 months; Surgical or ED escalation; Appendicitis imaging disposition; Pediatric abdominal pain, vomiting, or acute abdomen: immediate stabilization or escalation trigger: Bilious green vomiting or obstruction concern.; Pediatric abdominal pain, vomiting, or acute abdomen: treatment or disposition for high-risk or confirmed disease: Surgical or ED escalation.; document the exact modifier and reviewer input needed."
                           },
                           {
                             "id": "pediatric_abdominal_pain_vomiting_monitoring_bundle",
                             "type": "action",
                             "label": "Pediatric abdominal pain, vomiting, or acute abdomen: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Pediatric abdominal pain, vomiting, or acute abdomen symptoms, vital signs, threshold labs/results, treatment response, adverse effects, and disposition readiness",
+                            "edgeLabel": "Trend Pediatric abdominal pain, vomiting, or acute abdomen symptoms, vital signs, criterion-defining results, treatment response, adverse effects, and disposition readiness",
                             "source_ids": [
                               "RCH_ACUTE_ABDOMINAL_PAIN",
                               "ACEP_APPENDICITIS_2023",
@@ -5158,56 +4504,6 @@
                                   ],
                                   "source_section": "Antiemetics",
                                   "review_status": "source_backed"
-                                },
-                                {
-                                  "id": "initialTests_peds_abd_stool_microbiology",
-                                  "label": "Stool microbiology when indicated",
-                                  "criteria_text": "Stool microbiology when indicated Order stool microbiology when there is blood or mucus in stool, suspected septicemia, immunocompromise, recent foreign travel, no improvement by day 7, diagnostic uncertainty, or outbreak/public-health concern. Positive or indicated stool testing changes isolation, public health notification, antimicrobial decisions, follow-up, and return precautions. Bacterial, parasitic, outbreak-related, or severe enteric infection. Routine stool testing is not needed for every gastroenteritis case, but focused testing changes infection control and treatment.",
-                                  "cutoffs": [
-                                    "day 7"
-                                  ],
-                                  "data_needed": [
-                                    "day 7"
-                                  ],
-                                  "source_ids": [
-                                    "NICE_GASTROENTERITIS_UNDER5_CG84"
-                                  ],
-                                  "source_section": "stool microbiology indications and public health notification",
-                                  "review_status": "source_backed"
-                                },
-                                {
-                                  "id": "initialTests_peds_abd_ors_rehydration_threshold",
-                                  "label": "Oral rehydration therapy threshold",
-                                  "criteria_text": "Oral rehydration therapy threshold If clinical dehydration is present and shock is absent, give oral rehydration solution 50 mL/kg over 4 hours with small frequent amounts, continuing breastfeeding when applicable. Clinical dehydration changes to weight-based ORS, observation, reassessment, and escalation if oral route fails. Clinical dehydration without shock. Guideline-based ORS can prevent unnecessary IV fluids while ensuring children with clinical dehydration receive a concrete volume and reassessment plan.",
-                                  "cutoffs": [
-                                    "50 mL/kg",
-                                    "4 hours"
-                                  ],
-                                  "data_needed": [
-                                    "50 mL/kg",
-                                    "4 hours"
-                                  ],
-                                  "source_ids": [
-                                    "NICE_GASTROENTERITIS_UNDER5_CG84"
-                                  ],
-                                  "source_section": "oral rehydration for clinical dehydration",
-                                  "review_status": "source_backed"
-                                },
-                                {
-                                  "id": "redFlags_peds_abd_shock_dehydration_red_flag",
-                                  "label": "Shock dehydration or altered mental status",
-                                  "criteria_text": "Shock dehydration or altered mental status Escalate immediately when altered responsiveness, cold or mottled extremities, capillary refill over 3 seconds, hypotension, no urine, inability to tolerate fluids, or severe dehydration is present. Changes to supervised ORS, NG/IV fluids, bolus/resuscitation pathway, sepsis screening, admission, and transfer. Hypovolemic shock, septic shock, severe dehydration, metabolic crisis, or high-acuity abdominal illness. Shock or severe dehydration changes immediate fluids, monitoring, sepsis screening, and disposition.",
-                                  "cutoffs": [
-                                    "3 seconds"
-                                  ],
-                                  "data_needed": [
-                                    "3 seconds"
-                                  ],
-                                  "source_ids": [
-                                    "NICE_GASTROENTERITIS_UNDER5_CG84"
-                                  ],
-                                  "source_section": "clinical dehydration, shock, reduced urine output, and rehydration",
-                                  "review_status": "source_backed"
                                 }
                               ]
                             },
@@ -5217,7 +4513,7 @@
                                 "id": "pediatric_abdominal_pain_vomiting_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Pediatric abdominal pain, vomiting, or acute abdomen: reassessment escalation",
-                                "edgeLabel": "Pediatric abdominal pain, vomiting, or acute abdomen reassessment worsens or Bilious green vomiting or obstruction concern; Peritonitis or progressive localized pain; Shock dehydration or altered mental status; <3 mmol/L; >11 mmol/L; <2.6 mmol/L; 10-20 mL/kg; Right lower quadrant ultrasound first; Equivocal ultrasound appendicitis pathway no longer fit the selected pathway",
+                                "edgeLabel": "Pediatric abdominal pain, vomiting, or acute abdomen reassessment worsens or Bilious green vomiting or obstruction concern; Peritonitis or progressive localized pain; Shock dehydration or altered mental status; <3 mmol/L; >11 mmol/L; <2.6 mmol/L; 10-20 mL/kg; Right lower quadrant ultrasound first; Equivocal ultrasound appendicitis pathway no longer fit the documented Pediatric abdominal pain, vomiting, or acute abdomen branch",
                                 "source_ids": [
                                   "RCH_VOMITING_CHILD",
                                   "RCH_ACUTE_ABDOMINAL_PAIN",
@@ -5319,56 +4615,6 @@
                                       ],
                                       "source_section": "Antiemetics",
                                       "review_status": "source_backed"
-                                    },
-                                    {
-                                      "id": "initialTests_peds_abd_stool_microbiology",
-                                      "label": "Stool microbiology when indicated",
-                                      "criteria_text": "Stool microbiology when indicated Order stool microbiology when there is blood or mucus in stool, suspected septicemia, immunocompromise, recent foreign travel, no improvement by day 7, diagnostic uncertainty, or outbreak/public-health concern. Positive or indicated stool testing changes isolation, public health notification, antimicrobial decisions, follow-up, and return precautions. Bacterial, parasitic, outbreak-related, or severe enteric infection. Routine stool testing is not needed for every gastroenteritis case, but focused testing changes infection control and treatment.",
-                                      "cutoffs": [
-                                        "day 7"
-                                      ],
-                                      "data_needed": [
-                                        "day 7"
-                                      ],
-                                      "source_ids": [
-                                        "NICE_GASTROENTERITIS_UNDER5_CG84"
-                                      ],
-                                      "source_section": "stool microbiology indications and public health notification",
-                                      "review_status": "source_backed"
-                                    },
-                                    {
-                                      "id": "initialTests_peds_abd_ors_rehydration_threshold",
-                                      "label": "Oral rehydration therapy threshold",
-                                      "criteria_text": "Oral rehydration therapy threshold If clinical dehydration is present and shock is absent, give oral rehydration solution 50 mL/kg over 4 hours with small frequent amounts, continuing breastfeeding when applicable. Clinical dehydration changes to weight-based ORS, observation, reassessment, and escalation if oral route fails. Clinical dehydration without shock. Guideline-based ORS can prevent unnecessary IV fluids while ensuring children with clinical dehydration receive a concrete volume and reassessment plan.",
-                                      "cutoffs": [
-                                        "50 mL/kg",
-                                        "4 hours"
-                                      ],
-                                      "data_needed": [
-                                        "50 mL/kg",
-                                        "4 hours"
-                                      ],
-                                      "source_ids": [
-                                        "NICE_GASTROENTERITIS_UNDER5_CG84"
-                                      ],
-                                      "source_section": "oral rehydration for clinical dehydration",
-                                      "review_status": "source_backed"
-                                    },
-                                    {
-                                      "id": "redFlags_peds_abd_shock_dehydration_red_flag",
-                                      "label": "Shock dehydration or altered mental status",
-                                      "criteria_text": "Shock dehydration or altered mental status Escalate immediately when altered responsiveness, cold or mottled extremities, capillary refill over 3 seconds, hypotension, no urine, inability to tolerate fluids, or severe dehydration is present. Changes to supervised ORS, NG/IV fluids, bolus/resuscitation pathway, sepsis screening, admission, and transfer. Hypovolemic shock, septic shock, severe dehydration, metabolic crisis, or high-acuity abdominal illness. Shock or severe dehydration changes immediate fluids, monitoring, sepsis screening, and disposition.",
-                                      "cutoffs": [
-                                        "3 seconds"
-                                      ],
-                                      "data_needed": [
-                                        "3 seconds"
-                                      ],
-                                      "source_ids": [
-                                        "NICE_GASTROENTERITIS_UNDER5_CG84"
-                                      ],
-                                      "source_section": "clinical dehydration, shock, reduced urine output, and rehydration",
-                                      "review_status": "source_backed"
                                     }
                                   ]
                                 },
@@ -5440,56 +4686,6 @@
                                       "RCH_VOMITING_CHILD"
                                     ],
                                     "source_section": "Antiemetics",
-                                    "review_status": "source_backed"
-                                  },
-                                  {
-                                    "id": "initialTests_peds_abd_stool_microbiology",
-                                    "label": "Stool microbiology when indicated",
-                                    "criteria_text": "Stool microbiology when indicated Order stool microbiology when there is blood or mucus in stool, suspected septicemia, immunocompromise, recent foreign travel, no improvement by day 7, diagnostic uncertainty, or outbreak/public-health concern. Positive or indicated stool testing changes isolation, public health notification, antimicrobial decisions, follow-up, and return precautions. Bacterial, parasitic, outbreak-related, or severe enteric infection. Routine stool testing is not needed for every gastroenteritis case, but focused testing changes infection control and treatment.",
-                                    "cutoffs": [
-                                      "day 7"
-                                    ],
-                                    "data_needed": [
-                                      "day 7"
-                                    ],
-                                    "source_ids": [
-                                      "NICE_GASTROENTERITIS_UNDER5_CG84"
-                                    ],
-                                    "source_section": "stool microbiology indications and public health notification",
-                                    "review_status": "source_backed"
-                                  },
-                                  {
-                                    "id": "initialTests_peds_abd_ors_rehydration_threshold",
-                                    "label": "Oral rehydration therapy threshold",
-                                    "criteria_text": "Oral rehydration therapy threshold If clinical dehydration is present and shock is absent, give oral rehydration solution 50 mL/kg over 4 hours with small frequent amounts, continuing breastfeeding when applicable. Clinical dehydration changes to weight-based ORS, observation, reassessment, and escalation if oral route fails. Clinical dehydration without shock. Guideline-based ORS can prevent unnecessary IV fluids while ensuring children with clinical dehydration receive a concrete volume and reassessment plan.",
-                                    "cutoffs": [
-                                      "50 mL/kg",
-                                      "4 hours"
-                                    ],
-                                    "data_needed": [
-                                      "50 mL/kg",
-                                      "4 hours"
-                                    ],
-                                    "source_ids": [
-                                      "NICE_GASTROENTERITIS_UNDER5_CG84"
-                                    ],
-                                    "source_section": "oral rehydration for clinical dehydration",
-                                    "review_status": "source_backed"
-                                  },
-                                  {
-                                    "id": "redFlags_peds_abd_shock_dehydration_red_flag",
-                                    "label": "Shock dehydration or altered mental status",
-                                    "criteria_text": "Shock dehydration or altered mental status Escalate immediately when altered responsiveness, cold or mottled extremities, capillary refill over 3 seconds, hypotension, no urine, inability to tolerate fluids, or severe dehydration is present. Changes to supervised ORS, NG/IV fluids, bolus/resuscitation pathway, sepsis screening, admission, and transfer. Hypovolemic shock, septic shock, severe dehydration, metabolic crisis, or high-acuity abdominal illness. Shock or severe dehydration changes immediate fluids, monitoring, sepsis screening, and disposition.",
-                                    "cutoffs": [
-                                      "3 seconds"
-                                    ],
-                                    "data_needed": [
-                                      "3 seconds"
-                                    ],
-                                    "source_ids": [
-                                      "NICE_GASTROENTERITIS_UNDER5_CG84"
-                                    ],
-                                    "source_section": "clinical dehydration, shock, reduced urine output, and rehydration",
                                     "review_status": "source_backed"
                                   }
                                 ]
@@ -5600,56 +4796,6 @@
                                       ],
                                       "source_section": "Antiemetics",
                                       "review_status": "source_backed"
-                                    },
-                                    {
-                                      "id": "initialTests_peds_abd_stool_microbiology",
-                                      "label": "Stool microbiology when indicated",
-                                      "criteria_text": "Stool microbiology when indicated Order stool microbiology when there is blood or mucus in stool, suspected septicemia, immunocompromise, recent foreign travel, no improvement by day 7, diagnostic uncertainty, or outbreak/public-health concern. Positive or indicated stool testing changes isolation, public health notification, antimicrobial decisions, follow-up, and return precautions. Bacterial, parasitic, outbreak-related, or severe enteric infection. Routine stool testing is not needed for every gastroenteritis case, but focused testing changes infection control and treatment.",
-                                      "cutoffs": [
-                                        "day 7"
-                                      ],
-                                      "data_needed": [
-                                        "day 7"
-                                      ],
-                                      "source_ids": [
-                                        "NICE_GASTROENTERITIS_UNDER5_CG84"
-                                      ],
-                                      "source_section": "stool microbiology indications and public health notification",
-                                      "review_status": "source_backed"
-                                    },
-                                    {
-                                      "id": "initialTests_peds_abd_ors_rehydration_threshold",
-                                      "label": "Oral rehydration therapy threshold",
-                                      "criteria_text": "Oral rehydration therapy threshold If clinical dehydration is present and shock is absent, give oral rehydration solution 50 mL/kg over 4 hours with small frequent amounts, continuing breastfeeding when applicable. Clinical dehydration changes to weight-based ORS, observation, reassessment, and escalation if oral route fails. Clinical dehydration without shock. Guideline-based ORS can prevent unnecessary IV fluids while ensuring children with clinical dehydration receive a concrete volume and reassessment plan.",
-                                      "cutoffs": [
-                                        "50 mL/kg",
-                                        "4 hours"
-                                      ],
-                                      "data_needed": [
-                                        "50 mL/kg",
-                                        "4 hours"
-                                      ],
-                                      "source_ids": [
-                                        "NICE_GASTROENTERITIS_UNDER5_CG84"
-                                      ],
-                                      "source_section": "oral rehydration for clinical dehydration",
-                                      "review_status": "source_backed"
-                                    },
-                                    {
-                                      "id": "redFlags_peds_abd_shock_dehydration_red_flag",
-                                      "label": "Shock dehydration or altered mental status",
-                                      "criteria_text": "Shock dehydration or altered mental status Escalate immediately when altered responsiveness, cold or mottled extremities, capillary refill over 3 seconds, hypotension, no urine, inability to tolerate fluids, or severe dehydration is present. Changes to supervised ORS, NG/IV fluids, bolus/resuscitation pathway, sepsis screening, admission, and transfer. Hypovolemic shock, septic shock, severe dehydration, metabolic crisis, or high-acuity abdominal illness. Shock or severe dehydration changes immediate fluids, monitoring, sepsis screening, and disposition.",
-                                      "cutoffs": [
-                                        "3 seconds"
-                                      ],
-                                      "data_needed": [
-                                        "3 seconds"
-                                      ],
-                                      "source_ids": [
-                                        "NICE_GASTROENTERITIS_UNDER5_CG84"
-                                      ],
-                                      "source_section": "clinical dehydration, shock, reduced urine output, and rehydration",
-                                      "review_status": "source_backed"
                                     }
                                   ]
                                 },
@@ -5722,56 +4868,6 @@
                                     ],
                                     "source_section": "Antiemetics",
                                     "review_status": "source_backed"
-                                  },
-                                  {
-                                    "id": "initialTests_peds_abd_stool_microbiology",
-                                    "label": "Stool microbiology when indicated",
-                                    "criteria_text": "Stool microbiology when indicated Order stool microbiology when there is blood or mucus in stool, suspected septicemia, immunocompromise, recent foreign travel, no improvement by day 7, diagnostic uncertainty, or outbreak/public-health concern. Positive or indicated stool testing changes isolation, public health notification, antimicrobial decisions, follow-up, and return precautions. Bacterial, parasitic, outbreak-related, or severe enteric infection. Routine stool testing is not needed for every gastroenteritis case, but focused testing changes infection control and treatment.",
-                                    "cutoffs": [
-                                      "day 7"
-                                    ],
-                                    "data_needed": [
-                                      "day 7"
-                                    ],
-                                    "source_ids": [
-                                      "NICE_GASTROENTERITIS_UNDER5_CG84"
-                                    ],
-                                    "source_section": "stool microbiology indications and public health notification",
-                                    "review_status": "source_backed"
-                                  },
-                                  {
-                                    "id": "initialTests_peds_abd_ors_rehydration_threshold",
-                                    "label": "Oral rehydration therapy threshold",
-                                    "criteria_text": "Oral rehydration therapy threshold If clinical dehydration is present and shock is absent, give oral rehydration solution 50 mL/kg over 4 hours with small frequent amounts, continuing breastfeeding when applicable. Clinical dehydration changes to weight-based ORS, observation, reassessment, and escalation if oral route fails. Clinical dehydration without shock. Guideline-based ORS can prevent unnecessary IV fluids while ensuring children with clinical dehydration receive a concrete volume and reassessment plan.",
-                                    "cutoffs": [
-                                      "50 mL/kg",
-                                      "4 hours"
-                                    ],
-                                    "data_needed": [
-                                      "50 mL/kg",
-                                      "4 hours"
-                                    ],
-                                    "source_ids": [
-                                      "NICE_GASTROENTERITIS_UNDER5_CG84"
-                                    ],
-                                    "source_section": "oral rehydration for clinical dehydration",
-                                    "review_status": "source_backed"
-                                  },
-                                  {
-                                    "id": "redFlags_peds_abd_shock_dehydration_red_flag",
-                                    "label": "Shock dehydration or altered mental status",
-                                    "criteria_text": "Shock dehydration or altered mental status Escalate immediately when altered responsiveness, cold or mottled extremities, capillary refill over 3 seconds, hypotension, no urine, inability to tolerate fluids, or severe dehydration is present. Changes to supervised ORS, NG/IV fluids, bolus/resuscitation pathway, sepsis screening, admission, and transfer. Hypovolemic shock, septic shock, severe dehydration, metabolic crisis, or high-acuity abdominal illness. Shock or severe dehydration changes immediate fluids, monitoring, sepsis screening, and disposition.",
-                                    "cutoffs": [
-                                      "3 seconds"
-                                    ],
-                                    "data_needed": [
-                                      "3 seconds"
-                                    ],
-                                    "source_ids": [
-                                      "NICE_GASTROENTERITIS_UNDER5_CG84"
-                                    ],
-                                    "source_section": "clinical dehydration, shock, reduced urine output, and rehydration",
-                                    "review_status": "source_backed"
                                   }
                                 ]
                               },
@@ -5829,14 +4925,9 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend threshold labs/results",
+                              "trend criterion-defining results",
                               "review treatment response and adverse effects",
-                              "assign disposition and follow-up clinician/service",
-                              "Measure blood pressure",
-                              "Measure heart rate",
-                              "Measure respiratory rate",
-                              "Measure temperature",
-                              "Measure current weight"
+                              "assign disposition and follow-up clinician/service"
                             ],
                             "guideline_cutoffs": [
                               {
@@ -5904,56 +4995,6 @@
                                 ],
                                 "source_section": "Antiemetics",
                                 "review_status": "source_backed"
-                              },
-                              {
-                                "id": "initialTests_peds_abd_stool_microbiology",
-                                "label": "Stool microbiology when indicated",
-                                "criteria_text": "Stool microbiology when indicated Order stool microbiology when there is blood or mucus in stool, suspected septicemia, immunocompromise, recent foreign travel, no improvement by day 7, diagnostic uncertainty, or outbreak/public-health concern. Positive or indicated stool testing changes isolation, public health notification, antimicrobial decisions, follow-up, and return precautions. Bacterial, parasitic, outbreak-related, or severe enteric infection. Routine stool testing is not needed for every gastroenteritis case, but focused testing changes infection control and treatment.",
-                                "cutoffs": [
-                                  "day 7"
-                                ],
-                                "data_needed": [
-                                  "day 7"
-                                ],
-                                "source_ids": [
-                                  "NICE_GASTROENTERITIS_UNDER5_CG84"
-                                ],
-                                "source_section": "stool microbiology indications and public health notification",
-                                "review_status": "source_backed"
-                              },
-                              {
-                                "id": "initialTests_peds_abd_ors_rehydration_threshold",
-                                "label": "Oral rehydration therapy threshold",
-                                "criteria_text": "Oral rehydration therapy threshold If clinical dehydration is present and shock is absent, give oral rehydration solution 50 mL/kg over 4 hours with small frequent amounts, continuing breastfeeding when applicable. Clinical dehydration changes to weight-based ORS, observation, reassessment, and escalation if oral route fails. Clinical dehydration without shock. Guideline-based ORS can prevent unnecessary IV fluids while ensuring children with clinical dehydration receive a concrete volume and reassessment plan.",
-                                "cutoffs": [
-                                  "50 mL/kg",
-                                  "4 hours"
-                                ],
-                                "data_needed": [
-                                  "50 mL/kg",
-                                  "4 hours"
-                                ],
-                                "source_ids": [
-                                  "NICE_GASTROENTERITIS_UNDER5_CG84"
-                                ],
-                                "source_section": "oral rehydration for clinical dehydration",
-                                "review_status": "source_backed"
-                              },
-                              {
-                                "id": "redFlags_peds_abd_shock_dehydration_red_flag",
-                                "label": "Shock dehydration or altered mental status",
-                                "criteria_text": "Shock dehydration or altered mental status Escalate immediately when altered responsiveness, cold or mottled extremities, capillary refill over 3 seconds, hypotension, no urine, inability to tolerate fluids, or severe dehydration is present. Changes to supervised ORS, NG/IV fluids, bolus/resuscitation pathway, sepsis screening, admission, and transfer. Hypovolemic shock, septic shock, severe dehydration, metabolic crisis, or high-acuity abdominal illness. Shock or severe dehydration changes immediate fluids, monitoring, sepsis screening, and disposition.",
-                                "cutoffs": [
-                                  "3 seconds"
-                                ],
-                                "data_needed": [
-                                  "3 seconds"
-                                ],
-                                "source_ids": [
-                                  "NICE_GASTROENTERITIS_UNDER5_CG84"
-                                ],
-                                "source_section": "clinical dehydration, shock, reduced urine output, and rehydration",
-                                "review_status": "source_backed"
                               }
                             ]
                           }
@@ -5963,11 +5004,10 @@
                     "parallel_actions": [
                       "Pediatric abdominal pain, vomiting, or acute abdomen: immediate stabilization or escalation trigger: Bilious green vomiting or obstruction concern.",
                       "Pediatric abdominal pain, vomiting, or acute abdomen: treatment or disposition for high-risk or confirmed disease: Surgical or ED escalation.",
-                      "Pediatric abdominal pain, vomiting, or acute abdomen: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Appendicitis imaging disposition.",
-                      "Pediatric abdominal pain, vomiting, or acute abdomen: monitoring data for response, complications, and reassessment: Right lower quadrant ultrasound first.",
                       "Surgical or ED escalation",
                       "Appendicitis imaging disposition",
-                      "Gastroenteritis oral rehydration safety net"
+                      "Gastroenteritis oral rehydration safety net",
+                      "Ondansetron support if age >6 months"
                     ],
                     "guideline_cutoffs": [
                       {
@@ -6035,56 +5075,6 @@
                         ],
                         "source_section": "Antiemetics",
                         "review_status": "source_backed"
-                      },
-                      {
-                        "id": "initialTests_peds_abd_stool_microbiology",
-                        "label": "Stool microbiology when indicated",
-                        "criteria_text": "Stool microbiology when indicated Order stool microbiology when there is blood or mucus in stool, suspected septicemia, immunocompromise, recent foreign travel, no improvement by day 7, diagnostic uncertainty, or outbreak/public-health concern. Positive or indicated stool testing changes isolation, public health notification, antimicrobial decisions, follow-up, and return precautions. Bacterial, parasitic, outbreak-related, or severe enteric infection. Routine stool testing is not needed for every gastroenteritis case, but focused testing changes infection control and treatment.",
-                        "cutoffs": [
-                          "day 7"
-                        ],
-                        "data_needed": [
-                          "day 7"
-                        ],
-                        "source_ids": [
-                          "NICE_GASTROENTERITIS_UNDER5_CG84"
-                        ],
-                        "source_section": "stool microbiology indications and public health notification",
-                        "review_status": "source_backed"
-                      },
-                      {
-                        "id": "initialTests_peds_abd_ors_rehydration_threshold",
-                        "label": "Oral rehydration therapy threshold",
-                        "criteria_text": "Oral rehydration therapy threshold If clinical dehydration is present and shock is absent, give oral rehydration solution 50 mL/kg over 4 hours with small frequent amounts, continuing breastfeeding when applicable. Clinical dehydration changes to weight-based ORS, observation, reassessment, and escalation if oral route fails. Clinical dehydration without shock. Guideline-based ORS can prevent unnecessary IV fluids while ensuring children with clinical dehydration receive a concrete volume and reassessment plan.",
-                        "cutoffs": [
-                          "50 mL/kg",
-                          "4 hours"
-                        ],
-                        "data_needed": [
-                          "50 mL/kg",
-                          "4 hours"
-                        ],
-                        "source_ids": [
-                          "NICE_GASTROENTERITIS_UNDER5_CG84"
-                        ],
-                        "source_section": "oral rehydration for clinical dehydration",
-                        "review_status": "source_backed"
-                      },
-                      {
-                        "id": "redFlags_peds_abd_shock_dehydration_red_flag",
-                        "label": "Shock dehydration or altered mental status",
-                        "criteria_text": "Shock dehydration or altered mental status Escalate immediately when altered responsiveness, cold or mottled extremities, capillary refill over 3 seconds, hypotension, no urine, inability to tolerate fluids, or severe dehydration is present. Changes to supervised ORS, NG/IV fluids, bolus/resuscitation pathway, sepsis screening, admission, and transfer. Hypovolemic shock, septic shock, severe dehydration, metabolic crisis, or high-acuity abdominal illness. Shock or severe dehydration changes immediate fluids, monitoring, sepsis screening, and disposition.",
-                        "cutoffs": [
-                          "3 seconds"
-                        ],
-                        "data_needed": [
-                          "3 seconds"
-                        ],
-                        "source_ids": [
-                          "NICE_GASTROENTERITIS_UNDER5_CG84"
-                        ],
-                        "source_section": "clinical dehydration, shock, reduced urine output, and rehydration",
-                        "review_status": "source_backed"
                       }
                     ]
                   },
@@ -6107,7 +5097,7 @@
                     "criteria": {
                       "rule_id": "pediatric_abdominal_pain_vomiting_alternate_criteria",
                       "source": "criteria",
-                      "description": "Use an alternate pathway when Pediatric abdominal pain, vomiting, or acute abdomen criteria are absent, a cited mimic better explains the presentation, or objective result data contradict this workup.",
+                      "description": "Use an alternate pathway when Pediatric abdominal pain, vomiting, or acute abdomen criteria are absent, Appendicitis or surgical acute abdomen with localized or progressive abdominal pain, peritoneal signs, obstruction features, or persistent focal tenderness; Gastroenteritis or dehydration with vomiting, diarrhea, intake decline, reduced urine output, or exposure/travel clues; UTI, pyelonephritis, or urinary source with dysuria, frequency, malodorous urine, hematuria, flank pain, suprapubic tenderness, fever, or prior UTI; Pregnancy-related emergency or ectopic pregnancy in a pregnancy-capable adolescent with lower abdominal or pelvic pain, bleeding, syncope, shoulder-tip pain, or GI symptoms; Testicular torsion or acute scrotum presenting with abdominal pain, vomiting, testicular pain, swelling, high-riding testis, or absent cremasteric reflex better explains the presentation, or measured result data contradict this workup.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -6193,63 +5183,13 @@
                           ],
                           "source_section": "Antiemetics",
                           "review_status": "source_backed"
-                        },
-                        {
-                          "id": "initialTests_peds_abd_stool_microbiology",
-                          "label": "Stool microbiology when indicated",
-                          "criteria_text": "Stool microbiology when indicated Order stool microbiology when there is blood or mucus in stool, suspected septicemia, immunocompromise, recent foreign travel, no improvement by day 7, diagnostic uncertainty, or outbreak/public-health concern. Positive or indicated stool testing changes isolation, public health notification, antimicrobial decisions, follow-up, and return precautions. Bacterial, parasitic, outbreak-related, or severe enteric infection. Routine stool testing is not needed for every gastroenteritis case, but focused testing changes infection control and treatment.",
-                          "cutoffs": [
-                            "day 7"
-                          ],
-                          "data_needed": [
-                            "day 7"
-                          ],
-                          "source_ids": [
-                            "NICE_GASTROENTERITIS_UNDER5_CG84"
-                          ],
-                          "source_section": "stool microbiology indications and public health notification",
-                          "review_status": "source_backed"
-                        },
-                        {
-                          "id": "initialTests_peds_abd_ors_rehydration_threshold",
-                          "label": "Oral rehydration therapy threshold",
-                          "criteria_text": "Oral rehydration therapy threshold If clinical dehydration is present and shock is absent, give oral rehydration solution 50 mL/kg over 4 hours with small frequent amounts, continuing breastfeeding when applicable. Clinical dehydration changes to weight-based ORS, observation, reassessment, and escalation if oral route fails. Clinical dehydration without shock. Guideline-based ORS can prevent unnecessary IV fluids while ensuring children with clinical dehydration receive a concrete volume and reassessment plan.",
-                          "cutoffs": [
-                            "50 mL/kg",
-                            "4 hours"
-                          ],
-                          "data_needed": [
-                            "50 mL/kg",
-                            "4 hours"
-                          ],
-                          "source_ids": [
-                            "NICE_GASTROENTERITIS_UNDER5_CG84"
-                          ],
-                          "source_section": "oral rehydration for clinical dehydration",
-                          "review_status": "source_backed"
-                        },
-                        {
-                          "id": "redFlags_peds_abd_shock_dehydration_red_flag",
-                          "label": "Shock dehydration or altered mental status",
-                          "criteria_text": "Shock dehydration or altered mental status Escalate immediately when altered responsiveness, cold or mottled extremities, capillary refill over 3 seconds, hypotension, no urine, inability to tolerate fluids, or severe dehydration is present. Changes to supervised ORS, NG/IV fluids, bolus/resuscitation pathway, sepsis screening, admission, and transfer. Hypovolemic shock, septic shock, severe dehydration, metabolic crisis, or high-acuity abdominal illness. Shock or severe dehydration changes immediate fluids, monitoring, sepsis screening, and disposition.",
-                          "cutoffs": [
-                            "3 seconds"
-                          ],
-                          "data_needed": [
-                            "3 seconds"
-                          ],
-                          "source_ids": [
-                            "NICE_GASTROENTERITIS_UNDER5_CG84"
-                          ],
-                          "source_section": "clinical dehydration, shock, reduced urine output, and rehydration",
-                          "review_status": "source_backed"
                         }
                       ]
                     },
-                    "action": "Document why Pediatric abdominal pain, vomiting, or acute abdomen is not the active pathway, name the competing diagnosis or exclusion, and route to the appropriate workup rather than reassurance alone.",
+                    "action": "Name the competing diagnosis or exclusion for Pediatric abdominal pain, vomiting, or acute abdomen, such as Appendicitis or surgical acute abdomen with localized or progressive abdominal pain, peritoneal signs, obstruction features, or persistent focal tenderness; Gastroenteritis or dehydration with vomiting, diarrhea, intake decline, reduced urine output, or exposure/travel clues; UTI, pyelonephritis, or urinary source with dysuria, frequency, malodorous urine, hematuria, flank pain, suprapubic tenderness, fever, or prior UTI; Pregnancy-related emergency or ectopic pregnancy in a pregnancy-capable adolescent with lower abdominal or pelvic pain, bleeding, syncope, shoulder-tip pain, or GI symptoms; Testicular torsion or acute scrotum presenting with abdominal pain, vomiting, testicular pain, swelling, high-riding testis, or absent cremasteric reflex; route to the corresponding workup or specialty pathway and document why the Pediatric abdominal pain, vomiting, or acute abdomen branch is not used.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Competing diagnosis or exclusion changes the active pathway."
+                    "review_needed_reason": "Pediatric abdominal pain, vomiting, or acute abdomen criteria are absent or contradicted by Appendicitis or surgical acute abdomen with localized or progressive abdominal pain, peritoneal signs, obstruction features, or persistent focal tenderness; Gastroenteritis or dehydration with vomiting, diarrhea, intake decline, reduced urine output, or exposure/travel clues; UTI, pyelonephritis, or urinary source with dysuria, frequency, malodorous urine, hematuria, flank pain, suprapubic tenderness, fever, or prior UTI; Pregnancy-related emergency or ectopic pregnancy in a pregnancy-capable adolescent with lower abdominal or pelvic pain, bleeding, syncope, shoulder-tip pain, or GI symptoms; Testicular torsion or acute scrotum presenting with abdominal pain, vomiting, testicular pain, swelling, high-riding testis, or absent cremasteric reflex; competing diagnosis must be named before closure."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -6317,56 +5257,6 @@
                       "RCH_VOMITING_CHILD"
                     ],
                     "source_section": "Antiemetics",
-                    "review_status": "source_backed"
-                  },
-                  {
-                    "id": "initialTests_peds_abd_stool_microbiology",
-                    "label": "Stool microbiology when indicated",
-                    "criteria_text": "Stool microbiology when indicated Order stool microbiology when there is blood or mucus in stool, suspected septicemia, immunocompromise, recent foreign travel, no improvement by day 7, diagnostic uncertainty, or outbreak/public-health concern. Positive or indicated stool testing changes isolation, public health notification, antimicrobial decisions, follow-up, and return precautions. Bacterial, parasitic, outbreak-related, or severe enteric infection. Routine stool testing is not needed for every gastroenteritis case, but focused testing changes infection control and treatment.",
-                    "cutoffs": [
-                      "day 7"
-                    ],
-                    "data_needed": [
-                      "day 7"
-                    ],
-                    "source_ids": [
-                      "NICE_GASTROENTERITIS_UNDER5_CG84"
-                    ],
-                    "source_section": "stool microbiology indications and public health notification",
-                    "review_status": "source_backed"
-                  },
-                  {
-                    "id": "initialTests_peds_abd_ors_rehydration_threshold",
-                    "label": "Oral rehydration therapy threshold",
-                    "criteria_text": "Oral rehydration therapy threshold If clinical dehydration is present and shock is absent, give oral rehydration solution 50 mL/kg over 4 hours with small frequent amounts, continuing breastfeeding when applicable. Clinical dehydration changes to weight-based ORS, observation, reassessment, and escalation if oral route fails. Clinical dehydration without shock. Guideline-based ORS can prevent unnecessary IV fluids while ensuring children with clinical dehydration receive a concrete volume and reassessment plan.",
-                    "cutoffs": [
-                      "50 mL/kg",
-                      "4 hours"
-                    ],
-                    "data_needed": [
-                      "50 mL/kg",
-                      "4 hours"
-                    ],
-                    "source_ids": [
-                      "NICE_GASTROENTERITIS_UNDER5_CG84"
-                    ],
-                    "source_section": "oral rehydration for clinical dehydration",
-                    "review_status": "source_backed"
-                  },
-                  {
-                    "id": "redFlags_peds_abd_shock_dehydration_red_flag",
-                    "label": "Shock dehydration or altered mental status",
-                    "criteria_text": "Shock dehydration or altered mental status Escalate immediately when altered responsiveness, cold or mottled extremities, capillary refill over 3 seconds, hypotension, no urine, inability to tolerate fluids, or severe dehydration is present. Changes to supervised ORS, NG/IV fluids, bolus/resuscitation pathway, sepsis screening, admission, and transfer. Hypovolemic shock, septic shock, severe dehydration, metabolic crisis, or high-acuity abdominal illness. Shock or severe dehydration changes immediate fluids, monitoring, sepsis screening, and disposition.",
-                    "cutoffs": [
-                      "3 seconds"
-                    ],
-                    "data_needed": [
-                      "3 seconds"
-                    ],
-                    "source_ids": [
-                      "NICE_GASTROENTERITIS_UNDER5_CG84"
-                    ],
-                    "source_section": "clinical dehydration, shock, reduced urine output, and rehydration",
                     "review_status": "source_backed"
                   }
                 ],
@@ -6436,56 +5326,6 @@
                     ],
                     "source_section": "Antiemetics",
                     "review_status": "source_backed"
-                  },
-                  {
-                    "id": "initialTests_peds_abd_stool_microbiology",
-                    "label": "Stool microbiology when indicated",
-                    "criteria_text": "Stool microbiology when indicated Order stool microbiology when there is blood or mucus in stool, suspected septicemia, immunocompromise, recent foreign travel, no improvement by day 7, diagnostic uncertainty, or outbreak/public-health concern. Positive or indicated stool testing changes isolation, public health notification, antimicrobial decisions, follow-up, and return precautions. Bacterial, parasitic, outbreak-related, or severe enteric infection. Routine stool testing is not needed for every gastroenteritis case, but focused testing changes infection control and treatment.",
-                    "cutoffs": [
-                      "day 7"
-                    ],
-                    "data_needed": [
-                      "day 7"
-                    ],
-                    "source_ids": [
-                      "NICE_GASTROENTERITIS_UNDER5_CG84"
-                    ],
-                    "source_section": "stool microbiology indications and public health notification",
-                    "review_status": "source_backed"
-                  },
-                  {
-                    "id": "initialTests_peds_abd_ors_rehydration_threshold",
-                    "label": "Oral rehydration therapy threshold",
-                    "criteria_text": "Oral rehydration therapy threshold If clinical dehydration is present and shock is absent, give oral rehydration solution 50 mL/kg over 4 hours with small frequent amounts, continuing breastfeeding when applicable. Clinical dehydration changes to weight-based ORS, observation, reassessment, and escalation if oral route fails. Clinical dehydration without shock. Guideline-based ORS can prevent unnecessary IV fluids while ensuring children with clinical dehydration receive a concrete volume and reassessment plan.",
-                    "cutoffs": [
-                      "50 mL/kg",
-                      "4 hours"
-                    ],
-                    "data_needed": [
-                      "50 mL/kg",
-                      "4 hours"
-                    ],
-                    "source_ids": [
-                      "NICE_GASTROENTERITIS_UNDER5_CG84"
-                    ],
-                    "source_section": "oral rehydration for clinical dehydration",
-                    "review_status": "source_backed"
-                  },
-                  {
-                    "id": "redFlags_peds_abd_shock_dehydration_red_flag",
-                    "label": "Shock dehydration or altered mental status",
-                    "criteria_text": "Shock dehydration or altered mental status Escalate immediately when altered responsiveness, cold or mottled extremities, capillary refill over 3 seconds, hypotension, no urine, inability to tolerate fluids, or severe dehydration is present. Changes to supervised ORS, NG/IV fluids, bolus/resuscitation pathway, sepsis screening, admission, and transfer. Hypovolemic shock, septic shock, severe dehydration, metabolic crisis, or high-acuity abdominal illness. Shock or severe dehydration changes immediate fluids, monitoring, sepsis screening, and disposition.",
-                    "cutoffs": [
-                      "3 seconds"
-                    ],
-                    "data_needed": [
-                      "3 seconds"
-                    ],
-                    "source_ids": [
-                      "NICE_GASTROENTERITIS_UNDER5_CG84"
-                    ],
-                    "source_section": "clinical dehydration, shock, reduced urine output, and rehydration",
-                    "review_status": "source_backed"
                   }
                 ]
               }
@@ -6495,14 +5335,9 @@
               "Equivocal ultrasound appendicitis pathway",
               "Urinalysis with urine culture",
               "Pregnancy test for pregnancy-capable adolescent",
-              "Stool microbiology when indicated",
+              "Stool microbiology when the branch-specific criteria in this node apply",
               "Oral rehydration therapy threshold",
               "Avoid routine low-risk abdominal testing",
-              "Measure blood pressure",
-              "Measure heart rate",
-              "Measure respiratory rate",
-              "Measure temperature",
-              "Measure current weight",
               "point-of-care glucose",
               "blood or urine ketones",
               "hydration/perfusion status",
@@ -6528,7 +5363,7 @@
               "Equivocal ultrasound appendicitis pathway",
               "Urinalysis with urine culture",
               "Pregnancy test for pregnancy-capable adolescent",
-              "Stool microbiology when indicated",
+              "Stool microbiology when the branch-specific criteria in this node apply",
               "Oral rehydration therapy threshold",
               "Avoid routine low-risk abdominal testing",
               "<3 mmol/L",
@@ -6606,56 +5441,6 @@
                 ],
                 "source_section": "Antiemetics",
                 "review_status": "source_backed"
-              },
-              {
-                "id": "initialTests_peds_abd_stool_microbiology",
-                "label": "Stool microbiology when indicated",
-                "criteria_text": "Stool microbiology when indicated Order stool microbiology when there is blood or mucus in stool, suspected septicemia, immunocompromise, recent foreign travel, no improvement by day 7, diagnostic uncertainty, or outbreak/public-health concern. Positive or indicated stool testing changes isolation, public health notification, antimicrobial decisions, follow-up, and return precautions. Bacterial, parasitic, outbreak-related, or severe enteric infection. Routine stool testing is not needed for every gastroenteritis case, but focused testing changes infection control and treatment.",
-                "cutoffs": [
-                  "day 7"
-                ],
-                "data_needed": [
-                  "day 7"
-                ],
-                "source_ids": [
-                  "NICE_GASTROENTERITIS_UNDER5_CG84"
-                ],
-                "source_section": "stool microbiology indications and public health notification",
-                "review_status": "source_backed"
-              },
-              {
-                "id": "initialTests_peds_abd_ors_rehydration_threshold",
-                "label": "Oral rehydration therapy threshold",
-                "criteria_text": "Oral rehydration therapy threshold If clinical dehydration is present and shock is absent, give oral rehydration solution 50 mL/kg over 4 hours with small frequent amounts, continuing breastfeeding when applicable. Clinical dehydration changes to weight-based ORS, observation, reassessment, and escalation if oral route fails. Clinical dehydration without shock. Guideline-based ORS can prevent unnecessary IV fluids while ensuring children with clinical dehydration receive a concrete volume and reassessment plan.",
-                "cutoffs": [
-                  "50 mL/kg",
-                  "4 hours"
-                ],
-                "data_needed": [
-                  "50 mL/kg",
-                  "4 hours"
-                ],
-                "source_ids": [
-                  "NICE_GASTROENTERITIS_UNDER5_CG84"
-                ],
-                "source_section": "oral rehydration for clinical dehydration",
-                "review_status": "source_backed"
-              },
-              {
-                "id": "redFlags_peds_abd_shock_dehydration_red_flag",
-                "label": "Shock dehydration or altered mental status",
-                "criteria_text": "Shock dehydration or altered mental status Escalate immediately when altered responsiveness, cold or mottled extremities, capillary refill over 3 seconds, hypotension, no urine, inability to tolerate fluids, or severe dehydration is present. Changes to supervised ORS, NG/IV fluids, bolus/resuscitation pathway, sepsis screening, admission, and transfer. Hypovolemic shock, septic shock, severe dehydration, metabolic crisis, or high-acuity abdominal illness. Shock or severe dehydration changes immediate fluids, monitoring, sepsis screening, and disposition.",
-                "cutoffs": [
-                  "3 seconds"
-                ],
-                "data_needed": [
-                  "3 seconds"
-                ],
-                "source_ids": [
-                  "NICE_GASTROENTERITIS_UNDER5_CG84"
-                ],
-                "source_section": "clinical dehydration, shock, reduced urine output, and rehydration",
-                "review_status": "source_backed"
               }
             ]
           }
@@ -6663,10 +5448,10 @@
       },
       "synthetic_patient_scenarios": [
         {
-          "scenario_id": "missing_context",
+          "scenario_id": "internal_context_guard",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing Pediatric abdominal pain, vomiting, or acute abdomen: onset/trajectory, focused exam, vitals, threshold labs/results, meds, comorbidities, pregnancy/applicability, or follow-up access",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -6675,10 +5460,10 @@
           "traversal_status": "reaches_expected_endpoint"
         },
         {
-          "scenario_id": "missing_cutoff_data",
+          "scenario_id": "internal_threshold_guard",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "pediatric_abdominal_pain_vomiting_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Missing Pediatric abdominal pain, vomiting, or acute abdomen result(s): point-of-care glucose; blood or urine ketones; hydration/perfusion status; weight; perfusion signs; blood pressure",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "pediatric_abdominal_pain_vomiting_concurrent_data_bundle",
@@ -6720,7 +5505,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "pediatric_abdominal_pain_vomiting_review_endpoint",
-          "expected_active_branch": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
+          "expected_active_branch": "Pediatric abdominal pain, vomiting, or acute abdomen modifier needing review: Ondansetron support if age >6 months; Surgical or ED escalation; Appendicitis imaging disposition; Pediatric abdominal pain, vomiting, or acute abdomen: immediate stabilization or escalation trigger: Bilious green vomiting or obstruction concern.; Pediatric abdominal pain, vomiting, or acute abdomen: treatment or disposition for high-risk or confirmed disease: Surgical or ED escalation.",
           "expected_path_node_ids": [
             "root",
             "pediatric_abdominal_pain_vomiting_concurrent_data_bundle",
@@ -6736,7 +5521,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "pediatric_abdominal_pain_vomiting_worsening_endpoint",
-          "expected_active_branch": "Pediatric abdominal pain, vomiting, or acute abdomen reassessment worsens or Bilious green vomiting or obstruction concern; Peritonitis or progressive localized pain; Shock dehydration or altered mental status; <3 mmol/L; >11 mmol/L; <2.6 mmol/L; 10-20 mL/kg; Right lower quadrant ultrasound first; Equivocal ultrasound appendicitis pathway no longer fit the selected pathway",
+          "expected_active_branch": "Pediatric abdominal pain, vomiting, or acute abdomen reassessment worsens or Bilious green vomiting or obstruction concern; Peritonitis or progressive localized pain; Shock dehydration or altered mental status; <3 mmol/L; >11 mmol/L; <2.6 mmol/L; 10-20 mL/kg; Right lower quadrant ultrasound first; Equivocal ultrasound appendicitis pathway no longer fit the documented Pediatric abdominal pain, vomiting, or acute abdomen branch",
           "expected_path_node_ids": [
             "root",
             "pediatric_abdominal_pain_vomiting_concurrent_data_bundle",
@@ -6805,7 +5590,7 @@
           "concurrent diagnostic/treatment bundles instead of long one-step chains",
           "cited thresholds/rules visible in classification and endpoint nodes",
           "all endpoints cite evidence or state needs_clinical_review",
-          "missing-data endpoints name exact data needed"
+          "internal data guards keep exact unavailable fields in structured metadata"
         ]
       }
     },

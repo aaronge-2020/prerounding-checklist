@@ -1551,7 +1551,7 @@
         {
           "threshold": "SpO2 <90%",
           "evidence_item_id": "peds_fever_ng254_under5_sepsis_vitals",
-          "label": "NICE under-5 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR and HR cutoffs are age-banded; CRT >=3 seconds, urine <1 mL/kg/h, temperature <36 C, age <3 months temperature >=38 C, or non-blanching rash are high risk",
+          "label": "NICE under-5 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1560,7 +1560,7 @@
         {
           "threshold": "SpO2 <92%",
           "evidence_item_id": "peds_fever_ng254_under5_sepsis_vitals",
-          "label": "NICE under-5 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR and HR cutoffs are age-banded; CRT >=3 seconds, urine <1 mL/kg/h, temperature <36 C, age <3 months temperature >=38 C, or non-blanching rash are high risk",
+          "label": "NICE under-5 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1569,7 +1569,7 @@
         {
           "threshold": "RR >=60/min under 1 year",
           "evidence_item_id": "peds_fever_ng254_under5_sepsis_vitals",
-          "label": "NICE under-5 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR and HR cutoffs are age-banded; CRT >=3 seconds, urine <1 mL/kg/h, temperature <36 C, age <3 months temperature >=38 C, or non-blanching rash are high risk",
+          "label": "NICE under-5 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1578,7 +1578,7 @@
         {
           "threshold": "RR 50-59/min under 1 year",
           "evidence_item_id": "peds_fever_ng254_under5_sepsis_vitals",
-          "label": "NICE under-5 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR and HR cutoffs are age-banded; CRT >=3 seconds, urine <1 mL/kg/h, temperature <36 C, age <3 months temperature >=38 C, or non-blanching rash are high risk",
+          "label": "NICE under-5 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1587,7 +1587,7 @@
         {
           "threshold": "RR >=50/min age 1-2 years",
           "evidence_item_id": "peds_fever_ng254_under5_sepsis_vitals",
-          "label": "NICE under-5 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR and HR cutoffs are age-banded; CRT >=3 seconds, urine <1 mL/kg/h, temperature <36 C, age <3 months temperature >=38 C, or non-blanching rash are high risk",
+          "label": "NICE under-5 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1596,7 +1596,7 @@
         {
           "threshold": "RR 40-49/min age 1-2 years",
           "evidence_item_id": "peds_fever_ng254_under5_sepsis_vitals",
-          "label": "NICE under-5 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR and HR cutoffs are age-banded; CRT >=3 seconds, urine <1 mL/kg/h, temperature <36 C, age <3 months temperature >=38 C, or non-blanching rash are high risk",
+          "label": "NICE under-5 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1605,7 +1605,7 @@
         {
           "threshold": "RR >=40/min age 3-4 years",
           "evidence_item_id": "peds_fever_ng254_under5_sepsis_vitals",
-          "label": "NICE under-5 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR and HR cutoffs are age-banded; CRT >=3 seconds, urine <1 mL/kg/h, temperature <36 C, age <3 months temperature >=38 C, or non-blanching rash are high risk",
+          "label": "NICE under-5 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1614,7 +1614,7 @@
         {
           "threshold": "RR 35-39/min age 3-4 years",
           "evidence_item_id": "peds_fever_ng254_under5_sepsis_vitals",
-          "label": "NICE under-5 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR and HR cutoffs are age-banded; CRT >=3 seconds, urine <1 mL/kg/h, temperature <36 C, age <3 months temperature >=38 C, or non-blanching rash are high risk",
+          "label": "NICE under-5 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1623,7 +1623,7 @@
         {
           "threshold": "heart rate <60/min",
           "evidence_item_id": "peds_fever_ng254_under5_sepsis_vitals",
-          "label": "NICE under-5 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR and HR cutoffs are age-banded; CRT >=3 seconds, urine <1 mL/kg/h, temperature <36 C, age <3 months temperature >=38 C, or non-blanching rash are high risk",
+          "label": "NICE under-5 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1632,7 +1632,7 @@
         {
           "threshold": "CRT >=3 seconds",
           "evidence_item_id": "peds_fever_ng254_under5_sepsis_vitals",
-          "label": "NICE under-5 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR and HR cutoffs are age-banded; CRT >=3 seconds, urine <1 mL/kg/h, temperature <36 C, age <3 months temperature >=38 C, or non-blanching rash are high risk",
+          "label": "NICE under-5 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1641,7 +1641,7 @@
         {
           "threshold": "urine <1 mL/kg/hour",
           "evidence_item_id": "peds_fever_ng254_under5_sepsis_vitals",
-          "label": "NICE under-5 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR and HR cutoffs are age-banded; CRT >=3 seconds, urine <1 mL/kg/h, temperature <36 C, age <3 months temperature >=38 C, or non-blanching rash are high risk",
+          "label": "NICE under-5 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1650,7 +1650,7 @@
         {
           "threshold": "HR >=160/min under 1 year",
           "evidence_item_id": "peds_fever_ng254_under5_sepsis_vitals",
-          "label": "NICE under-5 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR and HR cutoffs are age-banded; CRT >=3 seconds, urine <1 mL/kg/h, temperature <36 C, age <3 months temperature >=38 C, or non-blanching rash are high risk",
+          "label": "NICE under-5 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1659,7 +1659,7 @@
         {
           "threshold": "HR 150-159/min under 1 year",
           "evidence_item_id": "peds_fever_ng254_under5_sepsis_vitals",
-          "label": "NICE under-5 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR and HR cutoffs are age-banded; CRT >=3 seconds, urine <1 mL/kg/h, temperature <36 C, age <3 months temperature >=38 C, or non-blanching rash are high risk",
+          "label": "NICE under-5 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1668,7 +1668,7 @@
         {
           "threshold": "HR >=150/min age 1-2 years",
           "evidence_item_id": "peds_fever_ng254_under5_sepsis_vitals",
-          "label": "NICE under-5 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR and HR cutoffs are age-banded; CRT >=3 seconds, urine <1 mL/kg/h, temperature <36 C, age <3 months temperature >=38 C, or non-blanching rash are high risk",
+          "label": "NICE under-5 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1677,7 +1677,7 @@
         {
           "threshold": "HR 140-149/min age 1-2 years",
           "evidence_item_id": "peds_fever_ng254_under5_sepsis_vitals",
-          "label": "NICE under-5 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR and HR cutoffs are age-banded; CRT >=3 seconds, urine <1 mL/kg/h, temperature <36 C, age <3 months temperature >=38 C, or non-blanching rash are high risk",
+          "label": "NICE under-5 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1686,7 +1686,7 @@
         {
           "threshold": "HR >=140/min age 3-4 years",
           "evidence_item_id": "peds_fever_ng254_under5_sepsis_vitals",
-          "label": "NICE under-5 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR and HR cutoffs are age-banded; CRT >=3 seconds, urine <1 mL/kg/h, temperature <36 C, age <3 months temperature >=38 C, or non-blanching rash are high risk",
+          "label": "NICE under-5 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1695,7 +1695,7 @@
         {
           "threshold": "HR 130-139/min age 3-4 years",
           "evidence_item_id": "peds_fever_ng254_under5_sepsis_vitals",
-          "label": "NICE under-5 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR and HR cutoffs are age-banded; CRT >=3 seconds, urine <1 mL/kg/h, temperature <36 C, age <3 months temperature >=38 C, or non-blanching rash are high risk",
+          "label": "NICE under-5 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1704,7 +1704,7 @@
         {
           "threshold": "temperature <36 C",
           "evidence_item_id": "peds_fever_ng254_under5_sepsis_vitals",
-          "label": "NICE under-5 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR and HR cutoffs are age-banded; CRT >=3 seconds, urine <1 mL/kg/h, temperature <36 C, age <3 months temperature >=38 C, or non-blanching rash are high risk",
+          "label": "NICE under-5 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1713,7 +1713,7 @@
         {
           "threshold": "age <3 months temperature >=38 C",
           "evidence_item_id": "peds_fever_ng254_under5_sepsis_vitals",
-          "label": "NICE under-5 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR and HR cutoffs are age-banded; CRT >=3 seconds, urine <1 mL/kg/h, temperature <36 C, age <3 months temperature >=38 C, or non-blanching rash are high risk",
+          "label": "NICE under-5 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1722,7 +1722,7 @@
         {
           "threshold": "age 3-6 months temperature >=39 C",
           "evidence_item_id": "peds_fever_ng254_under5_sepsis_vitals",
-          "label": "NICE under-5 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR and HR cutoffs are age-banded; CRT >=3 seconds, urine <1 mL/kg/h, temperature <36 C, age <3 months temperature >=38 C, or non-blanching rash are high risk",
+          "label": "NICE under-5 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1731,7 +1731,7 @@
         {
           "threshold": "SpO2 <90%",
           "evidence_item_id": "peds_fever_ng254_5_11_sepsis_vitals",
-          "label": "NICE age 5-11 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR/HR age bands, HR <60/min, CRT >=3 seconds, urine <1 mL/kg/h, tympanic temperature <36 C, or non-blanching rash change risk",
+          "label": "NICE age 5-11 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1740,7 +1740,7 @@
         {
           "threshold": "SpO2 <92%",
           "evidence_item_id": "peds_fever_ng254_5_11_sepsis_vitals",
-          "label": "NICE age 5-11 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR/HR age bands, HR <60/min, CRT >=3 seconds, urine <1 mL/kg/h, tympanic temperature <36 C, or non-blanching rash change risk",
+          "label": "NICE age 5-11 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1749,7 +1749,7 @@
         {
           "threshold": "RR >=29/min age 5",
           "evidence_item_id": "peds_fever_ng254_5_11_sepsis_vitals",
-          "label": "NICE age 5-11 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR/HR age bands, HR <60/min, CRT >=3 seconds, urine <1 mL/kg/h, tympanic temperature <36 C, or non-blanching rash change risk",
+          "label": "NICE age 5-11 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1758,7 +1758,7 @@
         {
           "threshold": "RR 24-28/min age 5",
           "evidence_item_id": "peds_fever_ng254_5_11_sepsis_vitals",
-          "label": "NICE age 5-11 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR/HR age bands, HR <60/min, CRT >=3 seconds, urine <1 mL/kg/h, tympanic temperature <36 C, or non-blanching rash change risk",
+          "label": "NICE age 5-11 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1767,7 +1767,7 @@
         {
           "threshold": "RR >=27/min age 6-7",
           "evidence_item_id": "peds_fever_ng254_5_11_sepsis_vitals",
-          "label": "NICE age 5-11 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR/HR age bands, HR <60/min, CRT >=3 seconds, urine <1 mL/kg/h, tympanic temperature <36 C, or non-blanching rash change risk",
+          "label": "NICE age 5-11 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1776,7 +1776,7 @@
         {
           "threshold": "RR 24-26/min age 6-7",
           "evidence_item_id": "peds_fever_ng254_5_11_sepsis_vitals",
-          "label": "NICE age 5-11 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR/HR age bands, HR <60/min, CRT >=3 seconds, urine <1 mL/kg/h, tympanic temperature <36 C, or non-blanching rash change risk",
+          "label": "NICE age 5-11 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1785,7 +1785,7 @@
         {
           "threshold": "RR >=25/min age 8-11",
           "evidence_item_id": "peds_fever_ng254_5_11_sepsis_vitals",
-          "label": "NICE age 5-11 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR/HR age bands, HR <60/min, CRT >=3 seconds, urine <1 mL/kg/h, tympanic temperature <36 C, or non-blanching rash change risk",
+          "label": "NICE age 5-11 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1794,7 +1794,7 @@
         {
           "threshold": "RR 22-24/min age 8-11",
           "evidence_item_id": "peds_fever_ng254_5_11_sepsis_vitals",
-          "label": "NICE age 5-11 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR/HR age bands, HR <60/min, CRT >=3 seconds, urine <1 mL/kg/h, tympanic temperature <36 C, or non-blanching rash change risk",
+          "label": "NICE age 5-11 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1803,7 +1803,7 @@
         {
           "threshold": "HR <60/min",
           "evidence_item_id": "peds_fever_ng254_5_11_sepsis_vitals",
-          "label": "NICE age 5-11 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR/HR age bands, HR <60/min, CRT >=3 seconds, urine <1 mL/kg/h, tympanic temperature <36 C, or non-blanching rash change risk",
+          "label": "NICE age 5-11 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1812,7 +1812,7 @@
         {
           "threshold": "CRT >=3 seconds",
           "evidence_item_id": "peds_fever_ng254_5_11_sepsis_vitals",
-          "label": "NICE age 5-11 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR/HR age bands, HR <60/min, CRT >=3 seconds, urine <1 mL/kg/h, tympanic temperature <36 C, or non-blanching rash change risk",
+          "label": "NICE age 5-11 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1821,7 +1821,7 @@
         {
           "threshold": "urine <1 mL/kg/hour",
           "evidence_item_id": "peds_fever_ng254_5_11_sepsis_vitals",
-          "label": "NICE age 5-11 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR/HR age bands, HR <60/min, CRT >=3 seconds, urine <1 mL/kg/h, tympanic temperature <36 C, or non-blanching rash change risk",
+          "label": "NICE age 5-11 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1830,7 +1830,7 @@
         {
           "threshold": "HR >=130/min age 5",
           "evidence_item_id": "peds_fever_ng254_5_11_sepsis_vitals",
-          "label": "NICE age 5-11 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR/HR age bands, HR <60/min, CRT >=3 seconds, urine <1 mL/kg/h, tympanic temperature <36 C, or non-blanching rash change risk",
+          "label": "NICE age 5-11 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1839,7 +1839,7 @@
         {
           "threshold": "HR 120-129/min age 5",
           "evidence_item_id": "peds_fever_ng254_5_11_sepsis_vitals",
-          "label": "NICE age 5-11 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR/HR age bands, HR <60/min, CRT >=3 seconds, urine <1 mL/kg/h, tympanic temperature <36 C, or non-blanching rash change risk",
+          "label": "NICE age 5-11 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1848,7 +1848,7 @@
         {
           "threshold": "HR >=120/min age 6-7",
           "evidence_item_id": "peds_fever_ng254_5_11_sepsis_vitals",
-          "label": "NICE age 5-11 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR/HR age bands, HR <60/min, CRT >=3 seconds, urine <1 mL/kg/h, tympanic temperature <36 C, or non-blanching rash change risk",
+          "label": "NICE age 5-11 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1857,7 +1857,7 @@
         {
           "threshold": "HR 110-119/min age 6-7",
           "evidence_item_id": "peds_fever_ng254_5_11_sepsis_vitals",
-          "label": "NICE age 5-11 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR/HR age bands, HR <60/min, CRT >=3 seconds, urine <1 mL/kg/h, tympanic temperature <36 C, or non-blanching rash change risk",
+          "label": "NICE age 5-11 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1866,7 +1866,7 @@
         {
           "threshold": "HR >=115/min age 8-11",
           "evidence_item_id": "peds_fever_ng254_5_11_sepsis_vitals",
-          "label": "NICE age 5-11 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR/HR age bands, HR <60/min, CRT >=3 seconds, urine <1 mL/kg/h, tympanic temperature <36 C, or non-blanching rash change risk",
+          "label": "NICE age 5-11 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1875,7 +1875,7 @@
         {
           "threshold": "HR 105-114/min age 8-11",
           "evidence_item_id": "peds_fever_ng254_5_11_sepsis_vitals",
-          "label": "NICE age 5-11 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR/HR age bands, HR <60/min, CRT >=3 seconds, urine <1 mL/kg/h, tympanic temperature <36 C, or non-blanching rash change risk",
+          "label": "NICE age 5-11 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1884,7 +1884,7 @@
         {
           "threshold": "tympanic temperature <36 C",
           "evidence_item_id": "peds_fever_ng254_5_11_sepsis_vitals",
-          "label": "NICE age 5-11 suspected sepsis risk: SpO2 <90% high risk, SpO2 <92% moderate risk; RR/HR age bands, HR <60/min, CRT >=3 seconds, urine <1 mL/kg/h, tympanic temperature <36 C, or non-blanching rash change risk",
+          "label": "NICE age 5-11 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1893,7 +1893,7 @@
         {
           "threshold": "RR >=25/min",
           "evidence_item_id": "peds_fever_ng254_12_15_sepsis_vitals",
-          "label": "NICE age 12-15 suspected sepsis risk: RR >=25/min, FiO2 >=40%, SBP <=90 mm Hg or >40 mm Hg below normal, HR >130/min, no urine 18 hours or catheter urine <0.5 mL/kg/h are high risk",
+          "label": "NICE age 12-15 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1902,7 +1902,7 @@
         {
           "threshold": "FiO2 >=40%",
           "evidence_item_id": "peds_fever_ng254_12_15_sepsis_vitals",
-          "label": "NICE age 12-15 suspected sepsis risk: RR >=25/min, FiO2 >=40%, SBP <=90 mm Hg or >40 mm Hg below normal, HR >130/min, no urine 18 hours or catheter urine <0.5 mL/kg/h are high risk",
+          "label": "NICE age 12-15 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1911,7 +1911,7 @@
         {
           "threshold": "SpO2 >92%",
           "evidence_item_id": "peds_fever_ng254_12_15_sepsis_vitals",
-          "label": "NICE age 12-15 suspected sepsis risk: RR >=25/min, FiO2 >=40%, SBP <=90 mm Hg or >40 mm Hg below normal, HR >130/min, no urine 18 hours or catheter urine <0.5 mL/kg/h are high risk",
+          "label": "NICE age 12-15 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1920,7 +1920,7 @@
         {
           "threshold": "SpO2 >88% in chronic hypercapnic respiratory failure",
           "evidence_item_id": "peds_fever_ng254_12_15_sepsis_vitals",
-          "label": "NICE age 12-15 suspected sepsis risk: RR >=25/min, FiO2 >=40%, SBP <=90 mm Hg or >40 mm Hg below normal, HR >130/min, no urine 18 hours or catheter urine <0.5 mL/kg/h are high risk",
+          "label": "NICE age 12-15 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1929,7 +1929,7 @@
         {
           "threshold": "SBP <=90 mm Hg",
           "evidence_item_id": "peds_fever_ng254_12_15_sepsis_vitals",
-          "label": "NICE age 12-15 suspected sepsis risk: RR >=25/min, FiO2 >=40%, SBP <=90 mm Hg or >40 mm Hg below normal, HR >130/min, no urine 18 hours or catheter urine <0.5 mL/kg/h are high risk",
+          "label": "NICE age 12-15 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1938,7 +1938,7 @@
         {
           "threshold": "SBP >40 mm Hg below normal",
           "evidence_item_id": "peds_fever_ng254_12_15_sepsis_vitals",
-          "label": "NICE age 12-15 suspected sepsis risk: RR >=25/min, FiO2 >=40%, SBP <=90 mm Hg or >40 mm Hg below normal, HR >130/min, no urine 18 hours or catheter urine <0.5 mL/kg/h are high risk",
+          "label": "NICE age 12-15 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1947,7 +1947,7 @@
         {
           "threshold": "SBP 91-100 mm Hg",
           "evidence_item_id": "peds_fever_ng254_12_15_sepsis_vitals",
-          "label": "NICE age 12-15 suspected sepsis risk: RR >=25/min, FiO2 >=40%, SBP <=90 mm Hg or >40 mm Hg below normal, HR >130/min, no urine 18 hours or catheter urine <0.5 mL/kg/h are high risk",
+          "label": "NICE age 12-15 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1956,7 +1956,7 @@
         {
           "threshold": "HR >130/min",
           "evidence_item_id": "peds_fever_ng254_12_15_sepsis_vitals",
-          "label": "NICE age 12-15 suspected sepsis risk: RR >=25/min, FiO2 >=40%, SBP <=90 mm Hg or >40 mm Hg below normal, HR >130/min, no urine 18 hours or catheter urine <0.5 mL/kg/h are high risk",
+          "label": "NICE age 12-15 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1965,7 +1965,7 @@
         {
           "threshold": "no urine 18 hours",
           "evidence_item_id": "peds_fever_ng254_12_15_sepsis_vitals",
-          "label": "NICE age 12-15 suspected sepsis risk: RR >=25/min, FiO2 >=40%, SBP <=90 mm Hg or >40 mm Hg below normal, HR >130/min, no urine 18 hours or catheter urine <0.5 mL/kg/h are high risk",
+          "label": "NICE age 12-15 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1974,7 +1974,7 @@
         {
           "threshold": "urine <0.5 mL/kg/hour",
           "evidence_item_id": "peds_fever_ng254_12_15_sepsis_vitals",
-          "label": "NICE age 12-15 suspected sepsis risk: RR >=25/min, FiO2 >=40%, SBP <=90 mm Hg or >40 mm Hg below normal, HR >130/min, no urine 18 hours or catheter urine <0.5 mL/kg/h are high risk",
+          "label": "NICE age 12-15 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1983,7 +1983,7 @@
         {
           "threshold": "no urine 12-18 hours",
           "evidence_item_id": "peds_fever_ng254_12_15_sepsis_vitals",
-          "label": "NICE age 12-15 suspected sepsis risk: RR >=25/min, FiO2 >=40%, SBP <=90 mm Hg or >40 mm Hg below normal, HR >130/min, no urine 18 hours or catheter urine <0.5 mL/kg/h are high risk",
+          "label": "NICE age 12-15 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -1992,7 +1992,7 @@
         {
           "threshold": "urine 0.5-1 mL/kg/hour",
           "evidence_item_id": "peds_fever_ng254_12_15_sepsis_vitals",
-          "label": "NICE age 12-15 suspected sepsis risk: RR >=25/min, FiO2 >=40%, SBP <=90 mm Hg or >40 mm Hg below normal, HR >130/min, no urine 18 hours or catheter urine <0.5 mL/kg/h are high risk",
+          "label": "NICE age 12-15 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -2001,7 +2001,7 @@
         {
           "threshold": "temperature <36 C",
           "evidence_item_id": "peds_fever_ng254_12_15_sepsis_vitals",
-          "label": "NICE age 12-15 suspected sepsis risk: RR >=25/min, FiO2 >=40%, SBP <=90 mm Hg or >40 mm Hg below normal, HR >130/min, no urine 18 hours or catheter urine <0.5 mL/kg/h are high risk",
+          "label": "NICE age 12-15 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -2010,7 +2010,7 @@
         {
           "threshold": "last 6 weeks",
           "evidence_item_id": "peds_fever_ng254_12_15_sepsis_vitals",
-          "label": "NICE age 12-15 suspected sepsis risk: RR >=25/min, FiO2 >=40%, SBP <=90 mm Hg or >40 mm Hg below normal, HR >130/min, no urine 18 hours or catheter urine <0.5 mL/kg/h are high risk",
+          "label": "NICE age 12-15 suspected sepsis risk",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -2019,7 +2019,7 @@
         {
           "threshold": "ceftriaxone 80 mg/kg once daily",
           "evidence_item_id": "peds_fever_ng254_antibiotic_fluid_oxygen",
-          "label": "NICE pediatric sepsis initial therapy: ceftriaxone 80 mg/kg daily maximum 4 g if not newborn; newborn ceftriaxone 50 mg/kg daily only if >40 weeks corrected GA and no IV calcium; fluid bolus 10 mL/kg under 16 maximum 250 mL over <10 minutes",
+          "label": "NICE pediatric sepsis initial therapy",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -2028,7 +2028,7 @@
         {
           "threshold": "maximum 4 g/day",
           "evidence_item_id": "peds_fever_ng254_antibiotic_fluid_oxygen",
-          "label": "NICE pediatric sepsis initial therapy: ceftriaxone 80 mg/kg daily maximum 4 g if not newborn; newborn ceftriaxone 50 mg/kg daily only if >40 weeks corrected GA and no IV calcium; fluid bolus 10 mL/kg under 16 maximum 250 mL over <10 minutes",
+          "label": "NICE pediatric sepsis initial therapy",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -2037,7 +2037,7 @@
         {
           "threshold": "ceftriaxone 50 mg/kg once daily",
           "evidence_item_id": "peds_fever_ng254_antibiotic_fluid_oxygen",
-          "label": "NICE pediatric sepsis initial therapy: ceftriaxone 80 mg/kg daily maximum 4 g if not newborn; newborn ceftriaxone 50 mg/kg daily only if >40 weeks corrected GA and no IV calcium; fluid bolus 10 mL/kg under 16 maximum 250 mL over <10 minutes",
+          "label": "NICE pediatric sepsis initial therapy",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -2046,7 +2046,7 @@
         {
           "threshold": ">40 weeks corrected gestational age",
           "evidence_item_id": "peds_fever_ng254_antibiotic_fluid_oxygen",
-          "label": "NICE pediatric sepsis initial therapy: ceftriaxone 80 mg/kg daily maximum 4 g if not newborn; newborn ceftriaxone 50 mg/kg daily only if >40 weeks corrected GA and no IV calcium; fluid bolus 10 mL/kg under 16 maximum 250 mL over <10 minutes",
+          "label": "NICE pediatric sepsis initial therapy",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -2055,7 +2055,7 @@
         {
           "threshold": "cefotaxime 50 mg/kg every 6-12 hours",
           "evidence_item_id": "peds_fever_ng254_antibiotic_fluid_oxygen",
-          "label": "NICE pediatric sepsis initial therapy: ceftriaxone 80 mg/kg daily maximum 4 g if not newborn; newborn ceftriaxone 50 mg/kg daily only if >40 weeks corrected GA and no IV calcium; fluid bolus 10 mL/kg under 16 maximum 250 mL over <10 minutes",
+          "label": "NICE pediatric sepsis initial therapy",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -2064,7 +2064,7 @@
         {
           "threshold": "age <3 months",
           "evidence_item_id": "peds_fever_ng254_antibiotic_fluid_oxygen",
-          "label": "NICE pediatric sepsis initial therapy: ceftriaxone 80 mg/kg daily maximum 4 g if not newborn; newborn ceftriaxone 50 mg/kg daily only if >40 weeks corrected GA and no IV calcium; fluid bolus 10 mL/kg under 16 maximum 250 mL over <10 minutes",
+          "label": "NICE pediatric sepsis initial therapy",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -2073,7 +2073,7 @@
         {
           "threshold": "newborn bolus 10-20 mL/kg",
           "evidence_item_id": "peds_fever_ng254_antibiotic_fluid_oxygen",
-          "label": "NICE pediatric sepsis initial therapy: ceftriaxone 80 mg/kg daily maximum 4 g if not newborn; newborn ceftriaxone 50 mg/kg daily only if >40 weeks corrected GA and no IV calcium; fluid bolus 10 mL/kg under 16 maximum 250 mL over <10 minutes",
+          "label": "NICE pediatric sepsis initial therapy",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -2082,7 +2082,7 @@
         {
           "threshold": "under-16 bolus 10 mL/kg",
           "evidence_item_id": "peds_fever_ng254_antibiotic_fluid_oxygen",
-          "label": "NICE pediatric sepsis initial therapy: ceftriaxone 80 mg/kg daily maximum 4 g if not newborn; newborn ceftriaxone 50 mg/kg daily only if >40 weeks corrected GA and no IV calcium; fluid bolus 10 mL/kg under 16 maximum 250 mL over <10 minutes",
+          "label": "NICE pediatric sepsis initial therapy",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -2091,7 +2091,7 @@
         {
           "threshold": "maximum 250 mL",
           "evidence_item_id": "peds_fever_ng254_antibiotic_fluid_oxygen",
-          "label": "NICE pediatric sepsis initial therapy: ceftriaxone 80 mg/kg daily maximum 4 g if not newborn; newborn ceftriaxone 50 mg/kg daily only if >40 weeks corrected GA and no IV calcium; fluid bolus 10 mL/kg under 16 maximum 250 mL over <10 minutes",
+          "label": "NICE pediatric sepsis initial therapy",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -2100,7 +2100,7 @@
         {
           "threshold": "<10 minutes",
           "evidence_item_id": "peds_fever_ng254_antibiotic_fluid_oxygen",
-          "label": "NICE pediatric sepsis initial therapy: ceftriaxone 80 mg/kg daily maximum 4 g if not newborn; newborn ceftriaxone 50 mg/kg daily only if >40 weeks corrected GA and no IV calcium; fluid bolus 10 mL/kg under 16 maximum 250 mL over <10 minutes",
+          "label": "NICE pediatric sepsis initial therapy",
           "source_ids": [
             "NICE_SEPSIS_UNDER16_2025"
           ],
@@ -2109,7 +2109,7 @@
         {
           "threshold": "antibiotics within 1 hour",
           "evidence_item_id": "peds_fever_ssc_sepsis_timing_fluids",
-          "label": "SSC pediatric sepsis timing and fluids: blood cultures before antibiotics if no substantial delay, antibiotics ideally within 1 hour for septic shock and within 3 hours for probable sepsis without shock; fluid boluses 10-20 mL/kg with repeated reassessment",
+          "label": "SSC pediatric sepsis timing and fluids",
           "source_ids": [
             "SSC_PEDIATRIC_SEPSIS_2026"
           ],
@@ -2118,7 +2118,7 @@
         {
           "threshold": "antibiotics within 3 hours",
           "evidence_item_id": "peds_fever_ssc_sepsis_timing_fluids",
-          "label": "SSC pediatric sepsis timing and fluids: blood cultures before antibiotics if no substantial delay, antibiotics ideally within 1 hour for septic shock and within 3 hours for probable sepsis without shock; fluid boluses 10-20 mL/kg with repeated reassessment",
+          "label": "SSC pediatric sepsis timing and fluids",
           "source_ids": [
             "SSC_PEDIATRIC_SEPSIS_2026"
           ],
@@ -2127,7 +2127,7 @@
         {
           "threshold": "10-20 mL/kg per bolus",
           "evidence_item_id": "peds_fever_ssc_sepsis_timing_fluids",
-          "label": "SSC pediatric sepsis timing and fluids: blood cultures before antibiotics if no substantial delay, antibiotics ideally within 1 hour for septic shock and within 3 hours for probable sepsis without shock; fluid boluses 10-20 mL/kg with repeated reassessment",
+          "label": "SSC pediatric sepsis timing and fluids",
           "source_ids": [
             "SSC_PEDIATRIC_SEPSIS_2026"
           ],
@@ -2136,7 +2136,7 @@
         {
           "threshold": "40-60 mL/kg first hour with ICU",
           "evidence_item_id": "peds_fever_ssc_sepsis_timing_fluids",
-          "label": "SSC pediatric sepsis timing and fluids: blood cultures before antibiotics if no substantial delay, antibiotics ideally within 1 hour for septic shock and within 3 hours for probable sepsis without shock; fluid boluses 10-20 mL/kg with repeated reassessment",
+          "label": "SSC pediatric sepsis timing and fluids",
           "source_ids": [
             "SSC_PEDIATRIC_SEPSIS_2026"
           ],
@@ -2145,7 +2145,7 @@
         {
           "threshold": "40 mL/kg first hour without ICU if hypotensive shock",
           "evidence_item_id": "peds_fever_ssc_sepsis_timing_fluids",
-          "label": "SSC pediatric sepsis timing and fluids: blood cultures before antibiotics if no substantial delay, antibiotics ideally within 1 hour for septic shock and within 3 hours for probable sepsis without shock; fluid boluses 10-20 mL/kg with repeated reassessment",
+          "label": "SSC pediatric sepsis timing and fluids",
           "source_ids": [
             "SSC_PEDIATRIC_SEPSIS_2026"
           ],
@@ -2154,7 +2154,7 @@
         {
           "threshold": "ScvO2 >=70%",
           "evidence_item_id": "peds_fever_ssc_sepsis_timing_fluids",
-          "label": "SSC pediatric sepsis timing and fluids: blood cultures before antibiotics if no substantial delay, antibiotics ideally within 1 hour for septic shock and within 3 hours for probable sepsis without shock; fluid boluses 10-20 mL/kg with repeated reassessment",
+          "label": "SSC pediatric sepsis timing and fluids",
           "source_ids": [
             "SSC_PEDIATRIC_SEPSIS_2026"
           ],
@@ -2163,7 +2163,7 @@
         {
           "threshold": "SpO2 88-92%",
           "evidence_item_id": "peds_fever_ssc_sepsis_timing_fluids",
-          "label": "SSC pediatric sepsis timing and fluids: blood cultures before antibiotics if no substantial delay, antibiotics ideally within 1 hour for septic shock and within 3 hours for probable sepsis without shock; fluid boluses 10-20 mL/kg with repeated reassessment",
+          "label": "SSC pediatric sepsis timing and fluids",
           "source_ids": [
             "SSC_PEDIATRIC_SEPSIS_2026"
           ],
@@ -2172,7 +2172,7 @@
         {
           "threshold": "SpO2 >94%",
           "evidence_item_id": "peds_fever_ssc_sepsis_timing_fluids",
-          "label": "SSC pediatric sepsis timing and fluids: blood cultures before antibiotics if no substantial delay, antibiotics ideally within 1 hour for septic shock and within 3 hours for probable sepsis without shock; fluid boluses 10-20 mL/kg with repeated reassessment",
+          "label": "SSC pediatric sepsis timing and fluids",
           "source_ids": [
             "SSC_PEDIATRIC_SEPSIS_2026"
           ],
@@ -2181,7 +2181,7 @@
         {
           "threshold": ">38.0 C",
           "evidence_item_id": "peds_fever_ucsf_febrile_infant_im_cutoffs",
-          "label": "Febrile infant inflammatory markers: fever >38.0 C is true fever; elevated inflammatory markers include ANC >4000/uL, CRP >20 mg/L or 2.0 mg/dL, procalcitonin >0.5 ng/mL, or temperature >38.5 C",
+          "label": "Febrile infant inflammatory markers",
           "source_ids": [
             "AAP_FEBRILE_INFANT_2021",
             "UCSF_FEBRILE_INFANT_2023"
@@ -2191,7 +2191,7 @@
         {
           "threshold": "ANC >4000/uL",
           "evidence_item_id": "peds_fever_ucsf_febrile_infant_im_cutoffs",
-          "label": "Febrile infant inflammatory markers: fever >38.0 C is true fever; elevated inflammatory markers include ANC >4000/uL, CRP >20 mg/L or 2.0 mg/dL, procalcitonin >0.5 ng/mL, or temperature >38.5 C",
+          "label": "Febrile infant inflammatory markers",
           "source_ids": [
             "AAP_FEBRILE_INFANT_2021",
             "UCSF_FEBRILE_INFANT_2023"
@@ -2201,7 +2201,7 @@
         {
           "threshold": "CRP >20 mg/L",
           "evidence_item_id": "peds_fever_ucsf_febrile_infant_im_cutoffs",
-          "label": "Febrile infant inflammatory markers: fever >38.0 C is true fever; elevated inflammatory markers include ANC >4000/uL, CRP >20 mg/L or 2.0 mg/dL, procalcitonin >0.5 ng/mL, or temperature >38.5 C",
+          "label": "Febrile infant inflammatory markers",
           "source_ids": [
             "AAP_FEBRILE_INFANT_2021",
             "UCSF_FEBRILE_INFANT_2023"
@@ -2211,7 +2211,7 @@
         {
           "threshold": "CRP >2.0 mg/dL",
           "evidence_item_id": "peds_fever_ucsf_febrile_infant_im_cutoffs",
-          "label": "Febrile infant inflammatory markers: fever >38.0 C is true fever; elevated inflammatory markers include ANC >4000/uL, CRP >20 mg/L or 2.0 mg/dL, procalcitonin >0.5 ng/mL, or temperature >38.5 C",
+          "label": "Febrile infant inflammatory markers",
           "source_ids": [
             "AAP_FEBRILE_INFANT_2021",
             "UCSF_FEBRILE_INFANT_2023"
@@ -2221,7 +2221,7 @@
         {
           "threshold": "procalcitonin >0.5 ng/mL",
           "evidence_item_id": "peds_fever_ucsf_febrile_infant_im_cutoffs",
-          "label": "Febrile infant inflammatory markers: fever >38.0 C is true fever; elevated inflammatory markers include ANC >4000/uL, CRP >20 mg/L or 2.0 mg/dL, procalcitonin >0.5 ng/mL, or temperature >38.5 C",
+          "label": "Febrile infant inflammatory markers",
           "source_ids": [
             "AAP_FEBRILE_INFANT_2021",
             "UCSF_FEBRILE_INFANT_2023"
@@ -2231,7 +2231,7 @@
         {
           "threshold": "temperature >38.5 C",
           "evidence_item_id": "peds_fever_ucsf_febrile_infant_im_cutoffs",
-          "label": "Febrile infant inflammatory markers: fever >38.0 C is true fever; elevated inflammatory markers include ANC >4000/uL, CRP >20 mg/L or 2.0 mg/dL, procalcitonin >0.5 ng/mL, or temperature >38.5 C",
+          "label": "Febrile infant inflammatory markers",
           "source_ids": [
             "AAP_FEBRILE_INFANT_2021",
             "UCSF_FEBRILE_INFANT_2023"
@@ -2241,7 +2241,7 @@
         {
           "threshold": "ANC <4000/uL",
           "evidence_item_id": "peds_fever_ucsf_febrile_infant_im_cutoffs",
-          "label": "Febrile infant inflammatory markers: fever >38.0 C is true fever; elevated inflammatory markers include ANC >4000/uL, CRP >20 mg/L or 2.0 mg/dL, procalcitonin >0.5 ng/mL, or temperature >38.5 C",
+          "label": "Febrile infant inflammatory markers",
           "source_ids": [
             "AAP_FEBRILE_INFANT_2021",
             "UCSF_FEBRILE_INFANT_2023"
@@ -2251,7 +2251,7 @@
         {
           "threshold": "procalcitonin <0.5 ng/mL",
           "evidence_item_id": "peds_fever_ucsf_febrile_infant_im_cutoffs",
-          "label": "Febrile infant inflammatory markers: fever >38.0 C is true fever; elevated inflammatory markers include ANC >4000/uL, CRP >20 mg/L or 2.0 mg/dL, procalcitonin >0.5 ng/mL, or temperature >38.5 C",
+          "label": "Febrile infant inflammatory markers",
           "source_ids": [
             "AAP_FEBRILE_INFANT_2021",
             "UCSF_FEBRILE_INFANT_2023"
@@ -2261,7 +2261,7 @@
         {
           "threshold": "0-21 days",
           "evidence_item_id": "peds_fever_ucsf_febrile_infant_age_branches",
-          "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+          "label": "Febrile infant age branches",
           "source_ids": [
             "AAP_FEBRILE_INFANT_2021",
             "UCSF_FEBRILE_INFANT_2023"
@@ -2271,7 +2271,7 @@
         {
           "threshold": "22-28 days",
           "evidence_item_id": "peds_fever_ucsf_febrile_infant_age_branches",
-          "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+          "label": "Febrile infant age branches",
           "source_ids": [
             "AAP_FEBRILE_INFANT_2021",
             "UCSF_FEBRILE_INFANT_2023"
@@ -2281,7 +2281,7 @@
         {
           "threshold": "29-60 days",
           "evidence_item_id": "peds_fever_ucsf_febrile_infant_age_branches",
-          "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+          "label": "Febrile infant age branches",
           "source_ids": [
             "AAP_FEBRILE_INFANT_2021",
             "UCSF_FEBRILE_INFANT_2023"
@@ -2291,7 +2291,7 @@
         {
           "threshold": "24-48 hours",
           "evidence_item_id": "peds_fever_ucsf_febrile_infant_age_branches",
-          "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+          "label": "Febrile infant age branches",
           "source_ids": [
             "AAP_FEBRILE_INFANT_2021",
             "UCSF_FEBRILE_INFANT_2023"
@@ -2301,7 +2301,7 @@
         {
           "threshold": "24-36 hours no culture growth",
           "evidence_item_id": "peds_fever_ucsf_febrile_infant_age_branches",
-          "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+          "label": "Febrile infant age branches",
           "source_ids": [
             "AAP_FEBRILE_INFANT_2021",
             "UCSF_FEBRILE_INFANT_2023"
@@ -2311,7 +2311,7 @@
         {
           "threshold": "final cultures 5 days",
           "evidence_item_id": "peds_fever_ucsf_febrile_infant_age_branches",
-          "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+          "label": "Febrile infant age branches",
           "source_ids": [
             "AAP_FEBRILE_INFANT_2021",
             "UCSF_FEBRILE_INFANT_2023"
@@ -2321,7 +2321,7 @@
         {
           "threshold": "WBC >5 cells/hpf",
           "evidence_item_id": "peds_fever_ucsf_febrile_infant_age_branches",
-          "label": "Febrile infant age branches: 0-21 days hospitalize with blood, urine, CSF cultures and empiric antibiotics 24-48 hours; 22-28 days and 29-60 days route by UA, inflammatory markers, CSF, and 24-hour follow-up reliability",
+          "label": "Febrile infant age branches",
           "source_ids": [
             "AAP_FEBRILE_INFANT_2021",
             "UCSF_FEBRILE_INFANT_2023"
@@ -2331,7 +2331,7 @@
         {
           "threshold": "age <3 months",
           "evidence_item_id": "peds_fever_ng143_infant_under3_wbc_lp_antibiotics",
-          "label": "NICE fever under 5 infant testing: under 3 months measure temperature/HR/RR, obtain FBC, blood culture, CRP, urine test; LP and parenteral antibiotics for age <1 month, unwell age 1-3 months, or WBC <5 or >15 x10^9/L",
+          "label": "NICE fever under 5 infant testing",
           "source_ids": [
             "NICE_FEVER_UNDER5_NG143"
           ],
@@ -2340,7 +2340,7 @@
         {
           "threshold": "age <1 month",
           "evidence_item_id": "peds_fever_ng143_infant_under3_wbc_lp_antibiotics",
-          "label": "NICE fever under 5 infant testing: under 3 months measure temperature/HR/RR, obtain FBC, blood culture, CRP, urine test; LP and parenteral antibiotics for age <1 month, unwell age 1-3 months, or WBC <5 or >15 x10^9/L",
+          "label": "NICE fever under 5 infant testing",
           "source_ids": [
             "NICE_FEVER_UNDER5_NG143"
           ],
@@ -2349,7 +2349,7 @@
         {
           "threshold": "age 1-3 months",
           "evidence_item_id": "peds_fever_ng143_infant_under3_wbc_lp_antibiotics",
-          "label": "NICE fever under 5 infant testing: under 3 months measure temperature/HR/RR, obtain FBC, blood culture, CRP, urine test; LP and parenteral antibiotics for age <1 month, unwell age 1-3 months, or WBC <5 or >15 x10^9/L",
+          "label": "NICE fever under 5 infant testing",
           "source_ids": [
             "NICE_FEVER_UNDER5_NG143"
           ],
@@ -2358,7 +2358,7 @@
         {
           "threshold": "WBC <5 x10^9/L",
           "evidence_item_id": "peds_fever_ng143_infant_under3_wbc_lp_antibiotics",
-          "label": "NICE fever under 5 infant testing: under 3 months measure temperature/HR/RR, obtain FBC, blood culture, CRP, urine test; LP and parenteral antibiotics for age <1 month, unwell age 1-3 months, or WBC <5 or >15 x10^9/L",
+          "label": "NICE fever under 5 infant testing",
           "source_ids": [
             "NICE_FEVER_UNDER5_NG143"
           ],
@@ -2367,7 +2367,7 @@
         {
           "threshold": "WBC >15 x10^9/L",
           "evidence_item_id": "peds_fever_ng143_infant_under3_wbc_lp_antibiotics",
-          "label": "NICE fever under 5 infant testing: under 3 months measure temperature/HR/RR, obtain FBC, blood culture, CRP, urine test; LP and parenteral antibiotics for age <1 month, unwell age 1-3 months, or WBC <5 or >15 x10^9/L",
+          "label": "NICE fever under 5 infant testing",
           "source_ids": [
             "NICE_FEVER_UNDER5_NG143"
           ],
@@ -2376,7 +2376,7 @@
         {
           "threshold": "fever >=5 days",
           "evidence_item_id": "peds_fever_ng143_safety_net_antipyretics",
-          "label": "NICE fever under 5 safety-net: red features urgent pediatric specialist, amber features safety-net if no diagnosis, fever >=5 days or non-blanching rash/fit/worsening concern requires further help; antipyretics only for distress",
+          "label": "NICE fever under 5 safety-net",
           "source_ids": [
             "NICE_FEVER_UNDER5_NG143"
           ],
@@ -2483,7 +2483,7 @@
           {
             "domain": "imaging_results",
             "exact_data_needed": [
-              "source-directed imaging/ECG/procedure results when indicated",
+              "imaging, ECG, culture, pathology, or procedure result required by the chosen branch",
               "Pediatric sepsis lactate cultures and antibiotic timing",
               "Age and source-directed pediatric fever tests"
             ],
@@ -5172,7 +5172,7 @@
         "pediatric_fever_sepsis_source_directed_endpoint": {
           "rule_id": "pediatric_fever_sepsis_source_directed_criteria",
           "source": "criteria",
-          "description": "Use when fever has a likely infection source or mimic requiring targeted tests, local antimicrobial guidance, or source control.",
+          "description": "Use when fever has a likely infection source or mimic requiring focused tests, local antimicrobial guidance, or source control.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -8037,8 +8037,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal data-availability guard",
-            "edgeLabel": "Internal data-availability guard",
+            "label": "Internal traversal guard",
+            "edgeLabel": "Internal traversal guard",
             "source_ids": [
               "AAP_FEBRILE_INFANT_2021",
               "UCSF_FEBRILE_INFANT_2023",
@@ -8084,7 +8084,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -8092,7 +8092,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
             },
             "missing_data_needed": [
               "exact age in days/months/years",
@@ -8864,8 +8864,8 @@
                   {
                     "id": "pediatric_fever_sepsis_missing_objective_endpoint",
                     "type": "endpoint",
-                    "label": "Internal data-availability guard",
-                    "edgeLabel": "Internal data-availability guard",
+                    "label": "Internal traversal guard",
+                    "edgeLabel": "Internal traversal guard",
                     "source_ids": [
                       "AAP_FEBRILE_INFANT_2021",
                       "UCSF_FEBRILE_INFANT_2023",
@@ -8916,7 +8916,7 @@
                         "CSF when indicated"
                       ]
                     },
-                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -8924,7 +8924,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
                     },
                     "missing_data_needed": [
                       "exact age band",
@@ -12098,7 +12098,7 @@
                         }
                       ]
                     },
-                    "action": "Do not use low-risk fever disposition. Give parenteral antibiotics at the earliest opportunity for suspected meningococcal disease, obtain CSF before antibiotics only when indicated and safe without delaying treatment, add acyclovir for infant HSV risk, involve pediatrics/critical care/neurology or transfer services, and reassess for inotropes/ICU when shocked, unrousable, or showing meningococcal disease.",
+                    "action": "Do not use low-risk fever disposition. Give parenteral antibiotics at the earliest opportunity for suspected meningococcal disease, obtain CSF before antibiotics only when the branch-specific criteria in this node apply and safe without delaying treatment, add acyclovir for infant HSV risk, involve pediatrics/critical care/neurology or transfer services, and reassess for inotropes/ICU when shocked, unrousable, or showing meningococcal disease.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -12447,7 +12447,7 @@
                     "criteria": {
                       "rule_id": "pediatric_fever_sepsis_source_directed_criteria",
                       "source": "criteria",
-                      "description": "Use when fever has a likely infection source or mimic requiring targeted tests, local antimicrobial guidance, or source control.",
+                      "description": "Use when fever has a likely infection source or mimic requiring focused tests, local antimicrobial guidance, or source control.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -12796,7 +12796,7 @@
                         }
                       ]
                     },
-                    "action": "Use the identified source to choose targeted testing: urine testing for possible UTI, CXR only when respiratory signs indicate it, stool culture if diarrhea and infant rules apply, respiratory viral testing when it changes infant or isolation decisions, wound/line/joint/CNS cultures or imaging when those sources fit, and source control as soon as feasible. For clear-source suspected sepsis, use local antimicrobial guidance; for fever without apparent source in under-5 children, avoid oral antibiotics unless a bacterial source or specialist plan is documented.",
+                    "action": "Use the identified source to choose focused testing: urine testing for possible UTI, CXR only when respiratory signs indicate it, stool culture if diarrhea and infant rules apply, respiratory viral testing when it changes infant or isolation decisions, wound/line/joint/CNS cultures or imaging when those sources fit, and source control as soon as feasible. For clear-source suspected sepsis, use local antimicrobial guidance; for fever without apparent source in under-5 children, avoid oral antibiotics unless a bacterial source or specialist plan is documented.",
                     "children": [],
                     "endpoint_type": "diagnostic_step",
                     "guideline_cutoffs": [
@@ -18106,7 +18106,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Internal data-availability guard",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -18118,7 +18118,7 @@
           "scenario_id": "missing_age_banded_vitals_or_infant_labs",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "pediatric_fever_sepsis_missing_objective_endpoint",
-          "expected_active_branch": "Internal data-availability guard",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "pediatric_fever_sepsis_bedside_assessment_bundle",

@@ -2531,13 +2531,13 @@
         "generated_at": "2026-06-11T00:00:00.000Z",
         "update_scope": "clinical_pathway_tree_v1 plus explicit clinical_cutoff_criteria enrichment where needed",
         "source_material": "Local module evidence rows, source registry metadata, and targeted guideline/literature review for cutoff gaps",
-        "review_note": "Compact tree is cutoff-cited and traversable but requires clinician review for local policy, patient-specific contraindications, and source conflicts."
+        "review_note": "Tree is cutoff-cited and traversable; clinician governance is reserved for explicitly flagged protocol, contraindication, pregnancy, organ-function, or evidence-conflict modifiers."
       },
       "source_thresholds": [
         {
           "threshold": "<21 days",
           "evidence_item_id": "pcos_irregular_cycle_cutoffs",
-          "label": "PCOS ovulatory dysfunction: 1 to <3 years post-menarche cycles <21 or >45 days; >=3 years post-menarche cycles <21 or >35 days or <8/year; any cycle >90 days after 1 year",
+          "label": "PCOS ovulatory dysfunction",
           "source_ids": [
             "PCOS_GUIDELINE_2023"
           ],
@@ -2546,7 +2546,7 @@
         {
           "threshold": ">45 days",
           "evidence_item_id": "pcos_irregular_cycle_cutoffs",
-          "label": "PCOS ovulatory dysfunction: 1 to <3 years post-menarche cycles <21 or >45 days; >=3 years post-menarche cycles <21 or >35 days or <8/year; any cycle >90 days after 1 year",
+          "label": "PCOS ovulatory dysfunction",
           "source_ids": [
             "PCOS_GUIDELINE_2023"
           ],
@@ -2555,7 +2555,7 @@
         {
           "threshold": ">35 days",
           "evidence_item_id": "pcos_irregular_cycle_cutoffs",
-          "label": "PCOS ovulatory dysfunction: 1 to <3 years post-menarche cycles <21 or >45 days; >=3 years post-menarche cycles <21 or >35 days or <8/year; any cycle >90 days after 1 year",
+          "label": "PCOS ovulatory dysfunction",
           "source_ids": [
             "PCOS_GUIDELINE_2023"
           ],
@@ -2564,7 +2564,7 @@
         {
           "threshold": "<8 cycles/year",
           "evidence_item_id": "pcos_irregular_cycle_cutoffs",
-          "label": "PCOS ovulatory dysfunction: 1 to <3 years post-menarche cycles <21 or >45 days; >=3 years post-menarche cycles <21 or >35 days or <8/year; any cycle >90 days after 1 year",
+          "label": "PCOS ovulatory dysfunction",
           "source_ids": [
             "PCOS_GUIDELINE_2023"
           ],
@@ -2573,7 +2573,7 @@
         {
           "threshold": ">90 days",
           "evidence_item_id": "pcos_irregular_cycle_cutoffs",
-          "label": "PCOS ovulatory dysfunction: 1 to <3 years post-menarche cycles <21 or >45 days; >=3 years post-menarche cycles <21 or >35 days or <8/year; any cycle >90 days after 1 year",
+          "label": "PCOS ovulatory dysfunction",
           "source_ids": [
             "PCOS_GUIDELINE_2023"
           ],
@@ -2582,7 +2582,7 @@
         {
           "threshold": "age 15",
           "evidence_item_id": "pcos_irregular_cycle_cutoffs",
-          "label": "PCOS ovulatory dysfunction: 1 to <3 years post-menarche cycles <21 or >45 days; >=3 years post-menarche cycles <21 or >35 days or <8/year; any cycle >90 days after 1 year",
+          "label": "PCOS ovulatory dysfunction",
           "source_ids": [
             "PCOS_GUIDELINE_2023"
           ],
@@ -2591,7 +2591,7 @@
         {
           "threshold": ">3 years post-thelarche",
           "evidence_item_id": "pcos_irregular_cycle_cutoffs",
-          "label": "PCOS ovulatory dysfunction: 1 to <3 years post-menarche cycles <21 or >45 days; >=3 years post-menarche cycles <21 or >35 days or <8/year; any cycle >90 days after 1 year",
+          "label": "PCOS ovulatory dysfunction",
           "source_ids": [
             "PCOS_GUIDELINE_2023"
           ],
@@ -2600,7 +2600,7 @@
         {
           "threshold": ">=10 mL",
           "evidence_item_id": "pcos_ultrasound_adult_cutoffs",
-          "label": "Adult PCOM ultrasound: ovarian volume >=10 mL or follicle number per section >=10 in at least one ovary when follicle count quality is insufficient",
+          "label": "Adult PCOM ultrasound",
           "source_ids": [
             "PCOS_GUIDELINE_2023"
           ],
@@ -2609,7 +2609,7 @@
         {
           "threshold": ">=10",
           "evidence_item_id": "pcos_ultrasound_adult_cutoffs",
-          "label": "Adult PCOM ultrasound: ovarian volume >=10 mL or follicle number per section >=10 in at least one ovary when follicle count quality is insufficient",
+          "label": "Adult PCOM ultrasound",
           "source_ids": [
             "PCOS_GUIDELINE_2023"
           ],
@@ -2618,7 +2618,7 @@
         {
           "threshold": "BMI <=30 kg/m2",
           "evidence_item_id": "pcos_metformin_bmi_cutoff",
-          "label": "PCOS treatment modifier: COCP plus metformin offers little additional benefit when BMI <=30 kg/m2; metformin may be most useful in BMI >30 or metabolic risk",
+          "label": "PCOS treatment modifier",
           "source_ids": [
             "PCOS_GUIDELINE_2023"
           ],
@@ -2627,7 +2627,7 @@
         {
           "threshold": "BMI >30 kg/m2",
           "evidence_item_id": "pcos_metformin_bmi_cutoff",
-          "label": "PCOS treatment modifier: COCP plus metformin offers little additional benefit when BMI <=30 kg/m2; metformin may be most useful in BMI >30 or metabolic risk",
+          "label": "PCOS treatment modifier",
           "source_ids": [
             "PCOS_GUIDELINE_2023"
           ],
@@ -2703,7 +2703,7 @@
               "Exclude mimics: TSH, prolactin, 17-OHP; DHEAS/androstenedione if severe.",
               "Ovulatory dysfunction criteria; ultrasound or AMH in adults; metabolic screen A1c/OGTT/lipids/BP.",
               "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-              "Hyperandrogenism/PCOS safety tests: pregnancy test when relevant, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin as indicated, and A1c/OGTT/lipids for cardiometabolic risk.",
+              "Hyperandrogenism/PCOS safety tests: pregnancy test when relevant, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin when the branch-specific criteria in this node apply, and A1c/OGTT/lipids for cardiometabolic risk.",
               "menarche date",
               "cycle length",
               "cycles per year",
@@ -2721,11 +2721,11 @@
           {
             "domain": "imaging_results",
             "exact_data_needed": [
-              "source-directed imaging/ECG/procedure results when indicated",
+              "imaging, ECG, culture, pathology, or procedure result required by the chosen branch",
               "Exclude mimics: TSH, prolactin, 17-OHP; DHEAS/androstenedione if severe.",
               "Ovulatory dysfunction criteria; ultrasound or AMH in adults; metabolic screen A1c/OGTT/lipids/BP.",
               "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-              "Hyperandrogenism/PCOS safety tests: pregnancy test when relevant, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin as indicated, and A1c/OGTT/lipids for cardiometabolic risk.",
+              "Hyperandrogenism/PCOS safety tests: pregnancy test when relevant, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin when the branch-specific criteria in this node apply, and A1c/OGTT/lipids for cardiometabolic risk.",
               "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors."
             ],
             "source_ids": [
@@ -2797,7 +2797,7 @@
               "treatment response",
               "disposition constraints",
               "Polycystic Ovary Syndrome (PCOS): diagnostic assessment",
-              "Adults: PCOS generally requires 2 of 3 Rotterdam features after excluding mimics: ovulatory dysfunction, hyperandrogenism, PCOM/elevated AMH. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+              "Adults: PCOS generally requires 2 of 3 Rotterdam features after excluding mimics: ovulatory dysfunction, hyperandrogenism, PCOM/elevated AMH.",
               "Important mimics/exclusions: pregnancy, hypothalamic/pituitary disease, thyroid disease, hyperprolactinemia, PCOS, androgen-secreting tumor, medication or substance effects, primary gonadal failure, menopause/POI, and structural pelvic or testicular disease.",
               "Tumor-range androgens or rapid virilization changes to urgent imaging/endocrine evaluation.",
               "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
@@ -3008,7 +3008,7 @@
             "Exclude mimics: TSH, prolactin, 17-OHP; DHEAS/androstenedione if severe.",
             "Ovulatory dysfunction criteria; ultrasound or AMH in adults; metabolic screen A1c/OGTT/lipids/BP.",
             "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-            "Hyperandrogenism/PCOS safety tests: pregnancy test when relevant, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin as indicated, and A1c/OGTT/lipids for cardiometabolic risk.",
+            "Hyperandrogenism/PCOS safety tests: pregnancy test when relevant, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin when the branch-specific criteria in this node apply, and A1c/OGTT/lipids for cardiometabolic risk.",
             "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
             "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.",
             "<21 days",
@@ -3243,7 +3243,7 @@
         "polycystic_ovary_syndrome_review_endpoint": {
           "rule_id": "polycystic_ovary_syndrome_review_criteria",
           "source": "criteria",
-          "description": "Use clinician review when Polycystic Ovary Syndrome (PCOS) treatment/disposition depends on pregnancy/postpartum status, pediatric/adult applicability, renal/hepatic/cardiac disease, allergy, drug interaction, procedural risk, guideline conflict, or local protocol.",
+          "description": "Use reviewer handoff when Polycystic Ovary Syndrome (PCOS) treatment or disposition depends on Adult PCOM ultrasound; Tumor-range androgens or rapid virilization changes to urgent imaging/endocrine evaluation.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Use lifestyle and weight-management support for metabolic risk and patient goals.; Use combined hormonal contraceptive for cycle control and hyperandrogenic symptoms when pregnancy is not desired and no contraindication exists..",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3543,7 +3543,7 @@
         "polycystic_ovary_syndrome_alternate_endpoint": {
           "rule_id": "polycystic_ovary_syndrome_alternate_criteria",
           "source": "criteria",
-          "description": "Use an alternate pathway when Polycystic Ovary Syndrome (PCOS) criteria are absent, a cited mimic better explains the presentation, or objective result data contradict this workup.",
+          "description": "Use an alternate pathway when Polycystic Ovary Syndrome (PCOS) criteria are absent, Adults: PCOS generally requires 2 of 3 Rotterdam features after excluding mimics: ovulatory dysfunction, hyperandrogenism, PCOM/elevated AMH.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics better explains the presentation, or measured result data contradict this workup.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3657,8 +3657,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal data-availability guard",
-            "edgeLabel": "Internal data-availability guard",
+            "label": "Internal traversal guard",
+            "edgeLabel": "Internal traversal guard",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -3694,7 +3694,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -3702,7 +3702,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
             },
             "missing_data_needed": [
               "symptoms",
@@ -3721,7 +3721,7 @@
             "id": "polycystic_ovary_syndrome_concurrent_data_bundle",
             "type": "action",
             "label": "Polycystic Ovary Syndrome: assessment, thresholds, and treatment-safety inputs",
-            "edgeLabel": "Collect Polycystic Ovary Syndrome: Pregnancy test.; Total/free testosterone by reliable assay.; Exclude mimics: TSH, prolactin, 17-OHP; DHEAS/androstenedione if severe.; Ovulatory dysfunction criteria; ultrasound or AMH in adults; metabolic screen A1c/OGTT/lipids/BP.; <21 days; >45 days; >35 days; Measure blood pressure",
+            "edgeLabel": "Collect Polycystic Ovary Syndrome: Pregnancy test.; Total/free testosterone by reliable assay.; Exclude mimics: TSH, prolactin, 17-OHP; DHEAS/androstenedione if severe.; Ovulatory dysfunction criteria; ultrasound or AMH in adults; metabolic screen A1c/OGTT/lipids/BP.; <21 days; >45 days; >35 days",
             "source_ids": [
               "PCOS_GUIDELINE_2023",
               "AHRQ_CALIBRATE_DX"
@@ -3745,7 +3745,7 @@
                 "AHRQ_CALIBRATE_DX"
               ]
             },
-            "action": "Obtain together: Pregnancy test.; Total/free testosterone by reliable assay.; Exclude mimics: TSH, prolactin, 17-OHP; DHEAS/androstenedione if severe.; Ovulatory dysfunction criteria; ultrasound or AMH in adults; metabolic screen A1c/OGTT/lipids/BP.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; Hyperandrogenism/PCOS safety tests: pregnancy test when relevant, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin as indicated, and A1c/OGTT/lipids for cardiometabolic risk.; Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.; Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.; Measure blood pressure; Measure heart rate; Measure body mass index; Document mental status; menarche date; cycle length; cycles per year; thelarche timing; pregnancy status; age/adolescent status; ultrasound route; ovarian volume.",
+            "action": "Obtain together: Pregnancy test.; Total/free testosterone by reliable assay.; Exclude mimics: TSH, prolactin, 17-OHP; DHEAS/androstenedione if severe.; Ovulatory dysfunction criteria; ultrasound or AMH in adults; metabolic screen A1c/OGTT/lipids/BP.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; Hyperandrogenism/PCOS safety tests: pregnancy test when relevant, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin when the branch-specific criteria in this node apply, and A1c/OGTT/lipids for cardiometabolic risk.; Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.; Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.; menarche date; cycle length; cycles per year; thelarche timing; pregnancy status; age/adolescent status; ultrasound route; ovarian volume.",
             "children": [
               {
                 "id": "polycystic_ovary_syndrome_classification_decision",
@@ -3852,8 +3852,8 @@
                   {
                     "id": "polycystic_ovary_syndrome_missing_cutoff_data_endpoint",
                     "type": "endpoint",
-                    "label": "Internal data-availability guard",
-                    "edgeLabel": "Internal data-availability guard",
+                    "label": "Internal traversal guard",
+                    "edgeLabel": "Internal traversal guard",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "PCOS_GUIDELINE_2023"
@@ -3896,7 +3896,7 @@
                         "Exclude mimics: TSH, prolactin, 17-OHP; DHEAS/androstenedione if severe.",
                         "Ovulatory dysfunction criteria; ultrasound or AMH in adults; metabolic screen A1c/OGTT/lipids/BP.",
                         "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-                        "Hyperandrogenism/PCOS safety tests: pregnancy test when relevant, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin as indicated, and A1c/OGTT/lipids for cardiometabolic risk.",
+                        "Hyperandrogenism/PCOS safety tests: pregnancy test when relevant, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin when the branch-specific criteria in this node apply, and A1c/OGTT/lipids for cardiometabolic risk.",
                         "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
                         "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.",
                         "<21 days",
@@ -3909,7 +3909,7 @@
                         ">=10 mL"
                       ]
                     },
-                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -3917,7 +3917,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
                     },
                     "missing_data_needed": [
                       "menarche date",
@@ -3937,7 +3937,7 @@
                       "Exclude mimics: TSH, prolactin, 17-OHP; DHEAS/androstenedione if severe.",
                       "Ovulatory dysfunction criteria; ultrasound or AMH in adults; metabolic screen A1c/OGTT/lipids/BP.",
                       "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-                      "Hyperandrogenism/PCOS safety tests: pregnancy test when relevant, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin as indicated, and A1c/OGTT/lipids for cardiometabolic risk.",
+                      "Hyperandrogenism/PCOS safety tests: pregnancy test when relevant, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin when the branch-specific criteria in this node apply, and A1c/OGTT/lipids for cardiometabolic risk.",
                       "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
                       "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.",
                       "<21 days",
@@ -4220,7 +4220,7 @@
                         }
                       ]
                     },
-                    "action": "Use lifestyle and weight-management support for metabolic risk and patient goals.; Use combined hormonal contraceptive for cycle control and hyperandrogenic symptoms when pregnancy is not desired and no contraindication exists.; Add antiandrogen such as spironolactone only with reliable contraception and monitoring when hirsutism/acne persists after first-line therapy.; Tumor-range androgens or rapid virilization changes to urgent imaging/endocrine evaluation.; unstable physiology or dangerous electrolyte/glucose abnormality",
+                    "action": "Use lifestyle and weight-management support for metabolic risk and patient goals.; Use combined hormonal contraceptive for cycle control and hyperandrogenic symptoms when pregnancy is not desired and no contraindication exists.; Add antiandrogen such as spironolactone only with reliable contraception and monitoring when hirsutism/acne persists after first-line therapy.; Tumor-range androgens or rapid virilization changes to urgent imaging/endocrine evaluation.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Adult PCOM ultrasound",
                     "children": [
                       {
                         "id": "polycystic_ovary_syndrome_treatment_safety_decision",
@@ -4277,8 +4277,8 @@
                           {
                             "id": "polycystic_ovary_syndrome_review_endpoint",
                             "type": "endpoint",
-                            "label": "Polycystic Ovary Syndrome: reviewer handoff for contraindication or special population",
-                            "edgeLabel": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
+                            "label": "Polycystic Ovary Syndrome: review Adult PCOM ultrasound; Tumor-range androgens or rapid virilization changes to urgent imaging/endocrine evaluation.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Use lifestyle and weight-management support for metabolic risk and patient goals.; Use combined hormonal contraceptive for cycle control and hyperandrogenic symptoms when pregnancy is not desired and no contraindication exists.",
+                            "edgeLabel": "Polycystic Ovary Syndrome modifier needing review: Adult PCOM ultrasound; Tumor-range androgens or rapid virilization changes to urgent imaging/endocrine evaluation.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Use lifestyle and weight-management support for metabolic risk and patient goals.; Use combined hormonal contraceptive for cycle control and hyperandrogenic symptoms when pregnancy is not desired and no contraindication exists.",
                             "source_ids": [
                               "PCOS_GUIDELINE_2023",
                               "AHRQ_CALIBRATE_DX"
@@ -4286,7 +4286,7 @@
                             "criteria": {
                               "rule_id": "polycystic_ovary_syndrome_review_criteria",
                               "source": "criteria",
-                              "description": "Use clinician review when Polycystic Ovary Syndrome (PCOS) treatment/disposition depends on pregnancy/postpartum status, pediatric/adult applicability, renal/hepatic/cardiac disease, allergy, drug interaction, procedural risk, guideline conflict, or local protocol.",
+                              "description": "Use reviewer handoff when Polycystic Ovary Syndrome (PCOS) treatment or disposition depends on Adult PCOM ultrasound; Tumor-range androgens or rapid virilization changes to urgent imaging/endocrine evaluation.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Use lifestyle and weight-management support for metabolic risk and patient goals.; Use combined hormonal contraceptive for cycle control and hyperandrogenic symptoms when pregnancy is not desired and no contraindication exists..",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4301,16 +4301,16 @@
                                 "AHRQ_CALIBRATE_DX"
                               ]
                             },
-                            "action": "Pause non-emergent Polycystic Ovary Syndrome treatment choices until the modifier is resolved and the reviewer documents the applicable guideline or local cutoff.",
+                            "action": "Resolve the named Polycystic Ovary Syndrome modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
-                            "review_needed_reason": "Patient-specific contraindication, special population, guideline conflict, or local policy affects treatment or disposition."
+                            "review_needed_reason": "Polycystic Ovary Syndrome management changes when Adult PCOM ultrasound; Tumor-range androgens or rapid virilization changes to urgent imaging/endocrine evaluation.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Use lifestyle and weight-management support for metabolic risk and patient goals.; Use combined hormonal contraceptive for cycle control and hyperandrogenic symptoms when pregnancy is not desired and no contraindication exists.; document the exact modifier and reviewer input needed."
                           },
                           {
                             "id": "polycystic_ovary_syndrome_monitoring_bundle",
                             "type": "action",
                             "label": "Polycystic Ovary Syndrome: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Polycystic Ovary Syndrome symptoms, vital signs, threshold labs/results, treatment response, adverse effects, and disposition readiness",
+                            "edgeLabel": "Trend Polycystic Ovary Syndrome symptoms, vital signs, criterion-defining results, treatment response, adverse effects, and disposition readiness",
                             "source_ids": [
                               "PCOS_GUIDELINE_2023",
                               "AHRQ_CALIBRATE_DX"
@@ -4409,7 +4409,7 @@
                                 "id": "polycystic_ovary_syndrome_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Polycystic Ovary Syndrome: reassessment escalation",
-                                "edgeLabel": "Polycystic Ovary Syndrome reassessment worsens or Rapid virilization, very high testosterone/DHEAS, pelvic mass, severe abnormal uterine bleeding.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; <21 days; >45 days; >35 days; <8 cycles/year; Pregnancy test.; Total/free testosterone by reliable assay. no longer fit the selected pathway",
+                                "edgeLabel": "Polycystic Ovary Syndrome reassessment worsens or Rapid virilization, very high testosterone/DHEAS, pelvic mass, severe abnormal uterine bleeding.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; <21 days; >45 days; >35 days; <8 cycles/year; Pregnancy test.; Total/free testosterone by reliable assay. no longer fit the documented Polycystic Ovary Syndrome branch",
                                 "source_ids": [
                                   "PCOS_GUIDELINE_2023",
                                   "AHRQ_CALIBRATE_DX"
@@ -4787,13 +4787,9 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend threshold labs/results",
+                              "trend criterion-defining results",
                               "review treatment response and adverse effects",
-                              "assign disposition and follow-up clinician/service",
-                              "Measure blood pressure",
-                              "Measure heart rate",
-                              "Measure body mass index",
-                              "Document mental status"
+                              "assign disposition and follow-up clinician/service"
                             ],
                             "guideline_cutoffs": [
                               {
@@ -4873,11 +4869,9 @@
                       "Use lifestyle and weight-management support for metabolic risk and patient goals.",
                       "Use combined hormonal contraceptive for cycle control and hyperandrogenic symptoms when pregnancy is not desired and no contraindication exists.",
                       "Add antiandrogen such as spironolactone only with reliable contraception and monitoring when hirsutism/acne persists after first-line therapy.",
-                      "For fertility goals, use ovulation induction pathway such as letrozole-first approaches per reproductive specialist/local guideline.",
-                      "Treat unstable presentations first using the urgent escalation rule for Polycystic Ovary Syndrome (PCOS); draw time-sensitive labs only if doing so does not delay stabilization.",
                       "Tumor-range androgens or rapid virilization changes to urgent imaging/endocrine evaluation.",
-                      "unstable physiology or dangerous electrolyte/glucose abnormality",
-                      "discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context"
+                      "discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context",
+                      "Adult PCOM ultrasound"
                     ],
                     "guideline_cutoffs": [
                       {
@@ -4954,7 +4948,7 @@
                     "id": "polycystic_ovary_syndrome_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Polycystic Ovary Syndrome: alternate diagnosis pathway",
-                    "edgeLabel": "Mimic or alternate pathway favored: Polycystic Ovary Syndrome (PCOS): diagnostic assessment; Adults: PCOS generally requires 2 of 3 Rotterdam features after excluding mimics: ovulatory dysfunction, hyperandrogenism, PCOM/elevated AMH. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+                    "edgeLabel": "Mimic or alternate pathway favored: Adults: PCOS generally requires 2 of 3 Rotterdam features after excluding mimics: ovulatory dysfunction, hyperandrogenism, PCOM/elevated AMH.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
                     "source_ids": [
                       "PCOS_GUIDELINE_2023",
                       "AHRQ_CALIBRATE_DX"
@@ -4962,7 +4956,7 @@
                     "criteria": {
                       "rule_id": "polycystic_ovary_syndrome_alternate_criteria",
                       "source": "criteria",
-                      "description": "Use an alternate pathway when Polycystic Ovary Syndrome (PCOS) criteria are absent, a cited mimic better explains the presentation, or objective result data contradict this workup.",
+                      "description": "Use an alternate pathway when Polycystic Ovary Syndrome (PCOS) criteria are absent, Adults: PCOS generally requires 2 of 3 Rotterdam features after excluding mimics: ovulatory dysfunction, hyperandrogenism, PCOM/elevated AMH.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics better explains the presentation, or measured result data contradict this workup.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5046,10 +5040,10 @@
                         }
                       ]
                     },
-                    "action": "Document why Polycystic Ovary Syndrome is not the active pathway, name the competing diagnosis or exclusion, and route to the appropriate workup rather than reassurance alone.",
+                    "action": "Name the competing diagnosis or exclusion for Polycystic Ovary Syndrome, such as Adults: PCOS generally requires 2 of 3 Rotterdam features after excluding mimics: ovulatory dysfunction, hyperandrogenism, PCOM/elevated AMH.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics; route to the corresponding workup or specialty pathway and document why the Polycystic Ovary Syndrome branch is not used.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Competing diagnosis or exclusion changes the active pathway."
+                    "review_needed_reason": "Polycystic Ovary Syndrome criteria are absent or contradicted by Adults: PCOS generally requires 2 of 3 Rotterdam features after excluding mimics: ovulatory dysfunction, hyperandrogenism, PCOM/elevated AMH.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics; competing diagnosis must be named before closure."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -5200,13 +5194,9 @@
               "Exclude mimics: TSH, prolactin, 17-OHP; DHEAS/androstenedione if severe.",
               "Ovulatory dysfunction criteria; ultrasound or AMH in adults; metabolic screen A1c/OGTT/lipids/BP.",
               "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-              "Hyperandrogenism/PCOS safety tests: pregnancy test when relevant, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin as indicated, and A1c/OGTT/lipids for cardiometabolic risk.",
+              "Hyperandrogenism/PCOS safety tests: pregnancy test when relevant, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin when the branch-specific criteria in this node apply, and A1c/OGTT/lipids for cardiometabolic risk.",
               "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
               "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.",
-              "Measure blood pressure",
-              "Measure heart rate",
-              "Measure body mass index",
-              "Document mental status",
               "menarche date",
               "cycle length",
               "cycles per year",
@@ -5234,7 +5224,7 @@
               "Exclude mimics: TSH, prolactin, 17-OHP; DHEAS/androstenedione if severe.",
               "Ovulatory dysfunction criteria; ultrasound or AMH in adults; metabolic screen A1c/OGTT/lipids/BP.",
               "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-              "Hyperandrogenism/PCOS safety tests: pregnancy test when relevant, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin as indicated, and A1c/OGTT/lipids for cardiometabolic risk.",
+              "Hyperandrogenism/PCOS safety tests: pregnancy test when relevant, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin when the branch-specific criteria in this node apply, and A1c/OGTT/lipids for cardiometabolic risk.",
               "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
               "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.",
               "<21 days",
@@ -5321,10 +5311,10 @@
       },
       "synthetic_patient_scenarios": [
         {
-          "scenario_id": "missing_context",
+          "scenario_id": "internal_context_guard",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing Polycystic Ovary Syndrome: onset/trajectory, focused exam, vitals, threshold labs/results, meds, comorbidities, pregnancy/applicability, or follow-up access",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -5333,10 +5323,10 @@
           "traversal_status": "reaches_expected_endpoint"
         },
         {
-          "scenario_id": "missing_cutoff_data",
+          "scenario_id": "internal_threshold_guard",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "polycystic_ovary_syndrome_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Missing Polycystic Ovary Syndrome result(s): menarche date; cycle length; cycles per year; thelarche timing; pregnancy status; age/adolescent status",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "polycystic_ovary_syndrome_concurrent_data_bundle",
@@ -5364,7 +5354,7 @@
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "polycystic_ovary_syndrome_alternate_endpoint",
-          "expected_active_branch": "Mimic or alternate pathway favored: Polycystic Ovary Syndrome (PCOS): diagnostic assessment; Adults: PCOS generally requires 2 of 3 Rotterdam features after excluding mimics: ovulatory dysfunction, hyperandrogenism, PCOM/elevated AMH. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+          "expected_active_branch": "Mimic or alternate pathway favored: Adults: PCOS generally requires 2 of 3 Rotterdam features after excluding mimics: ovulatory dysfunction, hyperandrogenism, PCOM/elevated AMH.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
           "expected_path_node_ids": [
             "root",
             "polycystic_ovary_syndrome_concurrent_data_bundle",
@@ -5378,7 +5368,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "polycystic_ovary_syndrome_review_endpoint",
-          "expected_active_branch": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
+          "expected_active_branch": "Polycystic Ovary Syndrome modifier needing review: Adult PCOM ultrasound; Tumor-range androgens or rapid virilization changes to urgent imaging/endocrine evaluation.; discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context; Use lifestyle and weight-management support for metabolic risk and patient goals.; Use combined hormonal contraceptive for cycle control and hyperandrogenic symptoms when pregnancy is not desired and no contraindication exists.",
           "expected_path_node_ids": [
             "root",
             "polycystic_ovary_syndrome_concurrent_data_bundle",
@@ -5394,7 +5384,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "polycystic_ovary_syndrome_worsening_endpoint",
-          "expected_active_branch": "Polycystic Ovary Syndrome reassessment worsens or Rapid virilization, very high testosterone/DHEAS, pelvic mass, severe abnormal uterine bleeding.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; <21 days; >45 days; >35 days; <8 cycles/year; Pregnancy test.; Total/free testosterone by reliable assay. no longer fit the selected pathway",
+          "expected_active_branch": "Polycystic Ovary Syndrome reassessment worsens or Rapid virilization, very high testosterone/DHEAS, pelvic mass, severe abnormal uterine bleeding.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; <21 days; >45 days; >35 days; <8 cycles/year; Pregnancy test.; Total/free testosterone by reliable assay. no longer fit the documented Polycystic Ovary Syndrome branch",
           "expected_path_node_ids": [
             "root",
             "polycystic_ovary_syndrome_concurrent_data_bundle",
@@ -5463,7 +5453,7 @@
           "concurrent diagnostic/treatment bundles instead of long one-step chains",
           "cited thresholds/rules visible in classification and endpoint nodes",
           "all endpoints cite evidence or state needs_clinical_review",
-          "missing-data endpoints name exact data needed"
+          "internal data guards keep exact unavailable fields in structured metadata"
         ]
       }
     },

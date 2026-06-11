@@ -2247,7 +2247,7 @@
         {
           "threshold": "30 mL/kg",
           "evidence_item_id": "adult_sepsis_fluid_resuscitation",
-          "label": "Sepsis-induced hypoperfusion or septic shock: at least 30 mL/kg IV crystalloid in first 3 hours with frequent reassessment",
+          "label": "Sepsis-induced hypoperfusion or septic shock",
           "source_ids": [
             "SSC_SEPSIS_2026"
           ],
@@ -2256,7 +2256,7 @@
         {
           "threshold": "3 hours",
           "evidence_item_id": "adult_sepsis_fluid_resuscitation",
-          "label": "Sepsis-induced hypoperfusion or septic shock: at least 30 mL/kg IV crystalloid in first 3 hours with frequent reassessment",
+          "label": "Sepsis-induced hypoperfusion or septic shock",
           "source_ids": [
             "SSC_SEPSIS_2026"
           ],
@@ -2265,7 +2265,7 @@
         {
           "threshold": "BMI >30 kg/m2",
           "evidence_item_id": "adult_sepsis_fluid_resuscitation",
-          "label": "Sepsis-induced hypoperfusion or septic shock: at least 30 mL/kg IV crystalloid in first 3 hours with frequent reassessment",
+          "label": "Sepsis-induced hypoperfusion or septic shock",
           "source_ids": [
             "SSC_SEPSIS_2026"
           ],
@@ -2274,7 +2274,7 @@
         {
           "threshold": "MAP >=65 mm Hg",
           "evidence_item_id": "adult_sepsis_map_vasopressor_targets",
-          "label": "Septic shock physiology: vasopressors to maintain MAP >=65 mm Hg with lactate >2 mmol/L; treatment target MAP 65 mm Hg, or 60-65 mm Hg initially if age >=65",
+          "label": "Septic shock physiology",
           "source_ids": [
             "SSC_SEPSIS_2026"
           ],
@@ -2283,7 +2283,7 @@
         {
           "threshold": "lactate >2 mmol/L",
           "evidence_item_id": "adult_sepsis_map_vasopressor_targets",
-          "label": "Septic shock physiology: vasopressors to maintain MAP >=65 mm Hg with lactate >2 mmol/L; treatment target MAP 65 mm Hg, or 60-65 mm Hg initially if age >=65",
+          "label": "Septic shock physiology",
           "source_ids": [
             "SSC_SEPSIS_2026"
           ],
@@ -2292,7 +2292,7 @@
         {
           "threshold": "MAP 65 mm Hg",
           "evidence_item_id": "adult_sepsis_map_vasopressor_targets",
-          "label": "Septic shock physiology: vasopressors to maintain MAP >=65 mm Hg with lactate >2 mmol/L; treatment target MAP 65 mm Hg, or 60-65 mm Hg initially if age >=65",
+          "label": "Septic shock physiology",
           "source_ids": [
             "SSC_SEPSIS_2026"
           ],
@@ -2301,7 +2301,7 @@
         {
           "threshold": "age >=65 years",
           "evidence_item_id": "adult_sepsis_map_vasopressor_targets",
-          "label": "Septic shock physiology: vasopressors to maintain MAP >=65 mm Hg with lactate >2 mmol/L; treatment target MAP 65 mm Hg, or 60-65 mm Hg initially if age >=65",
+          "label": "Septic shock physiology",
           "source_ids": [
             "SSC_SEPSIS_2026"
           ],
@@ -2310,7 +2310,7 @@
         {
           "threshold": "60-65 mm Hg",
           "evidence_item_id": "adult_sepsis_map_vasopressor_targets",
-          "label": "Septic shock physiology: vasopressors to maintain MAP >=65 mm Hg with lactate >2 mmol/L; treatment target MAP 65 mm Hg, or 60-65 mm Hg initially if age >=65",
+          "label": "Septic shock physiology",
           "source_ids": [
             "SSC_SEPSIS_2026"
           ],
@@ -2319,7 +2319,7 @@
         {
           "threshold": "1 hour",
           "evidence_item_id": "adult_sepsis_antibiotic_timing",
-          "label": "Antimicrobials: septic shock or probable/definite sepsis within 1 hour; possible sepsis without shock rapid investigation then antibiotics within 3 hours if concern persists",
+          "label": "Antimicrobials",
           "source_ids": [
             "SSC_SEPSIS_2026"
           ],
@@ -2328,7 +2328,7 @@
         {
           "threshold": "3 hours",
           "evidence_item_id": "adult_sepsis_antibiotic_timing",
-          "label": "Antimicrobials: septic shock or probable/definite sepsis within 1 hour; possible sepsis without shock rapid investigation then antibiotics within 3 hours if concern persists",
+          "label": "Antimicrobials",
           "source_ids": [
             "SSC_SEPSIS_2026"
           ],
@@ -2337,7 +2337,7 @@
         {
           "threshold": "6 hours",
           "evidence_item_id": "adult_sepsis_source_control",
-          "label": "Source control: evaluate emergent source-control diagnoses and perform early source control ideally within 6 hours when required",
+          "label": "Source control",
           "source_ids": [
             "SSC_SEPSIS_2026"
           ],
@@ -2346,7 +2346,7 @@
         {
           "threshold": "6 hours",
           "evidence_item_id": "adult_sepsis_icu_and_respiratory_cutoffs",
-          "label": "ICU/respiratory escalation: ICU admission within 6 hours when required; oxygen target usually SpO2 90-96%; HFNC if PaO2/FiO2 <200 or SpO2/FiO2 <235",
+          "label": "ICU/respiratory escalation",
           "source_ids": [
             "SSC_SEPSIS_2026"
           ],
@@ -2355,7 +2355,7 @@
         {
           "threshold": "SpO2 90-96%",
           "evidence_item_id": "adult_sepsis_icu_and_respiratory_cutoffs",
-          "label": "ICU/respiratory escalation: ICU admission within 6 hours when required; oxygen target usually SpO2 90-96%; HFNC if PaO2/FiO2 <200 or SpO2/FiO2 <235",
+          "label": "ICU/respiratory escalation",
           "source_ids": [
             "SSC_SEPSIS_2026"
           ],
@@ -2364,7 +2364,7 @@
         {
           "threshold": "PaO2/FiO2 <200",
           "evidence_item_id": "adult_sepsis_icu_and_respiratory_cutoffs",
-          "label": "ICU/respiratory escalation: ICU admission within 6 hours when required; oxygen target usually SpO2 90-96%; HFNC if PaO2/FiO2 <200 or SpO2/FiO2 <235",
+          "label": "ICU/respiratory escalation",
           "source_ids": [
             "SSC_SEPSIS_2026"
           ],
@@ -2373,7 +2373,7 @@
         {
           "threshold": "SpO2/FiO2 <235",
           "evidence_item_id": "adult_sepsis_icu_and_respiratory_cutoffs",
-          "label": "ICU/respiratory escalation: ICU admission within 6 hours when required; oxygen target usually SpO2 90-96%; HFNC if PaO2/FiO2 <200 or SpO2/FiO2 <235",
+          "label": "ICU/respiratory escalation",
           "source_ids": [
             "SSC_SEPSIS_2026"
           ],
@@ -2382,7 +2382,7 @@
         {
           "threshold": "6 mL/kg",
           "evidence_item_id": "adult_sepsis_ards_ventilator_cutoffs",
-          "label": "Sepsis-associated ARDS: low tidal volume 6 mL/kg, plateau pressure <=30 cm H2O, prone ventilation >12 hours/day for moderate-severe ARDS",
+          "label": "Sepsis-associated ARDS",
           "source_ids": [
             "SSC_SEPSIS_2026"
           ],
@@ -2391,7 +2391,7 @@
         {
           "threshold": "<=30 cm",
           "evidence_item_id": "adult_sepsis_ards_ventilator_cutoffs",
-          "label": "Sepsis-associated ARDS: low tidal volume 6 mL/kg, plateau pressure <=30 cm H2O, prone ventilation >12 hours/day for moderate-severe ARDS",
+          "label": "Sepsis-associated ARDS",
           "source_ids": [
             "SSC_SEPSIS_2026"
           ],
@@ -2400,7 +2400,7 @@
         {
           "threshold": ">12 hours",
           "evidence_item_id": "adult_sepsis_ards_ventilator_cutoffs",
-          "label": "Sepsis-associated ARDS: low tidal volume 6 mL/kg, plateau pressure <=30 cm H2O, prone ventilation >12 hours/day for moderate-severe ARDS",
+          "label": "Sepsis-associated ARDS",
           "source_ids": [
             "SSC_SEPSIS_2026"
           ],
@@ -2507,7 +2507,7 @@
           {
             "domain": "imaging_results",
             "exact_data_needed": [
-              "source-directed imaging/ECG/procedure results when indicated",
+              "imaging, ECG, culture, pathology, or procedure result required by the chosen branch",
               "Source-directed infection studies",
               "Respiratory source imaging and testing pathway"
             ],
@@ -6662,8 +6662,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal data-availability guard",
-            "edgeLabel": "Internal data-availability guard",
+            "label": "Internal traversal guard",
+            "edgeLabel": "Internal traversal guard",
             "source_ids": [
               "SSC_SEPSIS_2026",
               "SMFM_MATERNAL_SEPSIS_2023",
@@ -6703,7 +6703,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -6711,7 +6711,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
             },
             "missing_data_needed": [
               "symptoms",
@@ -6991,8 +6991,8 @@
               {
                 "id": "fever_infection_sepsis_missing_lactate_culture_source_endpoint",
                 "type": "endpoint",
-                "label": "Internal data-availability guard",
-                "edgeLabel": "Internal data-availability guard",
+                "label": "Internal traversal guard",
+                "edgeLabel": "Internal traversal guard",
                 "source_ids": [
                   "SSC_SEPSIS_2026"
                 ],
@@ -7026,7 +7026,7 @@
                     "antimicrobial timing"
                   ]
                 },
-                "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+                "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
                 "children": [],
                 "endpoint_type": "missing_data_needed",
                 "internal_traversal_guard": true,
@@ -7034,7 +7034,7 @@
                   "visible_in_pathway": false,
                   "visible_in_graph": false,
                   "visible_in_outline": false,
-                  "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                  "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
                 },
                 "missing_data_needed": [
                   "blood pressure/MAP",
@@ -14205,7 +14205,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Internal data-availability guard",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -14217,7 +14217,7 @@
           "scenario_id": "missing_lactate_source_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "fever_infection_sepsis_missing_lactate_culture_source_endpoint",
-          "expected_active_branch": "Internal data-availability guard",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "fever_infection_sepsis_initial_assessment_bundle",

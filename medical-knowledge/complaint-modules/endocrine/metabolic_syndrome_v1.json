@@ -2381,7 +2381,7 @@
         {
           "threshold": "3 or more",
           "evidence_item_id": "metabolic_syndrome_three_of_five",
-          "label": "Metabolic syndrome diagnosis: 3 or more of 5 cardiometabolic criteria",
+          "label": "Metabolic syndrome diagnosis",
           "source_ids": [
             "NHLBI_METABOLIC_SYNDROME"
           ],
@@ -2390,7 +2390,7 @@
         {
           "threshold": ">40 inches",
           "evidence_item_id": "metabolic_syndrome_waist_cutoffs",
-          "label": "Abdominal obesity criterion: waist >40 inches in men or >35 inches in women, with race/ethnicity-specific cutoffs when applicable",
+          "label": "Abdominal obesity criterion",
           "source_ids": [
             "NHLBI_METABOLIC_SYNDROME"
           ],
@@ -2399,7 +2399,7 @@
         {
           "threshold": ">35 inches",
           "evidence_item_id": "metabolic_syndrome_waist_cutoffs",
-          "label": "Abdominal obesity criterion: waist >40 inches in men or >35 inches in women, with race/ethnicity-specific cutoffs when applicable",
+          "label": "Abdominal obesity criterion",
           "source_ids": [
             "NHLBI_METABOLIC_SYNDROME"
           ],
@@ -2408,7 +2408,7 @@
         {
           "threshold": ">=130/85 mm Hg",
           "evidence_item_id": "metabolic_syndrome_bp_cutoff",
-          "label": "Blood pressure criterion: consistently >=130/85 mm Hg or treated hypertension",
+          "label": "Blood pressure criterion",
           "source_ids": [
             "NHLBI_METABOLIC_SYNDROME"
           ],
@@ -2417,7 +2417,7 @@
         {
           "threshold": "130/85 mmHg",
           "evidence_item_id": "metabolic_syndrome_bp_cutoff",
-          "label": "Blood pressure criterion: consistently >=130/85 mm Hg or treated hypertension",
+          "label": "Blood pressure criterion",
           "source_ids": [
             "NHLBI_METABOLIC_SYNDROME"
           ],
@@ -2426,7 +2426,7 @@
         {
           "threshold": "fasting glucose 100-125 mg/dL",
           "evidence_item_id": "metabolic_syndrome_glucose_cutoffs",
-          "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
+          "label": "Glucose criterion",
           "source_ids": [
             "NHLBI_METABOLIC_SYNDROME",
             "CDC_DIABETES_TESTING_2024",
@@ -2437,7 +2437,7 @@
         {
           "threshold": "fasting glucose >=126 mg/dL",
           "evidence_item_id": "metabolic_syndrome_glucose_cutoffs",
-          "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
+          "label": "Glucose criterion",
           "source_ids": [
             "NHLBI_METABOLIC_SYNDROME",
             "CDC_DIABETES_TESTING_2024",
@@ -2448,7 +2448,7 @@
         {
           "threshold": "HDL <40 mg/dL",
           "evidence_item_id": "metabolic_syndrome_lipid_cutoffs",
-          "label": "Lipid criteria: HDL <40 mg/dL in men or <50 mg/dL in women; triglycerides >=150 mg/dL or treatment",
+          "label": "Lipid criteria",
           "source_ids": [
             "NHLBI_METABOLIC_SYNDROME"
           ],
@@ -2457,7 +2457,7 @@
         {
           "threshold": "HDL <50 mg/dL",
           "evidence_item_id": "metabolic_syndrome_lipid_cutoffs",
-          "label": "Lipid criteria: HDL <40 mg/dL in men or <50 mg/dL in women; triglycerides >=150 mg/dL or treatment",
+          "label": "Lipid criteria",
           "source_ids": [
             "NHLBI_METABOLIC_SYNDROME"
           ],
@@ -2466,7 +2466,7 @@
         {
           "threshold": "triglycerides >=150 mg/dL",
           "evidence_item_id": "metabolic_syndrome_lipid_cutoffs",
-          "label": "Lipid criteria: HDL <40 mg/dL in men or <50 mg/dL in women; triglycerides >=150 mg/dL or treatment",
+          "label": "Lipid criteria",
           "source_ids": [
             "NHLBI_METABOLIC_SYNDROME"
           ],
@@ -2475,7 +2475,7 @@
         {
           "threshold": "triglycerides >150 mg/dL",
           "evidence_item_id": "metabolic_syndrome_lipid_cutoffs",
-          "label": "Lipid criteria: HDL <40 mg/dL in men or <50 mg/dL in women; triglycerides >=150 mg/dL or treatment",
+          "label": "Lipid criteria",
           "source_ids": [
             "NHLBI_METABOLIC_SYNDROME"
           ],
@@ -2536,7 +2536,7 @@
         {
           "threshold": "at least 150 minutes/week",
           "evidence_item_id": "metabolic_syndrome_prevention_targets",
-          "label": "Risk reduction: DPP-style activity/weight plan, BP/lipid/glucose treatment, and surveillance based on active criteria",
+          "label": "Risk reduction",
           "source_ids": [
             "ADA_SOC_2026",
             "CDC_NDPP_LIFESTYLE_2024",
@@ -2547,7 +2547,7 @@
         {
           "threshold": "at least 7%",
           "evidence_item_id": "metabolic_syndrome_prevention_targets",
-          "label": "Risk reduction: DPP-style activity/weight plan, BP/lipid/glucose treatment, and surveillance based on active criteria",
+          "label": "Risk reduction",
           "source_ids": [
             "ADA_SOC_2026",
             "CDC_NDPP_LIFESTYLE_2024",
@@ -2658,11 +2658,10 @@
           {
             "domain": "imaging_results",
             "exact_data_needed": [
-              "source-directed imaging/ECG/procedure results when indicated",
+              "imaging, ECG, culture, pathology, or procedure result required by the chosen branch",
               "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
               "Cardiometabolic safety data: confirm A1c/FPG/OGTT classification, document BP/waist/BMI, and check lipids, kidney function, albuminuria when diabetes-range, and liver/fatty-liver context when treatment selection or risk reduction is in scope.",
-              "Lipids, blood pressure, kidney function, albuminuria when diabetes-range, and liver context when cardiometabolic risk reduction or medication choice is in scope.",
-              "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+              "Lipids, blood pressure, kidney function, albuminuria when diabetes-range, and liver context when cardiometabolic risk reduction or medication choice is in scope."
             ],
             "source_ids": [
               "NHLBI_METABOLIC_SYNDROME",
@@ -2753,7 +2752,7 @@
               "treatment response",
               "disposition constraints",
               "Metabolic Syndrome: diagnostic assessment",
-              "Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+              "Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment.",
               "Important mimics/exclusions: stress or steroid hyperglycemia, type 1/LADA versus type 2 diabetes, DKA/HHS versus uncomplicated hyperglycemia, hypoglycemia/drug effect, renal disease, infection, pregnancy, and secondary endocrine causes.",
               "3 or more criteria shifts to intensive cardiometabolic risk reduction.",
               "Diabetes thresholds change diagnosis.",
@@ -2921,7 +2920,7 @@
             {
               "id": "metabolic_syndrome_glucose_cutoffs",
               "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the active pathway.",
+              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
               "cutoffs": [
                 "fasting glucose 100-125 mg/dL",
                 "fasting glucose >=126 mg/dL"
@@ -3111,7 +3110,7 @@
             {
               "id": "metabolic_syndrome_glucose_cutoffs",
               "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the active pathway.",
+              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
               "cutoffs": [
                 "fasting glucose 100-125 mg/dL",
                 "fasting glucose >=126 mg/dL"
@@ -3331,7 +3330,7 @@
             {
               "id": "metabolic_syndrome_glucose_cutoffs",
               "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the active pathway.",
+              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
               "cutoffs": [
                 "fasting glucose 100-125 mg/dL",
                 "fasting glucose >=126 mg/dL"
@@ -3521,7 +3520,7 @@
             {
               "id": "metabolic_syndrome_glucose_cutoffs",
               "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the active pathway.",
+              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
               "cutoffs": [
                 "fasting glucose 100-125 mg/dL",
                 "fasting glucose >=126 mg/dL"
@@ -3702,7 +3701,7 @@
             {
               "id": "metabolic_syndrome_glucose_cutoffs",
               "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the active pathway.",
+              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
               "cutoffs": [
                 "fasting glucose 100-125 mg/dL",
                 "fasting glucose >=126 mg/dL"
@@ -3805,7 +3804,7 @@
         "metabolic_syndrome_risk_reduction_endpoint": {
           "rule_id": "metabolic_syndrome_risk_reduction_criteria",
           "source": "criteria",
-          "description": "Use when active criteria can be targeted with outpatient risk reduction and surveillance.",
+          "description": "Use when active criteria can be focused with outpatient risk reduction and surveillance.",
           "evaluable_from": [
             "vitals",
             "labs",
@@ -3885,7 +3884,7 @@
             {
               "id": "metabolic_syndrome_glucose_cutoffs",
               "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the active pathway.",
+              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
               "cutoffs": [
                 "fasting glucose 100-125 mg/dL",
                 "fasting glucose >=126 mg/dL"
@@ -4070,7 +4069,7 @@
             {
               "id": "metabolic_syndrome_glucose_cutoffs",
               "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the active pathway.",
+              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
               "cutoffs": [
                 "fasting glucose 100-125 mg/dL",
                 "fasting glucose >=126 mg/dL"
@@ -4257,7 +4256,7 @@
             {
               "id": "metabolic_syndrome_glucose_cutoffs",
               "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the active pathway.",
+              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
               "cutoffs": [
                 "fasting glucose 100-125 mg/dL",
                 "fasting glucose >=126 mg/dL"
@@ -4397,8 +4396,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal data-availability guard",
-            "edgeLabel": "Internal data-availability guard",
+            "label": "Internal traversal guard",
+            "edgeLabel": "Internal traversal guard",
             "source_ids": [
               "NHLBI_METABOLIC_SYNDROME",
               "CDC_DIABETES_TESTING_2024",
@@ -4444,7 +4443,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -4452,7 +4451,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
             },
             "missing_data_needed": [
               "waist circumference with sex/race context",
@@ -4570,7 +4569,7 @@
                 {
                   "id": "metabolic_syndrome_glucose_cutoffs",
                   "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                  "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the active pathway.",
+                  "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
                   "cutoffs": [
                     "fasting glucose 100-125 mg/dL",
                     "fasting glucose >=126 mg/dL"
@@ -4775,7 +4774,7 @@
                     {
                       "id": "metabolic_syndrome_glucose_cutoffs",
                       "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                      "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the active pathway.",
+                      "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
                       "cutoffs": [
                         "fasting glucose 100-125 mg/dL",
                         "fasting glucose >=126 mg/dL"
@@ -4880,8 +4879,8 @@
                   {
                     "id": "metabolic_syndrome_missing_criteria_endpoint",
                     "type": "endpoint",
-                    "label": "Internal data-availability guard",
-                    "edgeLabel": "Internal data-availability guard",
+                    "label": "Internal traversal guard",
+                    "edgeLabel": "Internal traversal guard",
                     "source_ids": [
                       "NHLBI_METABOLIC_SYNDROME",
                       "CDC_DIABETES_TESTING_2024",
@@ -4925,7 +4924,7 @@
                         "pregnancy status"
                       ]
                     },
-                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -4933,7 +4932,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
                     },
                     "missing_data_needed": [
                       "waist circumference",
@@ -5044,7 +5043,7 @@
                         {
                           "id": "metabolic_syndrome_glucose_cutoffs",
                           "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                          "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the active pathway.",
+                          "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
                           "cutoffs": [
                             "fasting glucose 100-125 mg/dL",
                             "fasting glucose >=126 mg/dL"
@@ -5213,7 +5212,7 @@
                       {
                         "id": "metabolic_syndrome_glucose_cutoffs",
                         "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                        "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the active pathway.",
+                        "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
                         "cutoffs": [
                           "fasting glucose 100-125 mg/dL",
                           "fasting glucose >=126 mg/dL"
@@ -5425,7 +5424,7 @@
                         {
                           "id": "metabolic_syndrome_glucose_cutoffs",
                           "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                          "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the active pathway.",
+                          "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
                           "cutoffs": [
                             "fasting glucose 100-125 mg/dL",
                             "fasting glucose >=126 mg/dL"
@@ -5525,7 +5524,7 @@
                         }
                       ]
                     },
-                    "action": "Count criteria and treat active risks rather than using the label alone. Local evidence reminders: Waist circumference.; Fasting triglycerides, HDL, fasting glucose/A1c.; Blood pressure and medication review.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; Cardiometabolic safety data: confirm A1c/FPG/OGTT classification, document BP/waist/BMI, and check lipids, kidney function, albuminuria when diabetes-range, and liver/fatty-liver context when treatment selection or risk reduction is in scope.; A1c or plasma glucose criteria for prediabetes/diabetes classification, with repeat confirmatory testing when asymptomatic or discordant.; Lipids, blood pressure, kidney function, albuminuria when diabetes-range, and liver context when cardiometabolic risk reduction or medication choice is in scope.; Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment.; Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.; Diabetes-range glycemia, severe hypertension, ASCVD symptoms.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Diabetes-range glycemia with classic symptoms, severe hypertension, ASCVD symptoms, pregnancy-context hyperglycemia, or dehydration requires escalation beyond routine prevention care..",
+                    "action": "Count criteria and treat active risks rather than using the label alone. Local evidence reminders: Waist circumference.; Fasting triglycerides, HDL, fasting glucose/A1c.; Blood pressure and medication review.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; Cardiometabolic safety data: confirm A1c/FPG/OGTT classification, document BP/waist/BMI, and check lipids, kidney function, albuminuria when diabetes-range, and liver/fatty-liver context when treatment selection or risk reduction is in scope.; A1c or plasma glucose criteria for prediabetes/diabetes classification, with repeat confirmatory testing when asymptomatic or discordant.; Lipids, blood pressure, kidney function, albuminuria when diabetes-range, and liver context when cardiometabolic risk reduction or medication choice is in scope.; Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment.; Diabetes-range glycemia, severe hypertension, ASCVD symptoms.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Diabetes-range glycemia with classic symptoms, severe hypertension, ASCVD symptoms, pregnancy-context hyperglycemia, or dehydration requires escalation beyond routine prevention care..",
                     "children": [
                       {
                         "id": "metabolic_syndrome_criteria_count_endpoint",
@@ -5616,7 +5615,7 @@
                             {
                               "id": "metabolic_syndrome_glucose_cutoffs",
                               "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the active pathway.",
+                              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
                               "cutoffs": [
                                 "fasting glucose 100-125 mg/dL",
                                 "fasting glucose >=126 mg/dL"
@@ -5785,7 +5784,7 @@
                           {
                             "id": "metabolic_syndrome_glucose_cutoffs",
                             "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                            "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the active pathway.",
+                            "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
                             "cutoffs": [
                               "fasting glucose 100-125 mg/dL",
                               "fasting glucose >=126 mg/dL"
@@ -5898,7 +5897,7 @@
                         "criteria": {
                           "rule_id": "metabolic_syndrome_risk_reduction_criteria",
                           "source": "criteria",
-                          "description": "Use when active criteria can be targeted with outpatient risk reduction and surveillance.",
+                          "description": "Use when active criteria can be focused with outpatient risk reduction and surveillance.",
                           "evaluable_from": [
                             "vitals",
                             "labs",
@@ -5978,7 +5977,7 @@
                             {
                               "id": "metabolic_syndrome_glucose_cutoffs",
                               "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the active pathway.",
+                              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
                               "cutoffs": [
                                 "fasting glucose 100-125 mg/dL",
                                 "fasting glucose >=126 mg/dL"
@@ -6147,7 +6146,7 @@
                           {
                             "id": "metabolic_syndrome_glucose_cutoffs",
                             "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                            "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the active pathway.",
+                            "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
                             "cutoffs": [
                               "fasting glucose 100-125 mg/dL",
                               "fasting glucose >=126 mg/dL"
@@ -6355,7 +6354,7 @@
                             {
                               "id": "metabolic_syndrome_glucose_cutoffs",
                               "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the active pathway.",
+                              "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
                               "cutoffs": [
                                 "fasting glucose 100-125 mg/dL",
                                 "fasting glucose >=126 mg/dL"
@@ -6524,7 +6523,7 @@
                           {
                             "id": "metabolic_syndrome_glucose_cutoffs",
                             "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                            "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the active pathway.",
+                            "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
                             "cutoffs": [
                               "fasting glucose 100-125 mg/dL",
                               "fasting glucose >=126 mg/dL"
@@ -6709,7 +6708,7 @@
                       {
                         "id": "metabolic_syndrome_glucose_cutoffs",
                         "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                        "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the active pathway.",
+                        "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
                         "cutoffs": [
                           "fasting glucose 100-125 mg/dL",
                           "fasting glucose >=126 mg/dL"
@@ -6909,7 +6908,7 @@
                         {
                           "id": "metabolic_syndrome_glucose_cutoffs",
                           "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                          "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the active pathway.",
+                          "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
                           "cutoffs": [
                             "fasting glucose 100-125 mg/dL",
                             "fasting glucose >=126 mg/dL"
@@ -7009,7 +7008,7 @@
                         }
                       ]
                     },
-                    "action": "Document the criteria count and route to the active abnormality or competing diagnosis: Metabolic Syndrome: diagnostic assessment; Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics.",
+                    "action": "Document the criteria count and route to the active abnormality or competing diagnosis: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
                     "review_needed_reason": "Criteria count, waist threshold choice, pregnancy, medication effect, or secondary disease changes classification."
@@ -7081,7 +7080,7 @@
                   {
                     "id": "metabolic_syndrome_glucose_cutoffs",
                     "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                    "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the active pathway.",
+                    "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
                     "cutoffs": [
                       "fasting glucose 100-125 mg/dL",
                       "fasting glucose >=126 mg/dL"
@@ -7246,7 +7245,7 @@
                   {
                     "id": "metabolic_syndrome_glucose_cutoffs",
                     "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                    "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the active pathway.",
+                    "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
                     "cutoffs": [
                       "fasting glucose 100-125 mg/dL",
                       "fasting glucose >=126 mg/dL"
@@ -7459,7 +7458,7 @@
               {
                 "id": "metabolic_syndrome_glucose_cutoffs",
                 "label": "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
-                "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the active pathway.",
+                "criteria_text": "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the documented disease branch.",
                 "cutoffs": [
                   "fasting glucose 100-125 mg/dL",
                   "fasting glucose >=126 mg/dL"
@@ -7566,7 +7565,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Internal data-availability guard",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -7578,7 +7577,7 @@
           "scenario_id": "missing_five_criteria",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "metabolic_syndrome_missing_criteria_endpoint",
-          "expected_active_branch": "Internal data-availability guard",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "metabolic_syndrome_initial_assessment",

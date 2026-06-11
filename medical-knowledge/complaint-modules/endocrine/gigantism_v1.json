@@ -2181,7 +2181,7 @@
         {
           "threshold": ">1.3 x ULN",
           "evidence_item_id": "gigantism_igf1_1_3_uln_confirmation",
-          "label": "Gigantism confirmation: typical phenotype with IGF-1 >1.3 x ULN for age confirms GH excess spectrum",
+          "label": "Gigantism confirmation",
           "source_ids": [
             "ACROMEGALY_DIAGNOSIS_REMISSION_2024"
           ],
@@ -2190,7 +2190,7 @@
         {
           "threshold": "75 g",
           "evidence_item_id": "gigantism_ogtt_gh_suppression_cutoffs",
-          "label": "Gigantism OGTT: failure to suppress GH to <1 ng/mL (<1 ug/L) after 75-g glucose, or <0.4 ng/mL (<0.4 ug/L) with sufficiently accurate assays, supports active disease when IGF-1 is high/equivocal",
+          "label": "Gigantism OGTT",
           "source_ids": [
             "ES_ACROMEGALY_2014",
             "ACROMEGALY_DIAGNOSIS_REMISSION_2024"
@@ -2200,7 +2200,7 @@
         {
           "threshold": "GH nadir <1 ng/mL",
           "evidence_item_id": "gigantism_ogtt_gh_suppression_cutoffs",
-          "label": "Gigantism OGTT: failure to suppress GH to <1 ng/mL (<1 ug/L) after 75-g glucose, or <0.4 ng/mL (<0.4 ug/L) with sufficiently accurate assays, supports active disease when IGF-1 is high/equivocal",
+          "label": "Gigantism OGTT",
           "source_ids": [
             "ES_ACROMEGALY_2014",
             "ACROMEGALY_DIAGNOSIS_REMISSION_2024"
@@ -2210,7 +2210,7 @@
         {
           "threshold": "GH nadir <1 ug/L",
           "evidence_item_id": "gigantism_ogtt_gh_suppression_cutoffs",
-          "label": "Gigantism OGTT: failure to suppress GH to <1 ng/mL (<1 ug/L) after 75-g glucose, or <0.4 ng/mL (<0.4 ug/L) with sufficiently accurate assays, supports active disease when IGF-1 is high/equivocal",
+          "label": "Gigantism OGTT",
           "source_ids": [
             "ES_ACROMEGALY_2014",
             "ACROMEGALY_DIAGNOSIS_REMISSION_2024"
@@ -2220,7 +2220,7 @@
         {
           "threshold": "2 hours",
           "evidence_item_id": "gigantism_ogtt_gh_suppression_cutoffs",
-          "label": "Gigantism OGTT: failure to suppress GH to <1 ng/mL (<1 ug/L) after 75-g glucose, or <0.4 ng/mL (<0.4 ug/L) with sufficiently accurate assays, supports active disease when IGF-1 is high/equivocal",
+          "label": "Gigantism OGTT",
           "source_ids": [
             "ES_ACROMEGALY_2014",
             "ACROMEGALY_DIAGNOSIS_REMISSION_2024"
@@ -2230,7 +2230,7 @@
         {
           "threshold": "GH nadir <0.4 ng/mL",
           "evidence_item_id": "gigantism_ogtt_gh_suppression_cutoffs",
-          "label": "Gigantism OGTT: failure to suppress GH to <1 ng/mL (<1 ug/L) after 75-g glucose, or <0.4 ng/mL (<0.4 ug/L) with sufficiently accurate assays, supports active disease when IGF-1 is high/equivocal",
+          "label": "Gigantism OGTT",
           "source_ids": [
             "ES_ACROMEGALY_2014",
             "ACROMEGALY_DIAGNOSIS_REMISSION_2024"
@@ -2240,7 +2240,7 @@
         {
           "threshold": "GH nadir <0.4 ug/L",
           "evidence_item_id": "gigantism_ogtt_gh_suppression_cutoffs",
-          "label": "Gigantism OGTT: failure to suppress GH to <1 ng/mL (<1 ug/L) after 75-g glucose, or <0.4 ng/mL (<0.4 ug/L) with sufficiently accurate assays, supports active disease when IGF-1 is high/equivocal",
+          "label": "Gigantism OGTT",
           "source_ids": [
             "ES_ACROMEGALY_2014",
             "ACROMEGALY_DIAGNOSIS_REMISSION_2024"
@@ -2250,7 +2250,7 @@
         {
           "threshold": "<0.4 ug/L",
           "evidence_item_id": "gigantism_random_gh_not_diagnostic",
-          "label": "Gigantism random GH: do not diagnose by random GH alone; random GH <0.4 ug/L with normal IGF-1 helps exclude GH excess",
+          "label": "Gigantism random GH",
           "source_ids": [
             "ES_ACROMEGALY_2014",
             "ACROMEGALY_DIAGNOSIS_REMISSION_2024"
@@ -2260,7 +2260,7 @@
         {
           "threshold": "random GH <1.0 ug/L",
           "evidence_item_id": "gigantism_treatment_goals",
-          "label": "Gigantism treatment goals: age-normalized IGF-1 and random GH <1.0 ug/L, tracked with the same assay when possible",
+          "label": "Gigantism treatment goals",
           "source_ids": [
             "ES_ACROMEGALY_2014"
           ],
@@ -2269,7 +2269,7 @@
         {
           "threshold": ">=12 weeks",
           "evidence_item_id": "gigantism_surgery_postop_timing",
-          "label": "Gigantism surgery: transsphenoidal surgery primary for most; post-op IGF-1/random GH and MRI at >=12 weeks, OGTT if GH >1 ug/L",
+          "label": "Gigantism surgery",
           "source_ids": [
             "ES_ACROMEGALY_2014"
           ],
@@ -2278,7 +2278,7 @@
         {
           "threshold": ">1 ug/L",
           "evidence_item_id": "gigantism_surgery_postop_timing",
-          "label": "Gigantism surgery: transsphenoidal surgery primary for most; post-op IGF-1/random GH and MRI at >=12 weeks, OGTT if GH >1 ug/L",
+          "label": "Gigantism surgery",
           "source_ids": [
             "ES_ACROMEGALY_2014"
           ],
@@ -2287,7 +2287,7 @@
         {
           "threshold": "6 months",
           "evidence_item_id": "gigantism_pegvisomant_lft_cutoffs",
-          "label": "Gigantism pegvisomant safety: LFTs monthly for first 6 months, then every 6 months; consider stopping if transaminases >3-fold elevated",
+          "label": "Gigantism pegvisomant safety",
           "source_ids": [
             "ES_ACROMEGALY_2014"
           ],
@@ -2296,7 +2296,7 @@
         {
           "threshold": "every 6 months",
           "evidence_item_id": "gigantism_pegvisomant_lft_cutoffs",
-          "label": "Gigantism pegvisomant safety: LFTs monthly for first 6 months, then every 6 months; consider stopping if transaminases >3-fold elevated",
+          "label": "Gigantism pegvisomant safety",
           "source_ids": [
             "ES_ACROMEGALY_2014"
           ],
@@ -2305,7 +2305,7 @@
         {
           "threshold": ">3-fold",
           "evidence_item_id": "gigantism_pegvisomant_lft_cutoffs",
-          "label": "Gigantism pegvisomant safety: LFTs monthly for first 6 months, then every 6 months; consider stopping if transaminases >3-fold elevated",
+          "label": "Gigantism pegvisomant safety",
           "source_ids": [
             "ES_ACROMEGALY_2014"
           ],
@@ -2314,7 +2314,7 @@
         {
           "threshold": ">8 Gy",
           "evidence_item_id": "gigantism_radiation_followup_cutoffs",
-          "label": "Gigantism radiation: prefer stereotactic RT unless optic chiasm exposure would exceed 8 Gy; check GH/IGF-1 and pituitary hormones annually",
+          "label": "Gigantism radiation",
           "source_ids": [
             "ES_ACROMEGALY_2014"
           ],
@@ -2323,7 +2323,7 @@
         {
           "threshold": "approximately 2 months",
           "evidence_item_id": "gigantism_pregnancy_cutoffs",
-          "label": "Acromegaly pregnancy: stop long-acting SRL/pegvisomant about 2 months before conception attempts; serial visual fields for macroadenomas; avoid GH/IGF-1 monitoring during pregnancy",
+          "label": "Acromegaly pregnancy",
           "source_ids": [
             "ES_ACROMEGALY_2014"
           ],
@@ -2429,12 +2429,12 @@
           {
             "domain": "imaging_results",
             "exact_data_needed": [
-              "source-directed imaging/ECG/procedure results when indicated",
+              "imaging, ECG, culture, pathology, or procedure result required by the chosen branch",
               "Pituitary MRI after biochemical evidence.",
               "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
               "GH-excess safety tests: check age-adjusted IGF-1, oral-glucose GH suppression when needed, pituitary MRI after biochemical confirmation, and glucose/A1c, sleep apnea, BP/cardiac, colon, and thyroid risk screening.",
               "Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.",
-              "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when indicated."
+              "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when the branch-specific criteria in this node apply."
             ],
             "source_ids": [
               "ES_ACROMEGALY_2014",
@@ -2520,7 +2520,7 @@
               "treatment response",
               "disposition constraints",
               "Gigantism: diagnostic assessment",
-              "Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+              "Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient.",
               "Important mimics/exclusions: medication effects, pregnancy/lactation, renal/hepatic disease, sellar or parasellar mass, pituitary apoplexy, primary target-gland disease, central versus nephrogenic water-balance disorder, and age/puberty-specific normal variants.",
               "Confirmed GH excess before epiphyseal closure changes urgency of pediatric pituitary treatment.",
               "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
@@ -6562,8 +6562,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal data-availability guard",
-            "edgeLabel": "Internal data-availability guard",
+            "label": "Internal traversal guard",
+            "edgeLabel": "Internal traversal guard",
             "source_ids": [
               "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
               "ES_ACROMEGALY_2014",
@@ -6607,7 +6607,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -6615,7 +6615,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
             },
             "missing_data_needed": [
               "height velocity",
@@ -7384,8 +7384,8 @@
                   {
                     "id": "gigantism_missing_biochemical_endpoint",
                     "type": "endpoint",
-                    "label": "Internal data-availability guard",
-                    "edgeLabel": "Internal data-availability guard",
+                    "label": "Internal traversal guard",
+                    "edgeLabel": "Internal traversal guard",
                     "source_ids": [
                       "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
                       "ES_ACROMEGALY_2014"
@@ -7418,7 +7418,7 @@
                         "OGTT glucose values"
                       ]
                     },
-                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -7426,7 +7426,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
                     },
                     "missing_data_needed": [
                       "age/sex/puberty-adjusted IGF-1",
@@ -14938,7 +14938,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Internal data-availability guard",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -14950,7 +14950,7 @@
           "scenario_id": "missing_igf1_or_ogtt",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "gigantism_missing_biochemical_endpoint",
-          "expected_active_branch": "Internal data-availability guard",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "gigantism_initial_assessment",

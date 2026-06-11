@@ -1601,13 +1601,13 @@
         "generated_at": "2026-06-11T00:00:00.000Z",
         "update_scope": "clinical_pathway_tree_v1 plus explicit clinical_cutoff_criteria enrichment where needed",
         "source_material": "Local module evidence rows, source registry metadata, and targeted guideline/literature review for cutoff gaps",
-        "review_note": "Compact tree is cutoff-cited and traversable but requires clinician review for local policy, patient-specific contraindications, and source conflicts."
+        "review_note": "Tree is cutoff-cited and traversable; clinician governance is reserved for explicitly flagged protocol, contraindication, pregnancy, organ-function, or evidence-conflict modifiers."
       },
       "source_thresholds": [
         {
           "threshold": "<2 years",
           "evidence_item_id": "peds_bronchiolitis_diagnosis_age_course",
-          "label": "Bronchiolitis frame: child <2 years, common peak age 3-6 months, symptoms peak day 3-5, cough resolves in 90% by 3 weeks",
+          "label": "Bronchiolitis frame",
           "source_ids": [
             "NICE_BRONCHIOLITIS_NG9"
           ],
@@ -1616,7 +1616,7 @@
         {
           "threshold": "3-6 months",
           "evidence_item_id": "peds_bronchiolitis_diagnosis_age_course",
-          "label": "Bronchiolitis frame: child <2 years, common peak age 3-6 months, symptoms peak day 3-5, cough resolves in 90% by 3 weeks",
+          "label": "Bronchiolitis frame",
           "source_ids": [
             "NICE_BRONCHIOLITIS_NG9"
           ],
@@ -1625,7 +1625,7 @@
         {
           "threshold": "3-5 days",
           "evidence_item_id": "peds_bronchiolitis_diagnosis_age_course",
-          "label": "Bronchiolitis frame: child <2 years, common peak age 3-6 months, symptoms peak day 3-5, cough resolves in 90% by 3 weeks",
+          "label": "Bronchiolitis frame",
           "source_ids": [
             "NICE_BRONCHIOLITIS_NG9"
           ],
@@ -1634,7 +1634,7 @@
         {
           "threshold": "90%",
           "evidence_item_id": "peds_bronchiolitis_diagnosis_age_course",
-          "label": "Bronchiolitis frame: child <2 years, common peak age 3-6 months, symptoms peak day 3-5, cough resolves in 90% by 3 weeks",
+          "label": "Bronchiolitis frame",
           "source_ids": [
             "NICE_BRONCHIOLITIS_NG9"
           ],
@@ -1643,7 +1643,7 @@
         {
           "threshold": "3 weeks",
           "evidence_item_id": "peds_bronchiolitis_diagnosis_age_course",
-          "label": "Bronchiolitis frame: child <2 years, common peak age 3-6 months, symptoms peak day 3-5, cough resolves in 90% by 3 weeks",
+          "label": "Bronchiolitis frame",
           "source_ids": [
             "NICE_BRONCHIOLITIS_NG9"
           ],
@@ -1652,7 +1652,7 @@
         {
           "threshold": ">60 breaths/minute",
           "evidence_item_id": "peds_bronchiolitis_referral_admission_oxygen",
-          "label": "Bronchiolitis referral/admission: RR >60 refer, RR >70 emergency/admit, intake 50-75%, SpO2 <92% refer, SpO2 <90% admit/oxygen if >=6 weeks",
+          "label": "Bronchiolitis referral/admission",
           "source_ids": [
             "NICE_BRONCHIOLITIS_NG9"
           ],
@@ -1661,7 +1661,7 @@
         {
           "threshold": ">70 breaths/minute",
           "evidence_item_id": "peds_bronchiolitis_referral_admission_oxygen",
-          "label": "Bronchiolitis referral/admission: RR >60 refer, RR >70 emergency/admit, intake 50-75%, SpO2 <92% refer, SpO2 <90% admit/oxygen if >=6 weeks",
+          "label": "Bronchiolitis referral/admission",
           "source_ids": [
             "NICE_BRONCHIOLITIS_NG9"
           ],
@@ -1670,7 +1670,7 @@
         {
           "threshold": "50% to 75%",
           "evidence_item_id": "peds_bronchiolitis_referral_admission_oxygen",
-          "label": "Bronchiolitis referral/admission: RR >60 refer, RR >70 emergency/admit, intake 50-75%, SpO2 <92% refer, SpO2 <90% admit/oxygen if >=6 weeks",
+          "label": "Bronchiolitis referral/admission",
           "source_ids": [
             "NICE_BRONCHIOLITIS_NG9"
           ],
@@ -1679,7 +1679,7 @@
         {
           "threshold": "<92%",
           "evidence_item_id": "peds_bronchiolitis_referral_admission_oxygen",
-          "label": "Bronchiolitis referral/admission: RR >60 refer, RR >70 emergency/admit, intake 50-75%, SpO2 <92% refer, SpO2 <90% admit/oxygen if >=6 weeks",
+          "label": "Bronchiolitis referral/admission",
           "source_ids": [
             "NICE_BRONCHIOLITIS_NG9"
           ],
@@ -1688,7 +1688,7 @@
         {
           "threshold": "<90%",
           "evidence_item_id": "peds_bronchiolitis_referral_admission_oxygen",
-          "label": "Bronchiolitis referral/admission: RR >60 refer, RR >70 emergency/admit, intake 50-75%, SpO2 <92% refer, SpO2 <90% admit/oxygen if >=6 weeks",
+          "label": "Bronchiolitis referral/admission",
           "source_ids": [
             "NICE_BRONCHIOLITIS_NG9"
           ],
@@ -1697,7 +1697,7 @@
         {
           "threshold": ">=6 weeks",
           "evidence_item_id": "peds_bronchiolitis_referral_admission_oxygen",
-          "label": "Bronchiolitis referral/admission: RR >60 refer, RR >70 emergency/admit, intake 50-75%, SpO2 <92% refer, SpO2 <90% admit/oxygen if >=6 weeks",
+          "label": "Bronchiolitis referral/admission",
           "source_ids": [
             "NICE_BRONCHIOLITIS_NG9"
           ],
@@ -1706,7 +1706,7 @@
         {
           "threshold": "<6 weeks",
           "evidence_item_id": "peds_bronchiolitis_referral_admission_oxygen",
-          "label": "Bronchiolitis referral/admission: RR >60 refer, RR >70 emergency/admit, intake 50-75%, SpO2 <92% refer, SpO2 <90% admit/oxygen if >=6 weeks",
+          "label": "Bronchiolitis referral/admission",
           "source_ids": [
             "NICE_BRONCHIOLITIS_NG9"
           ],
@@ -1715,7 +1715,7 @@
         {
           "threshold": ">90%",
           "evidence_item_id": "peds_bronchiolitis_discharge_cutoffs",
-          "label": "Bronchiolitis discharge oxygen: maintain >90% in air for 4 hours including sleep if >=6 weeks; >92% if <6 weeks or underlying condition",
+          "label": "Bronchiolitis discharge oxygen",
           "source_ids": [
             "NICE_BRONCHIOLITIS_NG9"
           ],
@@ -1724,7 +1724,7 @@
         {
           "threshold": "4 hours",
           "evidence_item_id": "peds_bronchiolitis_discharge_cutoffs",
-          "label": "Bronchiolitis discharge oxygen: maintain >90% in air for 4 hours including sleep if >=6 weeks; >92% if <6 weeks or underlying condition",
+          "label": "Bronchiolitis discharge oxygen",
           "source_ids": [
             "NICE_BRONCHIOLITIS_NG9"
           ],
@@ -1733,7 +1733,7 @@
         {
           "threshold": ">=6 weeks",
           "evidence_item_id": "peds_bronchiolitis_discharge_cutoffs",
-          "label": "Bronchiolitis discharge oxygen: maintain >90% in air for 4 hours including sleep if >=6 weeks; >92% if <6 weeks or underlying condition",
+          "label": "Bronchiolitis discharge oxygen",
           "source_ids": [
             "NICE_BRONCHIOLITIS_NG9"
           ],
@@ -1742,7 +1742,7 @@
         {
           "threshold": ">92%",
           "evidence_item_id": "peds_bronchiolitis_discharge_cutoffs",
-          "label": "Bronchiolitis discharge oxygen: maintain >90% in air for 4 hours including sleep if >=6 weeks; >92% if <6 weeks or underlying condition",
+          "label": "Bronchiolitis discharge oxygen",
           "source_ids": [
             "NICE_BRONCHIOLITIS_NG9"
           ],
@@ -1751,16 +1751,7 @@
         {
           "threshold": "<6 weeks",
           "evidence_item_id": "peds_bronchiolitis_discharge_cutoffs",
-          "label": "Bronchiolitis discharge oxygen: maintain >90% in air for 4 hours including sleep if >=6 weeks; >92% if <6 weeks or underlying condition",
-          "source_ids": [
-            "NICE_BRONCHIOLITIS_NG9"
-          ],
-          "review_status": "source_backed"
-        },
-        {
-          "threshold": "2 years",
-          "evidence_item_id": "differentialBuckets_peds_bronchiolitis_under2",
-          "label": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles",
+          "label": "Bronchiolitis discharge oxygen",
           "source_ids": [
             "NICE_BRONCHIOLITIS_NG9"
           ],
@@ -1864,7 +1855,7 @@
           {
             "domain": "imaging_results",
             "exact_data_needed": [
-              "source-directed imaging/ECG/procedure results when indicated",
+              "imaging, ECG, culture, pathology, or procedure result required by the chosen branch",
               "Chest imaging when focal or severe"
             ],
             "source_ids": [
@@ -2045,7 +2036,7 @@
         "pediatric_respiratory_wheeze_classification_decision": {
           "rule_id": "pediatric_respiratory_wheeze_classification_criteria",
           "source": "criteria",
-          "description": "Classify Pediatric respiratory distress, wheeze, or bronchiolitis against cited thresholds and condition-specific rules: Bronchiolitis frame: <2 years, 3-6 months, 3-5 days, 90%, 3 weeks | Bronchiolitis referral/admission: >60 breaths/minute, >70 breaths/minute, 50% to 75%, <92%, <90% | Bronchiolitis discharge oxygen: >90%, 4 hours, >=6 weeks, >92%, <6 weeks | Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles: 2 years",
+          "description": "Classify Pediatric respiratory distress, wheeze, or bronchiolitis against cited thresholds and condition-specific rules: Bronchiolitis frame: <2 years, 3-6 months, 3-5 days, 90%, 3 weeks | Bronchiolitis referral/admission: >60 breaths/minute, >70 breaths/minute, 50% to 75%, <92%, <90% | Bronchiolitis discharge oxygen: >90%, 4 hours, >=6 weeks, >92%, <6 weeks",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2140,22 +2131,6 @@
                 "NICE_BRONCHIOLITIS_NG9"
               ],
               "source_section": "When to discharge",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "differentialBuckets_peds_bronchiolitis_under2",
-              "label": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles",
-              "criteria_text": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles Route infants and young children with bronchiolitis pattern to oxygen, feeding, hydration, apnea, and respiratory-failure assessment; avoid routine chest X-ray, blood tests, antibiotics, bronchodilators, or steroids unless another diagnosis is suspected. Changes oxygen thresholds, feeding and hydration plan, suction consideration, discharge safety-netting, and avoidance of routine bronchodilators, steroids, antibiotics, chest X-ray, and blood tests. Bronchiolitis in a child under 2 years with compatible prodrome and lower respiratory signs. Bronchiolitis is primarily a clinical diagnosis in young children; over-testing and asthma-style treatment can mislead management while missing apnea, hypoxemia, hydration, or respiratory-failure risks.",
-              "cutoffs": [
-                "2 years"
-              ],
-              "data_needed": [
-                "2 years"
-              ],
-              "source_ids": [
-                "NICE_BRONCHIOLITIS_NG9"
-              ],
-              "source_section": "assessment, diagnosis, referral, admission, management, and safety information",
               "review_status": "source_backed"
             }
           ]
@@ -2305,22 +2280,6 @@
               ],
               "source_section": "When to discharge",
               "review_status": "source_backed"
-            },
-            {
-              "id": "differentialBuckets_peds_bronchiolitis_under2",
-              "label": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles",
-              "criteria_text": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles Route infants and young children with bronchiolitis pattern to oxygen, feeding, hydration, apnea, and respiratory-failure assessment; avoid routine chest X-ray, blood tests, antibiotics, bronchodilators, or steroids unless another diagnosis is suspected. Changes oxygen thresholds, feeding and hydration plan, suction consideration, discharge safety-netting, and avoidance of routine bronchodilators, steroids, antibiotics, chest X-ray, and blood tests. Bronchiolitis in a child under 2 years with compatible prodrome and lower respiratory signs. Bronchiolitis is primarily a clinical diagnosis in young children; over-testing and asthma-style treatment can mislead management while missing apnea, hypoxemia, hydration, or respiratory-failure risks.",
-              "cutoffs": [
-                "2 years"
-              ],
-              "data_needed": [
-                "2 years"
-              ],
-              "source_ids": [
-                "NICE_BRONCHIOLITIS_NG9"
-              ],
-              "source_section": "assessment, diagnosis, referral, admission, management, and safety information",
-              "review_status": "source_backed"
             }
           ]
         },
@@ -2422,22 +2381,6 @@
               ],
               "source_section": "When to discharge",
               "review_status": "source_backed"
-            },
-            {
-              "id": "differentialBuckets_peds_bronchiolitis_under2",
-              "label": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles",
-              "criteria_text": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles Route infants and young children with bronchiolitis pattern to oxygen, feeding, hydration, apnea, and respiratory-failure assessment; avoid routine chest X-ray, blood tests, antibiotics, bronchodilators, or steroids unless another diagnosis is suspected. Changes oxygen thresholds, feeding and hydration plan, suction consideration, discharge safety-netting, and avoidance of routine bronchodilators, steroids, antibiotics, chest X-ray, and blood tests. Bronchiolitis in a child under 2 years with compatible prodrome and lower respiratory signs. Bronchiolitis is primarily a clinical diagnosis in young children; over-testing and asthma-style treatment can mislead management while missing apnea, hypoxemia, hydration, or respiratory-failure risks.",
-              "cutoffs": [
-                "2 years"
-              ],
-              "data_needed": [
-                "2 years"
-              ],
-              "source_ids": [
-                "NICE_BRONCHIOLITIS_NG9"
-              ],
-              "source_section": "assessment, diagnosis, referral, admission, management, and safety information",
-              "review_status": "source_backed"
             }
           ]
         },
@@ -2461,29 +2404,12 @@
             "NICE_SEPSIS_UNDER16_2025",
             "AHRQ_CALIBRATE_DX"
           ],
-          "criteria_options": [
-            {
-              "id": "differentialBuckets_peds_bronchiolitis_under2",
-              "label": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles",
-              "criteria_text": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles Route infants and young children with bronchiolitis pattern to oxygen, feeding, hydration, apnea, and respiratory-failure assessment; avoid routine chest X-ray, blood tests, antibiotics, bronchodilators, or steroids unless another diagnosis is suspected. Changes oxygen thresholds, feeding and hydration plan, suction consideration, discharge safety-netting, and avoidance of routine bronchodilators, steroids, antibiotics, chest X-ray, and blood tests. Bronchiolitis in a child under 2 years with compatible prodrome and lower respiratory signs. Bronchiolitis is primarily a clinical diagnosis in young children; over-testing and asthma-style treatment can mislead management while missing apnea, hypoxemia, hydration, or respiratory-failure risks.",
-              "cutoffs": [
-                "2 years"
-              ],
-              "data_needed": [
-                "2 years"
-              ],
-              "source_ids": [
-                "NICE_BRONCHIOLITIS_NG9"
-              ],
-              "source_section": "assessment, diagnosis, referral, admission, management, and safety information",
-              "review_status": "source_backed"
-            }
-          ]
+          "criteria_options": []
         },
         "pediatric_respiratory_wheeze_review_endpoint": {
           "rule_id": "pediatric_respiratory_wheeze_review_criteria",
           "source": "criteria",
-          "description": "Use clinician review when Pediatric respiratory distress, wheeze, or bronchiolitis treatment/disposition depends on pregnancy/postpartum status, pediatric/adult applicability, renal/hepatic/cardiac disease, allergy, drug interaction, procedural risk, guideline conflict, or local protocol.",
+          "description": "Use reviewer handoff when Pediatric respiratory distress, wheeze, or bronchiolitis treatment or disposition depends on Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Pediatric respiratory distress, wheeze, or bronchiolitis: immediate stabilization or escalation trigger: Apnea or central cyanosis.; Pediatric respiratory distress, wheeze, or bronchiolitis: treatment or disposition for high-risk or confirmed disease: Emergency pediatric respiratory escalation..",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -2597,22 +2523,6 @@
               ],
               "source_section": "When to discharge",
               "review_status": "source_backed"
-            },
-            {
-              "id": "differentialBuckets_peds_bronchiolitis_under2",
-              "label": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles",
-              "criteria_text": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles Route infants and young children with bronchiolitis pattern to oxygen, feeding, hydration, apnea, and respiratory-failure assessment; avoid routine chest X-ray, blood tests, antibiotics, bronchodilators, or steroids unless another diagnosis is suspected. Changes oxygen thresholds, feeding and hydration plan, suction consideration, discharge safety-netting, and avoidance of routine bronchodilators, steroids, antibiotics, chest X-ray, and blood tests. Bronchiolitis in a child under 2 years with compatible prodrome and lower respiratory signs. Bronchiolitis is primarily a clinical diagnosis in young children; over-testing and asthma-style treatment can mislead management while missing apnea, hypoxemia, hydration, or respiratory-failure risks.",
-              "cutoffs": [
-                "2 years"
-              ],
-              "data_needed": [
-                "2 years"
-              ],
-              "source_ids": [
-                "NICE_BRONCHIOLITIS_NG9"
-              ],
-              "source_section": "assessment, diagnosis, referral, admission, management, and safety information",
-              "review_status": "source_backed"
             }
           ]
         },
@@ -2711,22 +2621,6 @@
                 "NICE_BRONCHIOLITIS_NG9"
               ],
               "source_section": "When to discharge",
-              "review_status": "source_backed"
-            },
-            {
-              "id": "differentialBuckets_peds_bronchiolitis_under2",
-              "label": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles",
-              "criteria_text": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles Route infants and young children with bronchiolitis pattern to oxygen, feeding, hydration, apnea, and respiratory-failure assessment; avoid routine chest X-ray, blood tests, antibiotics, bronchodilators, or steroids unless another diagnosis is suspected. Changes oxygen thresholds, feeding and hydration plan, suction consideration, discharge safety-netting, and avoidance of routine bronchodilators, steroids, antibiotics, chest X-ray, and blood tests. Bronchiolitis in a child under 2 years with compatible prodrome and lower respiratory signs. Bronchiolitis is primarily a clinical diagnosis in young children; over-testing and asthma-style treatment can mislead management while missing apnea, hypoxemia, hydration, or respiratory-failure risks.",
-              "cutoffs": [
-                "2 years"
-              ],
-              "data_needed": [
-                "2 years"
-              ],
-              "source_ids": [
-                "NICE_BRONCHIOLITIS_NG9"
-              ],
-              "source_section": "assessment, diagnosis, referral, admission, management, and safety information",
               "review_status": "source_backed"
             }
           ]
@@ -2827,22 +2721,6 @@
               ],
               "source_section": "When to discharge",
               "review_status": "source_backed"
-            },
-            {
-              "id": "differentialBuckets_peds_bronchiolitis_under2",
-              "label": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles",
-              "criteria_text": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles Route infants and young children with bronchiolitis pattern to oxygen, feeding, hydration, apnea, and respiratory-failure assessment; avoid routine chest X-ray, blood tests, antibiotics, bronchodilators, or steroids unless another diagnosis is suspected. Changes oxygen thresholds, feeding and hydration plan, suction consideration, discharge safety-netting, and avoidance of routine bronchodilators, steroids, antibiotics, chest X-ray, and blood tests. Bronchiolitis in a child under 2 years with compatible prodrome and lower respiratory signs. Bronchiolitis is primarily a clinical diagnosis in young children; over-testing and asthma-style treatment can mislead management while missing apnea, hypoxemia, hydration, or respiratory-failure risks.",
-              "cutoffs": [
-                "2 years"
-              ],
-              "data_needed": [
-                "2 years"
-              ],
-              "source_ids": [
-                "NICE_BRONCHIOLITIS_NG9"
-              ],
-              "source_section": "assessment, diagnosis, referral, admission, management, and safety information",
-              "review_status": "source_backed"
             }
           ]
         },
@@ -2870,7 +2748,7 @@
         "pediatric_respiratory_wheeze_alternate_endpoint": {
           "rule_id": "pediatric_respiratory_wheeze_alternate_criteria",
           "source": "criteria",
-          "description": "Use an alternate pathway when Pediatric respiratory distress, wheeze, or bronchiolitis criteria are absent, a cited mimic better explains the presentation, or objective result data contradict this workup.",
+          "description": "Use an alternate pathway when Pediatric respiratory distress, wheeze, or bronchiolitis criteria are absent, Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles; Asthma exacerbation or viral-induced wheeze with recurrent episodes, atopy, prior asthma plan, or older-child wheeze pattern; Pneumonia, sepsis, aspiration, foreign body, anaphylaxis, cardiac disease, or other dangerous mimic of wheeze better explains the presentation, or measured result data contradict this workup.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2962,22 +2840,6 @@
               ],
               "source_section": "When to discharge",
               "review_status": "source_backed"
-            },
-            {
-              "id": "differentialBuckets_peds_bronchiolitis_under2",
-              "label": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles",
-              "criteria_text": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles Route infants and young children with bronchiolitis pattern to oxygen, feeding, hydration, apnea, and respiratory-failure assessment; avoid routine chest X-ray, blood tests, antibiotics, bronchodilators, or steroids unless another diagnosis is suspected. Changes oxygen thresholds, feeding and hydration plan, suction consideration, discharge safety-netting, and avoidance of routine bronchodilators, steroids, antibiotics, chest X-ray, and blood tests. Bronchiolitis in a child under 2 years with compatible prodrome and lower respiratory signs. Bronchiolitis is primarily a clinical diagnosis in young children; over-testing and asthma-style treatment can mislead management while missing apnea, hypoxemia, hydration, or respiratory-failure risks.",
-              "cutoffs": [
-                "2 years"
-              ],
-              "data_needed": [
-                "2 years"
-              ],
-              "source_ids": [
-                "NICE_BRONCHIOLITIS_NG9"
-              ],
-              "source_section": "assessment, diagnosis, referral, admission, management, and safety information",
-              "review_status": "source_backed"
             }
           ]
         }
@@ -3017,8 +2879,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal data-availability guard",
-            "edgeLabel": "Internal data-availability guard",
+            "label": "Internal traversal guard",
+            "edgeLabel": "Internal traversal guard",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -3054,7 +2916,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -3062,7 +2924,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
             },
             "missing_data_needed": [
               "symptoms",
@@ -3081,7 +2943,7 @@
             "id": "pediatric_respiratory_wheeze_concurrent_data_bundle",
             "type": "action",
             "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: assessment, thresholds, and treatment-safety inputs",
-            "edgeLabel": "Collect Pediatric respiratory distress, wheeze, or bronchiolitis: Bronchiolitis testing limits; Chest imaging when focal or severe; Asthma response reassessment; Controller and trigger review; <2 years; 3-6 months; 3-5 days; Measure oxygen saturation",
+            "edgeLabel": "Collect Pediatric respiratory distress, wheeze, or bronchiolitis: Bronchiolitis testing limits; Chest imaging when focal or severe; Asthma response reassessment; Controller and trigger review; <2 years; 3-6 months; 3-5 days",
             "source_ids": [
               "NICE_BRONCHIOLITIS_NG9",
               "GINA_ASTHMA_2025",
@@ -3111,7 +2973,7 @@
                 "AHRQ_CALIBRATE_DX"
               ]
             },
-            "action": "Obtain together: Bronchiolitis testing limits; Chest imaging when focal or severe; Asthma response reassessment; Controller and trigger review; Measure oxygen saturation; Measure respiratory rate; Measure temperature; Measure current weight; Document mental status; age; illness day; coryzal prodrome; cough; wheeze/crackles; work of breathing; respiratory rate; oxygen saturation in air.",
+            "action": "Obtain together: Bronchiolitis testing limits; Chest imaging when focal or severe; Asthma response reassessment; Controller and trigger review; age; illness day; coryzal prodrome; cough; wheeze/crackles; work of breathing; respiratory rate; oxygen saturation in air.",
             "children": [
               {
                 "id": "pediatric_respiratory_wheeze_classification_decision",
@@ -3128,7 +2990,7 @@
                 "criteria": {
                   "rule_id": "pediatric_respiratory_wheeze_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Pediatric respiratory distress, wheeze, or bronchiolitis against cited thresholds and condition-specific rules: Bronchiolitis frame: <2 years, 3-6 months, 3-5 days, 90%, 3 weeks | Bronchiolitis referral/admission: >60 breaths/minute, >70 breaths/minute, 50% to 75%, <92%, <90% | Bronchiolitis discharge oxygen: >90%, 4 hours, >=6 weeks, >92%, <6 weeks | Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles: 2 years",
+                  "description": "Classify Pediatric respiratory distress, wheeze, or bronchiolitis against cited thresholds and condition-specific rules: Bronchiolitis frame: <2 years, 3-6 months, 3-5 days, 90%, 3 weeks | Bronchiolitis referral/admission: >60 breaths/minute, >70 breaths/minute, 50% to 75%, <92%, <90% | Bronchiolitis discharge oxygen: >90%, 4 hours, >=6 weeks, >92%, <6 weeks",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -3224,22 +3086,6 @@
                       ],
                       "source_section": "When to discharge",
                       "review_status": "source_backed"
-                    },
-                    {
-                      "id": "differentialBuckets_peds_bronchiolitis_under2",
-                      "label": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles",
-                      "criteria_text": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles Route infants and young children with bronchiolitis pattern to oxygen, feeding, hydration, apnea, and respiratory-failure assessment; avoid routine chest X-ray, blood tests, antibiotics, bronchodilators, or steroids unless another diagnosis is suspected. Changes oxygen thresholds, feeding and hydration plan, suction consideration, discharge safety-netting, and avoidance of routine bronchodilators, steroids, antibiotics, chest X-ray, and blood tests. Bronchiolitis in a child under 2 years with compatible prodrome and lower respiratory signs. Bronchiolitis is primarily a clinical diagnosis in young children; over-testing and asthma-style treatment can mislead management while missing apnea, hypoxemia, hydration, or respiratory-failure risks.",
-                      "cutoffs": [
-                        "2 years"
-                      ],
-                      "data_needed": [
-                        "2 years"
-                      ],
-                      "source_ids": [
-                        "NICE_BRONCHIOLITIS_NG9"
-                      ],
-                      "source_section": "assessment, diagnosis, referral, admission, management, and safety information",
-                      "review_status": "source_backed"
                     }
                   ]
                 },
@@ -3248,8 +3094,8 @@
                   {
                     "id": "pediatric_respiratory_wheeze_missing_cutoff_data_endpoint",
                     "type": "endpoint",
-                    "label": "Internal data-availability guard",
-                    "edgeLabel": "Internal data-availability guard",
+                    "label": "Internal traversal guard",
+                    "edgeLabel": "Internal traversal guard",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "NICE_BRONCHIOLITIS_NG9",
@@ -3306,7 +3152,7 @@
                         "50% to 75%"
                       ]
                     },
-                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -3314,7 +3160,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
                     },
                     "missing_data_needed": [
                       "age",
@@ -3450,22 +3296,6 @@
                           ],
                           "source_section": "When to discharge",
                           "review_status": "source_backed"
-                        },
-                        {
-                          "id": "differentialBuckets_peds_bronchiolitis_under2",
-                          "label": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles",
-                          "criteria_text": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles Route infants and young children with bronchiolitis pattern to oxygen, feeding, hydration, apnea, and respiratory-failure assessment; avoid routine chest X-ray, blood tests, antibiotics, bronchodilators, or steroids unless another diagnosis is suspected. Changes oxygen thresholds, feeding and hydration plan, suction consideration, discharge safety-netting, and avoidance of routine bronchodilators, steroids, antibiotics, chest X-ray, and blood tests. Bronchiolitis in a child under 2 years with compatible prodrome and lower respiratory signs. Bronchiolitis is primarily a clinical diagnosis in young children; over-testing and asthma-style treatment can mislead management while missing apnea, hypoxemia, hydration, or respiratory-failure risks.",
-                          "cutoffs": [
-                            "2 years"
-                          ],
-                          "data_needed": [
-                            "2 years"
-                          ],
-                          "source_ids": [
-                            "NICE_BRONCHIOLITIS_NG9"
-                          ],
-                          "source_section": "assessment, diagnosis, referral, admission, management, and safety information",
-                          "review_status": "source_backed"
                         }
                       ]
                     },
@@ -3547,22 +3377,6 @@
                           "NICE_BRONCHIOLITIS_NG9"
                         ],
                         "source_section": "When to discharge",
-                        "review_status": "source_backed"
-                      },
-                      {
-                        "id": "differentialBuckets_peds_bronchiolitis_under2",
-                        "label": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles",
-                        "criteria_text": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles Route infants and young children with bronchiolitis pattern to oxygen, feeding, hydration, apnea, and respiratory-failure assessment; avoid routine chest X-ray, blood tests, antibiotics, bronchodilators, or steroids unless another diagnosis is suspected. Changes oxygen thresholds, feeding and hydration plan, suction consideration, discharge safety-netting, and avoidance of routine bronchodilators, steroids, antibiotics, chest X-ray, and blood tests. Bronchiolitis in a child under 2 years with compatible prodrome and lower respiratory signs. Bronchiolitis is primarily a clinical diagnosis in young children; over-testing and asthma-style treatment can mislead management while missing apnea, hypoxemia, hydration, or respiratory-failure risks.",
-                        "cutoffs": [
-                          "2 years"
-                        ],
-                        "data_needed": [
-                          "2 years"
-                        ],
-                        "source_ids": [
-                          "NICE_BRONCHIOLITIS_NG9"
-                        ],
-                        "source_section": "assessment, diagnosis, referral, admission, management, and safety information",
                         "review_status": "source_backed"
                       }
                     ]
@@ -3677,26 +3491,10 @@
                           ],
                           "source_section": "When to discharge",
                           "review_status": "source_backed"
-                        },
-                        {
-                          "id": "differentialBuckets_peds_bronchiolitis_under2",
-                          "label": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles",
-                          "criteria_text": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles Route infants and young children with bronchiolitis pattern to oxygen, feeding, hydration, apnea, and respiratory-failure assessment; avoid routine chest X-ray, blood tests, antibiotics, bronchodilators, or steroids unless another diagnosis is suspected. Changes oxygen thresholds, feeding and hydration plan, suction consideration, discharge safety-netting, and avoidance of routine bronchodilators, steroids, antibiotics, chest X-ray, and blood tests. Bronchiolitis in a child under 2 years with compatible prodrome and lower respiratory signs. Bronchiolitis is primarily a clinical diagnosis in young children; over-testing and asthma-style treatment can mislead management while missing apnea, hypoxemia, hydration, or respiratory-failure risks.",
-                          "cutoffs": [
-                            "2 years"
-                          ],
-                          "data_needed": [
-                            "2 years"
-                          ],
-                          "source_ids": [
-                            "NICE_BRONCHIOLITIS_NG9"
-                          ],
-                          "source_section": "assessment, diagnosis, referral, admission, management, and safety information",
-                          "review_status": "source_backed"
                         }
                       ]
                     },
-                    "action": "Pediatric respiratory distress, wheeze, or bronchiolitis: immediate stabilization or escalation trigger: Apnea or central cyanosis.; Pediatric respiratory distress, wheeze, or bronchiolitis: treatment or disposition for high-risk or confirmed disease: Emergency pediatric respiratory escalation.; Pediatric respiratory distress, wheeze, or bronchiolitis: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Bronchiolitis supportive plan.; Emergency pediatric respiratory escalation; Bronchiolitis supportive plan",
+                    "action": "Pediatric respiratory distress, wheeze, or bronchiolitis: immediate stabilization or escalation trigger: Apnea or central cyanosis.; Pediatric respiratory distress, wheeze, or bronchiolitis: treatment or disposition for high-risk or confirmed disease: Emergency pediatric respiratory escalation.; Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Asthma acute plan",
                     "children": [
                       {
                         "id": "pediatric_respiratory_wheeze_treatment_safety_decision",
@@ -3730,32 +3528,15 @@
                             "NICE_SEPSIS_UNDER16_2025",
                             "AHRQ_CALIBRATE_DX"
                           ],
-                          "criteria_options": [
-                            {
-                              "id": "differentialBuckets_peds_bronchiolitis_under2",
-                              "label": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles",
-                              "criteria_text": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles Route infants and young children with bronchiolitis pattern to oxygen, feeding, hydration, apnea, and respiratory-failure assessment; avoid routine chest X-ray, blood tests, antibiotics, bronchodilators, or steroids unless another diagnosis is suspected. Changes oxygen thresholds, feeding and hydration plan, suction consideration, discharge safety-netting, and avoidance of routine bronchodilators, steroids, antibiotics, chest X-ray, and blood tests. Bronchiolitis in a child under 2 years with compatible prodrome and lower respiratory signs. Bronchiolitis is primarily a clinical diagnosis in young children; over-testing and asthma-style treatment can mislead management while missing apnea, hypoxemia, hydration, or respiratory-failure risks.",
-                              "cutoffs": [
-                                "2 years"
-                              ],
-                              "data_needed": [
-                                "2 years"
-                              ],
-                              "source_ids": [
-                                "NICE_BRONCHIOLITIS_NG9"
-                              ],
-                              "source_section": "assessment, diagnosis, referral, admission, management, and safety information",
-                              "review_status": "source_backed"
-                            }
-                          ]
+                          "criteria_options": []
                         },
                         "action": "Apply Pediatric respiratory distress, wheeze, or bronchiolitis-specific safety modifiers before final treatment or disposition.",
                         "children": [
                           {
                             "id": "pediatric_respiratory_wheeze_review_endpoint",
                             "type": "endpoint",
-                            "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: reviewer handoff for contraindication or special population",
-                            "edgeLabel": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
+                            "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: review Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Pediatric respiratory distress, wheeze, or bronchiolitis: immediate stabilization or escalation trigger: Apnea or central cyanosis.; Pediatric respiratory distress, wheeze, or bronchiolitis: treatment or disposition for high-risk or confirmed disease: Emergency pediatric respiratory escalation.",
+                            "edgeLabel": "Pediatric respiratory distress, wheeze, or bronchiolitis modifier needing review: Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Pediatric respiratory distress, wheeze, or bronchiolitis: immediate stabilization or escalation trigger: Apnea or central cyanosis.; Pediatric respiratory distress, wheeze, or bronchiolitis: treatment or disposition for high-risk or confirmed disease: Emergency pediatric respiratory escalation.",
                             "source_ids": [
                               "NICE_BRONCHIOLITIS_NG9",
                               "GINA_ASTHMA_2025",
@@ -3766,7 +3547,7 @@
                             "criteria": {
                               "rule_id": "pediatric_respiratory_wheeze_review_criteria",
                               "source": "criteria",
-                              "description": "Use clinician review when Pediatric respiratory distress, wheeze, or bronchiolitis treatment/disposition depends on pregnancy/postpartum status, pediatric/adult applicability, renal/hepatic/cardiac disease, allergy, drug interaction, procedural risk, guideline conflict, or local protocol.",
+                              "description": "Use reviewer handoff when Pediatric respiratory distress, wheeze, or bronchiolitis treatment or disposition depends on Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Pediatric respiratory distress, wheeze, or bronchiolitis: immediate stabilization or escalation trigger: Apnea or central cyanosis.; Pediatric respiratory distress, wheeze, or bronchiolitis: treatment or disposition for high-risk or confirmed disease: Emergency pediatric respiratory escalation..",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -3784,16 +3565,16 @@
                                 "AHRQ_CALIBRATE_DX"
                               ]
                             },
-                            "action": "Pause non-emergent Pediatric respiratory distress, wheeze, or bronchiolitis treatment choices until the modifier is resolved and the reviewer documents the applicable guideline or local cutoff.",
+                            "action": "Resolve the named Pediatric respiratory distress, wheeze, or bronchiolitis modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
-                            "review_needed_reason": "Patient-specific contraindication, special population, guideline conflict, or local policy affects treatment or disposition."
+                            "review_needed_reason": "Pediatric respiratory distress, wheeze, or bronchiolitis management changes when Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Pediatric respiratory distress, wheeze, or bronchiolitis: immediate stabilization or escalation trigger: Apnea or central cyanosis.; Pediatric respiratory distress, wheeze, or bronchiolitis: treatment or disposition for high-risk or confirmed disease: Emergency pediatric respiratory escalation.; document the exact modifier and reviewer input needed."
                           },
                           {
                             "id": "pediatric_respiratory_wheeze_monitoring_bundle",
                             "type": "action",
                             "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Pediatric respiratory distress, wheeze, or bronchiolitis symptoms, vital signs, threshold labs/results, treatment response, adverse effects, and disposition readiness",
+                            "edgeLabel": "Trend Pediatric respiratory distress, wheeze, or bronchiolitis symptoms, vital signs, criterion-defining results, treatment response, adverse effects, and disposition readiness",
                             "source_ids": [
                               "NICE_BRONCHIOLITIS_NG9",
                               "GINA_ASTHMA_2025",
@@ -3897,22 +3678,6 @@
                                   ],
                                   "source_section": "When to discharge",
                                   "review_status": "source_backed"
-                                },
-                                {
-                                  "id": "differentialBuckets_peds_bronchiolitis_under2",
-                                  "label": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles",
-                                  "criteria_text": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles Route infants and young children with bronchiolitis pattern to oxygen, feeding, hydration, apnea, and respiratory-failure assessment; avoid routine chest X-ray, blood tests, antibiotics, bronchodilators, or steroids unless another diagnosis is suspected. Changes oxygen thresholds, feeding and hydration plan, suction consideration, discharge safety-netting, and avoidance of routine bronchodilators, steroids, antibiotics, chest X-ray, and blood tests. Bronchiolitis in a child under 2 years with compatible prodrome and lower respiratory signs. Bronchiolitis is primarily a clinical diagnosis in young children; over-testing and asthma-style treatment can mislead management while missing apnea, hypoxemia, hydration, or respiratory-failure risks.",
-                                  "cutoffs": [
-                                    "2 years"
-                                  ],
-                                  "data_needed": [
-                                    "2 years"
-                                  ],
-                                  "source_ids": [
-                                    "NICE_BRONCHIOLITIS_NG9"
-                                  ],
-                                  "source_section": "assessment, diagnosis, referral, admission, management, and safety information",
-                                  "review_status": "source_backed"
                                 }
                               ]
                             },
@@ -3922,7 +3687,7 @@
                                 "id": "pediatric_respiratory_wheeze_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Pediatric respiratory distress, wheeze, or bronchiolitis: reassessment escalation",
-                                "edgeLabel": "Pediatric respiratory distress, wheeze, or bronchiolitis reassessment worsens or Apnea or central cyanosis; Exhaustion or poor respiratory effort; Severe respiratory distress; <2 years; 3-6 months; 3-5 days; 90%; Bronchiolitis testing limits; Chest imaging when focal or severe no longer fit the selected pathway",
+                                "edgeLabel": "Pediatric respiratory distress, wheeze, or bronchiolitis reassessment worsens or Apnea or central cyanosis; Exhaustion or poor respiratory effort; Severe respiratory distress; <2 years; 3-6 months; 3-5 days; 90%; Bronchiolitis testing limits; Chest imaging when focal or severe no longer fit the documented Pediatric respiratory distress, wheeze, or bronchiolitis branch",
                                 "source_ids": [
                                   "NICE_BRONCHIOLITIS_NG9",
                                   "GINA_ASTHMA_2025",
@@ -4026,22 +3791,6 @@
                                       ],
                                       "source_section": "When to discharge",
                                       "review_status": "source_backed"
-                                    },
-                                    {
-                                      "id": "differentialBuckets_peds_bronchiolitis_under2",
-                                      "label": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles",
-                                      "criteria_text": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles Route infants and young children with bronchiolitis pattern to oxygen, feeding, hydration, apnea, and respiratory-failure assessment; avoid routine chest X-ray, blood tests, antibiotics, bronchodilators, or steroids unless another diagnosis is suspected. Changes oxygen thresholds, feeding and hydration plan, suction consideration, discharge safety-netting, and avoidance of routine bronchodilators, steroids, antibiotics, chest X-ray, and blood tests. Bronchiolitis in a child under 2 years with compatible prodrome and lower respiratory signs. Bronchiolitis is primarily a clinical diagnosis in young children; over-testing and asthma-style treatment can mislead management while missing apnea, hypoxemia, hydration, or respiratory-failure risks.",
-                                      "cutoffs": [
-                                        "2 years"
-                                      ],
-                                      "data_needed": [
-                                        "2 years"
-                                      ],
-                                      "source_ids": [
-                                        "NICE_BRONCHIOLITIS_NG9"
-                                      ],
-                                      "source_section": "assessment, diagnosis, referral, admission, management, and safety information",
-                                      "review_status": "source_backed"
                                     }
                                   ]
                                 },
@@ -4123,22 +3872,6 @@
                                       "NICE_BRONCHIOLITIS_NG9"
                                     ],
                                     "source_section": "When to discharge",
-                                    "review_status": "source_backed"
-                                  },
-                                  {
-                                    "id": "differentialBuckets_peds_bronchiolitis_under2",
-                                    "label": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles",
-                                    "criteria_text": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles Route infants and young children with bronchiolitis pattern to oxygen, feeding, hydration, apnea, and respiratory-failure assessment; avoid routine chest X-ray, blood tests, antibiotics, bronchodilators, or steroids unless another diagnosis is suspected. Changes oxygen thresholds, feeding and hydration plan, suction consideration, discharge safety-netting, and avoidance of routine bronchodilators, steroids, antibiotics, chest X-ray, and blood tests. Bronchiolitis in a child under 2 years with compatible prodrome and lower respiratory signs. Bronchiolitis is primarily a clinical diagnosis in young children; over-testing and asthma-style treatment can mislead management while missing apnea, hypoxemia, hydration, or respiratory-failure risks.",
-                                    "cutoffs": [
-                                      "2 years"
-                                    ],
-                                    "data_needed": [
-                                      "2 years"
-                                    ],
-                                    "source_ids": [
-                                      "NICE_BRONCHIOLITIS_NG9"
-                                    ],
-                                    "source_section": "assessment, diagnosis, referral, admission, management, and safety information",
                                     "review_status": "source_backed"
                                   }
                                 ]
@@ -4251,22 +3984,6 @@
                                       ],
                                       "source_section": "When to discharge",
                                       "review_status": "source_backed"
-                                    },
-                                    {
-                                      "id": "differentialBuckets_peds_bronchiolitis_under2",
-                                      "label": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles",
-                                      "criteria_text": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles Route infants and young children with bronchiolitis pattern to oxygen, feeding, hydration, apnea, and respiratory-failure assessment; avoid routine chest X-ray, blood tests, antibiotics, bronchodilators, or steroids unless another diagnosis is suspected. Changes oxygen thresholds, feeding and hydration plan, suction consideration, discharge safety-netting, and avoidance of routine bronchodilators, steroids, antibiotics, chest X-ray, and blood tests. Bronchiolitis in a child under 2 years with compatible prodrome and lower respiratory signs. Bronchiolitis is primarily a clinical diagnosis in young children; over-testing and asthma-style treatment can mislead management while missing apnea, hypoxemia, hydration, or respiratory-failure risks.",
-                                      "cutoffs": [
-                                        "2 years"
-                                      ],
-                                      "data_needed": [
-                                        "2 years"
-                                      ],
-                                      "source_ids": [
-                                        "NICE_BRONCHIOLITIS_NG9"
-                                      ],
-                                      "source_section": "assessment, diagnosis, referral, admission, management, and safety information",
-                                      "review_status": "source_backed"
                                     }
                                   ]
                                 },
@@ -4349,22 +4066,6 @@
                                     ],
                                     "source_section": "When to discharge",
                                     "review_status": "source_backed"
-                                  },
-                                  {
-                                    "id": "differentialBuckets_peds_bronchiolitis_under2",
-                                    "label": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles",
-                                    "criteria_text": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles Route infants and young children with bronchiolitis pattern to oxygen, feeding, hydration, apnea, and respiratory-failure assessment; avoid routine chest X-ray, blood tests, antibiotics, bronchodilators, or steroids unless another diagnosis is suspected. Changes oxygen thresholds, feeding and hydration plan, suction consideration, discharge safety-netting, and avoidance of routine bronchodilators, steroids, antibiotics, chest X-ray, and blood tests. Bronchiolitis in a child under 2 years with compatible prodrome and lower respiratory signs. Bronchiolitis is primarily a clinical diagnosis in young children; over-testing and asthma-style treatment can mislead management while missing apnea, hypoxemia, hydration, or respiratory-failure risks.",
-                                    "cutoffs": [
-                                      "2 years"
-                                    ],
-                                    "data_needed": [
-                                      "2 years"
-                                    ],
-                                    "source_ids": [
-                                      "NICE_BRONCHIOLITIS_NG9"
-                                    ],
-                                    "source_section": "assessment, diagnosis, referral, admission, management, and safety information",
-                                    "review_status": "source_backed"
                                   }
                                 ]
                               },
@@ -4414,14 +4115,9 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend threshold labs/results",
+                              "trend criterion-defining results",
                               "review treatment response and adverse effects",
-                              "assign disposition and follow-up clinician/service",
-                              "Measure oxygen saturation",
-                              "Measure respiratory rate",
-                              "Measure temperature",
-                              "Measure current weight",
-                              "Document mental status"
+                              "assign disposition and follow-up clinician/service"
                             ],
                             "guideline_cutoffs": [
                               {
@@ -4499,22 +4195,6 @@
                                 ],
                                 "source_section": "When to discharge",
                                 "review_status": "source_backed"
-                              },
-                              {
-                                "id": "differentialBuckets_peds_bronchiolitis_under2",
-                                "label": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles",
-                                "criteria_text": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles Route infants and young children with bronchiolitis pattern to oxygen, feeding, hydration, apnea, and respiratory-failure assessment; avoid routine chest X-ray, blood tests, antibiotics, bronchodilators, or steroids unless another diagnosis is suspected. Changes oxygen thresholds, feeding and hydration plan, suction consideration, discharge safety-netting, and avoidance of routine bronchodilators, steroids, antibiotics, chest X-ray, and blood tests. Bronchiolitis in a child under 2 years with compatible prodrome and lower respiratory signs. Bronchiolitis is primarily a clinical diagnosis in young children; over-testing and asthma-style treatment can mislead management while missing apnea, hypoxemia, hydration, or respiratory-failure risks.",
-                                "cutoffs": [
-                                  "2 years"
-                                ],
-                                "data_needed": [
-                                  "2 years"
-                                ],
-                                "source_ids": [
-                                  "NICE_BRONCHIOLITIS_NG9"
-                                ],
-                                "source_section": "assessment, diagnosis, referral, admission, management, and safety information",
-                                "review_status": "source_backed"
                               }
                             ]
                           }
@@ -4524,8 +4204,6 @@
                     "parallel_actions": [
                       "Pediatric respiratory distress, wheeze, or bronchiolitis: immediate stabilization or escalation trigger: Apnea or central cyanosis.",
                       "Pediatric respiratory distress, wheeze, or bronchiolitis: treatment or disposition for high-risk or confirmed disease: Emergency pediatric respiratory escalation.",
-                      "Pediatric respiratory distress, wheeze, or bronchiolitis: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Bronchiolitis supportive plan.",
-                      "Pediatric respiratory distress, wheeze, or bronchiolitis: monitoring data for response, complications, and reassessment: Bronchiolitis testing limits.",
                       "Emergency pediatric respiratory escalation",
                       "Bronchiolitis supportive plan",
                       "Asthma acute plan"
@@ -4606,22 +4284,6 @@
                         ],
                         "source_section": "When to discharge",
                         "review_status": "source_backed"
-                      },
-                      {
-                        "id": "differentialBuckets_peds_bronchiolitis_under2",
-                        "label": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles",
-                        "criteria_text": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles Route infants and young children with bronchiolitis pattern to oxygen, feeding, hydration, apnea, and respiratory-failure assessment; avoid routine chest X-ray, blood tests, antibiotics, bronchodilators, or steroids unless another diagnosis is suspected. Changes oxygen thresholds, feeding and hydration plan, suction consideration, discharge safety-netting, and avoidance of routine bronchodilators, steroids, antibiotics, chest X-ray, and blood tests. Bronchiolitis in a child under 2 years with compatible prodrome and lower respiratory signs. Bronchiolitis is primarily a clinical diagnosis in young children; over-testing and asthma-style treatment can mislead management while missing apnea, hypoxemia, hydration, or respiratory-failure risks.",
-                        "cutoffs": [
-                          "2 years"
-                        ],
-                        "data_needed": [
-                          "2 years"
-                        ],
-                        "source_ids": [
-                          "NICE_BRONCHIOLITIS_NG9"
-                        ],
-                        "source_section": "assessment, diagnosis, referral, admission, management, and safety information",
-                        "review_status": "source_backed"
                       }
                     ]
                   },
@@ -4640,7 +4302,7 @@
                     "criteria": {
                       "rule_id": "pediatric_respiratory_wheeze_alternate_criteria",
                       "source": "criteria",
-                      "description": "Use an alternate pathway when Pediatric respiratory distress, wheeze, or bronchiolitis criteria are absent, a cited mimic better explains the presentation, or objective result data contradict this workup.",
+                      "description": "Use an alternate pathway when Pediatric respiratory distress, wheeze, or bronchiolitis criteria are absent, Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles; Asthma exacerbation or viral-induced wheeze with recurrent episodes, atopy, prior asthma plan, or older-child wheeze pattern; Pneumonia, sepsis, aspiration, foreign body, anaphylaxis, cardiac disease, or other dangerous mimic of wheeze better explains the presentation, or measured result data contradict this workup.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4732,29 +4394,13 @@
                           ],
                           "source_section": "When to discharge",
                           "review_status": "source_backed"
-                        },
-                        {
-                          "id": "differentialBuckets_peds_bronchiolitis_under2",
-                          "label": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles",
-                          "criteria_text": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles Route infants and young children with bronchiolitis pattern to oxygen, feeding, hydration, apnea, and respiratory-failure assessment; avoid routine chest X-ray, blood tests, antibiotics, bronchodilators, or steroids unless another diagnosis is suspected. Changes oxygen thresholds, feeding and hydration plan, suction consideration, discharge safety-netting, and avoidance of routine bronchodilators, steroids, antibiotics, chest X-ray, and blood tests. Bronchiolitis in a child under 2 years with compatible prodrome and lower respiratory signs. Bronchiolitis is primarily a clinical diagnosis in young children; over-testing and asthma-style treatment can mislead management while missing apnea, hypoxemia, hydration, or respiratory-failure risks.",
-                          "cutoffs": [
-                            "2 years"
-                          ],
-                          "data_needed": [
-                            "2 years"
-                          ],
-                          "source_ids": [
-                            "NICE_BRONCHIOLITIS_NG9"
-                          ],
-                          "source_section": "assessment, diagnosis, referral, admission, management, and safety information",
-                          "review_status": "source_backed"
                         }
                       ]
                     },
-                    "action": "Document why Pediatric respiratory distress, wheeze, or bronchiolitis is not the active pathway, name the competing diagnosis or exclusion, and route to the appropriate workup rather than reassurance alone.",
+                    "action": "Name the competing diagnosis or exclusion for Pediatric respiratory distress, wheeze, or bronchiolitis, such as Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles; Asthma exacerbation or viral-induced wheeze with recurrent episodes, atopy, prior asthma plan, or older-child wheeze pattern; Pneumonia, sepsis, aspiration, foreign body, anaphylaxis, cardiac disease, or other dangerous mimic of wheeze; route to the corresponding workup or specialty pathway and document why the Pediatric respiratory distress, wheeze, or bronchiolitis branch is not used.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Competing diagnosis or exclusion changes the active pathway."
+                    "review_needed_reason": "Pediatric respiratory distress, wheeze, or bronchiolitis criteria are absent or contradicted by Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles; Asthma exacerbation or viral-induced wheeze with recurrent episodes, atopy, prior asthma plan, or older-child wheeze pattern; Pneumonia, sepsis, aspiration, foreign body, anaphylaxis, cardiac disease, or other dangerous mimic of wheeze; competing diagnosis must be named before closure."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -4832,22 +4478,6 @@
                       "NICE_BRONCHIOLITIS_NG9"
                     ],
                     "source_section": "When to discharge",
-                    "review_status": "source_backed"
-                  },
-                  {
-                    "id": "differentialBuckets_peds_bronchiolitis_under2",
-                    "label": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles",
-                    "criteria_text": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles Route infants and young children with bronchiolitis pattern to oxygen, feeding, hydration, apnea, and respiratory-failure assessment; avoid routine chest X-ray, blood tests, antibiotics, bronchodilators, or steroids unless another diagnosis is suspected. Changes oxygen thresholds, feeding and hydration plan, suction consideration, discharge safety-netting, and avoidance of routine bronchodilators, steroids, antibiotics, chest X-ray, and blood tests. Bronchiolitis in a child under 2 years with compatible prodrome and lower respiratory signs. Bronchiolitis is primarily a clinical diagnosis in young children; over-testing and asthma-style treatment can mislead management while missing apnea, hypoxemia, hydration, or respiratory-failure risks.",
-                    "cutoffs": [
-                      "2 years"
-                    ],
-                    "data_needed": [
-                      "2 years"
-                    ],
-                    "source_ids": [
-                      "NICE_BRONCHIOLITIS_NG9"
-                    ],
-                    "source_section": "assessment, diagnosis, referral, admission, management, and safety information",
                     "review_status": "source_backed"
                   }
                 ],
@@ -4927,22 +4557,6 @@
                     ],
                     "source_section": "When to discharge",
                     "review_status": "source_backed"
-                  },
-                  {
-                    "id": "differentialBuckets_peds_bronchiolitis_under2",
-                    "label": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles",
-                    "criteria_text": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles Route infants and young children with bronchiolitis pattern to oxygen, feeding, hydration, apnea, and respiratory-failure assessment; avoid routine chest X-ray, blood tests, antibiotics, bronchodilators, or steroids unless another diagnosis is suspected. Changes oxygen thresholds, feeding and hydration plan, suction consideration, discharge safety-netting, and avoidance of routine bronchodilators, steroids, antibiotics, chest X-ray, and blood tests. Bronchiolitis in a child under 2 years with compatible prodrome and lower respiratory signs. Bronchiolitis is primarily a clinical diagnosis in young children; over-testing and asthma-style treatment can mislead management while missing apnea, hypoxemia, hydration, or respiratory-failure risks.",
-                    "cutoffs": [
-                      "2 years"
-                    ],
-                    "data_needed": [
-                      "2 years"
-                    ],
-                    "source_ids": [
-                      "NICE_BRONCHIOLITIS_NG9"
-                    ],
-                    "source_section": "assessment, diagnosis, referral, admission, management, and safety information",
-                    "review_status": "source_backed"
                   }
                 ]
               }
@@ -4952,11 +4566,6 @@
               "Chest imaging when focal or severe",
               "Asthma response reassessment",
               "Controller and trigger review",
-              "Measure oxygen saturation",
-              "Measure respiratory rate",
-              "Measure temperature",
-              "Measure current weight",
-              "Document mental status",
               "age",
               "illness day",
               "coryzal prodrome",
@@ -5067,22 +4676,6 @@
                 ],
                 "source_section": "When to discharge",
                 "review_status": "source_backed"
-              },
-              {
-                "id": "differentialBuckets_peds_bronchiolitis_under2",
-                "label": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles",
-                "criteria_text": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles Route infants and young children with bronchiolitis pattern to oxygen, feeding, hydration, apnea, and respiratory-failure assessment; avoid routine chest X-ray, blood tests, antibiotics, bronchodilators, or steroids unless another diagnosis is suspected. Changes oxygen thresholds, feeding and hydration plan, suction consideration, discharge safety-netting, and avoidance of routine bronchodilators, steroids, antibiotics, chest X-ray, and blood tests. Bronchiolitis in a child under 2 years with compatible prodrome and lower respiratory signs. Bronchiolitis is primarily a clinical diagnosis in young children; over-testing and asthma-style treatment can mislead management while missing apnea, hypoxemia, hydration, or respiratory-failure risks.",
-                "cutoffs": [
-                  "2 years"
-                ],
-                "data_needed": [
-                  "2 years"
-                ],
-                "source_ids": [
-                  "NICE_BRONCHIOLITIS_NG9"
-                ],
-                "source_section": "assessment, diagnosis, referral, admission, management, and safety information",
-                "review_status": "source_backed"
               }
             ]
           }
@@ -5090,10 +4683,10 @@
       },
       "synthetic_patient_scenarios": [
         {
-          "scenario_id": "missing_context",
+          "scenario_id": "internal_context_guard",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing Pediatric respiratory distress, wheeze, or bronchiolitis: onset/trajectory, focused exam, vitals, threshold labs/results, meds, comorbidities, pregnancy/applicability, or follow-up access",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -5102,10 +4695,10 @@
           "traversal_status": "reaches_expected_endpoint"
         },
         {
-          "scenario_id": "missing_cutoff_data",
+          "scenario_id": "internal_threshold_guard",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "pediatric_respiratory_wheeze_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Missing Pediatric respiratory distress, wheeze, or bronchiolitis result(s): age; illness day; coryzal prodrome; cough; wheeze/crackles; work of breathing",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "pediatric_respiratory_wheeze_concurrent_data_bundle",
@@ -5147,7 +4740,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "pediatric_respiratory_wheeze_review_endpoint",
-          "expected_active_branch": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
+          "expected_active_branch": "Pediatric respiratory distress, wheeze, or bronchiolitis modifier needing review: Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Pediatric respiratory distress, wheeze, or bronchiolitis: immediate stabilization or escalation trigger: Apnea or central cyanosis.; Pediatric respiratory distress, wheeze, or bronchiolitis: treatment or disposition for high-risk or confirmed disease: Emergency pediatric respiratory escalation.",
           "expected_path_node_ids": [
             "root",
             "pediatric_respiratory_wheeze_concurrent_data_bundle",
@@ -5163,7 +4756,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "pediatric_respiratory_wheeze_worsening_endpoint",
-          "expected_active_branch": "Pediatric respiratory distress, wheeze, or bronchiolitis reassessment worsens or Apnea or central cyanosis; Exhaustion or poor respiratory effort; Severe respiratory distress; <2 years; 3-6 months; 3-5 days; 90%; Bronchiolitis testing limits; Chest imaging when focal or severe no longer fit the selected pathway",
+          "expected_active_branch": "Pediatric respiratory distress, wheeze, or bronchiolitis reassessment worsens or Apnea or central cyanosis; Exhaustion or poor respiratory effort; Severe respiratory distress; <2 years; 3-6 months; 3-5 days; 90%; Bronchiolitis testing limits; Chest imaging when focal or severe no longer fit the documented Pediatric respiratory distress, wheeze, or bronchiolitis branch",
           "expected_path_node_ids": [
             "root",
             "pediatric_respiratory_wheeze_concurrent_data_bundle",
@@ -5232,7 +4825,7 @@
           "concurrent diagnostic/treatment bundles instead of long one-step chains",
           "cited thresholds/rules visible in classification and endpoint nodes",
           "all endpoints cite evidence or state needs_clinical_review",
-          "missing-data endpoints name exact data needed"
+          "internal data guards keep exact unavailable fields in structured metadata"
         ]
       }
     },

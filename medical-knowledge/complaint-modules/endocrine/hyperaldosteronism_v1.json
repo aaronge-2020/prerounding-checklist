@@ -2573,7 +2573,7 @@
         {
           "threshold": "PRA <=1 ng/mL/h",
           "evidence_item_id": "pa_positive_screen_cutoffs",
-          "label": "Positive PA screen: PRA <=1 ng/mL/h or DRC <=8.2 mU/L plus aldosterone >=10 ng/dL immunoassay or >=7.5 ng/dL LC-MS/MS, with ARR >20 or >70 by unit system",
+          "label": "Positive PA screen",
           "source_ids": [
             "ES_PRIMARY_ALDO_2025"
           ],
@@ -2582,7 +2582,7 @@
         {
           "threshold": "DRC <=8.2 mU/L",
           "evidence_item_id": "pa_positive_screen_cutoffs",
-          "label": "Positive PA screen: PRA <=1 ng/mL/h or DRC <=8.2 mU/L plus aldosterone >=10 ng/dL immunoassay or >=7.5 ng/dL LC-MS/MS, with ARR >20 or >70 by unit system",
+          "label": "Positive PA screen",
           "source_ids": [
             "ES_PRIMARY_ALDO_2025"
           ],
@@ -2591,7 +2591,7 @@
         {
           "threshold": "aldosterone >=10 ng/dL",
           "evidence_item_id": "pa_positive_screen_cutoffs",
-          "label": "Positive PA screen: PRA <=1 ng/mL/h or DRC <=8.2 mU/L plus aldosterone >=10 ng/dL immunoassay or >=7.5 ng/dL LC-MS/MS, with ARR >20 or >70 by unit system",
+          "label": "Positive PA screen",
           "source_ids": [
             "ES_PRIMARY_ALDO_2025"
           ],
@@ -2600,7 +2600,7 @@
         {
           "threshold": "aldosterone >=7.5 ng/dL",
           "evidence_item_id": "pa_positive_screen_cutoffs",
-          "label": "Positive PA screen: PRA <=1 ng/mL/h or DRC <=8.2 mU/L plus aldosterone >=10 ng/dL immunoassay or >=7.5 ng/dL LC-MS/MS, with ARR >20 or >70 by unit system",
+          "label": "Positive PA screen",
           "source_ids": [
             "ES_PRIMARY_ALDO_2025"
           ],
@@ -2609,7 +2609,7 @@
         {
           "threshold": "ARR >20",
           "evidence_item_id": "pa_positive_screen_cutoffs",
-          "label": "Positive PA screen: PRA <=1 ng/mL/h or DRC <=8.2 mU/L plus aldosterone >=10 ng/dL immunoassay or >=7.5 ng/dL LC-MS/MS, with ARR >20 or >70 by unit system",
+          "label": "Positive PA screen",
           "source_ids": [
             "ES_PRIMARY_ALDO_2025"
           ],
@@ -2618,7 +2618,7 @@
         {
           "threshold": "ARR >70",
           "evidence_item_id": "pa_positive_screen_cutoffs",
-          "label": "Positive PA screen: PRA <=1 ng/mL/h or DRC <=8.2 mU/L plus aldosterone >=10 ng/dL immunoassay or >=7.5 ng/dL LC-MS/MS, with ARR >20 or >70 by unit system",
+          "label": "Positive PA screen",
           "source_ids": [
             "ES_PRIMARY_ALDO_2025"
           ],
@@ -2627,7 +2627,7 @@
         {
           "threshold": "4 weeks",
           "evidence_item_id": "pa_repeat_screen_interference_cutoffs",
-          "label": "Repeat PA screen after correction or medication washout: potassium into lab reference range; 4 weeks for MRAs/ENaC inhibitors/diuretics, 2 weeks for ACEi/ARB or beta/central alpha-2 agents when safe",
+          "label": "Repeat PA screen after correction or medication washout",
           "source_ids": [
             "ES_PRIMARY_ALDO_2025"
           ],
@@ -2636,7 +2636,7 @@
         {
           "threshold": "2 weeks",
           "evidence_item_id": "pa_repeat_screen_interference_cutoffs",
-          "label": "Repeat PA screen after correction or medication washout: potassium into lab reference range; 4 weeks for MRAs/ENaC inhibitors/diuretics, 2 weeks for ACEi/ARB or beta/central alpha-2 agents when safe",
+          "label": "Repeat PA screen after correction or medication washout",
           "source_ids": [
             "ES_PRIMARY_ALDO_2025"
           ],
@@ -2645,7 +2645,7 @@
         {
           "threshold": "PRA <0.2 ng/mL/h",
           "evidence_item_id": "pa_no_suppression_testing_cutoffs",
-          "label": "PA suppression testing can be skipped: resistant hypertension or hypertension plus hypokalemia with PRA <0.2 ng/mL/h or DRC <2 mU/L and aldosterone >20 ng/dL immunoassay or >15 ng/dL LC-MS/MS",
+          "label": "PA suppression testing can be skipped",
           "source_ids": [
             "ES_PRIMARY_ALDO_2025"
           ],
@@ -2654,7 +2654,7 @@
         {
           "threshold": "DRC <2 mU/L",
           "evidence_item_id": "pa_no_suppression_testing_cutoffs",
-          "label": "PA suppression testing can be skipped: resistant hypertension or hypertension plus hypokalemia with PRA <0.2 ng/mL/h or DRC <2 mU/L and aldosterone >20 ng/dL immunoassay or >15 ng/dL LC-MS/MS",
+          "label": "PA suppression testing can be skipped",
           "source_ids": [
             "ES_PRIMARY_ALDO_2025"
           ],
@@ -2663,7 +2663,7 @@
         {
           "threshold": "aldosterone >20 ng/dL",
           "evidence_item_id": "pa_no_suppression_testing_cutoffs",
-          "label": "PA suppression testing can be skipped: resistant hypertension or hypertension plus hypokalemia with PRA <0.2 ng/mL/h or DRC <2 mU/L and aldosterone >20 ng/dL immunoassay or >15 ng/dL LC-MS/MS",
+          "label": "PA suppression testing can be skipped",
           "source_ids": [
             "ES_PRIMARY_ALDO_2025"
           ],
@@ -2672,7 +2672,7 @@
         {
           "threshold": "aldosterone >15 ng/dL",
           "evidence_item_id": "pa_no_suppression_testing_cutoffs",
-          "label": "PA suppression testing can be skipped: resistant hypertension or hypertension plus hypokalemia with PRA <0.2 ng/mL/h or DRC <2 mU/L and aldosterone >20 ng/dL immunoassay or >15 ng/dL LC-MS/MS",
+          "label": "PA suppression testing can be skipped",
           "source_ids": [
             "ES_PRIMARY_ALDO_2025"
           ],
@@ -2681,7 +2681,7 @@
         {
           "threshold": "age <35 years",
           "evidence_item_id": "pa_lateralization_avs_exception_cutoffs",
-          "label": "PA lateralization: CT plus AVS before surgery; AVS exception may apply at age <35 with hypokalemia and unilateral adrenal adenoma >1.0 cm",
+          "label": "PA lateralization",
           "source_ids": [
             "ES_PRIMARY_ALDO_2025"
           ],
@@ -2690,7 +2690,7 @@
         {
           "threshold": ">1.0 cm",
           "evidence_item_id": "pa_lateralization_avs_exception_cutoffs",
-          "label": "PA lateralization: CT plus AVS before surgery; AVS exception may apply at age <35 with hypokalemia and unilateral adrenal adenoma >1.0 cm",
+          "label": "PA lateralization",
           "source_ids": [
             "ES_PRIMARY_ALDO_2025"
           ],
@@ -2699,7 +2699,7 @@
         {
           "threshold": ">=180/120 mm Hg",
           "evidence_item_id": "pa_hypertensive_emergency_cutoffs",
-          "label": "Hypertensive emergency: BP >=180/120 mm Hg with acute target-organ damage needs ED/ICU titratable IV therapy and about 20-25% MAP reduction in 1-2 hours",
+          "label": "Hypertensive emergency",
           "source_ids": [
             "MSD_HYPERTENSIVE_EMERGENCY_2026"
           ],
@@ -2708,7 +2708,7 @@
         {
           "threshold": "20-25%",
           "evidence_item_id": "pa_hypertensive_emergency_cutoffs",
-          "label": "Hypertensive emergency: BP >=180/120 mm Hg with acute target-organ damage needs ED/ICU titratable IV therapy and about 20-25% MAP reduction in 1-2 hours",
+          "label": "Hypertensive emergency",
           "source_ids": [
             "MSD_HYPERTENSIVE_EMERGENCY_2026"
           ],
@@ -2717,7 +2717,7 @@
         {
           "threshold": "1-2 hours",
           "evidence_item_id": "pa_hypertensive_emergency_cutoffs",
-          "label": "Hypertensive emergency: BP >=180/120 mm Hg with acute target-organ damage needs ED/ICU titratable IV therapy and about 20-25% MAP reduction in 1-2 hours",
+          "label": "Hypertensive emergency",
           "source_ids": [
             "MSD_HYPERTENSIVE_EMERGENCY_2026"
           ],
@@ -2815,7 +2815,7 @@
           {
             "domain": "imaging_results",
             "exact_data_needed": [
-              "source-directed imaging/ECG/procedure results when indicated",
+              "imaging, ECG, culture, pathology, or procedure result required by the chosen branch",
               "Aldosterone, renin, and ARR with potassium correction.",
               "Adrenal CT and adrenal vein sampling after biochemical diagnosis.",
               "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
@@ -2896,7 +2896,7 @@
               "treatment response",
               "disposition constraints",
               "Hyperaldosteronism (Conn's Syndrome): diagnostic assessment",
-              "ARR cutoffs are assay/unit/medication-specific; interpret with local lab guidance. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+              "ARR cutoffs are assay/unit/medication-specific; interpret with local lab guidance.",
               "Important mimics/exclusions: exogenous glucocorticoid exposure or withdrawal, primary versus central adrenal insufficiency, adrenal incidentaloma, medication-altered renin/aldosterone testing, catecholamine excess, severe illness, infection, and electrolyte mimics.",
               "Suppressed renin with clearly elevated aldosterone changes to PA pathway and focused therapy/subtyping.",
               "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
@@ -4792,8 +4792,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal data-availability guard",
-            "edgeLabel": "Internal data-availability guard",
+            "label": "Internal traversal guard",
+            "edgeLabel": "Internal traversal guard",
             "source_ids": [
               "ES_PRIMARY_ALDO_2025",
               "MSD_HYPERTENSIVE_EMERGENCY_2026",
@@ -4833,7 +4833,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -4841,7 +4841,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
             },
             "missing_data_needed": [
               "BP readings and hypertension treatment count",
@@ -5066,7 +5066,7 @@
                 }
               ]
             },
-            "action": "Measure repeat BP and target-organ symptoms; obtain potassium, aldosterone, PRA or DRC, ARR with units, assay method, renal function, pregnancy status, and medication-interference history. Local evidence reminders: Aldosterone, renin, and ARR with potassium correction.; Overt PA example: PRA <0.2 ng/mL/h or DRC <2 mU/L with aldosterone >15 ng/dL by LC-MS/MS or >20 ng/dL by immunoassay.; Adrenal CT and adrenal vein sampling after biochemical diagnosis.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; Primary aldosteronism safety tests: check potassium and renal function, aldosterone-renin ratio under interpretable medication/posture/salt conditions, and route confirmatory testing, subtype imaging, and adrenal venous sampling when screening is positive.; Morning cortisol/ACTH or cosyntropin for adrenal insufficiency; aldosterone-renin ratio with potassium correction for primary aldosteronism; metanephrines for PPGL.; Cushing screening with 1-mg DST, late-night salivary cortisol, or 24-hour UFC after excluding exogenous steroids; adrenal imaging follows biochemical framing except emergency/known incidentaloma context.; ARR cutoffs are assay/unit/medication-specific; interpret with local lab guidance.; Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.; Severe hypertension, hypokalemic paralysis, arrhythmia, stroke/ACS symptoms..",
+            "action": "Measure repeat BP and target-organ symptoms; obtain potassium, aldosterone, PRA or DRC, ARR with units, assay method, renal function, pregnancy status, and medication-interference history. Local evidence reminders: Aldosterone, renin, and ARR with potassium correction.; Overt PA example: PRA <0.2 ng/mL/h or DRC <2 mU/L with aldosterone >15 ng/dL by LC-MS/MS or >20 ng/dL by immunoassay.; Adrenal CT and adrenal vein sampling after biochemical diagnosis.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; Primary aldosteronism safety tests: check potassium and renal function, aldosterone-renin ratio under interpretable medication/posture/salt conditions, and route confirmatory testing, subtype imaging, and adrenal venous sampling when screening is positive.; Morning cortisol/ACTH or cosyntropin for adrenal insufficiency; aldosterone-renin ratio with potassium correction for primary aldosteronism; metanephrines for PPGL.; Cushing screening with 1-mg DST, late-night salivary cortisol, or 24-hour UFC after excluding exogenous steroids; adrenal imaging follows biochemical framing except emergency/known incidentaloma context.; ARR cutoffs are assay/unit/medication-specific; interpret with local lab guidance.; Severe hypertension, hypokalemic paralysis, arrhythmia, stroke/ACS symptoms..",
             "children": [
               {
                 "id": "primary_aldosteronism_classification_decision",
@@ -5283,8 +5283,8 @@
                   {
                     "id": "primary_aldosteronism_missing_screen_endpoint",
                     "type": "endpoint",
-                    "label": "Internal data-availability guard",
-                    "edgeLabel": "Internal data-availability guard",
+                    "label": "Internal traversal guard",
+                    "edgeLabel": "Internal traversal guard",
                     "source_ids": [
                       "ES_PRIMARY_ALDO_2025"
                     ],
@@ -5316,7 +5316,7 @@
                         "medication interference"
                       ]
                     },
-                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -5324,7 +5324,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
                     },
                     "missing_data_needed": [
                       "morning seated aldosterone",
@@ -8673,7 +8673,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Internal data-availability guard",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -8685,7 +8685,7 @@
           "scenario_id": "missing_aldosterone_renin",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "primary_aldosteronism_missing_screen_endpoint",
-          "expected_active_branch": "Internal data-availability guard",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "primary_aldosteronism_initial_assessment",

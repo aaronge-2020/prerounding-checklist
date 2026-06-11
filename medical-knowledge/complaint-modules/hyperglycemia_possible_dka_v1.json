@@ -4147,7 +4147,7 @@
         {
           "threshold": "glucose >=200 mg/dL",
           "evidence_item_id": "adult_dka_diagnostic_thresholds",
-          "label": "Adult DKA: diabetes/prior diabetes or glucose >=200 mg/dL, beta-hydroxybutyrate >=3.0 mmol/L or urine ketones >=2+, and pH <7.3 and/or bicarbonate <18 mmol/L",
+          "label": "Adult DKA",
           "source_ids": [
             "ADA_HYPERGLYCEMIC_CRISES_2024"
           ],
@@ -4156,7 +4156,7 @@
         {
           "threshold": "beta-hydroxybutyrate >=3.0 mmol/L",
           "evidence_item_id": "adult_dka_diagnostic_thresholds",
-          "label": "Adult DKA: diabetes/prior diabetes or glucose >=200 mg/dL, beta-hydroxybutyrate >=3.0 mmol/L or urine ketones >=2+, and pH <7.3 and/or bicarbonate <18 mmol/L",
+          "label": "Adult DKA",
           "source_ids": [
             "ADA_HYPERGLYCEMIC_CRISES_2024"
           ],
@@ -4165,7 +4165,7 @@
         {
           "threshold": "urine ketones >=2+",
           "evidence_item_id": "adult_dka_diagnostic_thresholds",
-          "label": "Adult DKA: diabetes/prior diabetes or glucose >=200 mg/dL, beta-hydroxybutyrate >=3.0 mmol/L or urine ketones >=2+, and pH <7.3 and/or bicarbonate <18 mmol/L",
+          "label": "Adult DKA",
           "source_ids": [
             "ADA_HYPERGLYCEMIC_CRISES_2024"
           ],
@@ -4174,7 +4174,7 @@
         {
           "threshold": "pH <7.3",
           "evidence_item_id": "adult_dka_diagnostic_thresholds",
-          "label": "Adult DKA: diabetes/prior diabetes or glucose >=200 mg/dL, beta-hydroxybutyrate >=3.0 mmol/L or urine ketones >=2+, and pH <7.3 and/or bicarbonate <18 mmol/L",
+          "label": "Adult DKA",
           "source_ids": [
             "ADA_HYPERGLYCEMIC_CRISES_2024"
           ],
@@ -4183,7 +4183,7 @@
         {
           "threshold": "bicarbonate <18 mmol/L",
           "evidence_item_id": "adult_dka_diagnostic_thresholds",
-          "label": "Adult DKA: diabetes/prior diabetes or glucose >=200 mg/dL, beta-hydroxybutyrate >=3.0 mmol/L or urine ketones >=2+, and pH <7.3 and/or bicarbonate <18 mmol/L",
+          "label": "Adult DKA",
           "source_ids": [
             "ADA_HYPERGLYCEMIC_CRISES_2024"
           ],
@@ -4192,7 +4192,7 @@
         {
           "threshold": "glucose <200 mg/dL",
           "evidence_item_id": "adult_dka_diagnostic_thresholds",
-          "label": "Adult DKA: diabetes/prior diabetes or glucose >=200 mg/dL, beta-hydroxybutyrate >=3.0 mmol/L or urine ketones >=2+, and pH <7.3 and/or bicarbonate <18 mmol/L",
+          "label": "Adult DKA",
           "source_ids": [
             "ADA_HYPERGLYCEMIC_CRISES_2024"
           ],
@@ -4201,7 +4201,7 @@
         {
           "threshold": "glucose >=600 mg/dL",
           "evidence_item_id": "adult_hhs_diagnostic_thresholds",
-          "label": "Adult HHS: glucose >=600 mg/dL with effective osmolality >300 mOsm/kg or total osmolality >320 mOsm/kg and absent significant ketonemia/acidosis",
+          "label": "Adult HHS",
           "source_ids": [
             "ADA_HYPERGLYCEMIC_CRISES_2024"
           ],
@@ -4210,7 +4210,7 @@
         {
           "threshold": "effective osmolality >300 mOsm/kg",
           "evidence_item_id": "adult_hhs_diagnostic_thresholds",
-          "label": "Adult HHS: glucose >=600 mg/dL with effective osmolality >300 mOsm/kg or total osmolality >320 mOsm/kg and absent significant ketonemia/acidosis",
+          "label": "Adult HHS",
           "source_ids": [
             "ADA_HYPERGLYCEMIC_CRISES_2024"
           ],
@@ -4219,7 +4219,7 @@
         {
           "threshold": "total osmolality >320 mOsm/kg",
           "evidence_item_id": "adult_hhs_diagnostic_thresholds",
-          "label": "Adult HHS: glucose >=600 mg/dL with effective osmolality >300 mOsm/kg or total osmolality >320 mOsm/kg and absent significant ketonemia/acidosis",
+          "label": "Adult HHS",
           "source_ids": [
             "ADA_HYPERGLYCEMIC_CRISES_2024"
           ],
@@ -4228,7 +4228,7 @@
         {
           "threshold": "potassium is <3.5 mmol/L",
           "evidence_item_id": "adult_dka_potassium_insulin_safety",
-          "label": "Adult DKA/HHS insulin safety: insulin should be delayed when potassium is <3.5 mmol/L and delay insulin until K is >3.5 mmol/L",
+          "label": "Adult DKA/HHS insulin safety",
           "source_ids": [
             "ADA_HYPERGLYCEMIC_CRISES_2024"
           ],
@@ -4237,7 +4237,7 @@
         {
           "threshold": "K <3.5 mmol/L",
           "evidence_item_id": "adult_dka_potassium_insulin_safety",
-          "label": "Adult DKA/HHS insulin safety: insulin should be delayed when potassium is <3.5 mmol/L and delay insulin until K is >3.5 mmol/L",
+          "label": "Adult DKA/HHS insulin safety",
           "source_ids": [
             "ADA_HYPERGLYCEMIC_CRISES_2024"
           ],
@@ -4246,7 +4246,7 @@
         {
           "threshold": "K is >3.5 mmol/L",
           "evidence_item_id": "adult_dka_potassium_insulin_safety",
-          "label": "Adult DKA/HHS insulin safety: insulin should be delayed when potassium is <3.5 mmol/L and delay insulin until K is >3.5 mmol/L",
+          "label": "Adult DKA/HHS insulin safety",
           "source_ids": [
             "ADA_HYPERGLYCEMIC_CRISES_2024"
           ],
@@ -4255,7 +4255,7 @@
         {
           "threshold": "persistent inpatient glucose >=180 mg/dL",
           "evidence_item_id": "adult_noncrisis_inpatient_hyperglycemia",
-          "label": "Adult non-crisis inpatient hyperglycemia: persistent inpatient glucose >=180 mg/dL generally needs insulin initiation or intensification",
+          "label": "Adult non-crisis inpatient hyperglycemia",
           "source_ids": [
             "ADA_STANDARDS_HOSPITAL_2026"
           ],
@@ -4264,7 +4264,7 @@
         {
           "threshold": "3 months",
           "evidence_item_id": "adult_noncrisis_inpatient_hyperglycemia",
-          "label": "Adult non-crisis inpatient hyperglycemia: persistent inpatient glucose >=180 mg/dL generally needs insulin initiation or intensification",
+          "label": "Adult non-crisis inpatient hyperglycemia",
           "source_ids": [
             "ADA_STANDARDS_HOSPITAL_2026"
           ],
@@ -4362,7 +4362,7 @@
           {
             "domain": "imaging_results",
             "exact_data_needed": [
-              "source-directed imaging/ECG/procedure results when indicated",
+              "imaging, ECG, culture, pathology, or procedure result required by the chosen branch",
               "Basic metabolic panel/electrolytes with sodium, potassium, chloride, bicarbonate, BUN, creatinine, glucose, anion gap, and corrected sodium",
               "Calculate effective osmolality and measure serum osmolality when HHS/mixed crisis, severe dehydration, altered mental status, or very high glucose is possible",
               "ECG and potassium-focused monitoring if potassium abnormality, weakness, renal failure, or insulin therapy is expected",
@@ -6636,8 +6636,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal data-availability guard",
-            "edgeLabel": "Internal data-availability guard",
+            "label": "Internal traversal guard",
+            "edgeLabel": "Internal traversal guard",
             "source_ids": [
               "ADA_HYPERGLYCEMIC_CRISES_2024",
               "ADA_STANDARDS_HOSPITAL_2026",
@@ -6677,7 +6677,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -6685,7 +6685,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
             },
             "missing_data_needed": [
               "symptoms",
@@ -7053,8 +7053,8 @@
                   {
                     "id": "adult_dka_hhs_missing_crisis_labs_endpoint",
                     "type": "endpoint",
-                    "label": "Internal data-availability guard",
-                    "edgeLabel": "Internal data-availability guard",
+                    "label": "Internal traversal guard",
+                    "edgeLabel": "Internal traversal guard",
                     "source_ids": [
                       "ADA_HYPERGLYCEMIC_CRISES_2024"
                     ],
@@ -7089,7 +7089,7 @@
                         "mental status"
                       ]
                     },
-                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -7097,7 +7097,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
                     },
                     "missing_data_needed": [
                       "glucose",
@@ -8078,7 +8078,7 @@
                             }
                           ]
                         },
-                        "action": "Transition only after biochemical resolution and clinical stability; give basal insulin overlap 1-2 h before stopping IV insulin, do not rely on anion gap alone, confirm insulin/supplies/ketone testing/sick-day plan/glucagon when indicated, address affordability and recurrent-DKA barriers, and provide return precautions for vomiting, rising ketones, recurrent glucose elevation, confusion, dyspnea, chest pain, syncope, or inability to take fluids/insulin.",
+                        "action": "Transition only after biochemical resolution and clinical stability; give basal insulin overlap 1-2 h before stopping IV insulin, do not rely on anion gap alone, confirm insulin/supplies/ketone testing/sick-day plan/glucagon when the branch-specific criteria in this node apply, address affordability and recurrent-DKA barriers, and provide return precautions for vomiting, rising ketones, recurrent glucose elevation, confusion, dyspnea, chest pain, syncope, or inability to take fluids/insulin.",
                         "children": [],
                         "endpoint_type": "safety_net_instruction",
                         "guideline_cutoffs": [
@@ -10435,7 +10435,7 @@
                     "action": "Document which DKA/HHS criteria are absent, treat the competing diagnosis, continue glucose/ketone/acid-base monitoring if risk persists, and hand off clinician review when metabolic acidosis or altered mental status remains unexplained.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Competing acidosis, hyperosmolarity, intoxication, infection, ischemia, or medication effect changes the active pathway."
+                    "review_needed_reason": "Competing acidosis, hyperosmolarity, intoxication, infection, ischemia, or medication effect changes the documented disease branch."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -10916,7 +10916,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Internal data-availability guard",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -10928,7 +10928,7 @@
           "scenario_id": "missing_crisis_labs",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "adult_dka_hhs_missing_crisis_labs_endpoint",
-          "expected_active_branch": "Internal data-availability guard",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "adult_dka_hhs_initial_assessment",

@@ -2080,7 +2080,7 @@
         {
           "threshold": "11 mmol/L",
           "evidence_item_id": "pediatric_dka_diagnostic_thresholds",
-          "label": "Pediatric DKA: BGL >11 mmol/L with pH <7.3 and/or bicarbonate <18 mmol/L plus moderate/large ketones; NICE uses beta-hydroxybutyrate >3 mmol/L or ketonuria ++",
+          "label": "Pediatric DKA",
           "source_ids": [
             "CHQ_DKA_HHS_CHILD_2024",
             "NICE_NG18_DKA_CHILD",
@@ -2091,7 +2091,7 @@
         {
           "threshold": "pH <7.3",
           "evidence_item_id": "pediatric_dka_diagnostic_thresholds",
-          "label": "Pediatric DKA: BGL >11 mmol/L with pH <7.3 and/or bicarbonate <18 mmol/L plus moderate/large ketones; NICE uses beta-hydroxybutyrate >3 mmol/L or ketonuria ++",
+          "label": "Pediatric DKA",
           "source_ids": [
             "CHQ_DKA_HHS_CHILD_2024",
             "NICE_NG18_DKA_CHILD",
@@ -2102,7 +2102,7 @@
         {
           "threshold": "bicarbonate <18 mmol/L",
           "evidence_item_id": "pediatric_dka_diagnostic_thresholds",
-          "label": "Pediatric DKA: BGL >11 mmol/L with pH <7.3 and/or bicarbonate <18 mmol/L plus moderate/large ketones; NICE uses beta-hydroxybutyrate >3 mmol/L or ketonuria ++",
+          "label": "Pediatric DKA",
           "source_ids": [
             "CHQ_DKA_HHS_CHILD_2024",
             "NICE_NG18_DKA_CHILD",
@@ -2113,7 +2113,7 @@
         {
           "threshold": "bicarbonate <15 mmol/L",
           "evidence_item_id": "pediatric_dka_diagnostic_thresholds",
-          "label": "Pediatric DKA: BGL >11 mmol/L with pH <7.3 and/or bicarbonate <18 mmol/L plus moderate/large ketones; NICE uses beta-hydroxybutyrate >3 mmol/L or ketonuria ++",
+          "label": "Pediatric DKA",
           "source_ids": [
             "CHQ_DKA_HHS_CHILD_2024",
             "NICE_NG18_DKA_CHILD",
@@ -2124,7 +2124,7 @@
         {
           "threshold": "beta-hydroxybutyrate >3 mmol/L",
           "evidence_item_id": "pediatric_dka_diagnostic_thresholds",
-          "label": "Pediatric DKA: BGL >11 mmol/L with pH <7.3 and/or bicarbonate <18 mmol/L plus moderate/large ketones; NICE uses beta-hydroxybutyrate >3 mmol/L or ketonuria ++",
+          "label": "Pediatric DKA",
           "source_ids": [
             "CHQ_DKA_HHS_CHILD_2024",
             "NICE_NG18_DKA_CHILD",
@@ -2135,7 +2135,7 @@
         {
           "threshold": "18 mmol/L",
           "evidence_item_id": "pediatric_dka_severity_thresholds",
-          "label": "Pediatric DKA severity: mild pH 7.2-7.3 or HCO3 <18 mmol/L; moderate pH 7.1-7.2 or HCO3 <10 mmol/L; severe pH <7.1 or HCO3 <5 mmol/L",
+          "label": "Pediatric DKA severity",
           "source_ids": [
             "CHQ_DKA_HHS_CHILD_2024",
             "NICE_NG18_DKA_CHILD",
@@ -2146,7 +2146,7 @@
         {
           "threshold": "10 mmol/L",
           "evidence_item_id": "pediatric_dka_severity_thresholds",
-          "label": "Pediatric DKA severity: mild pH 7.2-7.3 or HCO3 <18 mmol/L; moderate pH 7.1-7.2 or HCO3 <10 mmol/L; severe pH <7.1 or HCO3 <5 mmol/L",
+          "label": "Pediatric DKA severity",
           "source_ids": [
             "CHQ_DKA_HHS_CHILD_2024",
             "NICE_NG18_DKA_CHILD",
@@ -2157,7 +2157,7 @@
         {
           "threshold": "pH <7.1",
           "evidence_item_id": "pediatric_dka_severity_thresholds",
-          "label": "Pediatric DKA severity: mild pH 7.2-7.3 or HCO3 <18 mmol/L; moderate pH 7.1-7.2 or HCO3 <10 mmol/L; severe pH <7.1 or HCO3 <5 mmol/L",
+          "label": "Pediatric DKA severity",
           "source_ids": [
             "CHQ_DKA_HHS_CHILD_2024",
             "NICE_NG18_DKA_CHILD",
@@ -2168,7 +2168,7 @@
         {
           "threshold": "HCO3 <5 mmol/L",
           "evidence_item_id": "pediatric_dka_severity_thresholds",
-          "label": "Pediatric DKA severity: mild pH 7.2-7.3 or HCO3 <18 mmol/L; moderate pH 7.1-7.2 or HCO3 <10 mmol/L; severe pH <7.1 or HCO3 <5 mmol/L",
+          "label": "Pediatric DKA severity",
           "source_ids": [
             "CHQ_DKA_HHS_CHILD_2024",
             "NICE_NG18_DKA_CHILD",
@@ -2179,7 +2179,7 @@
         {
           "threshold": "2 years",
           "evidence_item_id": "pediatric_dka_severity_thresholds",
-          "label": "Pediatric DKA severity: mild pH 7.2-7.3 or HCO3 <18 mmol/L; moderate pH 7.1-7.2 or HCO3 <10 mmol/L; severe pH <7.1 or HCO3 <5 mmol/L",
+          "label": "Pediatric DKA severity",
           "source_ids": [
             "CHQ_DKA_HHS_CHILD_2024",
             "NICE_NG18_DKA_CHILD",
@@ -2190,7 +2190,7 @@
         {
           "threshold": "33.3 mmol/L",
           "evidence_item_id": "pediatric_hhs_diagnostic_thresholds",
-          "label": "Pediatric HHS: BGL >33.3 mmol/L, effective osmolality >320 mOsm/kg, ketones <1.1 mmol/L, and pH >7.25 and/or bicarbonate >15 mmol/L",
+          "label": "Pediatric HHS",
           "source_ids": [
             "CHQ_DKA_HHS_CHILD_2024",
             "ISPAD_DKA_HHS_2022"
@@ -2200,7 +2200,7 @@
         {
           "threshold": "320 mOsm/kg",
           "evidence_item_id": "pediatric_hhs_diagnostic_thresholds",
-          "label": "Pediatric HHS: BGL >33.3 mmol/L, effective osmolality >320 mOsm/kg, ketones <1.1 mmol/L, and pH >7.25 and/or bicarbonate >15 mmol/L",
+          "label": "Pediatric HHS",
           "source_ids": [
             "CHQ_DKA_HHS_CHILD_2024",
             "ISPAD_DKA_HHS_2022"
@@ -2210,7 +2210,7 @@
         {
           "threshold": "1.1 mmol/L",
           "evidence_item_id": "pediatric_hhs_diagnostic_thresholds",
-          "label": "Pediatric HHS: BGL >33.3 mmol/L, effective osmolality >320 mOsm/kg, ketones <1.1 mmol/L, and pH >7.25 and/or bicarbonate >15 mmol/L",
+          "label": "Pediatric HHS",
           "source_ids": [
             "CHQ_DKA_HHS_CHILD_2024",
             "ISPAD_DKA_HHS_2022"
@@ -2220,7 +2220,7 @@
         {
           "threshold": "pH >7.25",
           "evidence_item_id": "pediatric_hhs_diagnostic_thresholds",
-          "label": "Pediatric HHS: BGL >33.3 mmol/L, effective osmolality >320 mOsm/kg, ketones <1.1 mmol/L, and pH >7.25 and/or bicarbonate >15 mmol/L",
+          "label": "Pediatric HHS",
           "source_ids": [
             "CHQ_DKA_HHS_CHILD_2024",
             "ISPAD_DKA_HHS_2022"
@@ -2230,7 +2230,7 @@
         {
           "threshold": "bicarbonate >15 mmol/L",
           "evidence_item_id": "pediatric_hhs_diagnostic_thresholds",
-          "label": "Pediatric HHS: BGL >33.3 mmol/L, effective osmolality >320 mOsm/kg, ketones <1.1 mmol/L, and pH >7.25 and/or bicarbonate >15 mmol/L",
+          "label": "Pediatric HHS",
           "source_ids": [
             "CHQ_DKA_HHS_CHILD_2024",
             "ISPAD_DKA_HHS_2022"
@@ -2240,7 +2240,7 @@
         {
           "threshold": "10 mL/kg",
           "evidence_item_id": "pediatric_dka_fluid_insulin_potassium",
-          "label": "Pediatric DKA treatment: 0.9% saline 10 mL/kg bolus over 20-30 min if moderate/severe or shock, insulin 1 hour after fluids with no bolus, potassium usually 40 mmol/L",
+          "label": "Pediatric DKA treatment",
           "source_ids": [
             "CHQ_DKA_HHS_CHILD_2024",
             "NICE_NG18_DKA_CHILD",
@@ -2251,7 +2251,7 @@
         {
           "threshold": "20 mL/kg",
           "evidence_item_id": "pediatric_dka_fluid_insulin_potassium",
-          "label": "Pediatric DKA treatment: 0.9% saline 10 mL/kg bolus over 20-30 min if moderate/severe or shock, insulin 1 hour after fluids with no bolus, potassium usually 40 mmol/L",
+          "label": "Pediatric DKA treatment",
           "source_ids": [
             "CHQ_DKA_HHS_CHILD_2024",
             "NICE_NG18_DKA_CHILD",
@@ -2262,7 +2262,7 @@
         {
           "threshold": "1 hour",
           "evidence_item_id": "pediatric_dka_fluid_insulin_potassium",
-          "label": "Pediatric DKA treatment: 0.9% saline 10 mL/kg bolus over 20-30 min if moderate/severe or shock, insulin 1 hour after fluids with no bolus, potassium usually 40 mmol/L",
+          "label": "Pediatric DKA treatment",
           "source_ids": [
             "CHQ_DKA_HHS_CHILD_2024",
             "NICE_NG18_DKA_CHILD",
@@ -2273,7 +2273,7 @@
         {
           "threshold": "40 mmol/L",
           "evidence_item_id": "pediatric_dka_fluid_insulin_potassium",
-          "label": "Pediatric DKA treatment: 0.9% saline 10 mL/kg bolus over 20-30 min if moderate/severe or shock, insulin 1 hour after fluids with no bolus, potassium usually 40 mmol/L",
+          "label": "Pediatric DKA treatment",
           "source_ids": [
             "CHQ_DKA_HHS_CHILD_2024",
             "NICE_NG18_DKA_CHILD",
@@ -2284,7 +2284,7 @@
         {
           "threshold": "14 mmol/L",
           "evidence_item_id": "pediatric_dka_glucose_monitoring_transition",
-          "label": "Pediatric monitoring/transition: add 5% glucose when plasma glucose <14 mmol/L; if glucose <6 mmol/L continue insulin at least 0.05 units/kg/hour when ketosis persists; SC insulin 30 minutes before IV stop",
+          "label": "Pediatric monitoring/transition",
           "source_ids": [
             "NICE_NG18_DKA_CHILD"
           ],
@@ -2293,7 +2293,7 @@
         {
           "threshold": "6 mmol/L",
           "evidence_item_id": "pediatric_dka_glucose_monitoring_transition",
-          "label": "Pediatric monitoring/transition: add 5% glucose when plasma glucose <14 mmol/L; if glucose <6 mmol/L continue insulin at least 0.05 units/kg/hour when ketosis persists; SC insulin 30 minutes before IV stop",
+          "label": "Pediatric monitoring/transition",
           "source_ids": [
             "NICE_NG18_DKA_CHILD"
           ],
@@ -2302,7 +2302,7 @@
         {
           "threshold": "30 minutes",
           "evidence_item_id": "pediatric_dka_glucose_monitoring_transition",
-          "label": "Pediatric monitoring/transition: add 5% glucose when plasma glucose <14 mmol/L; if glucose <6 mmol/L continue insulin at least 0.05 units/kg/hour when ketosis persists; SC insulin 30 minutes before IV stop",
+          "label": "Pediatric monitoring/transition",
           "source_ids": [
             "NICE_NG18_DKA_CHILD"
           ],
@@ -2311,7 +2311,7 @@
         {
           "threshold": "30 minutes",
           "evidence_item_id": "pediatric_cerebral_edema_hypokalemia",
-          "label": "Pediatric cerebral edema/hypokalemia: neuro checks every 30 minutes if high risk; treat cerebral edema immediately with mannitol 0.5-1 g/kg or hypertonic saline 2.5-5 mL/kg over 10-15 minutes; potassium <3 mmol/L needs critical-care discussion",
+          "label": "Pediatric cerebral edema/hypokalemia",
           "source_ids": [
             "NICE_NG18_DKA_CHILD"
           ],
@@ -2320,7 +2320,7 @@
         {
           "threshold": "2 years",
           "evidence_item_id": "pediatric_cerebral_edema_hypokalemia",
-          "label": "Pediatric cerebral edema/hypokalemia: neuro checks every 30 minutes if high risk; treat cerebral edema immediately with mannitol 0.5-1 g/kg or hypertonic saline 2.5-5 mL/kg over 10-15 minutes; potassium <3 mmol/L needs critical-care discussion",
+          "label": "Pediatric cerebral edema/hypokalemia",
           "source_ids": [
             "NICE_NG18_DKA_CHILD"
           ],
@@ -2329,7 +2329,7 @@
         {
           "threshold": "0.5-1 g/kg",
           "evidence_item_id": "pediatric_cerebral_edema_hypokalemia",
-          "label": "Pediatric cerebral edema/hypokalemia: neuro checks every 30 minutes if high risk; treat cerebral edema immediately with mannitol 0.5-1 g/kg or hypertonic saline 2.5-5 mL/kg over 10-15 minutes; potassium <3 mmol/L needs critical-care discussion",
+          "label": "Pediatric cerebral edema/hypokalemia",
           "source_ids": [
             "NICE_NG18_DKA_CHILD"
           ],
@@ -2338,7 +2338,7 @@
         {
           "threshold": "2.5-5 mL/kg",
           "evidence_item_id": "pediatric_cerebral_edema_hypokalemia",
-          "label": "Pediatric cerebral edema/hypokalemia: neuro checks every 30 minutes if high risk; treat cerebral edema immediately with mannitol 0.5-1 g/kg or hypertonic saline 2.5-5 mL/kg over 10-15 minutes; potassium <3 mmol/L needs critical-care discussion",
+          "label": "Pediatric cerebral edema/hypokalemia",
           "source_ids": [
             "NICE_NG18_DKA_CHILD"
           ],
@@ -2347,7 +2347,7 @@
         {
           "threshold": "10-15 minutes",
           "evidence_item_id": "pediatric_cerebral_edema_hypokalemia",
-          "label": "Pediatric cerebral edema/hypokalemia: neuro checks every 30 minutes if high risk; treat cerebral edema immediately with mannitol 0.5-1 g/kg or hypertonic saline 2.5-5 mL/kg over 10-15 minutes; potassium <3 mmol/L needs critical-care discussion",
+          "label": "Pediatric cerebral edema/hypokalemia",
           "source_ids": [
             "NICE_NG18_DKA_CHILD"
           ],
@@ -2356,7 +2356,7 @@
         {
           "threshold": "potassium below 3 mmol/L",
           "evidence_item_id": "pediatric_cerebral_edema_hypokalemia",
-          "label": "Pediatric cerebral edema/hypokalemia: neuro checks every 30 minutes if high risk; treat cerebral edema immediately with mannitol 0.5-1 g/kg or hypertonic saline 2.5-5 mL/kg over 10-15 minutes; potassium <3 mmol/L needs critical-care discussion",
+          "label": "Pediatric cerebral edema/hypokalemia",
           "source_ids": [
             "NICE_NG18_DKA_CHILD"
           ],
@@ -2462,11 +2462,11 @@
           {
             "domain": "imaging_results",
             "exact_data_needed": [
-              "source-directed imaging/ECG/procedure results when indicated",
+              "imaging, ECG, culture, pathology, or procedure result required by the chosen branch",
               "Electrolytes, urea, creatinine, corrected sodium, and potassium",
               "Effective osmolality for HHS or mixed DKA/HHS",
               "12-lead ECG when potassium risk or severe illness",
-              "Source-directed infection tests only when indicated"
+              "Source-directed infection tests only when the branch-specific criteria in this node apply"
             ],
             "source_ids": [
               "CHQ_DKA_HHS_CHILD_2024",
@@ -4715,8 +4715,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal data-availability guard",
-            "edgeLabel": "Internal data-availability guard",
+            "label": "Internal traversal guard",
+            "edgeLabel": "Internal traversal guard",
             "source_ids": [
               "CHQ_DKA_HHS_CHILD_2024",
               "NICE_NG18_DKA_CHILD",
@@ -4760,7 +4760,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -4768,7 +4768,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
             },
             "missing_data_needed": [
               "symptoms",
@@ -5192,8 +5192,8 @@
                   {
                     "id": "pediatric_dka_hhs_missing_crisis_data_endpoint",
                     "type": "endpoint",
-                    "label": "Internal data-availability guard",
-                    "edgeLabel": "Internal data-availability guard",
+                    "label": "Internal traversal guard",
+                    "edgeLabel": "Internal traversal guard",
                     "source_ids": [
                       "CHQ_DKA_HHS_CHILD_2024",
                       "NICE_NG18_DKA_CHILD",
@@ -5237,7 +5237,7 @@
                         "mental status"
                       ]
                     },
-                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
+                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -5245,7 +5245,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
                     },
                     "missing_data_needed": [
                       "age",
@@ -8384,7 +8384,7 @@
                     "action": "Document which glucose, ketone, pH/bicarbonate, osmolality, and clinical severity criteria are absent; treat the competing diagnosis, continue repeat glucose/ketone checks if symptoms persist, and safety-net for vomiting, dehydration, Kussmaul breathing, altered mental status, rising ketones, or inability to keep fluids/insulin down.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Competing pediatric diagnosis or uncertain metabolic pattern changes the active pathway."
+                    "review_needed_reason": "Competing pediatric diagnosis or uncertain metabolic pattern changes the documented disease branch."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -8939,7 +8939,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Internal data-availability guard",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -8951,7 +8951,7 @@
           "scenario_id": "missing_pediatric_crisis_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "pediatric_dka_hhs_missing_crisis_data_endpoint",
-          "expected_active_branch": "Internal data-availability guard",
+          "expected_active_branch": "Internal traversal guard",
           "expected_path_node_ids": [
             "root",
             "pediatric_dka_hhs_initial_assessment",
