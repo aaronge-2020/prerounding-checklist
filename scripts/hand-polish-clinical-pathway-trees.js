@@ -2865,6 +2865,1081 @@ function buildHypopituitarismClinicalPathwayTree(module, sourceById) {
   };
 }
 
+function buildGestationalDiabetesClinicalPathwayTree(module, sourceById) {
+  const label = module.label || "Gestational Diabetes";
+  const prefix = "gestational_diabetes";
+  const adaSoc = ["ADA_SOC_2026"];
+  const adaDx = ["ADA_DIAGNOSIS_2026"];
+  const cdc = ["CDC_DIABETES_TESTING_2024", "CDC_NDPP_LIFESTYLE_2024"];
+  const sourceIds = unique([...adaSoc, ...adaDx, ...cdc, ...genericSourceIds]);
+  const tests = firstItems(module, "initialTests", 12);
+  const redFlags = firstItems(module, "redFlags", 8, ["safetyChecks"]);
+  const differentials = firstItems(module, "differentialBuckets", 8);
+  const dispositions = firstItems(module, "dispositionRules", 8, ["treatmentOptions"]);
+  const safetyChecks = firstItems(module, "safetyChecks", 6);
+
+  const criteriaRows = [
+    criterion({
+      id: "gdm_screening_timing",
+      label: "Gestational diabetes screening timing: early overt-diabetes testing when high risk, otherwise routine 24-28 week screening",
+      criteria_text: "Pregnant patients without known diabetes are screened for gestational diabetes at 24-28 weeks; high-risk patients can be tested earlier for overt type 1 or type 2 diabetes rather than labeling early hyperglycemia as routine GDM.",
+      cutoffs: ["24-28 weeks", "first 15 weeks"],
+      data_needed: ["gestational age", "prior diabetes status", "risk factors", "early pregnancy A1c/glucose", "local one-step or two-step strategy"],
+      source_ids: unique([...adaSoc, ...adaDx, "CDC_DIABETES_TESTING_2024"]),
+      source_section: "GDM timing and early pregnancy testing"
+    }),
+    criterion({
+      id: "gdm_one_step_75g_thresholds",
+      label: "One-step GDM diagnosis: 75-g OGTT fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL; one abnormal value diagnoses GDM",
+      criteria_text: "The one-step 75-g OGTT diagnoses gestational diabetes when fasting glucose is >=92 mg/dL, 1-hour glucose is >=180 mg/dL, or 2-hour glucose is >=153 mg/dL.",
+      cutoffs: ["75-g", "fasting >=92 mg/dL", "1-hour >=180 mg/dL", "2-hour >=153 mg/dL", "1 abnormal value"],
+      data_needed: ["75-g OGTT fasting glucose", "75-g OGTT 1-hour glucose", "75-g OGTT 2-hour glucose", "gestational age", "fasting status"],
+      source_ids: adaDx,
+      source_section: "Gestational diabetes one-step diagnostic strategy"
+    }),
+    criterion({
+      id: "gdm_two_step_carpenter_coustan",
+      label: "Two-step GDM diagnosis: 50-g screen threshold 130-140 mg/dL, then 100-g OGTT Carpenter-Coustan thresholds with usually 2 abnormal values",
+      criteria_text: "A two-step strategy uses a 50-g glucose challenge screen, commonly positive at 130-140 mg/dL by local policy, followed by a 100-g OGTT; Carpenter-Coustan thresholds are fasting 95, 1-hour 180, 2-hour 155, and 3-hour 140 mg/dL, with usually 2 abnormal values needed.",
+      cutoffs: ["50-g", "130-140 mg/dL", "100-g", "fasting 95 mg/dL", "1-hour 180 mg/dL", "2-hour 155 mg/dL", "3-hour 140 mg/dL", "2 abnormal values"],
+      data_needed: ["50-g screen result and local threshold", "100-g OGTT fasting glucose", "100-g OGTT 1-hour glucose", "100-g OGTT 2-hour glucose", "100-g OGTT 3-hour glucose", "number of abnormal values"],
+      source_ids: unique([...adaDx, "CDC_DIABETES_TESTING_2024"]),
+      source_section: "Gestational diabetes two-step diagnostic strategy"
+    }),
+    criterion({
+      id: "gdm_overt_diabetes_thresholds",
+      label: "Overt diabetes in pregnancy: A1c >=6.5%, fasting glucose >=126 mg/dL, 2-hour OGTT >=200 mg/dL, or random glucose >=200 mg/dL with symptoms",
+      criteria_text: "Diabetes-range testing in early pregnancy should be classified as overt diabetes rather than gestational diabetes when standard diabetes thresholds are met and confirmed when needed.",
+      cutoffs: ["A1c >=6.5%", "fasting glucose >=126 mg/dL", "2-hour OGTT >=200 mg/dL", "random glucose >=200 mg/dL"],
+      data_needed: ["A1c", "fasting plasma glucose", "2-hour 75-g OGTT glucose", "random plasma glucose", "classic hyperglycemia symptoms", "repeat confirmation if asymptomatic"],
+      source_ids: unique([...adaDx, "CDC_DIABETES_TESTING_2024"]),
+      source_section: "Overt diabetes diagnostic thresholds"
+    }),
+    criterion({
+      id: "gdm_treatment_glucose_targets",
+      label: "GDM treatment targets: fasting glucose <95 mg/dL, 1-hour postprandial <140 mg/dL, or 2-hour postprandial <120 mg/dL",
+      criteria_text: "Gestational diabetes treatment targets commonly use fasting glucose <95 mg/dL, 1-hour postprandial <140 mg/dL, or 2-hour postprandial <120 mg/dL; local obstetric protocols determine which postprandial timing is used.",
+      cutoffs: ["fasting <95 mg/dL", "1-hour <140 mg/dL", "2-hour <120 mg/dL"],
+      data_needed: ["home fasting glucose log", "1-hour postprandial glucose log", "2-hour postprandial glucose log", "hypoglycemia events", "nutrition therapy response", "local monitoring schedule"],
+      source_ids: adaSoc,
+      source_section: "Management of diabetes in pregnancy glycemic targets"
+    }),
+    criterion({
+      id: "gdm_medication_escalation",
+      label: "GDM medication escalation: nutrition/activity first; insulin preferred when glucose targets are not met",
+      criteria_text: "Use medical nutrition therapy and physical activity first; if fasting or postprandial targets are not met after a monitored trial, insulin is preferred because metformin and glyburide cross the placenta and require clinician review when used.",
+      cutoffs: ["fasting <95 mg/dL", "1-hour <140 mg/dL", "2-hour <120 mg/dL"],
+      data_needed: ["glucose log duration", "percentage above target", "nutrition plan", "physical activity plan", "hypoglycemia risk", "insulin access", "metformin/glyburide counseling"],
+      source_ids: adaSoc,
+      source_section: "Pregnancy pharmacologic treatment"
+    }),
+    criterion({
+      id: "gdm_obstetric_emergency_triggers",
+      label: "Pregnancy hyperglycemia escalation: ketones, vomiting/dehydration, severe hyperglycemia, altered mental status, preeclampsia features, or reduced fetal movement",
+      criteria_text: "Ketones, vomiting/dehydration, severe hyperglycemia, altered mental status, hypertensive/preeclampsia features, or reduced fetal movement require urgent obstetric/endocrine evaluation rather than routine outpatient GDM adjustment.",
+      cutoffs: ["random glucose >=200 mg/dL", "blood pressure >=140/90 mm Hg", "blood pressure >=160/110 mm Hg"],
+      data_needed: ["ketones", "bicarbonate/anion gap", "glucose", "hydration/oral intake", "mental status", "blood pressure", "preeclampsia symptoms", "fetal movement"],
+      source_ids: unique([...adaSoc, ...adaDx, "CDC_DIABETES_TESTING_2024"]),
+      source_section: "Pregnancy acute escalation and hypertensive-feature routing"
+    }),
+    criterion({
+      id: "gdm_postpartum_followup",
+      label: "Postpartum after GDM: 75-g OGTT at 4-12 weeks, then lifelong diabetes/prediabetes screening every 1-3 years",
+      criteria_text: "After gestational diabetes, perform postpartum 75-g OGTT at 4-12 weeks and continue lifelong screening every 1-3 years; if prediabetes is found, intensive lifestyle prevention and metformin consideration depend on risk profile.",
+      cutoffs: ["75-g", "4-12 weeks", "1-3 years"],
+      data_needed: ["delivery date", "postpartum 75-g OGTT result", "breastfeeding status", "contraception plan", "future pregnancy plans", "prediabetes/diabetes result", "follow-up access"],
+      source_ids: unique([...adaSoc, ...adaDx, "CDC_NDPP_LIFESTYLE_2024"]),
+      source_section: "Postpartum diabetes screening and prevention"
+    })
+  ];
+
+  const missingContextEndpoint = endpoint({
+    id: "endpoint_missing_context",
+    label: "Missing data needed: gestational age, glucose strategy, obstetric symptoms, vitals, and postpartum status",
+    edgeLabel: "Missing exact pregnancy diabetes data: gestational age, prior diabetes status, one-step or two-step strategy, OGTT values, home glucose log, ketones/acid-base status when ill, blood pressure, fetal symptoms, medications, and postpartum timing",
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_context_criteria`, "Route here when the pregnancy diabetes context needed to choose screening, treatment, escalation, or postpartum follow-up is unavailable.", contextDomains, sourceIds, { missing_any: contextDomains }),
+    action: "Document gestational age, prior diabetes status, early pregnancy A1c/glucose if high risk, local one-step or two-step strategy, exact OGTT values, home fasting and postprandial glucose log, current weight and blood pressure, ketones/electrolytes/anion gap when vomiting or severely hyperglycemic, fetal movement or obstetric symptoms, current medications, delivery date if postpartum, and follow-up access.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["gestational age", "prior diabetes status", "local one-step or two-step strategy", "OGTT values", "home glucose log", "ketones/anion gap if ill", "blood pressure", "fetal movement/obstetric symptoms", "current medications", "postpartum delivery date"]
+  });
+
+  const missingOgttEndpoint = endpoint({
+    id: `${prefix}_missing_ogtt_log_endpoint`,
+    label: "Missing data needed: OGTT values, home glucose log, ketones, blood pressure, or postpartum OGTT timing",
+    edgeLabel: "Cannot classify GDM, overt diabetes, medication escalation, urgent pregnancy risk, or postpartum follow-up until OGTT values, glucose log, ketones/acid-base status when ill, BP, and postpartum timing are known",
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_ogtt_criteria`, "Route here when exact GDM diagnostic or treatment-routing data are missing.", contextDomains, sourceIds, { missing_any: ["gestational age", "75-g or 100-g OGTT values", "50-g screen result if two-step strategy", "fasting and postprandial glucose log", "ketones/acid-base data when ill", "blood pressure", "postpartum OGTT date"] }),
+    action: "Obtain the local screening strategy result: 75-g fasting/1-hour/2-hour values, or 50-g screen threshold plus 100-g fasting/1-hour/2-hour/3-hour values; add home fasting and postprandial glucose logs, ketones/electrolytes/anion gap if symptomatic or vomiting, blood pressure and preeclampsia symptom screen, and postpartum 75-g OGTT timing if delivered.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["75-g fasting/1-hour/2-hour values", "50-g screen and local threshold", "100-g fasting/1-hour/2-hour/3-hour values", "fasting and postprandial glucose log", "ketones/electrolytes/anion gap when ill", "blood pressure", "postpartum 75-g OGTT date"]
+  });
+
+  const urgentEndpoint = endpoint({
+    id: `${prefix}_urgent_obstetric_endocrine_endpoint`,
+    label: "Pregnancy diabetes emergency: ketone/acidosis, dehydration, severe hyperglycemia, preeclampsia feature, or fetal concern",
+    edgeLabel: "Emergency branch: ketones, vomiting or dehydration, altered mental status, severe hyperglycemia, acid-base abnormality, blood pressure >=140/90 with symptoms or >=160/110, reduced fetal movement, or inability to keep insulin/fluids down",
+    sourceIds,
+    criteria: criteria(`${prefix}_urgent_criteria`, "Use when pregnancy hyperglycemia has DKA/acidosis risk, dehydration, hypertensive/preeclampsia features, altered mental status, or fetal concern.", ["symptoms", "exam", "vitals", "labs", "medications", "pregnancy_status", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
+    action: "Send for urgent obstetric/endocrine evaluation, check glucose, serum or urine ketones, electrolytes, bicarbonate/anion gap, creatinine, mental status, hydration, blood pressure and preeclampsia symptoms, fetal status per gestational age/local protocol, and treat possible DKA or hypertensive emergency before routine GDM titration.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["ketones and anion gap", "glucose trend", "hydration and oral intake", "blood pressure", "preeclampsia symptoms", "fetal movement/status", "insulin access"]
+  });
+
+  const diagnosticEndpoint = endpoint({
+    id: `${prefix}_diagnostic_confirmation_endpoint`,
+    label: "GDM or overt diabetes classification: apply the selected OGTT/diabetes thresholds",
+    edgeLabel: "Diagnostic branch: 24-28 week screening due, one-step 75-g threshold crossed, two-step screen/100-g threshold crossed, or early pregnancy diabetes-range value suggests overt diabetes",
+    sourceIds: unique([...adaDx, "CDC_DIABETES_TESTING_2024"]),
+    criteria: criteria(`${prefix}_diagnostic_criteria`, "Use when gestational age and OGTT or overt-diabetes data are available for classification.", ["pregnancy_status", "labs", "symptoms", "workup_findings"], unique([...adaDx, "CDC_DIABETES_TESTING_2024"]), { criteria_options: criteriaRows }),
+    action: "Classify with the local strategy: one-step 75-g OGTT fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL diagnoses GDM; two-step testing uses local 50-g screen threshold 130-140 mg/dL followed by 100-g OGTT Carpenter-Coustan values fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL with usually 2 abnormal values. Early pregnancy A1c >=6.5%, fasting >=126 mg/dL, 2-hour >=200 mg/dL, or random >=200 mg/dL with symptoms routes as overt diabetes in pregnancy.",
+    endpointType: "diagnostic_step",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const treatmentEndpoint = endpoint({
+    id: `${prefix}_nutrition_insulin_endpoint`,
+    label: "GDM treatment: nutrition/activity, glucose monitoring, then insulin if fasting or postprandial targets remain high",
+    edgeLabel: "Treatment branch: GDM confirmed and no emergency physiology; fasting or postprandial glucose targets guide nutrition, activity, insulin, and obstetric monitoring",
+    sourceIds: adaSoc,
+    criteria: criteria(`${prefix}_treatment_criteria`, "Use when GDM is diagnosed and the patient is stable enough for outpatient-style therapy or obstetric co-management.", ["labs", "medications", "pregnancy_status", "comorbidities", "workup_findings"], adaSoc, { criteria_options: criteriaRows }),
+    action: "Start medical nutrition therapy, appropriate physical activity, and fasting/postprandial monitoring; escalate when values remain above fasting <95 mg/dL, 1-hour <140 mg/dL, or 2-hour <120 mg/dL targets. Prefer insulin when medication is needed; metformin or glyburide requires clinician counseling because they cross the placenta and local obstetric policy may differ.",
+    endpointType: "treatment",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["fasting glucose", "1-hour or 2-hour postprandial glucose", "hypoglycemia", "weight gain", "nutrition adherence", "insulin dose/access", "obstetric monitoring plan"]
+  });
+
+  const mimicEndpoint = endpoint({
+    id: `${prefix}_mimic_or_overt_diabetes_endpoint`,
+    label: "Pregnancy glucose mimic or overt pregestational diabetes: route away from routine GDM plan",
+    edgeLabel: "Alternate branch: early diabetes-range value, type 1/type 2 diabetes, steroid or stress hyperglycemia, DKA/HHS, renal disease, infection, hypoglycemia/drug effect, or secondary endocrine cause fits better",
+    sourceIds: sourceIdsForItems(differentials, sourceIds),
+    criteria: criteria(`${prefix}_mimic_criteria`, "Use when glucose results or clinical context indicate overt diabetes, a hyperglycemic crisis, or another cause rather than routine gestational diabetes.", ["symptoms", "vitals", "labs", "medications", "comorbidities", "pregnancy_status", "workup_findings"], sourceIdsForItems(differentials, sourceIds), { criteria_options: criteriaRows }),
+    action: `Document why routine GDM is not the active pathway and route to the more specific diagnosis: ${listText(differentials, "overt type 1/type 2 diabetes, steroid/stress hyperglycemia, DKA/HHS, renal disease, infection, medication effect, or secondary endocrine cause", 5)}.`,
+    endpointType: "clinician_review_handoff",
+    reviewNeededReason: "Pregnancy hyperglycemia may represent overt diabetes, hyperglycemic crisis, medication effect, or another diagnosis requiring a different pathway."
+  });
+
+  const postpartumEndpoint = endpoint({
+    id: `${prefix}_postpartum_followup_endpoint`,
+    label: "Postpartum GDM: 75-g OGTT, prevention plan, lifelong screening, and future-pregnancy safety-net",
+    edgeLabel: "Postpartum branch: delivered after GDM, 4-12 week 75-g OGTT due or abnormal, breastfeeding/contraception/future pregnancy counseling needed, or long-term diabetes prevention follow-up due",
+    sourceIds: unique([...adaSoc, ...adaDx, "CDC_NDPP_LIFESTYLE_2024"]),
+    criteria: criteria(`${prefix}_postpartum_criteria`, "Use after delivery or when GDM history changes future diabetes prevention and screening.", ["pregnancy_status", "labs", "medications", "follow_up_access", "workup_findings"], unique([...adaSoc, ...adaDx, "CDC_NDPP_LIFESTYLE_2024"]), { criteria_options: criteriaRows }),
+    action: "Order or document postpartum 75-g OGTT at 4-12 weeks, classify normal/prediabetes/diabetes using nonpregnant thresholds, screen every 1-3 years lifelong, connect to a diabetes prevention program when prediabetes or high risk persists, review breastfeeding, contraception and medication compatibility, and safety-net for hyperglycemia symptoms before the next pregnancy.",
+    endpointType: "safety_net_instruction",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["postpartum 75-g OGTT date/result", "1-3 year rescreening interval", "prediabetes/diabetes classification", "prevention program referral", "future pregnancy plan", "medication compatibility"]
+  });
+
+  const managementAction = actionNode({
+    id: `${prefix}_management_action`,
+    label: "Gestational diabetes: combine diagnostic classification, treatment targets, obstetric modifiers, and postpartum plan",
+    edgeLabel: "Stable pregnancy branch: OGTT or glucose-log data available, emergency features absent, and maternal-fetal management can be selected",
+    sourceIds,
+    criteria: criteria(`${prefix}_management_criteria`, "Route stable pregnancy hyperglycemia through diagnostic thresholds, treatment targets, medication safety, fetal/obstetric modifiers, monitoring, and postpartum prevention.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Use diagnostic thresholds, glucose targets, medication safety, obstetric co-management, and postpartum prevention as one plan.",
+    parallelActions: ["classify by one-step or two-step OGTT", "set fasting and postprandial glucose targets", "nutrition/activity and insulin escalation", "blood pressure and fetal symptom safety", "postpartum 75-g OGTT and prevention"],
+    guidelineCutoffs: criteriaRows,
+    children: [diagnosticEndpoint, treatmentEndpoint, postpartumEndpoint]
+  });
+
+  const classificationDecision = decision({
+    id: `${prefix}_classification_decision`,
+    label: "Gestational diabetes: choose missing-data, emergency, diagnostic, treatment, mimic, or postpartum branch",
+    edgeLabel: "Gestational age, OGTT values, home glucose log, ketones/acid-base status, blood pressure, fetal symptoms, medication context, and postpartum status are available",
+    sourceIds,
+    criteria: criteria(`${prefix}_classification_criteria`, "Classify pregnancy hyperglycemia by gestational age, selected OGTT strategy, glucose thresholds, emergency symptoms, treatment response, medication constraints, and postpartum timing.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Choose from missing OGTT/glucose-log data, obstetric/endocrine emergency, GDM/overt-diabetes diagnosis, stable treatment, postpartum prevention, or competing diagnosis.",
+    clinicalCriteria: criteriaRows,
+    guidelineCutoffs: criteriaRows,
+    children: [missingOgttEndpoint, urgentEndpoint, managementAction, mimicEndpoint]
+  });
+
+  const initialAssessment = actionNode({
+    id: `${prefix}_initial_assessment`,
+    label: "Gestational diabetes: collect gestational age, OGTT strategy, glucose log, ketone risk, blood pressure, weight, and fetal symptoms together",
+    edgeLabel: "Pregnant or postpartum patient with GDM risk, abnormal glucose screen, diabetes-range value, hyperglycemia symptoms, prior GDM, obesity/PCOS/family history, or clinician-chosen pregnancy diabetes evaluation",
+    sourceIds,
+    criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial GDM assessment requires pregnancy timing, exact glucose thresholds, acute illness safety, blood pressure/fetal assessment, and medication context.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: `Measure blood pressure, measure heart rate, measure current weight, document mental status, and document fetal symptoms when gestational age applies. Obtain gestational age, prior diabetes/GDM status, local one-step or two-step strategy, exact OGTT or screen values, fasting/postprandial glucose log, ketones/electrolytes/anion gap if vomiting or severely hyperglycemic, medication/allergy list, nutrition/activity plan, and postpartum delivery date if delivered. Local evidence reminders: ${listText([...tests, ...redFlags, ...dispositions, ...safetyChecks], "pregnancy diabetes tests, red flags, disposition rules, and safety checks", 12)}.`,
+    parallelActions: ["measure blood pressure", "measure heart rate", "measure current weight", "document mental status", "gestational age and fetal symptom review", "one-step or two-step OGTT values", "fasting/postprandial glucose log", "ketones/electrolytes/anion gap when ill", "medication and insulin access review", "postpartum OGTT timing"],
+    requiredData: unique(criteriaRows.flatMap((row) => row.data_needed || [])),
+    guidelineCutoffs: criteriaRows,
+    children: [classificationDecision]
+  });
+
+  const root = decision({
+    id: "root",
+    label: "Gestational diabetes: route by pregnancy timing, OGTT thresholds, glucose targets, urgent obstetric risk, and postpartum prevention",
+    sourceIds,
+    criteria: criteria(`${prefix}_activate`, "Activate for pregnancy or postpartum context with GDM screening need, abnormal glucose challenge/OGTT, diabetes-range early pregnancy value, home glucose elevations, prior GDM, or clinician-chosen pregnancy diabetes evaluation.", ["clinician_selected_module", "pregnancy_status", "gestational_age", "labs", "presenting_symptoms", "problem_list_or_diagnosis"], sourceIds),
+    action: "Route pregnancy hyperglycemia through missing-data, emergency obstetric/endocrine evaluation, one-step or two-step diagnostic thresholds, treatment targets, insulin/medication safety, postpartum OGTT, prevention, follow-up, and safety-net endpoints.",
+    children: [missingContextEndpoint, initialAssessment]
+  });
+
+  return finalizeClinicalPathwayTree({
+    module,
+    sourceById,
+    label,
+    version: "4.0.0",
+    status: "hand_polished_gestational_diabetes_pathway_needs_clinician_review",
+    sourceIds,
+    criteriaRows,
+    tests,
+    redFlags,
+    differentials,
+    dispositions,
+    root,
+    sourceMaterial: "ADA Standards of Care in Diabetes 2026, ADA Diagnosis and Classification of Diabetes 2026, CDC Diabetes Testing, CDC National DPP resources, and local module evidence rows",
+    reviewNote: "Gestational diabetes tree is threshold-cited and patient-traversable; local one-step versus two-step strategy, medication formulary, fetal surveillance, delivery timing, and obstetric hypertensive-emergency protocols require clinician governance.",
+    syntheticScenarios: [
+      { scenario_id: "missing_context", major_pathway: "missing_data_needed", expected_endpoint_id: missingContextEndpoint.id, expected_active_branch: missingContextEndpoint.edgeLabel },
+      { scenario_id: "missing_ogtt_values", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: missingOgttEndpoint.id, expected_active_branch: missingOgttEndpoint.edgeLabel },
+      { scenario_id: "gdm_dka_or_preeclampsia_risk", major_pathway: "escalation_emergency_actions", expected_endpoint_id: urgentEndpoint.id, expected_active_branch: urgentEndpoint.edgeLabel },
+      { scenario_id: "one_step_or_two_step_diagnosis", major_pathway: "severity_risk_stratification", expected_endpoint_id: diagnosticEndpoint.id, expected_active_branch: diagnosticEndpoint.edgeLabel },
+      { scenario_id: "stable_gdm_treatment", major_pathway: "first_line_management", expected_endpoint_id: treatmentEndpoint.id, expected_active_branch: treatmentEndpoint.edgeLabel },
+      { scenario_id: "medication_or_obstetric_policy_review", major_pathway: "contraindications_special_populations", expected_endpoint_id: treatmentEndpoint.id, expected_active_branch: treatmentEndpoint.edgeLabel },
+      { scenario_id: "overt_diabetes_or_mimic", major_pathway: "mimics_exclusions", expected_endpoint_id: mimicEndpoint.id, expected_active_branch: mimicEndpoint.edgeLabel },
+      { scenario_id: "glucose_log_monitoring", major_pathway: "monitoring_reassessment_escalation", expected_endpoint_id: treatmentEndpoint.id, expected_active_branch: treatmentEndpoint.edgeLabel },
+      { scenario_id: "postpartum_deescalation", major_pathway: "deescalation_stopping_criteria", expected_endpoint_id: postpartumEndpoint.id, expected_active_branch: postpartumEndpoint.edgeLabel },
+      { scenario_id: "postpartum_safety_net", major_pathway: "disposition_followup_safety_netting", expected_endpoint_id: postpartumEndpoint.id, expected_active_branch: postpartumEndpoint.edgeLabel }
+    ],
+    handPolishRequirements: [
+      "diagnostic branch includes 75-g one-step fasting 92, 1-hour 180, 2-hour 153 mg/dL and two-step Carpenter-Coustan thresholds",
+      "treatment branch includes fasting <95, 1-hour <140, and 2-hour <120 mg/dL targets",
+      "emergency branch routes ketones/acidosis, vomiting/dehydration, severe hyperglycemia, hypertensive features, and fetal concerns",
+      "postpartum branch includes 75-g OGTT at 4-12 weeks and lifelong 1-3 year screening"
+    ]
+  });
+}
+
+function buildDiabetesMellitusClinicalPathwayTree(module, sourceById, diabetesType) {
+  const isType1 = diabetesType === "type1";
+  const label = module.label || (isType1 ? "Type 1 Diabetes Mellitus" : "Type 2 Diabetes Mellitus");
+  const prefix = isType1 ? "type_1_diabetes" : "type_2_diabetes";
+  const diag = ["ADA_DIAGNOSIS_2026", "CDC_DIABETES_TESTING_2024"];
+  const soc = ["ADA_SOC_2026"];
+  const crisis = ["ADA_HYPERGLYCEMIC_CRISES_2024", "ADA_STANDARDS_HOSPITAL_2026"];
+  const sourceIds = unique([...diag, ...soc, ...crisis, ...genericSourceIds]);
+  const tests = firstItems(module, "initialTests", 12);
+  const redFlags = firstItems(module, "redFlags", 8, ["safetyChecks"]);
+  const differentials = firstItems(module, "differentialBuckets", 8);
+  const dispositions = firstItems(module, "dispositionRules", 8, ["treatmentOptions"]);
+  const safetyChecks = firstItems(module, "safetyChecks", 6);
+
+  const criteriaRows = [
+    criterion({
+      id: `${prefix}_diabetes_diagnostic_thresholds`,
+      label: "Diabetes diagnosis: A1c >=6.5%, fasting glucose >=126 mg/dL, 2-hour OGTT >=200 mg/dL, or random glucose >=200 mg/dL with symptoms",
+      criteria_text: "Diabetes is diagnosed by A1c >=6.5%, fasting plasma glucose >=126 mg/dL, 2-hour 75-g OGTT glucose >=200 mg/dL, or random plasma glucose >=200 mg/dL with classic symptoms; asymptomatic results need confirmation.",
+      cutoffs: ["A1c >=6.5%", "fasting glucose >=126 mg/dL", "2-hour OGTT >=200 mg/dL", "random glucose >=200 mg/dL"],
+      data_needed: ["A1c", "fasting plasma glucose", "2-hour 75-g OGTT glucose", "random plasma glucose", "classic symptoms", "repeat confirmatory test if asymptomatic"],
+      source_ids: diag,
+      source_section: "Diabetes diagnostic criteria"
+    }),
+    criterion({
+      id: `${prefix}_prediabetes_thresholds_for_mimic`,
+      label: "Prediabetes range is not diabetes: A1c 5.7-6.4%, fasting glucose 100-125 mg/dL, or 2-hour OGTT 140-199 mg/dL",
+      criteria_text: "Prediabetes thresholds are A1c 5.7-6.4%, fasting glucose 100-125 mg/dL, or 2-hour 75-g OGTT glucose 140-199 mg/dL; these route away from a confirmed diabetes treatment branch unless other diabetes-range data exist.",
+      cutoffs: ["A1c 5.7-6.4%", "fasting glucose 100-125 mg/dL", "2-hour OGTT 140-199 mg/dL"],
+      data_needed: ["A1c", "fasting plasma glucose", "2-hour OGTT glucose", "symptoms", "repeat confirmation"],
+      source_ids: diag,
+      source_section: "Prediabetes diagnostic criteria"
+    }),
+    criterion({
+      id: `${prefix}_dka_hhs_red_flags`,
+      label: "Hyperglycemic crisis check: DKA has ketosis plus pH <7.3 or bicarbonate <18 mmol/L; beta-hydroxybutyrate often >=3.0 mmol/L",
+      criteria_text: "Vomiting, dehydration, Kussmaul respirations, altered mental status, severe hyperglycemia, or insulin deficiency symptoms require DKA/HHS assessment; DKA requires diabetes/hyperglycemia plus ketosis and metabolic acidosis, commonly beta-hydroxybutyrate >=3.0 mmol/L with pH <7.3 or bicarbonate <18 mmol/L.",
+      cutoffs: ["beta-hydroxybutyrate >=3.0 mmol/L", "pH <7.3", "bicarbonate <18 mmol/L"],
+      data_needed: ["glucose", "beta-hydroxybutyrate or urine ketones", "venous pH", "bicarbonate", "anion gap", "osmolality", "mental status", "volume status", "SGLT2 inhibitor use"],
+      source_ids: crisis,
+      source_section: "Hyperglycemic crises diagnostic criteria"
+    }),
+    criterion({
+      id: `${prefix}_glycemic_goals_and_hypoglycemia`,
+      label: "Most nonpregnant adults: A1c goal <7%; hypoglycemia level 1 <70 mg/dL and level 2 <54 mg/dL require treatment-plan review",
+      criteria_text: "For many nonpregnant adults, a reasonable A1c goal is <7% if safely achieved; level 1 hypoglycemia is glucose <70 mg/dL and level 2 is <54 mg/dL, with severe hypoglycemia requiring assistance regardless of value.",
+      cutoffs: ["A1c <7%", "glucose <70 mg/dL", "glucose <54 mg/dL"],
+      data_needed: ["A1c", "CGM/glucose log", "hypoglycemia frequency", "severe hypoglycemia needing assistance", "pregnancy status", "frailty/comorbidity context"],
+      source_ids: soc,
+      source_section: "Glycemic goals and hypoglycemia"
+    }),
+    criterion({
+      id: `${prefix}_kidney_albuminuria_thresholds`,
+      label: "Kidney risk: UACR >=30 mg/g or eGFR <60 mL/min/1.73 m2 changes kidney-protective therapy and follow-up",
+      criteria_text: "Diabetes kidney risk assessment includes eGFR and urine albumin-creatinine ratio; UACR >=30 mg/g or eGFR <60 mL/min/1.73 m2 changes kidney-protective therapy, medication safety, and monitoring.",
+      cutoffs: ["UACR >=30 mg/g", "eGFR <60 mL/min/1.73 m2"],
+      data_needed: ["eGFR", "UACR", "potassium", "blood pressure", "ACEi/ARB use", "SGLT2 inhibitor eligibility", "pregnancy status"],
+      source_ids: soc,
+      source_section: "Chronic kidney disease and risk management"
+    }),
+    ...(isType1 ? [
+      criterion({
+        id: "type1_autoimmune_classification",
+        label: "Autoimmune insulin-deficient diabetes: diabetes plus islet autoantibody positivity or low C-peptide supports type 1/LADA classification",
+        criteria_text: "Type 1 diabetes classification uses clinical insulin deficiency, DKA risk, islet autoantibodies such as GAD65, IA-2, ZnT8 or insulin autoantibody when appropriate, and C-peptide interpreted with concurrent glucose.",
+        cutoffs: ["glucose >=200 mg/dL"],
+        data_needed: ["islet autoantibodies", "C-peptide with concurrent glucose", "DKA history", "weight loss/catabolic symptoms", "age/onset tempo", "family autoimmune history"],
+        source_ids: unique([...diag, ...soc]),
+        source_section: "Type 1 diabetes classification"
+      }),
+      criterion({
+        id: "type1_insulin_essential",
+        label: "Type 1 diabetes treatment: physiologic insulin is required; never stop basal insulin during illness without clinician direction",
+        criteria_text: "People with type 1 diabetes require insulin therapy; acute illness, vomiting, pump failure, insulin omission, or SGLT2 inhibitor use requires ketone assessment and sick-day insulin safety rather than stopping basal insulin.",
+        cutoffs: ["glucose <70 mg/dL", "glucose <54 mg/dL"],
+        data_needed: ["basal insulin access", "bolus/correction plan", "pump/CGM status", "ketone plan", "hypoglycemia history", "glucagon access", "sick-day rules"],
+        source_ids: unique([...soc, ...crisis]),
+        source_section: "Type 1 pharmacologic therapy and sick-day safety"
+      })
+    ] : [
+      criterion({
+        id: "type2_initial_insulin_thresholds",
+        label: "Type 2 diabetes severe hyperglycemia: consider insulin when A1c >10%, glucose >=300 mg/dL, catabolism, symptoms, or ketosis are present",
+        criteria_text: "Type 2 diabetes with A1c >10%, glucose >=300 mg/dL, catabolic symptoms, symptomatic hyperglycemia, or ketosis should route to insulin or urgent evaluation rather than slow outpatient titration.",
+        cutoffs: ["A1c >10%", "glucose >=300 mg/dL"],
+        data_needed: ["A1c", "plasma glucose", "weight loss/catabolism", "polyuria/polydipsia", "ketones", "medication access", "insulin feasibility"],
+        source_ids: unique([...soc, ...crisis]),
+        source_section: "Pharmacologic treatment escalation"
+      }),
+      criterion({
+        id: "type2_cardiorenal_medication_selection",
+        label: "Type 2 diabetes cardiorenal branch: ASCVD, heart failure, CKD, UACR >=30 mg/g, or eGFR <60 changes GLP-1/SGLT2 and ACEi/ARB decisions",
+        criteria_text: "In type 2 diabetes, ASCVD, heart failure, CKD, albuminuria, or reduced eGFR changes medication selection toward cardiorenal risk-reducing therapy independent of baseline A1c in many patients; pregnancy and eGFR restrictions require clinician review.",
+        cutoffs: ["UACR >=30 mg/g", "eGFR <60 mL/min/1.73 m2", "eGFR >=20 mL/min/1.73 m2"],
+        data_needed: ["ASCVD status", "heart failure status", "eGFR", "UACR", "pregnancy status", "SGLT2/GLP-1 contraindications", "cost/access"],
+        source_ids: soc,
+        source_section: "Cardiovascular and kidney risk management"
+      })
+    ])
+  ];
+
+  const missingContextEndpoint = endpoint({
+    id: "endpoint_missing_context",
+    label: `Missing data needed: ${label} diagnosis, crisis screen, medication safety, kidney/cardiovascular risk, and follow-up context`,
+    edgeLabel: `Missing exact ${label} data: A1c/glucose criteria, symptoms, ketones/acid-base status when ill, diabetes type evidence, medications/insulin access, kidney/cardiovascular risk, pregnancy status, vitals, and follow-up access`,
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_context_criteria`, `Route here when the data needed to safely classify and manage ${label} cannot be extracted.`, contextDomains, sourceIds, { missing_any: contextDomains }),
+    action: `Document A1c, fasting or random glucose, 2-hour OGTT if used, symptoms, glucose/CGM pattern, ketones, bicarbonate/pH/anion gap when ill, kidney function, UACR, lipids, blood pressure, heart rate, weight, mental status, current medications including insulin/SGLT2 use, hypoglycemia history, pregnancy status, diabetes type evidence, complication screen, medication access, and follow-up access.`,
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["A1c and plasma glucose data", "classic symptoms", "ketones and acid-base data when ill", "current medications/insulin access", "eGFR and UACR", "blood pressure", "weight", "mental status", "pregnancy status", "diabetes type evidence", "hypoglycemia history", "follow-up access"]
+  });
+
+  const missingDiabetesDataEndpoint = endpoint({
+    id: `${prefix}_missing_diabetes_data_endpoint`,
+    label: "Missing data needed: diagnostic thresholds, ketones/acid-base, medication access, kidney risk, or hypoglycemia history",
+    edgeLabel: "Cannot choose confirmed diabetes, crisis, insulin/medication, kidney/cardiovascular, mimic, or follow-up branch until exact glucose/A1c, ketone/acid-base, medication, kidney, and safety data are known",
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_diabetes_data_criteria`, `Route here when exact ${label} threshold or treatment-safety data are unavailable.`, contextDomains, sourceIds, { missing_any: ["A1c", "fasting/random glucose or OGTT", "ketones/anion gap/pH/bicarbonate when symptomatic", "current medication and insulin access", "eGFR", "UACR", "hypoglycemia history"] }),
+    action: "Obtain A1c and plasma glucose criteria, repeat confirmatory test if asymptomatic, check beta-hydroxybutyrate or urine ketones plus bicarbonate/pH/anion gap when vomiting, dehydrated, losing weight, using SGLT2 inhibitors, or acutely ill, and document eGFR, UACR, BP, lipids, current medications, pregnancy status, hypoglycemia episodes, and access barriers.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["A1c", "fasting/random glucose or OGTT", "repeat confirmation if asymptomatic", "ketones/anion gap/pH/bicarbonate when symptomatic", "current medication and insulin access", "eGFR", "UACR", "BP/lipids", "hypoglycemia history", "pregnancy status"]
+  });
+
+  const crisisEndpoint = endpoint({
+    id: `${prefix}_crisis_hypoglycemia_endpoint`,
+    label: `${label}: DKA/HHS, severe hypoglycemia, dehydration, altered mental status, or infected foot wound needs urgent protocol care`,
+    edgeLabel: "Emergency branch: ketosis/acidosis, vomiting, dehydration, Kussmaul respirations, altered mental status, severe hyperglycemia, severe hypoglycemia requiring assistance, SGLT2 ketotic symptoms, pregnancy hyperglycemia, or infected foot wound",
+    sourceIds: unique([...crisis, ...soc]),
+    criteria: criteria(`${prefix}_crisis_criteria`, `Use when ${label} has hyperglycemic crisis physiology, severe hypoglycemia, infected foot, pregnancy hyperglycemia, or unstable vital signs.`, ["symptoms", "exam", "vitals", "labs", "medications", "pregnancy_status", "workup_findings"], unique([...crisis, ...soc]), { criteria_options: criteriaRows }),
+    action: "Route to ED/urgent monitored protocol: check glucose, beta-hydroxybutyrate or urine ketones, venous pH, bicarbonate, anion gap, electrolytes, creatinine, osmolality when HHS possible, ECG/potassium risk, infection/foot source, pregnancy status, mental status, and treat DKA/HHS or severe hypoglycemia before routine outpatient adjustment.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["glucose", "ketones", "pH/bicarbonate/anion gap", "potassium", "osmolality if HHS possible", "mental status", "volume status", "infection/foot findings", "hypoglycemia recurrence"]
+  });
+
+  const diagnosisEndpoint = endpoint({
+    id: `${prefix}_diagnosis_classification_endpoint`,
+    label: `${label}: confirm diabetes-range result and classify type before durable treatment choices`,
+    edgeLabel: `Diagnostic branch: A1c/glucose threshold meets diabetes range or ${isType1 ? "autoimmune/insulin-deficient features need type 1/LADA confirmation" : "type 2 phenotype requires type 1/LADA and secondary-cause exclusions"}`,
+    sourceIds: unique([...diag, ...soc]),
+    criteria: criteria(`${prefix}_diagnosis_classification_criteria`, `Use when ${label} diagnostic thresholds and type-classification data are available.`, ["symptoms", "labs", "medications", "comorbidities", "demographics", "pregnancy_status", "workup_findings"], unique([...diag, ...soc]), { criteria_options: criteriaRows }),
+    action: isType1
+      ? "Confirm diabetes-range A1c/glucose and classify autoimmune insulin-deficient diabetes using presentation tempo, DKA/ketosis, weight loss/catabolic symptoms, islet autoantibodies, C-peptide interpreted with concurrent glucose, family/autoimmune history, and age; do not delay insulin when insulin deficiency or ketosis is present."
+      : "Confirm diabetes-range A1c/glucose, repeat if asymptomatic, and classify likely type 2 diabetes while excluding type 1/LADA, steroid/stress hyperglycemia, pancreatic disease, pregnancy, monogenic diabetes, and DKA/HHS physiology; use phenotype, medications, ketones, C-peptide/autoantibodies when uncertain.",
+    endpointType: "diagnostic_step",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const treatmentEndpoint = endpoint({
+    id: `${prefix}_treatment_endpoint`,
+    label: isType1 ? "Type 1 diabetes: basal-bolus or pump insulin, ketone sick-day plan, glucagon, and hypoglycemia prevention" : "Type 2 diabetes: lifestyle, metformin or first-line comorbidity-directed therapy, and insulin when severe hyperglycemia/catabolism is present",
+    edgeLabel: isType1
+      ? "Treatment branch: type 1 diabetes confirmed or strongly likely, crisis excluded or treated, insulin access and hypoglycemia safety can be planned"
+      : "Treatment branch: type 2 diabetes confirmed, crisis excluded or treated, A1c/glucose severity and cardiorenal comorbidities guide medication intensity",
+    sourceIds: unique([...soc, ...crisis]),
+    criteria: criteria(`${prefix}_treatment_criteria`, `Use when ${label} is confirmed/likely and treatment-safety data are available.`, ["labs", "medications", "comorbidities", "pregnancy_status", "workup_findings"], unique([...soc, ...crisis]), { criteria_options: criteriaRows }),
+    action: isType1
+      ? "Start or continue physiologic insulin with basal coverage plus mealtime/correction strategy or pump plan, ensure CGM/glucose monitoring and ketone testing, prescribe glucagon when severe hypoglycemia risk exists, teach sick-day rules and never stopping basal insulin without clinician direction, and set individualized A1c and hypoglycemia targets."
+      : "Start individualized therapy with lifestyle and weight plan, DSMES, metformin when appropriate, and GLP-1/SGLT2 or other cardiorenal risk-reducing therapy when ASCVD/HF/CKD risk fits; consider insulin when A1c >10%, glucose >=300 mg/dL, catabolic symptoms, symptomatic hyperglycemia, or ketosis are present.",
+    endpointType: "treatment",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["A1c", "glucose/CGM pattern", "hypoglycemia", "medication access", "renal function", "weight", "sick-day plan", "follow-up interval"]
+  });
+
+  const riskModifierEndpoint = endpoint({
+    id: `${prefix}_risk_modifier_review_endpoint`,
+    label: isType1 ? "Type 1 modifiers: pregnancy, pump failure, SGLT2 use, recurrent hypoglycemia, access barriers, or uncertain LADA need clinician review" : "Type 2 modifiers: CKD/albuminuria, ASCVD/HF, pregnancy, eGFR limits, hypoglycemia risk, or cost/access changes therapy",
+    edgeLabel: isType1
+      ? "Modifier branch: pregnancy, recurrent severe hypoglycemia, pump/CGM failure, SGLT2-associated ketosis, low insulin access, or uncertain autoimmune classification"
+      : "Modifier branch: UACR >=30, eGFR <60 or SGLT2 threshold review, ASCVD/HF, pregnancy, frailty, eGFR <30 metformin concern, hypoglycemia-prone regimen, or medication cost/access barrier",
+    sourceIds: soc,
+    criteria: criteria(`${prefix}_risk_modifier_criteria`, `Use when ${label} treatment depends on comorbidity, pregnancy, device, medication-safety, or access constraints.`, ["labs", "medications", "comorbidities", "pregnancy_status", "demographics", "workup_findings"], soc, { criteria_options: criteriaRows }),
+    action: isType1
+      ? "Escalate to endocrinology/diabetes technology review for pregnancy, recurrent level 2 hypoglycemia <54 mg/dL or severe hypoglycemia, pump failure, SGLT2-associated ketosis risk, unreliable insulin access, or uncertain type 1/LADA classification; document backup basal insulin, ketone supplies, glucagon, and device failure plan."
+      : "Use clinician review for eGFR-restricted drugs, UACR >=30 mg/g kidney protection, eGFR <60 mL/min/1.73 m2 monitoring, eGFR >=20 mL/min/1.73 m2 SGLT2 eligibility, ASCVD/HF selection, pregnancy-compatible therapy, frailty/hypoglycemia goals, and cost/access barriers.",
+    endpointType: "clinician_review_handoff",
+    guidelineCutoffs: criteriaRows,
+    reviewNeededReason: "Comorbidities, pregnancy, kidney function, hypoglycemia risk, device reliability, and medication access can change therapy and disposition."
+  });
+
+  const followupEndpoint = endpoint({
+    id: `${prefix}_monitoring_followup_endpoint`,
+    label: `${label}: monitoring, complication screening, de-escalation, and safety-net follow-up`,
+    edgeLabel: "Follow-up branch: crisis absent/resolved, treatment plan active, A1c/glucose/hypoglycemia/kidney data have an owner, and complication screening or prevention plan is due",
+    sourceIds,
+    criteria: criteria(`${prefix}_followup_criteria`, `Use when ${label} can leave the acute branch with monitoring, complication screening, de-escalation, and safety-net instructions.`, ["labs", "medications", "follow_up_access", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
+    action: "Assign follow-up for A1c/glucose review, hypoglycemia and medication side effects, eGFR/UACR and BP/lipids, eye/foot/kidney complication screening, vaccines/prevention needs, DSMES/nutrition support, medication access, and return precautions for vomiting, ketones, dehydration, confusion, severe hypoglycemia, foot infection, pregnancy hyperglycemia, or inability to take insulin/medications.",
+    endpointType: "safety_net_instruction",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["A1c/glucose log", "hypoglycemia", "eGFR/UACR", "BP/lipids", "eye/foot/kidney screening", "medication access", "DSMES/nutrition", "return precautions"]
+  });
+
+  const mimicEndpoint = endpoint({
+    id: `${prefix}_mimic_endpoint`,
+    label: `${label}: route to prediabetes, alternate diabetes type, stress/steroid hyperglycemia, pregnancy, or endocrine mimic when thresholds do not fit`,
+    edgeLabel: "Alternate branch: prediabetes-range results only, discordant test, steroid/stress hyperglycemia, type 1/LADA versus type 2 mismatch, pregnancy hyperglycemia, pancreatic/monogenic diabetes, hypoglycemia/drug effect, or secondary endocrine cause fits better",
+    sourceIds: sourceIdsForItems(differentials, sourceIds),
+    criteria: criteria(`${prefix}_mimic_criteria`, `Use when ${label} thresholds are absent, discordant, or another diagnosis explains the glucose pattern better.`, ["symptoms", "vitals", "labs", "medications", "comorbidities", "pregnancy_status", "workup_findings"], sourceIdsForItems(differentials, sourceIds), { criteria_options: criteriaRows }),
+    action: `Document which diabetes thresholds or type-classification findings are absent, then route to the appropriate alternate pathway: ${listText(differentials, "prediabetes, alternate diabetes type, steroid/stress hyperglycemia, pregnancy hyperglycemia, pancreatic/monogenic diabetes, hypoglycemia/drug effect, renal disease, infection, or secondary endocrine cause", 5)}.`,
+    endpointType: "clinician_review_handoff",
+    reviewNeededReason: "Glucose thresholds, diabetes type, medication effect, pregnancy, or another endocrine/acute illness cause changes the active pathway."
+  });
+
+  const managementAction = actionNode({
+    id: `${prefix}_management_action`,
+    label: `${label}: combine diagnostic classification, acute crisis safety, treatment, modifiers, monitoring, and follow-up`,
+    edgeLabel: `${label} stable branch: diagnostic thresholds available, crisis physiology absent or treated, and treatment-safety data can guide management`,
+    sourceIds,
+    criteria: criteria(`${prefix}_management_criteria`, `Route stable ${label} through classification, treatment, comorbidity modifiers, complication monitoring, and safety-net follow-up.`, contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: `Use diagnostic classification, treatment intensity, medication/device safety, kidney/cardiovascular risk, hypoglycemia prevention, and follow-up as one plan. Local evidence reminders: ${listText([...tests, ...redFlags, ...dispositions, ...safetyChecks], `${label} tests, red flags, disposition rules, and safety checks`, 12)}.`,
+    parallelActions: ["diagnostic and type classification", "DKA/HHS and hypoglycemia safety", "treatment intensity and medication access", "kidney/cardiovascular risk modifiers", "complication monitoring", "follow-up and return precautions"],
+    guidelineCutoffs: criteriaRows,
+    children: [diagnosisEndpoint, treatmentEndpoint, riskModifierEndpoint, followupEndpoint]
+  });
+
+  const classificationDecision = decision({
+    id: `${prefix}_classification_decision`,
+    label: `${label}: choose missing-data, crisis, confirmed diabetes, modifier, follow-up, or mimic branch`,
+    edgeLabel: "A1c/glucose thresholds, symptoms, ketones/acid-base status, medication context, kidney/cardiovascular risk, pregnancy status, hypoglycemia history, and access barriers are available",
+    sourceIds,
+    criteria: criteria(`${prefix}_classification_criteria`, `Classify ${label} by diagnostic glucose thresholds, crisis physiology, diabetes type evidence, treatment severity, medication contraindications, comorbid risk, and follow-up safety.`, contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: `Choose from missing diabetes data, DKA/HHS/severe hypoglycemia emergency, confirmed ${label} management, comorbidity/modifier review, follow-up safety net, or alternate pathway.`,
+    clinicalCriteria: criteriaRows,
+    guidelineCutoffs: criteriaRows,
+    children: [missingDiabetesDataEndpoint, crisisEndpoint, managementAction, mimicEndpoint]
+  });
+
+  const initialAssessment = actionNode({
+    id: `${prefix}_initial_assessment`,
+    label: `${label}: collect A1c/glucose, crisis labs, diabetes type evidence, medication safety, vitals, weight, kidney/cardiovascular data, and access barriers`,
+    edgeLabel: `${label} evaluation: diabetes-range test, hyperglycemia symptoms, abnormal glucose pattern, ketosis risk, hypoglycemia, medication adjustment need, complication concern, or clinician-chosen diabetes workup`,
+    sourceIds,
+    criteria: criteria(`${prefix}_initial_assessment_criteria`, `Initial ${label} assessment requires diagnostic thresholds, acute crisis safety, medication context, comorbid risk, and follow-up access before nonurgent therapy changes.`, contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: `Measure blood pressure, measure heart rate, measure current weight, and document mental status. Obtain A1c, fasting/random glucose or OGTT result, symptoms, glucose/CGM log, ketones plus bicarbonate/pH/anion gap when acutely ill, eGFR, UACR, lipids, medication list, insulin or SGLT2 exposure, pregnancy status, hypoglycemia history, diabetes type evidence, foot/infection symptoms, and access barriers.`,
+    parallelActions: ["measure blood pressure", "measure heart rate", "measure current weight", "document mental status", "A1c and plasma glucose criteria", "ketones/acid-base labs when symptomatic", "medication and insulin access", "eGFR/UACR/lipids", "pregnancy and hypoglycemia screen", "diabetes type evidence"],
+    requiredData: unique(criteriaRows.flatMap((row) => row.data_needed || [])),
+    guidelineCutoffs: criteriaRows,
+    children: [classificationDecision]
+  });
+
+  const root = decision({
+    id: "root",
+    label: `${label}: route by diagnostic glucose thresholds, crisis risk, diabetes type, treatment safety, complications, and follow-up`,
+    sourceIds,
+    criteria: criteria(`${prefix}_activate`, `Activate for known or suspected ${label}, diabetes-range A1c/glucose, symptoms of hyperglycemia, ketones/acidosis concern, medication titration, hypoglycemia, kidney/cardiovascular complication risk, or clinician-chosen diabetes evaluation.`, ["clinician_selected_module", "presenting_symptoms", "problem_list_or_diagnosis", "labs", "medications", "workup_findings"], sourceIds),
+    action: `Route ${label} through missing-data, DKA/HHS or severe hypoglycemia escalation, diagnostic/type classification, treatment intensity, medication-safety modifiers, monitoring, de-escalation, follow-up, and safety-net endpoints.`,
+    children: [missingContextEndpoint, initialAssessment]
+  });
+
+  return finalizeClinicalPathwayTree({
+    module,
+    sourceById,
+    label,
+    version: "4.0.0",
+    status: isType1 ? "hand_polished_type_1_diabetes_pathway_needs_clinician_review" : "hand_polished_type_2_diabetes_pathway_needs_clinician_review",
+    sourceIds,
+    criteriaRows,
+    tests,
+    redFlags,
+    differentials,
+    dispositions,
+    root,
+    sourceMaterial: isType1
+      ? "ADA Standards of Care in Diabetes 2026, ADA Diagnosis and Classification of Diabetes 2026, 2024 hyperglycemic crises consensus report, CDC Diabetes Testing, and local module evidence rows"
+      : "ADA Standards of Care in Diabetes 2026, ADA Diagnosis and Classification of Diabetes 2026, ADA hospital care guidance, 2024 hyperglycemic crises consensus report, CDC Diabetes Testing, and local module evidence rows",
+    reviewNote: isType1
+      ? "Type 1 diabetes tree is threshold-cited and patient-traversable; insulin pump/CGM settings, pregnancy glycemic targets, LADA classification, SGLT2 use, and local sick-day protocols require clinician governance."
+      : "Type 2 diabetes tree is threshold-cited and patient-traversable; drug formulary, eGFR-specific prescribing, ASCVD/HF/CKD sequencing, pregnancy-compatible therapy, and local insulin protocols require clinician governance.",
+    syntheticScenarios: [
+      { scenario_id: "missing_context", major_pathway: "missing_data_needed", expected_endpoint_id: missingContextEndpoint.id, expected_active_branch: missingContextEndpoint.edgeLabel },
+      { scenario_id: "missing_diabetes_data", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: missingDiabetesDataEndpoint.id, expected_active_branch: missingDiabetesDataEndpoint.edgeLabel },
+      { scenario_id: "dka_hhs_or_severe_hypoglycemia", major_pathway: "escalation_emergency_actions", expected_endpoint_id: crisisEndpoint.id, expected_active_branch: crisisEndpoint.edgeLabel },
+      { scenario_id: "diagnosis_and_type_classification", major_pathway: "severity_risk_stratification", expected_endpoint_id: diagnosisEndpoint.id, expected_active_branch: diagnosisEndpoint.edgeLabel },
+      { scenario_id: "stable_diabetes_treatment", major_pathway: "first_line_management", expected_endpoint_id: treatmentEndpoint.id, expected_active_branch: treatmentEndpoint.edgeLabel },
+      { scenario_id: "pregnancy_kidney_access_modifier", major_pathway: "contraindications_special_populations", expected_endpoint_id: riskModifierEndpoint.id, expected_active_branch: riskModifierEndpoint.edgeLabel },
+      { scenario_id: "alternate_glucose_pathway", major_pathway: "mimics_exclusions", expected_endpoint_id: mimicEndpoint.id, expected_active_branch: mimicEndpoint.edgeLabel },
+      { scenario_id: "monitoring_after_treatment", major_pathway: "monitoring_reassessment_escalation", expected_endpoint_id: followupEndpoint.id, expected_active_branch: followupEndpoint.edgeLabel },
+      { scenario_id: "deescalation_or_goal_adjustment", major_pathway: "deescalation_stopping_criteria", expected_endpoint_id: followupEndpoint.id, expected_active_branch: followupEndpoint.edgeLabel },
+      { scenario_id: "followup_safety_net", major_pathway: "disposition_followup_safety_netting", expected_endpoint_id: followupEndpoint.id, expected_active_branch: followupEndpoint.edgeLabel }
+    ],
+    handPolishRequirements: isType1 ? [
+      "diagnostic branch includes A1c/glucose diabetes thresholds and autoimmune/C-peptide classification",
+      "emergency branch includes DKA beta-hydroxybutyrate, pH, bicarbonate, SGLT2, vomiting/dehydration, and altered mental status routing",
+      "treatment branch includes insulin requirement, basal safety, glucagon, ketone sick-day rules, and hypoglycemia levels",
+      "modifier branch covers pregnancy, pump failure, recurrent severe hypoglycemia, access barriers, and uncertain LADA classification"
+    ] : [
+      "diagnostic branch includes A1c/glucose diabetes thresholds and alternate-type exclusions",
+      "emergency branch includes DKA/HHS, severe hypoglycemia, dehydration, altered mental status, and infected foot routing",
+      "treatment branch includes A1c >10% or glucose >=300 mg/dL insulin escalation and cardiorenal medication selection",
+      "modifier branch covers eGFR/UACR, ASCVD/HF/CKD, pregnancy, hypoglycemia, frailty, and cost/access barriers"
+    ]
+  });
+}
+
+function buildPrediabetesClinicalPathwayTree(module, sourceById) {
+  const label = module.label || "Prediabetes";
+  const prefix = "prediabetes";
+  const diag = ["ADA_DIAGNOSIS_2026", "CDC_DIABETES_TESTING_2024"];
+  const prevention = ["ADA_SOC_2026", "CDC_NDPP_LIFESTYLE_2024"];
+  const sourceIds = unique([...diag, ...prevention, ...genericSourceIds]);
+  const tests = firstItems(module, "initialTests", 10);
+  const redFlags = firstItems(module, "redFlags", 8, ["safetyChecks"]);
+  const differentials = firstItems(module, "differentialBuckets", 8);
+  const dispositions = firstItems(module, "dispositionRules", 8, ["treatmentOptions"]);
+  const safetyChecks = firstItems(module, "safetyChecks", 6);
+
+  const criteriaRows = [
+    criterion({
+      id: "prediabetes_thresholds",
+      label: "Prediabetes diagnosis: A1c 5.7-6.4%, fasting glucose 100-125 mg/dL, or 2-hour 75-g OGTT 140-199 mg/dL",
+      criteria_text: "Prediabetes is diagnosed by A1c 5.7-6.4%, fasting plasma glucose 100-125 mg/dL, or 2-hour 75-g OGTT glucose 140-199 mg/dL.",
+      cutoffs: ["A1c 5.7-6.4%", "fasting glucose 100-125 mg/dL", "2-hour OGTT 140-199 mg/dL"],
+      data_needed: ["A1c", "fasting plasma glucose", "2-hour 75-g OGTT", "repeat confirmation if discordant/asymptomatic"],
+      source_ids: diag,
+      source_section: "Prediabetes diagnostic criteria"
+    }),
+    criterion({
+      id: "prediabetes_diabetes_thresholds",
+      label: "Diabetes-range values: A1c >=6.5%, fasting glucose >=126 mg/dL, 2-hour OGTT >=200 mg/dL, or random glucose >=200 mg/dL with symptoms",
+      criteria_text: "Diabetes-range values move the patient out of a prediabetes-only prevention pathway and into diabetes confirmation and treatment.",
+      cutoffs: ["A1c >=6.5%", "fasting glucose >=126 mg/dL", "2-hour OGTT >=200 mg/dL", "random glucose >=200 mg/dL"],
+      data_needed: ["A1c", "fasting plasma glucose", "2-hour OGTT glucose", "random plasma glucose", "classic symptoms", "repeat confirmation"],
+      source_ids: diag,
+      source_section: "Diabetes diagnostic criteria"
+    }),
+    criterion({
+      id: "prediabetes_lifestyle_targets",
+      label: "Prediabetes prevention: intensive lifestyle program targeting at least 7% weight loss and at least 150 minutes/week moderate activity",
+      criteria_text: "Adults with prediabetes should be referred to an intensive lifestyle behavior change program modeled on the Diabetes Prevention Program, with goals of at least 7% weight loss and at least 150 minutes/week of moderate-intensity physical activity.",
+      cutoffs: ["at least 7%", "at least 150 minutes/week"],
+      data_needed: ["current weight", "BMI", "activity minutes/week", "nutrition access", "DPP/lifestyle program access", "readiness/barriers"],
+      source_ids: prevention,
+      source_section: "Prevention or delay of type 2 diabetes"
+    }),
+    criterion({
+      id: "prediabetes_metformin_high_risk",
+      label: "Prediabetes metformin consideration: age 25-59 years, BMI >=35 kg/m2, fasting glucose >=110 mg/dL, A1c >=6.0%, or prior GDM",
+      criteria_text: "Metformin for diabetes prevention can be considered in high-risk adults with prediabetes, especially age 25-59 years, BMI >=35 kg/m2, fasting plasma glucose >=110 mg/dL, A1c >=6.0%, or prior gestational diabetes.",
+      cutoffs: ["age 25-59 years", "BMI >=35 kg/m2", "fasting glucose >=110 mg/dL", "A1c >=6.0%"],
+      data_needed: ["age", "BMI", "fasting glucose", "A1c", "history of gestational diabetes", "eGFR", "B12 risk", "pregnancy status"],
+      source_ids: ["ADA_SOC_2026"],
+      source_section: "Metformin prevention"
+    }),
+    criterion({
+      id: "prediabetes_ndpp_eligibility",
+      label: "CDC National DPP eligibility: age >=18, BMI >=25 or >=23 if Asian American, not pregnant, no type 1/type 2 diabetes, plus prediabetes-range result, prior GDM, or risk test >=5",
+      criteria_text: "CDC National DPP lifestyle change program eligibility requires age 18 years or older, BMI 25 or higher (23 or higher if Asian American), no prior type 1/type 2 diabetes, not pregnant, and a qualifying prediabetes-range test, prior gestational diabetes, or risk test score of 5 or higher.",
+      cutoffs: ["age >=18 years", "BMI >=25", "BMI >=23", "risk test >=5"],
+      data_needed: ["age", "BMI", "Asian American status if relevant", "pregnancy status", "diabetes diagnosis status", "prediabetes test within past year", "prior GDM", "risk test score"],
+      source_ids: ["CDC_NDPP_LIFESTYLE_2024"],
+      source_section: "National DPP eligibility"
+    }),
+    criterion({
+      id: "prediabetes_surveillance",
+      label: "Prediabetes surveillance: test for type 2 diabetes at least yearly",
+      criteria_text: "Adults and children diagnosed with prediabetes should be tested for type 2 diabetes every year; normal results after screening can generally be retested every 3 years.",
+      cutoffs: ["every year", "every 3 years"],
+      data_needed: ["last A1c/glucose date", "current result", "risk factors", "follow-up access"],
+      source_ids: unique([...diag, ...prevention]),
+      source_section: "Surveillance interval"
+    })
+  ];
+
+  const missingContextEndpoint = endpoint({
+    id: "endpoint_missing_context",
+    label: "Missing data needed: prediabetes thresholds, BMI/waist/BP, pregnancy status, medication risk, and prevention access",
+    edgeLabel: "Missing exact prediabetes data: A1c/FPG/OGTT, symptoms, BMI/weight/waist, BP/lipids, pregnancy status, prior GDM, diabetes-range exclusion, medication causes, and lifestyle/metformin eligibility",
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_context_criteria`, "Route here when glycemic classification or prevention eligibility cannot be determined.", contextDomains, sourceIds, { missing_any: contextDomains }),
+    action: "Document A1c, fasting glucose or 2-hour OGTT, classic symptoms, current weight/BMI and waist circumference, blood pressure, lipids, pregnancy status, prior GDM, medications such as glucocorticoids, kidney/liver context, activity level, nutrition access, DPP availability, metformin contraindications, and follow-up access.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["A1c", "fasting glucose or 2-hour OGTT", "classic symptoms", "BMI/weight", "waist circumference", "blood pressure", "lipids", "pregnancy status", "prior GDM", "medication causes", "DPP access", "metformin safety data"]
+  });
+
+  const missingGlycemiaEndpoint = endpoint({
+    id: `${prefix}_missing_glycemia_endpoint`,
+    label: "Missing data needed: A1c/FPG/OGTT, diabetes symptoms, BMI, pregnancy status, or DPP/metformin eligibility",
+    edgeLabel: "Cannot separate normal, prediabetes, diabetes, pregnancy hyperglycemia, medication effect, or prevention intensity until glycemic and risk data are known",
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_glycemia_criteria`, "Route here when exact prediabetes or diabetes-range data are unavailable.", contextDomains, sourceIds, { missing_any: ["A1c", "fasting glucose", "2-hour OGTT", "symptoms", "BMI", "pregnancy status", "prior GDM", "DPP/metformin eligibility"] }),
+    action: "Obtain A1c, fasting plasma glucose or 75-g 2-hour OGTT when needed, repeat discordant/asymptomatic results, check symptoms, BMI/weight, waist, BP/lipids, pregnancy status, prior GDM, medication causes, and data for DPP eligibility or metformin prevention.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["A1c", "fasting glucose", "2-hour OGTT", "repeat confirmation if discordant", "symptoms", "BMI/weight", "pregnancy status", "prior GDM", "DPP eligibility", "metformin safety"]
+  });
+
+  const diabetesRangeEndpoint = endpoint({
+    id: `${prefix}_diabetes_range_endpoint`,
+    label: "Diabetes-range or symptomatic hyperglycemia: leave prevention-only branch and confirm diabetes pathway",
+    edgeLabel: "Escalation branch: A1c >=6.5%, fasting glucose >=126 mg/dL, 2-hour OGTT >=200 mg/dL, random glucose >=200 mg/dL with symptoms, dehydration, pregnancy hyperglycemia, severe hypertension, or ASCVD symptoms",
+    sourceIds: diag,
+    criteria: criteria(`${prefix}_diabetes_range_criteria`, "Use when diabetes-range values or unstable symptoms require diagnostic confirmation or urgent diabetes/cardiometabolic evaluation.", ["symptoms", "vitals", "labs", "pregnancy_status", "workup_findings"], diag, { criteria_options: criteriaRows }),
+    action: "Confirm diabetes according to A1c/glucose thresholds, assess for symptoms, dehydration, pregnancy hyperglycemia, ketones if clinically ill, and cardiopulmonary or severe hypertension red flags, then route to the diabetes or urgent cardiometabolic pathway rather than prevention-only counseling.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["repeat diabetes confirmation", "symptoms", "dehydration/ketones if ill", "blood pressure", "pregnancy status", "cardiopulmonary symptoms"]
+  });
+
+  const preventionEndpoint = endpoint({
+    id: `${prefix}_lifestyle_prevention_endpoint`,
+    label: "Prediabetes confirmed: DPP-style lifestyle plan, weight/activity goals, and yearly glycemic surveillance",
+    edgeLabel: "Prediabetes branch: A1c 5.7-6.4%, fasting 100-125 mg/dL, or 2-hour OGTT 140-199 mg/dL without diabetes-range values or acute symptoms",
+    sourceIds: prevention,
+    criteria: criteria(`${prefix}_prevention_criteria`, "Use when prediabetes thresholds are met and diabetes-range or urgent features are absent.", ["labs", "vitals", "demographics", "comorbidities", "pregnancy_status", "follow_up_access"], prevention, { criteria_options: criteriaRows }),
+    action: "Refer to an intensive DPP-style lifestyle program, set at least 7% weight-loss and at least 150 minutes/week moderate activity goals when appropriate, address sleep/OSA/fatty-liver/PCOS and cardiovascular risk factors, and retest for diabetes at least yearly.",
+    endpointType: "treatment",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["weight/BMI", "activity minutes/week", "A1c/FPG/OGTT interval", "blood pressure", "lipids", "liver/OSA/PCOS risks", "program access"]
+  });
+
+  const metforminEndpoint = endpoint({
+    id: `${prefix}_metformin_review_endpoint`,
+    label: "High-risk prediabetes: consider metformin only after renal, pregnancy, B12, and preference review",
+    edgeLabel: "Metformin branch: age 25-59 years, BMI >=35 kg/m2, fasting glucose >=110 mg/dL, A1c >=6.0%, prior GDM, rising glycemia, or lifestyle program unavailable/insufficient",
+    sourceIds: ["ADA_SOC_2026"],
+    criteria: criteria(`${prefix}_metformin_criteria`, "Use when high-risk prediabetes features make metformin prevention a clinician-review option.", ["labs", "demographics", "pregnancy_status", "medications", "comorbidities", "workup_findings"], ["ADA_SOC_2026"], { criteria_options: criteriaRows }),
+    action: "Review metformin prevention for high-risk prediabetes, especially age 25-59 years, BMI >=35 kg/m2, fasting glucose >=110 mg/dL, A1c >=6.0%, or prior GDM; confirm eGFR safety, pregnancy plans, GI tolerance, B12 risk, patient preference, and continued lifestyle intervention.",
+    endpointType: "clinician_review_handoff",
+    guidelineCutoffs: criteriaRows,
+    reviewNeededReason: "Metformin prevention requires individualized renal, pregnancy, B12, tolerance, and preference review."
+  });
+
+  const mimicEndpoint = endpoint({
+    id: `${prefix}_mimic_endpoint`,
+    label: "Normal glycemia, medication/stress effect, pregnancy, or endocrine mimic: avoid labeling as prediabetes without repeatable thresholds",
+    edgeLabel: "Alternate branch: normal repeated tests, acute illness/steroid hyperglycemia, pregnancy-context hyperglycemia, lab interference, hypoglycemia/drug effect, renal/hepatic disease, or secondary endocrine cause fits better",
+    sourceIds: sourceIdsForItems(differentials, sourceIds),
+    criteria: criteria(`${prefix}_mimic_criteria`, "Use when prediabetes thresholds are absent, discordant, nonrepeatable, or explained by another condition.", ["symptoms", "vitals", "labs", "medications", "pregnancy_status", "comorbidities", "workup_findings"], sourceIdsForItems(differentials, sourceIds), { criteria_options: criteriaRows }),
+    action: `Document why prediabetes is not the active diagnosis and route to the more specific pathway: ${listText(differentials, "normal glycemia, diabetes, medication/stress hyperglycemia, pregnancy, hypoglycemia/drug effect, renal/hepatic disease, or secondary endocrine cause", 5)}.`,
+    endpointType: "clinician_review_handoff",
+    reviewNeededReason: "Discordant glycemia, medication effects, pregnancy, or another diagnosis changes classification."
+  });
+
+  const followupEndpoint = endpoint({
+    id: `${prefix}_followup_safety_endpoint`,
+    label: "Prediabetes follow-up: yearly testing, cardiometabolic risk ownership, and safety-net for diabetes symptoms",
+    edgeLabel: "Follow-up branch: prevention plan chosen, diabetes-range values absent, risk-factor treatment and surveillance owner documented",
+    sourceIds,
+    criteria: criteria(`${prefix}_followup_criteria`, "Use when prediabetes prevention and surveillance can be assigned.", ["labs", "vitals", "follow_up_access", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
+    action: "Assign yearly diabetes testing, BP/lipid/weight follow-up, lifestyle program or nutrition/activity support, medication review, and return precautions for polyuria, polydipsia, weight loss, blurry vision, random glucose >=200 mg/dL symptoms, pregnancy hyperglycemia, dehydration, or cardiopulmonary symptoms.",
+    endpointType: "safety_net_instruction",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["yearly A1c/FPG/OGTT", "weight/BMI/waist", "BP/lipids", "lifestyle program attendance", "metformin review if high risk", "return precautions"]
+  });
+
+  const managementAction = actionNode({
+    id: `${prefix}_management_action`,
+    label: "Prediabetes: combine threshold classification, prevention intensity, metformin review, risk-factor treatment, and surveillance",
+    edgeLabel: "Stable prevention branch: prediabetes-range glycemia confirmed, diabetes-range and emergency features absent, prevention eligibility data available",
+    sourceIds,
+    criteria: criteria(`${prefix}_management_criteria`, "Route prediabetes through lifestyle prevention, high-risk metformin review, mimics, monitoring, and safety-net follow-up.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: `Use prevention thresholds, DPP eligibility, metformin risk criteria, cardiometabolic risk factors, and surveillance as one plan. Local evidence reminders: ${listText([...tests, ...redFlags, ...dispositions, ...safetyChecks], "prediabetes tests, red flags, disposition rules, and safety checks", 12)}.`,
+    parallelActions: ["classify A1c/FPG/OGTT range", "refer to lifestyle prevention", "review weight/activity goals", "consider high-risk metformin", "treat BP/lipid/weight risks", "schedule yearly testing"],
+    guidelineCutoffs: criteriaRows,
+    children: [preventionEndpoint, metforminEndpoint, followupEndpoint]
+  });
+
+  const classificationDecision = decision({
+    id: `${prefix}_classification_decision`,
+    label: "Prediabetes: choose missing-data, diabetes-range escalation, prevention, metformin-review, mimic, or follow-up branch",
+    edgeLabel: "A1c/FPG/OGTT, symptoms, BMI/waist/BP/lipids, pregnancy status, prior GDM, medication context, and follow-up access are available",
+    sourceIds,
+    criteria: criteria(`${prefix}_classification_criteria`, "Classify by prediabetes thresholds, diabetes-range exclusions, prevention eligibility, high-risk metformin criteria, medication/pregnancy mimics, and follow-up access.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Choose from missing glycemic data, diabetes-range escalation, prevention plan, metformin review, alternate diagnosis, or follow-up safety net.",
+    clinicalCriteria: criteriaRows,
+    guidelineCutoffs: criteriaRows,
+    children: [missingGlycemiaEndpoint, diabetesRangeEndpoint, managementAction, mimicEndpoint]
+  });
+
+  const initialAssessment = actionNode({
+    id: `${prefix}_initial_assessment`,
+    label: "Prediabetes: collect glycemic thresholds, weight/BMI/waist, BP/lipids, pregnancy/prior GDM, medication causes, and prevention access",
+    edgeLabel: "Prediabetes evaluation: abnormal A1c/FPG/OGTT, metabolic risk, prior GDM, overweight/obesity, PCOS/fatty liver/OSA, medication hyperglycemia, or clinician-chosen prevention workup",
+    sourceIds,
+    criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial prediabetes assessment requires exact glycemic classification, cardiometabolic risk data, mimics, and prevention eligibility.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Measure blood pressure, measure heart rate, measure current weight, measure waist circumference, and document mental status. Obtain A1c, fasting glucose or 75-g OGTT when needed, symptoms, BMI, waist, lipids, pregnancy status, prior GDM, activity minutes/week, nutrition and DPP access, medication/steroid exposure, kidney function for metformin safety, and follow-up barriers.",
+    parallelActions: ["measure blood pressure", "measure heart rate", "measure current weight", "measure waist circumference", "document mental status", "A1c/FPG/OGTT classification", "BMI and activity assessment", "lipids and cardiometabolic risk", "pregnancy/prior GDM review", "DPP/metformin eligibility"],
+    requiredData: unique(criteriaRows.flatMap((row) => row.data_needed || [])),
+    guidelineCutoffs: criteriaRows,
+    children: [classificationDecision]
+  });
+
+  const root = decision({
+    id: "root",
+    label: "Prediabetes: route by A1c/FPG/OGTT thresholds, diabetes exclusion, prevention eligibility, metformin criteria, and follow-up",
+    sourceIds,
+    criteria: criteria(`${prefix}_activate`, "Activate for prediabetes-range A1c/FPG/OGTT, elevated diabetes risk, prior GDM, metabolic syndrome risk, abnormal screening, or clinician-chosen prevention evaluation.", ["clinician_selected_module", "labs", "vitals", "demographics", "problem_list_or_diagnosis", "workup_findings"], sourceIds),
+    action: "Route prediabetes through missing-data, diabetes-range escalation, DPP-style lifestyle intervention, high-risk metformin review, mimics/exclusions, surveillance, follow-up, and safety-net endpoints.",
+    children: [missingContextEndpoint, initialAssessment]
+  });
+
+  return finalizeClinicalPathwayTree({
+    module,
+    sourceById,
+    label,
+    version: "4.0.0",
+    status: "hand_polished_prediabetes_pathway_needs_clinician_review",
+    sourceIds,
+    criteriaRows,
+    tests,
+    redFlags,
+    differentials,
+    dispositions,
+    root,
+    sourceMaterial: "ADA Standards of Care in Diabetes 2026, ADA Diagnosis and Classification of Diabetes 2026, CDC Diabetes Testing, CDC National DPP resources, and local module evidence rows",
+    reviewNote: "Prediabetes tree is threshold-cited and patient-traversable; local lifestyle program availability, metformin prevention governance, pregnancy context, and cardiometabolic risk treatment require clinician review.",
+    syntheticScenarios: [
+      { scenario_id: "missing_context", major_pathway: "missing_data_needed", expected_endpoint_id: missingContextEndpoint.id, expected_active_branch: missingContextEndpoint.edgeLabel },
+      { scenario_id: "missing_glycemia", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: missingGlycemiaEndpoint.id, expected_active_branch: missingGlycemiaEndpoint.edgeLabel },
+      { scenario_id: "diabetes_range_or_urgent_symptoms", major_pathway: "escalation_emergency_actions", expected_endpoint_id: diabetesRangeEndpoint.id, expected_active_branch: diabetesRangeEndpoint.edgeLabel },
+      { scenario_id: "prediabetes_threshold_classification", major_pathway: "severity_risk_stratification", expected_endpoint_id: preventionEndpoint.id, expected_active_branch: preventionEndpoint.edgeLabel },
+      { scenario_id: "lifestyle_prevention", major_pathway: "first_line_management", expected_endpoint_id: preventionEndpoint.id, expected_active_branch: preventionEndpoint.edgeLabel },
+      { scenario_id: "metformin_or_pregnancy_review", major_pathway: "contraindications_special_populations", expected_endpoint_id: metforminEndpoint.id, expected_active_branch: metforminEndpoint.edgeLabel },
+      { scenario_id: "mimic_or_normal_glycemia", major_pathway: "mimics_exclusions", expected_endpoint_id: mimicEndpoint.id, expected_active_branch: mimicEndpoint.edgeLabel },
+      { scenario_id: "prevention_monitoring", major_pathway: "monitoring_reassessment_escalation", expected_endpoint_id: followupEndpoint.id, expected_active_branch: followupEndpoint.edgeLabel },
+      { scenario_id: "deescalate_to_surveillance", major_pathway: "deescalation_stopping_criteria", expected_endpoint_id: followupEndpoint.id, expected_active_branch: followupEndpoint.edgeLabel },
+      { scenario_id: "followup_safety_net", major_pathway: "disposition_followup_safety_netting", expected_endpoint_id: followupEndpoint.id, expected_active_branch: followupEndpoint.edgeLabel }
+    ],
+    handPolishRequirements: [
+      "classification includes A1c 5.7-6.4%, FPG 100-125, and 2-hour OGTT 140-199 mg/dL",
+      "diabetes escalation includes A1c >=6.5%, FPG >=126, 2-hour OGTT >=200, and random >=200 mg/dL with symptoms",
+      "prevention includes at least 7% weight loss and at least 150 minutes/week activity targets",
+      "metformin review includes age 25-59, BMI >=35, FPG >=110, A1c >=6.0, and prior GDM"
+    ]
+  });
+}
+
+function buildMetabolicSyndromeClinicalPathwayTree(module, sourceById) {
+  const label = module.label || "Metabolic Syndrome";
+  const prefix = "metabolic_syndrome";
+  const nhlbi = ["NHLBI_METABOLIC_SYNDROME"];
+  const diag = ["CDC_DIABETES_TESTING_2024", "ADA_DIAGNOSIS_2026"];
+  const soc = ["ADA_SOC_2026", "CDC_NDPP_LIFESTYLE_2024"];
+  const sourceIds = unique([...nhlbi, ...diag, ...soc, ...genericSourceIds]);
+  const tests = firstItems(module, "initialTests", 10);
+  const redFlags = firstItems(module, "redFlags", 8, ["safetyChecks"]);
+  const differentials = firstItems(module, "differentialBuckets", 8);
+  const dispositions = firstItems(module, "dispositionRules", 8, ["treatmentOptions"]);
+  const safetyChecks = firstItems(module, "safetyChecks", 6);
+
+  const criteriaRows = [
+    criterion({
+      id: "metabolic_syndrome_three_of_five",
+      label: "Metabolic syndrome diagnosis: 3 or more of 5 cardiometabolic criteria",
+      criteria_text: "Metabolic syndrome is diagnosed when at least 3 of 5 criteria are present: abdominal obesity, elevated triglycerides, low HDL cholesterol, elevated blood pressure, and elevated fasting glucose or treatment for high glucose.",
+      cutoffs: ["3 or more", "5 criteria"],
+      data_needed: ["waist circumference", "triglycerides", "HDL cholesterol", "blood pressure", "fasting glucose", "medication treatment status"],
+      source_ids: nhlbi,
+      source_section: "Metabolic syndrome diagnostic criteria"
+    }),
+    criterion({
+      id: "metabolic_syndrome_waist_cutoffs",
+      label: "Abdominal obesity criterion: waist >40 inches in men or >35 inches in women, with race/ethnicity-specific cutoffs when applicable",
+      criteria_text: "NHLBI describes abdominal obesity as waist circumference more than 40 inches for men and 35 inches for women, while noting that different values may be used depending on race and ethnicity.",
+      cutoffs: [">40 inches", ">35 inches"],
+      data_needed: ["waist circumference", "sex", "race/ethnicity-specific cutoff if applicable", "BMI", "measurement method"],
+      source_ids: nhlbi,
+      source_section: "Waist criterion"
+    }),
+    criterion({
+      id: "metabolic_syndrome_bp_cutoff",
+      label: "Blood pressure criterion: consistently >=130/85 mm Hg or treated hypertension",
+      criteria_text: "Blood pressure consistently 130/85 mm Hg or higher, or treatment for hypertension, counts as one metabolic syndrome criterion.",
+      cutoffs: [">=130/85 mm Hg", "130/85 mmHg"],
+      data_needed: ["systolic BP", "diastolic BP", "repeat BP", "hypertension medication"],
+      source_ids: nhlbi,
+      source_section: "Blood pressure criterion"
+    }),
+    criterion({
+      id: "metabolic_syndrome_glucose_cutoffs",
+      label: "Glucose criterion: fasting glucose 100-125 mg/dL is prediabetes; >=126 mg/dL may indicate diabetes or treatment for high glucose",
+      criteria_text: "Fasting glucose between 100-125 mg/dL indicates high blood sugar/prediabetes; fasting glucose 126 mg/dL or higher may indicate diabetes and changes the active pathway.",
+      cutoffs: ["fasting glucose 100-125 mg/dL", "fasting glucose >=126 mg/dL"],
+      data_needed: ["fasting glucose", "A1c if available", "diabetes medications", "classic symptoms", "repeat confirmation"],
+      source_ids: unique([...nhlbi, ...diag]),
+      source_section: "Blood sugar criterion"
+    }),
+    criterion({
+      id: "metabolic_syndrome_lipid_cutoffs",
+      label: "Lipid criteria: HDL <40 mg/dL in men or <50 mg/dL in women; triglycerides >=150 mg/dL or treatment",
+      criteria_text: "Low HDL cholesterol is lower than 40 mg/dL for men or lower than 50 mg/dL for women; triglycerides consistently more than 150 mg/dL, or treatment for high triglycerides, count toward metabolic syndrome.",
+      cutoffs: ["HDL <40 mg/dL", "HDL <50 mg/dL", "triglycerides >=150 mg/dL", "triglycerides >150 mg/dL"],
+      data_needed: ["HDL cholesterol", "triglycerides", "lipid medication", "fasting status", "sex"],
+      source_ids: nhlbi,
+      source_section: "Cholesterol and triglyceride criteria"
+    }),
+    criterion({
+      id: "metabolic_syndrome_diabetes_and_ascvd_red_flags",
+      label: "Escalate beyond routine prevention for diabetes-range glycemia, severe hypertension, ASCVD symptoms, pregnancy hyperglycemia, dehydration, or altered mental status",
+      criteria_text: "Metabolic syndrome is a risk-factor diagnosis; diabetes-range glycemia, severe hypertension, cardiopulmonary/ASCVD symptoms, pregnancy-context hyperglycemia, dehydration, or altered mental status require urgent diagnostic or acute-care routing.",
+      cutoffs: ["A1c >=6.5%", "fasting glucose >=126 mg/dL", "random glucose >=200 mg/dL", "blood pressure >=180/120 mm Hg"],
+      data_needed: ["A1c", "fasting/random glucose", "classic symptoms", "blood pressure", "chest pain/dyspnea/neuro symptoms", "pregnancy status", "hydration/mental status"],
+      source_ids: unique([...diag, ...soc, ...nhlbi]),
+      source_section: "Escalation criteria"
+    }),
+    criterion({
+      id: "metabolic_syndrome_prevention_targets",
+      label: "Risk reduction: DPP-style activity/weight plan, BP/lipid/glucose treatment, and surveillance based on active criteria",
+      criteria_text: "Management focuses on treating each active criterion, diabetes prevention when prediabetes is present, weight/activity counseling, BP/lipid risk reduction, and surveillance for diabetes and cardiovascular disease.",
+      cutoffs: ["at least 150 minutes/week", "at least 7%"],
+      data_needed: ["active criteria count", "BMI/weight", "activity minutes/week", "blood pressure", "lipids", "glucose/A1c", "ASCVD risk", "sleep apnea/fatty liver/PCOS context"],
+      source_ids: unique([...soc, ...nhlbi, "CDC_NDPP_LIFESTYLE_2024"]),
+      source_section: "Treatment and risk reduction"
+    })
+  ];
+
+  const missingContextEndpoint = endpoint({
+    id: "endpoint_missing_context",
+    label: "Missing data needed: waist, BP, fasting glucose/A1c, HDL, triglycerides, medications, symptoms, and risk context",
+    edgeLabel: "Missing exact metabolic-syndrome data: waist/sex/race context, BP, fasting glucose or A1c, HDL, triglycerides, medication treatment status, BMI/weight, pregnancy status, ASCVD symptoms, and follow-up access",
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_context_criteria`, "Route here when the five metabolic syndrome criteria or escalation context cannot be extracted.", contextDomains, sourceIds, { missing_any: contextDomains }),
+    action: "Document waist circumference with sex and race/ethnicity context, blood pressure, fasting glucose and/or A1c, HDL, triglycerides, medication treatment for BP/lipids/glucose, BMI/current weight, heart rate and mental status, pregnancy status, ASCVD symptoms, sleep apnea/fatty-liver/PCOS context, current medications, and follow-up access.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["waist circumference with sex/race context", "blood pressure", "fasting glucose or A1c", "HDL cholesterol", "triglycerides", "BP/lipid/glucose medications", "BMI/weight", "pregnancy status", "ASCVD symptoms", "follow-up access"]
+  });
+
+  const missingCriteriaEndpoint = endpoint({
+    id: `${prefix}_missing_criteria_endpoint`,
+    label: "Missing data needed: the five metabolic syndrome criteria and emergency exclusions",
+    edgeLabel: "Cannot count criteria or route urgent diabetes/BP/ASCVD risks until waist, BP, fasting glucose, HDL, triglycerides, treatment status, symptoms, and pregnancy context are known",
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_criteria_criteria`, "Route here when exact metabolic syndrome criteria or escalation exclusions are unavailable.", contextDomains, sourceIds, { missing_any: ["waist circumference", "blood pressure", "fasting glucose", "HDL cholesterol", "triglycerides", "medication treatment status", "ASCVD symptoms", "pregnancy status"] }),
+    action: "Measure waist circumference, blood pressure, heart rate, weight/BMI, and mental status; obtain fasting glucose or A1c, HDL, triglycerides, medication treatment history, ASCVD symptom screen, pregnancy status, and prior diabetes/prediabetes history before counting criteria.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["waist circumference", "blood pressure", "fasting glucose/A1c", "HDL cholesterol", "triglycerides", "medication treatment status", "ASCVD symptoms", "pregnancy status", "weight/BMI"]
+  });
+
+  const urgentEndpoint = endpoint({
+    id: `${prefix}_urgent_cardiometabolic_endpoint`,
+    label: "Urgent cardiometabolic route: diabetes-range symptomatic hyperglycemia, severe BP, ASCVD symptoms, pregnancy hyperglycemia, dehydration, or altered mental status",
+    edgeLabel: "Escalation branch: A1c >=6.5%, fasting glucose >=126 mg/dL or random glucose >=200 mg/dL with symptoms, BP around >=180/120 mm Hg or end-organ symptoms, chest pain, dyspnea, neurologic symptoms, pregnancy hyperglycemia, dehydration, or altered mental status",
+    sourceIds: unique([...diag, ...soc, ...nhlbi]),
+    criteria: criteria(`${prefix}_urgent_criteria`, "Use when metabolic syndrome workup reveals diabetes-range symptomatic glycemia, severe hypertension, ASCVD symptoms, pregnancy concern, or unstable physiology.", ["symptoms", "exam", "vitals", "labs", "pregnancy_status", "workup_findings"], unique([...diag, ...soc, ...nhlbi]), { criteria_options: criteriaRows }),
+    action: "Route to urgent diabetes, hypertension, cardiovascular, or pregnancy evaluation before routine metabolic-syndrome counseling; check glucose, ketones/acid-base if ill, repeat BP with end-organ symptom assessment, ECG/troponin or stroke evaluation when symptoms fit, pregnancy status, and disposition needs.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["blood pressure and end-organ symptoms", "glucose/A1c", "ketones/acid-base if ill", "ASCVD symptoms", "pregnancy status", "mental status", "disposition"]
+  });
+
+  const diagnosisEndpoint = endpoint({
+    id: `${prefix}_criteria_count_endpoint`,
+    label: "Metabolic syndrome confirmed when 3 or more criteria are present",
+    edgeLabel: "Criteria branch: at least 3 of waist, triglyceride, HDL, BP, and fasting glucose/treatment criteria are present",
+    sourceIds: nhlbi,
+    criteria: criteria(`${prefix}_criteria_count_criteria`, "Use when all five criteria can be counted.", ["exam", "vitals", "labs", "medications", "demographics", "workup_findings"], nhlbi, { criteria_options: criteriaRows }),
+    action: "Count all five criteria: waist >40 inches in men or >35 inches in women unless race/ethnicity-specific threshold applies, triglycerides >=150 mg/dL or treated, HDL <40 mg/dL in men or <50 mg/dL in women or treated, BP >=130/85 mm Hg or treated, and fasting glucose >=100 mg/dL or treated. Document the exact criteria present and whether the count is 3 or more.",
+    endpointType: "diagnostic_step",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const riskReductionEndpoint = endpoint({
+    id: `${prefix}_risk_reduction_endpoint`,
+    label: "Metabolic syndrome management: treat active BP, lipid, glucose, weight, activity, and sleep/fatty-liver risks",
+    edgeLabel: "Management branch: metabolic syndrome confirmed or near-threshold high-risk pattern without urgent diabetes/BP/ASCVD symptoms",
+    sourceIds: unique([...nhlbi, ...soc, "CDC_NDPP_LIFESTYLE_2024"]),
+    criteria: criteria(`${prefix}_risk_reduction_criteria`, "Use when active criteria can be targeted with outpatient risk reduction and surveillance.", ["vitals", "labs", "medications", "comorbidities", "follow_up_access", "workup_findings"], unique([...nhlbi, ...soc, "CDC_NDPP_LIFESTYLE_2024"]), { criteria_options: criteriaRows }),
+    action: "Treat each active criterion: weight and waist reduction plan, at least 150 minutes/week activity when safe, nutrition plan, BP treatment, lipid/ASCVD risk management, prediabetes/diabetes surveillance, sleep apnea/fatty-liver/PCOS assessment when relevant, and medication review for secondary causes.",
+    endpointType: "treatment",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["waist/BMI/weight", "blood pressure", "fasting glucose/A1c", "HDL/triglycerides", "activity minutes", "ASCVD risk", "sleep apnea/fatty liver/PCOS", "medication effects"]
+  });
+
+  const mimicEndpoint = endpoint({
+    id: `${prefix}_mimic_endpoint`,
+    label: "Mimic or fewer than 3 criteria: avoid metabolic syndrome label and treat the active abnormality",
+    edgeLabel: "Alternate branch: fewer than 3 criteria, race/ethnicity waist threshold changes classification, pregnancy or medication effect, secondary endocrine disease, acute illness, or isolated lipid/BP/glucose abnormality better explains findings",
+    sourceIds: sourceIdsForItems(differentials, sourceIds),
+    criteria: criteria(`${prefix}_mimic_criteria`, "Use when metabolic syndrome criteria are not met or another diagnosis explains the findings better.", ["exam", "vitals", "labs", "medications", "pregnancy_status", "comorbidities", "workup_findings"], sourceIdsForItems(differentials, sourceIds), { criteria_options: criteriaRows }),
+    action: `Document the criteria count and route to the active abnormality or competing diagnosis: ${listText(differentials, "isolated hypertension, dyslipidemia, prediabetes/diabetes, medication effect, pregnancy, secondary endocrine cause, or acute illness", 5)}.`,
+    endpointType: "clinician_review_handoff",
+    reviewNeededReason: "Criteria count, waist threshold choice, pregnancy, medication effect, or secondary disease changes classification."
+  });
+
+  const followupEndpoint = endpoint({
+    id: `${prefix}_followup_safety_endpoint`,
+    label: "Metabolic syndrome follow-up: criteria trend, ASCVD prevention, diabetes surveillance, and urgent symptom safety-net",
+    edgeLabel: "Follow-up branch: no urgent symptoms, active criteria and risk-factor owners documented, surveillance interval and return precautions assigned",
+    sourceIds,
+    criteria: criteria(`${prefix}_followup_criteria`, "Use when metabolic syndrome or component risks have an outpatient prevention and monitoring owner.", ["labs", "vitals", "medications", "follow_up_access", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
+    action: "Assign follow-up for waist/weight, BP, fasting glucose/A1c, HDL/triglycerides, ASCVD risk, sleep/fatty-liver/OSA/PCOS context, medication adherence/adverse effects, and safety-net for chest pain, dyspnea, neurologic symptoms, BP emergency symptoms, diabetes symptoms, dehydration, or pregnancy hyperglycemia.",
+    endpointType: "safety_net_instruction",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["criteria count trend", "weight/waist", "BP", "glucose/A1c", "HDL/triglycerides", "ASCVD risk", "diabetes surveillance", "return precautions"]
+  });
+
+  const managementAction = actionNode({
+    id: `${prefix}_management_action`,
+    label: "Metabolic syndrome: count five criteria, target each active risk factor, and assign surveillance",
+    edgeLabel: "Stable metabolic branch: waist, BP, fasting glucose, HDL, triglycerides, and treatment status are available and urgent symptoms are absent",
+    sourceIds,
+    criteria: criteria(`${prefix}_management_criteria`, "Route metabolic syndrome through criteria count, component treatment, mimic review, monitoring, and safety-net follow-up.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: `Count criteria and treat active risks rather than using the label alone. Local evidence reminders: ${listText([...tests, ...redFlags, ...dispositions, ...safetyChecks], "metabolic syndrome tests, red flags, disposition rules, and safety checks", 12)}.`,
+    parallelActions: ["count 5 criteria", "treat weight/waist risk", "treat BP risk", "treat lipid risk", "classify glucose risk", "assign ASCVD/diabetes surveillance"],
+    guidelineCutoffs: criteriaRows,
+    children: [diagnosisEndpoint, riskReductionEndpoint, followupEndpoint]
+  });
+
+  const classificationDecision = decision({
+    id: `${prefix}_classification_decision`,
+    label: "Metabolic syndrome: choose missing-data, urgent cardiometabolic, criteria-count, risk-reduction, mimic, or follow-up branch",
+    edgeLabel: "Waist, BP, fasting glucose/A1c, HDL, triglycerides, medications, symptoms, pregnancy status, and follow-up access are available",
+    sourceIds,
+    criteria: criteria(`${prefix}_classification_criteria`, "Classify by the five metabolic syndrome criteria, diabetes/hypertension/ASCVD red flags, treatment status, secondary causes, and follow-up access.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Choose from missing criteria, urgent cardiometabolic escalation, criteria count, component risk reduction, alternate diagnosis, or follow-up safety net.",
+    clinicalCriteria: criteriaRows,
+    guidelineCutoffs: criteriaRows,
+    children: [missingCriteriaEndpoint, urgentEndpoint, managementAction, mimicEndpoint]
+  });
+
+  const initialAssessment = actionNode({
+    id: `${prefix}_initial_assessment`,
+    label: "Metabolic syndrome: measure waist, BP, weight, mental status, fasting glucose/A1c, HDL, triglycerides, medications, and ASCVD symptoms",
+    edgeLabel: "Metabolic syndrome evaluation: central obesity, hypertension, dyslipidemia, prediabetes/diabetes risk, fatty liver/OSA/PCOS, medication effect, or clinician-chosen cardiometabolic workup",
+    sourceIds,
+    criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial metabolic syndrome assessment requires all five criteria plus urgent symptom exclusions and secondary-cause context.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Measure waist circumference, blood pressure, heart rate, current weight, and mental status. Obtain fasting glucose or A1c, HDL, triglycerides, medication/treatment status for BP/lipids/glucose, pregnancy status, ASCVD symptom screen, sleep apnea/fatty-liver/PCOS context, secondary endocrine or medication causes, and follow-up access.",
+    parallelActions: ["measure waist circumference", "measure blood pressure", "measure heart rate", "measure current weight", "document mental status", "fasting glucose/A1c", "HDL and triglycerides", "medication treatment status", "ASCVD symptom screen", "secondary cause and pregnancy review"],
+    requiredData: unique(criteriaRows.flatMap((row) => row.data_needed || [])),
+    guidelineCutoffs: criteriaRows,
+    children: [classificationDecision]
+  });
+
+  const root = decision({
+    id: "root",
+    label: "Metabolic syndrome: route by five criteria, urgent cardiometabolic exclusions, component treatment, and surveillance",
+    sourceIds,
+    criteria: criteria(`${prefix}_activate`, "Activate for central obesity, elevated BP, dyslipidemia, prediabetes/high glucose, cardiometabolic risk clustering, fatty liver/OSA/PCOS risk, or clinician-chosen metabolic syndrome evaluation.", ["clinician_selected_module", "vitals", "labs", "exam", "problem_list_or_diagnosis", "workup_findings"], sourceIds),
+    action: "Route metabolic syndrome through missing-data, urgent cardiometabolic escalation, five-criterion diagnosis, active risk-factor treatment, mimic review, monitoring, follow-up, and safety-net endpoints.",
+    children: [missingContextEndpoint, initialAssessment]
+  });
+
+  return finalizeClinicalPathwayTree({
+    module,
+    sourceById,
+    label,
+    version: "4.0.0",
+    status: "hand_polished_metabolic_syndrome_pathway_needs_clinician_review",
+    sourceIds,
+    criteriaRows,
+    tests,
+    redFlags,
+    differentials,
+    dispositions,
+    root,
+    sourceMaterial: "NHLBI Metabolic Syndrome Diagnosis, CDC Diabetes Testing, ADA Standards of Care in Diabetes 2026, CDC National DPP resources, and local module evidence rows",
+    reviewNote: "Metabolic syndrome tree is threshold-cited and patient-traversable; race/ethnicity waist cutoffs, ASCVD-risk calculations, lipid/BP medication choices, pregnancy, and secondary-cause workup require clinician governance.",
+    syntheticScenarios: [
+      { scenario_id: "missing_context", major_pathway: "missing_data_needed", expected_endpoint_id: missingContextEndpoint.id, expected_active_branch: missingContextEndpoint.edgeLabel },
+      { scenario_id: "missing_five_criteria", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: missingCriteriaEndpoint.id, expected_active_branch: missingCriteriaEndpoint.edgeLabel },
+      { scenario_id: "urgent_cardiometabolic_risk", major_pathway: "escalation_emergency_actions", expected_endpoint_id: urgentEndpoint.id, expected_active_branch: urgentEndpoint.edgeLabel },
+      { scenario_id: "three_of_five_criteria", major_pathway: "severity_risk_stratification", expected_endpoint_id: diagnosisEndpoint.id, expected_active_branch: diagnosisEndpoint.edgeLabel },
+      { scenario_id: "risk_reduction_plan", major_pathway: "first_line_management", expected_endpoint_id: riskReductionEndpoint.id, expected_active_branch: riskReductionEndpoint.edgeLabel },
+      { scenario_id: "waist_threshold_or_secondary_cause_review", major_pathway: "contraindications_special_populations", expected_endpoint_id: mimicEndpoint.id, expected_active_branch: mimicEndpoint.edgeLabel },
+      { scenario_id: "fewer_than_three_or_mimic", major_pathway: "mimics_exclusions", expected_endpoint_id: mimicEndpoint.id, expected_active_branch: mimicEndpoint.edgeLabel },
+      { scenario_id: "component_monitoring", major_pathway: "monitoring_reassessment_escalation", expected_endpoint_id: followupEndpoint.id, expected_active_branch: followupEndpoint.edgeLabel },
+      { scenario_id: "criteria_improve_surveillance", major_pathway: "deescalation_stopping_criteria", expected_endpoint_id: followupEndpoint.id, expected_active_branch: followupEndpoint.edgeLabel },
+      { scenario_id: "followup_safety_net", major_pathway: "disposition_followup_safety_netting", expected_endpoint_id: followupEndpoint.id, expected_active_branch: followupEndpoint.edgeLabel }
+    ],
+    handPolishRequirements: [
+      "diagnostic branch requires 3 or more of 5 criteria",
+      "criteria include waist >40 inches men/>35 inches women, BP >=130/85, glucose >=100, HDL <40 men/<50 women, and triglycerides >=150",
+      "urgent branch routes diabetes-range glycemia, severe hypertension, ASCVD symptoms, pregnancy hyperglycemia, dehydration, and altered mental status",
+      "management targets each active component and assigns diabetes/ASCVD surveillance"
+    ]
+  });
+}
+
+function finalizeClinicalPathwayTree({
+  module,
+  sourceById,
+  label,
+  version,
+  status,
+  sourceIds,
+  criteriaRows,
+  tests,
+  redFlags,
+  differentials,
+  dispositions,
+  root,
+  sourceMaterial,
+  reviewNote,
+  syntheticScenarios,
+  handPolishRequirements
+}) {
+  const activationRules = {};
+  const allNodeSourceIds = [];
+  const collect = (entry) => {
+    allNodeSourceIds.push(...(entry.source_ids || []), ...(entry.criteria?.source_ids || []));
+    if (entry.criteria) activationRules[entry.id] = entry.criteria;
+    for (const child of entry.children || []) collect(child);
+  };
+  collect(root);
+  const sourceThresholds = sourceThresholdsFromCriteria(criteriaRows);
+  const localEvidenceSourceIds = sourceIdsForItems([...tests, ...redFlags, ...differentials, ...dispositions], sourceIds);
+  const finalSourceIds = unique([...sourceIds, ...localEvidenceSourceIds, ...allNodeSourceIds, ...sourceThresholds.flatMap((row) => row.source_ids || [])]);
+
+  return {
+    schema: "clinical_pathway_tree_v1",
+    workupId: module.id,
+    workup_id: module.id,
+    title: label,
+    version,
+    status,
+    source_ids: finalSourceIds,
+    source_metadata: sourceRowsForTree(finalSourceIds, sourceById),
+    provenance: {
+      generated_by: "scripts/hand-polish-clinical-pathway-trees.js",
+      generated_at: `${auditDate}T00:00:00.000Z`,
+      update_scope: "clinical_pathway_tree_v1 only",
+      source_material: sourceMaterial,
+      review_note: reviewNote
+    },
+    source_thresholds: sourceThresholds,
+    traversable_context: buildTraversableContext(module, finalSourceIds, tests, criteriaRows),
+    activationRules,
+    root,
+    synthetic_patient_scenarios: syntheticScenarios,
+    audit_requirements: {
+      required_domains: requiredPathwayDomains,
+      hand_polish_requirements: handPolishRequirements
+    }
+  };
+}
+
 function enrichModule(module) {
   const curatedRows = curatedCutoffCriteria[module.id] || [];
   if (!curatedRows.length) return module;
@@ -2904,7 +3979,17 @@ function main() {
             ? buildAdrenalInsufficiencyClinicalPathwayTree(module, sourceById)
             : module.id === "hypopituitarism_v1"
               ? buildHypopituitarismClinicalPathwayTree(module, sourceById)
-              : buildCompactClinicalPathwayTree(module, sourceById);
+              : module.id === "gestational_diabetes_v1"
+                ? buildGestationalDiabetesClinicalPathwayTree(module, sourceById)
+                : module.id === "type_1_diabetes_mellitus_v1"
+                  ? buildDiabetesMellitusClinicalPathwayTree(module, sourceById, "type1")
+                  : module.id === "type_2_diabetes_mellitus_v1"
+                    ? buildDiabetesMellitusClinicalPathwayTree(module, sourceById, "type2")
+                    : module.id === "prediabetes_v1"
+                      ? buildPrediabetesClinicalPathwayTree(module, sourceById)
+                      : module.id === "metabolic_syndrome_v1"
+                        ? buildMetabolicSyndromeClinicalPathwayTree(module, sourceById)
+                        : buildCompactClinicalPathwayTree(module, sourceById);
     const nextModule = { ...module, clinical_pathway_tree_v1: clinicalPathway };
     const nextRaw = raw.module ? { ...raw, module: nextModule } : nextModule;
     const next = `${JSON.stringify(nextRaw, null, 2)}\n`;
