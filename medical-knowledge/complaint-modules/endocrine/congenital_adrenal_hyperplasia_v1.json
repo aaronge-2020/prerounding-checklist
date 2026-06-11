@@ -3166,8 +3166,6 @@
               "severity/risk category",
               "treatment response",
               "disposition constraints",
-              "Congenital Adrenal Hyperplasia (CAH): diagnostic frame from guideline-sourced endocrine workup",
-              "Key thresholds and interpretation caveats: 17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
               "Important mimics/exclusions: exogenous glucocorticoid exposure or withdrawal, primary versus central adrenal insufficiency, adrenal incidentaloma, medication-altered renin/aldosterone testing, catecholamine excess, severe illness, infection, and electrolyte mimics.",
               "Electrolyte crisis or vomiting changes to emergency steroid/fluid pathway.",
               "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
@@ -5779,8 +5777,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Missing data needed: CAH age band, crisis signs, 17-OHP profile, electrolytes, and steroid plan",
-            "edgeLabel": "Missing exact CAH data: age/gestation, newborn screen or 17-OHP timing, sodium/potassium/glucose/CO2, crisis symptoms, current glucocorticoid/mineralocorticoid/crinecerfont use, pregnancy/fertility status, or follow-up access",
+            "label": "Internal data-availability guard",
+            "edgeLabel": "Internal data-availability guard",
             "source_ids": [
               "ES_CAH_2018",
               "GENEREVIEWS_CAH_21OHD_2016",
@@ -5822,9 +5820,16 @@
                 "pregnancy or fertility intent when relevant"
               ]
             },
-            "action": "Before choosing a CAH branch, document age and gestational-age context, newborn screen result or early morning 17-OHP with assay method, cosyntropin timing/result if needed, sodium, potassium, glucose, CO2/bicarbonate, hydration and perfusion, vomiting or ability to keep steroids down, current hydrocortisone/prednisone/fludrocortisone/salt/crinecerfont use, pregnancy or fertility intent, CYP21A2/genetic counseling status, and reliable follow-up access.",
+            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
             "children": [],
             "endpoint_type": "missing_data_needed",
+            "internal_traversal_guard": true,
+            "display": {
+              "visible_in_pathway": false,
+              "visible_in_graph": false,
+              "visible_in_outline": false,
+              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+            },
             "missing_data_needed": [
               "age in days/months/years",
               "gestational age and birth weight when newborn",
@@ -6816,8 +6821,8 @@
                   {
                     "id": "congenital_adrenal_hyperplasia_missing_diagnostic_data_endpoint",
                     "type": "endpoint",
-                    "label": "Missing data needed: cannot classify classic, nonclassic, salt-wasting, or mimic",
-                    "edgeLabel": "CAH phenotype cannot be assigned until 17-OHP timing/assay, cosyntropin steroid profile, electrolytes, glucocorticoid exposure, and CYP21A2/family context are known",
+                    "label": "Internal data-availability guard",
+                    "edgeLabel": "Internal data-availability guard",
                     "source_ids": [
                       "ES_CAH_2018",
                       "GENEREVIEWS_CAH_21OHD_2016"
@@ -6848,9 +6853,16 @@
                         "CYP21A2 testing or family variant when diagnosis remains equivocal"
                       ]
                     },
-                    "action": "Complete CAH confirmation before labeling severity: repeat newborn screen or send serum 17-OHP with gestational-age and assay context, use LC-MS/MS when available, defer cosyntropin until after 24-48 hours of life when applicable, send baseline and 60-minute cortisol/17-OHP plus adrenal steroid profile for borderline results, check sodium, potassium, glucose, CO2/bicarbonate, renin/aldosterone when salt wasting is possible, and use CYP21A2 testing for equivocal profiles or genetic counseling.",
+                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
+                    "internal_traversal_guard": true,
+                    "display": {
+                      "visible_in_pathway": false,
+                      "visible_in_graph": false,
+                      "visible_in_outline": false,
+                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                    },
                     "missing_data_needed": [
                       "17-OHP value, timing, and assay",
                       "gestational-age or early-morning context",
@@ -14618,79 +14630,181 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing exact CAH data: age/gestation, newborn screen or 17-OHP timing, sodium/potassium/glucose/CO2, crisis symptoms, current glucocorticoid/mineralocorticoid/crinecerfont use, pregnancy/fertility status, or follow-up access"
+          "expected_active_branch": "Internal data-availability guard",
+          "expected_path_node_ids": [
+            "root",
+            "endpoint_missing_context"
+          ],
+          "terminal_endpoint_id": "endpoint_missing_context",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "missing_diagnostic_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "congenital_adrenal_hyperplasia_missing_diagnostic_data_endpoint",
-          "expected_active_branch": "CAH phenotype cannot be assigned until 17-OHP timing/assay, cosyntropin steroid profile, electrolytes, glucocorticoid exposure, and CYP21A2/family context are known"
+          "expected_active_branch": "Internal data-availability guard",
+          "expected_path_node_ids": [
+            "root",
+            "congenital_adrenal_hyperplasia_initial_assessment",
+            "congenital_adrenal_hyperplasia_branch_decision",
+            "congenital_adrenal_hyperplasia_missing_diagnostic_data_endpoint"
+          ],
+          "terminal_endpoint_id": "congenital_adrenal_hyperplasia_missing_diagnostic_data_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "newborn_salt_wasting_crisis",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "congenital_adrenal_hyperplasia_adrenal_crisis_endpoint",
-          "expected_active_branch": "Emergency branch: newborn first 4 weeks or any CAH patient with vomiting, dehydration, shock, hypoglycemia, hyponatremia, hyperkalemia, major illness, surgery, trauma, labor, or missed steroids"
+          "expected_active_branch": "Emergency branch: newborn first 4 weeks or any CAH patient with vomiting, dehydration, shock, hypoglycemia, hyponatremia, hyperkalemia, major illness, surgery, trauma, labor, or missed steroids",
+          "expected_path_node_ids": [
+            "root",
+            "congenital_adrenal_hyperplasia_initial_assessment",
+            "congenital_adrenal_hyperplasia_branch_decision",
+            "congenital_adrenal_hyperplasia_adrenal_crisis_endpoint"
+          ],
+          "terminal_endpoint_id": "congenital_adrenal_hyperplasia_adrenal_crisis_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "positive_newborn_screen_stable",
           "major_pathway": "diagnostic_confirmation",
           "expected_endpoint_id": "congenital_adrenal_hyperplasia_newborn_confirmation_endpoint",
-          "expected_active_branch": "Newborn branch: positive screen, ambiguous genitalia/virilization, poor feeding, vomiting, weight loss, dehydration, or family history with age/gestation-adjusted 17-OHP pending"
+          "expected_active_branch": "Newborn branch: positive screen, ambiguous genitalia/virilization, poor feeding, vomiting, weight loss, dehydration, or family history with age/gestation-adjusted 17-OHP pending",
+          "expected_path_node_ids": [
+            "root",
+            "congenital_adrenal_hyperplasia_initial_assessment",
+            "congenital_adrenal_hyperplasia_branch_decision",
+            "congenital_adrenal_hyperplasia_newborn_confirmation_endpoint"
+          ],
+          "terminal_endpoint_id": "congenital_adrenal_hyperplasia_newborn_confirmation_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "after_infancy_classification",
           "major_pathway": "severity_risk_stratification",
           "expected_endpoint_id": "congenital_adrenal_hyperplasia_after_infancy_diagnosis_endpoint",
-          "expected_active_branch": "Symptomatic child, adolescent, or adult branch: virilization, rapid pubarche, advanced bone age, hirsutism/acne, menstrual irregularity, infertility, adrenal rest tumor, or family history"
+          "expected_active_branch": "Symptomatic child, adolescent, or adult branch: virilization, rapid pubarche, advanced bone age, hirsutism/acne, menstrual irregularity, infertility, adrenal rest tumor, or family history",
+          "expected_path_node_ids": [
+            "root",
+            "congenital_adrenal_hyperplasia_initial_assessment",
+            "congenital_adrenal_hyperplasia_branch_decision",
+            "congenital_adrenal_hyperplasia_after_infancy_diagnosis_endpoint"
+          ],
+          "terminal_endpoint_id": "congenital_adrenal_hyperplasia_after_infancy_diagnosis_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "classic_cah_maintenance",
           "major_pathway": "first_line_management",
           "expected_endpoint_id": "congenital_adrenal_hyperplasia_classic_replacement_endpoint",
-          "expected_active_branch": "Classic CAH confirmed or highly likely without crisis: salt-wasting or simple-virilizing phenotype, classic 17-OHP range, or established CYP21A2 diagnosis needs maintenance therapy"
+          "expected_active_branch": "Classic CAH confirmed or highly likely without crisis: salt-wasting or simple-virilizing phenotype, classic 17-OHP range, or established CYP21A2 diagnosis needs maintenance therapy",
+          "expected_path_node_ids": [
+            "root",
+            "congenital_adrenal_hyperplasia_initial_assessment",
+            "congenital_adrenal_hyperplasia_branch_decision",
+            "congenital_adrenal_hyperplasia_classic_replacement_endpoint"
+          ],
+          "terminal_endpoint_id": "congenital_adrenal_hyperplasia_classic_replacement_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "symptomatic_nonclassic_cah",
           "major_pathway": "first_line_management",
           "expected_endpoint_id": "congenital_adrenal_hyperplasia_nonclassic_symptomatic_endpoint",
-          "expected_active_branch": "Nonclassic branch needing therapy: rapid pubarche, advanced bone age, overt virilization, infertility, miscarriage history, or patient-important hyperandrogenism"
+          "expected_active_branch": "Nonclassic branch needing therapy: rapid pubarche, advanced bone age, overt virilization, infertility, miscarriage history, or patient-important hyperandrogenism",
+          "expected_path_node_ids": [
+            "root",
+            "congenital_adrenal_hyperplasia_initial_assessment",
+            "congenital_adrenal_hyperplasia_branch_decision",
+            "congenital_adrenal_hyperplasia_nonclassic_symptomatic_endpoint"
+          ],
+          "terminal_endpoint_id": "congenital_adrenal_hyperplasia_nonclassic_symptomatic_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "asymptomatic_nonclassic_or_stop",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "congenital_adrenal_hyperplasia_nonclassic_no_daily_or_stop_endpoint",
-          "expected_active_branch": "Low-treatment branch: asymptomatic nonpregnant nonclassic CAH, adult height attained, symptoms resolved, most adult males, or stress dosing question without inadequate cortisol reserve"
+          "expected_active_branch": "Low-treatment branch: asymptomatic nonpregnant nonclassic CAH, adult height attained, symptoms resolved, most adult males, or stress dosing question without inadequate cortisol reserve",
+          "expected_path_node_ids": [
+            "root",
+            "congenital_adrenal_hyperplasia_initial_assessment",
+            "congenital_adrenal_hyperplasia_branch_decision",
+            "congenital_adrenal_hyperplasia_nonclassic_no_daily_or_stop_endpoint"
+          ],
+          "terminal_endpoint_id": "congenital_adrenal_hyperplasia_nonclassic_no_daily_or_stop_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "crinecerfont_candidate_or_safety_issue",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "congenital_adrenal_hyperplasia_crinecerfont_adjunct_endpoint",
-          "expected_active_branch": "Adjunct branch: classic CAH age at least 4 years, weight known, androgen control remains problematic, glucocorticoid replacement continues, and hypersensitivity/renal/CYP3A4 risks are reviewed"
+          "expected_active_branch": "Adjunct branch: classic CAH age at least 4 years, weight known, androgen control remains problematic, glucocorticoid replacement continues, and hypersensitivity/renal/CYP3A4 risks are reviewed",
+          "expected_path_node_ids": [
+            "root",
+            "congenital_adrenal_hyperplasia_initial_assessment",
+            "congenital_adrenal_hyperplasia_branch_decision",
+            "congenital_adrenal_hyperplasia_crinecerfont_adjunct_endpoint"
+          ],
+          "terminal_endpoint_id": "congenital_adrenal_hyperplasia_crinecerfont_adjunct_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "pregnancy_prenatal_or_dsd_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "congenital_adrenal_hyperplasia_pregnancy_dsd_review_endpoint",
-          "expected_active_branch": "Special branch: pregnancy or conception planning, infertility, prenatal dexamethasone request, partner/genetic counseling need, virilized 46,XX infant, or genital surgery discussion"
+          "expected_active_branch": "Special branch: pregnancy or conception planning, infertility, prenatal dexamethasone request, partner/genetic counseling need, virilized 46,XX infant, or genital surgery discussion",
+          "expected_path_node_ids": [
+            "root",
+            "congenital_adrenal_hyperplasia_initial_assessment",
+            "congenital_adrenal_hyperplasia_branch_decision",
+            "congenital_adrenal_hyperplasia_pregnancy_dsd_review_endpoint"
+          ],
+          "terminal_endpoint_id": "congenital_adrenal_hyperplasia_pregnancy_dsd_review_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "monitoring_overtreatment_or_tart",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "congenital_adrenal_hyperplasia_monitoring_reassessment_endpoint",
-          "expected_active_branch": "Monitoring branch: patient is on glucocorticoid, mineralocorticoid, salt, or crinecerfont therapy, or has fertility/adrenal rest tumor surveillance needs"
+          "expected_active_branch": "Monitoring branch: patient is on glucocorticoid, mineralocorticoid, salt, or crinecerfont therapy, or has fertility/adrenal rest tumor surveillance needs",
+          "expected_path_node_ids": [
+            "root",
+            "congenital_adrenal_hyperplasia_initial_assessment",
+            "congenital_adrenal_hyperplasia_branch_decision",
+            "congenital_adrenal_hyperplasia_monitoring_reassessment_endpoint"
+          ],
+          "terminal_endpoint_id": "congenital_adrenal_hyperplasia_monitoring_reassessment_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "mimic_or_other_enzyme_defect",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "congenital_adrenal_hyperplasia_mimic_exclusion_endpoint",
-          "expected_active_branch": "Mimic branch: CAH thresholds are not met, steroid profile suggests another enzyme defect, virilization/hyperandrogenism has another cause, or salt-wasting physiology has a non-CAH explanation"
+          "expected_active_branch": "Mimic branch: CAH thresholds are not met, steroid profile suggests another enzyme defect, virilization/hyperandrogenism has another cause, or salt-wasting physiology has a non-CAH explanation",
+          "expected_path_node_ids": [
+            "root",
+            "congenital_adrenal_hyperplasia_initial_assessment",
+            "congenital_adrenal_hyperplasia_branch_decision",
+            "congenital_adrenal_hyperplasia_mimic_exclusion_endpoint"
+          ],
+          "terminal_endpoint_id": "congenital_adrenal_hyperplasia_mimic_exclusion_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "stable_disposition_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "congenital_adrenal_hyperplasia_followup_safety_net_endpoint",
-          "expected_active_branch": "Stable branch: no active crisis, diagnostic/treatment plan is documented, medications are accessible, caregiver or patient can use injection kit, and follow-up/result ownership is assigned"
+          "expected_active_branch": "Stable branch: no active crisis, diagnostic/treatment plan is documented, medications are accessible, caregiver or patient can use injection kit, and follow-up/result ownership is assigned",
+          "expected_path_node_ids": [
+            "root",
+            "congenital_adrenal_hyperplasia_initial_assessment",
+            "congenital_adrenal_hyperplasia_branch_decision",
+            "congenital_adrenal_hyperplasia_followup_safety_net_endpoint"
+          ],
+          "terminal_endpoint_id": "congenital_adrenal_hyperplasia_followup_safety_net_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         }
       ],
       "audit_requirements": {

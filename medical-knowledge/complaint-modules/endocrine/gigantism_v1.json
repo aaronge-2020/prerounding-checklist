@@ -2519,8 +2519,6 @@
               "severity/risk category",
               "treatment response",
               "disposition constraints",
-              "Gigantism: diagnostic frame from guideline-sourced endocrine workup",
-              "Key thresholds and interpretation caveats: Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
               "Important mimics/exclusions: medication effects, pregnancy/lactation, renal/hepatic disease, sellar or parasellar mass, pituitary apoplexy, primary target-gland disease, central versus nephrogenic water-balance disorder, and age/puberty-specific normal variants.",
               "Confirmed GH excess before epiphyseal closure changes urgency of pediatric pituitary treatment.",
               "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
@@ -4060,9 +4058,9 @@
             "workup_findings"
           ],
           "source_ids": [
+            "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
             "ES_ACROMEGALY_2014",
             "PITUITARY_ACROMEGALY_2021",
-            "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
             "ACROMEGALY_COMPLICATIONS_2026",
             "AHRQ_CALIBRATE_DX"
           ],
@@ -6562,8 +6560,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Missing data needed: Gigantism symptoms, IGF-1/GH, glucose-load, pituitary imaging, comorbidity, and special-population context",
-            "edgeLabel": "Missing Gigantism data: phenotype/growth pattern, age/puberty context, age-adjusted IGF-1, assay ULN, OGTT GH nadir if needed, pituitary MRI/visual fields, comorbidities, medications, pregnancy or epiphyseal status, and treatment history",
+            "label": "Internal data-availability guard",
+            "edgeLabel": "Internal data-availability guard",
             "source_ids": [
               "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
               "ES_ACROMEGALY_2014",
@@ -6607,9 +6605,16 @@
                 "workup_findings"
               ]
             },
-            "action": "Document height velocity, height SDS/percentile, mid-parental target height, pubertal stage, bone age, epiphyseal/growth-plate status, age/sex/puberty context, IGF-1 with ULN, random GH and OGTT GH nadir when needed, glucose before/after OGTT, pituitary MRI and visual field status, BP/glucose/A1c/OSA/cardiac/colon/thyroid/pituitary-axis status, medication and pregnancy/fertility context, bone age and epiphyseal status, and follow-up access.",
+            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
             "children": [],
             "endpoint_type": "missing_data_needed",
+            "internal_traversal_guard": true,
+            "display": {
+              "visible_in_pathway": false,
+              "visible_in_graph": false,
+              "visible_in_outline": false,
+              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+            },
             "missing_data_needed": [
               "height velocity",
               "height SDS/percentile",
@@ -7377,8 +7382,8 @@
                   {
                     "id": "gigantism_missing_biochemical_endpoint",
                     "type": "endpoint",
-                    "label": "Missing data needed: Gigantism IGF-1 ULN, same-assay repeat, OGTT GH nadir, or glucose verification",
-                    "edgeLabel": "Cannot classify Gigantism until IGF-1 with age/puberty reference range, assay ULN, same-assay repeat if equivocal, and OGTT GH nadir with documented hyperglycemia are known when indicated",
+                    "label": "Internal data-availability guard",
+                    "edgeLabel": "Internal data-availability guard",
                     "source_ids": [
                       "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
                       "ES_ACROMEGALY_2014"
@@ -7411,9 +7416,16 @@
                         "OGTT glucose values"
                       ]
                     },
-                    "action": "Obtain or repeat age/sex/puberty-adjusted IGF-1 using the same validated assay when equivocal; if IGF-1 is elevated or equivocal and diagnosis remains uncertain, perform 75-g OGTT with GH nadir and glucose documentation to verify hyperglycemia and apply the <1 ug/L or assay-specific <0.4 ug/L suppression rule.",
+                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
+                    "internal_traversal_guard": true,
+                    "display": {
+                      "visible_in_pathway": false,
+                      "visible_in_graph": false,
+                      "visible_in_outline": false,
+                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                    },
                     "missing_data_needed": [
                       "age/sex/puberty-adjusted IGF-1",
                       "assay ULN",
@@ -8839,9 +8851,9 @@
                     "label": "Gigantism mimic/confounder route: normal IGF-1, adolescence/pregnancy, uncontrolled diabetes, renal/hepatic failure, hypothyroidism, malnutrition, severe infection, oral estrogen, or pseudoacromegaly",
                     "edgeLabel": "Alternate branch: IGF-1 normal for age/puberty, OGTT suppresses GH, phenotype is explained by adolescence/pregnancy or insulin-mediated pseudoacromegaly, or IGF-1/GH is confounded by diabetes, renal/hepatic disease, hypothyroidism, malnutrition, severe infection, oral estrogen, assay mismatch, or medication effect",
                     "source_ids": [
+                      "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
                       "ES_ACROMEGALY_2014",
                       "PITUITARY_ACROMEGALY_2021",
-                      "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
                       "ACROMEGALY_COMPLICATIONS_2026",
                       "AHRQ_CALIBRATE_DX"
                     ],
@@ -8859,9 +8871,9 @@
                         "workup_findings"
                       ],
                       "source_ids": [
+                        "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
                         "ES_ACROMEGALY_2014",
                         "PITUITARY_ACROMEGALY_2021",
-                        "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
                         "ACROMEGALY_COMPLICATIONS_2026",
                         "AHRQ_CALIBRATE_DX"
                       ],
@@ -14924,67 +14936,159 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing Gigantism data: phenotype/growth pattern, age/puberty context, age-adjusted IGF-1, assay ULN, OGTT GH nadir if needed, pituitary MRI/visual fields, comorbidities, medications, pregnancy or epiphyseal status, and treatment history"
+          "expected_active_branch": "Internal data-availability guard",
+          "expected_path_node_ids": [
+            "root",
+            "endpoint_missing_context"
+          ],
+          "terminal_endpoint_id": "endpoint_missing_context",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "missing_igf1_or_ogtt",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "gigantism_missing_biochemical_endpoint",
-          "expected_active_branch": "Cannot classify Gigantism until IGF-1 with age/puberty reference range, assay ULN, same-assay repeat if equivocal, and OGTT GH nadir with documented hyperglycemia are known when indicated"
+          "expected_active_branch": "Internal data-availability guard",
+          "expected_path_node_ids": [
+            "root",
+            "gigantism_initial_assessment",
+            "gigantism_classification_decision",
+            "gigantism_missing_biochemical_endpoint"
+          ],
+          "terminal_endpoint_id": "gigantism_missing_biochemical_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "mass_effect_or_metabolic_urgent",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "gigantism_urgent_mass_effect_endpoint",
-          "expected_active_branch": "Emergency branch: acute severe headache, visual field loss, cranial nerve palsy, altered mental status, macroadenoma pregnancy symptoms, severe OSA/airway concern, high-output heart failure/cardiomyopathy, arrhythmia, uncontrolled diabetes, severe electrolyte/glucose abnormality, or adrenal crisis"
+          "expected_active_branch": "Emergency branch: acute severe headache, visual field loss, cranial nerve palsy, altered mental status, macroadenoma pregnancy symptoms, severe OSA/airway concern, high-output heart failure/cardiomyopathy, arrhythmia, uncontrolled diabetes, severe electrolyte/glucose abnormality, or adrenal crisis",
+          "expected_path_node_ids": [
+            "root",
+            "gigantism_initial_assessment",
+            "gigantism_classification_decision",
+            "gigantism_urgent_mass_effect_endpoint"
+          ],
+          "terminal_endpoint_id": "gigantism_urgent_mass_effect_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "igf1_positive_diagnosis",
           "major_pathway": "diagnostic_confirmation",
           "expected_endpoint_id": "gigantism_diagnostic_confirmation_endpoint",
-          "expected_active_branch": "Diagnostic branch: typical Gigantism phenotype or rapid growth before epiphyseal closure with IGF-1 >1.3 x ULN, elevated/equivocal IGF-1 needing OGTT, or pituitary mass needing GH-excess exclusion"
+          "expected_active_branch": "Diagnostic branch: typical Gigantism phenotype or rapid growth before epiphyseal closure with IGF-1 >1.3 x ULN, elevated/equivocal IGF-1 needing OGTT, or pituitary mass needing GH-excess exclusion",
+          "expected_path_node_ids": [
+            "root",
+            "gigantism_initial_assessment",
+            "gigantism_classification_decision",
+            "gigantism_diagnostic_confirmation_endpoint"
+          ],
+          "terminal_endpoint_id": "gigantism_diagnostic_confirmation_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "ogtt_or_normal_igf1_exclusion",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "gigantism_mimic_or_confounded_endpoint",
-          "expected_active_branch": "Alternate branch: IGF-1 normal for age/puberty, OGTT suppresses GH, phenotype is explained by adolescence/pregnancy or insulin-mediated pseudoacromegaly, or IGF-1/GH is confounded by diabetes, renal/hepatic disease, hypothyroidism, malnutrition, severe infection, oral estrogen, assay mismatch, or medication effect"
+          "expected_active_branch": "Alternate branch: IGF-1 normal for age/puberty, OGTT suppresses GH, phenotype is explained by adolescence/pregnancy or insulin-mediated pseudoacromegaly, or IGF-1/GH is confounded by diabetes, renal/hepatic disease, hypothyroidism, malnutrition, severe infection, oral estrogen, assay mismatch, or medication effect",
+          "expected_path_node_ids": [
+            "root",
+            "gigantism_initial_assessment",
+            "gigantism_classification_decision",
+            "gigantism_mimic_or_confounded_endpoint"
+          ],
+          "terminal_endpoint_id": "gigantism_mimic_or_confounded_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "pituitary_surgery_first_line",
           "major_pathway": "first_line_management",
           "expected_endpoint_id": "gigantism_surgery_endpoint",
-          "expected_active_branch": "Surgery branch: biochemical Gigantism diagnosis with resectable pituitary adenoma, no overriding contraindication, mass-effect plan known, and neurosurgical/pituitary-center pathway available"
+          "expected_active_branch": "Surgery branch: biochemical Gigantism diagnosis with resectable pituitary adenoma, no overriding contraindication, mass-effect plan known, and neurosurgical/pituitary-center pathway available",
+          "expected_path_node_ids": [
+            "root",
+            "gigantism_initial_assessment",
+            "gigantism_classification_decision",
+            "gigantism_treatment_action",
+            "gigantism_surgery_endpoint"
+          ],
+          "terminal_endpoint_id": "gigantism_surgery_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "persistent_or_unresectable_disease",
           "major_pathway": "severity_risk_stratification",
           "expected_endpoint_id": "gigantism_medical_radiation_endpoint",
-          "expected_active_branch": "Medical/radiation branch: persistent active Gigantism after surgery, unresectable/cavernous sinus disease without chiasmal compression, poor surgical candidate, recurrent disease, medication sequencing need, or residual mass with failed/unavailable/not tolerated medical therapy"
+          "expected_active_branch": "Medical/radiation branch: persistent active Gigantism after surgery, unresectable/cavernous sinus disease without chiasmal compression, poor surgical candidate, recurrent disease, medication sequencing need, or residual mass with failed/unavailable/not tolerated medical therapy",
+          "expected_path_node_ids": [
+            "root",
+            "gigantism_initial_assessment",
+            "gigantism_classification_decision",
+            "gigantism_treatment_action",
+            "gigantism_medical_radiation_endpoint"
+          ],
+          "terminal_endpoint_id": "gigantism_medical_radiation_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "pediatric_growth_plate_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "gigantism_special_population_endpoint",
-          "expected_active_branch": "Special-population branch: GH excess begins before epiphyseal closure, rapid height acceleration or tall stature crosses expected family/puberty trajectory, pediatric pituitary mass is present, or syndromic/genetic risk changes care"
+          "expected_active_branch": "Special-population branch: GH excess begins before epiphyseal closure, rapid height acceleration or tall stature crosses expected family/puberty trajectory, pediatric pituitary mass is present, or syndromic/genetic risk changes care",
+          "expected_path_node_ids": [
+            "root",
+            "gigantism_initial_assessment",
+            "gigantism_classification_decision",
+            "gigantism_treatment_action",
+            "gigantism_special_population_endpoint"
+          ],
+          "terminal_endpoint_id": "gigantism_special_population_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "response_and_toxicity_monitoring",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "gigantism_monitoring_endpoint",
-          "expected_active_branch": "Monitoring branch: treatment has occurred or is ongoing, biochemical response, tumor size, pituitary deficits, comorbidities, medication toxicity, or radiation effects need reassessment"
+          "expected_active_branch": "Monitoring branch: treatment has occurred or is ongoing, biochemical response, tumor size, pituitary deficits, comorbidities, medication toxicity, or radiation effects need reassessment",
+          "expected_path_node_ids": [
+            "root",
+            "gigantism_initial_assessment",
+            "gigantism_classification_decision",
+            "gigantism_treatment_action",
+            "gigantism_monitoring_endpoint"
+          ],
+          "terminal_endpoint_id": "gigantism_monitoring_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "remission_or_radiation_deescalation",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "gigantism_monitoring_endpoint",
-          "expected_active_branch": "Monitoring branch: treatment has occurred or is ongoing, biochemical response, tumor size, pituitary deficits, comorbidities, medication toxicity, or radiation effects need reassessment"
+          "expected_active_branch": "Monitoring branch: treatment has occurred or is ongoing, biochemical response, tumor size, pituitary deficits, comorbidities, medication toxicity, or radiation effects need reassessment",
+          "expected_path_node_ids": [
+            "root",
+            "gigantism_initial_assessment",
+            "gigantism_classification_decision",
+            "gigantism_treatment_action",
+            "gigantism_monitoring_endpoint"
+          ],
+          "terminal_endpoint_id": "gigantism_monitoring_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "gigantism_followup_safety_endpoint",
-          "expected_active_branch": "Disposition branch: no acute mass effect, active treatment or remission plan documented, pending tests owned, pituitary-center follow-up scheduled, and return precautions reviewed"
+          "expected_active_branch": "Disposition branch: no acute mass effect, active treatment or remission plan documented, pending tests owned, pituitary-center follow-up scheduled, and return precautions reviewed",
+          "expected_path_node_ids": [
+            "root",
+            "gigantism_initial_assessment",
+            "gigantism_classification_decision",
+            "gigantism_treatment_action",
+            "gigantism_followup_safety_endpoint"
+          ],
+          "terminal_endpoint_id": "gigantism_followup_safety_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         }
       ],
       "audit_requirements": {

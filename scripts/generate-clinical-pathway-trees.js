@@ -208,6 +208,18 @@ function node({
     children
   };
   if (endpointType) entry.endpoint_type = endpointType;
+  if (endpointType === "missing_data_needed") {
+    entry.label = "Internal data-availability guard";
+    entry.edgeLabel = "Internal data-availability guard";
+    entry.action = "Internal traversal guard for data completeness; hidden from the clinical pathway display.";
+    entry.internal_traversal_guard = true;
+    entry.display = {
+      visible_in_pathway: false,
+      visible_in_graph: false,
+      visible_in_outline: false,
+      reason: "Internal traversal guard; exact missing fields remain in missing_data_needed."
+    };
+  }
   if (missingDataNeeded.length) entry.missing_data_needed = unique(missingDataNeeded);
   if (reviewNeededReason) entry.review_needed_reason = cleanText(reviewNeededReason);
   if (fallbackState) entry.fallbackState = fallbackState;

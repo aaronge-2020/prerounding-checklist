@@ -2895,8 +2895,6 @@
               "severity/risk category",
               "treatment response",
               "disposition constraints",
-              "Hyperaldosteronism (Conn's Syndrome): diagnostic frame from guideline-sourced endocrine workup",
-              "Key thresholds and interpretation caveats: ARR cutoffs are assay/unit/medication-specific; interpret with local lab guidance. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
               "Important mimics/exclusions: exogenous glucocorticoid exposure or withdrawal, primary versus central adrenal insufficiency, adrenal incidentaloma, medication-altered renin/aldosterone testing, catecholamine excess, severe illness, infection, and electrolyte mimics.",
               "Suppressed renin with clearly elevated aldosterone changes to PA pathway and targeted therapy/subtyping.",
               "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
@@ -4792,8 +4790,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Missing data needed: PA pathway context",
-            "edgeLabel": "Missing PA context: BP pattern, potassium, aldosterone, renin, ARR units, medication interference, renal function, pregnancy status, adrenal imaging, surgery preference, or follow-up access",
+            "label": "Internal data-availability guard",
+            "edgeLabel": "Internal data-availability guard",
             "source_ids": [
               "ES_PRIMARY_ALDO_2025",
               "MSD_HYPERTENSIVE_EMERGENCY_2026",
@@ -4833,9 +4831,16 @@
                 "workup_findings"
               ]
             },
-            "action": "Document sustained or resistant hypertension status, BP readings and symptoms, potassium, aldosterone with assay method, PRA or DRC, ARR and units, current antihypertensives including MRA/ENaC inhibitor/diuretic/ACEi/ARB/beta-blocker/central alpha-2 use, renal function, pregnancy status, adrenal CT/AVS status if known, surgery preference, and follow-up access.",
+            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
             "children": [],
             "endpoint_type": "missing_data_needed",
+            "internal_traversal_guard": true,
+            "display": {
+              "visible_in_pathway": false,
+              "visible_in_graph": false,
+              "visible_in_outline": false,
+              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+            },
             "missing_data_needed": [
               "BP readings and hypertension treatment count",
               "potassium",
@@ -5276,8 +5281,8 @@
                   {
                     "id": "primary_aldosteronism_missing_screen_endpoint",
                     "type": "endpoint",
-                    "label": "Missing data needed: aldosterone, renin, ARR units, potassium, assay method, or interfering medications",
-                    "edgeLabel": "Cannot classify PA until aldosterone, PRA or DRC, ARR units, potassium, assay method, BP treatment count, and medication-interference status are available",
+                    "label": "Internal data-availability guard",
+                    "edgeLabel": "Internal data-availability guard",
                     "source_ids": [
                       "ES_PRIMARY_ALDO_2025"
                     ],
@@ -5309,9 +5314,16 @@
                         "medication interference"
                       ]
                     },
-                    "action": "Obtain morning seated aldosterone, PRA or DRC, ARR with units, potassium collected and processed correctly, BP readings and medication count, renal function, and the medication-interference timeline before choosing PA confirmation, repeat testing, or treatment.",
+                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
+                    "internal_traversal_guard": true,
+                    "display": {
+                      "visible_in_pathway": false,
+                      "visible_in_graph": false,
+                      "visible_in_outline": false,
+                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                    },
                     "missing_data_needed": [
                       "morning seated aldosterone",
                       "PRA or DRC",
@@ -8659,67 +8671,159 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing PA context: BP pattern, potassium, aldosterone, renin, ARR units, medication interference, renal function, pregnancy status, adrenal imaging, surgery preference, or follow-up access"
+          "expected_active_branch": "Internal data-availability guard",
+          "expected_path_node_ids": [
+            "root",
+            "endpoint_missing_context"
+          ],
+          "terminal_endpoint_id": "endpoint_missing_context",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "missing_aldosterone_renin",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "primary_aldosteronism_missing_screen_endpoint",
-          "expected_active_branch": "Cannot classify PA until aldosterone, PRA or DRC, ARR units, potassium, assay method, BP treatment count, and medication-interference status are available"
+          "expected_active_branch": "Internal data-availability guard",
+          "expected_path_node_ids": [
+            "root",
+            "primary_aldosteronism_initial_assessment",
+            "primary_aldosteronism_classification_decision",
+            "primary_aldosteronism_missing_screen_endpoint"
+          ],
+          "terminal_endpoint_id": "primary_aldosteronism_missing_screen_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "hypertensive_emergency_or_hypokalemia",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "primary_aldosteronism_emergency_endpoint",
-          "expected_active_branch": "Emergency branch: BP >=180/120 mm Hg with target-organ symptoms, severe hypokalemia with weakness/paralysis or arrhythmia, chest pain, neurologic deficit, pulmonary edema, acute kidney injury, or pregnancy severe hypertension"
+          "expected_active_branch": "Emergency branch: BP >=180/120 mm Hg with target-organ symptoms, severe hypokalemia with weakness/paralysis or arrhythmia, chest pain, neurologic deficit, pulmonary edema, acute kidney injury, or pregnancy severe hypertension",
+          "expected_path_node_ids": [
+            "root",
+            "primary_aldosteronism_initial_assessment",
+            "primary_aldosteronism_classification_decision",
+            "primary_aldosteronism_emergency_endpoint"
+          ],
+          "terminal_endpoint_id": "primary_aldosteronism_emergency_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "positive_arr_screen",
           "major_pathway": "diagnostic_confirmation",
           "expected_endpoint_id": "primary_aldosteronism_overt_pa_endpoint",
-          "expected_active_branch": "Overt branch: resistant hypertension or hypertension with hypokalemia plus PRA <0.2 ng/mL/h or DRC <2 mU/L and aldosterone >20 ng/dL immunoassay or >15 ng/dL LC-MS/MS"
+          "expected_active_branch": "Overt branch: resistant hypertension or hypertension with hypokalemia plus PRA <0.2 ng/mL/h or DRC <2 mU/L and aldosterone >20 ng/dL immunoassay or >15 ng/dL LC-MS/MS",
+          "expected_path_node_ids": [
+            "root",
+            "primary_aldosteronism_initial_assessment",
+            "primary_aldosteronism_classification_decision",
+            "primary_aldosteronism_positive_screen_action",
+            "primary_aldosteronism_overt_pa_endpoint"
+          ],
+          "terminal_endpoint_id": "primary_aldosteronism_overt_pa_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "intermediate_suppression_testing",
           "major_pathway": "severity_risk_stratification",
           "expected_endpoint_id": "primary_aldosteronism_suppression_testing_endpoint",
-          "expected_active_branch": "Intermediate branch: positive PA screen but not overt; patient is willing and able to consider adrenalectomy and needs suppression testing or specialist interpretation before lateralization"
+          "expected_active_branch": "Intermediate branch: positive PA screen but not overt; patient is willing and able to consider adrenalectomy and needs suppression testing or specialist interpretation before lateralization",
+          "expected_path_node_ids": [
+            "root",
+            "primary_aldosteronism_initial_assessment",
+            "primary_aldosteronism_classification_decision",
+            "primary_aldosteronism_positive_screen_action",
+            "primary_aldosteronism_suppression_testing_endpoint"
+          ],
+          "terminal_endpoint_id": "primary_aldosteronism_suppression_testing_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "surgical_lateralization",
           "major_pathway": "first_line_management",
           "expected_endpoint_id": "primary_aldosteronism_lateralization_endpoint",
-          "expected_active_branch": "Surgery branch: diagnosed PA, adrenalectomy desired/feasible, adrenal CT result available or ordered, and AVS needed unless age <35 with hypokalemia, marked PA, and unilateral adrenal adenoma >1.0 cm"
+          "expected_active_branch": "Surgery branch: diagnosed PA, adrenalectomy desired/feasible, adrenal CT result available or ordered, and AVS needed unless age <35 with hypokalemia, marked PA, and unilateral adrenal adenoma >1.0 cm",
+          "expected_path_node_ids": [
+            "root",
+            "primary_aldosteronism_initial_assessment",
+            "primary_aldosteronism_classification_decision",
+            "primary_aldosteronism_positive_screen_action",
+            "primary_aldosteronism_lateralization_endpoint"
+          ],
+          "terminal_endpoint_id": "primary_aldosteronism_lateralization_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "mra_contraindication_or_pregnancy",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "primary_aldosteronism_medical_monitoring_endpoint",
-          "expected_active_branch": "Medical/follow-up branch: bilateral PA, unknown lateralization, not surgical, declines surgery, mild PA, comorbidity-limited surgery, or post-treatment monitoring needed"
+          "expected_active_branch": "Medical/follow-up branch: bilateral PA, unknown lateralization, not surgical, declines surgery, mild PA, comorbidity-limited surgery, or post-treatment monitoring needed",
+          "expected_path_node_ids": [
+            "root",
+            "primary_aldosteronism_initial_assessment",
+            "primary_aldosteronism_classification_decision",
+            "primary_aldosteronism_positive_screen_action",
+            "primary_aldosteronism_medical_monitoring_endpoint"
+          ],
+          "terminal_endpoint_id": "primary_aldosteronism_medical_monitoring_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "confounded_or_mimic",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "primary_aldosteronism_repeat_or_mimic_endpoint",
-          "expected_active_branch": "Repeat/mimic branch: hypokalemia, ACEi/ARB/diuretic/MRA/ENaC/beta-blocker/central alpha-2 interference, borderline aldosterone, unsuppressed renin, normokalemia with low aldosterone, renal artery stenosis, CKD, licorice, Liddle syndrome, Cushing syndrome, or PPGL fits better"
+          "expected_active_branch": "Repeat/mimic branch: hypokalemia, ACEi/ARB/diuretic/MRA/ENaC/beta-blocker/central alpha-2 interference, borderline aldosterone, unsuppressed renin, normokalemia with low aldosterone, renal artery stenosis, CKD, licorice, Liddle syndrome, Cushing syndrome, or PPGL fits better",
+          "expected_path_node_ids": [
+            "root",
+            "primary_aldosteronism_initial_assessment",
+            "primary_aldosteronism_classification_decision",
+            "primary_aldosteronism_repeat_or_mimic_endpoint"
+          ],
+          "terminal_endpoint_id": "primary_aldosteronism_repeat_or_mimic_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "mra_monitoring",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "primary_aldosteronism_medical_monitoring_endpoint",
-          "expected_active_branch": "Medical/follow-up branch: bilateral PA, unknown lateralization, not surgical, declines surgery, mild PA, comorbidity-limited surgery, or post-treatment monitoring needed"
+          "expected_active_branch": "Medical/follow-up branch: bilateral PA, unknown lateralization, not surgical, declines surgery, mild PA, comorbidity-limited surgery, or post-treatment monitoring needed",
+          "expected_path_node_ids": [
+            "root",
+            "primary_aldosteronism_initial_assessment",
+            "primary_aldosteronism_classification_decision",
+            "primary_aldosteronism_positive_screen_action",
+            "primary_aldosteronism_medical_monitoring_endpoint"
+          ],
+          "terminal_endpoint_id": "primary_aldosteronism_medical_monitoring_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "low_likelihood_or_rescreen",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "primary_aldosteronism_repeat_or_mimic_endpoint",
-          "expected_active_branch": "Repeat/mimic branch: hypokalemia, ACEi/ARB/diuretic/MRA/ENaC/beta-blocker/central alpha-2 interference, borderline aldosterone, unsuppressed renin, normokalemia with low aldosterone, renal artery stenosis, CKD, licorice, Liddle syndrome, Cushing syndrome, or PPGL fits better"
+          "expected_active_branch": "Repeat/mimic branch: hypokalemia, ACEi/ARB/diuretic/MRA/ENaC/beta-blocker/central alpha-2 interference, borderline aldosterone, unsuppressed renin, normokalemia with low aldosterone, renal artery stenosis, CKD, licorice, Liddle syndrome, Cushing syndrome, or PPGL fits better",
+          "expected_path_node_ids": [
+            "root",
+            "primary_aldosteronism_initial_assessment",
+            "primary_aldosteronism_classification_decision",
+            "primary_aldosteronism_repeat_or_mimic_endpoint"
+          ],
+          "terminal_endpoint_id": "primary_aldosteronism_repeat_or_mimic_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "primary_aldosteronism_medical_monitoring_endpoint",
-          "expected_active_branch": "Medical/follow-up branch: bilateral PA, unknown lateralization, not surgical, declines surgery, mild PA, comorbidity-limited surgery, or post-treatment monitoring needed"
+          "expected_active_branch": "Medical/follow-up branch: bilateral PA, unknown lateralization, not surgical, declines surgery, mild PA, comorbidity-limited surgery, or post-treatment monitoring needed",
+          "expected_path_node_ids": [
+            "root",
+            "primary_aldosteronism_initial_assessment",
+            "primary_aldosteronism_classification_decision",
+            "primary_aldosteronism_positive_screen_action",
+            "primary_aldosteronism_medical_monitoring_endpoint"
+          ],
+          "terminal_endpoint_id": "primary_aldosteronism_medical_monitoring_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         }
       ],
       "audit_requirements": {

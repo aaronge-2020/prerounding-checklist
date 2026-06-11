@@ -424,7 +424,7 @@ function clinicalRationale(kind, label, row) {
   }
   if (kind === "test") {
     if (/(>=|<=|>|<|\d|range|threshold|cutoff|normal)/.test(label)) {
-      return `Provides diagnostic or safety thresholds that change interpretation and management for ${diagnosis}.`;
+      return `Contains result thresholds that change diagnosis, risk category, treatment safety, monitoring, or disposition for ${diagnosis}.`;
     }
     return `Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for ${diagnosis}.`;
   }
@@ -2255,16 +2255,16 @@ function moduleFromWorkup(row) {
       ...(applicability ? { applicability } : {}),
       triggers: triggerTerms(row),
       differentialBuckets: [
-        item("differential", 0, `${row.diagnosis}: diagnostic frame from guideline-sourced endocrine workup`, primarySourceId, `${sourceSectionPrefix}: diagnostic frame`, {
-          action: `Use this frame to decide whether ${row.tests[0] || row.management_changes[0] || row.diagnosis} is the right first confirmatory step and whether urgent endocrine escalation is needed.`,
+        item("differential", 0, `${row.diagnosis}: diagnostic mimics and exclusions`, primarySourceId, `${sourceSectionPrefix}: diagnostic frame`, {
+          action: `Use ${row.tests[0] || row.management_changes[0] || row.diagnosis} with symptoms, exam, medications, and safety data to choose confirmatory testing or same-day endocrine escalation.`,
           rationale: clinicalRationale("test", row.tests[0] || row.management_changes[0] || row.diagnosis, row),
-          ...decisionItemMetadata("differential", `${row.diagnosis}: diagnostic frame from guideline-sourced endocrine workup`, row, `Use this frame to decide whether ${row.tests[0] || row.management_changes[0] || row.diagnosis} is the right first confirmatory step and whether urgent endocrine escalation is needed.`),
+          ...decisionItemMetadata("differential", `${row.diagnosis}: diagnostic mimics and exclusions`, row, `Use ${row.tests[0] || row.management_changes[0] || row.diagnosis} with symptoms, exam, medications, and safety data to choose confirmatory testing or same-day endocrine escalation.`),
           tags: questionTagsForPhrase(row.diagnosis, row)
         }),
-        item("differential", 1, `Key thresholds and interpretation caveats: ${row.reference_values.slice(0, 2).join(" ")}`, row.source_ids[Math.min(1, row.source_ids.length - 1)], `${sourceSectionPrefix}: thresholds`, {
-          action: "Use local assay and patient context; do not apply numeric anchors without clinical interpretation.",
+        item("differential", 1, `Threshold anchors: ${row.reference_values.slice(0, 2).join(" ")}`, row.source_ids[Math.min(1, row.source_ids.length - 1)], `${sourceSectionPrefix}: thresholds`, {
+          action: "Interpret these thresholds with local assay, medications, pregnancy status, acute illness, and patient context.",
           rationale: clinicalRationale("test", row.reference_values.slice(0, 2).join(" "), row),
-          ...decisionItemMetadata("differential", `Key thresholds and interpretation caveats: ${row.reference_values.slice(0, 2).join(" ")}`, row, "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."),
+          ...decisionItemMetadata("differential", `Threshold anchors: ${row.reference_values.slice(0, 2).join(" ")}`, row, "Interpret these thresholds with local assay, medications, pregnancy status, acute illness, and patient context."),
           tags: questionTagsForPhrase(row.reference_values.slice(0, 2).join(" "), row)
         }),
         item("differential", 2, differentialMimics(row), row.source_ids[Math.min(2, row.source_ids.length - 1)], `${sourceSectionPrefix}: mimics and exclusions`, {

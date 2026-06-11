@@ -2676,7 +2676,7 @@
         "pediatric_hematology_anemia_bleeding_classification_decision": {
           "rule_id": "pediatric_hematology_anemia_bleeding_classification_criteria",
           "source": "criteria",
-          "description": "Classify Pediatric pallor, anemia, bruising, bleeding, or petechiae against cited thresholds and condition-specific rules: Pediatric anemia is Hb below age cutoff: 2 mo <90 g/L; 2-6 mo <95; 6-24 mo <105; 2-11 y <115; >12 y female <120, male <130: 90 g/L, 95 g/L, 105 g/L, 115 g/L, 120 g/L, 130 g/L | Pediatric anemia red-flag admission: Hb <60 g/L or tachycardia/murmur/heart failure, hemolysis, reticulocytopenia, nucleated RBCs, thrombocytopenia/neutropenia: <60 g/L | Microcytosis mimic: beta-thalassemia trait supported by HbA2 >3.5% on electrophoresis/HPLC after iron deficiency addressed: >3.5% | Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity: 70 g/L, 70 to 90 g/L, 90 g/L | Severe anemia or symptomatic Hb below transfusion range: 70 g/L, 70 to 90 g/L",
+          "description": "Classify Pediatric pallor, anemia, bruising, bleeding, or petechiae against cited thresholds and condition-specific rules: Pediatric anemia is Hb below age cutoff: 90 g/L, 95 g/L, 105 g/L, 115 g/L, 120 g/L | Pediatric anemia red-flag admission: <60 g/L | Microcytosis mimic: >3.5% | Pediatric treatment frame: 70 g/L, 70 to 90 g/L, 90 g/L | Severe anemia or symptomatic Hb below transfusion range: 70 g/L, 70 to 90 g/L",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3874,7 +3874,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: route by documented findings and exact missing-data needs",
+        "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: route by findings, risk, treatment safety, and follow-up",
         "edgeLabel": "",
         "source_ids": [
           "RCH_ANAEMIA_CHILD",
@@ -3910,8 +3910,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Missing data needed: Pediatric pallor, anemia, bruising, bleeding, or petechiae pathway context",
-            "edgeLabel": "Missing exact Pediatric pallor, anemia, bruising, bleeding, or petechiae pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings",
+            "label": "Internal data-availability guard",
+            "edgeLabel": "Internal data-availability guard",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -3947,9 +3947,16 @@
                 "workup_findings"
               ]
             },
-            "action": "Before choosing a non-emergency Pediatric pallor, anemia, bruising, bleeding, or petechiae branch, document: presenting trigger, onset/trajectory, focused exam, vital signs, threshold labs/results, medication/allergy context, comorbidities, demographics, pregnancy/applicability status, and current workup findings.",
+            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
             "children": [],
             "endpoint_type": "missing_data_needed",
+            "internal_traversal_guard": true,
+            "display": {
+              "visible_in_pathway": false,
+              "visible_in_graph": false,
+              "visible_in_outline": false,
+              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+            },
             "missing_data_needed": [
               "symptoms",
               "exam",
@@ -3966,8 +3973,8 @@
           {
             "id": "pediatric_hematology_anemia_bleeding_concurrent_data_bundle",
             "type": "action",
-            "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Pediatric pallor, anemia, bruising, bleeding, or petechiae active from documented findings: Ask age growth and baseline hematology context; Ask anemia symptoms and instability history; Ask bleeding source and severity history; Ask bruising petechiae and trauma pattern history; Active bleeding with shock or altered state; Petechiae or purpura with fever or unwell appearance; Full blood examination film and reticulocyte count",
+            "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: assessment and key results",
+            "edgeLabel": "Collect Pediatric pallor, anemia, bruising, bleeding, or petechiae history/exam, vitals, key labs/results, medication safety, and major cutoffs",
             "source_ids": [
               "RCH_ANAEMIA_CHILD",
               "RCH_IRON_DEFICIENCY_CHILD",
@@ -4006,8 +4013,8 @@
               {
                 "id": "pediatric_hematology_anemia_bleeding_classification_decision",
                 "type": "decision",
-                "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: classify severity and disposition by cited thresholds",
-                "edgeLabel": "Pediatric pallor, anemia, bruising, bleeding, or petechiae results available for threshold classification: Full blood examination film and reticulocyte count; Ferritin and iron deficiency assessment; Coagulation and fibrinogen tests; Group screen and crossmatch when transfusion possible; Hemolysis bilirubin LDH haptoglobin DAT and urine tests; age; sex for >12 years; hemoglobin; MCV; reticulocyte count",
+                "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: classify risk and disposition",
+                "edgeLabel": "Classify Pediatric pallor, anemia, bruising, bleeding, or petechiae with available result(s): 90 g/L; 95 g/L; 105 g/L; 115 g/L",
                 "source_ids": [
                   "RCH_ANAEMIA_CHILD",
                   "RCH_BLOOD_PRODUCT_CHILD",
@@ -4020,7 +4027,7 @@
                 "criteria": {
                   "rule_id": "pediatric_hematology_anemia_bleeding_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Pediatric pallor, anemia, bruising, bleeding, or petechiae against cited thresholds and condition-specific rules: Pediatric anemia is Hb below age cutoff: 2 mo <90 g/L; 2-6 mo <95; 6-24 mo <105; 2-11 y <115; >12 y female <120, male <130: 90 g/L, 95 g/L, 105 g/L, 115 g/L, 120 g/L, 130 g/L | Pediatric anemia red-flag admission: Hb <60 g/L or tachycardia/murmur/heart failure, hemolysis, reticulocytopenia, nucleated RBCs, thrombocytopenia/neutropenia: <60 g/L | Microcytosis mimic: beta-thalassemia trait supported by HbA2 >3.5% on electrophoresis/HPLC after iron deficiency addressed: >3.5% | Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity: 70 g/L, 70 to 90 g/L, 90 g/L | Severe anemia or symptomatic Hb below transfusion range: 70 g/L, 70 to 90 g/L",
+                  "description": "Classify Pediatric pallor, anemia, bruising, bleeding, or petechiae against cited thresholds and condition-specific rules: Pediatric anemia is Hb below age cutoff: 90 g/L, 95 g/L, 105 g/L, 115 g/L, 120 g/L | Pediatric anemia red-flag admission: <60 g/L | Microcytosis mimic: >3.5% | Pediatric treatment frame: 70 g/L, 70 to 90 g/L, 90 g/L | Severe anemia or symptomatic Hb below transfusion range: 70 g/L, 70 to 90 g/L",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -4170,13 +4177,13 @@
                     }
                   ]
                 },
-                "action": "Choose the active Pediatric pallor, anemia, bruising, bleeding, or petechiae branch by matching patient data to: Pediatric anemia is Hb below age cutoff: 2 mo <90 g/L; 2-6 mo <95; 6-24 mo <105; 2-11 y <115; >12 y female <120, male <130: 90 g/L, 95 g/L, 105 g/L, 115 g/L, 120 g/L, 130 g/L | Pediatric anemia red-flag admission: Hb <60 g/L or tachycardia/murmur/heart failure, hemolysis, reticulocytopenia, nucleated RBCs, thrombocytopenia/neutropenia: <60 g/L | Microcytosis mimic: beta-thalassemia trait supported by HbA2 >3.5% on electrophoresis/HPLC after iron deficiency addressed: >3.5% | Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity: 70 g/L, 70 to 90 g/L, 90 g/L | Severe anemia or symptomatic Hb below transfusion range: 70 g/L, 70 to 90 g/L.",
+                "action": "Choose the active Pediatric pallor, anemia, bruising, bleeding, or petechiae branch by matching patient data to the cited cutoffs and patient-specific safety rules.",
                 "children": [
                   {
                     "id": "pediatric_hematology_anemia_bleeding_missing_cutoff_data_endpoint",
                     "type": "endpoint",
-                    "label": "Missing data needed: Pediatric pallor, anemia, bruising, bleeding, or petechiae threshold/results",
-                    "edgeLabel": "Missing exact Pediatric pallor, anemia, bruising, bleeding, or petechiae result(s): age; sex for >12 years; hemoglobin; MCV; reticulocyte count; blood film; heart rate; cardiac exam",
+                    "label": "Internal data-availability guard",
+                    "edgeLabel": "Internal data-availability guard",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "RCH_ANAEMIA_CHILD",
@@ -4238,9 +4245,16 @@
                         ">3.5%"
                       ]
                     },
-                    "action": "Obtain the exact Pediatric pallor, anemia, bruising, bleeding, or petechiae data needed for threshold-based routing: age; sex for >12 years; hemoglobin; MCV; reticulocyte count; blood film; heart rate; cardiac exam; platelets; Full blood examination film and reticulocyte count; Ferritin and iron deficiency assessment; Coagulation and fibrinogen tests; Group screen and crossmatch when transfusion possible; Hemolysis bilirubin LDH haptoglobin DAT and urine tests; B12 folate renal liver and inflammatory tests when indicated; Pregnancy test when adolescent bleeding or anemia context applies; 90 g/L; 95 g/L; 105 g/L; 115 g/L; 120 g/L; 130 g/L; <60 g/L; >3.5%.",
+                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
+                    "internal_traversal_guard": true,
+                    "display": {
+                      "visible_in_pathway": false,
+                      "visible_in_graph": false,
+                      "visible_in_outline": false,
+                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                    },
                     "missing_data_needed": [
                       "age",
                       "sex for >12 years",
@@ -4271,8 +4285,8 @@
                   {
                     "id": "pediatric_hematology_anemia_bleeding_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: emergency escalation or monitored-care disposition when danger thresholds are met",
-                    "edgeLabel": "Pediatric pallor, anemia, bruising, bleeding, or petechiae danger feature or high-risk cutoff: Active bleeding with shock or altered state; Petechiae or purpura with fever or unwell appearance; Unexplained petechiae bruising pallor fatigue fever infection or bone pain; Lymphadenopathy or splenomegaly with systemic features; 90 g/L; 95 g/L; 105 g/L; Emergency stabilization route",
+                    "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: emergency or monitored-care disposition",
+                    "edgeLabel": "Danger feature or high-risk result present: Active bleeding with shock or altered state; Petechiae or purpura with fever or unwell appearance; Unexplained petechiae bruising pallor fatigue fever infection or bone pain; 90 g/L; 95 g/L",
                     "source_ids": [
                       "RCH_BLOOD_PRODUCT_CHILD",
                       "RCH_PETECHIAE_PURPURA_CHILD",
@@ -4432,7 +4446,7 @@
                         }
                       ]
                     },
-                    "action": "Active bleeding with shock or altered state; Petechiae or purpura with fever or unwell appearance; Unexplained petechiae bruising pallor fatigue fever infection or bone pain; Lymphadenopathy or splenomegaly with systemic features. Pediatric pallor, anemia, bruising, bleeding, or petechiae: immediate stabilization or escalation trigger: Active bleeding with shock or altered state.; Pediatric pallor, anemia, bruising, bleeding, or petechiae: treatment or disposition for high-risk or confirmed disease: Emergency stabilization route.; Pediatric pallor, anemia, bruising, bleeding, or petechiae: outpatient or safety-net route after exclusion criteria and follow-up access are documented: RBC transfusion threshold route.; Pediatric pallor, anemia, bruising, bleeding, or petechiae: monitoring data for response, complications, and reassessment: Full blood examination film and reticulocyte count.; Emergency stabilization route; RBC transfusion threshold route; Iron therapy and diet route",
+                    "action": "Active bleeding with shock or altered state; Petechiae or purpura with fever or unwell appearance; Unexplained petechiae bruising pallor fatigue fever infection or bone pain. Escalate using the abnormal cutoff, unstable feature, or monitored-care rule.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -4566,8 +4580,8 @@
                   {
                     "id": "pediatric_hematology_anemia_bleeding_treatment_bundle",
                     "type": "action",
-                    "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: initiate treatment/disposition for the active threshold-defined branch",
-                    "edgeLabel": "Pediatric pallor, anemia, bruising, bleeding, or petechiae treatment/disposition indicated by: 90 g/L; 95 g/L; 105 g/L; 115 g/L; 120 g/L; 130 g/L; Pediatric pallor, anemia, bruising, bleeding, or petechiae: immediate stabilization or escalation trigger: Active bleeding with shock or altered state.; Pediatric pallor, anemia, bruising, bleeding, or petechiae: treatment or disposition for high-risk or confirmed disease: Emergency stabilization route.; Pediatric pallor, anemia, bruising, bleeding, or petechiae: outpatient or safety-net route after exclusion criteria and follow-up access are documented: RBC transfusion threshold route.; Pediatric pallor, anemia, bruising, bleeding, or petechiae: monitoring data for response, complications, and reassessment: Full blood examination film and reticulocyte count.; Emergency stabilization route; RBC transfusion threshold route; Iron therapy and diet route",
+                    "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: treatment and disposition branch",
+                    "edgeLabel": "Confirmed/high-risk Pediatric pallor, anemia, bruising, bleeding, or petechiae branch has treatment-safety data available",
                     "source_ids": [
                       "RCH_PETECHIAE_PURPURA_CHILD",
                       "RCH_BLOOD_PRODUCT_CHILD",
@@ -4729,13 +4743,13 @@
                         }
                       ]
                     },
-                    "action": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: immediate stabilization or escalation trigger: Active bleeding with shock or altered state.; Pediatric pallor, anemia, bruising, bleeding, or petechiae: treatment or disposition for high-risk or confirmed disease: Emergency stabilization route.; Pediatric pallor, anemia, bruising, bleeding, or petechiae: outpatient or safety-net route after exclusion criteria and follow-up access are documented: RBC transfusion threshold route.; Pediatric pallor, anemia, bruising, bleeding, or petechiae: monitoring data for response, complications, and reassessment: Full blood examination film and reticulocyte count.; Emergency stabilization route; RBC transfusion threshold route; Iron therapy and diet route",
+                    "action": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: immediate stabilization or escalation trigger: Active bleeding with shock or altered state.; Pediatric pallor, anemia, bruising, bleeding, or petechiae: treatment or disposition for high-risk or confirmed disease: Emergency stabilization route.; Pediatric pallor, anemia, bruising, bleeding, or petechiae: outpatient or safety-net route after exclusion criteria and follow-up access are documented: RBC transfusion threshold route.; Emergency stabilization route; RBC transfusion threshold route",
                     "children": [
                       {
                         "id": "pediatric_hematology_anemia_bleeding_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: medication/procedure safety and special-population thresholds resolved?",
-                        "edgeLabel": "Pediatric pallor, anemia, bruising, bleeding, or petechiae treatment selected; check patient-specific modifiers",
+                        "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: treatment safety resolved?",
+                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan",
                         "source_ids": [
                           "RCH_ANAEMIA_CHILD",
                           "RCH_BLOOD_PRODUCT_CHILD",
@@ -4790,13 +4804,13 @@
                             }
                           ]
                         },
-                        "action": "Apply Pediatric pallor, anemia, bruising, bleeding, or petechiae-specific safety modifiers before final treatment/disposition.",
+                        "action": "Apply Pediatric pallor, anemia, bruising, bleeding, or petechiae-specific safety modifiers before final treatment or disposition.",
                         "children": [
                           {
                             "id": "pediatric_hematology_anemia_bleeding_review_endpoint",
                             "type": "endpoint",
-                            "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: clinician review for contraindication, special population, or local-policy cutoff",
-                            "edgeLabel": "Pediatric pallor, anemia, bruising, bleeding, or petechiae modifier changes treatment/disposition: Measure temperature; Measure heart rate and blood pressure; Measure respiratory rate and oxygen saturation; Measure current weight; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability",
+                            "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: clinician review modifier",
+                            "edgeLabel": "Contraindication, special population, conflicting guidance, or local protocol dependency",
                             "source_ids": [
                               "RCH_ANAEMIA_CHILD",
                               "RCH_BLOOD_PRODUCT_CHILD",
@@ -4829,7 +4843,7 @@
                                 "AHRQ_CALIBRATE_DX"
                               ]
                             },
-                            "action": "Pause non-emergent Pediatric pallor, anemia, bruising, bleeding, or petechiae treatment choices until the modifier is resolved and the reviewer documents the applicable guideline/local cutoff.",
+                            "action": "Pause non-emergent Pediatric pallor, anemia, bruising, bleeding, or petechiae treatment choices until the modifier is resolved and the reviewer documents the applicable guideline or local cutoff.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
                             "review_needed_reason": "Patient-specific contraindication, special population, guideline conflict, or local policy affects treatment or disposition."
@@ -4837,8 +4851,8 @@
                           {
                             "id": "pediatric_hematology_anemia_bleeding_monitoring_bundle",
                             "type": "action",
-                            "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: concurrent monitoring, response checks, and disposition readiness",
-                            "edgeLabel": "After Pediatric pallor, anemia, bruising, bleeding, or petechiae therapy or diagnostic plan, trend: 90 g/L; 95 g/L; 105 g/L; 115 g/L; Full blood examination film and reticulocyte count; Ferritin and iron deficiency assessment; Coagulation and fibrinogen tests; Measure temperature",
+                            "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: monitoring and disposition readiness",
+                            "edgeLabel": "Trend Pediatric pallor, anemia, bruising, bleeding, or petechiae symptoms, vitals, key results, adverse effects, and disposition readiness",
                             "source_ids": [
                               "RCH_PETECHIAE_PURPURA_CHILD",
                               "RCH_BLOOD_PRODUCT_CHILD",
@@ -5003,8 +5017,8 @@
                               {
                                 "id": "pediatric_hematology_anemia_bleeding_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: escalate when reassessment worsens or contradicts expected course",
-                                "edgeLabel": "Pediatric pallor, anemia, bruising, bleeding, or petechiae reassessment worsens or contradicts expected response: 90 g/L; 95 g/L; 105 g/L; 115 g/L; Full blood examination film and reticulocyte count; Ferritin and iron deficiency assessment; Coagulation and fibrinogen tests; Measure temperature",
+                                "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: reassessment escalation",
+                                "edgeLabel": "Pediatric pallor, anemia, bruising, bleeding, or petechiae worsens, new danger feature appears, or results no longer fit the active branch",
                                 "source_ids": [
                                   "RCH_BLOOD_PRODUCT_CHILD",
                                   "RCH_PETECHIAE_PURPURA_CHILD",
@@ -5164,7 +5178,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Repeat critical Pediatric pallor, anemia, bruising, bleeding, or petechiae objective data, reassess mimics/complications, and move to ED/admission/specialty review according to the abnormal cutoff or danger feature.",
+                                "action": "Repeat critical Pediatric pallor, anemia, bruising, bleeding, or petechiae objective data, reassess mimics and complications, and move to ED/admission/specialty review according to the abnormal cutoff or danger feature.",
                                 "children": [],
                                 "endpoint_type": "escalation_disposition",
                                 "guideline_cutoffs": [
@@ -5298,8 +5312,8 @@
                               {
                                 "id": "pediatric_hematology_anemia_bleeding_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Pediatric pallor, anemia, bruising, bleeding, or petechiae objective response supports narrowing, stopping, tapering, or continuing: 90 g/L; 95 g/L; 105 g/L; 115 g/L; Emergency stabilization route; RBC transfusion threshold route; Iron therapy and diet route; Pediatric pallor, anemia, bruising, bleeding, or petechiae: immediate stabilization or escalation trigger: Active bleeding with shock or altered state.",
+                                "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: de-escalate, stop, or narrow",
+                                "edgeLabel": "Objective response supports narrowing, stopping, tapering, or continuing Pediatric pallor, anemia, bruising, bleeding, or petechiae care",
                                 "source_ids": [
                                   "RCH_PETECHIAE_PURPURA_CHILD",
                                   "RCH_BLOOD_PRODUCT_CHILD",
@@ -5459,7 +5473,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Use the active Pediatric pallor, anemia, bruising, bleeding, or petechiae objective criteria and response trend (90 g/L; 95 g/L; 105 g/L; 115 g/L; 120 g/L; 130 g/L; <60 g/L; >3.5%; 70 g/L; 70 to 90 g/L) to stop, narrow, taper, or continue treatment; document what threshold or finding changed.",
+                                "action": "Use active Pediatric pallor, anemia, bruising, bleeding, or petechiae results and response trend to stop, narrow, taper, or continue treatment; document which cutoff, symptom, adverse effect, or finding changed.",
                                 "children": [],
                                 "endpoint_type": "deescalation_stopping",
                                 "guideline_cutoffs": [
@@ -5593,8 +5607,8 @@
                               {
                                 "id": "pediatric_hematology_anemia_bleeding_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Pediatric pallor, anemia, bruising, bleeding, or petechiae discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Emergency stabilization route; RBC transfusion threshold route; Iron therapy and diet route",
+                                "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: follow-up and safety-net",
+                                "edgeLabel": "Pediatric pallor, anemia, bruising, bleeding, or petechiae stable enough for owned follow-up, pending results, and safety-netting",
                                 "source_ids": [
                                   "RCH_PETECHIAE_PURPURA_CHILD",
                                   "RCH_BLOOD_PRODUCT_CHILD",
@@ -5640,8 +5654,8 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend objective labs/results",
-                              "review treatment response/adverse effects",
+                              "trend key labs/results",
+                              "review treatment response and adverse effects",
                               "confirm disposition and follow-up owner",
                               "Measure temperature",
                               "Measure heart rate and blood pressure",
@@ -5920,8 +5934,8 @@
                   {
                     "id": "pediatric_hematology_anemia_bleeding_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: switch to mimic/alternate pathway when threshold/result criteria do not fit",
-                    "edgeLabel": "Pediatric pallor, anemia, bruising, bleeding, or petechiae mimic/exclusion better fits: Pediatric anemia or pallor: classify severity, symptom burden, production failure, blood loss, hemolysis, iron deficiency, B12 or folate deficiency, chronic disease, hemoglobinopathy, or malignancy pattern; Pediatric bruising, petechiae, purpura, thrombocytopenia, or ITP pattern; Possible leukemia or lymphoma: unexplained petechiae, bruising, pallor, persistent fatigue, fever, infections, bone pain, lymphadenopathy, splenomegaly, or weight loss; Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity",
+                    "label": "Pediatric pallor, anemia, bruising, bleeding, or petechiae: alternate diagnosis pathway",
+                    "edgeLabel": "Objective findings favor mimic or alternate pathway: Pediatric anemia or pallor: classify severity, symptom burden, production failure, blood loss, hemolysis, iron deficiency, B12 or folate deficiency, chronic disease, hemoglobinopathy, or malignancy pattern; Pediatric bruising, petechiae, purpura, thrombocytopenia, or ITP pattern; Possible leukemia or lymphoma: unexplained petechiae, bruising, pallor, persistent fatigue, fever, infections, bone pain, lymphadenopathy, splenomegaly, or weight loss; Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity",
                     "source_ids": [
                       "RCH_ANAEMIA_CHILD",
                       "RCH_ITP_CHILD",
@@ -6080,7 +6094,7 @@
                         }
                       ]
                     },
-                    "action": "Document why Pediatric pallor, anemia, bruising, bleeding, or petechiae is not the active pathway and route to the competing diagnosis: Pediatric anemia or pallor: classify severity, symptom burden, production failure, blood loss, hemolysis, iron deficiency, B12 or folate deficiency, chronic disease, hemoglobinopathy, or malignancy pattern; Pediatric bruising, petechiae, purpura, thrombocytopenia, or ITP pattern; Possible leukemia or lymphoma: unexplained petechiae, bruising, pallor, persistent fatigue, fever, infections, bone pain, lymphadenopathy, splenomegaly, or weight loss; Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity.",
+                    "action": "Document why Pediatric pallor, anemia, bruising, bleeding, or petechiae is not the active pathway, name the competing diagnosis or exclusion, and route to the appropriate workup rather than reassurance alone.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
                     "review_needed_reason": "Competing diagnosis or exclusion changes the active pathway."
@@ -6524,49 +6538,122 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing exact Pediatric pallor, anemia, bruising, bleeding, or petechiae pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings"
+          "expected_active_branch": "Missing Pediatric pallor, anemia, bruising, bleeding, or petechiae: onset/trajectory, focused exam, vitals, key results, meds, comorbidities, pregnancy/applicability, or follow-up access",
+          "expected_path_node_ids": [
+            "root",
+            "endpoint_missing_context"
+          ],
+          "terminal_endpoint_id": "endpoint_missing_context",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "pediatric_hematology_anemia_bleeding_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Missing exact Pediatric pallor, anemia, bruising, bleeding, or petechiae result(s): age; sex for >12 years; hemoglobin; MCV; reticulocyte count; blood film; heart rate; cardiac exam"
+          "expected_active_branch": "Missing Pediatric pallor, anemia, bruising, bleeding, or petechiae result(s): age; sex for >12 years; hemoglobin; MCV; reticulocyte count; blood film",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_hematology_anemia_bleeding_concurrent_data_bundle",
+            "pediatric_hematology_anemia_bleeding_classification_decision",
+            "pediatric_hematology_anemia_bleeding_missing_cutoff_data_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_hematology_anemia_bleeding_missing_cutoff_data_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "pediatric_hematology_anemia_bleeding_urgent_endpoint",
-          "expected_active_branch": "Pediatric pallor, anemia, bruising, bleeding, or petechiae danger feature or high-risk cutoff: Active bleeding with shock or altered state; Petechiae or purpura with fever or unwell appearance; Unexplained petechiae bruising pallor fatigue fever infection or bone pain; Lymphadenopathy or splenomegaly with systemic features; 90 g/L; 95 g/L; 105 g/L; Emergency stabilization route"
+          "expected_active_branch": "Danger feature or high-risk result present: Active bleeding with shock or altered state; Petechiae or purpura with fever or unwell appearance; Unexplained petechiae bruising pallor fatigue fever infection or bone pain; 90 g/L; 95 g/L",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_hematology_anemia_bleeding_concurrent_data_bundle",
+            "pediatric_hematology_anemia_bleeding_classification_decision",
+            "pediatric_hematology_anemia_bleeding_urgent_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_hematology_anemia_bleeding_urgent_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "pediatric_hematology_anemia_bleeding_alternate_endpoint",
-          "expected_active_branch": "Pediatric pallor, anemia, bruising, bleeding, or petechiae mimic/exclusion better fits: Pediatric anemia or pallor: classify severity, symptom burden, production failure, blood loss, hemolysis, iron deficiency, B12 or folate deficiency, chronic disease, hemoglobinopathy, or malignancy pattern; Pediatric bruising, petechiae, purpura, thrombocytopenia, or ITP pattern; Possible leukemia or lymphoma: unexplained petechiae, bruising, pallor, persistent fatigue, fever, infections, bone pain, lymphadenopathy, splenomegaly, or weight loss; Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity"
+          "expected_active_branch": "Objective findings favor mimic or alternate pathway: Pediatric anemia or pallor: classify severity, symptom burden, production failure, blood loss, hemolysis, iron deficiency, B12 or folate deficiency, chronic disease, hemoglobinopathy, or malignancy pattern; Pediatric bruising, petechiae, purpura, thrombocytopenia, or ITP pattern; Possible leukemia or lymphoma: unexplained petechiae, bruising, pallor, persistent fatigue, fever, infections, bone pain, lymphadenopathy, splenomegaly, or weight loss; Pediatric treatment frame: transfusion threshold, iron replacement, bleeding control, and specialty handoff depend on symptoms, hemoglobin, cause, and chronicity",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_hematology_anemia_bleeding_concurrent_data_bundle",
+            "pediatric_hematology_anemia_bleeding_classification_decision",
+            "pediatric_hematology_anemia_bleeding_alternate_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_hematology_anemia_bleeding_alternate_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "pediatric_hematology_anemia_bleeding_review_endpoint",
-          "expected_active_branch": "Pediatric pallor, anemia, bruising, bleeding, or petechiae modifier changes treatment/disposition: Measure temperature; Measure heart rate and blood pressure; Measure respiratory rate and oxygen saturation; Measure current weight; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability"
+          "expected_active_branch": "Contraindication, special population, conflicting guidance, or local protocol dependency",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_hematology_anemia_bleeding_concurrent_data_bundle",
+            "pediatric_hematology_anemia_bleeding_classification_decision",
+            "pediatric_hematology_anemia_bleeding_treatment_bundle",
+            "pediatric_hematology_anemia_bleeding_treatment_safety_decision",
+            "pediatric_hematology_anemia_bleeding_review_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_hematology_anemia_bleeding_review_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "pediatric_hematology_anemia_bleeding_worsening_endpoint",
-          "expected_active_branch": "Pediatric pallor, anemia, bruising, bleeding, or petechiae reassessment worsens or contradicts expected response: 90 g/L; 95 g/L; 105 g/L; 115 g/L; Full blood examination film and reticulocyte count; Ferritin and iron deficiency assessment; Coagulation and fibrinogen tests; Measure temperature"
+          "expected_active_branch": "Pediatric pallor, anemia, bruising, bleeding, or petechiae worsens, new danger feature appears, or results no longer fit the active branch",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_hematology_anemia_bleeding_concurrent_data_bundle",
+            "pediatric_hematology_anemia_bleeding_classification_decision",
+            "pediatric_hematology_anemia_bleeding_treatment_bundle",
+            "pediatric_hematology_anemia_bleeding_treatment_safety_decision",
+            "pediatric_hematology_anemia_bleeding_monitoring_bundle",
+            "pediatric_hematology_anemia_bleeding_worsening_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_hematology_anemia_bleeding_worsening_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "pediatric_hematology_anemia_bleeding_deescalate_endpoint",
-          "expected_active_branch": "Pediatric pallor, anemia, bruising, bleeding, or petechiae objective response supports narrowing, stopping, tapering, or continuing: 90 g/L; 95 g/L; 105 g/L; 115 g/L; Emergency stabilization route; RBC transfusion threshold route; Iron therapy and diet route; Pediatric pallor, anemia, bruising, bleeding, or petechiae: immediate stabilization or escalation trigger: Active bleeding with shock or altered state."
+          "expected_active_branch": "Objective response supports narrowing, stopping, tapering, or continuing Pediatric pallor, anemia, bruising, bleeding, or petechiae care",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_hematology_anemia_bleeding_concurrent_data_bundle",
+            "pediatric_hematology_anemia_bleeding_classification_decision",
+            "pediatric_hematology_anemia_bleeding_treatment_bundle",
+            "pediatric_hematology_anemia_bleeding_treatment_safety_decision",
+            "pediatric_hematology_anemia_bleeding_monitoring_bundle",
+            "pediatric_hematology_anemia_bleeding_deescalate_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_hematology_anemia_bleeding_deescalate_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "pediatric_hematology_anemia_bleeding_followup_endpoint",
-          "expected_active_branch": "Pediatric pallor, anemia, bruising, bleeding, or petechiae discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Emergency stabilization route; RBC transfusion threshold route; Iron therapy and diet route"
+          "expected_active_branch": "Pediatric pallor, anemia, bruising, bleeding, or petechiae stable enough for owned follow-up, pending results, and safety-netting",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_hematology_anemia_bleeding_concurrent_data_bundle",
+            "pediatric_hematology_anemia_bleeding_classification_decision",
+            "pediatric_hematology_anemia_bleeding_treatment_bundle",
+            "pediatric_hematology_anemia_bleeding_treatment_safety_decision",
+            "pediatric_hematology_anemia_bleeding_monitoring_bundle",
+            "pediatric_hematology_anemia_bleeding_followup_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_hematology_anemia_bleeding_followup_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         }
       ],
       "audit_requirements": {

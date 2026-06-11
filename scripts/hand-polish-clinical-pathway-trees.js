@@ -63,7 +63,7 @@ const cutoffPattern = new RegExp([
   "\\bage\\s+\\d+\\b",
   "\\b\\d+\\s+(?:principal clinical features|features|benzodiazepine doses|upper UTIs?|lower UTIs?)\\b"
 ].join("|"), "gi");
-const shallowGeneratedItemPattern = /\b(?:source-backed criteria|source-backed management route|use the high-risk or confirmed-pathway management option|lower-risk, outpatient, supportive, or safety-net pathway|stabilize or escalate before routine treatment|screen for immediate danger or disposition-changing findings|order focused first-line studies and interpret them in sequence|apply source-backed decision steps|does patient context support this workup|criteria match|concurrent data bundle)\b/i;
+const shallowGeneratedItemPattern = /\b(?:source-backed criteria|source-backed management route|use the high-risk or confirmed-pathway management option|lower-risk, outpatient, supportive, or safety-net pathway|stabilize or escalate before routine treatment|screen for immediate danger or disposition-changing findings|order focused first-line studies and interpret them in sequence|apply source-backed decision steps|does patient context support this workup|criteria match|concurrent data bundle|key thresholds and interpretation caveats|guideline-sourced endocrine workup|threshold-defined branch|presenting trigger)\b/i;
 
 const cahCutoffCriteria = [
   {
@@ -563,6 +563,72 @@ const prolactinomaCutoffCriteria = [
   }
 ];
 
+const erectileDysfunctionCutoffCriteria = [
+  {
+    id: "ed_definition_and_cv_screen",
+    label: "ED evaluation: persistent inability to achieve or maintain erection; assess CV risk because ED can precede CAD/MI/stroke by up to 5 years",
+    criteria_text: "ED is inability to achieve or maintain a rigid erection adequate for satisfactory sexual activity; some references use persistence for 6 months. ED is a cardiovascular risk marker and may precede coronary artery disease, myocardial infarction, or stroke by up to 5 years, so cardiovascular risk screening is part of the workup.",
+    cutoffs: ["6 months", "up to 5 years"],
+    data_needed: ["erectile symptom duration", "rigidity/maintenance pattern", "libido and orgasm/ejaculation symptoms", "morning/nocturnal erections", "cardiovascular symptoms", "exercise tolerance", "blood pressure", "peripheral pulses", "diabetes/hypertension/lipid/smoking history"],
+    source_ids: ["STATPEARLS_ED_2024", "ENDOTEXT_ED_2022"],
+    source_section: "Definition, cardiovascular risk, and ED evaluation"
+  },
+  {
+    id: "ed_initial_labs_metabolic_cutoffs",
+    label: "ED metabolic screen: A1c 5.7-6.4% is prediabetes; A1c >=6.5%, fasting glucose >=126 mg/dL, 2-hour OGTT >=200 mg/dL, or random glucose >=200 mg/dL with symptoms diagnoses diabetes",
+    criteria_text: "ED evaluation should look for metabolic and vascular disease. ADA diagnostic thresholds are A1c >=6.5%, fasting plasma glucose >=126 mg/dL, 2-hour 75-g OGTT glucose >=200 mg/dL, or random plasma glucose >=200 mg/dL with classic symptoms; prediabetes is A1c 5.7-6.4%, fasting glucose 100-125 mg/dL, or 2-hour OGTT 140-199 mg/dL.",
+    cutoffs: ["A1c 5.7-6.4%", "A1c >=6.5%", "fasting glucose 100-125 mg/dL", "fasting glucose >=126 mg/dL", "2-hour OGTT 140-199 mg/dL", "2-hour OGTT >=200 mg/dL", "random glucose >=200 mg/dL"],
+    data_needed: ["A1c", "fasting plasma glucose", "2-hour OGTT glucose if used", "random glucose and hyperglycemia symptoms", "lipid profile", "blood pressure", "kidney function"],
+    source_ids: ["ADA_DIAGNOSIS_2026", "ENDOTEXT_ED_2022", "STATPEARLS_ED_2024"],
+    source_section: "ADA diabetes diagnosis thresholds and ED metabolic evaluation"
+  },
+  {
+    id: "ed_hypogonadism_confirmation_cutoffs",
+    label: "Low-testosterone ED branch: symptoms plus 2 fasting morning total testosterone values below 264 ng/dL lower limit; free T if TT 200-400 ng/dL or SHBG altered",
+    criteria_text: "Endocrine Society recommends diagnosing hypogonadism only when symptoms/signs are present and morning testosterone is unequivocally and consistently low. The harmonized lower limit cited is 264 ng/dL; repeat fasting morning total testosterone is required, with free testosterone when total testosterone is near the lower limit, such as 200-400 ng/dL, or SHBG is altered.",
+    cutoffs: ["2 fasting morning total testosterone values", "264 ng/dL", "200-400 ng/dL"],
+    data_needed: ["hypogonadal symptoms/signs", "two fasting morning total testosterone values", "assay lower limit/reference range", "SHBG or albumin when indicated", "LH", "FSH", "fertility intent"],
+    source_ids: ["ES_TESTOSTERONE_2018", "ENDOTEXT_ED_2022"],
+    source_section: "Testosterone deficiency diagnosis and ED androgen evaluation"
+  },
+  {
+    id: "ed_pituitary_prolactin_cutoffs",
+    label: "Pituitary ED branch: testosterone <150 ng/dL, persistent hyperprolactinemia, prolactin >250 ug/L, prolactin >500 ug/L, macroadenoma >10 mm, or 1:100 dilution hook-effect concern",
+    criteria_text: "For secondary hypogonadism or low testosterone ED, evaluate LH/FSH and prolactin. Endocrine Society suggests pituitary imaging for severe secondary hypogonadism such as testosterone <150 ng/dL, persistent hyperprolactinemia, panhypopituitarism, or mass effect. Hyperprolactinemia is prolactin above assay ULN; normal values are generally <25 ug/L, >250 ug/L usually indicates prolactinoma, >500 ug/L is diagnostic of macroprolactinoma, macroadenoma is >10 mm, and a large tumor with unexpectedly mild prolactin elevation needs 1:100 dilution to exclude hook effect.",
+    cutoffs: ["testosterone <150 ng/dL", "prolactin >ULN", "prolactin <25 ug/L", "prolactin >250 ug/L", "prolactin >500 ug/L", "macroadenoma >10 mm", "1:100 dilution"],
+    data_needed: ["total testosterone", "LH", "FSH", "prolactin", "assay ULN", "pituitary MRI size", "headache/visual symptoms", "other pituitary hormone deficits", "medications causing prolactin elevation", "renal function", "TSH/free T4"],
+    source_ids: ["ES_TESTOSTERONE_2018", "ES_HYPERPROLACTINEMIA_2011"],
+    source_section: "Hypogonadism diagnostic evaluation and hyperprolactinemia diagnosis"
+  },
+  {
+    id: "ed_pde5_safety_dosing_cutoffs",
+    label: "PDE5 inhibitor branch: contraindicated with nitrates; high-risk CV status needs stabilization; sildenafil starts 50 mg 1 hour before sex max daily, lower 25 mg in older/renal/CYP3A4 risk",
+    criteria_text: "Endotext lists oral PDE5 inhibitors as first-line for most ED patients but strictly contraindicated with nitrates. Sexual activity/PDE5 treatment requires cardiovascular fitness; unstable cardiovascular disease, recent myocardial infarction, unstable angina, NYHA III-IV heart failure, or unstable arrhythmia needs cardiology/stabilization before routine ED therapy. Sildenafil usual start is 50 mg about 1 hour before sexual activity, maximum once daily. Lower starting doses such as sildenafil 25 mg or tadalafil/vardenafil 5 mg are used in older patients, severe renal impairment, or potent CYP3A4 inhibitor exposure; avoid PDE5 dosing within 4 hours of an alpha-blocker.",
+    cutoffs: ["sildenafil 50 mg", "1 hour", "once per day", "sildenafil 25 mg", "tadalafil 5 mg", "vardenafil 5 mg", "age >65 years", "4 hours", "NYHA III-IV"],
+    data_needed: ["nitrate or riociguat use", "alpha-blocker use and timing", "recent MI/stroke/unstable angina", "NYHA heart failure class", "unstable arrhythmia", "exercise tolerance", "blood pressure", "renal function", "CYP3A4 inhibitor use", "visual/hearing history"],
+    source_ids: ["ENDOTEXT_ED_2022"],
+    source_section: "PDE5 inhibitor treatment, dosing, contraindications, and cardiovascular safety"
+  },
+  {
+    id: "ed_testosterone_therapy_safety_cutoffs",
+    label: "Testosterone therapy safety: avoid/hold for fertility intent, prostate/breast cancer, PSA >4 ng/mL, PSA >3 ng/mL high-risk without urology review, hematocrit >54%, untreated severe OSA, uncontrolled HF, or MI/stroke within 6 months",
+    criteria_text: "Endocrine Society recommends against testosterone therapy in men planning fertility, prostate or breast cancer, prostate nodule, PSA >4 ng/mL, PSA >3 ng/mL in high-risk men without urologic evaluation, elevated hematocrit, untreated severe OSA, severe LUTS, uncontrolled heart failure, MI or stroke within 6 months, or thrombophilia. Monitor hematocrit at baseline, 3-6 months, then annually; stop when hematocrit is >54%. Urology consult is recommended for PSA increase >1.4 ng/mL within 12 months, confirmed PSA >4 ng/mL, abnormal DRE, or substantial LUTS worsening.",
+    cutoffs: ["PSA >4 ng/mL", "PSA >3 ng/mL", "hematocrit >54%", "3-6 months", "annually", "MI or stroke within 6 months", "PSA increase >1.4 ng/mL within 12 months", "confirmed PSA >4 ng/mL"],
+    data_needed: ["fertility intent", "breast/prostate cancer history", "PSA", "digital rectal exam/prostate nodule status", "hematocrit", "sleep apnea status", "LUTS/IPSS severity", "heart failure control", "recent MI/stroke date", "thrombophilia history", "testosterone treatment start date"],
+    source_ids: ["ES_TESTOSTERONE_2018"],
+    source_section: "Testosterone therapy contraindications and monitoring"
+  },
+  {
+    id: "ed_injection_priapism_safety_cutoffs",
+    label: "Injection/priapism safety: intracavernosal therapy after PDE5 failure needs training; erection lasting >4 hours is emergency care",
+    criteria_text: "Intracavernosal injection therapy can be used when oral PDE5 inhibitors fail or are not candidates, but requires dosing education and safety-netting for priapism. StatPearls describes injection goals around 45-90 minutes and recommends emergency evaluation for erections lasting more than 4 hours.",
+    cutoffs: ["45-90 minutes", ">4 hours"],
+    data_needed: ["PDE5 response and correct use", "injection medication/dose", "training completed", "sickle cell/priapism risk", "anticoagulation/bleeding risk", "erection duration", "access to emergency care"],
+    source_ids: ["STATPEARLS_ED_2024", "ENDOTEXT_ED_2022"],
+    source_section: "Intracavernosal injection therapy and priapism safety"
+  }
+];
+
 const pheochromocytomaCutoffCriteria = [
   {
     id: "pheo_biochemical_metanephrine_cutoff",
@@ -618,6 +684,7 @@ const curatedCutoffCriteria = {
   thyroid_nodules_v1: thyroidNoduleCutoffCriteria,
   gynecomastia_v1: testosteroneCutoffCriteria,
   hypogonadism_v1: testosteroneCutoffCriteria,
+  erectile_dysfunction_v1: erectileDysfunctionCutoffCriteria,
   hirsutism_v1: hirsutismCutoffCriteria,
   prolactinoma_v1: prolactinomaCutoffCriteria,
   pheochromocytoma_v1: pheochromocytomaCutoffCriteria,
@@ -1036,6 +1103,37 @@ function cleanText(value = "") {
   return String(value || "").replace(/\s+/g, " ").replace(/\s+([,.;:])/g, "$1").trim();
 }
 
+function dedupeSentences(text = "") {
+  const seen = new Set();
+  const sentences = cleanText(text).split(/(?<=[.!?])\s+/).filter(Boolean);
+  const uniqueSentences = sentences.filter((sentence) => {
+    const key = sentence.toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+  return cleanText(uniqueSentences.join(" "));
+}
+
+function cleanGeneratedScaffoldText(value = "", fallback = "") {
+  let text = cleanText(value);
+  text = text
+    .replace(/\bkey thresholds and interpretation caveats:\s*/gi, "")
+    .replace(/\bdiagnostic frame from guideline-sourced endocrine workup\b/gi, "diagnostic assessment")
+    .replace(/\bsource-backed criteria\b/gi, "cited criteria")
+    .replace(/\bsource-backed management route\b/gi, "cited management route")
+    .replace(/\bUse this frame to decide whether\s+(.+?)\s+is the right first confirmatory step and whether urgent endocrine escalation is needed\.?/gi, "Confirm whether $1 is indicated and whether same-day endocrine escalation is needed.")
+    .replace(/\bProvides diagnostic or safety thresholds that change interpretation and management for [^.]+\.?/gi, "")
+    .replace(/:\s*diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for [^.]+\.?/gi, "")
+    .replace(/\bUse local assay and patient context; do not apply numeric anchors without clinical interpretation\.?/gi, "Interpret with local assay, medications, pregnancy status, acute illness, and patient context.")
+    .replace(/\bthreshold-defined branch\b/gi, "threshold branch")
+    .replace(/\bpresenting trigger\b/gi, "presentation")
+    .replace(/\bcriteria match\b/gi, "criteria met")
+    .replace(/\benough context\b/gi, "required context")
+    .replace(/\bgather objective data\b/gi, "review objective data");
+  return dedupeSentences(text) || cleanText(fallback);
+}
+
 function hasRealCutoff(value = "") {
   const text = cleanText(value);
   if (/(?:(?:>=|<=|>|<|=)|(?:above|below|exceeds?))\s*(?:the\s+)?(?:assay\s+)?(?:ULN|LLN|upper limit of normal|lower limit of normal|reference range)/i.test(text)) return true;
@@ -1092,6 +1190,33 @@ function listLabels(items = [], maxItems = 5) {
   return items.slice(0, maxItems).map((item) => itemLabel(item)).filter(Boolean);
 }
 
+function displayWorkupLabel(value = "") {
+  return cleanText(value).replace(/\s*\([^)]{1,90}\)/g, "");
+}
+
+function visibleEvidenceLabel(item = {}) {
+  const text = itemLabel(item);
+  if (!text) return "";
+  if (/diagnostic frame from guideline-sourced endocrine workup/i.test(text)) return "";
+  if (/^key thresholds and interpretation caveats/i.test(text)) return "";
+  if (/^important mimics\/exclusions/i.test(text)) return "competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics";
+  if (/^hemodynamic instability, altered mental status/i.test(text)) return "unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat";
+  if (/^positive pregnancy with pain\/bleeding/i.test(text)) return "pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism";
+  if (/^unstable physiology, endocrine crisis/i.test(text)) return "unstable physiology or dangerous electrolyte/glucose abnormality";
+  if (/^discordant or borderline endocrine tests/i.test(text)) return "discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context";
+  return text;
+}
+
+function visibleListLabels(items = [], maxItems = 5) {
+  return items.map(visibleEvidenceLabel).filter(Boolean).slice(0, maxItems);
+}
+
+function displayCriterionLabel(row = {}) {
+  const label = cleanGeneratedScaffoldText(row.label || row.id || "criterion", row.id || "criterion");
+  const concise = label.includes(":") ? label.split(":")[0] : label;
+  return cleanText(concise.replace(/\s*\([^)]{1,90}\)/g, ""));
+}
+
 function listText(items = [], fallback = "", maxItems = 5) {
   return cleanText(listLabels(items, maxItems).join("; ") || fallback);
 }
@@ -1132,10 +1257,12 @@ function sourceRowsForTree(sourceIds = [], sourceById = new Map()) {
 
 function criterion({ id, label, criteria_text, cutoffs = [], data_needed = [], source_ids = [], source_section = "", needs_clinical_review = false, reviewer_input_needed = "" }) {
   const realCutoffs = unique(cutoffs).filter(hasRealCutoff);
+  const cleanLabel = cleanGeneratedScaffoldText(label, id);
+  const cleanCriteriaText = cleanGeneratedScaffoldText(criteria_text || label, cleanLabel);
   return {
     id,
-    label: cleanText(label),
-    criteria_text: cleanText(criteria_text || label),
+    label: cleanLabel,
+    criteria_text: cleanCriteriaText,
     cutoffs: realCutoffs,
     data_needed: unique(data_needed),
     source_ids: unique(source_ids),
@@ -1185,6 +1312,18 @@ function node({
     children
   };
   if (endpointType) entry.endpoint_type = endpointType;
+  if (endpointType === "missing_data_needed") {
+    entry.label = "Internal data-availability guard";
+    entry.edgeLabel = "Internal data-availability guard";
+    entry.action = "Internal traversal guard for data completeness; hidden from the clinical pathway display.";
+    entry.internal_traversal_guard = true;
+    entry.display = {
+      visible_in_pathway: false,
+      visible_in_graph: false,
+      visible_in_outline: false,
+      reason: "Internal traversal guard; exact missing fields remain in missing_data_needed."
+    };
+  }
   if (missingDataNeeded.length) entry.missing_data_needed = unique(missingDataNeeded);
   if (reviewNeededReason) entry.review_needed_reason = cleanText(reviewNeededReason);
   if (parallelActions.length) entry.parallel_actions = parallelActions;
@@ -1208,7 +1347,7 @@ function actionNode(args) {
 }
 
 function evidenceText(item = {}) {
-  return cleanText([item.label, item.action, item.management_change, item.diagnostic_target, item.rationale].filter(Boolean).join(" "));
+  return cleanGeneratedScaffoldText([item.label, item.action, item.management_change, item.diagnostic_target, item.rationale].filter(Boolean).join(" "));
 }
 
 function extractedCutoffCriteria(module) {
@@ -1219,9 +1358,13 @@ function extractedCutoffCriteria(module) {
       const text = evidenceText(item);
       const cutoffs = unique(text.match(new RegExp(cutoffPattern.source, "gi")) || []).filter(hasRealCutoff);
       if (!cutoffs.length) return;
+      const cleanLabel = cleanGeneratedScaffoldText(
+        itemLabel(item),
+        `${displayWorkupLabel(module.label || module.id)} thresholds: ${cutoffs.slice(0, 4).join(", ")}`
+      );
       rows.push(criterion({
         id: `${group}_${item.id || slug(itemLabel(item))}`,
-        label: itemLabel(item),
+        label: cleanLabel,
         criteria_text: text,
         cutoffs,
         data_needed: cutoffs,
@@ -1288,8 +1431,98 @@ function buildSyntheticScenarios(prefix, edgeLabels = {}) {
   ];
 }
 
+function endpointMajorPathway(endpoint = {}) {
+  const text = cleanText(`${endpoint.id || ""} ${endpoint.label || ""} ${endpoint.edgeLabel || ""} ${endpoint.action || ""}`).toLowerCase();
+  if (endpoint.endpoint_type === "missing_data_needed") return "missing_data_needed";
+  if (endpoint.endpoint_type === "deescalation_stopping" || /de-?escalat|stop|narrow|taper|transition|resolution/.test(text)) return "deescalation_stopping_criteria";
+  if (endpoint.endpoint_type === "follow_up" || endpoint.endpoint_type === "safety_net_instruction" || /follow|safety|return precaution|discharge|outpatient|home/.test(text)) return "disposition_followup_safety_netting";
+  if (endpoint.endpoint_type === "monitoring_reassessment" || /monitor|reassess|worsen|persistent|trend/.test(text)) return "monitoring_reassessment_escalation";
+  if (endpoint.endpoint_type === "clinician_review_handoff" && /contra|pregnan|special|local|policy|formulary|review|conflict/.test(text)) return "contraindications_special_populations";
+  if (endpoint.endpoint_type === "clinician_review_handoff" || /mimic|alternate|competing|excluded|contradict|not fit/.test(text)) return "mimics_exclusions";
+  if (endpoint.endpoint_type === "diagnostic_step" || /diagnos|confirm|test|image|culture|lab/.test(text)) return "diagnostic_confirmation";
+  if (endpoint.endpoint_type === "escalation_disposition" || /emergency|shock|icu|urgent|escalat|admit|transfer|unstable/.test(text)) return "escalation_emergency_actions";
+  if (endpoint.endpoint_type === "treatment" || /treat|therapy|dose|insulin|antibiotic|fluid|start/.test(text)) return "first_line_management";
+  return "severity_risk_stratification";
+}
+
+function pathToNode(root, targetId, path = []) {
+  if (!root) return null;
+  const nextPath = [...path, root];
+  if (root.id === targetId) return nextPath;
+  for (const child of root.children || []) {
+    const found = pathToNode(child, targetId, nextPath);
+    if (found) return found;
+  }
+  return null;
+}
+
+function terminalEndpoints(root) {
+  const leaves = [];
+  const visit = (node) => {
+    if (!node) return;
+    if (!Array.isArray(node.children) || !node.children.length) {
+      if (node.type === "endpoint") leaves.push(node);
+      return;
+    }
+    node.children.forEach(visit);
+  };
+  visit(root);
+  return leaves;
+}
+
+function completeSyntheticScenarioCoverage(root, scenarios = []) {
+  const usedScenarioIds = new Set();
+  const seenEndpointIds = new Set();
+  const normalized = scenarios.map((scenario, index) => {
+    const endpointPath = pathToNode(root, scenario.expected_endpoint_id);
+    const terminal = endpointPath?.[endpointPath.length - 1] || {};
+    const scenarioId = scenario.scenario_id || `scenario_${index + 1}`;
+    usedScenarioIds.add(scenarioId);
+    if (scenario.expected_endpoint_id) seenEndpointIds.add(scenario.expected_endpoint_id);
+    return {
+      ...scenario,
+      scenario_id: scenarioId,
+      major_pathway: scenario.major_pathway || endpointMajorPathway(terminal),
+      expected_active_branch: cleanText(scenario.expected_active_branch || terminal.edgeLabel || terminal.label || scenario.expected_endpoint_id),
+      expected_path_node_ids: endpointPath ? endpointPath.map((node) => node.id).filter(Boolean) : [],
+      terminal_endpoint_id: terminal.id || scenario.expected_endpoint_id || "",
+      traversal_status: endpointPath ? "reaches_expected_endpoint" : "endpoint_not_found"
+    };
+  });
+  for (const endpoint of terminalEndpoints(root)) {
+    if (seenEndpointIds.has(endpoint.id)) continue;
+    let scenarioId = `endpoint_${slug(endpoint.id)}_coverage`;
+    let suffix = 2;
+    while (usedScenarioIds.has(scenarioId)) {
+      scenarioId = `endpoint_${slug(endpoint.id)}_coverage_${suffix}`;
+      suffix += 1;
+    }
+    usedScenarioIds.add(scenarioId);
+    seenEndpointIds.add(endpoint.id);
+    const endpointPath = pathToNode(root, endpoint.id) || [];
+    normalized.push({
+      scenario_id: scenarioId,
+      major_pathway: endpointMajorPathway(endpoint),
+      expected_endpoint_id: endpoint.id,
+      expected_active_branch: cleanText(endpoint.edgeLabel || endpoint.label),
+      expected_path_node_ids: endpointPath.map((node) => node.id).filter(Boolean),
+      terminal_endpoint_id: endpoint.id,
+      traversal_status: "reaches_expected_endpoint",
+      synthetic_context: {
+        structured_context_domains: contextDomains,
+        branch_trigger: cleanText(endpoint.edgeLabel || endpoint.label),
+        expected_terminal_endpoint_type: endpoint.endpoint_type || "endpoint",
+        missing_data_needed: Array.isArray(endpoint.missing_data_needed) ? endpoint.missing_data_needed : []
+      },
+      coverage_type: "terminal_endpoint_coverage"
+    });
+  }
+  return normalized;
+}
+
 function buildCompactClinicalPathwayTree(module, sourceById) {
   const label = module.label || module.id;
+  const displayLabel = displayWorkupLabel(label);
   const prefix = slug(module.id || label).replace(/_v1$/g, "");
   const tests = firstItems(module, "initialTests", 8);
   const redFlags = firstItems(module, "redFlags", 6, ["safetyChecks"]);
@@ -1305,191 +1538,191 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
   const cutoffSources = unique([...criteriaRows.flatMap((row) => row.source_ids || []), ...testSources, ...managementSources]);
   const exactDiagnosticData = unique([
     ...criteriaRows.flatMap((row) => row.data_needed || []).slice(0, 12),
-    ...listLabels(tests, 8),
+    ...visibleListLabels(tests, 8),
     ...criteriaRows.flatMap((row) => row.cutoffs || []).slice(0, 8)
   ]);
   const thresholdExamples = unique(criteriaRows.flatMap((row) => row.cutoffs || [])).slice(0, 10);
-  const cutoffSummary = criteriaRows.slice(0, 5).map((row) => `${row.label}: ${(row.cutoffs || []).slice(0, 6).join(", ")}`).join(" | ");
+  const cutoffSummary = criteriaRows.slice(0, 5).map((row) => `${displayCriterionLabel(row)}: ${(row.cutoffs || []).slice(0, 5).join(", ")}`).join(" | ");
   const thresholdSummary = cutoffSummary || thresholdExamples.join("; ") || "documented diagnostic criteria with clinician review when numeric thresholds are unavailable";
   const shortThresholdSummary = arrayText(thresholdExamples, thresholdSummary, 6);
-  const redFlagSummary = listLabels(redFlags, 4).join("; ");
-  const safetySummary = listLabels(safetyChecks, 5);
-  const treatmentSummary = [...listLabels(treatments, 4), ...listLabels(dispositions, 3)].filter(Boolean).join("; ");
+  const redFlagSummary = visibleListLabels(redFlags, 3).join("; ");
+  const safetySummary = visibleListLabels(safetyChecks, 5);
+  const treatmentSummary = [...visibleListLabels(treatments, 3), ...visibleListLabels(dispositions, 2)].filter(Boolean).join("; ");
   const activationItems = firstItems(module, "requiredQuestions", 4, ["conditionalQuestions", "requiredExam"]);
   const activationSummary = arrayText([
-    ...listLabels(activationItems, 4),
-    ...listLabels(redFlags, 2),
-    ...listLabels(tests, 2)
-  ], `${label} symptoms, exam, vitals, and workup selection`, 7);
+    ...visibleListLabels(activationItems, 4),
+    ...visibleListLabels(redFlags, 2),
+    ...visibleListLabels(tests, 2)
+  ], `${displayLabel} symptoms, exam, vitals, and key results`, 7);
   const diagnosticDataSummary = arrayText([
-    ...listLabels(tests, 5),
+    ...visibleListLabels(tests, 5),
     ...criteriaRows.flatMap((row) => row.data_needed || []).slice(0, 6),
     ...thresholdExamples.slice(0, 4)
-  ], `${label} diagnostic, severity, and treatment-safety results`, 10);
+  ], `${displayLabel} diagnostic, severity, and treatment-safety results`, 10);
   const redFlagBranchSummary = arrayText([
-    ...listLabels(redFlags, 4),
+    ...visibleListLabels(redFlags, 4),
     ...thresholdExamples.slice(0, 3),
-    ...listLabels(dispositions, 2)
-  ], `${label} unstable physiology, danger feature, or monitored-care rule`, 8);
-  const alternateBranchSummary = listText(differentials, `${label} exclusion or competing diagnosis`, 5);
+    ...visibleListLabels(dispositions, 2)
+  ], `${displayLabel} unstable physiology, danger feature, or monitored-care rule`, 8);
+  const alternateBranchSummary = cleanText(visibleListLabels(differentials, 4).join("; ") || `${displayLabel} exclusion or competing diagnosis`);
   const safetyModifierSummary = arrayText([
-    ...listLabels(safetyChecks, 4),
+    ...visibleListLabels(safetyChecks, 4),
     "pregnancy/postpartum/lactation status",
     "renal/hepatic/cardiac disease",
     "allergy or drug interaction",
     "pediatric/adult applicability",
     "local protocol requirement"
-  ], `${label} treatment modifier`, 8);
+  ], `${displayLabel} treatment modifier`, 8);
   const monitoringSummary = arrayText([
     ...thresholdExamples.slice(0, 4),
-    ...listLabels(tests, 3),
-    ...listLabels(safetyChecks, 3)
-  ], `${label} symptoms, vitals, labs/results, adverse effects, and disposition`, 8);
+    ...visibleListLabels(tests, 3),
+    ...visibleListLabels(safetyChecks, 3)
+  ], `${displayLabel} symptoms, vitals, labs/results, adverse effects, and disposition`, 8);
   const deescalationSummary = arrayText([
     ...thresholdExamples.slice(0, 4),
-    ...listLabels(dispositions, 3),
-    ...listLabels(treatments, 3)
-  ], `${label} objective response and diagnosis certainty`, 8);
+    ...visibleListLabels(dispositions, 3),
+    ...visibleListLabels(treatments, 3)
+  ], `${displayLabel} objective response and diagnosis certainty`, 8);
   const followupSummary = arrayText([
     "pending-result owner",
     "follow-up interval",
     "return precautions",
-    ...listLabels(dispositions, 3)
-  ], `${label} follow-up ownership and safety net`, 6);
+    ...visibleListLabels(dispositions, 3)
+  ], `${displayLabel} follow-up ownership and safety net`, 6);
   const edgeLabels = {
-    missingContext: `Missing exact ${label} pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings`,
-    diagnosticData: `${label} active from documented findings: ${activationSummary}`,
-    classification: `${label} results available for threshold classification: ${diagnosticDataSummary}`,
-    missingCutoff: `Missing exact ${label} result(s): ${arrayText(exactDiagnosticData, `${label} threshold/result data`, 8)}`,
-    urgent: `${label} danger feature or high-risk cutoff: ${redFlagBranchSummary}`,
-    treatment: `${label} treatment/disposition indicated by: ${arrayText([shortThresholdSummary, treatmentSummary], `${label} confirmed or high-risk branch`, 4)}`,
-    alternate: `${label} mimic/exclusion better fits: ${alternateBranchSummary}`,
-    safetySelected: `${label} treatment selected; check patient-specific modifiers`,
-    review: `${label} modifier changes treatment/disposition: ${safetyModifierSummary}`,
-    monitoring: `After ${label} therapy or diagnostic plan, trend: ${monitoringSummary}`,
-    worsening: `${label} reassessment worsens or contradicts expected response: ${monitoringSummary}`,
-    deescalate: `${label} objective response supports narrowing, stopping, tapering, or continuing: ${deescalationSummary}`,
-    followup: `${label} discharge/outpatient criteria satisfied: ${followupSummary}`
+    missingContext: `Missing ${displayLabel}: onset/trajectory, focused exam, vitals, key results, meds, comorbidities, pregnancy/applicability, or follow-up access`,
+    diagnosticData: `Collect ${displayLabel} history/exam, vitals, key labs/results, medication safety, and major cutoffs`,
+    classification: `Classify ${displayLabel} with available result(s): ${arrayText(thresholdExamples.slice(0, 4), diagnosticDataSummary, 4)}`,
+    missingCutoff: `Missing ${displayLabel} result(s): ${arrayText(exactDiagnosticData, `${displayLabel} threshold/result data`, 6)}`,
+    urgent: `Danger feature or high-risk result present: ${arrayText([redFlagSummary, ...thresholdExamples.slice(0, 2)], redFlagBranchSummary, 4)}`,
+    treatment: `Confirmed/high-risk ${displayLabel} branch has treatment-safety data available`,
+    alternate: `Objective findings favor mimic or alternate pathway: ${alternateBranchSummary}`,
+    safetySelected: `Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan`,
+    review: `Contraindication, special population, conflicting guidance, or local protocol dependency`,
+    monitoring: `Trend ${displayLabel} symptoms, vitals, key results, adverse effects, and disposition readiness`,
+    worsening: `${displayLabel} worsens, new danger feature appears, or results no longer fit the active branch`,
+    deescalate: `Objective response supports narrowing, stopping, tapering, or continuing ${displayLabel} care`,
+    followup: `${displayLabel} stable enough for owned follow-up, pending results, and safety-netting`
   };
 
   const followupEndpoint = endpoint({
     id: `${prefix}_followup_endpoint`,
-    label: `${label}: follow-up ownership and safety-net endpoint`,
+    label: `${displayLabel}: follow-up and safety-net`,
     edgeLabel: edgeLabels.followup,
     sourceIds: managementSources,
     criteria: criteria(`${prefix}_followup_criteria`, `Use after ${label} is stable, actionable results have an owner, and return precautions are documented.`, ["symptoms", "vitals", "labs", "imaging_results", "medications", "follow_up_access", "workup_findings"], managementSources),
-    action: `Document the ${label} diagnosis/risk category, pending-result owner, follow-up interval, and return precautions for worsening symptoms, new danger features, inability to complete treatment, or abnormal pending results.`,
+    action: `Document the ${displayLabel} diagnosis/risk category, pending-result owner, follow-up interval, and return precautions for worsening symptoms, new danger features, inability to complete treatment, or abnormal pending results.`,
     endpointType: "safety_net_instruction",
     monitoringPlan: ["pending-result owner", "follow-up interval", "return precautions", "access barriers"]
   });
 
   const deescalateEndpoint = endpoint({
     id: `${prefix}_deescalate_endpoint`,
-    label: `${label}: de-escalate, stop, or narrow when objective criteria normalize`,
+    label: `${displayLabel}: de-escalate, stop, or narrow`,
     edgeLabel: edgeLabels.deescalate,
     sourceIds: managementSources,
     criteria: criteria(`${prefix}_deescalate_criteria`, `Stop, narrow, taper, or de-escalate ${label} treatment only when objective response, diagnosis certainty, and cited stopping criteria support it.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], managementSources, { criteria_options: criteriaRows.slice(0, 8) }),
-    action: `Use the active ${label} objective criteria and response trend (${shortText(thresholdExamples.join("; "), 220)}) to stop, narrow, taper, or continue treatment; document what threshold or finding changed.`,
+    action: `Use active ${displayLabel} results and response trend to stop, narrow, taper, or continue treatment; document which cutoff, symptom, adverse effect, or finding changed.`,
     endpointType: "deescalation_stopping",
     guidelineCutoffs: criteriaRows
   });
 
   const worseningEndpoint = endpoint({
     id: `${prefix}_worsening_endpoint`,
-    label: `${label}: escalate when reassessment worsens or contradicts expected course`,
+    label: `${displayLabel}: reassessment escalation`,
     edgeLabel: edgeLabels.worsening,
     sourceIds: unique([...redFlagSources, ...managementSources]),
     criteria: criteria(`${prefix}_worsening_criteria`, `Escalate ${label} if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], unique([...redFlagSources, ...managementSources]), { criteria_options: criteriaRows.slice(0, 8) }),
-    action: `Repeat critical ${label} objective data, reassess mimics/complications, and move to ED/admission/specialty review according to the abnormal cutoff or danger feature.`,
+    action: `Repeat critical ${displayLabel} objective data, reassess mimics and complications, and move to ED/admission/specialty review according to the abnormal cutoff or danger feature.`,
     endpointType: "escalation_disposition",
     guidelineCutoffs: criteriaRows
   });
 
   const monitoring = actionNode({
     id: `${prefix}_monitoring_bundle`,
-    label: `${label}: concurrent monitoring, response checks, and disposition readiness`,
+    label: `${displayLabel}: monitoring and disposition readiness`,
     edgeLabel: edgeLabels.monitoring,
     sourceIds: managementSources,
     criteria: criteria(`${prefix}_monitoring_criteria`, `Monitor ${label} by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], managementSources, { criteria_options: criteriaRows.slice(0, 8) }),
-    action: `Reassess ${label} using the active thresholds and clinical course; do not close the pathway until response, adverse effects, pending data, and disposition are owned.`,
-    parallelActions: unique(["repeat vital signs", "trend objective labs/results", "review treatment response/adverse effects", "confirm disposition and follow-up owner", ...safetySummary]),
+    action: `Reassess ${displayLabel} using the active thresholds and clinical course; do not close the pathway until response, adverse effects, pending data, and disposition are owned.`,
+    parallelActions: unique(["repeat vital signs", "trend key labs/results", "review treatment response and adverse effects", "confirm disposition and follow-up owner", ...safetySummary]),
     guidelineCutoffs: criteriaRows,
     children: [worseningEndpoint, deescalateEndpoint, followupEndpoint]
   });
 
   const reviewEndpoint = endpoint({
     id: `${prefix}_review_endpoint`,
-    label: `${label}: clinician review for contraindication, special population, or local-policy cutoff`,
+    label: `${displayLabel}: clinician review modifier`,
     edgeLabel: edgeLabels.review,
     sourceIds: cutoffSources,
     criteria: criteria(`${prefix}_review_criteria`, `Use clinician review when ${label} treatment/disposition depends on pregnancy/postpartum status, pediatric/adult applicability, renal/hepatic/cardiac disease, allergy, drug interaction, procedural risk, guideline conflict, or local protocol.`, ["pregnancy_status", "demographics", "medications", "comorbidities", "allergies", "local_policy", "workup_findings"], cutoffSources),
-    action: `Pause non-emergent ${label} treatment choices until the modifier is resolved and the reviewer documents the applicable guideline/local cutoff.`,
+    action: `Pause non-emergent ${displayLabel} treatment choices until the modifier is resolved and the reviewer documents the applicable guideline or local cutoff.`,
     endpointType: "clinician_review_handoff",
     reviewNeededReason: "Patient-specific contraindication, special population, guideline conflict, or local policy affects treatment or disposition."
   });
 
   const safetyDecision = decision({
     id: `${prefix}_treatment_safety_decision`,
-    label: `${label}: medication/procedure safety and special-population thresholds resolved?`,
+    label: `${displayLabel}: treatment safety resolved?`,
     edgeLabel: edgeLabels.safetySelected,
     sourceIds: cutoffSources,
     criteria: criteria(`${prefix}_safety_decision_criteria`, `Route ${label} management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.`, ["medications", "allergies", "pregnancy_status", "demographics", "comorbidities", "labs", "workup_findings"], cutoffSources, { criteria_options: criteriaRows.filter((row) => /treat|dose|mg|kg|pregnan|bmi|renal|contra/i.test(`${row.label} ${row.criteria_text}`)).slice(0, 8) }),
-    action: `Apply ${label}-specific safety modifiers before final treatment/disposition.`,
+    action: `Apply ${displayLabel}-specific safety modifiers before final treatment or disposition.`,
     children: [reviewEndpoint, monitoring]
   });
 
   const treatmentBundle = actionNode({
     id: `${prefix}_treatment_bundle`,
-    label: `${label}: initiate treatment/disposition for the active threshold-defined branch`,
+    label: `${displayLabel}: treatment and disposition branch`,
     edgeLabel: edgeLabels.treatment,
     sourceIds: managementSources,
     criteria: criteria(`${prefix}_treatment_bundle_criteria`, `Start ${label} treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "pregnancy_status", "workup_findings"], managementSources, { criteria_options: criteriaRows.slice(0, 10) }),
-    action: treatmentSummary || `Treat ${label} according to the active threshold-defined branch and documented severity.`,
-    parallelActions: unique([...listLabels(treatments, 5), ...listLabels(dispositions, 3)]),
+    action: treatmentSummary || `Treat ${displayLabel} according to the active branch, documented severity, and patient-specific safety data.`,
+    parallelActions: unique([...visibleListLabels(treatments, 5), ...visibleListLabels(dispositions, 3)]),
     guidelineCutoffs: criteriaRows,
     children: [safetyDecision]
   });
 
   const alternateEndpoint = endpoint({
     id: `${prefix}_alternate_endpoint`,
-    label: `${label}: switch to mimic/alternate pathway when threshold/result criteria do not fit`,
+    label: `${displayLabel}: alternate diagnosis pathway`,
     edgeLabel: edgeLabels.alternate,
     sourceIds: differentialSources,
     criteria: criteria(`${prefix}_alternate_criteria`, `Use an alternate pathway when ${label} criteria are absent, a cited mimic better explains the presentation, or objective result data contradict this workup.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "workup_findings"], differentialSources, { criteria_options: criteriaRows.slice(0, 8) }),
-    action: `Document why ${label} is not the active pathway and route to the competing diagnosis: ${shortText(listLabels(differentials, 5).join("; "), 320)}.`,
+    action: `Document why ${displayLabel} is not the active pathway, name the competing diagnosis or exclusion, and route to the appropriate workup rather than reassurance alone.`,
     endpointType: "clinician_review_handoff",
     reviewNeededReason: "Competing diagnosis or exclusion changes the active pathway."
   });
 
   const urgentEndpoint = endpoint({
     id: `${prefix}_urgent_endpoint`,
-    label: `${label}: emergency escalation or monitored-care disposition when danger thresholds are met`,
+    label: `${displayLabel}: emergency or monitored-care disposition`,
     edgeLabel: edgeLabels.urgent,
     sourceIds: unique([...redFlagSources, ...managementSources]),
     criteria: criteria(`${prefix}_urgent_criteria`, `Escalate ${label} when any condition-specific danger feature, high-risk cutoff, unstable physiology, or monitored-care disposition rule is present.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "mental_status", "workup_findings"], unique([...redFlagSources, ...managementSources]), { criteria_options: criteriaRows.slice(0, 10) }),
-    action: redFlagSummary ? `${redFlagSummary}. ${shortText(treatmentSummary, 240)}` : `Escalate ${label} for emergency evaluation or monitored care using the abnormal cutoff or danger feature.`,
+    action: redFlagSummary ? `${redFlagSummary}. Escalate using the abnormal cutoff, unstable feature, or monitored-care rule.` : `Escalate ${displayLabel} for emergency evaluation or monitored care using the abnormal cutoff or danger feature.`,
     endpointType: "escalation_disposition",
     guidelineCutoffs: criteriaRows
   });
 
   const missingCutoffEndpoint = endpoint({
     id: `${prefix}_missing_cutoff_data_endpoint`,
-    label: `Missing data needed: ${label} threshold/results`,
+    label: `Missing data: ${displayLabel} results`,
     edgeLabel: edgeLabels.missingCutoff,
     sourceIds: unique([...genericSourceIds, ...cutoffSources]),
     criteria: criteria(`${prefix}_missing_cutoff_data_criteria`, `Route here when ${label} cannot be classified because exact threshold/result data are missing.`, contextDomains, unique([...genericSourceIds, ...cutoffSources]), { missing_any: exactDiagnosticData }),
-    action: `Obtain the exact ${label} data needed for threshold-based routing: ${shortText(exactDiagnosticData.join("; "), 420)}.`,
+    action: `Obtain the exact ${displayLabel} data needed for routing: ${exactDiagnosticData.slice(0, 10).join("; ")}.`,
     endpointType: "missing_data_needed",
     missingDataNeeded: exactDiagnosticData
   });
 
   const classificationDecision = decision({
     id: `${prefix}_classification_decision`,
-    label: `${label}: classify severity and disposition by cited thresholds`,
+    label: `${displayLabel}: classify risk and disposition`,
     edgeLabel: edgeLabels.classification,
     sourceIds: cutoffSources,
     criteria: criteria(`${prefix}_classification_criteria`, `Classify ${label} against cited thresholds and condition-specific rules: ${shortText(thresholdSummary, 520)}`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "demographics", "pregnancy_status", "workup_findings"], cutoffSources, { criteria_options: criteriaRows }),
-    action: `Choose the active ${label} branch by matching patient data to: ${shortText(thresholdSummary, 520)}.`,
+    action: `Choose the active ${displayLabel} branch by matching patient data to the cited cutoffs and patient-specific safety rules.`,
     clinicalCriteria: criteriaRows,
     guidelineCutoffs: criteriaRows,
     children: [missingCutoffEndpoint, urgentEndpoint, treatmentBundle, alternateEndpoint]
@@ -1497,12 +1730,12 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
 
   const dataBundle = actionNode({
     id: `${prefix}_concurrent_data_bundle`,
-    label: `${label}: obtain concurrent diagnostic, severity, and treatment-safety data`,
+    label: `${displayLabel}: assessment and key results`,
     edgeLabel: edgeLabels.diagnosticData,
     sourceIds: testSources,
     criteria: criteria(`${prefix}_data_bundle_criteria`, `Obtain ${label} diagnostic/severity/treatment-safety data together rather than as a one-step chain.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "pregnancy_status"], testSources),
-    action: `Obtain together: ${shortText([...listLabels(tests, 8), ...safetySummary, ...criteriaRows.flatMap((row) => row.data_needed || []).slice(0, 8)].join("; "), 520)}.`,
-    parallelActions: unique([...listLabels(tests, 8), ...safetySummary, ...criteriaRows.flatMap((row) => row.data_needed || []).slice(0, 8)]),
+    action: `Obtain together: ${[...visibleListLabels(tests, 8), ...safetySummary, ...criteriaRows.flatMap((row) => row.data_needed || []).slice(0, 8)].join("; ")}.`,
+    parallelActions: unique([...visibleListLabels(tests, 8), ...safetySummary, ...criteriaRows.flatMap((row) => row.data_needed || []).slice(0, 8)]),
     requiredData: exactDiagnosticData,
     guidelineCutoffs: criteriaRows,
     children: [classificationDecision]
@@ -1510,21 +1743,21 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
 
   const missingContextEndpoint = endpoint({
     id: "endpoint_missing_context",
-    label: `Missing data needed: ${label} pathway context`,
+    label: `Missing context: ${displayLabel}`,
     edgeLabel: edgeLabels.missingContext,
     sourceIds: genericSourceIds,
     criteria: criteria("missing_context_criteria", `Route here when the patient context needed to activate ${label} is absent or cannot be extracted.`, contextDomains, genericSourceIds, { missing_any: contextDomains }),
-    action: `Before choosing a non-emergency ${label} branch, document: presenting trigger, onset/trajectory, focused exam, vital signs, threshold labs/results, medication/allergy context, comorbidities, demographics, pregnancy/applicability status, and current workup findings.`,
+    action: `Before choosing a non-emergency ${displayLabel} branch, document the presenting concern, onset/trajectory, focused exam, vital signs, key labs/results, medication/allergy context, comorbidities, demographics, pregnancy/applicability status, current findings, and follow-up access.`,
     endpointType: "missing_data_needed",
     missingDataNeeded: contextDomains
   });
 
   const root = decision({
     id: "root",
-    label: `${label}: route by documented findings and exact missing-data needs`,
+    label: `${displayLabel}: route by findings, risk, treatment safety, and follow-up`,
     sourceIds: cutoffSources,
     criteria: criteria("activate_workup", `Activate when structured or extractable context matches ${label} triggers or the clinician selects workup ${module.id}.`, ["selected_workup_id", "presenting_symptoms", "problem_list_or_diagnosis", "clinician_selected_module"], cutoffSources),
-    action: `Route ${label} from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.`,
+    action: `Route ${displayLabel} from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.`,
     children: [missingContextEndpoint, dataBundle]
   });
 
@@ -1559,7 +1792,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     traversable_context: buildTraversableContext(module, finalSourceIds, tests, criteriaRows),
     activationRules,
     root,
-    synthetic_patient_scenarios: buildSyntheticScenarios(prefix, edgeLabels),
+    synthetic_patient_scenarios: completeSyntheticScenarioCoverage(root, buildSyntheticScenarios(prefix, edgeLabels)),
     audit_requirements: {
       required_domains: requiredPathwayDomains,
       compact_tree_requirements: [
@@ -1951,7 +2184,7 @@ function buildAdultSepsisClinicalPathwayTree(module, sourceById) {
     traversable_context: buildTraversableContext(module, finalSourceIds, tests, criteriaRows),
     activationRules,
     root,
-    synthetic_patient_scenarios: [
+    synthetic_patient_scenarios: completeSyntheticScenarioCoverage(root, [
       { scenario_id: "missing_context", major_pathway: "missing_data_needed", expected_endpoint_id: "endpoint_missing_context", expected_active_branch: missingContextEndpoint.edgeLabel },
       { scenario_id: "missing_lactate_source_data", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: missingSepsisDataEndpoint.id, expected_active_branch: missingSepsisDataEndpoint.edgeLabel },
       { scenario_id: "septic_shock_hypoperfusion", major_pathway: "escalation_emergency_actions", expected_endpoint_id: shockIcuEndpoint.id, expected_active_branch: shockIcuEndpoint.edgeLabel },
@@ -1960,7 +2193,7 @@ function buildAdultSepsisClinicalPathwayTree(module, sourceById) {
       { scenario_id: "persistent_lactate_or_hypoperfusion", major_pathway: "monitoring_reassessment_escalation", expected_endpoint_id: persistentHypoperfusionEndpoint.id, expected_active_branch: persistentHypoperfusionEndpoint.edgeLabel },
       { scenario_id: "culture_deescalation_ready", major_pathway: "deescalation_stopping_criteria", expected_endpoint_id: deescalateEndpoint.id, expected_active_branch: deescalateEndpoint.edgeLabel },
       { scenario_id: "survivor_discharge_safety_net", major_pathway: "disposition_followup_safety_netting", expected_endpoint_id: dischargeEndpoint.id, expected_active_branch: dischargeEndpoint.edgeLabel }
-    ],
+    ]),
     audit_requirements: {
       required_domains: requiredPathwayDomains,
       hand_polished_requirements: [
@@ -2258,7 +2491,7 @@ function buildAdultDkaHhsClinicalPathwayTree(module, sourceById) {
     traversable_context: buildTraversableContext(module, finalSourceIds, tests, criteriaRows),
     activationRules,
     root,
-    synthetic_patient_scenarios: [
+    synthetic_patient_scenarios: completeSyntheticScenarioCoverage(root, [
       { scenario_id: "missing_context", major_pathway: "missing_data_needed", expected_endpoint_id: missingContextEndpoint.id, expected_active_branch: missingContextEndpoint.edgeLabel },
       { scenario_id: "missing_crisis_labs", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: missingCrisisDataEndpoint.id, expected_active_branch: missingCrisisDataEndpoint.edgeLabel },
       { scenario_id: "adult_dka_potassium_hold", major_pathway: "contraindications_special_populations", expected_endpoint_id: potassiumHoldEndpoint.id, expected_active_branch: potassiumHoldEndpoint.edgeLabel },
@@ -2269,7 +2502,7 @@ function buildAdultDkaHhsClinicalPathwayTree(module, sourceById) {
       { scenario_id: "adult_hhs_deescalation_ready", major_pathway: "deescalation_stopping_criteria", expected_endpoint_id: hhsTransitionEndpoint.id, expected_active_branch: hhsTransitionEndpoint.edgeLabel },
       { scenario_id: "adult_noncrisis_hyperglycemia", major_pathway: "mimics_exclusions", expected_endpoint_id: noncrisisEndpoint.id, expected_active_branch: noncrisisEndpoint.edgeLabel },
       { scenario_id: "adult_transition_safety_net", major_pathway: "disposition_followup_safety_netting", expected_endpoint_id: dkaTransitionEndpoint.id, expected_active_branch: dkaTransitionEndpoint.edgeLabel }
-    ],
+    ]),
     audit_requirements: {
       required_domains: requiredPathwayDomains,
       hand_polished_requirements: [
@@ -2547,7 +2780,7 @@ function buildPediatricDkaHhsClinicalPathwayTree(module, sourceById) {
     traversable_context: buildTraversableContext(module, finalSourceIds, tests, criteriaRows),
     activationRules,
     root,
-    synthetic_patient_scenarios: [
+    synthetic_patient_scenarios: completeSyntheticScenarioCoverage(root, [
       { scenario_id: "missing_context", major_pathway: "missing_data_needed", expected_endpoint_id: missingContextEndpoint.id, expected_active_branch: missingContextEndpoint.edgeLabel },
       { scenario_id: "missing_pediatric_crisis_data", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: missingDataEndpoint.id, expected_active_branch: missingDataEndpoint.edgeLabel },
       { scenario_id: "pediatric_cerebral_edema", major_pathway: "escalation_emergency_actions", expected_endpoint_id: cerebralEdemaEndpoint.id, expected_active_branch: cerebralEdemaEndpoint.edgeLabel },
@@ -2559,7 +2792,7 @@ function buildPediatricDkaHhsClinicalPathwayTree(module, sourceById) {
       { scenario_id: "pediatric_deescalation_transition", major_pathway: "deescalation_stopping_criteria", expected_endpoint_id: transitionEndpoint.id, expected_active_branch: transitionEndpoint.edgeLabel },
       { scenario_id: "pediatric_alternate_mimic", major_pathway: "mimics_exclusions", expected_endpoint_id: alternateEndpoint.id, expected_active_branch: alternateEndpoint.edgeLabel },
       { scenario_id: "pediatric_transition_recurrence", major_pathway: "disposition_followup_safety_netting", expected_endpoint_id: transitionEndpoint.id, expected_active_branch: transitionEndpoint.edgeLabel }
-    ],
+    ]),
     audit_requirements: {
       required_domains: requiredPathwayDomains,
       hand_polished_requirements: [
@@ -2818,7 +3051,7 @@ function buildCongenitalAdrenalHyperplasiaClinicalPathwayTree(module, sourceById
     traversable_context: buildTraversableContext(module, finalSourceIds, tests, criteriaRows),
     activationRules,
     root,
-    synthetic_patient_scenarios: [
+    synthetic_patient_scenarios: completeSyntheticScenarioCoverage(root, [
       { scenario_id: "missing_context", major_pathway: "missing_data_needed", expected_endpoint_id: missingContextEndpoint.id, expected_active_branch: missingContextEndpoint.edgeLabel },
       { scenario_id: "missing_diagnostic_data", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: missingDiagnosticEndpoint.id, expected_active_branch: missingDiagnosticEndpoint.edgeLabel },
       { scenario_id: "newborn_salt_wasting_crisis", major_pathway: "escalation_emergency_actions", expected_endpoint_id: crisisEndpoint.id, expected_active_branch: crisisEndpoint.edgeLabel },
@@ -2832,7 +3065,7 @@ function buildCongenitalAdrenalHyperplasiaClinicalPathwayTree(module, sourceById
       { scenario_id: "monitoring_overtreatment_or_tart", major_pathway: "monitoring_reassessment_escalation", expected_endpoint_id: monitoringEndpoint.id, expected_active_branch: monitoringEndpoint.edgeLabel },
       { scenario_id: "mimic_or_other_enzyme_defect", major_pathway: "mimics_exclusions", expected_endpoint_id: mimicEndpoint.id, expected_active_branch: mimicEndpoint.edgeLabel },
       { scenario_id: "stable_disposition_safety_net", major_pathway: "disposition_followup_safety_netting", expected_endpoint_id: safetyNetEndpoint.id, expected_active_branch: safetyNetEndpoint.edgeLabel }
-    ],
+    ]),
     audit_requirements: {
       required_domains: requiredPathwayDomains,
       hand_polish_requirements: [
@@ -3117,7 +3350,7 @@ function buildAdrenalInsufficiencyClinicalPathwayTree(module, sourceById) {
     traversable_context: buildTraversableContext(module, finalSourceIds, tests, criteriaRows),
     activationRules,
     root,
-    synthetic_patient_scenarios: [
+    synthetic_patient_scenarios: completeSyntheticScenarioCoverage(root, [
       { scenario_id: "missing_context", major_pathway: "missing_data_needed", expected_endpoint_id: missingContextEndpoint.id, expected_active_branch: missingContextEndpoint.edgeLabel },
       { scenario_id: "missing_adrenal_testing", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: missingAdrenalDataEndpoint.id, expected_active_branch: missingAdrenalDataEndpoint.edgeLabel },
       { scenario_id: "adrenal_crisis", major_pathway: "escalation_emergency_actions", expected_endpoint_id: crisisEndpoint.id, expected_active_branch: crisisEndpoint.edgeLabel },
@@ -3128,7 +3361,7 @@ function buildAdrenalInsufficiencyClinicalPathwayTree(module, sourceById) {
       { scenario_id: "monitoring_after_replacement", major_pathway: "monitoring_reassessment_escalation", expected_endpoint_id: monitoringEndpoint.id, expected_active_branch: monitoringEndpoint.edgeLabel },
       { scenario_id: "crisis_transition", major_pathway: "deescalation_stopping_criteria", expected_endpoint_id: transitionEndpoint.id, expected_active_branch: transitionEndpoint.edgeLabel },
       { scenario_id: "followup_sick_day_safety", major_pathway: "disposition_followup_safety_netting", expected_endpoint_id: transitionEndpoint.id, expected_active_branch: transitionEndpoint.edgeLabel }
-    ],
+    ]),
     audit_requirements: {
       required_domains: requiredPathwayDomains,
       hand_polish_requirements: [
@@ -3423,7 +3656,7 @@ function buildHypopituitarismClinicalPathwayTree(module, sourceById) {
     traversable_context: buildTraversableContext(module, finalSourceIds, tests, criteriaRows),
     activationRules,
     root,
-    synthetic_patient_scenarios: [
+    synthetic_patient_scenarios: completeSyntheticScenarioCoverage(root, [
       { scenario_id: "missing_context", major_pathway: "missing_data_needed", expected_endpoint_id: missingContextEndpoint.id, expected_active_branch: missingContextEndpoint.edgeLabel },
       { scenario_id: "missing_axis_data", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: missingPituitaryDataEndpoint.id, expected_active_branch: missingPituitaryDataEndpoint.edgeLabel },
       { scenario_id: "pituitary_apoplexy_or_secondary_crisis", major_pathway: "escalation_emergency_actions", expected_endpoint_id: apoplexyCrisisEndpoint.id, expected_active_branch: apoplexyCrisisEndpoint.edgeLabel },
@@ -3434,7 +3667,7 @@ function buildHypopituitarismClinicalPathwayTree(module, sourceById) {
       { scenario_id: "replacement_interaction_monitoring", major_pathway: "monitoring_reassessment_escalation", expected_endpoint_id: monitoringEndpoint.id, expected_active_branch: monitoringEndpoint.edgeLabel },
       { scenario_id: "postoperative_taper_or_ddavp_trial", major_pathway: "deescalation_stopping_criteria", expected_endpoint_id: monitoringEndpoint.id, expected_active_branch: monitoringEndpoint.edgeLabel },
       { scenario_id: "followup_safety_net", major_pathway: "disposition_followup_safety_netting", expected_endpoint_id: followupEndpoint.id, expected_active_branch: followupEndpoint.edgeLabel }
-    ],
+    ]),
     audit_requirements: {
       required_domains: requiredPathwayDomains,
       hand_polish_requirements: [
@@ -3599,7 +3832,7 @@ function buildGestationalDiabetesClinicalPathwayTree(module, sourceById) {
     edgeLabel: "Alternate branch: early diabetes-range value, type 1/type 2 diabetes, steroid or stress hyperglycemia, DKA/HHS, renal disease, infection, hypoglycemia/drug effect, or secondary endocrine cause fits better",
     sourceIds: sourceIdsForItems(differentials, sourceIds),
     criteria: criteria(`${prefix}_mimic_criteria`, "Use when glucose results or clinical context indicate overt diabetes, a hyperglycemic crisis, or another cause rather than routine gestational diabetes.", ["symptoms", "vitals", "labs", "medications", "comorbidities", "pregnancy_status", "workup_findings"], sourceIdsForItems(differentials, sourceIds), { criteria_options: criteriaRows }),
-    action: `Document why routine GDM is not the active pathway and route to the more specific diagnosis: ${listText(differentials, "overt type 1/type 2 diabetes, steroid/stress hyperglycemia, DKA/HHS, renal disease, infection, medication effect, or secondary endocrine cause", 5)}.`,
+    action: `Document why routine GDM is not the active pathway and route to the more specific diagnosis: ${visibleListLabels(differentials, 4).join("; ") || "overt type 1/type 2 diabetes, steroid/stress hyperglycemia, DKA/HHS, renal disease, infection, medication effect, or secondary endocrine cause"}.`,
     endpointType: "clinician_review_handoff",
     reviewNeededReason: "Pregnancy hyperglycemia may represent overt diabetes, hyperglycemic crisis, medication effect, or another diagnosis requiring a different pathway."
   });
@@ -3896,7 +4129,7 @@ function buildDiabetesMellitusClinicalPathwayTree(module, sourceById, diabetesTy
     edgeLabel: "Alternate branch: prediabetes-range results only, discordant test, steroid/stress hyperglycemia, type 1/LADA versus type 2 mismatch, pregnancy hyperglycemia, pancreatic/monogenic diabetes, hypoglycemia/drug effect, or secondary endocrine cause fits better",
     sourceIds: sourceIdsForItems(differentials, sourceIds),
     criteria: criteria(`${prefix}_mimic_criteria`, `Use when ${label} thresholds are absent, discordant, or another diagnosis explains the glucose pattern better.`, ["symptoms", "vitals", "labs", "medications", "comorbidities", "pregnancy_status", "workup_findings"], sourceIdsForItems(differentials, sourceIds), { criteria_options: criteriaRows }),
-    action: `Document which diabetes thresholds or type-classification findings are absent, then route to the appropriate alternate pathway: ${listText(differentials, "prediabetes, alternate diabetes type, steroid/stress hyperglycemia, pregnancy hyperglycemia, pancreatic/monogenic diabetes, hypoglycemia/drug effect, renal disease, infection, or secondary endocrine cause", 5)}.`,
+    action: `Document which diabetes thresholds or type-classification findings are absent, then route to the appropriate alternate pathway: ${visibleListLabels(differentials, 4).join("; ") || "prediabetes, alternate diabetes type, steroid/stress hyperglycemia, pregnancy hyperglycemia, pancreatic/monogenic diabetes, hypoglycemia/drug effect, renal disease, infection, or secondary endocrine cause"}.`,
     endpointType: "clinician_review_handoff",
     reviewNeededReason: "Glucose thresholds, diabetes type, medication effect, pregnancy, or another endocrine/acute illness cause changes the active pathway."
   });
@@ -4125,7 +4358,7 @@ function buildPrediabetesClinicalPathwayTree(module, sourceById) {
     edgeLabel: "Alternate branch: normal repeated tests, acute illness/steroid hyperglycemia, pregnancy-context hyperglycemia, lab interference, hypoglycemia/drug effect, renal/hepatic disease, or secondary endocrine cause fits better",
     sourceIds: sourceIdsForItems(differentials, sourceIds),
     criteria: criteria(`${prefix}_mimic_criteria`, "Use when prediabetes thresholds are absent, discordant, nonrepeatable, or explained by another condition.", ["symptoms", "vitals", "labs", "medications", "pregnancy_status", "comorbidities", "workup_findings"], sourceIdsForItems(differentials, sourceIds), { criteria_options: criteriaRows }),
-    action: `Document why prediabetes is not the active diagnosis and route to the more specific pathway: ${listText(differentials, "normal glycemia, diabetes, medication/stress hyperglycemia, pregnancy, hypoglycemia/drug effect, renal/hepatic disease, or secondary endocrine cause", 5)}.`,
+    action: `Document why prediabetes is not the active diagnosis and route to the more specific pathway: ${visibleListLabels(differentials, 4).join("; ") || "normal glycemia, diabetes, medication/stress hyperglycemia, pregnancy, hypoglycemia/drug effect, renal/hepatic disease, or secondary endocrine cause"}.`,
     endpointType: "clinician_review_handoff",
     reviewNeededReason: "Discordant glycemia, medication effects, pregnancy, or another diagnosis changes classification."
   });
@@ -4366,7 +4599,7 @@ function buildMetabolicSyndromeClinicalPathwayTree(module, sourceById) {
     edgeLabel: "Alternate branch: fewer than 3 criteria, race/ethnicity waist threshold changes classification, pregnancy or medication effect, secondary endocrine disease, acute illness, or isolated lipid/BP/glucose abnormality better explains findings",
     sourceIds: sourceIdsForItems(differentials, sourceIds),
     criteria: criteria(`${prefix}_mimic_criteria`, "Use when metabolic syndrome criteria are not met or another diagnosis explains the findings better.", ["exam", "vitals", "labs", "medications", "pregnancy_status", "comorbidities", "workup_findings"], sourceIdsForItems(differentials, sourceIds), { criteria_options: criteriaRows }),
-    action: `Document the criteria count and route to the active abnormality or competing diagnosis: ${listText(differentials, "isolated hypertension, dyslipidemia, prediabetes/diabetes, medication effect, pregnancy, secondary endocrine cause, or acute illness", 5)}.`,
+    action: `Document the criteria count and route to the active abnormality or competing diagnosis: ${visibleListLabels(differentials, 4).join("; ") || "isolated hypertension, dyslipidemia, prediabetes/diabetes, medication effect, pregnancy, secondary endocrine cause, or acute illness"}.`,
     endpointType: "clinician_review_handoff",
     reviewNeededReason: "Criteria count, waist threshold choice, pregnancy, medication effect, or secondary disease changes classification."
   });
@@ -5321,6 +5554,254 @@ function buildGrowthHormoneExcessClinicalPathwayTree(module, sourceById, growthM
   });
 }
 
+function buildErectileDysfunctionClinicalPathwayTree(module, sourceById) {
+  const label = module.label || "Erectile dysfunction";
+  const prefix = "erectile_dysfunction";
+  const endotext = ["ENDOTEXT_ED_2022"];
+  const statpearls = ["STATPEARLS_ED_2024"];
+  const testosterone = ["ES_TESTOSTERONE_2018"];
+  const prolactin = ["ES_HYPERPROLACTINEMIA_2011"];
+  const diabetesDx = ["ADA_DIAGNOSIS_2026"];
+  const sourceIds = unique([...endotext, ...statpearls, ...testosterone, ...prolactin, ...diabetesDx, ...genericSourceIds]);
+  const tests = firstItems(module, "initialTests", 8);
+  const redFlags = firstItems(module, "redFlags", 8, ["safetyChecks"]);
+  const differentials = firstItems(module, "differentialBuckets", 8);
+  const dispositions = firstItems(module, "dispositionRules", 8, ["treatmentOptions"]);
+  const criteriaRows = erectileDysfunctionCutoffCriteria.map(criterion);
+  const criteriaById = Object.fromEntries(criteriaRows.map((row) => [row.id, row]));
+  const focusedCriteria = (...ids) => ids.map((id) => criteriaById[id]).filter(Boolean);
+  const cvRows = focusedCriteria("ed_definition_and_cv_screen", "ed_pde5_safety_dosing_cutoffs");
+  const endocrineRows = focusedCriteria("ed_hypogonadism_confirmation_cutoffs", "ed_pituitary_prolactin_cutoffs");
+  const metabolicRows = focusedCriteria("ed_initial_labs_metabolic_cutoffs");
+  const therapyRows = focusedCriteria("ed_pde5_safety_dosing_cutoffs", "ed_testosterone_therapy_safety_cutoffs", "ed_injection_priapism_safety_cutoffs");
+
+  const missingContextEndpoint = endpoint({
+    id: "endpoint_missing_context",
+    label: "Missing ED context",
+    edgeLabel: "Missing duration, erection pattern, CV symptoms, meds, BP/pulses, genital exam, testosterone, A1c/glucose/lipids, or prolactin/TSH when indicated",
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_context_criteria`, "Use when ED cannot be routed because key history, exam, cardiovascular, metabolic, endocrine, medication, or treatment-safety data are unavailable.", contextDomains, sourceIds, { missing_any: contextDomains }),
+    action: "Document erectile symptom duration, rigidity/maintenance pattern, libido, morning/nocturnal erections, ejaculation/orgasm symptoms, partner/psych context, chest pain or claudication, exercise tolerance, BP/HR/pulses, genital/testicular and focused neuro exam, meds/substances including nitrates/alpha-blockers/CYP3A4 inhibitors, A1c or glucose, lipids, kidney function, two fasting morning testosterone values when low testosterone is possible, prolactin/TSH when libido, gynecomastia, infertility, or pituitary symptoms fit, fertility intent, pregnancy status when relevant, and follow-up access.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["erectile symptom duration", "rigidity and maintenance pattern", "libido and morning/nocturnal erections", "chest pain, claudication, exercise tolerance, or neurologic symptoms", "blood pressure, heart rate, and peripheral pulses", "genital/testicular and focused neurologic exam", "current medications including nitrates, alpha-blockers, CYP3A4 inhibitors, testosterone, opioids, antidepressants, and alcohol/substances", "A1c or glucose and lipid profile", "kidney function", "two fasting morning total testosterone values when indicated", "LH/FSH, prolactin, and TSH when indicated", "fertility intent and prostate/hematocrit safety data", "follow-up access"]
+  });
+
+  const missingObjectiveEndpoint = endpoint({
+    id: `${prefix}_missing_objective_endpoint`,
+    label: "Missing ED objective data",
+    edgeLabel: "Missing A1c/glucose/lipids, BP/pulses, two fasting morning testosterone values, LH/FSH, prolactin, TSH, PSA/Hct safety data, or nitrate/PDE5 medication review",
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_objective_criteria`, "Use when ED branch selection depends on an absent cardiovascular, endocrine, metabolic, or medication-safety result.", ["symptoms", "exam", "vitals", "labs", "medications", "comorbidities", "workup_findings"], sourceIds, { missing_any: ["blood pressure", "peripheral pulses", "A1c", "fasting glucose", "lipids", "two fasting morning total testosterone values", "LH", "FSH", "prolactin", "TSH/free T4", "nitrate/riociguat exposure", "alpha-blocker timing", "PSA", "hematocrit"] }),
+    action: "Before routine ED treatment, obtain the specific missing data: BP/HR and pulses, A1c or fasting glucose plus lipids, kidney function, repeat fasting morning testosterone when low testosterone is suspected, LH/FSH for low testosterone, prolactin and TSH for low libido/gynecomastia/infertility/pituitary symptoms, nitrate/riociguat and alpha-blocker timing, and PSA/hematocrit/prostate history before testosterone therapy.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["blood pressure and heart rate", "peripheral pulses or vascular exam", "A1c or fasting plasma glucose", "lipid profile", "kidney function", "two fasting morning total testosterone values", "LH and FSH if testosterone is low", "prolactin and TSH/free T4 when indicated", "nitrate or riociguat use", "alpha-blocker timing", "PSA and prostate cancer risk", "hematocrit"]
+  });
+
+  const emergencyEndpoint = endpoint({
+    id: `${prefix}_emergency_endpoint`,
+    label: "Emergency or unstable ED presentation",
+    edgeLabel: "Chest pain, claudication, neuro deficit, priapism >4 hours, hemodynamic instability, altered mental status, arrhythmia, vision threat, or pituitary mass effect",
+    sourceIds: unique([...endotext, ...statpearls, ...testosterone, ...prolactin]),
+    criteria: criteria(`${prefix}_emergency_criteria`, "Use when ED is accompanied by cardiovascular, neurologic, priapism, unstable physiology, visual, or pituitary mass-effect findings requiring urgent evaluation instead of routine ED therapy.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], unique([...endotext, ...statpearls, ...testosterone, ...prolactin]), { criteria_options: focusedCriteria("ed_definition_and_cv_screen", "ed_pde5_safety_dosing_cutoffs", "ed_injection_priapism_safety_cutoffs", "ed_pituitary_prolactin_cutoffs") }),
+    action: "Do not start routine sexual-activity or PDE5 treatment. Route chest pain, unstable angina, recent MI/stroke symptoms, unstable arrhythmia, hypotension, severe dyspnea, neurologic deficit, or claudication to ED/cardiology/neurology care; route erection lasting >4 hours to emergency priapism care; route headache/visual-field loss with severe secondary hypogonadism or high prolactin to pituitary imaging/endocrinology/neurosurgery.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: focusedCriteria("ed_injection_priapism_safety_cutoffs", "ed_pituitary_prolactin_cutoffs", "ed_pde5_safety_dosing_cutoffs")
+  });
+
+  const hypogonadismEndpoint = endpoint({
+    id: `${prefix}_hypogonadism_endpoint`,
+    label: "Confirmed low-testosterone ED",
+    edgeLabel: "Symptoms plus 2 fasting morning total testosterone values below 264 ng/dL, or TT 200-400 ng/dL/SHBG issue needing free T",
+    sourceIds: unique([...testosterone, ...endotext]),
+    criteria: criteria(`${prefix}_hypogonadism_criteria`, "Use when ED has hypogonadal symptoms and repeat fasting morning testosterone confirms low testosterone, with free testosterone when total testosterone is near the lower limit or SHBG is altered.", ["symptoms", "labs", "medications", "comorbidities", "demographics", "workup_findings"], unique([...testosterone, ...endotext]), { criteria_options: focusedCriteria("ed_hypogonadism_confirmation_cutoffs", "ed_testosterone_therapy_safety_cutoffs") }),
+    action: "Confirm symptoms/signs, repeat fasting morning total testosterone, use free testosterone when TT is near the lower limit or SHBG is altered, classify primary versus secondary using LH/FSH, address reversible causes such as obesity, opioids, acute illness, sleep apnea, or diabetes, and do not start testosterone until fertility intent, PSA/prostate, hematocrit, severe OSA, HF, and recent MI/stroke safety checks are resolved.",
+    endpointType: "diagnostic_step",
+    guidelineCutoffs: focusedCriteria("ed_hypogonadism_confirmation_cutoffs", "ed_testosterone_therapy_safety_cutoffs")
+  });
+
+  const pituitaryEndpoint = endpoint({
+    id: `${prefix}_pituitary_endpoint`,
+    label: "Pituitary or prolactin ED branch",
+    edgeLabel: "Testosterone <150 ng/dL, persistent hyperprolactinemia, prolactin >250 or >500 ug/L, macroadenoma >10 mm, or 1:100 dilution needed",
+    sourceIds: unique([...testosterone, ...prolactin]),
+    criteria: criteria(`${prefix}_pituitary_criteria`, "Use when severe secondary hypogonadism, hyperprolactinemia, prolactinoma-range prolactin, or pituitary mass-effect data change ED management.", ["symptoms", "exam", "labs", "imaging_results", "medications", "comorbidities", "workup_findings"], unique([...testosterone, ...prolactin]), { criteria_options: focusedCriteria("ed_pituitary_prolactin_cutoffs") }),
+    action: "Repeat prolactin if mild or stress-related, check medication causes, renal failure, hypothyroidism, pregnancy/lactation when relevant, and macroprolactin when asymptomatic. Obtain pituitary MRI/endocrinology review when testosterone is <150 ng/dL with secondary pattern, prolactin is persistently above ULN, prolactin is >250 ug/L or >500 ug/L, panhypopituitarism or headache/visual field symptoms are present, or a large sellar mass has only mild prolactin elevation needing 1:100 dilution.",
+    endpointType: "diagnostic_step",
+    guidelineCutoffs: focusedCriteria("ed_pituitary_prolactin_cutoffs")
+  });
+
+  const metabolicVascularEndpoint = endpoint({
+    id: `${prefix}_metabolic_vascular_endpoint`,
+    label: "Metabolic or vascular ED branch",
+    edgeLabel: "A1c 5.7-6.4%, A1c >=6.5%, fasting glucose >=126 mg/dL, dyslipidemia, hypertension, claudication, smoking, PAD, CAD, HF, or stroke risk",
+    sourceIds: unique([...diabetesDx, ...endotext, ...statpearls]),
+    criteria: criteria(`${prefix}_metabolic_vascular_criteria`, "Use when ED is more likely vascular/metabolic or when diabetes/CV risk changes first-line management and disposition.", ["symptoms", "exam", "vitals", "labs", "medications", "comorbidities", "demographics", "workup_findings"], unique([...diabetesDx, ...endotext, ...statpearls]), { criteria_options: focusedCriteria("ed_definition_and_cv_screen", "ed_initial_labs_metabolic_cutoffs") }),
+    action: "Treat ED as a vascular risk marker: classify diabetes/prediabetes using A1c/glucose thresholds, manage BP/lipids/smoking/weight and ASCVD risk, check exercise tolerance before sexual activity, refer cardiology or vascular medicine for intermediate/high-risk symptoms, and avoid using PDE5 therapy as the only intervention when ED may be the presenting sign of vascular disease.",
+    endpointType: "treatment",
+    guidelineCutoffs: focusedCriteria("ed_initial_labs_metabolic_cutoffs", "ed_definition_and_cv_screen")
+  });
+
+  const pde5Endpoint = endpoint({
+    id: `${prefix}_pde5_endpoint`,
+    label: "PDE5 first-line branch",
+    edgeLabel: "No nitrate/riociguat use, CV status stable enough for sex, and medication timing supports PDE5 trial with dose adjustment when needed",
+    sourceIds: endotext,
+    criteria: criteria(`${prefix}_pde5_criteria`, "Use when ED is stable enough for sexual activity and no absolute PDE5 contraindication is present.", ["symptoms", "vitals", "medications", "comorbidities", "labs", "workup_findings"], endotext, { criteria_options: focusedCriteria("ed_pde5_safety_dosing_cutoffs") }),
+    action: "Offer PDE5 inhibitor education and shared choice when sexual activity is safe: avoid nitrates/riociguat, separate from alpha-blockers by at least 4 hours, lower starting dose for age >65, severe renal impairment, or potent CYP3A4 inhibitors, use sildenafil 50 mg about 1 hour before sex at most once daily when appropriate, or tadalafil daily/PRN when duration goals fit. Stop and seek care for visual loss, sudden hearing change, chest pain, syncope, or priapism.",
+    endpointType: "treatment",
+    guidelineCutoffs: focusedCriteria("ed_pde5_safety_dosing_cutoffs")
+  });
+
+  const therapyReviewEndpoint = endpoint({
+    id: `${prefix}_therapy_review_endpoint`,
+    label: "ED therapy safety review",
+    edgeLabel: "Nitrates, unstable CV disease, alpha-blocker timing, CYP3A4 interaction, fertility intent, PSA/Hct risk, severe OSA, uncontrolled HF, or recent MI/stroke",
+    sourceIds: unique([...endotext, ...testosterone, ...statpearls]),
+    criteria: criteria(`${prefix}_therapy_review_criteria`, "Use when patient-specific factors make PDE5 inhibitor, testosterone therapy, injection therapy, device therapy, or sexual activity unsafe without clinician review.", ["medications", "comorbidities", "vitals", "labs", "demographics", "workup_findings"], unique([...endotext, ...testosterone, ...statpearls]), { criteria_options: therapyRows }),
+    action: "Pause non-emergent ED prescribing and obtain urology, cardiology, endocrinology, or pharmacy review. Resolve nitrate/riociguat exposure, alpha-blocker timing, severe renal or CYP3A4 interaction dosing, unstable cardiovascular disease, fertility plans, PSA/prostate risk, hematocrit, severe OSA, uncontrolled HF, MI/stroke within 6 months, thrombophilia, injection training, and priapism risk before therapy.",
+    endpointType: "clinician_review_handoff",
+    reviewNeededReason: "ED therapy depends on cardiovascular stability, nitrate/alpha-blocker/PDE5 safety, testosterone contraindications, injection safety, fertility intent, and local prescribing policy."
+  });
+
+  const alternateEndpoint = endpoint({
+    id: `${prefix}_alternate_endpoint`,
+    label: "Alternate ED driver",
+    edgeLabel: "Medication/substance effect, depression/anxiety/relationship stress, Peyronie plaque or curvature, pelvic surgery/trauma, neurologic disease, thyroid disease, or non-ED sexual complaint",
+    sourceIds: unique([...endotext, ...statpearls, ...genericSourceIds]),
+    criteria: criteria(`${prefix}_alternate_criteria`, "Use when ED is better explained by a psychogenic, medication, anatomic, neurologic, thyroid, post-surgical, substance-related, or non-erectile sexual dysfunction pathway.", ["symptoms", "exam", "labs", "medications", "comorbidities", "workup_findings"], unique([...endotext, ...statpearls, ...genericSourceIds])),
+    action: "Document the alternate driver and route to the right care: medication/substance adjustment, depression/anxiety or relationship/sex-therapy support, Peyronie/anatomic urology evaluation, pelvic surgery/trauma pathway, neurologic evaluation, thyroid disease treatment, or separate libido/ejaculation/orgasm/infertility workup. Avoid reassurance alone when CV or endocrine data remain incomplete.",
+    endpointType: "clinician_review_handoff",
+    reviewNeededReason: "Alternative diagnosis or dominant non-endocrine ED driver changes the workup and treatment pathway."
+  });
+
+  const worseningEndpoint = endpoint({
+    id: `${prefix}_worsening_endpoint`,
+    label: "ED reassessment escalation",
+    edgeLabel: "New chest pain, syncope, dyspnea, neuro deficit, visual/hearing loss, priapism >4 hours, rising PSA/Hct, failed correct PDE5 use, or worsening pituitary symptoms",
+    sourceIds: unique([...endotext, ...statpearls, ...testosterone, ...prolactin]),
+    criteria: criteria(`${prefix}_worsening_criteria`, "Use when follow-up data contradict the low-risk ED branch or reveal a therapy complication.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], unique([...endotext, ...statpearls, ...testosterone, ...prolactin]), { criteria_options: focusedCriteria("ed_pde5_safety_dosing_cutoffs", "ed_testosterone_therapy_safety_cutoffs", "ed_injection_priapism_safety_cutoffs", "ed_pituitary_prolactin_cutoffs") }),
+    action: "Escalate to ED/cardiology/urology/endocrinology as indicated, stop the unsafe ED medication, repeat the abnormal objective data, reassess mimics, verify PDE5 timing and adequate trials before labeling failure, and route priapism >4 hours, visual/hearing loss, chest pain, neurologic deficit, or pituitary mass-effect symptoms urgently.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: therapyRows
+  });
+
+  const deescalateEndpoint = endpoint({
+    id: `${prefix}_deescalation_endpoint`,
+    label: "ED de-escalation or stopping",
+    edgeLabel: "Endocrine cause excluded/corrected, CV risk stable, PDE5 tolerated, testosterone criteria no longer met, Hct >54%, PSA trigger, or adverse effect",
+    sourceIds: unique([...endotext, ...testosterone, ...diabetesDx]),
+    criteria: criteria(`${prefix}_deescalation_criteria`, "Use when objective response, normalized/corrected drivers, or medication safety thresholds support stopping, holding, narrowing, or continuing ED therapy.", ["symptoms", "vitals", "labs", "medications", "comorbidities", "workup_findings"], unique([...endotext, ...testosterone, ...diabetesDx]), { criteria_options: focusedCriteria("ed_hypogonadism_confirmation_cutoffs", "ed_testosterone_therapy_safety_cutoffs", "ed_initial_labs_metabolic_cutoffs") }),
+    action: "Stop or hold testosterone for hematocrit >54%, PSA trigger, new contraindication, or absent ongoing hypogonadism criteria; narrow endocrine workup when two morning testosterone values and prolactin/TSH are reassuring; continue vascular risk reduction even when erections improve; step down ED therapy only after response, adverse effects, and follow-up access are documented.",
+    endpointType: "deescalation_stopping",
+    guidelineCutoffs: focusedCriteria("ed_testosterone_therapy_safety_cutoffs", "ed_hypogonadism_confirmation_cutoffs")
+  });
+
+  const followupEndpoint = endpoint({
+    id: `${prefix}_followup_endpoint`,
+    label: "ED follow-up and safety-net",
+    edgeLabel: "Plan active, pending labs owned, CV/metabolic risk owner assigned, therapy safety documented, and return precautions given",
+    sourceIds: unique([...endotext, ...statpearls, ...testosterone, ...diabetesDx]),
+    criteria: criteria(`${prefix}_followup_criteria`, "Use when ED disposition is stable enough for outpatient management with result ownership, monitoring, and return precautions.", ["symptoms", "labs", "medications", "comorbidities", "follow_up_access", "workup_findings"], unique([...endotext, ...statpearls, ...testosterone, ...diabetesDx])),
+    action: "Assign follow-up for testosterone/prolactin/TSH/A1c/lipid results, CV risk management, PDE5 response and adverse effects, testosterone monitoring if used, urology/endocrinology/cardiology referrals, injection/device training when used, and safety-net instructions for chest pain, syncope, neurologic deficit, vision/hearing change, severe headache/visual field loss, priapism >4 hours, medication reaction, or inability to obtain follow-up.",
+    endpointType: "follow_up",
+    monitoringPlan: ["testosterone/prolactin/TSH/A1c/lipid result owner", "CV risk follow-up", "PDE5 response/adverse effects", "testosterone PSA/hematocrit monitoring when used", "specialty referral owner", "return precautions"]
+  });
+
+  const monitoringBundle = actionNode({
+    id: `${prefix}_monitoring_bundle`,
+    label: "ED monitoring",
+    edgeLabel: "Track erection response, PDE5 use timing, adverse effects, BP/CV symptoms, A1c/lipids, testosterone/prolactin results, PSA/Hct if testosterone used, and follow-up access",
+    sourceIds,
+    criteria: criteria(`${prefix}_monitoring_criteria`, "Monitor ED by the same cardiovascular, metabolic, endocrine, treatment-response, and adverse-effect data that selected the active branch.", ["symptoms", "vitals", "labs", "medications", "comorbidities", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
+    action: "Reassess ED response, correct PDE5 use, BP/CV symptoms, A1c/glucose/lipids, testosterone/prolactin/TSH results, PSA/hematocrit when testosterone is used, adverse effects, pending-result ownership, and access barriers.",
+    parallelActions: ["check PDE5 timing and response", "screen chest pain, syncope, dyspnea, claudication, neuro deficit, visual/hearing change, and priapism", "trend A1c/glucose/lipids and BP", "review testosterone/prolactin/TSH results", "monitor PSA/hematocrit when testosterone is used", "confirm follow-up owner and return precautions"],
+    guidelineCutoffs: criteriaRows,
+    children: [worseningEndpoint, deescalateEndpoint, followupEndpoint]
+  });
+
+  const treatmentDecision = decision({
+    id: `${prefix}_treatment_decision`,
+    label: "Choose ED treatment route",
+    edgeLabel: "CV safety, nitrate/PDE5 contraindications, endocrine diagnosis, metabolic risk, and alternate drivers are known",
+    sourceIds,
+    criteria: criteria(`${prefix}_treatment_decision_criteria`, "Route ED treatment by cardiovascular fitness, nitrate/PDE5 medication safety, testosterone/prolactin results, metabolic risk, alternate etiologies, and treatment contraindications.", ["symptoms", "exam", "vitals", "labs", "medications", "comorbidities", "demographics", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
+    action: "Choose the active ED treatment pathway after objective data are available.",
+    children: [pde5Endpoint, hypogonadismEndpoint, metabolicVascularEndpoint, therapyReviewEndpoint, alternateEndpoint, monitoringBundle]
+  });
+
+  const riskDecision = decision({
+    id: `${prefix}_risk_decision`,
+    label: "Classify ED by danger, endocrine, metabolic, and medication safety",
+    edgeLabel: "History, exam, vitals, metabolic labs, testosterone/prolactin/TSH when indicated, medication review, and therapy-safety data are available",
+    sourceIds,
+    criteria: criteria(`${prefix}_risk_decision_criteria`, "Classify ED by emergency features, cardiovascular risk, diabetes/metabolic thresholds, hypogonadism confirmation, prolactin/pituitary thresholds, PDE5 contraindications, testosterone contraindications, and alternate causes.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Select the active branch: missing objective data, emergency/unstable ED, pituitary/prolactin, hypogonadism, metabolic/vascular, PDE5 first-line, therapy safety review, alternate driver, monitoring, de-escalation, or follow-up.",
+    clinicalCriteria: criteriaRows,
+    guidelineCutoffs: criteriaRows,
+    children: [missingObjectiveEndpoint, emergencyEndpoint, pituitaryEndpoint, treatmentDecision]
+  });
+
+  const initialAssessment = actionNode({
+    id: `${prefix}_initial_assessment`,
+    label: "ED intake, exam, labs, and safety screen",
+    edgeLabel: "Assess erection pattern, libido, CV symptoms/exercise tolerance, meds/substances, BP/HR/pulses, genital/testicular/neuro exam, A1c/glucose/lipids, and testosterone/prolactin/TSH when indicated",
+    sourceIds,
+    criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial ED assessment requires sexual history, cardiovascular risk, focused exam, medication review, metabolic labs, and endocrine labs when symptoms suggest hypogonadism or pituitary disease.", contextDomains, sourceIds, { criteria_options: focusedCriteria("ed_definition_and_cv_screen", "ed_initial_labs_metabolic_cutoffs", "ed_hypogonadism_confirmation_cutoffs", "ed_pituitary_prolactin_cutoffs", "ed_pde5_safety_dosing_cutoffs") }),
+    action: "Take a focused sexual/medical/psychosocial history; screen chest pain, claudication, neurologic deficit, severe hypogonadism/pituitary symptoms, priapism, hemodynamic instability, altered mental status, arrhythmia, airway compromise, vision threat, and pregnancy-critical issues when relevant. Measure BP, HR, BMI, pulses, genital/testicular findings, body hair/breast tissue, and focused neurologic findings. Order A1c or fasting glucose, lipids, kidney function, morning total testosterone when low testosterone is possible, and prolactin/TSH for low libido, gynecomastia, infertility, or pituitary symptoms.",
+    parallelActions: ["focused sexual history and duration", "CV symptoms and exercise tolerance", "medication/substance review including nitrates and alpha-blockers", "BP/HR/BMI/pulses and genital/testicular/neuro exam", "A1c or fasting glucose plus lipids", "morning total testosterone when indicated", "prolactin and TSH when indicated", "fertility/prostate/hematocrit safety screen before testosterone"],
+    requiredData: ["erectile symptom duration", "libido and morning/nocturnal erections", "chest pain or claudication", "exercise tolerance", "nitrate/riociguat and alpha-blocker exposure", "blood pressure and pulses", "A1c or fasting glucose", "lipid profile", "morning total testosterone when indicated", "prolactin/TSH when indicated"],
+    guidelineCutoffs: focusedCriteria("ed_definition_and_cv_screen", "ed_initial_labs_metabolic_cutoffs", "ed_hypogonadism_confirmation_cutoffs", "ed_pituitary_prolactin_cutoffs", "ed_pde5_safety_dosing_cutoffs"),
+    children: [riskDecision]
+  });
+
+  const root = decision({
+    id: "root",
+    label: "ED route: emergency, CV/metabolic risk, testosterone, prolactin, PDE5 safety, follow-up",
+    sourceIds,
+    criteria: criteria(`${prefix}_activate`, "Activate for erectile dysfunction, loss of erection maintenance, reduced erection rigidity, endocrine-related ED concern, low libido with ED, medication-related ED, vascular/metabolic risk with ED, or clinician-chosen ED evaluation.", ["presenting_symptoms", "problem_list_or_diagnosis", "medications", "labs", "comorbidities", "clinician_chosen_module"], sourceIds),
+    action: "Route erectile dysfunction through missing-data, emergency, cardiovascular/metabolic, hypogonadism, prolactin/pituitary, PDE5 safety, testosterone safety, alternate-driver, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+    children: [missingContextEndpoint, initialAssessment]
+  });
+
+  return finalizeClinicalPathwayTree({
+    module,
+    sourceById,
+    label,
+    version: "4.0.0",
+    status: "hand_polished_erectile_dysfunction_pathway_needs_clinician_review",
+    sourceIds,
+    criteriaRows,
+    tests,
+    redFlags,
+    differentials,
+    dispositions,
+    root,
+    sourceMaterial: "Endotext ED therapy review, NCBI StatPearls ED review, Endocrine Society testosterone and hyperprolactinemia guidelines, ADA 2026 diabetes diagnosis thresholds, and local module evidence rows",
+    reviewNote: "ED tree is threshold-cited and patient-traversable; local PDE5/testosterone formulary, cardiology sexual-activity clearance policy, prostate-screening policy, injection therapy protocols, fertility goals, and specialist referral access require clinician governance.",
+    syntheticScenarios: [
+      { scenario_id: "missing_context", major_pathway: "missing_data_needed", expected_endpoint_id: missingContextEndpoint.id, expected_active_branch: missingContextEndpoint.edgeLabel },
+      { scenario_id: "missing_labs_medication_safety", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: missingObjectiveEndpoint.id, expected_active_branch: missingObjectiveEndpoint.edgeLabel },
+      { scenario_id: "chest_pain_or_priapism", major_pathway: "escalation_emergency_actions", expected_endpoint_id: emergencyEndpoint.id, expected_active_branch: emergencyEndpoint.edgeLabel },
+      { scenario_id: "pituitary_or_prolactinoma", major_pathway: "diagnostic_confirmation", expected_endpoint_id: pituitaryEndpoint.id, expected_active_branch: pituitaryEndpoint.edgeLabel },
+      { scenario_id: "low_testosterone_confirmed", major_pathway: "severity_risk_stratification", expected_endpoint_id: hypogonadismEndpoint.id, expected_active_branch: hypogonadismEndpoint.edgeLabel },
+      { scenario_id: "diabetes_or_vascular_risk", major_pathway: "first_line_management", expected_endpoint_id: metabolicVascularEndpoint.id, expected_active_branch: metabolicVascularEndpoint.edgeLabel },
+      { scenario_id: "pde5_candidate", major_pathway: "disposition_followup_safety_netting", expected_endpoint_id: pde5Endpoint.id, expected_active_branch: pde5Endpoint.edgeLabel },
+      { scenario_id: "testosterone_or_pde5_contraindication", major_pathway: "contraindications_special_populations", expected_endpoint_id: therapyReviewEndpoint.id, expected_active_branch: therapyReviewEndpoint.edgeLabel },
+      { scenario_id: "psychogenic_anatomic_or_medication_driver", major_pathway: "mimics_exclusions", expected_endpoint_id: alternateEndpoint.id, expected_active_branch: alternateEndpoint.edgeLabel },
+      { scenario_id: "worsening_or_adverse_effect", major_pathway: "monitoring_reassessment_escalation", expected_endpoint_id: worseningEndpoint.id, expected_active_branch: worseningEndpoint.edgeLabel },
+      { scenario_id: "stop_or_hold_therapy", major_pathway: "deescalation_stopping_criteria", expected_endpoint_id: deescalateEndpoint.id, expected_active_branch: deescalateEndpoint.edgeLabel },
+      { scenario_id: "followup_safety_net", major_pathway: "follow_up_safety_netting", expected_endpoint_id: followupEndpoint.id, expected_active_branch: followupEndpoint.edgeLabel }
+    ],
+    handPolishRequirements: [
+      "visible labels are short and branch-specific, with detailed thresholds stored in criteria/action fields",
+      "root and branches avoid generic context, trigger, and crisis-labs wording",
+      "PDE5 branch names nitrate, alpha-blocker, CV stability, and dose-adjustment rules",
+      "testosterone and prolactin branches include repeat morning testosterone, 264 ng/dL, 200-400 ng/dL, <150 ng/dL, >250 ug/L, >500 ug/L, >10 mm, and 1:100 dilution thresholds",
+      "monitoring includes priapism >4 hours, visual/hearing changes, PSA/hematocrit triggers, and CV return precautions"
+    ]
+  });
+}
+
 function buildAdultChestPainClinicalPathwayTree(module, sourceById) {
   const label = module.label || "Chest pain";
   const prefix = "adult_chest_pain";
@@ -5331,18 +5812,11 @@ function buildAdultChestPainClinicalPathwayTree(module, sourceById) {
   const differentials = firstItems(module, "differentialBuckets", 8);
   const dispositions = firstItems(module, "dispositionRules", 8, ["treatmentOptions"]);
   const safetyChecks = firstItems(module, "safetyChecks", 8);
-  const evidenceLabels = {
-    tests: listLabels(tests, 8).join("; "),
-    redFlags: listLabels(redFlags, 8).join("; "),
-    differentials: listLabels(differentials, 8).join("; "),
-    dispositions: listLabels(dispositions, 8).join("; "),
-    safety: listLabels(safetyChecks, 8).join("; ")
-  };
   const criteriaRows = [
     criterion({
       id: "adult_chest_pain_ecg_troponin_timing",
       label: "Acute chest pain ACS screen: 12-lead ECG reviewed within 10 minutes; cardiac troponin measured as soon as possible",
-      criteria_text: "For all adults with acute chest pain, acquire and review a 12-lead ECG for STEMI within 10 minutes of arrival; when ACS is suspected, measure cardiac troponin as soon as possible after presentation.",
+      criteria_text: "Acquire/review ECG for STEMI within 10 minutes; if ACS is suspected, collect cardiac troponin as soon as possible.",
       cutoffs: ["10 minutes"],
       data_needed: ["arrival time", "first ECG time", "ECG interpretation", "cardiac troponin assay", "troponin collection time", "symptom onset time"],
       source_ids: aha,
@@ -5351,7 +5825,7 @@ function buildAdultChestPainClinicalPathwayTree(module, sourceById) {
     criterion({
       id: "adult_chest_pain_serial_troponin_intervals",
       label: "Serial troponin rule-out/rule-in timing: hs-cTn repeat at 1-3 hours; conventional cTn repeat at 3-6 hours",
-      criteria_text: "When serial troponins are needed to exclude myocardial injury, repeat high-sensitivity troponin 1 to 3 hours after the time-zero sample or conventional troponin 3 to 6 hours after time zero, using assay-specific 99th percentile and delta criteria.",
+      criteria_text: "If serial troponins are needed, repeat hs-cTn at 1-3 hours or conventional cTn at 3-6 hours; use assay 99th percentile and delta.",
       cutoffs: ["1 to 3 hours", "3 to 6 hours", "99th percentile"],
       data_needed: ["troponin assay type", "time-zero troponin", "repeat troponin time", "delta troponin", "assay 99th percentile", "ischemic ECG change"],
       source_ids: aha,
@@ -5360,7 +5834,7 @@ function buildAdultChestPainClinicalPathwayTree(module, sourceById) {
     criterion({
       id: "adult_chest_pain_low_risk_discharge",
       label: "Low-risk chest pain: 30-day death/MACE risk <1%, HEART <3 or EDACS <16 with serial troponins below 99th percentile",
-      criteria_text: "Low-risk acute chest pain corresponds to estimated 30-day death or MACE risk <1%; examples include HEART score <3 or EDACS score <16 with initial and serial cTn/hs-cTn below the assay 99th percentile and no ischemic ECG change.",
+      criteria_text: "Low risk requires 30-day death/MACE <1%, such as HEART <3 or EDACS <16, nonischemic ECG, and serial troponins below 99th percentile.",
       cutoffs: ["30-day death/MACE risk <1%", "HEART score <3", "EDACS score <16", "99th percentile"],
       data_needed: ["structured chest pain risk score", "HEART score", "EDACS score", "serial troponins", "assay 99th percentile", "ECG ischemia status", "follow-up access"],
       source_ids: aha,
@@ -5369,7 +5843,7 @@ function buildAdultChestPainClinicalPathwayTree(module, sourceById) {
     criterion({
       id: "adult_chest_pain_aortic_dissection_probability",
       label: "Aortic dissection concern: abrupt severe/ripping pain plus pulse differential plus widened mediastinum gives >80% probability",
-      criteria_text: "Abrupt severe ripping chest or back pain, pulse differential, and widened mediastinum on chest radiograph should route to acute aortic syndrome imaging; the AHA/ACC slide set reports >80% probability when severe abrupt pain, pulse differential, and widened mediastinum coexist.",
+      criteria_text: "Abrupt severe ripping chest/back pain plus pulse differential plus widened mediastinum gives >80% dissection probability; image urgently.",
       cutoffs: [">80% probability"],
       data_needed: ["pain onset and quality", "back radiation", "bilateral arm blood pressures or pulse differential", "neurologic deficit", "CXR mediastinum", "aortic risk factors", "CTA/TEE/MRA feasibility"],
       source_ids: aha,
@@ -5378,7 +5852,7 @@ function buildAdultChestPainClinicalPathwayTree(module, sourceById) {
     criterion({
       id: `${prefix}_single_hsctn_onset_3h`,
       label: "Single hs-cTn rule-out is only a narrow option when symptoms began at least 3 hours before ED arrival and initial hs-cTn is below the assay limit of detection",
-      criteria_text: "For suspected ACS in selected low-risk ED contexts, a single hs-cTn below the assay limit of detection can exclude myocardial injury when symptoms began at least 3 hours before ED arrival and ECG/risk assessment is reassuring.",
+      criteria_text: "Single hs-cTn below the assay limit of detection can rule out injury only when symptom onset was >=3 hours before ED arrival and ECG/risk are reassuring.",
       cutoffs: ["at least 3 hours"],
       data_needed: ["symptom onset time", "arrival time", "hs-cTn assay", "limit of detection", "ECG ischemia status", "risk score", "prior CAD"],
       source_ids: aha,
@@ -5386,8 +5860,8 @@ function buildAdultChestPainClinicalPathwayTree(module, sourceById) {
     }),
     criterion({
       id: `${prefix}_stress_ccta_safety_cutoffs`,
-      label: "Testing safety: avoid stress testing in active ACS or AMI <2 days, severe BP >=200/110 mm Hg, SBP <90 mm Hg for vasodilators, GFR <30 mL/min/1.73 m2 for contrast-sensitive imaging when applicable, or caffeine within 12 hours for vasodilator stress",
-      criteria_text: "AHA/ACC testing tables list modality-specific contraindications, including active ACS or AMI <2 days, severe systemic hypertension such as >=200/110 mm Hg, significant hypotension such as SBP <90 mm Hg for vasodilator protocols, reduced GFR <30 mL/min/1.73 m2 for contrast-sensitive testing, and caffeine or methylxanthine use within 12 hours for vasodilator stress.",
+      label: "Testing safety cutoffs: active ACS or AMI <2 days, BP >=200/110, SBP <90 for vasodilators, eGFR <30 for selected contrast tests, caffeine within 12 hours",
+      criteria_text: "Review test safety for active ACS/AMI <2 days, BP >=200/110, vasodilator SBP <90, eGFR <30 for selected contrast tests, and caffeine within 12 hours.",
       cutoffs: ["AMI <2 days", ">=200/110 mm Hg", "SBP <90 mm Hg", "GFR <30 mL/min/1.73 m2", "12 hours"],
       data_needed: ["active ACS status", "recent AMI timing", "blood pressure", "renal function/eGFR", "contrast allergy", "caffeine/methylxanthine timing", "arrhythmia", "bronchospasm", "pregnancy status"],
       source_ids: aha,
@@ -5397,123 +5871,130 @@ function buildAdultChestPainClinicalPathwayTree(module, sourceById) {
     }),
     criterion({
       id: `${prefix}_intermediate_high_risk_thresholds`,
-      label: "Intermediate/high-risk examples: HEART 4-6 intermediate, HEART 7-10 high, GRACE <140 applies to selected low-risk ESC/GRACE pathways, T0 hs-cTn 12-52 ng/L or 1-hour delta 3-5 ng/L intermediate and T0 >52 ng/L or delta >5 ng/L high in one ESC pathway",
-      criteria_text: "AHA/ACC sample pathway tables list HEART score 4-6 as intermediate and 7-10 as high, and include examples such as GRACE <140 for selected low-risk classification and hs-cTn pathway bands T0 12-52 ng/L or 1-hour delta 3-5 ng/L for intermediate and T0 >52 ng/L or delta >5 ng/L for high risk; local assay pathways must govern troponin bands.",
+      label: "Risk strata: HEART 4-6 intermediate, HEART 7-10 high, GRACE <140 only in selected low-risk protocols, hs-cTn bands require local assay approval",
+      criteria_text: "HEART 4-6 is intermediate; HEART 7-10 is high. Example hs-cTn bands: T0 12-52 or delta 3-5 intermediate; T0 >52 or delta >5 high.",
       cutoffs: ["HEART score 4-6", "HEART score 7-10", "GRACE <140", "T0 hs-cTn 12-52 ng/L", "1-hour delta 3-5 ng/L", "T0 hs-cTn >52 ng/L", "delta >5 ng/L"],
       data_needed: ["HEART score", "GRACE score if used", "troponin assay protocol", "time-zero hs-cTn", "1-hour or 2-hour delta", "ECG ischemia status", "local pathway"],
       source_ids: aha,
-      source_section: "Sample clinical decision pathways used to define risk",
+      source_section: "AHA/ACC acute chest pain risk strata Table 6",
       needs_clinical_review: true,
-      reviewer_input_needed: "Troponin numeric bands are assay- and protocol-specific; local ED/cardiology governance must select the approved pathway."
+      reviewer_input_needed: "Troponin numeric bands are assay- and protocol-specific; local ED/cardiology governance must select the approved protocol."
     })
   ];
+  const criteriaById = Object.fromEntries(criteriaRows.map((row) => [row.id, row]));
+  const focusedCriteria = (...ids) => ids.map((id) => criteriaById[id]).filter(Boolean);
+  const ecgTroponinRows = focusedCriteria("adult_chest_pain_ecg_troponin_timing", "adult_chest_pain_serial_troponin_intervals");
+  const acsRiskRows = focusedCriteria("adult_chest_pain_ecg_troponin_timing", "adult_chest_pain_serial_troponin_intervals", `${prefix}_intermediate_high_risk_thresholds`);
+  const lowRiskRows = focusedCriteria("adult_chest_pain_low_risk_discharge", `${prefix}_single_hsctn_onset_3h`);
+  const mimicRows = focusedCriteria("adult_chest_pain_aortic_dissection_probability");
+  const testingSafetyRows = focusedCriteria(`${prefix}_stress_ccta_safety_cutoffs`, `${prefix}_intermediate_high_risk_thresholds`);
 
   const missingContextEndpoint = endpoint({
     id: "endpoint_missing_context",
     label: "Missing data needed: adult chest pain context",
-    edgeLabel: "Missing adult chest pain context: symptom onset, ischemic descriptors, vitals, ECG timing/result, troponin timing/result, dissection/PE features, medications, comorbidities, age/pregnancy context, and follow-up access",
+    edgeLabel: "Missing onset, vitals, ECG, troponin timing/value, emergency-mimic screen, medication risks, pregnancy status, comorbidities, or follow-up access",
     sourceIds,
     criteria: criteria(`${prefix}_missing_context_criteria`, "Route here when adult chest pain cannot be evaluated because the patient context needed for ACS, aortic, PE, respiratory, GI, musculoskeletal, or safety disposition is unavailable.", contextDomains, sourceIds, { missing_any: contextDomains }),
-    action: "Document onset time, symptom quality/radiation/exertional pattern, dyspnea/diaphoresis/syncope/neurologic symptoms, full vital signs, bilateral arm blood pressures when dissection is possible, focused cardiovascular/pulmonary exam, medication/anticoagulant/contrast allergy context, pregnancy possibility, comorbid CAD/aortic/PE risk, ECG timing/result, troponin assay/timing/result, CXR/imaging status, risk score, and follow-up access.",
+    action: "Document onset, quality/radiation/exertion, dyspnea/diaphoresis/syncope/neuro symptoms, vitals/SpO2, focused CV/pulmonary exam, ECG time/result, troponin assay/timing/value, aortic/PE screen, medication/allergy/contrast risks, pregnancy status, comorbidities, and follow-up access.",
     endpointType: "missing_data_needed",
     missingDataNeeded: ["symptom onset and duration", "ischemic descriptors and associated symptoms", "blood pressure, heart rate, respiratory rate, oxygen saturation, temperature", "bilateral arm BP or pulse differential when dissection possible", "focused cardiovascular and pulmonary exam", "12-lead ECG time and interpretation", "troponin assay type and collection times", "initial and repeat troponin values with assay 99th percentile", "aortic dissection and PE features", "medications/allergies/contrast risk", "age, pregnancy status, and comorbidities", "follow-up access"]
   });
 
   const missingAcsDataEndpoint = endpoint({
     id: `${prefix}_missing_acs_data_endpoint`,
-    label: "Missing data needed: adult chest pain ECG, troponin, risk score, or aortic emergency data",
-    edgeLabel: "Cannot classify adult chest pain until ECG within 10 minutes if acute, troponin assay/timing including 1-3 hour hs-cTn or 3-6 hour conventional repeat when needed, ischemic ECG status, 99th percentile/delta, risk score, and dissection/PE danger findings are known",
+    label: "Missing ACS data: ECG, troponin assay/timing, risk score, or aortic/PE danger screen",
+    edgeLabel: "Missing ECG within 10 minutes, hs-cTn 1-3 hour or conventional 3-6 hour repeat plan, 99th percentile/delta, HEART/EDACS, or dissection/PE screen",
     sourceIds: aha,
-    criteria: criteria(`${prefix}_missing_acs_data_criteria`, "Route here when the exact ACS/aortic risk data needed for disposition are unavailable.", contextDomains, aha, { missing_any: ["arrival time", "12-lead ECG", "cardiac troponin assay and collection time", "troponin assay type", "time-zero troponin", "repeat troponin time", "delta troponin", "assay 99th percentile", "structured risk score", "bilateral arm BP/pulse differential when dissection possible"] }),
-    action: "Obtain or repeat 12-lead ECG and clinician interpretation, time-zero troponin with assay 99th percentile, repeat hs-cTn at 1 to 3 hours or conventional cTn at 3 to 6 hours when serial testing is required, structured HEART/EDACS or approved local pathway score, CXR/CTA data when aortic or pulmonary emergency remains possible, and follow-up access before low-risk discharge.",
+    criteria: criteria(`${prefix}_missing_acs_data_criteria`, "Route here when the exact ACS/aortic risk data needed for disposition are unavailable.", contextDomains, aha, { missing_any: ["arrival time", "12-lead ECG", "cardiac troponin assay and collection time", "troponin assay type", "time-zero troponin", "repeat troponin time", "delta troponin", "assay 99th percentile", "structured risk score", "bilateral arm BP/pulse differential when dissection possible"], criteria_options: ecgTroponinRows }),
+    action: "Obtain clinician-interpreted ECG, time-zero troponin with assay 99th percentile, repeat hs-cTn at 1-3 hours or conventional cTn at 3-6 hours if needed, HEART/EDACS or local score, CXR/CTA when aortic or pulmonary emergency remains possible, and follow-up access.",
     endpointType: "missing_data_needed",
     missingDataNeeded: ["arrival time", "12-lead ECG", "ECG interpretation", "cardiac troponin assay and collection time", "troponin assay type", "time-zero troponin", "repeat troponin time", "delta troponin", "assay 99th percentile", "structured risk score", "CXR or aortic imaging data when indicated", "follow-up access"]
   });
 
   const acsEmergencyEndpoint = endpoint({
     id: `${prefix}_acs_emergency_endpoint`,
-    label: "Adult chest pain ACS emergency: STEMI/ischemic ECG, unstable vitals, shock, recurrent syncope, or rising troponin needs ED/cardiology escalation",
-    edgeLabel: `High-risk ACS branch: ECG reviewed within 10 minutes shows STEMI or ischemic change, serial ECG evolves, troponin rises above the 99th percentile with dynamic change, HEART 7-10 or equivalent high-risk pathway applies, or danger features are present: ${evidenceLabels.redFlags}`,
+    label: "ACS emergency: STEMI/ischemic ECG, dynamic troponin rise, shock, syncope, or HEART 7-10",
+    edgeLabel: "STEMI or ischemic ECG, evolving serial ECG, troponin above 99th percentile with dynamic change, HEART 7-10, hypotension/shock, recurrent syncope, or new neurologic deficit",
     sourceIds: aha,
-    criteria: criteria(`${prefix}_acs_emergency_criteria`, "Use when acute coronary syndrome, myocardial injury, unstable physiology, or high-risk structured pathway criteria require emergency treatment/disposition rather than outpatient testing.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], aha, { criteria_options: criteriaRows }),
-    action: "Manage as high-risk acute chest pain: place on monitor, repeat ECGs if symptoms persist or ECG is nondiagnostic, treat STEMI/NSTE-ACS according to local ACS protocols, obtain cardiology/ED escalation, avoid delayed ED transfer for outpatient troponin testing, and document antiplatelet/anticoagulant contraindications through the local ACS pathway.",
+    criteria: criteria(`${prefix}_acs_emergency_criteria`, "Use when acute coronary syndrome, myocardial injury, unstable physiology, or high-risk structured criteria require emergency treatment/disposition rather than outpatient testing.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], aha, { criteria_options: acsRiskRows }),
+    action: "Place on monitor, repeat ECGs if symptoms persist or ECG is nondiagnostic, treat STEMI/NSTE-ACS by local ACS protocol, escalate to ED/cardiology, avoid outpatient troponin delay, and document antiplatelet/anticoagulant contraindications.",
     endpointType: "escalation_disposition",
-    guidelineCutoffs: criteriaRows
+    guidelineCutoffs: acsRiskRows
   });
 
   const lifeThreateningMimicEndpoint = endpoint({
     id: `${prefix}_aortic_pe_esophageal_endpoint`,
-    label: "Adult chest pain non-ACS emergency: aortic syndrome, PE, pneumothorax, esophageal rupture, myocarditis/pericarditis, or sepsis route",
-    edgeLabel: `Non-ACS emergency branch: ${evidenceLabels.differentials} with dissection pattern, pulse/BP differential, widened mediastinum, pleuritic hypoxemia, unilateral absent breath sounds, fever/rub, emesis/subcutaneous emphysema, or other emergency physiology`,
+    label: "Non-ACS emergency: aortic syndrome, PE, pneumothorax, esophageal rupture, myocarditis, or sepsis",
+    edgeLabel: "Abrupt tearing pain/back radiation, pulse/BP differential, widened mediastinum, pleuritic hypoxemia, unilateral absent breath sounds, fever/rub, emesis, or subcutaneous emphysema",
     sourceIds: aha,
-    criteria: criteria(`${prefix}_life_threatening_mimic_criteria`, "Use when adult chest pain features point to acute aortic syndrome, PE, pneumothorax, esophageal rupture, myocarditis/pericarditis, pneumonia, or another time-sensitive emergency.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "workup_findings"], aha, { criteria_options: criteriaRows }),
-    action: "Do not force an ACS-only route. Activate the specific emergency pathway: acute aortic imaging for abrupt severe ripping pain with pulse differential or widened mediastinum, PE pathway for dyspnea/tachycardia/pleuritic pain/VTE risk, pneumothorax pathway for unilateral breath-sound loss, esophageal rupture pathway for emesis/subcutaneous emphysema, myocarditis/pericarditis workup for fever/pleuritic-positional pain/rub, and monitored disposition when unstable.",
+    criteria: criteria(`${prefix}_life_threatening_mimic_criteria`, "Use when adult chest pain features point to acute aortic syndrome, PE, pneumothorax, esophageal rupture, myocarditis/pericarditis, pneumonia, or another time-sensitive emergency.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "workup_findings"], aha, { criteria_options: mimicRows }),
+    action: "Use the matching emergency route: aortic imaging for tearing pain with pulse differential/widened mediastinum; PE evaluation for dyspnea, tachycardia, pleuritic pain, or VTE risk; pneumothorax, esophageal, myopericarditis, or sepsis care when those findings fit.",
     endpointType: "escalation_disposition",
-    guidelineCutoffs: criteriaRows
+    guidelineCutoffs: mimicRows
   });
 
   const lowRiskEndpoint = endpoint({
     id: `${prefix}_low_risk_discharge_endpoint`,
-    label: "Adult low-risk chest pain: discharge without urgent cardiac testing only after <1% 30-day death/MACE pathway criteria and serial troponin/ECG rules are satisfied",
-    edgeLabel: "Low-risk branch: estimated 30-day death/MACE risk <1%, HEART score <3 or EDACS score <16 with initial and serial troponins below the assay 99th percentile, no ischemic ECG change, no aortic/PE emergency features, symptoms stable, and follow-up/safety-net access documented",
+    label: "Low-risk discharge: <1% 30-day death/MACE, HEART <3 or EDACS <16, nonischemic ECG, serial troponins below 99th percentile",
+    edgeLabel: "30-day death/MACE <1%, HEART <3 or EDACS <16, nonischemic ECG, serial troponins below 99th percentile, no aortic/PE features, stable symptoms, and follow-up access",
     sourceIds: aha,
-    criteria: criteria(`${prefix}_low_risk_discharge_criteria`, "Use only after the adult chest pain pathway demonstrates low short-term risk and no alternate emergency condition.", ["symptoms", "vitals", "labs", "imaging_results", "workup_findings", "follow_up_access"], aha, { criteria_options: criteriaRows }),
-    action: "Discharge or use outpatient management only when low-risk pathway criteria are satisfied. Document risk score, ECG/troponin timing and assay 99th percentile, absence of dissection/PE/emergency features, shared decision-making, follow-up owner, and return precautions for recurrent/worsening chest pressure, dyspnea, syncope, neurologic deficit, hemoptysis, severe back pain, fever, or inability to obtain follow-up.",
+    criteria: criteria(`${prefix}_low_risk_discharge_criteria`, "Use only after adult chest pain has low short-term risk and no alternate emergency condition.", ["symptoms", "vitals", "labs", "imaging_results", "workup_findings", "follow_up_access"], aha, { criteria_options: lowRiskRows }),
+    action: "Discharge only when low-risk criteria are met. Document score, ECG/troponin timing, 99th percentile, no emergency features, shared decision, follow-up owner, and return precautions for recurrent pressure, dyspnea, syncope, neuro deficit, hemoptysis, severe back pain, fever, or failed follow-up.",
     endpointType: "safety_net_instruction",
-    guidelineCutoffs: criteriaRows
+    guidelineCutoffs: lowRiskRows
   });
 
   const intermediateEndpoint = endpoint({
     id: `${prefix}_intermediate_testing_endpoint`,
-    label: "Adult intermediate-risk chest pain: observation, serial biomarkers/ECGs, and CCTA or stress imaging selected by patient factors and contraindications",
-    edgeLabel: "Intermediate-risk branch: HEART score 4-6, nondiagnostic ECG with ongoing suspicion, troponin not clearly ruled out, known CAD or risk factors, or local pathway calls for observation/imaging before discharge",
+    label: "Intermediate risk: HEART 4-6, unresolved troponin/ECG risk, known CAD, or need for observation, CCTA, or stress imaging",
+    edgeLabel: "HEART 4-6, nondiagnostic ECG with ongoing suspicion, unresolved troponin risk, known CAD/risk factors, or need for observation/imaging",
     sourceIds: aha,
-    criteria: criteria(`${prefix}_intermediate_testing_criteria`, "Use when acute chest pain is not low risk and not an immediate high-risk emergency, and further observation or cardiac testing will change disposition.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "workup_findings"], aha, { criteria_options: criteriaRows }),
-    action: "Continue monitored observation or ED/cardiology-directed testing. Repeat ECG/troponin according to assay timing, choose CCTA or stress imaging based on age, prior CAD, ECG interpretability, ability to exercise, renal function, contrast allergy, arrhythmia, bronchospasm, pregnancy, and local availability; document why low-risk discharge is not yet appropriate.",
+    criteria: criteria(`${prefix}_intermediate_testing_criteria`, "Use when acute chest pain is not low risk and not an immediate high-risk emergency, and further observation or cardiac testing will change disposition.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "workup_findings"], aha, { criteria_options: testingSafetyRows }),
+    action: "Observe on monitor, repeat ECG/troponin, and choose CCTA or stress imaging by age, prior CAD, ECG interpretability, exercise ability, eGFR, contrast allergy, arrhythmia, bronchospasm, pregnancy, and availability; document why discharge is not safe yet.",
     endpointType: "diagnostic_step",
-    guidelineCutoffs: criteriaRows
+    guidelineCutoffs: testingSafetyRows
   });
 
   const testingSafetyEndpoint = endpoint({
     id: `${prefix}_testing_safety_review_endpoint`,
-    label: "Adult chest pain clinician review: pregnancy, renal/contrast risk, stress-test contraindication, assay-specific troponin pathway, anticoagulant/antiplatelet risk, or local protocol",
-    edgeLabel: "Special-population or contraindication branch: pregnancy/postpartum, age >75 with dyspnea/syncope/delirium/fall, GFR <30 mL/min/1.73 m2, contrast allergy, severe BP >=200/110 mm Hg, SBP <90 mm Hg, AMI <2 days/active ACS, bronchospasm, arrhythmia, caffeine within 12 hours, or assay-specific troponin thresholds require local governance",
+    label: "Safety review: pregnancy, eGFR <30, contrast allergy, BP >=200/110, SBP <90, AMI <2 days, bronchospasm, arrhythmia, caffeine within 12 hours, or local troponin protocol",
+    edgeLabel: "Pregnancy/postpartum, eGFR <30, contrast allergy, BP >=200/110, SBP <90, AMI <2 days, bronchospasm, arrhythmia, caffeine within 12 hours, or local troponin protocol",
     sourceIds: aha,
-    criteria: criteria(`${prefix}_testing_safety_review_criteria`, "Use when patient-specific factors change adult chest pain testing, treatment, or disposition.", ["demographics", "pregnancy_status", "medications", "allergies", "comorbidities", "vitals", "labs", "local_policy", "workup_findings"], aha, { criteria_options: criteriaRows }),
-    action: "Get ED/cardiology/radiology or appropriate clinician review before non-emergent testing or treatment that could be unsafe. Do not delay emergency ACS/aortic/PE stabilization; document the contraindication, approved local pathway, and reviewer recommendation.",
+    criteria: criteria(`${prefix}_testing_safety_review_criteria`, "Use when patient-specific factors change adult chest pain testing, treatment, or disposition.", ["demographics", "pregnancy_status", "medications", "allergies", "comorbidities", "vitals", "labs", "local_policy", "workup_findings"], aha, { criteria_options: testingSafetyRows }),
+    action: "Get ED/cardiology/radiology review before unsafe non-emergent testing or treatment. Do not delay emergency ACS/aortic/PE stabilization; document the contraindication, approved local protocol, and reviewer recommendation.",
     endpointType: "clinician_review_handoff",
     reviewNeededReason: "Testing and treatment depend on local troponin assay pathway, imaging availability, pregnancy/renal/contrast risk, stress-test contraindications, and ACS medication risk."
   });
 
   const worseningEndpoint = endpoint({
     id: `${prefix}_worsening_endpoint`,
-    label: "Adult chest pain reassessment: worsening symptoms, ECG evolution, troponin rise, hypoxemia, hypotension, or new neurologic deficit escalates disposition",
-    edgeLabel: "Reassessment branch: pain recurs or worsens, ECG changes appear on serial tracing, troponin crosses the 99th percentile or delta becomes concerning, oxygenation/vitals worsen, syncope/neurologic deficit occurs, or aortic/PE/pneumothorax features emerge",
+    label: "Reassessment escalation: worse pain, new ischemic ECG, rising troponin, hypoxemia, hypotension, syncope, or neurologic deficit",
+    edgeLabel: "Worse pain, new ischemic ECG, troponin >99th percentile or concerning delta, worse vitals/SpO2, syncope/neuro deficit, or new aortic/PE/pneumothorax signs",
     sourceIds: aha,
-    criteria: criteria(`${prefix}_worsening_criteria`, "Escalate adult chest pain when reassessment contradicts the current low/intermediate-risk branch.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "workup_findings"], aha, { criteria_options: criteriaRows }),
-    action: "Move to ED/cardiology or monitored emergency evaluation, repeat ECG and troponin per pathway, reconsider aortic/PE/pneumothorax/esophageal and myocarditis/pericarditis routes, and document the objective change that closed the lower-risk branch.",
+    criteria: criteria(`${prefix}_worsening_criteria`, "Escalate adult chest pain when reassessment contradicts the current low/intermediate-risk branch.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "workup_findings"], aha, { criteria_options: acsRiskRows }),
+    action: "Move to ED/cardiology or monitored emergency evaluation, repeat ECG/troponin per protocol, reconsider aortic/PE/pneumothorax/esophageal and myocarditis/pericarditis routes, and document the objective change.",
     endpointType: "escalation_disposition",
-    guidelineCutoffs: criteriaRows
+    guidelineCutoffs: acsRiskRows
   });
 
   const deescalateEndpoint = endpoint({
     id: `${prefix}_deescalation_endpoint`,
-    label: "Adult chest pain de-escalation: stop ACS escalation only after serial ECG/troponin and structured risk pathway support a lower-risk diagnosis",
-    edgeLabel: "De-escalation branch: symptoms stable or resolved, ECGs remain nonischemic, serial troponins stay below the assay 99th percentile with no concerning delta, HEART/EDACS or local pathway is low risk, and alternate emergency diagnoses have been excluded",
+    label: "De-escalate ACS route: stable symptoms, nonischemic serial ECGs, troponins below 99th percentile without concerning delta, and low-risk score",
+    edgeLabel: "Symptoms stable/resolved, ECGs nonischemic, serial troponins below 99th percentile without concerning delta, HEART/EDACS low risk, and emergencies excluded",
     sourceIds: aha,
-    criteria: criteria(`${prefix}_deescalation_criteria`, "Use when objective adult chest pain reassessment supports narrowing from emergency ACS/aortic/PE evaluation to outpatient or alternate diagnosis care.", ["symptoms", "vitals", "labs", "imaging_results", "workup_findings", "follow_up_access"], aha, { criteria_options: criteriaRows }),
+    criteria: criteria(`${prefix}_deescalation_criteria`, "Use when objective adult chest pain reassessment supports narrowing from emergency ACS/aortic/PE evaluation to outpatient or alternate diagnosis care.", ["symptoms", "vitals", "labs", "imaging_results", "workup_findings", "follow_up_access"], aha, { criteria_options: lowRiskRows }),
     action: "Document the negative serial ECG/troponin timing, risk score, absence of emergency mimics, patient counseling, and follow-up; avoid urgent cardiac testing when AHA/ACC low-risk criteria are satisfied.",
     endpointType: "deescalation_stopping",
-    guidelineCutoffs: criteriaRows
+    guidelineCutoffs: lowRiskRows
   });
 
   const followupEndpoint = endpoint({
     id: `${prefix}_followup_safety_endpoint`,
     label: "Adult chest pain follow-up and safety-net: pending results, outpatient testing owner, risk-factor care, and return precautions",
-    edgeLabel: `Disposition branch: ${evidenceLabels.dispositions}; acute emergency excluded or managed, pending troponin/imaging/stress/CCTA results assigned, follow-up interval documented, and patient understands return precautions`,
+    edgeLabel: "Emergency causes excluded or managed, pending results have owners, follow-up is reachable, and return precautions are documented",
     sourceIds: aha,
-    criteria: criteria(`${prefix}_followup_safety_criteria`, "Use when adult chest pain is stable enough for discharge or lower-acuity care with result ownership and safety-net instructions.", ["symptoms", "vitals", "labs", "imaging_results", "medications", "follow_up_access", "workup_findings"], aha, { criteria_options: criteriaRows }),
-    action: "Assign owners for pending ECG/troponin/imaging results and outpatient testing, reconcile cardiac risk-factor and medication plans, document shared decision-making, and give return precautions for recurrent pressure/tightness, dyspnea, diaphoresis, syncope, neurologic deficit, severe sudden back pain, hemoptysis, fever, or worsening oxygenation.",
+    criteria: criteria(`${prefix}_followup_safety_criteria`, "Use when adult chest pain is stable enough for discharge or lower-acuity care with result ownership and safety-net instructions.", ["symptoms", "vitals", "labs", "imaging_results", "medications", "follow_up_access", "workup_findings"], aha, { criteria_options: lowRiskRows }),
+    action: "Assign owners for pending ECG/troponin/imaging/outpatient tests, reconcile risk-factor and medication plans, document shared decision-making, and give return precautions for recurrent pressure, dyspnea, diaphoresis, syncope, neuro deficit, severe back pain, hemoptysis, fever, or worsening SpO2.",
     endpointType: "follow_up",
     monitoringPlan: ["pending result owner", "outpatient test owner", "medication/risk-factor plan", "return precautions", "follow-up access"]
   });
@@ -5521,9 +6002,9 @@ function buildAdultChestPainClinicalPathwayTree(module, sourceById) {
   const alternateEndpoint = endpoint({
     id: `${prefix}_alternate_noncardiac_endpoint`,
     label: "Adult chest pain alternate diagnosis: musculoskeletal, GI, anxiety, pulmonary infection, shingles, or other noncardiac cause after emergencies are excluded",
-    edgeLabel: `Alternate diagnosis branch: ${evidenceLabels.differentials} fits better after ACS, aortic, PE, pneumothorax, esophageal rupture, myocarditis/pericarditis, and unstable physiology have been checked`,
+    edgeLabel: "Localized tenderness, reflux/biliary pattern, dermatomal rash, pneumonia findings, or anxiety/panic pattern fits after ACS/aortic/PE/pneumothorax/esophageal/myopericarditis checks",
     sourceIds: aha,
-    criteria: criteria(`${prefix}_alternate_noncardiac_criteria`, "Use when a noncardiac or alternate pathway explains adult chest pain and emergency diagnoses are absent.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "workup_findings"], aha, { criteria_options: criteriaRows }),
+    criteria: criteria(`${prefix}_alternate_noncardiac_criteria`, "Use when a noncardiac or alternate diagnosis explains adult chest pain and emergency diagnoses are absent.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "workup_findings"], aha, { criteria_options: mimicRows }),
     action: "Treat the active alternate diagnosis and document why ACS/aortic/PE and other emergencies are no longer active. Use return precautions rather than reassurance alone when diagnostic uncertainty remains.",
     endpointType: "clinician_review_handoff",
     reviewNeededReason: "Alternate chest pain diagnosis should be documented with emergency exclusions and follow-up ownership."
@@ -5532,19 +6013,19 @@ function buildAdultChestPainClinicalPathwayTree(module, sourceById) {
   const reassessmentBundle = actionNode({
     id: `${prefix}_reassessment_bundle`,
     label: "Adult chest pain monitoring: serial symptoms, vital signs, ECG, troponin, oxygenation, and disposition readiness",
-    edgeLabel: "Monitoring branch after initial adult chest pain classification: trend pain, hemodynamics, oxygenation, ECG, troponin timing/delta, imaging results, treatment adverse effects, and follow-up constraints",
+    edgeLabel: "Trend pain, vitals, oxygenation, ECG, troponin timing/delta, imaging results, adverse effects, and disposition readiness",
     sourceIds: aha,
-    criteria: criteria(`${prefix}_reassessment_bundle_criteria`, "Monitor adult chest pain by repeating the same objective data that selected the active branch.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], aha, { criteria_options: criteriaRows }),
+    criteria: criteria(`${prefix}_reassessment_bundle_criteria`, "Monitor adult chest pain by repeating the same objective data that selected the active branch.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], aha, { criteria_options: acsRiskRows }),
     action: "Reassess symptoms, vitals, oxygenation, serial ECGs, serial troponin timing/delta, imaging/test results, treatment response, medication contraindications, and disposition readiness before closure.",
-    parallelActions: unique(["repeat vital signs", "repeat ECG if symptoms persist or evolve", "serial troponin per hs-cTn 1-3 hour or conventional 3-6 hour timing", "review CXR/CTA/CCTA/stress results when ordered", "confirm follow-up and return precautions", evidenceLabels.safety]),
-    guidelineCutoffs: criteriaRows,
+    parallelActions: unique(["repeat vital signs", "repeat ECG if symptoms persist or evolve", "serial troponin per hs-cTn 1-3 hour or conventional 3-6 hour timing", "review CXR/CTA/CCTA/stress results when ordered", "confirm follow-up and return precautions"]),
+    guidelineCutoffs: acsRiskRows,
     children: [worseningEndpoint, deescalateEndpoint, followupEndpoint]
   });
 
   const riskDecision = decision({
     id: `${prefix}_risk_decision`,
-    label: "Adult chest pain: choose low-risk discharge, intermediate testing, emergency escalation, alternate diagnosis, or clinician-review branch",
-    edgeLabel: "Adult chest pain ECG/troponin/risk-score branch ready: 10-minute ECG status, hs-cTn 1-3 hour or conventional 3-6 hour plan, 99th percentile/delta, HEART/EDACS, and aortic/PE emergency features are available",
+    label: "Classify by ECG, troponin timing/delta, HEART/EDACS, emergency mimics, and test safety",
+    edgeLabel: "ECG, troponin assay/timing/delta, HEART/EDACS, aortic/PE screen, and test contraindications are available",
     sourceIds: aha,
     criteria: criteria(`${prefix}_risk_decision_criteria`, "Classify adult chest pain by ECG, troponin timing/delta, structured risk score, vital stability, and life-threatening non-ACS features.", contextDomains, aha, { criteria_options: criteriaRows }),
     action: "Select the active branch: high-risk ACS emergency, aortic/PE/esophageal/pulmonary emergency, low-risk discharge, intermediate observation/testing, clinician-review modifier, reassessment, or documented alternate diagnosis.",
@@ -5555,14 +6036,14 @@ function buildAdultChestPainClinicalPathwayTree(module, sourceById) {
 
   const initialAssessment = actionNode({
     id: `${prefix}_initial_assessment_bundle`,
-    label: "Adult chest pain bedside assessment: ischemic symptoms, ECG within 10 minutes, troponin assay timing, vital stability, aortic/PE signs, and testing safety",
-    edgeLabel: `Adult chest pain assessment bundle: ${evidenceLabels.tests}; ${evidenceLabels.redFlags}; ${evidenceLabels.safety}`,
+    label: "Bedside assessment: onset, ischemic features, vitals, ECG within 10 minutes, troponin assay, aortic/PE screen, and test safety",
+    edgeLabel: "Collect onset, ischemic descriptors, vitals, focused exam, ECG, troponin assay/timing, mimic signs, medication risks, pregnancy status, and follow-up access",
     sourceIds,
-    criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial adult chest pain assessment requires symptom timing/quality, focused cardiovascular/pulmonary exam, full vital signs, 12-lead ECG, troponin assay plan, emergency mimic screening, medication/contraindication review, and disposition constraints.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
-    action: "Assess symptom onset/quality/radiation/exertion, dyspnea/diaphoresis/palpitations/syncope/neurologic symptoms, full vitals and oxygenation, focused cardiac/pulmonary/aortic exam, 12-lead ECG within 10 minutes for acute presentations, cardiac troponin as soon as possible when ACS is suspected, CXR when pulmonary/thoracic causes are possible, bilateral arm BP/pulse differential if aortic syndrome is possible, PE risk, pregnancy/renal/contrast/stress-test safety, and follow-up access.",
-    parallelActions: unique([evidenceLabels.tests, evidenceLabels.redFlags, evidenceLabels.safety, "arrival time", "symptom onset time", "cardiac troponin assay and 99th percentile", "structured HEART/EDACS or local pathway score", "aortic and PE emergency screen", "testing contraindication review"]),
+    criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial adult chest pain assessment requires symptom timing/quality, focused cardiovascular/pulmonary exam, full vital signs, 12-lead ECG, troponin assay plan, emergency mimic screening, medication/contraindication review, and disposition constraints.", contextDomains, sourceIds, { criteria_options: focusedCriteria("adult_chest_pain_ecg_troponin_timing", "adult_chest_pain_aortic_dissection_probability", `${prefix}_stress_ccta_safety_cutoffs`) }),
+    action: "Assess onset, quality/radiation/exertion, dyspnea/diaphoresis/palpitations/syncope/neuro symptoms, vitals/SpO2, focused cardiac/pulmonary/aortic exam, ECG within 10 minutes, troponin timing, CXR when thoracic causes are possible, aortic/PE risk, test safety, and follow-up access.",
+    parallelActions: unique(["arrival time", "symptom onset time", "12-lead ECG time and interpretation", "cardiac troponin assay and 99th percentile", "structured HEART/EDACS or local score", "aortic and PE emergency screen", "testing contraindication review"]),
     requiredData: ["arrival time", "symptom onset time", "12-lead ECG", "troponin assay and 99th percentile", "serial troponin plan", "risk score", "aortic/PE screen", "testing contraindications"],
-    guidelineCutoffs: criteriaRows,
+    guidelineCutoffs: focusedCriteria("adult_chest_pain_ecg_troponin_timing", "adult_chest_pain_aortic_dissection_probability", `${prefix}_stress_ccta_safety_cutoffs`),
     children: [riskDecision]
   });
 
@@ -6454,7 +6935,7 @@ function finalizeClinicalPathwayTree({
     traversable_context: buildTraversableContext(module, finalSourceIds, tests, criteriaRows),
     activationRules,
     root,
-    synthetic_patient_scenarios: syntheticScenarios,
+    synthetic_patient_scenarios: completeSyntheticScenarioCoverage(root, syntheticScenarios),
     audit_requirements: {
       required_domains: requiredPathwayDomains,
       hand_polish_requirements: handPolishRequirements
@@ -6520,9 +7001,11 @@ function main() {
                             : module.id === "acromegaly_v1"
                               ? buildGrowthHormoneExcessClinicalPathwayTree(module, sourceById, "acromegaly")
                               : module.id === "gigantism_v1"
-                                ? buildGrowthHormoneExcessClinicalPathwayTree(module, sourceById, "gigantism")
-                                : module.id === "chest_pain_v1"
-                                  ? buildAdultChestPainClinicalPathwayTree(module, sourceById)
+                              ? buildGrowthHormoneExcessClinicalPathwayTree(module, sourceById, "gigantism")
+                              : module.id === "chest_pain_v1"
+                                ? buildAdultChestPainClinicalPathwayTree(module, sourceById)
+                                : module.id === "erectile_dysfunction_v1"
+                                  ? buildErectileDysfunctionClinicalPathwayTree(module, sourceById)
                                   : module.id === "pediatric_fever_sepsis_v1"
                                     ? buildPediatricFeverSepsisClinicalPathwayTree(module, sourceById)
                                     : module.id === "pediatric_chest_pain_syncope_v1"

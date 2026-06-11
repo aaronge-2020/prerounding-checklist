@@ -66,7 +66,8 @@ const evidenceGroups = [
   "safetyChecks"
 ];
 
-const genericPattern = /\b(?:any red flag, unstable vital sign, or emergency feature|required diagnostic data available|initial assessment: stabilize|collect source-directed confirmation|severity or disposition-changing risk present|diagnostic criteria met or treatment cannot wait|source-backed|selected workup|first-line management only|use the high-risk or confirmed-pathway management option|lower-risk, outpatient, supportive, or safety-net pathway only|clinician review flagged|local policy and patient-specific clinician review flagged|explicit guideline cutoffs|cutoff-bearing|cutoff criteria|trigger present|enough context|gather objective data|crisis labs|obtain targeted tests|targeted tests and cultures|concurrent data bundle obtained|criteria match|does patient context support this workup|treatment modifier unresolved|treatment started or diagnostic plan active|worsening or discordant reassessment|stopping or de-escalation criteria met|stable for follow-up with safety net|diagnosis\/risk branch selected|threshold\/result data missing|compact evidence-cited management pathway|treatment branch only when the cited diagnostic\/severity criteria match)\b/i;
+const genericPattern = /\b(?:any red flag, unstable vital sign, or emergency feature|required diagnostic data available|initial assessment: stabilize|collect source-directed confirmation|severity or disposition-changing risk present|diagnostic criteria met or treatment cannot wait|source-backed|selected workup|first-line management only|use the high-risk or confirmed-pathway management option|lower-risk, outpatient, supportive, or safety-net pathway only|clinician review flagged|local policy and patient-specific clinician review flagged|explicit guideline cutoffs|cutoff-bearing|cutoff criteria|trigger present|enough context|gather objective data|crisis labs|obtain targeted tests|targeted tests and cultures|concurrent data bundle obtained|criteria match|does patient context support this workup|treatment modifier unresolved|treatment started or diagnostic plan active|worsening or discordant reassessment|stopping or de-escalation criteria met|stable for follow-up with safety net|diagnosis\/risk branch selected|threshold\/result data missing|compact evidence-cited management pathway|treatment branch only when the cited diagnostic\/severity criteria match|key thresholds and interpretation caveats|guideline-sourced endocrine workup|threshold-defined branch|presenting trigger)\b/i;
+const generatedEvidencePattern = /\b(?:diagnostic frame from guideline-sourced endocrine workup|key thresholds and interpretation caveats|source-backed criteria|source-backed management route|use the high-risk or confirmed-pathway management option|lower-risk, outpatient, supportive, or safety-net pathway|stabilize or escalate before routine treatment|screen for immediate danger or disposition-changing findings|order focused first-line studies and interpret them in sequence|apply source-backed decision steps|does patient context support this workup|criteria match|concurrent data bundle)\b/i;
 const shallowGeneratedPrefixPattern = /^(?:use the high-risk or confirmed-pathway management option when criteria are met|use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied|stabilize or escalate before routine treatment when danger criteria are present|screen for immediate danger or disposition-changing findings before routine workup|order focused first-line studies and interpret them in sequence|apply source-backed decision steps)\s*:\s*/i;
 const cutoffUnits = "(?:mg/dL|mg/L|g/L|mmol/L|mEq/L|mIU/L|mU/L|ng/mL|pg/mL|ug/L|mg/g|mcg/mg|mm Hg|mL/kg|mg/kg|g/kg|kg/m2|mL/min(?:/1\\.73\\s*m2)?|mL|hours?|days?|weeks?|months?|years?|cm|mm|ms|seconds?|minutes?|breaths/minute|x10\\^9/L|%|(?:deg\\s*C|degrees?\\s*C|C(?![a-z]))|ULN|LLN|mOsm/kg|bpm|IU/L|U/L|mcg/dL|ug/dL|mcg/day|mcg|g|mg|kg|cycles/year|measurements?|collections?|samples?|percent|percentile)";
 const strictThresholdPattern = new RegExp([
@@ -149,6 +150,10 @@ function itemSearchText(item = {}) {
   ].filter(Boolean).join(" ");
 }
 
+function isGeneratedEvidenceItem(item = {}) {
+  return generatedEvidencePattern.test(itemSearchText(item));
+}
+
 function hasRealThreshold(value = "") {
   const text = String(value || "").replace(/\s+/g, " ").trim();
   if (/(?:(?:>=|<=|>|<|=)|(?:above|below|exceeds?))\s*(?:the\s+)?(?:assay\s+)?(?:ULN|LLN|upper limit of normal|lower limit of normal|reference range)/i.test(text)) return true;
@@ -193,6 +198,21 @@ function pathList(root) {
   };
   visit(root);
   return paths;
+}
+
+function genericTreeStringFindings(value, path = "$", out = []) {
+  if (value && typeof value === "object") {
+    if (Array.isArray(value)) {
+      value.forEach((entry, index) => genericTreeStringFindings(entry, `${path}[${index}]`, out));
+    } else {
+      Object.entries(value).forEach(([key, entry]) => genericTreeStringFindings(entry, `${path}.${key}`, out));
+    }
+    return out;
+  }
+  if (typeof value === "string" && genericPattern.test(value)) {
+    out.push({ path, sample: value.replace(/\s+/g, " ").trim().slice(0, 180) });
+  }
+  return out;
 }
 
 function allSourceIdsInValue(value) {
@@ -243,7 +263,7 @@ function evidenceGroupHits(module, treeText) {
   const normalizedTree = normalize(treeText);
   const groups = {};
   for (const group of evidenceGroups) {
-    const items = Array.isArray(module[group]) ? module[group] : [];
+    const items = (Array.isArray(module[group]) ? module[group] : []).filter((item) => !isGeneratedEvidenceItem(item));
     const hits = [];
     items.forEach((item) => {
       const label = itemLabel(item);
@@ -262,11 +282,18 @@ function evidenceGroupHits(module, treeText) {
   return groups;
 }
 
-function thresholdCoverage(module, treeText) {
-  const sourceText = evidenceGroups
-    .flatMap((group) => Array.isArray(module[group]) ? module[group] : [])
-    .map((item) => itemSearchText(item))
-    .join(" ");
+function thresholdCoverage(module, tree = {}) {
+  const treeText = JSON.stringify(tree);
+  const treeThresholds = unique((tree.source_thresholds || [])
+    .map((row) => row.threshold)
+    .filter(hasRealThreshold));
+  const sourceText = treeThresholds.length
+    ? treeThresholds.join(" ")
+    : evidenceGroups
+      .flatMap((group) => Array.isArray(module[group]) ? module[group] : [])
+      .filter((item) => !isGeneratedEvidenceItem(item))
+      .map((item) => itemSearchText(item))
+      .join(" ");
   const thresholds = unique((sourceText.match(strictThresholdPattern) || []).map((item) => item.replace(/\s+/g, " ").trim()).filter(hasRealThreshold));
   const normalizedTree = normalize(treeText);
   const included = thresholds.filter((threshold) => normalizedTree.includes(normalize(threshold)));
@@ -303,11 +330,16 @@ function auditModule({ file, module, sourceIds }) {
   const maxDepth = entries.reduce((max, entry) => Math.max(max, entry.depth), 0);
 
   if (duplicateIds.length) blockers.push(`duplicate node ids: ${unique(duplicateIds).join(", ")}`);
-  if (nodes.length < 9) issues.push(`tree too sparse: ${nodes.length} nodes; expected at least 9 clinically meaningful nodes`);
-  if (nodes.length > 36) issues.push(`tree too large/generic-prone: ${nodes.length} nodes; expected compact tree with at most 36 nodes`);
+  const genericTreeStrings = genericTreeStringFindings(tree);
+  if (genericTreeStrings.length) {
+    issues.push(`tree contains prohibited generic/scaffold text in ${genericTreeStrings.length} string fields; examples: ${genericTreeStrings.slice(0, 3).map((row) => `${row.path}=${row.sample}`).join(" || ")}`);
+  }
+  if (nodes.length < 9) issues.push(`tree too sparse: ${nodes.length} nodes; expected at least 9 clinically meaningful bundled nodes`);
+  if (nodes.length > 20) issues.push(`tree too large/redundant: ${nodes.length} nodes; expected a concise bundled workup/management tree with at most 20 nodes`);
   if (leaves.length < 5) issues.push(`tree has too few terminal endpoints: ${leaves.length}; expected at least 5`);
+  if (leaves.length > 14) issues.push(`tree has too many terminal endpoints: ${leaves.length}; expected at most 14 bundled endpoints`);
   if (maxDepth < 4) issues.push(`tree lacks clinical routing depth: ${maxDepth}; expected at least 4 levels`);
-  if (maxDepth > 9) issues.push(`tree is too deep/chain-like: ${maxDepth}; expected compact concurrent bundles`);
+  if (maxDepth > 7) issues.push(`tree is too deep/chain-like: ${maxDepth}; expected compact concurrent bundles rather than lab-by-lab chains`);
 
   const declaredDomains = new Set(tree.audit_requirements?.required_domains || []);
   requiredPathwayDomains.forEach((domain) => {
@@ -346,6 +378,15 @@ function auditModule({ file, module, sourceIds }) {
       }
       if (node.endpoint_type === "missing_data_needed" && (!Array.isArray(node.missing_data_needed) || node.missing_data_needed.length < 3)) {
         issues.push(`${node.id}: missing-data endpoint must name exact data needed`);
+      }
+      if (node.endpoint_type === "missing_data_needed") {
+        const hiddenFromPathway = node.internal_traversal_guard === true
+          && node.display?.visible_in_pathway === false
+          && node.display?.visible_in_graph === false
+          && node.display?.visible_in_outline === false;
+        if (!hiddenFromPathway) {
+          issues.push(`${node.id}: missing-data endpoint must be an internal hidden traversal guard`);
+        }
       }
       if (node.review_needed_reason) reviewNeeds.push(`${node.id}: ${node.review_needed_reason}`);
     }
@@ -390,7 +431,7 @@ function auditModule({ file, module, sourceIds }) {
   Object.entries(evidenceCoverage).forEach(([group, row]) => {
     if (!row.pass) issues.push(`${group}: tree references ${row.hits.length}/${row.available} source evidence rows; expected ${row.required}`);
   });
-  const thresholdAudit = thresholdCoverage(module, treeText);
+  const thresholdAudit = thresholdCoverage(module, tree);
   if (thresholdAudit.marker_only) {
     issues.push("threshold coverage invalid: source evidence mentions lab/result markers but no numeric or ordinal guideline thresholds were extracted");
   }
@@ -399,18 +440,53 @@ function auditModule({ file, module, sourceIds }) {
   }
 
   const scenarios = Array.isArray(tree.synthetic_patient_scenarios) ? tree.synthetic_patient_scenarios : [];
+  const terminalPathByEndpointId = new Map(paths.map((path) => [path[path.length - 1], path]));
+  const scenarioEndpointIds = new Set();
   if (scenarios.length < requiredScenarioPathways.length) issues.push(`synthetic scenario count ${scenarios.length}; expected at least ${requiredScenarioPathways.length}`);
   const scenarioPathways = new Set(scenarios.map((scenario) => scenario.major_pathway));
   requiredScenarioPathways.forEach((pathway) => {
     if (!scenarioPathways.has(pathway)) issues.push(`missing synthetic scenario pathway: ${pathway}`);
   });
   scenarios.forEach((scenario) => {
-    if (!scenario.expected_endpoint_id) issues.push(`${scenario.scenario_id || "scenario"}: missing expected_endpoint_id`);
-    else if (!ids.includes(scenario.expected_endpoint_id)) issues.push(`${scenario.scenario_id}: expected endpoint does not resolve: ${scenario.expected_endpoint_id}`);
+    const scenarioId = scenario.scenario_id || "scenario";
+    const expectedEndpointId = scenario.expected_endpoint_id;
+    if (!expectedEndpointId) {
+      issues.push(`${scenarioId}: missing expected_endpoint_id`);
+      return;
+    }
+    if (!ids.includes(expectedEndpointId)) {
+      issues.push(`${scenarioId}: expected endpoint does not resolve: ${expectedEndpointId}`);
+      return;
+    }
+    const actualPath = terminalPathByEndpointId.get(expectedEndpointId);
+    if (!actualPath) {
+      issues.push(`${scenarioId}: expected_endpoint_id is not a terminal endpoint: ${expectedEndpointId}`);
+      return;
+    }
+    scenarioEndpointIds.add(expectedEndpointId);
+    if (!Array.isArray(scenario.expected_path_node_ids) || !scenario.expected_path_node_ids.length) {
+      issues.push(`${scenarioId}: missing expected_path_node_ids for traversability proof`);
+    } else {
+      const expectedPath = scenario.expected_path_node_ids.map((id) => String(id));
+      if (expectedPath.join(" > ") !== actualPath.join(" > ")) {
+        issues.push(`${scenarioId}: expected_path_node_ids do not match actual tree path to ${expectedEndpointId}`);
+      }
+    }
+    if (scenario.terminal_endpoint_id && scenario.terminal_endpoint_id !== expectedEndpointId) {
+      issues.push(`${scenarioId}: terminal_endpoint_id does not match expected_endpoint_id`);
+    }
+    if (scenario.traversal_status && scenario.traversal_status !== "reaches_expected_endpoint") {
+      issues.push(`${scenarioId}: traversal_status is ${scenario.traversal_status}; expected reaches_expected_endpoint`);
+    }
   });
+  const uncoveredEndpoints = leaves.filter((node) => !scenarioEndpointIds.has(node.id));
+  if (uncoveredEndpoints.length) {
+    issues.push(`synthetic scenarios do not cover terminal endpoints: ${uncoveredEndpoints.map((node) => node.id).join(", ")}`);
+  }
 
   const missingDataEndpoints = leaves.filter((node) => node.endpoint_type === "missing_data_needed");
   if (!missingDataEndpoints.length) issues.push("no missing-data endpoint present");
+  if (missingDataEndpoints.length > 2) issues.push(`too many missing-data endpoints: ${missingDataEndpoints.length}; bundle missing symptoms/exam/vitals/labs/imaging/medications into at most 2 endpoints`);
   const actionableLeaves = leaves.filter(endpointIsActionable).length;
   if (actionableLeaves !== leaves.length) issues.push(`only ${actionableLeaves}/${leaves.length} paths terminate in actionable endpoints`);
 
@@ -426,7 +502,8 @@ function auditModule({ file, module, sourceIds }) {
     evidenceCoverage,
     thresholdAudit,
     syntheticScenarioCount: scenarios.length,
-    scenarioCoverage: requiredScenarioPathways.filter((pathway) => scenarioPathways.has(pathway)).length / requiredScenarioPathways.length
+    scenarioCoverage: leaves.length ? (leaves.length - uncoveredEndpoints.length) / leaves.length : 0,
+    majorPathwayCoverage: requiredScenarioPathways.filter((pathway) => scenarioPathways.has(pathway)).length / requiredScenarioPathways.length
   });
 }
 
@@ -447,6 +524,7 @@ function resultRecord(file, module, tree, issues = [], blockers = [], reviewNeed
       all_source_ids_resolve: Boolean(metrics.allSourceIdsResolve),
       synthetic_scenario_count: metrics.syntheticScenarioCount || 0,
       scenario_coverage: metrics.scenarioCoverage || 0,
+      major_pathway_coverage: metrics.majorPathwayCoverage || 0,
       evidence_coverage: metrics.evidenceCoverage || {},
       threshold_coverage: metrics.thresholdAudit || { available: 0, included: 0, pass: true }
     },
@@ -459,6 +537,8 @@ function resultRecord(file, module, tree, issues = [], blockers = [], reviewNeed
 
 function buildSummary(results) {
   const citationValues = results.map((row) => row.metrics.citation_coverage).filter((value) => Number.isFinite(value));
+  const scenarioValues = results.map((row) => row.metrics.scenario_coverage).filter((value) => Number.isFinite(value));
+  const majorPathwayValues = results.map((row) => row.metrics.major_pathway_coverage).filter((value) => Number.isFinite(value));
   return {
     audit_date: auditDate,
     module_count: results.length,
@@ -471,7 +551,8 @@ function buildSummary(results) {
     endpoint_count: results.reduce((sum, row) => sum + row.metrics.endpoint_count, 0),
     synthetic_scenario_count: results.reduce((sum, row) => sum + row.metrics.synthetic_scenario_count, 0),
     min_citation_coverage: citationValues.length ? Math.min(...citationValues) : 0,
-    min_scenario_coverage: results.length ? Math.min(...results.map((row) => row.metrics.scenario_coverage || 0)) : 0,
+    min_scenario_coverage: scenarioValues.length ? Math.min(...scenarioValues) : 0,
+    min_major_pathway_coverage: majorPathwayValues.length ? Math.min(...majorPathwayValues) : 0,
     all_source_ids_resolve: results.every((row) => row.metrics.all_source_ids_resolve),
     final_gate_pass: results.every((row) => row.complete)
   };
@@ -491,14 +572,15 @@ function markdownReport(summary, results) {
   lines.push(`Total endpoints: ${summary.endpoint_count}`);
   lines.push(`Synthetic scenarios: ${summary.synthetic_scenario_count}`);
   lines.push(`Minimum citation coverage: ${(summary.min_citation_coverage * 100).toFixed(1)}%`);
-  lines.push(`Minimum scenario coverage: ${(summary.min_scenario_coverage * 100).toFixed(1)}%`);
+  lines.push(`Minimum terminal endpoint scenario coverage: ${(summary.min_scenario_coverage * 100).toFixed(1)}%`);
+  lines.push(`Minimum major pathway scenario coverage: ${(summary.min_major_pathway_coverage * 100).toFixed(1)}%`);
   lines.push(`All source IDs resolve: ${summary.all_source_ids_resolve ? "yes" : "no"}`);
   lines.push(`Final gate pass: ${summary.final_gate_pass ? "yes" : "no"}`);
   lines.push("");
   lines.push("## Per-workup completion");
   lines.push("");
-  lines.push("| Workup | Complete | Nodes | Branches | Endpoints | Depth | Paths | Citation coverage | Scenario coverage | Evidence row coverage | Issues | Review needs |");
-  lines.push("|---|---:|---:|---:|---:|---:|---:|---:|---:|---|---:|---:|");
+  lines.push("| Workup | Complete | Nodes | Branches | Endpoints | Depth | Paths | Citation coverage | Endpoint scenario coverage | Major pathway coverage | Evidence row coverage | Issues | Review needs |");
+  lines.push("|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---:|---:|");
   results.forEach((row) => {
     const evidence = Object.entries(row.metrics.evidence_coverage || {})
       .map(([group, info]) => `${group}:${info.hits?.length || 0}/${info.available || 0}`)
@@ -513,6 +595,7 @@ function markdownReport(summary, results) {
       row.metrics.path_count,
       `${(row.metrics.citation_coverage * 100).toFixed(1)}%`,
       `${(row.metrics.scenario_coverage * 100).toFixed(1)}%`,
+      `${(row.metrics.major_pathway_coverage * 100).toFixed(1)}%`,
       evidence || "n/a",
       row.issues.length + row.blockers.length,
       row.review_needs.length

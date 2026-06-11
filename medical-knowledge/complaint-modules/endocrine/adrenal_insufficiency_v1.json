@@ -2764,8 +2764,6 @@
               "severity/risk category",
               "treatment response",
               "disposition constraints",
-              "Adrenal Insufficiency: diagnostic frame from guideline-sourced endocrine workup",
-              "Key thresholds and interpretation caveats: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL.",
               "Important mimics/exclusions: exogenous glucocorticoid exposure or withdrawal, primary versus central adrenal insufficiency, adrenal incidentaloma, medication-altered renin/aldosterone testing, catecholamine excess, severe illness, infection, and electrolyte mimics.",
               "Suspected adrenal crisis should be treated urgently; do not delay hydrocortisone for testing if unstable.",
               "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
@@ -4963,8 +4961,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Missing data needed: Adrenal Insufficiency crisis risk and diagnostic context",
-            "edgeLabel": "Missing exact adrenal data: vitals, volume status, glucose, sodium, potassium, cortisol/ACTH testing, steroid exposure, illness stress, pregnancy status, and current replacement plan",
+            "label": "Internal data-availability guard",
+            "edgeLabel": "Internal data-availability guard",
             "source_ids": [
               "ES_ADRENAL_INSUFFICIENCY_2016",
               "AHRQ_CALIBRATE_DX"
@@ -5002,9 +5000,16 @@
                 "workup_findings"
               ]
             },
-            "action": "Document full vital signs including postural blood pressure when safe, mental status, hydration/perfusion, glucose, sodium, potassium, bicarbonate/renal function, cortisol/ACTH or cosyntropin status, renin/aldosterone when primary disease is possible, exogenous steroid exposure, acute illness or surgery stress, pregnancy status, and current steroid/mineralocorticoid access.",
+            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
             "children": [],
             "endpoint_type": "missing_data_needed",
+            "internal_traversal_guard": true,
+            "display": {
+              "visible_in_pathway": false,
+              "visible_in_graph": false,
+              "visible_in_outline": false,
+              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+            },
             "missing_data_needed": [
               "blood pressure and postural symptoms",
               "mental status and perfusion",
@@ -5464,8 +5469,8 @@
                   {
                     "id": "adrenal_insufficiency_missing_adrenal_testing_endpoint",
                     "type": "endpoint",
-                    "label": "Missing data needed: cortisol, ACTH, cosyntropin, electrolytes, or steroid exposure",
-                    "edgeLabel": "Cannot separate crisis, primary adrenal insufficiency, central adrenal insufficiency, steroid withdrawal, or mimic until cortisol/ACTH timing, cosyntropin result, Na/K/glucose, and recent glucocorticoid exposure are known",
+                    "label": "Internal data-availability guard",
+                    "edgeLabel": "Internal data-availability guard",
                     "source_ids": [
                       "ES_ADRENAL_INSUFFICIENCY_2016",
                       "AHRQ_CALIBRATE_DX"
@@ -5500,9 +5505,16 @@
                         "recent glucocorticoid exposure"
                       ]
                     },
-                    "action": "Obtain paired morning cortisol and ACTH when stable, perform 250 mcg cosyntropin testing with 30- and/or 60-minute cortisol when circumstances allow, check sodium, potassium, glucose, bicarbonate, creatinine, current and recent glucocorticoids, and add renin/aldosterone and 21-hydroxylase antibody testing when primary adrenal insufficiency is suspected.",
+                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
+                    "internal_traversal_guard": true,
+                    "display": {
+                      "visible_in_pathway": false,
+                      "visible_in_graph": false,
+                      "visible_in_outline": false,
+                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                    },
                     "missing_data_needed": [
                       "8 AM or morning cortisol",
                       "plasma ACTH",
@@ -9281,61 +9293,177 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing exact adrenal data: vitals, volume status, glucose, sodium, potassium, cortisol/ACTH testing, steroid exposure, illness stress, pregnancy status, and current replacement plan"
+          "expected_active_branch": "Internal data-availability guard",
+          "expected_path_node_ids": [
+            "root",
+            "endpoint_missing_context"
+          ],
+          "terminal_endpoint_id": "endpoint_missing_context",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "missing_adrenal_testing",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "adrenal_insufficiency_missing_adrenal_testing_endpoint",
-          "expected_active_branch": "Cannot separate crisis, primary adrenal insufficiency, central adrenal insufficiency, steroid withdrawal, or mimic until cortisol/ACTH timing, cosyntropin result, Na/K/glucose, and recent glucocorticoid exposure are known"
+          "expected_active_branch": "Internal data-availability guard",
+          "expected_path_node_ids": [
+            "root",
+            "adrenal_insufficiency_initial_assessment",
+            "adrenal_insufficiency_classification_decision",
+            "adrenal_insufficiency_missing_adrenal_testing_endpoint"
+          ],
+          "terminal_endpoint_id": "adrenal_insufficiency_missing_adrenal_testing_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "adrenal_crisis",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "adrenal_insufficiency_adrenal_crisis_endpoint",
-          "expected_active_branch": "Severe branch: shock, marked hypotension, dehydration, vomiting, altered mental status, hypoglycemia, severe hyponatremia/hyperkalemia, infection, trauma, surgery, labor, or missed steroids"
+          "expected_active_branch": "Severe branch: shock, marked hypotension, dehydration, vomiting, altered mental status, hypoglycemia, severe hyponatremia/hyperkalemia, infection, trauma, surgery, labor, or missed steroids",
+          "expected_path_node_ids": [
+            "root",
+            "adrenal_insufficiency_initial_assessment",
+            "adrenal_insufficiency_classification_decision",
+            "adrenal_insufficiency_adrenal_crisis_endpoint"
+          ],
+          "terminal_endpoint_id": "adrenal_insufficiency_adrenal_crisis_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "primary_ai_replacement",
           "major_pathway": "first_line_management",
           "expected_endpoint_id": "adrenal_insufficiency_primary_confirmed_endpoint",
-          "expected_active_branch": "Confirmed/likely primary pattern: cosyntropin peak cortisol below 18 ug/dL, morning cortisol below 5 ug/dL when stimulation cannot be done, ACTH above 2-fold ULN, or aldosterone deficiency with high renin"
+          "expected_active_branch": "Confirmed/likely primary pattern: cosyntropin peak cortisol below 18 ug/dL, morning cortisol below 5 ug/dL when stimulation cannot be done, ACTH above 2-fold ULN, or aldosterone deficiency with high renin",
+          "expected_path_node_ids": [
+            "root",
+            "adrenal_insufficiency_initial_assessment",
+            "adrenal_insufficiency_classification_decision",
+            "adrenal_insufficiency_chronic_replacement_action",
+            "adrenal_insufficiency_primary_confirmed_endpoint"
+          ],
+          "terminal_endpoint_id": "adrenal_insufficiency_primary_confirmed_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "primary_ai_severity_pattern",
           "major_pathway": "severity_risk_stratification",
           "expected_endpoint_id": "adrenal_insufficiency_primary_confirmed_endpoint",
-          "expected_active_branch": "Confirmed/likely primary pattern: cosyntropin peak cortisol below 18 ug/dL, morning cortisol below 5 ug/dL when stimulation cannot be done, ACTH above 2-fold ULN, or aldosterone deficiency with high renin"
+          "expected_active_branch": "Confirmed/likely primary pattern: cosyntropin peak cortisol below 18 ug/dL, morning cortisol below 5 ug/dL when stimulation cannot be done, ACTH above 2-fold ULN, or aldosterone deficiency with high renin",
+          "expected_path_node_ids": [
+            "root",
+            "adrenal_insufficiency_initial_assessment",
+            "adrenal_insufficiency_classification_decision",
+            "adrenal_insufficiency_chronic_replacement_action",
+            "adrenal_insufficiency_primary_confirmed_endpoint"
+          ],
+          "terminal_endpoint_id": "adrenal_insufficiency_primary_confirmed_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "borderline_cortisol_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "adrenal_insufficiency_borderline_assay_review_endpoint",
-          "expected_active_branch": "Indeterminate branch: cortisol timing uncertain, cosyntropin cutoff differs by assay, acute illness alters interpretation, exogenous steroids interfere, or ACTH/mineralocorticoid pattern is discordant"
+          "expected_active_branch": "Indeterminate branch: cortisol timing uncertain, cosyntropin cutoff differs by assay, acute illness alters interpretation, exogenous steroids interfere, or ACTH/mineralocorticoid pattern is discordant",
+          "expected_path_node_ids": [
+            "root",
+            "adrenal_insufficiency_initial_assessment",
+            "adrenal_insufficiency_classification_decision",
+            "adrenal_insufficiency_borderline_assay_review_endpoint"
+          ],
+          "terminal_endpoint_id": "adrenal_insufficiency_borderline_assay_review_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "mimic_or_central_pattern",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "adrenal_insufficiency_mimic_exclusion_endpoint",
-          "expected_active_branch": "Adrenal thresholds do not fit or another cause better explains hypotension, electrolyte changes, weight loss, hyperpigmentation, vomiting, fatigue, or hypoglycemia"
+          "expected_active_branch": "Adrenal thresholds do not fit or another cause better explains hypotension, electrolyte changes, weight loss, hyperpigmentation, vomiting, fatigue, or hypoglycemia",
+          "expected_path_node_ids": [
+            "root",
+            "adrenal_insufficiency_initial_assessment",
+            "adrenal_insufficiency_classification_decision",
+            "adrenal_insufficiency_mimic_exclusion_endpoint"
+          ],
+          "terminal_endpoint_id": "adrenal_insufficiency_mimic_exclusion_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "monitoring_after_replacement",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "adrenal_insufficiency_monitoring_reassessment_endpoint",
-          "expected_active_branch": "After hydrocortisone or chronic replacement: hypotension, glucose, sodium, potassium, edema, salt craving, weight, energy, infection source, or oral intake still needs active reassessment"
+          "expected_active_branch": "After hydrocortisone or chronic replacement: hypotension, glucose, sodium, potassium, edema, salt craving, weight, energy, infection source, or oral intake still needs active reassessment",
+          "expected_path_node_ids": [
+            "root",
+            "adrenal_insufficiency_initial_assessment",
+            "adrenal_insufficiency_classification_decision",
+            "adrenal_insufficiency_chronic_replacement_action",
+            "adrenal_insufficiency_monitoring_reassessment_endpoint"
+          ],
+          "terminal_endpoint_id": "adrenal_insufficiency_monitoring_reassessment_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "crisis_transition",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "adrenal_insufficiency_transition_safety_endpoint",
-          "expected_active_branch": "Improving branch: hemodynamics stable, glucose/electrolytes improving, precipitating illness controlled, oral intake possible, and outpatient steroid access confirmed"
+          "expected_active_branch": "Improving branch: hemodynamics stable, glucose/electrolytes improving, precipitating illness controlled, oral intake possible, and outpatient steroid access confirmed",
+          "expected_path_node_ids": [
+            "root",
+            "adrenal_insufficiency_initial_assessment",
+            "adrenal_insufficiency_classification_decision",
+            "adrenal_insufficiency_chronic_replacement_action",
+            "adrenal_insufficiency_transition_safety_endpoint"
+          ],
+          "terminal_endpoint_id": "adrenal_insufficiency_transition_safety_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "followup_sick_day_safety",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "adrenal_insufficiency_transition_safety_endpoint",
-          "expected_active_branch": "Improving branch: hemodynamics stable, glucose/electrolytes improving, precipitating illness controlled, oral intake possible, and outpatient steroid access confirmed"
+          "expected_active_branch": "Improving branch: hemodynamics stable, glucose/electrolytes improving, precipitating illness controlled, oral intake possible, and outpatient steroid access confirmed",
+          "expected_path_node_ids": [
+            "root",
+            "adrenal_insufficiency_initial_assessment",
+            "adrenal_insufficiency_classification_decision",
+            "adrenal_insufficiency_chronic_replacement_action",
+            "adrenal_insufficiency_transition_safety_endpoint"
+          ],
+          "terminal_endpoint_id": "adrenal_insufficiency_transition_safety_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
+        },
+        {
+          "scenario_id": "endpoint_adrenal_insufficiency_special_population_end_coverage",
+          "major_pathway": "deescalation_stopping_criteria",
+          "expected_endpoint_id": "adrenal_insufficiency_special_population_endpoint",
+          "expected_active_branch": "Modifier branch: pregnancy, third trimester symptoms, active labor, child/adolescent dosing, surgery/anesthesia, trauma, ICU illness, or inability to use the local stress-dose protocol",
+          "expected_path_node_ids": [
+            "root",
+            "adrenal_insufficiency_initial_assessment",
+            "adrenal_insufficiency_classification_decision",
+            "adrenal_insufficiency_chronic_replacement_action",
+            "adrenal_insufficiency_special_population_endpoint"
+          ],
+          "terminal_endpoint_id": "adrenal_insufficiency_special_population_endpoint",
+          "traversal_status": "reaches_expected_endpoint",
+          "synthetic_context": {
+            "structured_context_domains": [
+              "symptoms",
+              "exam",
+              "vitals",
+              "labs",
+              "imaging_results",
+              "medications",
+              "comorbidities",
+              "demographics",
+              "pregnancy_status",
+              "workup_findings"
+            ],
+            "branch_trigger": "Modifier branch: pregnancy, third trimester symptoms, active labor, child/adolescent dosing, surgery/anesthesia, trauma, ICU illness, or inability to use the local stress-dose protocol",
+            "expected_terminal_endpoint_type": "clinician_review_handoff",
+            "missing_data_needed": []
+          },
+          "coverage_type": "terminal_endpoint_coverage"
         }
       ],
       "audit_requirements": {

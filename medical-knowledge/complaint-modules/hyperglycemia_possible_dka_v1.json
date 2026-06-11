@@ -6636,8 +6636,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Missing data needed: adult hyperglycemic-crisis context",
-            "edgeLabel": "Missing adult DKA/HHS context: diabetes history, recent insulin/SGLT2 exposure, symptoms, full vitals, hydration/perfusion, mental status, pregnancy status, comorbid fluid risk, and available workup findings",
+            "label": "Internal data-availability guard",
+            "edgeLabel": "Internal data-availability guard",
             "source_ids": [
               "ADA_HYPERGLYCEMIC_CRISES_2024",
               "ADA_STANDARDS_HOSPITAL_2026",
@@ -6677,9 +6677,16 @@
                 "workup_findings"
               ]
             },
-            "action": "Document diabetes type/history, last insulin and pump/CGM status, SGLT2 inhibitor use, pregnancy/fasting/poor intake, polyuria/polydipsia/vomiting/abdominal pain, full vitals, hydration/perfusion, mental status, renal/cardiac disease, and current glucose/ketone/acid-base/osmolality results before selecting a non-emergency branch.",
+            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
             "children": [],
             "endpoint_type": "missing_data_needed",
+            "internal_traversal_guard": true,
+            "display": {
+              "visible_in_pathway": false,
+              "visible_in_graph": false,
+              "visible_in_outline": false,
+              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+            },
             "missing_data_needed": [
               "symptoms",
               "exam",
@@ -7046,8 +7053,8 @@
                   {
                     "id": "adult_dka_hhs_missing_crisis_labs_endpoint",
                     "type": "endpoint",
-                    "label": "Missing data needed: glucose, ketones, pH/bicarbonate, potassium, renal function, and osmolality",
-                    "edgeLabel": "Cannot distinguish DKA, HHS, mixed crisis, euglycemic DKA, potassium hazard, or non-crisis hyperglycemia until glucose, beta-hydroxybutyrate/ketones, pH, bicarbonate, potassium, creatinine, sodium, osmolality, and mental status are known",
+                    "label": "Internal data-availability guard",
+                    "edgeLabel": "Internal data-availability guard",
                     "source_ids": [
                       "ADA_HYPERGLYCEMIC_CRISES_2024"
                     ],
@@ -7082,9 +7089,16 @@
                         "mental status"
                       ]
                     },
-                    "action": "Obtain point-of-care glucose, serum/capillary beta-hydroxybutyrate or urine ketones, BMP with corrected sodium/potassium/creatinine/bicarbonate/anion gap, venous pH, osmolality when HHS or altered mental status is possible, ECG if potassium risk exists, and precipitant testing guided by symptoms.",
+                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
+                    "internal_traversal_guard": true,
+                    "display": {
+                      "visible_in_pathway": false,
+                      "visible_in_graph": false,
+                      "visible_in_outline": false,
+                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                    },
                     "missing_data_needed": [
                       "glucose",
                       "beta-hydroxybutyrate or urine ketones",
@@ -10902,61 +10916,209 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing adult DKA/HHS context: diabetes history, recent insulin/SGLT2 exposure, symptoms, full vitals, hydration/perfusion, mental status, pregnancy status, comorbid fluid risk, and available workup findings"
+          "expected_active_branch": "Internal data-availability guard",
+          "expected_path_node_ids": [
+            "root",
+            "endpoint_missing_context"
+          ],
+          "terminal_endpoint_id": "endpoint_missing_context",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "missing_crisis_labs",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "adult_dka_hhs_missing_crisis_labs_endpoint",
-          "expected_active_branch": "Cannot distinguish DKA, HHS, mixed crisis, euglycemic DKA, potassium hazard, or non-crisis hyperglycemia until glucose, beta-hydroxybutyrate/ketones, pH, bicarbonate, potassium, creatinine, sodium, osmolality, and mental status are known"
+          "expected_active_branch": "Internal data-availability guard",
+          "expected_path_node_ids": [
+            "root",
+            "adult_dka_hhs_initial_assessment",
+            "adult_dka_hhs_classification_decision",
+            "adult_dka_hhs_missing_crisis_labs_endpoint"
+          ],
+          "terminal_endpoint_id": "adult_dka_hhs_missing_crisis_labs_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "adult_dka_potassium_hold",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "adult_dka_hhs_potassium_insulin_hold_endpoint",
-          "expected_active_branch": "Potassium/ECG/renal hazard: insulin should be delayed when potassium is <3.5 mmol/L, marked hyperkalemia/ECG change is present, or renal failure prevents safe replacement"
+          "expected_active_branch": "Potassium/ECG/renal hazard: insulin should be delayed when potassium is <3.5 mmol/L, marked hyperkalemia/ECG change is present, or renal failure prevents safe replacement",
+          "expected_path_node_ids": [
+            "root",
+            "adult_dka_hhs_initial_assessment",
+            "adult_dka_hhs_classification_decision",
+            "adult_dka_hhs_dka_action",
+            "adult_dka_hhs_potassium_insulin_hold_endpoint"
+          ],
+          "terminal_endpoint_id": "adult_dka_hhs_potassium_insulin_hold_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "adult_dka_protocol",
           "major_pathway": "first_line_management",
           "expected_endpoint_id": "adult_dka_hhs_dka_protocol_endpoint",
-          "expected_active_branch": "DKA branch: prior diabetes or glucose >=200 mg/dL, beta-hydroxybutyrate >=3.0 mmol/L or urine ketones >=2+, and pH <7.3 and/or bicarbonate <18 mmol/L"
+          "expected_active_branch": "DKA branch: prior diabetes or glucose >=200 mg/dL, beta-hydroxybutyrate >=3.0 mmol/L or urine ketones >=2+, and pH <7.3 and/or bicarbonate <18 mmol/L",
+          "expected_path_node_ids": [
+            "root",
+            "adult_dka_hhs_initial_assessment",
+            "adult_dka_hhs_classification_decision",
+            "adult_dka_hhs_dka_action",
+            "adult_dka_hhs_dka_protocol_endpoint"
+          ],
+          "terminal_endpoint_id": "adult_dka_hhs_dka_protocol_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "adult_hhs_protocol",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "adult_dka_hhs_hhs_protocol_endpoint",
-          "expected_active_branch": "HHS branch: glucose >=600 mg/dL with effective osmolality >300 mOsm/kg or total osmolality >320 mOsm/kg, minimal ketonemia, and no major acidosis"
+          "expected_active_branch": "HHS branch: glucose >=600 mg/dL with effective osmolality >300 mOsm/kg or total osmolality >320 mOsm/kg, minimal ketonemia, and no major acidosis",
+          "expected_path_node_ids": [
+            "root",
+            "adult_dka_hhs_initial_assessment",
+            "adult_dka_hhs_classification_decision",
+            "adult_dka_hhs_hhs_action",
+            "adult_dka_hhs_hhs_protocol_endpoint"
+          ],
+          "terminal_endpoint_id": "adult_dka_hhs_hhs_protocol_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "adult_mixed_crisis",
           "major_pathway": "severity_risk_stratification",
           "expected_endpoint_id": "adult_dka_hhs_mixed_dka_hhs_endpoint",
-          "expected_active_branch": "Mixed crisis: DKA ketone/acidosis thresholds coexist with HHS hyperglycemia/osmolality thresholds or altered mentation"
+          "expected_active_branch": "Mixed crisis: DKA ketone/acidosis thresholds coexist with HHS hyperglycemia/osmolality thresholds or altered mentation",
+          "expected_path_node_ids": [
+            "root",
+            "adult_dka_hhs_initial_assessment",
+            "adult_dka_hhs_classification_decision",
+            "adult_dka_hhs_mixed_dka_hhs_endpoint"
+          ],
+          "terminal_endpoint_id": "adult_dka_hhs_mixed_dka_hhs_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "adult_hhs_osmolality_monitoring",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "adult_dka_hhs_hhs_protocol_endpoint",
-          "expected_active_branch": "HHS branch: glucose >=600 mg/dL with effective osmolality >300 mOsm/kg or total osmolality >320 mOsm/kg, minimal ketonemia, and no major acidosis"
+          "expected_active_branch": "HHS branch: glucose >=600 mg/dL with effective osmolality >300 mOsm/kg or total osmolality >320 mOsm/kg, minimal ketonemia, and no major acidosis",
+          "expected_path_node_ids": [
+            "root",
+            "adult_dka_hhs_initial_assessment",
+            "adult_dka_hhs_classification_decision",
+            "adult_dka_hhs_hhs_action",
+            "adult_dka_hhs_hhs_protocol_endpoint"
+          ],
+          "terminal_endpoint_id": "adult_dka_hhs_hhs_protocol_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "adult_hhs_deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "adult_dka_hhs_hhs_resolution_endpoint",
-          "expected_active_branch": "HHS response branch: osmolality falling safely, mental status improving, perfusion restored, electrolyte plan stable, precipitant treated, and nutrition/insulin plan ready"
+          "expected_active_branch": "HHS response branch: osmolality falling safely, mental status improving, perfusion restored, electrolyte plan stable, precipitant treated, and nutrition/insulin plan ready",
+          "expected_path_node_ids": [
+            "root",
+            "adult_dka_hhs_initial_assessment",
+            "adult_dka_hhs_classification_decision",
+            "adult_dka_hhs_hhs_action",
+            "adult_dka_hhs_hhs_resolution_endpoint"
+          ],
+          "terminal_endpoint_id": "adult_dka_hhs_hhs_resolution_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "adult_noncrisis_hyperglycemia",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "adult_dka_hhs_noncrisis_hyperglycemia_endpoint",
-          "expected_active_branch": "No DKA/HHS acidosis, ketone, osmolality, shock, or mental-status branch; persistent inpatient glucose >=180 mg/dL or outpatient hyperglycemia still needs diabetes plan"
+          "expected_active_branch": "No DKA/HHS acidosis, ketone, osmolality, shock, or mental-status branch; persistent inpatient glucose >=180 mg/dL or outpatient hyperglycemia still needs diabetes plan",
+          "expected_path_node_ids": [
+            "root",
+            "adult_dka_hhs_initial_assessment",
+            "adult_dka_hhs_classification_decision",
+            "adult_dka_hhs_noncrisis_hyperglycemia_endpoint"
+          ],
+          "terminal_endpoint_id": "adult_dka_hhs_noncrisis_hyperglycemia_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "adult_transition_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "adult_dka_hhs_dka_transition_discharge_endpoint",
-          "expected_active_branch": "DKA improving: biochemical resolution, stable vitals/mentation, oral intake possible, precipitant owned, and basal insulin can overlap IV insulin 1-2 h"
+          "expected_active_branch": "DKA improving: biochemical resolution, stable vitals/mentation, oral intake possible, precipitant owned, and basal insulin can overlap IV insulin 1-2 h",
+          "expected_path_node_ids": [
+            "root",
+            "adult_dka_hhs_initial_assessment",
+            "adult_dka_hhs_classification_decision",
+            "adult_dka_hhs_dka_action",
+            "adult_dka_hhs_dka_transition_discharge_endpoint"
+          ],
+          "terminal_endpoint_id": "adult_dka_hhs_dka_transition_discharge_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
+        },
+        {
+          "scenario_id": "endpoint_adult_dka_hhs_euglycemic_special_population__coverage",
+          "major_pathway": "deescalation_stopping_criteria",
+          "expected_endpoint_id": "adult_dka_hhs_euglycemic_special_population_endpoint",
+          "expected_active_branch": "Ketotic acidosis even if glucose is <200 mg/dL, or pregnancy/frailty/heart failure/advanced kidney disease/SGLT2 exposure changes standard fluid or insulin assumptions",
+          "expected_path_node_ids": [
+            "root",
+            "adult_dka_hhs_initial_assessment",
+            "adult_dka_hhs_classification_decision",
+            "adult_dka_hhs_euglycemic_special_population_endpoint"
+          ],
+          "terminal_endpoint_id": "adult_dka_hhs_euglycemic_special_population_endpoint",
+          "traversal_status": "reaches_expected_endpoint",
+          "synthetic_context": {
+            "structured_context_domains": [
+              "symptoms",
+              "exam",
+              "vitals",
+              "labs",
+              "imaging_results",
+              "medications",
+              "comorbidities",
+              "demographics",
+              "pregnancy_status",
+              "workup_findings"
+            ],
+            "branch_trigger": "Ketotic acidosis even if glucose is <200 mg/dL, or pregnancy/frailty/heart failure/advanced kidney disease/SGLT2 exposure changes standard fluid or insulin assumptions",
+            "expected_terminal_endpoint_type": "clinician_review_handoff",
+            "missing_data_needed": []
+          },
+          "coverage_type": "terminal_endpoint_coverage"
+        },
+        {
+          "scenario_id": "endpoint_adult_dka_hhs_alternate_endpoint_coverage",
+          "major_pathway": "monitoring_reassessment_escalation",
+          "expected_endpoint_id": "adult_dka_hhs_alternate_endpoint",
+          "expected_active_branch": "DKA/HHS thresholds absent or another cause better explains symptoms: starvation/alcohol ketosis, lactic acidosis, renal failure, intoxication, sepsis, pancreatitis, MI/stroke, medication effect, or lab artifact",
+          "expected_path_node_ids": [
+            "root",
+            "adult_dka_hhs_initial_assessment",
+            "adult_dka_hhs_classification_decision",
+            "adult_dka_hhs_alternate_endpoint"
+          ],
+          "terminal_endpoint_id": "adult_dka_hhs_alternate_endpoint",
+          "traversal_status": "reaches_expected_endpoint",
+          "synthetic_context": {
+            "structured_context_domains": [
+              "symptoms",
+              "exam",
+              "vitals",
+              "labs",
+              "imaging_results",
+              "medications",
+              "comorbidities",
+              "demographics",
+              "pregnancy_status",
+              "workup_findings"
+            ],
+            "branch_trigger": "DKA/HHS thresholds absent or another cause better explains symptoms: starvation/alcohol ketosis, lactic acidosis, renal failure, intoxication, sepsis, pancreatitis, MI/stroke, medication effect, or lab artifact",
+            "expected_terminal_endpoint_type": "clinician_review_handoff",
+            "missing_data_needed": []
+          },
+          "coverage_type": "terminal_endpoint_coverage"
         }
       ],
       "audit_requirements": {

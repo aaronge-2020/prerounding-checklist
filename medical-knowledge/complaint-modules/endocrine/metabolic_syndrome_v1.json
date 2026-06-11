@@ -2752,8 +2752,6 @@
               "severity/risk category",
               "treatment response",
               "disposition constraints",
-              "Metabolic Syndrome: diagnostic frame from guideline-sourced endocrine workup",
-              "Key thresholds and interpretation caveats: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
               "Important mimics/exclusions: stress or steroid hyperglycemia, type 1/LADA versus type 2 diabetes, DKA/HHS versus uncomplicated hyperglycemia, hypoglycemia/drug effect, renal disease, infection, pregnancy, and secondary endocrine causes.",
               "3 or more criteria shifts to intensive cardiometabolic risk reduction.",
               "Diabetes thresholds change diagnosis.",
@@ -4184,8 +4182,8 @@
             "workup_findings"
           ],
           "source_ids": [
-            "NHLBI_METABOLIC_SYNDROME",
             "ADA_SOC_2026",
+            "NHLBI_METABOLIC_SYNDROME",
             "CDC_DIABETES_TESTING_2024",
             "ADA_DIAGNOSIS_2026",
             "CDC_NDPP_LIFESTYLE_2024",
@@ -4397,8 +4395,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Missing data needed: waist, BP, fasting glucose/A1c, HDL, triglycerides, medications, symptoms, and risk context",
-            "edgeLabel": "Missing exact metabolic-syndrome data: waist/sex/race context, BP, fasting glucose or A1c, HDL, triglycerides, medication treatment status, BMI/weight, pregnancy status, ASCVD symptoms, and follow-up access",
+            "label": "Internal data-availability guard",
+            "edgeLabel": "Internal data-availability guard",
             "source_ids": [
               "NHLBI_METABOLIC_SYNDROME",
               "CDC_DIABETES_TESTING_2024",
@@ -4444,9 +4442,16 @@
                 "workup_findings"
               ]
             },
-            "action": "Document waist circumference with sex and race/ethnicity context, blood pressure, fasting glucose and/or A1c, HDL, triglycerides, medication treatment for BP/lipids/glucose, BMI/current weight, heart rate and mental status, pregnancy status, ASCVD symptoms, sleep apnea/fatty-liver/PCOS context, current medications, and follow-up access.",
+            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
             "children": [],
             "endpoint_type": "missing_data_needed",
+            "internal_traversal_guard": true,
+            "display": {
+              "visible_in_pathway": false,
+              "visible_in_graph": false,
+              "visible_in_outline": false,
+              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+            },
             "missing_data_needed": [
               "waist circumference with sex/race context",
               "blood pressure",
@@ -4873,8 +4878,8 @@
                   {
                     "id": "metabolic_syndrome_missing_criteria_endpoint",
                     "type": "endpoint",
-                    "label": "Missing data needed: the five metabolic syndrome criteria and emergency exclusions",
-                    "edgeLabel": "Cannot count criteria or route urgent diabetes/BP/ASCVD risks until waist, BP, fasting glucose, HDL, triglycerides, treatment status, symptoms, and pregnancy context are known",
+                    "label": "Internal data-availability guard",
+                    "edgeLabel": "Internal data-availability guard",
                     "source_ids": [
                       "NHLBI_METABOLIC_SYNDROME",
                       "CDC_DIABETES_TESTING_2024",
@@ -4918,9 +4923,16 @@
                         "pregnancy status"
                       ]
                     },
-                    "action": "Measure waist circumference, blood pressure, heart rate, weight/BMI, and mental status; obtain fasting glucose or A1c, HDL, triglycerides, medication treatment history, ASCVD symptom screen, pregnancy status, and prior diabetes/prediabetes history before counting criteria.",
+                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
+                    "internal_traversal_guard": true,
+                    "display": {
+                      "visible_in_pathway": false,
+                      "visible_in_graph": false,
+                      "visible_in_outline": false,
+                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                    },
                     "missing_data_needed": [
                       "waist circumference",
                       "blood pressure",
@@ -6801,8 +6813,8 @@
                     "label": "Mimic or fewer than 3 criteria: avoid metabolic syndrome label and treat the active abnormality",
                     "edgeLabel": "Alternate branch: fewer than 3 criteria, race/ethnicity waist threshold changes classification, pregnancy or medication effect, secondary endocrine disease, acute illness, or isolated lipid/BP/glucose abnormality better explains findings",
                     "source_ids": [
-                      "NHLBI_METABOLIC_SYNDROME",
                       "ADA_SOC_2026",
+                      "NHLBI_METABOLIC_SYNDROME",
                       "CDC_DIABETES_TESTING_2024",
                       "ADA_DIAGNOSIS_2026",
                       "CDC_NDPP_LIFESTYLE_2024",
@@ -6822,8 +6834,8 @@
                         "workup_findings"
                       ],
                       "source_ids": [
-                        "NHLBI_METABOLIC_SYNDROME",
                         "ADA_SOC_2026",
+                        "NHLBI_METABOLIC_SYNDROME",
                         "CDC_DIABETES_TESTING_2024",
                         "ADA_DIAGNOSIS_2026",
                         "CDC_NDPP_LIFESTYLE_2024",
@@ -6995,7 +7007,7 @@
                         }
                       ]
                     },
-                    "action": "Document the criteria count and route to the active abnormality or competing diagnosis: Metabolic Syndrome: diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.; Important mimics/exclusions: stress or steroid hyperglycemia, type 1/LADA versus type 2 diabetes, DKA/HHS versus uncomplicated hyperglycemia, hypoglycemia/drug effect, renal disease, infection, pregnancy, and secondary endocrine causes..",
+                    "action": "Document the criteria count and route to the active abnormality or competing diagnosis: competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
                     "review_needed_reason": "Criteria count, waist threshold choice, pregnancy, medication effect, or secondary disease changes classification."
@@ -7552,61 +7564,144 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing exact metabolic-syndrome data: waist/sex/race context, BP, fasting glucose or A1c, HDL, triglycerides, medication treatment status, BMI/weight, pregnancy status, ASCVD symptoms, and follow-up access"
+          "expected_active_branch": "Internal data-availability guard",
+          "expected_path_node_ids": [
+            "root",
+            "endpoint_missing_context"
+          ],
+          "terminal_endpoint_id": "endpoint_missing_context",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "missing_five_criteria",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "metabolic_syndrome_missing_criteria_endpoint",
-          "expected_active_branch": "Cannot count criteria or route urgent diabetes/BP/ASCVD risks until waist, BP, fasting glucose, HDL, triglycerides, treatment status, symptoms, and pregnancy context are known"
+          "expected_active_branch": "Internal data-availability guard",
+          "expected_path_node_ids": [
+            "root",
+            "metabolic_syndrome_initial_assessment",
+            "metabolic_syndrome_classification_decision",
+            "metabolic_syndrome_missing_criteria_endpoint"
+          ],
+          "terminal_endpoint_id": "metabolic_syndrome_missing_criteria_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "urgent_cardiometabolic_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "metabolic_syndrome_urgent_cardiometabolic_endpoint",
-          "expected_active_branch": "Escalation branch: A1c >=6.5%, fasting glucose >=126 mg/dL or random glucose >=200 mg/dL with symptoms, BP around >=180/120 mm Hg or end-organ symptoms, chest pain, dyspnea, neurologic symptoms, pregnancy hyperglycemia, dehydration, or altered mental status"
+          "expected_active_branch": "Escalation branch: A1c >=6.5%, fasting glucose >=126 mg/dL or random glucose >=200 mg/dL with symptoms, BP around >=180/120 mm Hg or end-organ symptoms, chest pain, dyspnea, neurologic symptoms, pregnancy hyperglycemia, dehydration, or altered mental status",
+          "expected_path_node_ids": [
+            "root",
+            "metabolic_syndrome_initial_assessment",
+            "metabolic_syndrome_classification_decision",
+            "metabolic_syndrome_urgent_cardiometabolic_endpoint"
+          ],
+          "terminal_endpoint_id": "metabolic_syndrome_urgent_cardiometabolic_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "three_of_five_criteria",
           "major_pathway": "severity_risk_stratification",
           "expected_endpoint_id": "metabolic_syndrome_criteria_count_endpoint",
-          "expected_active_branch": "Criteria branch: at least 3 of waist, triglyceride, HDL, BP, and fasting glucose/treatment criteria are present"
+          "expected_active_branch": "Criteria branch: at least 3 of waist, triglyceride, HDL, BP, and fasting glucose/treatment criteria are present",
+          "expected_path_node_ids": [
+            "root",
+            "metabolic_syndrome_initial_assessment",
+            "metabolic_syndrome_classification_decision",
+            "metabolic_syndrome_management_action",
+            "metabolic_syndrome_criteria_count_endpoint"
+          ],
+          "terminal_endpoint_id": "metabolic_syndrome_criteria_count_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "risk_reduction_plan",
           "major_pathway": "first_line_management",
           "expected_endpoint_id": "metabolic_syndrome_risk_reduction_endpoint",
-          "expected_active_branch": "Management branch: metabolic syndrome confirmed or near-threshold high-risk pattern without urgent diabetes/BP/ASCVD symptoms"
+          "expected_active_branch": "Management branch: metabolic syndrome confirmed or near-threshold high-risk pattern without urgent diabetes/BP/ASCVD symptoms",
+          "expected_path_node_ids": [
+            "root",
+            "metabolic_syndrome_initial_assessment",
+            "metabolic_syndrome_classification_decision",
+            "metabolic_syndrome_management_action",
+            "metabolic_syndrome_risk_reduction_endpoint"
+          ],
+          "terminal_endpoint_id": "metabolic_syndrome_risk_reduction_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "waist_threshold_or_secondary_cause_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "metabolic_syndrome_mimic_endpoint",
-          "expected_active_branch": "Alternate branch: fewer than 3 criteria, race/ethnicity waist threshold changes classification, pregnancy or medication effect, secondary endocrine disease, acute illness, or isolated lipid/BP/glucose abnormality better explains findings"
+          "expected_active_branch": "Alternate branch: fewer than 3 criteria, race/ethnicity waist threshold changes classification, pregnancy or medication effect, secondary endocrine disease, acute illness, or isolated lipid/BP/glucose abnormality better explains findings",
+          "expected_path_node_ids": [
+            "root",
+            "metabolic_syndrome_initial_assessment",
+            "metabolic_syndrome_classification_decision",
+            "metabolic_syndrome_mimic_endpoint"
+          ],
+          "terminal_endpoint_id": "metabolic_syndrome_mimic_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "fewer_than_three_or_mimic",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "metabolic_syndrome_mimic_endpoint",
-          "expected_active_branch": "Alternate branch: fewer than 3 criteria, race/ethnicity waist threshold changes classification, pregnancy or medication effect, secondary endocrine disease, acute illness, or isolated lipid/BP/glucose abnormality better explains findings"
+          "expected_active_branch": "Alternate branch: fewer than 3 criteria, race/ethnicity waist threshold changes classification, pregnancy or medication effect, secondary endocrine disease, acute illness, or isolated lipid/BP/glucose abnormality better explains findings",
+          "expected_path_node_ids": [
+            "root",
+            "metabolic_syndrome_initial_assessment",
+            "metabolic_syndrome_classification_decision",
+            "metabolic_syndrome_mimic_endpoint"
+          ],
+          "terminal_endpoint_id": "metabolic_syndrome_mimic_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "component_monitoring",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "metabolic_syndrome_followup_safety_endpoint",
-          "expected_active_branch": "Follow-up branch: no urgent symptoms, active criteria and risk-factor owners documented, surveillance interval and return precautions assigned"
+          "expected_active_branch": "Follow-up branch: no urgent symptoms, active criteria and risk-factor owners documented, surveillance interval and return precautions assigned",
+          "expected_path_node_ids": [
+            "root",
+            "metabolic_syndrome_initial_assessment",
+            "metabolic_syndrome_classification_decision",
+            "metabolic_syndrome_management_action",
+            "metabolic_syndrome_followup_safety_endpoint"
+          ],
+          "terminal_endpoint_id": "metabolic_syndrome_followup_safety_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "criteria_improve_surveillance",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "metabolic_syndrome_followup_safety_endpoint",
-          "expected_active_branch": "Follow-up branch: no urgent symptoms, active criteria and risk-factor owners documented, surveillance interval and return precautions assigned"
+          "expected_active_branch": "Follow-up branch: no urgent symptoms, active criteria and risk-factor owners documented, surveillance interval and return precautions assigned",
+          "expected_path_node_ids": [
+            "root",
+            "metabolic_syndrome_initial_assessment",
+            "metabolic_syndrome_classification_decision",
+            "metabolic_syndrome_management_action",
+            "metabolic_syndrome_followup_safety_endpoint"
+          ],
+          "terminal_endpoint_id": "metabolic_syndrome_followup_safety_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "metabolic_syndrome_followup_safety_endpoint",
-          "expected_active_branch": "Follow-up branch: no urgent symptoms, active criteria and risk-factor owners documented, surveillance interval and return precautions assigned"
+          "expected_active_branch": "Follow-up branch: no urgent symptoms, active criteria and risk-factor owners documented, surveillance interval and return precautions assigned",
+          "expected_path_node_ids": [
+            "root",
+            "metabolic_syndrome_initial_assessment",
+            "metabolic_syndrome_classification_decision",
+            "metabolic_syndrome_management_action",
+            "metabolic_syndrome_followup_safety_endpoint"
+          ],
+          "terminal_endpoint_id": "metabolic_syndrome_followup_safety_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         }
       ],
       "audit_requirements": {

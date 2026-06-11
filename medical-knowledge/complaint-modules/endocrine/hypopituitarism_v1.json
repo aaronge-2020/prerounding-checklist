@@ -3008,8 +3008,6 @@
               "severity/risk category",
               "treatment response",
               "disposition constraints",
-              "Hypopituitarism: diagnostic frame from guideline-sourced endocrine workup",
-              "Key thresholds and interpretation caveats: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL.",
               "Important mimics/exclusions: medication effects, pregnancy/lactation, renal/hepatic disease, sellar or parasellar mass, pituitary apoplexy, primary target-gland disease, central versus nephrogenic water-balance disorder, and age/puberty-specific normal variants.",
               "Central adrenal insufficiency must be addressed before thyroid hormone escalation.",
               "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
@@ -5300,8 +5298,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Missing data needed: pituitary axis, mass-effect, adrenal, thyroid, sodium, and medication context",
-            "edgeLabel": "Missing exact hypopituitarism data: headache/vision/cranial nerves, 8-9 AM cortisol, free T4/TSH, sodium/osmolality/urine output, prolactin, IGF-1, LH/FSH/sex steroid, MRI/visual fields, surgery/radiation history, pregnancy status, and current replacement therapy",
+            "label": "Internal data-availability guard",
+            "edgeLabel": "Internal data-availability guard",
             "source_ids": [
               "ES_HYPOPITUITARISM_2016",
               "ES_ADRENAL_INSUFFICIENCY_2016",
@@ -5341,9 +5339,16 @@
                 "workup_findings"
               ]
             },
-            "action": "Document headache timing, visual acuity/fields, diplopia or cranial nerve palsy, mental status, vitals, 8-9 AM cortisol, sodium, glucose, serum/urine osmolality and urine output if DI is possible, free T4/TSH, prolactin, IGF-1, LH/FSH with testosterone or estradiol as applicable, pituitary MRI/visual-field status, pregnancy/fertility context, prior surgery/radiation, and current glucocorticoid/thyroid/DDAVP/GH/sex-steroid therapy.",
+            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
             "children": [],
             "endpoint_type": "missing_data_needed",
+            "internal_traversal_guard": true,
+            "display": {
+              "visible_in_pathway": false,
+              "visible_in_graph": false,
+              "visible_in_outline": false,
+              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+            },
             "missing_data_needed": [
               "headache/vision/cranial nerve findings",
               "8-9 AM cortisol",
@@ -5784,8 +5789,8 @@
                   {
                     "id": "hypopituitarism_missing_axis_data_endpoint",
                     "type": "endpoint",
-                    "label": "Missing data needed: adrenal-first endocrine panel, DI safety data, or pituitary imaging",
-                    "edgeLabel": "Cannot route adrenal crisis, central hypothyroidism, DI, gonadal/GH deficiency, apoplexy, or tumor monitoring until axis labs, sodium/water-balance data, and sellar imaging/visual data are known",
+                    "label": "Internal data-availability guard",
+                    "edgeLabel": "Internal data-availability guard",
                     "source_ids": [
                       "ES_HYPOPITUITARISM_2016",
                       "ES_ADRENAL_INSUFFICIENCY_2016",
@@ -5824,9 +5829,16 @@
                         "pituitary MRI/visual fields"
                       ]
                     },
-                    "action": "Obtain 8-9 AM cortisol before thyroid escalation when stable, sodium and glucose, free T4/TSH, serum/urine osmolality and urine output if DI is possible, prolactin, IGF-1, LH/FSH plus testosterone or estradiol, pregnancy test when relevant, pituitary MRI, formal visual fields when optic chiasm risk exists, and medication history including glucocorticoids, opioids, dopamine agents, immune checkpoint inhibitors, and estrogen.",
+                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
+                    "internal_traversal_guard": true,
+                    "display": {
+                      "visible_in_pathway": false,
+                      "visible_in_graph": false,
+                      "visible_in_outline": false,
+                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                    },
                     "missing_data_needed": [
                       "8-9 AM cortisol",
                       "free T4/TSH",
@@ -9803,61 +9815,178 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing exact hypopituitarism data: headache/vision/cranial nerves, 8-9 AM cortisol, free T4/TSH, sodium/osmolality/urine output, prolactin, IGF-1, LH/FSH/sex steroid, MRI/visual fields, surgery/radiation history, pregnancy status, and current replacement therapy"
+          "expected_active_branch": "Internal data-availability guard",
+          "expected_path_node_ids": [
+            "root",
+            "endpoint_missing_context"
+          ],
+          "terminal_endpoint_id": "endpoint_missing_context",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "missing_axis_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "hypopituitarism_missing_axis_data_endpoint",
-          "expected_active_branch": "Cannot route adrenal crisis, central hypothyroidism, DI, gonadal/GH deficiency, apoplexy, or tumor monitoring until axis labs, sodium/water-balance data, and sellar imaging/visual data are known"
+          "expected_active_branch": "Internal data-availability guard",
+          "expected_path_node_ids": [
+            "root",
+            "hypopituitarism_initial_assessment",
+            "hypopituitarism_classification_decision",
+            "hypopituitarism_missing_axis_data_endpoint"
+          ],
+          "terminal_endpoint_id": "hypopituitarism_missing_axis_data_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "pituitary_apoplexy_or_secondary_crisis",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "hypopituitarism_apoplexy_or_adrenal_crisis_endpoint",
-          "expected_active_branch": "Emergency branch: sudden severe headache, visual loss, visual-field defect, ophthalmoplegia/cranial nerve palsy, reduced consciousness, meningism, severe hypotension, vomiting, hypoglycemia, or severe hyponatremia"
+          "expected_active_branch": "Emergency branch: sudden severe headache, visual loss, visual-field defect, ophthalmoplegia/cranial nerve palsy, reduced consciousness, meningism, severe hypotension, vomiting, hypoglycemia, or severe hyponatremia",
+          "expected_path_node_ids": [
+            "root",
+            "hypopituitarism_initial_assessment",
+            "hypopituitarism_classification_decision",
+            "hypopituitarism_apoplexy_or_adrenal_crisis_endpoint"
+          ],
+          "terminal_endpoint_id": "hypopituitarism_apoplexy_or_adrenal_crisis_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "central_adrenal_first",
           "major_pathway": "first_line_management",
           "expected_endpoint_id": "hypopituitarism_central_ai_endpoint",
-          "expected_active_branch": "Adrenal branch: 8-9 AM cortisol below 3 ug/dL, indeterminate 3-15 ug/dL needing dynamic test, peak stimulated cortisol below 18.1 ug/dL, or adrenal status unknown before L-T4"
+          "expected_active_branch": "Adrenal branch: 8-9 AM cortisol below 3 ug/dL, indeterminate 3-15 ug/dL needing dynamic test, peak stimulated cortisol below 18.1 ug/dL, or adrenal status unknown before L-T4",
+          "expected_path_node_ids": [
+            "root",
+            "hypopituitarism_initial_assessment",
+            "hypopituitarism_classification_decision",
+            "hypopituitarism_replacement_sequence_action",
+            "hypopituitarism_central_ai_endpoint"
+          ],
+          "terminal_endpoint_id": "hypopituitarism_central_ai_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "central_thyroid_and_di_risk",
           "major_pathway": "severity_risk_stratification",
           "expected_endpoint_id": "hypopituitarism_central_hypothyroid_endpoint",
-          "expected_active_branch": "Thyroid branch: free T4 below reference range with low or inappropriately normal TSH, but adrenal reserve has been covered or excluded"
+          "expected_active_branch": "Thyroid branch: free T4 below reference range with low or inappropriately normal TSH, but adrenal reserve has been covered or excluded",
+          "expected_path_node_ids": [
+            "root",
+            "hypopituitarism_initial_assessment",
+            "hypopituitarism_classification_decision",
+            "hypopituitarism_replacement_sequence_action",
+            "hypopituitarism_central_hypothyroid_endpoint"
+          ],
+          "terminal_endpoint_id": "hypopituitarism_central_hypothyroid_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "axis_contraindication_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "hypopituitarism_gonadal_gh_prolactin_endpoint",
-          "expected_active_branch": "Stable axis branch: adrenal and thyroid sequencing addressed, then LH/FSH-sex steroid, prolactin, IGF-1/dynamic GH testing, fertility intent, age, tumor activity, and contraindications guide treatment"
+          "expected_active_branch": "Stable axis branch: adrenal and thyroid sequencing addressed, then LH/FSH-sex steroid, prolactin, IGF-1/dynamic GH testing, fertility intent, age, tumor activity, and contraindications guide treatment",
+          "expected_path_node_ids": [
+            "root",
+            "hypopituitarism_initial_assessment",
+            "hypopituitarism_classification_decision",
+            "hypopituitarism_replacement_sequence_action",
+            "hypopituitarism_gonadal_gh_prolactin_endpoint"
+          ],
+          "terminal_endpoint_id": "hypopituitarism_gonadal_gh_prolactin_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "mimic_or_primary_gland_disease",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "hypopituitarism_mimic_exclusion_endpoint",
-          "expected_active_branch": "Alternate branch: primary thyroid/adrenal/gonadal disease, medication effect, pregnancy/lactation physiology, renal or osmotic polyuria, hyperglycemia, hypercalcemia, infection, malignancy, or nonpituitary sellar disease fits better"
+          "expected_active_branch": "Alternate branch: primary thyroid/adrenal/gonadal disease, medication effect, pregnancy/lactation physiology, renal or osmotic polyuria, hyperglycemia, hypercalcemia, infection, malignancy, or nonpituitary sellar disease fits better",
+          "expected_path_node_ids": [
+            "root",
+            "hypopituitarism_initial_assessment",
+            "hypopituitarism_classification_decision",
+            "hypopituitarism_mimic_exclusion_endpoint"
+          ],
+          "terminal_endpoint_id": "hypopituitarism_mimic_exclusion_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "replacement_interaction_monitoring",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "hypopituitarism_monitoring_interactions_endpoint",
-          "expected_active_branch": "Monitoring branch: GH start, estrogen change, glucocorticoid start, DDAVP use, postoperative status, pituitary surgery, radiation, or overreplacement risk changes labs and symptoms"
+          "expected_active_branch": "Monitoring branch: GH start, estrogen change, glucocorticoid start, DDAVP use, postoperative status, pituitary surgery, radiation, or overreplacement risk changes labs and symptoms",
+          "expected_path_node_ids": [
+            "root",
+            "hypopituitarism_initial_assessment",
+            "hypopituitarism_classification_decision",
+            "hypopituitarism_replacement_sequence_action",
+            "hypopituitarism_monitoring_interactions_endpoint"
+          ],
+          "terminal_endpoint_id": "hypopituitarism_monitoring_interactions_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "postoperative_taper_or_ddavp_trial",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "hypopituitarism_monitoring_interactions_endpoint",
-          "expected_active_branch": "Monitoring branch: GH start, estrogen change, glucocorticoid start, DDAVP use, postoperative status, pituitary surgery, radiation, or overreplacement risk changes labs and symptoms"
+          "expected_active_branch": "Monitoring branch: GH start, estrogen change, glucocorticoid start, DDAVP use, postoperative status, pituitary surgery, radiation, or overreplacement risk changes labs and symptoms",
+          "expected_path_node_ids": [
+            "root",
+            "hypopituitarism_initial_assessment",
+            "hypopituitarism_classification_decision",
+            "hypopituitarism_replacement_sequence_action",
+            "hypopituitarism_monitoring_interactions_endpoint"
+          ],
+          "terminal_endpoint_id": "hypopituitarism_monitoring_interactions_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "hypopituitarism_followup_safety_endpoint",
-          "expected_active_branch": "Stable branch: emergency physiology excluded or treated, hormone sequence documented, medication access confirmed, pending labs/imaging owned, and safety instructions can be delivered"
+          "expected_active_branch": "Stable branch: emergency physiology excluded or treated, hormone sequence documented, medication access confirmed, pending labs/imaging owned, and safety instructions can be delivered",
+          "expected_path_node_ids": [
+            "root",
+            "hypopituitarism_initial_assessment",
+            "hypopituitarism_classification_decision",
+            "hypopituitarism_replacement_sequence_action",
+            "hypopituitarism_followup_safety_endpoint"
+          ],
+          "terminal_endpoint_id": "hypopituitarism_followup_safety_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
+        },
+        {
+          "scenario_id": "endpoint_hypopituitarism_di_ddavp_safety_endpoint_coverage",
+          "major_pathway": "deescalation_stopping_criteria",
+          "expected_endpoint_id": "hypopituitarism_di_ddavp_safety_endpoint",
+          "expected_active_branch": "DI branch: polyuria/nocturia, hypernatremia or high-normal sodium, dilute urine, postoperative DI, adipsia, DDAVP use, hyponatremia risk, or new polyuria after glucocorticoids",
+          "expected_path_node_ids": [
+            "root",
+            "hypopituitarism_initial_assessment",
+            "hypopituitarism_classification_decision",
+            "hypopituitarism_replacement_sequence_action",
+            "hypopituitarism_di_ddavp_safety_endpoint"
+          ],
+          "terminal_endpoint_id": "hypopituitarism_di_ddavp_safety_endpoint",
+          "traversal_status": "reaches_expected_endpoint",
+          "synthetic_context": {
+            "structured_context_domains": [
+              "symptoms",
+              "exam",
+              "vitals",
+              "labs",
+              "imaging_results",
+              "medications",
+              "comorbidities",
+              "demographics",
+              "pregnancy_status",
+              "workup_findings"
+            ],
+            "branch_trigger": "DI branch: polyuria/nocturia, hypernatremia or high-normal sodium, dilute urine, postoperative DI, adipsia, DDAVP use, hyponatremia risk, or new polyuria after glucocorticoids",
+            "expected_terminal_endpoint_type": "monitoring_reassessment",
+            "missing_data_needed": []
+          },
+          "coverage_type": "terminal_endpoint_coverage"
         }
       ],
       "audit_requirements": {

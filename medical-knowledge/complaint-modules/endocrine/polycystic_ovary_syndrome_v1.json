@@ -2796,8 +2796,6 @@
               "severity/risk category",
               "treatment response",
               "disposition constraints",
-              "Polycystic Ovary Syndrome (PCOS): diagnostic frame from guideline-sourced endocrine workup",
-              "Key thresholds and interpretation caveats: Adults: PCOS generally requires 2 of 3 Rotterdam features after excluding mimics: ovulatory dysfunction, hyperandrogenism, PCOM/elevated AMH. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
               "Important mimics/exclusions: pregnancy, hypothalamic/pituitary disease, thyroid disease, hyperprolactinemia, PCOS, androgen-secreting tumor, medication or substance effects, primary gonadal failure, menopause/POI, and structural pelvic or testicular disease.",
               "Tumor-range androgens or rapid virilization changes to urgent imaging/endocrine evaluation.",
               "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
@@ -2882,7 +2880,7 @@
         "polycystic_ovary_syndrome_classification_decision": {
           "rule_id": "polycystic_ovary_syndrome_classification_criteria",
           "source": "criteria",
-          "description": "Classify Polycystic Ovary Syndrome (PCOS) against cited thresholds and condition-specific rules: PCOS ovulatory dysfunction: 1 to <3 years post-menarche cycles <21 or >45 days; >=3 years post-menarche cycles <21 or >35 days or <8/year; any cycle >90 days after 1 year: <21 days, >45 days, >35 days, <8 cycles/year, >90 days, age 15 | Adult PCOM ultrasound: ovarian volume >=10 mL or follicle number per section >=10 in at least one ovary when follicle count quality is insufficient: >=10 mL, >=10 | PCOS treatment modifier: COCP plus metformin offers little additional benefit when BMI <=30 kg/m2; metformin may be most useful in BMI >30 or metabolic risk: BMI <=30 kg/m2, BMI >30 kg/m2",
+          "description": "Classify Polycystic Ovary Syndrome (PCOS) against cited thresholds and condition-specific rules: PCOS ovulatory dysfunction: <21 days, >45 days, >35 days, <8 cycles/year, >90 days | Adult PCOM ultrasound: >=10 mL, >=10 | PCOS treatment modifier: BMI <=30 kg/m2, BMI >30 kg/m2",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3631,7 +3629,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Polycystic Ovary Syndrome (PCOS): route by documented findings and exact missing-data needs",
+        "label": "Polycystic Ovary Syndrome: route by findings, risk, treatment safety, and follow-up",
         "edgeLabel": "",
         "source_ids": [
           "PCOS_GUIDELINE_2023",
@@ -3652,13 +3650,13 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Polycystic Ovary Syndrome (PCOS) from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
+        "action": "Route Polycystic Ovary Syndrome from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.",
         "children": [
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Missing data needed: Polycystic Ovary Syndrome (PCOS) pathway context",
-            "edgeLabel": "Missing exact Polycystic Ovary Syndrome (PCOS) pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings",
+            "label": "Internal data-availability guard",
+            "edgeLabel": "Internal data-availability guard",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -3694,9 +3692,16 @@
                 "workup_findings"
               ]
             },
-            "action": "Before choosing a non-emergency Polycystic Ovary Syndrome (PCOS) branch, document: presenting trigger, onset/trajectory, focused exam, vital signs, threshold labs/results, medication/allergy context, comorbidities, demographics, pregnancy/applicability status, and current workup findings.",
+            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
             "children": [],
             "endpoint_type": "missing_data_needed",
+            "internal_traversal_guard": true,
+            "display": {
+              "visible_in_pathway": false,
+              "visible_in_graph": false,
+              "visible_in_outline": false,
+              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+            },
             "missing_data_needed": [
               "symptoms",
               "exam",
@@ -3713,8 +3718,8 @@
           {
             "id": "polycystic_ovary_syndrome_concurrent_data_bundle",
             "type": "action",
-            "label": "Polycystic Ovary Syndrome (PCOS): obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Polycystic Ovary Syndrome (PCOS) active from documented findings: When was the last menstrual period, how regular are cycles, and has bleeding changed from baseline?; Any new or rapidly progressive facial/body hair growth, acne, scalp hair loss, deepening voice, clitoromegaly, or menstrual irregularity?; Any weight change, insulin resistance, acanthosis, dyslipidemia, hypertension, fatty liver, or diabetes risk affecting this endocrine workup?; Any loud snoring, witnessed apneas, morning headaches, daytime sleepiness, resistant hypertension, or CPAP use?; Rapid virilization, very high testosterone/DHEAS, pelvic mass, severe abnormal uterine bleeding.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Pregnancy test.",
+            "label": "Polycystic Ovary Syndrome: assessment and key results",
+            "edgeLabel": "Collect Polycystic Ovary Syndrome history/exam, vitals, key labs/results, medication safety, and major cutoffs",
             "source_ids": [
               "PCOS_GUIDELINE_2023",
               "AHRQ_CALIBRATE_DX"
@@ -3743,8 +3748,8 @@
               {
                 "id": "polycystic_ovary_syndrome_classification_decision",
                 "type": "decision",
-                "label": "Polycystic Ovary Syndrome (PCOS): classify severity and disposition by cited thresholds",
-                "edgeLabel": "Polycystic Ovary Syndrome (PCOS) results available for threshold classification: Pregnancy test.; Total/free testosterone by reliable assay.; Exclude mimics: TSH, prolactin, 17-OHP; DHEAS/androstenedione if severe.; Ovulatory dysfunction criteria; ultrasound or AMH in adults; metabolic screen A1c/OGTT/lipids/BP.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; menarche date; cycle length; cycles per year; thelarche timing; pregnancy status",
+                "label": "Polycystic Ovary Syndrome: classify risk and disposition",
+                "edgeLabel": "Classify Polycystic Ovary Syndrome with available result(s): <21 days; >45 days; >35 days; <8 cycles/year",
                 "source_ids": [
                   "PCOS_GUIDELINE_2023",
                   "AHRQ_CALIBRATE_DX"
@@ -3752,7 +3757,7 @@
                 "criteria": {
                   "rule_id": "polycystic_ovary_syndrome_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Polycystic Ovary Syndrome (PCOS) against cited thresholds and condition-specific rules: PCOS ovulatory dysfunction: 1 to <3 years post-menarche cycles <21 or >45 days; >=3 years post-menarche cycles <21 or >35 days or <8/year; any cycle >90 days after 1 year: <21 days, >45 days, >35 days, <8 cycles/year, >90 days, age 15 | Adult PCOM ultrasound: ovarian volume >=10 mL or follicle number per section >=10 in at least one ovary when follicle count quality is insufficient: >=10 mL, >=10 | PCOS treatment modifier: COCP plus metformin offers little additional benefit when BMI <=30 kg/m2; metformin may be most useful in BMI >30 or metabolic risk: BMI <=30 kg/m2, BMI >30 kg/m2",
+                  "description": "Classify Polycystic Ovary Syndrome (PCOS) against cited thresholds and condition-specific rules: PCOS ovulatory dysfunction: <21 days, >45 days, >35 days, <8 cycles/year, >90 days | Adult PCOM ultrasound: >=10 mL, >=10 | PCOS treatment modifier: BMI <=30 kg/m2, BMI >30 kg/m2",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -3840,13 +3845,13 @@
                     }
                   ]
                 },
-                "action": "Choose the active Polycystic Ovary Syndrome (PCOS) branch by matching patient data to: PCOS ovulatory dysfunction: 1 to <3 years post-menarche cycles <21 or >45 days; >=3 years post-menarche cycles <21 or >35 days or <8/year; any cycle >90 days after 1 year: <21 days, >45 days, >35 days, <8 cycles/year, >90 days, age 15 | Adult PCOM ultrasound: ovarian volume >=10 mL or follicle number per section >=10 in at least one ovary when follicle count quality is insufficient: >=10 mL, >=10 | PCOS treatment modifier: COCP plus metformin offers little additional benefit when BMI <=30 kg/m2; metformin may be most useful in BMI >30 or metabolic risk: BMI <=30 kg/m2, BMI >30 kg/m2.",
+                "action": "Choose the active Polycystic Ovary Syndrome branch by matching patient data to the cited cutoffs and patient-specific safety rules.",
                 "children": [
                   {
                     "id": "polycystic_ovary_syndrome_missing_cutoff_data_endpoint",
                     "type": "endpoint",
-                    "label": "Missing data needed: Polycystic Ovary Syndrome (PCOS) threshold/results",
-                    "edgeLabel": "Missing exact Polycystic Ovary Syndrome (PCOS) result(s): menarche date; cycle length; cycles per year; thelarche timing; pregnancy status; age/adolescent status; ultrasound route; ovarian volume",
+                    "label": "Internal data-availability guard",
+                    "edgeLabel": "Internal data-availability guard",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "PCOS_GUIDELINE_2023"
@@ -3902,9 +3907,16 @@
                         ">=10 mL"
                       ]
                     },
-                    "action": "Obtain the exact Polycystic Ovary Syndrome (PCOS) data needed for threshold-based routing: menarche date; cycle length; cycles per year; thelarche timing; pregnancy status; age/adolescent status; ultrasound route; ovarian volume; follicle number per section; dominant follicle/cyst context; BMI; diabetes risk factors; Pregnancy test.; Total/free testosterone by reliable assay.; Exclude mimics: TSH, prolactin, 17-OHP; DHEAS/androstenedione if severe.; Ovulatory dysfunction criteria; ultrasound or AMH in adults; metabolic screen A1c/OGTT/lipids/BP.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; Hyperandrogenism/PCOS safety tests: pregnancy test when relevant, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin as indicated, and A1c/OGTT/lipids for cardiometabolic risk.; Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.; Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.; <21 days; >45 days; >35 days; <8 cycles/year; >90 days; age 15; >3 years post-thelarche; >=10 mL.",
+                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
+                    "internal_traversal_guard": true,
+                    "display": {
+                      "visible_in_pathway": false,
+                      "visible_in_graph": false,
+                      "visible_in_outline": false,
+                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                    },
                     "missing_data_needed": [
                       "menarche date",
                       "cycle length",
@@ -3939,8 +3951,8 @@
                   {
                     "id": "polycystic_ovary_syndrome_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Polycystic Ovary Syndrome (PCOS): emergency escalation or monitored-care disposition when danger thresholds are met",
-                    "edgeLabel": "Polycystic Ovary Syndrome (PCOS) danger feature or high-risk cutoff: Rapid virilization, very high testosterone/DHEAS, pelvic mass, severe abnormal uterine bleeding.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Positive pregnancy with pain/bleeding, rapid virilization, tumor-range androgens, severe abnormal bleeding, visual symptoms/headache, testicular mass, hard breast mass, or priapism.; Measure blood pressure; <21 days; >45 days; >35 days; Tumor-range androgens or rapid virilization changes to urgent imaging/endocrine evaluation.",
+                    "label": "Polycystic Ovary Syndrome: emergency or monitored-care disposition",
+                    "edgeLabel": "Danger feature or high-risk result present: Rapid virilization, very high testosterone/DHEAS, pelvic mass, severe abnormal uterine bleeding.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; <21 days; >45 days",
                     "source_ids": [
                       "PCOS_GUIDELINE_2023",
                       "AHRQ_CALIBRATE_DX"
@@ -4033,7 +4045,7 @@
                         }
                       ]
                     },
-                    "action": "Rapid virilization, very high testosterone/DHEAS, pelvic mass, severe abnormal uterine bleeding.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Positive pregnancy with pain/bleeding, rapid virilization, tumor-range androgens, severe abnormal bleeding, visual symptoms/headache, testicular mass, hard breast mass, or priapism.; Measure blood pressure. Use lifestyle and weight-management support for metabolic risk and patient goals.; Use combined hormonal contraceptive for cycle control and hyperandrogenic symptoms when pregnancy is not desired and no contraindication exists.; Add antiandrogen such as spironolactone only with reliable contraception and monitoring when hirsutism/acne persists after first-line therapy.; For fertility goals, use ovulation induction pathway such as letrozole-first approaches per reproductive specialist/local guideline.; Tumor-range androgens or rapid virilization changes to urgent imaging/endocrine evaluation.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+                    "action": "Rapid virilization, very high testosterone/DHEAS, pelvic mass, severe abnormal uterine bleeding.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism. Escalate using the abnormal cutoff, unstable feature, or monitored-care rule.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -4110,8 +4122,8 @@
                   {
                     "id": "polycystic_ovary_syndrome_treatment_bundle",
                     "type": "action",
-                    "label": "Polycystic Ovary Syndrome (PCOS): initiate treatment/disposition for the active threshold-defined branch",
-                    "edgeLabel": "Polycystic Ovary Syndrome (PCOS) treatment/disposition indicated by: <21 days; >45 days; >35 days; <8 cycles/year; >90 days; age 15; Use lifestyle and weight-management support for metabolic risk and patient goals.; Use combined hormonal contraceptive for cycle control and hyperandrogenic symptoms when pregnancy is not desired and no contraindication exists.; Add antiandrogen such as spironolactone only with reliable contraception and monitoring when hirsutism/acne persists after first-line therapy.; For fertility goals, use ovulation induction pathway such as letrozole-first approaches per reproductive specialist/local guideline.; Tumor-range androgens or rapid virilization changes to urgent imaging/endocrine evaluation.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+                    "label": "Polycystic Ovary Syndrome: treatment and disposition branch",
+                    "edgeLabel": "Confirmed/high-risk Polycystic Ovary Syndrome branch has treatment-safety data available",
                     "source_ids": [
                       "PCOS_GUIDELINE_2023",
                       "AHRQ_CALIBRATE_DX"
@@ -4206,13 +4218,13 @@
                         }
                       ]
                     },
-                    "action": "Use lifestyle and weight-management support for metabolic risk and patient goals.; Use combined hormonal contraceptive for cycle control and hyperandrogenic symptoms when pregnancy is not desired and no contraindication exists.; Add antiandrogen such as spironolactone only with reliable contraception and monitoring when hirsutism/acne persists after first-line therapy.; For fertility goals, use ovulation induction pathway such as letrozole-first approaches per reproductive specialist/local guideline.; Tumor-range androgens or rapid virilization changes to urgent imaging/endocrine evaluation.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+                    "action": "Use lifestyle and weight-management support for metabolic risk and patient goals.; Use combined hormonal contraceptive for cycle control and hyperandrogenic symptoms when pregnancy is not desired and no contraindication exists.; Add antiandrogen such as spironolactone only with reliable contraception and monitoring when hirsutism/acne persists after first-line therapy.; Tumor-range androgens or rapid virilization changes to urgent imaging/endocrine evaluation.; unstable physiology or dangerous electrolyte/glucose abnormality",
                     "children": [
                       {
                         "id": "polycystic_ovary_syndrome_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Polycystic Ovary Syndrome (PCOS): medication/procedure safety and special-population thresholds resolved?",
-                        "edgeLabel": "Polycystic Ovary Syndrome (PCOS) treatment selected; check patient-specific modifiers",
+                        "label": "Polycystic Ovary Syndrome: treatment safety resolved?",
+                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan",
                         "source_ids": [
                           "PCOS_GUIDELINE_2023",
                           "AHRQ_CALIBRATE_DX"
@@ -4258,13 +4270,13 @@
                             }
                           ]
                         },
-                        "action": "Apply Polycystic Ovary Syndrome (PCOS)-specific safety modifiers before final treatment/disposition.",
+                        "action": "Apply Polycystic Ovary Syndrome-specific safety modifiers before final treatment or disposition.",
                         "children": [
                           {
                             "id": "polycystic_ovary_syndrome_review_endpoint",
                             "type": "endpoint",
-                            "label": "Polycystic Ovary Syndrome (PCOS): clinician review for contraindication, special population, or local-policy cutoff",
-                            "edgeLabel": "Polycystic Ovary Syndrome (PCOS) modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Measure body mass index; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability",
+                            "label": "Polycystic Ovary Syndrome: clinician review modifier",
+                            "edgeLabel": "Contraindication, special population, conflicting guidance, or local protocol dependency",
                             "source_ids": [
                               "PCOS_GUIDELINE_2023",
                               "AHRQ_CALIBRATE_DX"
@@ -4287,7 +4299,7 @@
                                 "AHRQ_CALIBRATE_DX"
                               ]
                             },
-                            "action": "Pause non-emergent Polycystic Ovary Syndrome (PCOS) treatment choices until the modifier is resolved and the reviewer documents the applicable guideline/local cutoff.",
+                            "action": "Pause non-emergent Polycystic Ovary Syndrome treatment choices until the modifier is resolved and the reviewer documents the applicable guideline or local cutoff.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
                             "review_needed_reason": "Patient-specific contraindication, special population, guideline conflict, or local policy affects treatment or disposition."
@@ -4295,8 +4307,8 @@
                           {
                             "id": "polycystic_ovary_syndrome_monitoring_bundle",
                             "type": "action",
-                            "label": "Polycystic Ovary Syndrome (PCOS): concurrent monitoring, response checks, and disposition readiness",
-                            "edgeLabel": "After Polycystic Ovary Syndrome (PCOS) therapy or diagnostic plan, trend: <21 days; >45 days; >35 days; <8 cycles/year; Pregnancy test.; Total/free testosterone by reliable assay.; Exclude mimics: TSH, prolactin, 17-OHP; DHEAS/androstenedione if severe.; Measure blood pressure",
+                            "label": "Polycystic Ovary Syndrome: monitoring and disposition readiness",
+                            "edgeLabel": "Trend Polycystic Ovary Syndrome symptoms, vitals, key results, adverse effects, and disposition readiness",
                             "source_ids": [
                               "PCOS_GUIDELINE_2023",
                               "AHRQ_CALIBRATE_DX"
@@ -4389,13 +4401,13 @@
                                 }
                               ]
                             },
-                            "action": "Reassess Polycystic Ovary Syndrome (PCOS) using the active thresholds and clinical course; do not close the pathway until response, adverse effects, pending data, and disposition are owned.",
+                            "action": "Reassess Polycystic Ovary Syndrome using the active thresholds and clinical course; do not close the pathway until response, adverse effects, pending data, and disposition are owned.",
                             "children": [
                               {
                                 "id": "polycystic_ovary_syndrome_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Polycystic Ovary Syndrome (PCOS): escalate when reassessment worsens or contradicts expected course",
-                                "edgeLabel": "Polycystic Ovary Syndrome (PCOS) reassessment worsens or contradicts expected response: <21 days; >45 days; >35 days; <8 cycles/year; Pregnancy test.; Total/free testosterone by reliable assay.; Exclude mimics: TSH, prolactin, 17-OHP; DHEAS/androstenedione if severe.; Measure blood pressure",
+                                "label": "Polycystic Ovary Syndrome: reassessment escalation",
+                                "edgeLabel": "Polycystic Ovary Syndrome worsens, new danger feature appears, or results no longer fit the active branch",
                                 "source_ids": [
                                   "PCOS_GUIDELINE_2023",
                                   "AHRQ_CALIBRATE_DX"
@@ -4488,7 +4500,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Repeat critical Polycystic Ovary Syndrome (PCOS) objective data, reassess mimics/complications, and move to ED/admission/specialty review according to the abnormal cutoff or danger feature.",
+                                "action": "Repeat critical Polycystic Ovary Syndrome objective data, reassess mimics and complications, and move to ED/admission/specialty review according to the abnormal cutoff or danger feature.",
                                 "children": [],
                                 "endpoint_type": "escalation_disposition",
                                 "guideline_cutoffs": [
@@ -4565,8 +4577,8 @@
                               {
                                 "id": "polycystic_ovary_syndrome_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Polycystic Ovary Syndrome (PCOS): de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Polycystic Ovary Syndrome (PCOS) objective response supports narrowing, stopping, tapering, or continuing: <21 days; >45 days; >35 days; <8 cycles/year; Tumor-range androgens or rapid virilization changes to urgent imaging/endocrine evaluation.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Use lifestyle and weight-management support for metabolic risk and patient goals.",
+                                "label": "Polycystic Ovary Syndrome: de-escalate, stop, or narrow",
+                                "edgeLabel": "Objective response supports narrowing, stopping, tapering, or continuing Polycystic Ovary Syndrome care",
                                 "source_ids": [
                                   "PCOS_GUIDELINE_2023",
                                   "AHRQ_CALIBRATE_DX"
@@ -4659,7 +4671,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Use the active Polycystic Ovary Syndrome (PCOS) objective criteria and response trend (<21 days; >45 days; >35 days; <8 cycles/year; >90 days; age 15; >3 years post-thelarche; >=10 mL; >=10; BMI <=30 kg/m2) to stop, narrow, taper, or continue treatment; document what threshold or finding changed.",
+                                "action": "Use active Polycystic Ovary Syndrome results and response trend to stop, narrow, taper, or continue treatment; document which cutoff, symptom, adverse effect, or finding changed.",
                                 "children": [],
                                 "endpoint_type": "deescalation_stopping",
                                 "guideline_cutoffs": [
@@ -4736,8 +4748,8 @@
                               {
                                 "id": "polycystic_ovary_syndrome_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Polycystic Ovary Syndrome (PCOS): follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Polycystic Ovary Syndrome (PCOS) discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Tumor-range androgens or rapid virilization changes to urgent imaging/endocrine evaluation.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+                                "label": "Polycystic Ovary Syndrome: follow-up and safety-net",
+                                "edgeLabel": "Polycystic Ovary Syndrome stable enough for owned follow-up, pending results, and safety-netting",
                                 "source_ids": [
                                   "PCOS_GUIDELINE_2023",
                                   "AHRQ_CALIBRATE_DX"
@@ -4760,7 +4772,7 @@
                                     "AHRQ_CALIBRATE_DX"
                                   ]
                                 },
-                                "action": "Document the Polycystic Ovary Syndrome (PCOS) diagnosis/risk category, pending-result owner, follow-up interval, and return precautions for worsening symptoms, new danger features, inability to complete treatment, or abnormal pending results.",
+                                "action": "Document the Polycystic Ovary Syndrome diagnosis/risk category, pending-result owner, follow-up interval, and return precautions for worsening symptoms, new danger features, inability to complete treatment, or abnormal pending results.",
                                 "children": [],
                                 "endpoint_type": "safety_net_instruction",
                                 "monitoring_plan": [
@@ -4773,8 +4785,8 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend objective labs/results",
-                              "review treatment response/adverse effects",
+                              "trend key labs/results",
+                              "review treatment response and adverse effects",
                               "confirm disposition and follow-up owner",
                               "Measure blood pressure",
                               "Measure heart rate",
@@ -4862,8 +4874,8 @@
                       "For fertility goals, use ovulation induction pathway such as letrozole-first approaches per reproductive specialist/local guideline.",
                       "Treat unstable presentations first using the urgent escalation rule for Polycystic Ovary Syndrome (PCOS); draw time-sensitive labs only if doing so does not delay stabilization.",
                       "Tumor-range androgens or rapid virilization changes to urgent imaging/endocrine evaluation.",
-                      "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
-                      "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
+                      "unstable physiology or dangerous electrolyte/glucose abnormality",
+                      "discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context"
                     ],
                     "guideline_cutoffs": [
                       {
@@ -4939,8 +4951,8 @@
                   {
                     "id": "polycystic_ovary_syndrome_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Polycystic Ovary Syndrome (PCOS): switch to mimic/alternate pathway when threshold/result criteria do not fit",
-                    "edgeLabel": "Polycystic Ovary Syndrome (PCOS) mimic/exclusion better fits: Polycystic Ovary Syndrome (PCOS): diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: Adults: PCOS generally requires 2 of 3 Rotterdam features after excluding mimics: ovulatory dysfunction, hyperandrogenism, PCOM/elevated AMH. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.; Important mimics/exclusions: pregnancy, hypothalamic/pituitary disease, thyroid disease, hyperprolactinemia, PCOS, androgen-secreting tumor, medication or substance effects, primary gonadal failure, menopause/POI, and structural pelvic or testicular disease.",
+                    "label": "Polycystic Ovary Syndrome: alternate diagnosis pathway",
+                    "edgeLabel": "Objective findings favor mimic or alternate pathway: competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
                     "source_ids": [
                       "PCOS_GUIDELINE_2023",
                       "AHRQ_CALIBRATE_DX"
@@ -5032,7 +5044,7 @@
                         }
                       ]
                     },
-                    "action": "Document why Polycystic Ovary Syndrome (PCOS) is not the active pathway and route to the competing diagnosis: Polycystic Ovary Syndrome (PCOS): diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: Adults: PCOS generally requires 2 of 3 Rotterdam features after excluding mimics: ovulatory dysfunction, hyperandrogenism, PCOM/elevated AMH. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.; Important mimics/exclusions: pregnancy, hypothalamic/pituitary disease, thyroid disease, hyperprolactinemia, PCOS, androgen-secreting tumor, medication or substance effects, primary gonadal failure, menopause/POI, and structural pelvic or testicular disease..",
+                    "action": "Document why Polycystic Ovary Syndrome is not the active pathway, name the competing diagnosis or exclusion, and route to the appropriate workup rather than reassurance alone.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
                     "review_needed_reason": "Competing diagnosis or exclusion changes the active pathway."
@@ -5310,49 +5322,122 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing exact Polycystic Ovary Syndrome (PCOS) pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings"
+          "expected_active_branch": "Missing Polycystic Ovary Syndrome: onset/trajectory, focused exam, vitals, key results, meds, comorbidities, pregnancy/applicability, or follow-up access",
+          "expected_path_node_ids": [
+            "root",
+            "endpoint_missing_context"
+          ],
+          "terminal_endpoint_id": "endpoint_missing_context",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "polycystic_ovary_syndrome_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Missing exact Polycystic Ovary Syndrome (PCOS) result(s): menarche date; cycle length; cycles per year; thelarche timing; pregnancy status; age/adolescent status; ultrasound route; ovarian volume"
+          "expected_active_branch": "Missing Polycystic Ovary Syndrome result(s): menarche date; cycle length; cycles per year; thelarche timing; pregnancy status; age/adolescent status",
+          "expected_path_node_ids": [
+            "root",
+            "polycystic_ovary_syndrome_concurrent_data_bundle",
+            "polycystic_ovary_syndrome_classification_decision",
+            "polycystic_ovary_syndrome_missing_cutoff_data_endpoint"
+          ],
+          "terminal_endpoint_id": "polycystic_ovary_syndrome_missing_cutoff_data_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "polycystic_ovary_syndrome_urgent_endpoint",
-          "expected_active_branch": "Polycystic Ovary Syndrome (PCOS) danger feature or high-risk cutoff: Rapid virilization, very high testosterone/DHEAS, pelvic mass, severe abnormal uterine bleeding.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Positive pregnancy with pain/bleeding, rapid virilization, tumor-range androgens, severe abnormal bleeding, visual symptoms/headache, testicular mass, hard breast mass, or priapism.; Measure blood pressure; <21 days; >45 days; >35 days; Tumor-range androgens or rapid virilization changes to urgent imaging/endocrine evaluation."
+          "expected_active_branch": "Danger feature or high-risk result present: Rapid virilization, very high testosterone/DHEAS, pelvic mass, severe abnormal uterine bleeding.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; <21 days; >45 days",
+          "expected_path_node_ids": [
+            "root",
+            "polycystic_ovary_syndrome_concurrent_data_bundle",
+            "polycystic_ovary_syndrome_classification_decision",
+            "polycystic_ovary_syndrome_urgent_endpoint"
+          ],
+          "terminal_endpoint_id": "polycystic_ovary_syndrome_urgent_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "polycystic_ovary_syndrome_alternate_endpoint",
-          "expected_active_branch": "Polycystic Ovary Syndrome (PCOS) mimic/exclusion better fits: Polycystic Ovary Syndrome (PCOS): diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: Adults: PCOS generally requires 2 of 3 Rotterdam features after excluding mimics: ovulatory dysfunction, hyperandrogenism, PCOM/elevated AMH. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.; Important mimics/exclusions: pregnancy, hypothalamic/pituitary disease, thyroid disease, hyperprolactinemia, PCOS, androgen-secreting tumor, medication or substance effects, primary gonadal failure, menopause/POI, and structural pelvic or testicular disease."
+          "expected_active_branch": "Objective findings favor mimic or alternate pathway: competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+          "expected_path_node_ids": [
+            "root",
+            "polycystic_ovary_syndrome_concurrent_data_bundle",
+            "polycystic_ovary_syndrome_classification_decision",
+            "polycystic_ovary_syndrome_alternate_endpoint"
+          ],
+          "terminal_endpoint_id": "polycystic_ovary_syndrome_alternate_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "polycystic_ovary_syndrome_review_endpoint",
-          "expected_active_branch": "Polycystic Ovary Syndrome (PCOS) modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Measure body mass index; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability"
+          "expected_active_branch": "Contraindication, special population, conflicting guidance, or local protocol dependency",
+          "expected_path_node_ids": [
+            "root",
+            "polycystic_ovary_syndrome_concurrent_data_bundle",
+            "polycystic_ovary_syndrome_classification_decision",
+            "polycystic_ovary_syndrome_treatment_bundle",
+            "polycystic_ovary_syndrome_treatment_safety_decision",
+            "polycystic_ovary_syndrome_review_endpoint"
+          ],
+          "terminal_endpoint_id": "polycystic_ovary_syndrome_review_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "polycystic_ovary_syndrome_worsening_endpoint",
-          "expected_active_branch": "Polycystic Ovary Syndrome (PCOS) reassessment worsens or contradicts expected response: <21 days; >45 days; >35 days; <8 cycles/year; Pregnancy test.; Total/free testosterone by reliable assay.; Exclude mimics: TSH, prolactin, 17-OHP; DHEAS/androstenedione if severe.; Measure blood pressure"
+          "expected_active_branch": "Polycystic Ovary Syndrome worsens, new danger feature appears, or results no longer fit the active branch",
+          "expected_path_node_ids": [
+            "root",
+            "polycystic_ovary_syndrome_concurrent_data_bundle",
+            "polycystic_ovary_syndrome_classification_decision",
+            "polycystic_ovary_syndrome_treatment_bundle",
+            "polycystic_ovary_syndrome_treatment_safety_decision",
+            "polycystic_ovary_syndrome_monitoring_bundle",
+            "polycystic_ovary_syndrome_worsening_endpoint"
+          ],
+          "terminal_endpoint_id": "polycystic_ovary_syndrome_worsening_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "polycystic_ovary_syndrome_deescalate_endpoint",
-          "expected_active_branch": "Polycystic Ovary Syndrome (PCOS) objective response supports narrowing, stopping, tapering, or continuing: <21 days; >45 days; >35 days; <8 cycles/year; Tumor-range androgens or rapid virilization changes to urgent imaging/endocrine evaluation.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Use lifestyle and weight-management support for metabolic risk and patient goals."
+          "expected_active_branch": "Objective response supports narrowing, stopping, tapering, or continuing Polycystic Ovary Syndrome care",
+          "expected_path_node_ids": [
+            "root",
+            "polycystic_ovary_syndrome_concurrent_data_bundle",
+            "polycystic_ovary_syndrome_classification_decision",
+            "polycystic_ovary_syndrome_treatment_bundle",
+            "polycystic_ovary_syndrome_treatment_safety_decision",
+            "polycystic_ovary_syndrome_monitoring_bundle",
+            "polycystic_ovary_syndrome_deescalate_endpoint"
+          ],
+          "terminal_endpoint_id": "polycystic_ovary_syndrome_deescalate_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "polycystic_ovary_syndrome_followup_endpoint",
-          "expected_active_branch": "Polycystic Ovary Syndrome (PCOS) discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Tumor-range androgens or rapid virilization changes to urgent imaging/endocrine evaluation.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
+          "expected_active_branch": "Polycystic Ovary Syndrome stable enough for owned follow-up, pending results, and safety-netting",
+          "expected_path_node_ids": [
+            "root",
+            "polycystic_ovary_syndrome_concurrent_data_bundle",
+            "polycystic_ovary_syndrome_classification_decision",
+            "polycystic_ovary_syndrome_treatment_bundle",
+            "polycystic_ovary_syndrome_treatment_safety_decision",
+            "polycystic_ovary_syndrome_monitoring_bundle",
+            "polycystic_ovary_syndrome_followup_endpoint"
+          ],
+          "terminal_endpoint_id": "polycystic_ovary_syndrome_followup_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         }
       ],
       "audit_requirements": {

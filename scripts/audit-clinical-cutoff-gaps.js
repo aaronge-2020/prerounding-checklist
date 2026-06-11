@@ -35,6 +35,7 @@ const prohibitedGenericNodePatterns = [
   /cutoff-bearing/i,
   /cutoff criteria/i,
   /trigger present/i,
+  /presenting trigger/i,
   /enough context/i,
   /gather objective data/i,
   /crisis labs/i,
@@ -50,6 +51,9 @@ const prohibitedGenericNodePatterns = [
   /stable for follow-up with safety net/i,
   /diagnosis\/risk branch selected/i,
   /threshold\/result data missing/i,
+  /threshold-defined branch/i,
+  /key thresholds and interpretation caveats/i,
+  /guideline-sourced endocrine workup/i,
   /compact evidence-cited management pathway/i,
   /treatment branch only when the cited diagnostic\/severity criteria match/i
 ];
@@ -71,6 +75,7 @@ const cutoffPattern = new RegExp([
 ].join("|"), "gi");
 
 const bareMarkerPattern = /\b(?:A1c|HbA1c|pH|bicarbonate|anion gap|osmolality|lactate|MAP|TSH|free T4|FT4|T3|PTH|calcium|cortisol|ACTH|aldosterone|renin|eGFR|UACR|glucose|troponin)\b/i;
+const generatedEvidencePattern = /\b(?:diagnostic frame from guideline-sourced endocrine workup|key thresholds and interpretation caveats|source-backed criteria|source-backed management route|use the high-risk or confirmed-pathway management option|lower-risk, outpatient, supportive, or safety-net pathway|stabilize or escalate before routine treatment|screen for immediate danger or disposition-changing findings|order focused first-line studies and interpret them in sequence|apply source-backed decision steps|does patient context support this workup|criteria match|concurrent data bundle)\b/i;
 
 function hasRealCutoff(value = "") {
   const text = cleanText(value);
@@ -127,6 +132,10 @@ function itemText(item = {}) {
   ].filter(Boolean).join(" "));
 }
 
+function isGeneratedEvidenceItem(item = {}) {
+  return generatedEvidencePattern.test(itemText(item));
+}
+
 function walk(root, out = []) {
   if (!root || typeof root !== "object") return out;
   out.push(root);
@@ -148,7 +157,7 @@ function cutoffRows(module = {}) {
   const markerOnlyRows = [];
   const fakeCutoffRows = [];
   for (const group of evidenceGroups) {
-    const items = Array.isArray(module[group]) ? module[group] : [];
+    const items = (Array.isArray(module[group]) ? module[group] : []).filter((item) => !isGeneratedEvidenceItem(item));
     items.forEach((item) => {
       const text = itemText(item);
       const explicitCutoffs = Array.isArray(item.cutoffs) ? item.cutoffs : [];
@@ -186,17 +195,26 @@ function cutoffRows(module = {}) {
 }
 
 function treeGenericFindings(tree = {}) {
-  const nodes = walk(tree.root || null);
-  return nodes.flatMap((node) => {
-    const text = cleanText(`${node.label || ""} ${node.edgeLabel || ""} ${node.action || ""}`);
-    return prohibitedGenericNodePatterns
+  const findings = [];
+  const visit = (value, path = "$") => {
+    if (/^\$\.audit_requirements\.required_domains\[\d+\]$/.test(path)) return;
+    if (value && typeof value === "object") {
+      if (Array.isArray(value)) value.forEach((entry, index) => visit(entry, `${path}[${index}]`));
+      else Object.entries(value).forEach(([key, entry]) => visit(entry, `${path}.${key}`));
+      return;
+    }
+    if (typeof value !== "string") return;
+    const text = cleanText(value);
+    prohibitedGenericNodePatterns
       .filter((pattern) => pattern.test(text))
-      .map((pattern) => ({
-        node_id: node.id || "",
-        label: node.label || "",
+      .forEach((pattern) => findings.push({
+        node_id: path,
+        label: text.slice(0, 180),
         matched: pattern.source
       }));
-  });
+  };
+  visit(tree);
+  return findings;
 }
 
 function moduleRecord(file) {
@@ -204,9 +222,21 @@ function moduleRecord(file) {
   const module = raw.module || raw;
   const tree = module.clinical_pathway_tree_v1 || {};
   const treeNodes = walk(tree.root || null);
-  const rows = cutoffRows(module);
-  const markerOnlyRows = rows.markerOnlyRows || [];
-  const fakeCutoffRows = rows.fakeCutoffRows || [];
+  const moduleRows = cutoffRows(module);
+  const treeThresholdRows = Array.isArray(tree.source_thresholds)
+    ? tree.source_thresholds
+      .map((row) => ({
+        group: "source_thresholds",
+        item_id: row.evidence_item_id || "",
+        label: row.label || row.evidence_item_id || "",
+        cutoffs: [row.threshold].filter(hasRealCutoff),
+        source_ids: sourceIds(row)
+      }))
+      .filter((row) => row.cutoffs.length)
+    : [];
+  const rows = treeThresholdRows.length ? treeThresholdRows : moduleRows;
+  const markerOnlyRows = treeThresholdRows.length ? [] : moduleRows.markerOnlyRows || [];
+  const fakeCutoffRows = treeThresholdRows.length ? [] : moduleRows.fakeCutoffRows || [];
   const treeText = JSON.stringify(tree);
   const cutoffValues = unique(rows.flatMap((row) => row.cutoffs));
   const visibleCutoffs = cutoffValues.filter((cutoff) => treeText.toLowerCase().includes(String(cutoff).toLowerCase()));
@@ -229,7 +259,7 @@ function moduleRecord(file) {
     tree_node_count: treeNodes.length,
     prohibited_generic_nodes: genericFindings,
     needs_cutoff_enrichment: cutoffValues.length < 3,
-    needs_tree_rewrite: genericFindings.length > 0 || fakeCutoffRows.length > 0 || treeNodes.length > 36 || visibleCutoffs.length < Math.min(3, cutoffValues.length)
+    needs_tree_rewrite: genericFindings.length > 0 || fakeCutoffRows.length > 0 || treeNodes.length > 20 || visibleCutoffs.length < Math.min(3, cutoffValues.length)
   };
 }
 

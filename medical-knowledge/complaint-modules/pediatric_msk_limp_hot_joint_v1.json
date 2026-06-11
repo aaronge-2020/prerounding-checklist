@@ -7762,8 +7762,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Missing data needed: pediatric limp, hot joint, injury, or non-weight-bearing context",
-            "edgeLabel": "Missing pediatric limp context: age, onset/duration, trauma/safeguarding history, ability to weight bear after analgesia, fever/systemic symptoms, joint range of motion, full vitals, pain location, labs/imaging when indicated, medication/allergy context, comorbidities, and follow-up access",
+            "label": "Internal data-availability guard",
+            "edgeLabel": "Internal data-availability guard",
             "source_ids": [
               "RCH_LIMPING_CHILD",
               "RCH_BONE_JOINT_INFECTION",
@@ -7813,9 +7813,16 @@
                 "workup_findings"
               ]
             },
-            "action": "Document age/developmental baseline, symptom onset and duration, trauma mechanism and safeguarding consistency, current and post-analgesia weight-bearing, pain site including hip/groin/thigh/knee referral, fever and systemic symptoms, full vital signs, gait, look/feel/move exam, joint above and below, passive range of motion, neurovascular status, skin/wound source, immunocompromise/sickle cell/hemophilia or postoperative context, analgesics/antibiotic exposure/allergies, pregnancy possibility in adolescents when treatment or imaging depends on it, labs/cultures/imaging if indicated, and reliable follow-up.",
+            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
             "children": [],
             "endpoint_type": "missing_data_needed",
+            "internal_traversal_guard": true,
+            "display": {
+              "visible_in_pathway": false,
+              "visible_in_graph": false,
+              "visible_in_outline": false,
+              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+            },
             "missing_data_needed": [
               "age and developmental walking baseline",
               "limp onset, duration, and trajectory",
@@ -8590,8 +8597,8 @@
                   {
                     "id": "pediatric_msk_limp_hot_joint_missing_objective_endpoint",
                     "type": "endpoint",
-                    "label": "Missing data needed: weight-bearing after analgesia, temperature, inflammatory markers, culture, aspiration, X-ray, ultrasound, MRI, or follow-up plan",
-                    "edgeLabel": "Cannot choose low-risk, infection, fracture, SUFE/Perthes, systemic-mimic, or admission branch until post-analgesia weight-bearing, temperature, ROM, pain localization, red flags, CRP/ESR/WBC/culture when infection is possible, and imaging/aspiration status are known",
+                    "label": "Internal data-availability guard",
+                    "edgeLabel": "Internal data-availability guard",
                     "source_ids": [
                       "RCH_LIMPING_CHILD",
                       "RCH_BONE_JOINT_INFECTION",
@@ -8639,9 +8646,16 @@
                         "follow-up plan"
                       ]
                     },
-                    "action": "Complete the branch-critical data: repeat analgesia-supported walking assessment, measure temperature and full vitals, document passive joint motion and severe pain with movement, localize hip versus knee/thigh/bone pain, obtain FBE/WBC, ESR, CRP, blood culture before antibiotics when infection is possible, discuss aspiration for suspected septic arthritis without delaying antibiotics, obtain localized X-ray for injury or hip disease, ultrasound for suspected hip effusion, MRI with contrast when osteomyelitis or deep infection remains possible, and document follow-up or transfer access before discharge.",
+                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
+                    "internal_traversal_guard": true,
+                    "display": {
+                      "visible_in_pathway": false,
+                      "visible_in_graph": false,
+                      "visible_in_outline": false,
+                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                    },
                     "missing_data_needed": [
                       "post-analgesia weight-bearing status",
                       "temperature and full vitals",
@@ -17435,79 +17449,184 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing pediatric limp context: age, onset/duration, trauma/safeguarding history, ability to weight bear after analgesia, fever/systemic symptoms, joint range of motion, full vitals, pain location, labs/imaging when indicated, medication/allergy context, comorbidities, and follow-up access"
+          "expected_active_branch": "Internal data-availability guard",
+          "expected_path_node_ids": [
+            "root",
+            "endpoint_missing_context"
+          ],
+          "terminal_endpoint_id": "endpoint_missing_context",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "missing_weight_bearing_labs_imaging",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "pediatric_msk_limp_hot_joint_missing_objective_endpoint",
-          "expected_active_branch": "Cannot choose low-risk, infection, fracture, SUFE/Perthes, systemic-mimic, or admission branch until post-analgesia weight-bearing, temperature, ROM, pain localization, red flags, CRP/ESR/WBC/culture when infection is possible, and imaging/aspiration status are known"
+          "expected_active_branch": "Internal data-availability guard",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_msk_limp_hot_joint_initial_assessment_bundle",
+            "pediatric_msk_limp_hot_joint_classification_decision",
+            "pediatric_msk_limp_hot_joint_missing_objective_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_msk_limp_hot_joint_missing_objective_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "unstable_septic_child",
           "major_pathway": "red_flags_instability",
           "expected_endpoint_id": "pediatric_msk_limp_hot_joint_sepsis_instability_endpoint",
-          "expected_active_branch": "Instability branch: shock, toxic appearance, altered mental status, hypoxemia, poor perfusion, rapidly worsening illness, limb-threatening trauma, neurovascular compromise, or severe disseminated infection features override routine limp workup"
+          "expected_active_branch": "Instability branch: shock, toxic appearance, altered mental status, hypoxemia, poor perfusion, rapidly worsening illness, limb-threatening trauma, neurovascular compromise, or severe disseminated infection features override routine limp workup",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_msk_limp_hot_joint_initial_assessment_bundle",
+            "pediatric_msk_limp_hot_joint_classification_decision",
+            "pediatric_msk_limp_hot_joint_sepsis_instability_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_msk_limp_hot_joint_sepsis_instability_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "hot_swollen_nonweightbearing_hip_crp_high",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "pediatric_msk_limp_hot_joint_septic_arthritis_emergency_endpoint",
-          "expected_active_branch": "Septic arthritis branch: fever >38.5 C, hot/swollen joint, severe passive-motion pain, reduced ROM, refusal to weight bear, CRP >=20 mg/L, ESR >=40 mm/hr, WBC >12.0 x10^9/L, ultrasound effusion >=7 mm, purulent aspirate, positive Gram stain/culture, or high clinical suspicion"
+          "expected_active_branch": "Septic arthritis branch: fever >38.5 C, hot/swollen joint, severe passive-motion pain, reduced ROM, refusal to weight bear, CRP >=20 mg/L, ESR >=40 mm/hr, WBC >12.0 x10^9/L, ultrasound effusion >=7 mm, purulent aspirate, positive Gram stain/culture, or high clinical suspicion",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_msk_limp_hot_joint_initial_assessment_bundle",
+            "pediatric_msk_limp_hot_joint_classification_decision",
+            "pediatric_msk_limp_hot_joint_septic_arthritis_emergency_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_msk_limp_hot_joint_septic_arthritis_emergency_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "focal_bone_pain_osteomyelitis_mri",
           "major_pathway": "first_line_management",
           "expected_endpoint_id": "pediatric_msk_limp_hot_joint_bone_infection_admission_endpoint",
-          "expected_active_branch": "Bone infection branch: fever or systemic symptoms plus focal bone pain/tenderness, limited limb use, elevated CRP/ESR/WBC, bacteremia, wound/puncture source, MRI concern, X-ray that may be normal for 7-10 days, abscess, myositis, discitis, or osteomyelitis concern"
+          "expected_active_branch": "Bone infection branch: fever or systemic symptoms plus focal bone pain/tenderness, limited limb use, elevated CRP/ESR/WBC, bacteremia, wound/puncture source, MRI concern, X-ray that may be normal for 7-10 days, abscess, myositis, discitis, or osteomyelitis concern",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_msk_limp_hot_joint_initial_assessment_bundle",
+            "pediatric_msk_limp_hot_joint_classification_decision",
+            "pediatric_msk_limp_hot_joint_bone_infection_admission_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_msk_limp_hot_joint_bone_infection_admission_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "localized_trauma_negative_xray_toddler_fracture",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "pediatric_msk_limp_hot_joint_fracture_safeguarding_endpoint",
-          "expected_active_branch": "Injury/safeguarding branch: focal tenderness, trauma, deformity, swelling, persistent non-weight-bearing, negative initial X-ray with ongoing toddler-fracture concern, developmentally implausible story, delay, recurrent injury, bruising pattern, or unsafe discharge context"
+          "expected_active_branch": "Injury/safeguarding branch: focal tenderness, trauma, deformity, swelling, persistent non-weight-bearing, negative initial X-ray with ongoing toddler-fracture concern, developmentally implausible story, delay, recurrent injury, bruising pattern, or unsafe discharge context",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_msk_limp_hot_joint_initial_assessment_bundle",
+            "pediatric_msk_limp_hot_joint_classification_decision",
+            "pediatric_msk_limp_hot_joint_fracture_safeguarding_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_msk_limp_hot_joint_fracture_safeguarding_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "adolescent_groin_knee_pain_sufe",
           "major_pathway": "severity_risk_stratification",
           "expected_endpoint_id": "pediatric_msk_limp_hot_joint_sufe_perthes_hip_endpoint",
-          "expected_active_branch": "Age-specific hip branch: adolescent hip/groin/thigh/knee pain, weight >90th percentile, endocrine/puberty risk, painful limited internal rotation, frog-leg/pelvic X-ray concern, suspected SUFE with non-weight-bearing, male age 3-10 years with persistent limp, or early Perthes with possible normal X-ray"
+          "expected_active_branch": "Age-specific hip branch: adolescent hip/groin/thigh/knee pain, weight >90th percentile, endocrine/puberty risk, painful limited internal rotation, frog-leg/pelvic X-ray concern, suspected SUFE with non-weight-bearing, male age 3-10 years with persistent limp, or early Perthes with possible normal X-ray",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_msk_limp_hot_joint_initial_assessment_bundle",
+            "pediatric_msk_limp_hot_joint_classification_decision",
+            "pediatric_msk_limp_hot_joint_sufe_perthes_hip_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_msk_limp_hot_joint_sufe_perthes_hip_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "night_pain_pallor_bruising_malignancy_mimic",
           "major_pathway": "diagnostic_confirmation",
           "expected_endpoint_id": "pediatric_msk_limp_hot_joint_systemic_mimic_endpoint",
-          "expected_active_branch": "Systemic mimic branch: night pain, weight loss, pallor, bruising, bleeding, recurrent fever, morning stiffness, rash, CRP >30 with ARF context, ECG conduction abnormality, neurologic deficit, abdominal/scrotal/GU symptoms, sickle/hemophilia pain, or recurrent/persistent unexplained limp"
+          "expected_active_branch": "Systemic mimic branch: night pain, weight loss, pallor, bruising, bleeding, recurrent fever, morning stiffness, rash, CRP >30 with ARF context, ECG conduction abnormality, neurologic deficit, abdominal/scrotal/GU symptoms, sickle/hemophilia pain, or recurrent/persistent unexplained limp",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_msk_limp_hot_joint_initial_assessment_bundle",
+            "pediatric_msk_limp_hot_joint_classification_decision",
+            "pediatric_msk_limp_hot_joint_systemic_mimic_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_msk_limp_hot_joint_systemic_mimic_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "well_child_transient_synovitis",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "pediatric_msk_limp_hot_joint_low_risk_limp_endpoint",
-          "expected_active_branch": "Low-risk branch: systemically well, no fever or only low-grade temperature <38.5 C consistent with transient synovitis, no red flags, mild or no discomfort after simple analgesia, able to walk or weight bear, high-risk diagnoses unlikely, working diagnosis documented, and review plan within 7 days if symptoms persist"
+          "expected_active_branch": "Low-risk branch: systemically well, no fever or only low-grade temperature <38.5 C consistent with transient synovitis, no red flags, mild or no discomfort after simple analgesia, able to walk or weight bear, high-risk diagnoses unlikely, working diagnosis documented, and review plan within 7 days if symptoms persist",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_msk_limp_hot_joint_initial_assessment_bundle",
+            "pediatric_msk_limp_hot_joint_classification_decision",
+            "pediatric_msk_limp_hot_joint_low_risk_limp_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_msk_limp_hot_joint_low_risk_limp_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "neonate_immunocompromised_mrsa_puncture",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "pediatric_msk_limp_hot_joint_special_population_review_endpoint",
-          "expected_active_branch": "Special-population branch: neonate or age <3 months, immunocompromise, sickle cell, hemophilia, renal disease, postoperative orthopaedics, prosthesis/hardware, puncture/contaminated wound or water exposure, MRSA/Pseudomonas risk, relapse/persistent bacteremia, pregnancy-relevant adolescent imaging/medications, or child-safety policy requirement"
+          "expected_active_branch": "Special-population branch: neonate or age <3 months, immunocompromise, sickle cell, hemophilia, renal disease, postoperative orthopaedics, prosthesis/hardware, puncture/contaminated wound or water exposure, MRSA/Pseudomonas risk, relapse/persistent bacteremia, pregnancy-relevant adolescent imaging/medications, or child-safety policy requirement",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_msk_limp_hot_joint_initial_assessment_bundle",
+            "pediatric_msk_limp_hot_joint_classification_decision",
+            "pediatric_msk_limp_hot_joint_special_population_review_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_msk_limp_hot_joint_special_population_review_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "worsening_after_low_risk_or_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "pediatric_msk_limp_hot_joint_worsening_endpoint",
-          "expected_active_branch": "Worsening branch: fever appears or persists, nocturnal/worsening pain, refusal to weight bear despite analgesia, toxic appearance, CRP/ESR/WBC rise or fail to improve, blood or aspirate culture positive, ultrasound effusion or MRI infection concern emerges, or low-risk diagnosis no longer fits"
+          "expected_active_branch": "Worsening branch: fever appears or persists, nocturnal/worsening pain, refusal to weight bear despite analgesia, toxic appearance, CRP/ESR/WBC rise or fail to improve, blood or aspirate culture positive, ultrasound effusion or MRI infection concern emerges, or low-risk diagnosis no longer fits",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_msk_limp_hot_joint_initial_assessment_bundle",
+            "pediatric_msk_limp_hot_joint_classification_decision",
+            "pediatric_msk_limp_hot_joint_monitoring_bundle",
+            "pediatric_msk_limp_hot_joint_worsening_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_msk_limp_hot_joint_worsening_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "infection_oral_switch_stop_criteria",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "pediatric_msk_limp_hot_joint_deescalation_endpoint",
-          "expected_active_branch": "De-escalation branch: uncomplicated infection improving after IV therapy, afebrile at least 24 hours, IV minimum 48 hours or 2-3 days depending local guideline, CRP <20 mg/L or down >2/3 from peak, tolerating oral intake, cultures reviewed, and total duration plan 3-4 weeks osteomyelitis or 2-3 weeks septic arthritis"
+          "expected_active_branch": "De-escalation branch: uncomplicated infection improving after IV therapy, afebrile at least 24 hours, IV minimum 48 hours or 2-3 days depending local guideline, CRP <20 mg/L or down >2/3 from peak, tolerating oral intake, cultures reviewed, and total duration plan 3-4 weeks osteomyelitis or 2-3 weeks septic arthritis",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_msk_limp_hot_joint_initial_assessment_bundle",
+            "pediatric_msk_limp_hot_joint_classification_decision",
+            "pediatric_msk_limp_hot_joint_monitoring_bundle",
+            "pediatric_msk_limp_hot_joint_deescalation_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_msk_limp_hot_joint_deescalation_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "followup_and_return_precautions",
           "major_pathway": "follow_up_safety_netting",
           "expected_endpoint_id": "pediatric_msk_limp_hot_joint_followup_safety_endpoint",
-          "expected_active_branch": "Disposition branch: cause identified and managed or serious causes addressed, walking/weight-bearing plan documented, pending labs/cultures/imaging assigned, orthopaedic/pediatric/ID follow-up scheduled when needed, and family return precautions include fever, worsening/nocturnal pain, refusal to weight bear, no improvement after 3 days, persistence >14 days, lethargy, or unwell appearance"
+          "expected_active_branch": "Disposition branch: cause identified and managed or serious causes addressed, walking/weight-bearing plan documented, pending labs/cultures/imaging assigned, orthopaedic/pediatric/ID follow-up scheduled when needed, and family return precautions include fever, worsening/nocturnal pain, refusal to weight bear, no improvement after 3 days, persistence >14 days, lethargy, or unwell appearance",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_msk_limp_hot_joint_initial_assessment_bundle",
+            "pediatric_msk_limp_hot_joint_classification_decision",
+            "pediatric_msk_limp_hot_joint_monitoring_bundle",
+            "pediatric_msk_limp_hot_joint_followup_safety_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_msk_limp_hot_joint_followup_safety_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         }
       ],
       "audit_requirements": {

@@ -2777,8 +2777,6 @@
               "severity/risk category",
               "treatment response",
               "disposition constraints",
-              "Prediabetes: diagnostic frame from guideline-sourced endocrine workup",
-              "Key thresholds and interpretation caveats: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126.",
               "Important mimics/exclusions: stress or steroid hyperglycemia, type 1/LADA versus type 2 diabetes, DKA/HHS versus uncomplicated hyperglycemia, hypoglycemia/drug effect, renal disease, infection, pregnancy, and secondary endocrine causes.",
               "A1c 5.7-6.4, FPG 100-125, or 2-hour OGTT 140-199 triggers prevention and surveillance.",
               "Diabetes-range values change diagnosis.",
@@ -4062,9 +4060,9 @@
             "workup_findings"
           ],
           "source_ids": [
-            "ADA_SOC_2026",
             "ADA_DIAGNOSIS_2026",
             "CDC_DIABETES_TESTING_2024",
+            "ADA_SOC_2026",
             "CDC_NDPP_LIFESTYLE_2024",
             "AHRQ_CALIBRATE_DX"
           ],
@@ -4253,8 +4251,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Missing data needed: prediabetes thresholds, BMI/waist/BP, pregnancy status, medication risk, and prevention access",
-            "edgeLabel": "Missing exact prediabetes data: A1c/FPG/OGTT, symptoms, BMI/weight/waist, BP/lipids, pregnancy status, prior GDM, diabetes-range exclusion, medication causes, and lifestyle/metformin eligibility",
+            "label": "Internal data-availability guard",
+            "edgeLabel": "Internal data-availability guard",
             "source_ids": [
               "ADA_DIAGNOSIS_2026",
               "CDC_DIABETES_TESTING_2024",
@@ -4298,9 +4296,16 @@
                 "workup_findings"
               ]
             },
-            "action": "Document A1c, fasting glucose or 2-hour OGTT, classic symptoms, current weight/BMI and waist circumference, blood pressure, lipids, pregnancy status, prior GDM, medications such as glucocorticoids, kidney/liver context, activity level, nutrition access, DPP availability, metformin contraindications, and follow-up access.",
+            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
             "children": [],
             "endpoint_type": "missing_data_needed",
+            "internal_traversal_guard": true,
+            "display": {
+              "visible_in_pathway": false,
+              "visible_in_graph": false,
+              "visible_in_outline": false,
+              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+            },
             "missing_data_needed": [
               "A1c",
               "fasting glucose or 2-hour OGTT",
@@ -4687,8 +4692,8 @@
                   {
                     "id": "prediabetes_missing_glycemia_endpoint",
                     "type": "endpoint",
-                    "label": "Missing data needed: A1c/FPG/OGTT, diabetes symptoms, BMI, pregnancy status, or DPP/metformin eligibility",
-                    "edgeLabel": "Cannot separate normal, prediabetes, diabetes, pregnancy hyperglycemia, medication effect, or prevention intensity until glycemic and risk data are known",
+                    "label": "Internal data-availability guard",
+                    "edgeLabel": "Internal data-availability guard",
                     "source_ids": [
                       "ADA_DIAGNOSIS_2026",
                       "CDC_DIABETES_TESTING_2024",
@@ -4730,9 +4735,16 @@
                         "DPP/metformin eligibility"
                       ]
                     },
-                    "action": "Obtain A1c, fasting plasma glucose or 75-g 2-hour OGTT when needed, repeat discordant/asymptomatic results, check symptoms, BMI/weight, waist, BP/lipids, pregnancy status, prior GDM, medication causes, and data for DPP eligibility or metformin prevention.",
+                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
+                    "internal_traversal_guard": true,
+                    "display": {
+                      "visible_in_pathway": false,
+                      "visible_in_graph": false,
+                      "visible_in_outline": false,
+                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                    },
                     "missing_data_needed": [
                       "A1c",
                       "fasting glucose",
@@ -6407,9 +6419,9 @@
                     "label": "Normal glycemia, medication/stress effect, pregnancy, or endocrine mimic: avoid labeling as prediabetes without repeatable thresholds",
                     "edgeLabel": "Alternate branch: normal repeated tests, acute illness/steroid hyperglycemia, pregnancy-context hyperglycemia, lab interference, hypoglycemia/drug effect, renal/hepatic disease, or secondary endocrine cause fits better",
                     "source_ids": [
-                      "ADA_SOC_2026",
                       "ADA_DIAGNOSIS_2026",
                       "CDC_DIABETES_TESTING_2024",
+                      "ADA_SOC_2026",
                       "CDC_NDPP_LIFESTYLE_2024",
                       "AHRQ_CALIBRATE_DX"
                     ],
@@ -6427,9 +6439,9 @@
                         "workup_findings"
                       ],
                       "source_ids": [
-                        "ADA_SOC_2026",
                         "ADA_DIAGNOSIS_2026",
                         "CDC_DIABETES_TESTING_2024",
+                        "ADA_SOC_2026",
                         "CDC_NDPP_LIFESTYLE_2024",
                         "AHRQ_CALIBRATE_DX"
                       ],
@@ -6580,7 +6592,7 @@
                         }
                       ]
                     },
-                    "action": "Document why prediabetes is not the active diagnosis and route to the more specific pathway: Prediabetes: diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126.; Important mimics/exclusions: stress or steroid hyperglycemia, type 1/LADA versus type 2 diabetes, DKA/HHS versus uncomplicated hyperglycemia, hypoglycemia/drug effect, renal disease, infection, pregnancy, and secondary endocrine causes..",
+                    "action": "Document why prediabetes is not the active diagnosis and route to the more specific pathway: competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
                     "review_needed_reason": "Discordant glycemia, medication effects, pregnancy, or another diagnosis changes classification."
@@ -7077,61 +7089,145 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing exact prediabetes data: A1c/FPG/OGTT, symptoms, BMI/weight/waist, BP/lipids, pregnancy status, prior GDM, diabetes-range exclusion, medication causes, and lifestyle/metformin eligibility"
+          "expected_active_branch": "Internal data-availability guard",
+          "expected_path_node_ids": [
+            "root",
+            "endpoint_missing_context"
+          ],
+          "terminal_endpoint_id": "endpoint_missing_context",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "missing_glycemia",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "prediabetes_missing_glycemia_endpoint",
-          "expected_active_branch": "Cannot separate normal, prediabetes, diabetes, pregnancy hyperglycemia, medication effect, or prevention intensity until glycemic and risk data are known"
+          "expected_active_branch": "Internal data-availability guard",
+          "expected_path_node_ids": [
+            "root",
+            "prediabetes_initial_assessment",
+            "prediabetes_classification_decision",
+            "prediabetes_missing_glycemia_endpoint"
+          ],
+          "terminal_endpoint_id": "prediabetes_missing_glycemia_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "diabetes_range_or_urgent_symptoms",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "prediabetes_diabetes_range_endpoint",
-          "expected_active_branch": "Escalation branch: A1c >=6.5%, fasting glucose >=126 mg/dL, 2-hour OGTT >=200 mg/dL, random glucose >=200 mg/dL with symptoms, dehydration, pregnancy hyperglycemia, severe hypertension, or ASCVD symptoms"
+          "expected_active_branch": "Escalation branch: A1c >=6.5%, fasting glucose >=126 mg/dL, 2-hour OGTT >=200 mg/dL, random glucose >=200 mg/dL with symptoms, dehydration, pregnancy hyperglycemia, severe hypertension, or ASCVD symptoms",
+          "expected_path_node_ids": [
+            "root",
+            "prediabetes_initial_assessment",
+            "prediabetes_classification_decision",
+            "prediabetes_diabetes_range_endpoint"
+          ],
+          "terminal_endpoint_id": "prediabetes_diabetes_range_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "prediabetes_threshold_classification",
           "major_pathway": "severity_risk_stratification",
           "expected_endpoint_id": "prediabetes_lifestyle_prevention_endpoint",
-          "expected_active_branch": "Prediabetes branch: A1c 5.7-6.4%, fasting 100-125 mg/dL, or 2-hour OGTT 140-199 mg/dL without diabetes-range values or acute symptoms"
+          "expected_active_branch": "Prediabetes branch: A1c 5.7-6.4%, fasting 100-125 mg/dL, or 2-hour OGTT 140-199 mg/dL without diabetes-range values or acute symptoms",
+          "expected_path_node_ids": [
+            "root",
+            "prediabetes_initial_assessment",
+            "prediabetes_classification_decision",
+            "prediabetes_management_action",
+            "prediabetes_lifestyle_prevention_endpoint"
+          ],
+          "terminal_endpoint_id": "prediabetes_lifestyle_prevention_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "lifestyle_prevention",
           "major_pathway": "first_line_management",
           "expected_endpoint_id": "prediabetes_lifestyle_prevention_endpoint",
-          "expected_active_branch": "Prediabetes branch: A1c 5.7-6.4%, fasting 100-125 mg/dL, or 2-hour OGTT 140-199 mg/dL without diabetes-range values or acute symptoms"
+          "expected_active_branch": "Prediabetes branch: A1c 5.7-6.4%, fasting 100-125 mg/dL, or 2-hour OGTT 140-199 mg/dL without diabetes-range values or acute symptoms",
+          "expected_path_node_ids": [
+            "root",
+            "prediabetes_initial_assessment",
+            "prediabetes_classification_decision",
+            "prediabetes_management_action",
+            "prediabetes_lifestyle_prevention_endpoint"
+          ],
+          "terminal_endpoint_id": "prediabetes_lifestyle_prevention_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "metformin_or_pregnancy_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "prediabetes_metformin_review_endpoint",
-          "expected_active_branch": "Metformin branch: age 25-59 years, BMI >=35 kg/m2, fasting glucose >=110 mg/dL, A1c >=6.0%, prior GDM, rising glycemia, or lifestyle program unavailable/insufficient"
+          "expected_active_branch": "Metformin branch: age 25-59 years, BMI >=35 kg/m2, fasting glucose >=110 mg/dL, A1c >=6.0%, prior GDM, rising glycemia, or lifestyle program unavailable/insufficient",
+          "expected_path_node_ids": [
+            "root",
+            "prediabetes_initial_assessment",
+            "prediabetes_classification_decision",
+            "prediabetes_management_action",
+            "prediabetes_metformin_review_endpoint"
+          ],
+          "terminal_endpoint_id": "prediabetes_metformin_review_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "mimic_or_normal_glycemia",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "prediabetes_mimic_endpoint",
-          "expected_active_branch": "Alternate branch: normal repeated tests, acute illness/steroid hyperglycemia, pregnancy-context hyperglycemia, lab interference, hypoglycemia/drug effect, renal/hepatic disease, or secondary endocrine cause fits better"
+          "expected_active_branch": "Alternate branch: normal repeated tests, acute illness/steroid hyperglycemia, pregnancy-context hyperglycemia, lab interference, hypoglycemia/drug effect, renal/hepatic disease, or secondary endocrine cause fits better",
+          "expected_path_node_ids": [
+            "root",
+            "prediabetes_initial_assessment",
+            "prediabetes_classification_decision",
+            "prediabetes_mimic_endpoint"
+          ],
+          "terminal_endpoint_id": "prediabetes_mimic_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "prevention_monitoring",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "prediabetes_followup_safety_endpoint",
-          "expected_active_branch": "Follow-up branch: prevention plan chosen, diabetes-range values absent, risk-factor treatment and surveillance owner documented"
+          "expected_active_branch": "Follow-up branch: prevention plan chosen, diabetes-range values absent, risk-factor treatment and surveillance owner documented",
+          "expected_path_node_ids": [
+            "root",
+            "prediabetes_initial_assessment",
+            "prediabetes_classification_decision",
+            "prediabetes_management_action",
+            "prediabetes_followup_safety_endpoint"
+          ],
+          "terminal_endpoint_id": "prediabetes_followup_safety_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "deescalate_to_surveillance",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "prediabetes_followup_safety_endpoint",
-          "expected_active_branch": "Follow-up branch: prevention plan chosen, diabetes-range values absent, risk-factor treatment and surveillance owner documented"
+          "expected_active_branch": "Follow-up branch: prevention plan chosen, diabetes-range values absent, risk-factor treatment and surveillance owner documented",
+          "expected_path_node_ids": [
+            "root",
+            "prediabetes_initial_assessment",
+            "prediabetes_classification_decision",
+            "prediabetes_management_action",
+            "prediabetes_followup_safety_endpoint"
+          ],
+          "terminal_endpoint_id": "prediabetes_followup_safety_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "prediabetes_followup_safety_endpoint",
-          "expected_active_branch": "Follow-up branch: prevention plan chosen, diabetes-range values absent, risk-factor treatment and surveillance owner documented"
+          "expected_active_branch": "Follow-up branch: prevention plan chosen, diabetes-range values absent, risk-factor treatment and surveillance owner documented",
+          "expected_path_node_ids": [
+            "root",
+            "prediabetes_initial_assessment",
+            "prediabetes_classification_decision",
+            "prediabetes_management_action",
+            "prediabetes_followup_safety_endpoint"
+          ],
+          "terminal_endpoint_id": "prediabetes_followup_safety_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         }
       ],
       "audit_requirements": {

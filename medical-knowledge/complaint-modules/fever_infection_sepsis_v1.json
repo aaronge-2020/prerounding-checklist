@@ -6662,8 +6662,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Missing data needed: adult fever/sepsis pathway context",
-            "edgeLabel": "Missing exact infection/sepsis context: source symptoms, onset, vitals, mental status, perfusion, oxygenation, medications/allergies, comorbidities, immune status, pregnancy/postpartum status, and current workup findings",
+            "label": "Internal data-availability guard",
+            "edgeLabel": "Internal data-availability guard",
             "source_ids": [
               "SSC_SEPSIS_2026",
               "SMFM_MATERNAL_SEPSIS_2023",
@@ -6703,9 +6703,16 @@
                 "workup_findings"
               ]
             },
-            "action": "Obtain and document fever/source symptoms, onset and trajectory, full vital signs, mental status, perfusion/urine output, oxygenation/work of breathing, allergies/recent antimicrobials, immune status, pregnancy/postpartum status, comorbidities, and available labs/imaging before choosing a non-emergency branch.",
+            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
             "children": [],
             "endpoint_type": "missing_data_needed",
+            "internal_traversal_guard": true,
+            "display": {
+              "visible_in_pathway": false,
+              "visible_in_graph": false,
+              "visible_in_outline": false,
+              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+            },
             "missing_data_needed": [
               "symptoms",
               "exam",
@@ -6984,8 +6991,8 @@
               {
                 "id": "fever_infection_sepsis_missing_lactate_culture_source_endpoint",
                 "type": "endpoint",
-                "label": "Missing data needed: lactate, cultures, source, perfusion, or organ dysfunction",
-                "edgeLabel": "Cannot classify sepsis urgency until lactate, MAP/BP, perfusion, mental status, oxygenation, organ dysfunction, culture timing, and likely source are known",
+                "label": "Internal data-availability guard",
+                "edgeLabel": "Internal data-availability guard",
                 "source_ids": [
                   "SSC_SEPSIS_2026"
                 ],
@@ -7019,9 +7026,16 @@
                     "antimicrobial timing"
                   ]
                 },
-                "action": "Measure lactate, obtain blood cultures as soon as possible and ideally before antimicrobials if this does not delay therapy, repeat vital signs/MAP, assess perfusion and mental status, identify likely source, and document whether shock/probable sepsis/possible sepsis criteria apply.",
+                "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
                 "children": [],
                 "endpoint_type": "missing_data_needed",
+                "internal_traversal_guard": true,
+                "display": {
+                  "visible_in_pathway": false,
+                  "visible_in_graph": false,
+                  "visible_in_outline": false,
+                  "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                },
                 "missing_data_needed": [
                   "blood pressure/MAP",
                   "lactate",
@@ -14191,49 +14205,306 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing exact infection/sepsis context: source symptoms, onset, vitals, mental status, perfusion, oxygenation, medications/allergies, comorbidities, immune status, pregnancy/postpartum status, and current workup findings"
+          "expected_active_branch": "Internal data-availability guard",
+          "expected_path_node_ids": [
+            "root",
+            "endpoint_missing_context"
+          ],
+          "terminal_endpoint_id": "endpoint_missing_context",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "missing_lactate_source_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "fever_infection_sepsis_missing_lactate_culture_source_endpoint",
-          "expected_active_branch": "Cannot classify sepsis urgency until lactate, MAP/BP, perfusion, mental status, oxygenation, organ dysfunction, culture timing, and likely source are known"
+          "expected_active_branch": "Internal data-availability guard",
+          "expected_path_node_ids": [
+            "root",
+            "fever_infection_sepsis_initial_assessment_bundle",
+            "fever_infection_sepsis_missing_lactate_culture_source_endpoint"
+          ],
+          "terminal_endpoint_id": "fever_infection_sepsis_missing_lactate_culture_source_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "septic_shock_hypoperfusion",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "fever_infection_sepsis_shock_resuscitation_icu_endpoint",
-          "expected_active_branch": "Shock/hypoperfusion: MAP below target, severe hypotension, lactate >=4 mmol/L, lactate >2 mmol/L with vasopressor need, mottling, altered mentation, hypoxemia, oliguria, or rapid deterioration"
+          "expected_active_branch": "Shock/hypoperfusion: MAP below target, severe hypotension, lactate >=4 mmol/L, lactate >2 mmol/L with vasopressor need, mottling, altered mentation, hypoxemia, oliguria, or rapid deterioration",
+          "expected_path_node_ids": [
+            "root",
+            "fever_infection_sepsis_initial_assessment_bundle",
+            "fever_infection_sepsis_shock_resuscitation_action",
+            "fever_infection_sepsis_shock_reassessment_decision",
+            "fever_infection_sepsis_shock_resuscitation_icu_endpoint"
+          ],
+          "terminal_endpoint_id": "fever_infection_sepsis_shock_resuscitation_icu_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "possible_sepsis_mimic",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "fever_infection_sepsis_mimic_or_noninfectious_endpoint",
-          "expected_active_branch": "Low infection likelihood or alternate diagnosis: drug fever, inflammatory/autoimmune flare, thrombosis/PE, malignancy, transfusion reaction, endocrine crisis, or localized nonseptic syndrome better explains findings"
+          "expected_active_branch": "Low infection likelihood or alternate diagnosis: drug fever, inflammatory/autoimmune flare, thrombosis/PE, malignancy, transfusion reaction, endocrine crisis, or localized nonseptic syndrome better explains findings",
+          "expected_path_node_ids": [
+            "root",
+            "fever_infection_sepsis_initial_assessment_bundle",
+            "fever_infection_sepsis_possible_sepsis_action",
+            "fever_infection_sepsis_mimic_or_noninfectious_endpoint"
+          ],
+          "terminal_endpoint_id": "fever_infection_sepsis_mimic_or_noninfectious_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "pregnancy_or_mdr_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "fever_infection_sepsis_special_population_review_endpoint",
-          "expected_active_branch": "Treatment/disposition changes because pregnancy/postpartum status, immunocompromise/neutropenia, MDR colonization/prior infection, renal/hepatic dysfunction, antimicrobial allergy, device infection, or local protocol applies"
+          "expected_active_branch": "Treatment/disposition changes because pregnancy/postpartum status, immunocompromise/neutropenia, MDR colonization/prior infection, renal/hepatic dysfunction, antimicrobial allergy, device infection, or local protocol applies",
+          "expected_path_node_ids": [
+            "root",
+            "fever_infection_sepsis_initial_assessment_bundle",
+            "fever_infection_sepsis_possible_sepsis_action",
+            "fever_infection_sepsis_special_population_review_endpoint"
+          ],
+          "terminal_endpoint_id": "fever_infection_sepsis_special_population_review_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "persistent_lactate_or_hypoperfusion",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "fever_infection_sepsis_persistent_hypoperfusion_endpoint",
-          "expected_active_branch": "After initial therapy: MAP remains below target, lactate remains elevated, capillary refill/perfusion abnormal, escalating oxygen or vasopressor need, or source control not achieved"
+          "expected_active_branch": "After initial therapy: MAP remains below target, lactate remains elevated, capillary refill/perfusion abnormal, escalating oxygen or vasopressor need, or source control not achieved",
+          "expected_path_node_ids": [
+            "root",
+            "fever_infection_sepsis_initial_assessment_bundle",
+            "fever_infection_sepsis_shock_resuscitation_action",
+            "fever_infection_sepsis_shock_reassessment_decision",
+            "fever_infection_sepsis_persistent_hypoperfusion_endpoint"
+          ],
+          "terminal_endpoint_id": "fever_infection_sepsis_persistent_hypoperfusion_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "culture_deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "fever_infection_sepsis_antimicrobial_deescalation_endpoint",
-          "expected_active_branch": "Cultures/susceptibility or final negative cultures allow narrowing; adequate source control achieved; or alternate diagnosis demonstrated/strongly suspected"
+          "expected_active_branch": "Cultures/susceptibility or final negative cultures allow narrowing; adequate source control achieved; or alternate diagnosis demonstrated/strongly suspected",
+          "expected_path_node_ids": [
+            "root",
+            "fever_infection_sepsis_initial_assessment_bundle",
+            "fever_infection_sepsis_shock_resuscitation_action",
+            "fever_infection_sepsis_shock_reassessment_decision",
+            "fever_infection_sepsis_antimicrobial_deescalation_endpoint"
+          ],
+          "terminal_endpoint_id": "fever_infection_sepsis_antimicrobial_deescalation_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "survivor_discharge_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "fever_infection_sepsis_discharge_followup_endpoint",
-          "expected_active_branch": "Stable for discharge or lower acuity: source controlled or owned, hemodynamics/oxygenation stable, antimicrobial plan reconciled, pending results assigned, and sepsis education/follow-up documented"
+          "expected_active_branch": "Stable for discharge or lower acuity: source controlled or owned, hemodynamics/oxygenation stable, antimicrobial plan reconciled, pending results assigned, and sepsis education/follow-up documented",
+          "expected_path_node_ids": [
+            "root",
+            "fever_infection_sepsis_initial_assessment_bundle",
+            "fever_infection_sepsis_shock_resuscitation_action",
+            "fever_infection_sepsis_shock_reassessment_decision",
+            "fever_infection_sepsis_discharge_followup_endpoint"
+          ],
+          "terminal_endpoint_id": "fever_infection_sepsis_discharge_followup_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
+        },
+        {
+          "scenario_id": "endpoint_fever_infection_sepsis_probable_definite_sep_coverage",
+          "major_pathway": "monitoring_reassessment_escalation",
+          "expected_endpoint_id": "fever_infection_sepsis_probable_definite_sepsis_treatment_endpoint",
+          "expected_active_branch": "Probable/definite infection with organ dysfunction or high-risk trajectory but no current shock: start antimicrobials ideally within 1 hour and define source control need",
+          "expected_path_node_ids": [
+            "root",
+            "fever_infection_sepsis_initial_assessment_bundle",
+            "fever_infection_sepsis_probable_sepsis_action",
+            "fever_infection_sepsis_probable_definite_sepsis_treatment_endpoint"
+          ],
+          "terminal_endpoint_id": "fever_infection_sepsis_probable_definite_sepsis_treatment_endpoint",
+          "traversal_status": "reaches_expected_endpoint",
+          "synthetic_context": {
+            "structured_context_domains": [
+              "symptoms",
+              "exam",
+              "vitals",
+              "labs",
+              "imaging_results",
+              "medications",
+              "comorbidities",
+              "demographics",
+              "pregnancy_status",
+              "workup_findings"
+            ],
+            "branch_trigger": "Probable/definite infection with organ dysfunction or high-risk trajectory but no current shock: start antimicrobials ideally within 1 hour and define source control need",
+            "expected_terminal_endpoint_type": "treatment",
+            "missing_data_needed": []
+          },
+          "coverage_type": "terminal_endpoint_coverage"
+        },
+        {
+          "scenario_id": "endpoint_fever_infection_sepsis_source_control_endpoi_coverage",
+          "major_pathway": "diagnostic_confirmation",
+          "expected_endpoint_id": "fever_infection_sepsis_source_control_endpoint",
+          "expected_active_branch": "Anatomic diagnosis needs source control: abscess, obstructed infected urinary/biliary source, necrotizing soft tissue infection, infected line/device, CNS/deep infection, abdominal/pelvic source, septic joint, or empyema",
+          "expected_path_node_ids": [
+            "root",
+            "fever_infection_sepsis_initial_assessment_bundle",
+            "fever_infection_sepsis_probable_sepsis_action",
+            "fever_infection_sepsis_source_control_endpoint"
+          ],
+          "terminal_endpoint_id": "fever_infection_sepsis_source_control_endpoint",
+          "traversal_status": "reaches_expected_endpoint",
+          "synthetic_context": {
+            "structured_context_domains": [
+              "symptoms",
+              "exam",
+              "vitals",
+              "labs",
+              "imaging_results",
+              "medications",
+              "comorbidities",
+              "demographics",
+              "pregnancy_status",
+              "workup_findings"
+            ],
+            "branch_trigger": "Anatomic diagnosis needs source control: abscess, obstructed infected urinary/biliary source, necrotizing soft tissue infection, infected line/device, CNS/deep infection, abdominal/pelvic source, septic joint, or empyema",
+            "expected_terminal_endpoint_type": "escalation_disposition",
+            "missing_data_needed": []
+          },
+          "coverage_type": "terminal_endpoint_coverage"
+        },
+        {
+          "scenario_id": "endpoint_fever_infection_sepsis_probable_persistent_h_coverage",
+          "major_pathway": "monitoring_reassessment_escalation",
+          "expected_endpoint_id": "fever_infection_sepsis_probable_persistent_hypoperfusion_endpoint",
+          "expected_active_branch": "After probable-sepsis treatment: new hypotension, MAP below target, rising/elevated lactate, worsening oxygenation, oliguria, altered mentation, or source-control delay",
+          "expected_path_node_ids": [
+            "root",
+            "fever_infection_sepsis_initial_assessment_bundle",
+            "fever_infection_sepsis_probable_sepsis_action",
+            "fever_infection_sepsis_probable_persistent_hypoperfusion_endpoint"
+          ],
+          "terminal_endpoint_id": "fever_infection_sepsis_probable_persistent_hypoperfusion_endpoint",
+          "traversal_status": "reaches_expected_endpoint",
+          "synthetic_context": {
+            "structured_context_domains": [
+              "symptoms",
+              "exam",
+              "vitals",
+              "labs",
+              "imaging_results",
+              "medications",
+              "comorbidities",
+              "demographics",
+              "pregnancy_status",
+              "workup_findings"
+            ],
+            "branch_trigger": "After probable-sepsis treatment: new hypotension, MAP below target, rising/elevated lactate, worsening oxygenation, oliguria, altered mentation, or source-control delay",
+            "expected_terminal_endpoint_type": "monitoring_reassessment",
+            "missing_data_needed": []
+          },
+          "coverage_type": "terminal_endpoint_coverage"
+        },
+        {
+          "scenario_id": "endpoint_fever_infection_sepsis_probable_antimicrobia_coverage",
+          "major_pathway": "deescalation_stopping_criteria",
+          "expected_endpoint_id": "fever_infection_sepsis_probable_antimicrobial_deescalation_endpoint",
+          "expected_active_branch": "Probable-sepsis cultures/susceptibility, final negative cultures, clinical response, adequate source control, or alternate diagnosis supports de-escalation",
+          "expected_path_node_ids": [
+            "root",
+            "fever_infection_sepsis_initial_assessment_bundle",
+            "fever_infection_sepsis_probable_sepsis_action",
+            "fever_infection_sepsis_probable_antimicrobial_deescalation_endpoint"
+          ],
+          "terminal_endpoint_id": "fever_infection_sepsis_probable_antimicrobial_deescalation_endpoint",
+          "traversal_status": "reaches_expected_endpoint",
+          "synthetic_context": {
+            "structured_context_domains": [
+              "symptoms",
+              "exam",
+              "vitals",
+              "labs",
+              "imaging_results",
+              "medications",
+              "comorbidities",
+              "demographics",
+              "pregnancy_status",
+              "workup_findings"
+            ],
+            "branch_trigger": "Probable-sepsis cultures/susceptibility, final negative cultures, clinical response, adequate source control, or alternate diagnosis supports de-escalation",
+            "expected_terminal_endpoint_type": "deescalation_stopping",
+            "missing_data_needed": []
+          },
+          "coverage_type": "terminal_endpoint_coverage"
+        },
+        {
+          "scenario_id": "endpoint_fever_infection_sepsis_probable_discharge_fo_coverage",
+          "major_pathway": "disposition_followup_safety_netting",
+          "expected_endpoint_id": "fever_infection_sepsis_probable_discharge_followup_endpoint",
+          "expected_active_branch": "Probable-sepsis patient stable for lower-acuity care: hemodynamics/oxygenation stable, source plan owned, antimicrobial plan reconciled, pending cultures assigned",
+          "expected_path_node_ids": [
+            "root",
+            "fever_infection_sepsis_initial_assessment_bundle",
+            "fever_infection_sepsis_probable_sepsis_action",
+            "fever_infection_sepsis_probable_discharge_followup_endpoint"
+          ],
+          "terminal_endpoint_id": "fever_infection_sepsis_probable_discharge_followup_endpoint",
+          "traversal_status": "reaches_expected_endpoint",
+          "synthetic_context": {
+            "structured_context_domains": [
+              "symptoms",
+              "exam",
+              "vitals",
+              "labs",
+              "imaging_results",
+              "medications",
+              "comorbidities",
+              "demographics",
+              "pregnancy_status",
+              "workup_findings"
+            ],
+            "branch_trigger": "Probable-sepsis patient stable for lower-acuity care: hemodynamics/oxygenation stable, source plan owned, antimicrobial plan reconciled, pending cultures assigned",
+            "expected_terminal_endpoint_type": "safety_net_instruction",
+            "missing_data_needed": []
+          },
+          "coverage_type": "terminal_endpoint_coverage"
+        },
+        {
+          "scenario_id": "endpoint_fever_infection_sepsis_possible_sepsis_rapid_coverage",
+          "major_pathway": "monitoring_reassessment_escalation",
+          "expected_endpoint_id": "fever_infection_sepsis_possible_sepsis_rapid_eval_endpoint",
+          "expected_active_branch": "Possible infection without shock and diagnosis uncertain: investigate rapidly; if concern persists, give antimicrobials within 3 hours from first suspicion",
+          "expected_path_node_ids": [
+            "root",
+            "fever_infection_sepsis_initial_assessment_bundle",
+            "fever_infection_sepsis_possible_sepsis_action",
+            "fever_infection_sepsis_possible_sepsis_rapid_eval_endpoint"
+          ],
+          "terminal_endpoint_id": "fever_infection_sepsis_possible_sepsis_rapid_eval_endpoint",
+          "traversal_status": "reaches_expected_endpoint",
+          "synthetic_context": {
+            "structured_context_domains": [
+              "symptoms",
+              "exam",
+              "vitals",
+              "labs",
+              "imaging_results",
+              "medications",
+              "comorbidities",
+              "demographics",
+              "pregnancy_status",
+              "workup_findings"
+            ],
+            "branch_trigger": "Possible infection without shock and diagnosis uncertain: investigate rapidly; if concern persists, give antimicrobials within 3 hours from first suspicion",
+            "expected_terminal_endpoint_type": "diagnostic_step",
+            "missing_data_needed": []
+          },
+          "coverage_type": "terminal_endpoint_coverage"
         }
       ],
       "audit_requirements": {

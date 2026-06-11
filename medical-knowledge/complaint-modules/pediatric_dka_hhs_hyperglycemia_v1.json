@@ -4715,8 +4715,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Missing data needed: pediatric DKA/HHS context",
-            "edgeLabel": "Missing pediatric DKA/HHS context: age, weight, diabetes history, insulin/pump access, symptoms, vitals, hydration/perfusion, mental status, pregnancy/SGLT2 exposure when relevant, and current workup findings",
+            "label": "Internal data-availability guard",
+            "edgeLabel": "Internal data-availability guard",
             "source_ids": [
               "CHQ_DKA_HHS_CHILD_2024",
               "NICE_NG18_DKA_CHILD",
@@ -4760,9 +4760,16 @@
                 "workup_findings"
               ]
             },
-            "action": "Document age, weight, diabetes history, insulin/pump/CGM and access barriers, vomiting/intake/dehydration trajectory, full vital signs, hydration/perfusion, AVPU or modified GCS, pregnancy/SGLT2 exposure when relevant, and current glucose/ketone/pH/bicarbonate/potassium/osmolality data before selecting a non-emergency branch.",
+            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
             "children": [],
             "endpoint_type": "missing_data_needed",
+            "internal_traversal_guard": true,
+            "display": {
+              "visible_in_pathway": false,
+              "visible_in_graph": false,
+              "visible_in_outline": false,
+              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+            },
             "missing_data_needed": [
               "symptoms",
               "exam",
@@ -5185,8 +5192,8 @@
                   {
                     "id": "pediatric_dka_hhs_missing_crisis_data_endpoint",
                     "type": "endpoint",
-                    "label": "Missing data needed: pediatric glucose, ketones, acid-base, electrolytes, osmolality, neuro status, or weight",
-                    "edgeLabel": "Cannot classify pediatric DKA, HHS, cerebral edema risk, shock route, potassium safety, or transition readiness until glucose, ketones, pH, bicarbonate, potassium, sodium/osmolality, weight, fluid balance, and neuro status are known",
+                    "label": "Internal data-availability guard",
+                    "edgeLabel": "Internal data-availability guard",
                     "source_ids": [
                       "CHQ_DKA_HHS_CHILD_2024",
                       "NICE_NG18_DKA_CHILD",
@@ -5230,9 +5237,16 @@
                         "mental status"
                       ]
                     },
-                    "action": "Obtain bedside glucose and blood ketones, venous pH/bicarbonate, electrolytes/urea/creatinine with sodium and potassium, effective osmolality when HHS/mixed crisis is possible, weight, strict fluid balance, AVPU/modified GCS, ECG/cardiac monitoring when potassium risk exists, and senior pediatric/endocrine advice.",
+                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
+                    "internal_traversal_guard": true,
+                    "display": {
+                      "visible_in_pathway": false,
+                      "visible_in_graph": false,
+                      "visible_in_outline": false,
+                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                    },
                     "missing_data_needed": [
                       "age",
                       "weight",
@@ -8925,67 +8939,159 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing pediatric DKA/HHS context: age, weight, diabetes history, insulin/pump access, symptoms, vitals, hydration/perfusion, mental status, pregnancy/SGLT2 exposure when relevant, and current workup findings"
+          "expected_active_branch": "Internal data-availability guard",
+          "expected_path_node_ids": [
+            "root",
+            "endpoint_missing_context"
+          ],
+          "terminal_endpoint_id": "endpoint_missing_context",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "missing_pediatric_crisis_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "pediatric_dka_hhs_missing_crisis_data_endpoint",
-          "expected_active_branch": "Cannot classify pediatric DKA, HHS, cerebral edema risk, shock route, potassium safety, or transition readiness until glucose, ketones, pH, bicarbonate, potassium, sodium/osmolality, weight, fluid balance, and neuro status are known"
+          "expected_active_branch": "Internal data-availability guard",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_dka_hhs_initial_assessment",
+            "pediatric_dka_hhs_classification_decision",
+            "pediatric_dka_hhs_missing_crisis_data_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_dka_hhs_missing_crisis_data_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "pediatric_cerebral_edema",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "pediatric_dka_hhs_cerebral_edema_endpoint",
-          "expected_active_branch": "Headache, bradycardia or unexpected HR fall, rising BP, recurrent vomiting, agitation/irritability, deteriorating consciousness, respiratory pauses, oculomotor palsy, pupillary abnormality, falling sodium/osmolality, or high-risk age/severe DKA"
+          "expected_active_branch": "Headache, bradycardia or unexpected HR fall, rising BP, recurrent vomiting, agitation/irritability, deteriorating consciousness, respiratory pauses, oculomotor palsy, pupillary abnormality, falling sodium/osmolality, or high-risk age/severe DKA",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_dka_hhs_initial_assessment",
+            "pediatric_dka_hhs_classification_decision",
+            "pediatric_dka_hhs_cerebral_edema_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_dka_hhs_cerebral_edema_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "pediatric_dka_shock",
           "major_pathway": "red_flags_instability",
           "expected_endpoint_id": "pediatric_dka_hhs_shock_bolus_endpoint",
-          "expected_active_branch": "Shock, poor perfusion, hypotension, coma, cardiovascular compromise, or need for repeated fluid bolus; two 10 mL/kg boluses or maximum 20 mL/kg requires urgent critical-care advice"
+          "expected_active_branch": "Shock, poor perfusion, hypotension, coma, cardiovascular compromise, or need for repeated fluid bolus; two 10 mL/kg boluses or maximum 20 mL/kg requires urgent critical-care advice",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_dka_hhs_initial_assessment",
+            "pediatric_dka_hhs_classification_decision",
+            "pediatric_dka_hhs_dka_action",
+            "pediatric_dka_hhs_shock_bolus_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_dka_hhs_shock_bolus_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "pediatric_dka_protocol",
           "major_pathway": "first_line_management",
           "expected_endpoint_id": "pediatric_dka_hhs_dka_protocol_endpoint",
-          "expected_active_branch": "Pediatric DKA thresholds met: BGL >11 mmol/L, acidosis, and moderate/large ketones; severity and high-risk age determine monitoring location"
+          "expected_active_branch": "Pediatric DKA thresholds met: BGL >11 mmol/L, acidosis, and moderate/large ketones; severity and high-risk age determine monitoring location",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_dka_hhs_initial_assessment",
+            "pediatric_dka_hhs_classification_decision",
+            "pediatric_dka_hhs_dka_action",
+            "pediatric_dka_hhs_dka_protocol_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_dka_hhs_dka_protocol_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "pediatric_hhs_mixed",
           "major_pathway": "severity_risk_stratification",
           "expected_endpoint_id": "pediatric_dka_hhs_hhs_specialist_endpoint",
-          "expected_active_branch": "Pediatric HHS thresholds: BGL >33.3 mmol/L, effective osmolality >320 mOsm/kg, ketones <1.1 mmol/L, pH >7.25 and/or bicarbonate >15 mmol/L, or mixed DKA/HHS features"
+          "expected_active_branch": "Pediatric HHS thresholds: BGL >33.3 mmol/L, effective osmolality >320 mOsm/kg, ketones <1.1 mmol/L, pH >7.25 and/or bicarbonate >15 mmol/L, or mixed DKA/HHS features",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_dka_hhs_initial_assessment",
+            "pediatric_dka_hhs_classification_decision",
+            "pediatric_dka_hhs_hhs_specialist_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_dka_hhs_hhs_specialist_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "pediatric_potassium_anuria",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "pediatric_dka_hhs_potassium_anuria_endpoint",
-          "expected_active_branch": "K <3.5 mmol/L at diagnosis, potassium below 3 mmol/L during treatment, hyperkalemia, ECG changes, anuria, renal failure, or inability to monitor potassium safely"
+          "expected_active_branch": "K <3.5 mmol/L at diagnosis, potassium below 3 mmol/L during treatment, hyperkalemia, ECG changes, anuria, renal failure, or inability to monitor potassium safely",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_dka_hhs_initial_assessment",
+            "pediatric_dka_hhs_classification_decision",
+            "pediatric_dka_hhs_dka_action",
+            "pediatric_dka_hhs_potassium_anuria_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_dka_hhs_potassium_anuria_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "pediatric_glucose_fluid_reassessment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "pediatric_dka_hhs_glucose_fluids_endpoint",
-          "expected_active_branch": "Treatment glucose branch: plasma glucose <14 mmol/L needs 0.9% saline with 5% glucose and potassium; glucose <6 mmol/L with persisting ketosis needs more glucose and at least 0.05 units/kg/hour insulin"
+          "expected_active_branch": "Treatment glucose branch: plasma glucose <14 mmol/L needs 0.9% saline with 5% glucose and potassium; glucose <6 mmol/L with persisting ketosis needs more glucose and at least 0.05 units/kg/hour insulin",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_dka_hhs_initial_assessment",
+            "pediatric_dka_hhs_classification_decision",
+            "pediatric_dka_hhs_dka_action",
+            "pediatric_dka_hhs_glucose_fluids_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_dka_hhs_glucose_fluids_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "pediatric_deescalation_transition",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "pediatric_dka_hhs_transition_recurrence_endpoint",
-          "expected_active_branch": "DKA improving: ketosis resolving, pH >=7.3, alert, no vomiting, oral fluids tolerated, and subcutaneous insulin can start at least 30 minutes before stopping IV insulin"
+          "expected_active_branch": "DKA improving: ketosis resolving, pH >=7.3, alert, no vomiting, oral fluids tolerated, and subcutaneous insulin can start at least 30 minutes before stopping IV insulin",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_dka_hhs_initial_assessment",
+            "pediatric_dka_hhs_classification_decision",
+            "pediatric_dka_hhs_dka_action",
+            "pediatric_dka_hhs_transition_recurrence_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_dka_hhs_transition_recurrence_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "pediatric_alternate_mimic",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "pediatric_dka_hhs_alternate_endpoint",
-          "expected_active_branch": "DKA/HHS thresholds absent or another diagnosis better explains vomiting, abdominal pain, acidosis, dehydration, altered mental status, or hyperglycemia"
+          "expected_active_branch": "DKA/HHS thresholds absent or another diagnosis better explains vomiting, abdominal pain, acidosis, dehydration, altered mental status, or hyperglycemia",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_dka_hhs_initial_assessment",
+            "pediatric_dka_hhs_classification_decision",
+            "pediatric_dka_hhs_alternate_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_dka_hhs_alternate_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "pediatric_transition_recurrence",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "pediatric_dka_hhs_transition_recurrence_endpoint",
-          "expected_active_branch": "DKA improving: ketosis resolving, pH >=7.3, alert, no vomiting, oral fluids tolerated, and subcutaneous insulin can start at least 30 minutes before stopping IV insulin"
+          "expected_active_branch": "DKA improving: ketosis resolving, pH >=7.3, alert, no vomiting, oral fluids tolerated, and subcutaneous insulin can start at least 30 minutes before stopping IV insulin",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_dka_hhs_initial_assessment",
+            "pediatric_dka_hhs_classification_decision",
+            "pediatric_dka_hhs_dka_action",
+            "pediatric_dka_hhs_transition_recurrence_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_dka_hhs_transition_recurrence_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         }
       ],
       "audit_requirements": {

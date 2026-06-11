@@ -8037,8 +8037,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Missing core fever/sepsis context",
-            "edgeLabel": "Missing age, fever method, vitals, perfusion, source, infant risk, or follow-up access",
+            "label": "Internal data-availability guard",
+            "edgeLabel": "Internal data-availability guard",
             "source_ids": [
               "AAP_FEBRILE_INFANT_2021",
               "UCSF_FEBRILE_INFANT_2023",
@@ -8084,9 +8084,16 @@
                 "workup_findings"
               ]
             },
-            "action": "Before choosing a routine or outpatient branch, document exact age in days for infants and years for older children, temperature value/method and duration, full vital signs, oxygen requirement, mental state, capillary refill, urine output or last void, rash blanching/purpura, meningitis/HSV features, respiratory/urinary/skin/GI/CNS/joint/travel or line source symptoms, focused exam, immunization and prematurity/chronic illness status, recent immunization 24-48 hours, antibiotics already given, medication allergies, pregnancy or recent postpartum status in adolescents, caregiver concern, communication/transportation reliability, and pending result owner.",
+            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
             "children": [],
             "endpoint_type": "missing_data_needed",
+            "internal_traversal_guard": true,
+            "display": {
+              "visible_in_pathway": false,
+              "visible_in_graph": false,
+              "visible_in_outline": false,
+              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+            },
             "missing_data_needed": [
               "exact age in days/months/years",
               "temperature value and measurement method",
@@ -8857,8 +8864,8 @@
                   {
                     "id": "pediatric_fever_sepsis_missing_objective_endpoint",
                     "type": "endpoint",
-                    "label": "Missing branch-critical vitals or labs",
-                    "edgeLabel": "Missing age-banded vitals, perfusion, cultures/lactate, UA, CSF, or infant markers",
+                    "label": "Internal data-availability guard",
+                    "edgeLabel": "Internal data-availability guard",
                     "source_ids": [
                       "AAP_FEBRILE_INFANT_2021",
                       "UCSF_FEBRILE_INFANT_2023",
@@ -8909,9 +8916,16 @@
                         "CSF when indicated"
                       ]
                     },
-                    "action": "Obtain or document the missing values before assigning a non-emergent endpoint: exact age band, fever method, SpO2 in air and oxygen delivery, respiratory rate, heart rate, systolic BP, mental state, CRT, urine timing or catheter mL/kg/hour, non-blanching rash assessment, lactate and blood culture when probable sepsis or shock is possible, UA/urine culture for infant or urinary-source fever, ANC/CRP/procalcitonin for febrile infants, CSF data when age or CNS rules require it, and weight for antibiotic/fluid dosing.",
+                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
+                    "internal_traversal_guard": true,
+                    "display": {
+                      "visible_in_pathway": false,
+                      "visible_in_graph": false,
+                      "visible_in_outline": false,
+                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                    },
                     "missing_data_needed": [
                       "exact age band",
                       "temperature method",
@@ -18092,85 +18106,198 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing age, fever method, vitals, perfusion, source, infant risk, or follow-up access"
+          "expected_active_branch": "Internal data-availability guard",
+          "expected_path_node_ids": [
+            "root",
+            "endpoint_missing_context"
+          ],
+          "terminal_endpoint_id": "endpoint_missing_context",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "missing_age_banded_vitals_or_infant_labs",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "pediatric_fever_sepsis_missing_objective_endpoint",
-          "expected_active_branch": "Missing age-banded vitals, perfusion, cultures/lactate, UA, CSF, or infant markers"
+          "expected_active_branch": "Internal data-availability guard",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_fever_sepsis_bedside_assessment_bundle",
+            "pediatric_fever_sepsis_classification_decision",
+            "pediatric_fever_sepsis_missing_objective_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_fever_sepsis_missing_objective_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "septic_shock_lactate_antibiotics_fluids",
           "major_pathway": "red_flags_instability",
           "expected_endpoint_id": "pediatric_fever_sepsis_septic_shock_endpoint",
-          "expected_active_branch": "Shock, altered mental state, hypoxemia, poor perfusion, oliguria, or rapid decline"
+          "expected_active_branch": "Shock, altered mental state, hypoxemia, poor perfusion, oliguria, or rapid decline",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_fever_sepsis_bedside_assessment_bundle",
+            "pediatric_fever_sepsis_classification_decision",
+            "pediatric_fever_sepsis_septic_shock_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_fever_sepsis_septic_shock_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "nice_high_risk_under5_or_12_15",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "pediatric_fever_sepsis_nice_high_risk_endpoint",
-          "expected_active_branch": "High-risk SpO2, RR, HR, BP, CRT, urine, temperature, mental state, or rash"
+          "expected_active_branch": "High-risk SpO2, RR, HR, BP, CRT, urine, temperature, mental state, or rash",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_fever_sepsis_bedside_assessment_bundle",
+            "pediatric_fever_sepsis_classification_decision",
+            "pediatric_fever_sepsis_nice_high_risk_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_fever_sepsis_nice_high_risk_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "nice_moderate_risk_observation",
           "major_pathway": "severity_risk_stratification",
           "expected_endpoint_id": "pediatric_fever_sepsis_nice_moderate_risk_endpoint",
-          "expected_active_branch": "Moderate SpO2/RR/HR/BP/urine band, hypothermia, leg pain, immune risk, or recent procedure"
+          "expected_active_branch": "Moderate SpO2/RR/HR/BP/urine band, hypothermia, leg pain, immune risk, or recent procedure",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_fever_sepsis_bedside_assessment_bundle",
+            "pediatric_fever_sepsis_classification_decision",
+            "pediatric_fever_sepsis_nice_moderate_risk_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_fever_sepsis_nice_moderate_risk_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "well_appearing_febrile_infant_22_28_or_29_60",
           "major_pathway": "diagnostic_confirmation",
           "expected_endpoint_id": "pediatric_fever_sepsis_febrile_infant_endpoint",
-          "expected_active_branch": "Age 0-21, 22-28, or 29-60 days with fever >38.0 C"
+          "expected_active_branch": "Age 0-21, 22-28, or 29-60 days with fever >38.0 C",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_fever_sepsis_bedside_assessment_bundle",
+            "pediatric_fever_sepsis_classification_decision",
+            "pediatric_fever_sepsis_febrile_infant_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_fever_sepsis_febrile_infant_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "nonblanching_rash_or_hsv_cns",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "pediatric_fever_sepsis_meningococcal_cns_hsv_endpoint",
-          "expected_active_branch": "Non-blanching rash, meningism, seizure/AMS, vesicles, hypothermia, or abnormal CSF/CBC/LFTs"
+          "expected_active_branch": "Non-blanching rash, meningism, seizure/AMS, vesicles, hypothermia, or abnormal CSF/CBC/LFTs",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_fever_sepsis_bedside_assessment_bundle",
+            "pediatric_fever_sepsis_classification_decision",
+            "pediatric_fever_sepsis_meningococcal_cns_hsv_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_fever_sepsis_meningococcal_cns_hsv_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "clear_urinary_or_respiratory_source",
           "major_pathway": "first_line_management",
           "expected_endpoint_id": "pediatric_fever_sepsis_source_directed_endpoint",
-          "expected_active_branch": "Respiratory, urinary, skin, abdominal, line, CNS, joint, travel, or exposure source"
+          "expected_active_branch": "Respiratory, urinary, skin, abdominal, line, CNS, joint, travel, or exposure source",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_fever_sepsis_bedside_assessment_bundle",
+            "pediatric_fever_sepsis_classification_decision",
+            "pediatric_fever_sepsis_source_directed_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_fever_sepsis_source_directed_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "pregnant_postpartum_adolescent",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "pediatric_fever_sepsis_pregnancy_postpartum_endpoint",
-          "expected_active_branch": "Pregnancy, recent postpartum state, or unknown status changes pathway"
+          "expected_active_branch": "Pregnancy, recent postpartum state, or unknown status changes pathway",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_fever_sepsis_bedside_assessment_bundle",
+            "pediatric_fever_sepsis_classification_decision",
+            "pediatric_fever_sepsis_pregnancy_postpartum_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_fever_sepsis_pregnancy_postpartum_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "neonate_immunocompromised_resistant_risk",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "pediatric_fever_sepsis_special_population_review_endpoint",
-          "expected_active_branch": "Neonate, prematurity, immunocompromise, line/device, resistant risk, bronchiolitis exclusion, or local policy"
+          "expected_active_branch": "Neonate, prematurity, immunocompromise, line/device, resistant risk, bronchiolitis exclusion, or local policy",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_fever_sepsis_bedside_assessment_bundle",
+            "pediatric_fever_sepsis_classification_decision",
+            "pediatric_fever_sepsis_special_population_review_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_fever_sepsis_special_population_review_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "stable_child_low_risk_fever_home_care",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "pediatric_fever_sepsis_low_risk_fever_safety_endpoint",
-          "expected_active_branch": "No sepsis, infant, CNS/HSV, pregnancy, or special-population branch is active"
+          "expected_active_branch": "No sepsis, infant, CNS/HSV, pregnancy, or special-population branch is active",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_fever_sepsis_bedside_assessment_bundle",
+            "pediatric_fever_sepsis_classification_decision",
+            "pediatric_fever_sepsis_low_risk_fever_safety_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_fever_sepsis_low_risk_fever_safety_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "deterioration_after_observation",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "pediatric_fever_sepsis_worsening_endpoint",
-          "expected_active_branch": "Worse vitals, oxygen need, perfusion, urine, mental state, rash, cultures, fever duration, or bolus response"
+          "expected_active_branch": "Worse vitals, oxygen need, perfusion, urine, mental state, rash, cultures, fever duration, or bolus response",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_fever_sepsis_bedside_assessment_bundle",
+            "pediatric_fever_sepsis_classification_decision",
+            "pediatric_fever_sepsis_monitoring_bundle",
+            "pediatric_fever_sepsis_worsening_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_fever_sepsis_worsening_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "culture_negative_infant_or_narrow_antibiotics",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "pediatric_fever_sepsis_deescalation_endpoint",
-          "expected_active_branch": "Microbiology supports narrowing, or infant cultures negative 24-36 h with improvement"
+          "expected_active_branch": "Microbiology supports narrowing, or infant cultures negative 24-36 h with improvement",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_fever_sepsis_bedside_assessment_bundle",
+            "pediatric_fever_sepsis_classification_decision",
+            "pediatric_fever_sepsis_monitoring_bundle",
+            "pediatric_fever_sepsis_deescalation_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_fever_sepsis_deescalation_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "followup_return_precautions_pending_cultures",
           "major_pathway": "follow_up_safety_netting",
           "expected_endpoint_id": "pediatric_fever_sepsis_followup_safety_endpoint",
-          "expected_active_branch": "Stable plan with pending-result owner, follow-up access, and fever safety-net instructions"
+          "expected_active_branch": "Stable plan with pending-result owner, follow-up access, and fever safety-net instructions",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_fever_sepsis_bedside_assessment_bundle",
+            "pediatric_fever_sepsis_classification_decision",
+            "pediatric_fever_sepsis_monitoring_bundle",
+            "pediatric_fever_sepsis_followup_safety_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_fever_sepsis_followup_safety_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         }
       ],
       "audit_requirements": {

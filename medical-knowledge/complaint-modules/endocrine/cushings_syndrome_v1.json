@@ -2860,8 +2860,6 @@
               "severity/risk category",
               "treatment response",
               "disposition constraints",
-              "Cushing's Syndrome: diagnostic frame from guideline-sourced endocrine workup",
-              "Key thresholds and interpretation caveats: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
               "Important mimics/exclusions: exogenous glucocorticoid exposure or withdrawal, primary versus central adrenal insufficiency, adrenal incidentaloma, medication-altered renin/aldosterone testing, catecholamine excess, severe illness, infection, and electrolyte mimics.",
               "Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.",
               "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
@@ -2952,7 +2950,7 @@
         "cushings_syndrome_classification_decision": {
           "rule_id": "cushings_syndrome_classification_criteria",
           "source": "criteria",
-          "description": "Classify Cushing's Syndrome against cited thresholds and condition-specific rules: Cushing initial testing: use UFC at least 2 measurements, late-night salivary cortisol 2 measurements, 1-mg overnight DST, or 2 mg/day for 48 hours DST: at least 2 measurements, 2 measurements, 1 mg, 2 mg/day, 48 hours | Cushing positive biochemical screen: UFC > assay ULN, post-1 mg DST cortisol >1.8 ug/dL (50 nmol/L), or late-night salivary cortisol >145 ng/dL (4 nmol/L): >ULN, >1.8 ug/dL, >145 ng/dL | 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: cortisol >1.8 ug/dL",
+          "description": "Classify Cushing's Syndrome against cited thresholds and condition-specific rules: Cushing initial testing: at least 2 measurements, 2 measurements, 1 mg, 2 mg/day, 48 hours | Cushing positive biochemical screen: >ULN, >1.8 ug/dL, >145 ng/dL | 1-mg overnight DST: cortisol >1.8 ug/dL",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3020,7 +3018,7 @@
             {
               "id": "initialTests_test_02",
               "label": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.",
-              "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome. Provides diagnostic or safety thresholds that change interpretation and management for Cushing's Syndrome.",
+              "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome.",
               "cutoffs": [
                 "cortisol >1.8 ug/dL"
               ],
@@ -3154,7 +3152,7 @@
             {
               "id": "initialTests_test_02",
               "label": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.",
-              "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome. Provides diagnostic or safety thresholds that change interpretation and management for Cushing's Syndrome.",
+              "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome.",
               "cutoffs": [
                 "cortisol >1.8 ug/dL"
               ],
@@ -3239,7 +3237,7 @@
             {
               "id": "initialTests_test_02",
               "label": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.",
-              "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome. Provides diagnostic or safety thresholds that change interpretation and management for Cushing's Syndrome.",
+              "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome.",
               "cutoffs": [
                 "cortisol >1.8 ug/dL"
               ],
@@ -3322,7 +3320,7 @@
             {
               "id": "initialTests_test_02",
               "label": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.",
-              "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome. Provides diagnostic or safety thresholds that change interpretation and management for Cushing's Syndrome.",
+              "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome.",
               "cutoffs": [
                 "cortisol >1.8 ug/dL"
               ],
@@ -3425,7 +3423,7 @@
             {
               "id": "initialTests_test_02",
               "label": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.",
-              "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome. Provides diagnostic or safety thresholds that change interpretation and management for Cushing's Syndrome.",
+              "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome.",
               "cutoffs": [
                 "cortisol >1.8 ug/dL"
               ],
@@ -3508,7 +3506,7 @@
             {
               "id": "initialTests_test_02",
               "label": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.",
-              "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome. Provides diagnostic or safety thresholds that change interpretation and management for Cushing's Syndrome.",
+              "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome.",
               "cutoffs": [
                 "cortisol >1.8 ug/dL"
               ],
@@ -3591,7 +3589,7 @@
             {
               "id": "initialTests_test_02",
               "label": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.",
-              "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome. Provides diagnostic or safety thresholds that change interpretation and management for Cushing's Syndrome.",
+              "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome.",
               "cutoffs": [
                 "cortisol >1.8 ug/dL"
               ],
@@ -3639,9 +3637,9 @@
             "workup_findings"
           ],
           "source_ids": [
+            "ESE_ADRENAL_INCIDENTALOMA_2023",
             "ES_CUSHING_DX_2008",
             "ES_CUSHING_TREATMENT_2015",
-            "ESE_ADRENAL_INCIDENTALOMA_2023",
             "AHRQ_CALIBRATE_DX"
           ],
           "criteria_options": [
@@ -3693,7 +3691,7 @@
             {
               "id": "initialTests_test_02",
               "label": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.",
-              "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome. Provides diagnostic or safety thresholds that change interpretation and management for Cushing's Syndrome.",
+              "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome.",
               "cutoffs": [
                 "cortisol >1.8 ug/dL"
               ],
@@ -3712,7 +3710,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Cushing's Syndrome: route by documented findings and exact missing-data needs",
+        "label": "Cushing's Syndrome: route by findings, risk, treatment safety, and follow-up",
         "edgeLabel": "",
         "source_ids": [
           "ES_CUSHING_DX_2008",
@@ -3742,8 +3740,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Missing data needed: Cushing's Syndrome pathway context",
-            "edgeLabel": "Missing exact Cushing's Syndrome pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings",
+            "label": "Internal data-availability guard",
+            "edgeLabel": "Internal data-availability guard",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -3779,9 +3777,16 @@
                 "workup_findings"
               ]
             },
-            "action": "Before choosing a non-emergency Cushing's Syndrome branch, document: presenting trigger, onset/trajectory, focused exam, vital signs, threshold labs/results, medication/allergy context, comorbidities, demographics, pregnancy/applicability status, and current workup findings.",
+            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
             "children": [],
             "endpoint_type": "missing_data_needed",
+            "internal_traversal_guard": true,
+            "display": {
+              "visible_in_pathway": false,
+              "visible_in_graph": false,
+              "visible_in_outline": false,
+              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+            },
             "missing_data_needed": [
               "symptoms",
               "exam",
@@ -3798,8 +3803,8 @@
           {
             "id": "cushings_syndrome_concurrent_data_bundle",
             "type": "action",
-            "label": "Cushing's Syndrome: obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Cushing's Syndrome active from documented findings: Do you have trouble rising from a chair, climbing stairs, lifting overhead, or getting up from the floor?; Any measured fever, rigors, hypothermia, or toxic appearance suggesting infection as a precipitant or mimic?; Any cough, sputum, pleuritic pain, dyspnea, hypoxemia, or focal chest symptoms suggesting pneumonia or respiratory infection?; Any dysuria, urinary frequency or urgency, suprapubic pain, hematuria, or flank pain suggesting UTI or pyelonephritis?; Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Exclude exogenous steroids.",
+            "label": "Cushing's Syndrome: assessment and key results",
+            "edgeLabel": "Collect Cushing's Syndrome history/exam, vitals, key labs/results, medication safety, and major cutoffs",
             "source_ids": [
               "ES_CUSHING_DX_2008",
               "ES_CUSHING_TREATMENT_2015",
@@ -3832,8 +3837,8 @@
               {
                 "id": "cushings_syndrome_classification_decision",
                 "type": "decision",
-                "label": "Cushing's Syndrome: classify severity and disposition by cited thresholds",
-                "edgeLabel": "Cushing's Syndrome results available for threshold classification: Exclude exogenous steroids.; 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.; Late-night salivary cortisol, often two samples.; 24-hour urinary free cortisol, at least two collections.; ACTH after confirmed hypercortisolism.; UFC collection count; late-night salivary cortisol count; dexamethasone dose and timing; renal function; pregnancy/antiepileptic context",
+                "label": "Cushing's Syndrome: classify risk and disposition",
+                "edgeLabel": "Classify Cushing's Syndrome with available result(s): at least 2 measurements; 2 measurements; 1 mg; 2 mg/day",
                 "source_ids": [
                   "ES_CUSHING_DX_2008",
                   "ES_CUSHING_TREATMENT_2015",
@@ -3843,7 +3848,7 @@
                 "criteria": {
                   "rule_id": "cushings_syndrome_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Cushing's Syndrome against cited thresholds and condition-specific rules: Cushing initial testing: use UFC at least 2 measurements, late-night salivary cortisol 2 measurements, 1-mg overnight DST, or 2 mg/day for 48 hours DST: at least 2 measurements, 2 measurements, 1 mg, 2 mg/day, 48 hours | Cushing positive biochemical screen: UFC > assay ULN, post-1 mg DST cortisol >1.8 ug/dL (50 nmol/L), or late-night salivary cortisol >145 ng/dL (4 nmol/L): >ULN, >1.8 ug/dL, >145 ng/dL | 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: cortisol >1.8 ug/dL",
+                  "description": "Classify Cushing's Syndrome against cited thresholds and condition-specific rules: Cushing initial testing: at least 2 measurements, 2 measurements, 1 mg, 2 mg/day, 48 hours | Cushing positive biochemical screen: >ULN, >1.8 ug/dL, >145 ng/dL | 1-mg overnight DST: cortisol >1.8 ug/dL",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -3911,7 +3916,7 @@
                     {
                       "id": "initialTests_test_02",
                       "label": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.",
-                      "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome. Provides diagnostic or safety thresholds that change interpretation and management for Cushing's Syndrome.",
+                      "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome.",
                       "cutoffs": [
                         "cortisol >1.8 ug/dL"
                       ],
@@ -3926,13 +3931,13 @@
                     }
                   ]
                 },
-                "action": "Choose the active Cushing's Syndrome branch by matching patient data to: Cushing initial testing: use UFC at least 2 measurements, late-night salivary cortisol 2 measurements, 1-mg overnight DST, or 2 mg/day for 48 hours DST: at least 2 measurements, 2 measurements, 1 mg, 2 mg/day, 48 hours | Cushing positive biochemical screen: UFC > assay ULN, post-1 mg DST cortisol >1.8 ug/dL (50 nmol/L), or late-night salivary cortisol >145 ng/dL (4 nmol/L): >ULN, >1.8 ug/dL, >145 ng/dL | 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: cortisol >1.8 ug/dL.",
+                "action": "Choose the active Cushing's Syndrome branch by matching patient data to the cited cutoffs and patient-specific safety rules.",
                 "children": [
                   {
                     "id": "cushings_syndrome_missing_cutoff_data_endpoint",
                     "type": "endpoint",
-                    "label": "Missing data needed: Cushing's Syndrome threshold/results",
-                    "edgeLabel": "Missing exact Cushing's Syndrome result(s): UFC collection count; late-night salivary cortisol count; dexamethasone dose and timing; renal function; pregnancy/antiepileptic context; 24-hour UFC with assay ULN; post-DST cortisol; late-night salivary cortisol",
+                    "label": "Internal data-availability guard",
+                    "edgeLabel": "Internal data-availability guard",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "ES_CUSHING_DX_2008",
@@ -3990,9 +3995,16 @@
                         ">145 ng/dL"
                       ]
                     },
-                    "action": "Obtain the exact Cushing's Syndrome data needed for threshold-based routing: UFC collection count; late-night salivary cortisol count; dexamethasone dose and timing; renal function; pregnancy/antiepileptic context; 24-hour UFC with assay ULN; post-DST cortisol; late-night salivary cortisol; dexamethasone adherence/interactions; cortisol >1.8 ug/dL; Exclude exogenous steroids.; 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.; Late-night salivary cortisol, often two samples.; 24-hour urinary free cortisol, at least two collections.; ACTH after confirmed hypercortisolism.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; Cushing safety tests: use late-night salivary cortisol, 1-mg dexamethasone suppression, or 24-hour urinary free cortisol after excluding exogenous steroids, and assess glucose, BP, potassium, infection/VTE, and bone risk to determine severity and treatment urgency.; Morning cortisol/ACTH or cosyntropin for adrenal insufficiency; aldosterone-renin ratio with potassium correction for primary aldosteronism; metanephrines for PPGL.; at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; 48 hours; >ULN; >1.8 ug/dL; >145 ng/dL.",
+                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
+                    "internal_traversal_guard": true,
+                    "display": {
+                      "visible_in_pathway": false,
+                      "visible_in_graph": false,
+                      "visible_in_outline": false,
+                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                    },
                     "missing_data_needed": [
                       "UFC collection count",
                       "late-night salivary cortisol count",
@@ -4025,8 +4037,8 @@
                   {
                     "id": "cushings_syndrome_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Cushing's Syndrome: emergency escalation or monitored-care disposition when danger thresholds are met",
-                    "edgeLabel": "Cushing's Syndrome danger feature or high-risk cutoff: Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE.; Measure blood pressure; at least 2 measurements; 2 measurements; 1 mg; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.",
+                    "label": "Cushing's Syndrome: emergency or monitored-care disposition",
+                    "edgeLabel": "Danger feature or high-risk result present: Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE.; at least 2 measurements; 2 measurements",
                     "source_ids": [
                       "ES_CUSHING_DX_2008",
                       "ES_CUSHING_TREATMENT_2015",
@@ -4101,7 +4113,7 @@
                         {
                           "id": "initialTests_test_02",
                           "label": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.",
-                          "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome. Provides diagnostic or safety thresholds that change interpretation and management for Cushing's Syndrome.",
+                          "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome.",
                           "cutoffs": [
                             "cortisol >1.8 ug/dL"
                           ],
@@ -4116,7 +4128,7 @@
                         }
                       ]
                     },
-                    "action": "Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE.; Measure blood pressure. Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.; Use steroidogenesis inhibitors, glucocorticoid receptor blockade, pituitary-directed drugs, radiation, or bilateral adrenalectomy when surgery is delayed, incomplete, impossible, or recurrent.; Provide postoperative adrenal insufficiency monitoring, glucocorticoid replacement/taper, recurrence surveillance, and cardiometabolic/bone risk treatment.; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+                    "action": "Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE.. Escalate using the abnormal cutoff, unstable feature, or monitored-care rule.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -4168,7 +4180,7 @@
                       {
                         "id": "initialTests_test_02",
                         "label": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.",
-                        "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome. Provides diagnostic or safety thresholds that change interpretation and management for Cushing's Syndrome.",
+                        "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome.",
                         "cutoffs": [
                           "cortisol >1.8 ug/dL"
                         ],
@@ -4186,8 +4198,8 @@
                   {
                     "id": "cushings_syndrome_treatment_bundle",
                     "type": "action",
-                    "label": "Cushing's Syndrome: initiate treatment/disposition for the active threshold-defined branch",
-                    "edgeLabel": "Cushing's Syndrome treatment/disposition indicated by: at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; 48 hours; >ULN; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.; Use steroidogenesis inhibitors, glucocorticoid receptor blockade, pituitary-directed drugs, radiation, or bilateral adrenalectomy when surgery is delayed, incomplete, impossible, or recurrent.; Provide postoperative adrenal insufficiency monitoring, glucocorticoid replacement/taper, recurrence surveillance, and cardiometabolic/bone risk treatment.; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+                    "label": "Cushing's Syndrome: treatment and disposition branch",
+                    "edgeLabel": "Confirmed/high-risk Cushing's Syndrome branch has treatment-safety data available",
                     "source_ids": [
                       "ES_CUSHING_DX_2008",
                       "ES_CUSHING_TREATMENT_2015",
@@ -4264,7 +4276,7 @@
                         {
                           "id": "initialTests_test_02",
                           "label": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.",
-                          "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome. Provides diagnostic or safety thresholds that change interpretation and management for Cushing's Syndrome.",
+                          "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome.",
                           "cutoffs": [
                             "cortisol >1.8 ug/dL"
                           ],
@@ -4279,13 +4291,13 @@
                         }
                       ]
                     },
-                    "action": "Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.; Use steroidogenesis inhibitors, glucocorticoid receptor blockade, pituitary-directed drugs, radiation, or bilateral adrenalectomy when surgery is delayed, incomplete, impossible, or recurrent.; Provide postoperative adrenal insufficiency monitoring, glucocorticoid replacement/taper, recurrence surveillance, and cardiometabolic/bone risk treatment.; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+                    "action": "Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.; Use steroidogenesis inhibitors, glucocorticoid receptor blockade, pituitary-directed drugs, radiation, or bilateral adrenalectomy when surgery is delayed, incomplete, impossible, or recurrent.; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.; unstable physiology or dangerous electrolyte/glucose abnormality",
                     "children": [
                       {
                         "id": "cushings_syndrome_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Cushing's Syndrome: medication/procedure safety and special-population thresholds resolved?",
-                        "edgeLabel": "Cushing's Syndrome treatment selected; check patient-specific modifiers",
+                        "label": "Cushing's Syndrome: treatment safety resolved?",
+                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan",
                         "source_ids": [
                           "ES_CUSHING_DX_2008",
                           "ES_CUSHING_TREATMENT_2015",
@@ -4360,7 +4372,7 @@
                             {
                               "id": "initialTests_test_02",
                               "label": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.",
-                              "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome. Provides diagnostic or safety thresholds that change interpretation and management for Cushing's Syndrome.",
+                              "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome.",
                               "cutoffs": [
                                 "cortisol >1.8 ug/dL"
                               ],
@@ -4375,13 +4387,13 @@
                             }
                           ]
                         },
-                        "action": "Apply Cushing's Syndrome-specific safety modifiers before final treatment/disposition.",
+                        "action": "Apply Cushing's Syndrome-specific safety modifiers before final treatment or disposition.",
                         "children": [
                           {
                             "id": "cushings_syndrome_review_endpoint",
                             "type": "endpoint",
-                            "label": "Cushing's Syndrome: clinician review for contraindication, special population, or local-policy cutoff",
-                            "edgeLabel": "Cushing's Syndrome modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Measure orthostatic blood pressure; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability",
+                            "label": "Cushing's Syndrome: clinician review modifier",
+                            "edgeLabel": "Contraindication, special population, conflicting guidance, or local protocol dependency",
                             "source_ids": [
                               "ES_CUSHING_DX_2008",
                               "ES_CUSHING_TREATMENT_2015",
@@ -4408,7 +4420,7 @@
                                 "AHRQ_CALIBRATE_DX"
                               ]
                             },
-                            "action": "Pause non-emergent Cushing's Syndrome treatment choices until the modifier is resolved and the reviewer documents the applicable guideline/local cutoff.",
+                            "action": "Pause non-emergent Cushing's Syndrome treatment choices until the modifier is resolved and the reviewer documents the applicable guideline or local cutoff.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
                             "review_needed_reason": "Patient-specific contraindication, special population, guideline conflict, or local policy affects treatment or disposition."
@@ -4416,8 +4428,8 @@
                           {
                             "id": "cushings_syndrome_monitoring_bundle",
                             "type": "action",
-                            "label": "Cushing's Syndrome: concurrent monitoring, response checks, and disposition readiness",
-                            "edgeLabel": "After Cushing's Syndrome therapy or diagnostic plan, trend: at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; Exclude exogenous steroids.; 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.; Late-night salivary cortisol, often two samples.; Measure blood pressure",
+                            "label": "Cushing's Syndrome: monitoring and disposition readiness",
+                            "edgeLabel": "Trend Cushing's Syndrome symptoms, vitals, key results, adverse effects, and disposition readiness",
                             "source_ids": [
                               "ES_CUSHING_DX_2008",
                               "ES_CUSHING_TREATMENT_2015",
@@ -4492,7 +4504,7 @@
                                 {
                                   "id": "initialTests_test_02",
                                   "label": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.",
-                                  "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome. Provides diagnostic or safety thresholds that change interpretation and management for Cushing's Syndrome.",
+                                  "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome.",
                                   "cutoffs": [
                                     "cortisol >1.8 ug/dL"
                                   ],
@@ -4512,8 +4524,8 @@
                               {
                                 "id": "cushings_syndrome_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Cushing's Syndrome: escalate when reassessment worsens or contradicts expected course",
-                                "edgeLabel": "Cushing's Syndrome reassessment worsens or contradicts expected response: at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; Exclude exogenous steroids.; 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.; Late-night salivary cortisol, often two samples.; Measure blood pressure",
+                                "label": "Cushing's Syndrome: reassessment escalation",
+                                "edgeLabel": "Cushing's Syndrome worsens, new danger feature appears, or results no longer fit the active branch",
                                 "source_ids": [
                                   "ES_CUSHING_DX_2008",
                                   "ES_CUSHING_TREATMENT_2015",
@@ -4588,7 +4600,7 @@
                                     {
                                       "id": "initialTests_test_02",
                                       "label": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.",
-                                      "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome. Provides diagnostic or safety thresholds that change interpretation and management for Cushing's Syndrome.",
+                                      "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome.",
                                       "cutoffs": [
                                         "cortisol >1.8 ug/dL"
                                       ],
@@ -4603,7 +4615,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Repeat critical Cushing's Syndrome objective data, reassess mimics/complications, and move to ED/admission/specialty review according to the abnormal cutoff or danger feature.",
+                                "action": "Repeat critical Cushing's Syndrome objective data, reassess mimics and complications, and move to ED/admission/specialty review according to the abnormal cutoff or danger feature.",
                                 "children": [],
                                 "endpoint_type": "escalation_disposition",
                                 "guideline_cutoffs": [
@@ -4655,7 +4667,7 @@
                                   {
                                     "id": "initialTests_test_02",
                                     "label": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.",
-                                    "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome. Provides diagnostic or safety thresholds that change interpretation and management for Cushing's Syndrome.",
+                                    "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome.",
                                     "cutoffs": [
                                       "cortisol >1.8 ug/dL"
                                     ],
@@ -4673,8 +4685,8 @@
                               {
                                 "id": "cushings_syndrome_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Cushing's Syndrome: de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Cushing's Syndrome objective response supports narrowing, stopping, tapering, or continuing: at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.",
+                                "label": "Cushing's Syndrome: de-escalate, stop, or narrow",
+                                "edgeLabel": "Objective response supports narrowing, stopping, tapering, or continuing Cushing's Syndrome care",
                                 "source_ids": [
                                   "ES_CUSHING_DX_2008",
                                   "ES_CUSHING_TREATMENT_2015",
@@ -4749,7 +4761,7 @@
                                     {
                                       "id": "initialTests_test_02",
                                       "label": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.",
-                                      "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome. Provides diagnostic or safety thresholds that change interpretation and management for Cushing's Syndrome.",
+                                      "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome.",
                                       "cutoffs": [
                                         "cortisol >1.8 ug/dL"
                                       ],
@@ -4764,7 +4776,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Use the active Cushing's Syndrome objective criteria and response trend (at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; 48 hours; >ULN; >1.8 ug/dL; >145 ng/dL; cortisol >1.8 ug/dL) to stop, narrow, taper, or continue treatment; document what threshold or finding changed.",
+                                "action": "Use active Cushing's Syndrome results and response trend to stop, narrow, taper, or continue treatment; document which cutoff, symptom, adverse effect, or finding changed.",
                                 "children": [],
                                 "endpoint_type": "deescalation_stopping",
                                 "guideline_cutoffs": [
@@ -4816,7 +4828,7 @@
                                   {
                                     "id": "initialTests_test_02",
                                     "label": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.",
-                                    "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome. Provides diagnostic or safety thresholds that change interpretation and management for Cushing's Syndrome.",
+                                    "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome.",
                                     "cutoffs": [
                                       "cortisol >1.8 ug/dL"
                                     ],
@@ -4834,8 +4846,8 @@
                               {
                                 "id": "cushings_syndrome_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Cushing's Syndrome: follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Cushing's Syndrome discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+                                "label": "Cushing's Syndrome: follow-up and safety-net",
+                                "edgeLabel": "Cushing's Syndrome stable enough for owned follow-up, pending results, and safety-netting",
                                 "source_ids": [
                                   "ES_CUSHING_DX_2008",
                                   "ES_CUSHING_TREATMENT_2015",
@@ -4875,8 +4887,8 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend objective labs/results",
-                              "review treatment response/adverse effects",
+                              "trend key labs/results",
+                              "review treatment response and adverse effects",
                               "confirm disposition and follow-up owner",
                               "Measure blood pressure",
                               "Measure heart rate",
@@ -4932,7 +4944,7 @@
                               {
                                 "id": "initialTests_test_02",
                                 "label": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.",
-                                "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome. Provides diagnostic or safety thresholds that change interpretation and management for Cushing's Syndrome.",
+                                "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome.",
                                 "cutoffs": [
                                   "cortisol >1.8 ug/dL"
                                 ],
@@ -4957,8 +4969,8 @@
                       "Provide postoperative adrenal insufficiency monitoring, glucocorticoid replacement/taper, recurrence surveillance, and cardiometabolic/bone risk treatment.",
                       "Treat unstable presentations first using the urgent escalation rule for Cushing's Syndrome; draw time-sensitive labs only if doing so does not delay stabilization.",
                       "Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.",
-                      "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
-                      "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
+                      "unstable physiology or dangerous electrolyte/glucose abnormality",
+                      "discordant endocrine tests need correct timing, assay, medication, pregnancy, and illness context"
                     ],
                     "guideline_cutoffs": [
                       {
@@ -5009,7 +5021,7 @@
                       {
                         "id": "initialTests_test_02",
                         "label": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.",
-                        "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome. Provides diagnostic or safety thresholds that change interpretation and management for Cushing's Syndrome.",
+                        "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome.",
                         "cutoffs": [
                           "cortisol >1.8 ug/dL"
                         ],
@@ -5027,12 +5039,12 @@
                   {
                     "id": "cushings_syndrome_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Cushing's Syndrome: switch to mimic/alternate pathway when threshold/result criteria do not fit",
-                    "edgeLabel": "Cushing's Syndrome mimic/exclusion better fits: Cushing's Syndrome: diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.; Important mimics/exclusions: exogenous glucocorticoid exposure or withdrawal, primary versus central adrenal insufficiency, adrenal incidentaloma, medication-altered renin/aldosterone testing, catecholamine excess, severe illness, infection, and electrolyte mimics.",
+                    "label": "Cushing's Syndrome: alternate diagnosis pathway",
+                    "edgeLabel": "Objective findings favor mimic or alternate pathway: competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
                     "source_ids": [
+                      "ESE_ADRENAL_INCIDENTALOMA_2023",
                       "ES_CUSHING_DX_2008",
                       "ES_CUSHING_TREATMENT_2015",
-                      "ESE_ADRENAL_INCIDENTALOMA_2023",
                       "AHRQ_CALIBRATE_DX"
                     ],
                     "criteria": {
@@ -5048,9 +5060,9 @@
                         "workup_findings"
                       ],
                       "source_ids": [
+                        "ESE_ADRENAL_INCIDENTALOMA_2023",
                         "ES_CUSHING_DX_2008",
                         "ES_CUSHING_TREATMENT_2015",
-                        "ESE_ADRENAL_INCIDENTALOMA_2023",
                         "AHRQ_CALIBRATE_DX"
                       ],
                       "criteria_options": [
@@ -5102,7 +5114,7 @@
                         {
                           "id": "initialTests_test_02",
                           "label": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.",
-                          "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome. Provides diagnostic or safety thresholds that change interpretation and management for Cushing's Syndrome.",
+                          "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome.",
                           "cutoffs": [
                             "cortisol >1.8 ug/dL"
                           ],
@@ -5117,7 +5129,7 @@
                         }
                       ]
                     },
-                    "action": "Document why Cushing's Syndrome is not the active pathway and route to the competing diagnosis: Cushing's Syndrome: diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.; Important mimics/exclusions: exogenous glucocorticoid exposure or withdrawal, primary versus central adrenal insufficiency, adrenal incidentaloma, medication-altered renin/aldosterone testing, catecholamine excess, severe illness, infection, and electrolyte mimics..",
+                    "action": "Document why Cushing's Syndrome is not the active pathway, name the competing diagnosis or exclusion, and route to the appropriate workup rather than reassurance alone.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
                     "review_needed_reason": "Competing diagnosis or exclusion changes the active pathway."
@@ -5172,7 +5184,7 @@
                   {
                     "id": "initialTests_test_02",
                     "label": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.",
-                    "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome. Provides diagnostic or safety thresholds that change interpretation and management for Cushing's Syndrome.",
+                    "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome.",
                     "cutoffs": [
                       "cortisol >1.8 ug/dL"
                     ],
@@ -5235,7 +5247,7 @@
                   {
                     "id": "initialTests_test_02",
                     "label": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.",
-                    "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome. Provides diagnostic or safety thresholds that change interpretation and management for Cushing's Syndrome.",
+                    "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome.",
                     "cutoffs": [
                       "cortisol >1.8 ug/dL"
                     ],
@@ -5350,7 +5362,7 @@
               {
                 "id": "initialTests_test_02",
                 "label": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.",
-                "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome. Provides diagnostic or safety thresholds that change interpretation and management for Cushing's Syndrome.",
+                "criteria_text": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff. Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects. 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Cushing's Syndrome.",
                 "cutoffs": [
                   "cortisol >1.8 ug/dL"
                 ],
@@ -5372,49 +5384,122 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing exact Cushing's Syndrome pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings"
+          "expected_active_branch": "Missing Cushing's Syndrome: onset/trajectory, focused exam, vitals, key results, meds, comorbidities, pregnancy/applicability, or follow-up access",
+          "expected_path_node_ids": [
+            "root",
+            "endpoint_missing_context"
+          ],
+          "terminal_endpoint_id": "endpoint_missing_context",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "cushings_syndrome_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Missing exact Cushing's Syndrome result(s): UFC collection count; late-night salivary cortisol count; dexamethasone dose and timing; renal function; pregnancy/antiepileptic context; 24-hour UFC with assay ULN; post-DST cortisol; late-night salivary cortisol"
+          "expected_active_branch": "Missing Cushing's Syndrome result(s): UFC collection count; late-night salivary cortisol count; dexamethasone dose and timing; renal function; pregnancy/antiepileptic context; 24-hour UFC with assay ULN",
+          "expected_path_node_ids": [
+            "root",
+            "cushings_syndrome_concurrent_data_bundle",
+            "cushings_syndrome_classification_decision",
+            "cushings_syndrome_missing_cutoff_data_endpoint"
+          ],
+          "terminal_endpoint_id": "cushings_syndrome_missing_cutoff_data_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "cushings_syndrome_urgent_endpoint",
-          "expected_active_branch": "Cushing's Syndrome danger feature or high-risk cutoff: Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE.; Measure blood pressure; at least 2 measurements; 2 measurements; 1 mg; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup."
+          "expected_active_branch": "Danger feature or high-risk result present: Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE.; at least 2 measurements; 2 measurements",
+          "expected_path_node_ids": [
+            "root",
+            "cushings_syndrome_concurrent_data_bundle",
+            "cushings_syndrome_classification_decision",
+            "cushings_syndrome_urgent_endpoint"
+          ],
+          "terminal_endpoint_id": "cushings_syndrome_urgent_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "cushings_syndrome_alternate_endpoint",
-          "expected_active_branch": "Cushing's Syndrome mimic/exclusion better fits: Cushing's Syndrome: diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.; Important mimics/exclusions: exogenous glucocorticoid exposure or withdrawal, primary versus central adrenal insufficiency, adrenal incidentaloma, medication-altered renin/aldosterone testing, catecholamine excess, severe illness, infection, and electrolyte mimics."
+          "expected_active_branch": "Objective findings favor mimic or alternate pathway: competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+          "expected_path_node_ids": [
+            "root",
+            "cushings_syndrome_concurrent_data_bundle",
+            "cushings_syndrome_classification_decision",
+            "cushings_syndrome_alternate_endpoint"
+          ],
+          "terminal_endpoint_id": "cushings_syndrome_alternate_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "cushings_syndrome_review_endpoint",
-          "expected_active_branch": "Cushing's Syndrome modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Measure orthostatic blood pressure; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability"
+          "expected_active_branch": "Contraindication, special population, conflicting guidance, or local protocol dependency",
+          "expected_path_node_ids": [
+            "root",
+            "cushings_syndrome_concurrent_data_bundle",
+            "cushings_syndrome_classification_decision",
+            "cushings_syndrome_treatment_bundle",
+            "cushings_syndrome_treatment_safety_decision",
+            "cushings_syndrome_review_endpoint"
+          ],
+          "terminal_endpoint_id": "cushings_syndrome_review_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "cushings_syndrome_worsening_endpoint",
-          "expected_active_branch": "Cushing's Syndrome reassessment worsens or contradicts expected response: at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; Exclude exogenous steroids.; 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.; Late-night salivary cortisol, often two samples.; Measure blood pressure"
+          "expected_active_branch": "Cushing's Syndrome worsens, new danger feature appears, or results no longer fit the active branch",
+          "expected_path_node_ids": [
+            "root",
+            "cushings_syndrome_concurrent_data_bundle",
+            "cushings_syndrome_classification_decision",
+            "cushings_syndrome_treatment_bundle",
+            "cushings_syndrome_treatment_safety_decision",
+            "cushings_syndrome_monitoring_bundle",
+            "cushings_syndrome_worsening_endpoint"
+          ],
+          "terminal_endpoint_id": "cushings_syndrome_worsening_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "cushings_syndrome_deescalate_endpoint",
-          "expected_active_branch": "Cushing's Syndrome objective response supports narrowing, stopping, tapering, or continuing: at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy."
+          "expected_active_branch": "Objective response supports narrowing, stopping, tapering, or continuing Cushing's Syndrome care",
+          "expected_path_node_ids": [
+            "root",
+            "cushings_syndrome_concurrent_data_bundle",
+            "cushings_syndrome_classification_decision",
+            "cushings_syndrome_treatment_bundle",
+            "cushings_syndrome_treatment_safety_decision",
+            "cushings_syndrome_monitoring_bundle",
+            "cushings_syndrome_deescalate_endpoint"
+          ],
+          "terminal_endpoint_id": "cushings_syndrome_deescalate_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "cushings_syndrome_followup_endpoint",
-          "expected_active_branch": "Cushing's Syndrome discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
+          "expected_active_branch": "Cushing's Syndrome stable enough for owned follow-up, pending results, and safety-netting",
+          "expected_path_node_ids": [
+            "root",
+            "cushings_syndrome_concurrent_data_bundle",
+            "cushings_syndrome_classification_decision",
+            "cushings_syndrome_treatment_bundle",
+            "cushings_syndrome_treatment_safety_decision",
+            "cushings_syndrome_monitoring_bundle",
+            "cushings_syndrome_followup_endpoint"
+          ],
+          "terminal_endpoint_id": "cushings_syndrome_followup_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         }
       ],
       "audit_requirements": {

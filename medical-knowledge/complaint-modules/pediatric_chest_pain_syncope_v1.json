@@ -4179,8 +4179,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Missing data needed: pediatric chest pain, syncope, or palpitations context",
-            "edgeLabel": "Missing pediatric chest/syncope context: age, chest pain quality/onset/exertion, syncope/palpitations event details, family history, vitals including orthostatics when syncope, exam/perfusion, ECG, respiratory findings, medications/stimulants, pregnancy possibility, and follow-up access",
+            "label": "Internal data-availability guard",
+            "edgeLabel": "Internal data-availability guard",
             "source_ids": [
               "RCH_CHEST_PAIN_CHILD",
               "RCH_SYNCOPE_CHILD",
@@ -4222,9 +4222,16 @@
                 "workup_findings"
               ]
             },
-            "action": "Document age, onset/duration/site/quality/radiation/reproducibility, exertional or sleep association, syncope/presyncope/palpitations event details, prodrome and recovery, chest pain with palpitations, family history of early sudden death/cardiomyopathy/arrhythmia, full vitals, oxygenation, orthostatic heart rate and BP when syncope, cardiac/pulmonary/neurologic exam, ECG when syncope or cardiac risk is present, respiratory/PE/trauma features, stimulant/toxin/medication use, adolescent pregnancy possibility, and follow-up access.",
+            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
             "children": [],
             "endpoint_type": "missing_data_needed",
+            "internal_traversal_guard": true,
+            "display": {
+              "visible_in_pathway": false,
+              "visible_in_graph": false,
+              "visible_in_outline": false,
+              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+            },
             "missing_data_needed": [
               "age",
               "chest pain onset/duration/site/quality/radiation",
@@ -4561,8 +4568,8 @@
                   {
                     "id": "pediatric_chest_syncope_missing_objective_endpoint",
                     "type": "endpoint",
-                    "label": "Missing data needed: pediatric ECG, orthostatic vitals, oxygenation, respiratory exam, or family-history risk",
-                    "edgeLabel": "Cannot classify pediatric chest pain/syncope until ECG is obtained at least once for syncope or cardiac risk, QRS/QTc/ST findings are known when ECG is done, orthostatic BP/HR are measured when syncope/orthostatic intolerance is present, oxygenation and respiratory exam are documented, and family/cardiac history is known",
+                    "label": "Internal data-availability guard",
+                    "edgeLabel": "Internal data-availability guard",
                     "source_ids": [
                       "RCH_CHEST_PAIN_CHILD",
                       "RCH_SYNCOPE_CHILD",
@@ -4603,9 +4610,16 @@
                         "cardiac exam"
                       ]
                     },
-                    "action": "Obtain ECG at least once for syncope or cardiac concern, manual QRS/QTc/ST interpretation, full vitals including oxygen saturation, orthostatic BP/HR if syncope or orthostatic intolerance is present, cardiac/pulmonary/neurologic exam, BGL shortly after an event when indicated, FBE when anemia is suspected, pregnancy testing when relevant, and senior review before echo/Holter/exercise testing/CTPA.",
+                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
+                    "internal_traversal_guard": true,
+                    "display": {
+                      "visible_in_pathway": false,
+                      "visible_in_graph": false,
+                      "visible_in_outline": false,
+                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                    },
                     "missing_data_needed": [
                       "ECG",
                       "QRS duration",
@@ -7553,61 +7567,174 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing pediatric chest/syncope context: age, chest pain quality/onset/exertion, syncope/palpitations event details, family history, vitals including orthostatics when syncope, exam/perfusion, ECG, respiratory findings, medications/stimulants, pregnancy possibility, and follow-up access"
+          "expected_active_branch": "Internal data-availability guard",
+          "expected_path_node_ids": [
+            "root",
+            "endpoint_missing_context"
+          ],
+          "terminal_endpoint_id": "endpoint_missing_context",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "missing_ecg_orthostatics",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "pediatric_chest_syncope_missing_objective_endpoint",
-          "expected_active_branch": "Cannot classify pediatric chest pain/syncope until ECG is obtained at least once for syncope or cardiac risk, QRS/QTc/ST findings are known when ECG is done, orthostatic BP/HR are measured when syncope/orthostatic intolerance is present, oxygenation and respiratory exam are documented, and family/cardiac history is known"
+          "expected_active_branch": "Internal data-availability guard",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_chest_syncope_initial_assessment_bundle",
+            "pediatric_chest_syncope_classification_decision",
+            "pediatric_chest_syncope_missing_objective_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_chest_syncope_missing_objective_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "exertional_syncope_abnormal_ecg",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "pediatric_chest_syncope_cardiac_escalation_endpoint",
-          "expected_active_branch": "Cardiac risk branch: Exertional chest pain or syncope; Abnormal cardiac exam or poor perfusion; Family history of early sudden death or cardiomyopathy; Hypoxia respiratory distress or hemoptysis; Abnormal pediatric ECG; Measure blood pressure; Measure heart rate; Measure respiratory rate; QRS >0.12 seconds, QTc <=340 ms or >450 ms, ST shift >2 mm, WPW, long QT, wide-complex tachycardia, hypertrophic cardiomyopathy pattern, or syncope during exercise/chest pain/palpitations"
+          "expected_active_branch": "Cardiac risk branch: Exertional chest pain or syncope; Abnormal cardiac exam or poor perfusion; Family history of early sudden death or cardiomyopathy; Hypoxia respiratory distress or hemoptysis; Abnormal pediatric ECG; Measure blood pressure; Measure heart rate; Measure respiratory rate; QRS >0.12 seconds, QTc <=340 ms or >450 ms, ST shift >2 mm, WPW, long QT, wide-complex tachycardia, hypertrophic cardiomyopathy pattern, or syncope during exercise/chest pain/palpitations",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_chest_syncope_initial_assessment_bundle",
+            "pediatric_chest_syncope_classification_decision",
+            "pediatric_chest_syncope_cardiac_escalation_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_chest_syncope_cardiac_escalation_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "respiratory_pe_pneumothorax",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "pediatric_chest_syncope_respiratory_pe_endpoint",
-          "expected_active_branch": "Respiratory/PE branch: hypoxia, respiratory distress, hemoptysis, pleuritic pain, fever/cough, wheeze, unilateral decreased air entry, trauma, PE risk, or foreign-body concern; Cardiac chest pain or syncope risk with exertional symptoms, syncope, palpitations, abnormal cardiac exam, abnormal ECG, cardiac history, or family history of early sudden death; Respiratory, pulmonary embolus, pneumothorax, asthma, pneumonia, or hypoxemic cause of pediatric chest pain; Musculoskeletal pain, costochondritis, precordial catch, anxiety, reflux, or other self-limited cause after serious features are absent; Vasovagal, orthostatic, POTS, seizure mimic, hypoglycemia, toxin, or cardiogenic syncope pattern"
+          "expected_active_branch": "Respiratory/PE branch: hypoxia, respiratory distress, hemoptysis, pleuritic pain, fever/cough, wheeze, unilateral decreased air entry, trauma, PE risk, or foreign-body concern; Cardiac chest pain or syncope risk with exertional symptoms, syncope, palpitations, abnormal cardiac exam, abnormal ECG, cardiac history, or family history of early sudden death; Respiratory, pulmonary embolus, pneumothorax, asthma, pneumonia, or hypoxemic cause of pediatric chest pain; Musculoskeletal pain, costochondritis, precordial catch, anxiety, reflux, or other self-limited cause after serious features are absent; Vasovagal, orthostatic, POTS, seizure mimic, hypoglycemia, toxin, or cardiogenic syncope pattern",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_chest_syncope_initial_assessment_bundle",
+            "pediatric_chest_syncope_classification_decision",
+            "pediatric_chest_syncope_respiratory_pe_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_chest_syncope_respiratory_pe_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "orthostatic_pots",
           "major_pathway": "first_line_management",
           "expected_endpoint_id": "pediatric_chest_syncope_orthostatic_syncope_endpoint",
-          "expected_active_branch": "Orthostatic/autonomic branch: reflex trigger/prodrome or standing symptoms with orthostatic BP drop >20 mmHg systolic or >10 mmHg diastolic within 2-3 minutes, or chronic orthostatic symptoms with HR rise >40 bpm or >30 bpm within 5-10 minutes without postural hypotension"
+          "expected_active_branch": "Orthostatic/autonomic branch: reflex trigger/prodrome or standing symptoms with orthostatic BP drop >20 mmHg systolic or >10 mmHg diastolic within 2-3 minutes, or chronic orthostatic symptoms with HR rise >40 bpm or >30 bpm within 5-10 minutes without postural hypotension",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_chest_syncope_initial_assessment_bundle",
+            "pediatric_chest_syncope_classification_decision",
+            "pediatric_chest_syncope_orthostatic_syncope_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_chest_syncope_orthostatic_syncope_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "low_risk_precordial_catch",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "pediatric_chest_syncope_low_risk_no_testing_endpoint",
-          "expected_active_branch": "Low-risk pediatric chest pain branch: no exertional syncope/chest pain, no palpitations with syncope, normal vitals/perfusion/cardiac exam, no abnormal ECG concern, no serious family history, no hypoxia/respiratory distress/hemoptysis, and musculoskeletal/precordial catch/anxiety/reflux pattern fits"
+          "expected_active_branch": "Low-risk pediatric chest pain branch: no exertional syncope/chest pain, no palpitations with syncope, normal vitals/perfusion/cardiac exam, no abnormal ECG concern, no serious family history, no hypoxia/respiratory distress/hemoptysis, and musculoskeletal/precordial catch/anxiety/reflux pattern fits",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_chest_syncope_initial_assessment_bundle",
+            "pediatric_chest_syncope_classification_decision",
+            "pediatric_chest_syncope_low_risk_no_testing_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_chest_syncope_low_risk_no_testing_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "seizure_or_hypoglycemia_mimic",
           "major_pathway": "severity_risk_stratification",
           "expected_endpoint_id": "pediatric_chest_syncope_seizure_mimic_endpoint",
-          "expected_active_branch": "Syncope mimic branch: prolonged confusion 20-30 minutes, tonic-clonic movements, clustering, hypoglycemia concern, toxin/stimulant exposure, anemia/menorrhagia, pregnancy possibility, or neurologic features better explain the event"
+          "expected_active_branch": "Syncope mimic branch: prolonged confusion 20-30 minutes, tonic-clonic movements, clustering, hypoglycemia concern, toxin/stimulant exposure, anemia/menorrhagia, pregnancy possibility, or neurologic features better explain the event",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_chest_syncope_initial_assessment_bundle",
+            "pediatric_chest_syncope_classification_decision",
+            "pediatric_chest_syncope_seizure_mimic_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_chest_syncope_seizure_mimic_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "pregnancy_toxin_known_heart_disease",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "pediatric_chest_syncope_special_population_review_endpoint",
-          "expected_active_branch": "Special-population branch: pregnant/recently postpartum adolescent, PE/VTE risk, stimulant/toxin exposure, congenital/acquired heart disease, known arrhythmia/cardiomyopathy, prior cardiac surgery, abnormal ECG needing cardiology, or local sports-return policy applies"
+          "expected_active_branch": "Special-population branch: pregnant/recently postpartum adolescent, PE/VTE risk, stimulant/toxin exposure, congenital/acquired heart disease, known arrhythmia/cardiomyopathy, prior cardiac surgery, abnormal ECG needing cardiology, or local sports-return policy applies",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_chest_syncope_initial_assessment_bundle",
+            "pediatric_chest_syncope_classification_decision",
+            "pediatric_chest_syncope_special_population_review_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_chest_syncope_special_population_review_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "worsening_after_low_risk_branch",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "pediatric_chest_syncope_worsening_endpoint",
-          "expected_active_branch": "Reassessment branch: exertional pain/syncope appears, palpitations with syncope recur, ECG abnormality is found, oxygenation drops, respiratory distress develops, perfusion worsens, fever/myocarditis concern appears, or low-risk pain pattern no longer fits"
+          "expected_active_branch": "Reassessment branch: exertional pain/syncope appears, palpitations with syncope recur, ECG abnormality is found, oxygenation drops, respiratory distress develops, perfusion worsens, fever/myocarditis concern appears, or low-risk pain pattern no longer fits",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_chest_syncope_initial_assessment_bundle",
+            "pediatric_chest_syncope_classification_decision",
+            "pediatric_chest_syncope_monitoring_bundle",
+            "pediatric_chest_syncope_worsening_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_chest_syncope_worsening_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "deescalation_and_return_precautions",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "pediatric_chest_syncope_deescalation_endpoint",
-          "expected_active_branch": "De-escalation branch: normal vitals/perfusion, no exertional symptoms, no concerning family history, normal ECG if obtained, no hypoxia/respiratory distress, orthostatic/autonomic pattern stable, and follow-up/safety-net access documented"
+          "expected_active_branch": "De-escalation branch: normal vitals/perfusion, no exertional symptoms, no concerning family history, normal ECG if obtained, no hypoxia/respiratory distress, orthostatic/autonomic pattern stable, and follow-up/safety-net access documented",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_chest_syncope_initial_assessment_bundle",
+            "pediatric_chest_syncope_classification_decision",
+            "pediatric_chest_syncope_monitoring_bundle",
+            "pediatric_chest_syncope_deescalation_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_chest_syncope_deescalation_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
+        },
+        {
+          "scenario_id": "endpoint_pediatric_chest_syncope_followup_safety_endp_coverage",
+          "major_pathway": "disposition_followup_safety_netting",
+          "expected_endpoint_id": "pediatric_chest_syncope_followup_safety_endpoint",
+          "expected_active_branch": "Disposition branch: Emergency pediatric cardiology escalation; Low-risk chest pain testing restraint; Syncope consultation and discharge route; Respiratory or PE route; Activity restriction and return precautions; Pediatric chest pain, syncope, or palpitations: immediate stabilization or escalation trigger: Exertional chest pain or syncope.; Pediatric chest pain, syncope, or palpitations: treatment or disposition for high-risk or confirmed disease: Emergency pediatric cardiology escalation.; Pediatric chest pain, syncope, or palpitations: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Low-risk chest pain testing restraint.; cause identified or serious causes addressed, follow-up arranged, exercise/activity advice documented, pending ECG/CXR/lab/imaging owners assigned, and family return precautions given",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_chest_syncope_initial_assessment_bundle",
+            "pediatric_chest_syncope_classification_decision",
+            "pediatric_chest_syncope_monitoring_bundle",
+            "pediatric_chest_syncope_followup_safety_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_chest_syncope_followup_safety_endpoint",
+          "traversal_status": "reaches_expected_endpoint",
+          "synthetic_context": {
+            "structured_context_domains": [
+              "symptoms",
+              "exam",
+              "vitals",
+              "labs",
+              "imaging_results",
+              "medications",
+              "comorbidities",
+              "demographics",
+              "pregnancy_status",
+              "workup_findings"
+            ],
+            "branch_trigger": "Disposition branch: Emergency pediatric cardiology escalation; Low-risk chest pain testing restraint; Syncope consultation and discharge route; Respiratory or PE route; Activity restriction and return precautions; Pediatric chest pain, syncope, or palpitations: immediate stabilization or escalation trigger: Exertional chest pain or syncope.; Pediatric chest pain, syncope, or palpitations: treatment or disposition for high-risk or confirmed disease: Emergency pediatric cardiology escalation.; Pediatric chest pain, syncope, or palpitations: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Low-risk chest pain testing restraint.; cause identified or serious causes addressed, follow-up arranged, exercise/activity advice documented, pending ECG/CXR/lab/imaging owners assigned, and family return precautions given",
+            "expected_terminal_endpoint_type": "follow_up",
+            "missing_data_needed": []
+          },
+          "coverage_type": "terminal_endpoint_coverage"
         }
       ],
       "audit_requirements": {

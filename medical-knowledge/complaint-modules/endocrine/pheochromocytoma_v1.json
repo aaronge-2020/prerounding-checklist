@@ -2863,8 +2863,6 @@
               "severity/risk category",
               "treatment response",
               "disposition constraints",
-              "Pheochromocytoma: diagnostic frame from guideline-sourced endocrine workup",
-              "Key thresholds and interpretation caveats: Metanephrine intervals are lab and sampling-position-specific; >3x ULN is highly suggestive. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
               "Important mimics/exclusions: exogenous glucocorticoid exposure or withdrawal, primary versus central adrenal insufficiency, adrenal incidentaloma, medication-altered renin/aldosterone testing, catecholamine excess, severe illness, infection, and electrolyte mimics.",
               ">3x ULN metanephrines changes to localization/genetic/preoperative alpha-blockade pathway.",
               "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
@@ -4349,8 +4347,8 @@
             "workup_findings"
           ],
           "source_ids": [
-            "ES_PHEO_PPGL_2014",
             "ESE_ADRENAL_INCIDENTALOMA_2023",
+            "ES_PHEO_PPGL_2014",
             "MSD_HYPERTENSIVE_EMERGENCY_2026",
             "AHRQ_CALIBRATE_DX"
           ],
@@ -4566,8 +4564,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Missing data needed: PPGL pathway context",
-            "edgeLabel": "Missing PPGL context: paroxysmal symptoms, BP/HR pattern, metanephrine values and ULN, sampling position, medication triggers, adrenal or extra-adrenal imaging, pregnancy/genetic risk, or surgery status",
+            "label": "Internal data-availability guard",
+            "edgeLabel": "Internal data-availability guard",
             "source_ids": [
               "ES_PHEO_PPGL_2014",
               "MSD_HYPERTENSIVE_EMERGENCY_2026",
@@ -4607,9 +4605,16 @@
                 "workup_findings"
               ]
             },
-            "action": "Document episodic headache, sweating, palpitations, panic-like spells, sustained/paroxysmal BP and heart rate, plasma free or urinary fractionated metanephrines with assay ULN, sampling position and reference interval, medication/diet triggers, adrenal incidentaloma or imaging findings, pregnancy status, prior PPGL or hereditary syndrome risk, and surgery/follow-up status.",
+            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
             "children": [],
             "endpoint_type": "missing_data_needed",
+            "internal_traversal_guard": true,
+            "display": {
+              "visible_in_pathway": false,
+              "visible_in_graph": false,
+              "visible_in_outline": false,
+              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+            },
             "missing_data_needed": [
               "paroxysmal symptoms",
               "BP and heart rate",
@@ -5047,8 +5052,8 @@
                   {
                     "id": "pheochromocytoma_missing_metanephrine_endpoint",
                     "type": "endpoint",
-                    "label": "Missing data needed: plasma free or urinary fractionated metanephrines, ULN, sampling position, and medication triggers",
-                    "edgeLabel": "Cannot classify PPGL probability until plasma free or urinary fractionated metanephrines, assay ULN, sampling position, medication/diet confounders, BP/HR, and imaging context are available",
+                    "label": "Internal data-availability guard",
+                    "edgeLabel": "Internal data-availability guard",
                     "source_ids": [
                       "ES_PHEO_PPGL_2014"
                     ],
@@ -5080,9 +5085,16 @@
                         "imaging context"
                       ]
                     },
-                    "action": "Obtain plasma free metanephrines or urinary fractionated metanephrines with assay ULN, note whether plasma sampling was supine with matching reference interval, review interfering medications and catecholamine-provoking drugs, document BP/HR pattern and symptoms, and add adrenal/extra-adrenal imaging only after clear biochemical evidence unless emergent imaging is needed for another diagnosis.",
+                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
+                    "internal_traversal_guard": true,
+                    "display": {
+                      "visible_in_pathway": false,
+                      "visible_in_graph": false,
+                      "visible_in_outline": false,
+                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                    },
                     "missing_data_needed": [
                       "plasma free or urinary fractionated metanephrines",
                       "assay ULN",
@@ -7060,8 +7072,8 @@
                     "label": "PPGL borderline or mimic route: repeat controlled testing or switch pathway before irreversible treatment",
                     "edgeLabel": "Borderline/mimic branch: metanephrines not above ULN, mild elevation without supine sampling, medication/diet confounder, panic/anxiety, hyperthyroidism, stimulant/withdrawal, OSA, pain/illness, adrenal incidentaloma without biochemical evidence, or alternate endocrine pathway fits better",
                     "source_ids": [
-                      "ES_PHEO_PPGL_2014",
                       "ESE_ADRENAL_INCIDENTALOMA_2023",
+                      "ES_PHEO_PPGL_2014",
                       "MSD_HYPERTENSIVE_EMERGENCY_2026",
                       "AHRQ_CALIBRATE_DX"
                     ],
@@ -7082,8 +7094,8 @@
                         "workup_findings"
                       ],
                       "source_ids": [
-                        "ES_PHEO_PPGL_2014",
                         "ESE_ADRENAL_INCIDENTALOMA_2023",
+                        "ES_PHEO_PPGL_2014",
                         "MSD_HYPERTENSIVE_EMERGENCY_2026",
                         "AHRQ_CALIBRATE_DX"
                       ],
@@ -8043,67 +8055,160 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing PPGL context: paroxysmal symptoms, BP/HR pattern, metanephrine values and ULN, sampling position, medication triggers, adrenal or extra-adrenal imaging, pregnancy/genetic risk, or surgery status"
+          "expected_active_branch": "Internal data-availability guard",
+          "expected_path_node_ids": [
+            "root",
+            "endpoint_missing_context"
+          ],
+          "terminal_endpoint_id": "endpoint_missing_context",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "missing_metanephrine_uln",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "pheochromocytoma_missing_metanephrine_endpoint",
-          "expected_active_branch": "Cannot classify PPGL probability until plasma free or urinary fractionated metanephrines, assay ULN, sampling position, medication/diet confounders, BP/HR, and imaging context are available"
+          "expected_active_branch": "Internal data-availability guard",
+          "expected_path_node_ids": [
+            "root",
+            "pheochromocytoma_initial_assessment",
+            "pheochromocytoma_classification_decision",
+            "pheochromocytoma_missing_metanephrine_endpoint"
+          ],
+          "terminal_endpoint_id": "pheochromocytoma_missing_metanephrine_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "ppgl_crisis",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "pheochromocytoma_crisis_endpoint",
-          "expected_active_branch": "Emergency branch: BP >=180/120 mm Hg with target-organ symptoms, catecholamine crisis, arrhythmia, ACS/stroke symptoms, pulmonary edema, shock, medication-triggered crisis, pregnancy severe hypertension, or unopposed beta-blocker exposure"
+          "expected_active_branch": "Emergency branch: BP >=180/120 mm Hg with target-organ symptoms, catecholamine crisis, arrhythmia, ACS/stroke symptoms, pulmonary edema, shock, medication-triggered crisis, pregnancy severe hypertension, or unopposed beta-blocker exposure",
+          "expected_path_node_ids": [
+            "root",
+            "pheochromocytoma_initial_assessment",
+            "pheochromocytoma_classification_decision",
+            "pheochromocytoma_crisis_endpoint"
+          ],
+          "terminal_endpoint_id": "pheochromocytoma_crisis_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "positive_metanephrines",
           "major_pathway": "diagnostic_confirmation",
           "expected_endpoint_id": "pheochromocytoma_localization_genetic_endpoint",
-          "expected_active_branch": "Localization branch: metanephrines above ULN with high clinical probability or about 3-fold ULN, adrenal incidentaloma with biochemical evidence, prior PPGL, hereditary syndrome, paraganglioma, metastatic risk, pregnancy, or complex localization need"
+          "expected_active_branch": "Localization branch: metanephrines above ULN with high clinical probability or about 3-fold ULN, adrenal incidentaloma with biochemical evidence, prior PPGL, hereditary syndrome, paraganglioma, metastatic risk, pregnancy, or complex localization need",
+          "expected_path_node_ids": [
+            "root",
+            "pheochromocytoma_initial_assessment",
+            "pheochromocytoma_classification_decision",
+            "pheochromocytoma_positive_biochemistry_action",
+            "pheochromocytoma_localization_genetic_endpoint"
+          ],
+          "terminal_endpoint_id": "pheochromocytoma_localization_genetic_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "borderline_or_confounded",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "pheochromocytoma_borderline_or_mimic_endpoint",
-          "expected_active_branch": "Borderline/mimic branch: metanephrines not above ULN, mild elevation without supine sampling, medication/diet confounder, panic/anxiety, hyperthyroidism, stimulant/withdrawal, OSA, pain/illness, adrenal incidentaloma without biochemical evidence, or alternate endocrine pathway fits better"
+          "expected_active_branch": "Borderline/mimic branch: metanephrines not above ULN, mild elevation without supine sampling, medication/diet confounder, panic/anxiety, hyperthyroidism, stimulant/withdrawal, OSA, pain/illness, adrenal incidentaloma without biochemical evidence, or alternate endocrine pathway fits better",
+          "expected_path_node_ids": [
+            "root",
+            "pheochromocytoma_initial_assessment",
+            "pheochromocytoma_classification_decision",
+            "pheochromocytoma_borderline_or_mimic_endpoint"
+          ],
+          "terminal_endpoint_id": "pheochromocytoma_borderline_or_mimic_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "genetic_or_pregnancy_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "pheochromocytoma_localization_genetic_endpoint",
-          "expected_active_branch": "Localization branch: metanephrines above ULN with high clinical probability or about 3-fold ULN, adrenal incidentaloma with biochemical evidence, prior PPGL, hereditary syndrome, paraganglioma, metastatic risk, pregnancy, or complex localization need"
+          "expected_active_branch": "Localization branch: metanephrines above ULN with high clinical probability or about 3-fold ULN, adrenal incidentaloma with biochemical evidence, prior PPGL, hereditary syndrome, paraganglioma, metastatic risk, pregnancy, or complex localization need",
+          "expected_path_node_ids": [
+            "root",
+            "pheochromocytoma_initial_assessment",
+            "pheochromocytoma_classification_decision",
+            "pheochromocytoma_positive_biochemistry_action",
+            "pheochromocytoma_localization_genetic_endpoint"
+          ],
+          "terminal_endpoint_id": "pheochromocytoma_localization_genetic_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "preoperative_alpha_blockade",
           "major_pathway": "first_line_management",
           "expected_endpoint_id": "pheochromocytoma_preop_blockade_endpoint",
-          "expected_active_branch": "Treatment branch: hormonally functional PPGL, surgery planned or likely, BP/HR can be optimized, and alpha blockade plus high-sodium/fluid preparation can be started for 7-14 days"
+          "expected_active_branch": "Treatment branch: hormonally functional PPGL, surgery planned or likely, BP/HR can be optimized, and alpha blockade plus high-sodium/fluid preparation can be started for 7-14 days",
+          "expected_path_node_ids": [
+            "root",
+            "pheochromocytoma_initial_assessment",
+            "pheochromocytoma_classification_decision",
+            "pheochromocytoma_positive_biochemistry_action",
+            "pheochromocytoma_preop_blockade_endpoint"
+          ],
+          "terminal_endpoint_id": "pheochromocytoma_preop_blockade_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "surgery_size_route",
           "major_pathway": "severity_risk_stratification",
           "expected_endpoint_id": "pheochromocytoma_preop_blockade_endpoint",
-          "expected_active_branch": "Treatment branch: hormonally functional PPGL, surgery planned or likely, BP/HR can be optimized, and alpha blockade plus high-sodium/fluid preparation can be started for 7-14 days"
+          "expected_active_branch": "Treatment branch: hormonally functional PPGL, surgery planned or likely, BP/HR can be optimized, and alpha blockade plus high-sodium/fluid preparation can be started for 7-14 days",
+          "expected_path_node_ids": [
+            "root",
+            "pheochromocytoma_initial_assessment",
+            "pheochromocytoma_classification_decision",
+            "pheochromocytoma_positive_biochemistry_action",
+            "pheochromocytoma_preop_blockade_endpoint"
+          ],
+          "terminal_endpoint_id": "pheochromocytoma_preop_blockade_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "postop_monitoring",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "pheochromocytoma_postop_followup_endpoint",
-          "expected_active_branch": "Follow-up branch: post-resection, persistent symptoms, hereditary/metastatic risk, paraganglioma, large or invasive tumor, or lifelong recurrence surveillance due"
+          "expected_active_branch": "Follow-up branch: post-resection, persistent symptoms, hereditary/metastatic risk, paraganglioma, large or invasive tumor, or lifelong recurrence surveillance due",
+          "expected_path_node_ids": [
+            "root",
+            "pheochromocytoma_initial_assessment",
+            "pheochromocytoma_classification_decision",
+            "pheochromocytoma_positive_biochemistry_action",
+            "pheochromocytoma_postop_followup_endpoint"
+          ],
+          "terminal_endpoint_id": "pheochromocytoma_postop_followup_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "biochemical_remission_surveillance",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "pheochromocytoma_postop_followup_endpoint",
-          "expected_active_branch": "Follow-up branch: post-resection, persistent symptoms, hereditary/metastatic risk, paraganglioma, large or invasive tumor, or lifelong recurrence surveillance due"
+          "expected_active_branch": "Follow-up branch: post-resection, persistent symptoms, hereditary/metastatic risk, paraganglioma, large or invasive tumor, or lifelong recurrence surveillance due",
+          "expected_path_node_ids": [
+            "root",
+            "pheochromocytoma_initial_assessment",
+            "pheochromocytoma_classification_decision",
+            "pheochromocytoma_positive_biochemistry_action",
+            "pheochromocytoma_postop_followup_endpoint"
+          ],
+          "terminal_endpoint_id": "pheochromocytoma_postop_followup_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "lifelong_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "pheochromocytoma_postop_followup_endpoint",
-          "expected_active_branch": "Follow-up branch: post-resection, persistent symptoms, hereditary/metastatic risk, paraganglioma, large or invasive tumor, or lifelong recurrence surveillance due"
+          "expected_active_branch": "Follow-up branch: post-resection, persistent symptoms, hereditary/metastatic risk, paraganglioma, large or invasive tumor, or lifelong recurrence surveillance due",
+          "expected_path_node_ids": [
+            "root",
+            "pheochromocytoma_initial_assessment",
+            "pheochromocytoma_classification_decision",
+            "pheochromocytoma_positive_biochemistry_action",
+            "pheochromocytoma_postop_followup_endpoint"
+          ],
+          "terminal_endpoint_id": "pheochromocytoma_postop_followup_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         }
       ],
       "audit_requirements": {

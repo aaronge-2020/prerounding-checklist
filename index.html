@@ -11974,6 +11974,12 @@
       ]) {
         if (rawNode[field] !== undefined) node[field] = JSON.parse(JSON.stringify(rawNode[field]));
       }
+      if (rawNode.display && typeof rawNode.display === "object") {
+        node.display = JSON.parse(JSON.stringify(rawNode.display));
+      }
+      if (rawNode.internal_traversal_guard !== undefined) {
+        node.internal_traversal_guard = Boolean(rawNode.internal_traversal_guard);
+      }
       const rawLayout = rawNode.layout && typeof rawNode.layout === "object" ? rawNode.layout : null;
       const layoutX = Number(rawLayout?.x);
       const layoutY = Number(rawLayout?.y);
@@ -11987,6 +11993,16 @@
         sanitizeClinicalPathwayNode(child, seen, `${id}_${index + 1}`, child.edgeLabel || child.edge_label || "")
       ));
       if (node.type === "endpoint") node.children = [];
+      if (node.endpoint_type === "missing_data_needed") {
+        node.internal_traversal_guard = true;
+        node.display = {
+          ...(node.display || {}),
+          visible_in_pathway: false,
+          visible_in_graph: false,
+          visible_in_outline: false,
+          reason: node.display?.reason || "Internal traversal guard; exact missing fields remain in missing_data_needed."
+        };
+      }
       return node;
     }
 
@@ -12350,11 +12366,31 @@
       return clone;
     }
 
+    function isInternalDecisionTreeNode(node = {}) {
+      const display = node.display || {};
+      return Boolean(node.internal_traversal_guard)
+        || node.endpoint_type === "missing_data_needed"
+        || display.visible_in_pathway === false
+        || (display.visible_in_graph === false && display.visible_in_outline === false);
+    }
+
+    function visibleDecisionTreeChildren(node = {}) {
+      return (node.children || []).filter((child) => !isInternalDecisionTreeNode(child));
+    }
+
+    function visibleDecisionTreeFlatNodes(root) {
+      return flattenDecisionTree(root).map(({ node }) => node).filter((node) => !isInternalDecisionTreeNode(node));
+    }
+
     function decisionTreeTraversalSummary(graph) {
       const flat = flattenDecisionTree(graph.root).map(({ node }) => node);
       const activeNodes = flat.filter((node) => node.state === "active");
-      const activeNode = activeNodes[activeNodes.length - 1] || flat.find((node) => node.id === graph.root?.id) || flat[0] || null;
-      const terminalEndpoint = activeNodes.find((node) => node.type === "endpoint") || flat.find((node) => node.state === "warning" && node.type === "endpoint") || null;
+      const visibleFlat = flat.filter((node) => !isInternalDecisionTreeNode(node));
+      const activeVisibleNodes = activeNodes.filter((node) => !isInternalDecisionTreeNode(node));
+      const activeNode = activeVisibleNodes[activeVisibleNodes.length - 1] || visibleFlat.find((node) => node.id === graph.root?.id) || visibleFlat[0] || null;
+      const terminalEndpoint = activeVisibleNodes.find((node) => node.type === "endpoint")
+        || visibleFlat.find((node) => node.state === "warning" && node.type === "endpoint")
+        || null;
       const missingEndpoint = activeNodes.find((node) => node.endpoint_type === "missing_data_needed")
         || flat.find((node) => node.state === "warning" && node.endpoint_type === "missing_data_needed")
         || null;
@@ -12364,7 +12400,7 @@
       return {
         activeBranch: activeNode?.edgeLabel || activeNode?.label || "No active branch identified",
         missingDataNeeded: missingData,
-        terminalEndpoint: terminalEndpoint?.label || "No terminal endpoint reached yet"
+        terminalEndpoint: terminalEndpoint?.label || (missingData.length ? "Clinical endpoint not selected yet" : "No terminal endpoint reached yet")
       };
     }
 
@@ -12393,8 +12429,35 @@
       return lines.length ? lines : [""];
     }
 
+    function decisionTreeGraphEdgeLabel(text = "") {
+      const clean = String(text || "").replace(/\s+/g, " ").trim();
+      if (clean.length <= 220) return clean;
+      const segments = clean.split(/;\s*/).map((segment) => segment.trim()).filter(Boolean);
+      const summary = [];
+      for (const segment of segments) {
+        const next = [...summary, segment].join("; ");
+        if (next.length > 190) break;
+        summary.push(segment);
+        if (summary.length >= 2) break;
+      }
+      const compact = summary.join("; ") || clean.split(/\s+/).slice(0, 24).join(" ");
+      return `${compact}; additional criteria apply`;
+    }
+
+    function decisionTreeGraphNodeLabel(node = {}) {
+      const clean = String(node.label || node.id || "Pathway step").replace(/\s+/g, " ").trim();
+      if (clean.length <= 150) return clean;
+      const colonIndex = clean.indexOf(":");
+      if (colonIndex > 12 && colonIndex < 92) return clean.slice(0, colonIndex).trim();
+      const semicolonIndex = clean.indexOf(";");
+      if (semicolonIndex > 24 && semicolonIndex < 120) return clean.slice(0, semicolonIndex).trim();
+      const dashIndex = clean.indexOf(" - ");
+      if (dashIndex > 24 && dashIndex < 120) return clean.slice(0, dashIndex).trim();
+      return clean.split(/\s+/).slice(0, 14).join(" ");
+    }
+
     function decisionTreeNodeRenderBox(entry) {
-      const text = String(entry?.data?.label || entry?.data?.id || "Pathway step").replace(/\s+/g, " ").trim();
+      const text = decisionTreeGraphNodeLabel(entry?.data);
       const wrapChars = text.length > 260 ? 62 : text.length > 190 ? 56 : text.length > 120 ? 46 : 34;
       const lines = wrapTreeText(text, wrapChars);
       const longestLine = lines.reduce((max, line) => Math.max(max, line.length), 0);
@@ -12460,7 +12523,7 @@
       header.append(title, toggleButton);
       const list = document.createElement("ol");
       const visit = (node, depth = 0) => {
-        if (!node) return;
+        if (!node || isInternalDecisionTreeNode(node)) return;
         const item = document.createElement("li");
         item.dataset.state = node.state || "pending";
         item.style.marginLeft = `${Math.min(depth, 8) * 10}px`;
@@ -12476,7 +12539,7 @@
         body.append(label, detail);
         item.append(badge, body);
         list.appendChild(item);
-        for (const child of node.children || []) visit(child, depth + 1);
+        for (const child of visibleDecisionTreeChildren(node)) visit(child, depth + 1);
       };
       visit(graph.root, 0);
       panel.append(header, list);
@@ -12494,13 +12557,13 @@
       }
       const isPatientDecisionTree = container.id === "patientDecisionTreePanel";
       const width = Math.max(680, container.getBoundingClientRect().width || 680);
-      const root = d3.hierarchy(graph.root, (node) => node.collapsed ? [] : node.children || []);
+      const root = d3.hierarchy(graph.root, (node) => node.collapsed ? [] : visibleDecisionTreeChildren(node));
       root.descendants().forEach((entry) => {
         entry.data._renderBox = decisionTreeNodeRenderBox(entry);
       });
       const maxNodeWidth = Math.max(...root.descendants().map((entry) => decisionTreeNodeBox(entry).width), 230);
       const maxNodeHeight = Math.max(...root.descendants().map((entry) => decisionTreeNodeBox(entry).height), 96);
-      const maxEdgeLineCount = Math.max(1, ...root.links().map((link) => wrapTreeText(link.target.data.edgeLabel || "", 52).length));
+      const maxEdgeLineCount = Math.max(1, ...root.links().map((link) => wrapTreeText(decisionTreeGraphEdgeLabel(link.target.data.edgeLabel || ""), 52).length));
       const xSpacing = maxNodeWidth + 112;
       const ySpacing = maxNodeHeight + 150 + Math.min(150, maxEdgeLineCount * 12);
       const treeLayout = d3.tree().nodeSize([xSpacing, ySpacing]).separation((a, b) => a.parent === b.parent ? 1 : 1.12);
@@ -12548,7 +12611,9 @@
         .attr("text-anchor", "middle");
       edgeLabelSelection.each(function(link) {
         const label = d3.select(this);
-        for (const [lineIndex, line] of wrapTreeText(link.target.data.edgeLabel, 52).entries()) {
+        const graphLabel = decisionTreeGraphEdgeLabel(link.target.data.edgeLabel);
+        label.append("title").text(link.target.data.edgeLabel);
+        for (const [lineIndex, line] of wrapTreeText(graphLabel, 52).entries()) {
           label.append("tspan")
             .attr("x", (link.source.x + link.target.x) / 2)
             .attr("dy", lineIndex === 0 ? 0 : 13)
@@ -12581,6 +12646,8 @@
           renderWorkupDecisionSurfaces();
           renderDecisionTreeEditor();
         });
+      node.append("title")
+        .text((entry) => entry.data.label || entry.data.id || "Pathway step");
       node.append("rect")
         .attr("x", (entry) => -(decisionTreeNodeBox(entry).width / 2))
         .attr("y", (entry) => -(decisionTreeNodeBox(entry).height / 2))
@@ -12777,7 +12844,7 @@
       } else {
         const preview = document.createElement("ol");
         preview.className = "workup-pathway-preview";
-        const flatNodes = flattenDecisionTree(graph.root).map(({ node }) => node);
+        const flatNodes = visibleDecisionTreeFlatNodes(graph.root);
         const previewNodes = flatNodes.filter((node) => node.state !== "inactive").slice(0, 6);
         const nodesToRender = previewNodes.length ? previewNodes : flatNodes.slice(0, 6);
         for (const [index, node] of nodesToRender.entries()) {
@@ -12800,7 +12867,7 @@
       const tree = document.createElement("ol");
       tree.className = "decision-tree";
       tree.hidden = true;
-      const flatNodes = flattenDecisionTree(graph.root).map(({ node }) => node);
+      const flatNodes = visibleDecisionTreeFlatNodes(graph.root);
       for (const [index, node] of flatNodes.entries()) {
         const li = document.createElement("li");
         li.className = "decision-tree-node";

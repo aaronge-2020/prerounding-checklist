@@ -3024,8 +3024,6 @@
               "severity/risk category",
               "treatment response",
               "disposition constraints",
-              "Gestational Diabetes: diagnostic frame from guideline-sourced endocrine workup",
-              "Key thresholds and interpretation caveats: One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL. Two-step approach if used: 50-g screen often >=130-140 mg/dL; 100-g Carpenter-Coustan thresholds fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL, usually 2 abnormal values.",
               "Important mimics/exclusions: stress or steroid hyperglycemia, type 1/LADA versus type 2 diabetes, DKA/HHS versus uncomplicated hyperglycemia, hypoglycemia/drug effect, renal disease, infection, pregnancy, and secondary endocrine causes.",
               "OGTT threshold crossing changes maternal/fetal monitoring and therapy.",
               "Postpartum abnormal OGTT changes long-term prevention.",
@@ -4666,8 +4664,8 @@
             "workup_findings"
           ],
           "source_ids": [
-            "ADA_SOC_2026",
             "ADA_DIAGNOSIS_2026",
+            "ADA_SOC_2026",
             "CDC_DIABETES_TESTING_2024",
             "CDC_NDPP_LIFESTYLE_2024",
             "AHRQ_CALIBRATE_DX"
@@ -4908,8 +4906,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Missing data needed: gestational age, glucose strategy, obstetric symptoms, vitals, and postpartum status",
-            "edgeLabel": "Missing exact pregnancy diabetes data: gestational age, prior diabetes status, one-step or two-step strategy, OGTT values, home glucose log, ketones/acid-base status when ill, blood pressure, fetal symptoms, medications, and postpartum timing",
+            "label": "Internal data-availability guard",
+            "edgeLabel": "Internal data-availability guard",
             "source_ids": [
               "ADA_SOC_2026",
               "ADA_DIAGNOSIS_2026",
@@ -4953,9 +4951,16 @@
                 "workup_findings"
               ]
             },
-            "action": "Document gestational age, prior diabetes status, early pregnancy A1c/glucose if high risk, local one-step or two-step strategy, exact OGTT values, home fasting and postprandial glucose log, current weight and blood pressure, ketones/electrolytes/anion gap when vomiting or severely hyperglycemic, fetal movement or obstetric symptoms, current medications, delivery date if postpartum, and follow-up access.",
+            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
             "children": [],
             "endpoint_type": "missing_data_needed",
+            "internal_traversal_guard": true,
+            "display": {
+              "visible_in_pathway": false,
+              "visible_in_graph": false,
+              "visible_in_outline": false,
+              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+            },
             "missing_data_needed": [
               "gestational age",
               "prior diabetes status",
@@ -5442,8 +5447,8 @@
                   {
                     "id": "gestational_diabetes_missing_ogtt_log_endpoint",
                     "type": "endpoint",
-                    "label": "Missing data needed: OGTT values, home glucose log, ketones, blood pressure, or postpartum OGTT timing",
-                    "edgeLabel": "Cannot classify GDM, overt diabetes, medication escalation, urgent pregnancy risk, or postpartum follow-up until OGTT values, glucose log, ketones/acid-base status when ill, BP, and postpartum timing are known",
+                    "label": "Internal data-availability guard",
+                    "edgeLabel": "Internal data-availability guard",
                     "source_ids": [
                       "ADA_SOC_2026",
                       "ADA_DIAGNOSIS_2026",
@@ -5484,9 +5489,16 @@
                         "postpartum OGTT date"
                       ]
                     },
-                    "action": "Obtain the local screening strategy result: 75-g fasting/1-hour/2-hour values, or 50-g screen threshold plus 100-g fasting/1-hour/2-hour/3-hour values; add home fasting and postprandial glucose logs, ketones/electrolytes/anion gap if symptomatic or vomiting, blood pressure and preeclampsia symptom screen, and postpartum 75-g OGTT timing if delivered.",
+                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
+                    "internal_traversal_guard": true,
+                    "display": {
+                      "visible_in_pathway": false,
+                      "visible_in_graph": false,
+                      "visible_in_outline": false,
+                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                    },
                     "missing_data_needed": [
                       "75-g fasting/1-hour/2-hour values",
                       "50-g screen and local threshold",
@@ -7669,8 +7681,8 @@
                     "label": "Pregnancy glucose mimic or overt pregestational diabetes: route away from routine GDM plan",
                     "edgeLabel": "Alternate branch: early diabetes-range value, type 1/type 2 diabetes, steroid or stress hyperglycemia, DKA/HHS, renal disease, infection, hypoglycemia/drug effect, or secondary endocrine cause fits better",
                     "source_ids": [
-                      "ADA_SOC_2026",
                       "ADA_DIAGNOSIS_2026",
+                      "ADA_SOC_2026",
                       "CDC_DIABETES_TESTING_2024",
                       "CDC_NDPP_LIFESTYLE_2024",
                       "AHRQ_CALIBRATE_DX"
@@ -7689,8 +7701,8 @@
                         "workup_findings"
                       ],
                       "source_ids": [
-                        "ADA_SOC_2026",
                         "ADA_DIAGNOSIS_2026",
+                        "ADA_SOC_2026",
                         "CDC_DIABETES_TESTING_2024",
                         "CDC_NDPP_LIFESTYLE_2024",
                         "AHRQ_CALIBRATE_DX"
@@ -7893,7 +7905,7 @@
                         }
                       ]
                     },
-                    "action": "Document why routine GDM is not the active pathway and route to the more specific diagnosis: Gestational Diabetes: diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL. Two-step approach if used: 50-g screen often >=130-140 mg/dL; 100-g Carpenter-Coustan thresholds fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL, usually 2 abnormal values.; Important mimics/exclusions: stress or steroid hyperglycemia, type 1/LADA versus type 2 diabetes, DKA/HHS versus uncomplicated hyperglycemia, hypoglycemia/drug effect, renal disease, infection, pregnancy, and secondary endocrine causes..",
+                    "action": "Document why routine GDM is not the active pathway and route to the more specific diagnosis: competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
                     "review_needed_reason": "Pregnancy hyperglycemia may represent overt diabetes, hyperglycemic crisis, medication effect, or another diagnosis requiring a different pathway."
@@ -8563,61 +8575,145 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing exact pregnancy diabetes data: gestational age, prior diabetes status, one-step or two-step strategy, OGTT values, home glucose log, ketones/acid-base status when ill, blood pressure, fetal symptoms, medications, and postpartum timing"
+          "expected_active_branch": "Internal data-availability guard",
+          "expected_path_node_ids": [
+            "root",
+            "endpoint_missing_context"
+          ],
+          "terminal_endpoint_id": "endpoint_missing_context",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "missing_ogtt_values",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "gestational_diabetes_missing_ogtt_log_endpoint",
-          "expected_active_branch": "Cannot classify GDM, overt diabetes, medication escalation, urgent pregnancy risk, or postpartum follow-up until OGTT values, glucose log, ketones/acid-base status when ill, BP, and postpartum timing are known"
+          "expected_active_branch": "Internal data-availability guard",
+          "expected_path_node_ids": [
+            "root",
+            "gestational_diabetes_initial_assessment",
+            "gestational_diabetes_classification_decision",
+            "gestational_diabetes_missing_ogtt_log_endpoint"
+          ],
+          "terminal_endpoint_id": "gestational_diabetes_missing_ogtt_log_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "gdm_dka_or_preeclampsia_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "gestational_diabetes_urgent_obstetric_endocrine_endpoint",
-          "expected_active_branch": "Emergency branch: ketones, vomiting or dehydration, altered mental status, severe hyperglycemia, acid-base abnormality, blood pressure >=140/90 with symptoms or >=160/110, reduced fetal movement, or inability to keep insulin/fluids down"
+          "expected_active_branch": "Emergency branch: ketones, vomiting or dehydration, altered mental status, severe hyperglycemia, acid-base abnormality, blood pressure >=140/90 with symptoms or >=160/110, reduced fetal movement, or inability to keep insulin/fluids down",
+          "expected_path_node_ids": [
+            "root",
+            "gestational_diabetes_initial_assessment",
+            "gestational_diabetes_classification_decision",
+            "gestational_diabetes_urgent_obstetric_endocrine_endpoint"
+          ],
+          "terminal_endpoint_id": "gestational_diabetes_urgent_obstetric_endocrine_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "one_step_or_two_step_diagnosis",
           "major_pathway": "severity_risk_stratification",
           "expected_endpoint_id": "gestational_diabetes_diagnostic_confirmation_endpoint",
-          "expected_active_branch": "Diagnostic branch: 24-28 week screening due, one-step 75-g threshold crossed, two-step screen/100-g threshold crossed, or early pregnancy diabetes-range value suggests overt diabetes"
+          "expected_active_branch": "Diagnostic branch: 24-28 week screening due, one-step 75-g threshold crossed, two-step screen/100-g threshold crossed, or early pregnancy diabetes-range value suggests overt diabetes",
+          "expected_path_node_ids": [
+            "root",
+            "gestational_diabetes_initial_assessment",
+            "gestational_diabetes_classification_decision",
+            "gestational_diabetes_management_action",
+            "gestational_diabetes_diagnostic_confirmation_endpoint"
+          ],
+          "terminal_endpoint_id": "gestational_diabetes_diagnostic_confirmation_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "stable_gdm_treatment",
           "major_pathway": "first_line_management",
           "expected_endpoint_id": "gestational_diabetes_nutrition_insulin_endpoint",
-          "expected_active_branch": "Treatment branch: GDM confirmed and no emergency physiology; fasting or postprandial glucose targets guide nutrition, activity, insulin, and obstetric monitoring"
+          "expected_active_branch": "Treatment branch: GDM confirmed and no emergency physiology; fasting or postprandial glucose targets guide nutrition, activity, insulin, and obstetric monitoring",
+          "expected_path_node_ids": [
+            "root",
+            "gestational_diabetes_initial_assessment",
+            "gestational_diabetes_classification_decision",
+            "gestational_diabetes_management_action",
+            "gestational_diabetes_nutrition_insulin_endpoint"
+          ],
+          "terminal_endpoint_id": "gestational_diabetes_nutrition_insulin_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "medication_or_obstetric_policy_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "gestational_diabetes_nutrition_insulin_endpoint",
-          "expected_active_branch": "Treatment branch: GDM confirmed and no emergency physiology; fasting or postprandial glucose targets guide nutrition, activity, insulin, and obstetric monitoring"
+          "expected_active_branch": "Treatment branch: GDM confirmed and no emergency physiology; fasting or postprandial glucose targets guide nutrition, activity, insulin, and obstetric monitoring",
+          "expected_path_node_ids": [
+            "root",
+            "gestational_diabetes_initial_assessment",
+            "gestational_diabetes_classification_decision",
+            "gestational_diabetes_management_action",
+            "gestational_diabetes_nutrition_insulin_endpoint"
+          ],
+          "terminal_endpoint_id": "gestational_diabetes_nutrition_insulin_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "overt_diabetes_or_mimic",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "gestational_diabetes_mimic_or_overt_diabetes_endpoint",
-          "expected_active_branch": "Alternate branch: early diabetes-range value, type 1/type 2 diabetes, steroid or stress hyperglycemia, DKA/HHS, renal disease, infection, hypoglycemia/drug effect, or secondary endocrine cause fits better"
+          "expected_active_branch": "Alternate branch: early diabetes-range value, type 1/type 2 diabetes, steroid or stress hyperglycemia, DKA/HHS, renal disease, infection, hypoglycemia/drug effect, or secondary endocrine cause fits better",
+          "expected_path_node_ids": [
+            "root",
+            "gestational_diabetes_initial_assessment",
+            "gestational_diabetes_classification_decision",
+            "gestational_diabetes_mimic_or_overt_diabetes_endpoint"
+          ],
+          "terminal_endpoint_id": "gestational_diabetes_mimic_or_overt_diabetes_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "glucose_log_monitoring",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "gestational_diabetes_nutrition_insulin_endpoint",
-          "expected_active_branch": "Treatment branch: GDM confirmed and no emergency physiology; fasting or postprandial glucose targets guide nutrition, activity, insulin, and obstetric monitoring"
+          "expected_active_branch": "Treatment branch: GDM confirmed and no emergency physiology; fasting or postprandial glucose targets guide nutrition, activity, insulin, and obstetric monitoring",
+          "expected_path_node_ids": [
+            "root",
+            "gestational_diabetes_initial_assessment",
+            "gestational_diabetes_classification_decision",
+            "gestational_diabetes_management_action",
+            "gestational_diabetes_nutrition_insulin_endpoint"
+          ],
+          "terminal_endpoint_id": "gestational_diabetes_nutrition_insulin_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "postpartum_deescalation",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "gestational_diabetes_postpartum_followup_endpoint",
-          "expected_active_branch": "Postpartum branch: delivered after GDM, 4-12 week 75-g OGTT due or abnormal, breastfeeding/contraception/future pregnancy counseling needed, or long-term diabetes prevention follow-up due"
+          "expected_active_branch": "Postpartum branch: delivered after GDM, 4-12 week 75-g OGTT due or abnormal, breastfeeding/contraception/future pregnancy counseling needed, or long-term diabetes prevention follow-up due",
+          "expected_path_node_ids": [
+            "root",
+            "gestational_diabetes_initial_assessment",
+            "gestational_diabetes_classification_decision",
+            "gestational_diabetes_management_action",
+            "gestational_diabetes_postpartum_followup_endpoint"
+          ],
+          "terminal_endpoint_id": "gestational_diabetes_postpartum_followup_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "postpartum_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "gestational_diabetes_postpartum_followup_endpoint",
-          "expected_active_branch": "Postpartum branch: delivered after GDM, 4-12 week 75-g OGTT due or abnormal, breastfeeding/contraception/future pregnancy counseling needed, or long-term diabetes prevention follow-up due"
+          "expected_active_branch": "Postpartum branch: delivered after GDM, 4-12 week 75-g OGTT due or abnormal, breastfeeding/contraception/future pregnancy counseling needed, or long-term diabetes prevention follow-up due",
+          "expected_path_node_ids": [
+            "root",
+            "gestational_diabetes_initial_assessment",
+            "gestational_diabetes_classification_decision",
+            "gestational_diabetes_management_action",
+            "gestational_diabetes_postpartum_followup_endpoint"
+          ],
+          "terminal_endpoint_id": "gestational_diabetes_postpartum_followup_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         }
       ],
       "audit_requirements": {

@@ -2310,7 +2310,7 @@
         "pediatric_urinary_uti_pyelonephritis_classification_decision": {
           "rule_id": "pediatric_urinary_uti_pyelonephritis_classification_criteria",
           "source": "criteria",
-          "description": "Classify Pediatric urinary symptoms, UTI, or pyelonephritis against cited thresholds and condition-specific rules: Atypical/recurrent UTI: failure to respond within 48 hours, non-E. coli, or recurrent pattern of 2 upper UTIs, 1 upper plus lower, or 3 lower UTIs: 48 hours, 2 or more, 1 or more, 3 or more | UTI imaging schedule: <6 months first UTI ultrasound within 6 weeks; atypical UTI ultrasound during acute infection; DMSA 4-6 months when indicated: <6 months, 6 weeks, 4 to 6 months | When MCUG is done, give oral prophylactic antibiotics for 3 days with MCUG on day 2: 3 days, day 2 | Infant UTI, fever without focus, or sepsis-risk urinary source: 3 months | Age-based UTI imaging schedule: 6 weeks, 6 months",
+          "description": "Classify Pediatric urinary symptoms, UTI, or pyelonephritis against cited thresholds and condition-specific rules: Atypical/recurrent UTI: 48 hours, 2 or more, 1 or more, 3 or more | UTI imaging schedule: <6 months, 6 weeks, 4 to 6 months | When MCUG is done, give oral prophylactic antibiotics for 3 days with MCUG on day 2: 3 days, day 2 | Infant UTI, fever without focus, or sepsis-risk urinary source: 3 months | Age-based UTI imaging schedule: 6 weeks, 6 months",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3723,7 +3723,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: route by documented findings and exact missing-data needs",
+        "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: route by findings, risk, treatment safety, and follow-up",
         "edgeLabel": "",
         "source_ids": [
           "NICE_UTI_UNDER16_NG224",
@@ -3753,8 +3753,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Missing data needed: Pediatric urinary symptoms, UTI, or pyelonephritis pathway context",
-            "edgeLabel": "Missing exact Pediatric urinary symptoms, UTI, or pyelonephritis pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings",
+            "label": "Internal data-availability guard",
+            "edgeLabel": "Internal data-availability guard",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -3790,9 +3790,16 @@
                 "workup_findings"
               ]
             },
-            "action": "Before choosing a non-emergency Pediatric urinary symptoms, UTI, or pyelonephritis branch, document: presenting trigger, onset/trajectory, focused exam, vital signs, threshold labs/results, medication/allergy context, comorbidities, demographics, pregnancy/applicability status, and current workup findings.",
+            "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
             "children": [],
             "endpoint_type": "missing_data_needed",
+            "internal_traversal_guard": true,
+            "display": {
+              "visible_in_pathway": false,
+              "visible_in_graph": false,
+              "visible_in_outline": false,
+              "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+            },
             "missing_data_needed": [
               "symptoms",
               "exam",
@@ -3809,8 +3816,8 @@
           {
             "id": "pediatric_urinary_uti_pyelonephritis_concurrent_data_bundle",
             "type": "action",
-            "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Pediatric urinary symptoms, UTI, or pyelonephritis active from documented findings: Pediatric urinary age band; Classic urinary symptoms; Infant nonspecific UTI features; Upper-tract and systemic features; Suspected UTI in baby under 3 months; Toxic appearance or sepsis physiology; Urine sample before antibiotics when feasible",
+            "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: assessment and key results",
+            "edgeLabel": "Collect Pediatric urinary symptoms, UTI, or pyelonephritis history/exam, vitals, key labs/results, medication safety, and major cutoffs",
             "source_ids": [
               "NICE_UTI_UNDER16_NG224",
               "RCH_UTI_CHILD",
@@ -3843,8 +3850,8 @@
               {
                 "id": "pediatric_urinary_uti_pyelonephritis_classification_decision",
                 "type": "decision",
-                "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: classify severity and disposition by cited thresholds",
-                "edgeLabel": "Pediatric urinary symptoms, UTI, or pyelonephritis results available for threshold classification: Urine sample before antibiotics when feasible; Dipstick microscopy and culture interpretation; Upper-tract labs and renal ultrasound when indicated; Age-based UTI imaging schedule; Adolescent STI and pregnancy tests when indicated; organism; time on antibiotic; clinical response; upper/lower UTI history count; age",
+                "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: classify risk and disposition",
+                "edgeLabel": "Classify Pediatric urinary symptoms, UTI, or pyelonephritis with available result(s): 48 hours; 2 or more; 1 or more; 3 or more",
                 "source_ids": [
                   "NICE_UTI_UNDER16_NG224",
                   "CHQ_PEDS_UTI_2024",
@@ -3854,7 +3861,7 @@
                 "criteria": {
                   "rule_id": "pediatric_urinary_uti_pyelonephritis_classification_criteria",
                   "source": "criteria",
-                  "description": "Classify Pediatric urinary symptoms, UTI, or pyelonephritis against cited thresholds and condition-specific rules: Atypical/recurrent UTI: failure to respond within 48 hours, non-E. coli, or recurrent pattern of 2 upper UTIs, 1 upper plus lower, or 3 lower UTIs: 48 hours, 2 or more, 1 or more, 3 or more | UTI imaging schedule: <6 months first UTI ultrasound within 6 weeks; atypical UTI ultrasound during acute infection; DMSA 4-6 months when indicated: <6 months, 6 weeks, 4 to 6 months | When MCUG is done, give oral prophylactic antibiotics for 3 days with MCUG on day 2: 3 days, day 2 | Infant UTI, fever without focus, or sepsis-risk urinary source: 3 months | Age-based UTI imaging schedule: 6 weeks, 6 months",
+                  "description": "Classify Pediatric urinary symptoms, UTI, or pyelonephritis against cited thresholds and condition-specific rules: Atypical/recurrent UTI: 48 hours, 2 or more, 1 or more, 3 or more | UTI imaging schedule: <6 months, 6 weeks, 4 to 6 months | When MCUG is done, give oral prophylactic antibiotics for 3 days with MCUG on day 2: 3 days, day 2 | Infant UTI, fever without focus, or sepsis-risk urinary source: 3 months | Age-based UTI imaging schedule: 6 weeks, 6 months",
                   "evaluable_from": [
                     "symptoms",
                     "exam",
@@ -4038,13 +4045,13 @@
                     }
                   ]
                 },
-                "action": "Choose the active Pediatric urinary symptoms, UTI, or pyelonephritis branch by matching patient data to: Atypical/recurrent UTI: failure to respond within 48 hours, non-E. coli, or recurrent pattern of 2 upper UTIs, 1 upper plus lower, or 3 lower UTIs: 48 hours, 2 or more, 1 or more, 3 or more | UTI imaging schedule: <6 months first UTI ultrasound within 6 weeks; atypical UTI ultrasound during acute infection; DMSA 4-6 months when indicated: <6 months, 6 weeks, 4 to 6 months | When MCUG is done, give oral prophylactic antibiotics for 3 days with MCUG on day 2: 3 days, day 2 | Infant UTI, fever without focus, or sepsis-risk urinary source: 3 months | Age-based UTI imaging schedule: 6 weeks, 6 months.",
+                "action": "Choose the active Pediatric urinary symptoms, UTI, or pyelonephritis branch by matching patient data to the cited cutoffs and patient-specific safety rules.",
                 "children": [
                   {
                     "id": "pediatric_urinary_uti_pyelonephritis_missing_cutoff_data_endpoint",
                     "type": "endpoint",
-                    "label": "Missing data needed: Pediatric urinary symptoms, UTI, or pyelonephritis threshold/results",
-                    "edgeLabel": "Missing exact Pediatric urinary symptoms, UTI, or pyelonephritis result(s): organism; time on antibiotic; clinical response; upper/lower UTI history count; age; first/recurrent UTI status; atypical features; response within 48 hours",
+                    "label": "Internal data-availability guard",
+                    "edgeLabel": "Internal data-availability guard",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "NICE_UTI_UNDER16_NG224",
@@ -4101,9 +4108,16 @@
                         "3 days"
                       ]
                     },
-                    "action": "Obtain the exact Pediatric urinary symptoms, UTI, or pyelonephritis data needed for threshold-based routing: organism; time on antibiotic; clinical response; upper/lower UTI history count; age; first/recurrent UTI status; atypical features; response within 48 hours; imaging history; MCUG indication; antibiotic allergies; local prophylaxis choice; Urine sample before antibiotics when feasible; Dipstick microscopy and culture interpretation; Upper-tract labs and renal ultrasound when indicated; Age-based UTI imaging schedule; Adolescent STI and pregnancy tests when indicated; 48 hours; 2 or more; 1 or more; 3 or more; <6 months; 6 weeks; 4 to 6 months; 3 days.",
+                    "action": "Internal traversal guard for data completeness; hidden from the clinical pathway display.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
+                    "internal_traversal_guard": true,
+                    "display": {
+                      "visible_in_pathway": false,
+                      "visible_in_graph": false,
+                      "visible_in_outline": false,
+                      "reason": "Internal traversal guard; exact missing fields remain in missing_data_needed."
+                    },
                     "missing_data_needed": [
                       "organism",
                       "time on antibiotic",
@@ -4135,8 +4149,8 @@
                   {
                     "id": "pediatric_urinary_uti_pyelonephritis_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: emergency escalation or monitored-care disposition when danger thresholds are met",
-                    "edgeLabel": "Pediatric urinary symptoms, UTI, or pyelonephritis danger feature or high-risk cutoff: Suspected UTI in baby under 3 months; Toxic appearance or sepsis physiology; Upper UTI or pyelonephritis features; Atypical or recurrent UTI; 48 hours; 2 or more; 1 or more; Infant or sepsis escalation",
+                    "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: emergency or monitored-care disposition",
+                    "edgeLabel": "Danger feature or high-risk result present: Suspected UTI in baby under 3 months; Toxic appearance or sepsis physiology; Upper UTI or pyelonephritis features; 48 hours; 2 or more",
                     "source_ids": [
                       "NICE_UTI_UNDER16_NG224",
                       "CHQ_PEDS_UTI_2024",
@@ -4327,7 +4341,7 @@
                         }
                       ]
                     },
-                    "action": "Suspected UTI in baby under 3 months; Toxic appearance or sepsis physiology; Upper UTI or pyelonephritis features; Atypical or recurrent UTI. Pediatric urinary symptoms, UTI, or pyelonephritis: immediate stabilization or escalation trigger: Suspected UTI in baby under 3 months.; Pediatric urinary symptoms, UTI, or pyelonephritis: treatment or disposition for high-risk or confirmed disease: Infant or sepsis escalation.; Pediatric urinary symptoms, UTI, or pyelonephritis: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Uncomplicated outpatient UTI route.; Pediatric urinary symptoms, UTI, or pyelonephritis: monitoring data for response, complications, and reassessment: Urine sample before antibiotics when feasible.; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route",
+                    "action": "Suspected UTI in baby under 3 months; Toxic appearance or sepsis physiology; Upper UTI or pyelonephritis features. Escalate using the abnormal cutoff, unstable feature, or monitored-care rule.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -4498,8 +4512,8 @@
                   {
                     "id": "pediatric_urinary_uti_pyelonephritis_treatment_bundle",
                     "type": "action",
-                    "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: initiate treatment/disposition for the active threshold-defined branch",
-                    "edgeLabel": "Pediatric urinary symptoms, UTI, or pyelonephritis treatment/disposition indicated by: 48 hours; 2 or more; 1 or more; 3 or more; <6 months; 6 weeks; Pediatric urinary symptoms, UTI, or pyelonephritis: immediate stabilization or escalation trigger: Suspected UTI in baby under 3 months.; Pediatric urinary symptoms, UTI, or pyelonephritis: treatment or disposition for high-risk or confirmed disease: Infant or sepsis escalation.; Pediatric urinary symptoms, UTI, or pyelonephritis: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Uncomplicated outpatient UTI route.; Pediatric urinary symptoms, UTI, or pyelonephritis: monitoring data for response, complications, and reassessment: Urine sample before antibiotics when feasible.; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route",
+                    "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: treatment and disposition branch",
+                    "edgeLabel": "Confirmed/high-risk Pediatric urinary symptoms, UTI, or pyelonephritis branch has treatment-safety data available",
                     "source_ids": [
                       "CHQ_PEDS_UTI_2024",
                       "RCH_UTI_CHILD",
@@ -4692,13 +4706,13 @@
                         }
                       ]
                     },
-                    "action": "Pediatric urinary symptoms, UTI, or pyelonephritis: immediate stabilization or escalation trigger: Suspected UTI in baby under 3 months.; Pediatric urinary symptoms, UTI, or pyelonephritis: treatment or disposition for high-risk or confirmed disease: Infant or sepsis escalation.; Pediatric urinary symptoms, UTI, or pyelonephritis: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Uncomplicated outpatient UTI route.; Pediatric urinary symptoms, UTI, or pyelonephritis: monitoring data for response, complications, and reassessment: Urine sample before antibiotics when feasible.; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route",
+                    "action": "Pediatric urinary symptoms, UTI, or pyelonephritis: immediate stabilization or escalation trigger: Suspected UTI in baby under 3 months.; Pediatric urinary symptoms, UTI, or pyelonephritis: treatment or disposition for high-risk or confirmed disease: Infant or sepsis escalation.; Pediatric urinary symptoms, UTI, or pyelonephritis: outpatient or safety-net route after exclusion criteria and follow-up access are documented: Uncomplicated outpatient UTI route.; Infant or sepsis escalation; Uncomplicated outpatient UTI route",
                     "children": [
                       {
                         "id": "pediatric_urinary_uti_pyelonephritis_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: medication/procedure safety and special-population thresholds resolved?",
-                        "edgeLabel": "Pediatric urinary symptoms, UTI, or pyelonephritis treatment selected; check patient-specific modifiers",
+                        "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: treatment safety resolved?",
+                        "edgeLabel": "Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan",
                         "source_ids": [
                           "NICE_UTI_UNDER16_NG224",
                           "CHQ_PEDS_UTI_2024",
@@ -4799,13 +4813,13 @@
                             }
                           ]
                         },
-                        "action": "Apply Pediatric urinary symptoms, UTI, or pyelonephritis-specific safety modifiers before final treatment/disposition.",
+                        "action": "Apply Pediatric urinary symptoms, UTI, or pyelonephritis-specific safety modifiers before final treatment or disposition.",
                         "children": [
                           {
                             "id": "pediatric_urinary_uti_pyelonephritis_review_endpoint",
                             "type": "endpoint",
-                            "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: clinician review for contraindication, special population, or local-policy cutoff",
-                            "edgeLabel": "Pediatric urinary symptoms, UTI, or pyelonephritis modifier changes treatment/disposition: Measure temperature; Measure blood pressure; Measure heart rate; Measure respiratory rate; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability",
+                            "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: clinician review modifier",
+                            "edgeLabel": "Contraindication, special population, conflicting guidance, or local protocol dependency",
                             "source_ids": [
                               "NICE_UTI_UNDER16_NG224",
                               "CHQ_PEDS_UTI_2024",
@@ -4832,7 +4846,7 @@
                                 "AHRQ_CALIBRATE_DX"
                               ]
                             },
-                            "action": "Pause non-emergent Pediatric urinary symptoms, UTI, or pyelonephritis treatment choices until the modifier is resolved and the reviewer documents the applicable guideline/local cutoff.",
+                            "action": "Pause non-emergent Pediatric urinary symptoms, UTI, or pyelonephritis treatment choices until the modifier is resolved and the reviewer documents the applicable guideline or local cutoff.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
                             "review_needed_reason": "Patient-specific contraindication, special population, guideline conflict, or local policy affects treatment or disposition."
@@ -4840,8 +4854,8 @@
                           {
                             "id": "pediatric_urinary_uti_pyelonephritis_monitoring_bundle",
                             "type": "action",
-                            "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: concurrent monitoring, response checks, and disposition readiness",
-                            "edgeLabel": "After Pediatric urinary symptoms, UTI, or pyelonephritis therapy or diagnostic plan, trend: 48 hours; 2 or more; 1 or more; 3 or more; Urine sample before antibiotics when feasible; Dipstick microscopy and culture interpretation; Upper-tract labs and renal ultrasound when indicated; Measure temperature",
+                            "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: monitoring and disposition readiness",
+                            "edgeLabel": "Trend Pediatric urinary symptoms, UTI, or pyelonephritis symptoms, vitals, key results, adverse effects, and disposition readiness",
                             "source_ids": [
                               "CHQ_PEDS_UTI_2024",
                               "RCH_UTI_CHILD",
@@ -5021,8 +5035,8 @@
                               {
                                 "id": "pediatric_urinary_uti_pyelonephritis_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: escalate when reassessment worsens or contradicts expected course",
-                                "edgeLabel": "Pediatric urinary symptoms, UTI, or pyelonephritis reassessment worsens or contradicts expected response: 48 hours; 2 or more; 1 or more; 3 or more; Urine sample before antibiotics when feasible; Dipstick microscopy and culture interpretation; Upper-tract labs and renal ultrasound when indicated; Measure temperature",
+                                "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: reassessment escalation",
+                                "edgeLabel": "Pediatric urinary symptoms, UTI, or pyelonephritis worsens, new danger feature appears, or results no longer fit the active branch",
                                 "source_ids": [
                                   "NICE_UTI_UNDER16_NG224",
                                   "CHQ_PEDS_UTI_2024",
@@ -5197,7 +5211,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Repeat critical Pediatric urinary symptoms, UTI, or pyelonephritis objective data, reassess mimics/complications, and move to ED/admission/specialty review according to the abnormal cutoff or danger feature.",
+                                "action": "Repeat critical Pediatric urinary symptoms, UTI, or pyelonephritis objective data, reassess mimics and complications, and move to ED/admission/specialty review according to the abnormal cutoff or danger feature.",
                                 "children": [],
                                 "endpoint_type": "escalation_disposition",
                                 "guideline_cutoffs": [
@@ -5368,8 +5382,8 @@
                               {
                                 "id": "pediatric_urinary_uti_pyelonephritis_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Pediatric urinary symptoms, UTI, or pyelonephritis objective response supports narrowing, stopping, tapering, or continuing: 48 hours; 2 or more; 1 or more; 3 or more; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route; Pediatric urinary symptoms, UTI, or pyelonephritis: immediate stabilization or escalation trigger: Suspected UTI in baby under 3 months.",
+                                "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: de-escalate, stop, or narrow",
+                                "edgeLabel": "Objective response supports narrowing, stopping, tapering, or continuing Pediatric urinary symptoms, UTI, or pyelonephritis care",
                                 "source_ids": [
                                   "CHQ_PEDS_UTI_2024",
                                   "RCH_UTI_CHILD",
@@ -5544,7 +5558,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Use the active Pediatric urinary symptoms, UTI, or pyelonephritis objective criteria and response trend (48 hours; 2 or more; 1 or more; 3 or more; <6 months; 6 weeks; 4 to 6 months; 3 days; day 2; 3 months) to stop, narrow, taper, or continue treatment; document what threshold or finding changed.",
+                                "action": "Use active Pediatric urinary symptoms, UTI, or pyelonephritis results and response trend to stop, narrow, taper, or continue treatment; document which cutoff, symptom, adverse effect, or finding changed.",
                                 "children": [],
                                 "endpoint_type": "deescalation_stopping",
                                 "guideline_cutoffs": [
@@ -5715,8 +5729,8 @@
                               {
                                 "id": "pediatric_urinary_uti_pyelonephritis_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Pediatric urinary symptoms, UTI, or pyelonephritis discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route",
+                                "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: follow-up and safety-net",
+                                "edgeLabel": "Pediatric urinary symptoms, UTI, or pyelonephritis stable enough for owned follow-up, pending results, and safety-netting",
                                 "source_ids": [
                                   "CHQ_PEDS_UTI_2024",
                                   "RCH_UTI_CHILD",
@@ -5756,8 +5770,8 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend objective labs/results",
-                              "review treatment response/adverse effects",
+                              "trend key labs/results",
+                              "review treatment response and adverse effects",
                               "confirm disposition and follow-up owner",
                               "Measure temperature",
                               "Measure blood pressure",
@@ -6110,8 +6124,8 @@
                   {
                     "id": "pediatric_urinary_uti_pyelonephritis_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: switch to mimic/alternate pathway when threshold/result criteria do not fit",
-                    "edgeLabel": "Pediatric urinary symptoms, UTI, or pyelonephritis mimic/exclusion better fits: Lower UTI or cystitis pattern with dysuria, urinary frequency, urgency, new wetting, suprapubic discomfort, malodorous/cloudy urine, or hematuria; Upper UTI, pyelonephritis, or perinephric abscess pattern with fever, rigors, vomiting, malaise, loin/flank pain, renal-angle tenderness, or systemic illness; Infant UTI, fever without focus, or sepsis-risk urinary source; Complex urinary tract, recurrent UTI, catheter/anomaly, STI, pregnancy, renal stone, vulvovaginitis/urethritis, appendicitis, or contamination mimic",
+                    "label": "Pediatric urinary symptoms, UTI, or pyelonephritis: alternate diagnosis pathway",
+                    "edgeLabel": "Objective findings favor mimic or alternate pathway: Lower UTI or cystitis pattern with dysuria, urinary frequency, urgency, new wetting, suprapubic discomfort, malodorous/cloudy urine, or hematuria; Upper UTI, pyelonephritis, or perinephric abscess pattern with fever, rigors, vomiting, malaise, loin/flank pain, renal-angle tenderness, or systemic illness; Infant UTI, fever without focus, or sepsis-risk urinary source; Complex urinary tract, recurrent UTI, catheter/anomaly, STI, pregnancy, renal stone, vulvovaginitis/urethritis, appendicitis, or contamination mimic",
                     "source_ids": [
                       "NICE_UTI_UNDER16_NG224",
                       "CHQ_PEDS_UTI_2024",
@@ -6285,7 +6299,7 @@
                         }
                       ]
                     },
-                    "action": "Document why Pediatric urinary symptoms, UTI, or pyelonephritis is not the active pathway and route to the competing diagnosis: Lower UTI or cystitis pattern with dysuria, urinary frequency, urgency, new wetting, suprapubic discomfort, malodorous/cloudy urine, or hematuria; Upper UTI, pyelonephritis, or perinephric abscess pattern with fever, rigors, vomiting, malaise, loin/flank pain, renal-angle tenderness, or systemic illness; Infant UTI, fever without focus, or sepsis-risk urinary source; Complex urinary tract, recurrent UTI, catheter/anomaly, STI, pregnancy, renal stone, vulvovaginitis/urethritis, appendicitis, or contamination mimic.",
+                    "action": "Document why Pediatric urinary symptoms, UTI, or pyelonephritis is not the active pathway, name the competing diagnosis or exclusion, and route to the appropriate workup rather than reassurance alone.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
                     "review_needed_reason": "Competing diagnosis or exclusion changes the active pathway."
@@ -6840,49 +6854,122 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing exact Pediatric urinary symptoms, UTI, or pyelonephritis pathway data: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and current findings"
+          "expected_active_branch": "Missing Pediatric urinary symptoms, UTI, or pyelonephritis: onset/trajectory, focused exam, vitals, key results, meds, comorbidities, pregnancy/applicability, or follow-up access",
+          "expected_path_node_ids": [
+            "root",
+            "endpoint_missing_context"
+          ],
+          "terminal_endpoint_id": "endpoint_missing_context",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "pediatric_urinary_uti_pyelonephritis_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Missing exact Pediatric urinary symptoms, UTI, or pyelonephritis result(s): organism; time on antibiotic; clinical response; upper/lower UTI history count; age; first/recurrent UTI status; atypical features; response within 48 hours"
+          "expected_active_branch": "Missing Pediatric urinary symptoms, UTI, or pyelonephritis result(s): organism; time on antibiotic; clinical response; upper/lower UTI history count; age; first/recurrent UTI status",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_urinary_uti_pyelonephritis_concurrent_data_bundle",
+            "pediatric_urinary_uti_pyelonephritis_classification_decision",
+            "pediatric_urinary_uti_pyelonephritis_missing_cutoff_data_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_urinary_uti_pyelonephritis_missing_cutoff_data_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "pediatric_urinary_uti_pyelonephritis_urgent_endpoint",
-          "expected_active_branch": "Pediatric urinary symptoms, UTI, or pyelonephritis danger feature or high-risk cutoff: Suspected UTI in baby under 3 months; Toxic appearance or sepsis physiology; Upper UTI or pyelonephritis features; Atypical or recurrent UTI; 48 hours; 2 or more; 1 or more; Infant or sepsis escalation"
+          "expected_active_branch": "Danger feature or high-risk result present: Suspected UTI in baby under 3 months; Toxic appearance or sepsis physiology; Upper UTI or pyelonephritis features; 48 hours; 2 or more",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_urinary_uti_pyelonephritis_concurrent_data_bundle",
+            "pediatric_urinary_uti_pyelonephritis_classification_decision",
+            "pediatric_urinary_uti_pyelonephritis_urgent_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_urinary_uti_pyelonephritis_urgent_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "pediatric_urinary_uti_pyelonephritis_alternate_endpoint",
-          "expected_active_branch": "Pediatric urinary symptoms, UTI, or pyelonephritis mimic/exclusion better fits: Lower UTI or cystitis pattern with dysuria, urinary frequency, urgency, new wetting, suprapubic discomfort, malodorous/cloudy urine, or hematuria; Upper UTI, pyelonephritis, or perinephric abscess pattern with fever, rigors, vomiting, malaise, loin/flank pain, renal-angle tenderness, or systemic illness; Infant UTI, fever without focus, or sepsis-risk urinary source; Complex urinary tract, recurrent UTI, catheter/anomaly, STI, pregnancy, renal stone, vulvovaginitis/urethritis, appendicitis, or contamination mimic"
+          "expected_active_branch": "Objective findings favor mimic or alternate pathway: Lower UTI or cystitis pattern with dysuria, urinary frequency, urgency, new wetting, suprapubic discomfort, malodorous/cloudy urine, or hematuria; Upper UTI, pyelonephritis, or perinephric abscess pattern with fever, rigors, vomiting, malaise, loin/flank pain, renal-angle tenderness, or systemic illness; Infant UTI, fever without focus, or sepsis-risk urinary source; Complex urinary tract, recurrent UTI, catheter/anomaly, STI, pregnancy, renal stone, vulvovaginitis/urethritis, appendicitis, or contamination mimic",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_urinary_uti_pyelonephritis_concurrent_data_bundle",
+            "pediatric_urinary_uti_pyelonephritis_classification_decision",
+            "pediatric_urinary_uti_pyelonephritis_alternate_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_urinary_uti_pyelonephritis_alternate_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "pediatric_urinary_uti_pyelonephritis_review_endpoint",
-          "expected_active_branch": "Pediatric urinary symptoms, UTI, or pyelonephritis modifier changes treatment/disposition: Measure temperature; Measure blood pressure; Measure heart rate; Measure respiratory rate; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability"
+          "expected_active_branch": "Contraindication, special population, conflicting guidance, or local protocol dependency",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_urinary_uti_pyelonephritis_concurrent_data_bundle",
+            "pediatric_urinary_uti_pyelonephritis_classification_decision",
+            "pediatric_urinary_uti_pyelonephritis_treatment_bundle",
+            "pediatric_urinary_uti_pyelonephritis_treatment_safety_decision",
+            "pediatric_urinary_uti_pyelonephritis_review_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_urinary_uti_pyelonephritis_review_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "pediatric_urinary_uti_pyelonephritis_worsening_endpoint",
-          "expected_active_branch": "Pediatric urinary symptoms, UTI, or pyelonephritis reassessment worsens or contradicts expected response: 48 hours; 2 or more; 1 or more; 3 or more; Urine sample before antibiotics when feasible; Dipstick microscopy and culture interpretation; Upper-tract labs and renal ultrasound when indicated; Measure temperature"
+          "expected_active_branch": "Pediatric urinary symptoms, UTI, or pyelonephritis worsens, new danger feature appears, or results no longer fit the active branch",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_urinary_uti_pyelonephritis_concurrent_data_bundle",
+            "pediatric_urinary_uti_pyelonephritis_classification_decision",
+            "pediatric_urinary_uti_pyelonephritis_treatment_bundle",
+            "pediatric_urinary_uti_pyelonephritis_treatment_safety_decision",
+            "pediatric_urinary_uti_pyelonephritis_monitoring_bundle",
+            "pediatric_urinary_uti_pyelonephritis_worsening_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_urinary_uti_pyelonephritis_worsening_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "pediatric_urinary_uti_pyelonephritis_deescalate_endpoint",
-          "expected_active_branch": "Pediatric urinary symptoms, UTI, or pyelonephritis objective response supports narrowing, stopping, tapering, or continuing: 48 hours; 2 or more; 1 or more; 3 or more; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route; Pediatric urinary symptoms, UTI, or pyelonephritis: immediate stabilization or escalation trigger: Suspected UTI in baby under 3 months."
+          "expected_active_branch": "Objective response supports narrowing, stopping, tapering, or continuing Pediatric urinary symptoms, UTI, or pyelonephritis care",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_urinary_uti_pyelonephritis_concurrent_data_bundle",
+            "pediatric_urinary_uti_pyelonephritis_classification_decision",
+            "pediatric_urinary_uti_pyelonephritis_treatment_bundle",
+            "pediatric_urinary_uti_pyelonephritis_treatment_safety_decision",
+            "pediatric_urinary_uti_pyelonephritis_monitoring_bundle",
+            "pediatric_urinary_uti_pyelonephritis_deescalate_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_urinary_uti_pyelonephritis_deescalate_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "pediatric_urinary_uti_pyelonephritis_followup_endpoint",
-          "expected_active_branch": "Pediatric urinary symptoms, UTI, or pyelonephritis discharge/outpatient criteria satisfied: pending-result owner; follow-up interval; return precautions; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route"
+          "expected_active_branch": "Pediatric urinary symptoms, UTI, or pyelonephritis stable enough for owned follow-up, pending results, and safety-netting",
+          "expected_path_node_ids": [
+            "root",
+            "pediatric_urinary_uti_pyelonephritis_concurrent_data_bundle",
+            "pediatric_urinary_uti_pyelonephritis_classification_decision",
+            "pediatric_urinary_uti_pyelonephritis_treatment_bundle",
+            "pediatric_urinary_uti_pyelonephritis_treatment_safety_decision",
+            "pediatric_urinary_uti_pyelonephritis_monitoring_bundle",
+            "pediatric_urinary_uti_pyelonephritis_followup_endpoint"
+          ],
+          "terminal_endpoint_id": "pediatric_urinary_uti_pyelonephritis_followup_endpoint",
+          "traversal_status": "reaches_expected_endpoint"
         }
       ],
       "audit_requirements": {
