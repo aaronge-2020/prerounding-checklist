@@ -556,6 +556,96 @@ const curatedCutoffCriteria = {
       data_needed: ["CRP", "hip ultrasound effusion measurement", "fever/systemic illness", "weight-bearing status", "joint range of motion"],
       source_ids: ["RCH_LIMPING_CHILD"],
       source_section: "Reference list and investigations"
+    },
+    {
+      id: "peds_kocher_septic_hip_predictors",
+      label: "Kocher septic hip predictors: fever >38.5 C, non-weight-bearing, ESR >=40 mm/hr, WBC >12.0 x10^9/L; 0, 1, 2, 3, 4 predictors correspond to <0.2%, 3.0%, 40.0%, 93.1%, 99.6% predicted septic arthritis",
+      criteria_text: "Use Kocher predictors only as hip septic-arthritis risk support, not as discharge permission: history/temperature fever >38.5 C, non-weight-bearing, ESR at least 40 mm/hr, and WBC more than 12.0 x10^9/L; predicted septic arthritis rises from <0.2% with zero predictors to 99.6% with all four predictors.",
+      cutoffs: [">38.5 C", "ESR >=40 mm/hr", "WBC >12.0 x10^9/L", "<0.2%", "3.0%", "40.0%", "93.1%", "99.6%"],
+      data_needed: ["temperature or fever history", "weight-bearing status", "ESR", "WBC", "hip pain/effusion context", "orthopaedic review availability"],
+      source_ids: ["KOCHER_SEPTIC_HIP_1999"],
+      source_section: "Independent multivariate predictors and probability algorithm"
+    },
+    {
+      id: "peds_caird_crp_septic_hip_predictor",
+      label: "Caird septic hip support: oral temperature >38.5 C and CRP >2.0 mg/dL (>20 mg/L) increase concern; 3, 4, and 5 predictors correspond to 83%, 93%, and 98% septic arthritis probability in aspirated high-suspicion children",
+      criteria_text: "Caird prospective hip aspiration study found fever, CRP, ESR, refusal to bear weight, and WBC helpful in high-suspicion children; CRP >2.0 mg/dL (>20 mg/L) was a strong independent risk factor, and 3, 4, or 5 predictors gave 83%, 93%, and 98% probabilities.",
+      cutoffs: [">38.5 C", ">2.0 mg/dL", ">20 mg/L", "83%", "93%", "98%"],
+      data_needed: ["oral temperature", "CRP", "ESR", "weight-bearing status", "WBC", "hip aspiration/culture status"],
+      source_ids: ["CAIRD_SEPTIC_HIP_2006"],
+      source_section: "Prospective predictors and CRP threshold"
+    },
+    {
+      id: "peds_limp_chq_transient_synovitis_low_risk",
+      label: "Transient synovitis support: low-grade temperature <38.5 C, able to walk or weight bear with mild pain, serious causes excluded, rest/NSAIDs, and recovery expected over days to weeks",
+      criteria_text: "CHQ describes transient synovitis as an exclusion diagnosis in a child with low-grade temperature <38.5 C who is usually able to walk or weight bear with mild pain; use rest/NSAIDs and safety-net when serious infection, SUFE, Perthes, fracture, and systemic disease are unlikely.",
+      cutoffs: ["<38.5 C"],
+      data_needed: ["temperature", "weight-bearing status", "pain severity", "hip range of motion", "infection/fracture/SUFE/Perthes/systemic red flags", "follow-up access"],
+      source_ids: ["CHQ_LIMP_CHILD_2026"],
+      source_section: "Transient synovitis features and management"
+    },
+    {
+      id: "peds_limp_sufe_perthes_age_weight_cutoffs",
+      label: "Age-specific hip disease: SUFE risk increases with weight >90th percentile and about 20% bilateral disease; Perthes concern is typical in males age 3-10 years with persistent limp",
+      criteria_text: "CHQ highlights SUFE risk with weight >90th percentile, endocrine/puberty risk, and about 20% bilateral involvement requiring non-weight-bearing and prompt operative treatment; Perthes is considered especially in males age 3-10 years with persistent limp and may have normal early X-ray.",
+      cutoffs: [">90th percentile", "20%", "age 3-10 years"],
+      data_needed: ["age", "sex", "weight percentile", "puberty/endocrine risk", "hip/groin/thigh/knee pain", "frog-leg pelvic X-ray", "ability to weight bear", "persistence of limp"],
+      source_ids: ["CHQ_LIMP_CHILD_2026"],
+      source_section: "Slipped upper femoral epiphysis and Perthes disease"
+    },
+    {
+      id: "peds_limp_bji_labs_imaging_cutoffs",
+      label: "Bone/joint infection testing: FBE, ESR, CRP, and blood culture before antibiotics when feasible; early osteomyelitis X-ray can stay normal for 7-10 days; MRI with contrast is preferred when localized osteomyelitis remains possible",
+      criteria_text: "RCH bone/joint infection guidance recommends FBE, ESR, CRP, blood culture before antibiotics when feasible, joint aspiration when appropriate without delaying antibiotics, X-ray recognizing early osteomyelitis may be normal for 7-10 days, ultrasound for effusion but not specificity, and MRI with contrast as preferred localized osteomyelitis imaging.",
+      cutoffs: ["7-10 days"],
+      data_needed: ["FBE/WBC", "ESR", "CRP", "blood culture status", "antibiotic timing", "X-ray date/result", "ultrasound effusion", "MRI availability/result", "joint aspiration status"],
+      source_ids: ["RCH_BONE_JOINT_INFECTION"],
+      source_section: "Pathology, imaging, and aspiration investigations"
+    },
+    {
+      id: "peds_limp_rch_bji_antibiotic_switch",
+      label: "RCH bone/joint infection treatment: cefazolin 50 mg/kg max 2 g IV q8h; switch to cefalexin 45 mg/kg max 1.5 g q8h after 2-3 days IV when improving, afebrile, and markers improve; total osteomyelitis 3-4 weeks and septic arthritis 2-3 weeks",
+      criteria_text: "RCH lists cefazolin 50 mg/kg (maximum 2 g) IV every 8 hours for uncomplicated bone/joint infection, oral cefalexin 45 mg/kg (maximum 1.5 g) every 8 hours, oral switch after 2-3 days IV if clinical improvement, afebrile, and improving inflammatory markers, and total duration 3-4 weeks for osteomyelitis or 2-3 weeks for septic arthritis.",
+      cutoffs: ["50 mg/kg", "2 g", "q8h", "45 mg/kg", "1.5 g", "2-3 days", "3-4 weeks", "2-3 weeks"],
+      data_needed: ["weight", "drug allergy", "age", "organism/resistance risk", "clinical improvement", "temperature trend", "CRP/ESR trend", "oral tolerance", "diagnosis osteomyelitis versus septic arthritis"],
+      source_ids: ["RCH_BONE_JOINT_INFECTION"],
+      source_section: "Treatment and antimicrobial duration"
+    },
+    {
+      id: "peds_limp_chq_bji_48h_switch_stop",
+      label: "CHQ bone/joint infection oral switch/stopping: IV minimum 48 hours; afebrile at least 24 hours; CRP <20 mg/L or down >2/3 from peak; recheck CRP 1 week after oral switch and before stopping; total osteomyelitis 3-4 weeks and septic arthritis 2-3 weeks",
+      criteria_text: "CHQ recommends initial IV therapy for a minimum of 48 hours, oral switch when uncomplicated disease is clinically improved, afebrile at least 24 hours, tolerating oral intake, and CRP <20 mg/L or down by more than two-thirds from peak; recheck CRP one week after oral switch and before stopping, with total duration 3-4 weeks for osteomyelitis and 2-3 weeks for septic arthritis.",
+      cutoffs: ["48 hours", "24 hours", "CRP <20 mg/L", ">2/3 from peak", "1 week", "3-4 weeks", "2-3 weeks"],
+      data_needed: ["IV antibiotic start time", "temperature trend", "clinical improvement", "oral intake", "CRP peak", "current CRP", "CRP one week after oral switch", "CRP before stopping", "diagnosis osteomyelitis versus septic arthritis"],
+      source_ids: ["CHQ_BONE_JOINT_INFECTION_2025"],
+      source_section: "IV-to-oral switch, monitoring, and treatment duration"
+    },
+    {
+      id: "peds_limp_chq_bji_complicated_id_review",
+      label: "Complicated bone/joint infection review: ID/AMS code within 24-48 hours for MRSA/complex disease; seek senior ID before IV beyond 2-3 days, PICC, neonate, immunocompromise, Pseudomonas, relapse, or persistent bacteremia",
+      criteria_text: "CHQ requires ID review and antimicrobial stewardship authorization within 24-48 hours for MRSA or complex therapy contexts and senior ID input before longer-term IV/PICC plans beyond 2-3 days or for complex disease, neonates, immunocompromise, Pseudomonas, relapse, or persistent bacteremia.",
+      cutoffs: ["24-48 hours", "2-3 days"],
+      data_needed: ["organism/resistance risk", "MRSA risk", "antibiotic plan", "IV duration", "PICC consideration", "age/neonate status", "immunocompromise", "Pseudomonas risk", "relapse", "blood culture clearance"],
+      source_ids: ["CHQ_BONE_JOINT_INFECTION_2025"],
+      source_section: "Complex therapy, AMS authorization, and ID review"
+    },
+    {
+      id: "peds_limp_acr_occult_fracture_negative_xray",
+      label: "Occult toddler fracture support: negative initial radiographs do not exclude nondisplaced fracture; follow-up radiographs found toddler fracture in 16 of 39 (41%) clinically presumed cases",
+      criteria_text: "ACR notes negative radiographs do not exclude nondisplaced fracture and cites a series where 16 of 39 clinically presumed toddler fractures with negative initial imaging were seen on follow-up radiographs.",
+      cutoffs: ["16 of 39", "41%"],
+      data_needed: ["localized tenderness", "trauma history", "initial radiograph result", "immobilization status", "follow-up imaging plan", "safeguarding screen"],
+      source_ids: ["ACR_ACUTELY_LIMPING_CHILD_2018"],
+      source_section: "Radiography and occult toddler fracture discussion"
+    },
+    {
+      id: "peds_limp_chq_return_precautions",
+      label: "CHQ limp safety-net: return for fever, worsening/nocturnal pain, refusal to weight bear despite analgesia, no improvement after 3 days, persistence >14 days, or tired/lethargic/unwell state",
+      criteria_text: "CHQ parent advice recommends re-presentation for fever, worsening or nocturnal pain, refusal to weight bear despite analgesia, no improvement after 3 days, symptoms persisting more than 14 days, or if the child is tired, lethargic, or unwell.",
+      cutoffs: ["3 days", ">14 days"],
+      data_needed: ["fever recurrence", "pain trajectory", "night pain", "weight-bearing after analgesia", "days since onset", "energy/systemic state", "family follow-up access"],
+      source_ids: ["CHQ_LIMP_CHILD_2026"],
+      source_section: "Parent information and follow-up advice"
     }
   ],
   pediatric_neuro_headache_seizure_ams_v1: [
@@ -5300,6 +5390,262 @@ function buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById) {
   });
 }
 
+function buildPediatricMskLimpHotJointClinicalPathwayTree(module, sourceById) {
+  const label = module.label || "Pediatric limp, hot joint, injury, or non-weight bearing";
+  const prefix = "pediatric_msk_limp_hot_joint";
+  const rchLimp = ["RCH_LIMPING_CHILD"];
+  const rchBji = ["RCH_BONE_JOINT_INFECTION"];
+  const chqLimp = ["CHQ_LIMP_CHILD_2026"];
+  const chqBji = ["CHQ_BONE_JOINT_INFECTION_2025"];
+  const acr = ["ACR_ACUTELY_LIMPING_CHILD_2018"];
+  const kocher = ["KOCHER_SEPTIC_HIP_1999"];
+  const caird = ["CAIRD_SEPTIC_HIP_2006"];
+  const sourceIds = unique([...rchLimp, ...rchBji, ...chqLimp, ...chqBji, ...acr, ...kocher, ...caird, ...genericSourceIds]);
+  const tests = firstItems(module, "initialTests", 8);
+  const redFlags = firstItems(module, "redFlags", 8, ["safetyChecks"]);
+  const differentials = firstItems(module, "differentialBuckets", 8);
+  const dispositions = firstItems(module, "dispositionRules", 8, ["treatmentOptions"]);
+  const safetyChecks = firstItems(module, "safetyChecks", 8);
+  const evidenceLabels = {
+    tests: listLabels(tests, 8).join("; "),
+    redFlags: listLabels(redFlags, 8).join("; "),
+    differentials: listLabels(differentials, 8).join("; "),
+    dispositions: listLabels(dispositions, 8).join("; "),
+    safety: listLabels(safetyChecks, 8).join("; ")
+  };
+  const criteriaRows = cutoffCriteriaForModule(module);
+
+  const missingContextEndpoint = endpoint({
+    id: "endpoint_missing_context",
+    label: "Missing data needed: pediatric limp, hot joint, injury, or non-weight-bearing context",
+    edgeLabel: "Missing pediatric limp context: age, onset/duration, trauma/safeguarding history, ability to weight bear after analgesia, fever/systemic symptoms, joint range of motion, full vitals, pain location, labs/imaging when indicated, medication/allergy context, comorbidities, and follow-up access",
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_context_criteria`, "Route here when pediatric limp or hot-joint management cannot be classified because core history, exam, vitals, objective results, comorbidity, or follow-up data are unavailable.", contextDomains, sourceIds, { missing_any: contextDomains }),
+    action: "Document age/developmental baseline, symptom onset and duration, trauma mechanism and safeguarding consistency, current and post-analgesia weight-bearing, pain site including hip/groin/thigh/knee referral, fever and systemic symptoms, full vital signs, gait, look/feel/move exam, joint above and below, passive range of motion, neurovascular status, skin/wound source, immunocompromise/sickle cell/hemophilia or postoperative context, analgesics/antibiotic exposure/allergies, pregnancy possibility in adolescents when treatment or imaging depends on it, labs/cultures/imaging if indicated, and reliable follow-up.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["age and developmental walking baseline", "limp onset, duration, and trajectory", "trauma mechanism, timing, and safeguarding consistency", "ability to walk or weight bear after analgesia", "temperature and systemic illness symptoms", "pain location including hip/groin/thigh/knee referral", "full vital signs and perfusion", "focused gait and look/feel/move exam", "passive range of motion of affected and adjacent joints", "neurovascular exam", "skin/wound source", "immunocompromise, sickle cell, hemophilia, postoperative, or neonatal status", "medication, allergy, recent antibiotic, and analgesia history", "pregnancy possibility when relevant", "FBE/WBC, ESR, CRP, blood culture, aspiration, X-ray, ultrasound, or MRI results when indicated", "follow-up and return access"]
+  });
+
+  const missingObjectiveEndpoint = endpoint({
+    id: `${prefix}_missing_objective_endpoint`,
+    label: "Missing data needed: weight-bearing after analgesia, temperature, inflammatory markers, culture, aspiration, X-ray, ultrasound, MRI, or follow-up plan",
+    edgeLabel: "Cannot choose low-risk, infection, fracture, SUFE/Perthes, systemic-mimic, or admission branch until post-analgesia weight-bearing, temperature, ROM, pain localization, red flags, CRP/ESR/WBC/culture when infection is possible, and imaging/aspiration status are known",
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_objective_criteria`, "Route here when the patient has a pediatric limp or hot-joint presentation but the objective findings needed for guideline branch selection are missing.", contextDomains, sourceIds, { missing_any: ["weight-bearing after analgesia", "temperature", "focused range of motion", "pain localization", "CRP/ESR/WBC when infection possible", "blood culture before antibiotics when feasible", "X-ray/ultrasound/MRI/aspiration status when indicated", "follow-up plan"] }),
+    action: "Complete the branch-critical data: repeat analgesia-supported walking assessment, measure temperature and full vitals, document passive joint motion and severe pain with movement, localize hip versus knee/thigh/bone pain, obtain FBE/WBC, ESR, CRP, blood culture before antibiotics when infection is possible, discuss aspiration for suspected septic arthritis without delaying antibiotics, obtain targeted X-ray for localized injury or hip disease, ultrasound for suspected hip effusion, MRI with contrast when osteomyelitis or deep infection remains possible, and document follow-up or transfer access before discharge.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["post-analgesia weight-bearing status", "temperature and full vitals", "passive joint range of motion", "pain localization", "CRP", "ESR", "WBC/FBE", "blood culture before antibiotics when feasible", "joint aspiration or orthopaedic plan when septic arthritis possible", "targeted X-ray when localized pain/injury/hip disease possible", "hip ultrasound effusion measurement when septic hip possible", "MRI plan/result when osteomyelitis or deep infection possible", "follow-up or transfer access"]
+  });
+
+  const sepsisEndpoint = endpoint({
+    id: `${prefix}_sepsis_instability_endpoint`,
+    label: "Unstable pediatric limp or hot joint: sepsis, shock, toxic appearance, poor perfusion, altered mental status, or limb-threatening injury",
+    edgeLabel: "Instability branch: shock, toxic appearance, altered mental status, hypoxemia, poor perfusion, rapidly worsening illness, limb-threatening trauma, neurovascular compromise, or severe disseminated infection features override routine limp workup",
+    sourceIds: unique([...rchBji, ...chqBji, ...rchLimp]),
+    criteria: criteria(`${prefix}_sepsis_instability_criteria`, "Use when abnormal physiology or limb-threatening findings require immediate escalation before a routine limp differential is completed.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "comorbidities", "workup_findings"], unique([...rchBji, ...chqBji, ...rchLimp]), { criteria_options: criteriaRows }),
+    action: "Activate pediatric sepsis, resuscitation, ED/ICU/orthopaedic transfer, and limb-threat pathways immediately. Obtain cultures if this does not delay antibiotics, start empiric antimicrobial treatment according to local pediatric sepsis and bone/joint infection guidance, provide analgesia, keep the child nil by mouth if operative drainage is possible, and defer low-risk discharge logic until physiology and limb perfusion are stable.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const septicArthritisEndpoint = endpoint({
+    id: `${prefix}_septic_arthritis_emergency_endpoint`,
+    label: "Suspected pediatric septic arthritis: urgent orthopaedics, aspiration or washout, cultures, and antibiotics without treatment delay",
+    edgeLabel: "Septic arthritis branch: fever >38.5 C, hot/swollen joint, severe passive-motion pain, reduced ROM, refusal to weight bear, CRP >=20 mg/L, ESR >=40 mm/hr, WBC >12.0 x10^9/L, ultrasound effusion >=7 mm, purulent aspirate, positive Gram stain/culture, or high clinical suspicion",
+    sourceIds: unique([...rchLimp, ...rchBji, ...chqBji, ...kocher, ...caird]),
+    criteria: criteria(`${prefix}_septic_arthritis_criteria`, "Use when fever, non-weight-bearing, joint restriction, inflammatory markers, effusion, aspiration findings, or clinician concern make septic arthritis possible.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], unique([...rchLimp, ...rchBji, ...chqBji, ...kocher, ...caird]), { criteria_options: criteriaRows }),
+    action: "Treat as an orthopaedic emergency. Discuss with orthopaedics and pediatrics immediately, obtain FBE/WBC, ESR, CRP, and blood culture before antibiotics when feasible, arrange joint aspiration with Gram stain/culture where appropriate, keep the child nil by mouth for possible washout, start empiric IV antibiotics when urgent treatment is needed rather than waiting for surgical timing, and admit or transfer to a center able to provide pediatric orthopaedic care.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const boneInfectionEndpoint = endpoint({
+    id: `${prefix}_bone_infection_admission_endpoint`,
+    label: "Suspected pediatric osteomyelitis, myositis, discitis, abscess, or bone/joint infection: admit for cultures, imaging, IV antibiotics, and orthopaedic/ID plan",
+    edgeLabel: "Bone infection branch: fever or systemic symptoms plus focal bone pain/tenderness, limited limb use, elevated CRP/ESR/WBC, bacteremia, wound/puncture source, MRI concern, X-ray that may be normal for 7-10 days, abscess, myositis, discitis, or osteomyelitis concern",
+    sourceIds: unique([...rchBji, ...chqBji, ...rchLimp]),
+    criteria: criteria(`${prefix}_bone_infection_criteria`, "Use when pediatric limp or limb pain suggests osteomyelitis, deep infection, abscess, myositis, discitis, bacteremia, or complicated bone/joint infection.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "workup_findings"], unique([...rchBji, ...chqBji, ...rchLimp]), { criteria_options: criteriaRows }),
+    action: "Admit or transfer for pediatric/orthopaedic management. Obtain FBE/WBC, ESR, CRP, blood culture before antibiotics when feasible, targeted X-ray to evaluate fracture/tumor while recognizing early osteomyelitis may be radiographically normal for 7-10 days, MRI with contrast when localized osteomyelitis or deep infection remains possible, drainage/surgery when abscess or septic focus requires it, empiric IV antibiotics using local antimicrobial stewardship, and ID review for complex disease.",
+    endpointType: "treatment",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const fractureSafeguardingEndpoint = endpoint({
+    id: `${prefix}_fracture_safeguarding_endpoint`,
+    label: "Pediatric localized injury, occult fracture, toddler fracture, growth-plate injury, or safeguarding concern",
+    edgeLabel: "Injury/safeguarding branch: focal tenderness, trauma, deformity, swelling, persistent non-weight-bearing, negative initial X-ray with ongoing toddler-fracture concern, developmentally implausible story, delay, recurrent injury, bruising pattern, or unsafe discharge context",
+    sourceIds: unique([...rchLimp, ...acr]),
+    criteria: criteria(`${prefix}_fracture_safeguarding_criteria`, "Use when localized pain or history points to fracture, occult injury, growth-plate injury, dislocation, or inflicted injury rather than benign transient synovitis.", ["symptoms", "exam", "vitals", "imaging_results", "demographics", "workup_findings"], unique([...rchLimp, ...acr]), { criteria_options: criteriaRows }),
+    action: "Order site-specific radiographs, immobilize and provide analgesia when fracture is suspected, remember a negative initial X-ray does not exclude nondisplaced toddler fracture, arrange follow-up imaging or MRI when the child remains non-weight-bearing or pain localizes, restrict weight bearing as clinically needed, consult orthopaedics for growth-plate/dislocation/high-risk injury, and activate local safeguarding policy for inconsistent, delayed, recurrent, unwitnessed, or developmentally implausible injury.",
+    endpointType: "diagnostic_step",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const ageSpecificHipEndpoint = endpoint({
+    id: `${prefix}_sufe_perthes_hip_endpoint`,
+    label: "Pediatric age-specific hip disease: SUFE, Perthes disease, DDH, apophysitis, stress injury, or referred knee pain",
+    edgeLabel: "Age-specific hip branch: adolescent hip/groin/thigh/knee pain, weight >90th percentile, endocrine/puberty risk, painful limited internal rotation, frog-leg/pelvic X-ray concern, suspected SUFE with non-weight-bearing, male age 3-10 years with persistent limp, or early Perthes with possible normal X-ray",
+    sourceIds: unique([...rchLimp, ...chqLimp]),
+    criteria: criteria(`${prefix}_sufe_perthes_criteria`, "Use when age, sex, pain location, weight percentile, hip exam, or radiographs suggest SUFE, Perthes disease, DDH, apophysitis, stress injury, or referred hip disease.", ["symptoms", "exam", "vitals", "imaging_results", "demographics", "comorbidities", "workup_findings"], unique([...rchLimp, ...chqLimp]), { criteria_options: criteriaRows }),
+    action: "Examine the hip when knee or thigh pain is reported, obtain appropriate pelvic/hip imaging including frog-leg view when safe and indicated, make suspected SUFE non-weight-bearing and obtain prompt orthopaedic review for operative management, arrange orthopaedic referral for suspected Perthes or persistent limp in the typical age group even if early X-ray is normal, and avoid labeling adolescent hip or referred knee pain as a routine sprain without hip assessment.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const systemicMimicEndpoint = endpoint({
+    id: `${prefix}_systemic_mimic_endpoint`,
+    label: "Pediatric limp systemic mimic: malignancy, inflammatory arthritis, ARF, neurologic, abdominal, GU, hematologic, or referred pain",
+    edgeLabel: "Systemic mimic branch: night pain, weight loss, pallor, bruising, bleeding, recurrent fever, morning stiffness, rash, CRP >30 with ARF context, ECG conduction abnormality, neurologic deficit, abdominal/scrotal/GU symptoms, sickle/hemophilia pain, or recurrent/persistent unexplained limp",
+    sourceIds: unique([...rchLimp, ...chqLimp]),
+    criteria: criteria(`${prefix}_systemic_mimic_criteria`, "Use when the limp is not explained by isolated injury, transient synovitis, or focal infection and systemic, inflammatory, hematologic, neurologic, abdominal, or GU disease remains possible.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "comorbidities", "demographics", "workup_findings"], unique([...rchLimp, ...chqLimp]), { criteria_options: criteriaRows }),
+    action: "Do not anchor on sprain or transient synovitis. Obtain FBE with film when malignancy or hematologic disease is possible, inflammatory markers and targeted rheumatology/infectious evaluation when morning stiffness/rash/recurrent fever is present, ECG and ARF workup when migratory arthritis or high CRP context suggests rheumatic fever, neurologic/abdominal/GU/scrotal exam and pathway referral when referred pain dominates, and admit or arrange urgent specialty review when systemic danger features are present.",
+    endpointType: "diagnostic_step",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const lowRiskEndpoint = endpoint({
+    id: `${prefix}_low_risk_limp_endpoint`,
+    label: "Low-risk pediatric limp or transient synovitis: no routine tests only after red flags are absent and the child walks comfortably with follow-up",
+    edgeLabel: "Low-risk branch: systemically well, no fever or only low-grade temperature <38.5 C consistent with transient synovitis, no red flags, mild or no discomfort after simple analgesia, able to walk or weight bear, high-risk diagnoses unlikely, working diagnosis documented, and review plan within 7 days if symptoms persist",
+    sourceIds: unique([...rchLimp, ...chqLimp]),
+    criteria: criteria(`${prefix}_low_risk_limp_criteria`, "Use low-risk pediatric limp care only when serious infection, fracture, SUFE/Perthes, systemic disease, safeguarding concern, and follow-up gaps are absent.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "follow_up_access", "workup_findings"], unique([...rchLimp, ...chqLimp]), { criteria_options: criteriaRows }),
+    action: "Avoid routine labs or imaging when the child meets low-risk criteria. Provide simple analgesia or NSAID/rest when transient synovitis is likely and contraindications are absent, document the working diagnosis and high-risk exclusions, discharge only if walking comfortably with or without analgesia and family can return, and arrange review within 7 days of onset if symptoms persist.",
+    endpointType: "safety_net_instruction",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const specialReviewEndpoint = endpoint({
+    id: `${prefix}_special_population_review_endpoint`,
+    label: "Pediatric limp special-population or local-policy review: neonate, age <3 months, immunocompromise, sickle cell, hemophilia, MRSA/Pseudomonas risk, puncture wound, postoperative limb, pregnancy, or safeguarding",
+    edgeLabel: "Special-population branch: neonate or age <3 months, immunocompromise, sickle cell, hemophilia, renal disease, postoperative orthopaedics, prosthesis/hardware, puncture/contaminated wound or water exposure, MRSA/Pseudomonas risk, relapse/persistent bacteremia, pregnancy-relevant adolescent imaging/medications, or child-safety policy requirement",
+    sourceIds: unique([...rchBji, ...chqBji, ...rchLimp, ...chqLimp]),
+    criteria: criteria(`${prefix}_special_population_review_criteria`, "Use when host factors, organism risk, wound context, pregnancy, postoperative status, or local child-safety/antimicrobial policy changes routine pediatric limp management.", ["demographics", "pregnancy_status", "medications", "comorbidities", "labs", "imaging_results", "local_policy", "workup_findings"], unique([...rchBji, ...chqBji, ...rchLimp, ...chqLimp]), { criteria_options: criteriaRows }),
+    action: "Get pediatric, orthopaedic, infectious diseases, hematology, obstetric, safeguarding, or transfer-center review as appropriate. Apply local antimicrobial stewardship for MRSA/Pseudomonas/puncture or contaminated wounds, avoid routine oral-switch or discharge criteria in neonates, immunocompromised children, relapse, persistent bacteremia, hardware/postoperative cases, sickle cell/hemophilia pain, or uncertain safeguarding, and document the reviewer input needed before endpoint closure.",
+    endpointType: "clinician_review_handoff",
+    reviewNeededReason: "Local antimicrobial, orthopaedic, transfer, safeguarding, hematology, pregnancy/imaging, and postoperative protocols can override the general pediatric limp pathway."
+  });
+
+  const worseningEndpoint = endpoint({
+    id: `${prefix}_worsening_endpoint`,
+    label: "Pediatric limp reassessment escalation: fever, worsening pain, persistent non-weight-bearing, rising CRP/ESR/WBC, positive culture, new effusion, or abnormal MRI",
+    edgeLabel: "Worsening branch: fever appears or persists, nocturnal/worsening pain, refusal to weight bear despite analgesia, toxic appearance, CRP/ESR/WBC rise or fail to improve, blood or aspirate culture positive, ultrasound effusion or MRI infection concern emerges, or low-risk diagnosis no longer fits",
+    sourceIds,
+    criteria: criteria(`${prefix}_worsening_criteria`, "Escalate pediatric limp management when reassessment contradicts the low-risk, fracture-only, or improving infection branch.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
+    action: "Repeat vitals and focused exam, recheck ability to weight bear after analgesia, repeat or obtain CRP/ESR/WBC and cultures as indicated, review X-ray/ultrasound/MRI or obtain MRI when infection/occult fracture remains possible, move to septic arthritis, bone infection, fracture/safeguarding, systemic mimic, admission, or transfer branch according to the new finding, and stop low-risk discharge planning.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const deescalateEndpoint = endpoint({
+    id: `${prefix}_deescalation_endpoint`,
+    label: "Pediatric bone/joint infection de-escalation: oral switch or stopping only with clinical improvement, afebrile window, CRP response, oral tolerance, and specialist plan",
+    edgeLabel: "De-escalation branch: uncomplicated infection improving after IV therapy, afebrile at least 24 hours, IV minimum 48 hours or 2-3 days depending local guideline, CRP <20 mg/L or down >2/3 from peak, tolerating oral intake, cultures reviewed, and total duration plan 3-4 weeks osteomyelitis or 2-3 weeks septic arthritis",
+    sourceIds: unique([...rchBji, ...chqBji]),
+    criteria: criteria(`${prefix}_deescalation_criteria`, "Use when pediatric bone/joint infection has improved enough for oral switch, narrowing, or treatment stopping under the cited guideline criteria.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "follow_up_access", "workup_findings"], unique([...rchBji, ...chqBji]), { criteria_options: criteriaRows }),
+    action: "Switch from IV to oral therapy, narrow antibiotics, or stop treatment only when the treating team confirms uncomplicated disease, clinical improvement, afebrile status, oral tolerance, improving markers, culture/organism review, and follow-up. Use local dosing and stewardship, recheck CRP one week after oral switch and before stopping when following CHQ logic, and extend or seek ID review for complicated disease, neonates, immunocompromise, Pseudomonas, relapse, persistent bacteremia, or inadequate response.",
+    endpointType: "deescalation_stopping",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const followupEndpoint = endpoint({
+    id: `${prefix}_followup_safety_endpoint`,
+    label: "Pediatric limp follow-up and safety-net: review access, pending-result owner, weight-bearing plan, return precautions, and specialty handoff",
+    edgeLabel: "Disposition branch: cause identified and managed or serious causes addressed, walking/weight-bearing plan documented, pending labs/cultures/imaging assigned, orthopaedic/pediatric/ID follow-up scheduled when needed, and family return precautions include fever, worsening/nocturnal pain, refusal to weight bear, no improvement after 3 days, persistence >14 days, lethargy, or unwell appearance",
+    sourceIds: unique([...rchLimp, ...rchBji, ...chqLimp, ...chqBji, ...acr]),
+    criteria: criteria(`${prefix}_followup_safety_criteria`, "Use when pediatric limp or bone/joint infection is stable enough for discharge, outpatient review, or lower-acuity follow-up with explicit safety-net instructions.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "follow_up_access", "workup_findings"], unique([...rchLimp, ...rchBji, ...chqLimp, ...chqBji, ...acr]), { criteria_options: criteriaRows }),
+    action: "Document diagnosis or working diagnosis, red flags screened, ability to walk or weight-bear status, analgesia/rest/activity or non-weight-bearing plan, antibiotic plan if used, pending result owner for cultures/labs/imaging, specialty follow-up owner, and return precautions for fever, systemic illness, worsening or night pain, refusal to weight bear despite analgesia, new swelling/redness, neurovascular symptoms, no improvement after 3 days, persistence beyond 14 days, lethargy, or inability to access follow-up.",
+    endpointType: "follow_up",
+    monitoringPlan: ["weight-bearing and pain trajectory", "temperature/systemic symptoms", "CRP/ESR/WBC trend when infection treated", "culture and imaging result ownership", "orthopaedic/pediatric/ID follow-up", "family return precautions"]
+  });
+
+  const monitoringBundle = actionNode({
+    id: `${prefix}_monitoring_bundle`,
+    label: "Pediatric limp monitoring: pain, weight-bearing, fever, ROM, neurovascular status, cultures, CRP/ESR/WBC, imaging, antibiotic response, and discharge readiness",
+    edgeLabel: "Monitoring branch after pediatric limp classification: trend post-analgesia walking, pain/night pain, temperature, perfusion, range of motion, swelling, neurovascular findings, culture status, CRP/ESR/WBC, imaging evolution, antibiotic tolerance, oral switch readiness, follow-up access, and return precautions",
+    sourceIds,
+    criteria: criteria(`${prefix}_monitoring_bundle_criteria`, "Monitor pediatric limp or hot-joint management by reassessing the objective findings that selected the active branch.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "follow_up_access", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
+    action: "Reassess pain control, night pain, ability to walk or weight bear, fever/systemic signs, joint motion, swelling/warmth, neurovascular status, blood culture/aspiration/imaging results, CRP/ESR/WBC trend when obtained, antibiotic response and adverse effects, operative drainage need, oral switch criteria, and disposition readiness before closing the pathway.",
+    parallelActions: unique(["repeat vital signs and perfusion", "repeat post-analgesia weight-bearing assessment", "repeat focused joint and neurovascular exam", "trend CRP/ESR/WBC when infection is being treated", "track blood culture and aspirate results", "review X-ray/ultrasound/MRI result owner", "confirm antibiotic route/duration or no-test rationale", evidenceLabels.safety]),
+    guidelineCutoffs: criteriaRows,
+    children: [worseningEndpoint, deescalateEndpoint, followupEndpoint]
+  });
+
+  const classificationDecision = decision({
+    id: `${prefix}_classification_decision`,
+    label: "Pediatric limp/hot joint: classify instability, septic arthritis, bone infection, injury/safeguarding, SUFE/Perthes, systemic mimic, low-risk limp, or special-population review",
+    edgeLabel: "Pediatric limp branch ready: age/development, trauma/safeguarding story, post-analgesia weight-bearing, temperature/vitals, pain localization, ROM, red flags, infection labs/cultures when indicated, imaging/aspiration status, host factors, and follow-up access are available",
+    sourceIds,
+    criteria: criteria(`${prefix}_classification_criteria`, "Classify pediatric limp or hot-joint presentations using instability findings, septic hip predictors, infection labs/imaging, injury localization, age-specific hip rules, systemic mimics, and low-risk discharge criteria.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Select the active pediatric branch: instability/sepsis escalation, septic arthritis emergency, osteomyelitis or bone/joint infection admission, localized injury or safeguarding, SUFE/Perthes or other age-specific hip disease, systemic/referred mimic, low-risk transient synovitis/no-test care, special-population clinician review, or monitoring/follow-up.",
+    clinicalCriteria: criteriaRows,
+    guidelineCutoffs: criteriaRows,
+    children: [missingObjectiveEndpoint, sepsisEndpoint, septicArthritisEndpoint, boneInfectionEndpoint, fractureSafeguardingEndpoint, ageSpecificHipEndpoint, systemicMimicEndpoint, lowRiskEndpoint, specialReviewEndpoint, monitoringBundle]
+  });
+
+  const initialAssessment = actionNode({
+    id: `${prefix}_initial_assessment_bundle`,
+    label: "Pediatric limp bedside assessment: age, duration, trauma/safeguarding, post-analgesia weight-bearing, fever/vitals, localization, ROM, labs/imaging, and follow-up",
+    edgeLabel: `Pediatric limp assessment bundle: ${evidenceLabels.tests}; ${evidenceLabels.redFlags}; ${evidenceLabels.dispositions}`,
+    sourceIds,
+    criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial pediatric limp assessment requires age/development, duration, injury and safeguarding history, weight-bearing after analgesia, fever/vitals, focused MSK exam, infection/fracture/hip/systemic screen, targeted testing, and follow-up constraints.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Assess age/developmental walking baseline, duration and trajectory, trauma mechanism and safeguarding consistency, fever/systemic illness, analgesia response, ability to walk or weight bear, pain localization including referred knee/thigh/groin pain, gait, look/feel/move exam, joint above and below, passive ROM and severe pain with motion, neurovascular status, skin/wound source, night pain/weight loss/pallor/bruising, abdominal/GU/neurologic symptoms, high-risk host factors, targeted FBE/WBC/ESR/CRP/culture/aspiration when infection is possible, site-specific X-ray, hip ultrasound, MRI when osteomyelitis/deep infection or persistent unexplained limp remains possible, and follow-up or transfer access.",
+    parallelActions: unique([evidenceLabels.tests, evidenceLabels.redFlags, evidenceLabels.dispositions, "post-analgesia weight-bearing assessment", "temperature and full vital signs", "passive joint range of motion", "hip exam for knee/thigh/groin pain", "FBE/WBC, ESR, CRP, and blood culture when infection is possible", "site-specific X-ray or hip ultrasound/MRI when indicated", "safeguarding consistency screen"]),
+    requiredData: ["age and developmental baseline", "duration", "trauma/safeguarding history", "post-analgesia weight-bearing", "temperature and full vitals", "pain localization", "joint ROM", "neurovascular status", "infection labs/cultures when indicated", "imaging/aspiration status when indicated", "follow-up access"],
+    guidelineCutoffs: criteriaRows,
+    children: [classificationDecision]
+  });
+
+  const root = decision({
+    id: "root",
+    label: "Pediatric limp/hot joint: route by instability, septic arthritis predictors, bone infection, injury, age-specific hip disease, systemic mimics, low-risk criteria, and safety-net needs",
+    sourceIds,
+    criteria: criteria(`${prefix}_activate`, "Activate for child or adolescent with limp, refusal to walk, non-weight-bearing, hot/swollen joint, suspected septic arthritis or osteomyelitis, limb pain, localized injury, hip/groin/thigh/knee pain, persistent limp, or clinician-chosen pediatric MSK evaluation.", ["clinician_chosen_module", "symptoms", "exam", "vitals", "labs", "imaging_results", "problem_list_or_diagnosis"], sourceIds),
+    action: "Route pediatric limp and hot-joint presentations through missing-data, instability, septic arthritis, bone infection, fracture/safeguarding, SUFE/Perthes, systemic mimic, low-risk/no-test care, special-population review, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+    children: [missingContextEndpoint, initialAssessment]
+  });
+
+  return finalizeClinicalPathwayTree({
+    module,
+    sourceById,
+    label,
+    version: "4.0.0",
+    status: "hand_polished_pediatric_msk_limp_hot_joint_pathway_needs_clinician_review",
+    sourceIds,
+    criteriaRows,
+    tests,
+    redFlags,
+    differentials,
+    dispositions,
+    root,
+    sourceMaterial: "Royal Children's Hospital limp and bone/joint infection guidelines, Children's Health Queensland 2026 limp and bone/joint infection guidance, ACR acutely limping child appropriateness criteria, Kocher septic hip prediction study, Caird septic hip CRP study, and local module evidence rows",
+    reviewNote: "Pediatric limp/hot-joint tree is threshold-cited and patient-traversable; local pediatric sepsis criteria, antimicrobial formulary, orthopaedic washout timing, imaging/sedation access, safeguarding policy, and transfer thresholds require clinician governance.",
+    syntheticScenarios: [
+      { scenario_id: "missing_context", major_pathway: "missing_data_needed", expected_endpoint_id: missingContextEndpoint.id, expected_active_branch: missingContextEndpoint.edgeLabel },
+      { scenario_id: "missing_weight_bearing_labs_imaging", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: missingObjectiveEndpoint.id, expected_active_branch: missingObjectiveEndpoint.edgeLabel },
+      { scenario_id: "unstable_septic_child", major_pathway: "red_flags_instability", expected_endpoint_id: sepsisEndpoint.id, expected_active_branch: sepsisEndpoint.edgeLabel },
+      { scenario_id: "hot_swollen_nonweightbearing_hip_crp_high", major_pathway: "escalation_emergency_actions", expected_endpoint_id: septicArthritisEndpoint.id, expected_active_branch: septicArthritisEndpoint.edgeLabel },
+      { scenario_id: "focal_bone_pain_osteomyelitis_mri", major_pathway: "first_line_management", expected_endpoint_id: boneInfectionEndpoint.id, expected_active_branch: boneInfectionEndpoint.edgeLabel },
+      { scenario_id: "localized_trauma_negative_xray_toddler_fracture", major_pathway: "mimics_exclusions", expected_endpoint_id: fractureSafeguardingEndpoint.id, expected_active_branch: fractureSafeguardingEndpoint.edgeLabel },
+      { scenario_id: "adolescent_groin_knee_pain_sufe", major_pathway: "severity_risk_stratification", expected_endpoint_id: ageSpecificHipEndpoint.id, expected_active_branch: ageSpecificHipEndpoint.edgeLabel },
+      { scenario_id: "night_pain_pallor_bruising_malignancy_mimic", major_pathway: "diagnostic_confirmation", expected_endpoint_id: systemicMimicEndpoint.id, expected_active_branch: systemicMimicEndpoint.edgeLabel },
+      { scenario_id: "well_child_transient_synovitis", major_pathway: "disposition_followup_safety_netting", expected_endpoint_id: lowRiskEndpoint.id, expected_active_branch: lowRiskEndpoint.edgeLabel },
+      { scenario_id: "neonate_immunocompromised_mrsa_puncture", major_pathway: "contraindications_special_populations", expected_endpoint_id: specialReviewEndpoint.id, expected_active_branch: specialReviewEndpoint.edgeLabel },
+      { scenario_id: "worsening_after_low_risk_or_treatment", major_pathway: "monitoring_reassessment_escalation", expected_endpoint_id: worseningEndpoint.id, expected_active_branch: worseningEndpoint.edgeLabel },
+      { scenario_id: "infection_oral_switch_stop_criteria", major_pathway: "deescalation_stopping_criteria", expected_endpoint_id: deescalateEndpoint.id, expected_active_branch: deescalateEndpoint.edgeLabel },
+      { scenario_id: "followup_and_return_precautions", major_pathway: "follow_up_safety_netting", expected_endpoint_id: followupEndpoint.id, expected_active_branch: followupEndpoint.edgeLabel }
+    ],
+    handPolishRequirements: [
+      "activation and root labels name concrete pediatric limp/hot-joint decisions, not generic trigger or context-gathering phrases",
+      "septic arthritis branch includes fever >38.5 C, non-weight-bearing, ESR >=40 mm/hr, WBC >12.0 x10^9/L, CRP >=20 mg/L, and hip effusion >=7 mm support thresholds",
+      "bone/joint infection branch includes blood culture before antibiotics when feasible, early X-ray limitations at 7-10 days, MRI preference, IV/oral switch, CRP response, and total duration thresholds",
+      "fracture branch includes occult toddler fracture risk after negative X-ray and safeguarding routing",
+      "age-specific hip branch includes SUFE weight >90th percentile, about 20% bilateral disease, prompt non-weight-bearing/operative pathway, and Perthes age 3-10 concern",
+      "low-risk branch with no routine tests requires no red flags, comfortable walking with analgesia, and review within 7 days if symptoms persist",
+      "follow-up and safety-net include return for fever, worsening/nocturnal pain, refusal to weight bear, no improvement after 3 days, persistence >14 days, or lethargy/unwell state"
+    ]
+  });
+}
+
 function finalizeClinicalPathwayTree({
   module,
   sourceById,
@@ -5416,9 +5762,11 @@ function main() {
                             : module.id === "gigantism_v1"
                               ? buildGrowthHormoneExcessClinicalPathwayTree(module, sourceById, "gigantism")
                               : module.id === "chest_pain_v1"
-                                ? buildAdultChestPainClinicalPathwayTree(module, sourceById)
+                              ? buildAdultChestPainClinicalPathwayTree(module, sourceById)
                                 : module.id === "pediatric_chest_pain_syncope_v1"
                                   ? buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById)
+                                  : module.id === "pediatric_msk_limp_hot_joint_v1"
+                                    ? buildPediatricMskLimpHotJointClinicalPathwayTree(module, sourceById)
                               : buildCompactClinicalPathwayTree(module, sourceById);
     const nextModule = { ...module, clinical_pathway_tree_v1: clinicalPathway };
     const nextRaw = raw.module ? { ...raw, module: nextModule } : nextModule;
