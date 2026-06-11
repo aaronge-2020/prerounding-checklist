@@ -3824,7 +3824,7 @@
           {
             "id": "thyrotoxicosis_concurrent_data_bundle",
             "type": "action",
-            "label": "Initial data bundle",
+            "label": "Thyrotoxicosis triage inputs",
             "edgeLabel": "Assessment bundle: TSH, free T4, T3; TRAb/TSI; RAIU: high uptake suggests overproduction; ESR/CRP if painful thyroid; TSH; free T4",
             "source_ids": [
               "ATA_HYPERTHYROIDISM_2016",
@@ -3854,7 +3854,7 @@
               {
                 "id": "thyrotoxicosis_classification_decision",
                 "type": "decision",
-                "label": "Choose clinical branch",
+                "label": "Thyrotoxicosis severity thresholds",
                 "edgeLabel": "Classify using TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L",
                 "source_ids": [
                   "ATA_HYPERTHYROIDISM_2016",
@@ -4056,7 +4056,7 @@
                   {
                     "id": "thyrotoxicosis_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Escalation branch",
+                    "label": "Thyrotoxicosis emergency criteria",
                     "edgeLabel": "Escalate: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; TSH below LLN; free T4 above ULN",
                     "source_ids": [
                       "ATA_HYPERTHYROIDISM_2016",
@@ -4229,7 +4229,7 @@
                   {
                     "id": "thyrotoxicosis_treatment_bundle",
                     "type": "action",
-                    "label": "Treatment/disposition plan",
+                    "label": "Thyrotoxicosis treatment/disposition",
                     "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "ATA_HYPERTHYROIDISM_2016",
@@ -4331,7 +4331,7 @@
                       {
                         "id": "thyrotoxicosis_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Treatment safety review",
+                        "label": "Thyrotoxicosis contraindication screen",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "ATA_HYPERTHYROIDISM_2016",
@@ -4409,7 +4409,7 @@
                           {
                             "id": "thyrotoxicosis_review_endpoint",
                             "type": "endpoint",
-                            "label": "Clinician-review modifier",
+                            "label": "Thyrotoxicosis clinician review",
                             "edgeLabel": "Review modifier: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum",
                             "source_ids": [
                               "ATA_HYPERTHYROIDISM_2016",
@@ -4441,7 +4441,7 @@
                           {
                             "id": "thyrotoxicosis_monitoring_bundle",
                             "type": "action",
-                            "label": "Monitoring and readiness",
+                            "label": "Thyrotoxicosis response monitoring",
                             "edgeLabel": "Monitor: TSH below LLN; free T4 above ULN; TSH, free T4, T3; TRAb/TSI; treatment response",
                             "source_ids": [
                               "ATA_HYPERTHYROIDISM_2016",
@@ -4541,7 +4541,7 @@
                               {
                                 "id": "thyrotoxicosis_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Reassessment escalation",
+                                "label": "Thyrotoxicosis deterioration criteria",
                                 "edgeLabel": "Escalate if reassessment worsens: TSH below LLN; free T4 above ULN; TSH, free T4, T3; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "ATA_HYPERTHYROIDISM_2016",
@@ -4714,7 +4714,7 @@
                               {
                                 "id": "thyrotoxicosis_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "De-escalation or stopping criteria",
+                                "label": "Thyrotoxicosis stop/narrow criteria",
                                 "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "ATA_HYPERTHYROIDISM_2016",
@@ -4887,7 +4887,7 @@
                               {
                                 "id": "thyrotoxicosis_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Close loop: result owner, follow-up, return precautions",
+                                "label": "Thyrotoxicosis follow-up and safety-net",
                                 "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ATA_HYPERTHYROIDISM_2016",
@@ -5088,7 +5088,7 @@
                   {
                     "id": "thyrotoxicosis_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Alternate diagnosis pathway",
+                    "label": "Thyrotoxicosis mimic/exclusion",
                     "edgeLabel": "Alternate diagnosis: competing diagnosis better explains the presentation",
                     "source_ids": [
                       "ATA_HYPERTHYROIDISM_2016",

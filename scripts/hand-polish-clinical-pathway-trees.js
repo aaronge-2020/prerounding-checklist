@@ -1915,19 +1915,27 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
   };
   const branchDetails = (items = []) => unique(items.map(branchDetail).filter(Boolean));
   const criterionLabels = criteriaRows.map(displayCriterionLabel).filter(Boolean);
+  const diseaseBranchLabel = (suffix = "") => {
+    const words = cleanText(rootDisplayLabel).split(/\s+/).filter(Boolean);
+    const cleanSuffix = cleanText(suffix);
+    while (words.length > 1 && `${words.join(" ")} ${cleanSuffix}`.length > 80) {
+      words.pop();
+    }
+    return cleanText(`${words.join(" ") || rootDisplayLabel} ${cleanSuffix}`);
+  };
   const branchLabels = {
     root: `${rootDisplayLabel} pathway`,
-    dataBundle: "Initial data bundle",
-    classification: "Choose clinical branch",
-    urgent: "Escalation branch",
-    treatment: "Treatment/disposition plan",
-    safety: "Treatment safety review",
-    review: "Clinician-review modifier",
-    monitoring: "Monitoring and readiness",
-    worsening: "Reassessment escalation",
-    deescalate: "De-escalation or stopping criteria",
-    followup: "Close loop: result owner, follow-up, return precautions",
-    alternate: "Alternate diagnosis pathway"
+    dataBundle: diseaseBranchLabel("triage inputs"),
+    classification: diseaseBranchLabel("severity thresholds"),
+    urgent: diseaseBranchLabel("emergency criteria"),
+    treatment: diseaseBranchLabel("treatment/disposition"),
+    safety: diseaseBranchLabel("contraindication screen"),
+    review: diseaseBranchLabel("clinician review"),
+    monitoring: diseaseBranchLabel("response monitoring"),
+    worsening: diseaseBranchLabel("deterioration criteria"),
+    deescalate: diseaseBranchLabel("stop/narrow criteria"),
+    followup: diseaseBranchLabel("follow-up and safety-net"),
+    alternate: diseaseBranchLabel("mimic/exclusion")
   };
   const displayDiagnosticData = compactArrayText(branchDetails([
     ...visibleListLabels(tests, 4),
@@ -4702,7 +4710,7 @@ function buildPrediabetesClinicalPathwayTree(module, sourceById) {
   const diabetesRangeEndpoint = endpoint({
     id: `${prefix}_diabetes_range_endpoint`,
     label: "Diabetes-range escalation",
-    edgeLabel: "Escalation branch: A1c >=6.5%, fasting glucose >=126 mg/dL, 2-hour OGTT >=200 mg/dL, random glucose >=200 mg/dL with symptoms, dehydration, pregnancy hyperglycemia, severe hypertension, or ASCVD symptoms",
+    edgeLabel: "Diabetes-range values or unstable symptoms: A1c >=6.5%, fasting glucose >=126 mg/dL, 2-hour OGTT >=200 mg/dL, random glucose >=200 mg/dL with symptoms, dehydration, pregnancy hyperglycemia, severe hypertension, or ASCVD symptoms",
     sourceIds: diag,
     criteria: criteria(`${prefix}_diabetes_range_criteria`, "Use when diabetes-range values or unstable symptoms require diagnostic confirmation or urgent diabetes/cardiometabolic evaluation.", ["symptoms", "vitals", "labs", "pregnancy_status", "workup_findings"], diag, { criteria_options: criteriaRows }),
     action: "Confirm diabetes according to A1c/glucose thresholds, assess for symptoms, dehydration, pregnancy hyperglycemia, ketones if clinically ill, and cardiopulmonary or severe hypertension red flags, then route to the diabetes or urgent cardiometabolic pathway rather than prevention-only counseling.",
@@ -4944,7 +4952,7 @@ function buildMetabolicSyndromeClinicalPathwayTree(module, sourceById) {
   const urgentEndpoint = endpoint({
     id: `${prefix}_urgent_cardiometabolic_endpoint`,
     label: "Urgent cardiometabolic escalation",
-    edgeLabel: "Escalation branch: A1c >=6.5%, fasting glucose >=126 mg/dL or random glucose >=200 mg/dL with symptoms, BP around >=180/120 mm Hg or end-organ symptoms, chest pain, dyspnea, neurologic symptoms, pregnancy hyperglycemia, dehydration, or altered mental status",
+    edgeLabel: "Cardiometabolic emergency criteria: A1c >=6.5%, fasting glucose >=126 mg/dL or random glucose >=200 mg/dL with symptoms, BP around >=180/120 mm Hg or end-organ symptoms, chest pain, dyspnea, neurologic symptoms, pregnancy hyperglycemia, dehydration, or altered mental status",
     sourceIds: unique([...diag, ...soc, ...nhlbi]),
     criteria: criteria(`${prefix}_urgent_criteria`, "Use when metabolic syndrome workup reveals diabetes-range symptomatic glycemia, severe hypertension, ASCVD symptoms, pregnancy concern, or unstable physiology.", ["symptoms", "exam", "vitals", "labs", "pregnancy_status", "workup_findings"], unique([...diag, ...soc, ...nhlbi]), { criteria_options: criteriaRows }),
     action: "Route to urgent diabetes, hypertension, cardiovascular, or pregnancy evaluation before routine metabolic-syndrome counseling; check glucose, ketones/acid-base if ill, repeat BP with end-organ symptom assessment, ECG/troponin or stroke evaluation when symptoms fit, pregnancy status, and disposition needs.",
@@ -6059,7 +6067,7 @@ function buildErectileDysfunctionClinicalPathwayTree(module, sourceById) {
 
   const worseningEndpoint = endpoint({
     id: `${prefix}_worsening_endpoint`,
-    label: "ED reassessment escalation",
+    label: "ED deterioration criteria",
     edgeLabel: "New chest pain, syncope, dyspnea, neuro deficit, visual/hearing loss, priapism >4 hours, rising PSA/Hct, failed correct PDE5 use, or worsening pituitary symptoms",
     sourceIds: unique([...endotext, ...statpearls, ...testosterone, ...prolactin]),
     criteria: criteria(`${prefix}_worsening_criteria`, "Use when follow-up data contradict the low-risk ED branch or reveal a therapy complication.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], unique([...endotext, ...statpearls, ...testosterone, ...prolactin]), { criteria_options: focusedCriteria("ed_pde5_safety_dosing_cutoffs", "ed_testosterone_therapy_safety_cutoffs", "ed_injection_priapism_safety_cutoffs", "ed_pituitary_prolactin_cutoffs") }),
@@ -6912,7 +6920,7 @@ function buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById) {
   const deescalateEndpoint = endpoint({
     id: `${prefix}_deescalation_endpoint`,
     label: "Benign or autonomic de-escalation",
-    edgeLabel: "De-escalation branch: normal vitals/perfusion, no exertional symptoms, no concerning family history, normal ECG if obtained, no hypoxia/respiratory distress, orthostatic/autonomic pattern stable, and follow-up/safety-net access documented",
+    edgeLabel: "Benign/autonomic readiness: normal vitals/perfusion, no exertional symptoms, no concerning family history, normal ECG if obtained, no hypoxia/respiratory distress, orthostatic/autonomic pattern stable, and follow-up/safety-net access documented",
     sourceIds,
     criteria: criteria(`${prefix}_deescalation_criteria`, "Use when pediatric chest pain/syncope has been reassessed and emergency cardiac/respiratory/seizure features remain absent.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "follow_up_access", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
     action: "Narrow to benign chest pain, vasovagal/orthostatic care, or another documented low-risk diagnosis only after red flags are absent, ECG/vitals/oxygenation and event pattern are stable, and return precautions/follow-up are clear.",

@@ -3470,7 +3470,7 @@
           {
             "id": "cushings_disease_concurrent_data_bundle",
             "type": "action",
-            "label": "Initial data bundle",
+            "label": "Cushing's Disease triage inputs",
             "edgeLabel": "Assessment bundle: First confirm endogenous Cushing with UFC; ACTH: normal/high supports ACTH-dependent disease; Pituitary MRI; Inferior petrosal sinus sampling when MRI equivocal/discordant; UFC collection count; late-night salivary cortisol count",
             "source_ids": [
               "ES_CUSHING_DX_2008",
@@ -3504,7 +3504,7 @@
               {
                 "id": "cushings_disease_classification_decision",
                 "type": "decision",
-                "label": "Choose clinical branch",
+                "label": "Cushing's Disease severity thresholds",
                 "edgeLabel": "Classify using at least 2 measurements; 2 measurements; 1 mg; 2 mg/day",
                 "source_ids": [
                   "ES_CUSHING_DX_2008",
@@ -3682,7 +3682,7 @@
                   {
                     "id": "cushings_disease_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Escalation branch",
+                    "label": "Cushing's Disease emergency criteria",
                     "edgeLabel": "Escalate: Severe hypercortisolism with infection; Cushing initial testing; Cushing positive biochemical screen; at least 2 measurements; 2 measurements",
                     "source_ids": [
                       "ES_CUSHING_DX_2008",
@@ -3811,7 +3811,7 @@
                   {
                     "id": "cushings_disease_treatment_bundle",
                     "type": "action",
-                    "label": "Treatment/disposition plan",
+                    "label": "Cushing's Disease treatment/disposition",
                     "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "ES_CUSHING_DX_2008",
@@ -3893,7 +3893,7 @@
                       {
                         "id": "cushings_disease_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Treatment safety review",
+                        "label": "Cushing's Disease contraindication screen",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "ES_CUSHING_DX_2008",
@@ -3973,7 +3973,7 @@
                           {
                             "id": "cushings_disease_review_endpoint",
                             "type": "endpoint",
-                            "label": "Clinician-review modifier",
+                            "label": "Cushing's Disease clinician review",
                             "edgeLabel": "Review modifier: Cushing initial testing; Cushing positive biochemical screen; discordance triggers IPSS; discordant endocrine tests need correct timing; Treat the cause when feasible",
                             "source_ids": [
                               "ES_CUSHING_DX_2008",
@@ -4009,7 +4009,7 @@
                           {
                             "id": "cushings_disease_monitoring_bundle",
                             "type": "action",
-                            "label": "Monitoring and readiness",
+                            "label": "Cushing's Disease response monitoring",
                             "edgeLabel": "Monitor: at least 2 measurements; 2 measurements; First confirm endogenous Cushing with UFC; ACTH: normal/high supports ACTH-dependent disease; treatment response",
                             "source_ids": [
                               "ES_CUSHING_DX_2008",
@@ -4089,7 +4089,7 @@
                               {
                                 "id": "cushings_disease_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Reassessment escalation",
+                                "label": "Cushing's Disease deterioration criteria",
                                 "edgeLabel": "Escalate if reassessment worsens: Severe hypercortisolism with infection; at least 2 measurements; 2 measurements; First confirm endogenous Cushing with UFC; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "ES_CUSHING_DX_2008",
@@ -4218,7 +4218,7 @@
                               {
                                 "id": "cushings_disease_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "De-escalation or stopping criteria",
+                                "label": "Cushing's Disease stop/narrow criteria",
                                 "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "ES_CUSHING_DX_2008",
@@ -4347,7 +4347,7 @@
                               {
                                 "id": "cushings_disease_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Close loop: result owner, follow-up, return precautions",
+                                "label": "Cushing's Disease follow-up and safety-net",
                                 "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ES_CUSHING_DX_2008",
@@ -4503,7 +4503,7 @@
                   {
                     "id": "cushings_disease_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Alternate diagnosis pathway",
+                    "label": "Cushing's Disease mimic/exclusion",
                     "edgeLabel": "Alternate diagnosis: Post-1 mg DST cortisol >1.8 ug/dL is a sensitive abnormal screen",
                     "source_ids": [
                       "ES_CUSHING_DX_2008",

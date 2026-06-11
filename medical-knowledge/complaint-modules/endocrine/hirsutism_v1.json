@@ -3609,7 +3609,7 @@
           {
             "id": "hirsutism_concurrent_data_bundle",
             "type": "action",
-            "label": "Initial data bundle",
+            "label": "Hirsutism triage inputs",
             "edgeLabel": "Assessment bundle: Total testosterone and free testosterone; Early morning 17-OHP; DHEAS when severe/rapid; TSH/prolactin/metabolic PCOS tests when menstrual disturbance; modified Ferriman-Gallwey or local hirsutism score; ethnicity-specific scoring threshold",
             "source_ids": [
               "ES_HIRSUTISM_2018",
@@ -3641,7 +3641,7 @@
               {
                 "id": "hirsutism_classification_decision",
                 "type": "decision",
-                "label": "Choose clinical branch",
+                "label": "Hirsutism severity thresholds",
                 "edgeLabel": "Classify using above reference range; age >39 years; 20 mcg; at least 6 months",
                 "source_ids": [
                   "ES_HIRSUTISM_2018",
@@ -3833,7 +3833,7 @@
                   {
                     "id": "hirsutism_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Escalation branch",
+                    "label": "Hirsutism emergency criteria",
                     "edgeLabel": "Escalate: Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; Hirsutism workup trigger; Hirsutism OCP choice modifier; above reference range",
                     "source_ids": [
                       "ES_HIRSUTISM_2018",
@@ -3992,7 +3992,7 @@
                   {
                     "id": "hirsutism_treatment_bundle",
                     "type": "action",
-                    "label": "Treatment/disposition plan",
+                    "label": "Hirsutism treatment/disposition",
                     "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "ES_HIRSUTISM_2018",
@@ -4088,7 +4088,7 @@
                       {
                         "id": "hirsutism_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Treatment safety review",
+                        "label": "Hirsutism contraindication screen",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "ES_HIRSUTISM_2018",
@@ -4163,7 +4163,7 @@
                           {
                             "id": "hirsutism_review_endpoint",
                             "type": "endpoint",
-                            "label": "Clinician-review modifier",
+                            "label": "Hirsutism clinician review",
                             "edgeLabel": "Review modifier: Hirsutism OCP choice modifier; Hirsutism treatment response; Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway; discordant endocrine tests need correct timing",
                             "source_ids": [
                               "ES_HIRSUTISM_2018",
@@ -4197,7 +4197,7 @@
                           {
                             "id": "hirsutism_monitoring_bundle",
                             "type": "action",
-                            "label": "Monitoring and readiness",
+                            "label": "Hirsutism response monitoring",
                             "edgeLabel": "Monitor: above reference range; age >39 years; Total testosterone and free testosterone; Early morning 17-OHP; treatment response",
                             "source_ids": [
                               "ES_HIRSUTISM_2018",
@@ -4291,7 +4291,7 @@
                               {
                                 "id": "hirsutism_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Reassessment escalation",
+                                "label": "Hirsutism deterioration criteria",
                                 "edgeLabel": "Escalate if reassessment worsens: Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; above reference range; age >39 years",
                                 "source_ids": [
                                   "ES_HIRSUTISM_2018",
@@ -4450,7 +4450,7 @@
                               {
                                 "id": "hirsutism_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "De-escalation or stopping criteria",
+                                "label": "Hirsutism stop/narrow criteria",
                                 "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "ES_HIRSUTISM_2018",
@@ -4609,7 +4609,7 @@
                               {
                                 "id": "hirsutism_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Close loop: result owner, follow-up, return precautions",
+                                "label": "Hirsutism follow-up and safety-net",
                                 "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ES_HIRSUTISM_2018",
@@ -4795,7 +4795,7 @@
                   {
                     "id": "hirsutism_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Alternate diagnosis pathway",
+                    "label": "Hirsutism mimic/exclusion",
                     "edgeLabel": "Alternate diagnosis: competing diagnosis better explains the presentation",
                     "source_ids": [
                       "ES_HIRSUTISM_2018",

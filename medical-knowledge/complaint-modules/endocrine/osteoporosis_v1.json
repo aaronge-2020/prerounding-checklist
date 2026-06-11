@@ -3791,7 +3791,7 @@
           {
             "id": "osteoporosis_concurrent_data_bundle",
             "type": "action",
-            "label": "Initial data bundle",
+            "label": "Osteoporosis triage inputs",
             "edgeLabel": "Assessment bundle: DXA and vertebral imaging; DXA/vertebral imaging or validated fracture-risk tool; 24-hour urine calcium and renal imaging when calcium-stone risk is relevant; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL",
             "source_ids": [
               "ENDO_OSTEOPOROSIS_2020",
@@ -3823,7 +3823,7 @@
               {
                 "id": "osteoporosis_classification_decision",
                 "type": "decision",
-                "label": "Choose clinical branch",
+                "label": "Osteoporosis severity thresholds",
                 "edgeLabel": "Classify using 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0",
                 "source_ids": [
                   "AACE_OSTEOPOROSIS_2020",
@@ -4040,7 +4040,7 @@
                   {
                     "id": "osteoporosis_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Escalation branch",
+                    "label": "Osteoporosis emergency criteria",
                     "edgeLabel": "Escalate: New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures; Corrected calcium often about 8.5-10.5 mg/dL; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
                     "source_ids": [
                       "ENDO_OSTEOPOROSIS_2020",
@@ -4289,7 +4289,7 @@
                   {
                     "id": "osteoporosis_treatment_bundle",
                     "type": "action",
-                    "label": "Treatment/disposition plan",
+                    "label": "Osteoporosis treatment/disposition",
                     "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "ENDO_OSTEOPOROSIS_2020",
@@ -4430,7 +4430,7 @@
                       {
                         "id": "osteoporosis_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Treatment safety review",
+                        "label": "Osteoporosis contraindication screen",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "AACE_OSTEOPOROSIS_2020",
@@ -4569,7 +4569,7 @@
                           {
                             "id": "osteoporosis_review_endpoint",
                             "type": "endpoint",
-                            "label": "Clinician-review modifier",
+                            "label": "Osteoporosis clinician review",
                             "edgeLabel": "Review modifier: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; T-score <= -2.5 or fragility fracture confirms osteoporosis",
                             "source_ids": [
                               "AACE_OSTEOPOROSIS_2020",
@@ -4603,7 +4603,7 @@
                           {
                             "id": "osteoporosis_monitoring_bundle",
                             "type": "action",
-                            "label": "Monitoring and readiness",
+                            "label": "Osteoporosis response monitoring",
                             "edgeLabel": "Monitor: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; DXA and vertebral imaging; treatment response; adverse effects",
                             "source_ids": [
                               "ENDO_OSTEOPOROSIS_2020",
@@ -4742,7 +4742,7 @@
                               {
                                 "id": "osteoporosis_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Reassessment escalation",
+                                "label": "Osteoporosis deterioration criteria",
                                 "edgeLabel": "Escalate if reassessment worsens: New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; DXA and vertebral imaging; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "ENDO_OSTEOPOROSIS_2020",
@@ -4991,7 +4991,7 @@
                               {
                                 "id": "osteoporosis_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "De-escalation or stopping criteria",
+                                "label": "Osteoporosis stop/narrow criteria",
                                 "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "ENDO_OSTEOPOROSIS_2020",
@@ -5240,7 +5240,7 @@
                               {
                                 "id": "osteoporosis_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Close loop: result owner, follow-up, return precautions",
+                                "label": "Osteoporosis follow-up and safety-net",
                                 "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ENDO_OSTEOPOROSIS_2020",
@@ -5519,7 +5519,7 @@
                   {
                     "id": "osteoporosis_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Alternate diagnosis pathway",
+                    "label": "Osteoporosis mimic/exclusion",
                     "edgeLabel": "Alternate diagnosis: Corrected calcium often about 8.5-10.5 mg/dL",
                     "source_ids": [
                       "ENDO_OSTEOPOROSIS_2020",

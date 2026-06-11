@@ -4038,7 +4038,7 @@
           {
             "id": "thyroid_cancer_concurrent_data_bundle",
             "type": "action",
-            "label": "Initial data bundle",
+            "label": "Thyroid Cancer triage inputs",
             "edgeLabel": "Assessment bundle: Neck ultrasound and nodal mapping; FNA cytology with Bethesda category; TSH/free T4; Calcitonin and CEA when medullary thyroid cancer suspected/confirmed; thyroid ultrasound pattern; largest nodule dimension",
             "source_ids": [
               "ATA_THYROID_CANCER_2025",
@@ -4072,7 +4072,7 @@
               {
                 "id": "thyroid_cancer_classification_decision",
                 "type": "decision",
-                "label": "Choose clinical branch",
+                "label": "Thyroid Cancer severity thresholds",
                 "edgeLabel": "Classify using >=1 cm; >=1.5 cm; >=2 cm; <1%",
                 "source_ids": [
                   "ATA_THYROID_NODULE_DTC_2015",
@@ -4292,7 +4292,7 @@
                   {
                     "id": "thyroid_cancer_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Escalation branch",
+                    "label": "Thyroid Cancer emergency criteria",
                     "edgeLabel": "Escalate: ATA thyroid nodule FNA; >=1 cm; >=1.5 cm",
                     "source_ids": [
                       "ATA_THYROID_CANCER_2025",
@@ -4493,7 +4493,7 @@
                   {
                     "id": "thyroid_cancer_treatment_bundle",
                     "type": "action",
-                    "label": "Treatment/disposition plan",
+                    "label": "Thyroid Cancer treatment/disposition",
                     "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "ATA_THYROID_CANCER_2025",
@@ -4611,7 +4611,7 @@
                       {
                         "id": "thyroid_cancer_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Treatment safety review",
+                        "label": "Thyroid Cancer contraindication screen",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "ATA_THYROID_NODULE_DTC_2015",
@@ -4670,7 +4670,7 @@
                           {
                             "id": "thyroid_cancer_review_endpoint",
                             "type": "endpoint",
-                            "label": "Clinician-review modifier",
+                            "label": "Thyroid Cancer clinician review",
                             "edgeLabel": "Review modifier: Hypothyroid LT4 titration; discordant endocrine tests need correct timing; Choose lobectomy versus total thyroidectomy",
                             "source_ids": [
                               "ATA_THYROID_NODULE_DTC_2015",
@@ -4708,7 +4708,7 @@
                           {
                             "id": "thyroid_cancer_monitoring_bundle",
                             "type": "action",
-                            "label": "Monitoring and readiness",
+                            "label": "Thyroid Cancer response monitoring",
                             "edgeLabel": "Monitor: >=1 cm; >=1.5 cm; Neck ultrasound and nodal mapping; FNA cytology with Bethesda category; treatment response",
                             "source_ids": [
                               "ATA_THYROID_CANCER_2025",
@@ -4824,7 +4824,7 @@
                               {
                                 "id": "thyroid_cancer_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Reassessment escalation",
+                                "label": "Thyroid Cancer deterioration criteria",
                                 "edgeLabel": "Escalate if reassessment worsens: >=1 cm; >=1.5 cm; Neck ultrasound and nodal mapping; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "ATA_THYROID_CANCER_2025",
@@ -5025,7 +5025,7 @@
                               {
                                 "id": "thyroid_cancer_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "De-escalation or stopping criteria",
+                                "label": "Thyroid Cancer stop/narrow criteria",
                                 "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "ATA_THYROID_CANCER_2025",
@@ -5226,7 +5226,7 @@
                               {
                                 "id": "thyroid_cancer_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Close loop: result owner, follow-up, return precautions",
+                                "label": "Thyroid Cancer follow-up and safety-net",
                                 "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ATA_THYROID_CANCER_2025",
@@ -5453,7 +5453,7 @@
                   {
                     "id": "thyroid_cancer_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Alternate diagnosis pathway",
+                    "label": "Thyroid Cancer mimic/exclusion",
                     "edgeLabel": "Alternate diagnosis: competing diagnosis better explains the presentation",
                     "source_ids": [
                       "ATA_THYROID_CANCER_2025",

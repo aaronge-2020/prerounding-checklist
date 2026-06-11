@@ -3253,7 +3253,7 @@
           {
             "id": "gynecomastia_concurrent_data_bundle",
             "type": "action",
-            "label": "Initial data bundle",
+            "label": "Gynecomastia triage inputs",
             "edgeLabel": "Assessment bundle: Total testosterone, LH, FSH, estradiol; hCG if suspicious; TSH, prolactin, liver/kidney function; Gynecomastia safety tests; testosterone; LH/FSH",
             "source_ids": [
               "ES_TESTOSTERONE_2018",
@@ -3287,7 +3287,7 @@
               {
                 "id": "gynecomastia_classification_decision",
                 "type": "decision",
-                "label": "Choose clinical branch",
+                "label": "Gynecomastia severity thresholds",
                 "edgeLabel": "Classify using <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%",
                 "source_ids": [
                   "ES_TESTOSTERONE_2018",
@@ -3459,7 +3459,7 @@
                   {
                     "id": "gynecomastia_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Escalation branch",
+                    "label": "Gynecomastia emergency criteria",
                     "edgeLabel": "Escalate: Hard eccentric breast mass; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; <150 ng/dL",
                     "source_ids": [
                       "ES_TESTOSTERONE_2018",
@@ -3584,7 +3584,7 @@
                   {
                     "id": "gynecomastia_treatment_bundle",
                     "type": "action",
-                    "label": "Treatment/disposition plan",
+                    "label": "Gynecomastia treatment/disposition",
                     "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "ES_TESTOSTERONE_2018",
@@ -3664,7 +3664,7 @@
                       {
                         "id": "gynecomastia_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Treatment safety review",
+                        "label": "Gynecomastia contraindication screen",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "ES_TESTOSTERONE_2018",
@@ -3722,7 +3722,7 @@
                           {
                             "id": "gynecomastia_review_endpoint",
                             "type": "endpoint",
-                            "label": "Clinician-review modifier",
+                            "label": "Gynecomastia clinician review",
                             "edgeLabel": "Review modifier: Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Testicular mass/hCG elevation changes to urgent tumor pathway; discordant endocrine tests need correct timing",
                             "source_ids": [
                               "ES_TESTOSTERONE_2018",
@@ -3758,7 +3758,7 @@
                           {
                             "id": "gynecomastia_monitoring_bundle",
                             "type": "action",
-                            "label": "Monitoring and readiness",
+                            "label": "Gynecomastia response monitoring",
                             "edgeLabel": "Monitor: <150 ng/dL; >4 ng/mL; Total testosterone, LH, FSH, estradiol; hCG if suspicious; treatment response",
                             "source_ids": [
                               "ES_TESTOSTERONE_2018",
@@ -3836,7 +3836,7 @@
                               {
                                 "id": "gynecomastia_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Reassessment escalation",
+                                "label": "Gynecomastia deterioration criteria",
                                 "edgeLabel": "Escalate if reassessment worsens: Hard eccentric breast mass; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; <150 ng/dL; >4 ng/mL; Total testosterone, LH, FSH, estradiol",
                                 "source_ids": [
                                   "ES_TESTOSTERONE_2018",
@@ -3961,7 +3961,7 @@
                               {
                                 "id": "gynecomastia_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "De-escalation or stopping criteria",
+                                "label": "Gynecomastia stop/narrow criteria",
                                 "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "ES_TESTOSTERONE_2018",
@@ -4086,7 +4086,7 @@
                               {
                                 "id": "gynecomastia_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Close loop: result owner, follow-up, return precautions",
+                                "label": "Gynecomastia follow-up and safety-net",
                                 "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ES_TESTOSTERONE_2018",
@@ -4238,7 +4238,7 @@
                   {
                     "id": "gynecomastia_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Alternate diagnosis pathway",
+                    "label": "Gynecomastia mimic/exclusion",
                     "edgeLabel": "Alternate diagnosis: competing diagnosis better explains the presentation",
                     "source_ids": [
                       "ES_TESTOSTERONE_2018",

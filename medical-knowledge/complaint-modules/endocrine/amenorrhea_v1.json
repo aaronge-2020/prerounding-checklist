@@ -4773,7 +4773,7 @@
           {
             "id": "amenorrhea_concurrent_data_bundle",
             "type": "action",
-            "label": "Initial data bundle",
+            "label": "Amenorrhea triage inputs",
             "edgeLabel": "Assessment bundle: Pregnancy test first; TSH and prolactin; FSH and estradiol; Androgen testing when hyperandrogenism: testosterone, DHEAS, 17-OHP; age; menarche status",
             "source_ids": [
               "ASRM_AMENORRHEA_2024",
@@ -4803,7 +4803,7 @@
               {
                 "id": "amenorrhea_classification_decision",
                 "type": "decision",
-                "label": "Choose clinical branch",
+                "label": "Amenorrhea severity thresholds",
                 "edgeLabel": "Classify using age 15; 5 years after breast development; age 10; age 13",
                 "source_ids": [
                   "ASRM_AMENORRHEA_2024",
@@ -5089,7 +5089,7 @@
                   {
                     "id": "amenorrhea_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Escalation branch",
+                    "label": "Amenorrhea emergency criteria",
                     "edgeLabel": "Escalate: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; Amenorrhea evaluation timing; Amenorrhea initial labs; age 15; 5 years after breast development",
                     "source_ids": [
                       "ASRM_AMENORRHEA_2024",
@@ -5422,7 +5422,7 @@
                   {
                     "id": "amenorrhea_treatment_bundle",
                     "type": "action",
-                    "label": "Treatment/disposition plan",
+                    "label": "Amenorrhea treatment/disposition",
                     "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "ASRM_AMENORRHEA_2024",
@@ -5604,7 +5604,7 @@
                       {
                         "id": "amenorrhea_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Treatment safety review",
+                        "label": "Amenorrhea contraindication screen",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "ASRM_AMENORRHEA_2024",
@@ -5715,7 +5715,7 @@
                           {
                             "id": "amenorrhea_review_endpoint",
                             "type": "endpoint",
-                            "label": "Clinician-review modifier",
+                            "label": "Amenorrhea clinician review",
                             "edgeLabel": "Review modifier: Amenorrhea evaluation timing; Amenorrhea initial labs; Amenorrhea pituitary branch; discordant endocrine tests need correct timing; Treat the cause",
                             "source_ids": [
                               "ASRM_AMENORRHEA_2024",
@@ -5749,7 +5749,7 @@
                           {
                             "id": "amenorrhea_monitoring_bundle",
                             "type": "action",
-                            "label": "Monitoring and readiness",
+                            "label": "Amenorrhea response monitoring",
                             "edgeLabel": "Monitor: age 15; 5 years after breast development; Pregnancy test first; TSH and prolactin; treatment response",
                             "source_ids": [
                               "ASRM_AMENORRHEA_2024",
@@ -5929,7 +5929,7 @@
                               {
                                 "id": "amenorrhea_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Reassessment escalation",
+                                "label": "Amenorrhea deterioration criteria",
                                 "edgeLabel": "Escalate if reassessment worsens: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; age 15; 5 years after breast development; Pregnancy test first; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "ASRM_AMENORRHEA_2024",
@@ -6262,7 +6262,7 @@
                               {
                                 "id": "amenorrhea_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "De-escalation or stopping criteria",
+                                "label": "Amenorrhea stop/narrow criteria",
                                 "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "ASRM_AMENORRHEA_2024",
@@ -6595,7 +6595,7 @@
                               {
                                 "id": "amenorrhea_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Close loop: result owner, follow-up, return precautions",
+                                "label": "Amenorrhea follow-up and safety-net",
                                 "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ASRM_AMENORRHEA_2024",
@@ -6958,7 +6958,7 @@
                   {
                     "id": "amenorrhea_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Alternate diagnosis pathway",
+                    "label": "Amenorrhea mimic/exclusion",
                     "edgeLabel": "Alternate diagnosis: competing diagnosis better explains the presentation",
                     "source_ids": [
                       "ASRM_AMENORRHEA_2024",

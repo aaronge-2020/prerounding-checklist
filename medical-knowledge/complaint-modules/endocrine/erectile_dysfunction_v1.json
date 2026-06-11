@@ -6822,7 +6822,7 @@
                           {
                             "id": "erectile_dysfunction_worsening_endpoint",
                             "type": "endpoint",
-                            "label": "ED reassessment escalation",
+                            "label": "ED deterioration criteria",
                             "edgeLabel": "New chest pain, syncope, dyspnea, neuro deficit, visual/hearing loss, priapism >4 hours, rising PSA/Hct, failed correct PDE5 use, or worsening pituitary symptoms",
                             "source_ids": [
                               "ENDOTEXT_ED_2022",

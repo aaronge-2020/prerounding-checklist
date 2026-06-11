@@ -3081,7 +3081,7 @@
           {
             "id": "pediatric_urinary_uti_pyelonephritis_concurrent_data_bundle",
             "type": "action",
-            "label": "Initial data bundle",
+            "label": "Pediatric urinary symptoms, UTI, or pyelonephritis triage inputs",
             "edgeLabel": "Assessment bundle: Urine sample before antibiotics when feasible; Dipstick microscopy and culture interpretation; Upper-tract labs and renal ultrasound; Age-based UTI imaging schedule; organism; time on antibiotic",
             "source_ids": [
               "NICE_UTI_UNDER16_NG224",
@@ -3115,7 +3115,7 @@
               {
                 "id": "pediatric_urinary_uti_pyelonephritis_classification_decision",
                 "type": "decision",
-                "label": "Choose clinical branch",
+                "label": "Pediatric urinary symptoms, UTI, or pyelonephritis severity thresholds",
                 "edgeLabel": "Classify using 48 hours; 2 or more; 1 or more; 3 or more",
                 "source_ids": [
                   "NICE_UTI_UNDER16_NG224",
@@ -3316,7 +3316,7 @@
                   {
                     "id": "pediatric_urinary_uti_pyelonephritis_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Escalation branch",
+                    "label": "Pediatric urinary symptoms, UTI, or pyelonephritis emergency criteria",
                     "edgeLabel": "Escalate: Suspected UTI in baby under 3 months; Toxic appearance or sepsis physiology; Upper UTI or pyelonephritis features; Atypical/recurrent UTI; UTI imaging schedule",
                     "source_ids": [
                       "NICE_UTI_UNDER16_NG224",
@@ -3483,7 +3483,7 @@
                   {
                     "id": "pediatric_urinary_uti_pyelonephritis_treatment_bundle",
                     "type": "action",
-                    "label": "Treatment/disposition plan",
+                    "label": "Pediatric urinary symptoms, UTI, or pyelonephritis treatment/disposition",
                     "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "CHQ_PEDS_UTI_2024",
@@ -3584,7 +3584,7 @@
                       {
                         "id": "pediatric_urinary_uti_pyelonephritis_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Treatment safety review",
+                        "label": "Pediatric urinary symptoms, UTI, or pyelonephritis contraindication screen",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "NICE_UTI_UNDER16_NG224",
@@ -3641,7 +3641,7 @@
                           {
                             "id": "pediatric_urinary_uti_pyelonephritis_review_endpoint",
                             "type": "endpoint",
-                            "label": "Clinician-review modifier",
+                            "label": "Pediatric urinary symptoms, UTI, or pyelonephritis clinician review",
                             "edgeLabel": "Review modifier: Atypical/recurrent UTI; UTI imaging schedule; When MCUG is done, give oral prophylactic antibiotics for 3 days with MCUG on day 2; Infant or sepsis escalation; Uncomplicated outpatient UTI route",
                             "source_ids": [
                               "NICE_UTI_UNDER16_NG224",
@@ -3677,7 +3677,7 @@
                           {
                             "id": "pediatric_urinary_uti_pyelonephritis_monitoring_bundle",
                             "type": "action",
-                            "label": "Monitoring and readiness",
+                            "label": "Pediatric urinary symptoms, UTI, or pyelonephritis response monitoring",
                             "edgeLabel": "Monitor: 48 hours; 2 or more; Urine sample before antibiotics when feasible; Dipstick microscopy and culture interpretation; treatment response",
                             "source_ids": [
                               "CHQ_PEDS_UTI_2024",
@@ -3776,7 +3776,7 @@
                               {
                                 "id": "pediatric_urinary_uti_pyelonephritis_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Reassessment escalation",
+                                "label": "Pediatric urinary symptoms, UTI, or pyelonephritis deterioration criteria",
                                 "edgeLabel": "Escalate if reassessment worsens: Suspected UTI in baby under 3 months; Toxic appearance or sepsis physiology; 48 hours; 2 or more; Urine sample before antibiotics when feasible",
                                 "source_ids": [
                                   "NICE_UTI_UNDER16_NG224",
@@ -3943,7 +3943,7 @@
                               {
                                 "id": "pediatric_urinary_uti_pyelonephritis_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "De-escalation or stopping criteria",
+                                "label": "Pediatric urinary symptoms, UTI, or pyelonephritis stop/narrow criteria",
                                 "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "CHQ_PEDS_UTI_2024",
@@ -4110,7 +4110,7 @@
                               {
                                 "id": "pediatric_urinary_uti_pyelonephritis_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Close loop: result owner, follow-up, return precautions",
+                                "label": "Pediatric urinary symptoms, UTI, or pyelonephritis follow-up and safety-net",
                                 "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "CHQ_PEDS_UTI_2024",
@@ -4305,7 +4305,7 @@
                   {
                     "id": "pediatric_urinary_uti_pyelonephritis_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Alternate diagnosis pathway",
+                    "label": "Pediatric urinary symptoms, UTI, or pyelonephritis mimic/exclusion",
                     "edgeLabel": "Alternate diagnosis: Lower UTI or cystitis pattern with dysuria; Infant UTI, fever without focus, or sepsis-risk urinary source",
                     "source_ids": [
                       "NICE_UTI_UNDER16_NG224",

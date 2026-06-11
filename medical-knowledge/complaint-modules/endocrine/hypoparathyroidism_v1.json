@@ -3813,7 +3813,7 @@
           {
             "id": "hypoparathyroidism_concurrent_data_bundle",
             "type": "action",
-            "label": "Initial data bundle",
+            "label": "Hypoparathyroidism triage inputs",
             "edgeLabel": "Assessment bundle: Calcium plus PTH; Phosphorus, magnesium, creatinine/eGFR, 25D; 24-hour urine calcium during chronic treatment; DXA/vertebral imaging or validated fracture-risk tool; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
             "source_ids": [
               "HYPOPARA_TASK_FORCE_2022",
@@ -3843,7 +3843,7 @@
               {
                 "id": "hypoparathyroidism_classification_decision",
                 "type": "decision",
-                "label": "Choose clinical branch",
+                "label": "Hypoparathyroidism severity thresholds",
                 "edgeLabel": "Classify using 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0",
                 "source_ids": [
                   "HYPOPARA_TASK_FORCE_2022",
@@ -4038,7 +4038,7 @@
                   {
                     "id": "hypoparathyroidism_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Escalation branch",
+                    "label": "Hypoparathyroidism emergency criteria",
                     "edgeLabel": "Escalate: Seizure, laryngospasm, arrhythmia/QT prolongation, severe symptomatic hypocalcemia; Corrected calcium often about 8.5-10.5 mg/dL; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
                     "source_ids": [
                       "HYPOPARA_TASK_FORCE_2022",
@@ -4253,7 +4253,7 @@
                   {
                     "id": "hypoparathyroidism_treatment_bundle",
                     "type": "action",
-                    "label": "Treatment/disposition plan",
+                    "label": "Hypoparathyroidism treatment/disposition",
                     "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "HYPOPARA_TASK_FORCE_2022",
@@ -4376,7 +4376,7 @@
                       {
                         "id": "hypoparathyroidism_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Treatment safety review",
+                        "label": "Hypoparathyroidism contraindication screen",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "HYPOPARA_TASK_FORCE_2022",
@@ -4497,7 +4497,7 @@
                           {
                             "id": "hypoparathyroidism_review_endpoint",
                             "type": "endpoint",
-                            "label": "Clinician-review modifier",
+                            "label": "Hypoparathyroidism clinician review",
                             "edgeLabel": "Review modifier: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring",
                             "source_ids": [
                               "HYPOPARA_TASK_FORCE_2022",
@@ -4529,7 +4529,7 @@
                           {
                             "id": "hypoparathyroidism_monitoring_bundle",
                             "type": "action",
-                            "label": "Monitoring and readiness",
+                            "label": "Hypoparathyroidism response monitoring",
                             "edgeLabel": "Monitor: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; Calcium plus PTH; Phosphorus, magnesium, creatinine/eGFR, 25D; treatment response",
                             "source_ids": [
                               "HYPOPARA_TASK_FORCE_2022",
@@ -4650,7 +4650,7 @@
                               {
                                 "id": "hypoparathyroidism_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Reassessment escalation",
+                                "label": "Hypoparathyroidism deterioration criteria",
                                 "edgeLabel": "Escalate if reassessment worsens: Seizure, laryngospasm, arrhythmia/QT prolongation, severe symptomatic hypocalcemia; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; Calcium plus PTH; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "HYPOPARA_TASK_FORCE_2022",
@@ -4865,7 +4865,7 @@
                               {
                                 "id": "hypoparathyroidism_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "De-escalation or stopping criteria",
+                                "label": "Hypoparathyroidism stop/narrow criteria",
                                 "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "HYPOPARA_TASK_FORCE_2022",
@@ -5080,7 +5080,7 @@
                               {
                                 "id": "hypoparathyroidism_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Close loop: result owner, follow-up, return precautions",
+                                "label": "Hypoparathyroidism follow-up and safety-net",
                                 "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "HYPOPARA_TASK_FORCE_2022",
@@ -5325,7 +5325,7 @@
                   {
                     "id": "hypoparathyroidism_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Alternate diagnosis pathway",
+                    "label": "Hypoparathyroidism mimic/exclusion",
                     "edgeLabel": "Alternate diagnosis: Corrected calcium often about 8.5-10.5 mg/dL",
                     "source_ids": [
                       "HYPOPARA_TASK_FORCE_2022",

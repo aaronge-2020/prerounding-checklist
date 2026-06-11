@@ -6598,7 +6598,7 @@
                         "id": "pediatric_chest_syncope_deescalation_endpoint",
                         "type": "endpoint",
                         "label": "Benign or autonomic de-escalation",
-                        "edgeLabel": "De-escalation branch: normal vitals/perfusion, no exertional symptoms, no concerning family history, normal ECG if obtained, no hypoxia/respiratory distress, orthostatic/autonomic pattern stable, and follow-up/safety-net access documented",
+                        "edgeLabel": "Benign/autonomic readiness: normal vitals/perfusion, no exertional symptoms, no concerning family history, normal ECG if obtained, no hypoxia/respiratory distress, orthostatic/autonomic pattern stable, and follow-up/safety-net access documented",
                         "source_ids": [
                           "RCH_CHEST_PAIN_CHILD",
                           "RCH_SYNCOPE_CHILD",
@@ -7692,7 +7692,7 @@
           "scenario_id": "deescalation_and_return_precautions",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "pediatric_chest_syncope_deescalation_endpoint",
-          "expected_active_branch": "De-escalation branch: normal vitals/perfusion, no exertional symptoms, no concerning family history, normal ECG if obtained, no hypoxia/respiratory distress, orthostatic/autonomic pattern stable, and follow-up/safety-net access documented",
+          "expected_active_branch": "Benign/autonomic readiness: normal vitals/perfusion, no exertional symptoms, no concerning family history, normal ECG if obtained, no hypoxia/respiratory distress, orthostatic/autonomic pattern stable, and follow-up/safety-net access documented",
           "expected_path_node_ids": [
             "root",
             "pediatric_chest_syncope_initial_assessment_bundle",

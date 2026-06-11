@@ -3405,7 +3405,7 @@
           {
             "id": "pediatric_neuro_headache_seizure_ams_concurrent_data_bundle",
             "type": "action",
-            "label": "Initial data bundle",
+            "label": "Pediatric Neuro Headache Seizure AMS triage inputs",
             "edgeLabel": "Assessment bundle: Do not order routine tests for low-risk headache; Point-of-care glucose; Seizure metabolic labs; 12-lead ECG when seizure mimic or first seizure assessment; age; headache pattern",
             "source_ids": [
               "RCH_HEADACHE_CHILD",
@@ -3445,7 +3445,7 @@
               {
                 "id": "pediatric_neuro_headache_seizure_ams_classification_decision",
                 "type": "decision",
-                "label": "Choose clinical branch",
+                "label": "Pediatric Neuro Headache Seizure AMS severity thresholds",
                 "edgeLabel": "Classify using <4 years; >=5 minutes; 2 benzodiazepine doses; 0.15 mg/kg",
                 "source_ids": [
                   "RCH_HEADACHE_CHILD",
@@ -3663,7 +3663,7 @@
                   {
                     "id": "pediatric_neuro_headache_seizure_ams_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Escalation branch",
+                    "label": "Pediatric Neuro Headache Seizure AMS emergency criteria",
                     "edgeLabel": "Escalate: Seizure over 5 minutes or repeated without recovery; Persistent altered conscious state; Pediatric headache red flags; Headache imaging/escalation triggers include age <4 years",
                     "source_ids": [
                       "CHQ_STATUS_EPILEPTICUS_CHILD",
@@ -3842,7 +3842,7 @@
                   {
                     "id": "pediatric_neuro_headache_seizure_ams_treatment_bundle",
                     "type": "action",
-                    "label": "Treatment/disposition plan",
+                    "label": "Pediatric Neuro Headache Seizure AMS treatment/disposition",
                     "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "CHQ_STATUS_EPILEPTICUS_CHILD",
@@ -3952,7 +3952,7 @@
                       {
                         "id": "pediatric_neuro_headache_seizure_ams_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Treatment safety review",
+                        "label": "Pediatric Neuro Headache Seizure AMS contraindication screen",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "RCH_HEADACHE_CHILD",
@@ -4039,7 +4039,7 @@
                           {
                             "id": "pediatric_neuro_headache_seizure_ams_review_endpoint",
                             "type": "endpoint",
-                            "label": "Clinician-review modifier",
+                            "label": "Pediatric Neuro Headache Seizure AMS clinician review",
                             "edgeLabel": "Review modifier: Headache imaging/escalation triggers include age <4 years; Active seizure treatment starts when total seizure duration is >=5 minutes or unknown; Active seizure emergency route",
                             "source_ids": [
                               "RCH_HEADACHE_CHILD",
@@ -4081,7 +4081,7 @@
                           {
                             "id": "pediatric_neuro_headache_seizure_ams_monitoring_bundle",
                             "type": "action",
-                            "label": "Monitoring and readiness",
+                            "label": "Pediatric Neuro Headache Seizure AMS response monitoring",
                             "edgeLabel": "Monitor: <4 years; >=5 minutes; Do not order routine tests for low-risk headache; Point-of-care glucose; treatment response",
                             "source_ids": [
                               "CHQ_STATUS_EPILEPTICUS_CHILD",
@@ -4189,7 +4189,7 @@
                               {
                                 "id": "pediatric_neuro_headache_seizure_ams_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Reassessment escalation",
+                                "label": "Pediatric Neuro Headache Seizure AMS deterioration criteria",
                                 "edgeLabel": "Escalate if reassessment worsens: Seizure over 5 minutes or repeated without recovery; Persistent altered conscious state; <4 years; >=5 minutes; Do not order routine tests for low-risk headache",
                                 "source_ids": [
                                   "CHQ_STATUS_EPILEPTICUS_CHILD",
@@ -4368,7 +4368,7 @@
                               {
                                 "id": "pediatric_neuro_headache_seizure_ams_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "De-escalation or stopping criteria",
+                                "label": "Pediatric Neuro Headache Seizure AMS stop/narrow criteria",
                                 "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "CHQ_STATUS_EPILEPTICUS_CHILD",
@@ -4547,7 +4547,7 @@
                               {
                                 "id": "pediatric_neuro_headache_seizure_ams_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Close loop: result owner, follow-up, return precautions",
+                                "label": "Pediatric Neuro Headache Seizure AMS follow-up and safety-net",
                                 "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "CHQ_STATUS_EPILEPTICUS_CHILD",
@@ -4753,7 +4753,7 @@
                   {
                     "id": "pediatric_neuro_headache_seizure_ams_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Alternate diagnosis pathway",
+                    "label": "Pediatric Neuro Headache Seizure AMS mimic/exclusion",
                     "edgeLabel": "Alternate diagnosis: Primary headache or migraine only after pediatric red flags are absent; Secondary headache, raised intracranial pressure, infection, or head injury; Seizure, status epilepticus, or post-ictal neurologic risk",
                     "source_ids": [
                       "RCH_HEADACHE_CHILD",

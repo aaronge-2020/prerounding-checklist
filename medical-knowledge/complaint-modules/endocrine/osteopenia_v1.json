@@ -3649,7 +3649,7 @@
           {
             "id": "osteopenia_concurrent_data_bundle",
             "type": "action",
-            "label": "Initial data bundle",
+            "label": "Osteopenia triage inputs",
             "edgeLabel": "Assessment bundle: DXA; FRAX or validated fracture-risk tool; Calcium, creatinine/eGFR, 25D, and secondary-cause labs; DXA/vertebral imaging or validated fracture-risk tool; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
             "source_ids": [
               "ENDO_OSTEOPOROSIS_2020",
@@ -3681,7 +3681,7 @@
               {
                 "id": "osteopenia_classification_decision",
                 "type": "decision",
-                "label": "Choose clinical branch",
+                "label": "Osteopenia severity thresholds",
                 "edgeLabel": "Classify using 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0",
                 "source_ids": [
                   "AACE_OSTEOPOROSIS_2020",
@@ -3880,7 +3880,7 @@
                   {
                     "id": "osteopenia_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Escalation branch",
+                    "label": "Osteopenia emergency criteria",
                     "edgeLabel": "Escalate: Fragility fracture despite osteopenic T-score, rapid bone loss, secondary cause signs; Corrected calcium often about 8.5-10.5 mg/dL; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
                     "source_ids": [
                       "ENDO_OSTEOPOROSIS_2020",
@@ -4097,7 +4097,7 @@
                   {
                     "id": "osteopenia_treatment_bundle",
                     "type": "action",
-                    "label": "Treatment/disposition plan",
+                    "label": "Osteopenia treatment/disposition",
                     "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "ENDO_OSTEOPOROSIS_2020",
@@ -4222,7 +4222,7 @@
                       {
                         "id": "osteopenia_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Treatment safety review",
+                        "label": "Osteopenia contraindication screen",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "AACE_OSTEOPOROSIS_2020",
@@ -4345,7 +4345,7 @@
                           {
                             "id": "osteopenia_review_endpoint",
                             "type": "endpoint",
-                            "label": "Clinician-review modifier",
+                            "label": "Osteopenia clinician review",
                             "edgeLabel": "Review modifier: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy",
                             "source_ids": [
                               "AACE_OSTEOPOROSIS_2020",
@@ -4379,7 +4379,7 @@
                           {
                             "id": "osteopenia_monitoring_bundle",
                             "type": "action",
-                            "label": "Monitoring and readiness",
+                            "label": "Osteopenia response monitoring",
                             "edgeLabel": "Monitor: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; DXA; FRAX or validated fracture-risk tool; treatment response",
                             "source_ids": [
                               "ENDO_OSTEOPOROSIS_2020",
@@ -4502,7 +4502,7 @@
                               {
                                 "id": "osteopenia_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Reassessment escalation",
+                                "label": "Osteopenia deterioration criteria",
                                 "edgeLabel": "Escalate if reassessment worsens: Fragility fracture despite osteopenic T-score, rapid bone loss, secondary cause signs; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; DXA; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "ENDO_OSTEOPOROSIS_2020",
@@ -4719,7 +4719,7 @@
                               {
                                 "id": "osteopenia_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "De-escalation or stopping criteria",
+                                "label": "Osteopenia stop/narrow criteria",
                                 "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "ENDO_OSTEOPOROSIS_2020",
@@ -4936,7 +4936,7 @@
                               {
                                 "id": "osteopenia_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Close loop: result owner, follow-up, return precautions",
+                                "label": "Osteopenia follow-up and safety-net",
                                 "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ENDO_OSTEOPOROSIS_2020",
@@ -5183,7 +5183,7 @@
                   {
                     "id": "osteopenia_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Alternate diagnosis pathway",
+                    "label": "Osteopenia mimic/exclusion",
                     "edgeLabel": "Alternate diagnosis: Corrected calcium often about 8.5-10.5 mg/dL",
                     "source_ids": [
                       "ENDO_OSTEOPOROSIS_2020",

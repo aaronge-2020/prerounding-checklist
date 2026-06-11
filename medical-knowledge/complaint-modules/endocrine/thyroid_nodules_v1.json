@@ -3724,7 +3724,7 @@
           {
             "id": "thyroid_nodules_concurrent_data_bundle",
             "type": "action",
-            "label": "Initial data bundle",
+            "label": "Thyroid Nodules triage inputs",
             "edgeLabel": "Assessment bundle: TSH; High-quality thyroid ultrasound with risk stratification; FNA by size/risk system; Structural thyroid safety workup; thyroid ultrasound pattern; largest nodule dimension",
             "source_ids": [
               "ATA_THYROID_NODULE_DTC_2015",
@@ -3756,7 +3756,7 @@
               {
                 "id": "thyroid_nodules_classification_decision",
                 "type": "decision",
-                "label": "Choose clinical branch",
+                "label": "Thyroid Nodules severity thresholds",
                 "edgeLabel": "Classify using >=1 cm; >=1.5 cm; >=2 cm; <1%",
                 "source_ids": [
                   "ATA_THYROID_NODULE_DTC_2015",
@@ -3938,7 +3938,7 @@
                   {
                     "id": "thyroid_nodules_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Escalation branch",
+                    "label": "Thyroid Nodules emergency criteria",
                     "edgeLabel": "Escalate: ATA thyroid nodule FNA; >=1 cm; >=1.5 cm",
                     "source_ids": [
                       "ATA_THYROID_NODULE_DTC_2015",
@@ -4093,7 +4093,7 @@
                   {
                     "id": "thyroid_nodules_treatment_bundle",
                     "type": "action",
-                    "label": "Treatment/disposition plan",
+                    "label": "Thyroid Nodules treatment/disposition",
                     "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "ATA_THYROID_NODULE_DTC_2015",
@@ -4187,7 +4187,7 @@
                       {
                         "id": "thyroid_nodules_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Treatment safety review",
+                        "label": "Thyroid Nodules contraindication screen",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "ATA_THYROID_NODULE_DTC_2015",
@@ -4219,7 +4219,7 @@
                           {
                             "id": "thyroid_nodules_review_endpoint",
                             "type": "endpoint",
-                            "label": "Clinician-review modifier",
+                            "label": "Thyroid Nodules clinician review",
                             "edgeLabel": "Review modifier: Suspicious ultrasound/Bethesda cytology changes cancer pathway; Low TSH with hot nodule shifts to autonomous-function pathway; Observe benign low-risk nodules with ultrasound surveillance and symptom monitoring",
                             "source_ids": [
                               "ATA_THYROID_NODULE_DTC_2015",
@@ -4253,7 +4253,7 @@
                           {
                             "id": "thyroid_nodules_monitoring_bundle",
                             "type": "action",
-                            "label": "Monitoring and readiness",
+                            "label": "Thyroid Nodules response monitoring",
                             "edgeLabel": "Monitor: >=1 cm; >=1.5 cm; TSH; High-quality thyroid ultrasound with risk stratification; treatment response",
                             "source_ids": [
                               "ATA_THYROID_NODULE_DTC_2015",
@@ -4345,7 +4345,7 @@
                               {
                                 "id": "thyroid_nodules_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Reassessment escalation",
+                                "label": "Thyroid Nodules deterioration criteria",
                                 "edgeLabel": "Escalate if reassessment worsens: >=1 cm; >=1.5 cm; TSH; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "ATA_THYROID_NODULE_DTC_2015",
@@ -4500,7 +4500,7 @@
                               {
                                 "id": "thyroid_nodules_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "De-escalation or stopping criteria",
+                                "label": "Thyroid Nodules stop/narrow criteria",
                                 "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "ATA_THYROID_NODULE_DTC_2015",
@@ -4655,7 +4655,7 @@
                               {
                                 "id": "thyroid_nodules_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Close loop: result owner, follow-up, return precautions",
+                                "label": "Thyroid Nodules follow-up and safety-net",
                                 "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ATA_THYROID_NODULE_DTC_2015",
@@ -4835,7 +4835,7 @@
                   {
                     "id": "thyroid_nodules_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Alternate diagnosis pathway",
+                    "label": "Thyroid Nodules mimic/exclusion",
                     "edgeLabel": "Alternate diagnosis: competing diagnosis better explains the presentation",
                     "source_ids": [
                       "ATA_THYROID_NODULE_DTC_2015",

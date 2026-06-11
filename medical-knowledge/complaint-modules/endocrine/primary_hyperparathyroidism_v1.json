@@ -3951,7 +3951,7 @@
           {
             "id": "primary_hyperparathyroidism_concurrent_data_bundle",
             "type": "action",
-            "label": "Initial data bundle",
+            "label": "Primary Hyperparathyroidism triage inputs",
             "edgeLabel": "Assessment bundle: Repeat albumin-corrected/ionized calcium with intact PTH; 25D, phosphorus, creatinine/eGFR; 24-hour urine calcium and Ca/Cr clearance ratio; DXA/vertebral imaging or validated fracture-risk tool; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
             "source_ids": [
               "PHPT_WORKSHOP_2022",
@@ -3981,7 +3981,7 @@
               {
                 "id": "primary_hyperparathyroidism_classification_decision",
                 "type": "decision",
-                "label": "Choose clinical branch",
+                "label": "Primary Hyperparathyroidism severity thresholds",
                 "edgeLabel": "Classify using 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0",
                 "source_ids": [
                   "PHPT_WORKSHOP_2022",
@@ -4214,7 +4214,7 @@
                   {
                     "id": "primary_hyperparathyroidism_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Escalation branch",
+                    "label": "Primary Hyperparathyroidism emergency criteria",
                     "edgeLabel": "Escalate: Severe hypercalcemia, dehydration, AKI, confusion, pancreatitis; Corrected calcium often about 8.5-10.5 mg/dL; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
                     "source_ids": [
                       "PHPT_WORKSHOP_2022",
@@ -4497,7 +4497,7 @@
                   {
                     "id": "primary_hyperparathyroidism_treatment_bundle",
                     "type": "action",
-                    "label": "Treatment/disposition plan",
+                    "label": "Primary Hyperparathyroidism treatment/disposition",
                     "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "PHPT_WORKSHOP_2022",
@@ -4654,7 +4654,7 @@
                       {
                         "id": "primary_hyperparathyroidism_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Treatment safety review",
+                        "label": "Primary Hyperparathyroidism contraindication screen",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "PHPT_WORKSHOP_2022",
@@ -4809,7 +4809,7 @@
                           {
                             "id": "primary_hyperparathyroidism_review_endpoint",
                             "type": "endpoint",
-                            "label": "Clinician-review modifier",
+                            "label": "Primary Hyperparathyroidism clinician review",
                             "edgeLabel": "Review modifier: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; discordant endocrine tests need correct timing",
                             "source_ids": [
                               "PHPT_WORKSHOP_2022",
@@ -4841,7 +4841,7 @@
                           {
                             "id": "primary_hyperparathyroidism_monitoring_bundle",
                             "type": "action",
-                            "label": "Monitoring and readiness",
+                            "label": "Primary Hyperparathyroidism response monitoring",
                             "edgeLabel": "Monitor: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; Repeat albumin-corrected/ionized calcium with intact PTH; 25D, phosphorus, creatinine/eGFR; treatment response",
                             "source_ids": [
                               "PHPT_WORKSHOP_2022",
@@ -4996,7 +4996,7 @@
                               {
                                 "id": "primary_hyperparathyroidism_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Reassessment escalation",
+                                "label": "Primary Hyperparathyroidism deterioration criteria",
                                 "edgeLabel": "Escalate if reassessment worsens: Severe hypercalcemia, dehydration, AKI, confusion, pancreatitis; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; Repeat albumin-corrected/ionized calcium with intact PTH; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "PHPT_WORKSHOP_2022",
@@ -5279,7 +5279,7 @@
                               {
                                 "id": "primary_hyperparathyroidism_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "De-escalation or stopping criteria",
+                                "label": "Primary Hyperparathyroidism stop/narrow criteria",
                                 "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "PHPT_WORKSHOP_2022",
@@ -5562,7 +5562,7 @@
                               {
                                 "id": "primary_hyperparathyroidism_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Close loop: result owner, follow-up, return precautions",
+                                "label": "Primary Hyperparathyroidism follow-up and safety-net",
                                 "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "PHPT_WORKSHOP_2022",
@@ -5875,7 +5875,7 @@
                   {
                     "id": "primary_hyperparathyroidism_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Alternate diagnosis pathway",
+                    "label": "Primary Hyperparathyroidism mimic/exclusion",
                     "edgeLabel": "Alternate diagnosis: Corrected calcium often about 8.5-10.5 mg/dL",
                     "source_ids": [
                       "PHPT_WORKSHOP_2022",

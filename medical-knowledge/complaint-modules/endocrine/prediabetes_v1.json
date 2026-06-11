@@ -4764,7 +4764,7 @@
                     "id": "prediabetes_diabetes_range_endpoint",
                     "type": "endpoint",
                     "label": "Diabetes-range escalation",
-                    "edgeLabel": "Escalation branch: A1c >=6.5%, fasting glucose >=126 mg/dL, 2-hour OGTT >=200 mg/dL, random glucose >=200 mg/dL with symptoms, dehydration, pregnancy hyperglycemia, severe hypertension, or ASCVD symptoms",
+                    "edgeLabel": "Diabetes-range values or unstable symptoms: A1c >=6.5%, fasting glucose >=126 mg/dL, 2-hour OGTT >=200 mg/dL, random glucose >=200 mg/dL with symptoms, dehydration, pregnancy hyperglycemia, severe hypertension, or ASCVD symptoms",
                     "source_ids": [
                       "ADA_DIAGNOSIS_2026",
                       "CDC_DIABETES_TESTING_2024"
@@ -7117,7 +7117,7 @@
           "scenario_id": "diabetes_range_or_urgent_symptoms",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "prediabetes_diabetes_range_endpoint",
-          "expected_active_branch": "Escalation branch: A1c >=6.5%, fasting glucose >=126 mg/dL, 2-hour OGTT >=200 mg/dL, random glucose >=200 mg/dL with symptoms, dehydration, pregnancy hyperglycemia, severe hypertension, or ASCVD symptoms",
+          "expected_active_branch": "Diabetes-range values or unstable symptoms: A1c >=6.5%, fasting glucose >=126 mg/dL, 2-hour OGTT >=200 mg/dL, random glucose >=200 mg/dL with symptoms, dehydration, pregnancy hyperglycemia, severe hypertension, or ASCVD symptoms",
           "expected_path_node_ids": [
             "root",
             "prediabetes_initial_assessment",

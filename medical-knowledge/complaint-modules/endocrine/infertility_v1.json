@@ -4361,7 +4361,7 @@
           {
             "id": "infertility_concurrent_data_bundle",
             "type": "action",
-            "label": "Initial data bundle",
+            "label": "Infertility triage inputs",
             "edgeLabel": "Assessment bundle: Pregnancy test if amenorrhea; TSH/prolactin; FSH/estradiol/AMH/antral follicle count; PCOS and androgen labs; age; duration of attempts",
             "source_ids": [
               "ASRM_AMENORRHEA_2024",
@@ -4395,7 +4395,7 @@
               {
                 "id": "infertility_classification_decision",
                 "type": "decision",
-                "label": "Choose clinical branch",
+                "label": "Infertility severity thresholds",
                 "edgeLabel": "Classify using >=12 months; age <35; 6 months; age >=35",
                 "source_ids": [
                   "ASRM_INFERTILITY_EVALUATION_2021",
@@ -4615,7 +4615,7 @@
                   {
                     "id": "infertility_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Escalation branch",
+                    "label": "Infertility emergency criteria",
                     "edgeLabel": "Escalate: Amenorrhea with visual symptoms; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; Infertility evaluation timing; Ovulation branch; >=12 months",
                     "source_ids": [
                       "ASRM_AMENORRHEA_2024",
@@ -4804,7 +4804,7 @@
                   {
                     "id": "infertility_treatment_bundle",
                     "type": "action",
-                    "label": "Treatment/disposition plan",
+                    "label": "Infertility treatment/disposition",
                     "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "ASRM_AMENORRHEA_2024",
@@ -4916,7 +4916,7 @@
                       {
                         "id": "infertility_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Treatment safety review",
+                        "label": "Infertility contraindication screen",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "ASRM_INFERTILITY_EVALUATION_2021",
@@ -5006,7 +5006,7 @@
                           {
                             "id": "infertility_review_endpoint",
                             "type": "endpoint",
-                            "label": "Clinician-review modifier",
+                            "label": "Infertility clinician review",
                             "edgeLabel": "Review modifier: Infertility evaluation timing; Infertility endocrine redirection; discordant endocrine tests need correct timing",
                             "source_ids": [
                               "ASRM_INFERTILITY_EVALUATION_2021",
@@ -5044,7 +5044,7 @@
                           {
                             "id": "infertility_monitoring_bundle",
                             "type": "action",
-                            "label": "Monitoring and readiness",
+                            "label": "Infertility response monitoring",
                             "edgeLabel": "Monitor: >=12 months; age <35; Pregnancy test if amenorrhea; TSH/prolactin; treatment response",
                             "source_ids": [
                               "ASRM_AMENORRHEA_2024",
@@ -5154,7 +5154,7 @@
                               {
                                 "id": "infertility_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Reassessment escalation",
+                                "label": "Infertility deterioration criteria",
                                 "edgeLabel": "Escalate if reassessment worsens: Amenorrhea with visual symptoms; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; >=12 months; age <35; Pregnancy test if amenorrhea",
                                 "source_ids": [
                                   "ASRM_AMENORRHEA_2024",
@@ -5343,7 +5343,7 @@
                               {
                                 "id": "infertility_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "De-escalation or stopping criteria",
+                                "label": "Infertility stop/narrow criteria",
                                 "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "ASRM_AMENORRHEA_2024",
@@ -5532,7 +5532,7 @@
                               {
                                 "id": "infertility_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Close loop: result owner, follow-up, return precautions",
+                                "label": "Infertility follow-up and safety-net",
                                 "edgeLabel": "Follow-up ready: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ASRM_AMENORRHEA_2024",
@@ -5748,7 +5748,7 @@
                   {
                     "id": "infertility_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Alternate diagnosis pathway",
+                    "label": "Infertility mimic/exclusion",
                     "edgeLabel": "Alternate diagnosis: competing diagnosis better explains the presentation",
                     "source_ids": [
                       "ASRM_AMENORRHEA_2024",

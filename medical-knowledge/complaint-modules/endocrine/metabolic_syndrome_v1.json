@@ -4950,7 +4950,7 @@
                     "id": "metabolic_syndrome_urgent_cardiometabolic_endpoint",
                     "type": "endpoint",
                     "label": "Urgent cardiometabolic escalation",
-                    "edgeLabel": "Escalation branch: A1c >=6.5%, fasting glucose >=126 mg/dL or random glucose >=200 mg/dL with symptoms, BP around >=180/120 mm Hg or end-organ symptoms, chest pain, dyspnea, neurologic symptoms, pregnancy hyperglycemia, dehydration, or altered mental status",
+                    "edgeLabel": "Cardiometabolic emergency criteria: A1c >=6.5%, fasting glucose >=126 mg/dL or random glucose >=200 mg/dL with symptoms, BP around >=180/120 mm Hg or end-organ symptoms, chest pain, dyspnea, neurologic symptoms, pregnancy hyperglycemia, dehydration, or altered mental status",
                     "source_ids": [
                       "CDC_DIABETES_TESTING_2024",
                       "ADA_DIAGNOSIS_2026",
@@ -7591,7 +7591,7 @@
           "scenario_id": "urgent_cardiometabolic_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "metabolic_syndrome_urgent_cardiometabolic_endpoint",
-          "expected_active_branch": "Escalation branch: A1c >=6.5%, fasting glucose >=126 mg/dL or random glucose >=200 mg/dL with symptoms, BP around >=180/120 mm Hg or end-organ symptoms, chest pain, dyspnea, neurologic symptoms, pregnancy hyperglycemia, dehydration, or altered mental status",
+          "expected_active_branch": "Cardiometabolic emergency criteria: A1c >=6.5%, fasting glucose >=126 mg/dL or random glucose >=200 mg/dL with symptoms, BP around >=180/120 mm Hg or end-organ symptoms, chest pain, dyspnea, neurologic symptoms, pregnancy hyperglycemia, dehydration, or altered mental status",
           "expected_path_node_ids": [
             "root",
             "metabolic_syndrome_initial_assessment",
