@@ -4,9 +4,17 @@ on:
   workflow_dispatch:
     inputs:
       reviewer_email:
-        description: "Optional reviewer email to grant after Google sign-in"
+        description: "Optional reviewer email to grant after OAuth sign-in"
         required: false
         type: string
+      oauth_provider:
+        description: "Supabase OAuth provider to enable"
+        required: false
+        default: "google"
+        type: choice
+        options:
+          - google
+          - github
 
 jobs:
   deploy:
@@ -19,8 +27,11 @@ jobs:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
       SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      WORKUP_STUDIO_OAUTH_PROVIDER: ${{ inputs.oauth_provider }}
       SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID: ${{ secrets.SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID }}
       SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET: ${{ secrets.SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET }}
+      SUPABASE_AUTH_EXTERNAL_GITHUB_CLIENT_ID: ${{ secrets.SUPABASE_AUTH_EXTERNAL_GITHUB_CLIENT_ID }}
+      SUPABASE_AUTH_EXTERNAL_GITHUB_SECRET: ${{ secrets.SUPABASE_AUTH_EXTERNAL_GITHUB_SECRET }}
       WORKUP_STUDIO_REVIEWER_EMAIL: ${{ inputs.reviewer_email }}
     steps:
       - name: Checkout

@@ -9363,7 +9363,7 @@
               <div class="studio-backend-status" id="workupStudioBackendStatus" data-state="local">Not connected. Sign in with an assigned Workup Studio account.</div>
               <div class="notice">Backend: Workup Studio Supabase. Access requires an authenticated account with a reviewer profile or assigned workups.</div>
               <div class="button-row">
-                <button class="btn btn-primary" id="workupStudioSignInButton" type="button">Continue with Google</button>
+                <button class="btn btn-primary" id="workupStudioSignInButton" type="button">Continue with Google or GitHub</button>
                 <button class="btn btn-secondary" id="workupStudioLoadBackendDraftsButton" type="button" hidden disabled>Load drafts</button>
                 <button class="btn btn-secondary" id="workupStudioSignOutButton" type="button" hidden>Sign out</button>
               </div>
@@ -9776,6 +9776,11 @@
       publishableKey: "sb_publishable_-rugOaCgl3r9abyuX7TICA_JQ0KQLhn"
     });
     const WORKUP_STUDIO_OAUTH_PROVIDER = "google";
+    const WORKUP_STUDIO_OAUTH_PROVIDER_OPTIONS = Object.freeze(["google", "github"]);
+    const WORKUP_STUDIO_OAUTH_PROVIDER_LABELS = Object.freeze({
+      google: "Google",
+      github: "GitHub"
+    });
     const VAULT_KDF_ITERATIONS = 210000;
     const CHECKLIST_IMPROVEMENT_TASK_ID = "checklist_improvement_review";
     const DECISION_TREE_TASK_ID = "decision_tree_builder";
@@ -11341,7 +11346,7 @@
             : workupStudioState.backend.lastAuthError
               ? workupStudioState.backend.lastAuthError
             : workupStudioBackendConfigured()
-              ? "Not connected. Continue with Google using an assigned Workup Studio account."
+              ? `Not connected. Continue with ${workupStudioOAuthProviderListLabel()} using an assigned Workup Studio account.`
               : "Workup Studio backend is unavailable in this build.");
       }
       if (elements.workupStudioSignInButton) {
@@ -11385,22 +11390,77 @@
       return redirectUrl.toString();
     }
 
-    function workupStudioOAuthErrorMessage(errorCode = "", description = "") {
-      const detail = [errorCode, description].filter(Boolean).join(": ");
-      if (/unsupported provider|provider is not enabled|validation_failed/i.test(detail)) {
-        return "Google OAuth is not enabled for this Supabase project yet. Enable Google in Supabase Auth providers and add this app URL to the redirect allow-list.";
-      }
-      return detail || "Unable to finish Google sign-in with Supabase.";
+    function workupStudioOAuthProviderLabel(provider = WORKUP_STUDIO_OAUTH_PROVIDER) {
+      return WORKUP_STUDIO_OAUTH_PROVIDER_LABELS[provider] || provider.replace(/_/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
     }
 
-    function startWorkupStudioOAuthSignIn() {
+    function workupStudioOAuthProviderListLabel(providers = WORKUP_STUDIO_OAUTH_PROVIDER_OPTIONS) {
+      const labels = providers.map(workupStudioOAuthProviderLabel);
+      return labels.length > 1 ? `${labels.slice(0, -1).join(", ")} or ${labels.at(-1)}` : labels[0] || "OAuth";
+    }
+
+    function workupStudioOAuthProviderOptions() {
+      const options = [WORKUP_STUDIO_OAUTH_PROVIDER, ...WORKUP_STUDIO_OAUTH_PROVIDER_OPTIONS]
+        .map((provider) => String(provider || "").trim().toLowerCase())
+        .filter(Boolean);
+      return [...new Set(options)];
+    }
+
+    async function fetchWorkupStudioOAuthSettings() {
+      const response = await fetch(`${normalizeSupabaseUrl(workupStudioState.backend.url)}/auth/v1/settings`, {
+        headers: {
+          apikey: workupStudioState.backend.anonKey,
+          "content-type": "application/json"
+        }
+      });
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(`Unable to read Supabase OAuth provider settings: ${response.status} ${text.slice(0, 160)}`);
+      }
+      return response.json();
+    }
+
+    async function resolveWorkupStudioOAuthProvider() {
+      const options = workupStudioOAuthProviderOptions();
+      let settings;
+      try {
+        settings = await fetchWorkupStudioOAuthSettings();
+      } catch (error) {
+        throw new Error(error instanceof Error ? error.message : "Unable to read Supabase OAuth provider settings.");
+      }
+      const external = settings?.external && typeof settings.external === "object" ? settings.external : {};
+      const enabledProvider = options.find((provider) => external[provider] === true);
+      if (enabledProvider) return enabledProvider;
+      throw new Error(`No Supabase OAuth provider is enabled for Workup Studio. Enable ${workupStudioOAuthProviderListLabel(options)} in Supabase Auth, then rerun the backend deploy/readiness check.`);
+    }
+
+    function workupStudioOAuthErrorMessage(errorCode = "", description = "", provider = WORKUP_STUDIO_OAUTH_PROVIDER) {
+      const detail = [errorCode, description].filter(Boolean).join(": ");
+      if (/unsupported provider|provider is not enabled|validation_failed/i.test(detail)) {
+        return `${workupStudioOAuthProviderLabel(provider)} OAuth is not enabled for this Supabase project yet. Enable ${workupStudioOAuthProviderListLabel()} in Supabase Auth providers and add this app URL to the redirect allow-list.`;
+      }
+      return detail || `Unable to finish ${workupStudioOAuthProviderLabel(provider)} sign-in with Supabase.`;
+    }
+
+    async function startWorkupStudioOAuthSignIn() {
       if (!ensureWorkupStudioBackendConfig()) return false;
+      renderWorkupStudioBackendStatus(`Checking Supabase OAuth provider settings for ${workupStudioOAuthProviderListLabel()}...`);
+      let provider;
+      try {
+        provider = await resolveWorkupStudioOAuthProvider();
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Unable to verify Supabase OAuth provider settings.";
+        clearWorkupStudioAuthSession({ keepEmail: false, authError: message });
+        renderWorkupStudioBackendStatus(message);
+        setStatus(message);
+        return false;
+      }
       const authorizeUrl = new URL(`${normalizeSupabaseUrl(workupStudioState.backend.url)}/auth/v1/authorize`);
-      authorizeUrl.searchParams.set("provider", WORKUP_STUDIO_OAUTH_PROVIDER);
+      authorizeUrl.searchParams.set("provider", provider);
       authorizeUrl.searchParams.set("redirect_to", workupStudioOAuthRedirectUrl());
-      localStorage.setItem(WORKUP_AUTHORING_OAUTH_PENDING_KEY, WORKUP_STUDIO_OAUTH_PROVIDER);
-      renderWorkupStudioBackendStatus("Opening Google sign-in through Supabase...");
-      setStatus("Opening Google sign-in through Supabase.");
+      localStorage.setItem(WORKUP_AUTHORING_OAUTH_PENDING_KEY, provider);
+      renderWorkupStudioBackendStatus(`Opening ${workupStudioOAuthProviderLabel(provider)} sign-in through Supabase...`);
+      setStatus(`Opening ${workupStudioOAuthProviderLabel(provider)} sign-in through Supabase.`);
       window.location.assign(authorizeUrl.toString());
       return true;
     }
@@ -11422,7 +11482,7 @@
         return "Workup Studio database tables are not installed in Supabase yet. Deploy the authoring migrations, then import the medical knowledge seed data.";
       }
       if (/jwt expired|invalid jwt|invalid token|not authenticated/.test(lower) || status === 401) {
-        return "Your Supabase session expired or is invalid. Continue with Google again before connecting to Workup Studio.";
+        return `Your Supabase session expired or is invalid. Continue with ${workupStudioOAuthProviderListLabel()} again before connecting to Workup Studio.`;
       }
       if (/permission denied|violates row-level security|rls|row level security/.test(lower) || status === 403) {
         return "Supabase blocked this action. This account is not assigned to this workup or does not have reviewer permission.";
@@ -11523,7 +11583,7 @@
       return workupStudioState.backend;
     }
 
-    async function finishWorkupStudioOAuthSession(session) {
+    async function finishWorkupStudioOAuthSession(session, provider = WORKUP_STUDIO_OAUTH_PROVIDER) {
       if (!ensureWorkupStudioBackendConfig()) return false;
       const accessToken = String(session?.access_token || "").trim();
       if (!accessToken) return false;
@@ -11545,16 +11605,17 @@
         lastSyncAt: ""
       };
       saveWorkupStudioState();
-      renderWorkupStudioBackendStatus("Google sign-in returned. Checking Workup Studio permissions...");
+      const providerLabel = workupStudioOAuthProviderLabel(provider);
+      renderWorkupStudioBackendStatus(`${providerLabel} sign-in returned. Checking Workup Studio permissions...`);
       const ok = await hydrateWorkupStudioBackendUserFromToken();
       if (ok) {
         setStatus(workupStudioState.backend.canReview
-          ? "Signed in with Google as a Workup Studio reviewer."
-          : `Signed in with Google with ${workupStudioState.backend.permittedWorkupIds.length} assigned workup${workupStudioState.backend.permittedWorkupIds.length === 1 ? "" : "s"}.`);
+          ? `Signed in with ${providerLabel} as a Workup Studio reviewer.`
+          : `Signed in with ${providerLabel} with ${workupStudioState.backend.permittedWorkupIds.length} assigned workup${workupStudioState.backend.permittedWorkupIds.length === 1 ? "" : "s"}.`);
         await loadWorkupStudioBackendChangeSets({ announce: false });
         return true;
       }
-      setStatus("Google sign-in succeeded, but this account has no Workup Studio permission.");
+      setStatus(`${providerLabel} sign-in succeeded, but this account has no Workup Studio permission.`);
       return false;
     }
 
@@ -11567,6 +11628,7 @@
         || queryParams.get("workupStudioOAuth") === "1"
         || localStorage.getItem(WORKUP_AUTHORING_OAUTH_PENDING_KEY);
       if (!hasOAuthPayload) return false;
+      const pendingProvider = localStorage.getItem(WORKUP_AUTHORING_OAUTH_PENDING_KEY) || WORKUP_STUDIO_OAUTH_PROVIDER;
       localStorage.removeItem(WORKUP_AUTHORING_OAUTH_PENDING_KEY);
       const cleanUrl = new URL(window.location.href);
       cleanUrl.hash = "";
@@ -11575,7 +11637,7 @@
       const errorCode = hashParams.get("error_code") || queryParams.get("error_code") || error;
       const description = hashParams.get("error_description") || queryParams.get("error_description") || "";
       if (error || errorCode || description) {
-        const message = workupStudioOAuthErrorMessage(errorCode, description);
+        const message = workupStudioOAuthErrorMessage(errorCode, description, pendingProvider);
         clearWorkupStudioAuthSession({ keepEmail: false, authError: message });
         renderWorkupStudioBackendStatus(message);
         setStatus(message);
@@ -11592,7 +11654,7 @@
         refresh_token: hashParams.get("refresh_token") || "",
         expires_in: hashParams.get("expires_in") || "",
         expires_at: hashParams.get("expires_at") || ""
-      });
+      }, pendingProvider);
       window.history.replaceState({}, document.title, cleanUrl.toString());
       return result;
     }
@@ -19320,7 +19382,7 @@
         setStatus("Workup authoring import command copied.");
       });
       elements.workupStudioSignInButton?.addEventListener("click", () => {
-        startWorkupStudioOAuthSignIn();
+        void startWorkupStudioOAuthSignIn();
       });
       elements.workupStudioLoadBackendDraftsButton?.addEventListener("click", () => {
         void loadWorkupStudioBackendChangeSets();

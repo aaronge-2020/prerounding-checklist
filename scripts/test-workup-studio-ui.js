@@ -86,8 +86,10 @@ try {
   const fakeUserId = "11111111-1111-4111-8111-111111111111";
   const fakeUnassignedUserId = "22222222-2222-4222-8222-222222222222";
   const fakeAuthorUserId = "33333333-3333-4333-8333-333333333333";
+  let oauthProvidersEnabled = true;
   const supabaseRequests = {
     authorizeCount: 0,
+    settingsCount: 0,
     tokenRefreshCount: 0,
     userCount: 0,
     profileCount: 0,
@@ -101,6 +103,22 @@ try {
   await page.route("https://hajjuzpnlvpetsleuxwb.supabase.co/**", async (route) => {
     const request = route.request();
     const url = new URL(request.url());
+    if (url.pathname === "/auth/v1/settings") {
+      supabaseRequests.settingsCount += 1;
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          external: {
+            anonymous_users: false,
+            email: true,
+            google: oauthProvidersEnabled,
+            github: false
+          }
+        })
+      });
+      return;
+    }
     if (url.pathname === "/auth/v1/authorize") {
       supabaseRequests.authorizeCount += 1;
       const redirectTo = url.searchParams.get("redirect_to") || `${baseUrl}/index.html`;
@@ -320,13 +338,20 @@ try {
   await page.waitForFunction(() => document.querySelectorAll("#workupStudioList .studio-workup-row").length > 0);
   await page.locator("#workupStudioList .studio-workup-row", { hasText: "Hyperglycemia" }).first().click();
   await page.waitForFunction(() => document.querySelector("#workupStudioSelectedTitle")?.textContent?.includes("Hyperglycemia"));
+  oauthProvidersEnabled = false;
+  const authorizeCountBeforeDisabledProvider = supabaseRequests.authorizeCount;
+  await page.click("#workupStudioSignInButton");
+  await page.waitForFunction(() => /No Supabase OAuth provider is enabled/i.test(document.querySelector("#workupStudioBackendStatus")?.textContent || ""));
+  assert.equal(supabaseRequests.authorizeCount, authorizeCountBeforeDisabledProvider, "Disabled OAuth providers should stop before Supabase authorize navigation.");
+  oauthProvidersEnabled = true;
   await page.click("#workupStudioSignInButton");
   await waitForCondition(() => supabaseRequests.authorizeCount >= 1 && supabaseRequests.profileCount >= 2 && supabaseRequests.assignmentCount >= 2, "unassigned OAuth callback");
   await page.click("#demoCaseButton");
   await page.waitForFunction(() => document.body.dataset.view !== "vaultAccess");
   await page.click('button[data-view-target="studio"]');
   await page.waitForFunction(() => /no Workup Studio assignment/i.test(document.querySelector("#workupStudioBackendStatus")?.textContent || ""));
-  assert.equal(supabaseRequests.authorizeCount, 1, "Unassigned account should authenticate through Supabase Google OAuth before permission denial.");
+  assert.equal(supabaseRequests.settingsCount, 2, "Workup Studio should check Supabase OAuth provider settings before redirecting.");
+  assert.equal(supabaseRequests.authorizeCount, 1, "Unassigned account should authenticate through Supabase OAuth before permission denial.");
   assert.equal(supabaseRequests.profileCount, 2, "Unassigned account should check profile.");
   assert.equal(supabaseRequests.assignmentCount, 2, "Unassigned account should check assignments.");
   assert.equal(supabaseRequests.getChangeSetsCount, 0, "Unassigned account must not load backend drafts.");
@@ -340,7 +365,8 @@ try {
   await page.waitForFunction(() => document.body.dataset.view !== "vaultAccess");
   await page.click('button[data-view-target="studio"]');
   await page.waitForFunction(() => /Reviewer signed in as reviewer@example\.test/.test(document.querySelector("#workupStudioBackendStatus")?.textContent || ""));
-  assert.equal(supabaseRequests.authorizeCount, 2, "Workup Studio should sign in through Supabase Google OAuth.");
+  assert.equal(supabaseRequests.settingsCount, 3, "Each OAuth sign-in attempt should verify enabled provider settings.");
+  assert.equal(supabaseRequests.authorizeCount, 2, "Workup Studio should sign in through Supabase OAuth.");
   assert.equal(supabaseRequests.profileCount, 3, "Workup Studio should verify the signed-in user's author profile.");
   assert.equal(supabaseRequests.assignmentCount, 3, "Workup Studio should verify delegated workup assignments.");
   assert.equal(supabaseRequests.getChangeSetsCount, 1, "Sign-in should load RLS-filtered backend change sets.");

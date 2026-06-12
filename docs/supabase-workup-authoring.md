@@ -24,10 +24,13 @@ For a one-command hosted deployment, also set:
 ```powershell
 $env:SUPABASE_ACCESS_TOKEN="your-supabase-cli-access-token"
 $env:SUPABASE_DB_PASSWORD="your-hosted-postgres-password"
+$env:WORKUP_STUDIO_OAUTH_PROVIDER="google"
 $env:SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID="your-google-oauth-client-id"
 $env:SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET="your-google-oauth-client-secret"
 $env:WORKUP_STUDIO_REVIEWER_EMAIL="reviewer@example.com"
 ```
+
+Use `WORKUP_STUDIO_OAUTH_PROVIDER="github"` with `SUPABASE_AUTH_EXTERNAL_GITHUB_CLIENT_ID` and `SUPABASE_AUTH_EXTERNAL_GITHUB_SECRET` if GitHub OAuth is easier for the team.
 
 ## Create The Backend
 
@@ -37,7 +40,7 @@ First check whether this machine has the credentials needed to deploy and seed t
 npm run check:supabase-auth
 ```
 
-That command also probes the live project for Google OAuth readiness and the Workup Studio tables, so `Unsupported provider` or `table not found` failures show up before a maintainer opens the app.
+That command also probes the live project for OAuth provider readiness and the Workup Studio tables, so `Unsupported provider` or `table not found` failures show up before a maintainer opens the app.
 
 The simplest deployment path is:
 
@@ -45,7 +48,7 @@ The simplest deployment path is:
 npm run deploy:supabase-workup-authoring -- --reviewer-email=reviewer@example.com
 ```
 
-It pushes `supabase/config.toml` so Google OAuth and the deployed redirect URLs are configured, pushes the migrations, imports the current JSON workups into Supabase, optionally grants reviewer access, then reruns `npm run check:supabase-auth`.
+It pushes `supabase/config.toml` so the selected OAuth provider and deployed redirect URLs are configured, pushes the migrations, imports the current JSON workups into Supabase, optionally grants reviewer access, then reruns `npm run check:supabase-auth`.
 
 The same path is available in GitHub Actions through `.github/workflows/supabase-workup-authoring.yml`. Add these repository secrets, then run the `Supabase Workup Authoring Deploy` workflow manually:
 
@@ -54,6 +57,7 @@ The same path is available in GitHub Actions through `.github/workflows/supabase
 - `SUPABASE_SERVICE_ROLE_KEY`
 - `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID`
 - `SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET`
+- `SUPABASE_AUTH_EXTERNAL_GITHUB_CLIENT_ID` and `SUPABASE_AUTH_EXTERNAL_GITHUB_SECRET` if using GitHub
 
 Link the Supabase project, then push the migration:
 
@@ -90,15 +94,15 @@ Without the service role key, the same command safely falls back to a local snap
 
 ## Grant Reviewer Access
 
-Enable Google in Supabase Auth first:
+Enable the OAuth provider in Supabase Auth first:
 
-1. In Supabase, open `Authentication -> Providers -> Google`.
-2. Enable Google and add the Google OAuth client ID/secret.
+1. In Supabase, open `Authentication -> Providers -> Google` or `GitHub`.
+2. Enable the provider and add its OAuth client ID/secret.
 3. Add the deployed app URL to the Supabase Auth redirect allow-list, for example `https://aaronge-2020.github.io/prerounding-checklist/`.
 
-The deploy command can push the Google provider config from `supabase/config.toml` when `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID` and `SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET` are set. If you configure it manually in the dashboard, keep the callback URL `https://aaronge-2020.github.io/prerounding-checklist/?workupStudioOAuth=1` allow-listed.
+The deploy command can push the selected provider config from `supabase/config.toml` when that provider's client ID/secret are set. If you configure it manually in the dashboard, keep the callback URL `https://aaronge-2020.github.io/prerounding-checklist/?workupStudioOAuth=1` allow-listed.
 
-After the reviewer signs in once with Google, grant that Supabase Auth user reviewer access:
+After the reviewer signs in once with the selected OAuth provider, grant that Supabase Auth user reviewer access:
 
 ```bash
 npm run grant:workup-access -- --email=reviewer@example.com --role=reviewer
@@ -121,7 +125,7 @@ Workup Studio keeps publish controls locked until a signed-in account has a `rev
 
 ## Delegate One Workup
 
-Use Supabase Google OAuth for the collaborator account. The app does not ask users for a username/password. If Google is not enabled in Supabase Auth, Supabase returns `Unsupported provider: provider is not enabled`; enable the provider and redirect URL before delegating users.
+Use Supabase OAuth for the collaborator account. The app does not ask users for a username/password. If no supported OAuth provider is enabled in Supabase Auth, the app now blocks sign-in before redirecting and shows the provider setup issue; enable Google or GitHub and the redirect URL before delegating users.
 
 After the user signs in once and exists in `auth.users`, assign one workup:
 
@@ -152,7 +156,7 @@ That user can draft only the assigned workup. A reviewer/admin still has to publ
 
 1. Open the app and choose `Workup Studio`.
 2. The backend is fixed to the configured Workup Studio Supabase project.
-3. Continue with Google. Supabase handles authentication; Workup Studio only checks whether that authenticated user has an author assignment or reviewer/admin profile.
+3. Continue with Google or GitHub. Supabase handles authentication; Workup Studio only checks whether that authenticated user has an author assignment or reviewer/admin profile.
 4. Pick a workup and section.
 5. Copy the generated OpenEvidence prompt and paste it into OpenEvidence.
 6. Paste the reviewed JSON result back into Workup Studio.

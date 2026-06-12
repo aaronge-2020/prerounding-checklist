@@ -1,4 +1,6 @@
 import { spawnSync } from "node:child_process";
+import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
@@ -13,6 +15,7 @@ loadSupabaseEnvFiles({ cwd: repoRoot });
 
 const rawArgs = process.argv.slice(2);
 const args = new Set(rawArgs);
+const supportedOAuthProviders = new Set(["google", "github"]);
 
 function argValue(name, fallback = "") {
   const prefix = `${name}=`;
@@ -45,12 +48,14 @@ function usage() {
     "  SUPABASE_ACCESS_TOKEN",
     "  SUPABASE_DB_PASSWORD or SUPABASE_DB_URL",
     "  SUPABASE_SERVICE_ROLE_KEY",
-    "  SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID",
-    "  SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET",
+    "  SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID / SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET",
+    "    or SUPABASE_AUTH_EXTERNAL_GITHUB_CLIENT_ID / SUPABASE_AUTH_EXTERNAL_GITHUB_SECRET",
     "",
     "Optional:",
     "  SUPABASE_PROJECT_REF=hajjuzpnlvpetsleuxwb",
+    "  WORKUP_STUDIO_OAUTH_PROVIDER=google|github",
     "  WORKUP_STUDIO_REVIEWER_EMAIL=you@example.com",
+    "  --oauth-provider=google|github",
     "  --dry-run",
     "  --skip-config-push",
     "  --skip-db-push",
@@ -103,6 +108,57 @@ function requireValues(entries) {
   }
 }
 
+function selectedOAuthProvider() {
+  const provider = argValue("--oauth-provider", envValue("WORKUP_STUDIO_OAUTH_PROVIDER") || "google").toLowerCase();
+  if (!supportedOAuthProviders.has(provider)) {
+    throw new Error(`Unsupported --oauth-provider=${provider}. Use google or github.`);
+  }
+  return provider;
+}
+
+function oauthEnvNames(provider) {
+  const normalized = provider.toUpperCase();
+  return {
+    clientId: `SUPABASE_AUTH_EXTERNAL_${normalized}_CLIENT_ID`,
+    secret: `SUPABASE_AUTH_EXTERNAL_${normalized}_SECRET`
+  };
+}
+
+function providerBlock(provider, enabled) {
+  const envNames = oauthEnvNames(provider);
+  return [
+    `[auth.external.${provider}]`,
+    `enabled = ${enabled ? "true" : "false"}`,
+    `client_id = "env(${envNames.clientId})"`,
+    `secret = "env(${envNames.secret})"`,
+    'redirect_uri = ""',
+    'url = ""',
+    "skip_nonce_check = false",
+    "email_optional = false"
+  ].join("\n");
+}
+
+function upsertProviderBlock(configText, provider, enabled) {
+  const blockPattern = new RegExp(`\\[auth\\.external\\.${provider}\\][\\s\\S]*?(?=\\n\\[|$)`, "m");
+  const nextBlock = providerBlock(provider, enabled);
+  return blockPattern.test(configText)
+    ? configText.replace(blockPattern, nextBlock)
+    : `${configText.trimEnd()}\n\n${nextBlock}\n`;
+}
+
+function prepareSupabaseConfigWorkdir(oauthProvider) {
+  const tempRoot = mkdtempSync(path.join(tmpdir(), "workup-supabase-config-"));
+  const tempSupabaseDir = path.join(tempRoot, "supabase");
+  cpSync(path.join(repoRoot, "supabase"), tempSupabaseDir, { recursive: true });
+  const configPath = path.join(tempSupabaseDir, "config.toml");
+  let configText = readFileSync(configPath, "utf8");
+  for (const provider of supportedOAuthProviders) {
+    configText = upsertProviderBlock(configText, provider, provider === oauthProvider);
+  }
+  writeFileSync(configPath, configText);
+  return tempRoot;
+}
+
 async function main() {
   const dryRun = args.has("--dry-run");
   const projectRef = inferProjectRef();
@@ -110,10 +166,12 @@ async function main() {
   const publishableKey = getSupabasePublishableKey();
   const serviceRoleKey = getSupabaseServiceRoleKey();
   const accessToken = envValue("SUPABASE_ACCESS_TOKEN");
+  const oauthProvider = selectedOAuthProvider();
+  const oauthEnv = oauthEnvNames(oauthProvider);
   const dbPassword = argValue("--db-password", envValue("SUPABASE_DB_PASSWORD"));
   const dbUrl = argValue("--db-url", envValue("SUPABASE_DB_URL"));
-  const googleClientId = envValue("SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID");
-  const googleSecret = envValue("SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET");
+  const oauthClientId = envValue(oauthEnv.clientId);
+  const oauthSecret = envValue(oauthEnv.secret);
   const reviewerEmail = argValue("--reviewer-email", envValue("WORKUP_STUDIO_REVIEWER_EMAIL"));
   const skipConfigPush = args.has("--skip-config-push");
   const skipDbPush = args.has("--skip-db-push");
@@ -126,8 +184,8 @@ async function main() {
     { name: "SUPABASE_PROJECT_REF or Supabase project URL host", value: projectRef },
     { name: "SUPABASE_ACCESS_TOKEN", value: accessToken },
     { name: "SUPABASE_SERVICE_ROLE_KEY", value: skipImport && !reviewerEmail ? "not-needed" : serviceRoleKey },
-    { name: "SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID", value: skipConfigPush ? "not-needed" : googleClientId },
-    { name: "SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET", value: skipConfigPush ? "not-needed" : googleSecret },
+    { name: oauthEnv.clientId, value: skipConfigPush ? "not-needed" : oauthClientId },
+    { name: oauthEnv.secret, value: skipConfigPush ? "not-needed" : oauthSecret },
     { name: "SUPABASE_DB_PASSWORD or SUPABASE_DB_URL", value: skipDbPush ? "not-needed" : dbPassword || dbUrl }
   ]);
 
@@ -138,32 +196,38 @@ async function main() {
     { value: dbUrl, mask: masked(dbUrl) },
     { value: accessToken, mask: masked(accessToken) }
   ];
+  let configWorkdir = "";
 
-  if (!skipConfigPush) {
-    run(npx, ["supabase", "config", "push", "--project-ref", projectRef, "--yes"], { dryRun, masks });
-  }
-
-  if (!skipDbPush) {
-    if (dbUrl) {
-      run(npx, ["supabase", "db", "push", "--db-url", dbUrl, "--yes"], { dryRun, masks });
-    } else {
-      run(npx, ["supabase", "link", "--project-ref", projectRef, "--password", dbPassword, "--yes"], { dryRun, masks });
-      run(npx, ["supabase", "db", "push", "--linked", "--password", dbPassword, "--yes"], { dryRun, masks });
+  try {
+    if (!skipConfigPush) {
+      configWorkdir = prepareSupabaseConfigWorkdir(oauthProvider);
+      run(npx, ["supabase", "config", "push", "--project-ref", projectRef, "--workdir", configWorkdir, "--yes"], { dryRun, masks });
     }
-  }
 
-  if (!skipImport) {
-    run(npm, ["run", "import:medical-knowledge"], { dryRun, masks });
-  }
+    if (!skipDbPush) {
+      if (dbUrl) {
+        run(npx, ["supabase", "db", "push", "--db-url", dbUrl, "--yes"], { dryRun, masks });
+      } else {
+        run(npx, ["supabase", "link", "--project-ref", projectRef, "--password", dbPassword, "--yes"], { dryRun, masks });
+        run(npx, ["supabase", "db", "push", "--linked", "--password", dbPassword, "--yes"], { dryRun, masks });
+      }
+    }
 
-  if (reviewerEmail) {
-    run(npm, ["run", "grant:workup-access", "--", `--email=${reviewerEmail}`, "--role=reviewer"], { dryRun, masks });
-  } else {
-    console.log("No reviewer email supplied; skipping reviewer grant.");
-  }
+    if (!skipImport) {
+      run(npm, ["run", "import:medical-knowledge"], { dryRun, masks });
+    }
 
-  if (!skipCheck) {
-    run(npm, ["run", "check:supabase-auth"], { dryRun, masks });
+    if (reviewerEmail) {
+      run(npm, ["run", "grant:workup-access", "--", `--email=${reviewerEmail}`, "--role=reviewer"], { dryRun, masks });
+    } else {
+      console.log("No reviewer email supplied; skipping reviewer grant.");
+    }
+
+    if (!skipCheck) {
+      run(npm, ["run", "check:supabase-auth"], { dryRun, masks });
+    }
+  } finally {
+    if (configWorkdir) rmSync(configWorkdir, { recursive: true, force: true });
   }
 }
 
