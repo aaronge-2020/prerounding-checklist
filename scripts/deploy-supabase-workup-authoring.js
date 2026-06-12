@@ -15,6 +15,7 @@ loadSupabaseEnvFiles({ cwd: repoRoot });
 
 const rawArgs = process.argv.slice(2);
 const args = new Set(rawArgs);
+const supportedAuthMethods = new Set(["magic-link", "oauth"]);
 const supportedOAuthProviders = new Set(["google", "github"]);
 
 function argValue(name, fallback = "") {
@@ -48,13 +49,15 @@ function usage() {
     "  SUPABASE_ACCESS_TOKEN",
     "  SUPABASE_DB_PASSWORD or SUPABASE_DB_URL",
     "  SUPABASE_SERVICE_ROLE_KEY",
-    "  SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID / SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET",
-    "    or SUPABASE_AUTH_EXTERNAL_GITHUB_CLIENT_ID / SUPABASE_AUTH_EXTERNAL_GITHUB_SECRET",
     "",
     "Optional:",
     "  SUPABASE_PROJECT_REF=hajjuzpnlvpetsleuxwb",
+    "  WORKUP_STUDIO_AUTH_METHOD=magic-link|oauth",
     "  WORKUP_STUDIO_OAUTH_PROVIDER=google|github",
+    "  SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID / SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET",
+    "  SUPABASE_AUTH_EXTERNAL_GITHUB_CLIENT_ID / SUPABASE_AUTH_EXTERNAL_GITHUB_SECRET",
     "  WORKUP_STUDIO_REVIEWER_EMAIL=you@example.com",
+    "  --auth-method=magic-link|oauth",
     "  --oauth-provider=google|github",
     "  --dry-run",
     "  --skip-config-push",
@@ -108,6 +111,15 @@ function requireValues(entries) {
   }
 }
 
+function selectedAuthMethod() {
+  const raw = argValue("--auth-method", envValue("WORKUP_STUDIO_AUTH_METHOD") || "magic-link").toLowerCase();
+  const method = raw === "magic_link" || raw === "email" ? "magic-link" : raw;
+  if (!supportedAuthMethods.has(method)) {
+    throw new Error(`Unsupported --auth-method=${raw}. Use magic-link or oauth.`);
+  }
+  return method;
+}
+
 function selectedOAuthProvider() {
   const provider = argValue("--oauth-provider", envValue("WORKUP_STUDIO_OAUTH_PROVIDER") || "google").toLowerCase();
   if (!supportedOAuthProviders.has(provider)) {
@@ -138,6 +150,22 @@ function providerBlock(provider, enabled) {
   ].join("\n");
 }
 
+function emailAuthBlock() {
+  return [
+    "[auth.email]",
+    "enable_signup = false",
+    "enable_confirmations = false"
+  ].join("\n");
+}
+
+function upsertEmailAuthBlock(configText) {
+  const blockPattern = /\[auth\.email\][\s\S]*?(?=\n\[|$)/m;
+  const nextBlock = emailAuthBlock();
+  return blockPattern.test(configText)
+    ? configText.replace(blockPattern, nextBlock)
+    : `${configText.trimEnd()}\n\n${nextBlock}\n`;
+}
+
 function upsertProviderBlock(configText, provider, enabled) {
   const blockPattern = new RegExp(`\\[auth\\.external\\.${provider}\\][\\s\\S]*?(?=\\n\\[|$)`, "m");
   const nextBlock = providerBlock(provider, enabled);
@@ -146,14 +174,16 @@ function upsertProviderBlock(configText, provider, enabled) {
     : `${configText.trimEnd()}\n\n${nextBlock}\n`;
 }
 
-function prepareSupabaseConfigWorkdir(oauthProvider) {
+function prepareSupabaseConfigWorkdir(authMethod, oauthProvider) {
   const tempRoot = mkdtempSync(path.join(tmpdir(), "workup-supabase-config-"));
   const tempSupabaseDir = path.join(tempRoot, "supabase");
   cpSync(path.join(repoRoot, "supabase"), tempSupabaseDir, { recursive: true });
   const configPath = path.join(tempSupabaseDir, "config.toml");
   let configText = readFileSync(configPath, "utf8");
+  configText = upsertEmailAuthBlock(configText);
+  configText = configText.replace(/enable_signup\s*=\s*true/g, "enable_signup = false");
   for (const provider of supportedOAuthProviders) {
-    configText = upsertProviderBlock(configText, provider, provider === oauthProvider);
+    configText = upsertProviderBlock(configText, provider, authMethod === "oauth" && provider === oauthProvider);
   }
   writeFileSync(configPath, configText);
   return tempRoot;
@@ -166,6 +196,7 @@ async function main() {
   const publishableKey = getSupabasePublishableKey();
   const serviceRoleKey = getSupabaseServiceRoleKey();
   const accessToken = envValue("SUPABASE_ACCESS_TOKEN");
+  const authMethod = selectedAuthMethod();
   const oauthProvider = selectedOAuthProvider();
   const oauthEnv = oauthEnvNames(oauthProvider);
   const dbPassword = argValue("--db-password", envValue("SUPABASE_DB_PASSWORD"));
@@ -184,8 +215,8 @@ async function main() {
     { name: "SUPABASE_PROJECT_REF or Supabase project URL host", value: projectRef },
     { name: "SUPABASE_ACCESS_TOKEN", value: accessToken },
     { name: "SUPABASE_SERVICE_ROLE_KEY", value: skipImport && !reviewerEmail ? "not-needed" : serviceRoleKey },
-    { name: oauthEnv.clientId, value: skipConfigPush ? "not-needed" : oauthClientId },
-    { name: oauthEnv.secret, value: skipConfigPush ? "not-needed" : oauthSecret },
+    { name: oauthEnv.clientId, value: skipConfigPush || authMethod !== "oauth" ? "not-needed" : oauthClientId },
+    { name: oauthEnv.secret, value: skipConfigPush || authMethod !== "oauth" ? "not-needed" : oauthSecret },
     { name: "SUPABASE_DB_PASSWORD or SUPABASE_DB_URL", value: skipDbPush ? "not-needed" : dbPassword || dbUrl }
   ]);
 
@@ -200,7 +231,8 @@ async function main() {
 
   try {
     if (!skipConfigPush) {
-      configWorkdir = prepareSupabaseConfigWorkdir(oauthProvider);
+      console.log(`Configuring Workup Studio auth: ${authMethod === "oauth" ? `${oauthProvider} OAuth` : "email magic link"}.`);
+      configWorkdir = prepareSupabaseConfigWorkdir(authMethod, oauthProvider);
       run(npx, ["supabase", "config", "push", "--project-ref", projectRef, "--workdir", configWorkdir, "--yes"], { dryRun, masks });
     }
 

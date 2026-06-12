@@ -22,22 +22,6 @@ function fail(message, details = []) {
   process.exitCode = 1;
 }
 
-function oauthProviderOptions() {
-  const configured = String(process.env.WORKUP_STUDIO_OAUTH_PROVIDERS || process.env.WORKUP_STUDIO_OAUTH_PROVIDER || "google,github");
-  return [...new Set(configured.split(",").map((provider) => provider.trim().toLowerCase()).filter(Boolean))];
-}
-
-function providerLabel(provider) {
-  return provider === "github"
-    ? "GitHub"
-    : provider.replace(/_/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
-}
-
-function providerListLabel(providers) {
-  const labels = providers.map(providerLabel);
-  return labels.length > 1 ? `${labels.slice(0, -1).join(", ")} or ${labels.at(-1)}` : labels[0] || "OAuth";
-}
-
 async function fetchSupabaseText(url, options = {}) {
   try {
     const response = await fetch(url, options);
@@ -61,7 +45,6 @@ async function checkPublicSupabaseReadiness({ supabaseUrl, publishableKey }) {
   const issues = [];
   const notes = [];
   if (!supabaseUrl || !publishableKey) return { issues, notes };
-  const providerOptions = oauthProviderOptions();
 
   const headers = {
     apikey: publishableKey,
@@ -71,35 +54,19 @@ async function checkPublicSupabaseReadiness({ supabaseUrl, publishableKey }) {
   const settings = await fetchSupabaseText(`${supabaseUrl}/auth/v1/settings`, {
     headers: { apikey: publishableKey, "user-agent": "prerounding-checklist-readiness" }
   });
-  let enabledProvider = "";
   if (!settings.ok) {
-    issues.push(`Unable to read Supabase OAuth provider settings: HTTP ${settings.status} ${settings.text.slice(0, 180)}`);
+    issues.push(`Unable to read Supabase Auth settings: HTTP ${settings.status} ${settings.text.slice(0, 180)}`);
   } else {
     try {
       const payload = JSON.parse(settings.text || "{}");
       const external = payload.external && typeof payload.external === "object" ? payload.external : {};
-      enabledProvider = providerOptions.find((provider) => external[provider] === true) || "";
-      if (enabledProvider) {
-        notes.push(`${providerLabel(enabledProvider)} OAuth is enabled in Supabase Auth settings.`);
+      if (external.email === true || payload.email === true) {
+        notes.push("Supabase Email magic-link auth is enabled.");
       } else {
-        issues.push(`No supported Supabase OAuth provider is enabled. Enable ${providerListLabel(providerOptions)} in Supabase Auth settings.`);
+        issues.push("Supabase Email magic-link auth is disabled. Enable the Email provider in Supabase Auth.");
       }
     } catch {
-      issues.push(`Unable to parse Supabase OAuth provider settings: ${settings.text.slice(0, 180)}`);
-    }
-  }
-
-  const redirectTo = encodeURIComponent("https://aaronge-2020.github.io/prerounding-checklist/?workupStudioOAuth=1");
-  if (enabledProvider) {
-    const oauth = await fetchSupabaseText(`${supabaseUrl}/auth/v1/authorize?provider=${encodeURIComponent(enabledProvider)}&redirect_to=${redirectTo}`, {
-      headers: { apikey: publishableKey, "user-agent": "prerounding-checklist-readiness" },
-      redirect: "manual"
-    });
-    if (oauth.status >= 300 && oauth.status < 400 && oauth.location) {
-      notes.push(`${providerLabel(enabledProvider)} OAuth authorize endpoint redirects successfully.`);
-    } else {
-      const detail = oauth.text.slice(0, 240) || `HTTP ${oauth.status}`;
-      issues.push(`${providerLabel(enabledProvider)} OAuth is enabled but authorize does not redirect: ${detail}`);
+      issues.push(`Unable to parse Supabase Auth settings: ${settings.text.slice(0, 180)}`);
     }
   }
 
@@ -137,8 +104,8 @@ async function checkPublicSupabaseReadiness({ supabaseUrl, publishableKey }) {
 const html = read("index.html");
 const migrationPath = path.join(repoRoot, "supabase", "migrations", "202606110002_workup_author_assignments.sql");
 assert.ok(existsSync(migrationPath), "Delegated author RLS migration is missing.");
-assert.ok(html.includes("auth/v1/authorize"), "Supabase OAuth provider path should be present.");
-assert.ok(html.includes("/auth/v1/settings"), "Workup Studio should inspect enabled Supabase OAuth providers before redirecting.");
+assert.ok(html.includes("/auth/v1/otp"), "Supabase email magic-link path should be present.");
+assert.ok(html.includes("create_user: false"), "Workup Studio must not let browser magic links create new users.");
 assert.ok(!html.includes("grant_type=password"), "Password grant must not be present in the browser app.");
 assert.ok(html.includes("loadWorkupStudioPermissions"), "Workup Studio must verify profile/assignment permissions after auth.");
 assert.ok(html.includes("authorization: `Bearer ${workupStudioState.backend.accessToken}`"), "Workup Studio must use a user access token for REST calls.");
@@ -164,7 +131,7 @@ if (deploymentIssues.length) {
   fail("Supabase auth deployment is not ready.", [
     ...deploymentIssues,
     ...publicReadiness.notes,
-    "Set credentials, enable or provide OAuth provider config, then run:",
+    "Set credentials, enable Supabase Email magic links, then run:",
     "  npm run deploy:supabase-workup-authoring -- --reviewer-email=reviewer@example.com",
     "Manual fallback:",
     "  npx supabase link --project-ref hajjuzpnlvpetsleuxwb",

@@ -9360,10 +9360,14 @@
           <aside class="studio-inspector">
             <section class="studio-backend-panel">
               <h2>Backend sync</h2>
-              <div class="studio-backend-status" id="workupStudioBackendStatus" data-state="local">Not connected. Sign in with an assigned Workup Studio account.</div>
+              <div class="studio-backend-status" id="workupStudioBackendStatus" data-state="local">Not connected. Enter an assigned account email to receive a magic link.</div>
               <div class="notice">Backend: Workup Studio Supabase. Access requires an authenticated account with a reviewer profile or assigned workups.</div>
+              <div class="form-field" id="workupStudioMagicLinkEmailField">
+                <label for="workupStudioMagicLinkEmailInput">Email</label>
+                <input id="workupStudioMagicLinkEmailInput" type="email" autocomplete="email" inputmode="email" placeholder="reviewer@example.com">
+              </div>
               <div class="button-row">
-                <button class="btn btn-primary" id="workupStudioSignInButton" type="button">Continue with Google or GitHub</button>
+                <button class="btn btn-primary" id="workupStudioSignInButton" type="button">Send magic link</button>
                 <button class="btn btn-secondary" id="workupStudioLoadBackendDraftsButton" type="button" hidden disabled>Load drafts</button>
                 <button class="btn btn-secondary" id="workupStudioSignOutButton" type="button" hidden>Sign out</button>
               </div>
@@ -9770,17 +9774,13 @@
     const VAULT_META_KEY = "prerounding-local-vault-meta-v2";
     const VAULT_DATA_KEY = "prerounding-local-vault-data-v1";
     const WORKUP_AUTHORING_STORAGE_KEY = "prerounding-workup-authoring-v1";
+    const WORKUP_AUTHORING_AUTH_PENDING_KEY = "prerounding-workup-authoring-auth-pending-v1";
     const WORKUP_AUTHORING_OAUTH_PENDING_KEY = "prerounding-workup-authoring-oauth-pending-v1";
     const WORKUP_STUDIO_DEFAULT_BACKEND = Object.freeze({
       url: "https://hajjuzpnlvpetsleuxwb.supabase.co",
       publishableKey: "sb_publishable_-rugOaCgl3r9abyuX7TICA_JQ0KQLhn"
     });
-    const WORKUP_STUDIO_OAUTH_PROVIDER = "google";
-    const WORKUP_STUDIO_OAUTH_PROVIDER_OPTIONS = Object.freeze(["google", "github"]);
-    const WORKUP_STUDIO_OAUTH_PROVIDER_LABELS = Object.freeze({
-      google: "Google",
-      github: "GitHub"
-    });
+    const WORKUP_STUDIO_MAGIC_LINK_PROVIDER = "magic_link";
     const VAULT_KDF_ITERATIONS = 210000;
     const CHECKLIST_IMPROVEMENT_TASK_ID = "checklist_improvement_review";
     const DECISION_TREE_TASK_ID = "decision_tree_builder";
@@ -10092,6 +10092,8 @@
       workupStudioExportPatchButton: $("#workupStudioExportPatchButton"),
       workupStudioImportCommandButton: $("#workupStudioImportCommandButton"),
       workupStudioBackendStatus: $("#workupStudioBackendStatus"),
+      workupStudioMagicLinkEmailField: $("#workupStudioMagicLinkEmailField"),
+      workupStudioMagicLinkEmailInput: $("#workupStudioMagicLinkEmailInput"),
       workupStudioSignInButton: $("#workupStudioSignInButton"),
       workupStudioLoadBackendDraftsButton: $("#workupStudioLoadBackendDraftsButton"),
       workupStudioSignOutButton: $("#workupStudioSignOutButton"),
@@ -11346,8 +11348,17 @@
             : workupStudioState.backend.lastAuthError
               ? workupStudioState.backend.lastAuthError
             : workupStudioBackendConfigured()
-              ? `Not connected. Continue with ${workupStudioOAuthProviderListLabel()} using an assigned Workup Studio account.`
+              ? "Not connected. Enter an assigned account email to receive a magic link."
               : "Workup Studio backend is unavailable in this build.");
+      }
+      if (elements.workupStudioMagicLinkEmailInput) {
+        if (document.activeElement !== elements.workupStudioMagicLinkEmailInput) {
+          elements.workupStudioMagicLinkEmailInput.value = workupStudioState.backend.email || "";
+        }
+        elements.workupStudioMagicLinkEmailInput.disabled = !workupStudioBackendConfigured() || workupStudioBackendSignedIn();
+      }
+      if (elements.workupStudioMagicLinkEmailField) {
+        elements.workupStudioMagicLinkEmailField.hidden = workupStudioBackendSignedIn();
       }
       if (elements.workupStudioSignInButton) {
         elements.workupStudioSignInButton.hidden = workupStudioBackendSignedIn();
@@ -11384,84 +11395,98 @@
       return true;
     }
 
-    function workupStudioOAuthRedirectUrl() {
+    function workupStudioAuthRedirectUrl() {
       const redirectUrl = new URL(`${window.location.origin}${window.location.pathname || "/"}`);
       redirectUrl.searchParams.set("workupStudioOAuth", "1");
       return redirectUrl.toString();
     }
 
-    function workupStudioOAuthProviderLabel(provider = WORKUP_STUDIO_OAUTH_PROVIDER) {
-      return WORKUP_STUDIO_OAUTH_PROVIDER_LABELS[provider] || provider.replace(/_/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+    function normalizeWorkupStudioEmail(value = "") {
+      return String(value || "").trim().toLowerCase();
     }
 
-    function workupStudioOAuthProviderListLabel(providers = WORKUP_STUDIO_OAUTH_PROVIDER_OPTIONS) {
-      const labels = providers.map(workupStudioOAuthProviderLabel);
-      return labels.length > 1 ? `${labels.slice(0, -1).join(", ")} or ${labels.at(-1)}` : labels[0] || "OAuth";
+    function workupStudioAuthMethodLabel(method = WORKUP_STUDIO_MAGIC_LINK_PROVIDER) {
+      if (method === WORKUP_STUDIO_MAGIC_LINK_PROVIDER || method === "email") return "Magic link";
+      if (method === "google") return "Google";
+      if (method === "github") return "GitHub";
+      return "Supabase";
     }
 
-    function workupStudioOAuthProviderOptions() {
-      const options = [WORKUP_STUDIO_OAUTH_PROVIDER, ...WORKUP_STUDIO_OAUTH_PROVIDER_OPTIONS]
-        .map((provider) => String(provider || "").trim().toLowerCase())
-        .filter(Boolean);
-      return [...new Set(options)];
-    }
-
-    async function fetchWorkupStudioOAuthSettings() {
-      const response = await fetch(`${normalizeSupabaseUrl(workupStudioState.backend.url)}/auth/v1/settings`, {
-        headers: {
-          apikey: workupStudioState.backend.anonKey,
-          "content-type": "application/json"
-        }
-      });
-      if (!response.ok) {
-        const text = await response.text();
-        throw new Error(`Unable to read Supabase OAuth provider settings: ${response.status} ${text.slice(0, 160)}`);
+    function workupStudioMagicLinkErrorMessage(status = 0, text = "") {
+      const detail = String(text || "").trim();
+      if (/signup|signups|create_user|not.*allowed|user.*not.*found|invalid login/i.test(detail)) {
+        return "No Supabase user exists for that email yet. Create or invite the user in Supabase Auth, then resend the magic link.";
       }
-      return response.json();
-    }
-
-    async function resolveWorkupStudioOAuthProvider() {
-      const options = workupStudioOAuthProviderOptions();
-      let settings;
-      try {
-        settings = await fetchWorkupStudioOAuthSettings();
-      } catch (error) {
-        throw new Error(error instanceof Error ? error.message : "Unable to read Supabase OAuth provider settings.");
+      if (status === 429 || /rate limit|too many/i.test(detail)) {
+        return "Supabase is rate-limiting magic links. Wait a minute, then send another link.";
       }
-      const external = settings?.external && typeof settings.external === "object" ? settings.external : {};
-      const enabledProvider = options.find((provider) => external[provider] === true);
-      if (enabledProvider) return enabledProvider;
-      throw new Error(`No Supabase OAuth provider is enabled for Workup Studio. Enable ${workupStudioOAuthProviderListLabel(options)} in Supabase Auth, then rerun the backend deploy/readiness check.`);
+      if (/email provider|smtp|mail/i.test(detail)) {
+        return "Supabase email delivery is not ready yet. Enable the Email provider or SMTP settings in Supabase Auth.";
+      }
+      return detail
+        ? `Unable to send magic link: ${detail.slice(0, 220)}`
+        : "Unable to send magic link. Check that Supabase Email auth is enabled.";
     }
 
-    function workupStudioOAuthErrorMessage(errorCode = "", description = "", provider = WORKUP_STUDIO_OAUTH_PROVIDER) {
+    function workupStudioOAuthErrorMessage(errorCode = "", description = "", method = WORKUP_STUDIO_MAGIC_LINK_PROVIDER) {
       const detail = [errorCode, description].filter(Boolean).join(": ");
-      if (/unsupported provider|provider is not enabled|validation_failed/i.test(detail)) {
-        return `${workupStudioOAuthProviderLabel(provider)} OAuth is not enabled for this Supabase project yet. Enable ${workupStudioOAuthProviderListLabel()} in Supabase Auth providers and add this app URL to the redirect allow-list.`;
+      if (/otp|magic|email/i.test(detail)) {
+        return detail || "Unable to finish Supabase magic-link sign-in.";
       }
-      return detail || `Unable to finish ${workupStudioOAuthProviderLabel(provider)} sign-in with Supabase.`;
+      if (/unsupported provider|provider is not enabled|validation_failed/i.test(detail)) {
+        return "That Supabase sign-in provider is not enabled. Send an email magic link instead.";
+      }
+      return detail || `Unable to finish ${workupStudioAuthMethodLabel(method)} sign-in with Supabase.`;
     }
 
-    async function startWorkupStudioOAuthSignIn() {
+    async function sendWorkupStudioMagicLink() {
       if (!ensureWorkupStudioBackendConfig()) return false;
-      renderWorkupStudioBackendStatus(`Checking Supabase OAuth provider settings for ${workupStudioOAuthProviderListLabel()}...`);
-      let provider;
+      const email = normalizeWorkupStudioEmail(elements.workupStudioMagicLinkEmailInput?.value || workupStudioState.backend.email || "");
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        const message = "Enter a valid assigned account email to receive a magic link.";
+        renderWorkupStudioBackendStatus(message);
+        setStatus(message);
+        elements.workupStudioMagicLinkEmailInput?.focus();
+        return false;
+      }
+      workupStudioState.backend = {
+        ...workupStudioState.backend,
+        email,
+        lastAuthError: ""
+      };
+      saveWorkupStudioState();
+      renderWorkupStudioBackendStatus(`Sending magic link to ${email}...`);
+      setStatus("Sending Workup Studio magic link.");
       try {
-        provider = await resolveWorkupStudioOAuthProvider();
+        const url = new URL(`${normalizeSupabaseUrl(workupStudioState.backend.url)}/auth/v1/otp`);
+        url.searchParams.set("redirect_to", workupStudioAuthRedirectUrl());
+        const response = await fetch(url.toString(), {
+          method: "POST",
+          headers: {
+            apikey: workupStudioState.backend.anonKey,
+            "content-type": "application/json"
+          },
+          body: JSON.stringify({
+            email,
+            create_user: false,
+            data: {},
+            gotrue_meta_security: {}
+          })
+        });
+        if (!response.ok) {
+          throw new Error(workupStudioMagicLinkErrorMessage(response.status, await response.text()));
+        }
       } catch (error) {
-        const message = error instanceof Error ? error.message : "Unable to verify Supabase OAuth provider settings.";
-        clearWorkupStudioAuthSession({ keepEmail: false, authError: message });
+        const message = error instanceof Error ? error.message : "Unable to send magic link.";
+        clearWorkupStudioAuthSession({ keepEmail: true, authError: message });
         renderWorkupStudioBackendStatus(message);
         setStatus(message);
         return false;
       }
-      const authorizeUrl = new URL(`${normalizeSupabaseUrl(workupStudioState.backend.url)}/auth/v1/authorize`);
-      authorizeUrl.searchParams.set("provider", provider);
-      authorizeUrl.searchParams.set("redirect_to", workupStudioOAuthRedirectUrl());
-      localStorage.setItem(WORKUP_AUTHORING_OAUTH_PENDING_KEY, provider);
-      renderWorkupStudioBackendStatus(`Opening ${workupStudioOAuthProviderLabel(provider)} sign-in through Supabase...`);
-      setStatus(`Opening ${workupStudioOAuthProviderLabel(provider)} sign-in through Supabase.`);
-      window.location.assign(authorizeUrl.toString());
+      localStorage.setItem(WORKUP_AUTHORING_AUTH_PENDING_KEY, WORKUP_STUDIO_MAGIC_LINK_PROVIDER);
+      localStorage.removeItem(WORKUP_AUTHORING_OAUTH_PENDING_KEY);
+      renderWorkupStudioBackendStatus(`Magic link sent to ${email}. Open it from this browser, then Workup Studio will check permissions.`);
+      setStatus("Magic link sent. Check your email, then return here.");
       return true;
     }
 
@@ -11482,7 +11507,7 @@
         return "Workup Studio database tables are not installed in Supabase yet. Deploy the authoring migrations, then import the medical knowledge seed data.";
       }
       if (/jwt expired|invalid jwt|invalid token|not authenticated/.test(lower) || status === 401) {
-        return `Your Supabase session expired or is invalid. Continue with ${workupStudioOAuthProviderListLabel()} again before connecting to Workup Studio.`;
+        return "Your Supabase session expired or is invalid. Send a new magic link before connecting to Workup Studio.";
       }
       if (/permission denied|violates row-level security|rls|row level security/.test(lower) || status === 403) {
         return "Supabase blocked this action. This account is not assigned to this workup or does not have reviewer permission.";
@@ -11583,7 +11608,7 @@
       return workupStudioState.backend;
     }
 
-    async function finishWorkupStudioOAuthSession(session, provider = WORKUP_STUDIO_OAUTH_PROVIDER) {
+    async function finishWorkupStudioOAuthSession(session, provider = WORKUP_STUDIO_MAGIC_LINK_PROVIDER) {
       if (!ensureWorkupStudioBackendConfig()) return false;
       const accessToken = String(session?.access_token || "").trim();
       if (!accessToken) return false;
@@ -11605,7 +11630,7 @@
         lastSyncAt: ""
       };
       saveWorkupStudioState();
-      const providerLabel = workupStudioOAuthProviderLabel(provider);
+      const providerLabel = workupStudioAuthMethodLabel(provider);
       renderWorkupStudioBackendStatus(`${providerLabel} sign-in returned. Checking Workup Studio permissions...`);
       const ok = await hydrateWorkupStudioBackendUserFromToken();
       if (ok) {
@@ -11626,9 +11651,13 @@
         || hashParams.has("error")
         || hashParams.has("error_code")
         || queryParams.get("workupStudioOAuth") === "1"
+        || localStorage.getItem(WORKUP_AUTHORING_AUTH_PENDING_KEY)
         || localStorage.getItem(WORKUP_AUTHORING_OAUTH_PENDING_KEY);
       if (!hasOAuthPayload) return false;
-      const pendingProvider = localStorage.getItem(WORKUP_AUTHORING_OAUTH_PENDING_KEY) || WORKUP_STUDIO_OAUTH_PROVIDER;
+      const pendingProvider = localStorage.getItem(WORKUP_AUTHORING_AUTH_PENDING_KEY)
+        || localStorage.getItem(WORKUP_AUTHORING_OAUTH_PENDING_KEY)
+        || WORKUP_STUDIO_MAGIC_LINK_PROVIDER;
+      localStorage.removeItem(WORKUP_AUTHORING_AUTH_PENDING_KEY);
       localStorage.removeItem(WORKUP_AUTHORING_OAUTH_PENDING_KEY);
       const cleanUrl = new URL(window.location.href);
       cleanUrl.hash = "";
@@ -19382,7 +19411,13 @@
         setStatus("Workup authoring import command copied.");
       });
       elements.workupStudioSignInButton?.addEventListener("click", () => {
-        void startWorkupStudioOAuthSignIn();
+        void sendWorkupStudioMagicLink();
+      });
+      elements.workupStudioMagicLinkEmailInput?.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          void sendWorkupStudioMagicLink();
+        }
       });
       elements.workupStudioLoadBackendDraftsButton?.addEventListener("click", () => {
         void loadWorkupStudioBackendChangeSets();

@@ -68,6 +68,18 @@ function authoringTableRequestCount(requests) {
     + requests.deletedRows.length;
 }
 
+function magicLinkCallbackUrl(baseUrl, accessToken) {
+  const callbackUrl = new URL(`${baseUrl}/index.html`);
+  callbackUrl.searchParams.set("workupStudioOAuth", "1");
+  callbackUrl.hash = new URLSearchParams({
+    access_token: accessToken,
+    refresh_token: "fake-refresh-token",
+    expires_in: "3600",
+    token_type: "bearer"
+  }).toString();
+  return callbackUrl.toString();
+}
+
 const { server, baseUrl } = await startServer();
 let browser;
 try {
@@ -86,10 +98,9 @@ try {
   const fakeUserId = "11111111-1111-4111-8111-111111111111";
   const fakeUnassignedUserId = "22222222-2222-4222-8222-222222222222";
   const fakeAuthorUserId = "33333333-3333-4333-8333-333333333333";
-  let oauthProvidersEnabled = true;
   const supabaseRequests = {
-    authorizeCount: 0,
-    settingsCount: 0,
+    magicLinkCount: 0,
+    otpRequests: [],
     tokenRefreshCount: 0,
     userCount: 0,
     profileCount: 0,
@@ -103,36 +114,16 @@ try {
   await page.route("https://hajjuzpnlvpetsleuxwb.supabase.co/**", async (route) => {
     const request = route.request();
     const url = new URL(request.url());
-    if (url.pathname === "/auth/v1/settings") {
-      supabaseRequests.settingsCount += 1;
+    if (url.pathname === "/auth/v1/otp" && request.method() === "POST") {
+      supabaseRequests.magicLinkCount += 1;
+      supabaseRequests.otpRequests.push({
+        redirectTo: url.searchParams.get("redirect_to") || "",
+        body: JSON.parse(request.postData() || "{}")
+      });
       await route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: JSON.stringify({
-          external: {
-            anonymous_users: false,
-            email: true,
-            google: oauthProvidersEnabled,
-            github: false
-          }
-        })
-      });
-      return;
-    }
-    if (url.pathname === "/auth/v1/authorize") {
-      supabaseRequests.authorizeCount += 1;
-      const redirectTo = url.searchParams.get("redirect_to") || `${baseUrl}/index.html`;
-      const redirectUrl = new URL(redirectTo);
-      redirectUrl.hash = new URLSearchParams({
-        access_token: supabaseRequests.authorizeCount === 1 ? "fake-unassigned-token" : "fake-reviewer-token",
-        refresh_token: "fake-refresh-token",
-        expires_in: "3600",
-        token_type: "bearer"
-      }).toString();
-      await route.fulfill({
-        status: 302,
-        headers: { location: redirectUrl.toString() },
-        body: ""
+        body: "{}"
       });
       return;
     }
@@ -338,35 +329,43 @@ try {
   await page.waitForFunction(() => document.querySelectorAll("#workupStudioList .studio-workup-row").length > 0);
   await page.locator("#workupStudioList .studio-workup-row", { hasText: "Hyperglycemia" }).first().click();
   await page.waitForFunction(() => document.querySelector("#workupStudioSelectedTitle")?.textContent?.includes("Hyperglycemia"));
-  oauthProvidersEnabled = false;
-  const authorizeCountBeforeDisabledProvider = supabaseRequests.authorizeCount;
+  const magicLinkCountBeforeInvalidEmail = supabaseRequests.magicLinkCount;
+  await page.fill("#workupStudioMagicLinkEmailInput", "not-an-email");
   await page.click("#workupStudioSignInButton");
-  await page.waitForFunction(() => /No Supabase OAuth provider is enabled/i.test(document.querySelector("#workupStudioBackendStatus")?.textContent || ""));
-  assert.equal(supabaseRequests.authorizeCount, authorizeCountBeforeDisabledProvider, "Disabled OAuth providers should stop before Supabase authorize navigation.");
-  oauthProvidersEnabled = true;
+  await page.waitForFunction(() => /valid assigned account email/i.test(document.querySelector("#workupStudioBackendStatus")?.textContent || ""));
+  assert.equal(supabaseRequests.magicLinkCount, magicLinkCountBeforeInvalidEmail, "Invalid emails should not request a Supabase magic link.");
+  await page.fill("#workupStudioMagicLinkEmailInput", "unassigned@example.test");
   await page.click("#workupStudioSignInButton");
-  await waitForCondition(() => supabaseRequests.authorizeCount >= 1 && supabaseRequests.profileCount >= 2 && supabaseRequests.assignmentCount >= 2, "unassigned OAuth callback");
+  await waitForCondition(() => supabaseRequests.magicLinkCount >= 1, "unassigned magic-link request");
+  assert.equal(supabaseRequests.otpRequests.at(-1).body.email, "unassigned@example.test", "Magic link should be sent to the typed email.");
+  assert.equal(supabaseRequests.otpRequests.at(-1).body.create_user, false, "Magic link should not create arbitrary Supabase users.");
+  assert.match(supabaseRequests.otpRequests.at(-1).redirectTo, /workupStudioOAuth=1/, "Magic-link callback should use the configured Workup Studio redirect.");
+  await page.goto(magicLinkCallbackUrl(baseUrl, "fake-unassigned-token"));
+  await waitForCondition(() => supabaseRequests.profileCount >= 2 && supabaseRequests.assignmentCount >= 2, "unassigned magic-link callback");
   await page.click("#demoCaseButton");
   await page.waitForFunction(() => document.body.dataset.view !== "vaultAccess");
   await page.click('button[data-view-target="studio"]');
   await page.waitForFunction(() => /no Workup Studio assignment/i.test(document.querySelector("#workupStudioBackendStatus")?.textContent || ""));
-  assert.equal(supabaseRequests.settingsCount, 2, "Workup Studio should check Supabase OAuth provider settings before redirecting.");
-  assert.equal(supabaseRequests.authorizeCount, 1, "Unassigned account should authenticate through Supabase OAuth before permission denial.");
+  assert.equal(supabaseRequests.magicLinkCount, 1, "Unassigned account should request a magic link before permission denial.");
   assert.equal(supabaseRequests.profileCount, 2, "Unassigned account should check profile.");
   assert.equal(supabaseRequests.assignmentCount, 2, "Unassigned account should check assignments.");
   assert.equal(supabaseRequests.getChangeSetsCount, 0, "Unassigned account must not load backend drafts.");
   assert.equal(await page.locator("#workupStudioLoadBackendDraftsButton").isDisabled(), true, "Backend draft loading must stay locked for unassigned users.");
   assert.equal(await page.locator("#workupStudioApproveDraftButton").isDisabled(), true, "Unassigned account must not be able to publish from the editor.");
-  assert.equal(await page.locator("#workupStudioSignOutButton").isHidden(), true, "Sign out should stay hidden when an OAuth account has no Workup Studio permission.");
+  assert.equal(await page.locator("#workupStudioSignOutButton").isHidden(), true, "Sign out should stay hidden when a magic-link account has no Workup Studio permission.");
 
+  await page.fill("#workupStudioMagicLinkEmailInput", "reviewer@example.test");
   await page.click("#workupStudioSignInButton");
-  await waitForCondition(() => supabaseRequests.authorizeCount >= 2 && supabaseRequests.profileCount >= 3 && supabaseRequests.assignmentCount >= 3, "reviewer OAuth callback");
+  await waitForCondition(() => supabaseRequests.magicLinkCount >= 2, "reviewer magic-link request");
+  assert.equal(supabaseRequests.otpRequests.at(-1).body.email, "reviewer@example.test", "Reviewer magic link should use the typed reviewer email.");
+  assert.equal(supabaseRequests.otpRequests.at(-1).body.create_user, false, "Reviewer magic link should still require an existing Auth user.");
+  await page.goto(magicLinkCallbackUrl(baseUrl, "fake-reviewer-token"));
+  await waitForCondition(() => supabaseRequests.profileCount >= 3 && supabaseRequests.assignmentCount >= 3, "reviewer magic-link callback");
   await page.click("#demoCaseButton");
   await page.waitForFunction(() => document.body.dataset.view !== "vaultAccess");
   await page.click('button[data-view-target="studio"]');
   await page.waitForFunction(() => /Reviewer signed in as reviewer@example\.test/.test(document.querySelector("#workupStudioBackendStatus")?.textContent || ""));
-  assert.equal(supabaseRequests.settingsCount, 3, "Each OAuth sign-in attempt should verify enabled provider settings.");
-  assert.equal(supabaseRequests.authorizeCount, 2, "Workup Studio should sign in through Supabase OAuth.");
+  assert.equal(supabaseRequests.magicLinkCount, 2, "Workup Studio should request Supabase magic links for sign-in.");
   assert.equal(supabaseRequests.profileCount, 3, "Workup Studio should verify the signed-in user's author profile.");
   assert.equal(supabaseRequests.assignmentCount, 3, "Workup Studio should verify delegated workup assignments.");
   assert.equal(supabaseRequests.getChangeSetsCount, 1, "Sign-in should load RLS-filtered backend change sets.");

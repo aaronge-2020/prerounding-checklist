@@ -4,11 +4,19 @@ on:
   workflow_dispatch:
     inputs:
       reviewer_email:
-        description: "Optional reviewer email to grant after OAuth sign-in"
+        description: "Optional reviewer email to grant after the Auth user exists"
         required: false
         type: string
+      auth_method:
+        description: "Supabase sign-in method for Workup Studio"
+        required: false
+        default: "magic-link"
+        type: choice
+        options:
+          - magic-link
+          - oauth
       oauth_provider:
-        description: "Supabase OAuth provider to enable"
+        description: "Optional OAuth provider to enable when auth_method is oauth"
         required: false
         default: "google"
         type: choice
@@ -27,6 +35,7 @@ jobs:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
       SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      WORKUP_STUDIO_AUTH_METHOD: ${{ inputs.auth_method }}
       WORKUP_STUDIO_OAUTH_PROVIDER: ${{ inputs.oauth_provider }}
       SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID: ${{ secrets.SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID }}
       SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET: ${{ secrets.SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET }}

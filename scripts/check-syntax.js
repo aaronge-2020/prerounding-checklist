@@ -211,6 +211,8 @@ for (const requiredId of [
   "workupStudioPublishImportButton",
   "workupStudioExportPatchButton",
   "workupStudioBackendStatus",
+  "workupStudioMagicLinkEmailField",
+  "workupStudioMagicLinkEmailInput",
   "workupStudioSignInButton",
   "workupStudioLoadBackendDraftsButton",
   "workupStudioSignOutButton",

@@ -24,13 +24,11 @@ For a one-command hosted deployment, also set:
 ```powershell
 $env:SUPABASE_ACCESS_TOKEN="your-supabase-cli-access-token"
 $env:SUPABASE_DB_PASSWORD="your-hosted-postgres-password"
-$env:WORKUP_STUDIO_OAUTH_PROVIDER="google"
-$env:SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID="your-google-oauth-client-id"
-$env:SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET="your-google-oauth-client-secret"
+$env:WORKUP_STUDIO_AUTH_METHOD="magic-link"
 $env:WORKUP_STUDIO_REVIEWER_EMAIL="reviewer@example.com"
 ```
 
-Use `WORKUP_STUDIO_OAUTH_PROVIDER="github"` with `SUPABASE_AUTH_EXTERNAL_GITHUB_CLIENT_ID` and `SUPABASE_AUTH_EXTERNAL_GITHUB_SECRET` if GitHub OAuth is easier for the team.
+Magic Link is the default Workup Studio sign-in method. No Google Cloud or GitHub OAuth app is required. If the team later wants social sign-in, set `WORKUP_STUDIO_AUTH_METHOD="oauth"` plus `WORKUP_STUDIO_OAUTH_PROVIDER="google"` or `"github"` and the matching `SUPABASE_AUTH_EXTERNAL_*` secrets.
 
 ## Create The Backend
 
@@ -40,7 +38,7 @@ First check whether this machine has the credentials needed to deploy and seed t
 npm run check:supabase-auth
 ```
 
-That command also probes the live project for OAuth provider readiness and the Workup Studio tables, so `Unsupported provider` or `table not found` failures show up before a maintainer opens the app.
+That command probes the live project for Email magic-link readiness, the Workup Studio authoring tables, and anonymous-data exposure.
 
 The simplest deployment path is:
 
@@ -48,18 +46,15 @@ The simplest deployment path is:
 npm run deploy:supabase-workup-authoring -- --reviewer-email=reviewer@example.com
 ```
 
-It pushes `supabase/config.toml` so the selected OAuth provider and deployed redirect URLs are configured, pushes the migrations, imports the current JSON workups into Supabase, optionally grants reviewer access, then reruns `npm run check:supabase-auth`.
+It pushes `supabase/config.toml`, pushes the migrations, imports the current JSON workups into Supabase, optionally grants reviewer access, then reruns `npm run check:supabase-auth`.
 
 The same path is available in GitHub Actions through `.github/workflows/supabase-workup-authoring.yml`. Add these repository secrets, then run the `Supabase Workup Authoring Deploy` workflow manually:
 
 - `SUPABASE_ACCESS_TOKEN`
 - `SUPABASE_DB_PASSWORD`
 - `SUPABASE_SERVICE_ROLE_KEY`
-- `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID`
-- `SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET`
-- `SUPABASE_AUTH_EXTERNAL_GITHUB_CLIENT_ID` and `SUPABASE_AUTH_EXTERNAL_GITHUB_SECRET` if using GitHub
 
-Link the Supabase project, then push the migration:
+Link the Supabase project manually only if you are not using the deploy command:
 
 ```bash
 npx supabase link --project-ref hajjuzpnlvpetsleuxwb
@@ -82,6 +77,19 @@ The migration creates:
 RLS allows assigned authors to draft change sets for delegated workups, while reviewers/admins can approve and maintain canonical authoring tables.
 Delegated authors are scoped through `workup_author_assignments`; reviewers/admins can grant one user access to one workup without giving them global approval rights.
 
+## Enable Magic Link
+
+In Supabase, open `Authentication -> Providers -> Email` and keep Email enabled. The app sends `create_user: false` when requesting a magic link, so Workup Studio cannot silently create users from arbitrary email addresses.
+
+Recommended dashboard settings:
+
+- Email provider: enabled
+- Anonymous sign-ins: disabled
+- Public signup: disabled
+- Redirect allow-list: include `https://aaronge-2020.github.io/prerounding-checklist/?workupStudioOAuth=1`
+
+Create or invite each maintainer in `Authentication -> Users`. After the user exists in Supabase Auth, grant Workup Studio access.
+
 ## Seed Existing JSON
 
 After the migration is live and `SUPABASE_SERVICE_ROLE_KEY` is set:
@@ -94,15 +102,7 @@ Without the service role key, the same command safely falls back to a local snap
 
 ## Grant Reviewer Access
 
-Enable the OAuth provider in Supabase Auth first:
-
-1. In Supabase, open `Authentication -> Providers -> Google` or `GitHub`.
-2. Enable the provider and add its OAuth client ID/secret.
-3. Add the deployed app URL to the Supabase Auth redirect allow-list, for example `https://aaronge-2020.github.io/prerounding-checklist/`.
-
-The deploy command can push the selected provider config from `supabase/config.toml` when that provider's client ID/secret are set. If you configure it manually in the dashboard, keep the callback URL `https://aaronge-2020.github.io/prerounding-checklist/?workupStudioOAuth=1` allow-listed.
-
-After the reviewer signs in once with the selected OAuth provider, grant that Supabase Auth user reviewer access:
+After the reviewer exists in Supabase Auth, grant that user reviewer access:
 
 ```bash
 npm run grant:workup-access -- --email=reviewer@example.com --role=reviewer
@@ -125,9 +125,9 @@ Workup Studio keeps publish controls locked until a signed-in account has a `rev
 
 ## Delegate One Workup
 
-Use Supabase OAuth for the collaborator account. The app does not ask users for a username/password. If no supported OAuth provider is enabled in Supabase Auth, the app now blocks sign-in before redirecting and shows the provider setup issue; enable Google or GitHub and the redirect URL before delegating users.
+Create or invite the collaborator in Supabase Auth first. The app does not ask users for a password. It sends a Magic Link to an existing Supabase Auth user, then checks `workup_author_profiles` and `workup_author_assignments` before enabling backend sync.
 
-After the user signs in once and exists in `auth.users`, assign one workup:
+After the user exists in `auth.users`, assign one workup:
 
 ```bash
 npm run grant:workup-access -- --email=assigned-author@example.com --workup=pediatric_urinary_uti_pyelonephritis_v1 --assigned-by=reviewer@example.com
@@ -156,13 +156,14 @@ That user can draft only the assigned workup. A reviewer/admin still has to publ
 
 1. Open the app and choose `Workup Studio`.
 2. The backend is fixed to the configured Workup Studio Supabase project.
-3. Continue with Google or GitHub. Supabase handles authentication; Workup Studio only checks whether that authenticated user has an author assignment or reviewer/admin profile.
-4. Pick a workup and section.
-5. Copy the generated OpenEvidence prompt and paste it into OpenEvidence.
-6. Paste the reviewed JSON result back into Workup Studio.
-7. Preview the result. Only the selected section is accepted.
-8. Save a draft or, as a reviewer/admin, use `Save + publish`.
-9. Export reviewed content back to release JSON:
+3. Enter the assigned account email and send a Magic Link.
+4. Open the link from the same browser. Workup Studio checks the Supabase session and author/reviewer permissions.
+5. Pick a workup and section.
+6. Copy the generated OpenEvidence prompt and paste it into OpenEvidence.
+7. Paste the reviewed JSON result back into Workup Studio.
+8. Preview the result. Only the selected section is accepted.
+9. Save a draft or, as a reviewer/admin, use `Save + publish`.
+10. Export reviewed content back to release JSON:
 
 ```bash
 npm run export:medical-knowledge
