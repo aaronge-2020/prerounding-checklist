@@ -102,7 +102,7 @@ assert.match(
 );
 assert.match(
   appSource,
-  /data-clinical-modifier="currently pregnant"[\s\S]+data-clinical-modifier="not pregnant"[\s\S]+data-clinical-modifier="postpartum"[\s\S]+data-clinical-modifier="male reproductive context"[\s\S]+data-clinical-modifier="ovarian uterine pregnancy-capable context"[\s\S]+data-clinical-modifier="pediatric age"[\s\S]+data-clinical-modifier="older adult frailty"/,
+  /value:\s*"currently pregnant"[\s\S]+value:\s*"not pregnant"[\s\S]+value:\s*"postpartum"[\s\S]+value:\s*"male reproductive context"[\s\S]+value:\s*"ovarian uterine pregnancy-capable context"[\s\S]+value:\s*"pediatric age"[\s\S]+value:\s*"older adult frailty"[\s\S]+chip\.dataset\.clinicalModifier\s*=\s*option\.value/,
   "patient-context chips should explicitly capture pregnancy, postpartum, reproductive physiology, pediatric age, and older-adult/frailty context"
 );
 assert.match(
@@ -159,17 +159,30 @@ function htmlAttributes(tag = "") {
   return attributes;
 }
 
-const modifierChipTags = [...appSource.matchAll(/<button\b[^>]*class="clinical-modifier-chip"[^>]*data-clinical-modifier="[^"]+"[^>]*>/g)]
-  .map((match) => match[0]);
-const hiddenModifierChipTags = modifierChipTags
-  .filter((tag) => /\s(?:hidden\b|aria-hidden="true")/i.test(tag))
-  .map((tag) => tag.match(/data-clinical-modifier="([^"]+)"/)?.[1] || tag);
+function optionString(source = "", fieldName = "") {
+  return source.match(new RegExp(`${fieldName}:\\s*"([^"]*)"`))?.[1] || "";
+}
+
+const clinicalModifierOptionsSource = appSource.match(/const clinicalModifierOptions = \[([\s\S]*?)\n    \];/)?.[1] || "";
+const modifierChips = [...clinicalModifierOptionsSource.matchAll(/\{([\s\S]*?)\}/g)]
+  .map((match) => match[1])
+  .map((source) => ({
+    "data-clinical-modifier": optionString(source, "value"),
+    "data-modifier-effect": optionString(source, "effects"),
+    "data-secondary-intent-ids": optionString(source, "secondaryIntentIds"),
+    "data-applicability-signals": optionString(source, "applicabilitySignals"),
+    "data-primary-output-diff-intent-ids": optionString(source, "primaryOutputDiffIntentIds"),
+    title: optionString(source, "title")
+  }))
+  .filter((chip) => chip["data-clinical-modifier"]);
+const hiddenModifierChipTags = [];
+assert.ok(appSource.includes("chip.dataset.clinicalModifier = option.value"), "Clinical modifier chips should render option values into data-clinical-modifier.");
+assert.ok(!/clinical-modifier-chip[\s\S]{0,120}(?:hidden\b|aria-hidden="true")/i.test(appSource), "Clinical modifier chip renderer should not hide chips from clinicians or assistive technology.");
 assert.deepEqual(
   hiddenModifierChipTags,
   [],
   "Clinical modifier chips must not be hidden from clinicians or assistive technology"
 );
-const modifierChips = modifierChipTags.map((tag) => htmlAttributes(tag));
 assert.ok(modifierChips.length, "clinical modifier materiality audit should find visible modifier chips");
 const validatedIntentIds = new Set(clinicalIntentRegistry.filter((row) => row.status === "validated").map((row) => row.intent_id));
 const secondaryRuleSource = appSource.match(/const secondaryIntentSuggestionRules = \[([\s\S]*?)\];/)?.[1] || "";

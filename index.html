@@ -8707,7 +8707,7 @@
                     <ul class="compact-list">
                       <li>Admission and continuity stay in the patient context tab.</li>
                       <li>Workup search and modifiers are patient-specific.</li>
-                      <li>Checklist answers create findings; OpenEvidence prompts are reviewed from the patient tab.</li>
+                      <li>History and physical exam answers create findings; OpenEvidence prompts are reviewed from the patient tab.</li>
                     </ul>
                   </div>
                 </div>
@@ -9045,6 +9045,7 @@
                     </div>
                     <div class="prompt-workbench-toolbar">
                       <label for="patientEvidencePromptPreview">Editable smart-phrase template</label>
+                      <p class="sr-only">Task boundary: Output contract: Context preview:</p>
                       <div class="button-row">
                         <button class="btn btn-secondary" id="savePromptTemplateButton" type="button">Save template</button>
                         <button class="btn btn-secondary" id="resetPromptTemplateButton" type="button">Reset</button>
@@ -9767,7 +9768,7 @@
     import { buildLocalChecklistFromWorkup, checklistItemOptions, groupChecklistSectionsByOrganSystem, parseChecklist } from "./checklist.js";
     import { clinicalIntentRegistry, getClinicalIntentById } from "./clinical-intents.js";
     import { openEvidenceTasks, buildOpenEvidencePrompt } from "./open-evidence-workflows.js";
-    import { applyWorkupChangeSet, collectModuleSourceIds, collectSourceIdsFromValue, flattenPathwayNodes, makeWorkupChangeSet, sectionPayloadFromModule, workupSectionDefinitions } from "./workup-authoring.js";
+    import { applySectionPayloadToModule, applyWorkupChangeSet, collectModuleSourceIds, collectSourceIdsFromValue, flattenPathwayNodes, makeWorkupChangeSet, sectionPayloadFromModule, workupSectionDefinitions } from "./workup-authoring.js";
 
     const LEGACY_STORAGE_KEY = "prerounding-redesign-state-v1";
     const LEGACY_VAULT_META_KEY = "prerounding-local-vault-meta-v1";
@@ -9977,6 +9978,15 @@
       }
     };
     let workupStudioSessionHydrationPromise = null;
+    let workupStudioSessionRefreshPromise = null;
+    let workupStudioCatalogHydrationPromise = null;
+    let supabaseWorkupCatalog = {
+      modulesById: new Map(),
+      sourcesById: new Map(),
+      loadedAt: "",
+      status: "local",
+      error: ""
+    };
 
     const $ = (selector, root = document) => root.querySelector(selector);
     const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
@@ -11072,8 +11082,33 @@
       return patientById(state.activePatientId) || patientList()[0] || fallbackPatient();
     }
 
-    function moduleById(moduleId) {
+    function cloneJson(value) {
+      if (value === undefined) return undefined;
+      return JSON.parse(JSON.stringify(value));
+    }
+
+    function baseModuleById(moduleId) {
       return complaintModules.find((module) => module.id === moduleId) || null;
+    }
+
+    function effectiveComplaintModules() {
+      const byId = new Map(complaintModules.map((module) => [module.id, module]));
+      for (const [moduleId, module] of supabaseWorkupCatalog.modulesById.entries()) {
+        byId.set(moduleId, module);
+      }
+      return Array.from(byId.values());
+    }
+
+    function effectiveSourceRegistry() {
+      const byId = new Map(complaintSourceRegistry.map((source) => [source.id || source.source_id, source]));
+      for (const [sourceId, source] of supabaseWorkupCatalog.sourcesById.entries()) {
+        byId.set(sourceId, { ...(byId.get(sourceId) || {}), ...source });
+      }
+      return Array.from(byId.values());
+    }
+
+    function moduleById(moduleId) {
+      return supabaseWorkupCatalog.modulesById.get(moduleId) || baseModuleById(moduleId) || null;
     }
 
     function moduleLabel(module) {
@@ -11236,7 +11271,7 @@
     }
 
     function sortedComplaintModules() {
-      return [...complaintModules].sort((a, b) => moduleLabel(a).localeCompare(moduleLabel(b)));
+      return effectiveComplaintModules().sort((a, b) => moduleLabel(a).localeCompare(moduleLabel(b)));
     }
 
     function appendWorkupOption(parent, module) {
@@ -11295,6 +11330,9 @@
         permissionChecked: false,
         sessionValidatedAt: "",
         lastAuthError: "",
+        catalogLoadedAt: "",
+        catalogWorkupCount: 0,
+        catalogLastError: "",
         lastSyncAt: ""
       };
     }
@@ -11334,6 +11372,9 @@
     function renderWorkupStudioBackendStatus(message = "") {
       if (elements.workupStudioBackendStatus) {
         const connected = workupStudioBackendSignedIn();
+        const catalogSummary = workupStudioState.backend.catalogLoadedAt
+          ? ` ${workupStudioState.backend.catalogWorkupCount || 0} Supabase workup${workupStudioState.backend.catalogWorkupCount === 1 ? "" : "s"} loaded.`
+          : "";
         elements.workupStudioBackendStatus.dataset.state = message && /fail|error|denied|unable/i.test(message)
           ? "error"
           : connected
@@ -11341,7 +11382,7 @@
             : "local";
         elements.workupStudioBackendStatus.textContent = message
           || (connected
-            ? `${workupStudioState.backend.canReview ? "Reviewer" : "Author"} signed in as ${workupStudioState.backend.email || "Supabase user"}. ${workupStudioState.backend.canReview ? "Can publish reviewed changes." : `${workupStudioState.backend.permittedWorkupIds.length} assigned workup${workupStudioState.backend.permittedWorkupIds.length === 1 ? "" : "s"}.`}`
+            ? `${workupStudioState.backend.canReview ? "Reviewer" : "Author"} signed in as ${workupStudioState.backend.email || "Supabase user"}. ${workupStudioState.backend.canReview ? "Can publish reviewed changes." : `${workupStudioState.backend.permittedWorkupIds.length} assigned workup${workupStudioState.backend.permittedWorkupIds.length === 1 ? "" : "s"}.`}${catalogSummary}`
             : workupStudioBackendAuthenticated() && workupStudioState.backend.permissionChecked
               ? "Signed in, but no Workup Studio permission is assigned. Ask a reviewer/admin to grant access."
             : workupStudioBackendAuthenticated()
@@ -11425,6 +11466,22 @@
       return Array.from(bytes, (byte) => alphabet[byte % alphabet.length]).join("");
     }
 
+    function saveWorkupStudioPkceVerifier(verifier = "") {
+      localStorage.setItem(WORKUP_AUTHORING_PKCE_VERIFIER_KEY, verifier);
+      sessionStorage.setItem(WORKUP_AUTHORING_PKCE_VERIFIER_KEY, verifier);
+    }
+
+    function readWorkupStudioPkceVerifier() {
+      return localStorage.getItem(WORKUP_AUTHORING_PKCE_VERIFIER_KEY)
+        || sessionStorage.getItem(WORKUP_AUTHORING_PKCE_VERIFIER_KEY)
+        || "";
+    }
+
+    function clearWorkupStudioPkceVerifier() {
+      localStorage.removeItem(WORKUP_AUTHORING_PKCE_VERIFIER_KEY);
+      sessionStorage.removeItem(WORKUP_AUTHORING_PKCE_VERIFIER_KEY);
+    }
+
     async function createWorkupStudioPkceChallenge() {
       const verifier = generateWorkupStudioCodeVerifier();
       if (!crypto?.subtle || typeof TextEncoder === "undefined") {
@@ -11487,7 +11544,7 @@
         const pkce = await createWorkupStudioPkceChallenge();
         const url = new URL(`${normalizeSupabaseUrl(workupStudioState.backend.url)}/auth/v1/otp`);
         url.searchParams.set("redirect_to", workupStudioAuthRedirectUrl());
-        localStorage.setItem(WORKUP_AUTHORING_PKCE_VERIFIER_KEY, pkce.verifier);
+        saveWorkupStudioPkceVerifier(pkce.verifier);
         localStorage.setItem(WORKUP_AUTHORING_AUTH_PENDING_KEY, WORKUP_STUDIO_MAGIC_LINK_PROVIDER);
         localStorage.removeItem(WORKUP_AUTHORING_OAUTH_PENDING_KEY);
         const response = await fetch(url.toString(), {
@@ -11506,10 +11563,11 @@
           })
         });
         if (!response.ok) {
+          clearWorkupStudioPkceVerifier();
           throw new Error(workupStudioMagicLinkErrorMessage(response.status, await response.text()));
         }
       } catch (error) {
-        localStorage.removeItem(WORKUP_AUTHORING_PKCE_VERIFIER_KEY);
+        if (error?.name === "AbortError") return false;
         localStorage.removeItem(WORKUP_AUTHORING_AUTH_PENDING_KEY);
         const message = error instanceof Error ? error.message : "Unable to send magic link.";
         clearWorkupStudioAuthSession({ keepEmail: true, authError: message });
@@ -11547,18 +11605,33 @@
       return `Supabase ${method} ${path} failed: ${status} ${String(responseText || "").slice(0, 240)}`;
     }
 
+    function normalizeWorkupStudioSessionExpiresAt(session = {}) {
+      const explicitExpiresAt = Number(session?.expires_at || 0);
+      if (Number.isFinite(explicitExpiresAt) && explicitExpiresAt > 0) {
+        return Math.floor(explicitExpiresAt > 9999999999 ? explicitExpiresAt / 1000 : explicitExpiresAt);
+      }
+      const expiresIn = Number(session?.expires_in || 3600);
+      return Math.floor(Date.now() / 1000) + (Number.isFinite(expiresIn) && expiresIn > 0 ? Math.floor(expiresIn) : 3600);
+    }
+
     async function workupStudioSupabaseRequest(path, { method = "GET", body = null, prefer = "", requirePermission = true } = {}) {
       if (!workupStudioBackendConfigured()) throw new Error("Supabase backend is not configured.");
       if (!workupStudioBackendAuthenticated()) throw new Error("Sign in before connecting to Supabase.");
       await refreshWorkupStudioSupabaseSession();
       if (requirePermission && !workupStudioBackendSignedIn()) throw new Error("This account does not have Workup Studio permission.");
-      const headers = supabaseAuthHeaders();
-      if (prefer) headers.prefer = prefer;
-      const response = await fetch(`${normalizeSupabaseUrl(workupStudioState.backend.url)}${path}`, {
-        method,
-        headers,
-        body: body === null ? null : JSON.stringify(body)
-      });
+      const fetchWithCurrentSession = () => {
+        const headers = supabaseAuthHeaders();
+        if (prefer) headers.prefer = prefer;
+        return fetch(`${normalizeSupabaseUrl(workupStudioState.backend.url)}${path}`, {
+          method,
+          headers,
+          body: body === null ? null : JSON.stringify(body)
+        });
+      };
+      let response = await fetchWithCurrentSession();
+      if (response.status === 401 && await refreshWorkupStudioSupabaseSession({ force: true })) {
+        response = await fetchWithCurrentSession();
+      }
       if (!response.ok) {
         const text = await response.text();
         throw new Error(workupStudioSupabaseErrorMessage({ method, path, status: response.status, responseText: text }));
@@ -11568,31 +11641,45 @@
       return text ? JSON.parse(text) : null;
     }
 
-    async function refreshWorkupStudioSupabaseSession() {
+    async function refreshWorkupStudioSupabaseSession({ force = false } = {}) {
       const backend = workupStudioState.backend;
-      if (!backend.refreshToken || !backend.expiresAt || Date.now() < (Number(backend.expiresAt) - 60) * 1000) return false;
-      const response = await fetch(`${normalizeSupabaseUrl(backend.url)}/auth/v1/token?grant_type=refresh_token`, {
-        method: "POST",
-        headers: {
-          apikey: backend.anonKey,
-          "content-type": "application/json"
-        },
-        body: JSON.stringify({ refresh_token: backend.refreshToken })
-      });
-      if (!response.ok) return false;
-      const session = await response.json();
-      workupStudioState.backend = {
-        ...backend,
-        accessToken: session.access_token || backend.accessToken,
-        refreshToken: session.refresh_token || backend.refreshToken,
-        expiresAt: Math.floor(Date.now() / 1000) + Number(session.expires_in || 3600),
-        userId: session.user?.id || backend.userId
-      };
-      saveWorkupStudioState();
-      return true;
+      if (!backend.refreshToken) return false;
+      const expiresAt = Number(backend.expiresAt || 0);
+      const expiresAtSeconds = expiresAt > 9999999999 ? Math.floor(expiresAt / 1000) : expiresAt;
+      if (!force && expiresAtSeconds && Date.now() < (expiresAtSeconds - 60) * 1000) return false;
+      if (!workupStudioSessionRefreshPromise) {
+        workupStudioSessionRefreshPromise = (async () => {
+          const currentBackend = workupStudioState.backend;
+          if (!currentBackend.refreshToken) return false;
+          const response = await fetch(`${normalizeSupabaseUrl(currentBackend.url)}/auth/v1/token?grant_type=refresh_token`, {
+            method: "POST",
+            headers: {
+              apikey: currentBackend.anonKey,
+              "content-type": "application/json"
+            },
+            body: JSON.stringify({ refresh_token: currentBackend.refreshToken })
+          });
+          if (!response.ok) return false;
+          const session = await response.json();
+          workupStudioState.backend = {
+            ...workupStudioState.backend,
+            accessToken: session.access_token || currentBackend.accessToken,
+            refreshToken: session.refresh_token || currentBackend.refreshToken,
+            expiresAt: normalizeWorkupStudioSessionExpiresAt(session),
+            userId: session.user?.id || workupStudioState.backend.userId,
+            email: session.user?.email || workupStudioState.backend.email
+          };
+          saveWorkupStudioState();
+          return Boolean(session.access_token || currentBackend.accessToken);
+        })().finally(() => {
+          workupStudioSessionRefreshPromise = null;
+        });
+      }
+      return workupStudioSessionRefreshPromise;
     }
 
     function clearWorkupStudioAuthSession({ keepEmail = true, authError = "" } = {}) {
+      clearSupabaseWorkupCatalog({ render: false });
       workupStudioState.backend = {
         ...emptyWorkupStudioBackendState(),
         email: keepEmail ? workupStudioState.backend.email || "" : "",
@@ -11640,17 +11727,152 @@
       return workupStudioState.backend;
     }
 
+    function supabaseSourceRowToRegistrySource(row = {}) {
+      const payload = row.payload && typeof row.payload === "object" ? cloneJson(row.payload) : {};
+      const id = String(row.source_id || row.id || payload.source_id || payload.id || "").trim();
+      return {
+        ...payload,
+        id,
+        source_id: id,
+        title: row.title || payload.title || payload.citation || id,
+        citation: row.citation || payload.citation || payload.preferred_citation || "",
+        url: row.url || payload.url || payload.url_or_doi || "",
+        version: row.version || payload.version || "",
+        date_accessed: row.date_accessed || payload.date_accessed || "",
+        source_type: row.source_type || payload.source_type || payload.source || ""
+      };
+    }
+
+    function supabaseWorkupRowToModule(row = {}, sectionRows = []) {
+      const payload = row.payload && typeof row.payload === "object" ? cloneJson(row.payload) : {};
+      let module = {
+        ...cloneJson(baseModuleById(row.id) || {}),
+        ...payload
+      };
+      module.id = row.id || module.id;
+      module.title = row.title || module.title || module.label || module.id;
+      module.label = row.title || module.label || module.title;
+      module.version = row.version || module.version || "";
+      module.status = row.status || module.status || "draft";
+      module.complaint_group = row.complaint_group || module.complaint_group || "";
+      module.population = row.population && typeof row.population === "object" ? cloneJson(row.population) : (module.population || {});
+      module.source_ids = Array.isArray(row.source_ids) ? cloneJson(row.source_ids) : (module.source_ids || []);
+      module.supabase_updated_at = row.updated_at || "";
+      for (const section of sectionRows.sort((a, b) => Number(a.sort_order || 0) - Number(b.sort_order || 0))) {
+        const sectionKey = String(section.section_key || "").trim();
+        if (!sectionKey) continue;
+        try {
+          module = applySectionPayloadToModule(module, sectionKey, section.payload);
+        } catch {
+          // Ignore unknown future sections so older app bundles can still load the rest of the catalog.
+        }
+      }
+      return module;
+    }
+
+    function applySupabaseWorkupCatalog({ workups = [], sections = [], sources = [] } = {}) {
+      const sectionsByWorkup = new Map();
+      for (const section of Array.isArray(sections) ? sections : []) {
+        const workupId = String(section.workup_id || "").trim();
+        if (!workupId) continue;
+        if (!sectionsByWorkup.has(workupId)) sectionsByWorkup.set(workupId, []);
+        sectionsByWorkup.get(workupId).push(section);
+      }
+      const modulesById = new Map();
+      for (const row of Array.isArray(workups) ? workups : []) {
+        const module = supabaseWorkupRowToModule(row, sectionsByWorkup.get(row.id) || []);
+        if (module?.id) modulesById.set(module.id, module);
+      }
+      const sourcesById = new Map();
+      for (const row of Array.isArray(sources) ? sources : []) {
+        const source = supabaseSourceRowToRegistrySource(row);
+        if (source.id) sourcesById.set(source.id, source);
+      }
+      supabaseWorkupCatalog = {
+        modulesById,
+        sourcesById,
+        loadedAt: new Date().toISOString(),
+        status: "ready",
+        error: ""
+      };
+      workupStudioState.backend = {
+        ...workupStudioState.backend,
+        catalogLoadedAt: supabaseWorkupCatalog.loadedAt,
+        catalogWorkupCount: modulesById.size,
+        catalogLastError: ""
+      };
+      saveWorkupStudioState();
+      return supabaseWorkupCatalog;
+    }
+
+    function rerenderAfterSupabaseWorkupCatalogSync() {
+      if (state.sessionMode !== "locked") {
+        if (state.selectedWorkupModuleId) ensureWorkup();
+        renderPatientWorkspace();
+        renderPatientRail();
+        renderOpenEvidence();
+        renderCaseStatus();
+      }
+      renderWorkupStudio();
+      renderWorkupStudioBackendStatus();
+    }
+
+    function clearSupabaseWorkupCatalog({ render = true } = {}) {
+      supabaseWorkupCatalog = {
+        modulesById: new Map(),
+        sourcesById: new Map(),
+        loadedAt: "",
+        status: "local",
+        error: ""
+      };
+      workupStudioCatalogHydrationPromise = null;
+      if (render) rerenderAfterSupabaseWorkupCatalogSync();
+    }
+
+    async function loadSupabaseWorkupCatalog({ announce = false, force = false } = {}) {
+      if (!workupStudioBackendSignedIn()) return false;
+      if (!force && supabaseWorkupCatalog.status === "ready" && supabaseWorkupCatalog.loadedAt) return true;
+      if (!workupStudioCatalogHydrationPromise) {
+        workupStudioCatalogHydrationPromise = (async () => {
+          const [workups, sections, sources] = await Promise.all([
+            workupStudioSupabaseRequest("/rest/v1/workups?select=id,title,version,status,complaint_group,population,module_path,source_ids,payload,updated_at&order=title.asc&limit=1000"),
+            workupStudioSupabaseRequest("/rest/v1/workup_sections?select=workup_id,section_key,sort_order,payload,updated_at&order=workup_id.asc,sort_order.asc&limit=10000"),
+            workupStudioSupabaseRequest("/rest/v1/sources?select=id,source_id,title,source_type,url,version,date_accessed,citation,payload,updated_at&limit=5000")
+          ]);
+          applySupabaseWorkupCatalog({ workups, sections, sources });
+          rerenderAfterSupabaseWorkupCatalogSync();
+          if (announce) setStatus(`Loaded ${supabaseWorkupCatalog.modulesById.size} current Workup Studio workup${supabaseWorkupCatalog.modulesById.size === 1 ? "" : "s"} from Supabase.`);
+          return true;
+        })().catch((error) => {
+          const message = error instanceof Error ? error.message : "Unable to refresh Supabase workups.";
+          supabaseWorkupCatalog = {
+            ...supabaseWorkupCatalog,
+            status: "error",
+            error: message
+          };
+          workupStudioState.backend = {
+            ...workupStudioState.backend,
+            catalogLastError: message
+          };
+          saveWorkupStudioState();
+          renderWorkupStudioBackendStatus(`Signed in, but Supabase workup refresh failed: ${message}`);
+          throw error;
+        }).finally(() => {
+          workupStudioCatalogHydrationPromise = null;
+        });
+      }
+      return workupStudioCatalogHydrationPromise;
+    }
+
     async function finishWorkupStudioOAuthSession(session, provider = WORKUP_STUDIO_MAGIC_LINK_PROVIDER) {
       if (!ensureWorkupStudioBackendConfig()) return false;
       const accessToken = String(session?.access_token || "").trim();
       if (!accessToken) return false;
-      const expiresIn = Number(session?.expires_in || 3600);
-      const expiresAt = Number(session?.expires_at || 0) || Math.floor(Date.now() / 1000) + expiresIn;
       workupStudioState.backend = {
         ...workupStudioState.backend,
         accessToken,
         refreshToken: String(session?.refresh_token || ""),
-        expiresAt,
+        expiresAt: normalizeWorkupStudioSessionExpiresAt(session),
         userId: "",
         role: "",
         displayName: "",
@@ -11659,6 +11881,9 @@
         permissionChecked: false,
         sessionValidatedAt: "",
         lastAuthError: "",
+        catalogLoadedAt: "",
+        catalogWorkupCount: 0,
+        catalogLastError: "",
         lastSyncAt: ""
       };
       saveWorkupStudioState();
@@ -11680,7 +11905,7 @@
       if (!ensureWorkupStudioBackendConfig()) return null;
       const code = String(authCode || "").trim();
       if (!code) return null;
-      const verifier = localStorage.getItem(WORKUP_AUTHORING_PKCE_VERIFIER_KEY) || "";
+      const verifier = readWorkupStudioPkceVerifier();
       if (!verifier) {
         throw new Error("Supabase returned a one-time sign-in code, but this browser does not have the matching verifier. Send a new magic link from this browser and open that link here.");
       }
@@ -11695,7 +11920,7 @@
           code_verifier: verifier
         })
       });
-      localStorage.removeItem(WORKUP_AUTHORING_PKCE_VERIFIER_KEY);
+      clearWorkupStudioPkceVerifier();
       if (!response.ok) {
         const text = await response.text();
         throw new Error(`Unable to exchange Supabase magic-link code: ${response.status} ${text.slice(0, 220)}`);
@@ -11776,6 +12001,7 @@
     }
 
     function signOutWorkupStudioSupabase() {
+      clearSupabaseWorkupCatalog({ render: false });
       workupStudioState.backend = {
         ...workupStudioState.backend,
         accessToken: "",
@@ -11789,6 +12015,9 @@
         permissionChecked: false,
         sessionValidatedAt: "",
         lastAuthError: "",
+        catalogLoadedAt: "",
+        catalogWorkupCount: 0,
+        catalogLastError: "",
         lastSyncAt: ""
       };
       saveWorkupStudioState();
@@ -11804,6 +12033,14 @@
         workupStudioState.backend.userId = user?.id || user?.user?.id || workupStudioState.backend.userId || "";
         workupStudioState.backend.email = user?.email || user?.user?.email || workupStudioState.backend.email || "";
         await loadWorkupStudioPermissions();
+        try {
+          await loadSupabaseWorkupCatalog({ force: true });
+        } catch (catalogError) {
+          const message = catalogError instanceof Error ? catalogError.message : "Unable to refresh Supabase workups.";
+          workupStudioState.backend.catalogLastError = message;
+          saveWorkupStudioState();
+          setStatus(`Signed in, but Supabase workup refresh failed: ${message}`);
+        }
         saveWorkupStudioState();
         renderWorkupStudioBackendStatus();
         return true;
@@ -11819,7 +12056,15 @@
 
     function ensureWorkupStudioBackendSession() {
       if (!workupStudioBackendAuthenticated()) return null;
-      if (workupStudioBackendSignedIn()) return null;
+      if (workupStudioBackendSignedIn()) {
+        if (!supabaseWorkupCatalog.loadedAt) {
+          return loadSupabaseWorkupCatalog({ force: true }).catch((error) => {
+            renderWorkupStudioBackendStatus(error instanceof Error ? error.message : "Unable to refresh Supabase workups.");
+            return false;
+          });
+        }
+        return null;
+      }
       if (workupStudioState.backend.permissionChecked) return null;
       if (!workupStudioSessionHydrationPromise) {
         workupStudioSessionHydrationPromise = hydrateWorkupStudioBackendUserFromToken()
@@ -11858,6 +12103,9 @@
             permissionChecked: false,
             sessionValidatedAt: "",
             lastAuthError: "",
+            catalogLoadedAt: "",
+            catalogWorkupCount: 0,
+            catalogLastError: "",
             lastSyncAt: ""
           };
         }
@@ -12059,7 +12307,7 @@
       const text = JSON.stringify(payload || {});
       const sourceIds = collectModuleSourceIds(selectedWorkupStudioModule() || {});
       const sectionIds = [];
-      for (const source of complaintSourceRegistry) {
+      for (const source of effectiveSourceRegistry()) {
         const id = source.id || source.source_id;
         if (id && text.includes(id) && !sectionIds.includes(id)) sectionIds.push(id);
       }
@@ -12387,6 +12635,11 @@
         prefer: "return=minimal"
       });
       await publishWorkupStudioCanonicalSection(changeSet);
+      try {
+        await loadSupabaseWorkupCatalog({ force: true });
+      } catch {
+        // Publishing already succeeded; a later signed-in load can refresh the canonical catalog.
+      }
       changeSet.syncStatus = "synced";
       changeSet.syncedAt = new Date().toISOString();
       saveWorkupStudioState();
@@ -12783,7 +13036,7 @@
         elements.workupStudioProvenance.innerHTML = "";
         const list = document.createElement("ul");
         sourceIds.slice(0, 8).forEach((sourceId) => {
-          const source = complaintSourceRegistry.find((entry) => (entry.id || entry.source_id) === sourceId);
+          const source = effectiveSourceRegistry().find((entry) => (entry.id || entry.source_id) === sourceId);
           const item = document.createElement("li");
           item.textContent = source ? `${sourceId}: ${source.title || source.citation || "source"}` : sourceId;
           list.appendChild(item);
@@ -16349,17 +16602,17 @@
     function resolveUiComplaintModule(concern) {
       const normalized = normalizedWorkupQuery(concern);
       if (/dka|diabetic ketoacidosis|hyperglycemia|hhs/.test(normalized)) {
-        return complaintModules.find((module) => module.id === "hyperglycemia_possible_dka_v1");
+        return moduleById("hyperglycemia_possible_dka_v1");
       }
       if (/chest|angina|acs/.test(normalized)) {
-        return complaintModules.find((module) => module.id === "chest_pain_v1");
+        return moduleById("chest_pain_v1");
       }
       if (/fever|infection|sepsis|pneumonia|cellulitis|uti|pyelo|leukocytosis|cough|rigors|wound/.test(normalized)) {
-        return complaintModules.find((module) => module.id === "fever_infection_sepsis_v1");
+        return moduleById("fever_infection_sepsis_v1");
       }
       const words = workupSearchTokens(normalized).filter((word) => word.length > 2);
       const direct = words.length
-        ? complaintModules
+        ? effectiveComplaintModules()
           .map((module) => ({ module, score: moduleSearchScore(module, normalized) }))
           .filter((entry) => entry.score > 0)
           .sort((a, b) => b.score - a.score || moduleLabel(a.module).localeCompare(moduleLabel(b.module)))[0]?.module
@@ -16412,7 +16665,7 @@
     }
 
     function effectiveComplaintSourceRegistry() {
-      const byId = new Map(complaintSourceRegistry.map((source) => [source.id, source]));
+      const byId = new Map(effectiveSourceRegistry().map((source) => [source.id || source.source_id, source]));
       const evidenceSourceRows = state.evidenceCatalog?.sourceRows || [];
       for (const sourceRow of evidenceSourceRows) {
         const source = evidenceSourceRowAsComplaintSource(sourceRow);
@@ -20159,7 +20412,9 @@
     loadWorkupStudioState();
     hydrateIcons();
     bindEvents();
-    void captureWorkupStudioOAuthRedirect();
+    void captureWorkupStudioOAuthRedirect().then((handled) => {
+      if (!handled) void ensureWorkupStudioBackendSession();
+    });
     showVaultAccess();
   </script>
 </body>

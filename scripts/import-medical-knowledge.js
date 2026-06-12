@@ -6,7 +6,6 @@ import {
   validateAuthoringSnapshotNoPatientData
 } from "../workup-authoring.js";
 import { loadSupabaseEnvFiles, hasSupabaseServiceConfig } from "../utils/supabase/env.js";
-import { createSupabaseServiceClient } from "../utils/supabase/node.js";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 loadSupabaseEnvFiles({ cwd: repoRoot });
@@ -40,6 +39,7 @@ function outputPathForSnapshot() {
 
 async function supabaseRequest(table, rows, onConflict = "id") {
   if (!rows.length) return;
+  const { createSupabaseServiceClient } = await import("../utils/supabase/node.js");
   const supabase = createSupabaseServiceClient();
   const chunkSize = 250;
   for (let index = 0; index < rows.length; index += chunkSize) {

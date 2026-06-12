@@ -112,9 +112,13 @@ try {
     pkceTokenCount: 0,
     pkceTokenBodies: [],
     tokenRefreshCount: 0,
+    expiredReviewerTokenFailures: 0,
     userCount: 0,
     profileCount: 0,
     assignmentCount: 0,
+    catalogWorkupCount: 0,
+    catalogSectionCount: 0,
+    catalogSourceCount: 0,
     getChangeSetsCount: 0,
     postedRows: [],
     patchedRows: [],
@@ -144,7 +148,7 @@ try {
         status: 200,
         contentType: "application/json",
         body: JSON.stringify({
-          access_token: "fake-reviewer-token",
+          access_token: "expired-reviewer-token",
           refresh_token: "fake-refresh-token",
           expires_in: 3600,
           user: { id: fakeUserId, email: "reviewer@example.test" }
@@ -169,6 +173,15 @@ try {
     if (url.pathname === "/auth/v1/user" && request.method() === "GET") {
       supabaseRequests.userCount += 1;
       const authorization = request.headers().authorization || "";
+      if (/expired-reviewer-token/.test(authorization) && supabaseRequests.expiredReviewerTokenFailures < 1) {
+        supabaseRequests.expiredReviewerTokenFailures += 1;
+        await route.fulfill({
+          status: 401,
+          contentType: "application/json",
+          body: JSON.stringify({ msg: "invalid JWT" })
+        });
+        return;
+      }
       const isUnassigned = /stale-access-token|fake-unassigned-token/.test(authorization);
       await route.fulfill({
         status: 200,
@@ -194,6 +207,102 @@ try {
     if (url.pathname === "/rest/v1/workup_author_assignments" && request.method() === "GET") {
       supabaseRequests.assignmentCount += 1;
       await route.fulfill({ status: 200, contentType: "application/json", body: "[]" });
+      return;
+    }
+    if (url.pathname === "/rest/v1/workups" && request.method() === "GET") {
+      supabaseRequests.catalogWorkupCount += 1;
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify([
+          {
+            id: "hyperglycemia_possible_dka_v1",
+            title: "Supabase Hyperglycemia Workup",
+            version: "server-v2",
+            status: "mvp",
+            complaint_group: "endocrine",
+            population: { age_group: "adult" },
+            module_path: "medical-knowledge/complaint-modules/hyperglycemia_possible_dka_v1.json",
+            source_ids: ["SUPABASE_SOURCE_V2"],
+            payload: {
+              triggers: ["server dka"],
+              applicability: { age_group: "adult" }
+            },
+            updated_at: "2026-06-12T00:00:00.000Z"
+          }
+        ])
+      });
+      return;
+    }
+    if (url.pathname === "/rest/v1/workup_sections" && request.method() === "GET") {
+      supabaseRequests.catalogSectionCount += 1;
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify([
+          {
+            workup_id: "hyperglycemia_possible_dka_v1",
+            section_key: "clinical_pathway_tree_v1",
+            sort_order: 0,
+            payload: {
+              schema: "clinical_pathway_tree_v1",
+              workupId: "hyperglycemia_possible_dka_v1",
+              title: "Supabase Hyperglycemia Workup",
+              source_ids: ["SUPABASE_SOURCE_V2"],
+              root: {
+                id: "supabase_root",
+                label: "Supabase current DKA root",
+                type: "action",
+                children: []
+              },
+              activationRules: {}
+            },
+            updated_at: "2026-06-12T00:00:00.000Z"
+          },
+          {
+            workup_id: "hyperglycemia_possible_dka_v1",
+            section_key: "history_questions",
+            sort_order: 1,
+            payload: {
+              requiredQuestions: [
+                {
+                  id: "supabase_missed_insulin",
+                  item_type: "history_question",
+                  label: "Supabase current missed insulin question?",
+                  text: "Supabase current missed insulin question?",
+                  source: { source_id: "SUPABASE_SOURCE_V2" }
+                }
+              ],
+              conditionalQuestions: []
+            },
+            updated_at: "2026-06-12T00:00:00.000Z"
+          }
+        ])
+      });
+      return;
+    }
+    if (url.pathname === "/rest/v1/sources" && request.method() === "GET") {
+      supabaseRequests.catalogSourceCount += 1;
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify([
+          {
+            id: "SUPABASE_SOURCE_V2",
+            source_id: "SUPABASE_SOURCE_V2",
+            title: "Supabase source v2",
+            source_type: "guideline",
+            url: "",
+            version: "2026",
+            citation: "Supabase current source",
+            payload: {
+              id: "SUPABASE_SOURCE_V2",
+              title: "Supabase source v2"
+            },
+            updated_at: "2026-06-12T00:00:00.000Z"
+          }
+        ])
+      });
       return;
     }
     if (url.pathname === "/rest/v1/change_sets" && request.method() === "GET") {
@@ -314,6 +423,7 @@ try {
   assert.equal(supabaseRequests.profileCount, 1, "Saved sessions should recheck author profile.");
   assert.equal(supabaseRequests.assignmentCount, 1, "Saved sessions should recheck delegated assignments.");
   assert.equal(supabaseRequests.getChangeSetsCount, 0, "Stale cached reviewer state must not load backend drafts.");
+  assert.equal(supabaseRequests.catalogWorkupCount, 0, "Stale cached reviewer state must not load canonical Supabase workups.");
 
   await page.fill("#workupStudioSearchInput", "dka");
   await page.waitForFunction(() => document.querySelectorAll("#workupStudioList .studio-workup-row").length > 0);
@@ -344,6 +454,7 @@ try {
   await page.evaluate(() => document.querySelector("#workupStudioPublishImportButton")?.click());
   await page.waitForTimeout(100);
   assert.equal(authoringTableRequestCount(supabaseRequests), authoringRequestsBeforeLocalDraft, "Local draft/import controls must not touch Supabase authoring tables before auth and permission.");
+  assert.equal(supabaseRequests.catalogWorkupCount, 0, "Unauthenticated Workup Studio should not load canonical Supabase workups.");
   await page.evaluate(() => localStorage.removeItem("prerounding-workup-authoring-v1"));
   await page.goto(`${baseUrl}/index.html?workupStudioUiClean=${Date.now()}`);
   await page.click("#demoCaseButton");
@@ -377,6 +488,7 @@ try {
   assert.equal(supabaseRequests.profileCount, 2, "Unassigned account should check profile.");
   assert.equal(supabaseRequests.assignmentCount, 2, "Unassigned account should check assignments.");
   assert.equal(supabaseRequests.getChangeSetsCount, 0, "Unassigned account must not load backend drafts.");
+  assert.equal(supabaseRequests.catalogWorkupCount, 0, "Unassigned account must not load canonical Supabase workups.");
   assert.equal(await page.locator("#workupStudioLoadBackendDraftsButton").isDisabled(), true, "Backend draft loading must stay locked for unassigned users.");
   assert.equal(await page.locator("#workupStudioApproveDraftButton").isDisabled(), true, "Unassigned account must not be able to publish from the editor.");
   assert.equal(await page.locator("#workupStudioSignOutButton").isHidden(), true, "Sign out should stay hidden when a magic-link account has no Workup Studio permission.");
@@ -387,25 +499,36 @@ try {
   assert.equal(supabaseRequests.otpRequests.at(-1).body.email, "reviewer@example.test", "Reviewer magic link should use the typed reviewer email.");
   assert.equal(supabaseRequests.otpRequests.at(-1).body.create_user, false, "Reviewer magic link should still require an existing Auth user.");
   assert.match(supabaseRequests.otpRequests.at(-1).body.code_challenge, /^[A-Za-z0-9_-]{20,}$/, "Reviewer magic link should include a PKCE code challenge.");
+  const reviewerPkceVerifier = await page.evaluate(() => localStorage.getItem("prerounding-workup-authoring-pkce-verifier-v1") || sessionStorage.getItem("prerounding-workup-authoring-pkce-verifier-v1") || "");
+  assert.match(reviewerPkceVerifier, /^[A-Za-z0-9._~-]{40,}$/, "Reviewer callback should have a stored PKCE verifier before the email link opens.");
   await page.goto(magicLinkCodeCallbackUrl(baseUrl, "fake-reviewer-code"));
   await waitForCondition(() => supabaseRequests.profileCount >= 3 && supabaseRequests.assignmentCount >= 3, "reviewer magic-link callback");
   await page.click("#demoCaseButton");
   await page.waitForFunction(() => document.body.dataset.view !== "vaultAccess");
   await page.click('button[data-view-target="studio"]');
   await page.waitForFunction(() => /Reviewer signed in as reviewer@example\.test/.test(document.querySelector("#workupStudioBackendStatus")?.textContent || ""));
+  await waitForCondition(() => supabaseRequests.catalogWorkupCount >= 1 && supabaseRequests.catalogSectionCount >= 1 && supabaseRequests.catalogSourceCount >= 1, "reviewer canonical Supabase catalog");
+  await page.waitForFunction(() => /1 Supabase workup loaded/.test(document.querySelector("#workupStudioBackendStatus")?.textContent || ""));
   assert.equal(supabaseRequests.magicLinkCount, 2, "Workup Studio should request Supabase magic links for sign-in.");
   assert.equal(supabaseRequests.pkceTokenCount, 1, "Workup Studio should exchange PKCE magic-link codes for a session.");
   assert.equal(supabaseRequests.pkceTokenBodies.at(-1).auth_code, "fake-reviewer-code", "PKCE exchange should send the returned auth code.");
   assert.match(supabaseRequests.pkceTokenBodies.at(-1).code_verifier, /^[A-Za-z0-9._~-]{40,}$/, "PKCE exchange should send the stored code verifier.");
+  assert.equal(supabaseRequests.expiredReviewerTokenFailures, 1, "Fresh magic-link sessions should retry once when Supabase rejects the initial access token.");
+  assert.equal(supabaseRequests.tokenRefreshCount, 1, "Rejected fresh access tokens should be recovered through the refresh token before denying Workup Studio access.");
   assert.equal(supabaseRequests.profileCount, 3, "Workup Studio should verify the signed-in user's author profile.");
   assert.equal(supabaseRequests.assignmentCount, 3, "Workup Studio should verify delegated workup assignments.");
+  assert.equal(supabaseRequests.catalogWorkupCount, 1, "Reviewer sign-in should load current canonical Supabase workups.");
+  assert.equal(supabaseRequests.catalogSectionCount, 1, "Reviewer sign-in should load current canonical Supabase sections.");
+  assert.equal(supabaseRequests.catalogSourceCount, 1, "Reviewer sign-in should load current canonical Supabase sources.");
   assert.equal(supabaseRequests.getChangeSetsCount, 1, "Sign-in should load RLS-filtered backend change sets.");
+  assert.match(await page.textContent("#workupStudioList"), /Supabase Hyperglycemia Workup/, "Verified reviewers should see the Supabase canonical workup catalog.");
   assert.equal(await page.locator("#workupStudioLoadBackendDraftsButton").isDisabled(), false, "Backend draft loading should only unlock after permission checks.");
   assert.equal(await page.locator("#workupStudioApproveDraftButton").isDisabled(), false, "Reviewer account should unlock editor publish.");
   assert.match(await page.textContent("#workupStudioApproveDraftButton"), /Publish latest draft/, "Reviewer button should accurately describe publishing.");
   assert.equal(await page.locator("#workupStudioSignOutButton").isHidden(), false, "Sign out should appear after verified Workup Studio permission.");
   await page.click("#workupStudioApproveDraftButton");
   await waitForCondition(() => supabaseRequests.postedRows.some((row) => row.id === "loaded-author-draft"), "Supabase loaded author draft publish");
+  await waitForCondition(() => supabaseRequests.catalogWorkupCount >= 2, "canonical catalog refresh after publishing loaded author draft");
   const loadedAuthorDraftRow = supabaseRequests.postedRows.find((row) => row.id === "loaded-author-draft");
   assert.equal(loadedAuthorDraftRow.author_id, fakeAuthorUserId, "Reviewer publish must preserve the original draft author.");
   assert.equal(loadedAuthorDraftRow.reviewer_id, fakeUserId, "Reviewer publish should record the reviewer separately.");
@@ -451,6 +574,7 @@ try {
   await page.waitForFunction(() => /Supabase synced/.test(document.querySelector("#workupStudioDiffPreview")?.textContent || ""));
   await waitForCondition(() => supabaseRequests.postedRows.length >= 2, "Supabase draft insert");
   await waitForCondition(() => supabaseRequests.canonicalRows.some((entry) => entry.table === "pathway_trees"), "Supabase pathway tree publish");
+  await waitForCondition(() => supabaseRequests.catalogWorkupCount >= 3, "canonical catalog refresh after pathway publish");
   const importedPathwayRow = supabaseRequests.postedRows.find((row) => row.id !== "loaded-author-draft" && row.section_key === "clinical_pathway_tree_v1");
   assert.ok(importedPathwayRow, "OpenEvidence publish should create a separate pathway change-set row.");
   assert.equal(importedPathwayRow.author_id, fakeUserId);
@@ -465,6 +589,7 @@ try {
 
   await page.locator("#workupStudioSectionTabs button", { hasText: "History questions" }).click();
   await page.waitForSelector("#workupStudioItemLabelInput");
+  assert.match(await page.textContent("#workupStudioItemList"), /Supabase current missed insulin question/, "Supabase section hydration should populate current canonical history questions.");
   const historyPrompt = await page.inputValue("#workupStudioOpenEvidencePromptOutput");
   assert.match(historyPrompt, /requiredQuestions|conditionalQuestions/, "History prompt should be scoped to history question arrays.");
   await page.fill("#workupStudioItemLabelInput", "Studio test: ask about missed insulin, vomiting, and oral intake?");
@@ -485,6 +610,7 @@ try {
   });
   assert.match(supabaseRequests.patchedRows.at(-1).reviewed_at, /^\d{4}-\d{2}-\d{2}T/);
   await waitForCondition(() => supabaseRequests.canonicalRows.some((entry) => entry.table === "workup_items" && entry.rows.some((row) => row.section_key === "history_questions")), "Supabase history item publish");
+  await waitForCondition(() => supabaseRequests.catalogWorkupCount >= 4, "canonical catalog refresh after history publish");
 
   await page.locator("#workupStudioJsonDrawer summary").click();
   const exportJsonPreview = await page.inputValue("#workupStudioJsonPreview");
@@ -506,7 +632,52 @@ try {
 
   const storedDrafts = await page.evaluate(() => localStorage.getItem("prerounding-workup-authoring-v1") || "");
   assert.doesNotMatch(storedDrafts, /raw chart|MRN|DOB|patient identifier|room number/i, "Workup Studio local drafts should stay PHI-free.");
-  assert.equal(browserDiagnostics.filter((entry) => !/favicon/i.test(entry)).length, 0, browserDiagnostics.join("\n"));
+
+  const catalogCountBeforeSavedSessionStartup = supabaseRequests.catalogWorkupCount;
+  await page.evaluate((state) => {
+    localStorage.clear();
+    localStorage.setItem("prerounding-workup-authoring-v1", JSON.stringify(state));
+  }, {
+    selectedModuleId: "hyperglycemia_possible_dka_v1",
+    sectionKey: "history_questions",
+    changeSets: [],
+    backend: {
+      url: "https://studio-test.supabase.co",
+      anonKey: "stale-key",
+      email: "reviewer@example.test",
+      accessToken: "fake-access-token",
+      refreshToken: "fake-refresh-token",
+      expiresAt: Math.floor(Date.now() / 1000) + 3600,
+      userId: fakeUserId,
+      role: "reviewer",
+      canReview: true,
+      permittedWorkupIds: ["hyperglycemia_possible_dka_v1"],
+      permissionChecked: true,
+      sessionValidatedAt: "2026-06-12T00:00:00.000Z"
+    }
+  });
+  await page.goto(`${baseUrl}/index.html?workupStudioSavedSession=${Date.now()}`);
+  await waitForCondition(() => supabaseRequests.catalogWorkupCount >= catalogCountBeforeSavedSessionStartup + 1, "saved session canonical catalog on startup");
+  await page.click("#demoCaseButton");
+  await page.waitForFunction(() => document.body.dataset.view !== "vaultAccess");
+  await page.click('button[data-view-target="studio"]');
+  await page.waitForFunction(() => /Reviewer signed in as reviewer@example\.test/.test(document.querySelector("#workupStudioBackendStatus")?.textContent || ""));
+  assert.match(await page.textContent("#workupStudioList"), /Supabase Hyperglycemia Workup/, "Saved authenticated sessions should hydrate the Supabase canonical workup catalog on app startup.");
+  await page.click("#sidebarPatientRosterButton");
+  await page.waitForFunction(() => document.body.dataset.view === "workspace");
+  await page.click('button[data-patient-tab="workup"]');
+  await page.fill("#patientWorkupConcernInput", "server dka");
+  await page.waitForFunction(() => /Supabase Hyperglycemia Workup/.test(document.querySelector("#patientWorkupResults")?.textContent || ""));
+  await page.locator("#patientWorkupResults .workup-result-row", { hasText: "Supabase Hyperglycemia Workup" }).first().click();
+  await page.waitForFunction(() => /Supabase Hyperglycemia Workup/.test(document.querySelector("#patientValidatedIntentLabel")?.textContent || ""));
+  await page.waitForFunction(() => /Supabase current DKA root/.test(document.querySelector("#patientDecisionTreePanel")?.textContent || ""));
+  assert.match(await page.textContent("#patientValidatedIntentLabel"), /Supabase Hyperglycemia Workup/, "Second-device startup should use Supabase workup titles in the patient workspace.");
+  assert.match(await page.textContent("#patientDecisionTreePanel"), /Supabase current DKA root/, "Second-device startup should use Supabase clinical pathway sections in the patient workspace.");
+
+  const expectedRetryDiagnostics = browserDiagnostics.filter((entry) => /status of 401/i.test(entry));
+  assert.ok(expectedRetryDiagnostics.length <= 1, expectedRetryDiagnostics.join("\n"));
+  const unexpectedBrowserDiagnostics = browserDiagnostics.filter((entry) => !/favicon/i.test(entry) && !/status of 401/i.test(entry));
+  assert.equal(unexpectedBrowserDiagnostics.length, 0, unexpectedBrowserDiagnostics.join("\n"));
 
   console.log("Workup Studio UI authoring tests passed.");
 } finally {

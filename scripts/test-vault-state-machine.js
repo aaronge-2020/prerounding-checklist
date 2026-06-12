@@ -91,6 +91,13 @@ async function waitForEncryptedSave(page) {
   await page.waitForTimeout(250);
 }
 
+async function expandPatientRoster(page) {
+  const expanded = await page.evaluate(() => document.body.dataset.patientRoster === "expanded");
+  if (expanded) return;
+  await page.click("#sidebarPatientRosterButton");
+  await page.waitForFunction(() => document.body.dataset.patientRoster === "expanded");
+}
+
 async function testSinglePatientNoPersistence(browser, baseUrl) {
   const { context, page } = await openFreshPage(browser, baseUrl);
   await page.waitForSelector("#createVaultSection:not([hidden])");
@@ -104,6 +111,7 @@ async function testSinglePatientNoPersistence(browser, baseUrl) {
   await page.fill("#admitPatientConcernInput", "chest pain");
   await page.fill("#admitPatientHistoryInput", "Transient reviewed note.");
   await page.click('#patientAdmissionForm button[type="submit"]');
+  await expandPatientRoster(page);
   await page.waitForSelector('#patientList .patient-card:has-text("Temporary Alpha")');
   let snapshot = await storageSnapshot(page);
   assert(Object.keys(snapshot).length === 0, `Single-patient workflow should not write localStorage, got ${Object.keys(snapshot).join(", ")}`);
@@ -135,6 +143,7 @@ async function testEncryptedSingletonVault(browser, baseUrl) {
   await page.fill("#admitPatientMetaInput", "room 12");
   await page.fill("#admitPatientHistoryInput", "Reviewed context for cough and fever.");
   await page.click('#patientAdmissionForm button[type="submit"]');
+  await expandPatientRoster(page);
   await page.waitForSelector('#patientList .patient-card:has-text("Patient Alpha")');
   await waitForEncryptedSave(page);
 

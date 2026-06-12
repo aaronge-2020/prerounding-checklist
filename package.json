@@ -23,6 +23,7 @@
     "grant:workup-access": "node scripts/grant-workup-access.js",
     "deploy:supabase-workup-authoring": "node scripts/deploy-supabase-workup-authoring.js",
     "check:supabase-auth": "node scripts/check-supabase-auth-readiness.js",
+    "check:supabase-public": "node scripts/check-supabase-auth-readiness.js --public-only",
     "test:medical-knowledge": "node scripts/test-medical-knowledge-db.js",
     "test:workup-authoring": "node scripts/test-workup-authoring.js",
     "test:workup-studio-auth": "node scripts/test-workup-studio-auth.js",

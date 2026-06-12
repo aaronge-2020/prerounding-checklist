@@ -35,10 +35,18 @@ Magic Link is the default Workup Studio sign-in method. No Google Cloud or GitHu
 First check whether this machine has the credentials needed to deploy and seed the hosted Supabase project:
 
 ```bash
+npm run check:supabase-public
+```
+
+This credential-free check uses the browser-configured Supabase URL and publishable key to verify Email magic-link readiness, authoring table presence, and anonymous-data exposure. If it reports `PGRST205`, the hosted project does not have the Workup Studio migrations yet.
+
+Then check whether this machine has the credentials needed to deploy and seed the hosted Supabase project:
+
+```bash
 npm run check:supabase-auth
 ```
 
-That command probes the live project for Email magic-link readiness, the Workup Studio authoring tables, and anonymous-data exposure.
+That command runs the public checks plus local deployment credential checks for Supabase CLI access and service-role seeding/export.
 
 The simplest deployment path is:
 

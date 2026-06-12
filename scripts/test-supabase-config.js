@@ -21,6 +21,7 @@ assert.equal(pkg.scripts["import:medical-knowledge"], "node scripts/import-medic
 assert.equal(pkg.scripts["export:medical-knowledge"], "node scripts/export-medical-knowledge.js");
 assert.equal(pkg.scripts["grant:workup-access"], "node scripts/grant-workup-access.js");
 assert.equal(pkg.scripts["deploy:supabase-workup-authoring"], "node scripts/deploy-supabase-workup-authoring.js");
+assert.equal(pkg.scripts["check:supabase-public"], "node scripts/check-supabase-auth-readiness.js --public-only");
 
 const envExample = read(".env.example");
 for (const key of [
@@ -71,6 +72,8 @@ assert.ok(readinessScript.includes("Email magic-link auth"), "Readiness check sh
 assert.ok(readinessScript.includes("create_user: false"), "Readiness check should require existing users for magic links.");
 assert.ok(readinessScript.includes("PGRST205"), "Readiness check should detect missing Supabase authoring tables.");
 assert.ok(readinessScript.includes("Anonymous publishable-key request returned rows"), "Readiness check should flag anonymous authoring-data exposure.");
+assert.ok(readinessScript.includes("browserSupabaseDefaultsFromHtml"), "Readiness check should use browser defaults when env credentials are absent.");
+assert.ok(readinessScript.includes("--public-only"), "Readiness check should support credential-free public deployment probes.");
 assert.ok(readinessScript.includes("npm run deploy:supabase-workup-authoring"), "Readiness check should suggest the deploy command.");
 
 const deployScript = read("scripts/deploy-supabase-workup-authoring.js");
@@ -149,6 +152,7 @@ assert.ok(!finalChangeSetReadPolicy.includes("or review_status = 'approved'"), "
 const docs = read("docs/supabase-workup-authoring.md");
 assert.ok(docs.includes("npx supabase db push"), "Setup docs should explain how to deploy the migration.");
 assert.ok(docs.includes("npm run deploy:supabase-workup-authoring"), "Setup docs should explain the one-command deployment path.");
+assert.ok(docs.includes("npm run check:supabase-public"), "Setup docs should explain the credential-free public readiness check.");
 assert.ok(docs.includes("Supabase Workup Authoring Deploy"), "Setup docs should mention the manual GitHub Actions backend deploy.");
 assert.ok(docs.includes("npm run import:medical-knowledge"), "Setup docs should explain how to seed from JSON.");
 assert.ok(docs.includes("npm run export:medical-knowledge"), "Setup docs should explain how to export reviewed content.");

@@ -16,6 +16,14 @@ function read(relativePath) {
   return readFileSync(path.join(repoRoot, relativePath), "utf8");
 }
 
+function browserSupabaseDefaultsFromHtml(html = "") {
+  const backendBlock = html.match(/WORKUP_STUDIO_DEFAULT_BACKEND\s*=\s*Object\.freeze\(\{([\s\S]*?)\}\)/)?.[1] || "";
+  return {
+    url: backendBlock.match(/url:\s*"([^"]+)"/)?.[1] || "",
+    publishableKey: backendBlock.match(/publishableKey:\s*"([^"]+)"/)?.[1] || ""
+  };
+}
+
 function fail(message, details = []) {
   console.error(message);
   for (const detail of details) console.error(`- ${detail}`);
@@ -73,7 +81,13 @@ async function checkPublicSupabaseReadiness({ supabaseUrl, publishableKey }) {
   const tableChecks = [
     ["workup_author_profiles", "user_id"],
     ["workup_author_assignments", "user_id"],
+    ["sources", "id"],
     ["workups", "id"],
+    ["workup_sections", "workup_id"],
+    ["workup_items", "workup_id"],
+    ["pathway_trees", "workup_id"],
+    ["pathway_nodes", "tree_id"],
+    ["review_cases", "workup_id"],
     ["change_sets", "id"]
   ];
   for (const [table, column] of tableChecks) {
@@ -102,6 +116,8 @@ async function checkPublicSupabaseReadiness({ supabaseUrl, publishableKey }) {
 }
 
 const html = read("index.html");
+const publicOnly = process.argv.includes("--public-only");
+const browserDefaults = browserSupabaseDefaultsFromHtml(html);
 const migrationPath = path.join(repoRoot, "supabase", "migrations", "202606110002_workup_author_assignments.sql");
 assert.ok(existsSync(migrationPath), "Delegated author RLS migration is missing.");
 assert.ok(html.includes("/auth/v1/otp"), "Supabase email magic-link path should be present.");
@@ -111,15 +127,15 @@ assert.ok(html.includes("loadWorkupStudioPermissions"), "Workup Studio must veri
 assert.ok(html.includes("authorization: `Bearer ${workupStudioState.backend.accessToken}`"), "Workup Studio must use a user access token for REST calls.");
 assert.ok(!html.includes("accessToken || workupStudioState.backend.anonKey"), "Publishable key must not be used as bearer auth.");
 
-const supabaseUrl = getSupabaseUrl();
-const publishableKey = process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+const supabaseUrl = getSupabaseUrl() || browserDefaults.url;
+const publishableKey = process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || browserDefaults.publishableKey;
 const serviceRoleKey = getSupabaseServiceRoleKey();
 const accessToken = String(process.env.SUPABASE_ACCESS_TOKEN || "").trim();
 
 const missing = [];
 if (!supabaseUrl) missing.push("NEXT_PUBLIC_SUPABASE_URL or SUPABASE_URL");
-if (!accessToken) missing.push("SUPABASE_ACCESS_TOKEN, or run `npx supabase login`");
-if (!serviceRoleKey) missing.push("SUPABASE_SERVICE_ROLE_KEY for seeding/export verification");
+if (!publicOnly && !accessToken) missing.push("SUPABASE_ACCESS_TOKEN, or run `npx supabase login`");
+if (!publicOnly && !serviceRoleKey) missing.push("SUPABASE_SERVICE_ROLE_KEY for seeding/export verification");
 
 const publicReadiness = await checkPublicSupabaseReadiness({ supabaseUrl, publishableKey });
 const deploymentIssues = [
@@ -138,6 +154,9 @@ if (deploymentIssues.length) {
     "  npx supabase db push",
     "  npm run import:medical-knowledge"
   ]);
+} else if (publicOnly) {
+  console.log("Supabase public readiness checks passed.");
+  for (const note of publicReadiness.notes) console.log(`- ${note}`);
 } else {
   const command = process.platform === "win32" ? "npx.cmd" : "npx";
   const result = spawnSync(command, ["supabase", "projects", "list"], {
