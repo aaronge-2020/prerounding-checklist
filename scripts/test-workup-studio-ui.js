@@ -80,6 +80,14 @@ function magicLinkCallbackUrl(baseUrl, accessToken) {
   return callbackUrl.toString();
 }
 
+function magicLinkCodeCallbackUrl(baseUrl, code) {
+  const callbackUrl = new URL(`${baseUrl}/index.html`);
+  callbackUrl.searchParams.set("workupStudioOAuth", "1");
+  callbackUrl.searchParams.set("code", code);
+  callbackUrl.searchParams.set("type", "magiclink");
+  return callbackUrl.toString();
+}
+
 const { server, baseUrl } = await startServer();
 let browser;
 try {
@@ -101,6 +109,8 @@ try {
   const supabaseRequests = {
     magicLinkCount: 0,
     otpRequests: [],
+    pkceTokenCount: 0,
+    pkceTokenBodies: [],
     tokenRefreshCount: 0,
     userCount: 0,
     profileCount: 0,
@@ -124,6 +134,21 @@ try {
         status: 200,
         contentType: "application/json",
         body: "{}"
+      });
+      return;
+    }
+    if (url.pathname === "/auth/v1/token" && url.searchParams.get("grant_type") === "pkce") {
+      supabaseRequests.pkceTokenCount += 1;
+      supabaseRequests.pkceTokenBodies.push(JSON.parse(request.postData() || "{}"));
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          access_token: "fake-reviewer-token",
+          refresh_token: "fake-refresh-token",
+          expires_in: 3600,
+          user: { id: fakeUserId, email: "reviewer@example.test" }
+        })
       });
       return;
     }
@@ -339,6 +364,8 @@ try {
   await waitForCondition(() => supabaseRequests.magicLinkCount >= 1, "unassigned magic-link request");
   assert.equal(supabaseRequests.otpRequests.at(-1).body.email, "unassigned@example.test", "Magic link should be sent to the typed email.");
   assert.equal(supabaseRequests.otpRequests.at(-1).body.create_user, false, "Magic link should not create arbitrary Supabase users.");
+  assert.match(supabaseRequests.otpRequests.at(-1).body.code_challenge, /^[A-Za-z0-9_-]{20,}$/, "Magic link should include a PKCE code challenge.");
+  assert.match(supabaseRequests.otpRequests.at(-1).body.code_challenge_method, /^(s256|plain)$/, "Magic link should declare the PKCE challenge method.");
   assert.match(supabaseRequests.otpRequests.at(-1).redirectTo, /workupStudioOAuth=1/, "Magic-link callback should use the configured Workup Studio redirect.");
   await page.goto(magicLinkCallbackUrl(baseUrl, "fake-unassigned-token"));
   await waitForCondition(() => supabaseRequests.profileCount >= 2 && supabaseRequests.assignmentCount >= 2, "unassigned magic-link callback");
@@ -359,13 +386,17 @@ try {
   await waitForCondition(() => supabaseRequests.magicLinkCount >= 2, "reviewer magic-link request");
   assert.equal(supabaseRequests.otpRequests.at(-1).body.email, "reviewer@example.test", "Reviewer magic link should use the typed reviewer email.");
   assert.equal(supabaseRequests.otpRequests.at(-1).body.create_user, false, "Reviewer magic link should still require an existing Auth user.");
-  await page.goto(magicLinkCallbackUrl(baseUrl, "fake-reviewer-token"));
+  assert.match(supabaseRequests.otpRequests.at(-1).body.code_challenge, /^[A-Za-z0-9_-]{20,}$/, "Reviewer magic link should include a PKCE code challenge.");
+  await page.goto(magicLinkCodeCallbackUrl(baseUrl, "fake-reviewer-code"));
   await waitForCondition(() => supabaseRequests.profileCount >= 3 && supabaseRequests.assignmentCount >= 3, "reviewer magic-link callback");
   await page.click("#demoCaseButton");
   await page.waitForFunction(() => document.body.dataset.view !== "vaultAccess");
   await page.click('button[data-view-target="studio"]');
   await page.waitForFunction(() => /Reviewer signed in as reviewer@example\.test/.test(document.querySelector("#workupStudioBackendStatus")?.textContent || ""));
   assert.equal(supabaseRequests.magicLinkCount, 2, "Workup Studio should request Supabase magic links for sign-in.");
+  assert.equal(supabaseRequests.pkceTokenCount, 1, "Workup Studio should exchange PKCE magic-link codes for a session.");
+  assert.equal(supabaseRequests.pkceTokenBodies.at(-1).auth_code, "fake-reviewer-code", "PKCE exchange should send the returned auth code.");
+  assert.match(supabaseRequests.pkceTokenBodies.at(-1).code_verifier, /^[A-Za-z0-9._~-]{40,}$/, "PKCE exchange should send the stored code verifier.");
   assert.equal(supabaseRequests.profileCount, 3, "Workup Studio should verify the signed-in user's author profile.");
   assert.equal(supabaseRequests.assignmentCount, 3, "Workup Studio should verify delegated workup assignments.");
   assert.equal(supabaseRequests.getChangeSetsCount, 1, "Sign-in should load RLS-filtered backend change sets.");

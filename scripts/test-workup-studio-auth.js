@@ -18,6 +18,8 @@ assert.ok(html.includes('id="workupStudioMagicLinkEmailInput"'), "Workup Studio 
 assert.ok(html.includes("Send magic link"), "Workup Studio should use magic-link auth instead of username/password sign-in.");
 assert.ok(html.includes("/auth/v1/otp"), "Workup Studio should request Supabase email magic links through the OTP endpoint.");
 assert.ok(html.includes("create_user: false"), "Magic links must require an existing Supabase Auth user.");
+assert.ok(html.includes("code_challenge"), "Magic links should support Supabase PKCE redirects.");
+assert.ok(html.includes("grant_type=pkce"), "Workup Studio should exchange Supabase PKCE codes for sessions.");
 assert.ok(!html.includes("auth/v1/authorize"), "Workup Studio should not require a social OAuth provider to sign in.");
 assert.ok(!html.includes("/auth/v1/settings"), "Workup Studio should not block sign-in on social-provider settings.");
 assert.ok(html.includes("captureWorkupStudioOAuthRedirect"), "Workup Studio should capture Supabase auth redirects.");

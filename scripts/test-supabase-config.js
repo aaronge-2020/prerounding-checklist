@@ -95,6 +95,8 @@ assert.ok(!html.includes("grant_type=password"), "Workup Studio should not use t
 assert.ok(html.includes("Send magic link"), "Workup Studio should use email magic-link auth.");
 assert.ok(html.includes("/auth/v1/otp"), "Workup Studio should request Supabase email magic links.");
 assert.ok(html.includes("create_user: false"), "Workup Studio should require existing Supabase Auth users for magic links.");
+assert.ok(html.includes("code_challenge"), "Workup Studio should send a PKCE code challenge for email magic links.");
+assert.ok(html.includes("grant_type=pkce"), "Workup Studio should exchange PKCE auth codes on return.");
 assert.ok(!html.includes("/auth/v1/settings"), "Workup Studio should not require social-provider settings before sign-in.");
 assert.ok(!html.includes("auth/v1/authorize"), "Workup Studio should not require a social OAuth provider before sign-in.");
 assert.ok(html.includes("Backend: Workup Studio Supabase"), "Workup Studio should explain that backend access is configured by the app.");

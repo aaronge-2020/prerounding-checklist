@@ -9775,6 +9775,7 @@
     const VAULT_DATA_KEY = "prerounding-local-vault-data-v1";
     const WORKUP_AUTHORING_STORAGE_KEY = "prerounding-workup-authoring-v1";
     const WORKUP_AUTHORING_AUTH_PENDING_KEY = "prerounding-workup-authoring-auth-pending-v1";
+    const WORKUP_AUTHORING_PKCE_VERIFIER_KEY = "prerounding-workup-authoring-pkce-verifier-v1";
     const WORKUP_AUTHORING_OAUTH_PENDING_KEY = "prerounding-workup-authoring-oauth-pending-v1";
     const WORKUP_STUDIO_DEFAULT_BACKEND = Object.freeze({
       url: "https://hajjuzpnlvpetsleuxwb.supabase.co",
@@ -11412,6 +11413,31 @@
       return "Supabase";
     }
 
+    function base64UrlEncode(bytes) {
+      const binary = Array.from(bytes, (byte) => String.fromCharCode(byte)).join("");
+      return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+    }
+
+    function generateWorkupStudioCodeVerifier() {
+      const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
+      const bytes = new Uint8Array(64);
+      crypto.getRandomValues(bytes);
+      return Array.from(bytes, (byte) => alphabet[byte % alphabet.length]).join("");
+    }
+
+    async function createWorkupStudioPkceChallenge() {
+      const verifier = generateWorkupStudioCodeVerifier();
+      if (!crypto?.subtle || typeof TextEncoder === "undefined") {
+        return { verifier, challenge: verifier, method: "plain" };
+      }
+      const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier));
+      return {
+        verifier,
+        challenge: base64UrlEncode(new Uint8Array(digest)),
+        method: "s256"
+      };
+    }
+
     function workupStudioMagicLinkErrorMessage(status = 0, text = "") {
       const detail = String(text || "").trim();
       if (/signup|signups|create_user|not.*allowed|user.*not.*found|invalid login/i.test(detail)) {
@@ -11458,8 +11484,12 @@
       renderWorkupStudioBackendStatus(`Sending magic link to ${email}...`);
       setStatus("Sending Workup Studio magic link.");
       try {
+        const pkce = await createWorkupStudioPkceChallenge();
         const url = new URL(`${normalizeSupabaseUrl(workupStudioState.backend.url)}/auth/v1/otp`);
         url.searchParams.set("redirect_to", workupStudioAuthRedirectUrl());
+        localStorage.setItem(WORKUP_AUTHORING_PKCE_VERIFIER_KEY, pkce.verifier);
+        localStorage.setItem(WORKUP_AUTHORING_AUTH_PENDING_KEY, WORKUP_STUDIO_MAGIC_LINK_PROVIDER);
+        localStorage.removeItem(WORKUP_AUTHORING_OAUTH_PENDING_KEY);
         const response = await fetch(url.toString(), {
           method: "POST",
           headers: {
@@ -11470,21 +11500,23 @@
             email,
             create_user: false,
             data: {},
-            gotrue_meta_security: {}
+            gotrue_meta_security: {},
+            code_challenge: pkce.challenge,
+            code_challenge_method: pkce.method
           })
         });
         if (!response.ok) {
           throw new Error(workupStudioMagicLinkErrorMessage(response.status, await response.text()));
         }
       } catch (error) {
+        localStorage.removeItem(WORKUP_AUTHORING_PKCE_VERIFIER_KEY);
+        localStorage.removeItem(WORKUP_AUTHORING_AUTH_PENDING_KEY);
         const message = error instanceof Error ? error.message : "Unable to send magic link.";
         clearWorkupStudioAuthSession({ keepEmail: true, authError: message });
         renderWorkupStudioBackendStatus(message);
         setStatus(message);
         return false;
       }
-      localStorage.setItem(WORKUP_AUTHORING_AUTH_PENDING_KEY, WORKUP_STUDIO_MAGIC_LINK_PROVIDER);
-      localStorage.removeItem(WORKUP_AUTHORING_OAUTH_PENDING_KEY);
       renderWorkupStudioBackendStatus(`Magic link sent to ${email}. Open it from this browser, then Workup Studio will check permissions.`);
       setStatus("Magic link sent. Check your email, then return here.");
       return true;
@@ -11644,10 +11676,39 @@
       return false;
     }
 
+    async function exchangeWorkupStudioPkceCode(authCode = "") {
+      if (!ensureWorkupStudioBackendConfig()) return null;
+      const code = String(authCode || "").trim();
+      if (!code) return null;
+      const verifier = localStorage.getItem(WORKUP_AUTHORING_PKCE_VERIFIER_KEY) || "";
+      if (!verifier) {
+        throw new Error("Supabase returned a one-time sign-in code, but this browser does not have the matching verifier. Send a new magic link from this browser and open that link here.");
+      }
+      const response = await fetch(`${normalizeSupabaseUrl(workupStudioState.backend.url)}/auth/v1/token?grant_type=pkce`, {
+        method: "POST",
+        headers: {
+          apikey: workupStudioState.backend.anonKey,
+          "content-type": "application/json"
+        },
+        body: JSON.stringify({
+          auth_code: code,
+          code_verifier: verifier
+        })
+      });
+      localStorage.removeItem(WORKUP_AUTHORING_PKCE_VERIFIER_KEY);
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(`Unable to exchange Supabase magic-link code: ${response.status} ${text.slice(0, 220)}`);
+      }
+      return response.json();
+    }
+
     async function captureWorkupStudioOAuthRedirect() {
       const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
       const queryParams = new URLSearchParams(window.location.search);
       const hasOAuthPayload = hashParams.has("access_token")
+        || queryParams.has("access_token")
+        || queryParams.has("code")
         || hashParams.has("error")
         || hashParams.has("error_code")
         || queryParams.get("workupStudioOAuth") === "1"
@@ -11662,6 +11723,8 @@
       const cleanUrl = new URL(window.location.href);
       cleanUrl.hash = "";
       cleanUrl.searchParams.delete("workupStudioOAuth");
+      cleanUrl.searchParams.delete("code");
+      cleanUrl.searchParams.delete("type");
       const error = hashParams.get("error") || queryParams.get("error") || "";
       const errorCode = hashParams.get("error_code") || queryParams.get("error_code") || error;
       const description = hashParams.get("error_description") || queryParams.get("error_description") || "";
@@ -11673,16 +11736,40 @@
         window.history.replaceState({}, document.title, cleanUrl.toString());
         return false;
       }
-      const accessToken = hashParams.get("access_token") || "";
+      let session = null;
+      const authCode = queryParams.get("code") || "";
+      if (authCode) {
+        renderWorkupStudioBackendStatus("Supabase magic link returned. Exchanging sign-in code...");
+        setStatus("Finishing Workup Studio magic-link sign-in.");
+        try {
+          session = await exchangeWorkupStudioPkceCode(authCode);
+        } catch (error) {
+          const message = error instanceof Error ? error.message : "Unable to exchange Supabase magic-link code.";
+          clearWorkupStudioAuthSession({ keepEmail: true, authError: message });
+          renderWorkupStudioBackendStatus(message);
+          setStatus(message);
+          window.history.replaceState({}, document.title, cleanUrl.toString());
+          return false;
+        }
+      }
+      const accessToken = session?.access_token || hashParams.get("access_token") || queryParams.get("access_token") || "";
       if (!accessToken) {
+        const message = queryParams.get("workupStudioOAuth") === "1"
+          ? "Returned from Supabase, but no session token or sign-in code was present. Send a new magic link from this browser and open that exact link."
+          : "";
+        if (message) {
+          clearWorkupStudioAuthSession({ keepEmail: true, authError: message });
+          renderWorkupStudioBackendStatus(message);
+          setStatus(message);
+        }
         window.history.replaceState({}, document.title, cleanUrl.toString());
         return false;
       }
       const result = await finishWorkupStudioOAuthSession({
         access_token: accessToken,
-        refresh_token: hashParams.get("refresh_token") || "",
-        expires_in: hashParams.get("expires_in") || "",
-        expires_at: hashParams.get("expires_at") || ""
+        refresh_token: session?.refresh_token || hashParams.get("refresh_token") || queryParams.get("refresh_token") || "",
+        expires_in: session?.expires_in || hashParams.get("expires_in") || queryParams.get("expires_in") || "",
+        expires_at: session?.expires_at || hashParams.get("expires_at") || queryParams.get("expires_at") || ""
       }, pendingProvider);
       window.history.replaceState({}, document.title, cleanUrl.toString());
       return result;
@@ -11721,9 +11808,11 @@
         renderWorkupStudioBackendStatus();
         return true;
       } catch (error) {
-        const message = error instanceof Error ? error.message : "Unable to read Supabase user profile.";
+        const detail = error instanceof Error ? error.message : "Unable to read Supabase user profile.";
+        const message = `Supabase sign-in worked, but Workup Studio access failed: ${detail}`;
         clearWorkupStudioAuthSession({ authError: message });
         renderWorkupStudioBackendStatus(message);
+        setStatus(message);
         return false;
       }
     }
