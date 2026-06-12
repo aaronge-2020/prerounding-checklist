@@ -11,23 +11,20 @@ function read(relativePath) {
 
 const html = read("index.html");
 
-for (const forbidden of [
-  "workupStudioOauthSignInButton",
-  "workupStudioOauthProviderSelect",
-  "auth/v1/authorize",
-  "captureWorkupStudioOAuthRedirect",
-  "startWorkupStudioOAuthSignIn",
-  "Continue with OAuth"
-]) {
-  assert.ok(!html.includes(forbidden), `Workup Studio must not expose unconfigured OAuth path: ${forbidden}`);
-}
-
-assert.ok(html.includes('id="workupStudioLoadBackendDraftsButton" type="button" disabled'), "Load drafts must be disabled before auth/permission checks.");
+assert.ok(html.includes('id="workupStudioLoadBackendDraftsButton"') && html.includes("workupStudioLoadBackendDraftsButton.disabled = !workupStudioBackendSignedIn()"), "Load drafts must be disabled before auth/permission checks.");
 assert.ok(html.includes('id="workupStudioPublishImportButton" type="button" disabled'), "Publish must be disabled before reviewer auth.");
+assert.ok(html.includes('id="workupStudioSignOutButton" type="button" hidden'), "Sign out should be hidden before auth.");
+assert.ok(html.includes("Continue with Google"), "Workup Studio should use Google OAuth as the primary sign-in path.");
+assert.ok(html.includes("WORKUP_STUDIO_OAUTH_PROVIDER = \"google\""), "Google should be the configured OAuth provider.");
+assert.ok(html.includes("auth/v1/authorize"), "Workup Studio should start Supabase OAuth through the authorize endpoint.");
+assert.ok(html.includes("captureWorkupStudioOAuthRedirect"), "Workup Studio should capture Supabase OAuth redirects.");
+assert.ok(html.includes("Google OAuth is not enabled"), "Provider-not-enabled errors should be understandable.");
+assert.ok(!html.includes("grant_type=password"), "Browser app must not use Supabase password grant.");
+assert.ok(!html.includes("workupStudioSupabasePasswordInput"), "Workup Studio must not ask for a password.");
 assert.ok(!html.includes("workupStudioSupabaseUrlInput"), "Workup Studio must not expose editable Supabase project URL.");
 assert.ok(!html.includes("workupStudioSupabaseAnonKeyInput"), "Workup Studio must not expose editable publishable key.");
 assert.ok(!html.includes("workupStudioSaveBackendConfigButton"), "Workup Studio must not expose a backend config save button.");
-assert.ok(html.includes("saveWorkupStudioBackendEmailFromInput"), "Sign-in should save email only and use the configured backend.");
+assert.ok(html.includes("ensureWorkupStudioBackendConfig"), "Sign-in should use the configured backend only.");
 assert.ok(html.includes("function workupStudioBackendAuthenticated()"), "Auth state must distinguish raw session from permissioned connection.");
 assert.ok(html.includes("function workupStudioBackendSignedIn()"), "Auth state must require permission before backend connection.");
 assert.ok(html.includes("function loadWorkupStudioPermissions()"), "Sign-in must verify Workup Studio permissions.");

@@ -9362,18 +9362,10 @@
               <h2>Backend sync</h2>
               <div class="studio-backend-status" id="workupStudioBackendStatus" data-state="local">Not connected. Sign in with an assigned Workup Studio account.</div>
               <div class="notice">Backend: Workup Studio Supabase. Access requires an authenticated account with a reviewer profile or assigned workups.</div>
-              <div class="studio-form-grid">
-                <label for="workupStudioSupabaseEmailInput">Email
-                  <input id="workupStudioSupabaseEmailInput" type="email" autocomplete="username">
-                </label>
-                <label for="workupStudioSupabasePasswordInput">Password
-                  <input id="workupStudioSupabasePasswordInput" type="password" autocomplete="current-password">
-                </label>
-              </div>
               <div class="button-row">
-                <button class="btn btn-primary" id="workupStudioSignInButton" type="button">Email sign in</button>
-                <button class="btn btn-secondary" id="workupStudioLoadBackendDraftsButton" type="button" disabled>Load drafts</button>
-                <button class="btn btn-secondary" id="workupStudioSignOutButton" type="button">Sign out</button>
+                <button class="btn btn-primary" id="workupStudioSignInButton" type="button">Continue with Google</button>
+                <button class="btn btn-secondary" id="workupStudioLoadBackendDraftsButton" type="button" hidden disabled>Load drafts</button>
+                <button class="btn btn-secondary" id="workupStudioSignOutButton" type="button" hidden>Sign out</button>
               </div>
             </section>
 
@@ -9778,10 +9770,12 @@
     const VAULT_META_KEY = "prerounding-local-vault-meta-v2";
     const VAULT_DATA_KEY = "prerounding-local-vault-data-v1";
     const WORKUP_AUTHORING_STORAGE_KEY = "prerounding-workup-authoring-v1";
+    const WORKUP_AUTHORING_OAUTH_PENDING_KEY = "prerounding-workup-authoring-oauth-pending-v1";
     const WORKUP_STUDIO_DEFAULT_BACKEND = Object.freeze({
       url: "https://hajjuzpnlvpetsleuxwb.supabase.co",
       publishableKey: "sb_publishable_-rugOaCgl3r9abyuX7TICA_JQ0KQLhn"
     });
+    const WORKUP_STUDIO_OAUTH_PROVIDER = "google";
     const VAULT_KDF_ITERATIONS = 210000;
     const CHECKLIST_IMPROVEMENT_TASK_ID = "checklist_improvement_review";
     const DECISION_TREE_TASK_ID = "decision_tree_builder";
@@ -9972,6 +9966,7 @@
         permittedWorkupIds: [],
         permissionChecked: false,
         sessionValidatedAt: "",
+        lastAuthError: "",
         lastSyncAt: ""
       }
     };
@@ -10092,8 +10087,6 @@
       workupStudioExportPatchButton: $("#workupStudioExportPatchButton"),
       workupStudioImportCommandButton: $("#workupStudioImportCommandButton"),
       workupStudioBackendStatus: $("#workupStudioBackendStatus"),
-      workupStudioSupabaseEmailInput: $("#workupStudioSupabaseEmailInput"),
-      workupStudioSupabasePasswordInput: $("#workupStudioSupabasePasswordInput"),
       workupStudioSignInButton: $("#workupStudioSignInButton"),
       workupStudioLoadBackendDraftsButton: $("#workupStudioLoadBackendDraftsButton"),
       workupStudioSignOutButton: $("#workupStudioSignOutButton"),
@@ -11293,6 +11286,7 @@
         permittedWorkupIds: [],
         permissionChecked: false,
         sessionValidatedAt: "",
+        lastAuthError: "",
         lastSyncAt: ""
       };
     }
@@ -11314,11 +11308,11 @@
     }
 
     function workupStudioBackendAuthenticated() {
-      return Boolean(workupStudioBackendConfigured() && workupStudioState.backend.accessToken && workupStudioState.backend.userId);
+      return Boolean(workupStudioBackendConfigured() && workupStudioState.backend.accessToken);
     }
 
     function workupStudioBackendSignedIn() {
-      return Boolean(workupStudioBackendAuthenticated() && workupStudioState.backend.permissionChecked && (workupStudioState.backend.canReview || workupStudioState.backend.permittedWorkupIds?.length));
+      return Boolean(workupStudioBackendAuthenticated() && workupStudioState.backend.userId && workupStudioState.backend.permissionChecked && (workupStudioState.backend.canReview || workupStudioState.backend.permittedWorkupIds?.length));
     }
 
     function workupStudioCanReview() {
@@ -11344,24 +11338,30 @@
               ? "Signed in, but no Workup Studio permission is assigned. Ask a reviewer/admin to grant access."
             : workupStudioBackendAuthenticated()
               ? "Saved Supabase session needs permission recheck. Sign in again if revalidation fails."
+            : workupStudioState.backend.lastAuthError
+              ? workupStudioState.backend.lastAuthError
             : workupStudioBackendConfigured()
-              ? "Not connected. Sign in with an assigned Workup Studio account."
+              ? "Not connected. Continue with Google using an assigned Workup Studio account."
               : "Workup Studio backend is unavailable in this build.");
       }
-      if (elements.workupStudioSupabaseEmailInput && document.activeElement !== elements.workupStudioSupabaseEmailInput) {
-        elements.workupStudioSupabaseEmailInput.value = workupStudioState.backend.email || "";
+      if (elements.workupStudioSignInButton) {
+        elements.workupStudioSignInButton.hidden = workupStudioBackendSignedIn();
+        elements.workupStudioSignInButton.disabled = !workupStudioBackendConfigured();
       }
       if (elements.workupStudioLoadBackendDraftsButton) {
         elements.workupStudioLoadBackendDraftsButton.disabled = !workupStudioBackendSignedIn();
+        elements.workupStudioLoadBackendDraftsButton.hidden = !workupStudioBackendSignedIn();
       }
       if (elements.workupStudioPublishImportButton) {
         elements.workupStudioPublishImportButton.disabled = !workupStudioCanReview();
       }
+      if (elements.workupStudioSignOutButton) {
+        elements.workupStudioSignOutButton.hidden = !workupStudioBackendAuthenticated();
+      }
       configureWorkupStudioApproveButton();
     }
 
-    function saveWorkupStudioBackendEmailFromInput() {
-      const email = (elements.workupStudioSupabaseEmailInput?.value || "").trim();
+    function ensureWorkupStudioBackendConfig() {
       const url = normalizeSupabaseUrl(WORKUP_STUDIO_DEFAULT_BACKEND.url);
       const anonKey = WORKUP_STUDIO_DEFAULT_BACKEND.publishableKey;
       if (!url || !anonKey) {
@@ -11373,9 +11373,36 @@
         ...workupStudioState.backend,
         url,
         anonKey,
-        email
+        lastAuthError: ""
       };
       saveWorkupStudioState();
+      return true;
+    }
+
+    function workupStudioOAuthRedirectUrl() {
+      const redirectUrl = new URL(window.location.href);
+      redirectUrl.hash = "";
+      redirectUrl.searchParams.set("workupStudioOAuth", "1");
+      return redirectUrl.toString();
+    }
+
+    function workupStudioOAuthErrorMessage(errorCode = "", description = "") {
+      const detail = [errorCode, description].filter(Boolean).join(": ");
+      if (/unsupported provider|provider is not enabled|validation_failed/i.test(detail)) {
+        return "Google OAuth is not enabled for this Supabase project yet. Enable Google in Supabase Auth providers and add this app URL to the redirect allow-list.";
+      }
+      return detail || "Unable to finish Google sign-in with Supabase.";
+    }
+
+    function startWorkupStudioOAuthSignIn() {
+      if (!ensureWorkupStudioBackendConfig()) return false;
+      const authorizeUrl = new URL(`${normalizeSupabaseUrl(workupStudioState.backend.url)}/auth/v1/authorize`);
+      authorizeUrl.searchParams.set("provider", WORKUP_STUDIO_OAUTH_PROVIDER);
+      authorizeUrl.searchParams.set("redirect_to", workupStudioOAuthRedirectUrl());
+      localStorage.setItem(WORKUP_AUTHORING_OAUTH_PENDING_KEY, WORKUP_STUDIO_OAUTH_PROVIDER);
+      renderWorkupStudioBackendStatus("Opening Google sign-in through Supabase...");
+      setStatus("Opening Google sign-in through Supabase.");
+      window.location.assign(authorizeUrl.toString());
       return true;
     }
 
@@ -11435,10 +11462,11 @@
       return true;
     }
 
-    function clearWorkupStudioAuthSession({ keepEmail = true } = {}) {
+    function clearWorkupStudioAuthSession({ keepEmail = true, authError = "" } = {}) {
       workupStudioState.backend = {
         ...emptyWorkupStudioBackendState(),
-        email: keepEmail ? workupStudioState.backend.email || "" : ""
+        email: keepEmail ? workupStudioState.backend.email || "" : "",
+        lastAuthError: authError
       };
       saveWorkupStudioState();
     }
@@ -11482,61 +11510,78 @@
       return workupStudioState.backend;
     }
 
-    async function signInWorkupStudioSupabase() {
-      if (!saveWorkupStudioBackendEmailFromInput()) return false;
-      const password = elements.workupStudioSupabasePasswordInput?.value || "";
-      if (!workupStudioState.backend.email || !password) {
-        renderWorkupStudioBackendStatus("Enter email and password to sign in.");
-        setStatus("Enter Supabase email and password to sign in.");
-        return false;
-      }
-      try {
-        renderWorkupStudioBackendStatus("Signing in to Supabase...");
-        const response = await fetch(`${normalizeSupabaseUrl(workupStudioState.backend.url)}/auth/v1/token?grant_type=password`, {
-          method: "POST",
-          headers: {
-            apikey: workupStudioState.backend.anonKey,
-            "content-type": "application/json"
-          },
-          body: JSON.stringify({
-            email: workupStudioState.backend.email,
-            password
-          })
-        });
-        if (!response.ok) {
-          const text = await response.text();
-          throw new Error(text.slice(0, 240) || "Supabase sign-in failed.");
-        }
-        const session = await response.json();
-        workupStudioState.backend = {
-          ...workupStudioState.backend,
-          accessToken: session.access_token || "",
-          refreshToken: session.refresh_token || "",
-          expiresAt: Math.floor(Date.now() / 1000) + Number(session.expires_in || 3600),
-          userId: session.user?.id || "",
-          role: "",
-          displayName: "",
-          canReview: false,
-          permittedWorkupIds: [],
-          permissionChecked: false,
-          lastSyncAt: ""
-        };
-        if (elements.workupStudioSupabasePasswordInput) elements.workupStudioSupabasePasswordInput.value = "";
-        saveWorkupStudioState();
-        renderWorkupStudioBackendStatus("Signed in. Checking Workup Studio permissions...");
-        await loadWorkupStudioPermissions();
-        renderWorkupStudioBackendStatus();
+    async function finishWorkupStudioOAuthSession(session) {
+      if (!ensureWorkupStudioBackendConfig()) return false;
+      const accessToken = String(session?.access_token || "").trim();
+      if (!accessToken) return false;
+      const expiresIn = Number(session?.expires_in || 3600);
+      const expiresAt = Number(session?.expires_at || 0) || Math.floor(Date.now() / 1000) + expiresIn;
+      workupStudioState.backend = {
+        ...workupStudioState.backend,
+        accessToken,
+        refreshToken: String(session?.refresh_token || ""),
+        expiresAt,
+        userId: "",
+        role: "",
+        displayName: "",
+        canReview: false,
+        permittedWorkupIds: [],
+        permissionChecked: false,
+        sessionValidatedAt: "",
+        lastAuthError: "",
+        lastSyncAt: ""
+      };
+      saveWorkupStudioState();
+      renderWorkupStudioBackendStatus("Google sign-in returned. Checking Workup Studio permissions...");
+      const ok = await hydrateWorkupStudioBackendUserFromToken();
+      if (ok) {
         setStatus(workupStudioState.backend.canReview
-          ? "Signed in as a Workup Studio reviewer."
-          : `Signed in with ${workupStudioState.backend.permittedWorkupIds.length} assigned workup${workupStudioState.backend.permittedWorkupIds.length === 1 ? "" : "s"}.`);
+          ? "Signed in with Google as a Workup Studio reviewer."
+          : `Signed in with Google with ${workupStudioState.backend.permittedWorkupIds.length} assigned workup${workupStudioState.backend.permittedWorkupIds.length === 1 ? "" : "s"}.`);
         await loadWorkupStudioBackendChangeSets({ announce: false });
         return true;
-      } catch (error) {
-        clearWorkupStudioAuthSession();
-        renderWorkupStudioBackendStatus(error instanceof Error ? error.message : "Unable to sign in to Supabase.");
-        setStatus("Supabase sign-in failed or this account has no Workup Studio permission.");
+      }
+      setStatus("Google sign-in succeeded, but this account has no Workup Studio permission.");
+      return false;
+    }
+
+    async function captureWorkupStudioOAuthRedirect() {
+      const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+      const queryParams = new URLSearchParams(window.location.search);
+      const hasOAuthPayload = hashParams.has("access_token")
+        || hashParams.has("error")
+        || hashParams.has("error_code")
+        || queryParams.get("workupStudioOAuth") === "1"
+        || localStorage.getItem(WORKUP_AUTHORING_OAUTH_PENDING_KEY);
+      if (!hasOAuthPayload) return false;
+      localStorage.removeItem(WORKUP_AUTHORING_OAUTH_PENDING_KEY);
+      const cleanUrl = new URL(window.location.href);
+      cleanUrl.hash = "";
+      cleanUrl.searchParams.delete("workupStudioOAuth");
+      const error = hashParams.get("error") || queryParams.get("error") || "";
+      const errorCode = hashParams.get("error_code") || queryParams.get("error_code") || error;
+      const description = hashParams.get("error_description") || queryParams.get("error_description") || "";
+      if (error || errorCode || description) {
+        const message = workupStudioOAuthErrorMessage(errorCode, description);
+        clearWorkupStudioAuthSession({ keepEmail: false, authError: message });
+        renderWorkupStudioBackendStatus(message);
+        setStatus(message);
+        window.history.replaceState({}, document.title, cleanUrl.toString());
         return false;
       }
+      const accessToken = hashParams.get("access_token") || "";
+      if (!accessToken) {
+        window.history.replaceState({}, document.title, cleanUrl.toString());
+        return false;
+      }
+      const result = await finishWorkupStudioOAuthSession({
+        access_token: accessToken,
+        refresh_token: hashParams.get("refresh_token") || "",
+        expires_in: hashParams.get("expires_in") || "",
+        expires_at: hashParams.get("expires_at") || ""
+      });
+      window.history.replaceState({}, document.title, cleanUrl.toString());
+      return result;
     }
 
     function signOutWorkupStudioSupabase() {
@@ -11552,6 +11597,7 @@
         permittedWorkupIds: [],
         permissionChecked: false,
         sessionValidatedAt: "",
+        lastAuthError: "",
         lastSyncAt: ""
       };
       saveWorkupStudioState();
@@ -11571,8 +11617,9 @@
         renderWorkupStudioBackendStatus();
         return true;
       } catch (error) {
-        clearWorkupStudioAuthSession();
-        renderWorkupStudioBackendStatus(error instanceof Error ? error.message : "Unable to read Supabase user profile.");
+        const message = error instanceof Error ? error.message : "Unable to read Supabase user profile.";
+        clearWorkupStudioAuthSession({ authError: message });
+        renderWorkupStudioBackendStatus(message);
         return false;
       }
     }
@@ -11617,6 +11664,7 @@
             permittedWorkupIds: [],
             permissionChecked: false,
             sessionValidatedAt: "",
+            lastAuthError: "",
             lastSyncAt: ""
           };
         }
@@ -19259,7 +19307,7 @@
         setStatus("Workup authoring import command copied.");
       });
       elements.workupStudioSignInButton?.addEventListener("click", () => {
-        void signInWorkupStudioSupabase();
+        startWorkupStudioOAuthSignIn();
       });
       elements.workupStudioLoadBackendDraftsButton?.addEventListener("click", () => {
         void loadWorkupStudioBackendChangeSets();
@@ -19912,6 +19960,7 @@
     loadWorkupStudioState();
     hydrateIcons();
     bindEvents();
+    void captureWorkupStudioOAuthRedirect();
     showVaultAccess();
   </script>
 </body>

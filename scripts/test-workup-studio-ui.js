@@ -87,7 +87,8 @@ try {
   const fakeUnassignedUserId = "22222222-2222-4222-8222-222222222222";
   const fakeAuthorUserId = "33333333-3333-4333-8333-333333333333";
   const supabaseRequests = {
-    authCount: 0,
+    authorizeCount: 0,
+    tokenRefreshCount: 0,
     userCount: 0,
     profileCount: 0,
     assignmentCount: 0,
@@ -100,10 +101,25 @@ try {
   await page.route("https://hajjuzpnlvpetsleuxwb.supabase.co/**", async (route) => {
     const request = route.request();
     const url = new URL(request.url());
+    if (url.pathname === "/auth/v1/authorize") {
+      supabaseRequests.authorizeCount += 1;
+      const redirectTo = url.searchParams.get("redirect_to") || `${baseUrl}/index.html`;
+      const redirectUrl = new URL(redirectTo);
+      redirectUrl.hash = new URLSearchParams({
+        access_token: supabaseRequests.authorizeCount === 1 ? "fake-unassigned-token" : "fake-reviewer-token",
+        refresh_token: "fake-refresh-token",
+        expires_in: "3600",
+        token_type: "bearer"
+      }).toString();
+      await route.fulfill({
+        status: 302,
+        headers: { location: redirectUrl.toString() },
+        body: ""
+      });
+      return;
+    }
     if (url.pathname === "/auth/v1/token") {
-      supabaseRequests.authCount += 1;
-      const posted = JSON.parse(request.postData() || "{}");
-      const isUnassigned = posted.email === "unassigned@example.test";
+      supabaseRequests.tokenRefreshCount += 1;
       await route.fulfill({
         status: 200,
         contentType: "application/json",
@@ -111,22 +127,21 @@ try {
           access_token: "fake-access-token",
           refresh_token: "fake-refresh-token",
           expires_in: 3600,
-          user: {
-            id: isUnassigned ? fakeUnassignedUserId : fakeUserId,
-            email: isUnassigned ? "unassigned@example.test" : "reviewer@example.test"
-          }
+          user: { id: fakeUserId, email: "reviewer@example.test" }
         })
       });
       return;
     }
     if (url.pathname === "/auth/v1/user" && request.method() === "GET") {
       supabaseRequests.userCount += 1;
+      const authorization = request.headers().authorization || "";
+      const isUnassigned = /stale-access-token|fake-unassigned-token/.test(authorization);
       await route.fulfill({
         status: 200,
         contentType: "application/json",
         body: JSON.stringify({
-          id: fakeUnassignedUserId,
-          email: "stale-reviewer@example.test"
+          id: isUnassigned ? fakeUnassignedUserId : fakeUserId,
+          email: isUnassigned ? "unassigned@example.test" : "reviewer@example.test"
         })
       });
       return;
@@ -305,28 +320,34 @@ try {
   await page.waitForFunction(() => document.querySelectorAll("#workupStudioList .studio-workup-row").length > 0);
   await page.locator("#workupStudioList .studio-workup-row", { hasText: "Hyperglycemia" }).first().click();
   await page.waitForFunction(() => document.querySelector("#workupStudioSelectedTitle")?.textContent?.includes("Hyperglycemia"));
-  await page.fill("#workupStudioSupabaseEmailInput", "unassigned@example.test");
-  await page.fill("#workupStudioSupabasePasswordInput", "correct horse battery staple");
   await page.click("#workupStudioSignInButton");
+  await waitForCondition(() => supabaseRequests.authorizeCount >= 1 && supabaseRequests.profileCount >= 2 && supabaseRequests.assignmentCount >= 2, "unassigned OAuth callback");
+  await page.click("#demoCaseButton");
+  await page.waitForFunction(() => document.body.dataset.view !== "vaultAccess");
+  await page.click('button[data-view-target="studio"]');
   await page.waitForFunction(() => /no Workup Studio assignment/i.test(document.querySelector("#workupStudioBackendStatus")?.textContent || ""));
-  assert.equal(supabaseRequests.authCount, 1, "Unassigned account should still authenticate before permission denial.");
+  assert.equal(supabaseRequests.authorizeCount, 1, "Unassigned account should authenticate through Supabase Google OAuth before permission denial.");
   assert.equal(supabaseRequests.profileCount, 2, "Unassigned account should check profile.");
   assert.equal(supabaseRequests.assignmentCount, 2, "Unassigned account should check assignments.");
   assert.equal(supabaseRequests.getChangeSetsCount, 0, "Unassigned account must not load backend drafts.");
   assert.equal(await page.locator("#workupStudioLoadBackendDraftsButton").isDisabled(), true, "Backend draft loading must stay locked for unassigned users.");
   assert.equal(await page.locator("#workupStudioApproveDraftButton").isDisabled(), true, "Unassigned account must not be able to publish from the editor.");
+  assert.equal(await page.locator("#workupStudioSignOutButton").isHidden(), true, "Sign out should stay hidden when an OAuth account has no Workup Studio permission.");
 
-  await page.fill("#workupStudioSupabaseEmailInput", "reviewer@example.test");
-  await page.fill("#workupStudioSupabasePasswordInput", "correct horse battery staple");
   await page.click("#workupStudioSignInButton");
+  await waitForCondition(() => supabaseRequests.authorizeCount >= 2 && supabaseRequests.profileCount >= 3 && supabaseRequests.assignmentCount >= 3, "reviewer OAuth callback");
+  await page.click("#demoCaseButton");
+  await page.waitForFunction(() => document.body.dataset.view !== "vaultAccess");
+  await page.click('button[data-view-target="studio"]');
   await page.waitForFunction(() => /Reviewer signed in as reviewer@example\.test/.test(document.querySelector("#workupStudioBackendStatus")?.textContent || ""));
-  assert.equal(supabaseRequests.authCount, 2, "Workup Studio should sign in through Supabase Auth.");
+  assert.equal(supabaseRequests.authorizeCount, 2, "Workup Studio should sign in through Supabase Google OAuth.");
   assert.equal(supabaseRequests.profileCount, 3, "Workup Studio should verify the signed-in user's author profile.");
   assert.equal(supabaseRequests.assignmentCount, 3, "Workup Studio should verify delegated workup assignments.");
   assert.equal(supabaseRequests.getChangeSetsCount, 1, "Sign-in should load RLS-filtered backend change sets.");
   assert.equal(await page.locator("#workupStudioLoadBackendDraftsButton").isDisabled(), false, "Backend draft loading should only unlock after permission checks.");
   assert.equal(await page.locator("#workupStudioApproveDraftButton").isDisabled(), false, "Reviewer account should unlock editor publish.");
   assert.match(await page.textContent("#workupStudioApproveDraftButton"), /Publish latest draft/, "Reviewer button should accurately describe publishing.");
+  assert.equal(await page.locator("#workupStudioSignOutButton").isHidden(), false, "Sign out should appear after verified Workup Studio permission.");
   await page.click("#workupStudioApproveDraftButton");
   await waitForCondition(() => supabaseRequests.postedRows.some((row) => row.id === "loaded-author-draft"), "Supabase loaded author draft publish");
   const loadedAuthorDraftRow = supabaseRequests.postedRows.find((row) => row.id === "loaded-author-draft");

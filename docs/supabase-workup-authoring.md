@@ -62,7 +62,13 @@ Without the service role key, the same command safely falls back to a local snap
 
 ## Grant Reviewer Access
 
-Create or invite the reviewer in Supabase Auth, then run:
+Enable Google in Supabase Auth first:
+
+1. In Supabase, open `Authentication -> Providers -> Google`.
+2. Enable Google and add the Google OAuth client ID/secret.
+3. Add the deployed app URL to the Supabase Auth redirect allow-list, for example `https://aaronge-2020.github.io/prerounding-checklist/`.
+
+After the reviewer signs in once with Google, grant that Supabase Auth user reviewer access:
 
 ```bash
 npm run grant:workup-access -- --email=reviewer@example.com --role=reviewer
@@ -85,9 +91,9 @@ Workup Studio keeps publish controls locked until a signed-in account has a `rev
 
 ## Delegate One Workup
 
-Use Supabase Auth for the collaborator account. Email/password is the supported in-app path for this static build. OAuth is intentionally not exposed in the app until a provider is enabled in Supabase Auth and the app URL is added to the redirect allow-list; otherwise Supabase returns `Unsupported provider: provider is not enabled`.
+Use Supabase Google OAuth for the collaborator account. The app does not ask users for a username/password. If Google is not enabled in Supabase Auth, Supabase returns `Unsupported provider: provider is not enabled`; enable the provider and redirect URL before delegating users.
 
-After the user exists in `auth.users`, assign one workup:
+After the user signs in once and exists in `auth.users`, assign one workup:
 
 ```bash
 npm run grant:workup-access -- --email=assigned-author@example.com --workup=pediatric_urinary_uti_pyelonephritis_v1 --assigned-by=reviewer@example.com
@@ -115,8 +121,8 @@ That user can draft only the assigned workup. A reviewer/admin still has to publ
 ## Use Workup Studio
 
 1. Open the app and choose `Workup Studio`.
-2. The backend is fixed to the configured Workup Studio Supabase project; users only enter their assigned account credentials.
-3. Sign in with Supabase Auth by email/password.
+2. The backend is fixed to the configured Workup Studio Supabase project.
+3. Continue with Google. Supabase handles authentication; Workup Studio only checks whether that authenticated user has an author assignment or reviewer/admin profile.
 4. Pick a workup and section.
 5. Copy the generated OpenEvidence prompt and paste it into OpenEvidence.
 6. Paste the reviewed JSON result back into Workup Studio.

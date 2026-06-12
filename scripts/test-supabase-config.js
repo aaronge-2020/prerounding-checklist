@@ -61,12 +61,14 @@ assert.ok(html.includes("https://hajjuzpnlvpetsleuxwb.supabase.co"), "Workup Stu
 assert.ok(!html.includes("workupStudioSupabaseUrlInput"), "Workup Studio should not let users edit the Supabase project URL.");
 assert.ok(!html.includes("workupStudioSupabaseAnonKeyInput"), "Workup Studio should not render an editable publishable key.");
 assert.ok(!html.includes("workupStudioSaveBackendConfigButton"), "Workup Studio should not expose a backend config save button.");
+assert.ok(!html.includes("workupStudioSupabasePasswordInput"), "Workup Studio should not render password auth.");
+assert.ok(!html.includes("grant_type=password"), "Workup Studio should not use the password grant.");
+assert.ok(html.includes("Continue with Google"), "Workup Studio should use Google OAuth.");
+assert.ok(html.includes("auth/v1/authorize"), "Workup Studio should delegate auth to Supabase OAuth.");
 assert.ok(html.includes("Backend: Workup Studio Supabase"), "Workup Studio should explain that backend access is configured by the app.");
 assert.ok(html.includes("workupStudioOpenEvidencePromptOutput"), "Workup Studio should expose generated OpenEvidence section prompts.");
 assert.ok(html.includes("workup_section_update_v1"), "OpenEvidence prompt should request a section-scoped JSON schema.");
 assert.ok(html.includes("workupStudioPublishImportButton"), "Workup Studio should expose save-and-publish for reviewer users.");
-assert.ok(!html.includes("auth/v1/authorize"), "Workup Studio should not expose hardcoded OAuth providers.");
-assert.ok(!html.includes("workupStudioOauthSignInButton"), "Workup Studio should not render OAuth buttons unless providers are explicitly configured.");
 assert.ok(html.includes("loadWorkupStudioPermissions"), "Workup Studio should verify author/reviewer permissions after authentication.");
 assert.ok(html.includes("https://*.supabase.co"), "CSP should allow Supabase REST/Auth calls.");
 assert.ok(!html.includes("SUPABASE_SERVICE_ROLE_KEY"), "Browser app must not reference the service role key.");
@@ -115,6 +117,6 @@ assert.ok(docs.includes("npm run import:medical-knowledge"), "Setup docs should 
 assert.ok(docs.includes("npm run export:medical-knowledge"), "Setup docs should explain how to export reviewed content.");
 assert.ok(docs.includes("npm run grant:workup-access"), "Setup docs should explain how to delegate Workup Studio access.");
 assert.ok(docs.includes("workup_author_assignments"), "Setup docs should explain delegated workup assignments.");
-assert.ok(docs.includes("not exposed in the app until a provider is enabled"), "Setup docs should explain why OAuth is hidden by default.");
+assert.ok(docs.includes("Enable Google in Supabase Auth"), "Setup docs should explain Google OAuth setup.");
 
 console.log("Supabase Workup Studio configuration checks passed.");

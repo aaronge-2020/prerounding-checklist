@@ -25,7 +25,8 @@ function fail(message, details = []) {
 const html = read("index.html");
 const migrationPath = path.join(repoRoot, "supabase", "migrations", "202606110002_workup_author_assignments.sql");
 assert.ok(existsSync(migrationPath), "Delegated author RLS migration is missing.");
-assert.ok(!html.includes("auth/v1/authorize"), "Hardcoded OAuth provider path must not be present.");
+assert.ok(html.includes("auth/v1/authorize"), "Google OAuth provider path should be present.");
+assert.ok(!html.includes("grant_type=password"), "Password grant must not be present in the browser app.");
 assert.ok(html.includes("loadWorkupStudioPermissions"), "Workup Studio must verify profile/assignment permissions after auth.");
 assert.ok(html.includes("authorization: `Bearer ${workupStudioState.backend.accessToken}`"), "Workup Studio must use a user access token for REST calls.");
 assert.ok(!html.includes("accessToken || workupStudioState.backend.anonKey"), "Publishable key must not be used as bearer auth.");
