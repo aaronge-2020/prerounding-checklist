@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
@@ -19,6 +19,7 @@ assert.ok(pkg.dependencies["@supabase/supabase-js"], "Supabase JS client depende
 assert.ok(pkg.dependencies["@supabase/ssr"], "Supabase SSR helper dependency should be installed for a future Next.js migration.");
 assert.equal(pkg.scripts["import:medical-knowledge"], "node scripts/import-medical-knowledge.js");
 assert.equal(pkg.scripts["export:medical-knowledge"], "node scripts/export-medical-knowledge.js");
+assert.equal(pkg.scripts["grant:workup-access"], "node scripts/grant-workup-access.js");
 
 const envExample = read(".env.example");
 for (const key of [
@@ -48,16 +49,36 @@ assert.ok(exportScript.includes("createSupabaseServiceClient"), "Export command 
 assert.ok(exportScript.includes('eq("review_status", "approved")'), "Export command should only pull approved change sets.");
 assert.ok(exportScript.includes('eq("export_ready", true)'), "Export command should only pull export-ready change sets.");
 
+const grantScript = read("scripts/grant-workup-access.js");
+assert.ok(grantScript.includes("createSupabaseServiceClient"), "Grant command should use the service-role client.");
+assert.ok(grantScript.includes("workup_author_assignments"), "Grant command should write delegated workup assignments.");
+assert.ok(grantScript.includes("workup_author_profiles"), "Grant command should write author/reviewer profiles.");
+assert.ok(grantScript.includes("No Supabase Auth user found"), "Grant command should require an existing Supabase Auth user.");
+
 const html = read("index.html");
 assert.ok(html.includes("WORKUP_STUDIO_DEFAULT_BACKEND"), "Workup Studio should have public backend defaults.");
-assert.ok(html.includes("https://hajjuzpnlvpetsleuxwb.supabase.co"), "Workup Studio should be prefilled with the configured Supabase project.");
-assert.ok(html.includes("Publishable key"), "Workup Studio should use publishable-key wording.");
+assert.ok(html.includes("https://hajjuzpnlvpetsleuxwb.supabase.co"), "Workup Studio should use the configured Supabase project.");
+assert.ok(!html.includes("workupStudioSupabaseUrlInput"), "Workup Studio should not let users edit the Supabase project URL.");
+assert.ok(!html.includes("workupStudioSupabaseAnonKeyInput"), "Workup Studio should not render an editable publishable key.");
+assert.ok(!html.includes("workupStudioSaveBackendConfigButton"), "Workup Studio should not expose a backend config save button.");
+assert.ok(html.includes("Backend: Workup Studio Supabase"), "Workup Studio should explain that backend access is configured by the app.");
+assert.ok(html.includes("workupStudioOpenEvidencePromptOutput"), "Workup Studio should expose generated OpenEvidence section prompts.");
+assert.ok(html.includes("workup_section_update_v1"), "OpenEvidence prompt should request a section-scoped JSON schema.");
+assert.ok(html.includes("workupStudioPublishImportButton"), "Workup Studio should expose save-and-publish for reviewer users.");
+assert.ok(!html.includes("auth/v1/authorize"), "Workup Studio should not expose hardcoded OAuth providers.");
+assert.ok(!html.includes("workupStudioOauthSignInButton"), "Workup Studio should not render OAuth buttons unless providers are explicitly configured.");
+assert.ok(html.includes("loadWorkupStudioPermissions"), "Workup Studio should verify author/reviewer permissions after authentication.");
 assert.ok(html.includes("https://*.supabase.co"), "CSP should allow Supabase REST/Auth calls.");
 assert.ok(!html.includes("SUPABASE_SERVICE_ROLE_KEY"), "Browser app must not reference the service role key.");
 
-const migration = read("supabase/migrations/202606110001_workup_authoring.sql");
+const migration = readdirSync(path.join(repoRoot, "supabase", "migrations"))
+  .filter((fileName) => fileName.endsWith(".sql"))
+  .sort()
+  .map((fileName) => read(path.join("supabase", "migrations", fileName)))
+  .join("\n\n");
 for (const table of [
   "workup_author_profiles",
+  "workup_author_assignments",
   "sources",
   "workups",
   "workup_sections",
@@ -71,17 +92,29 @@ for (const table of [
   assert.match(migration, new RegExp(`alter table public\\.${table} enable row level security`), `${table} should have RLS enabled.`);
 }
 for (const required of [
-  "authors can draft their own change sets",
+  "assigned authors can draft their own change sets",
+  "can_edit_workup_content",
+  "reviewers can maintain workup assignments",
   "reviewers can approve exportable change sets",
+  "assigned authors can read workups",
+  "assigned authors can read pathway nodes",
+  "revoke execute on function public.can_edit_workup_content(text) from public",
+  "grant execute on function public.can_edit_workup_content(text) to authenticated, service_role",
   "change_sets_review_status_idx",
   "change_sets_source_ids_gin_idx"
 ]) {
   assert.ok(migration.includes(required), `Migration should include ${required}.`);
 }
+const finalChangeSetReadPolicy = migration.slice(migration.lastIndexOf('create policy "authors can read relevant change sets"'));
+assert.ok(finalChangeSetReadPolicy.includes("public.can_edit_workup_content(workup_id)"), "Final change-set read policy should require assignment/reviewer permission.");
+assert.ok(!finalChangeSetReadPolicy.includes("or review_status = 'approved'"), "Final change-set read policy should not make approved changes globally readable.");
 
 const docs = read("docs/supabase-workup-authoring.md");
 assert.ok(docs.includes("npx supabase db push"), "Setup docs should explain how to deploy the migration.");
 assert.ok(docs.includes("npm run import:medical-knowledge"), "Setup docs should explain how to seed from JSON.");
 assert.ok(docs.includes("npm run export:medical-knowledge"), "Setup docs should explain how to export reviewed content.");
+assert.ok(docs.includes("npm run grant:workup-access"), "Setup docs should explain how to delegate Workup Studio access.");
+assert.ok(docs.includes("workup_author_assignments"), "Setup docs should explain delegated workup assignments.");
+assert.ok(docs.includes("not exposed in the app until a provider is enabled"), "Setup docs should explain why OAuth is hidden by default.");
 
 console.log("Supabase Workup Studio configuration checks passed.");

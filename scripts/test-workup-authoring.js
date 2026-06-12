@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import {
   applyWorkupChangeSet,
   buildWorkupAuthoringSnapshot,
@@ -185,9 +185,15 @@ assert.deepEqual(
   "Export-ready change sets must still require reviewer approval before writing JSON."
 );
 
-const migrationSql = readFileSync(new URL("../supabase/migrations/202606110001_workup_authoring.sql", import.meta.url), "utf8");
+const migrationsDir = new URL("../supabase/migrations/", import.meta.url);
+const migrationSql = readdirSync(migrationsDir)
+  .filter((fileName) => fileName.endsWith(".sql"))
+  .sort()
+  .map((fileName) => readFileSync(new URL(fileName, migrationsDir), "utf8"))
+  .join("\n\n");
 for (const requiredSnippet of [
   "create table if not exists public.workups",
+  "create table if not exists public.workup_author_assignments",
   "create table if not exists public.workup_sections",
   "create table if not exists public.workup_items",
   "create table if not exists public.pathway_trees",
@@ -197,14 +203,23 @@ for (const requiredSnippet of [
   "create table if not exists public.change_sets",
   "source_id text not null unique",
   "alter table public.change_sets enable row level security",
-  "authors can draft their own change sets",
+  "can_edit_workup_content",
+  "assigned authors can draft their own change sets",
+  "assigned authors can read workups",
+  "assigned authors can read pathway nodes",
+  "revoke execute on function public.can_edit_workup_content(text) from public",
+  "grant execute on function public.can_edit_workup_content(text) to authenticated, service_role",
   "reviewers can approve exportable change sets",
+  "reviewers can insert reviewed change sets",
   "change_sets_review_status_idx",
   "workup_items_section_idx",
   "using gin(source_ids)"
 ]) {
   assert.ok(migrationSql.includes(requiredSnippet), `Migration should include: ${requiredSnippet}`);
 }
+const finalChangeSetReadPolicy = migrationSql.slice(migrationSql.lastIndexOf('create policy "authors can read relevant change sets"'));
+assert.match(finalChangeSetReadPolicy, /public\.can_edit_workup_content\(workup_id\)/, "Final change-set read policy should require assignment/reviewer permission.");
+assert.doesNotMatch(finalChangeSetReadPolicy, /or review_status = 'approved'/, "Final change-set read policy should not make approved changes globally readable.");
 assert.doesNotMatch(migrationSql, /generated always as \(id\)/i, "Import rows should not target a generated source_id column.");
 
 const packageJson = readJson("package.json");
