@@ -7,6 +7,7 @@ import {
 } from "../open-evidence-workflows.js";
 import {
   extractCitations,
+  extractRoundsPasteBack,
   parseOpenEvidenceResult
 } from "../open-evidence-results.js";
 
@@ -56,14 +57,16 @@ const baseContext = {
 };
 
 const outputContracts = {
-  initial_rounds_report: ["I. SUBJECTIVE", "III. ASSESSMENT AND PLAN", "include an inline citation to current guideline or literature"],
+  initial_rounds_report: ["I. SUBJECTIVE", "III. ASSESSMENT AND PLAN", "include an inline citation to current guideline or literature", "APP_PASTE_BACK_JSON", "open_evidence_rounds_pasteback_v1"],
   full_rounds_report: [
     "I. SUBJECTIVE",
     "II. OBJECTIVE",
     "III. ASSESSMENT AND PLAN",
-    "Include important negatives, trends, medication context, and contingencies"
+    "Include important negatives, trends, medication context, and contingencies",
+    "APP_PASTE_BACK_JSON",
+    "open_evidence_rounds_pasteback_v1"
   ],
-  final_rounds_update: ["Assume the attending heard the full presentation yesterday", "III. ASSESSMENT AND PLAN", "changes management"],
+  final_rounds_update: ["Assume the attending heard the full presentation yesterday", "III. ASSESSMENT AND PLAN", "changes management", "APP_PASTE_BACK_JSON", "open_evidence_rounds_pasteback_v1"],
   checklist_improvement_review: ["Output only one fenced JSON block", "\"schema\": \"workup_refinement_v1\"", "\"answerMode\": \"single or multi\"", "\"normalAnswers\""],
   decision_tree_builder: [
     "Return only the raw JSON object",
@@ -234,10 +237,29 @@ const attendingPlanResult = parseOpenEvidenceResult({
 assert.ok(attendingPlanResult.sections.some((section) => /DIABETIC KETOACIDOSIS/.test(section.title)), "attending plan parser should retain problem headings");
 assert.ok(extractCitations(attendingPlanResult.sections.map((section) => section.body).join("\n")).length >= 1, "citation extractor should find guideline citations in attending plan output");
 
+const roundsPasteBackText = `I. SUBJECTIVE
+- Better nausea.
+
+APP_PASTE_BACK_JSON
+\`\`\`json
+{"schema":"open_evidence_rounds_pasteback_v1","presentationType":"oral_rounds_soap","oneLiner":"Adult with DKA improving on insulin.","subjective":["Nausea improved"],"objective":["K 3.4"],"assessmentPlan":["Continue insulin with potassium monitoring"],"followUpTasks":["Verify supplies"],"bedsideRecheck":["Ask about oral intake"],"plainTextSummary":"DKA improving; verify potassium and discharge supplies."}
+\`\`\``;
+const roundsPasteBack = extractRoundsPasteBack(roundsPasteBackText);
+assert.equal(roundsPasteBack.oneLiner, "Adult with DKA improving on insulin.");
+assert.deepEqual(roundsPasteBack.followUpTasks, ["Verify supplies"]);
+const roundsParsedResult = parseOpenEvidenceResult({
+  taskId: "initial_rounds_report",
+  outputKind: "rounds_report",
+  text: roundsPasteBackText
+});
+assert.equal(roundsParsedResult.roundsPasteBack.plainTextSummary, "DKA improving; verify potassium and discharge supplies.");
+
 assert.equal(getOpenEvidenceTask("not_a_task"), null, "unknown task lookup should return null");
 
 const appHtml = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 assert.ok(appHtml.includes("promptTemplatesByTaskId"), "OpenEvidence prompt templates should persist as first-class local state");
+assert.ok(appHtml.includes("todayOpenEvidencePasteInput"), "Today cockpit should accept standardized OpenEvidence rounds paste-back");
+assert.ok(appHtml.includes("extractRoundsPasteBack"), "Today cockpit should parse standardized OpenEvidence rounds paste-back locally");
 assert.ok(appHtml.includes("resolvePromptTemplate"), "OpenEvidence copy should resolve editable template variables before copying");
 assert.ok(appHtml.includes("Editable smart-phrase template"), "OpenEvidence review tab should show editable smart-phrase prompt templates");
 assert.ok(appHtml.includes('id="savePromptTemplateButton"'), "OpenEvidence review tab should let users save edited prompt templates");

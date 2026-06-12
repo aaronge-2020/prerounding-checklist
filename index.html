@@ -4519,6 +4519,165 @@
       display: none;
     }
 
+    .today-cockpit {
+      display: grid;
+      gap: 12px;
+    }
+
+    .today-cockpit-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .today-mode-toggle {
+      display: inline-grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 4px;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #ffffff;
+    }
+
+    .today-mode-toggle button {
+      min-height: 34px;
+      border: 0;
+      border-radius: 5px;
+      background: transparent;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 850;
+      color: #33525a;
+      white-space: nowrap;
+    }
+
+    .today-mode-toggle button[aria-pressed="true"] {
+      background: var(--teal-soft);
+      color: var(--teal-dark);
+    }
+
+    .today-status-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .today-status-card {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #ffffff;
+      padding: 9px 10px;
+    }
+
+    .today-status-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .today-status-card strong {
+      display: block;
+      margin-top: 2px;
+      font-size: 13px;
+      line-height: 1.25;
+      overflow-wrap: anywhere;
+    }
+
+    .today-paste-grid,
+    .today-input-grid,
+    .today-baseline-grid {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .today-paste-grid {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    }
+
+    .today-cockpit textarea {
+      width: 100%;
+      min-height: 92px;
+      resize: vertical;
+    }
+
+    .today-cockpit #todaySmartPasteInput,
+    .today-cockpit #todayRoundsPromptPreview {
+      min-height: 208px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .today-review-list {
+      display: grid;
+      gap: 6px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .today-review-list li {
+      display: grid;
+      grid-template-columns: 92px minmax(0, 1fr);
+      gap: 8px;
+      align-items: start;
+      padding: 8px 9px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #ffffff;
+      color: #27434b;
+    }
+
+    .today-review-list strong {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .today-review-list span {
+      min-width: 0;
+      overflow-wrap: anywhere;
+      color: var(--muted);
+    }
+
+    .today-review-list [data-status="changed"],
+    .today-review-list [data-status="new"] {
+      color: var(--teal-dark);
+    }
+
+    .today-review-list [data-status="missing"] {
+      color: var(--amber);
+    }
+
+    .today-review-list [data-status="unchanged"] {
+      color: var(--muted);
+    }
+
+    .today-prompt-actions {
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    @media (max-width: 760px) {
+      .today-cockpit-head,
+      .today-paste-grid,
+      .today-input-grid,
+      .today-baseline-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .today-status-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
     .patient-evidence-grid {
       display: grid;
       grid-template-columns: minmax(300px, 0.34fr) minmax(0, 1fr);
@@ -8679,6 +8838,7 @@
             </div>
             <div class="patient-task-strip" role="tablist" aria-label="Selected patient workspace tabs">
               <button type="button" role="tab" data-patient-tab="overview" aria-selected="true" aria-label="Overview">Summary</button>
+              <button type="button" role="tab" data-patient-tab="today" aria-selected="false">Today</button>
               <button type="button" role="tab" data-patient-tab="context" aria-selected="false">Context</button>
               <button type="button" role="tab" data-patient-tab="workup" aria-selected="false">Workup</button>
               <button type="button" role="tab" data-patient-tab="checklist" aria-selected="false">Checklist</button>
@@ -8711,6 +8871,101 @@
                     </ul>
                   </div>
                 </div>
+              </section>
+
+              <section class="workflow-panel workflow-panel-wide today-cockpit" id="patientTodayPanel" data-patient-panel="today" hidden>
+                <div class="today-cockpit-head">
+                  <div>
+                    <div class="panel-title-row">
+                      <h3>Today's pre-round cockpit</h3>
+                      <span class="meta-tag" id="todayDateLabel">Today</span>
+                    </div>
+                    <p class="muted" id="todayModeHelp" style="margin: 2px 0 0;">Paste today's reviewed chart details, save the local update, then build the bedside checklist and rounds prompt.</p>
+                  </div>
+                  <div class="today-mode-toggle" aria-label="Today's workflow mode">
+                    <button type="button" data-today-mode="new" aria-pressed="true">New patient</button>
+                    <button type="button" data-today-mode="returning" aria-pressed="false">24h update</button>
+                  </div>
+                </div>
+
+                <div class="today-status-grid" id="todayStatusGrid" aria-label="Pre-round readiness">
+                  <div class="today-status-card"><span>Baseline</span><strong id="todayBaselineStatus">Not saved</strong></div>
+                  <div class="today-status-card"><span>Today</span><strong id="todayInputStatus">No update</strong></div>
+                  <div class="today-status-card"><span>Workup</span><strong id="todayWorkupStatus">Not selected</strong></div>
+                  <div class="today-status-card"><span>Bedside</span><strong id="todayChecklistStatus">Not built</strong></div>
+                  <div class="today-status-card"><span>Prompt</span><strong id="todayPromptStatus">Not ready</strong></div>
+                </div>
+
+                <div class="today-paste-grid">
+                  <div>
+                    <label for="todaySmartPasteInput">Smart paste</label>
+                    <textarea id="todaySmartPasteInput" maxlength="16000" aria-describedby="localTextEntryHelp" placeholder="Optional: paste one block with headings like Today note:, Labs:, Updated MAR:, Overnight events:, Subjective change:."></textarea>
+                    <div class="button-row">
+                      <button class="btn btn-secondary" id="todaySortPasteButton" type="button">Sort paste into fields</button>
+                      <button class="btn btn-secondary" id="todayClearPasteButton" type="button">Clear paste</button>
+                    </div>
+                  </div>
+                  <div>
+                    <label for="todayRoundsPromptPreview">Rounds SOAP prompt preview</label>
+                    <textarea id="todayRoundsPromptPreview" spellcheck="false" readonly aria-label="De-identified oral rounds SOAP prompt preview"></textarea>
+                    <div class="button-row today-prompt-actions">
+                      <button class="btn btn-primary" id="todayCopyRoundsPromptButton" type="button">Copy rounds prompt</button>
+                      <button class="btn btn-secondary" id="todayOpenEvidenceButton" type="button">Open OpenEvidence</button>
+                    </div>
+                    <label for="todayOpenEvidencePasteInput">OpenEvidence returned presentation</label>
+                    <textarea id="todayOpenEvidencePasteInput" maxlength="30000" aria-describedby="localTextEntryHelp" placeholder="Paste the full OpenEvidence result. The app will look for APP_PASTE_BACK_JSON with schema open_evidence_rounds_pasteback_v1."></textarea>
+                    <div class="button-row">
+                      <button class="btn btn-secondary" id="todayApplyOpenEvidenceButton" type="button">Record returned summary</button>
+                      <span class="meta-tag" id="todayPasteBackStatus">No returned summary</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="today-baseline-grid">
+                  <div>
+                    <label for="todayBaselineSummaryInput">Stable baseline summary</label>
+                    <textarea id="todayBaselineSummaryInput" maxlength="4000" aria-describedby="localTextEntryHelp" placeholder="One-liner, hospital course, stable background to carry forward."></textarea>
+                  </div>
+                  <div>
+                    <label for="todayActiveProblemsInput">Active problems and selected workups</label>
+                    <textarea id="todayActiveProblemsInput" maxlength="4000" aria-describedby="localTextEntryHelp" placeholder="Problem list, selected workup, current major management questions."></textarea>
+                  </div>
+                  <div>
+                    <label for="todayYesterdayPlanInput">Yesterday plan</label>
+                    <textarea id="todayYesterdayPlanInput" maxlength="4000" aria-describedby="localTextEntryHelp" placeholder="Plans or contingencies you want today's update to carry forward."></textarea>
+                  </div>
+                  <div>
+                    <label for="todayPendingItemsInput">Pending items</label>
+                    <textarea id="todayPendingItemsInput" maxlength="4000" aria-describedby="localTextEntryHelp" placeholder="Pending labs, imaging, consult questions, discharge barriers, or watch items."></textarea>
+                  </div>
+                </div>
+
+                <div class="today-input-grid">
+                  <div>
+                    <label for="todayNoteInput">Recent note or SOAP update</label>
+                    <textarea id="todayNoteInput" maxlength="8000" aria-describedby="localTextEntryHelp"></textarea>
+                  </div>
+                  <div>
+                    <label for="todayLabsInput">Most recent labs/results</label>
+                    <textarea id="todayLabsInput" maxlength="8000" aria-describedby="localTextEntryHelp"></textarea>
+                  </div>
+                  <div>
+                    <label for="todayMarInput">MAR / meds in last 24 hours</label>
+                    <textarea id="todayMarInput" maxlength="8000" aria-describedby="localTextEntryHelp"></textarea>
+                  </div>
+                  <div>
+                    <label for="todayOvernightInput">Overnight events and subjective changes</label>
+                    <textarea id="todayOvernightInput" maxlength="8000" aria-describedby="localTextEntryHelp"></textarea>
+                  </div>
+                </div>
+
+                <div class="button-row">
+                  <button class="btn btn-primary" id="saveTodayUpdateButton" type="button">Save today's update</button>
+                  <button class="btn btn-secondary" id="todayBuildChecklistButton" type="button">Build bedside checklist</button>
+                  <button class="btn btn-secondary" id="todayAnswerChecklistButton" type="button">Answer checklist</button>
+                  <button class="btn btn-secondary" id="todayOpenPromptWorkbenchButton" type="button">Open prompt workbench</button>
+                </div>
+                <ul class="today-review-list" id="todayUpdateReviewList" aria-live="polite"></ul>
               </section>
 
               <section class="workflow-panel" id="patientAdmissionPanel" data-patient-panel="context" hidden>
@@ -9768,6 +10023,8 @@
     import { buildLocalChecklistFromWorkup, checklistItemOptions, groupChecklistSectionsByOrganSystem, parseChecklist } from "./checklist.js";
     import { clinicalIntentRegistry, getClinicalIntentById } from "./clinical-intents.js";
     import { openEvidenceTasks, buildOpenEvidencePrompt } from "./open-evidence-workflows.js";
+    import { extractRoundsPasteBack } from "./open-evidence-results.js";
+    import { appendOrUpdateContinuityDay, buildCarryForwardBlock, buildSmartUpdateReview, classifySmartUpdateSections, createContinuityCase, formatDailyInputs, latestContinuityDay, normalizeContinuityCase, normalizeDailyInputs, smartSectionsToDailyInputs } from "./continuity.js";
     import { applySectionPayloadToModule, applyWorkupChangeSet, collectModuleSourceIds, collectSourceIdsFromValue, flattenPathwayNodes, makeWorkupChangeSet, sectionPayloadFromModule, workupSectionDefinitions } from "./workup-authoring.js";
 
     const LEGACY_STORAGE_KEY = "prerounding-redesign-state-v1";
@@ -9942,8 +10199,10 @@
       activePatientId: "",
       patientSearch: "",
       activePatientTab: "overview",
+      todayModeByPatientId: {},
       patientRosterExpanded: false,
       patientDrafts: {},
+      patientContinuityCases: {},
       patientWorkupSelections: {},
       workupRefinementsByModuleId: {},
       patientWorkupRefinements: {},
@@ -10040,6 +10299,35 @@
       workspaceAdmissionInput: $("#workspaceAdmissionInput"),
       workspaceLabsMedsInput: $("#workspaceLabsMedsInput"),
       workspaceContinuityInput: $("#workspaceContinuityInput"),
+      todayDateLabel: $("#todayDateLabel"),
+      todayModeHelp: $("#todayModeHelp"),
+      todayBaselineStatus: $("#todayBaselineStatus"),
+      todayInputStatus: $("#todayInputStatus"),
+      todayWorkupStatus: $("#todayWorkupStatus"),
+      todayChecklistStatus: $("#todayChecklistStatus"),
+      todayPromptStatus: $("#todayPromptStatus"),
+      todaySmartPasteInput: $("#todaySmartPasteInput"),
+      todaySortPasteButton: $("#todaySortPasteButton"),
+      todayClearPasteButton: $("#todayClearPasteButton"),
+      todayRoundsPromptPreview: $("#todayRoundsPromptPreview"),
+      todayCopyRoundsPromptButton: $("#todayCopyRoundsPromptButton"),
+      todayOpenEvidenceButton: $("#todayOpenEvidenceButton"),
+      todayOpenEvidencePasteInput: $("#todayOpenEvidencePasteInput"),
+      todayApplyOpenEvidenceButton: $("#todayApplyOpenEvidenceButton"),
+      todayPasteBackStatus: $("#todayPasteBackStatus"),
+      todayBaselineSummaryInput: $("#todayBaselineSummaryInput"),
+      todayActiveProblemsInput: $("#todayActiveProblemsInput"),
+      todayYesterdayPlanInput: $("#todayYesterdayPlanInput"),
+      todayPendingItemsInput: $("#todayPendingItemsInput"),
+      todayNoteInput: $("#todayNoteInput"),
+      todayLabsInput: $("#todayLabsInput"),
+      todayMarInput: $("#todayMarInput"),
+      todayOvernightInput: $("#todayOvernightInput"),
+      saveTodayUpdateButton: $("#saveTodayUpdateButton"),
+      todayBuildChecklistButton: $("#todayBuildChecklistButton"),
+      todayAnswerChecklistButton: $("#todayAnswerChecklistButton"),
+      todayOpenPromptWorkbenchButton: $("#todayOpenPromptWorkbenchButton"),
+      todayUpdateReviewList: $("#todayUpdateReviewList"),
       workspaceHistoryFindingInput: $("#workspaceHistoryFindingInput"),
       workspaceExamFindingInput: $("#workspaceExamFindingInput"),
       patientObjectiveSummaryPanel: $("#patientObjectiveSummaryPanel"),
@@ -10432,11 +10720,17 @@
       if (lock) state.sessionMode = "locked";
       state.vaultName = String(state.vaultName || vaultMeta()?.name || "");
       state.patientSearch = String(state.patientSearch || "");
-      if (!["overview", "context", "workup", "findings", "checklist", "evidence", "handoff"].includes(state.activePatientTab)) {
+      if (!["overview", "today", "context", "workup", "findings", "checklist", "evidence", "handoff"].includes(state.activePatientTab)) {
         state.activePatientTab = "overview";
+      }
+      if (!state.todayModeByPatientId || typeof state.todayModeByPatientId !== "object" || Array.isArray(state.todayModeByPatientId)) {
+        state.todayModeByPatientId = {};
       }
       if (!state.patientDrafts || typeof state.patientDrafts !== "object" || Array.isArray(state.patientDrafts)) {
         state.patientDrafts = {};
+      }
+      if (!state.patientContinuityCases || typeof state.patientContinuityCases !== "object" || Array.isArray(state.patientContinuityCases)) {
+        state.patientContinuityCases = {};
       }
       if (!state.patientWorkupSelections || typeof state.patientWorkupSelections !== "object" || Array.isArray(state.patientWorkupSelections)) {
         state.patientWorkupSelections = {};
@@ -10457,6 +10751,18 @@
         state.promptTemplatesByTaskId = {};
       }
       const validPatientIds = new Set(patientList({ includeDischarged: true }).map((patient) => patient.id));
+      for (const patientId of Object.keys(state.todayModeByPatientId)) {
+        if (!validPatientIds.has(patientId) || !["new", "returning"].includes(state.todayModeByPatientId[patientId])) {
+          delete state.todayModeByPatientId[patientId];
+        }
+      }
+      for (const [patientId, patientCase] of Object.entries(state.patientContinuityCases)) {
+        if (!validPatientIds.has(patientId)) {
+          delete state.patientContinuityCases[patientId];
+        } else {
+          state.patientContinuityCases[patientId] = normalizeContinuityCase(patientCase);
+        }
+      }
       for (const [patientId, moduleId] of Object.entries(state.patientWorkupSelections)) {
         if (!validPatientIds.has(patientId) || (moduleId && !moduleById(moduleId))) {
           delete state.patientWorkupSelections[patientId];
@@ -10527,7 +10833,9 @@
         "activePatientId",
         "patientSearch",
         "activePatientTab",
+        "todayModeByPatientId",
         "patientDrafts",
+        "patientContinuityCases",
         "patientWorkupSelections",
         "workupRefinementsByModuleId",
         "patientWorkupRefinements",
@@ -10555,8 +10863,8 @@
     }
 
     function vaultPayload() {
-	      const { vaultName, patients, lastPatientSeq, scrubbedText, deidCounts, workup, workupRows, selectedWorkupRow, selectedWorkupModuleId, checklistText, sections, answers, itemNotes, reviewedChecklistKeys, bedsideNote, selectedTaskId, openEvidenceSummaries, lastChecklistRefinementCount, lastChecklistRefinementAdditionCount, lastChecklistRefinementRemovalCount, transferCode, phonePayload, importedFindings, activePatientId, patientSearch, activePatientTab, patientDrafts, patientWorkupSelections, workupRefinementsByModuleId, patientWorkupRefinements, patientObjectiveData, decisionTreeGraphsByModuleId, promptTemplatesByTaskId, currentView, sourceMode, concern, modifiers, clinicalModifierDetails, setting, population } = state;
-	      return { vaultName, patients, lastPatientSeq, scrubbedText, deidCounts, workup, workupRows, selectedWorkupRow, selectedWorkupModuleId, checklistText, sections, answers, itemNotes, reviewedChecklistKeys, bedsideNote, selectedTaskId, openEvidenceSummaries, lastChecklistRefinementCount, lastChecklistRefinementAdditionCount, lastChecklistRefinementRemovalCount, transferCode, phonePayload, importedFindings, activePatientId, patientSearch, activePatientTab, patientDrafts, patientWorkupSelections, workupRefinementsByModuleId, patientWorkupRefinements, patientObjectiveData, decisionTreeGraphsByModuleId, promptTemplatesByTaskId, currentView, sourceMode, concern, modifiers, clinicalModifierDetails, setting, population };
+	      const { vaultName, patients, lastPatientSeq, scrubbedText, deidCounts, workup, workupRows, selectedWorkupRow, selectedWorkupModuleId, checklistText, sections, answers, itemNotes, reviewedChecklistKeys, bedsideNote, selectedTaskId, openEvidenceSummaries, lastChecklistRefinementCount, lastChecklistRefinementAdditionCount, lastChecklistRefinementRemovalCount, transferCode, phonePayload, importedFindings, activePatientId, patientSearch, activePatientTab, todayModeByPatientId, patientDrafts, patientContinuityCases, patientWorkupSelections, workupRefinementsByModuleId, patientWorkupRefinements, patientObjectiveData, decisionTreeGraphsByModuleId, promptTemplatesByTaskId, currentView, sourceMode, concern, modifiers, clinicalModifierDetails, setting, population } = state;
+	      return { vaultName, patients, lastPatientSeq, scrubbedText, deidCounts, workup, workupRows, selectedWorkupRow, selectedWorkupModuleId, checklistText, sections, answers, itemNotes, reviewedChecklistKeys, bedsideNote, selectedTaskId, openEvidenceSummaries, lastChecklistRefinementCount, lastChecklistRefinementAdditionCount, lastChecklistRefinementRemovalCount, transferCode, phonePayload, importedFindings, activePatientId, patientSearch, activePatientTab, todayModeByPatientId, patientDrafts, patientContinuityCases, patientWorkupSelections, workupRefinementsByModuleId, patientWorkupRefinements, patientObjectiveData, decisionTreeGraphsByModuleId, promptTemplatesByTaskId, currentView, sourceMode, concern, modifiers, clinicalModifierDetails, setting, population };
     }
 
     function saveState() {
@@ -10700,6 +11008,8 @@
       state.lastPatientSeq = 0;
       state.activePatientId = "";
       state.patientDrafts = {};
+      state.patientContinuityCases = {};
+      state.todayModeByPatientId = {};
       state.patientWorkupSelections = {};
       state.workupRefinementsByModuleId = {};
       state.patientWorkupRefinements = {};
@@ -10719,6 +11029,8 @@
       state.patients = [];
       state.activePatientId = "";
       state.patientDrafts = {};
+      state.patientContinuityCases = {};
+      state.todayModeByPatientId = {};
       state.patientWorkupSelections = {};
       state.workupRefinementsByModuleId = {};
       state.patientWorkupRefinements = {};
@@ -10798,6 +11110,8 @@
       state.patients = [];
       state.activePatientId = "";
       state.patientDrafts = {};
+      state.patientContinuityCases = {};
+      state.todayModeByPatientId = {};
       state.patientWorkupSelections = {};
       state.patientSearch = "";
       resetWorkflowArtifacts();
@@ -10907,6 +11221,8 @@
       closeDischargeConfirmation();
       state.patients = patientList({ includeDischarged: true }).filter((current) => current.id !== patient.id);
       delete state.patientDrafts[patient.id];
+      delete state.patientContinuityCases[patient.id];
+      delete state.todayModeByPatientId[patient.id];
       delete state.patientWorkupSelections[patient.id];
       delete state.patientWorkupRefinements[patient.id];
       if (state.activePatientId === patient.id) {
@@ -12331,7 +12647,7 @@
       const sectionRules = definition.kind === "pathway"
         ? "For payload, return one complete clinical_pathway_tree_v1 object with schema, workupId/workup_id, title, source_ids, activationRules, root, and children. Use short actionable node labels. Do not include placeholder labels like 'Missing data needed' unless hidden in missing_data_needed metadata."
         : definition.kind === "items"
-          ? `For payload, return only these arrays: ${definition.moduleFields.join(", ")}. Preserve existing item ids when revising; add stable ids for new rows. Each item should include a label/action/question/technique and source metadata when possible.`
+          ? `For payload, return only these arrays: ${definition.moduleFields.join(", ")}. Preserve existing item ids when revising; add stable ids for new rows. Each item should include id, label, item_type, answerMode, clinically specific options for bedside questions, findings_options for physical exam maneuvers, normalAnswers when a default normal response is safe, and source metadata when possible.`
           : definition.kind === "sources"
             ? "For payload, return module_source_ids and any source_ids that should be associated with this workup. Do not invent citations."
             : "For payload, return review-test metadata for this section only, such as gold_cases, synthetic_patient_scenarios, audit_requirements, and suppress_rules.";
@@ -12854,16 +13170,143 @@
       configureWorkupStudioApproveButton();
     }
 
-    function updateItemPayloadFromForm(entry) {
+    function parseStudioOptionList(value) {
+      const raw = Array.isArray(value) ? value : String(value || "").split(/\n|;|\||\s+\/\s+/);
+      return raw
+        .map((option) => typeof option === "string" ? option : option?.label || option?.value || option?.text || "")
+        .map((option, index) => String(option || "")
+          .replace(index === 0 ? /^(?:multi-?select|single-?select|choose one|select all that apply)\s*:\s*/i : /^$/, "")
+          .replace(/\s+/g, " ")
+          .trim())
+        .filter(Boolean)
+        .filter((option, index, options) => options.findIndex((candidate) => candidate.toLowerCase() === option.toLowerCase()) === index);
+    }
+
+    function formatStudioOptionList(value) {
+      return parseStudioOptionList(value).join("\n");
+    }
+
+    function studioItemOptions(item = {}, definition = studioSectionDefinition()) {
+      const raw = definition?.key === "physical_exam"
+        ? item.findings_options || item.findingsOptions || item.options || item.answer_options || item.answerOptions
+        : item.options || item.answer_options || item.answerOptions || item.answer_options_override || item.findings_options || item.findingsOptions;
+      return parseStudioOptionList(raw);
+    }
+
+    function studioItemNormalAnswers(item = {}) {
+      return parseStudioOptionList(item.normalAnswers || item.normal_answers || item.normal || item.defaultAnswers || item.default_answers);
+    }
+
+    function studioItemAnswerMode(item = {}, options = studioItemOptions(item)) {
+      const mode = String(item.answerMode || item.answer_mode || item.selectionMode || item.selection_mode || "").toLowerCase().replace(/[^a-z_]/g, "_");
+      if (["single", "multi", "endorsement", "free_text"].includes(mode)) return mode;
+      const optionText = options.join(" ");
+      if (/multi[-\s]?select|select all/i.test(optionText)) return "multi";
+      if (!options.length || options.some((option) => /_{2,3}/.test(option))) return "free_text";
+      return options.length > 4 ? "multi" : "single";
+    }
+
+    function studioDefaultItemType(definition = studioSectionDefinition(), groupKey = "") {
+      if (/Questions$/.test(groupKey) || definition?.key === "history_questions") return "history_question";
+      if (/Exam$/.test(groupKey) || definition?.key === "physical_exam") return "physical_exam_maneuver";
+      if (groupKey === "safetyChecks") return "safety_check";
+      if (/Tests|criteria/i.test(groupKey)) return "diagnostic_test";
+      if (groupKey === "redFlags") return "red_flag";
+      if (/disposition|decision|treatment/i.test(groupKey)) return "management_change";
+      if (/differential/i.test(groupKey)) return "diagnostic_frame";
+      return "workup_item";
+    }
+
+    function studioGeneratedItemId(label = "new item") {
+      return String(label || "new item")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "_")
+        .replace(/^_+|_+$/g, "")
+        .slice(0, 72) || `item_${Date.now().toString(36)}`;
+    }
+
+    function studioNewItemForSection(definition = studioSectionDefinition(), groupKey = "") {
+      const itemType = studioDefaultItemType(definition, groupKey);
+      const id = `new_${Date.now().toString(36)}`;
+      if (definition?.key === "history_questions") {
+        return {
+          id,
+          item_type: itemType,
+          label: "New bedside question?",
+          text: "New bedside question?",
+          answerMode: "single",
+          options: ["No change", "Improving", "Worse", "Other ___"],
+          normalAnswers: [],
+          source: {},
+          tags: []
+        };
+      }
+      if (definition?.key === "physical_exam") {
+        return {
+          id,
+          item_type: itemType,
+          label: "New focused exam finding",
+          technique: "New focused exam finding",
+          answerMode: "single",
+          findings_options: ["Expected or baseline", "New or worse abnormal finding", "Unable to assess", "Other ___"],
+          normalAnswers: ["Expected or baseline"],
+          source: {},
+          tags: []
+        };
+      }
+      return {
+        id,
+        item_type: itemType,
+        label: "New section item",
+        action: "New section item",
+        source: {},
+        tags: []
+      };
+    }
+
+    function addWorkupStudioItem(groupKey = "") {
       const module = selectedWorkupStudioModule();
+      const definition = studioSectionDefinition();
+      if (!module || !definition || definition.kind !== "items") return null;
+      const targetGroup = definition.moduleFields.includes(groupKey) ? groupKey : definition.moduleFields[0];
       const payload = studioSectionPayload(module, workupStudioState.sectionKey);
       const next = JSON.parse(JSON.stringify(payload));
+      const item = studioNewItemForSection(definition, targetGroup);
+      next[targetGroup] = [...(next[targetGroup] || []), item];
+      workupStudioState.selectedItemId = `${targetGroup}:${item.id}`;
+      return saveWorkupStudioChangeSet(next);
+    }
+
+    function updateItemPayloadFromForm(entry, { remove = false } = {}) {
+      const module = selectedWorkupStudioModule();
+      const definition = studioSectionDefinition();
+      const payload = studioSectionPayload(module, workupStudioState.sectionKey);
+      const next = JSON.parse(JSON.stringify(payload));
+      for (const field of definition.moduleFields) {
+        if (!Array.isArray(next[field])) next[field] = [];
+      }
+      if (remove) {
+        if (next[entry.groupKey]?.[entry.index]) {
+          next[entry.groupKey].splice(entry.index, 1);
+        }
+        const firstRemaining = definition.moduleFields.flatMap((field) => (next[field] || []).map((item, index) => ({ field, item, index })))[0];
+        workupStudioState.selectedItemId = firstRemaining ? `${firstRemaining.field}:${firstRemaining.item.id || firstRemaining.item.item_id || firstRemaining.index}` : "";
+        return next;
+      }
+      const targetGroupValue = $("#workupStudioItemGroupSelect")?.value || entry.groupKey;
+      const targetGroup = definition.moduleFields.includes(targetGroupValue) ? targetGroupValue : entry.groupKey;
       const item = { ...(next[entry.groupKey]?.[entry.index] || entry.item) };
       const label = $("#workupStudioItemLabelInput")?.value.trim();
       const primary = $("#workupStudioItemPrimaryInput")?.value.trim();
       const rationale = $("#workupStudioItemRationaleInput")?.value.trim();
       const sourceId = $("#workupStudioItemSourceInput")?.value.trim();
       const tags = $("#workupStudioItemTagsInput")?.value.split(",").map((tag) => tag.trim()).filter(Boolean);
+      const itemType = $("#workupStudioItemTypeInput")?.value.trim() || item.item_type || studioDefaultItemType(definition, targetGroup);
+      const answerMode = $("#workupStudioItemAnswerModeSelect")?.value || "";
+      const answerOptions = parseStudioOptionList($("#workupStudioItemOptionsInput")?.value || "");
+      const normalAnswers = parseStudioOptionList($("#workupStudioItemNormalAnswersInput")?.value || "");
+      item.item_type = itemType;
+      item.id = item.id || item.item_id || studioGeneratedItemId(label || primary || itemType);
       if (label) {
         item.label = label;
         if (item.text || item.item_type === "history_question") item.text = label.endsWith("?") ? label : `${label}?`;
@@ -12873,7 +13316,7 @@
         else if (item.technique !== undefined || item.item_type === "physical_exam_maneuver") item.technique = primary;
         else item.text = primary.endsWith("?") ? primary : `${primary}?`;
       }
-      if (rationale) {
+      if (rationale || item.rationale || item.management_change || item.management_implication || item.diagnostic_purpose) {
         item.rationale = rationale;
         item.diagnostic_purpose = item.diagnostic_purpose || rationale;
         item.management_implication = item.management_implication || rationale;
@@ -12881,9 +13324,47 @@
       }
       if (sourceId) {
         item.source = { ...(item.source || {}), source_id: sourceId };
+      } else if (item.source?.source_id) {
+        item.source = { ...item.source };
+        delete item.source.source_id;
       }
-      if (tags.length) item.tags = tags;
-      next[entry.groupKey][entry.index] = item;
+      item.tags = tags || [];
+      if (answerMode) item.answerMode = answerMode;
+      if (answerOptions.length) {
+        if (definition.key === "physical_exam") {
+          item.findings_options = answerOptions;
+          delete item.findingsOptions;
+          delete item.options;
+          delete item.answer_options;
+          delete item.answerOptions;
+        } else {
+          item.options = answerOptions;
+          item.answer_options = answerOptions;
+        }
+      } else if (definition.key === "physical_exam") {
+        item.findings_options = [];
+        delete item.options;
+        delete item.answer_options;
+        delete item.answerOptions;
+      } else {
+        item.options = [];
+        delete item.answer_options;
+        delete item.answerOptions;
+      }
+      if (normalAnswers.length) {
+        item.normalAnswers = normalAnswers;
+      } else {
+        item.normalAnswers = [];
+        delete item.normal_answers;
+      }
+      if (targetGroup !== entry.groupKey) {
+        next[entry.groupKey].splice(entry.index, 1);
+        next[targetGroup].push(item);
+      } else {
+        next[entry.groupKey][entry.index] = item;
+      }
+      const targetIndex = next[targetGroup].findIndex((candidate) => candidate === item || (candidate.id && candidate.id === item.id));
+      workupStudioState.selectedItemId = `${targetGroup}:${item.id || item.item_id || Math.max(targetIndex, 0)}`;
       return next;
     }
 
@@ -12901,7 +13382,8 @@
         button.setAttribute("aria-selected", String(entry.id === workupStudioState.selectedItemId));
         button.innerHTML = "<strong></strong><span></span>";
         $("strong", button).textContent = entry.item.label || entry.item.text || entry.item.action || entry.item.id || "Untitled item";
-        $("span", button).textContent = `${entry.groupKey} | ${entry.item.item_type || "item"}`;
+        const optionCount = studioItemOptions(entry.item, definition).length;
+        $("span", button).textContent = `${entry.groupKey} | ${entry.item.item_type || "item"}${optionCount ? ` | ${optionCount} option${optionCount === 1 ? "" : "s"}` : ""}`;
         button.addEventListener("click", () => {
           workupStudioState.selectedItemId = entry.id;
           saveWorkupStudioState();
@@ -12916,30 +13398,51 @@
           <p class="muted">This section has no editable rows yet.</p>
           <button class="btn btn-primary" id="workupStudioAddItemButton" type="button">Add section item</button>
         `;
-        $("#workupStudioAddItemButton")?.addEventListener("click", () => {
-          const payload = studioSectionPayload(module, definition.key);
-          const firstGroup = definition.moduleFields[0];
-          const next = { ...payload, [firstGroup]: [...(payload[firstGroup] || []), { id: `new_${Date.now().toString(36)}`, label: "New section item", item_type: "management_change", source: {} }] };
-          saveWorkupStudioChangeSet(next);
-        });
+        $("#workupStudioAddItemButton")?.addEventListener("click", () => addWorkupStudioItem(definition.moduleFields[0]));
         return;
       }
       const item = selected.item;
       const primaryValue = item.action || item.technique || item.text || item.management_change || "";
+      const itemOptions = studioItemOptions(item, definition);
+      const normalAnswers = studioItemNormalAnswers(item);
+      const answerMode = studioItemAnswerMode(item, itemOptions);
+      const editorTitle = definition.key === "history_questions"
+        ? "Bedside question editor"
+        : definition.key === "physical_exam"
+          ? "Physical exam editor"
+          : definition.label;
       elements.workupStudioEditor.innerHTML = `
-        <h3>${definition.label}</h3>
+        <div class="button-row">
+          <h3>${editorTitle}</h3>
+          <button class="btn btn-secondary" id="workupStudioAddItemButton" type="button">Add ${definition.key === "history_questions" ? "question" : definition.key === "physical_exam" ? "exam" : "item"}</button>
+        </div>
         <div class="studio-form-grid">
-          <label>Group
-            <input readonly value="${selected.groupKey}">
+          <label for="workupStudioItemGroupSelect">Scope
+            <select id="workupStudioItemGroupSelect"></select>
           </label>
-          <label>Item type
-            <input readonly value="${item.item_type || "item"}">
+          <label for="workupStudioItemTypeInput">Item type
+            <input id="workupStudioItemTypeInput" maxlength="120">
           </label>
         </div>
         <label for="workupStudioItemLabelInput">Label</label>
         <textarea id="workupStudioItemLabelInput" maxlength="1200"></textarea>
         <label for="workupStudioItemPrimaryInput">Action, question, or technique</label>
         <textarea id="workupStudioItemPrimaryInput" maxlength="1800"></textarea>
+        <div class="studio-form-grid">
+          <label for="workupStudioItemAnswerModeSelect">Answer mode
+            <select id="workupStudioItemAnswerModeSelect">
+              <option value="single">Single choice</option>
+              <option value="multi">Multi-select</option>
+              <option value="endorsement">Endorsement chips</option>
+              <option value="free_text">Free text</option>
+            </select>
+          </label>
+          <label for="workupStudioItemNormalAnswersInput">Normal answers
+            <textarea id="workupStudioItemNormalAnswersInput" maxlength="1200"></textarea>
+          </label>
+        </div>
+        <label for="workupStudioItemOptionsInput">${definition.key === "physical_exam" ? "Finding options" : "Answer options"}</label>
+        <textarea id="workupStudioItemOptionsInput" maxlength="2400"></textarea>
         <label for="workupStudioItemRationaleInput">Rationale / management impact</label>
         <textarea id="workupStudioItemRationaleInput" maxlength="1800"></textarea>
         <div class="studio-form-grid">
@@ -12952,16 +13455,33 @@
         </div>
         <div class="button-row">
           <button class="btn btn-secondary" id="workupStudioSaveItemDraftButton" type="button">Save section draft</button>
+          <button class="btn btn-secondary" id="workupStudioDeleteItemButton" type="button">Remove row</button>
           <button class="btn btn-primary" id="workupStudioApproveDraftButton" type="button" disabled>Reviewer publish locked</button>
         </div>
       `;
+      const groupSelect = $("#workupStudioItemGroupSelect");
+      for (const groupKey of definition.moduleFields) {
+        const option = document.createElement("option");
+        option.value = groupKey;
+        option.textContent = groupKey;
+        groupSelect.appendChild(option);
+      }
+      groupSelect.value = selected.groupKey;
+      $("#workupStudioItemTypeInput").value = item.item_type || studioDefaultItemType(definition, selected.groupKey);
+      $("#workupStudioItemAnswerModeSelect").value = answerMode;
       $("#workupStudioItemLabelInput").value = item.label || item.text || item.action || "";
       $("#workupStudioItemPrimaryInput").value = primaryValue;
+      $("#workupStudioItemOptionsInput").value = formatStudioOptionList(itemOptions);
+      $("#workupStudioItemNormalAnswersInput").value = formatStudioOptionList(normalAnswers);
       $("#workupStudioItemRationaleInput").value = item.rationale || item.management_change || item.management_implication || item.diagnostic_purpose || "";
       $("#workupStudioItemSourceInput").value = item.source?.source_id || item.source_id || "";
       $("#workupStudioItemTagsInput").value = (item.tags || []).join(", ");
+      $("#workupStudioAddItemButton").addEventListener("click", () => addWorkupStudioItem($("#workupStudioItemGroupSelect")?.value || selected.groupKey));
       $("#workupStudioSaveItemDraftButton").addEventListener("click", () => {
         saveWorkupStudioChangeSet(updateItemPayloadFromForm(selected));
+      });
+      $("#workupStudioDeleteItemButton").addEventListener("click", () => {
+        saveWorkupStudioChangeSet(updateItemPayloadFromForm(selected, { remove: true }));
       });
       $("#workupStudioApproveDraftButton").addEventListener("click", approveLatestWorkupStudioChangeSet);
       configureWorkupStudioApproveButton();
@@ -13464,7 +13984,7 @@
     }
 
     function setPatientTab(tabName, { announce = true, focusPanel = false } = {}) {
-      const allowedTabs = ["overview", "context", "workup", "checklist", "findings", "evidence", "handoff"];
+      const allowedTabs = ["overview", "today", "context", "workup", "checklist", "findings", "evidence", "handoff"];
       state.activePatientTab = allowedTabs.includes(tabName) ? tabName : "overview";
       renderPatientTabs();
       if (state.activePatientTab === "workup") {
@@ -15684,6 +16204,8 @@
       const patient = activePatient();
       const draft = patientDraft(patient);
       const selectedModule = moduleById(state.selectedWorkupModuleId);
+      const patientCase = patientContinuityCase(patient, { create: false });
+      const todayDay = currentContinuityDay(patientCase);
       const contextRows = Object.entries(patient.context || {})
         .map(([label, value]) => `${label}: ${value}`)
         .filter(Boolean);
@@ -15695,6 +16217,9 @@
         draft.admission ? `Admission/current context:\n${draft.admission}` : "",
         draft.labsMeds ? `Labs/medications:\n${draft.labsMeds}` : "",
         draft.continuity ? `Continuity/update:\n${draft.continuity}` : "",
+        buildCarryForwardBlock(patientCase) ? `Local carry-forward:\n${buildCarryForwardBlock(patientCase)}` : "",
+        todayDay?.deidentifiedInputs ? `Today's saved update:\n${formatDailyInputs(todayDay.deidentifiedInputs)}` : "",
+        todayDay?.finalCompiledFindings ? `Returned OpenEvidence rounds summary:\n${todayDay.finalCompiledFindings}` : "",
 	        draft.historyFindings ? `Bedside history findings:\n${draft.historyFindings}` : "",
 	        draft.examFindings ? `Bedside exam findings:\n${draft.examFindings}` : "",
 	        draft.bedsideNote ? `Reviewed bedside note:\n${draft.bedsideNote}` : "",
@@ -15728,11 +16253,325 @@
 	        || [draft.historyFindings, draft.examFindings].filter(Boolean).join("\n");
     }
 
-	    function syncWorkupConcernInputs(value = state.concern) {
-	      const nextValue = value ?? activePatient().concern ?? "";
-	      if (elements.workupConcernInput && elements.workupConcernInput.value !== nextValue) elements.workupConcernInput.value = nextValue;
-	      if (elements.patientWorkupConcernInput && elements.patientWorkupConcernInput.value !== nextValue) elements.patientWorkupConcernInput.value = nextValue;
-	    }
+    function syncWorkupConcernInputs(value = state.concern) {
+      const nextValue = value ?? activePatient().concern ?? "";
+      if (elements.workupConcernInput && elements.workupConcernInput.value !== nextValue) elements.workupConcernInput.value = nextValue;
+      if (elements.patientWorkupConcernInput && elements.patientWorkupConcernInput.value !== nextValue) elements.patientWorkupConcernInput.value = nextValue;
+    }
+
+    function todayDateKey(now = new Date()) {
+      return now.toISOString().slice(0, 10);
+    }
+
+    function patientContinuityCase(patient = activePatient(), { create = true } = {}) {
+      if (!patient?.id) return normalizeContinuityCase({});
+      const existing = state.patientContinuityCases?.[patient.id];
+      if (existing) return normalizeContinuityCase(existing);
+      if (!create) return normalizeContinuityCase({});
+      const draft = patientDraft(patient);
+      const selectedModule = moduleById(patientSelectedWorkupModuleId(patient));
+      const created = createContinuityCase({
+        patientId: patient.id,
+        label: patient.title || "Patient",
+        baselineSummary: [
+          patient.oneLine,
+          draft.admission || patient.intake || patient.context?.History || ""
+        ].filter(Boolean).join("\n"),
+        activeProblems: [
+          patient.concern || state.concern || "",
+          selectedModule ? `Selected workup: ${moduleLabel(selectedModule)}` : ""
+        ].filter(Boolean).join("\n"),
+        medicationTrendNotes: draft.labsMeds || patient.context?.Meds || "",
+        labTrendNotes: patient.context?.Labs || ""
+      });
+      state.patientContinuityCases[patient.id] = created;
+      return created;
+    }
+
+    function savePatientContinuityCase(patientId, patientCase) {
+      if (!patientId) return;
+      state.patientContinuityCases[patientId] = normalizeContinuityCase(patientCase);
+    }
+
+    function todayWorkflowMode(patient = activePatient()) {
+      if (!patient?.id) return "new";
+      const stored = state.todayModeByPatientId?.[patient.id];
+      if (stored === "new" || stored === "returning") return stored;
+      const patientCase = patientContinuityCase(patient, { create: false });
+      return (patientCase.days || []).some((day) => day.date < todayDateKey()) ? "returning" : "new";
+    }
+
+    function setTodayWorkflowMode(mode = "new") {
+      const patient = activePatient();
+      if (!patient.id) return;
+      state.todayModeByPatientId[patient.id] = mode === "returning" ? "returning" : "new";
+      renderTodayCockpit();
+      saveState();
+    }
+
+    function currentContinuityDay(patientCase = patientContinuityCase()) {
+      const date = todayDateKey();
+      return (patientCase.days || []).find((day) => day.date === date) || null;
+    }
+
+    function setFieldValueIfInactive(field, value = "") {
+      if (field && document.activeElement !== field && field.value !== value) {
+        field.value = value;
+      }
+    }
+
+    function todayInputsFromElements() {
+      return normalizeDailyInputs({
+        todayNote: elements.todayNoteInput?.value || "",
+        todayLabs: elements.todayLabsInput?.value || "",
+        updatedMar: elements.todayMarInput?.value || "",
+        overnightEvents: elements.todayOvernightInput?.value || ""
+      });
+    }
+
+    function deidentifyDailyInputs(inputs = {}) {
+      const normalized = normalizeDailyInputs(inputs);
+      return normalizeDailyInputs(Object.fromEntries(Object.entries(normalized).map(([key, value]) => [
+        key,
+        value ? deidentifyTextStructuredOnly(value).text : ""
+      ])));
+    }
+
+    function fillTodayInputFields(inputs = {}) {
+      const normalized = normalizeDailyInputs(inputs);
+      setFieldValueIfInactive(elements.todayNoteInput, normalized.todayNote);
+      setFieldValueIfInactive(elements.todayLabsInput, normalized.todayLabs);
+      setFieldValueIfInactive(elements.todayMarInput, normalized.updatedMar);
+      setFieldValueIfInactive(elements.todayOvernightInput, [
+        normalized.overnightEvents,
+        normalized.subjectiveChange
+      ].filter(Boolean).join("\n\n"));
+    }
+
+    function todayBaselinePatchFromElements() {
+      return {
+        baselineSummary: elements.todayBaselineSummaryInput?.value || "",
+        activeProblems: elements.todayActiveProblemsInput?.value || "",
+        yesterdayPlan: elements.todayYesterdayPlanInput?.value || "",
+        pendingItems: elements.todayPendingItemsInput?.value || ""
+      };
+    }
+
+    function syncTodayFieldsFromCase(patient = activePatient()) {
+      const patientCase = patientContinuityCase(patient);
+      const todayDay = currentContinuityDay(patientCase);
+      setFieldValueIfInactive(elements.todayBaselineSummaryInput, patientCase.baselineSummary || "");
+      setFieldValueIfInactive(elements.todayActiveProblemsInput, patientCase.activeProblems || "");
+      setFieldValueIfInactive(elements.todayYesterdayPlanInput, patientCase.yesterdayPlan || "");
+      setFieldValueIfInactive(elements.todayPendingItemsInput, patientCase.pendingItems || "");
+      fillTodayInputFields(todayDay?.deidentifiedInputs || {});
+      if (elements.todayOpenEvidencePasteInput && document.activeElement !== elements.todayOpenEvidencePasteInput) {
+        elements.todayOpenEvidencePasteInput.value = "";
+      }
+    }
+
+    function todaySourceContext({ patient = activePatient(), inputs = todayInputsFromElements() } = {}) {
+      const selectedModule = moduleById(state.selectedWorkupModuleId);
+      const patientCase = patientContinuityCase(patient);
+      const rawContext = [
+        `Patient: ${patient.title || "Selected patient"}`,
+        patient.oneLine,
+        selectedModule ? `Selected workup: ${moduleLabel(selectedModule)}` : "",
+        buildCarryForwardBlock({ ...patientCase, ...todayBaselinePatchFromElements() }),
+        formatDailyInputs(inputs),
+        objectiveDataContextText(),
+        state.bedsideNote ? `Bedside findings:\n${state.bedsideNote}` : ""
+      ].filter(Boolean).join("\n\n");
+      return deidentifyTextStructuredOnly(rawContext).text;
+    }
+
+    function todayPromptTaskId(mode = todayWorkflowMode()) {
+      return mode === "returning" ? "final_rounds_update" : "initial_rounds_report";
+    }
+
+    function buildTodayRoundsPrompt() {
+      const patient = activePatient();
+      if (!patient.id) return "";
+      const mode = todayWorkflowMode(patient);
+      const inputs = deidentifyDailyInputs(todayInputsFromElements());
+      const sourceContext = todaySourceContext({ patient, inputs });
+      const selectedModule = moduleById(state.selectedWorkupModuleId);
+      const context = {
+        sourceMode: mode === "returning" ? "continuity" : "admission",
+        contextType: mode === "returning"
+          ? "De-identified 24-hour update for oral inpatient rounds."
+          : "De-identified new-patient context for oral inpatient rounds.",
+        sourceContext,
+        compiledFindings: [
+          buildFinalUpdateText(),
+          formatDailyInputs(inputs) ? `Today's pasted update:\n${formatDailyInputs(inputs)}` : ""
+        ].filter(Boolean).join("\n\n"),
+        objectiveData: objectiveDataContextText(),
+        selectedWorkupTitle: selectedModule ? moduleLabel(selectedModule) : state.concern || patient.concern || "selected condition",
+        selectedWorkupId: selectedModule?.id || "",
+        sameConversationReady: false,
+        userContext: "<user_context>\nOutput target: concise oral rounds SOAP presentation for inpatient pre-rounding. Include APP_PASTE_BACK_JSON so this app can record the returned summary locally.\n</user_context>"
+      };
+      return buildOpenEvidencePrompt(todayPromptTaskId(mode), context).prompt;
+    }
+
+    function renderTodayReviewList(review = null) {
+      if (!elements.todayUpdateReviewList) return;
+      elements.todayUpdateReviewList.innerHTML = "";
+      const patientCase = patientContinuityCase(activePatient(), { create: false });
+      const rows = review?.rows || currentContinuityDay(patientCase)?.smartUpdateReview || [];
+      if (!rows.length) {
+        const empty = document.createElement("li");
+        empty.innerHTML = "<strong>Status</strong><span>Paste today's chart updates or save a day to see what changed from the latest saved day.</span>";
+        elements.todayUpdateReviewList.appendChild(empty);
+        return;
+      }
+      for (const row of rows) {
+        const item = document.createElement("li");
+        const status = document.createElement("strong");
+        status.dataset.status = row.status || "new";
+        status.textContent = row.status || "new";
+        const body = document.createElement("span");
+        const details = Array.isArray(row.details) && row.details.length ? ` ${row.details.join(" ")}` : "";
+        body.textContent = `${row.type || row.dailyField || "update"}: ${(row.preview || "").slice(0, 180)}${details}`;
+        item.append(status, body);
+        elements.todayUpdateReviewList.appendChild(item);
+      }
+    }
+
+    function renderTodayCockpit() {
+      const patient = activePatient();
+      const hasPatient = Boolean(patient.id);
+      const mode = todayWorkflowMode(patient);
+      const patientCase = patientContinuityCase(patient, { create: hasPatient });
+      const todayDay = currentContinuityDay(patientCase);
+      const selectedWorkup = moduleById(state.selectedWorkupModuleId);
+      const checklistBuilt = state.sections.length > 0;
+      if (elements.todayDateLabel) elements.todayDateLabel.textContent = todayDateKey();
+      if (elements.todayModeHelp) {
+        elements.todayModeHelp.textContent = mode === "returning"
+          ? "Paste only the last 24 hours: new labs, MAR/meds, overnight events, and subjective changes."
+          : "Paste the new-patient note, meds/MAR, labs, and high-yield context once, then carry it forward locally.";
+      }
+      for (const button of $$("[data-today-mode]")) {
+        button.setAttribute("aria-pressed", String(button.dataset.todayMode === mode));
+      }
+      syncTodayFieldsFromCase(patient);
+      const inputs = todayInputsFromElements();
+      const hasInputs = Object.values(inputs).some(Boolean);
+      const prompt = hasPatient ? buildTodayRoundsPrompt() : "";
+      setFieldValueIfInactive(elements.todayRoundsPromptPreview, prompt);
+      if (elements.todayBaselineStatus) elements.todayBaselineStatus.textContent = buildCarryForwardBlock(patientCase) ? "Saved" : "Not saved";
+      if (elements.todayInputStatus) elements.todayInputStatus.textContent = todayDay ? `Saved ${todayDay.date}` : hasInputs ? "Draft only" : "No update";
+      if (elements.todayWorkupStatus) elements.todayWorkupStatus.textContent = selectedWorkup ? moduleLabel(selectedWorkup) : "Not selected";
+      if (elements.todayChecklistStatus) elements.todayChecklistStatus.textContent = checklistBuilt ? `${answeredChecklistCount()}/${checklistTotalCount()} answered` : "Not built";
+      if (elements.todayPromptStatus) elements.todayPromptStatus.textContent = prompt ? (todayDay?.roundsPasteBack ? "Returned summary recorded" : "Ready to copy") : "Not ready";
+      if (elements.todayPasteBackStatus) {
+        elements.todayPasteBackStatus.textContent = todayDay?.roundsPasteBack ? "Returned summary saved" : "No returned summary";
+      }
+      if (elements.todayCopyRoundsPromptButton) elements.todayCopyRoundsPromptButton.disabled = !prompt;
+      if (elements.todayBuildChecklistButton) elements.todayBuildChecklistButton.disabled = !hasPatient || !selectedWorkup;
+      if (elements.todayAnswerChecklistButton) elements.todayAnswerChecklistButton.disabled = !hasPatient || !checklistBuilt;
+      if (elements.todayApplyOpenEvidenceButton) elements.todayApplyOpenEvidenceButton.disabled = !hasPatient;
+      renderTodayReviewList();
+    }
+
+    function classifyTodaySmartPaste() {
+      const raw = elements.todaySmartPasteInput?.value || "";
+      const sections = classifySmartUpdateSections(raw);
+      const inputs = smartSectionsToDailyInputs(sections);
+      if (!sections.length) {
+        setStatus("Paste a headed update before sorting it into today fields.");
+        renderTodayReviewList();
+        return false;
+      }
+      fillTodayInputFields(inputs);
+      const review = buildSmartUpdateReview(sections, patientContinuityCase());
+      renderTodayReviewList(review);
+      setStatus(`${sections.length} update section${sections.length === 1 ? "" : "s"} sorted into today's local fields.`);
+      return true;
+    }
+
+    function saveTodayUpdate({ announce = true } = {}) {
+      const patient = activePatient();
+      if (!patient.id) return null;
+      const mode = todayWorkflowMode(patient);
+      const rawInputs = todayInputsFromElements();
+      const deidentifiedInputs = deidentifyDailyInputs(rawInputs);
+      let patientCase = patientContinuityCase(patient);
+      patientCase = normalizeContinuityCase({
+        ...patientCase,
+        label: patient.title,
+        patientId: patient.id,
+        ...todayBaselinePatchFromElements()
+      });
+      const rawSections = classifySmartUpdateSections(elements.todaySmartPasteInput?.value || formatDailyInputs(rawInputs));
+      const review = buildSmartUpdateReview(rawSections, patientCase);
+      patientCase = appendOrUpdateContinuityDay(patientCase, {
+        deidentifiedInputs,
+        smartUpdateReview: review.rows,
+        carryForwardUpdates: review.carryForwardSuggestions
+      });
+      savePatientContinuityCase(patient.id, patientCase);
+
+      const draft = patientDraft(patient);
+      if (mode === "new") {
+        if (rawInputs.todayNote) draft.admission = rawInputs.todayNote;
+      }
+      draft.labsMeds = [rawInputs.todayLabs, rawInputs.updatedMar].filter(Boolean).join("\n\n") || draft.labsMeds || "";
+      draft.continuity = [rawInputs.overnightEvents, rawInputs.subjectiveChange].filter(Boolean).join("\n\n") || draft.continuity || "";
+      markPatientDerivedArtifactsStale();
+      syncSelectedPatientInputs();
+      renderPatientWorkspace();
+      if (announce) setStatus(`${patient.title} ${mode === "returning" ? "24-hour update" : "new-patient update"} saved locally for ${todayDateKey()}.`);
+      saveState();
+      return patientCase;
+    }
+
+    function copyTodayRoundsPrompt() {
+      const prompt = buildTodayRoundsPrompt();
+      if (!prompt) {
+        setStatus("Open a patient before copying a rounds prompt.");
+        return;
+      }
+      openPhiOverlay({
+        title: "PHI safety check for rounds prompt",
+        copy: "Review the de-identified oral rounds SOAP prompt before copying to OpenEvidence.",
+        text: prompt,
+        actionLabel: "Copy rounds prompt",
+        onConfirm: () => copyText(prompt)
+      });
+    }
+
+    function applyTodayOpenEvidencePasteBack() {
+      const patient = activePatient();
+      if (!patient.id) return false;
+      const raw = elements.todayOpenEvidencePasteInput?.value || "";
+      const pasteBack = extractRoundsPasteBack(raw);
+      if (!pasteBack) {
+        if (elements.todayPasteBackStatus) elements.todayPasteBackStatus.textContent = "APP_PASTE_BACK_JSON not found";
+        setStatus("Paste the OpenEvidence result with APP_PASTE_BACK_JSON before recording it.");
+        return false;
+      }
+      let patientCase = saveTodayUpdate({ announce: false }) || patientContinuityCase(patient);
+      const summary = pasteBack.plainTextSummary || [
+        pasteBack.oneLiner,
+        ...pasteBack.subjective,
+        ...pasteBack.objective,
+        ...pasteBack.assessmentPlan
+      ].filter(Boolean).join("\n");
+      patientCase = appendOrUpdateContinuityDay(patientCase, {
+        finalCompiledFindings: summary,
+        roundsPasteBack: pasteBack
+      });
+      savePatientContinuityCase(patient.id, patientCase);
+      if (elements.todayPasteBackStatus) elements.todayPasteBackStatus.textContent = "Returned summary saved";
+      renderPatientWorkspace();
+      renderFinalUpdate();
+      saveState();
+      setStatus("OpenEvidence rounds summary recorded locally for today's patient update.");
+      return true;
+    }
 
     function renderPatientWorkspace() {
       const patient = activePatient();
@@ -15827,6 +16666,7 @@
       syncWorkupConcernInputs();
       syncSelectedPatientInputs();
       renderObjectiveDataSurfaces();
+      renderTodayCockpit();
       if (!hasPatient) setChecklistBuildDisabled(true);
       renderPatientTabs();
       renderPatientScopeBars();
@@ -19494,6 +20334,10 @@
       if (objectiveDataText) {
         lines.push("", objectiveDataText);
       }
+      const todayDay = currentContinuityDay(patientContinuityCase(activePatient(), { create: false }));
+      if (todayDay?.finalCompiledFindings) {
+        lines.push("", "Returned OpenEvidence rounds summary:", todayDay.finalCompiledFindings);
+      }
       if (state.importedFindings) {
         lines.push("", "Imported phone findings:", state.importedFindings);
       }
@@ -19508,12 +20352,15 @@
     }
 
     function renderCaseStatus() {
+      const todayDay = currentContinuityDay(patientContinuityCase(activePatient(), { create: false }));
       const statuses = [
         ["Chart intake", Boolean(state.scrubbedText)],
+        ["Today saved", Boolean(todayDay)],
         ["De-ID complete", Boolean(state.scrubbedText)],
         ["Checklist built", Boolean(state.sections.length)],
         ["Bedside findings", answeredChecklistCount() > 0 || Boolean(state.importedFindings)],
-        ["Final update ready", answeredChecklistCount() > 0 || Boolean(state.importedFindings)]
+        ["Returned summary", Boolean(todayDay?.roundsPasteBack)],
+        ["Final update ready", answeredChecklistCount() > 0 || Boolean(state.importedFindings) || Boolean(todayDay?.roundsPasteBack)]
       ];
       for (const container of [elements.caseStatusList, elements.finalCaseStatus]) {
         if (!container) continue;
@@ -19922,6 +20769,41 @@
       elements.patientOpenEvidenceFromRefinementButton?.addEventListener("click", () => {
         window.open("https://www.openevidence.com/", "_blank", "noopener,noreferrer");
       });
+      for (const button of $$("[data-today-mode]")) {
+        button.addEventListener("click", () => setTodayWorkflowMode(button.dataset.todayMode));
+      }
+      elements.todaySortPasteButton?.addEventListener("click", classifyTodaySmartPaste);
+      elements.todayClearPasteButton?.addEventListener("click", () => {
+        if (elements.todaySmartPasteInput) elements.todaySmartPasteInput.value = "";
+        renderTodayReviewList();
+        setStatus("Smart paste cleared.");
+      });
+      elements.saveTodayUpdateButton?.addEventListener("click", () => saveTodayUpdate());
+      elements.todayBuildChecklistButton?.addEventListener("click", () => {
+        saveTodayUpdate({ announce: false });
+        buildPatientChecklistInWorkspace();
+      });
+      elements.todayAnswerChecklistButton?.addEventListener("click", () => {
+        saveTodayUpdate({ announce: false });
+        if (state.sections.length) {
+          showView("bedside");
+        } else {
+          buildPatientChecklistInWorkspace();
+        }
+      });
+      elements.todayOpenPromptWorkbenchButton?.addEventListener("click", () => {
+        saveTodayUpdate({ announce: false });
+        state.selectedTaskId = todayPromptTaskId(todayWorkflowMode());
+        setPatientTab("evidence", { focusPanel: true });
+      });
+      elements.todayCopyRoundsPromptButton?.addEventListener("click", () => {
+        saveTodayUpdate({ announce: false });
+        copyTodayRoundsPrompt();
+      });
+      elements.todayOpenEvidenceButton?.addEventListener("click", () => {
+        window.open("https://www.openevidence.com/", "_blank", "noopener,noreferrer");
+      });
+      elements.todayApplyOpenEvidenceButton?.addEventListener("click", applyTodayOpenEvidencePasteBack);
       elements.patientWorkupRefinementInput?.addEventListener("input", () => {
         syncWorkupRefinementPreview(elements.patientWorkupRefinementInput.value);
       });

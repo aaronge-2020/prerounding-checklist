@@ -885,6 +885,13 @@ assert.ok(appHtml.includes('id="patientWorkupSelect"'), "patient workspace shoul
 assert.ok(appHtml.includes("selectedWorkupModuleId"), "patient workup selection should persist as first-class state");
 assert.ok(appHtml.includes("patientWorkupSelections"), "patient workup selections should persist per patient instead of globally");
 assert.ok(appHtml.includes("patientObjectiveData"), "patient objective workup data should persist locally per selected workup");
+assert.ok(appHtml.includes("patientContinuityCases"), "patient daily pre-round updates should persist locally per patient");
+assert.ok(appHtml.includes("todayModeByPatientId"), "new-vs-returning preround mode should persist per patient");
+assert.ok(appHtml.includes('data-patient-tab="today"'), "patient workspace should expose a first-class Today cockpit tab");
+assert.ok(appHtml.includes('id="todaySmartPasteInput"'), "Today cockpit should support smart paste intake");
+assert.ok(appHtml.includes('id="todayRoundsPromptPreview"'), "Today cockpit should preview the de-identified oral rounds SOAP prompt");
+assert.ok(appHtml.includes('id="todayOpenEvidencePasteInput"'), "Today cockpit should accept standardized OpenEvidence returned presentations");
+assert.ok(appHtml.includes("APP_PASTE_BACK_JSON"), "OpenEvidence rounds prompts should request standardized app paste-back JSON");
 assert.ok(appHtml.includes('id="patientObjectiveDataPanel"'), "patient context should expose structured workup data fields");
 assert.ok(appHtml.includes('id="patientObjectiveSummaryPanel"'), "patient summary should expose entered and missing objective workup data");
 assert.ok(

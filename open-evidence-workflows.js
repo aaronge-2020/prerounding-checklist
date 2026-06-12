@@ -21,6 +21,13 @@ Do not ask the team about facts the student can usually verify directly in the c
 Use only the prefixes or headings requested by the task; do not add empty headings or sections.
 </usefulness_rules>`;
 
+const roundsPasteBackContract = `<local_app_paste_back_contract>
+After the human-readable rounds presentation, include exactly one fenced JSON block labeled APP_PASTE_BACK_JSON.
+The JSON must use schema "open_evidence_rounds_pasteback_v1" and this shape:
+{"schema":"open_evidence_rounds_pasteback_v1","presentationType":"oral_rounds_soap","oneLiner":"","subjective":[],"objective":[],"assessmentPlan":[],"followUpTasks":[],"bedsideRecheck":[],"plainTextSummary":""}
+Each array item must be a concise de-identified string. Put only facts or recommendations already supported by the prompt or current OpenEvidence citations.
+</local_app_paste_back_contract>`;
+
 function clean(value) {
   return String(value || "").trim();
 }
@@ -131,7 +138,9 @@ III. ASSESSMENT AND PLAN
 For each management recommendation, include an inline citation to current guideline or literature when OpenEvidence can support it.
 Keep subjective and objective sections as short as possible without losing management-changing details.
 Do not repeat the same fact in multiple sections unless it changes a separate management decision.
-</output_format>`
+</output_format>
+
+${roundsPasteBackContract}`
   );
 }
 
@@ -174,7 +183,9 @@ III. ASSESSMENT AND PLAN
 Include important negatives, trends, medication context, and contingencies when they matter to the team's management.
 For each management recommendation, include an inline citation to current guideline or literature when OpenEvidence can support it.
 Do not add a separate reference list unless inline citations would be unclear.
-</output_format>`
+</output_format>
+
+${roundsPasteBackContract}`
   );
 }
 
@@ -206,7 +217,9 @@ II. OBJECTIVE - only new vitals, exam changes, labs/trends, imaging, medication 
 III. ASSESSMENT AND PLAN - each bullet must state what changed in the last 24 hours and whether/how it changes management
 Include "no management change" only when a new result might otherwise appear to require action.
 Use inline guideline/literature citations only for new management recommendations or changed thresholds.
-</output_format>`
+</output_format>
+
+${roundsPasteBackContract}`
   ].filter(Boolean).join("\n\n");
 }
 

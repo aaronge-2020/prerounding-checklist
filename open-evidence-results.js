@@ -1,4 +1,5 @@
 export const openEvidenceResultSchemaVersion = "open-evidence-task-result-v1";
+export const openEvidenceRoundsPasteBackSchema = "open_evidence_rounds_pasteback_v1";
 
 const checklistStartPattern = /\bBEDSIDE QUESTION CHECKLIST\b/i;
 const checklistEndPattern = /\bTARGETED PHYSICAL EXAM CHECKLIST\b/i;
@@ -113,6 +114,48 @@ function extractChecklistText(text = "") {
   return normalized.slice(from).trim();
 }
 
+function parseJsonCandidate(value = "") {
+  const text = String(value || "").trim();
+  if (!text) return null;
+  try {
+    return JSON.parse(text);
+  } catch {
+    return null;
+  }
+}
+
+export function extractRoundsPasteBack(text = "") {
+  const normalized = normalizeBody(text);
+  if (!normalized) return null;
+  const fencedPattern = /```(?:json)?\s*([\s\S]*?)```/gi;
+  for (const match of normalized.matchAll(fencedPattern)) {
+    const parsed = parseJsonCandidate(match[1]);
+    if (parsed?.schema === openEvidenceRoundsPasteBackSchema) {
+      return normalizeRoundsPasteBack(parsed);
+    }
+  }
+  const inlineMatch = normalized.match(/\{\s*"schema"\s*:\s*"open_evidence_rounds_pasteback_v1"[\s\S]*\}/);
+  const parsed = parseJsonCandidate(inlineMatch?.[0] || "");
+  return parsed?.schema === openEvidenceRoundsPasteBackSchema ? normalizeRoundsPasteBack(parsed) : null;
+}
+
+export function normalizeRoundsPasteBack(value = {}) {
+  const list = (items) => Array.isArray(items)
+    ? items.map((item) => cleanLine(item)).filter(Boolean).slice(0, 24)
+    : [];
+  return {
+    schema: openEvidenceRoundsPasteBackSchema,
+    presentationType: cleanLine(value.presentationType || "oral_rounds_soap"),
+    oneLiner: cleanLine(value.oneLiner),
+    subjective: list(value.subjective),
+    objective: list(value.objective),
+    assessmentPlan: list(value.assessmentPlan),
+    followUpTasks: list(value.followUpTasks),
+    bedsideRecheck: list(value.bedsideRecheck),
+    plainTextSummary: normalizeBody(value.plainTextSummary)
+  };
+}
+
 function concernPriority(sectionTitle) {
   const title = titleKey(sectionTitle);
   if (/HIGH PRIORITY|URGENT|VERIFY BEFORE ROUNDS/.test(title)) {
@@ -165,6 +208,7 @@ export function normalizeOpenEvidenceTaskResult(result = {}) {
     citations: Array.isArray(result.citations) ? result.citations : [],
     concerns: Array.isArray(result.concerns) ? result.concerns : [],
     checklistText: String(result.checklistText || "").trim(),
+    roundsPasteBack: result.roundsPasteBack ? normalizeRoundsPasteBack(result.roundsPasteBack) : null,
     acceptedSummary: String(result.acceptedSummary || "").trim(),
     reviewStatus: ["accepted", "needs_review", "rejected"].includes(result.reviewStatus) ? result.reviewStatus : "needs_review"
   };
@@ -177,6 +221,9 @@ export function parseOpenEvidenceResult({ taskId = "", outputKind = "general", s
     ? extractChecklistText(normalizedText)
     : "";
   const citations = extractCitations(normalizedText);
+  const roundsPasteBack = /^rounds|full_rounds_report|rounds_update|attending_plan$/i.test(outputKind)
+    ? extractRoundsPasteBack(normalizedText)
+    : null;
   const concerns = outputKind === "medication_safety"
     ? extractConcerns(sections)
     : outputKind === "missing_items"
@@ -191,6 +238,7 @@ export function parseOpenEvidenceResult({ taskId = "", outputKind = "general", s
     citations,
     concerns,
     checklistText,
+    roundsPasteBack,
     acceptedSummary: acceptedSummaryFromSections(sections, outputKind),
     reviewStatus: "needs_review"
   });
@@ -205,6 +253,7 @@ export function formatOpenEvidenceResultSummary(result = {}) {
     normalized.citations.length ? `Citations: ${normalized.citations.length}` : "",
     normalized.concerns.length ? `Concerns: ${normalized.concerns.length}` : "",
     normalized.checklistText ? "Checklist: detected" : "",
+    normalized.roundsPasteBack ? "Rounds paste-back: detected" : "",
     normalized.acceptedSummary ? `Summary:\n${normalized.acceptedSummary}` : ""
   ].filter(Boolean);
   return lines.join("\n");

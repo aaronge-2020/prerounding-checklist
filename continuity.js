@@ -365,6 +365,7 @@ export function normalizeContinuityDay(day = {}, now = new Date()) {
     bedsideAnswers: day.bedsideAnswers && typeof day.bedsideAnswers === "object" ? { ...day.bedsideAnswers } : {},
     notes: day.notes && typeof day.notes === "object" ? { ...day.notes } : {},
     finalCompiledFindings: cleanText(day.finalCompiledFindings),
+    roundsPasteBack: day.roundsPasteBack && typeof day.roundsPasteBack === "object" && !Array.isArray(day.roundsPasteBack) ? { ...day.roundsPasteBack } : null,
     smartUpdateReview: Array.isArray(day.smartUpdateReview) ? day.smartUpdateReview.map((row) => ({ ...row })) : [],
     carryForwardUpdates: Array.isArray(day.carryForwardUpdates) ? day.carryForwardUpdates.map((row) => ({ ...row })) : []
   };

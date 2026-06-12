@@ -270,10 +270,34 @@ try {
                   item_type: "history_question",
                   label: "Supabase current missed insulin question?",
                   text: "Supabase current missed insulin question?",
+                  answerMode: "single",
+                  options: ["No missed doses", "Missed basal insulin", "Missed bolus insulin", "Unsure", "Other ___"],
+                  normalAnswers: ["No missed doses"],
                   source: { source_id: "SUPABASE_SOURCE_V2" }
                 }
               ],
               conditionalQuestions: []
+            },
+            updated_at: "2026-06-12T00:00:00.000Z"
+          },
+          {
+            workup_id: "hyperglycemia_possible_dka_v1",
+            section_key: "physical_exam",
+            sort_order: 2,
+            payload: {
+              requiredExam: [
+                {
+                  id: "supabase_work_of_breathing",
+                  item_type: "physical_exam_maneuver",
+                  label: "Supabase current work of breathing exam",
+                  technique: "Observe work of breathing at rest.",
+                  answerMode: "single",
+                  findings_options: ["Comfortable", "Tachypneic", "Kussmaul pattern", "Unable to assess"],
+                  normalAnswers: ["Comfortable"],
+                  source: { source_id: "SUPABASE_SOURCE_V2" }
+                }
+              ],
+              conditionalExam: []
             },
             updated_at: "2026-06-12T00:00:00.000Z"
           }
@@ -590,15 +614,35 @@ try {
   await page.locator("#workupStudioSectionTabs button", { hasText: "History questions" }).click();
   await page.waitForSelector("#workupStudioItemLabelInput");
   assert.match(await page.textContent("#workupStudioItemList"), /Supabase current missed insulin question/, "Supabase section hydration should populate current canonical history questions.");
+  assert.ok(await page.locator("#workupStudioItemGroupSelect").isVisible(), "History item editor should expose editable row scope.");
+  assert.ok(await page.locator("#workupStudioItemAnswerModeSelect").isVisible(), "History item editor should expose answer mode.");
+  assert.ok(await page.locator("#workupStudioItemOptionsInput").isVisible(), "History item editor should expose structured answer options.");
+  assert.ok(await page.locator("#workupStudioItemNormalAnswersInput").isVisible(), "History item editor should expose normal/default answers.");
+  assert.ok(await page.locator("#workupStudioDeleteItemButton").isVisible(), "History item editor should expose row removal.");
+  assert.equal(await page.inputValue("#workupStudioItemGroupSelect"), "requiredQuestions");
+  assert.equal(await page.inputValue("#workupStudioItemAnswerModeSelect"), "single");
+  assert.match(await page.inputValue("#workupStudioItemOptionsInput"), /Missed basal insulin/, "History editor should hydrate answer options.");
   const historyPrompt = await page.inputValue("#workupStudioOpenEvidencePromptOutput");
   assert.match(historyPrompt, /requiredQuestions|conditionalQuestions/, "History prompt should be scoped to history question arrays.");
+  assert.match(historyPrompt, /answerMode/, "History prompt should request structured answer mode metadata.");
+  assert.match(historyPrompt, /normalAnswers/, "History prompt should request structured normal answer metadata.");
+  await page.selectOption("#workupStudioItemGroupSelect", "conditionalQuestions");
+  await page.selectOption("#workupStudioItemAnswerModeSelect", "multi");
   await page.fill("#workupStudioItemLabelInput", "Studio test: ask about missed insulin, vomiting, and oral intake?");
+  await page.fill("#workupStudioItemOptionsInput", "No missed doses\nMissed basal insulin\nMissed bolus insulin\nVomiting\nPoor oral intake\nOther ___");
+  await page.fill("#workupStudioItemNormalAnswersInput", "No missed doses");
   await page.click("#workupStudioSaveItemDraftButton");
   await page.waitForFunction(() => Number(document.querySelector("#workupStudioDraftCount")?.textContent || "0") >= 2);
   await waitForCondition(() => supabaseRequests.postedRows.some((row) => row.section_key === "history_questions"), "Supabase history draft insert");
-  const historyRow = supabaseRequests.postedRows.find((row) => row.section_key === "history_questions");
+  const historyRow = supabaseRequests.postedRows.filter((row) => row.section_key === "history_questions").at(-1);
   assert.equal(historyRow.author_id, fakeUserId);
   assert.ok(historyRow.after_snapshot.requiredQuestions || historyRow.after_snapshot.conditionalQuestions, "Backend row should store only the edited section payload.");
+  assert.equal(historyRow.after_snapshot.requiredQuestions.length, 0, "Changing scope should move the edited question out of requiredQuestions.");
+  const editedHistoryQuestion = historyRow.after_snapshot.conditionalQuestions[0];
+  assert.equal(editedHistoryQuestion.item_type, "history_question");
+  assert.equal(editedHistoryQuestion.answerMode, "multi");
+  assert.deepEqual(editedHistoryQuestion.options, ["No missed doses", "Missed basal insulin", "Missed bolus insulin", "Vomiting", "Poor oral intake", "Other ___"]);
+  assert.deepEqual(editedHistoryQuestion.normalAnswers, ["No missed doses"]);
 
   await page.click("#workupStudioApproveDraftButton");
   await waitForCondition(() => supabaseRequests.patchedRows.length >= 1, "Supabase approval patch");
@@ -610,6 +654,12 @@ try {
   });
   assert.match(supabaseRequests.patchedRows.at(-1).reviewed_at, /^\d{4}-\d{2}-\d{2}T/);
   await waitForCondition(() => supabaseRequests.canonicalRows.some((entry) => entry.table === "workup_items" && entry.rows.some((row) => row.section_key === "history_questions")), "Supabase history item publish");
+  const publishedHistoryRows = supabaseRequests.canonicalRows.find((entry) => entry.table === "workup_items" && entry.rows.some((row) => row.section_key === "history_questions"))?.rows || [];
+  const publishedHistoryQuestion = publishedHistoryRows.find((row) => row.section_key === "history_questions" && row.group_key === "conditionalQuestions");
+  assert.ok(publishedHistoryQuestion, "Published workup_items row should retain the edited conditional question scope.");
+  assert.equal(publishedHistoryQuestion.payload.answerMode, "multi");
+  assert.deepEqual(publishedHistoryQuestion.payload.options, ["No missed doses", "Missed basal insulin", "Missed bolus insulin", "Vomiting", "Poor oral intake", "Other ___"]);
+  assert.deepEqual(publishedHistoryQuestion.payload.normalAnswers, ["No missed doses"]);
   await waitForCondition(() => supabaseRequests.catalogWorkupCount >= 4, "canonical catalog refresh after history publish");
 
   await page.locator("#workupStudioJsonDrawer summary").click();
@@ -632,6 +682,19 @@ try {
 
   const storedDrafts = await page.evaluate(() => localStorage.getItem("prerounding-workup-authoring-v1") || "");
   assert.doesNotMatch(storedDrafts, /raw chart|MRN|DOB|patient identifier|room number/i, "Workup Studio local drafts should stay PHI-free.");
+
+  await page.locator("#workupStudioSectionTabs button", { hasText: "Physical exam" }).click();
+  await page.waitForSelector("#workupStudioItemOptionsInput");
+  assert.match(await page.inputValue("#workupStudioItemOptionsInput"), /Kussmaul pattern/, "Physical exam editor should hydrate findings_options into the option editor.");
+  await page.selectOption("#workupStudioItemAnswerModeSelect", "single");
+  await page.fill("#workupStudioItemOptionsInput", "Comfortable\nMildly increased work\nKussmaul pattern\nUnable to assess");
+  await page.fill("#workupStudioItemNormalAnswersInput", "Comfortable");
+  await page.click("#workupStudioSaveItemDraftButton");
+  await waitForCondition(() => supabaseRequests.postedRows.some((row) => row.section_key === "physical_exam"), "Supabase physical exam draft insert");
+  const examRow = supabaseRequests.postedRows.filter((row) => row.section_key === "physical_exam").at(-1);
+  assert.deepEqual(examRow.after_snapshot.requiredExam[0].findings_options, ["Comfortable", "Mildly increased work", "Kussmaul pattern", "Unable to assess"]);
+  assert.equal(examRow.after_snapshot.requiredExam[0].options, undefined, "Physical exam saves should use native findings_options instead of stale options.");
+  assert.deepEqual(examRow.after_snapshot.requiredExam[0].normalAnswers, ["Comfortable"]);
 
   const catalogCountBeforeSavedSessionStartup = supabaseRequests.catalogWorkupCount;
   await page.evaluate((state) => {

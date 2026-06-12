@@ -351,7 +351,7 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
   assert(sidebarLabels.join("|") === "Show roster|Admit patient|Demo case|Quick de-ID|Workup Studio|About privacy", `sidebar should expose only shift utilities, got ${sidebarLabels.join("|")}`);
   await assertRosterState(false, `default collapsed roster ${label}`);
   const tabLabels = await page.locator(".patient-task-strip [role='tab']").allTextContents();
-  assert(tabLabels.join("|") === "Summary|Context|Workup|Checklist|Findings|Evidence|Phone", `patient tabs should match clinical workflow order, got ${tabLabels.join("|")}`);
+  assert(tabLabels.join("|") === "Summary|Today|Context|Workup|Checklist|Findings|Evidence|Phone", `patient tabs should match clinical workflow order, got ${tabLabels.join("|")}`);
   const patientTabLayout = await page.evaluate(() => {
     const strip = document.querySelector(".patient-task-strip");
     const tabs = Array.from(document.querySelectorAll(".patient-task-strip [role='tab']"));

@@ -51,10 +51,16 @@ assert.equal(dayOne.days[0].deidentifiedInputs.todayLabs, "K 3.4, glucose 180");
 
 const updatedSameDay = appendOrUpdateContinuityDay(dayOne, {
   date: "2026-06-06",
-  finalCompiledFindings: "Bedside findings ready."
+  finalCompiledFindings: "Bedside findings ready.",
+  roundsPasteBack: {
+    schema: "open_evidence_rounds_pasteback_v1",
+    presentationType: "oral_rounds_soap",
+    plainTextSummary: "DKA improving; continue potassium monitoring."
+  }
 }, new Date("2026-06-06T15:00:00Z"));
 assert.equal(updatedSameDay.days.length, 1, "same date should update rather than append");
 assert.equal(updatedSameDay.days[0].finalCompiledFindings, "Bedside findings ready.");
+assert.equal(updatedSameDay.days[0].roundsPasteBack.plainTextSummary, "DKA improving; continue potassium monitoring.");
 assert.equal(updatedSameDay.days[0].deidentifiedInputs.todayNote, "Feels better today.");
 
 const dayTwo = appendOrUpdateContinuityDay(updatedSameDay, {
