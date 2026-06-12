@@ -18,6 +18,7 @@ assert.ok(html.includes("Continue with Google"), "Workup Studio should use Googl
 assert.ok(html.includes("WORKUP_STUDIO_OAUTH_PROVIDER = \"google\""), "Google should be the configured OAuth provider.");
 assert.ok(html.includes("auth/v1/authorize"), "Workup Studio should start Supabase OAuth through the authorize endpoint.");
 assert.ok(html.includes("captureWorkupStudioOAuthRedirect"), "Workup Studio should capture Supabase OAuth redirects.");
+assert.ok(html.includes("`${window.location.origin}${window.location.pathname || \"/\"}`"), "OAuth redirects should use a stable callback path.");
 assert.ok(html.includes("Google OAuth is not enabled"), "Provider-not-enabled errors should be understandable.");
 assert.ok(!html.includes("grant_type=password"), "Browser app must not use Supabase password grant.");
 assert.ok(!html.includes("workupStudioSupabasePasswordInput"), "Workup Studio must not ask for a password.");

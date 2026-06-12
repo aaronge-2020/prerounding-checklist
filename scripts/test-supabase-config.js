@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
@@ -20,12 +20,18 @@ assert.ok(pkg.dependencies["@supabase/ssr"], "Supabase SSR helper dependency sho
 assert.equal(pkg.scripts["import:medical-knowledge"], "node scripts/import-medical-knowledge.js");
 assert.equal(pkg.scripts["export:medical-knowledge"], "node scripts/export-medical-knowledge.js");
 assert.equal(pkg.scripts["grant:workup-access"], "node scripts/grant-workup-access.js");
+assert.equal(pkg.scripts["deploy:supabase-workup-authoring"], "node scripts/deploy-supabase-workup-authoring.js");
 
 const envExample = read(".env.example");
 for (const key of [
   "NEXT_PUBLIC_SUPABASE_URL",
   "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
-  "SUPABASE_SERVICE_ROLE_KEY"
+  "SUPABASE_SERVICE_ROLE_KEY",
+  "SUPABASE_ACCESS_TOKEN",
+  "SUPABASE_DB_PASSWORD",
+  "SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID",
+  "SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET",
+  "WORKUP_STUDIO_REVIEWER_EMAIL"
 ]) {
   assert.ok(envExample.includes(key), `.env.example should document ${key}.`);
 }
@@ -57,8 +63,18 @@ assert.ok(grantScript.includes("No Supabase Auth user found"), "Grant command sh
 
 const readinessScript = read("scripts/check-supabase-auth-readiness.js");
 assert.ok(readinessScript.includes("/auth/v1/authorize?provider=google"), "Readiness check should probe live Google OAuth.");
+assert.ok(readinessScript.includes("?workupStudioOAuth=1"), "Readiness check should probe the actual Workup Studio OAuth callback URL.");
 assert.ok(readinessScript.includes("PGRST205"), "Readiness check should detect missing Supabase authoring tables.");
 assert.ok(readinessScript.includes("Anonymous publishable-key request returned rows"), "Readiness check should flag anonymous authoring-data exposure.");
+assert.ok(readinessScript.includes("npm run deploy:supabase-workup-authoring"), "Readiness check should suggest the deploy command.");
+
+const deployScript = read("scripts/deploy-supabase-workup-authoring.js");
+assert.ok(deployScript.includes("supabase\", \"config\", \"push\""), "Deploy command should push Supabase auth config.");
+assert.ok(deployScript.includes("supabase\", \"db\", \"push\""), "Deploy command should push Supabase migrations.");
+assert.ok(deployScript.includes("import:medical-knowledge"), "Deploy command should seed authoring tables.");
+assert.ok(deployScript.includes("grant:workup-access"), "Deploy command should support reviewer grants.");
+assert.ok(deployScript.includes("check:supabase-auth"), "Deploy command should finish with the readiness probe.");
+assert.ok(existsSync(path.join(repoRoot, ".github", "workflows", "supabase-workup-authoring.yml")), "GitHub Actions workflow should exist for hosted Supabase deploys.");
 
 const html = read("index.html");
 assert.ok(html.includes("WORKUP_STUDIO_DEFAULT_BACKEND"), "Workup Studio should have public backend defaults.");
@@ -77,6 +93,7 @@ assert.ok(html.includes("workupStudioPublishImportButton"), "Workup Studio shoul
 assert.ok(html.includes("loadWorkupStudioPermissions"), "Workup Studio should verify author/reviewer permissions after authentication.");
 assert.ok(html.includes("https://*.supabase.co"), "CSP should allow Supabase REST/Auth calls.");
 assert.ok(!html.includes("SUPABASE_SERVICE_ROLE_KEY"), "Browser app must not reference the service role key.");
+assert.ok(html.includes("`${window.location.origin}${window.location.pathname || \"/\"}`"), "OAuth redirect should use a stable callback URL instead of preserving arbitrary query state.");
 
 const migration = readdirSync(path.join(repoRoot, "supabase", "migrations"))
   .filter((fileName) => fileName.endsWith(".sql"))
@@ -118,10 +135,19 @@ assert.ok(!finalChangeSetReadPolicy.includes("or review_status = 'approved'"), "
 
 const docs = read("docs/supabase-workup-authoring.md");
 assert.ok(docs.includes("npx supabase db push"), "Setup docs should explain how to deploy the migration.");
+assert.ok(docs.includes("npm run deploy:supabase-workup-authoring"), "Setup docs should explain the one-command deployment path.");
+assert.ok(docs.includes("Supabase Workup Authoring Deploy"), "Setup docs should mention the manual GitHub Actions backend deploy.");
 assert.ok(docs.includes("npm run import:medical-knowledge"), "Setup docs should explain how to seed from JSON.");
 assert.ok(docs.includes("npm run export:medical-knowledge"), "Setup docs should explain how to export reviewed content.");
 assert.ok(docs.includes("npm run grant:workup-access"), "Setup docs should explain how to delegate Workup Studio access.");
 assert.ok(docs.includes("workup_author_assignments"), "Setup docs should explain delegated workup assignments.");
 assert.ok(docs.includes("Enable Google in Supabase Auth"), "Setup docs should explain Google OAuth setup.");
+
+const supabaseConfig = read("supabase/config.toml");
+assert.ok(supabaseConfig.includes("[auth.external.google]"), "Supabase config should declare Google OAuth.");
+assert.ok(supabaseConfig.includes("SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID"), "Google client ID should come from env.");
+assert.ok(supabaseConfig.includes("SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET"), "Google client secret should come from env.");
+assert.ok(supabaseConfig.includes("enable_anonymous_sign_ins = false"), "Anonymous Supabase sign-ins should be disabled.");
+assert.ok(supabaseConfig.includes("https://aaronge-2020.github.io/prerounding-checklist/?workupStudioOAuth=1"), "Supabase config should allow the deployed Workup Studio callback.");
 
 console.log("Supabase Workup Studio configuration checks passed.");

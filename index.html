@@ -11380,8 +11380,7 @@
     }
 
     function workupStudioOAuthRedirectUrl() {
-      const redirectUrl = new URL(window.location.href);
-      redirectUrl.hash = "";
+      const redirectUrl = new URL(`${window.location.origin}${window.location.pathname || "/"}`);
       redirectUrl.searchParams.set("workupStudioOAuth", "1");
       return redirectUrl.toString();
     }

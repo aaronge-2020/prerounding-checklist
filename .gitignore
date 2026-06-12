@@ -6,6 +6,7 @@ node_modules/
 !.env.example
 
 # Generated/local outputs
+supabase/.temp/
 benchmark-results/
 qa-screenshots/
 archive/

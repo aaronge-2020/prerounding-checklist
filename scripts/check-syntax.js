@@ -24,6 +24,7 @@ const files = [
   "scripts/import-medical-knowledge.js",
   "scripts/export-medical-knowledge.js",
   "scripts/grant-workup-access.js",
+  "scripts/deploy-supabase-workup-authoring.js",
   "scripts/check-supabase-auth-readiness.js",
   "scripts/build-physical-exam-evidence.js",
   "scripts/audit-evidence-checklist.js",

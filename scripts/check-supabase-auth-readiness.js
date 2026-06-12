@@ -51,7 +51,7 @@ async function checkPublicSupabaseReadiness({ supabaseUrl, publishableKey }) {
     authorization: `Bearer ${publishableKey}`,
     "user-agent": "prerounding-checklist-readiness"
   };
-  const redirectTo = encodeURIComponent("https://aaronge-2020.github.io/prerounding-checklist/");
+  const redirectTo = encodeURIComponent("https://aaronge-2020.github.io/prerounding-checklist/?workupStudioOAuth=1");
   const oauth = await fetchSupabaseText(`${supabaseUrl}/auth/v1/authorize?provider=google&redirect_to=${redirectTo}`, {
     headers: { apikey: publishableKey, "user-agent": "prerounding-checklist-readiness" },
     redirect: "manual"
@@ -123,7 +123,9 @@ if (deploymentIssues.length) {
   fail("Supabase auth deployment is not ready.", [
     ...deploymentIssues,
     ...publicReadiness.notes,
-    "Set credentials, enable Google OAuth in Supabase Auth, then run:",
+    "Set credentials, enable or provide Google OAuth config, then run:",
+    "  npm run deploy:supabase-workup-authoring -- --reviewer-email=reviewer@example.com",
+    "Manual fallback:",
     "  npx supabase link --project-ref hajjuzpnlvpetsleuxwb",
     "  npx supabase db push",
     "  npm run import:medical-knowledge"

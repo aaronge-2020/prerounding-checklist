@@ -19,6 +19,16 @@ $env:SUPABASE_SERVICE_ROLE_KEY="your-service-role-key"
 
 Do not paste the service role key into Workup Studio.
 
+For a one-command hosted deployment, also set:
+
+```powershell
+$env:SUPABASE_ACCESS_TOKEN="your-supabase-cli-access-token"
+$env:SUPABASE_DB_PASSWORD="your-hosted-postgres-password"
+$env:SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID="your-google-oauth-client-id"
+$env:SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET="your-google-oauth-client-secret"
+$env:WORKUP_STUDIO_REVIEWER_EMAIL="reviewer@example.com"
+```
+
 ## Create The Backend
 
 First check whether this machine has the credentials needed to deploy and seed the hosted Supabase project:
@@ -28,6 +38,22 @@ npm run check:supabase-auth
 ```
 
 That command also probes the live project for Google OAuth readiness and the Workup Studio tables, so `Unsupported provider` or `table not found` failures show up before a maintainer opens the app.
+
+The simplest deployment path is:
+
+```bash
+npm run deploy:supabase-workup-authoring -- --reviewer-email=reviewer@example.com
+```
+
+It pushes `supabase/config.toml` so Google OAuth and the deployed redirect URLs are configured, pushes the migrations, imports the current JSON workups into Supabase, optionally grants reviewer access, then reruns `npm run check:supabase-auth`.
+
+The same path is available in GitHub Actions through `.github/workflows/supabase-workup-authoring.yml`. Add these repository secrets, then run the `Supabase Workup Authoring Deploy` workflow manually:
+
+- `SUPABASE_ACCESS_TOKEN`
+- `SUPABASE_DB_PASSWORD`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID`
+- `SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET`
 
 Link the Supabase project, then push the migration:
 
@@ -69,6 +95,8 @@ Enable Google in Supabase Auth first:
 1. In Supabase, open `Authentication -> Providers -> Google`.
 2. Enable Google and add the Google OAuth client ID/secret.
 3. Add the deployed app URL to the Supabase Auth redirect allow-list, for example `https://aaronge-2020.github.io/prerounding-checklist/`.
+
+The deploy command can push the Google provider config from `supabase/config.toml` when `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID` and `SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET` are set. If you configure it manually in the dashboard, keep the callback URL `https://aaronge-2020.github.io/prerounding-checklist/?workupStudioOAuth=1` allow-listed.
 
 After the reviewer signs in once with Google, grant that Supabase Auth user reviewer access:
 

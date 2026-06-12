@@ -21,6 +21,7 @@
     "import:medical-knowledge": "node scripts/import-medical-knowledge.js",
     "export:medical-knowledge": "node scripts/export-medical-knowledge.js",
     "grant:workup-access": "node scripts/grant-workup-access.js",
+    "deploy:supabase-workup-authoring": "node scripts/deploy-supabase-workup-authoring.js",
     "check:supabase-auth": "node scripts/check-supabase-auth-readiness.js",
     "test:medical-knowledge": "node scripts/test-medical-knowledge-db.js",
     "test:workup-authoring": "node scripts/test-workup-authoring.js",
