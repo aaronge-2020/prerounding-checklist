@@ -55,6 +55,11 @@ assert.ok(grantScript.includes("workup_author_assignments"), "Grant command shou
 assert.ok(grantScript.includes("workup_author_profiles"), "Grant command should write author/reviewer profiles.");
 assert.ok(grantScript.includes("No Supabase Auth user found"), "Grant command should require an existing Supabase Auth user.");
 
+const readinessScript = read("scripts/check-supabase-auth-readiness.js");
+assert.ok(readinessScript.includes("/auth/v1/authorize?provider=google"), "Readiness check should probe live Google OAuth.");
+assert.ok(readinessScript.includes("PGRST205"), "Readiness check should detect missing Supabase authoring tables.");
+assert.ok(readinessScript.includes("Anonymous publishable-key request returned rows"), "Readiness check should flag anonymous authoring-data exposure.");
+
 const html = read("index.html");
 assert.ok(html.includes("WORKUP_STUDIO_DEFAULT_BACKEND"), "Workup Studio should have public backend defaults.");
 assert.ok(html.includes("https://hajjuzpnlvpetsleuxwb.supabase.co"), "Workup Studio should use the configured Supabase project.");

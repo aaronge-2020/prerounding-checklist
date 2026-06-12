@@ -31,6 +31,7 @@ assert.ok(html.includes("function loadWorkupStudioPermissions()"), "Sign-in must
 assert.ok(html.includes("workup_author_profiles?select=role,display_name"), "Permission check must read author profile.");
 assert.ok(html.includes("workup_author_assignments?select=workup_id,role"), "Permission check must read workup assignments.");
 assert.ok(html.includes("This signed-in account has no Workup Studio assignment"), "Unassigned users must be denied explicitly.");
+assert.ok(html.includes("Workup Studio database tables are not installed in Supabase yet"), "Missing Supabase migrations should be explained clearly.");
 assert.ok(html.includes("authorization: `Bearer ${workupStudioState.backend.accessToken}`"), "REST calls must use a real user access token.");
 assert.ok(!html.includes("authorization: `Bearer ${workupStudioState.backend.accessToken || workupStudioState.backend.anonKey}`"), "REST calls must not fall back to publishable key auth.");
 assert.ok(html.includes('if (!workupStudioBackendAuthenticated()) throw new Error("Sign in before connecting to Supabase.")'), "REST calls must require authentication.");
@@ -42,6 +43,7 @@ assert.ok(html.includes("canReview: false") && html.includes("permissionChecked:
 assert.ok(html.includes("sessionValidatedAt: \"\""), "Saved sessions should require fresh validation before permissions unlock.");
 assert.ok(html.includes("function ensureWorkupStudioBackendSession()"), "Opening Workup Studio should revalidate saved Supabase sessions.");
 assert.ok(html.includes("Saved Supabase session needs permission recheck"), "UI should not present cached sessions as connected before revalidation.");
+assert.ok(html.includes("workupStudioSignOutButton.hidden = !workupStudioBackendSignedIn()"), "Sign out should appear only after verified Workup Studio permission.");
 assert.ok(html.includes("Reviewer publish locked"), "Editor publish controls should render locked by default.");
 assert.ok(!html.includes("marked approved locally"), "Workup Studio must not present local-only approval as a real approval path.");
 

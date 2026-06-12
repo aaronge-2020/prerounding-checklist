@@ -11356,7 +11356,7 @@
         elements.workupStudioPublishImportButton.disabled = !workupStudioCanReview();
       }
       if (elements.workupStudioSignOutButton) {
-        elements.workupStudioSignOutButton.hidden = !workupStudioBackendAuthenticated();
+        elements.workupStudioSignOutButton.hidden = !workupStudioBackendSignedIn();
       }
       configureWorkupStudioApproveButton();
     }
@@ -11417,6 +11417,20 @@
       };
     }
 
+    function workupStudioSupabaseErrorMessage({ method = "GET", path = "", status = 0, responseText = "" } = {}) {
+      const lower = String(responseText || "").toLowerCase();
+      if (/pgrst205|could not find the table|schema cache/.test(lower)) {
+        return "Workup Studio database tables are not installed in Supabase yet. Deploy the authoring migrations, then import the medical knowledge seed data.";
+      }
+      if (/jwt expired|invalid jwt|invalid token|not authenticated/.test(lower) || status === 401) {
+        return "Your Supabase session expired or is invalid. Continue with Google again before connecting to Workup Studio.";
+      }
+      if (/permission denied|violates row-level security|rls|row level security/.test(lower) || status === 403) {
+        return "Supabase blocked this action. This account is not assigned to this workup or does not have reviewer permission.";
+      }
+      return `Supabase ${method} ${path} failed: ${status} ${String(responseText || "").slice(0, 240)}`;
+    }
+
     async function workupStudioSupabaseRequest(path, { method = "GET", body = null, prefer = "", requirePermission = true } = {}) {
       if (!workupStudioBackendConfigured()) throw new Error("Supabase backend is not configured.");
       if (!workupStudioBackendAuthenticated()) throw new Error("Sign in before connecting to Supabase.");
@@ -11431,7 +11445,7 @@
       });
       if (!response.ok) {
         const text = await response.text();
-        throw new Error(`Supabase ${method} ${path} failed: ${response.status} ${text.slice(0, 240)}`);
+        throw new Error(workupStudioSupabaseErrorMessage({ method, path, status: response.status, responseText: text }));
       }
       if (response.status === 204) return null;
       const text = await response.text();

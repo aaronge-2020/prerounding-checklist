@@ -27,6 +27,8 @@ First check whether this machine has the credentials needed to deploy and seed t
 npm run check:supabase-auth
 ```
 
+That command also probes the live project for Google OAuth readiness and the Workup Studio tables, so `Unsupported provider` or `table not found` failures show up before a maintainer opens the app.
+
 Link the Supabase project, then push the migration:
 
 ```bash
