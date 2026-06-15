@@ -22,6 +22,8 @@ assert.equal(pkg.scripts["export:medical-knowledge"], "node scripts/export-medic
 assert.equal(pkg.scripts["grant:workup-access"], "node scripts/grant-workup-access.js");
 assert.equal(pkg.scripts["deploy:supabase-workup-authoring"], "node scripts/deploy-supabase-workup-authoring.js");
 assert.equal(pkg.scripts["check:supabase-public"], "node scripts/check-supabase-auth-readiness.js --public-only");
+assert.equal(pkg.scripts["test:supabase-catalog-empty"], "node scripts/test-supabase-catalog-empty.js");
+assert.ok(pkg.scripts["test:clinical"].includes("test:supabase-catalog-empty"), "Clinical test suite should cover empty public Supabase catalog fallback.");
 
 const envExample = read(".env.example");
 for (const key of [
@@ -119,8 +121,17 @@ assert.ok(deployWorkflow.includes('missing+=("SUPABASE_SERVICE_ROLE_KEY")'), "Su
 assert.ok(deployWorkflow.includes('missing+=("SUPABASE_DB_PASSWORD or SUPABASE_DB_URL")'), "Supabase deploy preflight should require one database credential secret.");
 assert.ok(deployWorkflow.includes("Supabase Workup Studio deploy is missing required GitHub secret"), "Supabase deploy preflight should print an actionable missing-secret message.");
 
+assert.ok(existsSync(path.join(repoRoot, ".github", "workflows", "supabase-public-catalog-readiness.yml")), "GitHub Actions workflow should exist for credential-free public catalog readiness.");
+const publicCatalogWorkflow = read(".github/workflows/supabase-public-catalog-readiness.yml");
+assert.ok(publicCatalogWorkflow.includes("schedule:"), "Public catalog readiness workflow should run on a schedule.");
+assert.ok(publicCatalogWorkflow.includes("workflow_dispatch:"), "Public catalog readiness workflow should support manual checks.");
+assert.ok(publicCatalogWorkflow.includes("npm run check:supabase-public"), "Public catalog readiness workflow should run the credential-free public readiness probe.");
+assert.ok(!publicCatalogWorkflow.includes("secrets."), "Public catalog readiness workflow should not require GitHub secrets.");
+
 const html = read("index.html");
 assert.ok(html.includes("WORKUP_STUDIO_DEFAULT_BACKEND"), "Workup Studio should have public backend defaults.");
+assert.ok(html.includes("Public Supabase catalog returned no reviewed workups"), "Public catalog hydration should fail closed when the server has no reviewed workups.");
+assert.ok(html.includes("using bundled local workups"), "Empty public catalog should visibly fall back to bundled local workups.");
 assert.ok(html.includes("https://hajjuzpnlvpetsleuxwb.supabase.co"), "Workup Studio should use the configured Supabase project.");
 assert.ok(!html.includes("workupStudioSupabaseUrlInput"), "Workup Studio should not let users edit the Supabase project URL.");
 assert.ok(!html.includes("workupStudioSupabaseAnonKeyInput"), "Workup Studio should not render an editable publishable key.");

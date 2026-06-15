@@ -14065,6 +14065,8 @@
           ? `${workupStudioState.backend.canReview ? "Reviewer" : "Author"} signed in as ${workupStudioState.backend.email || "Supabase user"}. ${workupStudioState.backend.canReview ? "Can publish reviewed changes." : `${workupStudioState.backend.permittedWorkupIds.length} assigned workup${workupStudioState.backend.permittedWorkupIds.length === 1 ? "" : "s"}.`}${catalogSummary}`
           : workupStudioState.backend.catalogLoadedAt
             ? `${workupStudioState.backend.catalogWorkupCount || 0} public Supabase workup${workupStudioState.backend.catalogWorkupCount === 1 ? "" : "s"} loaded for patient care. Sign in to draft or publish.`
+          : workupStudioState.backend.catalogLastError
+            ? `Public Supabase workup refresh failed; using bundled local workups. ${workupStudioState.backend.catalogLastError}`
           : workupStudioBackendAuthenticated() && workupStudioState.backend.permissionChecked
             ? "Signed in, but no Workup Studio permission is assigned. Ask a reviewer/admin to grant access."
           : workupStudioBackendAuthenticated()
@@ -14627,6 +14629,9 @@
           } else {
             workups = await workupCatalogSupabaseRequest(supabaseWorkupsCatalogPath({ publicOnly: true }), { publicOnly });
             const workupIds = Array.isArray(workups) ? workups.map((workup) => workup.id).filter(Boolean) : [];
+            if (!workupIds.length) {
+              throw new Error("Public Supabase catalog returned no reviewed workups; server seed/import has not published workups for fresh devices yet.");
+            }
             sections = workupIds.length
               ? await workupCatalogSupabaseRequest(supabaseWorkupSectionsCatalogPath({ workupIds, publicOnly: true }), { publicOnly })
               : [];
@@ -14670,7 +14675,9 @@
       if (!publicWorkupCatalogConfigured()) return null;
       return loadSupabaseWorkupCatalog({ force, publicOnly: true }).catch((error) => {
         const message = error instanceof Error ? error.message : "Unable to refresh public Supabase workups.";
-        setStatus(`Using bundled local workups. Public Supabase refresh failed: ${message}`);
+        if (state.currentView === "studio") {
+          setStatus(`Using bundled local workups. Public Supabase refresh failed: ${message}`);
+        }
         return false;
       });
     }

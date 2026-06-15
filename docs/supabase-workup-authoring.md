@@ -41,6 +41,8 @@ npm run check:supabase-public
 
 This credential-free check uses the browser-configured Supabase URL and publishable key to verify Email magic-link readiness, authoring table presence, app-shaped public reviewed-catalog hydration, source traceability, and protected draft/authoring-table privacy. If it reports `PGRST205`, the hosted project does not have the Workup Studio migrations yet.
 
+Fresh app loads also fail closed when the public catalog returns zero reviewed workups: clinicians keep the bundled local workups, and Workup Studio shows a public-catalog failure message instead of treating an empty server catalog as current.
+
 Then check whether this machine has the credentials needed to deploy and seed the hosted Supabase project:
 
 ```bash
@@ -62,6 +64,8 @@ The same path is available in GitHub Actions through `.github/workflows/supabase
 - `SUPABASE_ACCESS_TOKEN`
 - `SUPABASE_DB_PASSWORD` or `SUPABASE_DB_URL`
 - `SUPABASE_SERVICE_ROLE_KEY`
+
+`.github/workflows/supabase-public-catalog-readiness.yml` runs `npm run check:supabase-public` without secrets on push, manual dispatch, and an hourly schedule. It is expected to fail until the hosted project exposes at least one active reviewed workup, readable sections, and referenced sources through the publishable-key public catalog.
 
 Link the Supabase project manually only if you are not using the deploy command:
 

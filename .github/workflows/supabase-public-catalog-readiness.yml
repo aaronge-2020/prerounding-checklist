@@ -1,0 +1,41 @@
+name: Supabase Public Catalog Readiness
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/supabase-public-catalog-readiness.yml"
+      - "index.html"
+      - "scripts/check-supabase-auth-readiness.js"
+      - "utils/supabase/**"
+      - "package.json"
+      - "package-lock.json"
+  workflow_dispatch:
+  schedule:
+    - cron: "17 * * * *"
+
+concurrency:
+  group: supabase-public-catalog-readiness-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  public-catalog:
+    name: Verify fresh-device public workup catalog
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check public catalog readiness
+        run: npm run check:supabase-public
