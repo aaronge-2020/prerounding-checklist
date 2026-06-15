@@ -51,6 +51,59 @@ async function assertNoHorizontalOverflow(page, label) {
   assert.ok(overflow <= 2, `${label}: horizontal overflow ${overflow}px`);
 }
 
+async function assertPathwayEditorControlsContained(page, label) {
+  const audit = await page.evaluate(() => {
+    const form = document.querySelector("#workupStudioEditor");
+    const formRect = form?.getBoundingClientRect();
+    const controls = Array.from(document.querySelectorAll(
+      "#workupStudioEditor input, #workupStudioEditor select, #workupStudioEditor textarea, #workupStudioEditor button"
+    ));
+    const offenders = controls.map((control) => {
+      const rect = control.getBoundingClientRect();
+      return {
+        id: control.id || control.textContent?.trim() || control.tagName,
+        left: Math.round(rect.left),
+        right: Math.round(rect.right),
+        width: Math.round(rect.width),
+        formLeft: Math.round(formRect?.left || 0),
+        formRight: Math.round(formRect?.right || 0)
+      };
+    }).filter((entry) => entry.left < Math.round((formRect?.left || 0) - 1)
+      || entry.right > Math.round((formRect?.right || 0) + 1));
+    const selectedRect = document.querySelector("#workupStudioPathwayTreePanel .decision-tree-node-g[data-selected='true'] rect")?.getBoundingClientRect();
+    const inlineEditor = document.querySelector("#workupStudioPathwayTreePanel .decision-tree-inline-label")?.getBoundingClientRect();
+    return {
+      viewportWidth: document.documentElement.clientWidth,
+      form: formRect ? {
+        left: Math.round(formRect.left),
+        right: Math.round(formRect.right),
+        width: Math.round(formRect.width)
+      } : null,
+      offenders,
+      inlineInsideNode: Boolean(selectedRect && inlineEditor
+        && inlineEditor.top >= selectedRect.top - 1
+        && inlineEditor.left >= selectedRect.left - 1
+        && inlineEditor.right <= selectedRect.right + 1
+        && inlineEditor.bottom <= selectedRect.bottom + 1),
+      inlineEditor: inlineEditor ? {
+        left: Math.round(inlineEditor.left),
+        right: Math.round(inlineEditor.right),
+        top: Math.round(inlineEditor.top),
+        bottom: Math.round(inlineEditor.bottom)
+      } : null,
+      selectedNode: selectedRect ? {
+        left: Math.round(selectedRect.left),
+        right: Math.round(selectedRect.right),
+        top: Math.round(selectedRect.top),
+        bottom: Math.round(selectedRect.bottom)
+      } : null
+    };
+  });
+  assert.ok(audit.form?.width > 0, `${label}: pathway editor form should be visible: ${JSON.stringify(audit)}`);
+  assert.deepEqual(audit.offenders, [], `${label}: pathway editor controls should stay inside the editor form: ${JSON.stringify(audit)}`);
+  assert.equal(audit.inlineInsideNode, true, `${label}: inline pathway textbox should stay inside the selected rendered node: ${JSON.stringify(audit)}`);
+}
+
 async function waitForCondition(callback, label, timeoutMs = 5000) {
   const started = Date.now();
   while (Date.now() - started < timeoutMs) {
@@ -550,6 +603,15 @@ try {
   });
   assert(resizedStudioColumns.workupsWidth > startStudioWorkupsWidth && resizedStudioColumns.storedWorkupsWidth >= resizedStudioColumns.workupsWidth - 2 && resizedStudioColumns.visibleHandleCount >= 2, `Studio columns should resize and persist: ${JSON.stringify({ startStudioWorkupsWidth, resizedStudioColumns })}`);
   await assertNoHorizontalOverflow(page, "desktop Workup Studio");
+  await assertPathwayEditorControlsContained(page, "desktop Workup Studio pathway editor");
+  await page.setViewportSize({ width: 640, height: 900 });
+  await page.waitForFunction(() => document.documentElement.clientWidth === 640
+    && document.querySelector(".studio-editor-body")?.classList.contains("is-pathway-editor"));
+  await assertNoHorizontalOverflow(page, "phone-width Workup Studio pathway editor");
+  await assertPathwayEditorControlsContained(page, "phone-width Workup Studio pathway editor");
+  await page.setViewportSize({ width: 1440, height: 980 });
+  await page.waitForFunction(() => document.documentElement.clientWidth === 1440
+    && document.querySelector(".studio-editor-body")?.classList.contains("is-pathway-editor"));
   await page.click("#workupStudioImportCommandButton");
   await page.waitForFunction(() => document.activeElement?.id === "workupStudioImportInput");
   await page.click("#workupStudioAuditLogButton");

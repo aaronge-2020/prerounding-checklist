@@ -976,6 +976,13 @@ assert.ok(
   "desktop patient workspace should expose OpenEvidence prompts as a first-class patient tab"
 );
 assert.ok(
+  appHtml.includes('data-patient-tab="handoff"')
+    && appHtml.includes('data-patient-tab="handoff" aria-selected="false" aria-label="Phone handoff" aria-hidden="true" tabindex="-1" hidden')
+    && appHtml.includes('function patientTabAvailableOnDevice')
+    && appHtml.includes('return tabName !== "handoff" || isCompactPatientDevice();'),
+  "desktop patient workspace should keep the Phone tab hidden by default while compact devices opt into it"
+);
+assert.ok(
   appHtml.includes("decisionTreeGraphsByModuleId")
     && appHtml.includes("clinical_pathway_tree_v1")
     && appHtml.includes('id="decisionTreeJsonInput"')

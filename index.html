@@ -3109,8 +3109,22 @@
 
     .studio-pathway-node-actions {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
       gap: 8px;
+    }
+
+    .studio-form > .button-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+      gap: 8px;
+    }
+
+    .studio-form > .button-row .btn,
+    .studio-pathway-node-actions .btn {
+      width: 100%;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      text-align: center;
     }
 
     .studio-item-button {
@@ -3169,8 +3183,26 @@
       display: grid;
       align-content: start;
       gap: 10px;
+      min-width: 0;
       overflow: auto;
+      overflow-x: hidden;
       padding: 12px;
+    }
+
+    .studio-form > *,
+    .studio-form-grid > *,
+    .decision-tree-rule-grid > *,
+    .studio-pathway-node-actions > * {
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    .studio-form label,
+    .studio-form input,
+    .studio-form select,
+    .studio-form textarea,
+    .studio-form .btn {
+      max-width: 100%;
     }
 
     .studio-form-header {
@@ -3201,6 +3233,10 @@
     .studio-form textarea {
       min-height: 76px;
       resize: vertical;
+    }
+
+    .studio-editor-body.is-pathway-editor .studio-form textarea {
+      overflow-wrap: anywhere;
     }
 
     .studio-form-grid {
@@ -8593,6 +8629,10 @@
         grid-template-columns: 0 minmax(0, 1fr);
       }
 
+      body:not([data-view="vaultAccess"])[data-view="studio"][data-nav-collapsed] .app-shell {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
       .topbar {
         grid-column: 2;
       }
@@ -10661,7 +10701,7 @@
               <button type="button" role="tab" data-patient-tab="checklist" aria-selected="false">Checklist</button>
               <button type="button" role="tab" data-patient-tab="findings" aria-selected="false">Findings</button>
               <button type="button" role="tab" data-patient-tab="evidence" aria-selected="false" aria-label="OpenEvidence prompts">Evidence</button>
-              <button type="button" role="tab" data-patient-tab="handoff" aria-selected="false" aria-label="Phone handoff">Phone</button>
+              <button type="button" role="tab" data-patient-tab="handoff" aria-selected="false" aria-label="Phone handoff" aria-hidden="true" tabindex="-1" hidden>Phone</button>
             </div>
             <div class="patient-workflow-grid">
               <section class="workflow-panel workflow-panel-wide" id="patientOverviewPanel" data-patient-panel="overview">
