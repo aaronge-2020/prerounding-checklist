@@ -11958,6 +11958,8 @@
     const CHECKLIST_IMPROVEMENT_TASK_ID = "checklist_improvement_review";
     const DECISION_TREE_TASK_ID = "decision_tree_builder";
     const EMPTY_CONTEXT_MESSAGE = "Add reviewed patient context before running de-ID, building a checklist, or preparing a handoff.";
+    const WORKUP_CATALOG_RESUME_REFRESH_INTERVAL_MS = 10 * 60 * 1000;
+    const WORKUP_CATALOG_REFRESH_DEBOUNCE_MS = 30 * 1000;
 
     const clinicalModifierOptions = [
       {
@@ -12178,6 +12180,7 @@
     let workupStudioSessionHydrationPromise = null;
     let workupStudioSessionRefreshPromise = null;
     let workupStudioCatalogHydrationPromises = new Map();
+    let workupCatalogResumeRefreshAttemptAt = 0;
     let supabaseWorkupCatalog = {
       modulesById: new Map(),
       sourcesById: new Map(),
@@ -14500,6 +14503,27 @@
         setStatus(`Using bundled local workups. Public Supabase refresh failed: ${message}`);
         return false;
       });
+    }
+
+    function supabaseWorkupCatalogAgeMs() {
+      const loadedAt = Date.parse(supabaseWorkupCatalog.loadedAt || "");
+      return Number.isFinite(loadedAt) ? Date.now() - loadedAt : Number.POSITIVE_INFINITY;
+    }
+
+    function refreshSupabaseWorkupCatalogForCurrentSession({ force = false, minAgeMs = WORKUP_CATALOG_RESUME_REFRESH_INTERVAL_MS, announce = false } = {}) {
+      if (!workupStudioBackendAuthenticated() && !publicWorkupCatalogConfigured()) return null;
+      if (!force && supabaseWorkupCatalog.loadedAt && supabaseWorkupCatalogAgeMs() < minAgeMs) return null;
+      const now = Date.now();
+      if (!force && now - workupCatalogResumeRefreshAttemptAt < WORKUP_CATALOG_REFRESH_DEBOUNCE_MS) return null;
+      workupCatalogResumeRefreshAttemptAt = now;
+      const request = workupStudioBackendSignedIn()
+        ? loadSupabaseWorkupCatalog({ force: true, announce })
+        : hydratePublicWorkupCatalogOnStartup({ force: true });
+      return request?.catch?.((error) => {
+        const message = error instanceof Error ? error.message : "Unable to refresh Supabase workups.";
+        setStatus(`Using available workups. Supabase refresh failed: ${message}`);
+        return false;
+      }) || request;
     }
 
     async function finishWorkupStudioOAuthSession(session, provider = WORKUP_STUDIO_MAGIC_LINK_PROVIDER) {
@@ -24278,6 +24302,15 @@
       });
       elements.workupStudioSignOutButton?.addEventListener("click", signOutWorkupStudioSupabase);
       elements.workupStudioTopSignOutButton?.addEventListener("click", signOutWorkupStudioSupabase);
+      window.addEventListener("online", () => {
+        void refreshSupabaseWorkupCatalogForCurrentSession({ force: true });
+      });
+      window.addEventListener("focus", () => {
+        void refreshSupabaseWorkupCatalogForCurrentSession();
+      });
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) void refreshSupabaseWorkupCatalogForCurrentSession();
+      });
       elements.sidebarPatientRosterButton?.addEventListener("click", togglePatientRosterFromNav);
       elements.topPatientRosterButton?.addEventListener("click", togglePatientRosterFromNav);
       for (const button of $$("[data-source-mode]")) {

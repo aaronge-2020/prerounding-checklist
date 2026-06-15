@@ -114,6 +114,9 @@ assert.ok(html.includes("hydratePublicWorkupCatalogOnStartup"), "Fresh patient d
 assert.ok(html.includes("publicOnly"), "Public catalog hydration should be able to bypass stale Workup Studio auth tokens.");
 assert.ok(html.includes("workupStudioCatalogHydrationPromises"), "Public startup catalog reads and authenticated reviewer refreshes should not share one in-flight promise.");
 assert.ok(html.includes("accessMode === \"public\" && supabaseWorkupCatalog.accessMode === \"authenticated\""), "Delayed public catalog reads should not overwrite authenticated reviewer catalog hydration.");
+assert.ok(html.includes("refreshSupabaseWorkupCatalogForCurrentSession"), "Open patient devices should refresh Supabase workups after returning online or resuming the tab.");
+assert.ok(html.includes('addEventListener("online"'), "The app should refresh the reviewed server catalog when the device returns online.");
+assert.ok(html.includes('addEventListener("visibilitychange"'), "The app should refresh stale server workups when clinicians resume the app.");
 assert.ok(html.includes("cache: \"no-store\""), "Supabase catalog reads should avoid cached stale server workups.");
 assert.ok(html.includes("checklistWorkupSignature"), "Built patient checklists should record the exact workup catalog version used.");
 assert.ok(html.includes("isChecklistStaleForCurrentWorkup"), "Patient workspaces should detect checklists made from superseded workups.");
