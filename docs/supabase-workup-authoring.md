@@ -38,7 +38,7 @@ First check whether this machine has the credentials needed to deploy and seed t
 npm run check:supabase-public
 ```
 
-This credential-free check uses the browser-configured Supabase URL and publishable key to verify Email magic-link readiness, authoring table presence, and anonymous-data exposure. If it reports `PGRST205`, the hosted project does not have the Workup Studio migrations yet.
+This credential-free check uses the browser-configured Supabase URL and publishable key to verify Email magic-link readiness, authoring table presence, public reviewed-catalog reads, and protected draft/authoring-table privacy. If it reports `PGRST205`, the hosted project does not have the Workup Studio migrations yet.
 
 Then check whether this machine has the credentials needed to deploy and seed the hosted Supabase project:
 
@@ -82,7 +82,7 @@ The migration creates:
 - `review_cases`
 - `change_sets`
 
-RLS allows assigned authors to draft change sets for delegated workups, while reviewers/admins can approve and maintain canonical authoring tables.
+RLS allows every fresh app load to read the reviewed canonical workup catalog with the publishable key. Assigned authors can draft change sets for delegated workups, while reviewers/admins can approve and maintain canonical authoring tables.
 Delegated authors are scoped through `workup_author_assignments`; reviewers/admins can grant one user access to one workup without giving them global approval rights.
 
 ## Enable Magic Link
@@ -178,7 +178,7 @@ npm run export:medical-knowledge
 ```
 
 The export writes the existing `medical-knowledge/complaint-modules/*.json` shape used by `medical-knowledge-db.js`.
-`Save + publish` updates Supabase `change_sets` plus the normalized authoring tables for database-backed users. The static app release still needs the export/build/deploy path before bundled JSON users see the new content.
+`Save + publish` updates Supabase `change_sets` plus the normalized authoring tables. Fresh patient devices load the reviewed Supabase catalog on app startup with the publishable key; the export/build/deploy path still updates the bundled JSON fallback for offline or Supabase-unavailable sessions.
 
 ## Next.js Note
 

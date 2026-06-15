@@ -12044,6 +12044,10 @@
     ]);
     const modifierOptions = clinicalModifierOptions.map((option) => option.label);
     const views = ["workspace", "intake", "deid", "workup", "studio", "evidence", "handoff", "bedside", "final", "privacy"];
+    const patientTabOrder = ["overview", "today", "context", "workup", "checklist", "findings", "evidence", "handoff"];
+    const desktopPatientTabFallbacks = {
+      handoff: "checklist"
+    };
     const LAYOUT_PREFS_KEY = "prerounding-layout-preferences-v1";
     const layoutSizeConfig = {
       appSidebar: { cssVar: "--app-sidebar-w", defaultValue: 204, min: 144, max: 360 },
@@ -12639,7 +12643,7 @@
       if (lock) state.sessionMode = "locked";
       state.vaultName = String(state.vaultName || vaultMeta()?.name || "");
       state.patientSearch = String(state.patientSearch || "");
-      if (!["overview", "today", "context", "workup", "findings", "checklist", "evidence", "handoff"].includes(state.activePatientTab)) {
+      if (!patientTabOrder.includes(state.activePatientTab)) {
         state.activePatientTab = "overview";
       }
       if (!state.todayModeByPatientId || typeof state.todayModeByPatientId !== "object" || Array.isArray(state.todayModeByPatientId)) {
@@ -13810,6 +13814,10 @@
       return Boolean(normalizeSupabaseUrl(workupStudioState.backend.url) && workupStudioState.backend.anonKey);
     }
 
+    function publicWorkupCatalogConfigured() {
+      return Boolean(normalizeSupabaseUrl(WORKUP_STUDIO_DEFAULT_BACKEND.url) && WORKUP_STUDIO_DEFAULT_BACKEND.publishableKey);
+    }
+
     function workupStudioBackendAuthenticated() {
       return Boolean(workupStudioBackendConfigured() && workupStudioState.backend.accessToken);
     }
@@ -13834,6 +13842,8 @@
       const statusMessage = message
         || (connected
           ? `${workupStudioState.backend.canReview ? "Reviewer" : "Author"} signed in as ${workupStudioState.backend.email || "Supabase user"}. ${workupStudioState.backend.canReview ? "Can publish reviewed changes." : `${workupStudioState.backend.permittedWorkupIds.length} assigned workup${workupStudioState.backend.permittedWorkupIds.length === 1 ? "" : "s"}.`}${catalogSummary}`
+          : workupStudioState.backend.catalogLoadedAt
+            ? `${workupStudioState.backend.catalogWorkupCount || 0} public Supabase workup${workupStudioState.backend.catalogWorkupCount === 1 ? "" : "s"} loaded for patient care. Sign in to draft or publish.`
           : workupStudioBackendAuthenticated() && workupStudioState.backend.permissionChecked
             ? "Signed in, but no Workup Studio permission is assigned. Ask a reviewer/admin to grant access."
           : workupStudioBackendAuthenticated()
@@ -14119,6 +14129,29 @@
       return text ? JSON.parse(text) : null;
     }
 
+    async function workupCatalogSupabaseRequest(path) {
+      if (workupStudioBackendAuthenticated()) {
+        return workupStudioSupabaseRequest(path, { requirePermission: false });
+      }
+      const url = normalizeSupabaseUrl(WORKUP_STUDIO_DEFAULT_BACKEND.url);
+      const publishableKey = WORKUP_STUDIO_DEFAULT_BACKEND.publishableKey;
+      if (!url || !publishableKey) throw new Error("Supabase catalog backend is not configured.");
+      const response = await fetch(`${url}${path}`, {
+        method: "GET",
+        headers: {
+          apikey: publishableKey,
+          authorization: `Bearer ${publishableKey}`,
+          "content-type": "application/json"
+        }
+      });
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(workupStudioSupabaseErrorMessage({ method: "GET", path, status: response.status, responseText: text }));
+      }
+      const text = await response.text();
+      return text ? JSON.parse(text) : null;
+    }
+
     async function refreshWorkupStudioSupabaseSession({ force = false } = {}) {
       const backend = workupStudioState.backend;
       if (!backend.refreshToken) return false;
@@ -14248,7 +14281,7 @@
       return module;
     }
 
-    function applySupabaseWorkupCatalog({ workups = [], sections = [], sources = [] } = {}) {
+    function applySupabaseWorkupCatalog({ workups = [], sections = [], sources = [] } = {}, { persist = workupStudioBackendAuthenticated() } = {}) {
       const sectionsByWorkup = new Map();
       for (const section of Array.isArray(sections) ? sections : []) {
         const workupId = String(section.workup_id || "").trim();
@@ -14279,7 +14312,7 @@
         catalogWorkupCount: modulesById.size,
         catalogLastError: ""
       };
-      saveWorkupStudioState();
+      if (persist) saveWorkupStudioState();
       return supabaseWorkupCatalog;
     }
 
@@ -14308,14 +14341,14 @@
     }
 
     async function loadSupabaseWorkupCatalog({ announce = false, force = false } = {}) {
-      if (!workupStudioBackendSignedIn()) return false;
+      if (!workupStudioBackendAuthenticated() && !publicWorkupCatalogConfigured()) return false;
       if (!force && supabaseWorkupCatalog.status === "ready" && supabaseWorkupCatalog.loadedAt) return true;
       if (!workupStudioCatalogHydrationPromise) {
         workupStudioCatalogHydrationPromise = (async () => {
           const [workups, sections, sources] = await Promise.all([
-            workupStudioSupabaseRequest("/rest/v1/workups?select=id,title,version,status,complaint_group,population,module_path,source_ids,payload,updated_at&order=title.asc&limit=1000"),
-            workupStudioSupabaseRequest("/rest/v1/workup_sections?select=workup_id,section_key,sort_order,payload,updated_at&order=workup_id.asc,sort_order.asc&limit=10000"),
-            workupStudioSupabaseRequest("/rest/v1/sources?select=id,source_id,title,source_type,url,version,date_accessed,citation,payload,updated_at&limit=5000")
+            workupCatalogSupabaseRequest("/rest/v1/workups?select=id,title,version,status,complaint_group,population,module_path,source_ids,payload,updated_at&order=title.asc&limit=1000"),
+            workupCatalogSupabaseRequest("/rest/v1/workup_sections?select=workup_id,section_key,sort_order,payload,updated_at&order=workup_id.asc,sort_order.asc&limit=10000"),
+            workupCatalogSupabaseRequest("/rest/v1/sources?select=id,source_id,title,source_type,url,version,date_accessed,citation,payload,updated_at&limit=5000")
           ]);
           applySupabaseWorkupCatalog({ workups, sections, sources });
           rerenderAfterSupabaseWorkupCatalogSync();
@@ -14332,8 +14365,10 @@
             ...workupStudioState.backend,
             catalogLastError: message
           };
-          saveWorkupStudioState();
-          renderWorkupStudioBackendStatus(`Signed in, but Supabase workup refresh failed: ${message}`);
+          if (workupStudioBackendAuthenticated()) saveWorkupStudioState();
+          renderWorkupStudioBackendStatus(workupStudioBackendAuthenticated()
+            ? `Signed in, but Supabase workup refresh failed: ${message}`
+            : `Public Supabase workup refresh failed; using bundled local workups. ${message}`);
           throw error;
         }).finally(() => {
           workupStudioCatalogHydrationPromise = null;
@@ -14533,7 +14568,15 @@
     }
 
     function ensureWorkupStudioBackendSession() {
-      if (!workupStudioBackendAuthenticated()) return null;
+      if (!workupStudioBackendAuthenticated()) {
+        if (!supabaseWorkupCatalog.loadedAt && publicWorkupCatalogConfigured()) {
+          return loadSupabaseWorkupCatalog({ force: true }).catch((error) => {
+            renderWorkupStudioBackendStatus(error instanceof Error ? `Public Supabase workup refresh failed; using bundled local workups. ${error.message}` : "Public Supabase workup refresh failed; using bundled local workups.");
+            return false;
+          });
+        }
+        return null;
+      }
       if (workupStudioBackendSignedIn()) {
         if (!supabaseWorkupCatalog.loadedAt) {
           return loadSupabaseWorkupCatalog({ force: true }).catch((error) => {
@@ -16880,9 +16923,23 @@
       requestAnimationFrame(() => panel.scrollIntoView({ block: "start", behavior: "auto" }));
     }
 
+    function isCompactPatientDevice() {
+      return Boolean(window.matchMedia?.("(max-width: 760px)").matches);
+    }
+
+    function patientTabAvailableOnDevice(tabName) {
+      return tabName !== "handoff" || isCompactPatientDevice();
+    }
+
+    function coercePatientTabForDevice(tabName = state.activePatientTab) {
+      const requested = patientTabOrder.includes(tabName) ? tabName : "overview";
+      if (patientTabAvailableOnDevice(requested)) return requested;
+      return desktopPatientTabFallbacks[requested] || "overview";
+    }
+
     function setPatientTab(tabName, { announce = true, focusPanel = false } = {}) {
-      const allowedTabs = ["overview", "today", "context", "workup", "checklist", "findings", "evidence", "handoff"];
-      state.activePatientTab = allowedTabs.includes(tabName) ? tabName : "overview";
+      const requestedTab = patientTabOrder.includes(tabName) ? tabName : "overview";
+      state.activePatientTab = coercePatientTabForDevice(requestedTab);
       renderPatientTabs();
       if (state.activePatientTab === "workup") {
         ensureWorkup();
@@ -16897,19 +16954,29 @@
       }
       renderPatientWorkspace();
       if (focusPanel) scrollPatientPanelIntoView(state.activePatientTab);
-      if (announce) setStatus(`${activePatient().title} ${state.activePatientTab} tab opened.`);
+      if (announce) {
+        setStatus(requestedTab === "handoff" && state.activePatientTab !== "handoff"
+          ? "Use Send checklist to phone to open the desktop handoff workflow."
+          : `${activePatient().title} ${state.activePatientTab} tab opened.`);
+      }
       saveState();
     }
 
     function renderPatientTabs() {
+      state.activePatientTab = coercePatientTabForDevice(state.activePatientTab);
+      document.body.dataset.deviceMode = isCompactPatientDevice() ? "phone" : "desktop";
       document.body.dataset.patientTab = state.activePatientTab;
       for (const button of $$("button[data-patient-tab]")) {
+        const available = patientTabAvailableOnDevice(button.dataset.patientTab);
+        button.hidden = !available;
+        button.setAttribute("aria-hidden", String(!available));
         const active = button.dataset.patientTab === state.activePatientTab;
         button.setAttribute("aria-selected", String(active));
-        button.setAttribute("tabindex", active ? "0" : "-1");
+        button.setAttribute("tabindex", active && available ? "0" : "-1");
       }
       for (const panel of $$("[data-patient-panel]")) {
-        panel.hidden = panel.dataset.patientPanel !== state.activePatientTab;
+        const available = patientTabAvailableOnDevice(panel.dataset.patientPanel);
+        panel.hidden = !available || panel.dataset.patientPanel !== state.activePatientTab;
       }
     }
 
@@ -24209,6 +24276,11 @@
         window.addEventListener("resize", () => {
           window.clearTimeout(decisionTreeResizeTimer);
           decisionTreeResizeTimer = window.setTimeout(() => {
+            const previousPatientTab = state.activePatientTab;
+            renderPatientTabs();
+            if (state.currentView === "workspace" && previousPatientTab !== state.activePatientTab) {
+              renderPatientWorkspace();
+            }
             renderWorkupDecisionSurfaces();
             if (!elements.studioView?.hidden && workupStudioState.sectionKey === "clinical_pathway_tree_v1") {
               renderWorkupStudioEditor();

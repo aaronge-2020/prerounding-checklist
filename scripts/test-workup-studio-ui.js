@@ -553,12 +553,13 @@ try {
   assert.equal(await page.locator("#workupStudioSaveBackendConfigButton").count(), 0, "Workup Studio should not expose a backend config save button.");
   assert.equal(await page.locator("#workupStudioPublishImportButton").isDisabled(), true, "Cached reviewer state must not unlock publish before token revalidation.");
   assert.match(await page.textContent("#workupStudioPublishImportButton"), /Reviewer publish locked/, "Cached reviewer state should render as locked until Supabase revalidates permissions.");
-  await page.waitForFunction(() => /no Workup Studio assignment/i.test(document.querySelector("#workupStudioBackendStatus")?.textContent || ""));
+  await waitForCondition(() => supabaseRequests.profileCount >= 1 && supabaseRequests.assignmentCount >= 1, "stale cached reviewer permission recheck");
+  const staleReviewerStatus = await page.textContent("#workupStudioBackendStatus");
+  assert.doesNotMatch(staleReviewerStatus, /Reviewer signed in|Can publish reviewed changes/i, `Stale cached reviewer state must not render as authorized: ${staleReviewerStatus}`);
   assert.equal(supabaseRequests.userCount, 1, "Saved sessions should be revalidated against Supabase Auth before unlocking permissions.");
   assert.equal(supabaseRequests.profileCount, 1, "Saved sessions should recheck author profile.");
   assert.equal(supabaseRequests.assignmentCount, 1, "Saved sessions should recheck delegated assignments.");
   assert.equal(supabaseRequests.getChangeSetsCount, 0, "Stale cached reviewer state must not load backend drafts.");
-  assert.equal(supabaseRequests.catalogWorkupCount, 0, "Stale cached reviewer state must not load canonical Supabase workups.");
 
   await page.fill("#workupStudioSearchInput", "dka");
   await page.waitForFunction(() => document.querySelectorAll("#workupStudioList .studio-workup-row").length > 0);
@@ -598,13 +599,16 @@ try {
   await page.evaluate(() => document.querySelector("#workupStudioPublishImportButton")?.click());
   await page.waitForTimeout(100);
   assert.equal(authoringTableRequestCount(supabaseRequests), authoringRequestsBeforeLocalDraft, "Local draft/import controls must not touch Supabase authoring tables before auth and permission.");
-  assert.equal(supabaseRequests.catalogWorkupCount, 0, "Unauthenticated Workup Studio should not load canonical Supabase workups.");
+  assert.equal(supabaseRequests.getChangeSetsCount, 0, "Unauthenticated Workup Studio should not load protected backend drafts.");
+  const publicCatalogCountBeforeCleanLoad = supabaseRequests.catalogWorkupCount;
   await page.evaluate(() => localStorage.removeItem("prerounding-workup-authoring-v1"));
   await page.goto(`${baseUrl}/index.html?workupStudioUiClean=${Date.now()}`);
+  await waitForCondition(() => supabaseRequests.catalogWorkupCount >= publicCatalogCountBeforeCleanLoad + 1, "public canonical Supabase catalog");
   await page.click("#demoCaseButton");
   await page.waitForFunction(() => document.body.dataset.view !== "vaultAccess");
   await page.click('button[data-view-target="studio"]');
   await page.waitForSelector("#studioView:not([hidden])");
+  assert.match(await page.textContent("#workupStudioList"), /Supabase Hyperglycemia Workup/, "Unauthenticated patient devices should hydrate the public Supabase canonical workup catalog.");
   await page.fill("#workupStudioSearchInput", "dka");
   await page.waitForFunction(() => document.querySelectorAll("#workupStudioList .studio-workup-row").length > 0);
   await page.locator("#workupStudioList .studio-workup-row", { hasText: "Hyperglycemia" }).first().click();
@@ -628,16 +632,19 @@ try {
   await page.click("#demoCaseButton");
   await page.waitForFunction(() => document.body.dataset.view !== "vaultAccess");
   await page.click('button[data-view-target="studio"]');
-  await page.waitForFunction(() => /no Workup Studio assignment/i.test(document.querySelector("#workupStudioBackendStatus")?.textContent || ""));
+  const unassignedStatus = await page.textContent("#workupStudioBackendStatus");
+  assert.doesNotMatch(unassignedStatus, /Reviewer signed in|Can publish reviewed changes/i, `Unassigned account must not render as authorized: ${unassignedStatus}`);
+  const catalogCountAfterUnassignedDenial = supabaseRequests.catalogWorkupCount;
   assert.equal(supabaseRequests.magicLinkCount, 1, "Unassigned account should request a magic link before permission denial.");
   assert.equal(supabaseRequests.profileCount, 2, "Unassigned account should check profile.");
   assert.equal(supabaseRequests.assignmentCount, 2, "Unassigned account should check assignments.");
   assert.equal(supabaseRequests.getChangeSetsCount, 0, "Unassigned account must not load backend drafts.");
-  assert.equal(supabaseRequests.catalogWorkupCount, 0, "Unassigned account must not load canonical Supabase workups.");
+  assert(catalogCountAfterUnassignedDenial >= publicCatalogCountBeforeCleanLoad + 1, "Unassigned account may use public catalog reads but must not unlock protected authoring APIs.");
   assert.equal(await page.locator("#workupStudioLoadBackendDraftsButton").isDisabled(), true, "Backend draft loading must stay locked for unassigned users.");
   assert.equal(await page.locator("#workupStudioPublishImportButton").isDisabled(), true, "Unassigned account must not be able to publish from the editor.");
   assert.equal(await page.locator("#workupStudioSignOutButton").isHidden(), true, "Sign out should stay hidden when a magic-link account has no Workup Studio permission.");
 
+  const catalogCountBeforeReviewerAuth = supabaseRequests.catalogWorkupCount;
   await page.fill("#workupStudioMagicLinkEmailInput", "reviewer@example.test");
   await page.click("#workupStudioSignInButton");
   await waitForCondition(() => supabaseRequests.magicLinkCount >= 2, "reviewer magic-link request");
@@ -669,7 +676,7 @@ try {
   await page.waitForFunction(() => document.body.dataset.view !== "vaultAccess");
   await page.click('button[data-view-target="studio"]');
   await page.waitForFunction(() => /Reviewer signed in as reviewer@example\.test/.test(document.querySelector("#workupStudioBackendStatus")?.textContent || ""));
-  await waitForCondition(() => supabaseRequests.catalogWorkupCount >= 1 && supabaseRequests.catalogSectionCount >= 1 && supabaseRequests.catalogSourceCount >= 1, "reviewer canonical Supabase catalog");
+  await waitForCondition(() => supabaseRequests.catalogWorkupCount >= catalogCountBeforeReviewerAuth + 1 && supabaseRequests.catalogSectionCount >= 2 && supabaseRequests.catalogSourceCount >= 2, "reviewer canonical Supabase catalog");
   await page.waitForFunction(() => /1 Supabase workup loaded/.test(document.querySelector("#workupStudioBackendStatus")?.textContent || ""));
   assert.equal(supabaseRequests.magicLinkCount, 2, "Workup Studio should request Supabase magic links for sign-in.");
   assert.equal(supabaseRequests.pkceTokenCount, 1, "Workup Studio should exchange PKCE magic-link codes for a session.");
@@ -679,9 +686,9 @@ try {
   assert.equal(supabaseRequests.tokenRefreshCount, 1, "Rejected fresh access tokens should be recovered through the refresh token before denying Workup Studio access.");
   assert.equal(supabaseRequests.profileCount, 3, "Workup Studio should verify the signed-in user's author profile.");
   assert.equal(supabaseRequests.assignmentCount, 3, "Workup Studio should verify delegated workup assignments.");
-  assert.equal(supabaseRequests.catalogWorkupCount, 1, "Reviewer sign-in should load current canonical Supabase workups.");
-  assert.equal(supabaseRequests.catalogSectionCount, 1, "Reviewer sign-in should load current canonical Supabase sections.");
-  assert.equal(supabaseRequests.catalogSourceCount, 1, "Reviewer sign-in should load current canonical Supabase sources.");
+  assert(supabaseRequests.catalogWorkupCount >= catalogCountBeforeReviewerAuth + 1, "Reviewer sign-in should refresh current canonical Supabase workups.");
+  assert(supabaseRequests.catalogSectionCount >= 2, "Reviewer sign-in should refresh current canonical Supabase sections.");
+  assert(supabaseRequests.catalogSourceCount >= 2, "Reviewer sign-in should refresh current canonical Supabase sources.");
   assert.equal(supabaseRequests.getChangeSetsCount, 1, "Sign-in should load RLS-filtered backend change sets.");
   assert.match(await page.textContent("#workupStudioList"), /Supabase Hyperglycemia Workup/, "Verified reviewers should see the Supabase canonical workup catalog.");
   assert.equal(await page.locator("#workupStudioLoadBackendDraftsButton").isDisabled(), false, "Backend draft loading should only unlock after permission checks.");

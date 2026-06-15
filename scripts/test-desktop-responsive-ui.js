@@ -394,11 +394,30 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
     assert(resizedNavAudit.width > startSidebarWidth && resizedNavAudit.storedWidth >= resizedNavAudit.width - 2 && resizedNavAudit.collapsed === false, `primary navigation width should resize and persist: ${JSON.stringify({ startSidebarWidth, resizedNavAudit })}`);
   }
   await assertRosterState(false, `default collapsed roster ${label}`);
-  const tabLabels = await page.locator(".patient-task-strip [role='tab']").allTextContents();
-  assert(tabLabels.join("|") === "Summary|Today|Context|Workup|Checklist|Findings|Evidence|Phone", `patient tabs should match clinical workflow order, got ${tabLabels.join("|")}`);
+  const tabLabels = await page.locator(".patient-task-strip [role='tab']:visible").allTextContents();
+  const expectedTabLabels = viewport.width < 760
+    ? "Summary|Today|Context|Workup|Checklist|Findings|Evidence|Phone"
+    : "Summary|Today|Context|Workup|Checklist|Findings|Evidence";
+  assert(tabLabels.join("|") === expectedTabLabels, `patient tabs should match device workflow order, got ${tabLabels.join("|")}`);
+  const phoneTabAudit = await page.evaluate(() => {
+    const tab = document.querySelector('[data-patient-tab="handoff"]');
+    const rect = tab?.getBoundingClientRect();
+    return {
+      bodyDeviceMode: document.body.dataset.deviceMode,
+      hidden: Boolean(tab?.hidden),
+      ariaHidden: tab?.getAttribute("aria-hidden") || "",
+      visible: Boolean(rect && rect.width > 0 && rect.height > 0 && getComputedStyle(tab).display !== "none")
+    };
+  });
+  if (viewport.width < 760) {
+    assert(phoneTabAudit.visible && phoneTabAudit.bodyDeviceMode === "phone", `phone-sized workspace should expose the phone handoff tab: ${JSON.stringify(phoneTabAudit)}`);
+  } else {
+    assert(phoneTabAudit.hidden && phoneTabAudit.ariaHidden === "true" && !phoneTabAudit.visible && phoneTabAudit.bodyDeviceMode === "desktop", `desktop workspace should hide the phone handoff tab: ${JSON.stringify(phoneTabAudit)}`);
+  }
   const patientTabLayout = await page.evaluate(() => {
     const strip = document.querySelector(".patient-task-strip");
-    const tabs = Array.from(document.querySelectorAll(".patient-task-strip [role='tab']"));
+    const tabs = Array.from(document.querySelectorAll(".patient-task-strip [role='tab']"))
+      .filter((tab) => !tab.hidden && getComputedStyle(tab).display !== "none" && tab.getBoundingClientRect().width > 0);
     const rowTops = new Set(tabs.map((tab) => Math.round(tab.getBoundingClientRect().top)));
     const clipped = tabs
       .filter((tab) => tab.scrollWidth > tab.clientWidth + 2 || tab.scrollHeight > tab.clientHeight + 2)
@@ -595,8 +614,13 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
   await clickPatientTab(page, "checklist");
   await page.waitForFunction(() => document.body.dataset.patientTab === "checklist");
 
-      await clickPatientTab(page, "handoff");
-  await page.click("#workspaceHandoffButton");
+  if (viewport.width < 760) {
+    await clickPatientTab(page, "handoff");
+    await page.waitForSelector("#patientPhonePanel:not([hidden])");
+    await page.click("#workspaceHandoffButton");
+  } else {
+    await page.click("#workspaceChecklistPhoneButton");
+  }
   await page.waitForSelector("#handoffView:not([hidden])");
   await page.waitForFunction(() => document.querySelector("#phonePayload")?.value.length > 100);
   const phoneCode = await page.textContent("#phoneTransferCode");

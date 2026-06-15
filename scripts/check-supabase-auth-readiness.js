@@ -90,6 +90,7 @@ async function checkPublicSupabaseReadiness({ supabaseUrl, publishableKey }) {
     ["review_cases", "workup_id"],
     ["change_sets", "id"]
   ];
+  const publicCatalogTables = new Set(["sources", "workups", "workup_sections"]);
   for (const [table, column] of tableChecks) {
     const result = await fetchSupabaseText(`${supabaseUrl}/rest/v1/${table}?select=${column}&limit=1`, { headers });
     if (/PGRST205|Could not find the table|schema cache/i.test(result.text)) {
@@ -98,15 +99,23 @@ async function checkPublicSupabaseReadiness({ supabaseUrl, publishableKey }) {
     }
     if (result.status === 200) {
       const text = result.text.trim();
-      if (text && text !== "[]") {
-        issues.push(`Anonymous publishable-key request returned rows from public.${table}; check RLS before shipping.`);
+      if (publicCatalogTables.has(table)) {
+        notes.push(text && text !== "[]"
+          ? `Public catalog request returned rows from public.${table}.`
+          : `public.${table} exists and public catalog read returned no rows.`);
+      } else if (text && text !== "[]") {
+        issues.push(`Anonymous publishable-key request returned rows from protected public.${table}; check RLS before shipping.`);
       } else {
-        notes.push(`public.${table} exists and anonymous read returned no rows.`);
+        notes.push(`public.${table} exists and protected anonymous read returned no rows.`);
       }
       continue;
     }
     if (result.status === 401 || result.status === 403) {
-      notes.push(`public.${table} exists and anonymous read is blocked with HTTP ${result.status}.`);
+      if (publicCatalogTables.has(table)) {
+        issues.push(`Public catalog table public.${table} is not readable with the publishable key; fresh devices cannot load reviewed workup updates.`);
+      } else {
+        notes.push(`public.${table} exists and anonymous read is blocked with HTTP ${result.status}.`);
+      }
       continue;
     }
     issues.push(`Unexpected public.${table} probe response: HTTP ${result.status} ${result.text.slice(0, 160)}`);

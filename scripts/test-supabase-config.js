@@ -71,7 +71,8 @@ assert.ok(readinessScript.includes("/auth/v1/settings"), "Readiness check should
 assert.ok(readinessScript.includes("Email magic-link auth"), "Readiness check should require Supabase Email magic-link auth.");
 assert.ok(readinessScript.includes("create_user: false"), "Readiness check should require existing users for magic links.");
 assert.ok(readinessScript.includes("PGRST205"), "Readiness check should detect missing Supabase authoring tables.");
-assert.ok(readinessScript.includes("Anonymous publishable-key request returned rows"), "Readiness check should flag anonymous authoring-data exposure.");
+assert.ok(readinessScript.includes("Public catalog request returned rows"), "Readiness check should allow public reviewed catalog reads.");
+assert.ok(readinessScript.includes("protected public.${table}"), "Readiness check should still flag anonymous protected authoring-data exposure.");
 assert.ok(readinessScript.includes("browserSupabaseDefaultsFromHtml"), "Readiness check should use browser defaults when env credentials are absent.");
 assert.ok(readinessScript.includes("--public-only"), "Readiness check should support credential-free public deployment probes.");
 assert.ok(readinessScript.includes("npm run deploy:supabase-workup-authoring"), "Readiness check should suggest the deploy command.");
@@ -107,6 +108,8 @@ assert.ok(html.includes("workupStudioOpenEvidencePromptOutput"), "Workup Studio 
 assert.ok(html.includes("workup_section_update_v1"), "OpenEvidence prompt should request a section-scoped JSON schema.");
 assert.ok(html.includes("workupStudioPublishImportButton"), "Workup Studio should expose save-and-publish for reviewer users.");
 assert.ok(html.includes("loadWorkupStudioPermissions"), "Workup Studio should verify author/reviewer permissions after authentication.");
+assert.ok(html.includes("workupCatalogSupabaseRequest"), "Patient-facing devices should load the reviewed Supabase catalog with a read-only request path.");
+assert.ok(html.includes("publicWorkupCatalogConfigured"), "The app should support public reviewed-catalog hydration before Workup Studio sign-in.");
 assert.ok(html.includes("https://*.supabase.co"), "CSP should allow Supabase REST/Auth calls.");
 assert.ok(!html.includes("SUPABASE_SERVICE_ROLE_KEY"), "Browser app must not reference the service role key.");
 assert.ok(html.includes("`${window.location.origin}${window.location.pathname || \"/\"}`"), "Magic-link redirect should use a stable callback URL instead of preserving arbitrary query state.");
@@ -135,6 +138,9 @@ for (const required of [
   "assigned authors can draft their own change sets",
   "can_edit_workup_content",
   "reviewers can maintain workup assignments",
+  "public can read reviewed workups",
+  "public can read reviewed workup sections",
+  "public can read reviewed sources",
   "reviewers can approve exportable change sets",
   "assigned authors can read workups",
   "assigned authors can read pathway nodes",
