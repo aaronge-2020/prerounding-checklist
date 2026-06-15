@@ -150,6 +150,36 @@
       margin-bottom: 10px;
     }
 
+    .phone-entry-title,
+    .phone-entry-copy,
+    .phone-entry-steps {
+      display: none;
+    }
+
+    .phone-entry-steps {
+      gap: 8px;
+    }
+
+    .phone-entry-step {
+      display: grid;
+      gap: 3px;
+      border: 1px solid #d8e8e5;
+      border-radius: 7px;
+      background: #ffffff;
+      padding: 9px 10px;
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .phone-entry-step strong {
+      color: #12373b;
+      font-size: 12px;
+    }
+
+    .phone-entry-step span {
+      color: var(--muted);
+    }
+
     .vault-access-panel {
       padding: 20px;
       display: grid;
@@ -175,10 +205,17 @@
       gap: 12px;
     }
 
-    @media (max-width: 720px) {
+    @media (max-width: 760px) {
       .vault-access {
-        padding: 16px 12px;
+        min-height: 100dvh;
+        padding: 0;
         place-items: start stretch;
+        background: #ffffff;
+      }
+
+      .vault-access-shell {
+        width: 100%;
+        min-height: 100dvh;
       }
 
       .vault-access-shell,
@@ -188,7 +225,75 @@
 
       .vault-access-intro,
       .vault-access-panel {
-        padding: 16px;
+        border: 0;
+        border-radius: 0;
+        background: #ffffff;
+        padding: 16px 14px;
+      }
+
+      .vault-access-intro {
+        gap: 10px;
+        padding-bottom: 8px;
+      }
+
+      .vault-access-intro .brand {
+        margin-bottom: 12px !important;
+      }
+
+      .vault-access-intro .notice,
+      .desktop-entry-title,
+      .desktop-entry-copy {
+        display: none;
+      }
+
+      .phone-entry-title {
+        display: inline;
+      }
+
+      .phone-entry-copy {
+        display: block;
+      }
+
+      .vault-access-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding-top: 4px;
+        padding-bottom: calc(18px + env(safe-area-inset-bottom));
+      }
+
+      #phoneBundleEntrySection {
+        order: -3;
+        border-color: #cfe3df;
+        background: #f7fbfa;
+      }
+
+      #singlePatientEntrySection {
+        order: -2;
+      }
+
+      #openVaultSection,
+      #createVaultSection {
+        order: 2;
+      }
+
+      .phone-entry-steps {
+        display: grid;
+      }
+
+      #phoneBundleEntryInput {
+        min-height: 178px;
+        font-size: 13px;
+        line-height: 1.35;
+      }
+
+      #phoneBundleEntrySection .button-row {
+        display: grid;
+      }
+
+      #phoneBundleEntrySection .btn {
+        width: 100%;
+        min-height: 46px;
       }
     }
 
@@ -204,6 +309,7 @@
     }
 
     .form-field input,
+    .form-field select,
     .form-field textarea {
       width: 100%;
       border: 1px solid var(--line-strong);
@@ -213,9 +319,17 @@
       min-height: 40px;
     }
 
+    .form-field select {
+      appearance: auto;
+    }
+
     .form-field textarea {
       min-height: 84px;
       resize: vertical;
+    }
+
+    .service-focus-input {
+      min-height: 66px;
     }
 
     .vault-status-line {
@@ -722,6 +836,19 @@
       display: block;
       margin-bottom: 4px;
       color: var(--teal-dark);
+    }
+
+    .vault-mini .btn {
+      width: 100%;
+      margin-top: 8px;
+      justify-content: center;
+    }
+
+    .service-mini-line {
+      margin-top: 6px;
+      color: #294b50;
+      font-size: 12px;
+      line-height: 1.25;
     }
 
     .workspace {
@@ -5495,6 +5622,10 @@
       color: #486168;
       text-align: center;
       font-size: 13px;
+    }
+
+    .bedside-phone-note-panel {
+      display: none;
     }
 
     #evidenceReviewItems {
@@ -10489,7 +10620,7 @@
         display: block;
         height: auto;
         min-height: 100dvh;
-        padding-bottom: 92px;
+        padding-bottom: 148px;
       }
 
       body[data-view="bedside"] .bedside-mobile-top {
@@ -10663,6 +10794,35 @@
         display: none;
       }
 
+      body[data-view="bedside"] .bedside-phone-note-panel {
+        display: grid;
+        gap: 6px;
+        margin: 0;
+        padding: 10px 12px 12px;
+        border: 0;
+        border-top: 1px solid #edf2f1;
+        border-bottom: 1px solid #edf2f1;
+        background: #fbfdfd;
+      }
+
+      body[data-view="bedside"] .bedside-phone-note-panel label {
+        color: #27434b;
+        font-size: 12px;
+        font-weight: 780;
+      }
+
+      body[data-view="bedside"] #bedsidePhoneNoteInput {
+        width: 100%;
+        min-height: 88px;
+        border: 1px solid #d5e2df;
+        border-radius: 7px;
+        background: #ffffff;
+        padding: 9px 10px;
+        font-size: 13px;
+        line-height: 1.35;
+        resize: vertical;
+      }
+
       body[data-view="bedside"] .checklist-layout {
         display: flex;
         flex-direction: column;
@@ -10799,9 +10959,9 @@
         right: 0;
         bottom: 0;
         z-index: 12;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 8px;
-        min-height: 74px;
+        min-height: 126px;
         padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
         border: 1px solid #dfe8e6;
         background: #ffffff;
@@ -10813,6 +10973,27 @@
         padding: 7px 8px;
         font-size: 12px;
         line-height: 1.15;
+      }
+
+      body[data-view="bedside"] #copyPhoneReturnPayloadButton {
+        order: 1;
+        grid-column: 1 / -1;
+        border-color: var(--teal);
+        background: var(--teal);
+        color: #ffffff;
+      }
+
+      body[data-view="bedside"] #bottomNextUnansweredChecklistButton {
+        order: 2;
+      }
+
+      body[data-view="bedside"] #clearAllChecklistButton {
+        order: 3;
+      }
+
+      body[data-view="bedside"] #copyFindingsToBedsideNoteButton,
+      body[data-view="bedside"] #reviewFindingsButton {
+        display: none;
       }
 
       body[data-view="bedside"] .bedside-local-note {
@@ -10834,8 +11015,12 @@
             <span class="brand-mark" data-icon="clipboard" aria-hidden="true"></span>
             <span>Pre-Rounding Checklist Builder</span>
           </div>
-          <h1 id="vaultAccessTitle">Open your local patient vault</h1>
-          <p class="muted">Use a password-protected local vault for saved patient work, or start a single-patient workflow that does not persist data on this device.</p>
+          <h1 id="vaultAccessTitle">
+            <span class="desktop-entry-title">Open your local patient vault</span>
+            <span class="phone-entry-title">Bedside checklist</span>
+          </h1>
+          <p class="muted desktop-entry-copy">Use a password-protected local vault for saved patient work, or start a single-patient workflow that does not persist data on this device.</p>
+          <p class="muted phone-entry-copy">Paste the bundle from your computer, answer bedside questions and exam findings, then copy the return bundle back.</p>
         </div>
         <div class="notice">
           <strong>Local-first storage</strong>
@@ -10873,12 +11058,26 @@
               <label for="confirmVaultPasswordInput">Confirm password</label>
               <input id="confirmVaultPasswordInput" type="password" autocomplete="new-password" required>
             </div>
+            <div class="field-grid">
+              <div class="form-field">
+                <label for="newVaultServiceSelect">Default service</label>
+                <select id="newVaultServiceSelect"></select>
+              </div>
+              <div class="form-field">
+                <label for="newVaultCustomServiceInput">Custom service</label>
+                <input id="newVaultCustomServiceInput" autocomplete="off" placeholder="Optional service name">
+              </div>
+            </div>
+            <div class="form-field">
+              <label for="newVaultServiceFocusInput">Prompt focus</label>
+              <textarea class="service-focus-input" id="newVaultServiceFocusInput" maxlength="1200" spellcheck="false" placeholder="Optional: team-specific priorities, consult question style, attending preferences."></textarea>
+            </div>
             <button class="btn btn-secondary" id="createVaultButton" type="submit">Create new vault</button>
             <div class="vault-status-line" id="createVaultStatus" aria-live="polite"></div>
           </form>
         </section>
 
-        <section class="vault-access-section" aria-labelledby="singlePatientTitle">
+        <section class="vault-access-section" id="singlePatientEntrySection" aria-labelledby="singlePatientTitle">
           <h2 id="singlePatientTitle">Single patient, no saved data</h2>
           <p class="muted">Start one temporary workflow. Reloading or locking clears this session.</p>
           <div class="button-row">
@@ -10887,15 +11086,29 @@
           </div>
         </section>
 
-        <section class="vault-access-section" aria-labelledby="phoneBundleEntryTitle">
-          <h2 id="phoneBundleEntryTitle">Load phone bundle</h2>
-          <p class="muted">Paste a bundle copied from the desktop to open a no-save bedside checklist on this device.</p>
+        <section class="vault-access-section" id="phoneBundleEntrySection" aria-labelledby="phoneBundleEntryTitle">
+          <h2 id="phoneBundleEntryTitle">Open bedside checklist</h2>
+          <p class="muted">Paste a bundle copied from the computer to open a no-save bedside checklist on this device.</p>
+          <div class="phone-entry-steps" aria-label="Phone bedside workflow">
+            <div class="phone-entry-step">
+              <strong>1. Paste bundle</strong>
+              <span>Use the handoff from the computer.</span>
+            </div>
+            <div class="phone-entry-step">
+              <strong>2. Answer bedside items</strong>
+              <span>Questions, exam findings, and notes stay local.</span>
+            </div>
+            <div class="phone-entry-step">
+              <strong>3. Copy back</strong>
+              <span>Send the return bundle to the computer.</span>
+            </div>
+          </div>
           <div class="form-field">
-            <label for="phoneBundleEntryInput">Desktop phone bundle</label>
-            <textarea id="phoneBundleEntryInput" maxlength="32000" spellcheck="false" aria-describedby="localTextEntryHelp" placeholder="Paste the copied phone bundle or downloaded JSON payload."></textarea>
+            <label for="phoneBundleEntryInput">Computer checklist bundle</label>
+            <textarea id="phoneBundleEntryInput" maxlength="32000" spellcheck="false" aria-describedby="localTextEntryHelp" placeholder="Paste the copied bundle or downloaded JSON payload."></textarea>
           </div>
           <div class="button-row">
-            <button class="btn btn-primary" id="loadPhoneBundleEntryButton" type="button">Start phone interview</button>
+            <button class="btn btn-primary" id="loadPhoneBundleEntryButton" type="button">Open checklist</button>
           </div>
           <div class="vault-status-line" id="phoneBundleEntryStatus" aria-live="polite"></div>
         </section>
@@ -10955,6 +11168,8 @@
         <strong>Local vault</strong>
         <div>No app-server upload</div>
         <div>Local only by default</div>
+        <div class="service-mini-line" id="servicePreferenceSummaryMini">Service: Primary medicine team</div>
+        <button class="btn btn-secondary btn-compact" id="vaultSettingsButton" type="button">Settings</button>
       </div>
       <button class="layout-sidebar-resize" id="layoutSidebarResizeHandle" type="button" aria-label="Resize primary navigation" aria-orientation="vertical" title="Drag to resize primary navigation" data-layout-resize-key="appSidebar" data-resize-side="left" data-resize-min="144" data-resize-max="360"></button>
     </aside>
@@ -12086,6 +12301,10 @@
             <button type="button" id="clearChecklistSectionButton">Clear section</button>
           </div>
         </div>
+        <div class="bedside-phone-note-panel" id="bedsidePhoneNotePanel">
+          <label for="bedsidePhoneNoteInput">Physical exam / bedside notes</label>
+          <textarea id="bedsidePhoneNoteInput" maxlength="8000" aria-describedby="localTextEntryHelp" placeholder="Optional exam findings or bedside notes to return to the computer."></textarea>
+        </div>
         <div class="checklist-layout">
           <nav class="checklist-section-rail" id="checklistSectionRail" aria-label="Checklist section map"></nav>
           <div id="checklistSections"></div>
@@ -12108,7 +12327,7 @@
             <span>Copy findings</span>
           </button>
           <div class="bedside-local-note">Findings stay local on this device until you copy the final update.</div>
-          <button class="btn btn-secondary" id="copyPhoneReturnPayloadButton" type="button">Copy for laptop</button>
+          <button class="btn btn-secondary" id="copyPhoneReturnPayloadButton" type="button">Copy for computer</button>
           <button class="btn btn-secondary bedside-bottom-next" id="bottomNextUnansweredChecklistButton" type="button">Next unanswered</button>
           <button class="btn btn-primary" id="reviewFindingsButton" type="button">Open prompts</button>
         </div>
@@ -12163,6 +12382,20 @@
           <form class="admission-form" id="patientAdmissionForm">
             <div class="field-grid">
               <div class="form-field">
+                <label for="admitServiceSelect">Service</label>
+                <select id="admitServiceSelect"></select>
+              </div>
+              <div class="form-field">
+                <label for="admitCustomServiceInput">Custom service</label>
+                <input id="admitCustomServiceInput" autocomplete="off" placeholder="Optional service name">
+              </div>
+            </div>
+            <div class="form-field">
+              <label for="admitServiceFocusInput">Prompt focus</label>
+              <textarea class="service-focus-input" id="admitServiceFocusInput" maxlength="1200" spellcheck="false" placeholder="Optional: consult question, problem scope, or attending preferences for prompts."></textarea>
+            </div>
+            <div class="field-grid">
+              <div class="form-field">
                 <label for="admitPatientLabelInput">Patient label</label>
                 <input id="admitPatientLabelInput" autocomplete="off" placeholder="Room 812, initials, or service label" required>
               </div>
@@ -12200,6 +12433,40 @@
               <button class="btn btn-secondary" id="cancelAdmissionButton" type="button">Cancel</button>
             </div>
             <div class="vault-status-line" id="patientAdmissionStatus" aria-live="polite"></div>
+          </form>
+        </section>
+      </div>
+
+      <div class="modal-overlay" id="serviceSettingsOverlay" hidden>
+        <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="serviceSettingsTitle">
+          <div class="modal-head">
+            <div>
+              <h2 id="serviceSettingsTitle">Service settings</h2>
+              <p class="muted">These local preferences shape rounds reports and OpenEvidence prompts for new sessions.</p>
+            </div>
+            <button class="square-button" id="closeServiceSettingsButton" type="button" aria-label="Close service settings">x</button>
+          </div>
+          <form class="admission-form" id="serviceSettingsForm">
+            <div class="field-grid">
+              <div class="form-field">
+                <label for="servicePreferenceSelect">Service</label>
+                <select id="servicePreferenceSelect"></select>
+              </div>
+              <div class="form-field">
+                <label for="serviceCustomNameInput">Custom service</label>
+                <input id="serviceCustomNameInput" autocomplete="off" placeholder="Optional service name">
+              </div>
+            </div>
+            <div class="form-field">
+              <label for="serviceFocusInput">Prompt focus</label>
+              <textarea class="service-focus-input" id="serviceFocusInput" maxlength="1200" spellcheck="false" placeholder="Optional: specific service priorities, consult style, or attending preferences."></textarea>
+            </div>
+            <div class="notice" id="serviceSettingsPreview">Primary team prompts use a holistic problem-list view.</div>
+            <div class="button-row">
+              <button class="btn btn-primary" id="saveServiceSettingsButton" type="submit">Save settings</button>
+              <button class="btn btn-secondary" id="cancelServiceSettingsButton" type="button">Cancel</button>
+            </div>
+            <div class="vault-status-line" id="serviceSettingsStatus" aria-live="polite"></div>
           </form>
         </section>
       </div>
@@ -12340,6 +12607,44 @@
     const WORKUP_STUDIO_DEFAULT_BACKEND = Object.freeze({
       url: "https://hajjuzpnlvpetsleuxwb.supabase.co",
       publishableKey: "sb_publishable_-rugOaCgl3r9abyuX7TICA_JQ0KQLhn"
+    });
+    const SERVICE_PREFERENCES_KEY = "prerounding-service-preferences-v1";
+    const serviceProfiles = Object.freeze([
+      {
+        id: "primary_medicine",
+        label: "Primary medicine team",
+        role: "Primary team",
+        guidance: "Use a holistic inpatient problem-list view: active problems, overnight events, medication safety, discharge barriers, follow-up tasks, and what should be said on rounds."
+      },
+      {
+        id: "endocrine_consult",
+        label: "Endocrine consult service",
+        role: "Consult service",
+        guidance: "Prioritize the endocrine consult question and endocrine-specific decisions, including glycemic, thyroid, adrenal, calcium, pituitary, medication, monitoring, discharge, and follow-up issues. Keep non-endocrine problems brief unless they affect the consult recommendation."
+      },
+      {
+        id: "consult_service",
+        label: "Other consult service",
+        role: "Consult service",
+        guidance: "Prioritize the consult question, service-specific recommendations, data still needed from the primary team, and concise communication back to the primary team. Keep unrelated problems brief."
+      },
+      {
+        id: "icu_primary",
+        label: "ICU primary team",
+        role: "Primary team",
+        guidance: "Use a whole-patient critical-care view: organ support, active instability, lines/tubes/drains, antimicrobial and medication safety, daily goals, liberation/disposition barriers, and contingency planning."
+      },
+      {
+        id: "custom",
+        label: "Custom service",
+        role: "Custom",
+        guidance: "Use the custom service name and prompt focus notes to decide whether the prompt should behave like a primary-team or consult-service workflow."
+      }
+    ]);
+    const DEFAULT_SERVICE_PREFERENCES = Object.freeze({
+      serviceId: "primary_medicine",
+      customServiceName: "",
+      focusNotes: ""
     });
     const WORKUP_STUDIO_MAGIC_LINK_PROVIDER = "magic_link";
     const VAULT_KDF_ITERATIONS = 210000;
@@ -12533,7 +12838,8 @@
       patientWorkupRefinements: {},
       patientObjectiveData: {},
       decisionTreeGraphsByModuleId: {},
-      promptTemplatesByTaskId: {}
+      promptTemplatesByTaskId: {},
+      servicePreferences: { ...DEFAULT_SERVICE_PREFERENCES }
     };
 
     const workupStudioState = {
@@ -12599,12 +12905,16 @@
       newVaultNameInput: $("#newVaultNameInput"),
       newVaultPasswordInput: $("#newVaultPasswordInput"),
       confirmVaultPasswordInput: $("#confirmVaultPasswordInput"),
+      newVaultServiceSelect: $("#newVaultServiceSelect"),
+      newVaultCustomServiceInput: $("#newVaultCustomServiceInput"),
+      newVaultServiceFocusInput: $("#newVaultServiceFocusInput"),
       createVaultStatus: $("#createVaultStatus"),
       singlePatientWorkflowButton: $("#singlePatientWorkflowButton"),
       demoCaseButton: $("#demoCaseButton"),
       phoneBundleEntryInput: $("#phoneBundleEntryInput"),
       loadPhoneBundleEntryButton: $("#loadPhoneBundleEntryButton"),
       phoneBundleEntryStatus: $("#phoneBundleEntryStatus"),
+      vaultSettingsButton: $("#vaultSettingsButton"),
       lockVaultButton: $("#lockVaultButton"),
       statusLive: $("#statusLive"),
       patientSearchInput: $("#patientSearchInput"),
@@ -12637,9 +12947,23 @@
       admitPatientHistoryInput: $("#admitPatientHistoryInput"),
       admitPatientVitalsInput: $("#admitPatientVitalsInput"),
       admitPatientLabsInput: $("#admitPatientLabsInput"),
+      admitServiceSelect: $("#admitServiceSelect"),
+      admitCustomServiceInput: $("#admitCustomServiceInput"),
+      admitServiceFocusInput: $("#admitServiceFocusInput"),
       patientAdmissionStatus: $("#patientAdmissionStatus"),
       closeAdmissionOverlayButton: $("#closeAdmissionOverlayButton"),
       cancelAdmissionButton: $("#cancelAdmissionButton"),
+      servicePreferenceSummaryMini: $("#servicePreferenceSummaryMini"),
+      configurePromptButton: $("#configurePromptButton"),
+      serviceSettingsOverlay: $("#serviceSettingsOverlay"),
+      serviceSettingsForm: $("#serviceSettingsForm"),
+      servicePreferenceSelect: $("#servicePreferenceSelect"),
+      serviceCustomNameInput: $("#serviceCustomNameInput"),
+      serviceFocusInput: $("#serviceFocusInput"),
+      serviceSettingsPreview: $("#serviceSettingsPreview"),
+      serviceSettingsStatus: $("#serviceSettingsStatus"),
+      closeServiceSettingsButton: $("#closeServiceSettingsButton"),
+      cancelServiceSettingsButton: $("#cancelServiceSettingsButton"),
       workspaceAdmissionInput: $("#workspaceAdmissionInput"),
       workspaceLabsMedsInput: $("#workspaceLabsMedsInput"),
       workspaceContinuityInput: $("#workspaceContinuityInput"),
@@ -12883,6 +13207,7 @@
       bedsideMobileCaseTitle: $("#bedsideMobileCaseTitle"),
       bedsideMobileMenuButton: $("#bedsideMobileMenuButton"),
       bedsideNoteInput: $("#bedsideNoteInput"),
+      bedsidePhoneNoteInput: $("#bedsidePhoneNoteInput"),
       finalUpdatePreview: $("#finalUpdatePreview"),
       finalCaseStatus: $("#finalCaseStatus"),
       caseStatusList: $("#caseStatusList"),
@@ -13057,6 +13382,179 @@
       };
     }
 
+    function serviceProfileById(serviceId = "") {
+      return serviceProfiles.find((profile) => profile.id === serviceId) || serviceProfiles[0];
+    }
+
+    function normalizeServicePreferences(preferences = {}) {
+      const raw = preferences && typeof preferences === "object" && !Array.isArray(preferences) ? preferences : {};
+      const serviceId = serviceProfiles.some((profile) => profile.id === raw.serviceId)
+        ? raw.serviceId
+        : DEFAULT_SERVICE_PREFERENCES.serviceId;
+      return {
+        serviceId,
+        customServiceName: String(raw.customServiceName || "").slice(0, 80).trim(),
+        focusNotes: String(raw.focusNotes || "").slice(0, 1200).trim()
+      };
+    }
+
+    function servicePreferenceLabel(preferences = state.servicePreferences) {
+      const normalized = normalizeServicePreferences(preferences);
+      const custom = normalized.customServiceName.trim();
+      if (custom) return custom;
+      return serviceProfileById(normalized.serviceId).label;
+    }
+
+    function servicePreferenceContextText(preferences = state.servicePreferences) {
+      const normalized = normalizeServicePreferences(preferences);
+      const profile = serviceProfileById(normalized.serviceId);
+      return [
+        `Service: ${servicePreferenceLabel(normalized)}`,
+        `Workflow role: ${profile.role}`,
+        `Prompt focus: ${profile.guidance}`,
+        normalized.focusNotes ? `Local preference notes: ${normalized.focusNotes}` : ""
+      ].filter(Boolean).join("\n");
+    }
+
+    function isDefaultServicePreferences(preferences = state.servicePreferences) {
+      const normalized = normalizeServicePreferences(preferences);
+      return normalized.serviceId === DEFAULT_SERVICE_PREFERENCES.serviceId
+        && !normalized.customServiceName
+        && !normalized.focusNotes;
+    }
+
+    function serviceUserContext(extra = "") {
+      return [
+        "<user_context>",
+        servicePreferenceContextText(),
+        extra,
+        "</user_context>"
+      ].filter(Boolean).join("\n");
+    }
+
+    function saveServicePreferences({ announce = false } = {}) {
+      state.servicePreferences = normalizeServicePreferences(state.servicePreferences);
+      try {
+        if (isDefaultServicePreferences()) {
+          localStorage.removeItem(SERVICE_PREFERENCES_KEY);
+        } else {
+          localStorage.setItem(SERVICE_PREFERENCES_KEY, JSON.stringify(state.servicePreferences));
+        }
+      } catch {
+        setStatus("Service settings are active for this session but could not be saved locally.");
+      }
+      renderServicePreferenceSummary();
+      if (activePatient().id) {
+        renderTodayCockpit();
+        if (state.activePatientTab === "evidence") renderOpenEvidence();
+      }
+      if (announce) setStatus(`Service settings saved for ${servicePreferenceLabel()}.`);
+    }
+
+    function loadServicePreferences() {
+      try {
+        state.servicePreferences = normalizeServicePreferences(JSON.parse(localStorage.getItem(SERVICE_PREFERENCES_KEY) || "null") || {});
+      } catch {
+        localStorage.removeItem(SERVICE_PREFERENCES_KEY);
+        state.servicePreferences = { ...DEFAULT_SERVICE_PREFERENCES };
+      }
+      renderServicePreferenceSummary();
+      syncAllServicePreferenceFields();
+    }
+
+    function populateServiceSelect(select, selectedId = state.servicePreferences.serviceId) {
+      if (!select) return;
+      const current = serviceProfiles.some((profile) => profile.id === selectedId) ? selectedId : DEFAULT_SERVICE_PREFERENCES.serviceId;
+      select.innerHTML = "";
+      for (const profile of serviceProfiles) {
+        const option = document.createElement("option");
+        option.value = profile.id;
+        option.textContent = profile.label;
+        option.selected = profile.id === current;
+        select.appendChild(option);
+      }
+    }
+
+    function setServiceFields(prefix, preferences = state.servicePreferences) {
+      const normalized = normalizeServicePreferences(preferences);
+      const fields = serviceFieldsForPrefix(prefix);
+      populateServiceSelect(fields.select, normalized.serviceId);
+      if (fields.custom && document.activeElement !== fields.custom) fields.custom.value = normalized.customServiceName;
+      if (fields.focus && document.activeElement !== fields.focus) fields.focus.value = normalized.focusNotes;
+    }
+
+    function serviceFieldsForPrefix(prefix) {
+      if (prefix === "newVault") {
+        return {
+          select: elements.newVaultServiceSelect,
+          custom: elements.newVaultCustomServiceInput,
+          focus: elements.newVaultServiceFocusInput
+        };
+      }
+      if (prefix === "admit") {
+        return {
+          select: elements.admitServiceSelect,
+          custom: elements.admitCustomServiceInput,
+          focus: elements.admitServiceFocusInput
+        };
+      }
+      return {
+        select: elements.servicePreferenceSelect,
+        custom: elements.serviceCustomNameInput,
+        focus: elements.serviceFocusInput
+      };
+    }
+
+    function readServiceFields(prefix) {
+      const fields = serviceFieldsForPrefix(prefix);
+      return normalizeServicePreferences({
+        serviceId: fields.select?.value || state.servicePreferences.serviceId,
+        customServiceName: fields.custom?.value || "",
+        focusNotes: fields.focus?.value || ""
+      });
+    }
+
+    function syncAllServicePreferenceFields() {
+      for (const prefix of ["newVault", "admit", "settings"]) {
+        setServiceFields(prefix, state.servicePreferences);
+      }
+      updateServiceSettingsPreview();
+    }
+
+    function applyServiceFields(prefix, { announce = false } = {}) {
+      state.servicePreferences = readServiceFields(prefix);
+      saveServicePreferences({ announce });
+      syncAllServicePreferenceFields();
+      return state.servicePreferences;
+    }
+
+    function renderServicePreferenceSummary() {
+      if (elements.servicePreferenceSummaryMini) {
+        elements.servicePreferenceSummaryMini.textContent = `Service: ${servicePreferenceLabel()}`;
+      }
+      updateServiceSettingsPreview();
+    }
+
+    function updateServiceSettingsPreview() {
+      if (!elements.serviceSettingsPreview) return;
+      const draft = elements.serviceSettingsOverlay && !elements.serviceSettingsOverlay.hidden
+        ? readServiceFields("settings")
+        : state.servicePreferences;
+      elements.serviceSettingsPreview.textContent = servicePreferenceContextText(draft);
+    }
+
+    function openServiceSettings() {
+      syncAllServicePreferenceFields();
+      setVaultStatus(elements.serviceSettingsStatus, "");
+      if (elements.serviceSettingsOverlay) elements.serviceSettingsOverlay.hidden = false;
+      requestAnimationFrame(() => elements.servicePreferenceSelect?.focus());
+    }
+
+    function closeServiceSettings() {
+      if (elements.serviceSettingsOverlay) elements.serviceSettingsOverlay.hidden = true;
+      syncAllServicePreferenceFields();
+    }
+
     function resetWorkflowArtifacts() {
       state.scrubbedText = "";
       state.deidCounts = {};
@@ -13082,6 +13580,7 @@
     }
 
     function normalizeState({ lock = false } = {}) {
+      state.servicePreferences = normalizeServicePreferences(state.servicePreferences);
       if (!state.itemNotes || typeof state.itemNotes !== "object" || Array.isArray(state.itemNotes)) {
         state.itemNotes = {};
       }
@@ -13438,6 +13937,7 @@
 
     function showVaultAccess() {
       document.body.dataset.view = "vaultAccess";
+      syncAllServicePreferenceFields();
       const meta = vaultMeta();
       const hasVault = Boolean(meta?.salt && meta?.version === 2);
       if (elements.openVaultSection) elements.openVaultSection.hidden = !hasVault;
@@ -13454,7 +13954,10 @@
       if (elements.newVaultPasswordInput) elements.newVaultPasswordInput.value = "";
       if (elements.confirmVaultPasswordInput) elements.confirmVaultPasswordInput.value = "";
       requestAnimationFrame(() => {
-        (hasVault ? elements.vaultPasswordInput : elements.newVaultNameInput)?.focus();
+        const focusTarget = isCompactPatientDevice()
+          ? elements.phoneBundleEntryInput
+          : (hasVault ? elements.vaultPasswordInput : elements.newVaultNameInput);
+        focusTarget?.focus();
       });
     }
 
@@ -13474,7 +13977,7 @@
       syncWorkupConcernInputs(state.concern);
       elements.clinicalSettingSelect.value = state.setting;
       elements.populationSelect.value = state.population;
-      elements.bedsideNoteInput.value = state.bedsideNote || "";
+      setBedsideNoteValue(state.bedsideNote || "");
       setSourceMode(state.sourceMode, { fill: false });
       renderModifierChips();
       if (patient.id) ensureWorkup();
@@ -13530,6 +14033,7 @@
 
     async function createVaultFromPassword(event) {
       event.preventDefault();
+      applyServiceFields("newVault");
       if (vaultMeta()?.salt) {
         setVaultStatus(elements.createVaultStatus, "A vault already exists on this device. Locking prevents creating a second local vault.", "error");
         showVaultAccess();
@@ -13677,6 +14181,7 @@
     function openAdmissionOverlay() {
       if (!elements.patientAdmissionOverlay || state.sessionMode === "locked") return;
       elements.patientAdmissionForm.reset();
+      syncAllServicePreferenceFields();
       elements.patientAdmissionTitle.textContent = state.sessionMode === "single" ? "Set up single patient" : "Admit patient to local vault";
       elements.patientAdmissionCopy.textContent = state.sessionMode === "single"
         ? "This patient exists only until reload or lock. Nothing from this session is saved."
@@ -13723,6 +14228,7 @@
 
     function admitPatientFromForm(event) {
       event.preventDefault();
+      applyServiceFields("admit");
       const patient = createPatientFromAdmission();
       if (!patient.title.trim()) {
         setVaultStatus(elements.patientAdmissionStatus, "Patient label is required.", "error");
@@ -20561,9 +21067,27 @@
       $("#labsInput").value = draft.labsMeds || patient.context?.Labs || "";
       $("#medsInput").value = patient.context?.Meds || "";
       $("#handoffInput").value = draft.continuity || "";
-	      elements.bedsideNoteInput.value = state.bedsideNote
+	      setBedsideNoteValue(state.bedsideNote
 	        || draft.bedsideNote
-	        || [draft.historyFindings, draft.examFindings].filter(Boolean).join("\n");
+	        || [draft.historyFindings, draft.examFindings].filter(Boolean).join("\n"));
+    }
+
+    function visibleBedsideNoteInput() {
+      if (elements.bedsidePhoneNoteInput?.getClientRects().length) return elements.bedsidePhoneNoteInput;
+      return elements.bedsideNoteInput;
+    }
+
+    function setBedsideNoteValue(value = "") {
+      const nextValue = String(value || "");
+      state.bedsideNote = nextValue;
+      for (const input of [elements.bedsideNoteInput, elements.bedsidePhoneNoteInput]) {
+        if (input && input.value !== nextValue) input.value = nextValue;
+      }
+      return nextValue;
+    }
+
+    function readBedsideNoteValue() {
+      return setBedsideNoteValue(visibleBedsideNoteInput()?.value || "");
     }
 
     function syncWorkupConcernInputs(value = state.concern) {
@@ -20723,7 +21247,7 @@
         selectedWorkupTitle: selectedModule ? moduleLabel(selectedModule) : state.concern || patient.concern || "selected condition",
         selectedWorkupId: selectedModule?.id || "",
         sameConversationReady: false,
-        userContext: "<user_context>\nOutput target: concise oral rounds SOAP presentation for inpatient pre-rounding. Include APP_PASTE_BACK_JSON so this app can record the returned summary locally.\n</user_context>"
+        userContext: serviceUserContext("Output target: concise oral rounds SOAP presentation for inpatient pre-rounding. Include APP_PASTE_BACK_JSON so this app can record the returned summary locally.")
       };
       return buildOpenEvidencePrompt(todayPromptTaskId(mode), context).prompt;
     }
@@ -21177,7 +21701,7 @@
 	      draft.examFindings = elements.workspaceExamFindingInput.value.trim();
 	      state.bedsideNote = [draft.historyFindings, draft.examFindings].filter(Boolean).join("\n");
 	      draft.bedsideNote = state.bedsideNote;
-	      elements.bedsideNoteInput.value = state.bedsideNote;
+	      setBedsideNoteValue(state.bedsideNote);
       renderPatientWorkspace();
       renderFinalUpdate();
       if (announce) setStatus(`${patient.title} bedside findings saved locally and included in final update review.`);
@@ -23433,17 +23957,15 @@
 	        setStatus("Answer a checklist item or add a row note before copying findings to the bedside note.");
 	        return;
 	      }
-	      const currentNote = elements.bedsideNoteInput?.value || state.bedsideNote || "";
+	      const currentNote = readBedsideNoteValue();
 	      const nextNote = appendUniqueNoteBlock(currentNote, draft);
-	      state.bedsideNote = nextNote;
 	      const patientDraftRecord = patientDraft(activePatient());
 	      patientDraftRecord.bedsideNote = nextNote;
-	      if (elements.bedsideNoteInput) {
-	        elements.bedsideNoteInput.value = nextNote;
-	        if (!elements.bedsideNoteInput.closest("[hidden]")) {
-	          elements.bedsideNoteInput.scrollIntoView({ block: "nearest", inline: "nearest" });
-	          elements.bedsideNoteInput.focus({ preventScroll: true });
-	        }
+	      const noteInput = visibleBedsideNoteInput();
+	      setBedsideNoteValue(nextNote);
+	      if (noteInput && !noteInput.closest("[hidden]") && noteInput.getClientRects().length) {
+	        noteInput.scrollIntoView({ block: "nearest", inline: "nearest" });
+	        noteInput.focus({ preventScroll: true });
 	      }
 	      renderChecklistInspector();
 	      renderFinalUpdate();
@@ -24076,6 +24598,7 @@
         deidentified_patient_context: checklistPatientSummaryText(),
         new_bedside_findings: buildFinalUpdateText(),
         objective_data: objectiveDataContextText(),
+        service_preferences: servicePreferenceContextText(),
         selected_workup_title: moduleLabel(selectedModule) || state.concern || "selected disease state/condition",
         decision_tree_json: JSON.stringify(currentDecisionTreeGraph(), null, 2)
       }, taskId);
@@ -24127,6 +24650,7 @@
         deidentified_patient_context: "patient",
         new_bedside_findings: "new findings",
         objective_data: "orders/results",
+        service_preferences: "service",
         selected_workup_title: "workup",
         decision_tree_json: "tree JSON"
       };
@@ -24201,7 +24725,8 @@
         objectiveData: objectiveDataContextText(),
         selectedWorkupTitle: moduleLabel(moduleById(state.selectedWorkupModuleId)) || state.concern || "selected disease state/condition",
         selectedWorkupId: state.selectedWorkupModuleId || "",
-        decisionTreeJson: JSON.stringify(currentDecisionTreeGraph(), null, 2)
+        decisionTreeJson: JSON.stringify(currentDecisionTreeGraph(), null, 2),
+        userContext: serviceUserContext()
       };
       const built = buildOpenEvidencePrompt(task.id, context);
       const variables = openEvidencePromptVariables(task.id);
@@ -24690,7 +25215,7 @@
     }
 
     function renderFinalUpdate() {
-      state.bedsideNote = elements.bedsideNoteInput.value;
+      readBedsideNoteValue();
       elements.finalUpdatePreview.textContent = buildFinalUpdateText();
       renderCaseStatus();
     }
@@ -24932,7 +25457,7 @@
         });
         state.transferCode = bundleCode;
         state.phonePayload = encoded;
-        if (elements.bedsideNoteInput) elements.bedsideNoteInput.value = state.bedsideNote;
+        setBedsideNoteValue(state.bedsideNote);
         renderChecklist();
         renderHandoff();
         renderFinalUpdate();
@@ -24967,7 +25492,7 @@
           return null;
         }
       }
-      state.bedsideNote = elements.bedsideNoteInput.value;
+      state.bedsideNote = readBedsideNoteValue();
       state.transferCode = randomCode();
       const payload = {
         version: "local-phone-handoff-v1",
@@ -24998,7 +25523,7 @@
     }
 
     function createPhoneReturnPayload() {
-      state.bedsideNote = elements.bedsideNoteInput?.value || state.bedsideNote || "";
+      state.bedsideNote = readBedsideNoteValue();
       const code = currentPhoneTransferCode();
       if (!code) {
         const message = "This phone session has no laptop pairing code. Load a fresh phone bundle before copying return findings.";
@@ -25135,8 +25660,7 @@
           state.itemNotes = { ...state.itemNotes, ...filteredItemNotes.values };
         }
         if (payload.bedsideNote) {
-          state.bedsideNote = payload.bedsideNote;
-          elements.bedsideNoteInput.value = payload.bedsideNote;
+          setBedsideNoteValue(payload.bedsideNote);
         }
         state.importedFindings = payload.bedsideNote || payload.findingsText || `Imported bundle ${payload.code || ""}`.trim();
         const ignoredCount = filteredAnswers.ignoredCount + filteredItemNotes.ignoredCount;
@@ -25228,6 +25752,26 @@
         if (event.target === elements.rebuildChecklistConfirmOverlay) closeRebuildChecklistConfirmation();
       });
       elements.confirmRebuildChecklistButton?.addEventListener("click", confirmRebuildChecklist);
+      elements.configurePromptButton?.addEventListener("click", openServiceSettings);
+      elements.vaultSettingsButton?.addEventListener("click", openServiceSettings);
+      elements.closeServiceSettingsButton?.addEventListener("click", closeServiceSettings);
+      elements.cancelServiceSettingsButton?.addEventListener("click", closeServiceSettings);
+      elements.serviceSettingsOverlay?.addEventListener("click", (event) => {
+        if (event.target === elements.serviceSettingsOverlay) closeServiceSettings();
+      });
+      elements.serviceSettingsForm?.addEventListener("submit", (event) => {
+        event.preventDefault();
+        applyServiceFields("settings", { announce: true });
+        setVaultStatus(elements.serviceSettingsStatus, "Settings saved.", "success");
+        closeServiceSettings();
+      });
+      for (const field of [
+        elements.servicePreferenceSelect,
+        elements.serviceCustomNameInput,
+        elements.serviceFocusInput
+      ].filter(Boolean)) {
+        field.addEventListener(field.tagName === "SELECT" ? "change" : "input", updateServiceSettingsPreview);
+      }
       for (const button of $$("[data-view-target]")) {
         button.addEventListener("click", () => {
           showView(button.dataset.viewTarget);
@@ -25457,7 +26001,6 @@
           if (selectIntentId) selectClinicalIntent(selectIntentId);
         });
       }
-      $("#configurePromptButton")?.addEventListener("click", () => setStatus("Prompt defaults configured for general medicine learner workflow."));
       $("#workspaceBuildChecklistButton").addEventListener("click", buildPatientChecklistInWorkspace);
       elements.dischargePatientButton?.addEventListener("click", () => dischargePatient());
       $("#patientBuildChecklistButton").addEventListener("click", buildPatientChecklistInWorkspace);
@@ -25823,13 +26366,15 @@
 	      elements.clearChecklistSectionButton.addEventListener("click", clearActiveChecklistSection);
       elements.clearAllChecklistButton.addEventListener("click", clearAllChecklistAnswers);
       elements.bedsideRebuildChecklistButton.addEventListener("click", () => rebuildChecklistWithConfirmation({ source: "bedside" }));
-	      elements.bedsideNoteInput.addEventListener("input", () => {
-	        state.bedsideNote = elements.bedsideNoteInput.value;
+	      const handleBedsideNoteInput = (event) => {
+	        state.bedsideNote = setBedsideNoteValue(event.currentTarget.value);
 	        const draft = patientDraft(activePatient());
 	        draft.bedsideNote = state.bedsideNote.trim();
 	        renderFinalUpdate();
 	        saveState();
-	      });
+	      };
+	      elements.bedsideNoteInput.addEventListener("input", handleBedsideNoteInput);
+	      elements.bedsidePhoneNoteInput?.addEventListener("input", handleBedsideNoteInput);
       $("#copyFinalUpdateButton").addEventListener("click", () => {
         const text = buildFinalUpdateText();
         openPhiOverlay({
@@ -25968,7 +26513,7 @@
           [answerKey(0, 1)]: "Timing clarified at bedside."
         };
         state.bedsideNote = "Bedside note: symptoms improved; oral intake and repeat labs still need review.";
-        elements.bedsideNoteInput.value = state.bedsideNote;
+        setBedsideNoteValue(state.bedsideNote);
       }
       if (withSummary) {
         state.openEvidenceSummaries.initial_rounds_report = "Reviewed summary saved for final rounds update.";
@@ -26017,6 +26562,7 @@
     }
 
     restoreState();
+    loadServicePreferences();
     loadLayoutPreferences();
     loadWorkupStudioState();
     applyWorkupStudioChromeState();
