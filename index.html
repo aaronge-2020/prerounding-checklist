@@ -12177,13 +12177,14 @@
     };
     let workupStudioSessionHydrationPromise = null;
     let workupStudioSessionRefreshPromise = null;
-    let workupStudioCatalogHydrationPromise = null;
+    let workupStudioCatalogHydrationPromises = new Map();
     let supabaseWorkupCatalog = {
       modulesById: new Map(),
       sourcesById: new Map(),
       loadedAt: "",
       status: "local",
-      error: ""
+      error: "",
+      accessMode: ""
     };
 
     const $ = (selector, root = document) => root.querySelector(selector);
@@ -14381,7 +14382,10 @@
       return module;
     }
 
-    function applySupabaseWorkupCatalog({ workups = [], sections = [], sources = [] } = {}, { persist = workupStudioBackendAuthenticated() } = {}) {
+    function applySupabaseWorkupCatalog({ workups = [], sections = [], sources = [] } = {}, { persist = workupStudioBackendAuthenticated(), accessMode = "public" } = {}) {
+      if (accessMode === "public" && supabaseWorkupCatalog.accessMode === "authenticated" && workupStudioBackendAuthenticated()) {
+        return supabaseWorkupCatalog;
+      }
       const sectionsByWorkup = new Map();
       for (const section of Array.isArray(sections) ? sections : []) {
         const workupId = String(section.workup_id || "").trim();
@@ -14404,7 +14408,8 @@
         sourcesById,
         loadedAt: new Date().toISOString(),
         status: "ready",
-        error: ""
+        error: "",
+        accessMode
       };
       workupStudioState.backend = {
         ...workupStudioState.backend,
@@ -14435,23 +14440,29 @@
         sourcesById: new Map(),
         loadedAt: "",
         status: "local",
-        error: ""
+        error: "",
+        accessMode: ""
       };
-      workupStudioCatalogHydrationPromise = null;
+      workupStudioCatalogHydrationPromises.clear();
       if (render) rerenderAfterSupabaseWorkupCatalogSync();
     }
 
     async function loadSupabaseWorkupCatalog({ announce = false, force = false, publicOnly = false } = {}) {
       if (!workupStudioBackendAuthenticated() && !publicWorkupCatalogConfigured()) return false;
-      if (!force && supabaseWorkupCatalog.status === "ready" && supabaseWorkupCatalog.loadedAt) return true;
-      if (!workupStudioCatalogHydrationPromise) {
-        workupStudioCatalogHydrationPromise = (async () => {
+      const authenticatedCatalog = !publicOnly && workupStudioBackendAuthenticated();
+      const accessMode = authenticatedCatalog ? "authenticated" : "public";
+      const readyForMode = supabaseWorkupCatalog.status === "ready"
+        && supabaseWorkupCatalog.loadedAt
+        && (accessMode === "public" || supabaseWorkupCatalog.accessMode === "authenticated");
+      if (!force && readyForMode) return true;
+      if (!workupStudioCatalogHydrationPromises.has(accessMode)) {
+        const hydrationPromise = (async () => {
           const [workups, sections, sources] = await Promise.all([
             workupCatalogSupabaseRequest("/rest/v1/workups?select=id,title,version,status,complaint_group,population,module_path,source_ids,payload,updated_at&order=title.asc&limit=1000", { publicOnly }),
             workupCatalogSupabaseRequest("/rest/v1/workup_sections?select=workup_id,section_key,sort_order,payload,updated_at&order=workup_id.asc,sort_order.asc&limit=10000", { publicOnly }),
             workupCatalogSupabaseRequest("/rest/v1/sources?select=id,source_id,title,source_type,url,version,date_accessed,citation,payload,updated_at&limit=5000", { publicOnly })
           ]);
-          applySupabaseWorkupCatalog({ workups, sections, sources }, { persist: !publicOnly && workupStudioBackendAuthenticated() });
+          applySupabaseWorkupCatalog({ workups, sections, sources }, { persist: authenticatedCatalog, accessMode });
           rerenderAfterSupabaseWorkupCatalogSync();
           if (announce) setStatus(`Loaded ${supabaseWorkupCatalog.modulesById.size} current Workup Studio workup${supabaseWorkupCatalog.modulesById.size === 1 ? "" : "s"} from Supabase.`);
           return true;
@@ -14460,22 +14471,26 @@
           supabaseWorkupCatalog = {
             ...supabaseWorkupCatalog,
             status: "error",
-            error: message
+            error: message,
+            accessMode: supabaseWorkupCatalog.accessMode || accessMode
           };
           workupStudioState.backend = {
             ...workupStudioState.backend,
             catalogLastError: message
           };
-          if (!publicOnly && workupStudioBackendAuthenticated()) saveWorkupStudioState();
-          renderWorkupStudioBackendStatus(workupStudioBackendAuthenticated()
+          if (authenticatedCatalog) saveWorkupStudioState();
+          renderWorkupStudioBackendStatus(authenticatedCatalog
             ? `Signed in, but Supabase workup refresh failed: ${message}`
             : `Public Supabase workup refresh failed; using bundled local workups. ${message}`);
           throw error;
         }).finally(() => {
-          workupStudioCatalogHydrationPromise = null;
+          if (workupStudioCatalogHydrationPromises.get(accessMode) === hydrationPromise) {
+            workupStudioCatalogHydrationPromises.delete(accessMode);
+          }
         });
+        workupStudioCatalogHydrationPromises.set(accessMode, hydrationPromise);
       }
-      return workupStudioCatalogHydrationPromise;
+      return workupStudioCatalogHydrationPromises.get(accessMode);
     }
 
     function hydratePublicWorkupCatalogOnStartup({ force = false } = {}) {
