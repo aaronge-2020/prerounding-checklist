@@ -6,6 +6,7 @@ import { chromium } from "playwright";
 const root = process.cwd();
 const vaultMetaKey = "prerounding-local-vault-meta-v2";
 const vaultDataKey = "prerounding-local-vault-data-v1";
+const publicCatalogCacheKey = "prerounding-public-workup-catalog-cache-v1";
 
 const mimeTypes = new Map([
   [".html", "text/html; charset=utf-8"],
@@ -90,6 +91,48 @@ function joinedStorage(snapshot) {
   return Object.entries(snapshot).map(([key, value]) => `${key}:${value}`).join("\n");
 }
 
+function publicCatalogCacheFixture() {
+  return JSON.stringify({
+    schema: "public_workup_catalog_cache_v1",
+    cachedAt: "2026-06-15T05:00:00.000Z",
+    workups: [{
+      id: "public_cache_smoke_workup_v1",
+      title: "Public cache smoke workup",
+      version: "cache-smoke-v1",
+      status: "mvp",
+      source_ids: ["PUBLIC_CACHE_SMOKE_SOURCE"],
+      payload: {
+        triggers: ["public cache smoke"],
+        applicability: { age_group: "adult" }
+      },
+      updated_at: "2026-06-15T05:00:00.000Z"
+    }],
+    sections: [],
+    sources: [{
+      id: "PUBLIC_CACHE_SMOKE_SOURCE",
+      source_id: "PUBLIC_CACHE_SMOKE_SOURCE",
+      title: "Public cache smoke source",
+      source_type: "guideline",
+      citation: "Public cache smoke source",
+      payload: { id: "PUBLIC_CACHE_SMOKE_SOURCE", title: "Public cache smoke source" },
+      updated_at: "2026-06-15T05:00:00.000Z"
+    }]
+  });
+}
+
+function unexpectedNoSaveStorageKeys(snapshot) {
+  return Object.keys(snapshot).filter((key) => key !== publicCatalogCacheKey);
+}
+
+function assertNoSavePatientStorage(snapshot, label, forbiddenText = []) {
+  const unexpectedKeys = unexpectedNoSaveStorageKeys(snapshot);
+  assert(unexpectedKeys.length === 0, `${label} should not persist patient/session localStorage keys, got ${unexpectedKeys.join(", ")}`);
+  const storageText = joinedStorage(snapshot);
+  for (const forbidden of forbiddenText.filter(Boolean)) {
+    assert(!storageText.includes(forbidden), `${label} should not persist patient/session text "${forbidden}" in localStorage`);
+  }
+}
+
 async function waitForEncryptedSave(page) {
   await page.waitForFunction(
     ([dataKey]) => {
@@ -146,12 +189,18 @@ async function assertNoLayoutBreakage(page, label) {
   assert(report.offscreenControls.length === 0, `${label}: offscreen or collapsed controls ${JSON.stringify(report.offscreenControls.slice(0, 5), null, 2)}`);
 }
 
-async function openFreshPage(browser, baseUrl, viewport) {
+async function openFreshPage(browser, baseUrl, viewport, { preloadLocalStorage = {} } = {}) {
   const context = await browser.newContext({ viewport });
   await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: baseUrl });
   const page = await context.newPage();
   await page.goto(`${baseUrl}/index.html?fresh=${Date.now()}`);
   await page.evaluate(() => localStorage.clear());
+  const preloadEntries = Object.entries(preloadLocalStorage).filter(([key]) => key);
+  if (preloadEntries.length) {
+    await page.evaluate((entries) => {
+      for (const [key, value] of entries) localStorage.setItem(key, value);
+    }, preloadEntries);
+  }
   await page.goto(`${baseUrl}/index.html`);
   await page.waitForFunction(() => document.body.dataset.view === "vaultAccess");
   return { context, page };
@@ -204,7 +253,7 @@ async function testDemoCaseLoader(browser, baseUrl) {
   await page.click("#demoCaseButton");
   await page.waitForFunction(() => document.body.dataset.view === "workspace" && document.body.dataset.patientTab === "context");
   let snapshot = await storageSnapshot(page);
-  assert(Object.keys(snapshot).length === 0, `demo case should not write localStorage, got ${Object.keys(snapshot).join(", ")}`);
+  assertNoSavePatientStorage(snapshot, "demo case");
   const demoAudit = await page.evaluate(() => ({
     title: document.querySelector("#caseTitle")?.textContent?.trim() || "",
     workspaceTitle: document.querySelector("#patientWorkspaceTitle")?.textContent?.trim() || "",
@@ -311,7 +360,7 @@ async function testSinglePatientBypass(browser, baseUrl) {
   await clickPatientRosterToggle(page);
   await page.waitForFunction(() => document.body.dataset.patientRoster === "expanded" && document.activeElement?.id === "patientSearchInput");
   let snapshot = await storageSnapshot(page);
-  assert(Object.keys(snapshot).length === 0, `single-patient details should not write localStorage, got ${Object.keys(snapshot).join(", ")}`);
+  assertNoSavePatientStorage(snapshot, "single-patient details", ["Focused no-save pneumonia", "oxygen need"]);
   await page.fill("#patientSearchInput", "missing");
   const emptyText = await page.textContent("#patientList");
   assert(/No patients match that search/.test(emptyText), "single-patient search should show an empty state without freezing");
@@ -321,7 +370,7 @@ async function testSinglePatientBypass(browser, baseUrl) {
   await page.click("#lockVaultButton");
   await page.waitForFunction(() => document.body.dataset.view === "vaultAccess");
   snapshot = await storageSnapshot(page);
-  assert(Object.keys(snapshot).length === 0, "locking a single-patient workflow should leave localStorage empty");
+  assertNoSavePatientStorage(snapshot, "locking a single-patient workflow");
   await context.close();
 }
 
@@ -347,7 +396,12 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   assert(/^[a-f0-9]{8}$/.test(desktopBundle.checklistFingerprint || ""), `desktop handoff should include a compact checklist fingerprint, got ${desktopBundle.checklistFingerprint}`);
   assert(desktopBundle.checklistWorkupSignature === undefined, "phone handoff should not send the full canonical workup signature.");
 
-  const { context: phoneContext, page: phonePage } = await openFreshPage(browser, baseUrl, { width: 390, height: 844 });
+  const { context: phoneContext, page: phonePage } = await openFreshPage(
+    browser,
+    baseUrl,
+    { width: 390, height: 844 },
+    { preloadLocalStorage: { [publicCatalogCacheKey]: publicCatalogCacheFixture() } }
+  );
   await assertNoLayoutBreakage(phonePage, "phone bundle vault entry");
   await phonePage.fill("#phoneBundleEntryInput", JSON.stringify({ code: "WRNG-0000", payload: desktopPayload }, null, 2));
   await phonePage.click("#loadPhoneBundleEntryButton");
@@ -358,7 +412,7 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
     storageKeys: Object.keys(localStorage)
   }));
   assert(mismatchPhoneAudit.view === "vaultAccess", `mismatched phone bundle should stay on vault entry: ${JSON.stringify(mismatchPhoneAudit)}`);
-  assert(mismatchPhoneAudit.storageKeys.length === 0, `rejected phone bundle should not persist storage: ${JSON.stringify(mismatchPhoneAudit)}`);
+  assert(mismatchPhoneAudit.storageKeys.every((key) => key === publicCatalogCacheKey), `rejected phone bundle should persist only public catalog cache storage: ${JSON.stringify(mismatchPhoneAudit)}`);
   await phonePage.fill("#phoneBundleEntryInput", JSON.stringify({ code: desktopCode, payload: desktopPayload }, null, 2));
   await phonePage.click("#loadPhoneBundleEntryButton");
   await phonePage.waitForSelector("#bedsideView:not([hidden])");
@@ -373,7 +427,7 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   assert(phoneLoadedAudit.view === "bedside", `phone bundle should open directly to bedside view: ${JSON.stringify(phoneLoadedAudit)}`);
   assert(/Demo - DKA consult/i.test(phoneLoadedAudit.caseTitle), `phone bundle should preserve case title: ${JSON.stringify(phoneLoadedAudit)}`);
   assert(phoneLoadedAudit.rowCount >= 8, `phone bundle should load checklist rows: ${JSON.stringify(phoneLoadedAudit)}`);
-  assert(phoneLoadedAudit.storageKeys.length === 0, `phone bundle session should not persist localStorage: ${JSON.stringify(phoneLoadedAudit)}`);
+  assert(phoneLoadedAudit.storageKeys.every((key) => key === publicCatalogCacheKey), `phone bundle session should persist only public catalog cache storage: ${JSON.stringify(phoneLoadedAudit)}`);
 
   const answerMode = await phonePage.evaluate(() => {
     const chip = document.querySelector(".checklist-row .answer-chip");
@@ -413,7 +467,13 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   staleItemReturn.itemNotes = { ...(staleItemReturn.itemNotes || {}), "999:999": "Injected stale note" };
   const staleItemReturnPayload = encodeLocalBundle(staleItemReturn);
   let phoneSnapshot = await storageSnapshot(phonePage);
-  assert(Object.keys(phoneSnapshot).length === 0, `phone interview should remain no-save after answers, got ${Object.keys(phoneSnapshot).join(", ")}`);
+  assertNoSavePatientStorage(phoneSnapshot, "phone interview after answers", [
+    "Demo - DKA consult",
+    "Synthetic demo case",
+    "Imported bundle",
+    "Injected stale answer",
+    "Injected stale note"
+  ]);
   await phoneContext.close();
 
   await desktopPage.fill("#phoneImportInput", mismatchedReturnPayload);
