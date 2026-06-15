@@ -50,13 +50,13 @@ async function supabaseRequest(table, rows, onConflict = "id") {
 }
 
 async function seedSupabase(snapshot) {
-  await supabaseRequest("sources", snapshot.sources, "id");
+  await supabaseRequest("sources", snapshot.sources, "source_id");
   await supabaseRequest("workups", snapshot.workups, "id");
-  await supabaseRequest("workup_sections", snapshot.workup_sections, "id");
-  await supabaseRequest("workup_items", snapshot.workup_items, "id");
-  await supabaseRequest("pathway_trees", snapshot.pathway_trees, "id");
-  await supabaseRequest("pathway_nodes", snapshot.pathway_nodes, "id");
-  await supabaseRequest("review_cases", snapshot.review_cases, "id");
+  await supabaseRequest("workup_sections", snapshot.workup_sections, "workup_id,section_key");
+  await supabaseRequest("workup_items", snapshot.workup_items, "workup_id,group_key,item_id");
+  await supabaseRequest("pathway_trees", snapshot.pathway_trees, "workup_id,section_key");
+  await supabaseRequest("pathway_nodes", snapshot.pathway_nodes, "tree_id,node_id");
+  await supabaseRequest("review_cases", snapshot.review_cases, "workup_id,case_type,case_id");
 }
 
 async function main() {
