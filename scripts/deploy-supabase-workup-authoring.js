@@ -1,5 +1,5 @@
 import { spawnSync } from "node:child_process";
-import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { appendFileSync, cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -86,17 +86,78 @@ function displayCommand(command, parts, masks = []) {
   return [command, ...maskedParts].join(" ");
 }
 
+function sanitizeText(text = "", masks = []) {
+  let sanitized = String(text || "");
+  const envMasks = [
+    "SUPABASE_ACCESS_TOKEN",
+    "SUPABASE_DB_URL",
+    "SUPABASE_DB_PASSWORD",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID",
+    "SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET",
+    "SUPABASE_AUTH_EXTERNAL_GITHUB_CLIENT_ID",
+    "SUPABASE_AUTH_EXTERNAL_GITHUB_SECRET",
+    "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
+    "SUPABASE_ANON_KEY"
+  ].map((name) => ({ value: envValue(name), mask: masked(envValue(name)) }));
+  for (const entry of [...masks, ...envMasks]) {
+    if (entry.value) sanitized = sanitized.split(entry.value).join(entry.mask || "***");
+  }
+  return sanitized;
+}
+
+function outputTail(text = "", maxLength = 4000) {
+  const compact = String(text || "").trim();
+  if (compact.length <= maxLength) return compact;
+  return `...${compact.slice(compact.length - maxLength)}`;
+}
+
+function escapeGithubCommandValue(value = "") {
+  return String(value).replace(/%/g, "%25").replace(/\r/g, "%0D").replace(/\n/g, "%0A");
+}
+
+function emitGithubFailure(message) {
+  const summary = outputTail(message, 6000);
+  if (process.env.GITHUB_ACTIONS) {
+    console.error(`::error title=Supabase Workup Studio deploy failed::${escapeGithubCommandValue(outputTail(message, 3500))}`);
+  }
+  if (process.env.GITHUB_STEP_SUMMARY) {
+    appendFileSync(process.env.GITHUB_STEP_SUMMARY, [
+      "## Supabase Workup Studio deploy failed",
+      "",
+      "```text",
+      summary,
+      "```",
+      ""
+    ].join("\n"));
+  }
+}
+
 function run(command, parts, { dryRun = false, masks = [], failureHint = "" } = {}) {
   console.log(`$ ${displayCommand(command, parts, masks)}`);
   if (dryRun) return;
   const result = spawnSync(command, parts, {
     cwd: repoRoot,
     env: process.env,
-    stdio: "inherit"
+    encoding: "utf8",
+    maxBuffer: 20 * 1024 * 1024
   });
+  const stdout = sanitizeText(result.stdout, masks);
+  const stderr = sanitizeText(result.stderr, masks);
+  if (stdout) process.stdout.write(stdout);
+  if (stderr) process.stderr.write(stderr);
+  if (result.error) {
+    throw new Error([
+      `${displayCommand(command, parts, masks)} failed to start.`,
+      sanitizeText(result.error.message, masks),
+      failureHint
+    ].filter(Boolean).join("\n"));
+  }
   if (result.status !== 0) {
+    const details = outputTail([stdout, stderr].filter(Boolean).join("\n"));
     throw new Error([
       `${displayCommand(command, parts, masks)} failed with exit code ${result.status}.`,
+      details ? `Command output tail:\n${details}` : "",
       failureHint
     ].filter(Boolean).join("\n"));
   }
@@ -252,7 +313,11 @@ async function main() {
   const masks = [
     { value: dbPassword, mask: masked(dbPassword) },
     { value: dbUrl, mask: masked(dbUrl) },
-    { value: accessToken, mask: masked(accessToken) }
+    { value: accessToken, mask: masked(accessToken) },
+    { value: serviceRoleKey, mask: masked(serviceRoleKey) },
+    { value: publishableKey, mask: masked(publishableKey) },
+    { value: oauthClientId, mask: masked(oauthClientId) },
+    { value: oauthSecret, mask: masked(oauthSecret) }
   ];
   let configWorkdir = "";
 
@@ -292,6 +357,8 @@ async function main() {
 }
 
 main().catch((error) => {
-  console.error(error?.message || error);
+  const message = error?.message || String(error);
+  emitGithubFailure(message);
+  console.error(message);
   process.exitCode = 1;
 });
