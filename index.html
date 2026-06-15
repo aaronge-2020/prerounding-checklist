@@ -12018,6 +12018,8 @@
     const WORKUP_AUTHORING_AUTH_PENDING_KEY = "prerounding-workup-authoring-auth-pending-v1";
     const WORKUP_AUTHORING_PKCE_VERIFIER_KEY = "prerounding-workup-authoring-pkce-verifier-v1";
     const WORKUP_AUTHORING_OAUTH_PENDING_KEY = "prerounding-workup-authoring-oauth-pending-v1";
+    const PUBLIC_WORKUP_CATALOG_CACHE_KEY = "prerounding-public-workup-catalog-cache-v1";
+    const PUBLIC_WORKUP_CATALOG_CACHE_SCHEMA = "public_workup_catalog_cache_v1";
     const WORKUP_STUDIO_PROMPT_TEMPLATE_MAX_CHARS = 500000;
     const WORKUP_STUDIO_DEFAULT_BACKEND = Object.freeze({
       url: "https://hajjuzpnlvpetsleuxwb.supabase.co",
@@ -12257,7 +12259,9 @@
       loadedAt: "",
       status: "local",
       error: "",
-      accessMode: ""
+      accessMode: "",
+      fromCache: false,
+      cacheLoadedAt: ""
     };
 
     const $ = (selector, root = document) => root.querySelector(selector);
@@ -14060,9 +14064,14 @@
       const catalogSummary = workupStudioState.backend.catalogLoadedAt
         ? ` ${workupStudioState.backend.catalogWorkupCount || 0} Supabase workup${workupStudioState.backend.catalogWorkupCount === 1 ? "" : "s"} loaded.`
         : "";
+      const cachedCatalogSummary = workupStudioState.backend.catalogLoadedAt && supabaseWorkupCatalog.fromCache
+        ? `${workupStudioState.backend.catalogWorkupCount || 0} last downloaded public Supabase workup${workupStudioState.backend.catalogWorkupCount === 1 ? "" : "s"} loaded for patient care. ${workupStudioState.backend.catalogLastError ? `Latest public refresh failed: ${workupStudioState.backend.catalogLastError}` : "Refreshing again when online."}`
+        : "";
       const statusMessage = message
         || (connected
           ? `${workupStudioState.backend.canReview ? "Reviewer" : "Author"} signed in as ${workupStudioState.backend.email || "Supabase user"}. ${workupStudioState.backend.canReview ? "Can publish reviewed changes." : `${workupStudioState.backend.permittedWorkupIds.length} assigned workup${workupStudioState.backend.permittedWorkupIds.length === 1 ? "" : "s"}.`}${catalogSummary}`
+          : cachedCatalogSummary
+            ? cachedCatalogSummary
           : workupStudioState.backend.catalogLoadedAt
             ? `${workupStudioState.backend.catalogWorkupCount || 0} public Supabase workup${workupStudioState.backend.catalogWorkupCount === 1 ? "" : "s"} loaded for patient care. Sign in to draft or publish.`
           : workupStudioState.backend.catalogLastError
@@ -14506,7 +14515,45 @@
       return module;
     }
 
-    function applySupabaseWorkupCatalog({ workups = [], sections = [], sources = [] } = {}, { persist = workupStudioBackendAuthenticated(), accessMode = "public" } = {}) {
+    function validPublicCatalogSnapshot(snapshot) {
+      return Boolean(snapshot
+        && snapshot.schema === PUBLIC_WORKUP_CATALOG_CACHE_SCHEMA
+        && Array.isArray(snapshot.workups)
+        && snapshot.workups.length
+        && Array.isArray(snapshot.sections)
+        && Array.isArray(snapshot.sources));
+    }
+
+    function writePublicWorkupCatalogCache({ workups = [], sections = [], sources = [] } = {}) {
+      if (!Array.isArray(workups) || !workups.length) return false;
+      try {
+        localStorage.setItem(PUBLIC_WORKUP_CATALOG_CACHE_KEY, JSON.stringify({
+          schema: PUBLIC_WORKUP_CATALOG_CACHE_SCHEMA,
+          cachedAt: new Date().toISOString(),
+          workups,
+          sections: Array.isArray(sections) ? sections : [],
+          sources: Array.isArray(sources) ? sources : []
+        }));
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    function readPublicWorkupCatalogCache() {
+      try {
+        const snapshot = JSON.parse(localStorage.getItem(PUBLIC_WORKUP_CATALOG_CACHE_KEY) || "null");
+        return validPublicCatalogSnapshot(snapshot) ? snapshot : null;
+      } catch {
+        localStorage.removeItem(PUBLIC_WORKUP_CATALOG_CACHE_KEY);
+        return null;
+      }
+    }
+
+    function applySupabaseWorkupCatalog(
+      { workups = [], sections = [], sources = [] } = {},
+      { persist = workupStudioBackendAuthenticated(), accessMode = "public", fromCache = false, loadedAt = "", clearError = true } = {}
+    ) {
       if (accessMode === "public" && supabaseWorkupCatalog.accessMode === "authenticated" && workupStudioBackendAuthenticated()) {
         return supabaseWorkupCatalog;
       }
@@ -14530,19 +14577,33 @@
       supabaseWorkupCatalog = {
         modulesById,
         sourcesById,
-        loadedAt: new Date().toISOString(),
+        loadedAt: loadedAt || new Date().toISOString(),
         status: "ready",
-        error: "",
-        accessMode
+        error: clearError ? "" : supabaseWorkupCatalog.error,
+        accessMode,
+        fromCache,
+        cacheLoadedAt: fromCache ? loadedAt || "" : ""
       };
       workupStudioState.backend = {
         ...workupStudioState.backend,
         catalogLoadedAt: supabaseWorkupCatalog.loadedAt,
         catalogWorkupCount: modulesById.size,
-        catalogLastError: ""
+        catalogLastError: clearError ? "" : workupStudioState.backend.catalogLastError
       };
       if (persist) saveWorkupStudioState();
       return supabaseWorkupCatalog;
+    }
+
+    function applyCachedPublicWorkupCatalog({ render = true, clearError = false } = {}) {
+      if (supabaseWorkupCatalog.accessMode === "authenticated" && workupStudioBackendAuthenticated()) return false;
+      const cached = readPublicWorkupCatalogCache();
+      if (!cached) return false;
+      applySupabaseWorkupCatalog(
+        { workups: cached.workups, sections: cached.sections, sources: cached.sources },
+        { persist: false, accessMode: "public", fromCache: true, loadedAt: cached.cachedAt || "", clearError }
+      );
+      if (render) rerenderAfterSupabaseWorkupCatalogSync();
+      return true;
     }
 
     function rerenderAfterSupabaseWorkupCatalogSync() {
@@ -14565,7 +14626,9 @@
         loadedAt: "",
         status: "local",
         error: "",
-        accessMode: ""
+        accessMode: "",
+        fromCache: false,
+        cacheLoadedAt: ""
       };
       workupStudioCatalogHydrationPromises.clear();
       if (render) rerenderAfterSupabaseWorkupCatalogSync();
@@ -14640,7 +14703,8 @@
               ? await workupCatalogSupabaseRequest(supabaseSourcesCatalogPath({ sourceIds, publicOnly: true }), { publicOnly })
               : [];
           }
-          applySupabaseWorkupCatalog({ workups, sections, sources }, { persist: authenticatedCatalog, accessMode });
+          if (!authenticatedCatalog) writePublicWorkupCatalogCache({ workups, sections, sources });
+          applySupabaseWorkupCatalog({ workups, sections, sources }, { persist: authenticatedCatalog, accessMode, fromCache: false, clearError: true });
           rerenderAfterSupabaseWorkupCatalogSync();
           if (announce) setStatus(`Loaded ${supabaseWorkupCatalog.modulesById.size} current Workup Studio workup${supabaseWorkupCatalog.modulesById.size === 1 ? "" : "s"} from Supabase.`);
           return true;
@@ -14673,10 +14737,15 @@
 
     function hydratePublicWorkupCatalogOnStartup({ force = false } = {}) {
       if (!publicWorkupCatalogConfigured()) return null;
-      return loadSupabaseWorkupCatalog({ force, publicOnly: true }).catch((error) => {
+      const cachedCatalogApplied = !workupStudioBackendAuthenticated() && applyCachedPublicWorkupCatalog({ render: true, clearError: false });
+      return loadSupabaseWorkupCatalog({ force: force || cachedCatalogApplied, publicOnly: true }).catch((error) => {
         const message = error instanceof Error ? error.message : "Unable to refresh public Supabase workups.";
+        const hasServerFallback = Boolean(supabaseWorkupCatalog.modulesById.size)
+          || applyCachedPublicWorkupCatalog({ render: true, clearError: false });
         if (state.currentView === "studio") {
-          setStatus(`Using bundled local workups. Public Supabase refresh failed: ${message}`);
+          setStatus(hasServerFallback
+            ? `Using last downloaded server workups. Public Supabase refresh failed: ${message}`
+            : `Using bundled local workups. Public Supabase refresh failed: ${message}`);
         }
         return false;
       });

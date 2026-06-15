@@ -132,6 +132,8 @@ const html = read("index.html");
 assert.ok(html.includes("WORKUP_STUDIO_DEFAULT_BACKEND"), "Workup Studio should have public backend defaults.");
 assert.ok(html.includes("Public Supabase catalog returned no reviewed workups"), "Public catalog hydration should fail closed when the server has no reviewed workups.");
 assert.ok(html.includes("using bundled local workups"), "Empty public catalog should visibly fall back to bundled local workups.");
+assert.ok(html.includes("PUBLIC_WORKUP_CATALOG_CACHE_KEY"), "Public server catalog hydration should keep a last-good reviewed catalog cache for offline or failed refreshes.");
+assert.ok(html.includes("last downloaded public Supabase workup"), "Workup Studio should explain when it is using cached public server workups.");
 assert.ok(html.includes("https://hajjuzpnlvpetsleuxwb.supabase.co"), "Workup Studio should use the configured Supabase project.");
 assert.ok(!html.includes("workupStudioSupabaseUrlInput"), "Workup Studio should not let users edit the Supabase project URL.");
 assert.ok(!html.includes("workupStudioSupabaseAnonKeyInput"), "Workup Studio should not render an editable publishable key.");
