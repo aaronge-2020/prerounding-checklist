@@ -980,6 +980,16 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
+    .handoff-phone-loader {
+      grid-column: 1 / -1;
+    }
+
+    #phoneBundleEntryInput,
+    #phoneBundleLoadInput {
+      min-height: 112px;
+      font-family: inherit;
+    }
+
     .intake-grid {
       grid-template-columns: minmax(0, 1.1fr) minmax(310px, 0.9fr);
       align-items: start;
@@ -10532,6 +10542,19 @@
             <button class="btn btn-secondary" id="demoCaseButton" type="button">Load demo case</button>
           </div>
         </section>
+
+        <section class="vault-access-section" aria-labelledby="phoneBundleEntryTitle">
+          <h2 id="phoneBundleEntryTitle">Load phone bundle</h2>
+          <p class="muted">Paste a bundle copied from the desktop to open a no-save bedside checklist on this device.</p>
+          <div class="form-field">
+            <label for="phoneBundleEntryInput">Desktop phone bundle</label>
+            <textarea id="phoneBundleEntryInput" maxlength="32000" spellcheck="false" aria-describedby="localTextEntryHelp" placeholder="Paste the copied phone bundle or downloaded JSON payload."></textarea>
+          </div>
+          <div class="button-row">
+            <button class="btn btn-primary" id="loadPhoneBundleEntryButton" type="button">Start phone interview</button>
+          </div>
+          <div class="vault-status-line" id="phoneBundleEntryStatus" aria-live="polite"></div>
+        </section>
       </div>
     </div>
   </section>
@@ -11586,6 +11609,15 @@
             </div>
             <div class="notice" id="handoffStatus">No phone findings imported yet.</div>
           </div>
+          <div class="panel handoff-phone-loader">
+            <h2>Load bundle on this phone</h2>
+            <p class="muted">If this device is the bedside phone, paste the desktop bundle here. It opens a temporary checklist and does not save patient data.</p>
+            <label for="phoneBundleLoadInput">Desktop phone bundle</label>
+            <textarea id="phoneBundleLoadInput" maxlength="32000" spellcheck="false" aria-describedby="localTextEntryHelp" placeholder="Paste the copied phone bundle or downloaded JSON payload."></textarea>
+            <div class="button-row" style="margin-top: 12px;">
+              <button class="btn btn-primary" id="loadPhoneBundleButton" type="button">Open bedside checklist</button>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -12083,6 +12115,9 @@
       selectedWorkupModuleId: "",
       checklistText: "",
       sections: [],
+      checklistWorkupModuleId: "",
+      checklistWorkupSignature: "",
+      checklistCatalogStale: false,
       answers: {},
       itemNotes: {},
       reviewedChecklistKeys: {},
@@ -12173,6 +12208,9 @@
       createVaultStatus: $("#createVaultStatus"),
       singlePatientWorkflowButton: $("#singlePatientWorkflowButton"),
       demoCaseButton: $("#demoCaseButton"),
+      phoneBundleEntryInput: $("#phoneBundleEntryInput"),
+      loadPhoneBundleEntryButton: $("#loadPhoneBundleEntryButton"),
+      phoneBundleEntryStatus: $("#phoneBundleEntryStatus"),
       lockVaultButton: $("#lockVaultButton"),
       statusLive: $("#statusLive"),
       patientSearchInput: $("#patientSearchInput"),
@@ -12444,6 +12482,8 @@
       phoneTransferCode: $("#phoneTransferCode"),
       phonePayload: $("#phonePayload"),
       phoneImportInput: $("#phoneImportInput"),
+      phoneBundleLoadInput: $("#phoneBundleLoadInput"),
+      loadPhoneBundleButton: $("#loadPhoneBundleButton"),
       handoffStatus: $("#handoffStatus"),
       phiOverlay: $("#phiOverlay"),
       phiOverlayTitle: $("#phiOverlayTitle"),
@@ -12610,6 +12650,9 @@
       state.selectedWorkupRow = "history";
       state.checklistText = "";
       state.sections = [];
+      state.checklistWorkupModuleId = "";
+      state.checklistWorkupSignature = "";
+      state.checklistCatalogStale = false;
       state.answers = {};
       state.itemNotes = {};
 	      state.reviewedChecklistKeys = {};
@@ -12630,6 +12673,9 @@
       if (!state.answers || typeof state.answers !== "object" || Array.isArray(state.answers)) {
         state.answers = {};
       }
+      state.checklistWorkupModuleId = String(state.checklistWorkupModuleId || "");
+      state.checklistWorkupSignature = String(state.checklistWorkupSignature || "");
+      state.checklistCatalogStale = Boolean(state.checklistCatalogStale);
 	      if (!state.reviewedChecklistKeys || typeof state.reviewedChecklistKeys !== "object" || Array.isArray(state.reviewedChecklistKeys)) {
 	        state.reviewedChecklistKeys = {};
 	      }
@@ -12741,6 +12787,9 @@
         "selectedWorkupModuleId",
         "checklistText",
         "sections",
+        "checklistWorkupModuleId",
+        "checklistWorkupSignature",
+        "checklistCatalogStale",
         "answers",
         "itemNotes",
         "reviewedChecklistKeys",
@@ -12786,8 +12835,8 @@
     }
 
     function vaultPayload() {
-	      const { vaultName, patients, lastPatientSeq, scrubbedText, deidCounts, workup, workupRows, selectedWorkupRow, selectedWorkupModuleId, checklistText, sections, answers, itemNotes, reviewedChecklistKeys, bedsideNote, selectedTaskId, openEvidenceSummaries, lastChecklistRefinementCount, lastChecklistRefinementAdditionCount, lastChecklistRefinementRemovalCount, transferCode, phonePayload, importedFindings, activePatientId, patientSearch, activePatientTab, todayModeByPatientId, patientDrafts, patientContinuityCases, patientWorkupSelections, workupRefinementsByModuleId, patientWorkupRefinements, patientObjectiveData, decisionTreeGraphsByModuleId, promptTemplatesByTaskId, currentView, sourceMode, concern, modifiers, clinicalModifierDetails, setting, population } = state;
-	      return { vaultName, patients, lastPatientSeq, scrubbedText, deidCounts, workup, workupRows, selectedWorkupRow, selectedWorkupModuleId, checklistText, sections, answers, itemNotes, reviewedChecklistKeys, bedsideNote, selectedTaskId, openEvidenceSummaries, lastChecklistRefinementCount, lastChecklistRefinementAdditionCount, lastChecklistRefinementRemovalCount, transferCode, phonePayload, importedFindings, activePatientId, patientSearch, activePatientTab, todayModeByPatientId, patientDrafts, patientContinuityCases, patientWorkupSelections, workupRefinementsByModuleId, patientWorkupRefinements, patientObjectiveData, decisionTreeGraphsByModuleId, promptTemplatesByTaskId, currentView, sourceMode, concern, modifiers, clinicalModifierDetails, setting, population };
+	      const { vaultName, patients, lastPatientSeq, scrubbedText, deidCounts, workup, workupRows, selectedWorkupRow, selectedWorkupModuleId, checklistText, sections, checklistWorkupModuleId, checklistWorkupSignature, checklistCatalogStale, answers, itemNotes, reviewedChecklistKeys, bedsideNote, selectedTaskId, openEvidenceSummaries, lastChecklistRefinementCount, lastChecklistRefinementAdditionCount, lastChecklistRefinementRemovalCount, transferCode, phonePayload, importedFindings, activePatientId, patientSearch, activePatientTab, todayModeByPatientId, patientDrafts, patientContinuityCases, patientWorkupSelections, workupRefinementsByModuleId, patientWorkupRefinements, patientObjectiveData, decisionTreeGraphsByModuleId, promptTemplatesByTaskId, currentView, sourceMode, concern, modifiers, clinicalModifierDetails, setting, population } = state;
+	      return { vaultName, patients, lastPatientSeq, scrubbedText, deidCounts, workup, workupRows, selectedWorkupRow, selectedWorkupModuleId, checklistText, sections, checklistWorkupModuleId, checklistWorkupSignature, checklistCatalogStale, answers, itemNotes, reviewedChecklistKeys, bedsideNote, selectedTaskId, openEvidenceSummaries, lastChecklistRefinementCount, lastChecklistRefinementAdditionCount, lastChecklistRefinementRemovalCount, transferCode, phonePayload, importedFindings, activePatientId, patientSearch, activePatientTab, todayModeByPatientId, patientDrafts, patientContinuityCases, patientWorkupSelections, workupRefinementsByModuleId, patientWorkupRefinements, patientObjectiveData, decisionTreeGraphsByModuleId, promptTemplatesByTaskId, currentView, sourceMode, concern, modifiers, clinicalModifierDetails, setting, population };
     }
 
     function saveState() {
@@ -13570,6 +13619,55 @@
       return module?.label || module?.title || module?.name || titleFromId(module?.id) || "Validated workup";
     }
 
+    function checklistModuleSignature(module = moduleById(state.selectedWorkupModuleId)) {
+      if (!module?.id) return "";
+      return JSON.stringify({
+        id: module.id,
+        version: module.version || "",
+        updatedAt: module.supabase_updated_at || "",
+        sources: module.source_ids || [],
+        module
+      });
+    }
+
+    function checklistHasLocalBedsideWork() {
+      return answeredChecklistCount() > 0
+        || Object.keys(state.answers || {}).length > 0
+        || Object.keys(state.itemNotes || {}).length > 0
+        || Object.keys(state.reviewedChecklistKeys || {}).length > 0
+        || Boolean(state.bedsideNote || state.importedFindings);
+    }
+
+    function isChecklistStaleForCurrentWorkup() {
+      if (!state.sections.length || !state.checklistWorkupModuleId) return false;
+      const selected = moduleById(state.selectedWorkupModuleId);
+      if (!selected || selected.id !== state.checklistWorkupModuleId) return false;
+      return state.checklistCatalogStale || state.checklistWorkupSignature !== checklistModuleSignature(selected);
+    }
+
+    function reconcileChecklistWithCurrentCatalog() {
+      if (!state.sections.length || !state.checklistWorkupModuleId) return false;
+      const selected = moduleById(state.selectedWorkupModuleId);
+      if (!selected || selected.id !== state.checklistWorkupModuleId) return false;
+      const nextSignature = checklistModuleSignature(selected);
+      if (!nextSignature || nextSignature === state.checklistWorkupSignature) {
+        state.checklistCatalogStale = false;
+        return false;
+      }
+      if (!checklistHasLocalBedsideWork()) {
+        buildChecklistFromWorkup({ navigate: false, announce: false });
+        setStatus(`Checklist refreshed from the current server workup for ${moduleLabel(selected)}.`);
+        return true;
+      }
+      state.checklistCatalogStale = true;
+      state.transferCode = "";
+      state.phonePayload = "";
+      renderHandoff();
+      setStatus("A newer server workup is available. Rebuild the checklist before sending it to a phone.");
+      saveState();
+      return true;
+    }
+
     function modulePopulationLabel(module) {
       const ageGroup = module?.population?.age_group || module?.applicability?.age_group || "";
       return String(ageGroup || "").trim() || "general";
@@ -14112,6 +14210,7 @@
         if (prefer) headers.prefer = prefer;
         return fetch(`${normalizeSupabaseUrl(workupStudioState.backend.url)}${path}`, {
           method,
+          cache: method === "GET" ? "no-store" : "default",
           headers,
           body: body === null ? null : JSON.stringify(body)
         });
@@ -14129,8 +14228,8 @@
       return text ? JSON.parse(text) : null;
     }
 
-    async function workupCatalogSupabaseRequest(path) {
-      if (workupStudioBackendAuthenticated()) {
+    async function workupCatalogSupabaseRequest(path, { publicOnly = false } = {}) {
+      if (!publicOnly && workupStudioBackendAuthenticated()) {
         return workupStudioSupabaseRequest(path, { requirePermission: false });
       }
       const url = normalizeSupabaseUrl(WORKUP_STUDIO_DEFAULT_BACKEND.url);
@@ -14138,6 +14237,7 @@
       if (!url || !publishableKey) throw new Error("Supabase catalog backend is not configured.");
       const response = await fetch(`${url}${path}`, {
         method: "GET",
+        cache: "no-store",
         headers: {
           apikey: publishableKey,
           authorization: `Bearer ${publishableKey}`,
@@ -14319,6 +14419,7 @@
     function rerenderAfterSupabaseWorkupCatalogSync() {
       if (state.sessionMode !== "locked") {
         if (state.selectedWorkupModuleId) ensureWorkup();
+        reconcileChecklistWithCurrentCatalog();
         renderPatientWorkspace();
         renderPatientRail();
         renderOpenEvidence();
@@ -14340,17 +14441,17 @@
       if (render) rerenderAfterSupabaseWorkupCatalogSync();
     }
 
-    async function loadSupabaseWorkupCatalog({ announce = false, force = false } = {}) {
+    async function loadSupabaseWorkupCatalog({ announce = false, force = false, publicOnly = false } = {}) {
       if (!workupStudioBackendAuthenticated() && !publicWorkupCatalogConfigured()) return false;
       if (!force && supabaseWorkupCatalog.status === "ready" && supabaseWorkupCatalog.loadedAt) return true;
       if (!workupStudioCatalogHydrationPromise) {
         workupStudioCatalogHydrationPromise = (async () => {
           const [workups, sections, sources] = await Promise.all([
-            workupCatalogSupabaseRequest("/rest/v1/workups?select=id,title,version,status,complaint_group,population,module_path,source_ids,payload,updated_at&order=title.asc&limit=1000"),
-            workupCatalogSupabaseRequest("/rest/v1/workup_sections?select=workup_id,section_key,sort_order,payload,updated_at&order=workup_id.asc,sort_order.asc&limit=10000"),
-            workupCatalogSupabaseRequest("/rest/v1/sources?select=id,source_id,title,source_type,url,version,date_accessed,citation,payload,updated_at&limit=5000")
+            workupCatalogSupabaseRequest("/rest/v1/workups?select=id,title,version,status,complaint_group,population,module_path,source_ids,payload,updated_at&order=title.asc&limit=1000", { publicOnly }),
+            workupCatalogSupabaseRequest("/rest/v1/workup_sections?select=workup_id,section_key,sort_order,payload,updated_at&order=workup_id.asc,sort_order.asc&limit=10000", { publicOnly }),
+            workupCatalogSupabaseRequest("/rest/v1/sources?select=id,source_id,title,source_type,url,version,date_accessed,citation,payload,updated_at&limit=5000", { publicOnly })
           ]);
-          applySupabaseWorkupCatalog({ workups, sections, sources });
+          applySupabaseWorkupCatalog({ workups, sections, sources }, { persist: !publicOnly && workupStudioBackendAuthenticated() });
           rerenderAfterSupabaseWorkupCatalogSync();
           if (announce) setStatus(`Loaded ${supabaseWorkupCatalog.modulesById.size} current Workup Studio workup${supabaseWorkupCatalog.modulesById.size === 1 ? "" : "s"} from Supabase.`);
           return true;
@@ -14365,7 +14466,7 @@
             ...workupStudioState.backend,
             catalogLastError: message
           };
-          if (workupStudioBackendAuthenticated()) saveWorkupStudioState();
+          if (!publicOnly && workupStudioBackendAuthenticated()) saveWorkupStudioState();
           renderWorkupStudioBackendStatus(workupStudioBackendAuthenticated()
             ? `Signed in, but Supabase workup refresh failed: ${message}`
             : `Public Supabase workup refresh failed; using bundled local workups. ${message}`);
@@ -14375,6 +14476,15 @@
         });
       }
       return workupStudioCatalogHydrationPromise;
+    }
+
+    function hydratePublicWorkupCatalogOnStartup({ force = false } = {}) {
+      if (!publicWorkupCatalogConfigured()) return null;
+      return loadSupabaseWorkupCatalog({ force, publicOnly: true }).catch((error) => {
+        const message = error instanceof Error ? error.message : "Unable to refresh public Supabase workups.";
+        setStatus(`Using bundled local workups. Public Supabase refresh failed: ${message}`);
+        return false;
+      });
     }
 
     async function finishWorkupStudioOAuthSession(session, provider = WORKUP_STUDIO_MAGIC_LINK_PROVIDER) {
@@ -14570,10 +14680,7 @@
     function ensureWorkupStudioBackendSession() {
       if (!workupStudioBackendAuthenticated()) {
         if (!supabaseWorkupCatalog.loadedAt && publicWorkupCatalogConfigured()) {
-          return loadSupabaseWorkupCatalog({ force: true }).catch((error) => {
-            renderWorkupStudioBackendStatus(error instanceof Error ? `Public Supabase workup refresh failed; using bundled local workups. ${error.message}` : "Public Supabase workup refresh failed; using bundled local workups.");
-            return false;
-          });
+          return hydratePublicWorkupCatalogOnStartup({ force: true });
         }
         return null;
       }
@@ -16882,6 +16989,9 @@
     function clearChecklistArtifacts() {
       state.checklistText = "";
       state.sections = [];
+      state.checklistWorkupModuleId = "";
+      state.checklistWorkupSignature = "";
+      state.checklistCatalogStale = false;
       state.answers = {};
       state.itemNotes = {};
       state.reviewedChecklistKeys = {};
@@ -19857,14 +19967,15 @@
       elements.patientWorkspaceTitle.textContent = patient.title;
       elements.patientWorkspaceOneLine.textContent = patient.oneLine;
       const checklistBuilt = state.sections.length > 0;
+      const checklistStale = isChecklistStaleForCurrentWorkup();
       const selectedWorkupReady = Boolean(moduleById(state.selectedWorkupModuleId));
       const selectedWorkup = moduleById(state.selectedWorkupModuleId);
       elements.patientOverviewText.textContent = hasPatient
         ? [
           state.concern || patient.concern || "No concern entered",
           selectedWorkupReady ? `Workup: ${moduleLabel(selectedWorkup)}` : "No workup selected",
-          checklistBuilt ? `${checklistTotalCount()} checklist items ready` : "Checklist not built"
-        ].join(" · ")
+          checklistStale ? "Checklist needs server refresh" : checklistBuilt ? `${checklistTotalCount()} checklist items ready` : "Checklist not built"
+        ].join(" - ")
         : "Open a saved patient from the vault or admit a new patient to start the workflow.";
       elements.patientWorkupPatientLabel.textContent = patient.title;
       if (elements.patientWorkupPatientMeta) {
@@ -19880,7 +19991,7 @@
       elements.workspaceContinuityInput.value = draft.continuity || "";
       elements.workspaceHistoryFindingInput.value = draft.historyFindings || "";
       elements.workspaceExamFindingInput.value = draft.examFindings || "";
-      const primaryRoundsLabel = checklistBuilt ? "Open checklist" : selectedWorkupReady ? "Build checklist" : "Select workup";
+      const primaryRoundsLabel = checklistStale ? "Rebuild checklist" : checklistBuilt ? "Open checklist" : selectedWorkupReady ? "Build checklist" : "Select workup";
       const workspaceBuildButton = $("#workspaceBuildChecklistButton");
       const overviewChecklistButton = $("#patientOverviewChecklistButton");
       if (workspaceBuildButton) workspaceBuildButton.textContent = hasPatient ? primaryRoundsLabel : "Build checklist";
@@ -19905,13 +20016,19 @@
       if (elements.findingsOpenChecklistButton) {
         elements.findingsOpenChecklistButton.disabled = !checklistBuilt;
       }
-      elements.workspaceChecklistStatus.textContent = state.sections.length ? `${checklistTotalCount()} items built` : "Not built";
+      elements.workspaceChecklistStatus.textContent = state.sections.length
+        ? checklistStale
+          ? `${checklistTotalCount()} items built - server update available`
+          : `${checklistTotalCount()} items built`
+        : "Not built";
       if (elements.workspaceOpenBedsideChecklistButton) {
-        elements.workspaceOpenBedsideChecklistButton.textContent = checklistBuilt
-          ? "Answer bedside checklist"
-          : selectedWorkupReady
-            ? "Build checklist from workup"
-            : "Select workup first";
+        elements.workspaceOpenBedsideChecklistButton.textContent = checklistStale
+          ? "Rebuild from server workup"
+          : checklistBuilt
+            ? "Answer bedside checklist"
+            : selectedWorkupReady
+              ? "Build checklist from workup"
+              : "Select workup first";
         elements.workspaceOpenBedsideChecklistButton.disabled = !hasPatient || (!checklistBuilt && !selectedWorkupReady);
       }
       if (elements.workspaceChecklistSecondaryButton) {
@@ -19925,14 +20042,16 @@
       }
       if (elements.workspaceChecklistPhoneButton) {
         elements.workspaceChecklistPhoneButton.hidden = !checklistBuilt;
-        elements.workspaceChecklistPhoneButton.disabled = !hasPatient || !checklistBuilt;
+        elements.workspaceChecklistPhoneButton.disabled = !hasPatient || !checklistBuilt || checklistStale;
       }
       if (elements.workspaceChecklistReadyNotice) {
-        elements.workspaceChecklistReadyNotice.textContent = checklistBuilt
-          ? `${checklistTotalCount()} checklist items are built for ${patient.title}. Answer the bedside checklist to record findings.`
-          : selectedWorkupReady
-            ? `No checklist is built for ${patient.title} yet. Build it from the selected workup first.`
-            : `No checklist is built for ${patient.title} yet. Select a validated workup first.`;
+        elements.workspaceChecklistReadyNotice.textContent = checklistStale
+          ? `A newer server workup is available for ${patient.title}. Rebuild before answering or sending to phone.`
+          : checklistBuilt
+            ? `${checklistTotalCount()} checklist items are built for ${patient.title}. Answer the bedside checklist to record findings.`
+            : selectedWorkupReady
+              ? `No checklist is built for ${patient.title} yet. Build it from the selected workup first.`
+              : `No checklist is built for ${patient.title} yet. Select a validated workup first.`;
       }
       if (elements.workspaceChecklistPreviewList) {
         elements.workspaceChecklistPreviewList.innerHTML = "";
@@ -21510,7 +21629,7 @@
 	      };
 	    }
 
-	    function buildChecklistFromWorkup({ navigate = true, destination = "handoff" } = {}) {
+	    function buildChecklistFromWorkup({ navigate = true, destination = "handoff", announce = true } = {}) {
 	      if (!activePatient().id) {
 	        setStatus("Admit or open a patient before building a checklist.");
         openAdmissionOverlay();
@@ -21560,14 +21679,20 @@
 	        setStatus(error instanceof Error ? error.message : "Checklist organ-system validation failed.");
 	        throw error;
 	      }
+      const selectedModule = moduleById(state.selectedWorkupModuleId);
+      state.checklistWorkupModuleId = selectedModule?.id || "";
+      state.checklistWorkupSignature = checklistModuleSignature(selectedModule);
+      state.checklistCatalogStale = false;
       renderChecklist();
       renderOpenEvidence();
       renderHandoff();
       renderPatientWorkspace();
       renderCaseStatus();
-	      setStatus(state.lastChecklistRefinementCount
-	        ? `Clinical workup and bedside checklist built locally with ${state.lastChecklistRefinementAdditionCount || 0} OpenEvidence item${state.lastChecklistRefinementAdditionCount === 1 ? "" : "s"} added and ${state.lastChecklistRefinementRemovalCount || 0} removed for local verification.`
-	        : "Clinical workup and bedside checklist built locally.");
+	      if (announce) {
+	        setStatus(state.lastChecklistRefinementCount
+	          ? `Clinical workup and bedside checklist built locally with ${state.lastChecklistRefinementAdditionCount || 0} OpenEvidence item${state.lastChecklistRefinementAdditionCount === 1 ? "" : "s"} added and ${state.lastChecklistRefinementRemovalCount || 0} removed for local verification.`
+	          : "Clinical workup and bedside checklist built locally.");
+	      }
       saveState();
       if (navigate) showView(destination);
       return true;
@@ -23675,6 +23800,121 @@
       return JSON.parse(new TextDecoder().decode(bytes));
     }
 
+    function plainObject(value) {
+      return Boolean(value && typeof value === "object" && !Array.isArray(value));
+    }
+
+    function decodePhoneBundleInput(raw) {
+      const text = String(raw || "").trim();
+      if (!text) throw new Error("Paste a desktop phone bundle first.");
+      let parsedJson = false;
+      try {
+        const parsed = JSON.parse(text);
+        parsedJson = true;
+        if (typeof parsed.payload === "string") {
+          const encoded = parsed.payload.trim();
+          if (!encoded) throw new Error("Downloaded phone bundle JSON did not include a payload.");
+          return { payload: decodePayload(encoded), encoded };
+        }
+        if (plainObject(parsed) && parsed.version) {
+          return { payload: parsed, encoded: encodePayload(parsed) };
+        }
+      } catch (error) {
+        if (!parsedJson && error instanceof SyntaxError) {
+          // Plain copied bundles are base64, not JSON.
+        } else {
+          throw error;
+        }
+      }
+      return { payload: decodePayload(text), encoded: text };
+    }
+
+    function setPhoneBundleLoadStatus(source, message, tone = "") {
+      if (source === "entry") {
+        setVaultStatus(elements.phoneBundleEntryStatus, message, tone);
+        return;
+      }
+      if (elements.handoffStatus) {
+        elements.handoffStatus.textContent = message || "";
+        elements.handoffStatus.classList.toggle("is-error", tone === "error");
+        elements.handoffStatus.classList.toggle("success", tone === "success");
+      }
+    }
+
+    function loadDesktopPhoneBundle(raw, { source = "entry" } = {}) {
+      try {
+        const { payload, encoded } = decodePhoneBundleInput(raw);
+        if (payload.version !== "local-phone-handoff-v1") {
+          throw new Error("This is not a desktop-to-phone checklist bundle.");
+        }
+        if (!Array.isArray(payload.sections) || !payload.sections.length) {
+          throw new Error("The bundle does not contain checklist sections.");
+        }
+        const caseTitle = String(payload.caseTitle || "Phone interview").trim().slice(0, 120) || "Phone interview";
+        const workupModuleId = String(payload.workupModuleId || "").trim();
+        resetNoSaveSession("Phone interview session");
+        const patient = {
+          id: "phone-interview",
+          caseName: caseTitle,
+          title: caseTitle,
+          oneLine: "Phone checklist bundle - no saved data",
+          progress: "0/6",
+          concern: caseTitle,
+          workupModuleId,
+          modifiers: [],
+          context: payload.scrubbedContext ? { History: String(payload.scrubbedContext) } : {},
+          intake: String(payload.scrubbedContext || ""),
+          status: "active",
+          admittedAt: new Date().toISOString(),
+          localId: ""
+        };
+        state.patients = [patient];
+        state.activePatientId = patient.id;
+        state.patientDrafts[patient.id] = defaultDraftFor(patient);
+        if (workupModuleId) state.patientWorkupSelections[patient.id] = workupModuleId;
+        state.selectedWorkupModuleId = workupModuleId;
+        state.scrubbedText = String(payload.scrubbedContext || "");
+        state.checklistText = String(payload.checklistText || "");
+        state.sections = payload.sections;
+        state.checklistWorkupModuleId = "";
+        state.checklistWorkupSignature = "";
+        state.checklistCatalogStale = false;
+        state.answers = plainObject(payload.answers) ? { ...payload.answers } : {};
+        state.itemNotes = plainObject(payload.itemNotes) ? { ...payload.itemNotes } : {};
+        state.reviewedChecklistKeys = {};
+        state.bedsideNote = String(payload.bedsideNote || "");
+        state.transferCode = String(payload.code || "");
+        state.phonePayload = encoded;
+        state.importedFindings = "";
+        activeChecklistKey = "";
+        checklistFilter = "all";
+        checklistSearch = "";
+        checklistSectionFocus = false;
+        openChecklistNoteKey = "";
+        if (elements.phoneBundleEntryInput) elements.phoneBundleEntryInput.value = "";
+        if (elements.phoneBundleLoadInput) elements.phoneBundleLoadInput.value = "";
+        unlockVault({
+          mode: "single",
+          name: state.vaultName,
+          route: { panel: "phone-bundle", view: "bedside", prime: null, sourceMode: "admission" }
+        });
+        if (elements.bedsideNoteInput) elements.bedsideNoteInput.value = state.bedsideNote;
+        renderChecklist();
+        renderHandoff();
+        renderFinalUpdate();
+        renderCaseStatus();
+        const itemCount = state.sections.reduce((sum, section) => sum + (Array.isArray(section.items) ? section.items.length : 0), 0);
+        setPhoneBundleLoadStatus(source, `${itemCount} checklist items loaded for ${caseTitle}.`, "success");
+        setStatus(`Phone interview ready for ${caseTitle}.`);
+        return true;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Phone bundle could not be opened.";
+        setPhoneBundleLoadStatus(source, message, "error");
+        setStatus(message);
+        return false;
+      }
+    }
+
     function createPhonePayload() {
       if (!activePatient().id) {
         setStatus("Admit or open a patient before preparing a phone handoff.");
@@ -23700,6 +23940,7 @@
         code: state.transferCode,
         createdAt: new Date().toISOString(),
         caseTitle: $("#caseTitle").textContent,
+        workupModuleId: state.selectedWorkupModuleId || activePatient().workupModuleId || "",
         scrubbedContext: reviewedSourceContextText(),
         checklistText: state.checklistText,
         sections: state.sections,
@@ -23744,6 +23985,15 @@
     }
 
     function preparePhoneHandoff({ navigate = true } = {}) {
+      if (isChecklistStaleForCurrentWorkup()) {
+        setStatus("Rebuild the checklist from the current server workup before sending it to a phone.");
+        if (navigate) {
+          showView("workspace");
+          setPatientTab("checklist", { announce: false });
+        }
+        renderPatientWorkspace();
+        return false;
+      }
       const payload = createPhonePayload();
       if (!payload) {
         setPatientTab("workup", { announce: false });
@@ -23779,7 +24029,7 @@
           state.bedsideNote = payload.bedsideNote;
           elements.bedsideNoteInput.value = payload.bedsideNote;
         }
-        state.importedFindings = payload.bedsideNote || `Imported bundle ${payload.code || ""}`.trim();
+        state.importedFindings = payload.bedsideNote || payload.findingsText || `Imported bundle ${payload.code || ""}`.trim();
         elements.handoffStatus.textContent = "Phone checklist answers imported into final review.";
       } catch {
         state.importedFindings = raw;
@@ -23839,6 +24089,7 @@
       elements.createVaultForm?.addEventListener("submit", createVaultFromPassword);
       elements.singlePatientWorkflowButton?.addEventListener("click", startSinglePatientWorkflow);
       elements.demoCaseButton?.addEventListener("click", loadDemoCase);
+      elements.loadPhoneBundleEntryButton?.addEventListener("click", () => loadDesktopPhoneBundle(elements.phoneBundleEntryInput?.value || "", { source: "entry" }));
       elements.lockVaultButton?.addEventListener("click", lockVault);
       elements.patientAdmissionForm?.addEventListener("submit", admitPatientFromForm);
       elements.closeAdmissionOverlayButton?.addEventListener("click", closeAdmissionOverlay);
@@ -24143,7 +24394,7 @@
       });
       $("#workspaceOpenBedsideChecklistButton").addEventListener("click", () => {
         saveSelectedPatientDrafts();
-        if (state.sections.length) {
+        if (state.sections.length && !isChecklistStaleForCurrentWorkup()) {
           showView("bedside");
           return;
         }
@@ -24349,6 +24600,7 @@
         downloadFile("pre-rounding-phone-handoff.json", JSON.stringify({ code: state.transferCode, payload: state.phonePayload }, null, 2), "application/json");
       });
       $("#importPhoneFindingsButton").addEventListener("click", importPhoneFindings);
+      elements.loadPhoneBundleButton?.addEventListener("click", () => loadDesktopPhoneBundle(elements.phoneBundleLoadInput?.value || "", { source: "handoff" }));
       $("#handoffToFinalButton").addEventListener("click", () => {
         state.selectedTaskId = "final_rounds_update";
         showView("evidence");
@@ -24625,6 +24877,7 @@
     applyWorkupStudioChromeState();
     hydrateIcons();
     bindEvents();
+    void hydratePublicWorkupCatalogOnStartup();
     void captureWorkupStudioOAuthRedirect().then((handled) => {
       if (!handled) void ensureWorkupStudioBackendSession();
     });

@@ -20,6 +20,8 @@ const requiredSnippets = [
   "Quick de-ID",
   "Standalone local de-ID",
   "Phone handoff",
+  "Load phone bundle",
+  "Start phone interview",
   "PHI review before copy",
   "code-paired local bundles"
 ];
@@ -67,5 +69,9 @@ assert.match(html, /id="workspaceQuickDeidButton"/, "Quick de-ID should remain r
 assert.match(html, /id="topClinicalWorkupButton"/, "Clinical workup should remain reachable from the topbar.");
 assert.match(html, /id="exportPhoneContextButton"/, "Phone handoff export should remain present.");
 assert.match(html, /id="importPhoneFindingsButton"/, "Phone handoff import should remain present.");
+assert.match(html, /id="phoneBundleEntryInput"/, "Vault entry should let a phone load a desktop handoff bundle.");
+assert.match(html, /id="loadPhoneBundleEntryButton"/, "Vault entry should expose a one-tap phone interview loader.");
+assert.match(html, /id="phoneBundleLoadInput"/, "Phone handoff screen should let the current device load a desktop bundle.");
+assert.match(html, /id="loadPhoneBundleButton"/, "Phone handoff screen should open the bedside checklist from a pasted bundle.");
 
 console.log("Vault entry UX tests passed.");

@@ -106,6 +106,7 @@ async function assertNoLayoutBreakage(page, label) {
     const viewportWidth = document.documentElement.clientWidth;
     const overflow = rootElement.scrollWidth - viewportWidth;
     const visible = (element) => {
+      if (element.closest(".sr-only, [aria-hidden='true']")) return false;
       const style = window.getComputedStyle(element);
       const rect = element.getBoundingClientRect();
       return style.display !== "none" && style.visibility !== "hidden" && rect.width > 0 && rect.height > 0 && !element.closest("[hidden]");
@@ -139,6 +140,7 @@ async function assertNoLayoutBreakage(page, label) {
 
 async function openFreshPage(browser, baseUrl, viewport) {
   const context = await browser.newContext({ viewport });
+  await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: baseUrl });
   const page = await context.newPage();
   await page.goto(`${baseUrl}/index.html?fresh=${Date.now()}`);
   await page.evaluate(() => localStorage.clear());
@@ -313,6 +315,88 @@ async function testSinglePatientBypass(browser, baseUrl) {
   snapshot = await storageSnapshot(page);
   assert(Object.keys(snapshot).length === 0, "locking a single-patient workflow should leave localStorage empty");
   await context.close();
+}
+
+async function testPhoneBundleRoundTrip(browser, baseUrl) {
+  console.log("Checking desktop-to-phone interview handoff");
+  const { context: desktopContext, page: desktopPage } = await openFreshPage(browser, baseUrl, { width: 1024, height: 768 });
+  await desktopPage.click("#demoCaseButton");
+  await desktopPage.waitForFunction(() => document.body.dataset.view === "workspace" && document.body.dataset.patientTab === "context");
+  await clickPatientTab(desktopPage, "checklist");
+  await desktopPage.click("#workspaceOpenBedsideChecklistButton");
+  await desktopPage.waitForFunction(() => /items built/.test(document.querySelector("#workspaceChecklistStatus")?.textContent || ""));
+  if (await desktopPage.locator("#bedsideView:not([hidden])").isVisible().catch(() => false)) {
+    await desktopPage.click("#bedsideMoreActionsButton");
+  } else {
+    await desktopPage.click("#workspaceChecklistPhoneButton");
+  }
+  await desktopPage.waitForSelector("#handoffView:not([hidden])");
+  await desktopPage.waitForFunction(() => document.querySelector("#phonePayload")?.value.length > 100);
+  const desktopPayload = await desktopPage.inputValue("#phonePayload");
+  const desktopCode = (await desktopPage.textContent("#phoneTransferCode")).trim();
+  assert(/^[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(desktopCode), `desktop handoff should generate a pairing code, got ${desktopCode}`);
+
+  const { context: phoneContext, page: phonePage } = await openFreshPage(browser, baseUrl, { width: 390, height: 844 });
+  await assertNoLayoutBreakage(phonePage, "phone bundle vault entry");
+  await phonePage.fill("#phoneBundleEntryInput", JSON.stringify({ code: desktopCode, payload: desktopPayload }, null, 2));
+  await phonePage.click("#loadPhoneBundleEntryButton");
+  await phonePage.waitForSelector("#bedsideView:not([hidden])");
+  await phonePage.waitForFunction(() => document.querySelectorAll(".checklist-row").length >= 8);
+  await assertNoLayoutBreakage(phonePage, "phone bundle bedside checklist");
+  const phoneLoadedAudit = await phonePage.evaluate(() => ({
+    view: document.body.dataset.view,
+    caseTitle: document.querySelector("#bedsideMobileCaseTitle")?.textContent?.trim() || "",
+    rowCount: document.querySelectorAll(".checklist-row").length,
+    storageKeys: Object.keys(localStorage)
+  }));
+  assert(phoneLoadedAudit.view === "bedside", `phone bundle should open directly to bedside view: ${JSON.stringify(phoneLoadedAudit)}`);
+  assert(/Demo - DKA consult/i.test(phoneLoadedAudit.caseTitle), `phone bundle should preserve case title: ${JSON.stringify(phoneLoadedAudit)}`);
+  assert(phoneLoadedAudit.rowCount >= 8, `phone bundle should load checklist rows: ${JSON.stringify(phoneLoadedAudit)}`);
+  assert(phoneLoadedAudit.storageKeys.length === 0, `phone bundle session should not persist localStorage: ${JSON.stringify(phoneLoadedAudit)}`);
+
+  const answerMode = await phonePage.evaluate(() => {
+    const chip = document.querySelector(".checklist-row .answer-chip");
+    if (chip) {
+      chip.click();
+      return "chip";
+    }
+    const endorsement = document.querySelector(".checklist-row .endorsement-button");
+    if (endorsement) {
+      endorsement.click();
+      return "endorsement";
+    }
+    const select = document.querySelector(".checklist-row select.answer-select");
+    if (select && select.options.length > 1) {
+      select.selectedIndex = 1;
+      select.dispatchEvent(new Event("change", { bubbles: true }));
+      return "select";
+    }
+    return "";
+  });
+  assert(answerMode, "phone checklist should expose an answer control");
+  await phonePage.waitForFunction(() => /[1-9]\d*\/\d+ answered/.test(document.querySelector("#answeredCount")?.textContent || ""));
+  await phonePage.click("#copyPhoneReturnPayloadButton");
+  await phonePage.waitForSelector("#phiOverlay:not([hidden])");
+  await phonePage.click("#confirmPhiActionButton");
+  await phonePage.waitForFunction(() => document.querySelector("#phiOverlay")?.hidden === true);
+  const returnPayload = await phonePage.evaluate(async () => navigator.clipboard.readText());
+  assert(returnPayload.length > 100, "phone return payload should copy to clipboard after PHI review");
+  let phoneSnapshot = await storageSnapshot(phonePage);
+  assert(Object.keys(phoneSnapshot).length === 0, `phone interview should remain no-save after answers, got ${Object.keys(phoneSnapshot).join(", ")}`);
+  await phoneContext.close();
+
+  await desktopPage.fill("#phoneImportInput", returnPayload);
+  await desktopPage.click("#importPhoneFindingsButton");
+  await desktopPage.waitForFunction(() => /Phone checklist answers imported/i.test(document.querySelector("#handoffStatus")?.textContent || ""));
+  await desktopPage.waitForFunction(() => /Imported phone findings:[\s\S]+:/i.test(document.querySelector("#finalUpdatePreview")?.textContent || ""));
+  const desktopImportAudit = await desktopPage.evaluate(() => ({
+    handoffStatus: document.querySelector("#handoffStatus")?.textContent?.trim() || "",
+    finalText: document.querySelector("#finalUpdatePreview")?.textContent || "",
+    answeredRows: document.querySelectorAll(".checklist-row.is-answered").length
+  }));
+  assert(desktopImportAudit.answeredRows >= 1, `desktop import should merge answered checklist rows: ${JSON.stringify(desktopImportAudit)}`);
+  assert(/Imported phone findings:[\s\S]+:/i.test(desktopImportAudit.finalText), "desktop final update should include returned phone checklist findings");
+  await desktopContext.close();
 }
 
 async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
@@ -657,6 +741,7 @@ try {
   browser = await chromium.launch({ headless: true });
   await testDemoCaseLoader(browser, baseUrl);
   await testSinglePatientBypass(browser, baseUrl);
+  await testPhoneBundleRoundTrip(browser, baseUrl);
   for (const viewport of [
     { width: 390, height: 844 },
     { width: 1024, height: 768 },

@@ -110,6 +110,12 @@ assert.ok(html.includes("workupStudioPublishImportButton"), "Workup Studio shoul
 assert.ok(html.includes("loadWorkupStudioPermissions"), "Workup Studio should verify author/reviewer permissions after authentication.");
 assert.ok(html.includes("workupCatalogSupabaseRequest"), "Patient-facing devices should load the reviewed Supabase catalog with a read-only request path.");
 assert.ok(html.includes("publicWorkupCatalogConfigured"), "The app should support public reviewed-catalog hydration before Workup Studio sign-in.");
+assert.ok(html.includes("hydratePublicWorkupCatalogOnStartup"), "Fresh patient devices should explicitly hydrate the public reviewed catalog on app startup.");
+assert.ok(html.includes("publicOnly"), "Public catalog hydration should be able to bypass stale Workup Studio auth tokens.");
+assert.ok(html.includes("cache: \"no-store\""), "Supabase catalog reads should avoid cached stale server workups.");
+assert.ok(html.includes("checklistWorkupSignature"), "Built patient checklists should record the exact workup catalog version used.");
+assert.ok(html.includes("isChecklistStaleForCurrentWorkup"), "Patient workspaces should detect checklists made from superseded workups.");
+assert.ok(html.includes("Rebuild from server workup"), "Stale checklists should guide clinicians to rebuild from the current server workup.");
 assert.ok(html.includes("https://*.supabase.co"), "CSP should allow Supabase REST/Auth calls.");
 assert.ok(!html.includes("SUPABASE_SERVICE_ROLE_KEY"), "Browser app must not reference the service role key.");
 assert.ok(html.includes("`${window.location.origin}${window.location.pathname || \"/\"}`"), "Magic-link redirect should use a stable callback URL instead of preserving arbitrary query state.");

@@ -127,6 +127,7 @@ try {
     catalogWorkupCount: 0,
     catalogSectionCount: 0,
     catalogSourceCount: 0,
+    catalogWorkupAuthHeaders: [],
     getChangeSetsCount: 0,
     postedRows: [],
     patchedRows: [],
@@ -219,6 +220,7 @@ try {
     }
     if (url.pathname === "/rest/v1/workups" && request.method() === "GET") {
       supabaseRequests.catalogWorkupCount += 1;
+      supabaseRequests.catalogWorkupAuthHeaders.push(request.headers().authorization || "");
       await route.fulfill({
         status: 200,
         contentType: "application/json",
@@ -415,6 +417,7 @@ try {
   });
 
   await page.goto(`${baseUrl}/index.html?workupStudioUi=${Date.now()}`);
+  await waitForCondition(() => supabaseRequests.catalogWorkupCount >= 1, "initial startup public Supabase catalog");
   await page.evaluate((state) => {
     localStorage.clear();
     localStorage.setItem("prerounding-workup-authoring-v1", JSON.stringify(state));
@@ -439,7 +442,13 @@ try {
       sessionValidatedAt: "2026-06-01T00:00:00.000Z"
     }
   });
+  const staleSessionStartupCatalogBaseline = supabaseRequests.catalogWorkupCount;
+  const staleSessionStartupHeaderBaseline = supabaseRequests.catalogWorkupAuthHeaders.length;
   await page.goto(`${baseUrl}/index.html?workupStudioUi=${Date.now()}`);
+  await waitForCondition(() => supabaseRequests.catalogWorkupCount >= staleSessionStartupCatalogBaseline + 1, "stale-session startup public Supabase catalog");
+  const staleSessionStartupHeaders = supabaseRequests.catalogWorkupAuthHeaders.slice(staleSessionStartupHeaderBaseline);
+  assert(staleSessionStartupHeaders.some((header) => /sb_publishable_/i.test(header)), `Startup public catalog hydration should use the publishable key even with stale saved auth: ${JSON.stringify(staleSessionStartupHeaders)}`);
+  assert(!staleSessionStartupHeaders.some((header) => /stale-access-token/i.test(header)), `Startup public catalog hydration must not depend on a stale saved Workup Studio token: ${JSON.stringify(staleSessionStartupHeaders)}`);
   await page.click("#demoCaseButton");
   await page.waitForFunction(() => document.body.dataset.view !== "vaultAccess");
 
@@ -976,6 +985,12 @@ try {
   await page.waitForFunction(() => /Supabase current DKA root/.test(document.querySelector("#patientDecisionTreePanel")?.textContent || ""));
   assert.match(await page.textContent("#patientValidatedIntentLabel"), /Supabase Hyperglycemia Workup/, "Second-device startup should use Supabase workup titles in the patient workspace.");
   assert.match(await page.textContent("#patientDecisionTreePanel"), /Supabase current DKA root/, "Second-device startup should use Supabase clinical pathway sections in the patient workspace.");
+  await page.locator('button[data-patient-tab="checklist"]').evaluate((button) => button.click());
+  await page.waitForFunction(() => document.body.dataset.patientTab === "checklist");
+  await page.click("#workspaceOpenBedsideChecklistButton");
+  await page.waitForFunction(() => /items built/.test(document.querySelector("#workspaceChecklistStatus")?.textContent || ""));
+  assert.match(await page.textContent("#workspaceChecklistDirectory"), /Supabase current missed insulin question/i, "Second-device patient checklist should build from the current public Supabase section payload.");
+  assert.doesNotMatch(await page.textContent("#workspaceChecklistStatus"), /server update available/i, "Fresh server-built patient checklists should not be marked stale.");
 
   const expectedRetryDiagnostics = browserDiagnostics.filter((entry) => /status of 401/i.test(entry));
   assert.ok(expectedRetryDiagnostics.length <= 1, expectedRetryDiagnostics.join("\n"));
