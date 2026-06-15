@@ -7573,7 +7573,8 @@
       margin: 0;
       order: 1;
       align-self: start;
-      overflow: hidden;
+      overflow: auto;
+      overflow-x: hidden;
     }
 
     #decisionTreeEditorPanel[hidden] {
@@ -7650,8 +7651,14 @@
     }
 
     .decision-tree-node-editor textarea {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
       min-height: 40px !important;
       max-height: 72px;
+      overflow: auto;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
       font-family: inherit;
       font-size: 12px;
     }
@@ -7731,9 +7738,15 @@
     }
 
     #patientWorkupPanel.is-importing .decision-tree-json-panel textarea {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
       min-height: 112px;
       max-height: 160px;
+      overflow: auto;
+      overflow-wrap: anywhere;
       resize: vertical;
+      white-space: pre-wrap;
     }
 
     #patientWorkupPanel.is-importing .decision-tree-json-panel .button-row,

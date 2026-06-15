@@ -529,6 +529,72 @@ try {
   }));
   assert(importDrawerAudit.importing && importDrawerAudit.editorHidden === false && importDrawerAudit.inputVisible && importDrawerAudit.nodeEditorVisible === false && importDrawerAudit.focused === "decisionTreeJsonInput", `import button should open only the pathway JSON drawer: ${JSON.stringify(importDrawerAudit)}`);
   assert(importDrawerAudit.overflowingButtons.length === 0, `right-panel decision-tree buttons should not overflow: ${JSON.stringify(importDrawerAudit)}`);
+  await page.setViewportSize({ width: 1024, height: 820 });
+  await page.waitForFunction(() => document.querySelector("#decisionTreeEditorPanel")?.hidden === false);
+  const longWrappedTreeJson = JSON.stringify({
+    schema: "clinical_pathway_tree_v1",
+    workupId: "hyperglycemia_possible_dka_v1",
+    title: "Long import containment test",
+    root: {
+      id: "root",
+      label: `Import drawer containment root ${"criterion_without_spaces_".repeat(24)}`,
+      type: "decision",
+      children: []
+    },
+    activationRules: {}
+  }, null, 2);
+  await page.fill("#decisionTreeJsonInput", `\`\`\`json\n${longWrappedTreeJson}\n\`\`\``);
+  await assertNoHorizontalOverflow(page, "patient decision-tree import drawer 1024px");
+  const importDrawerContainmentAudit = await page.evaluate(() => {
+    const editor = document.querySelector("#decisionTreeEditorPanel");
+    const card = document.querySelector("#patientWorkupPanel.is-importing .decision-tree-json-panel");
+    const textarea = document.querySelector("#decisionTreeJsonInput");
+    const cardRect = card?.getBoundingClientRect();
+    const editorRect = editor?.getBoundingClientRect();
+    const textareaRect = textarea?.getBoundingClientRect();
+    const controls = Array.from(document.querySelectorAll("#decisionTreeEditorPanel textarea, #decisionTreeEditorPanel button"))
+      .filter((node) => {
+        const rect = node.getBoundingClientRect();
+        return getComputedStyle(node).display !== "none" && rect.width > 0 && rect.height > 0;
+      })
+      .map((node) => {
+        const rect = node.getBoundingClientRect();
+        return {
+          id: node.id || node.textContent?.trim() || node.tagName,
+          left: Math.round(rect.left),
+          right: Math.round(rect.right),
+          top: Math.round(rect.top),
+          bottom: Math.round(rect.bottom),
+          overflowsCard: Boolean(cardRect && (rect.left < cardRect.left - 1 || rect.right > cardRect.right + 1)),
+          overflowsViewport: rect.left < -1 || rect.right > window.innerWidth + 1
+        };
+      });
+    return {
+      viewportWidth: document.documentElement.clientWidth,
+      editor: editorRect ? {
+        left: Math.round(editorRect.left),
+        right: Math.round(editorRect.right),
+        width: Math.round(editorRect.width)
+      } : null,
+      card: cardRect ? {
+        left: Math.round(cardRect.left),
+        right: Math.round(cardRect.right),
+        width: Math.round(cardRect.width)
+      } : null,
+      textarea: textareaRect ? {
+        left: Math.round(textareaRect.left),
+        right: Math.round(textareaRect.right),
+        width: Math.round(textareaRect.width),
+        scrollOverflow: Math.round((textarea?.scrollWidth || 0) - (textarea?.clientWidth || 0))
+      } : null,
+      overflowingControls: controls.filter((entry) => entry.overflowsCard || entry.overflowsViewport)
+    };
+  });
+  assert(importDrawerContainmentAudit.editor?.width > 0 && importDrawerContainmentAudit.card?.width > 0, `decision-tree import editor should remain visible at 1024px: ${JSON.stringify(importDrawerContainmentAudit)}`);
+  assert(importDrawerContainmentAudit.textarea?.scrollOverflow <= 2, `decision-tree JSON textarea should wrap long pasted content instead of creating horizontal scroll: ${JSON.stringify(importDrawerContainmentAudit)}`);
+  assert(importDrawerContainmentAudit.overflowingControls.length === 0, `decision-tree import controls should stay inside the drawer card and viewport: ${JSON.stringify(importDrawerContainmentAudit)}`);
+  await page.setViewportSize({ width: 1440, height: 1024 });
+  await page.waitForFunction(() => document.querySelector("#decisionTreeEditorPanel")?.hidden === false);
   await page.fill("#decisionTreeJsonInput", `\`\`\`json\n${importedTreeJson}\n\`\`\``);
   await page.click("#applyDecisionTreeJsonButton");
   await page.waitForFunction(() => /Imported DKA pathway root/i.test(document.querySelector("#patientDecisionTreePanel")?.textContent || ""));
