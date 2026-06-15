@@ -89,6 +89,8 @@ assert.ok(readinessScript.includes("npm run deploy:supabase-workup-authoring"), 
 const deployScript = read("scripts/deploy-supabase-workup-authoring.js");
 assert.ok(deployScript.includes("supabase\", \"config\", \"push\""), "Deploy command should push Supabase auth config.");
 assert.ok(deployScript.includes("supabase\", \"db\", \"push\""), "Deploy command should push Supabase migrations.");
+assert.ok(deployScript.includes("network is unreachable"), "Deploy command should explain direct Supabase IPv6 database failures.");
+assert.ok(deployScript.includes("Session pooler"), "Deploy command should guide IPv4-only runners to the Supabase Session pooler URL.");
 assert.ok(deployScript.includes("--auth-method=magic-link|oauth"), "Deploy command should expose magic-link versus optional OAuth auth methods.");
 assert.ok(deployScript.includes("email magic link"), "Deploy command should default to email magic-link config.");
 assert.ok(deployScript.includes("SUPABASE_AUTH_EXTERNAL_GITHUB_CLIENT_ID"), "Deploy command should still support GitHub OAuth provider secrets as an optional fallback.");
@@ -240,6 +242,8 @@ const docs = read("docs/supabase-workup-authoring.md");
 assert.ok(docs.includes("npx supabase db push"), "Setup docs should explain how to deploy the migration.");
 assert.ok(docs.includes("npm run deploy:supabase-workup-authoring"), "Setup docs should explain the one-command deployment path.");
 assert.ok(docs.includes("npm run check:supabase-public"), "Setup docs should explain the credential-free public readiness check.");
+assert.ok(docs.includes("network is unreachable"), "Setup docs should explain the direct database IPv6 failure seen on IPv4-only runners.");
+assert.ok(docs.includes("Session pooler") && docs.includes(":5432/postgres"), "Setup docs should recommend the Supabase Session pooler URL for GitHub-hosted deploys.");
 assert.ok(docs.includes("automatically run the deploy workflow"), "Setup docs should explain automatic GitHub Actions backend deploys on relevant main pushes.");
 assert.ok(docs.includes("Supabase Workup Authoring Deploy"), "Setup docs should mention the manual GitHub Actions backend deploy.");
 assert.ok(docs.includes("SUPABASE_DB_PASSWORD` or `SUPABASE_DB_URL"), "Setup docs should allow either DB password or direct DB URL for hosted deploys.");

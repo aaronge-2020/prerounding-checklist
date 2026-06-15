@@ -86,7 +86,7 @@ function displayCommand(command, parts, masks = []) {
   return [command, ...maskedParts].join(" ");
 }
 
-function run(command, parts, { dryRun = false, masks = [] } = {}) {
+function run(command, parts, { dryRun = false, masks = [], failureHint = "" } = {}) {
   console.log(`$ ${displayCommand(command, parts, masks)}`);
   if (dryRun) return;
   const result = spawnSync(command, parts, {
@@ -95,8 +95,35 @@ function run(command, parts, { dryRun = false, masks = [] } = {}) {
     stdio: "inherit"
   });
   if (result.status !== 0) {
-    throw new Error(`${displayCommand(command, parts, masks)} failed with exit code ${result.status}.`);
+    throw new Error([
+      `${displayCommand(command, parts, masks)} failed with exit code ${result.status}.`,
+      failureHint
+    ].filter(Boolean).join("\n"));
   }
+}
+
+function supabaseDbPushFailureHint({ dbUrl = "", projectRef = "" } = {}) {
+  const lines = [
+    "",
+    "Database migration push could not connect to Postgres.",
+    "If the error mentions `network is unreachable` for `db.<project-ref>.supabase.co`, the runner cannot reach Supabase's direct IPv6 database endpoint.",
+    "Fix: set `SUPABASE_DB_URL` to the project's Shared Pooler Session mode connection string from Supabase Dashboard -> Connect -> Session pooler. It should look like `postgres://postgres.<project-ref>:<password>@aws-<region>.pooler.supabase.com:5432/postgres`.",
+    "Alternative: enable the Supabase IPv4 add-on for the direct database host."
+  ];
+  if (!dbUrl) {
+    lines.push("Because only `SUPABASE_DB_PASSWORD` was supplied, the CLI uses the linked direct database host. Use `SUPABASE_DB_URL` with the Session pooler URL on IPv4-only runners.");
+    return lines.join("\n");
+  }
+  try {
+    const parsed = new URL(dbUrl);
+    const directHost = projectRef ? `db.${projectRef}.supabase.co` : "";
+    if (parsed.hostname === directHost || /^db\.[^.]+\.supabase\.co$/i.test(parsed.hostname)) {
+      lines.push("The current `SUPABASE_DB_URL` appears to be the direct database URL; replace it with the Session pooler URL for GitHub-hosted deploys.");
+    }
+  } catch {
+    lines.push("Also verify that `SUPABASE_DB_URL` is a complete Postgres URL with the database password filled in.");
+  }
+  return lines.join("\n");
 }
 
 function requireValues(entries) {
@@ -237,11 +264,12 @@ async function main() {
     }
 
     if (!skipDbPush) {
+      const dbPushFailureHint = supabaseDbPushFailureHint({ dbUrl, projectRef });
       if (dbUrl) {
-        run(npx, ["supabase", "db", "push", "--db-url", dbUrl, "--yes"], { dryRun, masks });
+        run(npx, ["supabase", "db", "push", "--db-url", dbUrl, "--yes"], { dryRun, masks, failureHint: dbPushFailureHint });
       } else {
         run(npx, ["supabase", "link", "--project-ref", projectRef, "--password", dbPassword, "--yes"], { dryRun, masks });
-        run(npx, ["supabase", "db", "push", "--linked", "--password", dbPassword, "--yes"], { dryRun, masks });
+        run(npx, ["supabase", "db", "push", "--linked", "--password", dbPassword, "--yes"], { dryRun, masks, failureHint: dbPushFailureHint });
       }
     }
 

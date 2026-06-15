@@ -29,6 +29,8 @@ $env:WORKUP_STUDIO_AUTH_METHOD="magic-link"
 $env:WORKUP_STUDIO_REVIEWER_EMAIL="reviewer@example.com"
 ```
 
+GitHub-hosted runners and many local networks cannot reach Supabase's direct IPv6 database host (`db.<project-ref>.supabase.co`). If `supabase db push` fails with `network is unreachable`, replace `SUPABASE_DB_PASSWORD` or any direct `SUPABASE_DB_URL` with a full `SUPABASE_DB_URL` from Supabase Dashboard -> Connect -> Session pooler. Use the Session pooler URL on port `5432`, for example `postgres://postgres.<project-ref>:<password>@aws-<region>.pooler.supabase.com:5432/postgres`.
+
 Magic Link is the default Workup Studio sign-in method. No Google Cloud or GitHub OAuth app is required. If the team later wants social sign-in, set `WORKUP_STUDIO_AUTH_METHOD="oauth"` plus `WORKUP_STUDIO_OAUTH_PROVIDER="google"` or `"github"` and the matching `SUPABASE_AUTH_EXTERNAL_*` secrets.
 
 ## Create The Backend
