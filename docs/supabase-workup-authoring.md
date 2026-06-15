@@ -67,6 +67,8 @@ The same path is available in GitHub Actions through `.github/workflows/supabase
 
 `.github/workflows/supabase-public-catalog-readiness.yml` runs `npm run check:supabase-public` without secrets on push, manual dispatch, and an hourly schedule. It is expected to fail until the hosted project exposes at least one active reviewed workup, readable sections, and referenced sources through the publishable-key public catalog.
 
+If `Supabase Workup Authoring Deploy` fails in the `Check deployment secrets` step, open the run summary. It lists the missing repository secrets and explains that fresh devices will keep using bundled or cached public workups until reviewed workups are imported and verified in Supabase.
+
 Link the Supabase project manually only if you are not using the deploy command:
 
 ```bash

@@ -120,6 +120,9 @@ assert.ok(deployWorkflow.includes('missing+=("SUPABASE_ACCESS_TOKEN")'), "Supaba
 assert.ok(deployWorkflow.includes('missing+=("SUPABASE_SERVICE_ROLE_KEY")'), "Supabase deploy preflight should require the service-role seed/import secret.");
 assert.ok(deployWorkflow.includes('missing+=("SUPABASE_DB_PASSWORD or SUPABASE_DB_URL")'), "Supabase deploy preflight should require one database credential secret.");
 assert.ok(deployWorkflow.includes("Supabase Workup Studio deploy is missing required GitHub secret"), "Supabase deploy preflight should print an actionable missing-secret message.");
+assert.ok(deployWorkflow.includes("GITHUB_STEP_SUMMARY"), "Supabase deploy preflight should write an actionable GitHub Actions summary when secrets are missing.");
+assert.ok(deployWorkflow.includes("fresh-device public catalog"), "Supabase deploy preflight summary should explain the fresh-device catalog consequence.");
+assert.ok(deployWorkflow.includes("Settings -> Secrets and variables -> Actions -> Repository secrets"), "Supabase deploy preflight summary should point maintainers to repository secrets.");
 
 assert.ok(existsSync(path.join(repoRoot, ".github", "workflows", "supabase-public-catalog-readiness.yml")), "GitHub Actions workflow should exist for credential-free public catalog readiness.");
 const publicCatalogWorkflow = read(".github/workflows/supabase-public-catalog-readiness.yml");

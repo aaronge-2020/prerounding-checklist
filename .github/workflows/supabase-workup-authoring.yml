@@ -85,6 +85,20 @@ jobs:
           if [ "${#missing[@]}" -gt 0 ]; then
             printf 'Supabase Workup Studio deploy is missing required GitHub secret(s):\n' >&2
             printf -- '- %s\n' "${missing[@]}" >&2
+            if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then
+              {
+                printf '## Supabase Workup Studio deploy blocked\n\n'
+                printf 'This workflow cannot update Supabase config, push migrations, import reviewed workups, or verify the fresh-device public catalog until the required repository secrets exist.\n\n'
+                printf 'Missing GitHub secret(s):\n'
+                printf -- '- `%s`\n' "${missing[@]}"
+                printf '\nAdd them in **Settings -> Secrets and variables -> Actions -> Repository secrets** for `aaronge-2020/prerounding-checklist`.\n\n'
+                printf 'Required secrets:\n'
+                printf -- '- `SUPABASE_ACCESS_TOKEN`\n'
+                printf -- '- `SUPABASE_SERVICE_ROLE_KEY`\n'
+                printf -- '- `SUPABASE_DB_PASSWORD` or `SUPABASE_DB_URL`\n\n'
+                printf 'Until this is fixed, the app can use bundled or cached public workups, but new reviewed workup updates will not be published to Supabase for fresh devices worldwide.\n'
+              } >> "${GITHUB_STEP_SUMMARY}"
+            fi
             exit 1
           fi
 
