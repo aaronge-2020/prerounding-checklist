@@ -24,6 +24,7 @@ For a one-command hosted deployment, also set:
 ```powershell
 $env:SUPABASE_ACCESS_TOKEN="your-supabase-cli-access-token"
 $env:SUPABASE_DB_PASSWORD="your-hosted-postgres-password"
+# Or set SUPABASE_DB_URL instead of SUPABASE_DB_PASSWORD.
 $env:WORKUP_STUDIO_AUTH_METHOD="magic-link"
 $env:WORKUP_STUDIO_REVIEWER_EMAIL="reviewer@example.com"
 ```
@@ -56,10 +57,10 @@ npm run deploy:supabase-workup-authoring -- --reviewer-email=reviewer@example.co
 
 It pushes `supabase/config.toml`, pushes the migrations, imports the current JSON workups into Supabase, optionally grants reviewer access, then reruns `npm run check:supabase-auth`.
 
-The same path is available in GitHub Actions through `.github/workflows/supabase-workup-authoring.yml`. Add these repository secrets, then run the `Supabase Workup Authoring Deploy` workflow manually:
+The same path is available in GitHub Actions through `.github/workflows/supabase-workup-authoring.yml`. After these repository secrets are set, pushes to `main` that change Supabase migrations, workup authoring/import code, or the medical knowledge bundle automatically run the deploy workflow so fresh devices can hydrate the latest reviewed server catalog. You can also run the `Supabase Workup Authoring Deploy` workflow manually when granting a reviewer or forcing a redeploy:
 
 - `SUPABASE_ACCESS_TOKEN`
-- `SUPABASE_DB_PASSWORD`
+- `SUPABASE_DB_PASSWORD` or `SUPABASE_DB_URL`
 - `SUPABASE_SERVICE_ROLE_KEY`
 
 Link the Supabase project manually only if you are not using the deploy command:

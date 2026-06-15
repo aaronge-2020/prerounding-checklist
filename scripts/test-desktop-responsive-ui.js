@@ -341,8 +341,11 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   await desktopPage.waitForSelector("#handoffView:not([hidden])");
   await desktopPage.waitForFunction(() => document.querySelector("#phonePayload")?.value.length > 100);
   const desktopPayload = await desktopPage.inputValue("#phonePayload");
+  const desktopBundle = decodeLocalBundle(desktopPayload);
   const desktopCode = (await desktopPage.textContent("#phoneTransferCode")).trim();
   assert(/^[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(desktopCode), `desktop handoff should generate a pairing code, got ${desktopCode}`);
+  assert(/^[a-f0-9]{8}$/.test(desktopBundle.checklistFingerprint || ""), `desktop handoff should include a compact checklist fingerprint, got ${desktopBundle.checklistFingerprint}`);
+  assert(desktopBundle.checklistWorkupSignature === undefined, "phone handoff should not send the full canonical workup signature.");
 
   const { context: phoneContext, page: phonePage } = await openFreshPage(browser, baseUrl, { width: 390, height: 844 });
   await assertNoLayoutBreakage(phonePage, "phone bundle vault entry");
@@ -400,8 +403,15 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   const returnPayload = await phonePage.evaluate(async () => navigator.clipboard.readText());
   assert(returnPayload.length > 100, "phone return payload should copy to clipboard after PHI review");
   const mismatchedReturn = decodeLocalBundle(returnPayload);
+  assert(mismatchedReturn.checklistFingerprint === desktopBundle.checklistFingerprint, "phone return bundle should preserve the laptop checklist fingerprint.");
   mismatchedReturn.code = "WRNG-0000";
   const mismatchedReturnPayload = encodeLocalBundle(mismatchedReturn);
+  const staleChecklistReturn = { ...decodeLocalBundle(returnPayload), checklistFingerprint: "00000000" };
+  const staleChecklistReturnPayload = encodeLocalBundle(staleChecklistReturn);
+  const staleItemReturn = decodeLocalBundle(returnPayload);
+  staleItemReturn.answers = { ...(staleItemReturn.answers || {}), "999:999": "Injected stale answer" };
+  staleItemReturn.itemNotes = { ...(staleItemReturn.itemNotes || {}), "999:999": "Injected stale note" };
+  const staleItemReturnPayload = encodeLocalBundle(staleItemReturn);
   let phoneSnapshot = await storageSnapshot(phonePage);
   assert(Object.keys(phoneSnapshot).length === 0, `phone interview should remain no-save after answers, got ${Object.keys(phoneSnapshot).join(", ")}`);
   await phoneContext.close();
@@ -417,7 +427,19 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   assert(!/Imported phone findings/i.test(mismatchDesktopAudit.finalText), `mismatched return bundle should not update final text: ${JSON.stringify(mismatchDesktopAudit)}`);
   assert(mismatchDesktopAudit.answeredRows === 0, `mismatched return bundle should not merge answers: ${JSON.stringify(mismatchDesktopAudit)}`);
 
-  await desktopPage.fill("#phoneImportInput", returnPayload);
+  await desktopPage.fill("#phoneImportInput", staleChecklistReturnPayload);
+  await desktopPage.click("#importPhoneFindingsButton");
+  await desktopPage.waitForTimeout(250);
+  const staleChecklistDesktopAudit = await desktopPage.evaluate(() => ({
+    status: document.querySelector("#handoffStatus")?.textContent || "",
+    finalText: document.querySelector("#finalUpdatePreview")?.textContent || "",
+    answeredRows: document.querySelectorAll(".checklist-row.is-answered").length
+  }));
+  assert(/different checklist|fresh phone bundle|checklist fingerprint/i.test(staleChecklistDesktopAudit.status), `stale checklist return bundle should show a fingerprint mismatch error: ${JSON.stringify(staleChecklistDesktopAudit)}`);
+  assert(!/Imported phone findings/i.test(staleChecklistDesktopAudit.finalText), `stale checklist return bundle should not update final text: ${JSON.stringify(staleChecklistDesktopAudit)}`);
+  assert(staleChecklistDesktopAudit.answeredRows === 0, `stale checklist return bundle should not merge answers: ${JSON.stringify(staleChecklistDesktopAudit)}`);
+
+  await desktopPage.fill("#phoneImportInput", staleItemReturnPayload);
   await desktopPage.click("#importPhoneFindingsButton");
   await desktopPage.waitForFunction(() => /Phone checklist answers imported/i.test(document.querySelector("#handoffStatus")?.textContent || ""));
   await desktopPage.waitForFunction(() => /Imported phone findings:[\s\S]+:/i.test(document.querySelector("#finalUpdatePreview")?.textContent || ""));
@@ -427,6 +449,7 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
     answeredRows: document.querySelectorAll(".checklist-row.is-answered").length
   }));
   assert(desktopImportAudit.answeredRows >= 1, `desktop import should merge answered checklist rows: ${JSON.stringify(desktopImportAudit)}`);
+  assert(/stale phone items ignored/i.test(desktopImportAudit.handoffStatus), `desktop import should report stale phone item keys were ignored: ${JSON.stringify(desktopImportAudit)}`);
   assert(/Imported phone findings:[\s\S]+:/i.test(desktopImportAudit.finalText), "desktop final update should include returned phone checklist findings");
   await desktopContext.close();
 }
@@ -529,6 +552,28 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
     assert(phoneTabAudit.visible && phoneTabAudit.bodyDeviceMode === "phone", `phone-sized workspace should expose the phone handoff tab: ${JSON.stringify(phoneTabAudit)}`);
   } else {
     assert(phoneTabAudit.hidden && phoneTabAudit.ariaHidden === "true" && !phoneTabAudit.visible && phoneTabAudit.bodyDeviceMode === "desktop", `desktop workspace should hide the phone handoff tab: ${JSON.stringify(phoneTabAudit)}`);
+    await page.evaluate(() => document.querySelector('[data-patient-tab="handoff"]')?.click());
+    await page.waitForFunction(() => document.body.dataset.patientTab === "checklist");
+    const forcedPhoneTabAudit = await page.evaluate(() => ({
+      bodyDeviceMode: document.body.dataset.deviceMode,
+      patientTab: document.body.dataset.patientTab,
+      phoneTabHidden: Boolean(document.querySelector('[data-patient-tab="handoff"]')?.hidden),
+      phonePanelHidden: Boolean(document.querySelector('[data-patient-panel="handoff"]')?.hidden),
+      admissionOverlayHidden: Boolean(document.querySelector("#patientAdmissionOverlay")?.hidden),
+      visibleTabs: Array.from(document.querySelectorAll(".patient-task-strip [role='tab']"))
+        .filter((tab) => !tab.hidden && getComputedStyle(tab).display !== "none")
+        .map((tab) => tab.textContent?.trim() || "")
+    }));
+    assert(
+      forcedPhoneTabAudit.bodyDeviceMode === "desktop"
+        && forcedPhoneTabAudit.patientTab === "checklist"
+        && forcedPhoneTabAudit.phoneTabHidden
+        && forcedPhoneTabAudit.phonePanelHidden
+        && forcedPhoneTabAudit.admissionOverlayHidden
+        && !forcedPhoneTabAudit.visibleTabs.includes("Phone"),
+      `desktop should coerce hidden Phone tab activation back to the checklist workflow: ${JSON.stringify(forcedPhoneTabAudit)}`
+    );
+    await clickPatientTab(page, "overview");
   }
   const patientTabLayout = await page.evaluate(() => {
     const strip = document.querySelector(".patient-task-strip");

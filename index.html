@@ -2385,6 +2385,8 @@
     .decision-tree-node-editor {
       display: grid;
       gap: 8px;
+      width: 100%;
+      max-width: 100%;
       min-width: 0;
       border: 1px solid var(--line);
       border-radius: 7px;
@@ -2394,7 +2396,13 @@
 
     .decision-tree-json-panel textarea,
     .decision-tree-node-editor textarea {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
       min-height: 120px;
+      overflow-x: hidden;
+      overflow-wrap: anywhere;
       resize: vertical;
       font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
       font-size: 12.5px;
@@ -3231,7 +3239,12 @@
     }
 
     .studio-form textarea {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
       min-height: 76px;
+      overflow-x: hidden;
       resize: vertical;
     }
 
@@ -15450,6 +15463,46 @@
       return ["mvp", "active", "published", "reviewed"].includes(normalized) ? normalized : "reviewed";
     }
 
+    async function verifyPublishedWorkupPublicCatalog(workupId) {
+      const id = String(workupId || "").trim();
+      if (!id) throw new Error("Public catalog verification failed: missing workup id.");
+      if (!publicWorkupCatalogConfigured()) {
+        throw new Error("Public catalog verification failed: Supabase public catalog backend is not configured.");
+      }
+      const workups = await workupCatalogSupabaseRequest(
+        `/rest/v1/workups?select=id,title,status,source_ids,updated_at&id=eq.${encodeURIComponent(id)}&status=in.(mvp,active,published,reviewed)&limit=1`,
+        { publicOnly: true }
+      );
+      const visibleWorkup = Array.isArray(workups) ? workups.find((row) => String(row.id || "") === id) : null;
+      if (!visibleWorkup) {
+        throw new Error(`Public catalog verification failed for ${id}: fresh devices cannot read the published workup row.`);
+      }
+      const sections = await workupCatalogSupabaseRequest(
+        supabaseWorkupSectionsCatalogPath({ workupIds: [id], publicOnly: true }),
+        { publicOnly: true }
+      );
+      if (!Array.isArray(sections) || !sections.some((row) => String(row.workup_id || "") === id)) {
+        throw new Error(`Public catalog verification failed for ${id}: fresh devices cannot read its section rows.`);
+      }
+      const sourceIds = sourceIdsForCatalogRows([visibleWorkup], sections);
+      let sources = [];
+      if (sourceIds.length) {
+        sources = await workupCatalogSupabaseRequest(
+          supabaseSourcesCatalogPath({ sourceIds, publicOnly: true }),
+          { publicOnly: true }
+        );
+        if (!Array.isArray(sources) || !sources.length) {
+          throw new Error(`Public catalog verification failed for ${id}: fresh devices cannot read referenced source rows.`);
+        }
+      }
+      return {
+        verified: true,
+        workupCount: 1,
+        sectionCount: sections.length,
+        sourceCount: Array.isArray(sources) ? sources.length : 0
+      };
+    }
+
     async function publishWorkupStudioCanonicalSection(changeSet) {
       if (!workupStudioCanReview()) throw new Error("Reviewer access is required to publish canonical Workup Studio content.");
       const workupId = changeSet.workupId || changeSet.workup_id;
@@ -15549,6 +15602,7 @@
         prefer: "return=minimal"
       });
       await publishWorkupStudioCanonicalSection(changeSet);
+      const publicCatalogVerification = await verifyPublishedWorkupPublicCatalog(changeSet.workupId || changeSet.workup_id);
       try {
         await loadSupabaseWorkupCatalog({ force: true });
       } catch {
@@ -15558,7 +15612,12 @@
       changeSet.syncedAt = new Date().toISOString();
       saveWorkupStudioState();
       renderWorkupStudio();
-      if (announce) setStatus(`${studioSectionDefinition().label} published to Supabase for all database-backed users.`);
+      if (announce) {
+        const verificationCopy = publicCatalogVerification?.verified
+          ? ` Public catalog verified for fresh devices (${publicCatalogVerification.sectionCount} section row${publicCatalogVerification.sectionCount === 1 ? "" : "s"}).`
+          : "";
+        setStatus(`${studioSectionDefinition().label} published to Supabase for all database-backed users.${verificationCopy}`);
+      }
       return true;
     }
 
@@ -15656,11 +15715,14 @@
       }
       void publishWorkupStudioChangeSet(latest)
         .catch((error) => {
+          const message = error instanceof Error ? error.message : "Supabase publish failed.";
           latest.syncStatus = "error";
           saveWorkupStudioState();
           renderWorkupStudio();
-          renderWorkupStudioBackendStatus(error instanceof Error ? error.message : "Supabase publish failed.");
-          setStatus("Draft publish failed. Reviewer role or canonical table RLS may be missing.");
+          renderWorkupStudioBackendStatus(message);
+          setStatus(/Public catalog verification failed/i.test(message)
+            ? "Published to Supabase authoring tables, but fresh-device public catalog verification failed."
+            : "Draft publish failed. Reviewer role or canonical table RLS may be missing.");
         });
       setStatus("Publishing latest draft to Supabase...");
       return true;
@@ -24035,6 +24097,74 @@
       return embedded || wrapper;
     }
 
+    function currentPhoneTransferCode() {
+      return normalizeTransferCode(state.transferCode) || normalizeTransferCode(activePatient()?.phoneBundleCode);
+    }
+
+    function currentPhonePayload() {
+      return state.phonePayload || activePatient()?.phoneBundlePayload || "";
+    }
+
+    function compactStringFingerprint(value = "") {
+      let hash = 2166136261;
+      const text = String(value || "");
+      for (let index = 0; index < text.length; index += 1) {
+        hash ^= text.charCodeAt(index);
+        hash = Math.imul(hash, 16777619);
+      }
+      return (hash >>> 0).toString(16).padStart(8, "0");
+    }
+
+    function phoneChecklistFingerprint({ sections = state.sections, workupModuleId = state.checklistWorkupModuleId || state.selectedWorkupModuleId } = {}) {
+      const sectionSummary = (Array.isArray(sections) ? sections : []).map((section) => ({
+        title: section?.title || "",
+        count: Array.isArray(section?.items) ? section.items.length : 0,
+        labels: (Array.isArray(section?.items) ? section.items : []).map((item) => item?.label || item?.text || item?.question || item?.id || "")
+      }));
+      return compactStringFingerprint(JSON.stringify({
+        workupModuleId: workupModuleId || "",
+        sections: sectionSummary
+      }));
+    }
+
+    function assertMatchingChecklistFingerprint(payloadFingerprint, mismatchMessage) {
+      const incoming = String(payloadFingerprint || "").trim();
+      const expected = phoneChecklistFingerprint();
+      if (!incoming) {
+        throw new Error("Returned phone bundle is missing its checklist fingerprint. Generate a fresh phone bundle from the laptop.");
+      }
+      if (incoming !== expected) {
+        throw new Error(mismatchMessage || "Returned phone bundle was created from a different checklist. Generate a fresh phone bundle after rebuilding the laptop checklist.");
+      }
+      return expected;
+    }
+
+    function currentChecklistAnswerKeySet() {
+      const validKeys = new Set();
+      for (const [sectionIndex, section] of (state.sections || []).entries()) {
+        for (const [itemIndex] of (section.items || []).entries()) {
+          validKeys.add(answerKey(sectionIndex, itemIndex));
+        }
+      }
+      return validKeys;
+    }
+
+    function filterCurrentChecklistMap(source, validKeys = currentChecklistAnswerKeySet()) {
+      const values = {};
+      let ignoredCount = 0;
+      if (!source || typeof source !== "object" || Array.isArray(source)) {
+        return { values, ignoredCount };
+      }
+      for (const [key, value] of Object.entries(source)) {
+        if (validKeys.has(key)) {
+          values[key] = value;
+        } else {
+          ignoredCount += 1;
+        }
+      }
+      return { values, ignoredCount };
+    }
+
     function decodePhoneBundleInput(raw) {
       const text = String(raw || "").trim();
       if (!text) throw new Error("Paste a desktop phone bundle first.");
@@ -24107,7 +24237,9 @@
           intake: String(payload.scrubbedContext || ""),
           status: "active",
           admittedAt: new Date().toISOString(),
-          localId: ""
+          localId: "",
+          phoneBundleCode: bundleCode,
+          phoneBundlePayload: encoded
         };
         state.patients = [patient];
         state.activePatientId = patient.id;
@@ -24117,15 +24249,13 @@
         state.scrubbedText = String(payload.scrubbedContext || "");
         state.checklistText = String(payload.checklistText || "");
         state.sections = payload.sections;
-        state.checklistWorkupModuleId = "";
+        state.checklistWorkupModuleId = String(payload.checklistWorkupModuleId || workupModuleId || "");
         state.checklistWorkupSignature = "";
         state.checklistCatalogStale = false;
         state.answers = plainObject(payload.answers) ? { ...payload.answers } : {};
         state.itemNotes = plainObject(payload.itemNotes) ? { ...payload.itemNotes } : {};
         state.reviewedChecklistKeys = {};
         state.bedsideNote = String(payload.bedsideNote || "");
-        state.transferCode = bundleCode;
-        state.phonePayload = encoded;
         state.importedFindings = "";
         activeChecklistKey = "";
         checklistFilter = "all";
@@ -24139,6 +24269,8 @@
           name: state.vaultName,
           route: { panel: "phone-bundle", view: "bedside", prime: null, sourceMode: "admission" }
         });
+        state.transferCode = bundleCode;
+        state.phonePayload = encoded;
         if (elements.bedsideNoteInput) elements.bedsideNoteInput.value = state.bedsideNote;
         renderChecklist();
         renderHandoff();
@@ -24182,6 +24314,8 @@
         createdAt: new Date().toISOString(),
         caseTitle: $("#caseTitle").textContent,
         workupModuleId: state.selectedWorkupModuleId || activePatient().workupModuleId || "",
+        checklistWorkupModuleId: state.checklistWorkupModuleId || state.selectedWorkupModuleId || activePatient().workupModuleId || "",
+        checklistFingerprint: phoneChecklistFingerprint(),
         scrubbedContext: reviewedSourceContextText(),
         checklistText: state.checklistText,
         sections: state.sections,
@@ -24199,11 +24333,21 @@
 
     function createPhoneReturnPayload() {
       state.bedsideNote = elements.bedsideNoteInput?.value || state.bedsideNote || "";
+      const code = currentPhoneTransferCode();
+      if (!code) {
+        const message = "This phone session has no laptop pairing code. Load a fresh phone bundle before copying return findings.";
+        setHandoffStatus(message, "error");
+        setStatus(message);
+        return null;
+      }
       const payload = {
         version: "local-phone-return-v1",
-        code: state.transferCode || randomCode(),
+        code,
         createdAt: new Date().toISOString(),
         caseTitle: activePatient().title,
+        workupModuleId: state.selectedWorkupModuleId || activePatient().workupModuleId || "",
+        checklistWorkupModuleId: state.checklistWorkupModuleId || state.selectedWorkupModuleId || activePatient().workupModuleId || "",
+        checklistFingerprint: phoneChecklistFingerprint(),
         answers: state.answers,
         itemNotes: state.itemNotes,
         bedsideNote: state.bedsideNote,
@@ -24216,6 +24360,7 @@
     function copyPhoneReturnPayload() {
       const findingPreview = findingsDraftText() || state.bedsideNote || "No bedside findings recorded yet.";
       const payload = createPhoneReturnPayload();
+      if (!payload) return;
       openPhiOverlay({
         title: "PHI safety check for laptop return bundle",
         copy: "Review bedside findings before copying this local return bundle back to the laptop.",
@@ -24287,8 +24432,8 @@
     }
 
     function renderHandoff() {
-      elements.phoneTransferCode.textContent = state.transferCode || "Not generated";
-      elements.phonePayload.value = state.phonePayload || "";
+      elements.phoneTransferCode.textContent = currentPhoneTransferCode() || "Not generated";
+      elements.phonePayload.value = currentPhonePayload();
     }
 
     function importPhoneFindings() {
@@ -24303,7 +24448,7 @@
           throw new Error("This is not a phone return bundle. Paste the return bundle copied from the phone, or paste plain bedside notes.");
         }
         const incomingCode = normalizeTransferCode(payload.code);
-        const expectedCode = normalizeTransferCode(state.transferCode);
+        const expectedCode = currentPhoneTransferCode();
         if (!incomingCode) {
           throw new Error("Returned phone bundle is missing its pairing code. Copy a fresh return bundle from the phone.");
         }
@@ -24313,18 +24458,26 @@
         if (expectedCode && incomingCode !== expectedCode) {
           throw new Error(`Returned phone bundle code ${incomingCode} does not match this laptop handoff code ${expectedCode}.`);
         }
-        if (payload.answers && typeof payload.answers === "object") {
-          state.answers = { ...state.answers, ...payload.answers };
+        assertMatchingChecklistFingerprint(payload.checklistFingerprint);
+        const validChecklistKeys = currentChecklistAnswerKeySet();
+        const filteredAnswers = filterCurrentChecklistMap(payload.answers, validChecklistKeys);
+        const filteredItemNotes = filterCurrentChecklistMap(payload.itemNotes, validChecklistKeys);
+        if (Object.keys(filteredAnswers.values).length) {
+          state.answers = { ...state.answers, ...filteredAnswers.values };
         }
-        if (payload.itemNotes && typeof payload.itemNotes === "object") {
-          state.itemNotes = { ...state.itemNotes, ...payload.itemNotes };
+        if (Object.keys(filteredItemNotes.values).length) {
+          state.itemNotes = { ...state.itemNotes, ...filteredItemNotes.values };
         }
         if (payload.bedsideNote) {
           state.bedsideNote = payload.bedsideNote;
           elements.bedsideNoteInput.value = payload.bedsideNote;
         }
         state.importedFindings = payload.bedsideNote || payload.findingsText || `Imported bundle ${payload.code || ""}`.trim();
-        setHandoffStatus("Phone checklist answers imported into final review.", "success");
+        const ignoredCount = filteredAnswers.ignoredCount + filteredItemNotes.ignoredCount;
+        const ignoredCopy = ignoredCount
+          ? ` ${ignoredCount} stale phone item${ignoredCount === 1 ? "" : "s"} ignored.`
+          : "";
+        setHandoffStatus(`Phone checklist answers imported into final review.${ignoredCopy}`, "success");
       } catch (error) {
         if (looksLikePhoneBundleText(raw)) {
           const message = error instanceof Error ? error.message : "Returned phone bundle could not be imported.";

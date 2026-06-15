@@ -30,6 +30,7 @@ for (const key of [
   "SUPABASE_SERVICE_ROLE_KEY",
   "SUPABASE_ACCESS_TOKEN",
   "SUPABASE_DB_PASSWORD",
+  "SUPABASE_DB_URL",
   "WORKUP_STUDIO_AUTH_METHOD",
   "WORKUP_STUDIO_OAUTH_PROVIDER",
   "SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID",
@@ -93,6 +94,30 @@ assert.ok(deployScript.includes("import:medical-knowledge"), "Deploy command sho
 assert.ok(deployScript.includes("grant:workup-access"), "Deploy command should support reviewer grants.");
 assert.ok(deployScript.includes("check:supabase-auth"), "Deploy command should finish with the readiness probe.");
 assert.ok(existsSync(path.join(repoRoot, ".github", "workflows", "supabase-workup-authoring.yml")), "GitHub Actions workflow should exist for hosted Supabase deploys.");
+const deployWorkflow = read(".github/workflows/supabase-workup-authoring.yml");
+assert.ok(deployWorkflow.includes("push:"), "Supabase deploy workflow should run automatically for main-branch server catalog changes.");
+assert.ok(deployWorkflow.includes("branches:") && deployWorkflow.includes("- main"), "Supabase deploy workflow should target main pushes.");
+for (const workflowPath of [
+  "supabase/**",
+  "medical-knowledge/**",
+  "scripts/import-medical-knowledge.js",
+  "scripts/deploy-supabase-workup-authoring.js",
+  "utils/supabase/**"
+]) {
+  assert.ok(deployWorkflow.includes(workflowPath), `Supabase deploy workflow should watch ${workflowPath}.`);
+}
+assert.ok(deployWorkflow.includes("inputs.auth_method || 'magic-link'"), "Push-triggered Supabase deploys should default to magic-link auth without manual inputs.");
+assert.ok(deployWorkflow.includes("inputs.oauth_provider || 'google'"), "Push-triggered Supabase deploys should default OAuth provider inputs safely.");
+assert.ok(deployWorkflow.includes("inputs.reviewer_email || ''"), "Push-triggered Supabase deploys should not require a reviewer email input.");
+assert.ok(deployWorkflow.includes("SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}"), "GitHub deploy workflow should pass through SUPABASE_DB_URL when projects use direct DB URLs instead of passwords.");
+assert.ok(deployWorkflow.includes("concurrency:"), "Supabase deploy workflow should prevent overlapping catalog deploys.");
+assert.ok(deployWorkflow.includes("group: supabase-workup-authoring-${{ github.ref }}"), "Supabase deploy workflow should serialize deploys by branch/ref.");
+assert.ok(deployWorkflow.includes("cancel-in-progress: true"), "Supabase deploy workflow should cancel stale deploys so the newest workup catalog wins.");
+assert.ok(deployWorkflow.includes("Check deployment secrets"), "Supabase deploy workflow should fail fast when required GitHub secrets are missing.");
+assert.ok(deployWorkflow.includes('missing+=("SUPABASE_ACCESS_TOKEN")'), "Supabase deploy preflight should require the CLI access token secret.");
+assert.ok(deployWorkflow.includes('missing+=("SUPABASE_SERVICE_ROLE_KEY")'), "Supabase deploy preflight should require the service-role seed/import secret.");
+assert.ok(deployWorkflow.includes('missing+=("SUPABASE_DB_PASSWORD or SUPABASE_DB_URL")'), "Supabase deploy preflight should require one database credential secret.");
+assert.ok(deployWorkflow.includes("Supabase Workup Studio deploy is missing required GitHub secret"), "Supabase deploy preflight should print an actionable missing-secret message.");
 
 const html = read("index.html");
 assert.ok(html.includes("WORKUP_STUDIO_DEFAULT_BACKEND"), "Workup Studio should have public backend defaults.");
@@ -122,6 +147,10 @@ assert.ok(html.includes("function sourceIdsForCatalogRows"), "Public catalog hyd
 assert.ok(html.includes("status=in.(mvp,active,published,reviewed)"), "Public patient catalog requests should filter to active reviewed server workups.");
 assert.ok(html.includes("function publicCatalogWorkupStatus"), "Reviewer publish should normalize canonical workups into a public-catalog status.");
 assert.ok(html.includes("status: publicCatalogWorkupStatus(currentWorkupStatus)"), "Publishing a reviewed draft should patch the workup status so fresh patient devices can load it.");
+assert.ok(html.includes("function verifyPublishedWorkupPublicCatalog"), "Reviewer publish should verify the read-only public catalog path used by fresh devices.");
+assert.ok(html.includes("Public catalog verification failed"), "Reviewer publish should surface public-catalog visibility failures distinctly.");
+assert.ok(html.includes("await verifyPublishedWorkupPublicCatalog(changeSet.workupId || changeSet.workup_id)"), "Publishing should not mark a draft synced until the public catalog verification runs.");
+assert.ok(html.includes("Public catalog verified for fresh devices"), "Successful reviewer publish should tell the reviewer the fresh-device catalog path was verified.");
 assert.ok(html.includes("publicWorkupCatalogConfigured"), "The app should support public reviewed-catalog hydration before Workup Studio sign-in.");
 assert.ok(html.includes("hydratePublicWorkupCatalogOnStartup"), "Fresh patient devices should explicitly hydrate the public reviewed catalog on app startup.");
 assert.ok(html.includes("publicOnly"), "Public catalog hydration should be able to bypass stale Workup Studio auth tokens.");
@@ -195,7 +224,9 @@ const docs = read("docs/supabase-workup-authoring.md");
 assert.ok(docs.includes("npx supabase db push"), "Setup docs should explain how to deploy the migration.");
 assert.ok(docs.includes("npm run deploy:supabase-workup-authoring"), "Setup docs should explain the one-command deployment path.");
 assert.ok(docs.includes("npm run check:supabase-public"), "Setup docs should explain the credential-free public readiness check.");
+assert.ok(docs.includes("automatically run the deploy workflow"), "Setup docs should explain automatic GitHub Actions backend deploys on relevant main pushes.");
 assert.ok(docs.includes("Supabase Workup Authoring Deploy"), "Setup docs should mention the manual GitHub Actions backend deploy.");
+assert.ok(docs.includes("SUPABASE_DB_PASSWORD` or `SUPABASE_DB_URL"), "Setup docs should allow either DB password or direct DB URL for hosted deploys.");
 assert.ok(docs.includes("npm run import:medical-knowledge"), "Setup docs should explain how to seed from JSON.");
 assert.ok(docs.includes("npm run export:medical-knowledge"), "Setup docs should explain how to export reviewed content.");
 assert.ok(docs.includes("npm run grant:workup-access"), "Setup docs should explain how to delegate Workup Studio access.");

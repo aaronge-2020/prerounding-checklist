@@ -181,6 +181,9 @@ try {
     catalogSectionCount: 0,
     catalogSourceCount: 0,
     catalogWorkupAuthHeaders: [],
+    catalogWorkupSearches: [],
+    catalogSectionSearches: [],
+    catalogSourceSearches: [],
     getChangeSetsCount: 0,
     postedRows: [],
     patchedRows: [],
@@ -274,6 +277,7 @@ try {
     if (url.pathname === "/rest/v1/workups" && request.method() === "GET") {
       supabaseRequests.catalogWorkupCount += 1;
       supabaseRequests.catalogWorkupAuthHeaders.push(request.headers().authorization || "");
+      supabaseRequests.catalogWorkupSearches.push(decodeURIComponent(url.search));
       await route.fulfill({
         status: 200,
         contentType: "application/json",
@@ -299,6 +303,7 @@ try {
     }
     if (url.pathname === "/rest/v1/workup_sections" && request.method() === "GET") {
       supabaseRequests.catalogSectionCount += 1;
+      supabaseRequests.catalogSectionSearches.push(decodeURIComponent(url.search));
       await route.fulfill({
         status: 200,
         contentType: "application/json",
@@ -370,6 +375,7 @@ try {
     }
     if (url.pathname === "/rest/v1/sources" && request.method() === "GET") {
       supabaseRequests.catalogSourceCount += 1;
+      supabaseRequests.catalogSourceSearches.push(decodeURIComponent(url.search));
       await route.fulfill({
         status: 200,
         contentType: "application/json",
@@ -766,9 +772,29 @@ try {
   assert.equal(await page.locator("#workupStudioPublishImportButton").isDisabled(), false, "Reviewer account should unlock editor publish.");
   assert.match(await page.textContent("#workupStudioPublishImportButton"), /Publish latest draft/, "Reviewer button should accurately describe publishing.");
   assert.equal(await page.locator("#workupStudioSignOutButton").isHidden(), false, "Sign out should appear after verified Workup Studio permission.");
+  const loadedAuthorPublishHeaderBaseline = supabaseRequests.catalogWorkupAuthHeaders.length;
+  const loadedAuthorPublishWorkupSearchBaseline = supabaseRequests.catalogWorkupSearches.length;
+  const loadedAuthorPublishSectionSearchBaseline = supabaseRequests.catalogSectionSearches.length;
+  const loadedAuthorPublishSourceSearchBaseline = supabaseRequests.catalogSourceSearches.length;
   await page.click("#workupStudioPublishImportButton");
   await waitForCondition(() => supabaseRequests.postedRows.some((row) => row.id === "loaded-author-draft"), "Supabase loaded author draft publish");
   await waitForCondition(() => supabaseRequests.catalogWorkupCount >= 2, "canonical catalog refresh after publishing loaded author draft");
+  await waitForCondition(() => supabaseRequests.catalogWorkupAuthHeaders.slice(loadedAuthorPublishHeaderBaseline).some((header) => /sb_publishable_/i.test(header)), "public catalog verification after publishing loaded author draft");
+  const loadedAuthorPublicWorkupSearches = supabaseRequests.catalogWorkupSearches.slice(loadedAuthorPublishWorkupSearchBaseline);
+  const loadedAuthorPublicSectionSearches = supabaseRequests.catalogSectionSearches.slice(loadedAuthorPublishSectionSearchBaseline);
+  const loadedAuthorPublicSourceSearches = supabaseRequests.catalogSourceSearches.slice(loadedAuthorPublishSourceSearchBaseline);
+  assert.ok(
+    loadedAuthorPublicWorkupSearches.some((search) => search.includes("id=eq.hyperglycemia_possible_dka_v1") && search.includes("status=in.(mvp,active,published,reviewed)")),
+    `Reviewer publish should verify the public workup row through the same filtered catalog path fresh devices use: ${JSON.stringify(loadedAuthorPublicWorkupSearches)}`
+  );
+  assert.ok(
+    loadedAuthorPublicSectionSearches.some((search) => search.includes('workup_id=in.("hyperglycemia_possible_dka_v1")')),
+    `Reviewer publish should verify public section hydration for the published workup: ${JSON.stringify(loadedAuthorPublicSectionSearches)}`
+  );
+  assert.ok(
+    loadedAuthorPublicSourceSearches.some((search) => /or=\(id\.in\./.test(search) && /SUPABASE_SOURCE_V2/.test(search)),
+    `Reviewer publish should verify referenced public sources for fresh-device traceability: ${JSON.stringify(loadedAuthorPublicSourceSearches)}`
+  );
   const loadedAuthorDraftRow = supabaseRequests.postedRows.find((row) => row.id === "loaded-author-draft");
   assert.equal(loadedAuthorDraftRow.author_id, fakeAuthorUserId, "Reviewer publish must preserve the original draft author.");
   assert.equal(loadedAuthorDraftRow.reviewer_id, fakeUserId, "Reviewer publish should record the reviewer separately.");
