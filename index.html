@@ -388,8 +388,11 @@
     body[data-nav-collapsed="true"] .sidebar {
       display: flex !important;
       align-items: stretch;
+      width: var(--app-nav-rail-w);
+      max-width: var(--app-nav-rail-w);
       padding: 12px 7px;
       overflow: hidden;
+      transition: width 0.16s ease, max-width 0.16s ease, padding 0.16s ease, box-shadow 0.16s ease;
     }
 
     .workspace {
@@ -490,6 +493,84 @@
 
     body[data-nav-collapsed="true"] .layout-sidebar-resize {
       display: none;
+    }
+
+    @media (hover: hover) and (pointer: fine) and (min-width: 761px) {
+      body:not([data-view="vaultAccess"])[data-nav-collapsed="true"] .sidebar:focus-within,
+      body:not([data-view="vaultAccess"])[data-nav-collapsed="true"] .sidebar:hover {
+        width: min(var(--app-sidebar-w), calc(100vw - 48px));
+        max-width: calc(100vw - 48px);
+        padding: 18px 12px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        box-shadow: 12px 0 28px rgba(19, 38, 46, 0.14);
+      }
+
+      body:not([data-view="vaultAccess"])[data-nav-collapsed="true"] .sidebar:focus-within .layout-sidebar-head,
+      body:not([data-view="vaultAccess"])[data-nav-collapsed="true"] .sidebar:hover .layout-sidebar-head {
+        justify-content: space-between;
+        margin-bottom: 14px;
+        padding: 0 2px 10px;
+      }
+
+      body:not([data-view="vaultAccess"])[data-nav-collapsed="true"] .sidebar:focus-within .layout-sidebar-head strong,
+      body:not([data-view="vaultAccess"])[data-nav-collapsed="true"] .sidebar:focus-within .nav-title,
+      body:not([data-view="vaultAccess"])[data-nav-collapsed="true"] .sidebar:focus-within .vault-mini,
+      body:not([data-view="vaultAccess"])[data-nav-collapsed="true"] .sidebar:hover .layout-sidebar-head strong,
+      body:not([data-view="vaultAccess"])[data-nav-collapsed="true"] .sidebar:hover .nav-title,
+      body:not([data-view="vaultAccess"])[data-nav-collapsed="true"] .sidebar:hover .vault-mini {
+        display: block;
+      }
+
+      body:not([data-view="vaultAccess"])[data-nav-collapsed="true"] .sidebar:focus-within .layout-sidebar-toggle,
+      body:not([data-view="vaultAccess"])[data-nav-collapsed="true"] .sidebar:hover .layout-sidebar-toggle {
+        width: 32px;
+        height: 32px;
+      }
+
+      body:not([data-view="vaultAccess"])[data-nav-collapsed="true"] .sidebar:focus-within .nav-section,
+      body:not([data-view="vaultAccess"])[data-nav-collapsed="true"] .sidebar:hover .nav-section {
+        gap: 4px;
+        margin-bottom: 20px;
+      }
+
+      body:not([data-view="vaultAccess"])[data-nav-collapsed="true"] .sidebar:focus-within .nav-button,
+      body:not([data-view="vaultAccess"])[data-nav-collapsed="true"] .sidebar:hover .nav-button {
+        justify-content: flex-start;
+        width: 100%;
+        min-height: 44px;
+        padding: 8px 10px;
+      }
+
+      body:not([data-view="vaultAccess"])[data-nav-collapsed="true"] .sidebar:focus-within .nav-button > span:not(.icon-box),
+      body:not([data-view="vaultAccess"])[data-nav-collapsed="true"] .sidebar:hover .nav-button > span:not(.icon-box) {
+        display: inline;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      body:not([data-view="vaultAccess"])[data-nav-collapsed="true"] .sidebar:focus-within .nav-button .icon-box,
+      body:not([data-view="vaultAccess"])[data-nav-collapsed="true"] .sidebar:hover .nav-button .icon-box {
+        width: 19px;
+        height: 19px;
+      }
+
+      body:not([data-view="vaultAccess"])[data-nav-collapsed="true"] .layout-sidebar-head {
+        display: none;
+      }
+
+      body:not([data-view="vaultAccess"])[data-nav-collapsed="true"] .sidebar:focus-within .layout-sidebar-head,
+      body:not([data-view="vaultAccess"])[data-nav-collapsed="true"] .sidebar:hover .layout-sidebar-head {
+        display: flex;
+      }
+
+      body:not([data-view="vaultAccess"])[data-nav-collapsed="true"] .layout-sidebar-toggle,
+      body:not([data-view="vaultAccess"])[data-nav-collapsed="true"] .sidebar:focus-within .layout-sidebar-toggle,
+      body:not([data-view="vaultAccess"])[data-nav-collapsed="true"] .sidebar:hover .layout-sidebar-toggle {
+        display: none;
+      }
     }
 
     .layout-sidebar-resize,
@@ -6192,9 +6273,7 @@
       }
 
       .patient-task-strip {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        overflow-x: visible;
+        display: none;
       }
 
       .patient-task-strip button {
@@ -6202,6 +6281,59 @@
         width: 100%;
         padding: 6px 3px;
         font-size: 11px;
+      }
+
+      .patient-workspace-head {
+        padding: 11px 12px;
+      }
+
+      .patient-workspace-head .workspace-header-actions,
+      .patient-workspace-head #patientWorkspaceOneLine {
+        display: none;
+      }
+
+      .patient-workflow-grid {
+        display: block;
+        padding: 0;
+      }
+
+      #patientChecklistPanel {
+        border: 0;
+        border-radius: 0;
+        background: #f8fbfb;
+        padding: 10px;
+      }
+
+      #patientChecklistPanel .panel-title-row {
+        margin-bottom: 8px;
+      }
+
+      #patientChecklistPanel .checklist-command-grid,
+      #workspaceChecklistPreviewList {
+        display: none;
+      }
+
+      .phone-checklist-launcher {
+        display: grid;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .phone-checklist-status {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .phone-checklist-status .btn {
+        width: 100%;
+      }
+
+      .phone-workup-results .workup-result-rows {
+        gap: 6px;
+      }
+
+      .phone-workup-results .workup-result-row {
+        border: 1px solid var(--line);
+        border-radius: 7px;
       }
 
       .patient-evidence-preview-head {
@@ -8138,6 +8270,124 @@
       overflow-wrap: anywhere;
     }
 
+    .phone-checklist-launcher {
+      display: none;
+    }
+
+    .phone-checklist-status {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 11px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #ffffff;
+    }
+
+    .phone-checklist-status strong,
+    .phone-checklist-status span {
+      display: block;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .phone-checklist-status strong {
+      color: #17313a;
+      font-size: 15px;
+      line-height: 1.25;
+    }
+
+    .phone-checklist-status span {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.35;
+    }
+
+    .phone-checklist-status[data-refinement="available"] {
+      border-color: #8ec9c1;
+      background: var(--teal-soft);
+    }
+
+    .phone-workup-search {
+      display: grid;
+      grid-template-columns: 20px minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #ffffff;
+      padding: 0 10px;
+    }
+
+    .phone-workup-search input {
+      width: 100%;
+      min-width: 0;
+      border: 0;
+      padding: 10px 0;
+      background: transparent;
+      font-size: 16px;
+      line-height: 1.35;
+      outline: none;
+    }
+
+    .phone-workup-results {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .phone-workup-results .workup-result-group-title {
+      margin: 2px 0 6px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 820;
+    }
+
+    .phone-workup-results .workup-result-row {
+      min-height: 58px;
+    }
+
+    .phone-computer-bundle {
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    .phone-computer-bundle summary {
+      padding: 10px 11px;
+      cursor: pointer;
+      color: #17313a;
+      font-size: 13px;
+      font-weight: 820;
+      list-style-position: inside;
+    }
+
+    .phone-computer-bundle textarea {
+      width: calc(100% - 22px);
+      min-height: 92px;
+      margin: 0 11px 10px;
+      font-size: 12px;
+      line-height: 1.4;
+      resize: vertical;
+    }
+
+    .phone-computer-bundle .button-row,
+    .phone-computer-bundle .vault-status-line {
+      margin: 0 11px 11px;
+    }
+
+    @media (max-width: 760px) {
+      .phone-checklist-launcher {
+        display: grid;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+    }
+
     .workspace-checklist-directory {
       display: grid;
       gap: 8px;
@@ -8648,7 +8898,9 @@
         display: grid;
         grid-template-columns: var(--app-nav-rail-w) minmax(0, 1fr);
         grid-template-rows: var(--header-h) minmax(0, 1fr) var(--footer-h);
-        height: 100vh;
+        min-height: 100dvh;
+        height: auto;
+        overflow: visible;
       }
 
       body:not([data-view="vaultAccess"])[data-nav-collapsed="false"] .app-shell {
@@ -8694,7 +8946,21 @@
       .workspace {
         grid-column: 2;
         height: auto;
-        overflow: auto;
+        overflow: visible;
+      }
+
+      body[data-view="workspace"][data-patient-tab="workup"] .app-shell {
+        min-height: 100dvh;
+        height: auto;
+        overflow: visible;
+      }
+
+      body[data-view="workspace"][data-patient-tab="workup"] .workspace,
+      body[data-view="workspace"][data-patient-tab="workup"] .patient-workspace,
+      body[data-view="workspace"][data-patient-tab="workup"] #patientWorkupPanel {
+        height: auto;
+        min-height: 100dvh;
+        overflow: visible;
       }
 
       body[data-view="studio"] .app-shell {
@@ -10208,9 +10474,21 @@
         background: #ffffff;
       }
 
+      body[data-view="bedside"] .app-shell,
+      body[data-view="bedside"][data-nav-collapsed="true"] .app-shell {
+        min-height: 100dvh;
+        height: auto;
+        overflow: visible;
+      }
+
+      body[data-view="bedside"] .workspace {
+        overflow: visible;
+      }
+
       body[data-view="bedside"] #bedsideView:not([hidden]) {
         display: block;
-        min-height: 100vh;
+        height: auto;
+        min-height: 100dvh;
         padding-bottom: 92px;
       }
 
@@ -11146,6 +11424,30 @@
                   <span class="meta-tag" id="workspaceChecklistStatus">Not built</span>
                 </div>
                 <div class="notice success" id="workspaceChecklistReadyNotice">Build a patient-scoped checklist, then answer it on the bedside checklist screen.</div>
+                <div class="phone-checklist-launcher" id="phoneChecklistLauncher" aria-label="Phone checklist setup">
+                  <div class="phone-checklist-status">
+                    <div>
+                      <strong id="phoneChecklistWorkupTitle">No workup selected</strong>
+                      <span id="phoneChecklistRefinementStatus">Select a workup to see the checklist that will open here.</span>
+                    </div>
+                    <button class="btn btn-primary" id="phoneChecklistPrimaryButton" type="button">Build and open checklist</button>
+                  </div>
+                  <label for="phoneChecklistWorkupInput">Checklist workup</label>
+                  <div class="phone-workup-search">
+                    <span class="icon-box" data-icon="search" aria-hidden="true"></span>
+                    <input id="phoneChecklistWorkupInput" type="search" autocomplete="off" maxlength="160" aria-controls="phoneChecklistWorkupResults" placeholder="Search by diagnosis or workup">
+                    <button class="checklist-search-clear" id="phoneChecklistClearWorkupButton" type="button" hidden>Clear</button>
+                  </div>
+                  <div class="phone-workup-results" id="phoneChecklistWorkupResults" role="listbox" aria-label="Phone checklist workup choices"></div>
+                  <details class="phone-computer-bundle">
+                    <summary>Open checklist copied from computer</summary>
+                    <textarea id="phoneChecklistBundleInput" maxlength="32000" spellcheck="false" aria-describedby="localTextEntryHelp" placeholder="Paste the phone bundle copied from the computer."></textarea>
+                    <div class="button-row">
+                      <button class="btn btn-primary" id="phoneChecklistLoadBundleButton" type="button">Open copied checklist</button>
+                    </div>
+                    <div class="vault-status-line" id="phoneChecklistBundleStatus" aria-live="polite"></div>
+                  </details>
+                </div>
                 <div class="checklist-command-grid">
                   <button class="btn btn-primary" id="workspaceOpenBedsideChecklistButton" type="button">Build checklist from workup</button>
                   <button class="btn btn-secondary" id="workspaceChecklistSecondaryButton" type="button">Choose workup</button>
@@ -12018,11 +12320,12 @@
     import { complaintModules, complaintSourceRegistry, evaluateComplaintCds, formatComplaintCdsReport } from "./complaint-cds.js";
     import { buildLocalChecklistFromWorkup, checklistItemOptions, groupChecklistSectionsByOrganSystem, parseChecklist } from "./checklist.js";
     import { clinicalIntentRegistry, getClinicalIntentById } from "./clinical-intents.js";
-    import { openEvidenceTasks, buildOpenEvidencePrompt } from "./open-evidence-workflows.js";
+    import { openEvidenceTasks, buildOpenEvidencePrompt, compactOpenEvidenceContext } from "./open-evidence-workflows.js";
     import { extractRoundsPasteBack } from "./open-evidence-results.js";
     import { appendOrUpdateContinuityDay, buildCarryForwardBlock, buildSmartUpdateReview, classifySmartUpdateSections, createContinuityCase, formatDailyInputs, latestContinuityDay, normalizeContinuityCase, normalizeDailyInputs, smartSectionsToDailyInputs } from "./continuity.js";
     import { applySectionPayloadToModule, applyWorkupChangeSet, collectModuleSourceIds, collectSourceIdsFromValue, flattenPathwayNodes, makeWorkupChangeSet, sectionPayloadFromModule, workupSectionDefinitions } from "./workup-authoring.js";
 
+    const baseComplaintModulesById = new Map(complaintModules.map((module) => [module.id, module]));
     const LEGACY_STORAGE_KEY = "prerounding-redesign-state-v1";
     const LEGACY_VAULT_META_KEY = "prerounding-local-vault-meta-v1";
     const VAULT_META_KEY = "prerounding-local-vault-meta-v2";
@@ -12492,6 +12795,16 @@
       workspaceOpenBedsideChecklistButton: $("#workspaceOpenBedsideChecklistButton"),
       workspaceChecklistSecondaryButton: $("#workspaceChecklistSecondaryButton"),
       workspaceChecklistPhoneButton: $("#workspaceChecklistPhoneButton"),
+      phoneChecklistLauncher: $("#phoneChecklistLauncher"),
+      phoneChecklistWorkupTitle: $("#phoneChecklistWorkupTitle"),
+      phoneChecklistRefinementStatus: $("#phoneChecklistRefinementStatus"),
+      phoneChecklistPrimaryButton: $("#phoneChecklistPrimaryButton"),
+      phoneChecklistWorkupInput: $("#phoneChecklistWorkupInput"),
+      phoneChecklistClearWorkupButton: $("#phoneChecklistClearWorkupButton"),
+      phoneChecklistWorkupResults: $("#phoneChecklistWorkupResults"),
+      phoneChecklistBundleInput: $("#phoneChecklistBundleInput"),
+      phoneChecklistLoadBundleButton: $("#phoneChecklistLoadBundleButton"),
+      phoneChecklistBundleStatus: $("#phoneChecklistBundleStatus"),
       deidPreview: $("#deidPreview"),
       deidCounts: $("#deidCounts"),
       deidModelStatus: $("#deidModelStatus"),
@@ -12594,6 +12907,7 @@
     let quickDeidText = "";
     let checklistFilter = "all";
     let checklistSearch = "";
+    let phoneChecklistWorkupSearch = "";
     let openEvidenceTaskSearch = "";
     let checklistSectionFocus = false;
     let activeChecklistKey = "";
@@ -12604,6 +12918,13 @@
     let decisionTreeZoom = 1;
     let decisionTreeUserZoomed = false;
     let decisionTreeResizeTimer = null;
+    let standaloneWorkupSearchTimer = null;
+    let patientWorkupSearchTimer = null;
+    let workupModuleCacheVersion = 0;
+    let effectiveComplaintModulesCache = { version: -1, modules: [] };
+    let sortedComplaintModulesCache = { version: -1, modules: [] };
+    const effectiveModuleByIdCache = new Map();
+    const workupSearchTextCache = new Map();
     const decisionTreeOutlineCollapsedByPanel = new Map([
       ["patientDecisionTreePanel", true],
       ["decisionTreePanel", false]
@@ -13418,7 +13739,7 @@
       state.patientWorkupSelections[patient.id] = "";
       closeAdmissionOverlay();
       selectPatient(patient.id);
-      setPatientTab("context", { announce: false });
+      setPatientTab(isCompactPatientDevice() ? "checklist" : "context", { announce: false });
       saveState();
       setStatus(`${patient.title} admitted to ${state.sessionMode === "single" ? "the no-save workflow" : "the local vault"}.`);
     }
@@ -13481,10 +13802,12 @@
     }
 
     function confirmRebuildChecklist() {
+      const source = elements.rebuildChecklistConfirmOverlay?.dataset?.source || "bedside";
       closeRebuildChecklistConfirmation();
-      rebuildChecklistWithConfirmation({ source: elements.rebuildChecklistConfirmOverlay?.dataset?.source || "bedside", force: true });
+      const built = rebuildChecklistWithConfirmation({ source, force: true });
       renderChecklist();
       renderPatientWorkspace();
+      if (built && source === "phone") showView("bedside");
     }
 
     function confirmDischargePatient() {
@@ -13701,8 +14024,16 @@
       return JSON.parse(JSON.stringify(value));
     }
 
+    function invalidateWorkupModuleCaches() {
+      workupModuleCacheVersion += 1;
+      effectiveComplaintModulesCache = { version: -1, modules: [] };
+      sortedComplaintModulesCache = { version: -1, modules: [] };
+      effectiveModuleByIdCache.clear();
+      workupSearchTextCache.clear();
+    }
+
     function baseModuleById(moduleId) {
-      return complaintModules.find((module) => module.id === moduleId) || null;
+      return baseComplaintModulesById.get(moduleId) || null;
     }
 
     function rawModuleById(moduleId) {
@@ -13730,11 +14061,16 @@
     }
 
     function effectiveComplaintModules() {
-      const byId = new Map(complaintModules.map((module) => [module.id, module]));
+      if (effectiveComplaintModulesCache.version === workupModuleCacheVersion) {
+        return effectiveComplaintModulesCache.modules;
+      }
+      const byId = new Map(baseComplaintModulesById);
       for (const [moduleId, module] of supabaseWorkupCatalog.modulesById.entries()) {
         byId.set(moduleId, module);
       }
-      return Array.from(byId.values()).map((module) => effectiveLocalWorkupModule(module));
+      const modules = Array.from(byId.values()).map((module) => effectiveLocalWorkupModule(module));
+      effectiveComplaintModulesCache = { version: workupModuleCacheVersion, modules };
+      return modules;
     }
 
     function effectiveSourceRegistry() {
@@ -13746,8 +14082,14 @@
     }
 
     function moduleById(moduleId) {
-      const module = supabaseWorkupCatalog.modulesById.get(moduleId) || baseModuleById(moduleId);
-      return module ? effectiveLocalWorkupModule(module) : null;
+      const key = String(moduleId || "");
+      if (!key) return null;
+      const cached = effectiveModuleByIdCache.get(key);
+      if (cached?.version === workupModuleCacheVersion) return cached.module;
+      const module = supabaseWorkupCatalog.modulesById.get(key) || baseModuleById(key);
+      const effectiveModule = module ? effectiveLocalWorkupModule(module) : null;
+      effectiveModuleByIdCache.set(key, { version: workupModuleCacheVersion, module: effectiveModule });
+      return effectiveModule;
     }
 
     function moduleLabel(module) {
@@ -13871,6 +14213,9 @@
     }
 
     function moduleSearchText(module) {
+      const cacheKey = module?.id || "";
+      const cached = cacheKey ? workupSearchTextCache.get(cacheKey) : null;
+      if (cached?.version === workupModuleCacheVersion) return cached.text;
       const parts = [];
       for (const value of [
         module?.id,
@@ -13888,7 +14233,9 @@
       parts.push(...searchFieldParts(module?.aliases));
       parts.push(...searchFieldParts(module?.keywords));
       parts.push(...searchFieldParts(module?.triggers));
-      return parts.join(" ").toLowerCase();
+      const text = parts.join(" ").toLowerCase();
+      if (cacheKey) workupSearchTextCache.set(cacheKey, { version: workupModuleCacheVersion, text });
+      return text;
     }
 
     function normalizedWorkupQuery(value) {
@@ -13970,7 +14317,12 @@
     }
 
     function sortedComplaintModules() {
-      return effectiveComplaintModules().sort((a, b) => moduleLabel(a).localeCompare(moduleLabel(b)));
+      if (sortedComplaintModulesCache.version === workupModuleCacheVersion) {
+        return sortedComplaintModulesCache.modules;
+      }
+      const modules = [...effectiveComplaintModules()].sort((a, b) => moduleLabel(a).localeCompare(moduleLabel(b)));
+      sortedComplaintModulesCache = { version: workupModuleCacheVersion, modules };
+      return modules;
     }
 
     function appendWorkupOption(parent, module) {
@@ -14597,6 +14949,7 @@
         fromCache,
         cacheLoadedAt: fromCache ? loadedAt || "" : ""
       };
+      invalidateWorkupModuleCaches();
       workupStudioState.backend = {
         ...workupStudioState.backend,
         catalogLoadedAt: supabaseWorkupCatalog.loadedAt,
@@ -14643,6 +14996,7 @@
         fromCache: false,
         cacheLoadedAt: ""
       };
+      invalidateWorkupModuleCaches();
       workupStudioCatalogHydrationPromises.clear();
       if (render) rerenderAfterSupabaseWorkupCatalogSync();
     }
@@ -15020,6 +15374,7 @@
           workupStudioState.selectedItemId = String(saved.selectedItemId || "");
           workupStudioState.selectedPathwayNodeId = String(saved.selectedPathwayNodeId || "").slice(0, 160);
           workupStudioState.changeSets = Array.isArray(saved.changeSets) ? saved.changeSets.filter((entry) => entry?.schema === "workup_change_set_v1") : [];
+          invalidateWorkupModuleCaches();
           workupStudioState.promptTemplatesBySection = saved.promptTemplatesBySection && typeof saved.promptTemplatesBySection === "object" && !Array.isArray(saved.promptTemplatesBySection)
             ? Object.fromEntries(Object.entries(saved.promptTemplatesBySection).map(([key, value]) => [String(key).slice(0, 240), String(value || "").slice(0, WORKUP_STUDIO_PROMPT_TEMPLATE_MAX_CHARS)]))
             : {};
@@ -15128,6 +15483,7 @@
       workupStudioState.changeSets = Array.from(byId.values())
         .filter((entry) => entry?.schema === "workup_change_set_v1")
         .sort((a, b) => String(a.created_at || a.createdAt || "").localeCompare(String(b.created_at || b.createdAt || "")));
+      invalidateWorkupModuleCaches();
       saveWorkupStudioState();
     }
 
@@ -15762,6 +16118,7 @@
         ...workupStudioState.changeSets.filter((entry) => entry.id !== changeSet.id),
         changeSet
       ];
+      invalidateWorkupModuleCaches();
       saveWorkupStudioState();
       if (refreshConsumers) refreshWorkupConsumersAfterAuthoringChange(original.id);
       renderWorkupStudio();
@@ -17321,12 +17678,54 @@
       renderSelectedWorkupCard();
     }
 
+    function updateWorkupSearchOnly(input, { renderChecklistIfCleared = true } = {}) {
+      const nextConcern = String(input?.value || "").slice(0, 160);
+      const hadChecklistArtifacts = Boolean(state.checklistText || state.sections?.length);
+      state.concern = nextConcern;
+      phoneChecklistWorkupSearch = nextConcern;
+      setSelectedWorkupModuleId("");
+      clearChecklistArtifacts();
+      state.workup = null;
+      state.workupRows = [];
+      state.selectedWorkupRow = "history";
+      syncWorkupConcernInputs(nextConcern);
+      syncWorkupSelectors();
+      renderWorkupRows();
+      renderWorkupSummary();
+      if (renderChecklistIfCleared && hadChecklistArtifacts) renderChecklist();
+    }
+
+    function scheduleStandaloneWorkupSearch(input = elements.workupConcernInput) {
+      updateWorkupSearchOnly(input);
+      if (standaloneWorkupSearchTimer) window.clearTimeout(standaloneWorkupSearchTimer);
+      standaloneWorkupSearchTimer = window.setTimeout(() => {
+        standaloneWorkupSearchTimer = null;
+        ensureWorkup({ preferredInput: input });
+        renderChecklist();
+        renderPatientWorkspace();
+      }, 180);
+    }
+
+    function schedulePatientWorkupSearch(input = elements.patientWorkupConcernInput) {
+      updateWorkupSearchOnly(input);
+      if (patientWorkupSearchTimer) window.clearTimeout(patientWorkupSearchTimer);
+      patientWorkupSearchTimer = window.setTimeout(() => {
+        patientWorkupSearchTimer = null;
+        ensureWorkup({ preferredInput: input });
+      }, 180);
+    }
+
     function selectPatientWorkupModule(moduleId, { announce = true } = {}) {
+      if (standaloneWorkupSearchTimer) window.clearTimeout(standaloneWorkupSearchTimer);
+      standaloneWorkupSearchTimer = null;
+      if (patientWorkupSearchTimer) window.clearTimeout(patientWorkupSearchTimer);
+      patientWorkupSearchTimer = null;
       const selected = moduleById(moduleId);
       setSelectedWorkupModuleId(selected?.id || "");
       state.concern = selected
         ? moduleLabel(selected)
         : String(elements.patientWorkupConcernInput?.value || activePatient().concern || "").slice(0, 160).trim();
+      phoneChecklistWorkupSearch = state.concern;
       syncWorkupConcernInputs(state.concern);
       clearChecklistArtifacts();
       ensureWorkup({ preferredInput: elements.patientWorkupConcernInput });
@@ -17403,6 +17802,7 @@
 
     function coercePatientTabForDevice(tabName = state.activePatientTab) {
       const requested = patientTabOrder.includes(tabName) ? tabName : "overview";
+      if (isCompactPatientDevice() && requested === "overview") return "checklist";
       if (patientTabAvailableOnDevice(requested)) return requested;
       return desktopPatientTabFallbacks[requested] || "overview";
     }
@@ -19947,6 +20347,172 @@
       container.append(head, list);
     }
 
+    function refinementItemCount(refinement = {}) {
+      return (Array.isArray(refinement?.sections) ? refinement.sections : [])
+        .reduce((sum, section) => sum + (Array.isArray(section.items) ? section.items.length : 0), 0);
+    }
+
+    function phoneChecklistRefinementSummary(moduleId = state.selectedWorkupModuleId, patientId = activePatient().id) {
+      if (!moduleId) {
+        return {
+          hasRefinement: false,
+          text: "Select a workup to see whether a computer-modified checklist is available."
+        };
+      }
+      const defaultRefinement = state.workupRefinementsByModuleId?.[moduleId];
+      const patientRefinement = patientId ? state.patientWorkupRefinements?.[patientId]?.[moduleId] : null;
+      const defaultCount = refinementItemCount(defaultRefinement);
+      const patientCount = refinementItemCount(patientRefinement);
+      if (patientCount && defaultCount) {
+        return {
+          hasRefinement: true,
+          text: `${patientCount} patient-specific and ${defaultCount} default OpenEvidence checklist item${defaultCount === 1 ? "" : "s"} will be used.`
+        };
+      }
+      if (patientCount) {
+        return {
+          hasRefinement: true,
+          text: `${patientCount} patient-specific OpenEvidence checklist item${patientCount === 1 ? "" : "s"} will be used.`
+        };
+      }
+      if (defaultCount) {
+        return {
+          hasRefinement: true,
+          text: `Computer-modified default available: ${defaultCount} OpenEvidence checklist item${defaultCount === 1 ? "" : "s"} will be used.`
+        };
+      }
+      return {
+        hasRefinement: false,
+        text: "No computer-modified checklist is saved for this workup yet."
+      };
+    }
+
+    function renderPhoneChecklistWorkupResults(query = "") {
+      const container = elements.phoneChecklistWorkupResults;
+      if (!container) return;
+      const queryText = String(query || "").trim();
+      const normalizedQuery = normalizedWorkupQuery(queryText);
+      const selectedId = state.selectedWorkupModuleId || "";
+      const recommendedId = recommendedWorkupModuleId(activePatient());
+      const hasExactLocalWorkup = Boolean(recommendedId || moduleById(selectedId));
+      container.innerHTML = "";
+      if (!hasExactLocalWorkup && normalizedQuery) {
+        renderUnsupportedClinicalIntentResult(container, {
+          unsupported: true,
+          unsupportedClinicalIntentGap: { sanitized_query: normalizedQuery }
+        });
+      } else if (!hasExactLocalWorkup) {
+        renderClearedWorkupSearchPrompt(container);
+      }
+      for (const group of workupPickerGroups(queryText)) {
+        const modules = group.modules.slice(0, group.key === "matches" ? 6 : 3);
+        if (!modules.length) continue;
+        const section = document.createElement("section");
+        section.className = "workup-result-group";
+        const title = document.createElement("h5");
+        title.className = "workup-result-group-title";
+        title.textContent = group.key === "recommended" ? "Recommended" : group.key === "selected" ? "Selected" : group.title;
+        const rows = document.createElement("div");
+        rows.className = "workup-result-rows";
+        for (const module of modules) {
+          const badge = workupMatchBadge(module, group.key);
+          const isSelected = module.id === selectedId;
+          const row = document.createElement("button");
+          row.type = "button";
+          row.className = "workup-result-row";
+          row.dataset.workupResult = module.id;
+          row.dataset.moduleId = module.id;
+          row.setAttribute("role", "option");
+          row.setAttribute("aria-selected", String(isSelected));
+          row.innerHTML = `
+            <span class="icon-box" data-icon="${isSelected ? "check-circle" : "stethoscope"}" aria-hidden="true"></span>
+            <span class="workup-result-main"><strong></strong><span></span></span>
+            <span class="workup-result-meta"><span class="workup-match-badge"></span><span class="muted"></span></span>
+            <span class="chevron" aria-hidden="true">></span>
+          `;
+          $(".workup-result-main strong", row).textContent = moduleLabel(module);
+          $(".workup-result-main span", row).textContent = moduleDescription(module);
+          const badgeNode = $(".workup-match-badge", row);
+          badgeNode.textContent = badge.text;
+          badgeNode.classList.add(`is-${badge.tone}`);
+          $(".workup-result-meta .muted", row).textContent = String(moduleItemCount(module));
+          row.addEventListener("click", () => {
+            phoneChecklistWorkupSearch = moduleLabel(module);
+            selectPatientWorkupModule(module.id, { announce: false });
+            setPatientTab("checklist", { announce: false });
+            setStatus(`${moduleLabel(module)} selected for the phone checklist.`);
+          });
+          rows.appendChild(row);
+        }
+        section.append(title, rows);
+        container.appendChild(section);
+      }
+      hydrateIcons();
+    }
+
+    function renderPhoneChecklistLauncher() {
+      if (!elements.phoneChecklistLauncher) return;
+      const patient = activePatient();
+      const selected = moduleById(state.selectedWorkupModuleId);
+      const checklistBuilt = Boolean(state.sections.length);
+      const checklistStale = isChecklistStaleForCurrentWorkup();
+      const refinement = phoneChecklistRefinementSummary(selected?.id || "");
+      const statusBox = elements.phoneChecklistRefinementStatus?.closest(".phone-checklist-status");
+      if (elements.phoneChecklistWorkupTitle) {
+        elements.phoneChecklistWorkupTitle.textContent = selected ? moduleLabel(selected) : "Choose checklist workup";
+      }
+      if (elements.phoneChecklistRefinementStatus) {
+        elements.phoneChecklistRefinementStatus.textContent = !patient.id
+          ? "Select or add a patient first."
+          : selected
+            ? refinement.text
+            : "Search for the workup that should drive this checklist.";
+      }
+      if (statusBox) statusBox.dataset.refinement = refinement.hasRefinement ? "available" : "none";
+      if (elements.phoneChecklistPrimaryButton) {
+        elements.phoneChecklistPrimaryButton.textContent = !patient.id
+          ? "Add/select patient"
+          : !selected && !checklistBuilt
+            ? "Select workup"
+            : checklistStale
+              ? "Rebuild and open checklist"
+              : checklistBuilt
+                ? refinement.hasRefinement ? "Open modified checklist" : "Open checklist"
+                : refinement.hasRefinement ? "Build modified checklist" : "Build and open checklist";
+        elements.phoneChecklistPrimaryButton.disabled = Boolean(patient.id && !selected && !checklistBuilt);
+      }
+      const suggestedSearch = phoneChecklistWorkupSearch || state.concern || patient.concern || "";
+      if (elements.phoneChecklistWorkupInput && document.activeElement !== elements.phoneChecklistWorkupInput) {
+        elements.phoneChecklistWorkupInput.value = suggestedSearch;
+      }
+      if (elements.phoneChecklistClearWorkupButton) {
+        elements.phoneChecklistClearWorkupButton.hidden = !String(elements.phoneChecklistWorkupInput?.value || "").trim();
+      }
+      renderPhoneChecklistWorkupResults(elements.phoneChecklistWorkupInput?.value || suggestedSearch);
+    }
+
+    function openPhoneChecklistPrimary() {
+      if (!activePatient().id) {
+        openAdmissionOverlay();
+        return;
+      }
+      const selected = moduleById(state.selectedWorkupModuleId);
+      const checklistStale = isChecklistStaleForCurrentWorkup();
+      if (state.sections.length && !checklistStale) {
+        showView("bedside");
+        return;
+      }
+      if (!selected) {
+        setStatus("Select a workup before opening the phone checklist.");
+        elements.phoneChecklistWorkupInput?.focus();
+        return;
+      }
+      const built = state.sections.length
+        ? rebuildChecklistWithConfirmation({ source: "phone" })
+        : buildChecklistFromWorkup({ navigate: false });
+      if (built) showView("bedside");
+    }
+
     function selectedPatientContextText() {
       const patient = activePatient();
       const draft = patientDraft(patient);
@@ -20425,6 +20991,7 @@
       renderWorkspaceChecklistDirectory(elements.workspaceChecklistDirectory);
       syncWorkupSelectors();
       syncWorkupConcernInputs();
+      renderPhoneChecklistLauncher();
       syncSelectedPatientInputs();
       renderObjectiveDataSurfaces();
       renderTodayCockpit();
@@ -20545,6 +21112,7 @@
       setSelectedWorkupModuleId(patientSelectedWorkupModuleId(patient), { persistForPatient: false });
       const selectedModule = moduleById(state.selectedWorkupModuleId);
       state.concern = selectedModule ? moduleLabel(selectedModule) : patient.concern || "";
+      phoneChecklistWorkupSearch = state.concern;
       state.modifiers = Array.isArray(patient.modifiers) && patient.modifiers.length ? [...patient.modifiers] : ["Vomiting", "Poor intake"];
       state.activePatientTab = "overview";
       state.scrubbedText = "";
@@ -23500,9 +24068,9 @@
       ].join("\n");
     }
 
-    function openEvidencePromptVariables() {
+    function openEvidencePromptVariables(taskId = selectedTask()?.id || "") {
       const selectedModule = moduleById(state.selectedWorkupModuleId);
-      return {
+      return compactOpenEvidenceContext({
         source_context: reviewedSourceContextText(),
         current_checklist: state.checklistText,
         deidentified_patient_context: checklistPatientSummaryText(),
@@ -23510,7 +24078,7 @@
         objective_data: objectiveDataContextText(),
         selected_workup_title: moduleLabel(selectedModule) || state.concern || "selected disease state/condition",
         decision_tree_json: JSON.stringify(currentDecisionTreeGraph(), null, 2)
-      };
+      }, taskId);
     }
 
     function replaceAllLiteral(source = "", search = "", replacement = "") {
@@ -23636,7 +24204,7 @@
         decisionTreeJson: JSON.stringify(currentDecisionTreeGraph(), null, 2)
       };
       const built = buildOpenEvidencePrompt(task.id, context);
-      const variables = openEvidencePromptVariables();
+      const variables = openEvidencePromptVariables(task.id);
       const builtTemplate = promptTemplateFromResolvedPrompt(built.prompt || built.text || String(built), variables);
       const template = String(state.promptTemplatesByTaskId?.[task.id] || builtTemplate);
       const resolvedText = resolvePromptTemplate(template, variables);
@@ -24286,6 +24854,10 @@
         setVaultStatus(elements.phoneBundleEntryStatus, message, tone);
         return;
       }
+      if (source === "phoneChecklist") {
+        setVaultStatus(elements.phoneChecklistBundleStatus, message, tone);
+        return;
+      }
       setHandoffStatus(message, tone);
     }
 
@@ -24414,6 +24986,11 @@
         bedsideNote: state.bedsideNote
       };
       state.phonePayload = encodePayload(payload);
+      updatePatient(activePatient().id, (patient) => ({
+        ...patient,
+        phoneBundleCode: state.transferCode,
+        phoneBundlePayload: state.phonePayload
+      }));
       renderHandoff();
       setHandoffStatus(`Phone bundle ready for ${activePatient().title}.`, "success");
       saveState();
@@ -24658,7 +25235,7 @@
           if (layoutPrefs.workupNavOpen) setWorkupNavOpen(false, { announce: false });
         });
       }
-      elements.layoutNavCollapseButton?.addEventListener("click", () => {
+      elements.layoutNavCollapseButton?.addEventListener("click", (event) => {
         const compactNav = window.matchMedia?.("(max-width: 760px)")?.matches;
         if (compactNav && document.body.dataset.view === "studio" && layoutPrefs.navCollapsed && workupStudioState.navOpen) {
           setWorkupStudioNavOpen(false);
@@ -24668,7 +25245,14 @@
           setWorkupNavOpen(false);
           return;
         }
+        if (!compactNav && layoutPrefs.navCollapsed) {
+          event.currentTarget?.blur();
+          setStatus("Primary navigation stays collapsed on desktop.");
+          return;
+        }
+        const wasCollapsed = layoutPrefs.navCollapsed;
         setLayoutNavCollapsed(!layoutPrefs.navCollapsed);
+        if (!compactNav && !wasCollapsed) event.currentTarget?.blur();
       });
       elements.layoutNavFloatButton?.addEventListener("click", () => setLayoutNavCollapsed(false));
       elements.patientWorkupMenuButton?.addEventListener("click", () => {
@@ -24789,38 +25373,42 @@
       $("#closeToolsButton").addEventListener("click", () => showView("workspace"));
       $("#clearConcernButton").addEventListener("click", () => {
         elements.workupConcernInput.value = "";
-        setSelectedWorkupModuleId("");
-        clearChecklistArtifacts();
-        ensureWorkup({ preferredInput: elements.workupConcernInput });
-        renderChecklist();
+        if (standaloneWorkupSearchTimer) window.clearTimeout(standaloneWorkupSearchTimer);
+        standaloneWorkupSearchTimer = null;
+        updateWorkupSearchOnly(elements.workupConcernInput);
         renderPatientWorkspace();
         elements.workupConcernInput.focus();
       });
       $("#patientClearConcernButton").addEventListener("click", () => {
         elements.patientWorkupConcernInput.value = "";
-        setSelectedWorkupModuleId("");
-        clearChecklistArtifacts();
-        ensureWorkup({ preferredInput: elements.patientWorkupConcernInput });
-        renderChecklist();
+        if (patientWorkupSearchTimer) window.clearTimeout(patientWorkupSearchTimer);
+        patientWorkupSearchTimer = null;
+        updateWorkupSearchOnly(elements.patientWorkupConcernInput);
         renderPatientRail();
         elements.patientWorkupConcernInput.focus();
       });
 		      elements.workupConcernInput.addEventListener("input", () => {
-		        setSelectedWorkupModuleId("");
-		        clearChecklistArtifacts();
-		        ensureWorkup({ preferredInput: elements.workupConcernInput });
-		        renderChecklist();
-		        renderPatientWorkspace();
+		        scheduleStandaloneWorkupSearch(elements.workupConcernInput);
 		      });
 		      elements.patientWorkupConcernInput.addEventListener("input", () => {
-		        setSelectedWorkupModuleId("");
-		        clearChecklistArtifacts();
-		        ensureWorkup({ preferredInput: elements.patientWorkupConcernInput });
-		        renderChecklist();
-		        renderPatientWorkspace();
+		        schedulePatientWorkupSearch(elements.patientWorkupConcernInput);
 		      });
       elements.patientWorkupSelect.addEventListener("change", () => {
         selectPatientWorkupModule(elements.patientWorkupSelect.value);
+      });
+      elements.phoneChecklistWorkupInput?.addEventListener("input", () => {
+        phoneChecklistWorkupSearch = elements.phoneChecklistWorkupInput.value.slice(0, 160);
+        renderPhoneChecklistLauncher();
+      });
+      elements.phoneChecklistClearWorkupButton?.addEventListener("click", () => {
+        phoneChecklistWorkupSearch = "";
+        if (elements.phoneChecklistWorkupInput) elements.phoneChecklistWorkupInput.value = "";
+        renderPhoneChecklistLauncher();
+        elements.phoneChecklistWorkupInput?.focus();
+      });
+      elements.phoneChecklistPrimaryButton?.addEventListener("click", openPhoneChecklistPrimary);
+      elements.phoneChecklistLoadBundleButton?.addEventListener("click", () => {
+        loadDesktopPhoneBundle(elements.phoneChecklistBundleInput?.value || "", { source: "phoneChecklist" });
       });
       elements.clinicalSettingSelect.addEventListener("change", () => {
         clearChecklistArtifacts();
