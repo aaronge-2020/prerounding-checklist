@@ -99,10 +99,19 @@ async function checkPublicSupabaseReadiness({ supabaseUrl, publishableKey }) {
     try {
       const payload = JSON.parse(settings.text || "{}");
       const external = payload.external && typeof payload.external === "object" ? payload.external : {};
-      if (external.email === true || payload.email === true) {
-        notes.push("Supabase Email magic-link auth is enabled.");
+      const publicEmailSignupEnabled = external.email === true || payload.email === true;
+      const publicSignupDisabled = payload.disable_signup === true;
+      if (publicEmailSignupEnabled) {
+        notes.push("Supabase Email signup provider is enabled.");
+      } else if (publicSignupDisabled) {
+        notes.push("Supabase public email signup is disabled as expected; Workup Studio uses existing-user magic links with create_user=false.");
       } else {
-        issues.push("Supabase Email magic-link auth is disabled. Enable the Email provider in Supabase Auth.");
+        issues.push("Supabase Email magic-link auth appears disabled. Enable Email auth or disable public signup for existing-user magic links.");
+      }
+      if (publicSignupDisabled) {
+        notes.push("Supabase public signup is disabled.");
+      } else {
+        issues.push("Supabase public signup is enabled; disable signup before shipping Workup Studio.");
       }
     } catch {
       issues.push(`Unable to parse Supabase Auth settings: ${settings.text.slice(0, 180)}`);
@@ -246,7 +255,7 @@ if (deploymentIssues.length) {
   fail("Supabase auth deployment is not ready.", [
     ...deploymentIssues,
     ...publicReadiness.notes,
-    "Set credentials, enable Supabase Email magic links, then run:",
+    "Set credentials, verify Supabase Email auth for existing users, then run:",
     "  npm run deploy:supabase-workup-authoring -- --reviewer-email=reviewer@example.com",
     "Manual fallback:",
     "  npx supabase link --project-ref hajjuzpnlvpetsleuxwb",

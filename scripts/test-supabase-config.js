@@ -71,7 +71,8 @@ assert.ok(grantScript.includes("No Supabase Auth user found"), "Grant command sh
 
 const readinessScript = read("scripts/check-supabase-auth-readiness.js");
 assert.ok(readinessScript.includes("/auth/v1/settings"), "Readiness check should probe Supabase Auth settings.");
-assert.ok(readinessScript.includes("Email magic-link auth"), "Readiness check should require Supabase Email magic-link auth.");
+assert.ok(readinessScript.includes("public email signup is disabled as expected"), "Readiness check should allow intentionally disabled public signup for existing-user magic links.");
+assert.ok(readinessScript.includes("Supabase public signup is enabled"), "Readiness check should reject public Workup Studio signups.");
 assert.ok(readinessScript.includes("create_user: false"), "Readiness check should require existing users for magic links.");
 assert.ok(readinessScript.includes("PGRST205"), "Readiness check should detect missing Supabase authoring tables.");
 assert.ok(readinessScript.includes("Public catalog request returned rows"), "Readiness check should allow public reviewed catalog reads.");
