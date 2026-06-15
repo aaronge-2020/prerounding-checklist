@@ -2664,8 +2664,14 @@ export function buildLocalChecklistFromWorkup(workup = {}, options = {}) {
   (complaintResult.focusedExam || []).forEach((item) => {
     addUniqueChecklistItem(coreExamItems, examSeen, item, "exam");
   });
+  (complaintResult.requiredExam || []).forEach((item) => {
+    addUniqueChecklistItem(coreExamItems, examSeen, item, "exam");
+  });
   (recommendation.corePhysicalExamManeuvers || recommendation.coreItems || []).forEach((entry) => {
     addUniqueChecklistItem(coreExamItems, examSeen, recommendationExamItem(entry), "exam");
+  });
+  (complaintResult.conditionalExam || []).forEach((item) => {
+    addUniqueChecklistItem(conditionalExamItems, examSeen, item, "exam");
   });
   (recommendation.conditionalPhysicalExamManeuvers || recommendation.conditionalItems || []).forEach((entry) => {
     addUniqueChecklistItem(conditionalExamItems, examSeen, recommendationExamItem(entry), "exam");

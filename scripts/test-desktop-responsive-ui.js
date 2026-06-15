@@ -31,6 +31,15 @@ async function clickPatientTab(page, tabName) {
   await page.waitForFunction((expectedTab) => document.body.dataset.patientTab === expectedTab, tabName);
 }
 
+async function showPatientWorkupsPane(page) {
+  await page.evaluate(() => document.querySelector('#patientWorkupPanel .target-pane-switcher [data-workup-pane-target="workups"]')?.click());
+  await page.waitForFunction(() => {
+    const panel = document.querySelector("#patientWorkupPanel");
+    const input = document.querySelector("#patientWorkupConcernInput");
+    return panel?.dataset.activePane === "workups" && Boolean(input?.getBoundingClientRect().height);
+  });
+}
+
 function startServer() {
   const server = createServer(async (request, response) => {
     try {
@@ -200,7 +209,7 @@ async function testDemoCaseLoader(browser, baseUrl) {
   assert(/Synthetic adult case - no saved data/i.test(demoAudit.oneLine), `demo one-line copy should identify no-save synthetic data: ${JSON.stringify(demoAudit)}`);
   assert(/Synthetic demo case only/i.test(demoAudit.admission) && /possible DKA|vomiting|insulin/i.test(demoAudit.admission), `demo admission context should be prefilled: ${JSON.stringify(demoAudit)}`);
   assert(/glucose 318|anion gap 22|beta-hydroxybutyrate 4\.2/i.test(demoAudit.labs), `demo labs should be prefilled with synthetic objective context: ${JSON.stringify(demoAudit)}`);
-  assert(demoAudit.workupValue === "" && demoAudit.buildDisabled, `demo should start without a selected workup: ${JSON.stringify(demoAudit)}`);
+  assert(demoAudit.workupValue === "hyperglycemia_possible_dka_v1" && !demoAudit.buildDisabled, `demo should start with the DKA workup selected and ready to build: ${JSON.stringify(demoAudit)}`);
   assert(/fake|disappears/i.test(demoAudit.status), `demo status should explain fake/no-save behavior: ${JSON.stringify(demoAudit)}`);
 
   await clickPatientRosterToggle(page);
@@ -209,11 +218,13 @@ async function testDemoCaseLoader(browser, baseUrl) {
   assert(rosterText.includes("Demo - DKA consult"), "expanded roster should expose the demo patient");
 
   await clickPatientTab(page, "workup");
+  await showPatientWorkupsPane(page);
   await page.fill("#patientWorkupConcernInput", "dka");
   await page.waitForSelector('#patientWorkupResults [data-module-id="hyperglycemia_possible_dka_v1"]');
   await page.click('#patientWorkupResults .workup-result-row[data-module-id="hyperglycemia_possible_dka_v1"]');
   await page.waitForFunction(() => document.querySelector("#patientWorkupSelect")?.value === "hyperglycemia_possible_dka_v1");
-  await page.click("#patientBuildChecklistButton");
+  await clickPatientTab(page, "checklist");
+  await page.click("#workspaceOpenBedsideChecklistButton");
   await page.waitForFunction(() => /items built/.test(document.querySelector("#workspaceChecklistStatus")?.textContent || ""));
   await page.click("#workspaceOpenBedsideChecklistButton");
   await page.waitForSelector("#bedsideView:not([hidden])");
@@ -349,6 +360,39 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
 
   const sidebarLabels = await page.locator(".sidebar .nav-button").allTextContents();
   assert(sidebarLabels.join("|") === "Show roster|Admit patient|Demo case|Quick de-ID|Workup Studio|About privacy", `sidebar should expose only shift utilities, got ${sidebarLabels.join("|")}`);
+  if (viewport.width >= 760) {
+    await page.click("#layoutNavCollapseButton");
+    await page.waitForFunction(() => document.body.dataset.navCollapsed === "true");
+    const collapsedNavAudit = await page.evaluate(() => ({
+      sidebarVisible: Boolean(document.querySelector(".sidebar")?.offsetParent),
+      sidebarWidth: Math.round(document.querySelector(".sidebar")?.getBoundingClientRect().width || 0),
+      navTextHidden: Array.from(document.querySelectorAll(".sidebar .nav-button > span:not(.icon-box)")).every((node) => {
+        const rect = node.getBoundingClientRect();
+        return rect.width <= 1 && rect.height <= 1;
+      }),
+      floatVisible: (() => {
+        const button = document.querySelector("#layoutNavFloatButton");
+        const style = getComputedStyle(button);
+        const rect = button.getBoundingClientRect();
+        return style.display !== "none" && style.visibility !== "hidden" && rect.width > 0 && rect.height > 0;
+      })(),
+      shellColumns: getComputedStyle(document.querySelector("#appShell")).gridTemplateColumns
+    }));
+    assert(collapsedNavAudit.sidebarVisible === true && collapsedNavAudit.sidebarWidth <= 70 && collapsedNavAudit.navTextHidden && collapsedNavAudit.floatVisible === false, `primary navigation should collapse to an in-layout rail without a floating button: ${JSON.stringify(collapsedNavAudit)}`);
+    await page.click("#layoutNavCollapseButton");
+    await page.waitForFunction(() => document.body.dataset.navCollapsed === "false");
+    const startSidebarWidth = await page.evaluate(() => Math.round(document.querySelector(".sidebar").getBoundingClientRect().width));
+    await page.locator("#layoutSidebarResizeHandle").press("ArrowRight");
+    const resizedNavAudit = await page.evaluate(() => {
+      const prefs = JSON.parse(localStorage.getItem("prerounding-layout-preferences-v1") || "{}");
+      return {
+        width: Math.round(document.querySelector(".sidebar").getBoundingClientRect().width),
+        storedWidth: prefs?.sizes?.appSidebar,
+        collapsed: prefs?.navCollapsed
+      };
+    });
+    assert(resizedNavAudit.width > startSidebarWidth && resizedNavAudit.storedWidth >= resizedNavAudit.width - 2 && resizedNavAudit.collapsed === false, `primary navigation width should resize and persist: ${JSON.stringify({ startSidebarWidth, resizedNavAudit })}`);
+  }
   await assertRosterState(false, `default collapsed roster ${label}`);
   const tabLabels = await page.locator(".patient-task-strip [role='tab']").allTextContents();
   assert(tabLabels.join("|") === "Summary|Today|Context|Workup|Checklist|Findings|Evidence|Phone", `patient tabs should match clinical workflow order, got ${tabLabels.join("|")}`);
@@ -396,8 +440,8 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
 
   await clickPatientTab(page, "checklist");
   await assertRosterState(true, `checklist tab roster ${label}`);
-  let checklistPanelButtons = await page.locator('#patientChecklistPanel:not([hidden]) .checklist-command-grid button').allTextContents();
-  assert(checklistPanelButtons.join("|") === "Build checklist from workup|Change workup|Send checklist to phone", `unbuilt checklist panel should expose build, workup-change, and phone-send paths, got ${checklistPanelButtons.join("|")}`);
+  let checklistPanelButtons = await page.locator('#patientChecklistPanel:not([hidden]) .checklist-command-grid button:visible').allTextContents();
+  assert(checklistPanelButtons.join("|") === "Build checklist from workup|Change workup", `unbuilt checklist panel should expose only build and workup-change paths, got ${checklistPanelButtons.join("|")}`);
   let checklistPrimaryEnabled = await page.locator("#workspaceOpenBedsideChecklistButton").isEnabled();
   assert(checklistPrimaryEnabled, "checklist build primary should be enabled for the selected workup");
   await page.click("#workspaceChecklistSecondaryButton");
@@ -506,6 +550,7 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
   await page.waitForFunction(() => document.body.dataset.view === "workspace" && document.body.dataset.patientTab === "evidence" && document.querySelector("#sharedPromptWorkbench")?.dataset.mode !== "full");
 
   await clickPatientTab(page, "workup");
+  await showPatientWorkupsPane(page);
   await page.fill("#patientWorkupConcernInput", "chest pain");
   await page.waitForSelector('#patientWorkupResults [data-module-id]:has-text("Chest pain")');
   const chestPainId = await page.locator('#patientWorkupResults [data-module-id]:has-text("Chest pain")').first().getAttribute("data-module-id");
@@ -516,14 +561,14 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
   assert(/chest pain/i.test(selectedLabel), `selecting a workup result should update the patient workup, got ${selectedLabel}`);
 
   await clickPatientTab(page, "checklist");
-  checklistPanelButtons = await page.locator('#patientChecklistPanel:not([hidden]) .checklist-command-grid button').allTextContents();
-  assert(checklistPanelButtons.join("|") === "Build checklist from workup|Change workup|Send checklist to phone", `selected-workup checklist panel should show build/change/phone actions, got ${checklistPanelButtons.join("|")}`);
+  checklistPanelButtons = await page.locator('#patientChecklistPanel:not([hidden]) .checklist-command-grid button:visible').allTextContents();
+  assert(checklistPanelButtons.join("|") === "Build checklist from workup|Change workup", `selected-workup checklist panel should show only build/change actions, got ${checklistPanelButtons.join("|")}`);
   checklistPrimaryEnabled = await page.locator("#workspaceOpenBedsideChecklistButton").isEnabled();
   assert(checklistPrimaryEnabled, "checklist build primary should be enabled after selecting a validated workup");
   await page.click("#workspaceOpenBedsideChecklistButton");
   await page.waitForFunction(() => /items built/.test(document.querySelector("#workspaceChecklistStatus")?.textContent || ""));
-  checklistPanelButtons = await page.locator('#patientChecklistPanel:not([hidden]) .checklist-command-grid button').allTextContents();
-  assert(checklistPanelButtons.join("|") === "Answer bedside checklist|Rebuild from workup|Send checklist to phone", `built checklist panel should switch to answer/rebuild/phone actions, got ${checklistPanelButtons.join("|")}`);
+  checklistPanelButtons = await page.locator('#patientChecklistPanel:not([hidden]) .checklist-command-grid button:visible').allTextContents();
+  assert(checklistPanelButtons.join("|") === "Answer bedside checklist|Send checklist to phone", `built checklist panel should switch to answer/phone actions without a redundant rebuild button, got ${checklistPanelButtons.join("|")}`);
   const checklistDirectoryAudit = await page.evaluate(() => {
     const directory = document.querySelector("#workspaceChecklistDirectory");
     const buttons = Array.from(document.querySelectorAll("#workspaceChecklistDirectory .workspace-checklist-jump"));

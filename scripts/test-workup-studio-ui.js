@@ -60,6 +60,13 @@ async function waitForCondition(callback, label, timeoutMs = 5000) {
   throw new Error(`Timed out waiting for ${label}`);
 }
 
+async function setTextareaValue(page, selector, value) {
+  await page.locator(selector).evaluate((node, nextValue) => {
+    node.value = nextValue;
+    node.dispatchEvent(new Event("input", { bubbles: true }));
+  }, value);
+}
+
 function authoringTableRequestCount(requests) {
   return requests.getChangeSetsCount
     + requests.postedRows.length
@@ -96,6 +103,7 @@ try {
     acceptDownloads: true,
     viewport: { width: 1440, height: 980 }
   });
+  await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: baseUrl });
   const page = await context.newPage();
   page.on("pageerror", (error) => browserDiagnostics.push(`pageerror: ${error.message}`));
   page.on("console", (message) => {
@@ -411,8 +419,10 @@ try {
     localStorage.clear();
     localStorage.setItem("prerounding-workup-authoring-v1", JSON.stringify(state));
   }, {
-    selectedModuleId: "hyperglycemia_possible_dka_v1",
+    selectedModuleId: "acromegaly_v1",
     sectionKey: "clinical_pathway_tree_v1",
+    search: "acro",
+    statusFilter: "all",
     changeSets: [],
     backend: {
       url: "https://studio-test.supabase.co",
@@ -435,13 +445,114 @@ try {
 
   await page.click('button[data-view-target="studio"]');
   await page.waitForSelector("#studioView:not([hidden])");
+  await page.waitForFunction(() => document.querySelector("#workupStudioSelectedTitle")?.textContent?.includes("Hyperglycemia"));
+  const patientWorkupStudioAudit = await page.evaluate(() => ({
+    selectedTitle: document.querySelector("#workupStudioSelectedTitle")?.textContent?.trim() || "",
+    topSelectedTitle: document.querySelector("#workupStudioTopSelectedTitle")?.textContent?.trim() || "",
+    topBackendStatus: document.querySelector("#workupStudioTopBackendStatus")?.textContent?.trim() || "",
+    searchValue: document.querySelector("#workupStudioSearchInput")?.value || "",
+    sectionTitle: document.querySelector("#workupStudioTopSectionTitle")?.textContent?.trim() || "",
+    commandbarActions: Array.from(document.querySelectorAll(".studio-commandbar button")).map((button) => button.textContent?.trim()),
+    renderedTreeNodes: document.querySelectorAll("#workupStudioPathwayTreePanel .decision-tree-node-g").length,
+    legacyItemRows: document.querySelectorAll("#workupStudioItemList .studio-item-button").length,
+    editorBodyMode: document.querySelector(".studio-editor-body")?.classList.contains("is-pathway-editor") || false,
+    inlineEditorBounds: (() => {
+      const selectedRect = document.querySelector("#workupStudioPathwayTreePanel .decision-tree-node-g[data-selected='true'] rect")?.getBoundingClientRect();
+      const inlineEditor = document.querySelector("#workupStudioPathwayTreePanel .decision-tree-inline-label")?.getBoundingClientRect();
+      if (!selectedRect || !inlineEditor) return null;
+      return {
+        editorInsideNode: inlineEditor.top >= selectedRect.top - 1
+          && inlineEditor.left >= selectedRect.left - 1
+          && inlineEditor.right <= selectedRect.right + 1
+          && inlineEditor.bottom <= selectedRect.bottom + 1,
+        selectedRect: {
+          top: Math.round(selectedRect.top),
+          right: Math.round(selectedRect.right),
+          bottom: Math.round(selectedRect.bottom),
+          left: Math.round(selectedRect.left)
+        },
+        inlineEditor: {
+          top: Math.round(inlineEditor.top),
+          right: Math.round(inlineEditor.right),
+          bottom: Math.round(inlineEditor.bottom),
+          left: Math.round(inlineEditor.left)
+        }
+      };
+    })(),
+    navCollapsed: document.body.dataset.navCollapsed,
+    shellLeft: Math.round(document.querySelector(".studio-shell")?.getBoundingClientRect().left ?? -1),
+    shellRight: Math.round(document.querySelector(".studio-shell")?.getBoundingClientRect().right ?? -1),
+    viewportWidth: document.documentElement.clientWidth,
+    sidebarPointerEvents: getComputedStyle(document.querySelector("#primarySidebar")).pointerEvents
+  }));
+  assert.match(patientWorkupStudioAudit.selectedTitle, /Hyperglycemia/, `Studio should open on the active patient workup, not stale cached selection: ${JSON.stringify(patientWorkupStudioAudit)}`);
+  assert.match(patientWorkupStudioAudit.topSelectedTitle, /Hyperglycemia/, `Studio topbar should mirror the active patient workup: ${JSON.stringify(patientWorkupStudioAudit)}`);
+  assert.equal(patientWorkupStudioAudit.searchValue, "", `Entering Studio from a patient should clear filters that hide the active workup: ${JSON.stringify(patientWorkupStudioAudit)}`);
+  assert.equal(patientWorkupStudioAudit.sectionTitle, "Pathway tree", `Studio should preserve the pathway section when entering from patient workup: ${JSON.stringify(patientWorkupStudioAudit)}`);
+  assert.deepEqual(patientWorkupStudioAudit.commandbarActions, ["Workup settings", "Export", "Import", "Audit log"], `Studio commandbar should expose the concept actions without redundant controls: ${JSON.stringify(patientWorkupStudioAudit)}`);
+  assert.match(patientWorkupStudioAudit.topBackendStatus, /Backend status: sign in to sync|Synced as/i, `Top backend status should be concise and not clip a long auth paragraph: ${JSON.stringify(patientWorkupStudioAudit)}`);
+  assert(patientWorkupStudioAudit.renderedTreeNodes > 0, `Pathway section should render the tree canvas immediately: ${JSON.stringify(patientWorkupStudioAudit)}`);
+  assert.equal(patientWorkupStudioAudit.legacyItemRows, 0, `Pathway section should not show the old long item list: ${JSON.stringify(patientWorkupStudioAudit)}`);
+  assert.equal(patientWorkupStudioAudit.editorBodyMode, true, "Pathway section should use tree editing mode on Studio entry.");
+  assert(patientWorkupStudioAudit.inlineEditorBounds?.editorInsideNode, `Selected tree node inline editor should stay inside the rendered node card: ${JSON.stringify(patientWorkupStudioAudit.inlineEditorBounds)}`);
+  assert.equal(patientWorkupStudioAudit.navCollapsed, "false", `Studio should start with the persistent primary navigation expanded on desktop: ${JSON.stringify(patientWorkupStudioAudit)}`);
+  assert(patientWorkupStudioAudit.shellLeft >= 180 && patientWorkupStudioAudit.shellLeft <= 380, `Studio shell should start after the resizable primary sidebar on desktop: ${JSON.stringify(patientWorkupStudioAudit)}`);
+  assert(Math.abs(patientWorkupStudioAudit.shellRight - patientWorkupStudioAudit.viewportWidth) <= 2, `Studio shell should end at the viewport edge without a right gutter: ${JSON.stringify(patientWorkupStudioAudit)}`);
+  assert.equal(patientWorkupStudioAudit.sidebarPointerEvents, "auto", `Primary nav should be usable in Studio when expanded: ${JSON.stringify(patientWorkupStudioAudit)}`);
+  await page.click("#workupStudioMenuButton");
+  await page.waitForFunction(() => document.body.dataset.navCollapsed === "true" && document.body.dataset.studioNavOpen === "false");
+  const studioCollapsedAudit = await page.evaluate(() => ({
+    navCollapsed: document.body.dataset.navCollapsed,
+    navOpen: document.body.dataset.studioNavOpen,
+    shellLeft: Math.round(document.querySelector(".studio-shell")?.getBoundingClientRect().left ?? -1),
+    sidebarPointerEvents: getComputedStyle(document.querySelector("#primarySidebar")).pointerEvents,
+    menuText: document.querySelector("#workupStudioMenuButton")?.textContent?.trim() || ""
+  }));
+  assert(studioCollapsedAudit.shellLeft === 0 && studioCollapsedAudit.sidebarPointerEvents === "none" && /Menu/i.test(studioCollapsedAudit.menuText), `Studio menu should collapse to a labeled full-width workspace control: ${JSON.stringify(studioCollapsedAudit)}`);
+  await page.click("#workupStudioMenuButton");
+  await page.waitForFunction(() => document.body.dataset.studioNavOpen === "true");
+  await page.waitForFunction(() => (document.querySelector("#primarySidebar")?.getBoundingClientRect().left ?? -999) >= -1);
+  const studioDrawerAudit = await page.evaluate(() => ({
+    navCollapsed: document.body.dataset.navCollapsed,
+    navOpen: document.body.dataset.studioNavOpen,
+    sidebarLeft: Math.round(document.querySelector("#primarySidebar")?.getBoundingClientRect().left || -1),
+    sidebarWidth: Math.round(document.querySelector("#primarySidebar")?.getBoundingClientRect().width || 0),
+    navLabelsVisible: getComputedStyle(document.querySelector("#sidebarPatientRosterLabel")).display !== "none"
+  }));
+  assert(studioDrawerAudit.sidebarLeft >= -1 && studioDrawerAudit.sidebarWidth >= 180 && studioDrawerAudit.navLabelsVisible, `Studio menu should open a full navigation drawer, not an icon rail: ${JSON.stringify(studioDrawerAudit)}`);
+  await page.click("#layoutNavCollapseButton");
+  await page.waitForFunction(() => document.body.dataset.navCollapsed === "false" && document.body.dataset.studioNavOpen === "false");
+  const studioWorkbenchHandle = page.locator('[data-layout-resize-key="studioWorkups"]');
+  await studioWorkbenchHandle.waitFor({ state: "visible" });
+  const startStudioWorkupsWidth = await page.evaluate(() => Math.round(document.querySelector(".studio-rail").getBoundingClientRect().width));
+  await studioWorkbenchHandle.press("ArrowRight");
+  const resizedStudioColumns = await page.evaluate(() => {
+    const prefs = JSON.parse(localStorage.getItem("prerounding-layout-preferences-v1") || "{}");
+    const visibleHandles = Array.from(document.querySelectorAll("#studioView [data-layout-resize-key]")).filter((handle) => {
+      const rect = handle.getBoundingClientRect();
+      const style = getComputedStyle(handle);
+      return style.display !== "none" && rect.width > 0 && rect.height > 0;
+    });
+    return {
+      workupsWidth: Math.round(document.querySelector(".studio-rail").getBoundingClientRect().width),
+      storedWorkupsWidth: prefs?.sizes?.studioWorkups,
+      visibleHandleCount: visibleHandles.length
+    };
+  });
+  assert(resizedStudioColumns.workupsWidth > startStudioWorkupsWidth && resizedStudioColumns.storedWorkupsWidth >= resizedStudioColumns.workupsWidth - 2 && resizedStudioColumns.visibleHandleCount >= 2, `Studio columns should resize and persist: ${JSON.stringify({ startStudioWorkupsWidth, resizedStudioColumns })}`);
   await assertNoHorizontalOverflow(page, "desktop Workup Studio");
+  await page.click("#workupStudioImportCommandButton");
+  await page.waitForFunction(() => document.activeElement?.id === "workupStudioImportInput");
+  await page.click("#workupStudioAuditLogButton");
+  await page.waitForFunction(() => document.querySelector("#workupStudioJsonDrawer")?.open);
+  await page.click("#workupStudioSettingsCommandButton");
+  await page.waitForFunction(() => document.activeElement?.id === "workupStudioMagicLinkEmailInput" || document.activeElement?.id === "workupStudioLoadBackendDraftsButton");
   assert.equal(await page.locator("#workupStudioLoadBackendDraftsButton").isDisabled(), true, "Backend drafts should not load before authenticated permission checks.");
   assert.equal(await page.locator("#workupStudioSupabaseUrlInput").count(), 0, "Workup Studio should not expose an editable Supabase URL.");
   assert.equal(await page.locator("#workupStudioSupabaseAnonKeyInput").count(), 0, "Workup Studio should not expose an editable Supabase key.");
   assert.equal(await page.locator("#workupStudioSaveBackendConfigButton").count(), 0, "Workup Studio should not expose a backend config save button.");
-  assert.equal(await page.locator("#workupStudioApproveDraftButton").isDisabled(), true, "Cached reviewer state must not unlock publish before token revalidation.");
-  assert.match(await page.textContent("#workupStudioApproveDraftButton"), /Reviewer publish locked/, "Cached reviewer state should render as locked until Supabase revalidates permissions.");
+  assert.equal(await page.locator("#workupStudioPublishImportButton").isDisabled(), true, "Cached reviewer state must not unlock publish before token revalidation.");
+  assert.match(await page.textContent("#workupStudioPublishImportButton"), /Reviewer publish locked/, "Cached reviewer state should render as locked until Supabase revalidates permissions.");
   await page.waitForFunction(() => /no Workup Studio assignment/i.test(document.querySelector("#workupStudioBackendStatus")?.textContent || ""));
   assert.equal(supabaseRequests.userCount, 1, "Saved sessions should be revalidated against Supabase Auth before unlocking permissions.");
   assert.equal(supabaseRequests.profileCount, 1, "Saved sessions should recheck author profile.");
@@ -453,12 +564,21 @@ try {
   await page.waitForFunction(() => document.querySelectorAll("#workupStudioList .studio-workup-row").length > 0);
   await page.locator("#workupStudioList .studio-workup-row", { hasText: "Hyperglycemia" }).first().click();
   await page.waitForFunction(() => document.querySelector("#workupStudioSelectedTitle")?.textContent?.includes("Hyperglycemia"));
-  assert.equal(await page.locator("#workupStudioApproveDraftButton").isDisabled(), true, "Reviewer publish should be locked before auth.");
-  assert.match(await page.textContent("#workupStudioApproveDraftButton"), /Reviewer publish locked/, "Locked publish button should not imply local approval works.");
+  assert.equal(await page.locator("#workupStudioPublishImportButton").isDisabled(), true, "Reviewer publish should be locked before auth.");
+  assert.match(await page.textContent("#workupStudioPublishImportButton"), /Reviewer publish locked/, "Locked publish button should not imply local approval works.");
   const pathwayPrompt = await page.inputValue("#workupStudioOpenEvidencePromptOutput");
+  assert.equal(await page.locator("#workupStudioOpenEvidencePromptOutput").evaluate((node) => node.readOnly), false, "AI prompt textarea should be editable.");
   assert.match(pathwayPrompt, /workup_section_update_v1/, "Workup Studio should generate a paste-ready OpenEvidence section schema.");
   assert.match(pathwayPrompt, /clinical_pathway_tree_v1/, "Pathway prompt should be scoped to the selected tree section.");
   assert.match(pathwayPrompt, /Do not include patient-specific details/, "OpenEvidence prompt should guard against PHI.");
+  const editedPromptSentinel = `COPY_SENTINEL_${Date.now()}`;
+  await setTextareaValue(page, "#workupStudioOpenEvidencePromptOutput", `${pathwayPrompt}\n\nReviewer focus: ${editedPromptSentinel}`);
+  await page.click("#workupStudioCopyPromptButton");
+  await page.waitForFunction((sentinel) => navigator.clipboard.readText().then((text) => text.includes(sentinel)).catch(() => false), editedPromptSentinel);
+  await page.click("#workupStudioResetPromptButton");
+  const resetPathwayPrompt = await page.inputValue("#workupStudioOpenEvidencePromptOutput");
+  assert.doesNotMatch(resetPathwayPrompt, new RegExp(editedPromptSentinel), "Reset should restore the generated section prompt.");
+  assert.match(resetPathwayPrompt, /clinical_pathway_tree_v1/, "Reset prompt should still target the selected pathway section.");
   const authoringRequestsBeforeLocalDraft = authoringTableRequestCount(supabaseRequests);
   await page.click("#workupStudioSaveTreeDraftButton");
   await page.fill("#workupStudioImportInput", JSON.stringify({
@@ -502,6 +622,7 @@ try {
   assert.match(supabaseRequests.otpRequests.at(-1).body.code_challenge, /^[A-Za-z0-9_-]{20,}$/, "Magic link should include a PKCE code challenge.");
   assert.match(supabaseRequests.otpRequests.at(-1).body.code_challenge_method, /^(s256|plain)$/, "Magic link should declare the PKCE challenge method.");
   assert.match(supabaseRequests.otpRequests.at(-1).redirectTo, /workupStudioOAuth=1/, "Magic-link callback should use the configured Workup Studio redirect.");
+  await page.waitForFunction(() => /Magic link sent to unassigned@example\.test/.test(document.querySelector("#workupStudioBackendStatus")?.textContent || ""));
   await page.goto(magicLinkCallbackUrl(baseUrl, "fake-unassigned-token"));
   await waitForCondition(() => supabaseRequests.profileCount >= 2 && supabaseRequests.assignmentCount >= 2, "unassigned magic-link callback");
   await page.click("#demoCaseButton");
@@ -514,7 +635,7 @@ try {
   assert.equal(supabaseRequests.getChangeSetsCount, 0, "Unassigned account must not load backend drafts.");
   assert.equal(supabaseRequests.catalogWorkupCount, 0, "Unassigned account must not load canonical Supabase workups.");
   assert.equal(await page.locator("#workupStudioLoadBackendDraftsButton").isDisabled(), true, "Backend draft loading must stay locked for unassigned users.");
-  assert.equal(await page.locator("#workupStudioApproveDraftButton").isDisabled(), true, "Unassigned account must not be able to publish from the editor.");
+  assert.equal(await page.locator("#workupStudioPublishImportButton").isDisabled(), true, "Unassigned account must not be able to publish from the editor.");
   assert.equal(await page.locator("#workupStudioSignOutButton").isHidden(), true, "Sign out should stay hidden when a magic-link account has no Workup Studio permission.");
 
   await page.fill("#workupStudioMagicLinkEmailInput", "reviewer@example.test");
@@ -523,10 +644,27 @@ try {
   assert.equal(supabaseRequests.otpRequests.at(-1).body.email, "reviewer@example.test", "Reviewer magic link should use the typed reviewer email.");
   assert.equal(supabaseRequests.otpRequests.at(-1).body.create_user, false, "Reviewer magic link should still require an existing Auth user.");
   assert.match(supabaseRequests.otpRequests.at(-1).body.code_challenge, /^[A-Za-z0-9_-]{20,}$/, "Reviewer magic link should include a PKCE code challenge.");
+  await page.waitForFunction(() => /Magic link sent to reviewer@example\.test/.test(document.querySelector("#workupStudioBackendStatus")?.textContent || ""));
+  await page.waitForFunction(() => Boolean(localStorage.getItem("prerounding-workup-authoring-pkce-verifier-v1")));
   const reviewerPkceVerifier = await page.evaluate(() => localStorage.getItem("prerounding-workup-authoring-pkce-verifier-v1") || sessionStorage.getItem("prerounding-workup-authoring-pkce-verifier-v1") || "");
   assert.match(reviewerPkceVerifier, /^[A-Za-z0-9._~-]{40,}$/, "Reviewer callback should have a stored PKCE verifier before the email link opens.");
   await page.goto(magicLinkCodeCallbackUrl(baseUrl, "fake-reviewer-code"));
-  await waitForCondition(() => supabaseRequests.profileCount >= 3 && supabaseRequests.assignmentCount >= 3, "reviewer magic-link callback");
+  try {
+    await waitForCondition(() => supabaseRequests.profileCount >= 3 && supabaseRequests.assignmentCount >= 3, "reviewer magic-link callback", 10000);
+  } catch (error) {
+    const callbackStatus = await page.evaluate(() => ({
+      view: document.body.dataset.view || "",
+      status: document.querySelector("#workupStudioBackendStatus")?.textContent || "",
+      location: location.href
+    }));
+    throw new Error(`${error.message}; counters=${JSON.stringify({
+      magicLinkCount: supabaseRequests.magicLinkCount,
+      pkceTokenCount: supabaseRequests.pkceTokenCount,
+      profileCount: supabaseRequests.profileCount,
+      assignmentCount: supabaseRequests.assignmentCount,
+      getChangeSetsCount: supabaseRequests.getChangeSetsCount
+    })}; callbackStatus=${JSON.stringify(callbackStatus)}; diagnostics=${browserDiagnostics.join(" | ")}`);
+  }
   await page.click("#demoCaseButton");
   await page.waitForFunction(() => document.body.dataset.view !== "vaultAccess");
   await page.click('button[data-view-target="studio"]');
@@ -547,10 +685,10 @@ try {
   assert.equal(supabaseRequests.getChangeSetsCount, 1, "Sign-in should load RLS-filtered backend change sets.");
   assert.match(await page.textContent("#workupStudioList"), /Supabase Hyperglycemia Workup/, "Verified reviewers should see the Supabase canonical workup catalog.");
   assert.equal(await page.locator("#workupStudioLoadBackendDraftsButton").isDisabled(), false, "Backend draft loading should only unlock after permission checks.");
-  assert.equal(await page.locator("#workupStudioApproveDraftButton").isDisabled(), false, "Reviewer account should unlock editor publish.");
-  assert.match(await page.textContent("#workupStudioApproveDraftButton"), /Publish latest draft/, "Reviewer button should accurately describe publishing.");
+  assert.equal(await page.locator("#workupStudioPublishImportButton").isDisabled(), false, "Reviewer account should unlock editor publish.");
+  assert.match(await page.textContent("#workupStudioPublishImportButton"), /Publish latest draft/, "Reviewer button should accurately describe publishing.");
   assert.equal(await page.locator("#workupStudioSignOutButton").isHidden(), false, "Sign out should appear after verified Workup Studio permission.");
-  await page.click("#workupStudioApproveDraftButton");
+  await page.click("#workupStudioPublishImportButton");
   await waitForCondition(() => supabaseRequests.postedRows.some((row) => row.id === "loaded-author-draft"), "Supabase loaded author draft publish");
   await waitForCondition(() => supabaseRequests.catalogWorkupCount >= 2, "canonical catalog refresh after publishing loaded author draft");
   const loadedAuthorDraftRow = supabaseRequests.postedRows.find((row) => row.id === "loaded-author-draft");
@@ -590,16 +728,89 @@ try {
   await page.fill("#workupStudioImportInput", JSON.stringify(graph, null, 2));
   await page.click("#workupStudioPreviewImportButton");
   await page.waitForFunction(() => /2 clinical nodes will replace only clinical_pathway_tree_v1/.test(document.querySelector("#workupStudioDiffPreview")?.textContent || ""));
+  await page.click("#workupStudioAcceptImportButton");
   await page.click("#workupStudioPublishImportButton");
   await page.waitForFunction(() => Number(document.querySelector("#workupStudioDraftCount")?.textContent || "0") >= 1);
+  await page.waitForSelector("#workupStudioPathwayTreePanel .decision-tree-node-g[data-node-id='studio_ketones']");
   await page.waitForFunction(() => /Classify DKA\/HHS/.test(document.querySelector("#workupStudioItemList")?.textContent || ""));
+  const renderedTreeAudit = await page.evaluate(() => ({
+    treeNodeCount: document.querySelectorAll("#workupStudioPathwayTreePanel .decision-tree-node-g").length,
+    legacyListButtonCount: document.querySelectorAll("#workupStudioItemList .studio-item-button").length,
+    selectedNodeId: document.querySelector("#workupStudioPathwayNodeIdDisplay")?.value || "",
+    editorBodyMode: document.querySelector(".studio-editor-body")?.classList.contains("is-pathway-editor") || false,
+    treeText: document.querySelector("#workupStudioPathwayTreePanel")?.textContent || ""
+  }));
+  assert(renderedTreeAudit.treeNodeCount >= 2, `Pathway Studio should render an editable tree canvas, not just item rows: ${JSON.stringify(renderedTreeAudit)}`);
+  assert.equal(renderedTreeAudit.legacyListButtonCount, 0, `Pathway Studio should not render the old long section-item list: ${JSON.stringify(renderedTreeAudit)}`);
+  assert.equal(renderedTreeAudit.editorBodyMode, true, "Pathway Studio should switch the editor body into tree-editing mode.");
   const pathwayItemListText = await page.textContent("#workupStudioItemList");
   assert.doesNotMatch(pathwayItemListText || "", /Missing data needed/i, "Workup Studio should hide internal missing-data guards from the pathway outline.");
+  await page.locator("#workupStudioPathwayTreePanel .decision-tree-node-g[data-node-id='studio_ketones']").click();
+  await page.waitForFunction(() => document.querySelector("#workupStudioPathwayNodeIdDisplay")?.value === "studio_ketones");
+  await page.waitForSelector("#workupStudioPathwayTreePanel .decision-tree-node-g[data-node-id='studio_ketones'] .decision-tree-inline-label");
+  const inlineNodeLabel = page.locator("#workupStudioPathwayTreePanel .decision-tree-node-g[data-node-id='studio_ketones'] .decision-tree-inline-label");
+  await inlineNodeLabel.fill("Canvas inline edit: classify DKA/HHS severity with reviewed criteria.");
+  const postedRowsBeforeInlineNodeEdit = supabaseRequests.postedRows.length;
+  await inlineNodeLabel.press(process.platform === "darwin" ? "Meta+Enter" : "Control+Enter");
+  await waitForCondition(() => supabaseRequests.postedRows.length > postedRowsBeforeInlineNodeEdit && supabaseRequests.postedRows.some((row) => {
+    if (row.section_key !== "clinical_pathway_tree_v1" || row.review_status !== "draft") return false;
+    const stack = [row.after_snapshot?.root].filter(Boolean);
+    while (stack.length) {
+      const entry = stack.shift();
+      if (entry?.id === "studio_ketones" && entry.label === "Canvas inline edit: classify DKA/HHS severity with reviewed criteria.") return true;
+      stack.push(...(Array.isArray(entry?.children) ? entry.children : []));
+    }
+    return false;
+  }), "Supabase rendered-tree inline label draft insert");
+  await page.waitForSelector("#workupStudioPathwayTreePanel .decision-tree-node-g[data-node-id='studio_ketones'] .decision-tree-inline-label");
+  await page.waitForFunction(() => document.querySelector("#workupStudioPathwayNodeLabelInput")?.value === "Canvas inline edit: classify DKA/HHS severity with reviewed criteria.");
+  const postedRowsBeforeLayoutDrag = supabaseRequests.postedRows.length;
+  const ketoneNodeBox = await page.locator("#workupStudioPathwayTreePanel .decision-tree-node-g[data-node-id='studio_ketones'] rect").boundingBox();
+  assert.ok(ketoneNodeBox, "Rendered pathway node should have a draggable screen box.");
+  await page.mouse.move(ketoneNodeBox.x + ketoneNodeBox.width / 2, ketoneNodeBox.y + 8);
+  await page.mouse.down();
+  await page.mouse.move(ketoneNodeBox.x + ketoneNodeBox.width / 2 + 28, ketoneNodeBox.y + 26, { steps: 4 });
+  await page.mouse.up();
+  await waitForCondition(() => supabaseRequests.postedRows.length > postedRowsBeforeLayoutDrag && supabaseRequests.postedRows.some((row) => {
+    if (row.section_key !== "clinical_pathway_tree_v1") return false;
+    const stack = [row.after_snapshot?.root].filter(Boolean);
+    while (stack.length) {
+      const entry = stack.shift();
+      if (entry?.id === "studio_ketones" && entry.layout && Number.isFinite(Number(entry.layout.x)) && Number.isFinite(Number(entry.layout.y))) return true;
+      stack.push(...(Array.isArray(entry?.children) ? entry.children : []));
+    }
+    return false;
+  }), "Supabase rendered-tree layout draft insert");
+  await page.fill("#workupStudioPathwayNodeLabelInput", "Direct tree edit: classify DKA/HHS severity with reviewed criteria.");
+  await page.fill("#workupStudioPathwayEdgeLabelInput", "Direct tree edit branch criteria");
+  const postedRowsBeforeTreeEdit = supabaseRequests.postedRows.length;
+  await page.click("#workupStudioSaveTreeDraftButton");
+  await waitForCondition(() => supabaseRequests.postedRows.length > postedRowsBeforeTreeEdit && supabaseRequests.postedRows.some((row) => (
+    row.section_key === "clinical_pathway_tree_v1"
+    && row.review_status === "draft"
+    && /Direct tree edit: classify DKA\/HHS severity/.test(JSON.stringify(row.after_snapshot || {}))
+  )), "Supabase direct rendered-tree draft insert");
+  const directTreeEditRow = [...supabaseRequests.postedRows].reverse().find((row) => row.section_key === "clinical_pathway_tree_v1" && /Direct tree edit: classify DKA\/HHS severity/.test(JSON.stringify(row.after_snapshot || {})));
+  assert.ok(directTreeEditRow, "Rendered-tree edit should save a clinical_pathway_tree_v1 draft row.");
+  assert.equal(directTreeEditRow.review_status, "draft", "Rendered-tree direct edit should save as a reviewer-gated draft.");
+  const directTreeEditedNode = (() => {
+    const stack = [directTreeEditRow.after_snapshot?.root].filter(Boolean);
+    while (stack.length) {
+      const entry = stack.shift();
+      if (entry?.id === "studio_ketones") return entry;
+      stack.push(...(Array.isArray(entry?.children) ? entry.children : []));
+    }
+    return null;
+  })();
+  assert.ok(directTreeEditedNode, "Rendered-tree edit should keep the selected node id in the saved tree.");
+  assert.equal(directTreeEditedNode.label, "Direct tree edit: classify DKA/HHS severity with reviewed criteria.", "Rendered-tree node edit should update the selected node label.");
+  assert.equal(directTreeEditedNode.edgeLabel, "Direct tree edit branch criteria", "Rendered-tree node edit should update the selected branch criteria.");
   await page.waitForFunction(() => /Supabase synced/.test(document.querySelector("#workupStudioDiffPreview")?.textContent || ""));
   await waitForCondition(() => supabaseRequests.postedRows.length >= 2, "Supabase draft insert");
   await waitForCondition(() => supabaseRequests.canonicalRows.some((entry) => entry.table === "pathway_trees"), "Supabase pathway tree publish");
   await waitForCondition(() => supabaseRequests.catalogWorkupCount >= 3, "canonical catalog refresh after pathway publish");
-  const importedPathwayRow = supabaseRequests.postedRows.find((row) => row.id !== "loaded-author-draft" && row.section_key === "clinical_pathway_tree_v1");
+  assert.ok(supabaseRequests.postedRows.some((row) => row.id !== "loaded-author-draft" && row.section_key === "clinical_pathway_tree_v1" && row.review_status === "draft"), "OpenEvidence save should create a draft before publishing.");
+  const importedPathwayRow = supabaseRequests.postedRows.find((row) => row.id !== "loaded-author-draft" && row.section_key === "clinical_pathway_tree_v1" && row.review_status === "approved");
   assert.ok(importedPathwayRow, "OpenEvidence publish should create a separate pathway change-set row.");
   assert.equal(importedPathwayRow.author_id, fakeUserId);
   assert.equal(importedPathwayRow.review_status, "approved");
@@ -622,10 +833,32 @@ try {
   assert.equal(await page.inputValue("#workupStudioItemGroupSelect"), "requiredQuestions");
   assert.equal(await page.inputValue("#workupStudioItemAnswerModeSelect"), "single");
   assert.match(await page.inputValue("#workupStudioItemOptionsInput"), /Missed basal insulin/, "History editor should hydrate answer options.");
+  const historyToolbarAudit = await page.evaluate(() => ({
+    toolbarVisible: Boolean(document.querySelector("#workupStudioItemSearchInput")?.getBoundingClientRect().height),
+    addVisible: Boolean(document.querySelector("#workupStudioToolbarAddItemButton")?.getBoundingClientRect().height),
+    duplicateVisible: Boolean(document.querySelector("#workupStudioToolbarDuplicateItemButton")?.getBoundingClientRect().height),
+    deleteVisible: Boolean(document.querySelector("#workupStudioToolbarDeleteItemButton")?.getBoundingClientRect().height),
+    toolbarOverflow: Math.round((document.querySelector(".studio-item-toolbar")?.getBoundingClientRect().right || 0) - (document.querySelector(".studio-item-pane")?.getBoundingClientRect().right || 0))
+  }));
+  assert(historyToolbarAudit.toolbarVisible && historyToolbarAudit.addVisible && historyToolbarAudit.duplicateVisible && historyToolbarAudit.deleteVisible, `History item toolbar should expose search/add/duplicate/delete controls: ${JSON.stringify(historyToolbarAudit)}`);
+  assert(historyToolbarAudit.toolbarOverflow <= 1, `History item toolbar should fit inside the editor pane: ${JSON.stringify(historyToolbarAudit)}`);
+  await page.fill("#workupStudioItemSearchInput", "insulin");
+  await page.waitForFunction(() => document.activeElement?.id === "workupStudioItemSearchInput");
+  const filteredHistoryCount = await page.locator("#workupStudioItemList .studio-item-button").count();
+  assert(filteredHistoryCount > 0, "History item search should keep matching rows visible.");
+  await page.fill("#workupStudioItemSearchInput", "");
   const historyPrompt = await page.inputValue("#workupStudioOpenEvidencePromptOutput");
   assert.match(historyPrompt, /requiredQuestions|conditionalQuestions/, "History prompt should be scoped to history question arrays.");
+  assert.doesNotMatch(historyPrompt, /requiredExam|conditionalExam/, "History prompt should not include physical exam arrays.");
   assert.match(historyPrompt, /answerMode/, "History prompt should request structured answer mode metadata.");
   assert.match(historyPrompt, /normalAnswers/, "History prompt should request structured normal answer metadata.");
+  await page.locator("#workupStudioSectionTabs button", { hasText: "Physical exam" }).click();
+  await page.waitForSelector("#workupStudioItemLabelInput");
+  const physicalExamPrompt = await page.inputValue("#workupStudioOpenEvidencePromptOutput");
+  assert.match(physicalExamPrompt, /requiredExam|conditionalExam/, "Physical exam prompt should be scoped to exam maneuver arrays.");
+  assert.doesNotMatch(physicalExamPrompt, /requiredQuestions|conditionalQuestions/, "Physical exam prompt should not include history question arrays.");
+  await page.locator("#workupStudioSectionTabs button", { hasText: "History questions" }).click();
+  await page.waitForSelector("#workupStudioItemLabelInput");
   await page.selectOption("#workupStudioItemGroupSelect", "conditionalQuestions");
   await page.selectOption("#workupStudioItemAnswerModeSelect", "multi");
   await page.fill("#workupStudioItemLabelInput", "Studio test: ask about missed insulin, vomiting, and oral intake?");
@@ -634,7 +867,7 @@ try {
   await page.click("#workupStudioSaveItemDraftButton");
   await page.waitForFunction(() => Number(document.querySelector("#workupStudioDraftCount")?.textContent || "0") >= 2);
   await waitForCondition(() => supabaseRequests.postedRows.some((row) => row.section_key === "history_questions"), "Supabase history draft insert");
-  const historyRow = supabaseRequests.postedRows.filter((row) => row.section_key === "history_questions").at(-1);
+  const historyRow = [...supabaseRequests.postedRows].reverse().find((row) => row.section_key === "history_questions");
   assert.equal(historyRow.author_id, fakeUserId);
   assert.ok(historyRow.after_snapshot.requiredQuestions || historyRow.after_snapshot.conditionalQuestions, "Backend row should store only the edited section payload.");
   assert.equal(historyRow.after_snapshot.requiredQuestions.length, 0, "Changing scope should move the edited question out of requiredQuestions.");
@@ -644,7 +877,7 @@ try {
   assert.deepEqual(editedHistoryQuestion.options, ["No missed doses", "Missed basal insulin", "Missed bolus insulin", "Vomiting", "Poor oral intake", "Other ___"]);
   assert.deepEqual(editedHistoryQuestion.normalAnswers, ["No missed doses"]);
 
-  await page.click("#workupStudioApproveDraftButton");
+  await page.click("#workupStudioPublishImportButton");
   await waitForCondition(() => supabaseRequests.patchedRows.length >= 1, "Supabase approval patch");
   assert.deepEqual(supabaseRequests.patchedRows.at(-1), {
     review_status: "approved",
