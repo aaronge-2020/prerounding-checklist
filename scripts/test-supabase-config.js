@@ -73,6 +73,12 @@ assert.ok(readinessScript.includes("create_user: false"), "Readiness check shoul
 assert.ok(readinessScript.includes("PGRST205"), "Readiness check should detect missing Supabase authoring tables.");
 assert.ok(readinessScript.includes("Public catalog request returned rows"), "Readiness check should allow public reviewed catalog reads.");
 assert.ok(readinessScript.includes("protected public.${table}"), "Readiness check should still flag anonymous protected authoring-data exposure.");
+assert.ok(readinessScript.includes("returned draft workups"), "Readiness check should flag anonymous draft workup exposure.");
+assert.ok(readinessScript.includes("Public catalog did not expose draft workups"), "Readiness check should verify public catalog RLS filters draft workups.");
+assert.ok(readinessScript.includes("Active reviewed public catalog workup probe"), "Readiness check should probe the app-shaped active reviewed workup catalog.");
+assert.ok(readinessScript.includes("Public catalog returned no active reviewed workups"), "Readiness check should fail when no active reviewed server workups are available.");
+assert.ok(readinessScript.includes("fresh patient devices cannot build server workups"), "Readiness check should fail when reviewed workups have no readable sections.");
+assert.ok(readinessScript.includes("Public catalog source probe returned no rows"), "Readiness check should fail when referenced public catalog sources are unreadable.");
 assert.ok(readinessScript.includes("browserSupabaseDefaultsFromHtml"), "Readiness check should use browser defaults when env credentials are absent.");
 assert.ok(readinessScript.includes("--public-only"), "Readiness check should support credential-free public deployment probes.");
 assert.ok(readinessScript.includes("npm run deploy:supabase-workup-authoring"), "Readiness check should suggest the deploy command.");
@@ -109,6 +115,13 @@ assert.ok(html.includes("workup_section_update_v1"), "OpenEvidence prompt should
 assert.ok(html.includes("workupStudioPublishImportButton"), "Workup Studio should expose save-and-publish for reviewer users.");
 assert.ok(html.includes("loadWorkupStudioPermissions"), "Workup Studio should verify author/reviewer permissions after authentication.");
 assert.ok(html.includes("workupCatalogSupabaseRequest"), "Patient-facing devices should load the reviewed Supabase catalog with a read-only request path.");
+assert.ok(html.includes("function supabaseWorkupsCatalogPath"), "Patient-facing catalog loads should build a reviewed-workup REST path.");
+assert.ok(html.includes("function supabaseWorkupSectionsCatalogPath"), "Patient-facing catalog loads should build a workup-scoped section REST path.");
+assert.ok(html.includes("function supabaseSourcesCatalogPath"), "Patient-facing catalog loads should build a source-scoped REST path.");
+assert.ok(html.includes("function sourceIdsForCatalogRows"), "Public catalog hydration should request only sources referenced by reviewed workups and sections.");
+assert.ok(html.includes("status=in.(mvp,active,published,reviewed)"), "Public patient catalog requests should filter to active reviewed server workups.");
+assert.ok(html.includes("function publicCatalogWorkupStatus"), "Reviewer publish should normalize canonical workups into a public-catalog status.");
+assert.ok(html.includes("status: publicCatalogWorkupStatus(currentWorkupStatus)"), "Publishing a reviewed draft should patch the workup status so fresh patient devices can load it.");
 assert.ok(html.includes("publicWorkupCatalogConfigured"), "The app should support public reviewed-catalog hydration before Workup Studio sign-in.");
 assert.ok(html.includes("hydratePublicWorkupCatalogOnStartup"), "Fresh patient devices should explicitly hydrate the public reviewed catalog on app startup.");
 assert.ok(html.includes("publicOnly"), "Public catalog hydration should be able to bypass stale Workup Studio auth tokens.");
@@ -157,6 +170,9 @@ for (const required of [
   "assigned authors can read pathway nodes",
   "revoke execute on function public.can_edit_workup_content(text) from public",
   "grant execute on function public.can_edit_workup_content(text) to authenticated, service_role",
+  "workups_public_catalog_status_title_idx",
+  "workup_sections_public_catalog_order_idx",
+  "workup_sections_source_ids_gin_idx",
   "change_sets_review_status_idx",
   "change_sets_source_ids_gin_idx"
 ]) {
@@ -165,6 +181,15 @@ for (const required of [
 const finalChangeSetReadPolicy = migration.slice(migration.lastIndexOf('create policy "authors can read relevant change sets"'));
 assert.ok(finalChangeSetReadPolicy.includes("public.can_edit_workup_content(workup_id)"), "Final change-set read policy should require assignment/reviewer permission.");
 assert.ok(!finalChangeSetReadPolicy.includes("or review_status = 'approved'"), "Final change-set read policy should not make approved changes globally readable.");
+const finalPublicWorkupPolicy = migration.slice(migration.lastIndexOf('create policy "public can read reviewed workups"'));
+assert.ok(finalPublicWorkupPolicy.includes("status in ('mvp', 'active', 'published', 'reviewed')"), "Final public workup read policy should expose only reviewed/active canonical workups.");
+assert.ok(!/public can read reviewed workups[\s\S]*?using\s*\(\s*true\s*\)/i.test(finalPublicWorkupPolicy), "Final public workup read policy must not expose every workup row.");
+const finalPublicSectionPolicy = migration.slice(migration.lastIndexOf('create policy "public can read reviewed workup sections"'));
+assert.ok(finalPublicSectionPolicy.includes("workup.status in ('mvp', 'active', 'published', 'reviewed')"), "Final public section read policy should expose only sections for reviewed/active workups.");
+assert.ok(!/public can read reviewed workup sections[\s\S]*?using\s*\(\s*true\s*\)/i.test(finalPublicSectionPolicy), "Final public section read policy must not expose every section row.");
+const finalPublicSourcePolicy = migration.slice(migration.lastIndexOf('create policy "public can read reviewed sources"'));
+assert.ok(finalPublicSourcePolicy.includes("workup.status in ('mvp', 'active', 'published', 'reviewed')"), "Final public source read policy should expose only sources referenced by reviewed/active workups.");
+assert.ok(!/public can read reviewed sources[\s\S]*?using\s*\(\s*true\s*\)/i.test(finalPublicSourcePolicy), "Final public source read policy must not expose every source row.");
 
 const docs = read("docs/supabase-workup-authoring.md");
 assert.ok(docs.includes("npx supabase db push"), "Setup docs should explain how to deploy the migration.");

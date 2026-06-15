@@ -139,7 +139,10 @@ try {
     authenticatedWorkups: 0,
     publicFulfilled: false,
     authenticatedFulfilled: false,
-    workupHeaders: []
+    workupHeaders: [],
+    workupSearches: [],
+    sectionSearches: [],
+    sourceSearches: []
   };
 
   await page.route("https://hajjuzpnlvpetsleuxwb.supabase.co/**", async (route) => {
@@ -168,6 +171,7 @@ try {
     }
     if (url.pathname === "/rest/v1/workups" && request.method() === "GET") {
       requests.workupHeaders.push(authorization);
+      requests.workupSearches.push({ authenticated, search: url.search });
       if (authenticated) {
         requests.authenticatedWorkups += 1;
       } else {
@@ -180,11 +184,13 @@ try {
       return;
     }
     if (url.pathname === "/rest/v1/workup_sections" && request.method() === "GET") {
+      requests.sectionSearches.push({ authenticated, search: decodeURIComponent(url.search) });
       if (!authenticated) await delay(500);
       await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(rows.sections) });
       return;
     }
     if (url.pathname === "/rest/v1/sources" && request.method() === "GET") {
+      requests.sourceSearches.push({ authenticated, search: decodeURIComponent(url.search) });
       if (!authenticated) await delay(500);
       await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(rows.sources) });
       return;
@@ -213,6 +219,12 @@ try {
   }));
   assert(requests.workupHeaders.some((header) => /sb_publishable_/i.test(header)), `Expected a public startup catalog request: ${JSON.stringify(requests.workupHeaders)}`);
   assert(requests.workupHeaders.some((header) => /fake-access-token/i.test(header)), `Expected an authenticated reviewer catalog request: ${JSON.stringify(requests.workupHeaders)}`);
+  assert(requests.workupSearches.some((entry) => !entry.authenticated && /status=in\.\(mvp,active,published,reviewed\)/.test(entry.search)), `Public startup catalog request should filter to active reviewed workups: ${JSON.stringify(requests.workupSearches)}`);
+  assert(requests.workupSearches.some((entry) => entry.authenticated && !/status=in\.\(mvp,active,published,reviewed\)/.test(entry.search)), `Authenticated reviewer catalog request should not be limited by the public-only status filter: ${JSON.stringify(requests.workupSearches)}`);
+  assert(requests.sectionSearches.some((entry) => !entry.authenticated && /workup_id=in\.\("hyperglycemia_possible_dka_v1"\)/.test(entry.search)), `Public startup catalog request should fetch only active reviewed workup sections: ${JSON.stringify(requests.sectionSearches)}`);
+  assert(requests.sectionSearches.some((entry) => entry.authenticated && !/workup_id=in\./.test(entry.search)), `Authenticated reviewer section catalog request should remain unfiltered: ${JSON.stringify(requests.sectionSearches)}`);
+  assert(requests.sourceSearches.some((entry) => !entry.authenticated && /or=\(id\.in\.\("PUBLIC_SOURCE"\),source_id\.in\.\("PUBLIC_SOURCE"\)\)/.test(entry.search)), `Public startup catalog request should fetch only referenced sources: ${JSON.stringify(requests.sourceSearches)}`);
+  assert(requests.sourceSearches.some((entry) => entry.authenticated && !/or=\(id\.in\./.test(entry.search)), `Authenticated reviewer source catalog request should remain unfiltered: ${JSON.stringify(requests.sourceSearches)}`);
   assert.match(audit.listText, /Authenticated reviewer workup/, `Authenticated catalog should win the startup race: ${JSON.stringify(audit)}`);
   assert.doesNotMatch(audit.listText, /Public startup workup/, `Delayed public catalog must not overwrite authenticated reviewer catalog: ${JSON.stringify(audit)}`);
   assert.match(audit.itemList, /Authenticated reviewer current question/, `Section payload should come from the authenticated catalog: ${JSON.stringify(audit)}`);

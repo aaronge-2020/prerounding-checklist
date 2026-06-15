@@ -211,6 +211,9 @@ for (const requiredSnippet of [
   "grant execute on function public.can_edit_workup_content(text) to authenticated, service_role",
   "reviewers can approve exportable change sets",
   "reviewers can insert reviewed change sets",
+  "workups_public_catalog_status_title_idx",
+  "workup_sections_public_catalog_order_idx",
+  "workup_sections_source_ids_gin_idx",
   "change_sets_review_status_idx",
   "workup_items_section_idx",
   "using gin(source_ids)"

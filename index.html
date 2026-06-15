@@ -11893,6 +11893,23 @@
         </section>
       </div>
 
+      <div class="modal-overlay" id="rebuildChecklistConfirmOverlay" hidden>
+        <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="rebuildChecklistConfirmTitle">
+          <div class="modal-head">
+            <div>
+              <h2 id="rebuildChecklistConfirmTitle">Rebuild checklist?</h2>
+              <p class="muted" id="rebuildChecklistConfirmCopy">Confirm before replacing the current bedside checklist.</p>
+            </div>
+            <button class="square-button" id="closeRebuildChecklistConfirmButton" type="button" aria-label="Close rebuild confirmation">x</button>
+          </div>
+          <div class="notice warning">Rebuilding replaces the checklist rows from the selected workup and clears current bedside answers, item notes, reviewed marks, and phone payloads.</div>
+          <div class="button-row" style="margin-top: 14px;">
+            <button class="btn btn-secondary" id="cancelRebuildChecklistButton" type="button">Cancel</button>
+            <button class="btn btn-danger" id="confirmRebuildChecklistButton" type="button">Rebuild and clear answers</button>
+          </div>
+        </section>
+      </div>
+
       <section class="view" id="privacyView" hidden aria-labelledby="privacyTitle">
         <div class="page-head">
           <div>
@@ -12273,6 +12290,9 @@
       dischargeConfirmOverlay: $("#dischargeConfirmOverlay"),
       dischargeConfirmCopy: $("#dischargeConfirmCopy"),
       confirmDischargeButton: $("#confirmDischargeButton"),
+      rebuildChecklistConfirmOverlay: $("#rebuildChecklistConfirmOverlay"),
+      rebuildChecklistConfirmCopy: $("#rebuildChecklistConfirmCopy"),
+      confirmRebuildChecklistButton: $("#confirmRebuildChecklistButton"),
       patientAdmissionOverlay: $("#patientAdmissionOverlay"),
       patientAdmissionForm: $("#patientAdmissionForm"),
       patientAdmissionTitle: $("#patientAdmissionTitle"),
@@ -13396,6 +13416,47 @@
       elements.confirmDischargeButton?.focus();
     }
 
+    function closeRebuildChecklistConfirmation() {
+      if (elements.rebuildChecklistConfirmOverlay) elements.rebuildChecklistConfirmOverlay.hidden = true;
+    }
+
+    function openRebuildChecklistConfirmation({ source = "bedside" } = {}) {
+      const patient = activePatient();
+      const stale = isChecklistStaleForCurrentWorkup();
+      if (elements.rebuildChecklistConfirmCopy) {
+        elements.rebuildChecklistConfirmCopy.textContent = stale
+          ? `Rebuild ${patient.title}'s checklist from the newest server workup before continuing. Current bedside answers will be cleared.`
+          : `Rebuild ${patient.title}'s checklist from the selected workup. Current bedside answers will be cleared.`;
+      }
+      if (elements.rebuildChecklistConfirmOverlay) {
+        elements.rebuildChecklistConfirmOverlay.dataset.source = source;
+        elements.rebuildChecklistConfirmOverlay.hidden = false;
+      }
+      elements.confirmRebuildChecklistButton?.focus();
+    }
+
+    function rebuildChecklistWithConfirmation({ source = "bedside", force = false } = {}) {
+      if (!force && state.sections.length && checklistHasResponseArtifacts()) {
+        openRebuildChecklistConfirmation({ source });
+        return false;
+      }
+      const wasStale = isChecklistStaleForCurrentWorkup();
+      const built = buildChecklistFromWorkup({ navigate: false });
+      if (built) {
+        setStatus(wasStale
+          ? "Checklist rebuilt from the current server workup."
+          : "Checklist rebuilt from the selected workup.");
+      }
+      return built;
+    }
+
+    function confirmRebuildChecklist() {
+      closeRebuildChecklistConfirmation();
+      rebuildChecklistWithConfirmation({ source: elements.rebuildChecklistConfirmOverlay?.dataset?.source || "bedside", force: true });
+      renderChecklist();
+      renderPatientWorkspace();
+    }
+
     function confirmDischargePatient() {
       const patient = patientById(pendingDischargePatientId);
       if (!patient || state.sessionMode === "single") {
@@ -13674,11 +13735,16 @@
       });
     }
 
-    function checklistHasLocalBedsideWork() {
-      return answeredChecklistCount() > 0
-        || Object.keys(state.answers || {}).length > 0
+    function checklistHasResponseArtifacts() {
+      return Object.keys(state.answers || {}).length > 0
         || Object.keys(state.itemNotes || {}).length > 0
         || Object.keys(state.reviewedChecklistKeys || {}).length > 0
+        || Boolean(state.transferCode || state.phonePayload);
+    }
+
+    function checklistHasLocalBedsideWork() {
+      return answeredChecklistCount() > 0
+        || checklistHasResponseArtifacts()
         || Boolean(state.bedsideNote || state.importedFindings);
     }
 
@@ -14490,6 +14556,42 @@
       if (render) rerenderAfterSupabaseWorkupCatalogSync();
     }
 
+    function supabaseWorkupsCatalogPath({ publicOnly = false } = {}) {
+      const reviewedStatusFilter = publicOnly ? "&status=in.(mvp,active,published,reviewed)" : "";
+      return `/rest/v1/workups?select=id,title,version,status,complaint_group,population,module_path,source_ids,payload,updated_at${reviewedStatusFilter}&order=title.asc&limit=1000`;
+    }
+
+    function postgrestInFilter(values = []) {
+      const clean = Array.from(new Set((Array.isArray(values) ? values : [values])
+        .map((value) => String(value || "").trim())
+        .filter(Boolean)
+        .filter((value) => /^[A-Za-z0-9_.:-]+$/.test(value))));
+      return clean.length ? `in.(${clean.map((value) => `"${value}"`).join(",")})` : "";
+    }
+
+    function supabaseWorkupSectionsCatalogPath({ workupIds = [], publicOnly = false } = {}) {
+      const workupFilter = publicOnly ? postgrestInFilter(workupIds) : "";
+      const filtered = workupFilter ? `&workup_id=${workupFilter}` : "";
+      return `/rest/v1/workup_sections?select=workup_id,section_key,sort_order,payload,source_ids,updated_at${filtered}&order=workup_id.asc,sort_order.asc&limit=10000`;
+    }
+
+    function sourceIdsForCatalogRows(workups = [], sections = []) {
+      const sourceIds = new Set();
+      for (const row of [...(Array.isArray(workups) ? workups : []), ...(Array.isArray(sections) ? sections : [])]) {
+        for (const sourceId of collectSourceIdsFromValue(row, [])) {
+          const normalized = String(sourceId || "").trim();
+          if (normalized) sourceIds.add(normalized);
+        }
+      }
+      return Array.from(sourceIds);
+    }
+
+    function supabaseSourcesCatalogPath({ sourceIds = [], publicOnly = false } = {}) {
+      const sourceFilter = publicOnly ? postgrestInFilter(sourceIds) : "";
+      const filtered = sourceFilter ? `&or=(id.${sourceFilter},source_id.${sourceFilter})` : "";
+      return `/rest/v1/sources?select=id,source_id,title,source_type,url,version,date_accessed,citation,payload,updated_at${filtered}&limit=5000`;
+    }
+
     async function loadSupabaseWorkupCatalog({ announce = false, force = false, publicOnly = false } = {}) {
       if (!workupStudioBackendAuthenticated() && !publicWorkupCatalogConfigured()) return false;
       const authenticatedCatalog = !publicOnly && workupStudioBackendAuthenticated();
@@ -14500,11 +14602,26 @@
       if (!force && readyForMode) return true;
       if (!workupStudioCatalogHydrationPromises.has(accessMode)) {
         const hydrationPromise = (async () => {
-          const [workups, sections, sources] = await Promise.all([
-            workupCatalogSupabaseRequest("/rest/v1/workups?select=id,title,version,status,complaint_group,population,module_path,source_ids,payload,updated_at&order=title.asc&limit=1000", { publicOnly }),
-            workupCatalogSupabaseRequest("/rest/v1/workup_sections?select=workup_id,section_key,sort_order,payload,updated_at&order=workup_id.asc,sort_order.asc&limit=10000", { publicOnly }),
-            workupCatalogSupabaseRequest("/rest/v1/sources?select=id,source_id,title,source_type,url,version,date_accessed,citation,payload,updated_at&limit=5000", { publicOnly })
-          ]);
+          let workups = [];
+          let sections = [];
+          let sources = [];
+          if (authenticatedCatalog) {
+            [workups, sections, sources] = await Promise.all([
+              workupCatalogSupabaseRequest(supabaseWorkupsCatalogPath({ publicOnly: false }), { publicOnly }),
+              workupCatalogSupabaseRequest(supabaseWorkupSectionsCatalogPath({ publicOnly: false }), { publicOnly }),
+              workupCatalogSupabaseRequest(supabaseSourcesCatalogPath({ publicOnly: false }), { publicOnly })
+            ]);
+          } else {
+            workups = await workupCatalogSupabaseRequest(supabaseWorkupsCatalogPath({ publicOnly: true }), { publicOnly });
+            const workupIds = Array.isArray(workups) ? workups.map((workup) => workup.id).filter(Boolean) : [];
+            sections = workupIds.length
+              ? await workupCatalogSupabaseRequest(supabaseWorkupSectionsCatalogPath({ workupIds, publicOnly: true }), { publicOnly })
+              : [];
+            const sourceIds = sourceIdsForCatalogRows(workups, sections);
+            sources = sourceIds.length
+              ? await workupCatalogSupabaseRequest(supabaseSourcesCatalogPath({ sourceIds, publicOnly: true }), { publicOnly })
+              : [];
+          }
           applySupabaseWorkupCatalog({ workups, sections, sources }, { persist: authenticatedCatalog, accessMode });
           rerenderAfterSupabaseWorkupCatalogSync();
           if (announce) setStatus(`Loaded ${supabaseWorkupCatalog.modulesById.size} current Workup Studio workup${supabaseWorkupCatalog.modulesById.size === 1 ? "" : "s"} from Supabase.`);
@@ -15328,6 +15445,11 @@
       return true;
     }
 
+    function publicCatalogWorkupStatus(status = "") {
+      const normalized = String(status || "").trim().toLowerCase();
+      return ["mvp", "active", "published", "reviewed"].includes(normalized) ? normalized : "reviewed";
+    }
+
     async function publishWorkupStudioCanonicalSection(changeSet) {
       if (!workupStudioCanReview()) throw new Error("Reviewer access is required to publish canonical Workup Studio content.");
       const workupId = changeSet.workupId || changeSet.workup_id;
@@ -15381,7 +15503,11 @@
         });
         await upsertWorkupStudioRows("review_cases", workupStudioReviewCaseRowsFromPayload(workupId, payload));
       }
-      const workupPatch = { updated_at: now };
+      const currentWorkupStatus = moduleById(workupId)?.status || "";
+      const workupPatch = {
+        updated_at: now,
+        status: publicCatalogWorkupStatus(currentWorkupStatus)
+      };
       if (definition.kind === "sources" && Array.isArray(payload.module_source_ids)) {
         workupPatch.source_ids = payload.module_source_ids;
       }
@@ -17071,6 +17197,13 @@
       state.checklistWorkupModuleId = "";
       state.checklistWorkupSignature = "";
       state.checklistCatalogStale = false;
+      clearChecklistResponseArtifacts();
+      state.lastChecklistRefinementCount = 0;
+      state.lastChecklistRefinementAdditionCount = 0;
+      state.lastChecklistRefinementRemovalCount = 0;
+    }
+
+    function clearChecklistResponseArtifacts() {
       state.answers = {};
       state.itemNotes = {};
       state.reviewedChecklistKeys = {};
@@ -17081,9 +17214,6 @@
 	      checklistSectionFocus = false;
 	      activeChecklistKey = "";
 	      openChecklistNoteKey = "";
-	      state.lastChecklistRefinementCount = 0;
-	      state.lastChecklistRefinementAdditionCount = 0;
-	      state.lastChecklistRefinementRemovalCount = 0;
 	    }
 
     function setChecklistBuildDisabled(disabled) {
@@ -21759,6 +21889,7 @@
 	        throw error;
 	      }
       const selectedModule = moduleById(state.selectedWorkupModuleId);
+      clearChecklistResponseArtifacts();
       state.checklistWorkupModuleId = selectedModule?.id || "";
       state.checklistWorkupSignature = checklistModuleSignature(selectedModule);
       state.checklistCatalogStale = false;
@@ -21784,7 +21915,15 @@
         return;
       }
       saveSelectedPatientDrafts();
-      const built = buildChecklistFromWorkup({ navigate: false });
+      if (state.sections.length && !isChecklistStaleForCurrentWorkup()) {
+        showView("workspace");
+        setPatientTab("checklist", { announce: false });
+        setStatus(`${activePatient().title} checklist is ready for bedside answers.`);
+        return;
+      }
+      const built = state.sections.length
+        ? rebuildChecklistWithConfirmation({ source: "workspace" })
+        : buildChecklistFromWorkup({ navigate: false });
       if (!built) return;
       showView("workspace");
       setPatientTab("checklist", { announce: false });
@@ -24264,6 +24403,12 @@
         if (event.target === elements.dischargeConfirmOverlay) closeDischargeConfirmation();
       });
       elements.confirmDischargeButton?.addEventListener("click", confirmDischargePatient);
+      $("#closeRebuildChecklistConfirmButton")?.addEventListener("click", closeRebuildChecklistConfirmation);
+      $("#cancelRebuildChecklistButton")?.addEventListener("click", closeRebuildChecklistConfirmation);
+      elements.rebuildChecklistConfirmOverlay?.addEventListener("click", (event) => {
+        if (event.target === elements.rebuildChecklistConfirmOverlay) closeRebuildChecklistConfirmation();
+      });
+      elements.confirmRebuildChecklistButton?.addEventListener("click", confirmRebuildChecklist);
       for (const button of $$("[data-view-target]")) {
         button.addEventListener("click", () => {
           showView(button.dataset.viewTarget);
@@ -24847,7 +24992,7 @@
 	      elements.showAllChecklistSectionsButton?.addEventListener("click", showAllChecklistQuestions);
 	      elements.clearChecklistSectionButton.addEventListener("click", clearActiveChecklistSection);
       elements.clearAllChecklistButton.addEventListener("click", clearAllChecklistAnswers);
-      elements.bedsideRebuildChecklistButton.addEventListener("click", () => buildChecklistFromWorkup({ navigate: false }));
+      elements.bedsideRebuildChecklistButton.addEventListener("click", () => rebuildChecklistWithConfirmation({ source: "bedside" }));
 	      elements.bedsideNoteInput.addEventListener("input", () => {
 	        state.bedsideNote = elements.bedsideNoteInput.value;
 	        const draft = patientDraft(activePatient());

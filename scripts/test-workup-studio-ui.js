@@ -896,6 +896,7 @@ try {
   assert.equal(importedPathwayRow.section_key, "clinical_pathway_tree_v1");
   assert.ok(supabaseRequests.canonicalRows.some((entry) => entry.table === "workup_sections" && entry.rows.some((row) => row.section_key === "clinical_pathway_tree_v1")), "Publishing should update canonical workup_sections.");
   assert.ok(supabaseRequests.canonicalRows.some((entry) => entry.table === "pathway_nodes" && entry.rows.length >= 1), "Publishing should update canonical pathway_nodes.");
+  assert.ok(supabaseRequests.canonicalRows.some((entry) => entry.table === "workups" && entry.rows.some((row) => /^(?:mvp|active|published|reviewed)$/.test(row.status || ""))), "Publishing should patch the canonical workup into a public-catalog status.");
   const importedTreeDraft = JSON.stringify(importedPathwayRow.after_snapshot || {});
   assert.doesNotMatch(importedTreeDraft, /Missing data needed: glucose and ketones/i, "Imported missing-data placeholders should be sanitized out of stored pathway text.");
   assert.match(importedTreeDraft, /Hidden traversal metadata/i, "Imported missing-data guards should remain as hidden traversal metadata.");

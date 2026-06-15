@@ -49,6 +49,37 @@ async function fetchSupabaseText(url, options = {}) {
   }
 }
 
+function parseSupabaseJsonRows(result, label, issues) {
+  try {
+    const parsed = JSON.parse(result.text || "[]");
+    if (Array.isArray(parsed)) return parsed;
+    issues.push(`${label} returned a non-array JSON response.`);
+    return [];
+  } catch {
+    issues.push(`${label} returned invalid JSON: ${result.text.slice(0, 160)}`);
+    return [];
+  }
+}
+
+function postgrestInFilter(values = []) {
+  const clean = Array.from(new Set((Array.isArray(values) ? values : [values])
+    .map((value) => String(value || "").trim())
+    .filter(Boolean)
+    .filter((value) => /^[A-Za-z0-9_.:-]+$/.test(value))));
+  return clean.length ? `in.(${clean.map((value) => `"${value}"`).join(",")})` : "";
+}
+
+function sourceIdsFromCatalogRows(rows = []) {
+  const sourceIds = new Set();
+  for (const row of rows) {
+    for (const sourceId of Array.isArray(row?.source_ids) ? row.source_ids : []) {
+      const normalized = String(sourceId || "").trim();
+      if (normalized) sourceIds.add(normalized);
+    }
+  }
+  return Array.from(sourceIds);
+}
+
 async function checkPublicSupabaseReadiness({ supabaseUrl, publishableKey }) {
   const issues = [];
   const notes = [];
@@ -119,6 +150,65 @@ async function checkPublicSupabaseReadiness({ supabaseUrl, publishableKey }) {
       continue;
     }
     issues.push(`Unexpected public.${table} probe response: HTTP ${result.status} ${result.text.slice(0, 160)}`);
+  }
+
+  const draftWorkupProbe = await fetchSupabaseText(`${supabaseUrl}/rest/v1/workups?select=id,status&status=eq.draft&limit=1`, { headers });
+  if (draftWorkupProbe.status === 200) {
+    const text = draftWorkupProbe.text.trim();
+    if (text && text !== "[]") {
+      issues.push("Anonymous publishable-key request returned draft workups; public catalog RLS must expose only reviewed/active workups.");
+    } else {
+      notes.push("Public catalog did not expose draft workups to anonymous publishable-key reads.");
+    }
+  } else if (draftWorkupProbe.status === 401 || draftWorkupProbe.status === 403) {
+    notes.push(`Draft workup public probe is blocked with HTTP ${draftWorkupProbe.status}.`);
+  } else {
+    issues.push(`Unexpected draft workup public probe response: HTTP ${draftWorkupProbe.status} ${draftWorkupProbe.text.slice(0, 160)}`);
+  }
+
+  const activeWorkupsProbe = await fetchSupabaseText(`${supabaseUrl}/rest/v1/workups?select=id,title,status,source_ids&status=in.(mvp,active,published,reviewed)&order=title.asc&limit=25`, { headers });
+  if (activeWorkupsProbe.status !== 200) {
+    issues.push(`Active reviewed public catalog workup probe failed: HTTP ${activeWorkupsProbe.status} ${activeWorkupsProbe.text.slice(0, 160)}`);
+    return { issues, notes };
+  }
+  const activeWorkups = parseSupabaseJsonRows(activeWorkupsProbe, "Active reviewed public catalog workup probe", issues);
+  if (!activeWorkups.length) {
+    issues.push("Public catalog returned no active reviewed workups; fresh patient devices cannot load server workup updates.");
+    return { issues, notes };
+  }
+  const activeWorkupIds = activeWorkups.map((row) => row.id).filter(Boolean);
+  const sectionFilter = postgrestInFilter(activeWorkupIds);
+  if (!sectionFilter) {
+    issues.push("Active reviewed workups did not include safe workup IDs for section hydration.");
+    return { issues, notes };
+  }
+  const activeSectionsProbe = await fetchSupabaseText(`${supabaseUrl}/rest/v1/workup_sections?select=workup_id,section_key,source_ids&workup_id=${sectionFilter}&order=workup_id.asc,sort_order.asc&limit=200`, { headers });
+  if (activeSectionsProbe.status !== 200) {
+    issues.push(`Active reviewed public catalog section probe failed: HTTP ${activeSectionsProbe.status} ${activeSectionsProbe.text.slice(0, 160)}`);
+    return { issues, notes };
+  }
+  const activeSections = parseSupabaseJsonRows(activeSectionsProbe, "Active reviewed public catalog section probe", issues);
+  if (!activeSections.length) {
+    issues.push("Public catalog returned active reviewed workups but no readable sections; fresh patient devices cannot build server workups.");
+  } else {
+    notes.push(`Public catalog app-shaped probe returned ${activeWorkups.length} active reviewed workup(s) and ${activeSections.length} section row(s).`);
+  }
+  const sourceIds = sourceIdsFromCatalogRows([...activeWorkups, ...activeSections]);
+  if (!sourceIds.length) {
+    issues.push("Public catalog active reviewed workups/sections expose no source IDs; source traceability may be missing from fresh devices.");
+    return { issues, notes };
+  }
+  const sourceFilter = postgrestInFilter(sourceIds);
+  const activeSourcesProbe = await fetchSupabaseText(`${supabaseUrl}/rest/v1/sources?select=id,source_id&or=(id.${sourceFilter},source_id.${sourceFilter})&limit=200`, { headers });
+  if (activeSourcesProbe.status !== 200) {
+    issues.push(`Active reviewed public catalog source probe failed: HTTP ${activeSourcesProbe.status} ${activeSourcesProbe.text.slice(0, 160)}`);
+    return { issues, notes };
+  }
+  const activeSources = parseSupabaseJsonRows(activeSourcesProbe, "Active reviewed public catalog source probe", issues);
+  if (!activeSources.length) {
+    issues.push("Public catalog source probe returned no rows for active reviewed workup source IDs; fresh devices may show untraceable workups.");
+  } else {
+    notes.push(`Public catalog app-shaped probe returned ${activeSources.length} referenced source row(s).`);
   }
 
   return { issues, notes };

@@ -94,17 +94,26 @@ for (const required of [
   assert.ok(migrationSql.includes(required), `RLS migration should include ${required}.`);
 }
 
-const finalReadPolicy = migrationSql.slice(migrationSql.lastIndexOf('create policy "authors can read relevant change sets"'));
+const finalPolicies = finalPolicyMap(migrationSql);
+const finalReadPolicy = finalPolicies.get("change_sets.authors can read relevant change sets") || "";
 assert.ok(finalReadPolicy.includes("public.can_edit_workup_content(workup_id)"), "Final change-set read policy must require workup permission.");
 assert.ok(!finalReadPolicy.includes("review_status = 'approved'"), "Final change-set read policy must not expose approved rows globally.");
 assert.ok(!finalReadPolicy.includes("using (true)"), "Final change-set read policy must not use permissive true policy.");
 
-const finalPolicies = finalPolicyMap(migrationSql);
+const publicCatalogPolicyKeys = new Set([
+  "sources.public can read reviewed sources",
+  "workups.public can read reviewed workups",
+  "workup_sections.public can read reviewed workup sections"
+]);
 for (const [policyKey, policySql] of finalPolicies) {
-  assert.ok(!/\bto\s+anon\b/i.test(policySql), `Final policy must not grant anon access: ${policyKey}`);
+  assert.ok(!/\bto\s+anon\b/i.test(policySql) || publicCatalogPolicyKeys.has(policyKey), `Final policy must not grant anon access outside the reviewed public catalog: ${policyKey}`);
   assert.ok(!/using\s*\(\s*true\s*\)/i.test(policySql), `Final policy must not use broad using(true): ${policyKey}`);
   assert.ok(!/review_status\s*=\s*'approved'/i.test(policySql), `Final policy must not expose approved content globally: ${policyKey}`);
   assert.ok(!/public\.can_review_workup_content\(\)\s+or\s+author_id\s*=\s*auth\.uid\(\)/i.test(policySql), `Final policy must not combine reviewer insert with author bypass: ${policyKey}`);
+}
+for (const publicPolicyKey of publicCatalogPolicyKeys) {
+  assert.ok(finalPolicies.has(publicPolicyKey), `Reviewed public catalog policy is missing: ${publicPolicyKey}`);
+  assert.ok(finalPolicies.get(publicPolicyKey).includes("status in ('mvp', 'active', 'published', 'reviewed')"), `Reviewed public catalog policy must filter draft workups: ${publicPolicyKey}`);
 }
 
 for (const removedPolicy of [

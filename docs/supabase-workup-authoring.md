@@ -38,7 +38,7 @@ First check whether this machine has the credentials needed to deploy and seed t
 npm run check:supabase-public
 ```
 
-This credential-free check uses the browser-configured Supabase URL and publishable key to verify Email magic-link readiness, authoring table presence, public reviewed-catalog reads, and protected draft/authoring-table privacy. If it reports `PGRST205`, the hosted project does not have the Workup Studio migrations yet.
+This credential-free check uses the browser-configured Supabase URL and publishable key to verify Email magic-link readiness, authoring table presence, app-shaped public reviewed-catalog hydration, source traceability, and protected draft/authoring-table privacy. If it reports `PGRST205`, the hosted project does not have the Workup Studio migrations yet.
 
 Then check whether this machine has the credentials needed to deploy and seed the hosted Supabase project:
 
@@ -82,7 +82,7 @@ The migration creates:
 - `review_cases`
 - `change_sets`
 
-RLS allows every fresh app load to read the reviewed canonical workup catalog with the publishable key. Assigned authors can draft change sets for delegated workups, while reviewers/admins can approve and maintain canonical authoring tables.
+RLS allows every fresh app load to read the reviewed canonical workup catalog with the publishable key. Public catalog reads are limited to active reviewed workups (`mvp`, `active`, `published`, or `reviewed`) plus their sections and referenced sources; draft/non-public workups stay behind authenticated authoring policies. Assigned authors can draft change sets for delegated workups, while reviewers/admins can approve and maintain canonical authoring tables.
 Delegated authors are scoped through `workup_author_assignments`; reviewers/admins can grant one user access to one workup without giving them global approval rights.
 
 ## Enable Magic Link
