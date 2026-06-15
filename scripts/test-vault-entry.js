@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 
 const requiredSnippets = [
-  "Open your local patient vault",
+  "Open local patient vault",
   "Create vault",
   "Open vault",
   "Start single patient",
@@ -20,8 +20,15 @@ const requiredSnippets = [
   "Quick de-ID",
   "Standalone local de-ID",
   "Phone handoff",
-  "Load phone bundle",
-  "Start phone interview",
+  "Paste & open",
+  "Open pasted text",
+  "Scan desktop QR",
+  "Manual bundle fallback",
+  "Scan to open bedside mode",
+  "Regenerate",
+  "Copy bundle",
+  "Download",
+  "My service is not listed",
   "Bundle code mismatch",
   "Returned phone bundle code",
   "PHI review before copy",
@@ -64,6 +71,8 @@ assert.doesNotMatch(html, removedRosterDashboardPattern, "The removed roster das
 assert.match(html, /id="vaultAccessView"/, "Vault access screen should be present.");
 assert.match(html, /id="openVaultForm"/, "Vault login form should be present.");
 assert.match(html, /id="createVaultForm"/, "Vault creation form should be present.");
+assert.match(html, /class="service-picker"/, "Service selection should use the searchable picker UI.");
+assert.doesNotMatch(html, /Default service/, "Service labels should use the user-facing label 'Service'.");
 assert.match(html, /id="singlePatientWorkflowButton"/, "No-save single-patient bypass should be present.");
 assert.match(html, /id="patientAdmissionForm"/, "Patient admission form should be present.");
 assert.match(html, /id="dischargePatientButton"/, "Patient discharge control should be present.");

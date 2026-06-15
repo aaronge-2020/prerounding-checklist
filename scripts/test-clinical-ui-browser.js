@@ -350,9 +350,8 @@ try {
   assert(smallWorkupsAudit.activePane === "workups" && smallWorkupsAudit.workupsVisible && smallWorkupsAudit.railBuildButtonCount === 0 && smallWorkupsAudit.searchVisible && smallWorkupsAudit.resultCount > 0, `Workup selector pane should remain usable without redundant checklist actions at 1024px: ${JSON.stringify(smallWorkupsAudit)}`);
   await page.click('#patientWorkupPanel .target-pane-switcher [data-workup-pane-target="pathway"]');
   await page.waitForFunction(() => document.querySelector("#patientWorkupPanel")?.dataset.activePane === "pathway");
-  await page.click("#layoutNavCollapseButton");
-  await page.waitForFunction(() => document.body.dataset.navCollapsed === "true");
   await page.setViewportSize({ width: 760, height: 900 });
+  await page.waitForFunction(() => document.body.dataset.navCollapsed === "true");
   await assertNoHorizontalOverflow(page, "patient Workup tab 760px pathway pane");
   const mobileWorkupClosedAudit = await page.evaluate(() => {
     const panel = document.querySelector("#patientWorkupPanel");
@@ -374,7 +373,7 @@ try {
     };
   });
   assert(mobileWorkupClosedAudit.panelLeft === 0 && Math.abs(mobileWorkupClosedAudit.panelRight - mobileWorkupClosedAudit.viewportWidth) <= 2, `760px Workup should use full width instead of reserving an icon rail: ${JSON.stringify(mobileWorkupClosedAudit)}`);
-  assert(mobileWorkupClosedAudit.sidebarPointerEvents === "none" && mobileWorkupClosedAudit.menuVisible && /Menu/i.test(mobileWorkupClosedAudit.menuText), `760px Workup should hide primary nav as a labeled drawer control: ${JSON.stringify(mobileWorkupClosedAudit)}`);
+  assert(mobileWorkupClosedAudit.sidebarPointerEvents === "none" && mobileWorkupClosedAudit.menuVisible && /Menu/i.test(mobileWorkupClosedAudit.menuText), `760px Workup should hide the menu as a labeled drawer control: ${JSON.stringify(mobileWorkupClosedAudit)}`);
   await page.click("#patientWorkupMenuButton");
   await page.waitForFunction(() => document.body.dataset.workupNavOpen === "true");
   await page.waitForFunction(() => (document.querySelector("#primarySidebar")?.getBoundingClientRect().left ?? -999) >= -1);
@@ -389,11 +388,10 @@ try {
     };
   });
   assert(mobileWorkupOpenAudit.sidebarLeft >= -1 && mobileWorkupOpenAudit.sidebarWidth >= 180 && mobileWorkupOpenAudit.navLabelsVisible, `760px Workup menu should open a full navigation drawer, not an icon rail: ${JSON.stringify(mobileWorkupOpenAudit)}`);
-  await page.click("#layoutNavCollapseButton");
+  await page.click("#patientWorkupMenuButton");
   await page.waitForFunction(() => document.body.dataset.workupNavOpen === "false");
-  await page.evaluate(() => document.querySelector("#layoutNavFloatButton")?.click());
-  await page.waitForFunction(() => document.body.dataset.navCollapsed === "false");
   await page.setViewportSize({ width: 1440, height: 1024 });
+  await page.waitForFunction(() => document.body.dataset.navCollapsed === "false");
   await page.waitForSelector("#patientWorkupPanel:not([hidden]) #patientWorkupOrdersPanel:not([hidden])");
   const editModeAudit = await page.evaluate(() => ({
     editButtonCount: document.querySelectorAll("#toggleDecisionTreeEditButton").length,

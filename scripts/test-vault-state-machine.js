@@ -103,6 +103,75 @@ async function testSinglePatientNoPersistence(browser, baseUrl) {
   await page.waitForSelector("#createVaultSection:not([hidden])");
   const openHidden = await page.locator("#openVaultSection").evaluate((node) => node.hidden);
   assert(openHidden, "No-vault boot should hide the login form and direct the user to create a vault.");
+  const desktopPhoneEntryHidden = await page.locator("#phoneBundleEntrySection").evaluate((node) => node.hidden || getComputedStyle(node).display === "none");
+  assert(desktopPhoneEntryHidden, "Desktop vault entry should not show the phone-only bedside bundle loader.");
+
+  const serviceAudit = await page.evaluate(() => {
+    const select = document.querySelector("#newVaultServiceSelect");
+    const pickerInput = document.querySelector("#newVaultServicePickerInput");
+    const pickerList = document.querySelector("#newVaultServicePickerList");
+    const customField = document.querySelector("[data-service-custom-field='newVault']");
+    const customInput = document.querySelector("#newVaultCustomServiceInput");
+    const initial = {
+      options: Array.from(select?.options || []).map((option) => option.textContent),
+      nativeVisible: (() => {
+        const rect = select?.getBoundingClientRect();
+        return Boolean(rect && rect.width > 2 && rect.height > 2 && getComputedStyle(select).opacity !== "0");
+      })(),
+      pickerValue: pickerInput?.value || "",
+      pickerListHidden: Boolean(pickerList?.hidden),
+      customHidden: Boolean(customField?.hidden),
+      customDisabled: Boolean(customInput?.disabled),
+      customRequired: Boolean(customInput?.required)
+    };
+    select.value = "custom";
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+    const custom = {
+      customHidden: Boolean(customField?.hidden),
+      customDisabled: Boolean(customInput?.disabled),
+      customRequired: Boolean(customInput?.required)
+    };
+    select.value = "primary_medicine";
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+    const reset = {
+      customHidden: Boolean(customField?.hidden),
+      customDisabled: Boolean(customInput?.disabled),
+      customRequired: Boolean(customInput?.required),
+      pickerValue: pickerInput?.value || ""
+    };
+    return { initial, custom, reset };
+  });
+  assert(serviceAudit.initial.options.includes("Primary medicine team"), `Service dropdown should include default options: ${JSON.stringify(serviceAudit)}`);
+  assert(serviceAudit.initial.options.includes("Cardiology consult service") && serviceAudit.initial.options.includes("Nephrology consult service") && serviceAudit.initial.options.length >= 18, `Service picker should include common team options: ${JSON.stringify(serviceAudit)}`);
+  assert(serviceAudit.initial.options.includes("My service is not listed"), `Service dropdown should include a not-listed escape hatch: ${JSON.stringify(serviceAudit)}`);
+  assert(!serviceAudit.initial.nativeVisible && /Primary medicine team/.test(serviceAudit.initial.pickerValue), `Native service select should be hidden behind the searchable picker: ${JSON.stringify(serviceAudit)}`);
+  assert(serviceAudit.initial.customHidden && serviceAudit.initial.customDisabled && !serviceAudit.initial.customRequired, `Custom service should be inactive by default: ${JSON.stringify(serviceAudit)}`);
+  assert(!serviceAudit.custom.customHidden && !serviceAudit.custom.customDisabled && serviceAudit.custom.customRequired, `Custom service should activate only when not-listed is selected: ${JSON.stringify(serviceAudit)}`);
+  assert(serviceAudit.reset.customHidden && serviceAudit.reset.customDisabled && !serviceAudit.reset.customRequired && /Primary medicine team/.test(serviceAudit.reset.pickerValue), `Custom service should hide again after returning to a listed service: ${JSON.stringify(serviceAudit)}`);
+
+  await page.fill("#newVaultServicePickerInput", "endo");
+  await page.waitForSelector('#newVaultServicePickerList [data-service-id="endocrine_consult"]');
+  const pickerSearchAudit = await page.evaluate(() => {
+    const input = document.querySelector("#newVaultServicePickerInput");
+    const list = document.querySelector("#newVaultServicePickerList");
+    const option = document.querySelector('#newVaultServicePickerList [data-service-id="endocrine_consult"]');
+    const inputRect = input?.getBoundingClientRect();
+    const listRect = list?.getBoundingClientRect();
+    return {
+      expanded: input?.getAttribute("aria-expanded"),
+      listHidden: Boolean(list?.hidden),
+      optionText: option?.textContent || "",
+      opensDown: Boolean(inputRect && listRect && listRect.top >= inputRect.bottom)
+    };
+  });
+  assert(pickerSearchAudit.expanded === "true" && !pickerSearchAudit.listHidden && /Endocrine consult service/.test(pickerSearchAudit.optionText) && pickerSearchAudit.opensDown, `Service picker should search and open downward: ${JSON.stringify(pickerSearchAudit)}`);
+  await page.click('#newVaultServicePickerList [data-service-id="endocrine_consult"]');
+  await page.waitForFunction(() => document.querySelector("#newVaultServiceSelect")?.value === "endocrine_consult");
+  await page.evaluate(() => {
+    const select = document.querySelector("#newVaultServiceSelect");
+    select.value = "primary_medicine";
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+  });
 
   await page.click("#singlePatientWorkflowButton");
   await page.waitForSelector("#appShell", { state: "visible" });
@@ -174,6 +243,8 @@ async function testEncryptedSingletonVault(browser, baseUrl) {
   await page.waitForSelector("#openVaultSection:not([hidden])");
   const createHidden = await page.locator("#createVaultSection").evaluate((node) => node.hidden);
   assert(createHidden, "Existing-vault boot should hide the create form and direct the user to login.");
+  const existingDesktopPhoneEntryHidden = await page.locator("#phoneBundleEntrySection").evaluate((node) => node.hidden || getComputedStyle(node).display === "none");
+  assert(existingDesktopPhoneEntryHidden, "Existing-vault desktop entry should keep the phone bedside loader hidden.");
 
   await page.fill("#vaultPasswordInput", "wrong-passphrase");
   await page.click("#openVaultButton");

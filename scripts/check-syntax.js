@@ -137,7 +137,7 @@ for (const requiredSnippet of [
   "No app-server upload by default",
   "Raw chart text is not saved to the vault",
   "Patients in the open local vault",
-  "Open your local patient vault",
+  "Open local patient vault",
   "Create new vault",
   "Start single patient",
   "VAULT_DATA_KEY",

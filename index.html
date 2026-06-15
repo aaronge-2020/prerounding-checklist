@@ -74,6 +74,10 @@
       cursor: pointer;
     }
 
+    [hidden] {
+      display: none !important;
+    }
+
     button:disabled {
       cursor: not-allowed;
       opacity: 0.55;
@@ -118,16 +122,16 @@
       min-height: 100vh;
       display: grid;
       place-items: center;
-      padding: 32px 18px;
+      padding: 40px 18px;
       background: var(--bg);
     }
 
     .vault-access-shell {
-      width: min(100%, 1040px);
+      width: min(100%, 980px);
       display: grid;
-      grid-template-columns: minmax(280px, 0.85fr) minmax(320px, 1.15fr);
-      gap: 18px;
-      align-items: stretch;
+      grid-template-columns: minmax(260px, 0.78fr) minmax(380px, 1fr);
+      gap: 16px;
+      align-items: start;
     }
 
     .vault-access-intro,
@@ -141,56 +145,120 @@
       padding: 24px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 22px;
       justify-content: space-between;
+      min-height: 430px;
     }
 
     .vault-access-intro h1 {
-      font-size: 24px;
-      margin-bottom: 10px;
+      font-size: 25px;
+      line-height: 1.14;
+      margin: 0 0 10px;
+      letter-spacing: 0;
+    }
+
+    .vault-access-intro .muted {
+      max-width: 34rem;
     }
 
     .phone-entry-title,
-    .phone-entry-copy,
-    .phone-entry-steps {
+    .phone-entry-copy {
       display: none;
     }
 
-    .phone-entry-steps {
-      gap: 8px;
+    .phone-scanner-panel {
+      display: grid;
+      gap: 12px;
     }
 
-    .phone-entry-step {
+    .phone-scanner-frame {
       display: grid;
-      gap: 3px;
+      place-items: center;
+      min-height: 250px;
       border: 1px solid #d8e8e5;
       border-radius: 7px;
       background: #ffffff;
-      padding: 9px 10px;
-      font-size: 12px;
-      line-height: 1.25;
+      overflow: hidden;
     }
 
-    .phone-entry-step strong {
-      color: #12373b;
-      font-size: 12px;
+    .phone-scanner-empty {
+      padding: 24px;
+      color: #47636b;
+      font-size: 14px;
+      line-height: 1.35;
+      text-align: center;
     }
 
-    .phone-entry-step span {
-      color: var(--muted);
+    .phone-scanner-empty[hidden] {
+      display: none;
+    }
+
+    .phone-qr-scanner-video {
+      width: 100%;
+      min-height: 250px;
+      height: 100%;
+      background: #102125;
+      object-fit: cover;
+    }
+
+    .phone-qr-scanner-video[hidden] {
+      display: none;
+    }
+
+    .phone-scanner-actions {
+      display: grid;
+      gap: 8px;
+    }
+
+    .phone-manual-fallback {
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    .phone-manual-fallback summary {
+      padding: 10px 11px;
+      cursor: pointer;
+      color: #17313a;
+      font-size: 13px;
+      font-weight: 820;
+      list-style-position: inside;
+    }
+
+    .phone-manual-fallback:not([open]) > :not(summary) {
+      display: none !important;
+    }
+
+    .phone-manual-fallback .form-field,
+    .phone-manual-fallback .button-row,
+    .phone-manual-fallback .vault-status-line {
+      margin: 0 11px 11px;
     }
 
     .vault-access-panel {
-      padding: 20px;
+      padding: 16px;
       display: grid;
-      gap: 18px;
+      gap: 12px;
     }
 
     .vault-access-section {
       border: 1px solid var(--line);
       border-radius: 8px;
-      padding: 14px;
+      padding: 16px;
       background: var(--surface-soft);
+    }
+
+    .vault-access-section h2 {
+      margin-top: 0;
+      margin-bottom: 8px;
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .vault-access-section > .muted {
+      margin-top: 0;
+      margin-bottom: 12px;
     }
 
     .vault-access-section form,
@@ -203,6 +271,135 @@
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 12px;
+    }
+
+    .service-field-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .service-field-grid[data-custom-service-visible="true"] {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .service-native-select {
+      position: absolute !important;
+      left: 0;
+      top: 0;
+      width: 1px !important;
+      min-width: 1px !important;
+      max-width: 1px !important;
+      height: 1px !important;
+      min-height: 1px !important;
+      max-height: 1px !important;
+      border: 0 !important;
+      margin: 0 !important;
+      opacity: 0;
+      overflow: hidden !important;
+      padding: 0 !important;
+      clip: rect(0 0 0 0);
+      clip-path: inset(50%);
+      pointer-events: none;
+    }
+
+    .service-picker {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 42px;
+      min-width: 0;
+    }
+
+    .service-picker-input {
+      width: 100%;
+      min-width: 0;
+      min-height: 44px;
+      border: 1px solid var(--line-strong);
+      border-right: 0;
+      border-radius: 7px 0 0 7px;
+      background: #ffffff;
+      color: var(--ink);
+      padding: 8px 10px;
+      font: inherit;
+    }
+
+    .service-picker-input:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(9, 132, 124, 0.14);
+      outline: 0;
+    }
+
+    .service-picker-toggle {
+      display: grid;
+      place-items: center;
+      min-height: 44px;
+      border: 1px solid var(--line-strong);
+      border-radius: 0 7px 7px 0;
+      background: #ffffff;
+      color: #294851;
+      padding: 0;
+    }
+
+    .service-picker-list {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      z-index: 80;
+      display: grid;
+      max-height: 280px;
+      border: 1px solid #b8d2d2;
+      border-radius: 7px;
+      background: #ffffff;
+      box-shadow: 0 8px 18px rgba(19, 38, 46, 0.12);
+      overflow: auto;
+    }
+
+    .service-picker-list[hidden] {
+      display: none;
+    }
+
+    .service-picker-option {
+      display: grid;
+      gap: 2px;
+      min-height: 46px;
+      border: 0;
+      border-bottom: 1px solid #e3eceb;
+      background: #ffffff;
+      color: #1d3840;
+      padding: 8px 10px;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .service-picker-option:last-child {
+      border-bottom: 0;
+    }
+
+    .service-picker-option:hover,
+    .service-picker-option.is-active,
+    .service-picker-option[aria-selected="true"] {
+      background: #eef8f6;
+      color: var(--teal-dark);
+    }
+
+    .service-picker-option strong {
+      font-size: 13px;
+      line-height: 1.2;
+    }
+
+    .service-picker-option span {
+      color: #5d7279;
+      font-size: 11px;
+      line-height: 1.2;
+    }
+
+    .service-picker-empty {
+      padding: 12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    #phoneBundleEntrySection {
+      display: none;
     }
 
     @media (max-width: 760px) {
@@ -234,6 +431,7 @@
       .vault-access-intro {
         gap: 10px;
         padding-bottom: 8px;
+        min-height: auto;
       }
 
       .vault-access-intro .brand {
@@ -263,6 +461,8 @@
       }
 
       #phoneBundleEntrySection {
+        display: grid;
+        gap: 12px;
         order: -3;
         border-color: #cfe3df;
         background: #f7fbfa;
@@ -275,10 +475,6 @@
       #openVaultSection,
       #createVaultSection {
         order: 2;
-      }
-
-      .phone-entry-steps {
-        display: grid;
       }
 
       #phoneBundleEntryInput {
@@ -294,6 +490,14 @@
       #phoneBundleEntrySection .btn {
         width: 100%;
         min-height: 46px;
+      }
+
+      .phone-qr-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .phone-qr-code {
+        justify-self: center;
       }
     }
 
@@ -867,7 +1071,10 @@
     body[data-view="workspace"][data-patient-tab="workup"] .app-shell {
       grid-template-columns: var(--app-sidebar-w) minmax(0, 1fr);
       grid-template-rows: minmax(0, 1fr);
+      height: auto;
+      min-height: 100vh;
       background: #ffffff;
+      overflow: visible;
     }
 
     body[data-view="workspace"][data-patient-tab="workup"] .topbar,
@@ -957,7 +1164,8 @@
       grid-column: 2;
       grid-row: 1 / -1;
       padding: 0;
-      overflow: auto;
+      min-height: 100vh;
+      overflow: visible;
       background: #ffffff;
     }
 
@@ -976,12 +1184,17 @@
 
     body[data-view="workspace"][data-patient-tab="workup"] .patient-workspace,
     body[data-view="workspace"][data-patient-tab="workup"] #patientWorkupPanel {
-      height: 100vh;
+      height: auto;
       min-height: 100vh;
       border: 0;
       border-radius: 0;
       background: #ffffff;
-      overflow: hidden;
+      overflow: visible;
+    }
+
+    body[data-view="workspace"][data-patient-tab="workup"] .target-workup-body {
+      height: auto;
+      min-height: calc(100vh - 96px);
     }
 
     body[data-view="studio"] .app-shell {
@@ -1190,6 +1403,75 @@
 
     .handoff-phone-loader {
       grid-column: 1 / -1;
+    }
+
+    .phone-qr-panel {
+      display: grid;
+      justify-items: center;
+      gap: 10px;
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fff;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .phone-qr-panel[hidden] {
+      display: none;
+    }
+
+    .phone-qr-code {
+      display: grid;
+      place-items: center;
+      width: min(100%, 248px);
+      max-width: 248px;
+      aspect-ratio: 1;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fff;
+      padding: 10px;
+    }
+
+    .phone-qr-code svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .phone-qr-code.is-unavailable {
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .phone-qr-meta {
+      display: grid;
+      justify-items: center;
+      gap: 4px;
+      max-width: 28rem;
+      min-width: 0;
+    }
+
+    .phone-qr-meta strong {
+      color: #17313a;
+      font-size: 15px;
+    }
+
+    .phone-qr-meta p {
+      margin: 0;
+    }
+
+    .handoff-secondary-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .handoff-secondary-actions .btn {
+      min-width: 0;
     }
 
     #phoneBundleEntryInput,
@@ -2826,11 +3108,22 @@
       color: var(--teal-dark);
     }
 
+    body[data-studio-nav-open="true"] .studio-menu-button {
+      position: relative;
+      z-index: 95;
+    }
+
     .studio-menu-button .icon-box {
       width: 18px;
       height: 18px;
       border: 0;
       background: transparent;
+    }
+
+    @media (min-width: 761px) {
+      .studio-menu-button {
+        display: none;
+      }
     }
 
     .studio-product-title h1 {
@@ -6974,6 +7267,11 @@
       color: var(--teal-dark);
     }
 
+    body[data-workup-nav-open="true"] .patient-workup-menu-button {
+      position: relative;
+      z-index: 95;
+    }
+
     .patient-workup-menu-button .icon-box {
       width: 18px;
       height: 18px;
@@ -8495,6 +8793,10 @@
       font-size: 13px;
       font-weight: 820;
       list-style-position: inside;
+    }
+
+    .phone-computer-bundle:not([open]) > :not(summary) {
+      display: none !important;
     }
 
     .phone-computer-bundle textarea {
@@ -11016,11 +11318,12 @@
             <span>Pre-Rounding Checklist Builder</span>
           </div>
           <h1 id="vaultAccessTitle">
-            <span class="desktop-entry-title">Open your local patient vault</span>
-            <span class="phone-entry-title">Bedside checklist</span>
+            <span class="desktop-entry-title">Open local patient vault</span>
+            <span class="phone-entry-title">Scan desktop QR</span>
           </h1>
-          <p class="muted desktop-entry-copy">Use a password-protected local vault for saved patient work, or start a single-patient workflow that does not persist data on this device.</p>
-          <p class="muted phone-entry-copy">Paste the bundle from your computer, answer bedside questions and exam findings, then copy the return bundle back.</p>
+          <p class="muted desktop-entry-copy">Use this computer for saved patient prep. Phone bedside checklists open from a copied bundle.</p>
+          <p class="muted phone-entry-copy">Point this phone at the QR code on your computer. Bedside mode opens without a vault.</p>
+          <p class="muted" id="vaultEntrySummary"></p>
         </div>
         <div class="notice">
           <strong>Local-first storage</strong>
@@ -11058,21 +11361,28 @@
               <label for="confirmVaultPasswordInput">Confirm password</label>
               <input id="confirmVaultPasswordInput" type="password" autocomplete="new-password" required>
             </div>
-            <div class="field-grid">
+            <div class="field-grid service-field-grid">
               <div class="form-field">
-                <label for="newVaultServiceSelect">Default service</label>
-                <select id="newVaultServiceSelect"></select>
+                <label for="newVaultServicePickerInput">Service</label>
+                <div class="service-picker" data-service-picker="newVault">
+                  <input class="service-picker-input" id="newVaultServicePickerInput" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="newVaultServicePickerList">
+                  <button class="service-picker-toggle" type="button" aria-label="Show services">
+                    <span class="icon-box" data-icon="chevron-down" aria-hidden="true"></span>
+                  </button>
+                  <div class="service-picker-list" id="newVaultServicePickerList" role="listbox" hidden></div>
+                </div>
+                <select class="service-native-select" id="newVaultServiceSelect" tabindex="-1" aria-hidden="true"></select>
               </div>
-              <div class="form-field">
-                <label for="newVaultCustomServiceInput">Custom service</label>
-                <input id="newVaultCustomServiceInput" autocomplete="off" placeholder="Optional service name">
+              <div class="form-field" data-service-custom-field="newVault" hidden>
+                <label for="newVaultCustomServiceInput">Actual service</label>
+                <input id="newVaultCustomServiceInput" autocomplete="off" placeholder="Cardiology consult service">
               </div>
             </div>
             <div class="form-field">
               <label for="newVaultServiceFocusInput">Prompt focus</label>
               <textarea class="service-focus-input" id="newVaultServiceFocusInput" maxlength="1200" spellcheck="false" placeholder="Optional: team-specific priorities, consult question style, attending preferences."></textarea>
             </div>
-            <button class="btn btn-secondary" id="createVaultButton" type="submit">Create new vault</button>
+            <button class="btn btn-primary" id="createVaultButton" type="submit">Create new vault</button>
             <div class="vault-status-line" id="createVaultStatus" aria-live="polite"></div>
           </form>
         </section>
@@ -11087,36 +11397,37 @@
         </section>
 
         <section class="vault-access-section" id="phoneBundleEntrySection" aria-labelledby="phoneBundleEntryTitle">
-          <h2 id="phoneBundleEntryTitle">Open bedside checklist</h2>
-          <p class="muted">Paste a bundle copied from the computer to open a no-save bedside checklist on this device.</p>
-          <div class="phone-entry-steps" aria-label="Phone bedside workflow">
-            <div class="phone-entry-step">
-              <strong>1. Paste bundle</strong>
-              <span>Use the handoff from the computer.</span>
+          <h2 id="phoneBundleEntryTitle">Scan desktop QR</h2>
+          <p class="muted">Open the handoff screen on your computer, then scan its QR code here.</p>
+          <div class="phone-scanner-panel">
+            <div class="phone-scanner-frame">
+              <video class="phone-qr-scanner-video" id="phoneQrScannerVideo" playsinline muted hidden></video>
+              <div class="phone-scanner-empty" id="phoneQrScannerEmpty">Ready to scan the desktop QR code.</div>
             </div>
-            <div class="phone-entry-step">
-              <strong>2. Answer bedside items</strong>
-              <span>Questions, exam findings, and notes stay local.</span>
+            <div class="phone-scanner-actions">
+              <button class="btn btn-primary" id="startPhoneQrScannerButton" type="button">Scan QR code</button>
+              <button class="btn btn-secondary" id="stopPhoneQrScannerButton" type="button" hidden>Stop scanner</button>
             </div>
-            <div class="phone-entry-step">
-              <strong>3. Copy back</strong>
-              <span>Send the return bundle to the computer.</span>
+            <div class="vault-status-line" id="phoneQrScannerStatus" aria-live="polite"></div>
+          </div>
+          <details class="phone-manual-fallback">
+            <summary>Manual paste fallback</summary>
+            <div class="form-field">
+              <label for="phoneBundleEntryInput">Computer checklist bundle</label>
+              <textarea id="phoneBundleEntryInput" maxlength="32000" spellcheck="false" aria-describedby="localTextEntryHelp" placeholder="Paste the copied bundle or downloaded JSON payload."></textarea>
             </div>
-          </div>
-          <div class="form-field">
-            <label for="phoneBundleEntryInput">Computer checklist bundle</label>
-            <textarea id="phoneBundleEntryInput" maxlength="32000" spellcheck="false" aria-describedby="localTextEntryHelp" placeholder="Paste the copied bundle or downloaded JSON payload."></textarea>
-          </div>
-          <div class="button-row">
-            <button class="btn btn-primary" id="loadPhoneBundleEntryButton" type="button">Open checklist</button>
-          </div>
-          <div class="vault-status-line" id="phoneBundleEntryStatus" aria-live="polite"></div>
+            <div class="button-row">
+              <button class="btn btn-primary" id="pastePhoneBundleEntryButton" type="button">Paste & open</button>
+              <button class="btn btn-secondary" id="loadPhoneBundleEntryButton" type="button">Open pasted text</button>
+            </div>
+            <div class="vault-status-line" id="phoneBundleEntryStatus" aria-live="polite"></div>
+          </details>
         </section>
       </div>
     </div>
   </section>
   <a class="skip-link" href="#workspaceRoot">Skip to workspace content</a>
-  <button class="layout-nav-float" id="layoutNavFloatButton" type="button" aria-label="Show primary navigation" title="Show primary navigation">
+  <button class="layout-nav-float" id="layoutNavFloatButton" type="button" aria-label="Show menu" title="Show menu">
     <span class="icon-box" data-icon="menu" aria-hidden="true"></span>
   </button>
   <main class="app-shell" id="appShell">
@@ -11142,15 +11453,9 @@
       </div>
     </header>
 
-    <aside class="sidebar" aria-label="Primary navigation" id="primarySidebar">
-      <div class="layout-sidebar-head">
-        <strong>Primary navigation</strong>
-        <button class="layout-sidebar-toggle" id="layoutNavCollapseButton" type="button" aria-label="Hide primary navigation" title="Hide primary navigation">
-          <span class="icon-box" data-icon="chevron-left" aria-hidden="true"></span>
-        </button>
-      </div>
+    <aside class="sidebar" aria-label="App menu" id="primarySidebar">
       <span class="sr-only">Patients in the open local vault</span>
-      <nav aria-label="Primary navigation">
+      <nav aria-label="Menu">
         <div class="nav-section">
           <div class="nav-title">Vault</div>
           <button class="nav-button" type="button" id="sidebarPatientRosterButton" aria-current="page" aria-expanded="false" aria-controls="patientRosterRail" aria-label="Show roster" title="Show roster"><span class="icon-box" data-icon="calendar"></span><span id="sidebarPatientRosterLabel">Show roster</span></button>
@@ -11171,7 +11476,7 @@
         <div class="service-mini-line" id="servicePreferenceSummaryMini">Service: Primary medicine team</div>
         <button class="btn btn-secondary btn-compact" id="vaultSettingsButton" type="button">Settings</button>
       </div>
-      <button class="layout-sidebar-resize" id="layoutSidebarResizeHandle" type="button" aria-label="Resize primary navigation" aria-orientation="vertical" title="Drag to resize primary navigation" data-layout-resize-key="appSidebar" data-resize-side="left" data-resize-min="144" data-resize-max="360"></button>
+      <button class="layout-sidebar-resize" id="layoutSidebarResizeHandle" type="button" aria-label="Resize menu" aria-orientation="vertical" title="Drag to resize menu" data-layout-resize-key="appSidebar" data-resize-side="left" data-resize-min="144" data-resize-max="360"></button>
     </aside>
 
     <section class="workspace" id="workspaceRoot" tabindex="-1">
@@ -11658,7 +11963,8 @@
                     <summary>Open checklist copied from computer</summary>
                     <textarea id="phoneChecklistBundleInput" maxlength="32000" spellcheck="false" aria-describedby="localTextEntryHelp" placeholder="Paste the phone bundle copied from the computer."></textarea>
                     <div class="button-row">
-                      <button class="btn btn-primary" id="phoneChecklistLoadBundleButton" type="button">Open copied checklist</button>
+                      <button class="btn btn-primary" id="phoneChecklistPasteBundleButton" type="button"><span class="icon-box" data-icon="copy" aria-hidden="true"></span>Paste & open</button>
+                      <button class="btn btn-secondary" id="phoneChecklistLoadBundleButton" type="button">Open pasted text</button>
                     </div>
                     <div class="vault-status-line" id="phoneChecklistBundleStatus" aria-live="polite"></div>
                   </details>
@@ -11983,7 +12289,7 @@
       <section class="view" id="studioView" hidden aria-labelledby="workupStudioTitle">
         <div class="studio-topbar">
           <div class="studio-product-title">
-            <button class="studio-menu-button" id="workupStudioMenuButton" type="button" aria-controls="primarySidebar" aria-expanded="false" aria-label="Open primary navigation" title="Open primary navigation">
+            <button class="studio-menu-button" id="workupStudioMenuButton" type="button" aria-controls="primarySidebar" aria-expanded="false" aria-label="Open menu" title="Open menu">
               <span class="icon-box" data-icon="menu" aria-hidden="true"></span>
               <span>Menu</span>
             </button>
@@ -12168,18 +12474,31 @@
         <div class="handoff-grid">
           <div class="panel">
             <h2>Send checklist to phone</h2>
-            <p class="muted">Export the reviewed checklist and de-identified context. Check the PHI preview before copying or downloading.</p>
-            <div class="transfer-box">
+            <p class="muted">Scan this QR code from the phone. It opens bedside questions and exam findings with no saved vault data.</p>
+            <div class="phone-qr-panel" id="phoneQrPanel" hidden>
+              <div class="phone-qr-code" id="phoneQrCode" aria-label="Phone checklist QR code"></div>
+              <div class="phone-qr-meta">
+                <strong>Scan to open bedside mode</strong>
+                <p class="muted" id="phoneQrStatus">Generate a bundle to create the QR code.</p>
+              </div>
+            </div>
+            <div class="transfer-box" style="margin-top: 12px;">
               <div class="muted">Pairing code</div>
               <div class="handoff-code" id="phoneTransferCode">Not generated</div>
             </div>
-            <label for="phonePayload" style="margin-top: 12px;">Phone import payload</label>
-            <textarea id="phonePayload" readonly maxlength="24000" aria-describedby="localTextEntryHelp" placeholder="Generate a local transfer bundle to populate this field."></textarea>
-            <div class="button-row" style="margin-top: 12px;">
-              <button class="btn btn-primary" id="exportPhoneContextButton" type="button">Generate phone bundle</button>
-              <button class="btn btn-secondary" id="copyPhonePayloadButton" type="button">Copy payload</button>
-              <button class="btn btn-secondary" id="downloadPhonePayloadButton" type="button">Download file</button>
+            <div class="handoff-secondary-actions">
+              <button class="btn btn-secondary" id="exportPhoneContextButton" type="button">Regenerate</button>
+              <button class="btn btn-secondary" id="copyPhonePayloadButton" type="button">Copy bundle</button>
+              <button class="btn btn-secondary" id="downloadPhonePayloadButton" type="button">Download</button>
             </div>
+            <details class="phone-computer-bundle" style="margin-top: 12px;">
+              <summary>Manual bundle fallback</summary>
+              <div class="button-row">
+                <button class="btn btn-secondary" id="copyPhoneQrLinkButton" type="button">Copy QR link</button>
+              </div>
+              <label for="phonePayload">Phone import payload</label>
+              <textarea id="phonePayload" readonly maxlength="32000" aria-describedby="localTextEntryHelp" placeholder="Generate a local transfer bundle to populate this field."></textarea>
+            </details>
           </div>
           <div class="panel">
             <h2>Bring phone findings back</h2>
@@ -12198,7 +12517,8 @@
             <label for="phoneBundleLoadInput">Desktop phone bundle</label>
             <textarea id="phoneBundleLoadInput" maxlength="32000" spellcheck="false" aria-describedby="localTextEntryHelp" placeholder="Paste the copied phone bundle or downloaded JSON payload."></textarea>
             <div class="button-row" style="margin-top: 12px;">
-              <button class="btn btn-primary" id="loadPhoneBundleButton" type="button">Open bedside checklist</button>
+              <button class="btn btn-primary" id="pastePhoneBundleButton" type="button"><span class="icon-box" data-icon="copy" aria-hidden="true"></span>Paste & open</button>
+              <button class="btn btn-secondary" id="loadPhoneBundleButton" type="button">Open pasted text</button>
             </div>
           </div>
         </div>
@@ -12209,7 +12529,7 @@
           <span class="brand-mark" data-icon="shield" aria-hidden="true"></span>
           <div>
             <strong id="bedsideMobileCaseTitle">No patient selected</strong>
-            <span>Local de-ID complete <span aria-hidden="true">✓</span></span>
+            <span>History questions and exam findings</span>
           </div>
           <button id="bedsideMobileMenuButton" type="button" aria-label="Open patient workspace">☰</button>
         </div>
@@ -12380,14 +12700,21 @@
             <button class="square-button" id="closeAdmissionOverlayButton" type="button" aria-label="Close patient admission">x</button>
           </div>
           <form class="admission-form" id="patientAdmissionForm">
-            <div class="field-grid">
+            <div class="field-grid service-field-grid">
               <div class="form-field">
-                <label for="admitServiceSelect">Service</label>
-                <select id="admitServiceSelect"></select>
+                <label for="admitServicePickerInput">Service</label>
+                <div class="service-picker" data-service-picker="admit">
+                  <input class="service-picker-input" id="admitServicePickerInput" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="admitServicePickerList">
+                  <button class="service-picker-toggle" type="button" aria-label="Show services">
+                    <span class="icon-box" data-icon="chevron-down" aria-hidden="true"></span>
+                  </button>
+                  <div class="service-picker-list" id="admitServicePickerList" role="listbox" hidden></div>
+                </div>
+                <select class="service-native-select" id="admitServiceSelect" tabindex="-1" aria-hidden="true"></select>
               </div>
-              <div class="form-field">
-                <label for="admitCustomServiceInput">Custom service</label>
-                <input id="admitCustomServiceInput" autocomplete="off" placeholder="Optional service name">
+              <div class="form-field" data-service-custom-field="admit" hidden>
+                <label for="admitCustomServiceInput">Actual service</label>
+                <input id="admitCustomServiceInput" autocomplete="off" placeholder="Cardiology consult service">
               </div>
             </div>
             <div class="form-field">
@@ -12447,14 +12774,21 @@
             <button class="square-button" id="closeServiceSettingsButton" type="button" aria-label="Close service settings">x</button>
           </div>
           <form class="admission-form" id="serviceSettingsForm">
-            <div class="field-grid">
+            <div class="field-grid service-field-grid">
               <div class="form-field">
-                <label for="servicePreferenceSelect">Service</label>
-                <select id="servicePreferenceSelect"></select>
+                <label for="servicePreferencePickerInput">Service</label>
+                <div class="service-picker" data-service-picker="settings">
+                  <input class="service-picker-input" id="servicePreferencePickerInput" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="servicePreferencePickerList">
+                  <button class="service-picker-toggle" type="button" aria-label="Show services">
+                    <span class="icon-box" data-icon="chevron-down" aria-hidden="true"></span>
+                  </button>
+                  <div class="service-picker-list" id="servicePreferencePickerList" role="listbox" hidden></div>
+                </div>
+                <select class="service-native-select" id="servicePreferenceSelect" tabindex="-1" aria-hidden="true"></select>
               </div>
-              <div class="form-field">
-                <label for="serviceCustomNameInput">Custom service</label>
-                <input id="serviceCustomNameInput" autocomplete="off" placeholder="Optional service name">
+              <div class="form-field" data-service-custom-field="settings" hidden>
+                <label for="serviceCustomNameInput">Actual service</label>
+                <input id="serviceCustomNameInput" autocomplete="off" placeholder="Cardiology consult service">
               </div>
             </div>
             <div class="form-field">
@@ -12582,6 +12916,8 @@
   </div>
 
   <script src="./vendor/d3.v7.min.js"></script>
+  <script src="./vendor/qrcode-generator-2.0.4.js"></script>
+  <script src="./vendor/jsQR-1.4.0.js"></script>
   <script type="module">
     import { deidentifyTextStructuredOnly } from "./deid.js";
     import { complaintModules, complaintSourceRegistry, evaluateComplaintCds, formatComplaintCdsReport } from "./complaint-cds.js";
@@ -12617,16 +12953,10 @@
         guidance: "Use a holistic inpatient problem-list view: active problems, overnight events, medication safety, discharge barriers, follow-up tasks, and what should be said on rounds."
       },
       {
-        id: "endocrine_consult",
-        label: "Endocrine consult service",
-        role: "Consult service",
-        guidance: "Prioritize the endocrine consult question and endocrine-specific decisions, including glycemic, thyroid, adrenal, calcium, pituitary, medication, monitoring, discharge, and follow-up issues. Keep non-endocrine problems brief unless they affect the consult recommendation."
-      },
-      {
-        id: "consult_service",
-        label: "Other consult service",
-        role: "Consult service",
-        guidance: "Prioritize the consult question, service-specific recommendations, data still needed from the primary team, and concise communication back to the primary team. Keep unrelated problems brief."
+        id: "primary_surgery",
+        label: "Surgery primary team",
+        role: "Primary team",
+        guidance: "Use a surgical primary-team view: operative plan, drains/tubes, diet, pain control, antibiotics, anticoagulation, mobility, discharge barriers, and complications to screen for."
       },
       {
         id: "icu_primary",
@@ -12635,8 +12965,116 @@
         guidance: "Use a whole-patient critical-care view: organ support, active instability, lines/tubes/drains, antimicrobial and medication safety, daily goals, liberation/disposition barriers, and contingency planning."
       },
       {
+        id: "emergency_medicine",
+        label: "Emergency medicine team",
+        role: "Primary team",
+        guidance: "Prioritize stabilization, dangerous diagnoses, disposition, time-sensitive reassessment, pending tests, consultant asks, and clear return or admission criteria."
+      },
+      {
+        id: "pediatrics_primary",
+        label: "Pediatrics primary team",
+        role: "Primary team",
+        guidance: "Use a pediatric primary-team view: age-specific vitals, hydration, weight-based meds, family concerns, growth/development context, safety, discharge readiness, and follow-up."
+      },
+      {
+        id: "cardiology_consult",
+        label: "Cardiology consult service",
+        role: "Consult service",
+        guidance: "Prioritize the cardiac consult question, hemodynamics, rhythm, ischemia, heart failure, anticoagulation, cardiac meds, procedures, monitoring, and communication back to the primary team."
+      },
+      {
+        id: "endocrine_consult",
+        label: "Endocrine consult service",
+        role: "Consult service",
+        guidance: "Prioritize the endocrine consult question and endocrine-specific decisions, including glycemic, thyroid, adrenal, calcium, pituitary, medication, monitoring, discharge, and follow-up issues. Keep non-endocrine problems brief unless they affect the consult recommendation."
+      },
+      {
+        id: "nephrology_consult",
+        label: "Nephrology consult service",
+        role: "Consult service",
+        guidance: "Prioritize kidney function trajectory, volume status, electrolytes, acid-base, urine studies, dialysis needs, nephrotoxin safety, renal dosing, and clear next-step recommendations."
+      },
+      {
+        id: "pulmonary_consult",
+        label: "Pulmonary consult service",
+        role: "Consult service",
+        guidance: "Prioritize oxygenation/ventilation, imaging, pulmonary physiology, airway clearance, procedures, antimicrobials when relevant, and focused respiratory recommendations."
+      },
+      {
+        id: "infectious_disease_consult",
+        label: "Infectious diseases consult service",
+        role: "Consult service",
+        guidance: "Prioritize syndrome/source, cultures, antimicrobial choice and duration, source control, diagnostics still needed, isolation, follow-up, and stewardship-sensitive recommendations."
+      },
+      {
+        id: "gastroenterology_consult",
+        label: "GI / hepatology consult service",
+        role: "Consult service",
+        guidance: "Prioritize the GI/hepatology question, bleeding risk, liver tests, endoscopy/procedure timing, bowel or nutrition plan, medications, and focused follow-up recommendations."
+      },
+      {
+        id: "hematology_oncology_consult",
+        label: "Hematology / oncology consult service",
+        role: "Consult service",
+        guidance: "Prioritize cytopenias, thrombosis/bleeding, malignancy status, treatment complications, transfusion thresholds, anticoagulation, urgent oncologic issues, and communication with the primary team."
+      },
+      {
+        id: "neurology_consult",
+        label: "Neurology consult service",
+        role: "Consult service",
+        guidance: "Prioritize neurologic localization, time course, exam changes, stroke/seizure risk, imaging/tests, medication safety, monitoring, and focused neurologic recommendations."
+      },
+      {
+        id: "psychiatry_consult",
+        label: "Psychiatry consult service",
+        role: "Consult service",
+        guidance: "Prioritize safety, capacity, delirium versus psychiatric illness, medication effects, suicide/violence risk, legal status when relevant, and concise behavioral/medication recommendations."
+      },
+      {
+        id: "rheumatology_consult",
+        label: "Rheumatology consult service",
+        role: "Consult service",
+        guidance: "Prioritize inflammatory pattern, organ involvement, serologies/imaging, immunosuppression risk, infection exclusion, medication toxicity, and focused rheumatology recommendations."
+      },
+      {
+        id: "general_surgery_consult",
+        label: "General surgery consult service",
+        role: "Consult service",
+        guidance: "Prioritize the operative question, abdominal or wound exam, imaging, source control, diet, antibiotics, anticoagulation/procedure risk, and clear surgical follow-up plan."
+      },
+      {
+        id: "ob_gyn_consult",
+        label: "OB/GYN consult service",
+        role: "Consult service",
+        guidance: "Prioritize pregnancy/postpartum status when relevant, gynecologic or obstetric red flags, bleeding, infection, imaging/labs, medication safety, and focused OB/GYN recommendations."
+      },
+      {
+        id: "geriatrics_consult",
+        label: "Geriatrics consult service",
+        role: "Consult service",
+        guidance: "Prioritize function, cognition, delirium risk, falls, medications, goals of care, discharge supports, caregiver context, and practical recommendations for the primary team."
+      },
+      {
+        id: "palliative_care_consult",
+        label: "Palliative care consult service",
+        role: "Consult service",
+        guidance: "Prioritize symptoms, goals, prognosis understanding, decision-makers, code status when relevant, family meeting needs, and clear communication recommendations."
+      },
+      {
+        id: "transplant_consult",
+        label: "Transplant consult service",
+        role: "Consult service",
+        guidance: "Prioritize graft function, immunosuppression, infection risk, drug interactions, rejection concern, procedure/biopsy needs, monitoring, and communication with the primary team."
+      },
+      {
+        id: "consult_service",
+        label: "Other consult service",
+        role: "Consult service",
+        guidance: "Prioritize the consult question, service-specific recommendations, data still needed from the primary team, and concise communication back to the primary team. Keep unrelated problems brief."
+      },
+      {
         id: "custom",
-        label: "Custom service",
+        label: "My service is not listed",
         role: "Custom",
         guidance: "Use the custom service name and prompt focus notes to decide whether the prompt should behave like a primary-team or consult-service workflow."
       }
@@ -12891,9 +13329,9 @@
 
     const elements = {
       vaultAccessView: $("#vaultAccessView"),
+      vaultEntrySummary: $("#vaultEntrySummary"),
       appShell: $("#appShell"),
       primarySidebar: $("#primarySidebar"),
-      layoutNavCollapseButton: $("#layoutNavCollapseButton"),
       layoutNavFloatButton: $("#layoutNavFloatButton"),
       layoutSidebarResizeHandle: $("#layoutSidebarResizeHandle"),
       openVaultSection: $("#openVaultSection"),
@@ -12911,9 +13349,16 @@
       createVaultStatus: $("#createVaultStatus"),
       singlePatientWorkflowButton: $("#singlePatientWorkflowButton"),
       demoCaseButton: $("#demoCaseButton"),
+      phoneBundleEntrySection: $("#phoneBundleEntrySection"),
       phoneBundleEntryInput: $("#phoneBundleEntryInput"),
+      pastePhoneBundleEntryButton: $("#pastePhoneBundleEntryButton"),
       loadPhoneBundleEntryButton: $("#loadPhoneBundleEntryButton"),
       phoneBundleEntryStatus: $("#phoneBundleEntryStatus"),
+      phoneQrScannerVideo: $("#phoneQrScannerVideo"),
+      phoneQrScannerEmpty: $("#phoneQrScannerEmpty"),
+      startPhoneQrScannerButton: $("#startPhoneQrScannerButton"),
+      stopPhoneQrScannerButton: $("#stopPhoneQrScannerButton"),
+      phoneQrScannerStatus: $("#phoneQrScannerStatus"),
       vaultSettingsButton: $("#vaultSettingsButton"),
       lockVaultButton: $("#lockVaultButton"),
       statusLive: $("#statusLive"),
@@ -13080,6 +13525,8 @@
       decisionTreePanel: $("#decisionTreePanel"),
       workspaceFindingsGateNotice: $("#workspaceFindingsGateNotice"),
       findingsOpenChecklistButton: $("#findingsOpenChecklistButton"),
+      workspaceSendPhoneButton: $("#workspaceSendPhoneButton"),
+      workspaceHandoffButton: $("#workspaceHandoffButton"),
       workspaceChecklistStatus: $("#workspaceChecklistStatus"),
       patientOverviewText: $("#patientOverviewText"),
       patientWorkupPatientLabel: $("#patientWorkupPatientLabel"),
@@ -13127,6 +13574,7 @@
       phoneChecklistClearWorkupButton: $("#phoneChecklistClearWorkupButton"),
       phoneChecklistWorkupResults: $("#phoneChecklistWorkupResults"),
       phoneChecklistBundleInput: $("#phoneChecklistBundleInput"),
+      phoneChecklistPasteBundleButton: $("#phoneChecklistPasteBundleButton"),
       phoneChecklistLoadBundleButton: $("#phoneChecklistLoadBundleButton"),
       phoneChecklistBundleStatus: $("#phoneChecklistBundleStatus"),
       deidPreview: $("#deidPreview"),
@@ -13212,9 +13660,14 @@
       finalCaseStatus: $("#finalCaseStatus"),
       caseStatusList: $("#caseStatusList"),
       phoneTransferCode: $("#phoneTransferCode"),
+      phoneQrPanel: $("#phoneQrPanel"),
+      phoneQrCode: $("#phoneQrCode"),
+      phoneQrStatus: $("#phoneQrStatus"),
+      copyPhoneQrLinkButton: $("#copyPhoneQrLinkButton"),
       phonePayload: $("#phonePayload"),
       phoneImportInput: $("#phoneImportInput"),
       phoneBundleLoadInput: $("#phoneBundleLoadInput"),
+      pastePhoneBundleButton: $("#pastePhoneBundleButton"),
       loadPhoneBundleButton: $("#loadPhoneBundleButton"),
       handoffStatus: $("#handoffStatus"),
       phiOverlay: $("#phiOverlay"),
@@ -13228,6 +13681,12 @@
     };
 
     let pendingPhiAction = null;
+    let latestPhoneQrLink = "";
+    let phoneQrRenderSequence = 0;
+    let phoneQrScannerStream = null;
+    let phoneQrScannerFrame = 0;
+    let phoneQrScannerCanvas = null;
+    let phoneQrScannerCanvasContext = null;
     let pendingDischargePatientId = "";
     let quickDeidText = "";
     let checklistFilter = "all";
@@ -13393,7 +13852,7 @@
         : DEFAULT_SERVICE_PREFERENCES.serviceId;
       return {
         serviceId,
-        customServiceName: String(raw.customServiceName || "").slice(0, 80).trim(),
+        customServiceName: serviceId === "custom" ? String(raw.customServiceName || "").slice(0, 80).trim() : "",
         focusNotes: String(raw.focusNotes || "").slice(0, 1200).trim()
       };
     }
@@ -13401,7 +13860,7 @@
     function servicePreferenceLabel(preferences = state.servicePreferences) {
       const normalized = normalizeServicePreferences(preferences);
       const custom = normalized.customServiceName.trim();
-      if (custom) return custom;
+      if (normalized.serviceId === "custom" && custom) return custom;
       return serviceProfileById(normalized.serviceId).label;
     }
 
@@ -13475,12 +13934,170 @@
       }
     }
 
+    function servicePickerForPrefix(prefix) {
+      const root = $(`[data-service-picker="${prefix}"]`);
+      return {
+        root,
+        input: root?.querySelector(".service-picker-input") || null,
+        toggle: root?.querySelector(".service-picker-toggle") || null,
+        list: root?.querySelector(".service-picker-list") || null
+      };
+    }
+
+    function serviceProfileSearchText(profile) {
+      return [
+        profile.label,
+        profile.role,
+        profile.guidance,
+        profile.id.replace(/_/g, " ")
+      ].join(" ").toLowerCase();
+    }
+
+    function servicePickerMatches(query = "") {
+      const needle = String(query || "").trim().toLowerCase();
+      if (!needle) return serviceProfiles;
+      return serviceProfiles.filter((profile) => serviceProfileSearchText(profile).includes(needle));
+    }
+
+    function closeServicePicker(prefix) {
+      const picker = servicePickerForPrefix(prefix);
+      if (!picker.root || !picker.input || !picker.list) return;
+      const selectedId = serviceFieldsForPrefix(prefix).select?.value || state.servicePreferences.serviceId;
+      picker.input.value = serviceProfileById(selectedId).label;
+      picker.root.dataset.open = "false";
+      picker.input.setAttribute("aria-expanded", "false");
+      picker.input.removeAttribute("aria-activedescendant");
+      picker.list.hidden = true;
+    }
+
+    function closeAllServicePickers(exceptPrefix = "") {
+      for (const prefix of ["newVault", "admit", "settings"]) {
+        if (prefix !== exceptPrefix) closeServicePicker(prefix);
+      }
+    }
+
+    function renderServicePicker(prefix, { query = "", open = false } = {}) {
+      const fields = serviceFieldsForPrefix(prefix);
+      const picker = servicePickerForPrefix(prefix);
+      if (!picker.root || !picker.input || !picker.list || !fields.select) return;
+      const selectedId = fields.select.value || state.servicePreferences.serviceId;
+      if (!open && document.activeElement !== picker.input) {
+        picker.input.value = serviceProfileById(selectedId).label;
+      }
+      picker.list.innerHTML = "";
+      const matches = servicePickerMatches(query);
+      if (!matches.length) {
+        const empty = document.createElement("div");
+        empty.className = "service-picker-empty";
+        empty.textContent = "No matching services";
+        picker.list.appendChild(empty);
+      }
+      for (const profile of matches) {
+        const option = document.createElement("button");
+        option.type = "button";
+        option.className = "service-picker-option";
+        option.id = `${prefix}ServiceOption-${profile.id}`;
+        option.dataset.serviceId = profile.id;
+        option.setAttribute("role", "option");
+        option.setAttribute("aria-selected", String(profile.id === selectedId));
+        const title = document.createElement("strong");
+        title.textContent = profile.label;
+        const meta = document.createElement("span");
+        meta.textContent = profile.role;
+        option.append(title, meta);
+        picker.list.appendChild(option);
+      }
+      picker.list.hidden = !open;
+      picker.root.dataset.open = String(open);
+      picker.input.setAttribute("aria-expanded", String(open));
+    }
+
+    function openServicePicker(prefix, { query = "" } = {}) {
+      closeAllServicePickers(prefix);
+      const picker = servicePickerForPrefix(prefix);
+      if (!picker.input) return;
+      renderServicePicker(prefix, { query, open: true });
+    }
+
+    function servicePickerOptions(prefix) {
+      return $$(".service-picker-option", servicePickerForPrefix(prefix).list || document);
+    }
+
+    function moveServicePickerActiveOption(prefix, delta) {
+      const picker = servicePickerForPrefix(prefix);
+      const options = servicePickerOptions(prefix);
+      if (!picker.input || !options.length) return;
+      const currentIndex = options.findIndex((option) => option.classList.contains("is-active"));
+      const nextIndex = Math.max(0, Math.min(options.length - 1, currentIndex + delta));
+      options.forEach((option, index) => option.classList.toggle("is-active", index === nextIndex));
+      const active = options[nextIndex];
+      picker.input.setAttribute("aria-activedescendant", active.id);
+      active.scrollIntoView({ block: "nearest" });
+    }
+
+    function selectServiceFromPicker(prefix, serviceId) {
+      const fields = serviceFieldsForPrefix(prefix);
+      const picker = servicePickerForPrefix(prefix);
+      if (!fields.select || !serviceProfiles.some((profile) => profile.id === serviceId)) return;
+      fields.select.value = serviceId;
+      fields.select.dispatchEvent(new Event("change", { bubbles: true }));
+      if (picker.input) picker.input.value = serviceProfileById(serviceId).label;
+      closeServicePicker(prefix);
+      picker.input?.focus();
+    }
+
+    function bindServicePicker(prefix) {
+      const picker = servicePickerForPrefix(prefix);
+      if (!picker.root || !picker.input || !picker.list) return;
+      picker.input.addEventListener("focus", () => openServicePicker(prefix, { query: "" }));
+      picker.input.addEventListener("input", () => openServicePicker(prefix, { query: picker.input.value }));
+      picker.input.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowDown") {
+          event.preventDefault();
+          if (picker.list.hidden) openServicePicker(prefix, { query: picker.input.value });
+          moveServicePickerActiveOption(prefix, 1);
+        } else if (event.key === "ArrowUp") {
+          event.preventDefault();
+          if (picker.list.hidden) openServicePicker(prefix, { query: picker.input.value });
+          moveServicePickerActiveOption(prefix, -1);
+        } else if (event.key === "Enter") {
+          const active = picker.list.querySelector(".service-picker-option.is-active") || picker.list.querySelector(".service-picker-option");
+          if (active?.dataset.serviceId) {
+            event.preventDefault();
+            selectServiceFromPicker(prefix, active.dataset.serviceId);
+          }
+        } else if (event.key === "Escape") {
+          event.preventDefault();
+          closeServicePicker(prefix);
+          picker.input.value = serviceProfileById(serviceFieldsForPrefix(prefix).select?.value).label;
+        }
+      });
+      picker.toggle?.addEventListener("click", () => {
+        const wasOpen = picker.root.dataset.open === "true";
+        picker.input.focus();
+        if (wasOpen) {
+          closeServicePicker(prefix);
+        } else {
+          picker.input.value = "";
+          openServicePicker(prefix, { query: "" });
+        }
+      });
+      picker.toggle?.addEventListener("mousedown", (event) => event.preventDefault());
+      picker.list.addEventListener("mousedown", (event) => event.preventDefault());
+      picker.list.addEventListener("click", (event) => {
+        const option = event.target.closest("[data-service-id]");
+        if (option) selectServiceFromPicker(prefix, option.dataset.serviceId);
+      });
+    }
+
     function setServiceFields(prefix, preferences = state.servicePreferences) {
       const normalized = normalizeServicePreferences(preferences);
       const fields = serviceFieldsForPrefix(prefix);
       populateServiceSelect(fields.select, normalized.serviceId);
       if (fields.custom && document.activeElement !== fields.custom) fields.custom.value = normalized.customServiceName;
       if (fields.focus && document.activeElement !== fields.focus) fields.focus.value = normalized.focusNotes;
+      renderServicePicker(prefix);
+      updateServiceCustomField(prefix, normalized);
     }
 
     function serviceFieldsForPrefix(prefix) {
@@ -13507,11 +14124,28 @@
 
     function readServiceFields(prefix) {
       const fields = serviceFieldsForPrefix(prefix);
+      const serviceId = fields.select?.value || state.servicePreferences.serviceId;
       return normalizeServicePreferences({
-        serviceId: fields.select?.value || state.servicePreferences.serviceId,
-        customServiceName: fields.custom?.value || "",
+        serviceId,
+        customServiceName: serviceId === "custom" ? fields.custom?.value || "" : "",
         focusNotes: fields.focus?.value || ""
       });
+    }
+
+    function updateServiceCustomField(prefix, preferences = readServiceFields(prefix)) {
+      const normalized = normalizeServicePreferences(preferences);
+      const fields = serviceFieldsForPrefix(prefix);
+      const customSelected = normalized.serviceId === "custom";
+      const wrapper = fields.custom?.closest("[data-service-custom-field]");
+      const grid = fields.custom?.closest(".service-field-grid");
+      if (wrapper) wrapper.hidden = !customSelected;
+      if (grid) grid.dataset.customServiceVisible = String(customSelected);
+      if (fields.custom) {
+        fields.custom.disabled = !customSelected;
+        fields.custom.required = customSelected;
+        fields.custom.setAttribute("aria-hidden", String(!customSelected));
+        if (!customSelected && document.activeElement !== fields.custom) fields.custom.value = "";
+      }
     }
 
     function syncAllServicePreferenceFields() {
@@ -13547,7 +14181,7 @@
       syncAllServicePreferenceFields();
       setVaultStatus(elements.serviceSettingsStatus, "");
       if (elements.serviceSettingsOverlay) elements.serviceSettingsOverlay.hidden = false;
-      requestAnimationFrame(() => elements.servicePreferenceSelect?.focus());
+      requestAnimationFrame(() => servicePickerForPrefix("settings").input?.focus());
     }
 
     function closeServiceSettings() {
@@ -13801,41 +14435,63 @@
           handle.setAttribute("aria-valuenow", String(size));
         }
       }
-      if (elements.layoutNavCollapseButton) {
-        elements.layoutNavCollapseButton.setAttribute("aria-expanded", String(!layoutPrefs.navCollapsed));
-        elements.layoutNavCollapseButton.setAttribute("aria-label", layoutPrefs.navCollapsed ? "Expand primary navigation" : "Collapse primary navigation");
-        elements.layoutNavCollapseButton.setAttribute("title", layoutPrefs.navCollapsed ? "Expand primary navigation" : "Collapse primary navigation");
-      }
       if (elements.layoutNavFloatButton) {
         elements.layoutNavFloatButton.setAttribute("aria-expanded", String(!layoutPrefs.navCollapsed));
       }
       if (elements.patientWorkupMenuButton) {
         elements.patientWorkupMenuButton.setAttribute("aria-expanded", String(Boolean(layoutPrefs.workupNavOpen)));
-        elements.patientWorkupMenuButton.setAttribute("aria-label", layoutPrefs.workupNavOpen ? "Close primary navigation" : "Open primary navigation");
-        elements.patientWorkupMenuButton.setAttribute("title", layoutPrefs.workupNavOpen ? "Close primary navigation" : "Open primary navigation");
+        elements.patientWorkupMenuButton.setAttribute("aria-label", layoutPrefs.workupNavOpen ? "Close menu" : "Open menu");
+        elements.patientWorkupMenuButton.setAttribute("title", layoutPrefs.workupNavOpen ? "Close menu" : "Open menu");
       }
       applyWorkupStudioChromeState();
       if (persist) saveLayoutPreferences();
     }
 
     function loadLayoutPreferences() {
+      const compactNav = window.matchMedia?.("(max-width: 760px)")?.matches;
       try {
         const saved = JSON.parse(localStorage.getItem(LAYOUT_PREFS_KEY) || "null");
         if (saved && typeof saved === "object") {
-          layoutPrefs.navCollapsed = Boolean(saved.navCollapsed);
+          layoutPrefs.navCollapsed = compactNav ? true : false;
           layoutPrefs.workupNavOpen = Boolean(saved.workupNavOpen);
           if (saved.sizes && typeof saved.sizes === "object") {
             for (const key of Object.keys(layoutSizeConfig)) {
               layoutPrefs.sizes[key] = clampLayoutSize(key, saved.sizes[key]);
             }
           }
-        } else if (window.matchMedia?.("(max-width: 760px)")?.matches) {
+        } else if (compactNav) {
           layoutPrefs.navCollapsed = true;
         }
       } catch {
-        if (window.matchMedia?.("(max-width: 760px)")?.matches) layoutPrefs.navCollapsed = true;
+        if (compactNav) layoutPrefs.navCollapsed = true;
       }
+      if (!compactNav || layoutPrefs.navCollapsed) layoutPrefs.workupNavOpen = false;
       applyLayoutPreferences();
+    }
+
+    function compactMenuViewport() {
+      return Boolean(window.matchMedia?.("(max-width: 760px)")?.matches);
+    }
+
+    function syncLayoutForViewport({ persist = false } = {}) {
+      const compactNav = compactMenuViewport();
+      let changed = false;
+      if (compactNav && !layoutPrefs.navCollapsed) {
+        layoutPrefs.navCollapsed = true;
+        layoutPrefs.workupNavOpen = false;
+        workupStudioState.navOpen = false;
+        changed = true;
+      } else if (!compactNav && layoutPrefs.navCollapsed) {
+        layoutPrefs.navCollapsed = false;
+        layoutPrefs.workupNavOpen = false;
+        workupStudioState.navOpen = false;
+        changed = true;
+      } else if (!compactNav && (layoutPrefs.workupNavOpen || workupStudioState.navOpen)) {
+        layoutPrefs.workupNavOpen = false;
+        workupStudioState.navOpen = false;
+        changed = true;
+      }
+      if (changed) applyLayoutPreferences({ persist });
     }
 
     function setLayoutNavCollapsed(collapsed, { announce = true } = {}) {
@@ -13845,13 +14501,13 @@
         workupStudioState.navOpen = false;
       }
       applyLayoutPreferences({ persist: true });
-      if (announce) setStatus(layoutPrefs.navCollapsed ? "Primary navigation collapsed to icon rail." : "Primary navigation expanded.");
+      if (announce) setStatus(layoutPrefs.navCollapsed ? "Menu collapsed." : "Menu expanded.");
     }
 
     function setWorkupNavOpen(open, { announce = true } = {}) {
       layoutPrefs.workupNavOpen = Boolean(open);
       applyLayoutPreferences({ persist: true });
-      if (announce) setStatus(layoutPrefs.workupNavOpen ? "Primary navigation opened." : "Primary navigation hidden.");
+      if (announce) setStatus(layoutPrefs.workupNavOpen ? "Menu opened." : "Menu hidden.");
     }
 
     function applyWorkupStudioChromeState() {
@@ -13859,11 +14515,7 @@
       if (elements.workupStudioMenuButton) {
         const persistentNavVisible = !layoutPrefs.navCollapsed;
         const expanded = persistentNavVisible || Boolean(workupStudioState.navOpen);
-        const label = persistentNavVisible
-          ? "Hide primary navigation"
-          : workupStudioState.navOpen
-            ? "Close primary navigation"
-            : "Open primary navigation";
+        const label = workupStudioState.navOpen ? "Close menu" : "Open menu";
         elements.workupStudioMenuButton.setAttribute("aria-expanded", String(expanded));
         elements.workupStudioMenuButton.setAttribute("aria-label", label);
         elements.workupStudioMenuButton.setAttribute("title", label);
@@ -13874,7 +14526,7 @@
       workupStudioState.navOpen = Boolean(open);
       applyWorkupStudioChromeState();
       saveWorkupStudioState();
-      if (announce) setStatus(workupStudioState.navOpen ? "Primary navigation opened." : "Primary navigation hidden.");
+      if (announce) setStatus(workupStudioState.navOpen ? "Menu opened." : "Menu hidden.");
     }
 
     function setLayoutSize(key, nextSize, { persist = true, announce = false } = {}) {
@@ -13940,15 +14592,29 @@
       syncAllServicePreferenceFields();
       const meta = vaultMeta();
       const hasVault = Boolean(meta?.salt && meta?.version === 2);
-      if (elements.openVaultSection) elements.openVaultSection.hidden = !hasVault;
-      if (elements.createVaultSection) elements.createVaultSection.hidden = hasVault;
+      const compactEntry = isCompactPatientDevice();
+      document.body.dataset.vaultExists = String(hasVault);
+      document.body.dataset.vaultEntryDevice = compactEntry ? "phone" : "desktop";
+      if (elements.openVaultSection) elements.openVaultSection.hidden = compactEntry || !hasVault;
+      if (elements.createVaultSection) elements.createVaultSection.hidden = compactEntry || hasVault;
+      if (elements.singlePatientWorkflowButton?.closest("section")) {
+        elements.singlePatientWorkflowButton.closest("section").hidden = compactEntry;
+      }
+      if (elements.phoneBundleEntrySection) elements.phoneBundleEntrySection.hidden = !compactEntry;
+      if (elements.vaultEntrySummary) {
+        elements.vaultEntrySummary.textContent = compactEntry
+          ? "Phone bedside mode: no saved vault data is required."
+          : hasVault
+            ? `Vault found: ${meta.name || "Local vault"}.`
+            : "No vault exists in this browser profile yet.";
+      }
       setVaultStatus(
         elements.openVaultStatus,
         hasVault ? `Vault found: ${meta.name || "Local vault"}. Enter the password to open it.` : ""
       );
       setVaultStatus(
         elements.createVaultStatus,
-        hasVault ? "A vault already exists on this device. Open that vault instead." : "No vault exists yet on this browser profile. Create the one local vault for this device."
+        hasVault ? "" : "Create the one local vault for this browser profile."
       );
       if (elements.vaultPasswordInput) elements.vaultPasswordInput.value = "";
       if (elements.newVaultPasswordInput) elements.newVaultPasswordInput.value = "";
@@ -18280,11 +18946,7 @@
         "#workspaceBuildChecklistButton",
         "#patientBuildChecklistButton",
         "#patientOverviewChecklistButton",
-        "#workspaceOpenBedsideChecklistButton",
-        "#patientApplyWorkupRefinementButton",
-        "#patientSaveDefaultWorkupRefinementButton",
-        "#patientApplyEvidenceRefinementButton",
-        "#patientSaveDefaultEvidenceRefinementButton"
+        "#workspaceOpenBedsideChecklistButton"
       ]) {
         const button = $(selector);
         if (button) button.disabled = shouldDisable;
@@ -20227,6 +20889,20 @@
         zoomLayer.attr("transform", event.transform);
       });
       svg.call(zoom);
+      if (isPatientDecisionTree) {
+        mount.style.touchAction = "pan-y";
+        mount.addEventListener("wheel", (event) => {
+          if (event.ctrlKey) return;
+          event.preventDefault();
+          window.scrollBy({ top: event.deltaY, left: event.deltaX, behavior: "auto" });
+        }, { passive: false });
+        svg
+          .on("wheel.zoom", null)
+          .on("touchstart.zoom", null)
+          .on("touchmove.zoom", null)
+          .on("touchend.zoom", null)
+          .on("touchcancel.zoom", null);
+      }
       const initialTreeTransform = options.initialView === "fit"
         ? fitTransform()
         : options.initialView === "fit-readable"
@@ -21465,6 +22141,11 @@
       }
       if (elements.findingsOpenChecklistButton) {
         elements.findingsOpenChecklistButton.disabled = !checklistBuilt;
+      }
+      for (const button of [elements.workspaceSendPhoneButton, elements.workspaceHandoffButton]) {
+        if (!button) continue;
+        button.hidden = !checklistBuilt;
+        button.disabled = !hasPatient || !checklistBuilt || checklistStale;
       }
       elements.workspaceChecklistStatus.textContent = state.sections.length
         ? checklistStale
@@ -25002,7 +25683,7 @@
           elements.patientWorkupRefinementInput.value = savedAnswer;
           syncWorkupRefinementPreview(savedAnswer);
         }
-	      updateOpenEvidenceChangePreview(savedAnswer);
+	      updateOpenEvidenceChangePreview(currentOpenEvidenceAnswerText() || savedAnswer);
 	    }
 
 	    function renderOpenEvidence() {
@@ -25287,6 +25968,437 @@
       return state.phonePayload || activePatient()?.phoneBundlePayload || "";
     }
 
+    function phonePayloadTransferText() {
+      const payload = currentPhonePayload();
+      if (!payload) return "";
+      return JSON.stringify({ code: currentPhoneTransferCode(), payload }, null, 2);
+    }
+
+    function base64UrlEncodeBytes(bytes) {
+      let binary = "";
+      const chunkSize = 0x8000;
+      for (let offset = 0; offset < bytes.length; offset += chunkSize) {
+        binary += String.fromCharCode(...bytes.subarray(offset, offset + chunkSize));
+      }
+      return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+    }
+
+    function base64UrlDecodeBytes(value = "") {
+      const normalized = String(value || "").replace(/-/g, "+").replace(/_/g, "/");
+      const padded = normalized + "=".repeat((4 - normalized.length % 4) % 4);
+      const binary = atob(padded);
+      const bytes = new Uint8Array(binary.length);
+      for (let index = 0; index < binary.length; index += 1) {
+        bytes[index] = binary.charCodeAt(index);
+      }
+      return bytes;
+    }
+
+    function base64UrlEncodeText(text = "") {
+      return base64UrlEncodeBytes(new TextEncoder().encode(String(text || "")));
+    }
+
+    function base64UrlDecodeText(value = "") {
+      return new TextDecoder().decode(base64UrlDecodeBytes(value));
+    }
+
+    async function gzipTextToBase64Url(text = "") {
+      if (typeof CompressionStream !== "function") return "";
+      const compressed = new Blob([String(text || "")], { type: "text/plain" })
+        .stream()
+        .pipeThrough(new CompressionStream("gzip"));
+      const buffer = await new Response(compressed).arrayBuffer();
+      return base64UrlEncodeBytes(new Uint8Array(buffer));
+    }
+
+    async function gunzipBase64UrlToText(value = "") {
+      if (typeof DecompressionStream !== "function") {
+        throw new Error("This browser cannot open compressed QR checklist links. Use Copy for phone instead.");
+      }
+      const inflated = new Blob([base64UrlDecodeBytes(value)])
+        .stream()
+        .pipeThrough(new DecompressionStream("gzip"));
+      return new Response(inflated).text();
+    }
+
+    function currentPhoneQrBaseUrl() {
+      const url = new URL(window.location.href);
+      url.search = "";
+      url.hash = "";
+      url.searchParams.set("phone", "1");
+      return url;
+    }
+
+    function compactChecklistSectionsForQr({ includeOptions = true } = {}) {
+      return (state.sections || []).map((section) => [
+        section.title || "",
+        section.shortTitle || "",
+        section.category || "",
+        section.organSystemKey || "",
+        (section.items || []).map((item) => {
+          const row = [
+            item.id || "",
+            item.label || itemText(item),
+            item.category || "",
+            item.rawValue || "",
+            item.hasNotes ? 1 : 0
+          ];
+          if (includeOptions) row.push(checklistOptionsForItem(section, item));
+          const answerMode = item.answerMode || item.answer_mode || item.selectionMode || item.selection_mode || "";
+          if (answerMode) {
+            if (!includeOptions) row.push([]);
+            row.push(answerMode);
+          }
+          return row;
+        })
+      ]);
+    }
+
+    function expandCompactChecklistSectionsForQr(sections = []) {
+      return (Array.isArray(sections) ? sections : []).map((section) => {
+        const [title, shortTitle, category, organSystemKey, items] = Array.isArray(section) ? section : [];
+        return {
+          title: title || "Checklist section",
+          shortTitle: shortTitle || title || "Checklist",
+          category: category || "",
+          organSystemKey: organSystemKey || "",
+          items: (Array.isArray(items) ? items : []).map((item, index) => {
+            const [id, label, itemCategory, rawValue, hasNotes, options, answerMode] = Array.isArray(item) ? item : [];
+            const expanded = {
+              id: id || `qr_item_${index + 1}`,
+              label: label || "Checklist item",
+              text: label || "Checklist item",
+              category: itemCategory || category || "",
+              rawValue: rawValue || "",
+              hasNotes: Boolean(hasNotes)
+            };
+            if (Array.isArray(options) && options.length) {
+              expanded.options = options;
+              expanded.answer_options = options;
+              if ((itemCategory || category) === "exam") expanded.findings_options = options;
+            }
+            if (answerMode) expanded.answerMode = answerMode;
+            return expanded;
+          })
+        };
+      }).filter((section) => section.items.length);
+    }
+
+    function compactPhoneHandoffPayloadForQr({ includeOptions = true } = {}) {
+      const validKeys = currentChecklistAnswerKeySet();
+      const answers = filterCurrentChecklistMap(state.answers, validKeys).values;
+      const itemNotes = filterCurrentChecklistMap(state.itemNotes, validKeys).values;
+      const payload = {
+        v: "phoneQr1",
+        c: currentPhoneTransferCode(),
+        d: new Date().toISOString(),
+        t: activePatient().title || $("#caseTitle")?.textContent || "Phone checklist",
+        w: state.selectedWorkupModuleId || activePatient().workupModuleId || "",
+        cw: state.checklistWorkupModuleId || state.selectedWorkupModuleId || activePatient().workupModuleId || "",
+        o: includeOptions ? 1 : 0,
+        s: compactChecklistSectionsForQr({ includeOptions })
+      };
+      if (Object.keys(answers).length) payload.a = answers;
+      if (Object.keys(itemNotes).length) payload.n = itemNotes;
+      const bedsideNote = readBedsideNoteValue();
+      if (bedsideNote) payload.b = bedsideNote;
+      return payload;
+    }
+
+    function expandCompactPhoneHandoffPayloadForQr(compact = {}) {
+      if (compact?.version === "local-phone-handoff-v1") return compact;
+      if (compact?.v !== "phoneQr1") throw new Error("This QR code is not a bedside checklist bundle.");
+      return {
+        version: "local-phone-handoff-v1",
+        code: compact.c || "",
+        createdAt: compact.d || new Date().toISOString(),
+        caseTitle: compact.t || "Phone checklist",
+        workupModuleId: compact.w || "",
+        checklistWorkupModuleId: compact.cw || compact.w || "",
+        checklistFingerprint: "",
+        scrubbedContext: "",
+        checklistText: "",
+        sections: expandCompactChecklistSectionsForQr(compact.s),
+        answers: plainObject(compact.a) ? compact.a : {},
+        itemNotes: plainObject(compact.n) ? compact.n : {},
+        objectiveData: "",
+        bedsideNote: compact.b || ""
+      };
+    }
+
+    async function encodePhoneQrToken(compactPayload) {
+      const json = JSON.stringify(compactPayload);
+      const gzipped = await gzipTextToBase64Url(json);
+      return {
+        token: gzipped ? `gz.${gzipped}` : `j.${base64UrlEncodeText(json)}`,
+        compressed: Boolean(gzipped),
+        jsonLength: json.length
+      };
+    }
+
+    async function decodePhoneQrToken(token = "") {
+      const text = String(token || "").trim();
+      if (text.startsWith("gz.")) {
+        return expandCompactPhoneHandoffPayloadForQr(JSON.parse(await gunzipBase64UrlToText(text.slice(3))));
+      }
+      if (text.startsWith("j.")) {
+        return expandCompactPhoneHandoffPayloadForQr(JSON.parse(base64UrlDecodeText(text.slice(2))));
+      }
+      return null;
+    }
+
+    function phoneQrTokenFromText(raw = "") {
+      const text = String(raw || "").trim();
+      if (/^(?:gz|j)\./.test(text)) return text;
+      const parseParams = (value = "") => {
+        if (!value) return "";
+        const params = new URLSearchParams(value.replace(/^[#?]/, ""));
+        return params.get("phoneBundle") || params.get("qr") || "";
+      };
+      try {
+        const url = new URL(text, window.location.href);
+        return parseParams(url.hash) || parseParams(url.search);
+      } catch {
+        return parseParams(text);
+      }
+    }
+
+    async function phonePayloadFromQrDeepLink(raw = "") {
+      const token = phoneQrTokenFromText(raw);
+      return token ? decodePhoneQrToken(token) : null;
+    }
+
+    async function createPhoneQrDeepLink({ includeOptions = true } = {}) {
+      const compact = compactPhoneHandoffPayloadForQr({ includeOptions });
+      const encoded = await encodePhoneQrToken(compact);
+      const url = currentPhoneQrBaseUrl();
+      const hashParams = new URLSearchParams();
+      hashParams.set("phoneBundle", encoded.token);
+      url.hash = hashParams.toString();
+      return {
+        url: url.toString(),
+        itemCount: (state.sections || []).reduce((sum, section) => sum + (section.items || []).length, 0),
+        includeOptions,
+        compressed: encoded.compressed,
+        jsonLength: encoded.jsonLength
+      };
+    }
+
+    function phoneQrSvgForUrl(url) {
+      if (typeof window.qrcode !== "function") {
+        throw new Error("Local QR renderer is not available.");
+      }
+      const qr = window.qrcode(0, "L");
+      qr.addData(url, "Byte");
+      qr.make();
+      return {
+        svg: qr.createSvgTag({
+          cellSize: 4,
+          margin: 12,
+          scalable: true,
+          title: "Bedside checklist QR code",
+          alt: "Scan to open the bedside checklist on your phone"
+        }),
+        modules: qr.getModuleCount()
+      };
+    }
+
+    async function renderPhoneQrCode() {
+      if (!elements.phoneQrPanel || !elements.phoneQrCode || !elements.phoneQrStatus) return;
+      latestPhoneQrLink = "";
+      phoneQrRenderSequence += 1;
+      const sequence = phoneQrRenderSequence;
+      elements.phoneQrPanel.dataset.qrLink = "";
+      if (!currentPhonePayload()) {
+        elements.phoneQrPanel.hidden = true;
+        elements.phoneQrCode.innerHTML = "";
+        return;
+      }
+      elements.phoneQrPanel.hidden = false;
+      elements.phoneQrCode.classList.add("is-unavailable");
+      elements.phoneQrCode.textContent = "Building QR";
+      elements.phoneQrStatus.textContent = "Compressing the bedside checklist for phone scan.";
+      const attempts = [
+        { includeOptions: true, label: "answer choices preserved" },
+        { includeOptions: false, label: "standard answer choices" }
+      ];
+      let lastError = null;
+      for (const attempt of attempts) {
+        try {
+          const link = await createPhoneQrDeepLink(attempt);
+          const qr = phoneQrSvgForUrl(link.url);
+          if (sequence !== phoneQrRenderSequence) return;
+          latestPhoneQrLink = link.url;
+          elements.phoneQrPanel.dataset.qrLink = link.url;
+          elements.phoneQrCode.classList.remove("is-unavailable");
+          elements.phoneQrCode.innerHTML = qr.svg;
+          elements.phoneQrStatus.textContent = `${link.itemCount} checklist items ready. Scan with the phone camera; it opens directly into bedside mode (${attempt.label}).`;
+          return;
+        } catch (error) {
+          lastError = error;
+        }
+      }
+      if (sequence !== phoneQrRenderSequence) return;
+      elements.phoneQrCode.classList.add("is-unavailable");
+      elements.phoneQrCode.textContent = "QR too large";
+      elements.phoneQrStatus.textContent = "This checklist is too large for a QR code. Use Copy for phone, then tap Paste & open on the phone.";
+      if (lastError) console.warn("Phone QR could not be generated.", lastError);
+    }
+
+    async function copyPhoneQrLinkForTransfer() {
+      if (!currentPhonePayload() && !createPhonePayload()) return;
+      if (!latestPhoneQrLink) await renderPhoneQrCode();
+      if (!latestPhoneQrLink) {
+        setHandoffStatus("QR link is too large for this checklist. Use Copy for phone instead.", "error");
+        return;
+      }
+      openPhiOverlay({
+        title: "PHI safety check for QR link",
+        copy: "Review the source text before copying this QR deep link.",
+        text: reviewedSourceContextText(),
+        actionLabel: "Copy QR link",
+        onConfirm: async () => {
+          await copyText(latestPhoneQrLink);
+          setHandoffStatus("QR link copied. Open it on the phone to start bedside mode.", "success");
+        }
+      });
+    }
+
+    async function loadDesktopPhoneBundleFromAnyText(raw, { source = "entry" } = {}) {
+      const qrPayload = await phonePayloadFromQrDeepLink(raw);
+      if (qrPayload) return loadDesktopPhoneBundle(encodePayload(qrPayload), { source });
+      return loadDesktopPhoneBundle(raw, { source });
+    }
+
+    function cleanPhoneQrUrl() {
+      try {
+        const url = new URL(window.location.href);
+        url.hash = "";
+        url.searchParams.delete("phone");
+        window.history.replaceState({}, document.title, url.toString());
+      } catch {
+        // Non-critical; loading the phone bundle should still succeed.
+      }
+    }
+
+    async function loadPhoneQrDeepLinkFromLocation() {
+      if (!phoneQrTokenFromText(window.location.href)) return false;
+      try {
+        const payload = await phonePayloadFromQrDeepLink(window.location.href);
+        if (!payload) return false;
+        const loaded = loadDesktopPhoneBundle(encodePayload(payload), { source: "entry" });
+        if (loaded) cleanPhoneQrUrl();
+        return loaded;
+      } catch (error) {
+        showVaultAccess();
+        const message = error instanceof Error ? error.message : "Phone QR code could not be opened.";
+        setPhoneBundleLoadStatus("entry", message, "error");
+        setStatus(message);
+        return true;
+      }
+    }
+
+    function setPhoneQrScannerStatus(message, tone = "") {
+      setVaultStatus(elements.phoneQrScannerStatus, message, tone);
+    }
+
+    function setPhoneQrScannerActive(active) {
+      if (elements.phoneQrScannerVideo) elements.phoneQrScannerVideo.hidden = !active;
+      if (elements.phoneQrScannerEmpty) elements.phoneQrScannerEmpty.hidden = active;
+      if (elements.startPhoneQrScannerButton) elements.startPhoneQrScannerButton.hidden = active;
+      if (elements.stopPhoneQrScannerButton) elements.stopPhoneQrScannerButton.hidden = !active;
+    }
+
+    function stopPhoneQrScanner({ announce = true } = {}) {
+      if (phoneQrScannerFrame) {
+        window.cancelAnimationFrame(phoneQrScannerFrame);
+        phoneQrScannerFrame = 0;
+      }
+      if (phoneQrScannerStream) {
+        for (const track of phoneQrScannerStream.getTracks()) track.stop();
+        phoneQrScannerStream = null;
+      }
+      if (elements.phoneQrScannerVideo) {
+        elements.phoneQrScannerVideo.pause();
+        elements.phoneQrScannerVideo.srcObject = null;
+      }
+      setPhoneQrScannerActive(false);
+      if (announce) setPhoneQrScannerStatus("Scanner stopped.");
+    }
+
+    function decodePhoneQrScannerFrame() {
+      const video = elements.phoneQrScannerVideo;
+      if (!video || video.readyState < 2 || !video.videoWidth || !video.videoHeight) return "";
+      if (typeof window.jsQR !== "function") return "";
+      if (!phoneQrScannerCanvas) phoneQrScannerCanvas = document.createElement("canvas");
+      const width = video.videoWidth;
+      const height = video.videoHeight;
+      if (phoneQrScannerCanvas.width !== width) phoneQrScannerCanvas.width = width;
+      if (phoneQrScannerCanvas.height !== height) phoneQrScannerCanvas.height = height;
+      phoneQrScannerCanvasContext ||= phoneQrScannerCanvas.getContext("2d", { willReadFrequently: true });
+      if (!phoneQrScannerCanvasContext) return "";
+      phoneQrScannerCanvasContext.drawImage(video, 0, 0, width, height);
+      const image = phoneQrScannerCanvasContext.getImageData(0, 0, width, height);
+      const result = window.jsQR(image.data, image.width, image.height, { inversionAttempts: "attemptBoth" });
+      return result?.data || "";
+    }
+
+    async function scanPhoneQrScannerFrame() {
+      if (!phoneQrScannerStream || !elements.phoneQrScannerVideo) return;
+      let scannedText = "";
+      try {
+        scannedText = decodePhoneQrScannerFrame();
+      } catch (error) {
+        console.warn("Phone QR scanner frame could not be decoded.", error);
+      }
+      if (scannedText) {
+        stopPhoneQrScanner({ announce: false });
+        setPhoneQrScannerStatus("QR found. Opening bedside mode.", "success");
+        const loaded = await loadDesktopPhoneBundleFromAnyText(scannedText, { source: "entry" });
+        if (!loaded) {
+          const message = elements.phoneBundleEntryStatus?.textContent || "That QR code was not a bedside checklist.";
+          setPhoneQrScannerStatus(message, "error");
+        }
+        return;
+      }
+      phoneQrScannerFrame = window.requestAnimationFrame(scanPhoneQrScannerFrame);
+    }
+
+    async function startPhoneQrScanner() {
+      if (!elements.phoneQrScannerVideo) return;
+      if (!navigator.mediaDevices?.getUserMedia) {
+        setPhoneQrScannerStatus("Camera access is not available in this browser. Use the phone camera app or manual paste fallback.", "error");
+        return;
+      }
+      if (typeof window.jsQR !== "function") {
+        setPhoneQrScannerStatus("The local QR scanner did not load. Use the phone camera app or manual paste fallback.", "error");
+        return;
+      }
+      stopPhoneQrScanner({ announce: false });
+      try {
+        setPhoneQrScannerStatus("Requesting camera access.");
+        phoneQrScannerStream = await navigator.mediaDevices.getUserMedia({
+          audio: false,
+          video: {
+            facingMode: { ideal: "environment" },
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          }
+        });
+        elements.phoneQrScannerVideo.srcObject = phoneQrScannerStream;
+        setPhoneQrScannerActive(true);
+        await elements.phoneQrScannerVideo.play();
+        setPhoneQrScannerStatus("Scanning. Hold the desktop QR inside the frame.");
+        phoneQrScannerFrame = window.requestAnimationFrame(scanPhoneQrScannerFrame);
+      } catch (error) {
+        stopPhoneQrScanner({ announce: false });
+        const message = error instanceof Error && error.name === "NotAllowedError"
+          ? "Camera permission was denied. Use the phone camera app or manual paste fallback."
+          : "Camera could not start. Use the phone camera app or manual paste fallback.";
+        setPhoneQrScannerStatus(message, "error");
+      }
+    }
+
     function compactStringFingerprint(value = "") {
       let hash = 2166136261;
       const text = String(value || "");
@@ -25522,6 +26634,74 @@
       return payload;
     }
 
+    function copyPhonePayloadForTransfer() {
+      if (!currentPhonePayload() && !createPhonePayload()) return;
+      const transferText = phonePayloadTransferText();
+      openPhiOverlay({
+        title: "PHI safety check for phone bundle",
+        copy: "Review the source text before copying this local phone bundle.",
+        text: reviewedSourceContextText(),
+        actionLabel: "Copy for phone",
+        onConfirm: async () => {
+          await copyText(transferText);
+          setHandoffStatus("Copied for phone. On the phone, tap Paste & open.", "success");
+        }
+      });
+    }
+
+    function sharePhonePayloadForTransfer() {
+      if (!currentPhonePayload() && !createPhonePayload()) return;
+      const transferText = phonePayloadTransferText();
+      openPhiOverlay({
+        title: "PHI safety check for phone bundle",
+        copy: "Review the source text before sharing this local phone bundle.",
+        text: reviewedSourceContextText(),
+        actionLabel: "Share to phone",
+        onConfirm: async () => {
+          if (navigator.share) {
+            try {
+              await navigator.share({
+                title: "Bedside checklist bundle",
+                text: transferText
+              });
+              setHandoffStatus("Phone bundle shared.", "success");
+              return;
+            } catch (error) {
+              if (error?.name === "AbortError") {
+                setHandoffStatus("Phone bundle share canceled.");
+                return;
+              }
+            }
+          }
+          await copyText(transferText);
+          setHandoffStatus("Share is not available here. Bundle copied instead; tap Paste & open on the phone.", "success");
+        }
+      });
+    }
+
+    async function pasteDesktopPhoneBundleFromClipboard(source = "entry") {
+      const input = source === "entry"
+        ? elements.phoneBundleEntryInput
+        : source === "phoneChecklist"
+          ? elements.phoneChecklistBundleInput
+          : elements.phoneBundleLoadInput;
+      try {
+        if (!navigator.clipboard?.readText) {
+          throw new Error("Clipboard paste is not available in this browser.");
+        }
+        const text = await navigator.clipboard.readText();
+        if (!String(text || "").trim()) {
+          throw new Error("Clipboard is empty. Copy the phone bundle from the computer first.");
+        }
+        if (input) input.value = text;
+        await loadDesktopPhoneBundleFromAnyText(text, { source });
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Clipboard paste failed.";
+        setPhoneBundleLoadStatus(source, `${message} Paste the bundle into the box, then tap Open pasted text.`, "error");
+        input?.focus();
+      }
+    }
+
     function createPhoneReturnPayload() {
       state.bedsideNote = readBedsideNoteValue();
       const code = currentPhoneTransferCode();
@@ -25625,6 +26805,7 @@
     function renderHandoff() {
       elements.phoneTransferCode.textContent = currentPhoneTransferCode() || "Not generated";
       elements.phonePayload.value = currentPhonePayload();
+      void renderPhoneQrCode();
     }
 
     function importPhoneFindings() {
@@ -25732,7 +26913,15 @@
       elements.createVaultForm?.addEventListener("submit", createVaultFromPassword);
       elements.singlePatientWorkflowButton?.addEventListener("click", startSinglePatientWorkflow);
       elements.demoCaseButton?.addEventListener("click", loadDemoCase);
-      elements.loadPhoneBundleEntryButton?.addEventListener("click", () => loadDesktopPhoneBundle(elements.phoneBundleEntryInput?.value || "", { source: "entry" }));
+      elements.pastePhoneBundleEntryButton?.addEventListener("click", () => pasteDesktopPhoneBundleFromClipboard("entry"));
+      elements.loadPhoneBundleEntryButton?.addEventListener("click", () => {
+        void loadDesktopPhoneBundleFromAnyText(elements.phoneBundleEntryInput?.value || "", { source: "entry" });
+      });
+      elements.startPhoneQrScannerButton?.addEventListener("click", () => {
+        void startPhoneQrScanner();
+      });
+      elements.stopPhoneQrScannerButton?.addEventListener("click", () => stopPhoneQrScanner());
+      window.addEventListener("pagehide", () => stopPhoneQrScanner({ announce: false }));
       elements.lockVaultButton?.addEventListener("click", lockVault);
       elements.patientAdmissionForm?.addEventListener("submit", admitPatientFromForm);
       elements.closeAdmissionOverlayButton?.addEventListener("click", closeAdmissionOverlay);
@@ -25765,13 +26954,24 @@
         setVaultStatus(elements.serviceSettingsStatus, "Settings saved.", "success");
         closeServiceSettings();
       });
-      for (const field of [
-        elements.servicePreferenceSelect,
-        elements.serviceCustomNameInput,
-        elements.serviceFocusInput
-      ].filter(Boolean)) {
-        field.addEventListener(field.tagName === "SELECT" ? "change" : "input", updateServiceSettingsPreview);
+      for (const prefix of ["newVault", "admit", "settings"]) {
+        const fields = serviceFieldsForPrefix(prefix);
+        bindServicePicker(prefix);
+        fields.select?.addEventListener("change", () => {
+          updateServiceCustomField(prefix);
+          renderServicePicker(prefix);
+          if (prefix === "settings") updateServiceSettingsPreview();
+        });
+        fields.custom?.addEventListener("input", () => {
+          if (prefix === "settings") updateServiceSettingsPreview();
+        });
+        fields.focus?.addEventListener("input", () => {
+          if (prefix === "settings") updateServiceSettingsPreview();
+        });
       }
+      document.addEventListener("click", (event) => {
+        if (!event.target.closest(".service-picker")) closeAllServicePickers();
+      });
       for (const button of $$("[data-view-target]")) {
         button.addEventListener("click", () => {
           showView(button.dataset.viewTarget);
@@ -25779,35 +26979,14 @@
           if (layoutPrefs.workupNavOpen) setWorkupNavOpen(false, { announce: false });
         });
       }
-      elements.layoutNavCollapseButton?.addEventListener("click", (event) => {
-        const compactNav = window.matchMedia?.("(max-width: 760px)")?.matches;
-        if (compactNav && document.body.dataset.view === "studio" && layoutPrefs.navCollapsed && workupStudioState.navOpen) {
-          setWorkupStudioNavOpen(false);
-          return;
-        }
-        if (compactNav && document.body.dataset.view === "workspace" && document.body.dataset.patientTab === "workup" && layoutPrefs.navCollapsed && layoutPrefs.workupNavOpen) {
-          setWorkupNavOpen(false);
-          return;
-        }
-        if (!compactNav && layoutPrefs.navCollapsed) {
-          event.currentTarget?.blur();
-          setStatus("Primary navigation stays collapsed on desktop.");
-          return;
-        }
-        const wasCollapsed = layoutPrefs.navCollapsed;
-        setLayoutNavCollapsed(!layoutPrefs.navCollapsed);
-        if (!compactNav && !wasCollapsed) event.currentTarget?.blur();
-      });
       elements.layoutNavFloatButton?.addEventListener("click", () => setLayoutNavCollapsed(false));
       elements.patientWorkupMenuButton?.addEventListener("click", () => {
         setWorkupNavOpen(!layoutPrefs.workupNavOpen);
       });
       elements.workupStudioMenuButton?.addEventListener("click", () => {
-        if (!layoutPrefs.navCollapsed) {
-          setLayoutNavCollapsed(true);
-        } else {
-          setWorkupStudioNavOpen(!workupStudioState.navOpen);
-        }
+        if (!compactMenuViewport()) return;
+        if (!layoutPrefs.navCollapsed) setLayoutNavCollapsed(true, { announce: false });
+        setWorkupStudioNavOpen(!workupStudioState.navOpen);
       });
       installLayoutResizers();
       for (const button of $$("[data-workup-pane-target]", elements.patientWorkupPanel || document)) {
@@ -25951,8 +27130,11 @@
         elements.phoneChecklistWorkupInput?.focus();
       });
       elements.phoneChecklistPrimaryButton?.addEventListener("click", openPhoneChecklistPrimary);
+      elements.phoneChecklistPasteBundleButton?.addEventListener("click", () => {
+        pasteDesktopPhoneBundleFromClipboard("phoneChecklist");
+      });
       elements.phoneChecklistLoadBundleButton?.addEventListener("click", () => {
-        loadDesktopPhoneBundle(elements.phoneChecklistBundleInput?.value || "", { source: "phoneChecklist" });
+        void loadDesktopPhoneBundleFromAnyText(elements.phoneChecklistBundleInput?.value || "", { source: "phoneChecklist" });
       });
       elements.clinicalSettingSelect.addEventListener("change", () => {
         clearChecklistArtifacts();
@@ -26215,6 +27397,7 @@
         window.addEventListener("resize", () => {
           window.clearTimeout(decisionTreeResizeTimer);
           decisionTreeResizeTimer = window.setTimeout(() => {
+            syncLayoutForViewport({ persist: false });
             const previousPatientTab = state.activePatientTab;
             renderPatientTabs();
             if (state.currentView === "workspace" && previousPatientTab !== state.activePatientTab) {
@@ -26268,27 +27451,26 @@
         const preview = `${reviewedSourceContextText()}\n\n${state.checklistText || "Checklist will be built locally."}`;
         openPhiOverlay({
           title: "PHI safety check for phone handoff",
-          copy: "Review the code-paired local transfer bundle before exporting.",
+          copy: "Review the code-paired local bundle before regenerating the QR handoff.",
           text: preview,
-          actionLabel: "Generate phone bundle",
+          actionLabel: "Regenerate bundle",
           onConfirm: () => createPhonePayload()
         });
       });
-      $("#copyPhonePayloadButton").addEventListener("click", () => {
-        if (!state.phonePayload && !createPhonePayload()) return;
-        openPhiOverlay({
-          title: "PHI safety check for phone payload",
-          copy: "Review the payload source before copying.",
-          text: reviewedSourceContextText(),
-          onConfirm: () => copyText(state.phonePayload)
-        });
+      $("#copyPhonePayloadButton").addEventListener("click", copyPhonePayloadForTransfer);
+      elements.copyPhoneQrLinkButton?.addEventListener("click", () => {
+        void copyPhoneQrLinkForTransfer();
       });
+      $("#sharePhonePayloadButton")?.addEventListener("click", sharePhonePayloadForTransfer);
       $("#downloadPhonePayloadButton").addEventListener("click", () => {
         if (!state.phonePayload && !createPhonePayload()) return;
         downloadFile("pre-rounding-phone-handoff.json", JSON.stringify({ code: state.transferCode, payload: state.phonePayload }, null, 2), "application/json");
       });
       $("#importPhoneFindingsButton").addEventListener("click", importPhoneFindings);
-      elements.loadPhoneBundleButton?.addEventListener("click", () => loadDesktopPhoneBundle(elements.phoneBundleLoadInput?.value || "", { source: "handoff" }));
+      elements.pastePhoneBundleButton?.addEventListener("click", () => pasteDesktopPhoneBundleFromClipboard("handoff"));
+      elements.loadPhoneBundleButton?.addEventListener("click", () => {
+        void loadDesktopPhoneBundleFromAnyText(elements.phoneBundleLoadInput?.value || "", { source: "handoff" });
+      });
       $("#handoffToFinalButton").addEventListener("click", () => {
         state.selectedTaskId = "final_rounds_update";
         showView("evidence");
@@ -26572,7 +27754,9 @@
     void captureWorkupStudioOAuthRedirect().then((handled) => {
       if (!handled) void ensureWorkupStudioBackendSession();
     });
-    showVaultAccess();
+    void loadPhoneQrDeepLinkFromLocation().then((handled) => {
+      if (!handled) showVaultAccess();
+    });
   </script>
 </body>
 </html>

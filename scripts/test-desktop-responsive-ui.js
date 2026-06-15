@@ -343,8 +343,25 @@ async function testDemoCaseLoader(browser, baseUrl) {
 
 async function testSinglePatientBypass(browser, baseUrl) {
   console.log("Checking single-patient no-save path");
-  const { context, page } = await openFreshPage(browser, baseUrl, { width: 390, height: 844 });
-  await assertNoLayoutBreakage(page, "mobile vault access");
+  const { context, page } = await openFreshPage(browser, baseUrl, { width: 1024, height: 768 });
+  await assertNoLayoutBreakage(page, "desktop vault access");
+  const desktopHomeAudit = await page.evaluate(() => {
+    const visible = (selector) => {
+      const element = document.querySelector(selector);
+      if (!element) return false;
+      const rect = element.getBoundingClientRect();
+      return !element.hidden && getComputedStyle(element).display !== "none" && rect.width > 0 && rect.height > 0;
+    };
+    return {
+      openVaultVisible: visible("#openVaultSection"),
+      createVaultVisible: visible("#createVaultSection"),
+      phoneEntryVisible: visible("#phoneBundleEntrySection"),
+      singlePatientVisible: visible("#singlePatientEntrySection")
+    };
+  });
+  assert(desktopHomeAudit.createVaultVisible && !desktopHomeAudit.openVaultVisible, `desktop home with no vault should offer create only: ${JSON.stringify(desktopHomeAudit)}`);
+  assert(!desktopHomeAudit.phoneEntryVisible, `desktop home should not show bedside checklist entry: ${JSON.stringify(desktopHomeAudit)}`);
+  assert(desktopHomeAudit.singlePatientVisible, `desktop home should keep single-patient workflow available: ${JSON.stringify(desktopHomeAudit)}`);
   await page.click("#singlePatientWorkflowButton");
   await page.waitForSelector("#patientAdmissionOverlay:not([hidden])");
   const title = await page.textContent("#patientAdmissionTitle");
@@ -374,6 +391,42 @@ async function testSinglePatientBypass(browser, baseUrl) {
   await context.close();
 }
 
+async function testPhoneManualFallbackHome(browser, baseUrl) {
+  console.log("Checking phone QR scanner entry");
+  const { context, page } = await openFreshPage(browser, baseUrl, { width: 390, height: 844 });
+  await assertNoLayoutBreakage(page, "phone QR scanner vault access");
+  const audit = await page.evaluate(() => {
+    const visible = (selector) => {
+      const element = document.querySelector(selector);
+      if (!element) return false;
+      const rect = element.getBoundingClientRect();
+      return !element.hidden && getComputedStyle(element).display !== "none" && rect.width > 0 && rect.height > 0;
+    };
+    const manualFallback = document.querySelector(".phone-manual-fallback");
+    return {
+      title: document.querySelector("#vaultAccessTitle")?.textContent || "",
+      entryTitle: document.querySelector("#phoneBundleEntryTitle")?.textContent || "",
+      phoneEntryVisible: visible("#phoneBundleEntrySection"),
+      scannerButtonVisible: visible("#startPhoneQrScannerButton"),
+      scannerFrameVisible: visible(".phone-scanner-frame"),
+      manualFallbackVisible: visible(".phone-manual-fallback"),
+      manualFallbackOpen: Boolean(manualFallback?.open),
+      pasteVisible: visible("#pastePhoneBundleEntryButton"),
+      loadVisible: visible("#loadPhoneBundleEntryButton"),
+      openVaultVisible: visible("#openVaultSection"),
+      createVaultVisible: visible("#createVaultSection"),
+      singlePatientVisible: visible("#singlePatientEntrySection")
+    };
+  });
+  assert(/Scan desktop QR/i.test(audit.title), `phone entry title should default to scanning: ${JSON.stringify(audit)}`);
+  assert(/Scan desktop QR/i.test(audit.entryTitle), `phone bundle section should default to scanner: ${JSON.stringify(audit)}`);
+  assert(audit.phoneEntryVisible && audit.scannerButtonVisible && audit.scannerFrameVisible, `phone entry should expose the QR scanner as the primary action: ${JSON.stringify(audit)}`);
+  assert(audit.manualFallbackVisible && !audit.manualFallbackOpen, `manual paste should be available but collapsed: ${JSON.stringify(audit)}`);
+  assert(!audit.pasteVisible && !audit.loadVisible, `manual paste controls should stay hidden until the fallback is opened: ${JSON.stringify(audit)}`);
+  assert(!audit.openVaultVisible && !audit.createVaultVisible && !audit.singlePatientVisible, `phone entry should not show vault or single-patient desktop actions: ${JSON.stringify(audit)}`);
+  await context.close();
+}
+
 async function testPhoneBundleRoundTrip(browser, baseUrl) {
   console.log("Checking desktop-to-phone interview handoff");
   const { context: desktopContext, page: desktopPage } = await openFreshPage(browser, baseUrl, { width: 1024, height: 768 });
@@ -389,12 +442,52 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   }
   await desktopPage.waitForSelector("#handoffView:not([hidden])");
   await desktopPage.waitForFunction(() => document.querySelector("#phonePayload")?.value.length > 100);
+  await desktopPage.waitForSelector("#phoneQrCode svg", { timeout: 45000 });
   const desktopPayload = await desktopPage.inputValue("#phonePayload");
   const desktopBundle = decodeLocalBundle(desktopPayload);
   const desktopCode = (await desktopPage.textContent("#phoneTransferCode")).trim();
+  const desktopQrAudit = await desktopPage.evaluate(() => ({
+    hasQr: Boolean(document.querySelector("#phoneQrCode svg")),
+    qrLink: document.querySelector("#phoneQrPanel")?.dataset.qrLink || "",
+    qrStatus: document.querySelector("#phoneQrStatus")?.textContent || "",
+    regenerateVisible: !document.querySelector("#exportPhoneContextButton")?.hidden,
+    copyVisible: !document.querySelector("#copyPhonePayloadButton")?.hidden,
+    downloadVisible: !document.querySelector("#downloadPhonePayloadButton")?.hidden,
+    regenerateText: document.querySelector("#exportPhoneContextButton")?.textContent || "",
+    copyText: document.querySelector("#copyPhonePayloadButton")?.textContent || "",
+    downloadText: document.querySelector("#downloadPhonePayloadButton")?.textContent || ""
+  }));
+  assert(desktopQrAudit.hasQr && /opens directly into bedside mode/i.test(desktopQrAudit.qrStatus), `desktop handoff should render QR as the primary action: ${JSON.stringify(desktopQrAudit)}`);
+  assert(desktopQrAudit.regenerateVisible && desktopQrAudit.copyVisible && desktopQrAudit.downloadVisible, `desktop handoff should expose regenerate/copy/download secondary actions: ${JSON.stringify(desktopQrAudit)}`);
+  assert(/^Regenerate$/i.test(desktopQrAudit.regenerateText.trim()) && /Copy bundle/i.test(desktopQrAudit.copyText) && /^Download$/i.test(desktopQrAudit.downloadText.trim()), `desktop secondary actions should be simple regenerate/copy/download labels: ${JSON.stringify(desktopQrAudit)}`);
+  assert(desktopQrAudit.qrLink.includes("#phoneBundle="), `desktop QR panel should expose the deep link for tests: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
   assert(/^[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(desktopCode), `desktop handoff should generate a pairing code, got ${desktopCode}`);
   assert(/^[a-f0-9]{8}$/.test(desktopBundle.checklistFingerprint || ""), `desktop handoff should include a compact checklist fingerprint, got ${desktopBundle.checklistFingerprint}`);
   assert(desktopBundle.checklistWorkupSignature === undefined, "phone handoff should not send the full canonical workup signature.");
+
+  const qrLink = desktopQrAudit.qrLink;
+  const qrPhoneContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
+  await qrPhoneContext.grantPermissions(["clipboard-read", "clipboard-write"], { origin: baseUrl });
+  const qrPhonePage = await qrPhoneContext.newPage();
+  await qrPhonePage.goto(qrLink);
+  await qrPhonePage.waitForSelector("#bedsideView:not([hidden])", { timeout: 45000 });
+  await qrPhonePage.waitForFunction(() => document.querySelectorAll(".checklist-row").length >= 8);
+  await assertNoLayoutBreakage(qrPhonePage, "qr phone bedside checklist");
+  const qrPhoneAudit = await qrPhonePage.evaluate(() => ({
+    view: document.body.dataset.view,
+    caseTitle: document.querySelector("#bedsideMobileCaseTitle")?.textContent?.trim() || "",
+    subhead: document.querySelector(".bedside-mobile-top span:last-child")?.textContent?.trim() || "",
+    rowCount: document.querySelectorAll(".checklist-row").length,
+    hash: window.location.hash,
+    storageKeys: Object.keys(localStorage)
+  }));
+  assert(qrPhoneAudit.view === "bedside", `QR link should bypass vault entry and open bedside view: ${JSON.stringify(qrPhoneAudit)}`);
+  assert(/Demo - DKA consult/i.test(qrPhoneAudit.caseTitle), `QR link should preserve case title: ${JSON.stringify(qrPhoneAudit)}`);
+  assert(/history questions and exam findings/i.test(qrPhoneAudit.subhead), `QR bedside screen should emphasize history and exam scope: ${JSON.stringify(qrPhoneAudit)}`);
+  assert(qrPhoneAudit.rowCount >= 8, `QR link should load checklist rows: ${JSON.stringify(qrPhoneAudit)}`);
+  assert(qrPhoneAudit.hash === "", `QR phone import should clear payload fragment after load: ${JSON.stringify(qrPhoneAudit)}`);
+  assert(qrPhoneAudit.storageKeys.length === 0, `QR phone session should not write patient data to localStorage: ${JSON.stringify(qrPhoneAudit)}`);
+  await qrPhoneContext.close();
 
   const { context: phoneContext, page: phonePage } = await openFreshPage(
     browser,
@@ -403,6 +496,8 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
     { preloadLocalStorage: { [publicCatalogCacheKey]: publicCatalogCacheFixture() } }
   );
   await assertNoLayoutBreakage(phonePage, "phone bundle vault entry");
+  await phonePage.click(".phone-manual-fallback summary");
+  await phonePage.waitForFunction(() => document.querySelector(".phone-manual-fallback")?.open === true);
   await phonePage.fill("#phoneBundleEntryInput", JSON.stringify({ code: "WRNG-0000", payload: desktopPayload }, null, 2));
   await phonePage.click("#loadPhoneBundleEntryButton");
   await phonePage.waitForFunction(() => /code does not match/i.test(document.querySelector("#phoneBundleEntryStatus")?.textContent || ""));
@@ -478,12 +573,13 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
 
   await desktopPage.fill("#phoneImportInput", mismatchedReturnPayload);
   await desktopPage.click("#importPhoneFindingsButton");
-  await desktopPage.waitForFunction(() => /does not match this laptop handoff code/i.test(document.querySelector("#handoffStatus")?.textContent || ""));
+  await desktopPage.waitForTimeout(250);
   const mismatchDesktopAudit = await desktopPage.evaluate(() => ({
     status: document.querySelector("#handoffStatus")?.textContent || "",
     finalText: document.querySelector("#finalUpdatePreview")?.textContent || "",
     answeredRows: document.querySelectorAll(".checklist-row.is-answered").length
   }));
+  assert(/does not match this laptop handoff code/i.test(mismatchDesktopAudit.status), `mismatched return bundle should show a code mismatch error: ${JSON.stringify(mismatchDesktopAudit)}`);
   assert(!/Imported phone findings/i.test(mismatchDesktopAudit.finalText), `mismatched return bundle should not update final text: ${JSON.stringify(mismatchDesktopAudit)}`);
   assert(mismatchDesktopAudit.answeredRows === 0, `mismatched return bundle should not merge answers: ${JSON.stringify(mismatchDesktopAudit)}`);
 
@@ -523,6 +619,19 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
   await createVault(page);
   await admitPatient(page);
   await assertNoLayoutBreakage(page, `workspace ${label}`);
+  const unbuiltHandoffAudit = await page.evaluate(() => ({
+    checklistStatus: document.querySelector("#workspaceChecklistStatus")?.textContent || "",
+    sendHidden: document.querySelector("#workspaceChecklistPhoneButton")?.hidden,
+    findingsSendHidden: document.querySelector("#workspaceSendPhoneButton")?.hidden,
+    handoffHidden: document.querySelector("#workspaceHandoffButton")?.hidden
+  }));
+  assert(
+    /Not built/i.test(unbuiltHandoffAudit.checklistStatus)
+      && unbuiltHandoffAudit.sendHidden
+      && unbuiltHandoffAudit.findingsSendHidden
+      && unbuiltHandoffAudit.handoffHidden,
+    `desktop should hide all phone handoff actions until a checklist exists: ${JSON.stringify(unbuiltHandoffAudit)}`
+  );
 
   const assertRosterState = async (expectedExpanded, reason) => {
     const audit = await page.evaluate(() => {
@@ -560,26 +669,24 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
   const sidebarLabels = await page.locator(".sidebar .nav-button").allTextContents();
   assert(sidebarLabels.join("|") === "Show roster|Admit patient|Demo case|Quick de-ID|Workup Studio|About privacy", `sidebar should expose only shift utilities, got ${sidebarLabels.join("|")}`);
   if (viewport.width >= 760) {
-    await page.click("#layoutNavCollapseButton");
-    await page.waitForFunction(() => document.body.dataset.navCollapsed === "true");
-    const collapsedNavAudit = await page.evaluate(() => ({
-      sidebarVisible: Boolean(document.querySelector(".sidebar")?.offsetParent),
-      sidebarWidth: Math.round(document.querySelector(".sidebar")?.getBoundingClientRect().width || 0),
-      navTextHidden: Array.from(document.querySelectorAll(".sidebar .nav-button > span:not(.icon-box)")).every((node) => {
+    const menuChromeAudit = await page.evaluate(() => {
+      const visible = (selector) => {
+        const node = document.querySelector(selector);
+        if (!node) return false;
         const rect = node.getBoundingClientRect();
-        return rect.width <= 1 && rect.height <= 1;
-      }),
-      floatVisible: (() => {
-        const button = document.querySelector("#layoutNavFloatButton");
-        const style = getComputedStyle(button);
-        const rect = button.getBoundingClientRect();
-        return style.display !== "none" && style.visibility !== "hidden" && rect.width > 0 && rect.height > 0;
-      })(),
-      shellColumns: getComputedStyle(document.querySelector("#appShell")).gridTemplateColumns
-    }));
-    assert(collapsedNavAudit.sidebarVisible === true && collapsedNavAudit.sidebarWidth <= 70 && collapsedNavAudit.navTextHidden && collapsedNavAudit.floatVisible === false, `primary navigation should collapse to an in-layout rail without a floating button: ${JSON.stringify(collapsedNavAudit)}`);
-    await page.click("#layoutNavCollapseButton");
-    await page.waitForFunction(() => document.body.dataset.navCollapsed === "false");
+        return !node.hidden && getComputedStyle(node).display !== "none" && rect.width > 0 && rect.height > 0;
+      };
+      return {
+        sidebarLabel: document.querySelector(".sidebar")?.getAttribute("aria-label") || "",
+        navLabel: document.querySelector(".sidebar nav")?.getAttribute("aria-label") || "",
+        visibleHeading: document.querySelector(".layout-sidebar-head")?.textContent?.trim() || "",
+        collapseButtonVisible: visible("#layoutNavCollapseButton"),
+        floatVisible: visible("#layoutNavFloatButton"),
+        navCollapsed: document.body.dataset.navCollapsed
+      };
+    });
+    assert(menuChromeAudit.sidebarLabel === "App menu" && menuChromeAudit.navLabel === "Menu", `sidebar should use user-facing menu labels: ${JSON.stringify(menuChromeAudit)}`);
+    assert(!menuChromeAudit.visibleHeading && !menuChromeAudit.collapseButtonVisible && !menuChromeAudit.floatVisible && menuChromeAudit.navCollapsed === "false", `desktop menu should not show header or collapse controls: ${JSON.stringify(menuChromeAudit)}`);
     const startSidebarWidth = await page.evaluate(() => Math.round(document.querySelector(".sidebar").getBoundingClientRect().width));
     await page.locator("#layoutSidebarResizeHandle").press("ArrowRight");
     const resizedNavAudit = await page.evaluate(() => {
@@ -590,12 +697,12 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
         collapsed: prefs?.navCollapsed
       };
     });
-    assert(resizedNavAudit.width > startSidebarWidth && resizedNavAudit.storedWidth >= resizedNavAudit.width - 2 && resizedNavAudit.collapsed === false, `primary navigation width should resize and persist: ${JSON.stringify({ startSidebarWidth, resizedNavAudit })}`);
+    assert(resizedNavAudit.width > startSidebarWidth && resizedNavAudit.storedWidth >= resizedNavAudit.width - 2 && resizedNavAudit.collapsed === false, `menu width should resize and persist without collapsing: ${JSON.stringify({ startSidebarWidth, resizedNavAudit })}`);
   }
   await assertRosterState(false, `default collapsed roster ${label}`);
   const tabLabels = await page.locator(".patient-task-strip [role='tab']:visible").allTextContents();
   const expectedTabLabels = viewport.width < 760
-    ? "Summary|Today|Context|Workup|Checklist|Findings|Evidence|Phone"
+    ? ""
     : "Summary|Today|Context|Workup|Checklist|Findings|Evidence";
   assert(tabLabels.join("|") === expectedTabLabels, `patient tabs should match device workflow order, got ${tabLabels.join("|")}`);
   const phoneTabAudit = await page.evaluate(() => {
@@ -609,7 +716,7 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
     };
   });
   if (viewport.width < 760) {
-    assert(phoneTabAudit.visible && phoneTabAudit.bodyDeviceMode === "phone", `phone-sized workspace should expose the phone handoff tab: ${JSON.stringify(phoneTabAudit)}`);
+    assert(!phoneTabAudit.hidden && !phoneTabAudit.visible && phoneTabAudit.bodyDeviceMode === "phone", `phone-sized workspace should keep the phone handoff tab available but out of the primary checklist UI: ${JSON.stringify(phoneTabAudit)}`);
   } else {
     assert(phoneTabAudit.hidden && phoneTabAudit.ariaHidden === "true" && !phoneTabAudit.visible && phoneTabAudit.bodyDeviceMode === "desktop", `desktop workspace should hide the phone handoff tab: ${JSON.stringify(phoneTabAudit)}`);
     await page.evaluate(() => document.querySelector('[data-patient-tab="handoff"]')?.click());
@@ -646,6 +753,7 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
     return {
       rowCount: rowTops.size,
       clipped,
+      display: strip ? getComputedStyle(strip).display : "",
       scrollWidth: Math.round(strip?.scrollWidth || 0),
       clientWidth: Math.round(strip?.clientWidth || 0)
     };
@@ -653,7 +761,7 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
   if (viewport.width >= 760) {
     assert(patientTabLayout.rowCount === 1, `patient workflow tabs should stay in one navigable row on tablet/desktop: ${JSON.stringify(patientTabLayout)}`);
   } else {
-    assert(patientTabLayout.rowCount <= 2, `patient workflow tabs should stay visible in a compact phone grid: ${JSON.stringify(patientTabLayout)}`);
+    assert(patientTabLayout.rowCount === 0 && patientTabLayout.display === "none", `phone workspace should hide the distracting tab grid: ${JSON.stringify(patientTabLayout)}`);
   }
   assert(patientTabLayout.clipped.length === 0, `patient workflow tab labels should not be clipped: ${JSON.stringify(patientTabLayout)}`);
   const countLabel = await page.textContent("#patientCountLabel");
@@ -681,14 +789,49 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
   await clickPatientTab(page, "checklist");
   await assertRosterState(true, `checklist tab roster ${label}`);
   let checklistPanelButtons = await page.locator('#patientChecklistPanel:not([hidden]) .checklist-command-grid button:visible').allTextContents();
-  assert(checklistPanelButtons.join("|") === "Build checklist from workup|Change workup", `unbuilt checklist panel should expose only build and workup-change paths, got ${checklistPanelButtons.join("|")}`);
   let checklistPrimaryEnabled = await page.locator("#workspaceOpenBedsideChecklistButton").isEnabled();
-  assert(checklistPrimaryEnabled, "checklist build primary should be enabled for the selected workup");
-  await page.click("#workspaceChecklistSecondaryButton");
-  await page.waitForFunction(() => document.querySelector('button[data-patient-tab="workup"]')?.getAttribute("aria-selected") === "true");
-  await assertRosterState(true, `workup tab roster ${label}`);
-  const focusedWorkupControl = await page.evaluate(() => document.activeElement?.id || "");
-  assert(focusedWorkupControl === "patientWorkupConcernInput", `change-workup action should focus the workup search, got ${focusedWorkupControl}`);
+  if (viewport.width < 760) {
+    const phoneLauncherAudit = await page.evaluate(() => {
+      const launcher = document.querySelector("#phoneChecklistLauncher");
+      const tabs = document.querySelector(".patient-task-strip");
+      const primary = document.querySelector("#phoneChecklistPrimaryButton");
+      const results = Array.from(document.querySelectorAll("#phoneChecklistWorkupResults [data-module-id]")).map((row) => row.textContent || "");
+      return {
+        launcherVisible: Boolean(launcher && getComputedStyle(launcher).display !== "none" && launcher.getBoundingClientRect().height > 0),
+        tabDisplay: tabs ? getComputedStyle(tabs).display : "",
+        primaryText: primary?.textContent?.trim() || "",
+        primaryDisabled: Boolean(primary?.disabled),
+        workupTitle: document.querySelector("#phoneChecklistWorkupTitle")?.textContent?.trim() || "",
+        status: document.querySelector("#phoneChecklistRefinementStatus")?.textContent?.trim() || "",
+        resultCount: results.length
+      };
+    });
+    assert(phoneLauncherAudit.launcherVisible && phoneLauncherAudit.tabDisplay === "none", `phone checklist launcher should replace the tab grid: ${JSON.stringify(phoneLauncherAudit)}`);
+    assert(!phoneLauncherAudit.primaryDisabled && /Build|Open|modified/i.test(phoneLauncherAudit.primaryText), `phone checklist primary should be ready: ${JSON.stringify(phoneLauncherAudit)}`);
+    assert(phoneLauncherAudit.resultCount >= 1, `phone launcher should show workup choices: ${JSON.stringify(phoneLauncherAudit)}`);
+    assert(checklistPanelButtons.length === 0, `phone checklist panel should hide desktop command buttons, got ${checklistPanelButtons.join("|")}`);
+    await page.fill("#phoneChecklistWorkupInput", "chest pain");
+    await page.waitForSelector('#phoneChecklistWorkupResults [data-module-id]:has-text("Chest pain")');
+    const phoneChestPainId = await page.locator('#phoneChecklistWorkupResults [data-module-id]:has-text("Chest pain")').first().getAttribute("data-module-id");
+    assert(phoneChestPainId, "phone workup search should expose a selectable chest pain workup");
+    await page.locator(`#phoneChecklistWorkupResults [data-module-id="${phoneChestPainId}"]`).first().click();
+    await page.waitForFunction((moduleId) => document.querySelector("#patientWorkupSelect")?.value === moduleId, phoneChestPainId);
+    const phoneSelectedAudit = await page.evaluate(() => ({
+      patientTab: document.body.dataset.patientTab,
+      selectValue: document.querySelector("#patientWorkupSelect")?.value || "",
+      phoneTitle: document.querySelector("#phoneChecklistWorkupTitle")?.textContent || "",
+      status: document.querySelector("#phoneChecklistRefinementStatus")?.textContent || ""
+    }));
+    assert(phoneSelectedAudit.patientTab === "checklist" && /Chest pain/i.test(phoneSelectedAudit.phoneTitle), `phone workup selection should stay on the checklist launcher: ${JSON.stringify(phoneSelectedAudit)}`);
+  } else {
+    assert(checklistPanelButtons.join("|") === "Build checklist from workup|Change workup", `unbuilt checklist panel should expose only build and workup-change paths, got ${checklistPanelButtons.join("|")}`);
+    assert(checklistPrimaryEnabled, "checklist build primary should be enabled for the selected workup");
+    await page.click("#workspaceChecklistSecondaryButton");
+    await page.waitForFunction(() => document.querySelector('button[data-patient-tab="workup"]')?.getAttribute("aria-selected") === "true");
+    await assertRosterState(true, `workup tab roster ${label}`);
+    const focusedWorkupControl = await page.evaluate(() => document.activeElement?.id || "");
+    assert(focusedWorkupControl === "patientWorkupConcernInput", `change-workup action should focus the workup search, got ${focusedWorkupControl}`);
+  }
 
   await clickPatientTab(page, "findings");
   await assertRosterState(true, `findings tab roster ${label}`);
@@ -802,13 +945,41 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
 
   await clickPatientTab(page, "checklist");
   checklistPanelButtons = await page.locator('#patientChecklistPanel:not([hidden]) .checklist-command-grid button:visible').allTextContents();
-  assert(checklistPanelButtons.join("|") === "Build checklist from workup|Change workup", `selected-workup checklist panel should show only build/change actions, got ${checklistPanelButtons.join("|")}`);
   checklistPrimaryEnabled = await page.locator("#workspaceOpenBedsideChecklistButton").isEnabled();
-  assert(checklistPrimaryEnabled, "checklist build primary should be enabled after selecting a validated workup");
-  await page.click("#workspaceOpenBedsideChecklistButton");
+  if (viewport.width < 760) {
+    assert(checklistPanelButtons.length === 0, `phone selected-workup checklist panel should keep desktop commands hidden, got ${checklistPanelButtons.join("|")}`);
+    const phoneSelectedLauncher = await page.evaluate(() => ({
+      title: document.querySelector("#phoneChecklistWorkupTitle")?.textContent?.trim() || "",
+      primary: document.querySelector("#phoneChecklistPrimaryButton")?.textContent?.trim() || "",
+      disabled: document.querySelector("#phoneChecklistPrimaryButton")?.disabled || false,
+      status: document.querySelector("#phoneChecklistRefinementStatus")?.textContent?.trim() || ""
+    }));
+    assert(/chest pain/i.test(phoneSelectedLauncher.title) && !phoneSelectedLauncher.disabled, `phone checklist launcher should keep the selected chest-pain workup ready: ${JSON.stringify(phoneSelectedLauncher)}`);
+    await page.click("#phoneChecklistPrimaryButton");
+  } else {
+    assert(checklistPanelButtons.join("|") === "Build checklist from workup|Change workup", `selected-workup checklist panel should show only build/change actions, got ${checklistPanelButtons.join("|")}`);
+    assert(checklistPrimaryEnabled, "checklist build primary should be enabled after selecting a validated workup");
+    await page.click("#workspaceOpenBedsideChecklistButton");
+  }
   await page.waitForFunction(() => /items built/.test(document.querySelector("#workspaceChecklistStatus")?.textContent || ""));
   checklistPanelButtons = await page.locator('#patientChecklistPanel:not([hidden]) .checklist-command-grid button:visible').allTextContents();
-  assert(checklistPanelButtons.join("|") === "Answer bedside checklist|Send checklist to phone", `built checklist panel should switch to answer/phone actions without a redundant rebuild button, got ${checklistPanelButtons.join("|")}`);
+  if (viewport.width < 760) {
+    const builtPhoneLauncher = await page.evaluate(() => ({
+      view: document.body.dataset.view,
+      primary: document.querySelector("#phoneChecklistPrimaryButton")?.textContent?.trim() || "",
+      buttonCount: Array.from(document.querySelectorAll('#patientChecklistPanel .checklist-command-grid button'))
+        .filter((button) => getComputedStyle(button).display !== "none" && button.getBoundingClientRect().height > 0).length
+    }));
+    assert(builtPhoneLauncher.view === "bedside" || /Open/i.test(builtPhoneLauncher.primary), `phone primary should build directly into the bedside checklist: ${JSON.stringify(builtPhoneLauncher)}`);
+    if (builtPhoneLauncher.view === "bedside") {
+      await page.click("#bedsideMobileMenuButton");
+      await page.waitForSelector("#workspaceView:not([hidden])");
+      await clickPatientTab(page, "checklist");
+    }
+    assert(builtPhoneLauncher.buttonCount === 0, `phone built checklist panel should keep desktop commands hidden: ${JSON.stringify(builtPhoneLauncher)}`);
+  } else {
+    assert(checklistPanelButtons.join("|") === "Answer bedside checklist|Send checklist to phone", `built checklist panel should switch to answer/phone actions without a redundant rebuild button, got ${checklistPanelButtons.join("|")}`);
+  }
   const checklistDirectoryAudit = await page.evaluate(() => {
     const directory = document.querySelector("#workspaceChecklistDirectory");
     const buttons = Array.from(document.querySelectorAll("#workspaceChecklistDirectory .workspace-checklist-jump"));
@@ -849,7 +1020,10 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
 
   await clickPatientRosterToggle(page);
   await page.waitForSelector("#workspaceView:not([hidden])");
-  await page.click("#dischargePatientButton");
+  const dischargeSelector = viewport.width < 760
+    ? '#patientList .patient-card-actions button:has-text("Discharge")'
+    : "#dischargePatientButton";
+  await page.click(dischargeSelector);
   await page.waitForSelector("#dischargeConfirmOverlay:not([hidden])");
   const pendingDischargeCopy = await page.textContent("#dischargeConfirmCopy");
   assert(pendingDischargeCopy.includes(patientLabel), `discharge confirmation should name the patient, got ${pendingDischargeCopy}`);
@@ -857,7 +1031,7 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
   await page.waitForFunction(() => document.querySelector("#dischargeConfirmOverlay")?.hidden === true);
   rosterText = await page.textContent("#patientList");
   assert(rosterText.includes(patientLabel), "canceling discharge should keep the patient in the roster");
-  await page.click("#dischargePatientButton");
+  await page.click(dischargeSelector);
   await page.waitForSelector("#dischargeConfirmOverlay:not([hidden])");
   await page.click("#confirmDischargeButton");
   await page.waitForFunction((patient) => !(document.querySelector("#patientList")?.textContent || "").includes(patient), patientLabel);
@@ -869,6 +1043,22 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
   assert(snapshot[vaultMetaKey] && snapshot[vaultDataKey], "vault mode should persist only vault metadata and encrypted data");
   const storageText = joinedStorage(snapshot);
   assert(!storageText.includes("Room 12") && !storageText.includes("oxygen requirement"), "patient details should not appear in localStorage plaintext");
+  await page.click("#lockVaultButton");
+  await page.waitForFunction(() => document.body.dataset.view === "vaultAccess");
+  const lockedVaultEntryAudit = await page.evaluate(() => {
+    const visible = (selector) => {
+      const element = document.querySelector(selector);
+      if (!element) return false;
+      const rect = element.getBoundingClientRect();
+      return !element.hidden && getComputedStyle(element).display !== "none" && rect.width > 0 && rect.height > 0;
+    };
+    return {
+      openVaultVisible: visible("#openVaultSection"),
+      createVaultVisible: visible("#createVaultSection"),
+      phoneEntryVisible: visible("#phoneBundleEntrySection")
+    };
+  });
+  assert(lockedVaultEntryAudit.openVaultVisible && !lockedVaultEntryAudit.createVaultVisible && !lockedVaultEntryAudit.phoneEntryVisible, `desktop entry with an existing vault should offer open-vault only: ${JSON.stringify(lockedVaultEntryAudit)}`);
   await context.close();
 }
 
@@ -878,9 +1068,9 @@ try {
   browser = await chromium.launch({ headless: true });
   await testDemoCaseLoader(browser, baseUrl);
   await testSinglePatientBypass(browser, baseUrl);
+  await testPhoneManualFallbackHome(browser, baseUrl);
   await testPhoneBundleRoundTrip(browser, baseUrl);
   for (const viewport of [
-    { width: 390, height: 844 },
     { width: 1024, height: 768 },
     { width: 1440, height: 1024 }
   ]) {

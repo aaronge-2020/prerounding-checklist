@@ -563,33 +563,23 @@ try {
   assert.equal(patientWorkupStudioAudit.legacyItemRows, 0, `Pathway section should not show the old long item list: ${JSON.stringify(patientWorkupStudioAudit)}`);
   assert.equal(patientWorkupStudioAudit.editorBodyMode, true, "Pathway section should use tree editing mode on Studio entry.");
   assert(patientWorkupStudioAudit.inlineEditorBounds?.editorInsideNode, `Selected tree node inline editor should stay inside the rendered node card: ${JSON.stringify(patientWorkupStudioAudit.inlineEditorBounds)}`);
-  assert.equal(patientWorkupStudioAudit.navCollapsed, "false", `Studio should start with the persistent primary navigation expanded on desktop: ${JSON.stringify(patientWorkupStudioAudit)}`);
+  assert.equal(patientWorkupStudioAudit.navCollapsed, "false", `Studio should start with the persistent menu expanded on desktop: ${JSON.stringify(patientWorkupStudioAudit)}`);
   assert(patientWorkupStudioAudit.shellLeft >= 180 && patientWorkupStudioAudit.shellLeft <= 380, `Studio shell should start after the resizable primary sidebar on desktop: ${JSON.stringify(patientWorkupStudioAudit)}`);
   assert(Math.abs(patientWorkupStudioAudit.shellRight - patientWorkupStudioAudit.viewportWidth) <= 2, `Studio shell should end at the viewport edge without a right gutter: ${JSON.stringify(patientWorkupStudioAudit)}`);
-  assert.equal(patientWorkupStudioAudit.sidebarPointerEvents, "auto", `Primary nav should be usable in Studio when expanded: ${JSON.stringify(patientWorkupStudioAudit)}`);
-  await page.click("#workupStudioMenuButton");
-  await page.waitForFunction(() => document.body.dataset.navCollapsed === "true" && document.body.dataset.studioNavOpen === "false");
-  const studioCollapsedAudit = await page.evaluate(() => ({
-    navCollapsed: document.body.dataset.navCollapsed,
-    navOpen: document.body.dataset.studioNavOpen,
-    shellLeft: Math.round(document.querySelector(".studio-shell")?.getBoundingClientRect().left ?? -1),
-    sidebarPointerEvents: getComputedStyle(document.querySelector("#primarySidebar")).pointerEvents,
-    menuText: document.querySelector("#workupStudioMenuButton")?.textContent?.trim() || ""
-  }));
-  assert(studioCollapsedAudit.shellLeft === 0 && studioCollapsedAudit.sidebarPointerEvents === "none" && /Menu/i.test(studioCollapsedAudit.menuText), `Studio menu should collapse to a labeled full-width workspace control: ${JSON.stringify(studioCollapsedAudit)}`);
-  await page.click("#workupStudioMenuButton");
-  await page.waitForFunction(() => document.body.dataset.studioNavOpen === "true");
-  await page.waitForFunction(() => (document.querySelector("#primarySidebar")?.getBoundingClientRect().left ?? -999) >= -1);
-  const studioDrawerAudit = await page.evaluate(() => ({
-    navCollapsed: document.body.dataset.navCollapsed,
-    navOpen: document.body.dataset.studioNavOpen,
-    sidebarLeft: Math.round(document.querySelector("#primarySidebar")?.getBoundingClientRect().left || -1),
-    sidebarWidth: Math.round(document.querySelector("#primarySidebar")?.getBoundingClientRect().width || 0),
-    navLabelsVisible: getComputedStyle(document.querySelector("#sidebarPatientRosterLabel")).display !== "none"
-  }));
-  assert(studioDrawerAudit.sidebarLeft >= -1 && studioDrawerAudit.sidebarWidth >= 180 && studioDrawerAudit.navLabelsVisible, `Studio menu should open a full navigation drawer, not an icon rail: ${JSON.stringify(studioDrawerAudit)}`);
-  await page.click("#layoutNavCollapseButton");
-  await page.waitForFunction(() => document.body.dataset.navCollapsed === "false" && document.body.dataset.studioNavOpen === "false");
+  assert.equal(patientWorkupStudioAudit.sidebarPointerEvents, "auto", `Menu should be usable in Studio when expanded: ${JSON.stringify(patientWorkupStudioAudit)}`);
+  const desktopStudioMenuAudit = await page.evaluate(() => {
+    const button = document.querySelector("#workupStudioMenuButton");
+    const rect = button?.getBoundingClientRect();
+    return {
+      navCollapsed: document.body.dataset.navCollapsed,
+      navOpen: document.body.dataset.studioNavOpen,
+      buttonVisible: Boolean(button && getComputedStyle(button).display !== "none" && rect.width > 0 && rect.height > 0),
+      shellLeft: Math.round(document.querySelector(".studio-shell")?.getBoundingClientRect().left ?? -1),
+      sidebarPointerEvents: getComputedStyle(document.querySelector("#primarySidebar")).pointerEvents
+    };
+  });
+  assert.equal(desktopStudioMenuAudit.buttonVisible, false, `Studio should not show a desktop menu collapse button: ${JSON.stringify(desktopStudioMenuAudit)}`);
+  assert.equal(desktopStudioMenuAudit.navCollapsed, "false", `Studio desktop nav should remain expanded: ${JSON.stringify(desktopStudioMenuAudit)}`);
   const studioWorkbenchHandle = page.locator('[data-layout-resize-key="studioWorkups"]');
   await studioWorkbenchHandle.waitFor({ state: "visible" });
   const startStudioWorkupsWidth = await page.evaluate(() => Math.round(document.querySelector(".studio-rail").getBoundingClientRect().width));
@@ -612,7 +602,32 @@ try {
   await assertPathwayEditorControlsContained(page, "desktop Workup Studio pathway editor");
   await page.setViewportSize({ width: 640, height: 900 });
   await page.waitForFunction(() => document.documentElement.clientWidth === 640
-    && document.querySelector(".studio-editor-body")?.classList.contains("is-pathway-editor"));
+    && document.querySelector(".studio-editor-body")?.classList.contains("is-pathway-editor")
+    && document.body.dataset.navCollapsed === "true");
+  const mobileStudioMenuAudit = await page.evaluate(() => {
+    const button = document.querySelector("#workupStudioMenuButton");
+    const rect = button?.getBoundingClientRect();
+    return {
+      buttonVisible: Boolean(button && getComputedStyle(button).display !== "none" && rect.width > 0 && rect.height > 0),
+      navCollapsed: document.body.dataset.navCollapsed,
+      navOpen: document.body.dataset.studioNavOpen,
+      shellLeft: Math.round(document.querySelector(".studio-shell")?.getBoundingClientRect().left ?? -1)
+    };
+  });
+  assert(mobileStudioMenuAudit.buttonVisible && mobileStudioMenuAudit.shellLeft === 0, `Phone-width Studio should show a drawer menu button and use full width: ${JSON.stringify(mobileStudioMenuAudit)}`);
+  await page.click("#workupStudioMenuButton");
+  await page.waitForFunction(() => document.body.dataset.studioNavOpen === "true");
+  await page.waitForFunction(() => (document.querySelector("#primarySidebar")?.getBoundingClientRect().left ?? -999) >= -1);
+  const mobileStudioDrawerAudit = await page.evaluate(() => ({
+    navCollapsed: document.body.dataset.navCollapsed,
+    navOpen: document.body.dataset.studioNavOpen,
+    sidebarLeft: Math.round(document.querySelector("#primarySidebar")?.getBoundingClientRect().left || -1),
+    sidebarWidth: Math.round(document.querySelector("#primarySidebar")?.getBoundingClientRect().width || 0),
+    navLabelsVisible: getComputedStyle(document.querySelector("#sidebarPatientRosterLabel")).display !== "none"
+  }));
+  assert(mobileStudioDrawerAudit.sidebarLeft >= -1 && mobileStudioDrawerAudit.sidebarWidth >= 180 && mobileStudioDrawerAudit.navLabelsVisible, `Phone-width Studio menu should open a full drawer: ${JSON.stringify(mobileStudioDrawerAudit)}`);
+  await page.click("#workupStudioMenuButton");
+  await page.waitForFunction(() => document.body.dataset.studioNavOpen === "false");
   await assertNoHorizontalOverflow(page, "phone-width Workup Studio pathway editor");
   await assertPathwayEditorControlsContained(page, "phone-width Workup Studio pathway editor");
   await page.setViewportSize({ width: 1440, height: 980 });

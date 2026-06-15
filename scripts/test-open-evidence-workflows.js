@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import {
   buildOpenEvidencePrompt,
   getOpenEvidenceTask,
+  OPEN_EVIDENCE_PROMPT_CHAR_LIMIT,
   openEvidenceTasks
 } from "../open-evidence-workflows.js";
 import {
@@ -177,6 +178,73 @@ assert.ok(!promptWithoutGuidelineDump.includes("Measure vital sign 1"), "OpenEvi
 assert.ok(!promptWithoutGuidelineDump.includes("Retrieved evidence detail"), "OpenEvidence prompt should not include retrieved evidence summaries");
 assert.ok(!promptWithoutGuidelineDump.includes("trace fever_infection_sepsis_v1"), "OpenEvidence prompt should not include local trace/debug metadata");
 assert.ok(!promptWithoutGuidelineDump.includes("omitted from prompt"), "OpenEvidence prompt should not include guideline dump omission notices");
+
+const oversizedSourceContext = [
+  "Case B - Pneumonia",
+  "Selected workup: Fever, infection, or sepsis",
+  "Assessment: hypoxic pneumonia with antibiotics started and oxygen requirement improving.",
+  "Plan: reassess oxygen need, cultures, antibiotic fit, discharge barriers, and return precautions.",
+  ...Array.from({ length: 1800 }, (_, index) => `Generated boilerplate line ${index}: copied chart shell text that should not enter OpenEvidence prompts.`),
+  ...Array.from({ length: 260 }, (_, index) => `Lab trend ${index}: WBC ${12 + (index % 4)}; creatinine ${1 + (index % 3) / 10}; oxygen saturation ${92 + (index % 5)}%.`)
+].join("\n");
+const oversizedChecklist = [
+  "BEDSIDE QUESTION CHECKLIST",
+  ...Array.from({ length: 900 }, (_, index) => `Question ${index}: Any worsening cough, dyspnea, fever, oral intake issue, medication barrier, or discharge concern?`),
+  "TARGETED PHYSICAL EXAM CHECKLIST",
+  ...Array.from({ length: 900 }, (_, index) => `Exam ${index}: Check work of breathing, oxygen device fit, focal lung sounds, edema, perfusion, and mental status.`)
+].join("\n");
+const oversizedDecisionTree = JSON.stringify({
+  schema: "clinical_pathway_tree_v1",
+  workupId: "fever_infection_sepsis_v1",
+  root: {
+    id: "root",
+    label: "Assess suspected infection",
+    type: "action",
+    children: Array.from({ length: 600 }, (_, index) => ({
+      id: `node_${index}`,
+      label: `Branch ${index}: evaluate severity, source, antimicrobial fit, monitoring, and disposition threshold.`,
+      type: "decision",
+      edgeLabel: `criteria ${index}`,
+      children: []
+    }))
+  },
+  activationRules: {}
+}, null, 2);
+const oversizedContext = {
+  ...baseContext,
+  sourceContext: oversizedSourceContext,
+  checklistPatientSummary: [
+    "Compact de-identified checklist-review context. Raw source note text and the full HPI are intentionally excluded.",
+    "Patient: Case B - Pneumonia",
+    "Selected local workup: Fever, infection, or sepsis",
+    ...Array.from({ length: 500 }, (_, index) => `Repeated checklist context ${index}: not needed in the copied prompt.`)
+  ].join("\n"),
+  currentChecklist: oversizedChecklist,
+  compiledFindings: [
+    "Pre-rounding update draft (local review)",
+    "Case B - Pneumonia",
+    "Bedside findings: Oxygen need increased during hallway ambulation.",
+    ...Array.from({ length: 900 }, (_, index) => `Repeated finding ${index}: unchanged low-yield detail.`)
+  ].join("\n"),
+  objectiveData: [
+    "Objective workup data for Fever, infection, or sepsis:",
+    ...Array.from({ length: 500 }, (_, index) => `- Objective row ${index}: present (auto from chart)`)
+  ].join("\n"),
+  decisionTreeJson: oversizedDecisionTree,
+  sameConversationReady: false
+};
+for (const task of openEvidenceTasks) {
+  const built = buildOpenEvidencePrompt(task.id, oversizedContext);
+  assert.ok(
+    built.prompt.length < OPEN_EVIDENCE_PROMPT_CHAR_LIMIT,
+    `${task.id} prompt must stay under OpenEvidence's 50,000 character limit with oversized local context; saw ${built.prompt.length}`
+  );
+  assert.ok(
+    built.prompt.length < 30000,
+    `${task.id} prompt should stay concise after context compaction; saw ${built.prompt.length}`
+  );
+  assert.ok(!built.prompt.includes("Generated boilerplate line 1799"), `${task.id} prompt should drop repeated chart boilerplate`);
+}
 
 const missingItemsPrompt = buildOpenEvidencePrompt("what_am_i_missing", baseContext);
 assert.ok(missingItemsPrompt.prompt.includes("UNVALIDATED GAP"), "blind-spot prompt should keep a local-review gap prefix");

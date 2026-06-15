@@ -1,5 +1,61 @@
 import { parseOpenEvidenceResult } from "./open-evidence-results.js";
 
+export const OPEN_EVIDENCE_PROMPT_CHAR_LIMIT = 50000;
+
+const DEFAULT_CONTEXT_LIMITS = {
+  contextType: 400,
+  userContext: 1200,
+  labChronologyBlock: 1800,
+  sourceContext: 9000,
+  source_context: 9000,
+  compiledFindings: 6000,
+  new_bedside_findings: 6000,
+  checklistPatientSummary: 3000,
+  deidentified_patient_context: 3000,
+  currentChecklist: 9000,
+  current_checklist: 9000,
+  checklistAuditSummary: 1000,
+  refinementNotes: 1000,
+  objectiveData: 3000,
+  objective_data: 3000,
+  selectedWorkupTitle: 240,
+  selected_workup_title: 240,
+  selectedWorkupId: 120,
+  selected_workup_id: 120,
+  decisionTreeJson: 10000,
+  decision_tree_json: 10000
+};
+
+const TASK_CONTEXT_LIMIT_OVERRIDES = {
+  full_rounds_report: {
+    sourceContext: 12000,
+    source_context: 12000
+  },
+  teaching_explanation: {
+    sourceContext: 10000,
+    source_context: 10000
+  },
+  checklist_improvement_review: {
+    currentChecklist: 12000,
+    current_checklist: 12000
+  },
+  final_rounds_update: {
+    sourceContext: 5000,
+    source_context: 5000,
+    compiledFindings: 7000,
+    new_bedside_findings: 7000
+  },
+  decision_tree_builder: {
+    decisionTreeJson: 14000,
+    decision_tree_json: 14000,
+    sourceContext: 3000,
+    source_context: 3000
+  }
+};
+
+const HIGH_VALUE_CONTEXT_LINE_PATTERN = /\b(?:chief complaint|one-liner|assessment|plan|problem|diagnos|subjective|objective|hpi|history|hospital course|interval|overnight|event|vital|temperature|heart rate|blood pressure|respiratory|oxygen|exam|lab|sodium|potassium|creatinine|glucose|anion gap|bicarb|wbc|hemoglobin|platelet|lactate|troponin|culture|imaging|x-?ray|ct\b|mri\b|ultrasound|medication|mar\b|antibiotic|insulin|allerg|consult|procedure|discharge|follow.?up|pending|intake|output|urine|diet|pain|mental status|baseline|active problem|workup)\b/i;
+const LOW_VALUE_CONTEXT_LINE_PATTERN = /^(?:page \d+|printed|generated|electronically signed|signed by|cosigned by|dictated by|confidentiality notice|copyright|fax|phone|address|insurance|billing|encounter id|account|medical record|mrn|dob|room|bed|visit number|result status|specimen received|reference range|normal range)\b/i;
+
 const commonClinicalRules = `<clinical_safety_rules>
 Use only de-identified context in this prompt or earlier in this OpenEvidence conversation.
 Do not invent facts, identifiers, orders, diagnoses, results, responses, or consultant recommendations.
@@ -30,6 +86,108 @@ Each array item must be a concise de-identified string. Put only facts or recomm
 
 function clean(value) {
   return String(value || "").trim();
+}
+
+function contextLimitsForTask(taskId = "") {
+  return {
+    ...DEFAULT_CONTEXT_LIMITS,
+    ...(TASK_CONTEXT_LIMIT_OVERRIDES[taskId] || {})
+  };
+}
+
+function normalizeContextLine(line = "") {
+  return String(line || "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function shortenContextLine(line = "", maxChars = 700) {
+  const text = normalizeContextLine(line);
+  if (text.length <= maxChars) return text;
+  const keep = Math.max(80, maxChars - 42);
+  return `${text.slice(0, keep).trim()} [line shortened for prompt size]`;
+}
+
+function compactPromptText(value, {
+  maxChars = 9000,
+  maxLines = 160,
+  headLines = 24,
+  tailLines = 20,
+  lineMaxChars = 700
+} = {}) {
+  const text = clean(value)
+    .replace(/\r\n?/g, "\n")
+    .replace(/[ \t]+$/gm, "")
+    .replace(/\n{3,}/g, "\n\n");
+  if (!text) return "";
+  if (text.length <= maxChars) return text;
+
+  const seen = new Set();
+  const records = [];
+  text.split("\n").forEach((line, index) => {
+    const normalized = normalizeContextLine(line);
+    if (!normalized) return;
+    if (LOW_VALUE_CONTEXT_LINE_PATTERN.test(normalized) && !HIGH_VALUE_CONTEXT_LINE_PATTERN.test(normalized)) return;
+    const key = normalized.toLowerCase();
+    if (seen.has(key)) return;
+    seen.add(key);
+    records.push({
+      index,
+      line: shortenContextLine(normalized, lineMaxChars),
+      highValue: HIGH_VALUE_CONTEXT_LINE_PATTERN.test(normalized)
+    });
+  });
+
+  const usableRecords = records.length ? records : text.split("\n")
+    .map((line, index) => ({ index, line: shortenContextLine(line, lineMaxChars), highValue: false }))
+    .filter((record) => record.line);
+  if (!usableRecords.length) return "";
+
+  const selected = new Map();
+  const addRecord = (record) => {
+    if (record && selected.size < maxLines) selected.set(record.index, record);
+  };
+  usableRecords.slice(0, headLines).forEach(addRecord);
+  const remainingSlots = Math.max(0, maxLines - selected.size - tailLines);
+  usableRecords
+    .filter((record) => record.highValue && !selected.has(record.index))
+    .slice(0, remainingSlots)
+    .forEach(addRecord);
+  usableRecords.slice(-tailLines).forEach(addRecord);
+
+  const ordered = Array.from(selected.values()).sort((a, b) => a.index - b.index);
+  const notice = `[Context shortened for OpenEvidence input limit: kept ${ordered.length} of ${usableRecords.length} useful lines; omitted repeated chart boilerplate and overflow.]`;
+  const availableChars = Math.max(800, maxChars - notice.length - 2);
+  const outputLines = [];
+  let usedChars = 0;
+  for (const record of ordered) {
+    const separatorChars = outputLines.length ? 1 : 0;
+    const nextChars = separatorChars + record.line.length;
+    if (usedChars + nextChars > availableChars) break;
+    outputLines.push(record.line);
+    usedChars += nextChars;
+  }
+  if (!outputLines.length) {
+    outputLines.push(shortenContextLine(usableRecords[0].line, Math.max(200, availableChars)));
+  }
+  return `${outputLines.join("\n")}\n${notice}`.trim();
+}
+
+export function compactOpenEvidenceContext(context = {}, taskId = "") {
+  const limits = contextLimitsForTask(taskId);
+  const compacted = { ...context };
+  for (const [field, maxChars] of Object.entries(limits)) {
+    if (typeof context[field] === "string") {
+      compacted[field] = compactPromptText(context[field], {
+        maxChars,
+        maxLines: /^(?:sourceContext|source_context|currentChecklist|current_checklist|decisionTreeJson|decision_tree_json)$/.test(field) ? 180 : 90,
+        headLines: /^(?:decisionTreeJson|decision_tree_json)$/.test(field) ? 40 : 24,
+        tailLines: /^(?:sourceContext|source_context|decisionTreeJson|decision_tree_json)$/.test(field) ? 28 : 16,
+        lineMaxChars: /^(?:decisionTreeJson|decision_tree_json)$/.test(field) ? 900 : 700
+      });
+    }
+  }
+  return compacted;
 }
 
 function block(title, value) {
@@ -616,7 +774,8 @@ export function buildOpenEvidencePrompt(taskId, context = {}) {
   if (!task) {
     throw new Error(`Unknown OpenEvidence task: ${taskId}`);
   }
-  const prompt = task.promptBuilder(context);
+  const compactContext = compactOpenEvidenceContext(context, task.id);
+  const prompt = task.promptBuilder(compactContext);
   const promptIncludesSource = /<source_context>/i.test(prompt);
   const promptIncludesChecklist = /<current_checklist>/i.test(prompt);
   const promptIncludesPatientContext = /<deidentified_patient_context>/i.test(prompt);
@@ -626,13 +785,13 @@ export function buildOpenEvidencePrompt(taskId, context = {}) {
   const promptIncludesDecisionTree = /<existing_decision_tree_json>/i.test(prompt) || /<decision_tree_json>/i.test(prompt);
   const sourceIncluded = promptIncludesSource || promptIncludesChecklist || promptIncludesPatientContext || promptIncludesFindings || promptIncludesObjective || promptIncludesWorkupTitle || promptIncludesDecisionTree;
   const reviewText = [
-    promptIncludesSource ? context.sourceContext : "",
-    promptIncludesPatientContext ? context.checklistPatientSummary : "",
-    promptIncludesChecklist ? context.currentChecklist : "",
-    promptIncludesFindings ? context.compiledFindings : "",
-    promptIncludesObjective ? context.objectiveData : "",
-    promptIncludesWorkupTitle ? context.selectedWorkupTitle : "",
-    promptIncludesDecisionTree ? context.decisionTreeJson : ""
+    promptIncludesSource ? compactContext.sourceContext : "",
+    promptIncludesPatientContext ? compactContext.checklistPatientSummary : "",
+    promptIncludesChecklist ? compactContext.currentChecklist : "",
+    promptIncludesFindings ? compactContext.compiledFindings : "",
+    promptIncludesObjective ? compactContext.objectiveData : "",
+    promptIncludesWorkupTitle ? compactContext.selectedWorkupTitle : "",
+    promptIncludesDecisionTree ? compactContext.decisionTreeJson : ""
   ].filter((value) => clean(value)).join("\n\n");
   return {
     taskId: task.id,
@@ -641,12 +800,12 @@ export function buildOpenEvidencePrompt(taskId, context = {}) {
     requiredContext: task.requiredContext,
     outputKind: task.outputKind,
     prompt,
-    contextText: context.sourceContext || context.checklistPatientSummary || context.currentChecklist || context.compiledFindings || "",
+    contextText: compactContext.sourceContext || compactContext.checklistPatientSummary || compactContext.currentChecklist || compactContext.compiledFindings || "",
     reviewScope: sourceIncluded ? "custom" : "source-free",
     reviewText: sourceIncluded ? reviewText : "",
     copySuccessMessage: task.copySuccessMessage,
     requiresSameConversation: task.requiresSameConversation,
-    sameConversationReady: Boolean(context.sameConversationReady),
-    pasteBackParser: (text) => task.pasteBackParser(task, text, context)
+    sameConversationReady: Boolean(compactContext.sameConversationReady),
+    pasteBackParser: (text) => task.pasteBackParser(task, text, compactContext)
   };
 }
