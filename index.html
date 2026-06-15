@@ -23804,6 +23804,19 @@
       return Boolean(value && typeof value === "object" && !Array.isArray(value));
     }
 
+    function normalizeTransferCode(value) {
+      return String(value || "").trim().toUpperCase();
+    }
+
+    function assertMatchingBundleCode(wrapperCode, payloadCode, mismatchMessage) {
+      const wrapper = normalizeTransferCode(wrapperCode);
+      const embedded = normalizeTransferCode(payloadCode);
+      if (wrapper && embedded && wrapper !== embedded) {
+        throw new Error(mismatchMessage || "Bundle code mismatch. Use the payload that matches the displayed code.");
+      }
+      return embedded || wrapper;
+    }
+
     function decodePhoneBundleInput(raw) {
       const text = String(raw || "").trim();
       if (!text) throw new Error("Paste a desktop phone bundle first.");
@@ -23814,7 +23827,9 @@
         if (typeof parsed.payload === "string") {
           const encoded = parsed.payload.trim();
           if (!encoded) throw new Error("Downloaded phone bundle JSON did not include a payload.");
-          return { payload: decodePayload(encoded), encoded };
+          const payload = decodePayload(encoded);
+          assertMatchingBundleCode(parsed.code, payload?.code, "Downloaded phone bundle code does not match its embedded checklist payload. Use a freshly downloaded bundle from the laptop.");
+          return { payload, encoded };
         }
         if (plainObject(parsed) && parsed.version) {
           return { payload: parsed, encoded: encodePayload(parsed) };
@@ -23834,6 +23849,10 @@
         setVaultStatus(elements.phoneBundleEntryStatus, message, tone);
         return;
       }
+      setHandoffStatus(message, tone);
+    }
+
+    function setHandoffStatus(message, tone = "") {
       if (elements.handoffStatus) {
         elements.handoffStatus.textContent = message || "";
         elements.handoffStatus.classList.toggle("is-error", tone === "error");
@@ -23846,6 +23865,10 @@
         const { payload, encoded } = decodePhoneBundleInput(raw);
         if (payload.version !== "local-phone-handoff-v1") {
           throw new Error("This is not a desktop-to-phone checklist bundle.");
+        }
+        const bundleCode = normalizeTransferCode(payload.code);
+        if (!bundleCode) {
+          throw new Error("Desktop phone bundle is missing its pairing code. Generate a fresh phone bundle from the laptop.");
         }
         if (!Array.isArray(payload.sections) || !payload.sections.length) {
           throw new Error("The bundle does not contain checklist sections.");
@@ -23883,7 +23906,7 @@
         state.itemNotes = plainObject(payload.itemNotes) ? { ...payload.itemNotes } : {};
         state.reviewedChecklistKeys = {};
         state.bedsideNote = String(payload.bedsideNote || "");
-        state.transferCode = String(payload.code || "");
+        state.transferCode = bundleCode;
         state.phonePayload = encoded;
         state.importedFindings = "";
         activeChecklistKey = "";
@@ -23951,7 +23974,7 @@
       };
       state.phonePayload = encodePayload(payload);
       renderHandoff();
-      if (elements.handoffStatus) elements.handoffStatus.textContent = `Phone bundle ready for ${activePatient().title}.`;
+      setHandoffStatus(`Phone bundle ready for ${activePatient().title}.`, "success");
       saveState();
       return payload;
     }
@@ -23984,6 +24007,45 @@
       });
     }
 
+    function decodePhoneReturnInput(raw) {
+      const text = String(raw || "").trim();
+      if (!text) throw new Error("Paste returned findings or a phone payload first.");
+      let parsedJson = false;
+      try {
+        const parsed = JSON.parse(text);
+        parsedJson = true;
+        if (typeof parsed.payload === "string") {
+          const encoded = parsed.payload.trim();
+          if (!encoded) throw new Error("Returned phone bundle JSON did not include a payload.");
+          const payload = decodePayload(encoded);
+          assertMatchingBundleCode(parsed.code, payload?.code, "Returned phone bundle code does not match its embedded findings payload.");
+          return payload;
+        }
+        if (plainObject(parsed) && parsed.version) return parsed;
+      } catch (error) {
+        if (!parsedJson && error instanceof SyntaxError) {
+          // Plain bedside notes are allowed; copied bundles are base64.
+        } else {
+          throw error;
+        }
+      }
+      return decodePayload(text);
+    }
+
+    function looksLikePhoneBundleText(raw) {
+      const text = String(raw || "").trim();
+      if (!text) return false;
+      if (text.startsWith("{")) {
+        try {
+          const parsed = JSON.parse(text);
+          return plainObject(parsed) && (typeof parsed.payload === "string" || Boolean(parsed.version || parsed.code));
+        } catch {
+          return true;
+        }
+      }
+      return /^[A-Za-z0-9+/=]{80,}$/.test(text);
+    }
+
     function preparePhoneHandoff({ navigate = true } = {}) {
       if (isChecklistStaleForCurrentWorkup()) {
         setStatus("Rebuild the checklist from the current server workup before sending it to a phone.");
@@ -24014,11 +24076,25 @@
     function importPhoneFindings() {
       const raw = elements.phoneImportInput.value.trim();
       if (!raw) {
-        elements.handoffStatus.textContent = "Paste returned findings or a phone payload first.";
+        setHandoffStatus("Paste returned findings or a phone payload first.", "error");
         return;
       }
       try {
-        const payload = decodePayload(raw);
+        const payload = decodePhoneReturnInput(raw);
+        if (payload.version !== "local-phone-return-v1") {
+          throw new Error("This is not a phone return bundle. Paste the return bundle copied from the phone, or paste plain bedside notes.");
+        }
+        const incomingCode = normalizeTransferCode(payload.code);
+        const expectedCode = normalizeTransferCode(state.transferCode);
+        if (!incomingCode) {
+          throw new Error("Returned phone bundle is missing its pairing code. Copy a fresh return bundle from the phone.");
+        }
+        if (!expectedCode) {
+          throw new Error("This laptop has no active handoff code. Generate the phone bundle here before importing a return bundle.");
+        }
+        if (expectedCode && incomingCode !== expectedCode) {
+          throw new Error(`Returned phone bundle code ${incomingCode} does not match this laptop handoff code ${expectedCode}.`);
+        }
         if (payload.answers && typeof payload.answers === "object") {
           state.answers = { ...state.answers, ...payload.answers };
         }
@@ -24030,10 +24106,16 @@
           elements.bedsideNoteInput.value = payload.bedsideNote;
         }
         state.importedFindings = payload.bedsideNote || payload.findingsText || `Imported bundle ${payload.code || ""}`.trim();
-        elements.handoffStatus.textContent = "Phone checklist answers imported into final review.";
-      } catch {
+        setHandoffStatus("Phone checklist answers imported into final review.", "success");
+      } catch (error) {
+        if (looksLikePhoneBundleText(raw)) {
+          const message = error instanceof Error ? error.message : "Returned phone bundle could not be imported.";
+          setHandoffStatus(message, "error");
+          setStatus(message);
+          return;
+        }
         state.importedFindings = raw;
-        elements.handoffStatus.textContent = "Plain bedside findings imported into final review.";
+        setHandoffStatus("Plain bedside findings imported into final review.", "success");
       }
       renderChecklist();
       renderFinalUpdate();

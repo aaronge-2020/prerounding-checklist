@@ -20,6 +20,14 @@ function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
+function decodeLocalBundle(encoded) {
+  return JSON.parse(Buffer.from(encoded, "base64").toString("utf8"));
+}
+
+function encodeLocalBundle(payload) {
+  return Buffer.from(JSON.stringify(payload), "utf8").toString("base64");
+}
+
 async function clickPatientTab(page, tabName) {
   const selector = `[data-patient-tab="${tabName}"]`;
   const tab = page.locator(selector).first();
@@ -338,6 +346,16 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
 
   const { context: phoneContext, page: phonePage } = await openFreshPage(browser, baseUrl, { width: 390, height: 844 });
   await assertNoLayoutBreakage(phonePage, "phone bundle vault entry");
+  await phonePage.fill("#phoneBundleEntryInput", JSON.stringify({ code: "WRNG-0000", payload: desktopPayload }, null, 2));
+  await phonePage.click("#loadPhoneBundleEntryButton");
+  await phonePage.waitForFunction(() => /code does not match/i.test(document.querySelector("#phoneBundleEntryStatus")?.textContent || ""));
+  const mismatchPhoneAudit = await phonePage.evaluate(() => ({
+    view: document.body.dataset.view,
+    status: document.querySelector("#phoneBundleEntryStatus")?.textContent || "",
+    storageKeys: Object.keys(localStorage)
+  }));
+  assert(mismatchPhoneAudit.view === "vaultAccess", `mismatched phone bundle should stay on vault entry: ${JSON.stringify(mismatchPhoneAudit)}`);
+  assert(mismatchPhoneAudit.storageKeys.length === 0, `rejected phone bundle should not persist storage: ${JSON.stringify(mismatchPhoneAudit)}`);
   await phonePage.fill("#phoneBundleEntryInput", JSON.stringify({ code: desktopCode, payload: desktopPayload }, null, 2));
   await phonePage.click("#loadPhoneBundleEntryButton");
   await phonePage.waitForSelector("#bedsideView:not([hidden])");
@@ -381,9 +399,23 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   await phonePage.waitForFunction(() => document.querySelector("#phiOverlay")?.hidden === true);
   const returnPayload = await phonePage.evaluate(async () => navigator.clipboard.readText());
   assert(returnPayload.length > 100, "phone return payload should copy to clipboard after PHI review");
+  const mismatchedReturn = decodeLocalBundle(returnPayload);
+  mismatchedReturn.code = "WRNG-0000";
+  const mismatchedReturnPayload = encodeLocalBundle(mismatchedReturn);
   let phoneSnapshot = await storageSnapshot(phonePage);
   assert(Object.keys(phoneSnapshot).length === 0, `phone interview should remain no-save after answers, got ${Object.keys(phoneSnapshot).join(", ")}`);
   await phoneContext.close();
+
+  await desktopPage.fill("#phoneImportInput", mismatchedReturnPayload);
+  await desktopPage.click("#importPhoneFindingsButton");
+  await desktopPage.waitForFunction(() => /does not match this laptop handoff code/i.test(document.querySelector("#handoffStatus")?.textContent || ""));
+  const mismatchDesktopAudit = await desktopPage.evaluate(() => ({
+    status: document.querySelector("#handoffStatus")?.textContent || "",
+    finalText: document.querySelector("#finalUpdatePreview")?.textContent || "",
+    answeredRows: document.querySelectorAll(".checklist-row.is-answered").length
+  }));
+  assert(!/Imported phone findings/i.test(mismatchDesktopAudit.finalText), `mismatched return bundle should not update final text: ${JSON.stringify(mismatchDesktopAudit)}`);
+  assert(mismatchDesktopAudit.answeredRows === 0, `mismatched return bundle should not merge answers: ${JSON.stringify(mismatchDesktopAudit)}`);
 
   await desktopPage.fill("#phoneImportInput", returnPayload);
   await desktopPage.click("#importPhoneFindingsButton");

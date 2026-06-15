@@ -22,6 +22,8 @@ const requiredSnippets = [
   "Phone handoff",
   "Load phone bundle",
   "Start phone interview",
+  "Bundle code mismatch",
+  "Returned phone bundle code",
   "PHI review before copy",
   "code-paired local bundles"
 ];
