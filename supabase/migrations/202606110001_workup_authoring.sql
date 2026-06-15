@@ -188,6 +188,27 @@ alter table public.pathway_nodes enable row level security;
 alter table public.review_cases enable row level security;
 alter table public.change_sets enable row level security;
 
+drop policy if exists "authors can read author profiles" on public.workup_author_profiles;
+drop policy if exists "users can read reviewed authoring content" on public.sources;
+drop policy if exists "users can read workups" on public.workups;
+drop policy if exists "users can read workup sections" on public.workup_sections;
+drop policy if exists "users can read workup items" on public.workup_items;
+drop policy if exists "users can read pathway trees" on public.pathway_trees;
+drop policy if exists "users can read pathway nodes" on public.pathway_nodes;
+drop policy if exists "users can read review cases" on public.review_cases;
+drop policy if exists "reviewers can maintain canonical authoring tables" on public.sources;
+drop policy if exists "reviewers can maintain workups" on public.workups;
+drop policy if exists "reviewers can maintain workup sections" on public.workup_sections;
+drop policy if exists "reviewers can maintain workup items" on public.workup_items;
+drop policy if exists "reviewers can maintain pathway trees" on public.pathway_trees;
+drop policy if exists "reviewers can maintain pathway nodes" on public.pathway_nodes;
+drop policy if exists "reviewers can maintain review cases" on public.review_cases;
+drop policy if exists "authors can read relevant change sets" on public.change_sets;
+drop policy if exists "authors can draft their own change sets" on public.change_sets;
+drop policy if exists "authors can update unapproved own change sets" on public.change_sets;
+drop policy if exists "reviewers can approve exportable change sets" on public.change_sets;
+drop policy if exists "reviewers can insert reviewed change sets" on public.change_sets;
+
 create policy "authors can read author profiles"
 on public.workup_author_profiles
 for select

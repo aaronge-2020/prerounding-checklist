@@ -105,8 +105,8 @@ function run(command, parts, { dryRun = false, masks = [], failureHint = "" } = 
 function supabaseDbPushFailureHint({ dbUrl = "", projectRef = "" } = {}) {
   const lines = [
     "",
-    "Database migration push could not connect to Postgres.",
-    "If the error mentions `network is unreachable` for `db.<project-ref>.supabase.co`, the runner cannot reach Supabase's direct IPv6 database endpoint.",
+    "Database migration push failed.",
+    "If the output above mentions `network is unreachable` for `db.<project-ref>.supabase.co`, the runner cannot reach Supabase's direct IPv6 database endpoint.",
     "Fix: set `SUPABASE_DB_URL` to the project's Shared Pooler Session mode connection string from Supabase Dashboard -> Connect -> Session pooler. It should look like `postgres://postgres.<project-ref>:<password>@aws-<region>.pooler.supabase.com:5432/postgres`.",
     "Alternative: enable the Supabase IPv4 add-on for the direct database host."
   ];

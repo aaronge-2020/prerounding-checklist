@@ -39,12 +39,14 @@ on public.workup_author_assignments(workup_id, role);
 
 alter table public.workup_author_assignments enable row level security;
 
+drop policy if exists "authors can read own workup assignments" on public.workup_author_assignments;
 create policy "authors can read own workup assignments"
 on public.workup_author_assignments
 for select
 to authenticated
 using (user_id = auth.uid() or public.can_review_workup_content());
 
+drop policy if exists "reviewers can maintain workup assignments" on public.workup_author_assignments;
 create policy "reviewers can maintain workup assignments"
 on public.workup_author_assignments
 for all
@@ -64,6 +66,7 @@ using (
 );
 
 drop policy if exists "users can read reviewed authoring content" on public.sources;
+drop policy if exists "assigned authors can read relevant sources" on public.sources;
 create policy "assigned authors can read relevant sources"
 on public.sources
 for select
@@ -82,6 +85,7 @@ using (
 );
 
 drop policy if exists "users can read workups" on public.workups;
+drop policy if exists "assigned authors can read workups" on public.workups;
 create policy "assigned authors can read workups"
 on public.workups
 for select
@@ -89,6 +93,7 @@ to authenticated
 using (public.can_edit_workup_content(id));
 
 drop policy if exists "users can read workup sections" on public.workup_sections;
+drop policy if exists "assigned authors can read workup sections" on public.workup_sections;
 create policy "assigned authors can read workup sections"
 on public.workup_sections
 for select
@@ -96,6 +101,7 @@ to authenticated
 using (public.can_edit_workup_content(workup_id));
 
 drop policy if exists "users can read workup items" on public.workup_items;
+drop policy if exists "assigned authors can read workup items" on public.workup_items;
 create policy "assigned authors can read workup items"
 on public.workup_items
 for select
@@ -103,6 +109,7 @@ to authenticated
 using (public.can_edit_workup_content(workup_id));
 
 drop policy if exists "users can read pathway trees" on public.pathway_trees;
+drop policy if exists "assigned authors can read pathway trees" on public.pathway_trees;
 create policy "assigned authors can read pathway trees"
 on public.pathway_trees
 for select
@@ -110,6 +117,7 @@ to authenticated
 using (public.can_edit_workup_content(workup_id));
 
 drop policy if exists "users can read pathway nodes" on public.pathway_nodes;
+drop policy if exists "assigned authors can read pathway nodes" on public.pathway_nodes;
 create policy "assigned authors can read pathway nodes"
 on public.pathway_nodes
 for select
@@ -124,6 +132,7 @@ using (
 );
 
 drop policy if exists "users can read review cases" on public.review_cases;
+drop policy if exists "assigned authors can read review cases" on public.review_cases;
 create policy "assigned authors can read review cases"
 on public.review_cases
 for select
@@ -131,6 +140,7 @@ to authenticated
 using (public.can_edit_workup_content(workup_id));
 
 drop policy if exists "authors can draft their own change sets" on public.change_sets;
+drop policy if exists "assigned authors can draft their own change sets" on public.change_sets;
 create policy "assigned authors can draft their own change sets"
 on public.change_sets
 for insert
@@ -143,6 +153,7 @@ with check (
 );
 
 drop policy if exists "authors can update unapproved own change sets" on public.change_sets;
+drop policy if exists "assigned authors can update unapproved own change sets" on public.change_sets;
 create policy "assigned authors can update unapproved own change sets"
 on public.change_sets
 for update

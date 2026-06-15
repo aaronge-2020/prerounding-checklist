@@ -89,6 +89,7 @@ assert.ok(readinessScript.includes("npm run deploy:supabase-workup-authoring"), 
 const deployScript = read("scripts/deploy-supabase-workup-authoring.js");
 assert.ok(deployScript.includes("supabase\", \"config\", \"push\""), "Deploy command should push Supabase auth config.");
 assert.ok(deployScript.includes("supabase\", \"db\", \"push\""), "Deploy command should push Supabase migrations.");
+assert.ok(deployScript.includes("Database migration push failed"), "Deploy command should describe migration failures without assuming a connection failure.");
 assert.ok(deployScript.includes("network is unreachable"), "Deploy command should explain direct Supabase IPv6 database failures.");
 assert.ok(deployScript.includes("Session pooler"), "Deploy command should guide IPv4-only runners to the Supabase Session pooler URL.");
 assert.ok(deployScript.includes("--auth-method=magic-link|oauth"), "Deploy command should expose magic-link versus optional OAuth auth methods.");
@@ -206,6 +207,11 @@ for (const table of [
   assert.match(migration, new RegExp(`alter table public\\.${table} enable row level security`), `${table} should have RLS enabled.`);
 }
 for (const required of [
+  "drop policy if exists \"authors can read author profiles\" on public.workup_author_profiles",
+  "drop policy if exists \"authors can read own workup assignments\" on public.workup_author_assignments",
+  "drop policy if exists \"assigned authors can read relevant sources\" on public.sources",
+  "drop policy if exists \"assigned authors can draft their own change sets\" on public.change_sets",
+  "drop policy if exists \"public can read reviewed workups\" on public.workups",
   "assigned authors can draft their own change sets",
   "can_edit_workup_content",
   "reviewers can maintain workup assignments",
