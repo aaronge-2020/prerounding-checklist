@@ -7148,6 +7148,45 @@
 	      #patientSaveDefaultEvidenceRefinementButton {
 	        grid-column: 1 / -1;
 	      }
+
+	      .patient-workspace,
+	      #patientEvidencePanel,
+	      #sharedPromptWorkbench {
+	        overflow: visible;
+	      }
+
+	      #sharedPromptWorkbench.patient-evidence-grid {
+	        display: grid;
+	        grid-template-columns: 1fr;
+	        max-height: none;
+	      }
+
+	      #sharedPromptWorkbench .patient-evidence-preview {
+	        display: grid;
+	        grid-template-columns: 1fr;
+	        grid-template-rows: auto auto auto;
+	        grid-template-areas:
+	          "summary"
+	          "prompt"
+	          "answer";
+	      }
+
+	      #sharedPromptWorkbench .patient-evidence-nav {
+	        border-top: 1px solid var(--line);
+	        overflow: visible;
+	      }
+
+	      #sharedPromptWorkbench .task-strip {
+	        max-height: 42vh;
+	        overflow: auto;
+	        -webkit-overflow-scrolling: touch;
+	      }
+
+	      #sharedPromptWorkbench .patient-prompt-preview {
+	        max-height: 64vh;
+	        overflow: auto;
+	        -webkit-overflow-scrolling: touch;
+	      }
 	    }
 
     .patient-workup-grid {
@@ -10122,10 +10161,12 @@
       #bedsideMobileMenuButton {
         width: 44px;
         height: 44px;
-        border: 0;
-        background: transparent;
-        color: #111111;
-        font-size: 32px;
+        border: 1px solid #b9d6d2;
+        border-radius: 8px;
+        background: #f0fbf8;
+        color: var(--teal-dark);
+        font-size: 12px;
+        font-weight: 860;
         line-height: 1;
       }
 
@@ -11550,7 +11591,8 @@
       body[data-view="bedside"] #bedsideMobileMenuButton {
         width: 34px;
         height: 34px;
-        font-size: 24px;
+        font-size: 11px;
+        font-weight: 860;
       }
 
       body[data-view="bedside"] .bedside-stepper {
@@ -11973,7 +12015,8 @@
         width: 36px;
         height: 36px;
         color: #10232c;
-        font-size: 28px;
+        font-size: 11px;
+        font-weight: 860;
       }
 
       body[data-view="bedside"] .bedside-stepper {
@@ -12019,6 +12062,10 @@
       body[data-view="bedside"] .bedside-step[aria-current="step"] .bedside-step-mobile-label {
         color: #314854;
         font-weight: 800;
+      }
+
+      body[data-view="bedside"] .bedside-stepper {
+        display: none;
       }
 
       body[data-view="bedside"] #bedsideView .page-head {
@@ -12395,7 +12442,7 @@
         color: #ffffff;
       }
 
-      body[data-view="bedside"] #reviewFindingsButton {
+      body[data-view="bedside"] #showPhoneReturnQrButton {
         order: 2;
         display: inline-flex;
         border-color: var(--teal);
@@ -12405,7 +12452,7 @@
 
       body[data-view="bedside"] #clearAllChecklistButton,
       body[data-view="bedside"] #copyFindingsToBedsideNoteButton,
-      body[data-view="bedside"] #showPhoneReturnQrButton,
+      body[data-view="bedside"] #reviewFindingsButton,
       body[data-view="bedside"] .bedside-local-note {
         display: none;
       }
@@ -12562,8 +12609,12 @@
 
       body[data-view="bedside"] .bedside-completion-actions {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
         gap: 8px;
+      }
+
+      body[data-view="bedside"] #completionReviewFindingsButton {
+        display: none;
       }
 
       body[data-view="bedside"] .bedside-completion-actions .btn {
@@ -13950,7 +14001,7 @@
             <span id="bedsideMobileSubtitle">Bedside physical exam</span>
             <span class="bedside-mobile-progress" id="bedsideMobileProgress">0/0 answered</span>
           </div>
-          <button id="bedsideMobileMenuButton" type="button" aria-label="Open patient workspace">☰</button>
+          <button id="bedsideMobileMenuButton" type="button" aria-label="Return findings to computer" title="Return findings to computer">QR</button>
         </div>
         <div class="bedside-stepper" aria-label="Rounding workflow">
           <div class="bedside-app-title">
@@ -14692,6 +14743,15 @@
     const desktopPatientTabFallbacks = {
       today: "context",
       handoff: "checklist"
+    };
+    const phonePatientTabs = new Set(["checklist", "handoff"]);
+    const phonePatientTabFallbacks = {
+      overview: "checklist",
+      today: "checklist",
+      context: "checklist",
+      workup: "checklist",
+      findings: "handoff",
+      evidence: "handoff"
     };
     const LAYOUT_PREFS_KEY = "prerounding-layout-preferences-v1";
     const layoutSizeConfig = {
@@ -16564,7 +16624,7 @@
         viewName = "evidence";
       }
       if (viewName === "evidence") {
-        state.activePatientTab = "evidence";
+        state.activePatientTab = isPhoneWorkflowDevice() ? "handoff" : "evidence";
         viewName = "workspace";
       }
       if (viewName === "handoff" && !isCompactPatientDevice()) {
@@ -20651,6 +20711,10 @@ Rules:
       return Boolean(window.matchMedia?.("(max-width: 760px)").matches);
     }
 
+    function isPhoneWorkflowDevice() {
+      return Boolean(window.matchMedia?.("(max-width: 640px)").matches);
+    }
+
     function patientHasFollowUpContext(patient = activePatient()) {
       if (!patient?.id) return false;
       if (state.todayModeByPatientId?.[patient.id] === "returning") return true;
@@ -20666,13 +20730,17 @@ Rules:
     }
 
     function patientTabAvailableOnDevice(tabName) {
+      if (isPhoneWorkflowDevice()) return phonePatientTabs.has(tabName);
       if (tabName === "today") return patientHasFollowUpContext();
-      return tabName !== "handoff" || isCompactPatientDevice();
+      return tabName !== "handoff";
     }
 
     function coercePatientTabForDevice(tabName = state.activePatientTab) {
       const requested = patientTabOrder.includes(tabName) ? tabName : "overview";
-      if (isCompactPatientDevice() && requested === "overview") return "checklist";
+      if (isPhoneWorkflowDevice()) {
+        if (phonePatientTabs.has(requested)) return requested;
+        return phonePatientTabFallbacks[requested] || "checklist";
+      }
       if (patientTabAvailableOnDevice(requested)) return requested;
       return desktopPatientTabFallbacks[requested] || "overview";
     }
@@ -30990,6 +31058,11 @@ Rules:
     }
 
     function openFinalFindingsReview() {
+      if (isPhoneWorkflowDevice()) {
+        openPhoneReturnQrOverlay({ review: false, maximized: true });
+        setStatus("Scan or copy the return bundle on the computer to review and synthesize findings.");
+        return;
+      }
       state.selectedTaskId = "final_rounds_update";
       showView("evidence");
     }
@@ -31804,7 +31877,19 @@ Rules:
         openFinalFindingsReview();
       });
       for (const button of $$("[data-bedside-step-view]")) {
-        button.addEventListener("click", () => showView(button.dataset.bedsideStepView || "bedside"));
+        button.addEventListener("click", () => {
+          const targetView = button.dataset.bedsideStepView || "bedside";
+          if (isPhoneWorkflowDevice() && targetView !== "bedside") {
+            if (targetView === "final") {
+              openPhoneReturnQrOverlay({ review: false, maximized: true });
+            } else {
+              setStatus("Use the computer for setup and prompt review. Phone mode stays on bedside capture and return.");
+            }
+            showView("bedside");
+            return;
+          }
+          showView(targetView);
+        });
       }
       $("#bedsideCaseSelectButton").addEventListener("click", () => {
         showView("workspace");
@@ -31843,6 +31928,16 @@ Rules:
         renderBedsideCompletionSummary();
       });
       elements.bedsideMobileMenuButton.addEventListener("click", () => {
+        if (isPhoneWorkflowDevice()) {
+          if (currentPhoneTransferCode()) {
+            openPhoneReturnQrOverlay({ review: false, maximized: document.body.dataset.bedsideComplete === "true" });
+          } else {
+            showView("workspace");
+            setPatientTab("handoff", { focusPanel: true });
+            setStatus("Load a desktop bundle before returning findings to a computer.");
+          }
+          return;
+        }
         showView("workspace");
         setPatientTab("overview");
       });

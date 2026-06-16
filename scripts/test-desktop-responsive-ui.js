@@ -745,11 +745,14 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
     view: document.body.dataset.view,
     caseTitle: document.querySelector("#bedsideMobileCaseTitle")?.textContent?.trim() || "",
     rowCount: document.querySelectorAll(".checklist-row").length,
+    stepperVisible: Boolean(document.querySelector(".bedside-stepper")?.getBoundingClientRect().height),
+    reviewFindingsVisible: Boolean(document.querySelector("#reviewFindingsButton")?.getBoundingClientRect().height),
     storageKeys: Object.keys(localStorage)
   }));
   assert(phoneLoadedAudit.view === "bedside", `phone bundle should open directly to bedside view: ${JSON.stringify(phoneLoadedAudit)}`);
   assert(/Demo - DKA consult/i.test(phoneLoadedAudit.caseTitle), `phone bundle should preserve case title: ${JSON.stringify(phoneLoadedAudit)}`);
   assert(phoneLoadedAudit.rowCount >= 8, `phone bundle should load checklist rows: ${JSON.stringify(phoneLoadedAudit)}`);
+  assert(!phoneLoadedAudit.stepperVisible && !phoneLoadedAudit.reviewFindingsVisible, `phone bedside mode should not expose desktop workflow or review controls: ${JSON.stringify(phoneLoadedAudit)}`);
   assert(phoneLoadedAudit.storageKeys.every((key) => key === publicCatalogCacheKey), `phone bundle session should persist only public catalog cache storage: ${JSON.stringify(phoneLoadedAudit)}`);
 
   const answerMode = await phonePage.evaluate(() => {
@@ -803,11 +806,13 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
     progress: document.querySelector("#bedsideMobileProgress")?.textContent || "",
     hasQr: Boolean(document.querySelector("#bedsideCompletionQrCode svg")),
     copyText: document.querySelector("#completionCopyPhoneReturnPayloadButton")?.textContent || "",
+    reviewVisible: Boolean(document.querySelector("#completionReviewFindingsButton")?.getBoundingClientRect().height),
+    addNoteVisible: Boolean(document.querySelector("#completionAddBedsideNoteButton")?.getBoundingClientRect().height),
     maximizeVisible: Boolean(document.querySelector("#maximizeBedsideReturnQrButton")?.getBoundingClientRect().height),
     summaryRows: document.querySelectorAll(".bedside-completion-summary-row").length
   }));
   assert(/Findings ready/i.test(completionAudit.title) && /26\/26 answered/i.test(completionAudit.progress), `completed phone screen should default to findings-ready QR state: ${JSON.stringify(completionAudit)}`);
-  assert(completionAudit.hasQr && /Copy findings for computer/i.test(completionAudit.copyText) && completionAudit.maximizeVisible && completionAudit.summaryRows >= 1, `completed phone screen should show QR, copy fallback, maximize, and summary: ${JSON.stringify(completionAudit)}`);
+  assert(completionAudit.hasQr && /Copy findings for computer/i.test(completionAudit.copyText) && !completionAudit.reviewVisible && completionAudit.addNoteVisible && completionAudit.maximizeVisible && completionAudit.summaryRows >= 1, `completed phone screen should show QR, copy fallback, note capture, maximize, and summary without desktop review: ${JSON.stringify(completionAudit)}`);
   await phonePage.click("#maximizeBedsideReturnQrButton");
   await phonePage.waitForSelector("#phoneReturnQrOverlay:not([hidden])");
   await phonePage.waitForSelector("#phoneReturnQrCode svg", { timeout: 45000 });

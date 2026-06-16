@@ -944,7 +944,9 @@ assert.ok(
 assert.ok(
   appHtml.includes('id="exportPhoneContextButton"')
     && appHtml.includes('id="importPhoneFindingsButton"')
-    && appHtml.includes("code-paired local bundles"),
+    && appHtml.includes("No backend sync is used.")
+    && appHtml.includes("Use the phone only for bedside checklist answers and focused notes")
+    && appHtml.includes('aria-label="Return findings to computer"'),
   "desktop-to-phone checklist handoff should be explicit and local-first"
 );
 assert.ok(
@@ -979,8 +981,10 @@ assert.ok(
   appHtml.includes('data-patient-tab="handoff"')
     && appHtml.includes('data-patient-tab="handoff" aria-selected="false" aria-label="Phone handoff" aria-hidden="true" tabindex="-1" hidden')
     && appHtml.includes('function patientTabAvailableOnDevice')
-    && appHtml.includes('return tabName !== "handoff" || isCompactPatientDevice();'),
-  "desktop patient workspace should keep the Phone tab hidden by default while compact devices opt into it"
+    && appHtml.includes('const phonePatientTabs = new Set(["checklist", "handoff"]);')
+    && appHtml.includes('if (isPhoneWorkflowDevice()) return phonePatientTabs.has(tabName);')
+    && appHtml.includes('return tabName !== "handoff";'),
+  "desktop patient workspace should keep the Phone tab hidden by default while phone-width devices stay limited to checklist and handoff"
 );
 assert.ok(
   appHtml.includes("decisionTreeGraphsByModuleId")
@@ -992,7 +996,7 @@ assert.ok(
 );
 assert.ok(
   appHtml.includes('id="workspaceFindingsGateNotice"')
-    && appHtml.includes("Answer at least one bedside checklist item before recording findings here")
+    && appHtml.includes("Build the bedside checklist before sending or returning phone findings.")
     && appHtml.includes("findingsUnlocked"),
   "patient findings should be gated behind checklist-derived findings"
 );
