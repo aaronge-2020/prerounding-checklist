@@ -60,7 +60,7 @@ const commonClinicalRules = `<clinical_safety_rules>
 Use only de-identified context in this prompt or earlier in this OpenEvidence conversation.
 Do not invent facts, identifiers, orders, diagnoses, results, responses, or consultant recommendations.
 Separate facts from interpretation, preserve uncertainty, and frame possible actions as items to verify or consider with the treating team.
-Local validated clinical intents and reviewed evidence remain authoritative for bedside questions/exams. Do not write, rewrite, or silently expand bedside checklist rows unless the selected task is Checklist improvement review; that task must output only the requested structured JSON replacement.
+Local validated clinical intents and reviewed evidence remain authoritative for bedside questions/exams. Do not write, rewrite, or silently expand bedside checklist rows unless the selected task is Checklist improvement review; that task must output only the requested structured JSON patch or replacement.
 </clinical_safety_rules>`;
 
 const abbreviationRules = `<abbreviation_rules>
@@ -623,23 +623,24 @@ Do not include low-yield distractions or padding.
 }
 
 function checklistImprovementPrompt(context) {
+  const workupId = clean(context.selectedWorkupId) || "selected local workup id if known";
   return [
     `<role>
-Attending physician helping a clinician pressure-test a locally generated bedside prerounding checklist.
+Clinician-review checklist editor.
 </role>
 
 ${taskBoundary({
-  primary: "Return a complete structured replacement checklist/workup that can be pasted back into the local app.",
+  primary: "Return small patch operations for one patient checklist section.",
   notFor: [
+    "regenerating the full checklist",
+    "editing default/canonical workup rows",
     "writing a patient management plan",
-    "summarizing the full chart",
-    "performing a medication-only audit",
-    "giving generic disease teaching"
+    "summarizing the full chart"
   ]
 })}
 
 <task>
-Review the current checklist against the compact de-identified context and selected local workup. Return a complete replacement checklist in the schema below, with clinically coherent answer choices, normal defaults, and explicit answerMode metadata.
+Return only needed add/update/remove operations. Default to physical_exam for exam-row requests. Do not regenerate other sections.
 </task>`,
     commonClinicalRules,
     abbreviationRules,
@@ -650,42 +651,42 @@ Review the current checklist against the compact de-identified context and selec
     block("local_checklist_audit", context.checklistAuditSummary),
     block("clinician_refinement_notes", context.refinementNotes),
     `<privacy_boundary>
-Raw chart text, HPI, identifiers, names, exact dates, room numbers, and medical record numbers were intentionally withheld. Work only from the compact de-identified context and current checklist.
+Raw chart text and identifiers were withheld. Use only the compact de-identified context and current checklist.
 </privacy_boundary>
 
 <output_format>
-Output only one fenced JSON block. Do not include prose before or after it.
+Output only one fenced JSON block. Do not include prose before or after it. Do not include :contentReference markers or citation prose.
 Use this exact top-level schema:
 {
-  "schema": "workup_refinement_v1",
-  "workupId": "selected local workup id if known",
-  "title": "selected workup title",
-  "replaceMode": "full_replacement",
-  "sections": [
+  "schema": "workup_section_patch_v1",
+  "workupId": "${workupId}",
+  "sectionKey": "physical_exam",
+  "summary": "Brief reason for the row changes.",
+  "operations": [
     {
-      "title": "SECTION TITLE",
-      "organSystemKey": "endocrine_metabolic",
-      "items": [
-        {
-          "id": "stable_snake_case_id",
-          "category": "bedside or exam",
-          "label": "Bedside question or exam maneuver",
-          "answerMode": "single or multi",
-          "options": ["option 1", "option 2"],
-          "normalAnswers": ["normal option"],
-          "exclusiveGroups": [["mutually exclusive option A", "mutually exclusive option B"]],
-          "patientSpecific": false,
-          "rationale": "Why this item changes bedside verification or management.",
-          "citations": ["Guideline/literature citation when OpenEvidence can support it"]
-        }
-      ]
-    }
-  ],
-  "removedItemLabels": []
+      "op": "add",
+      "groupKey": "conditionalExam",
+      "item": {
+        "id": "stable_snake_case_id",
+        "item_type": "physical_exam_maneuver",
+        "label": "Exam item to add",
+        "answerMode": "single or multi",
+        "options": ["Normal", "Abnormal", "Unable to assess"],
+        "normalAnswers": ["Normal"],
+        "rationale": "Why this item changes bedside verification or management."
+      }
+    },
+    { "op": "update", "itemId": "exact_existing_itemId", "label": "Revised row text" },
+    { "op": "remove", "itemId": "exact_existing_itemId" }
+  ]
 }
-Use patientSpecific true only for a row that should not become the future default for this workup.
-Prefer multi answerMode when independent findings can coexist, such as normal strength plus symmetric pulses.
-Prefer one combined option when the choices are truly mutually exclusive, such as basal/bolus subQ insulin regimen.
+Allowed sectionKey values: history_questions, physical_exam.
+Allowed groupKey values: requiredQuestions or conditionalQuestions for history_questions; requiredExam or conditionalExam for physical_exam.
+Allowed op values: add, update, remove.
+Add: include groupKey and complete item. Use item_type "history_question" or "physical_exam_maneuver".
+Update/remove: use exact itemId from the current checklist. Do not invent IDs for existing rows.
+Update: include only changed fields directly on the operation or inside item.
+If no changes are useful, return "operations": [].
 Do not include identifiers, exact dates, room numbers, medical record numbers, or full chart narrative.
 </output_format>`
   ].filter(Boolean).join("\n\n");

@@ -135,6 +135,7 @@ async function cytoscapeNodeScreenPoint(page, nodeId) {
     const cy = document.querySelector("#workupStudioPathwayTreePanel")?._cytoscape;
     const node = cy?.$id(id);
     if (!cy || !node?.nonempty()) return null;
+    cy.center(node);
     const position = node.renderedPosition();
     const rect = cy.container().getBoundingClientRect();
     return {

@@ -3816,6 +3816,10 @@
       cursor: grabbing;
     }
 
+    #patientDecisionTreePanel .cytoscape-tree-shell {
+      touch-action: pan-y;
+    }
+
     .cytoscape-tree-canvas {
       width: 100%;
       height: 100%;
@@ -8173,6 +8177,7 @@
       border: 0;
       border-radius: 999px;
       background: var(--target-accent);
+      cursor: pointer;
     }
 
     .target-toggle::after {
@@ -8184,6 +8189,16 @@
       height: 12px;
       border-radius: 999px;
       background: #ffffff;
+      transition: left 120ms ease, right 120ms ease;
+    }
+
+    .target-toggle[aria-pressed="false"] {
+      background: #aabec4;
+    }
+
+    .target-toggle[aria-pressed="false"]::after {
+      right: auto;
+      left: 3px;
     }
 
     .target-path-legend {
@@ -8843,9 +8858,13 @@
         font-size: 11px;
       }
 
-      .target-active-toggle,
       .target-path-legend {
         display: none;
+      }
+
+      .target-active-toggle {
+        grid-column: 1 / -1;
+        justify-content: start;
       }
 
       #patientDecisionTreePanel .d3-decision-tree {
@@ -9257,6 +9276,44 @@
       text-align: right;
     }
 
+    .patient-checklist-patch-panel {
+      display: grid;
+      gap: 10px;
+      border-top: 1px solid var(--line);
+      padding-top: 11px;
+    }
+
+    .patient-checklist-patch-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(170px, 0.34fr);
+      gap: 10px;
+      align-items: end;
+    }
+
+    .patient-checklist-patch-head > div {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+    }
+
+    .patient-checklist-patch-head strong {
+      color: #18323c;
+      font-size: 13px;
+    }
+
+    .patient-checklist-patch-head span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .patient-checklist-patch-panel textarea {
+      min-height: 112px;
+      font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
     .findings-manual-notes .findings-grid {
       padding: 0 11px;
     }
@@ -9274,6 +9331,10 @@
       }
 
       .patient-checklist-editor-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .patient-checklist-patch-head {
         grid-template-columns: minmax(0, 1fr);
       }
 
@@ -13151,7 +13212,7 @@
                       <button class="target-icon-button" id="zoomOutDecisionTreeButton" type="button" aria-label="Zoom out"><span class="icon-box" data-icon="minus" aria-hidden="true"></span></button>
                       <div class="target-active-toggle">
                         <span>Highlight active path</span>
-                        <button class="target-toggle is-on" type="button" aria-pressed="true"></button>
+                        <button class="target-toggle is-on" id="decisionTreeHighlightPathToggle" type="button" aria-pressed="true" aria-label="Toggle active path highlighting"></button>
                       </div>
                       <div class="target-path-legend" aria-hidden="true">
                         <span><i class="is-active"></i>Active path</span>
@@ -13174,13 +13235,13 @@
                         <h3>Refine checklist</h3>
                         <span class="meta-tag">Structured paste-back</span>
                       </div>
-                      <p class="muted">Copy the checklist improvement prompt, paste the structured JSON response here, then apply it as a patient checklist override. Canonical workup questions and exam items are edited in Workup Studio.</p>
+                      <p class="muted">Copy a patient checklist patch prompt, paste the structured JSON response here, then apply only those row changes for this patient. Canonical workup questions and exam items are edited in Workup Studio.</p>
                       <div class="button-row">
-                        <button class="btn btn-secondary" id="patientCopyChecklistRefinementPromptDrawerButton" type="button">Copy refinement prompt</button>
+                        <button class="btn btn-secondary" id="patientCopyChecklistRefinementPromptDrawerButton" type="button">Copy patch prompt</button>
                         <button class="btn btn-secondary" id="patientOpenEvidenceFromRefinementButton" type="button">Open OpenEvidence</button>
                       </div>
-                      <label for="patientWorkupRefinementInput">Structured patient checklist override JSON</label>
-                      <textarea id="patientWorkupRefinementInput" maxlength="12000" aria-describedby="localTextEntryHelp" placeholder="Paste fenced workup_refinement_v1 JSON for this patient's checklist here."></textarea>
+                      <label for="patientWorkupRefinementInput">Structured patient checklist patch JSON</label>
+                      <textarea id="patientWorkupRefinementInput" maxlength="12000" aria-describedby="localTextEntryHelp" placeholder="Paste fenced workup_section_patch_v1 JSON for this patient's checklist here."></textarea>
                       <div class="evidence-change-preview" id="patientWorkupRefinementPreview" aria-live="polite">No structured refinement pasted yet.</div>
                       <div class="button-row">
                         <button class="btn btn-secondary" id="patientApplyWorkupRefinementButton" type="button">Apply to this patient</button>
@@ -13265,6 +13326,34 @@
                       <button class="btn btn-secondary" id="savePatientChecklistItemButton" type="button">Save selected</button>
                       <button class="btn btn-secondary" id="removePatientChecklistItemButton" type="button">Remove selected</button>
                       <div class="vault-status-line" id="patientChecklistEditStatus" aria-live="polite"></div>
+                    </div>
+                    <div class="patient-checklist-patch-panel" id="patientChecklistPatchPanel">
+                      <div class="patient-checklist-patch-head">
+                        <div>
+                          <strong>OpenEvidence row patch</strong>
+                          <span>Copy a prompt, paste returned operations, then apply only those changes to this patient.</span>
+                        </div>
+                        <label for="patientChecklistPatchSectionSelect">
+                          Target
+                          <select id="patientChecklistPatchSectionSelect">
+                            <option value="physical_exam" selected>Physical exam</option>
+                            <option value="history_questions">History questions</option>
+                          </select>
+                        </label>
+                      </div>
+                      <div class="button-row">
+                        <button class="btn btn-secondary" id="copyPatientChecklistPatchPromptButton" type="button">Copy OpenEvidence patch prompt</button>
+                        <button class="btn btn-secondary" id="openPatientChecklistPatchEvidenceButton" type="button">Open OpenEvidence</button>
+                      </div>
+                      <label for="patientChecklistPatchInput">
+                        Patch JSON
+                        <textarea id="patientChecklistPatchInput" maxlength="20000" spellcheck="false" aria-describedby="localTextEntryHelp" placeholder="Paste workup_section_patch_v1 JSON here."></textarea>
+                      </label>
+                      <div class="evidence-change-preview" id="patientChecklistPatchPreview" aria-live="polite">No patient checklist patch pasted yet.</div>
+                      <div class="patient-checklist-editor-actions">
+                        <button class="btn btn-primary" id="applyPatientChecklistPatchButton" type="button">Apply patch to this patient</button>
+                        <div class="vault-status-line" id="patientChecklistPatchStatus" aria-live="polite"></div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -14765,6 +14854,7 @@
       decisionTreeZoomSelect: $("#decisionTreeZoomSelect"),
       zoomInDecisionTreeButton: $("#zoomInDecisionTreeButton"),
       zoomOutDecisionTreeButton: $("#zoomOutDecisionTreeButton"),
+      decisionTreeHighlightPathToggle: $("#decisionTreeHighlightPathToggle"),
       decisionTreeJsonInput: $("#decisionTreeJsonInput"),
       decisionTreeImportPreview: $("#decisionTreeImportPreview"),
       copyDecisionTreePromptButton: $("#copyDecisionTreePromptButton"),
@@ -14872,6 +14962,7 @@
       workspaceOpenBedsideChecklistButton: $("#workspaceOpenBedsideChecklistButton"),
       workspaceChecklistSecondaryButton: $("#workspaceChecklistSecondaryButton"),
       workspaceChecklistPhoneButton: $("#workspaceChecklistPhoneButton"),
+      patientCopyChecklistRefinementPromptDrawerButton: $("#patientCopyChecklistRefinementPromptDrawerButton"),
       patientChecklistEditor: $("#patientChecklistEditor"),
       patientChecklistEditItemSelect: $("#patientChecklistEditItemSelect"),
       patientChecklistEditTypeSelect: $("#patientChecklistEditTypeSelect"),
@@ -14881,6 +14972,14 @@
       savePatientChecklistItemButton: $("#savePatientChecklistItemButton"),
       removePatientChecklistItemButton: $("#removePatientChecklistItemButton"),
       patientChecklistEditStatus: $("#patientChecklistEditStatus"),
+      patientChecklistPatchPanel: $("#patientChecklistPatchPanel"),
+      patientChecklistPatchSectionSelect: $("#patientChecklistPatchSectionSelect"),
+      copyPatientChecklistPatchPromptButton: $("#copyPatientChecklistPatchPromptButton"),
+      openPatientChecklistPatchEvidenceButton: $("#openPatientChecklistPatchEvidenceButton"),
+      patientChecklistPatchInput: $("#patientChecklistPatchInput"),
+      patientChecklistPatchPreview: $("#patientChecklistPatchPreview"),
+      applyPatientChecklistPatchButton: $("#applyPatientChecklistPatchButton"),
+      patientChecklistPatchStatus: $("#patientChecklistPatchStatus"),
       phoneChecklistLauncher: $("#phoneChecklistLauncher"),
       phoneChecklistWorkupTitle: $("#phoneChecklistWorkupTitle"),
       phoneChecklistRefinementStatus: $("#phoneChecklistRefinementStatus"),
@@ -15054,6 +15153,7 @@
     let decisionTreeEditMode = false;
     let decisionTreeSearch = "";
     let decisionTreeZoom = 1;
+    let decisionTreeHighlightActivePath = true;
     let decisionTreeUserZoomed = false;
     let decisionTreeResizeTimer = null;
     let standaloneWorkupSearchTimer = null;
@@ -21904,7 +22004,7 @@ Rules:
       const clean = String(text || "").replace(/\s+/g, " ").trim();
       if (!clean) return "";
       const lower = clean.toLowerCase();
-      if (lower.includes("missing") || lower.includes("data")) return "Data insufficient";
+      if (lower.includes("missing") || lower.includes("insufficient") || lower.includes("unavailable") || lower.includes("data gap")) return "Data insufficient";
       if (lower.includes("dka") && lower.includes("threshold")) return "DKA criteria met";
       if (lower.includes("hhs") && (lower.includes("glucose") || lower.includes("osmolality"))) return "HHS criteria";
       if (lower.includes("potassium")) return "Potassium safety risk";
@@ -21973,6 +22073,27 @@ Rules:
         if (node.endpoint_type === "missing_data_needed") return 2;
         return 3;
       };
+      const isPatientMissingDataBranch = (node = {}) => {
+        const key = normalizedAnswerComponent([
+          node.id,
+          node.label,
+          node.edgeLabel,
+          node.branchCriteria,
+          node.endpoint_type,
+          node.boxText,
+          node.details
+        ].filter(Boolean).join(" "));
+        return node.endpoint_type === "missing_data_needed"
+          || node.patient_canvas_missing_data === true
+          || key.includes("missing_data_needed")
+          || key.includes("patient_canvas_missing_data")
+          || key.includes("data gap")
+          || key.includes("data insufficient")
+          || key.includes("missing data")
+          || key.includes("missing classification")
+          || key.includes("missing symptoms")
+          || key.includes("unavailable");
+      };
       const cloneDisplayNode = (node, depth = 0) => {
         const next = { ...node };
         next.state = depth === 0 ? "pending" : patientCanvasBranchState(node, rows);
@@ -21981,8 +22102,10 @@ Rules:
           next.children = [];
           return next;
         }
+        const missingRows = missingObjectiveRows(rows);
         let sourceChildren = (node.children || []).filter((child) => child.endpoint_type !== "missing_data_needed");
-        if (depth === 0 && missingObjectiveRows(rows).length) {
+        if (depth === 0 && missingRows.length) {
+          sourceChildren = sourceChildren.filter((child) => !isPatientMissingDataBranch(child));
           const alreadyHasMissing = sourceChildren.some((child) => child.id === "patient_canvas_missing_data");
           if (!alreadyHasMissing) {
             sourceChildren = [
@@ -21995,7 +22118,7 @@ Rules:
                 patient_canvas_missing_data: true,
                 edgeLabel: "Data insufficient",
                 state: "warning",
-                missing_data_needed: missingObjectiveRows(rows).map(({ field }) => field.label).slice(0, 4)
+                missing_data_needed: missingRows.map(({ field }) => field.label).slice(0, 4)
               }
             ];
           }
@@ -22163,22 +22286,27 @@ Rules:
       return `${clean.slice(0, maxChars).trim().replace(/[,;:]\s*$/, "")} ...`;
     }
 
-    function cytoscapeStudioTreeNodePayload(node = {}) {
+    function cytoscapeStudioTreeNodePayload(node = {}, options = {}) {
+      const showDetail = options.showDetail !== false;
       const type = String(node.type || "action").toLowerCase();
       const title = decisionTreeGraphNodeLabel(node);
       const detail = compactDecisionTreeNodeDetail(decisionTreeNodeDetailText(node), 360);
-      const wrappedTitle = wrapTreeText(title, 38, 3).slice(0, 3);
-      const wrappedDetail = detail ? wrapTreeText(detail, 52, 6).slice(0, 6) : [];
+      const wrappedTitle = wrapTreeText(title, showDetail ? 38 : 30, 3).slice(0, 3);
+      const wrappedDetail = showDetail && detail ? wrapTreeText(detail, 52, 6).slice(0, 6) : [];
       const label = [
         ...wrappedTitle,
         ...(wrappedDetail.length ? ["", ...wrappedDetail] : [])
       ].join("\n");
-      const height = Math.min(292, Math.max(122, 52 + wrappedTitle.length * 17 + wrappedDetail.length * 15 + (wrappedDetail.length ? 12 : 0)));
+      const fontSize = showDetail ? 12 : 16;
+      const height = showDetail
+        ? Math.min(292, Math.max(122, 52 + wrappedTitle.length * 17 + wrappedDetail.length * 15 + (wrappedDetail.length ? 12 : 0)))
+        : Math.min(184, Math.max(112, 54 + wrappedTitle.length * 24));
       return {
         label,
         detail,
-        width: 390,
-        textMaxWidth: 338,
+        width: showDetail ? 390 : 360,
+        textMaxWidth: showDetail ? 338 : 292,
+        fontSize,
         height
       };
     }
@@ -22187,7 +22315,7 @@ Rules:
       return decisionTreeGraphEdgeLabel(text);
     }
 
-    function cytoscapeStudioTreeElements(graph = {}) {
+    function cytoscapeStudioTreeElements(graph = {}, options = {}) {
       const nodes = [];
       const edges = [];
       const seen = new Set();
@@ -22197,7 +22325,7 @@ Rules:
         const internal = isInternalDecisionTreeNode(node);
         let nextParentId = parentId;
         if (!internal) {
-          const payload = cytoscapeStudioTreeNodePayload(node);
+          const payload = cytoscapeStudioTreeNodePayload(node, options);
           const data = {
             id: nodeId,
             label: payload.label,
@@ -22214,6 +22342,7 @@ Rules:
             ].filter(Boolean).join(" ")),
             width: payload.width,
             textMaxWidth: payload.textMaxWidth,
+            fontSize: payload.fontSize,
             height: payload.height
           };
           const layoutX = Number(node.layout?.x);
@@ -22259,6 +22388,9 @@ Rules:
         return;
       }
       const isPatientDecisionTree = container.id === "patientDecisionTreePanel";
+      const showFloatingToolbar = options.showFloatingToolbar !== false && !isPatientDecisionTree;
+      const showNodeDetail = options.showNodeDetail !== undefined ? options.showNodeDetail !== false : !isPatientDecisionTree;
+      const highlightActivePath = options.highlightActivePath !== false;
       const shell = document.createElement("div");
       shell.className = "cytoscape-tree-shell";
       shell.dataset.renderer = "cytoscape";
@@ -22266,12 +22398,17 @@ Rules:
       const canvas = document.createElement("div");
       canvas.className = "cytoscape-tree-canvas";
       canvas.setAttribute("aria-label", `${graph.title || "Clinical pathway"} graph canvas. Hover near the top for zoom controls.`);
-      const toolbar = document.createElement("div");
-      toolbar.className = "cytoscape-tree-toolbar";
-      toolbar.setAttribute("aria-label", "Pathway tree zoom controls");
+      const toolbar = showFloatingToolbar ? document.createElement("div") : null;
+      if (toolbar) {
+        toolbar.className = "cytoscape-tree-toolbar";
+        toolbar.setAttribute("aria-label", "Pathway tree zoom controls");
+      }
       const readable = document.createElement("div");
       readable.className = "sr-only";
-      const { nodes, edges } = cytoscapeStudioTreeElements(graph);
+      const { nodes, edges } = cytoscapeStudioTreeElements(graph, { showDetail: showNodeDetail });
+      for (const entry of [...nodes, ...edges]) {
+        entry.data.highlightActivePath = highlightActivePath ? "yes" : "no";
+      }
       shell.dataset.nodeCount = String(nodes.length);
       shell.dataset.mode = isPatientDecisionTree ? "patient" : "studio";
       readable.textContent = nodes.map((entry) => entry.data.label.replace(/\n+/g, " ")).join(" | ");
@@ -22294,11 +22431,12 @@ Rules:
         node.setAttribute("aria-hidden", "true");
         return node;
       };
-      shell.append(canvas, toolbar, readable);
+      shell.append(canvas, ...(toolbar ? [toolbar] : []), readable);
       container.appendChild(shell);
       let toolbarHideTimer = 0;
       let toolbarPinnedUntil = 0;
       const showTreeToolbar = (holdMs = 0) => {
+        if (!toolbar) return;
         window.clearTimeout(toolbarHideTimer);
         if (holdMs) toolbarPinnedUntil = Date.now() + holdMs;
         shell.dataset.toolbarVisible = "true";
@@ -22308,6 +22446,7 @@ Rules:
         toolbar.style.transform = "translate(-50%, 0)";
       };
       const hideTreeToolbarSoon = () => {
+        if (!toolbar) return;
         window.clearTimeout(toolbarHideTimer);
         toolbarHideTimer = window.setTimeout(() => {
           if (Date.now() < toolbarPinnedUntil) {
@@ -22327,8 +22466,8 @@ Rules:
       shell.addEventListener("pointerleave", hideTreeToolbarSoon);
       shell.addEventListener("focusin", () => showTreeToolbar());
       shell.addEventListener("focusout", hideTreeToolbarSoon);
-      toolbar.addEventListener("pointerenter", () => showTreeToolbar());
-      toolbar.addEventListener("pointerleave", hideTreeToolbarSoon);
+      toolbar?.addEventListener("pointerenter", () => showTreeToolbar());
+      toolbar?.addEventListener("pointerleave", hideTreeToolbarSoon);
 
       const cy = cytoscape({
         container: canvas,
@@ -22336,6 +22475,7 @@ Rules:
         minZoom: 0.25,
         maxZoom: 7,
         boxSelectionEnabled: false,
+        userZoomingEnabled: !isPatientDecisionTree,
         autoungrabify: options.disableDrag === true,
         layout: { name: "preset" },
         style: [
@@ -22349,7 +22489,7 @@ Rules:
               "border-color": "#b8ccd1",
               "border-width": 1.2,
               "color": "#13262e",
-              "font-size": 11,
+              "font-size": "data(fontSize)",
               "font-weight": 700,
               "label": "data(label)",
               "line-height": 1.18,
@@ -22398,7 +22538,7 @@ Rules:
             }
           },
           {
-            selector: "node[state = 'active']",
+            selector: "node[highlightActivePath = 'yes'][state = 'active']",
             style: {
               "background-color": "#f0fbf9",
               "border-color": "#087d75",
@@ -22406,7 +22546,7 @@ Rules:
             }
           },
           {
-            selector: "node[state = 'warning']",
+            selector: "node[highlightActivePath = 'yes'][state = 'warning']",
             style: {
               "background-color": "#fff8ed",
               "border-color": "#d88417",
@@ -22414,7 +22554,7 @@ Rules:
             }
           },
           {
-            selector: "node[state = 'inactive']",
+            selector: "node[highlightActivePath = 'yes'][state = 'inactive']",
             style: {
               "opacity": 0.52
             }
@@ -22429,7 +22569,7 @@ Rules:
               "target-distance-from-node": 2,
               "width": 1.4,
               "color": "#31525b",
-              "font-size": 9,
+              "font-size": isPatientDecisionTree ? 12 : 9,
               "font-weight": 700,
               "label": "data(label)",
               "line-height": 1.15,
@@ -22437,13 +22577,13 @@ Rules:
               "text-background-color": "#fbfdfd",
               "text-background-opacity": 0.86,
               "text-background-padding": 3,
-              "text-max-width": 84,
+              "text-max-width": isPatientDecisionTree ? 112 : 84,
               "text-rotation": "none",
               "text-wrap": "wrap"
             }
           },
           {
-            selector: "edge[state = 'active']",
+            selector: "edge[highlightActivePath = 'yes'][state = 'active']",
             style: {
               "line-color": "#087d75",
               "target-arrow-color": "#087d75",
@@ -22452,7 +22592,7 @@ Rules:
             }
           },
           {
-            selector: "edge[state = 'warning']",
+            selector: "edge[highlightActivePath = 'yes'][state = 'warning']",
             style: {
               "line-color": "#d88417",
               "line-style": "dashed",
@@ -22462,7 +22602,7 @@ Rules:
             }
           },
           {
-            selector: "edge[state = 'inactive']",
+            selector: "edge[highlightActivePath = 'yes'][state = 'inactive']",
             style: {
               "opacity": 0.5
             }
@@ -22528,9 +22668,9 @@ Rules:
         cy.stop();
         const padding = Number(options.fitPadding) || (isPatientDecisionTree ? 42 : 64);
         const minReadableZoom = Number(options.minFitZoom) || (isPatientDecisionTree
-          ? (window.innerWidth < 760 ? 0.56 : 0.62)
+          ? (window.innerWidth < 760 ? 0.72 : 0.88)
           : 0.58);
-        const maxFitZoom = Number(options.maxFitZoom) || (isPatientDecisionTree ? 1.04 : 1.08);
+        const maxFitZoom = Number(options.maxFitZoom) || (isPatientDecisionTree ? 1.18 : 1.08);
         const focusRootNode = (rootNode) => {
           if (!rootNode?.nonempty?.()) return;
           cy.center(rootNode);
@@ -22579,13 +22719,15 @@ Rules:
           }
         }).run();
       };
-      toolbar.append(
-        makeButton("-", "Zoom out", () => setTreeZoom(cy.zoom() / 1.18)),
-        makeButton("+", "Zoom in", () => setTreeZoom(cy.zoom() * 1.18)),
-        divider(),
-        makeButton("Fit", "Fit pathway", () => fitGraph(120)),
-        makeButton("Reset", "Reset layout", () => runLayout())
-      );
+      if (toolbar) {
+        toolbar.append(
+          makeButton("-", "Zoom out", () => setTreeZoom(cy.zoom() / 1.18)),
+          makeButton("+", "Zoom in", () => setTreeZoom(cy.zoom() * 1.18)),
+          divider(),
+          makeButton("Fit", "Fit pathway", () => fitGraph(120)),
+          makeButton("Reset", "Reset layout", () => runLayout())
+        );
+      }
       cy.on("zoom", updateSyncedZoom);
       if (isPatientDecisionTree) {
         if (elements.fitDecisionTreeButton) {
@@ -22666,7 +22808,11 @@ Rules:
           window.requestAnimationFrame(() => {
             if (!cy.destroyed()) {
               cy.resize();
-              fitGraph(0);
+              if (isPatientDecisionTree && decisionTreeUserZoomed) {
+                updateSyncedZoom();
+              } else {
+                fitGraph(0);
+              }
             }
           });
         });
@@ -23282,7 +23428,11 @@ Rules:
         renderCytoscapeStudioPathwayTree(container, isPatientPanel ? patientDecisionTreeCanvasGraph(graph, patientCanvasOptions) : graph, {
           disableDrag: isPatientPanel,
           fitPadding: isPatientPanel ? 42 : 64,
-          minFitZoom: isPatientPanel ? (panelWidth < 760 ? 0.96 : 0.86) : 0.58,
+          minFitZoom: isPatientPanel ? (panelWidth < 760 ? 0.82 : 0.96) : 0.58,
+          maxFitZoom: isPatientPanel ? 1.22 : 1.08,
+          showFloatingToolbar: !isPatientPanel,
+          showNodeDetail: !isPatientPanel,
+          highlightActivePath: isPatientPanel ? decisionTreeHighlightActivePath : true,
           searchText: isPatientPanel ? decisionTreeSearch : "",
           selectedNodeId: selectedDecisionTreeNodeId
         });
@@ -23638,7 +23788,14 @@ Rules:
       if (decisionTreeEditMode) renderDecisionTreeEditor();
     }
 
+    function syncDecisionTreeHighlightToggle() {
+      if (!elements.decisionTreeHighlightPathToggle) return;
+      elements.decisionTreeHighlightPathToggle.setAttribute("aria-pressed", String(decisionTreeHighlightActivePath));
+      elements.decisionTreeHighlightPathToggle.classList.toggle("is-on", decisionTreeHighlightActivePath);
+    }
+
     function renderWorkupDecisionSurfaces(rows = objectiveDataRows()) {
+      syncDecisionTreeHighlightToggle();
       for (const container of [elements.patientDecisionTreePanel, elements.decisionTreePanel].filter(Boolean)) {
         renderDecisionTreePanel(container, rows);
       }
@@ -23799,6 +23956,8 @@ Rules:
       if (!hasChecklist) {
         patientChecklistEditSelection = "";
         setPatientChecklistEditStatus("");
+        setPatientChecklistPatchStatus("");
+        if (elements.applyPatientChecklistPatchButton) elements.applyPatientChecklistPatchButton.disabled = true;
         syncPatientChecklistEditorControls();
         return;
       }
@@ -23827,6 +23986,7 @@ Rules:
       } else {
         syncPatientChecklistEditorControls();
       }
+      renderPatientChecklistPatchPreview(elements.patientChecklistPatchInput?.value || "");
     }
 
     function clearPatientChecklistEditorDraft(kind = elements.patientChecklistEditTypeSelect?.value || "history") {
@@ -24058,6 +24218,380 @@ Rules:
       const kind = patientChecklistKindForEntry(entry.section, entry.item);
       clearPatientChecklistEditorDraft(kind);
       finalizePatientChecklistEdit(snapshot, kind === "exam" ? "Exam item removed for this patient." : "History question removed for this patient.");
+    }
+
+    function patientChecklistPatchSectionKey() {
+      const key = String(elements.patientChecklistPatchSectionSelect?.value || "physical_exam").trim();
+      return key === "history_questions" ? "history_questions" : "physical_exam";
+    }
+
+    function patientChecklistPatchKind(sectionKey = patientChecklistPatchSectionKey()) {
+      return sectionKey === "physical_exam" ? "exam" : "history";
+    }
+
+    function patientChecklistPatchGroupKeys(sectionKey = patientChecklistPatchSectionKey()) {
+      return sectionKey === "physical_exam"
+        ? { required: "requiredExam", conditional: "conditionalExam" }
+        : { required: "requiredQuestions", conditional: "conditionalQuestions" };
+    }
+
+    function patientChecklistPatchEntries(sectionKey = patientChecklistPatchSectionKey()) {
+      const expectedKind = patientChecklistPatchKind(sectionKey);
+      ensurePatientChecklistItemIds();
+      return allChecklistEntries().filter((entry) => patientChecklistKindForEntry(entry.section, entry.item) === expectedKind);
+    }
+
+    function patchItemPayloadFromChecklistEntry(sectionKey, entry) {
+      const { section, item } = entry;
+      const label = item.label || itemText(item) || item.id || "Checklist row";
+      const options = checklistOptionsForItem(section, item);
+      const normalAnswers = uniqueChecklistOptions(item.normalAnswers || item.normal_answers || []);
+      const base = {
+        ...item,
+        id: String(item.id || "").trim(),
+        label,
+        text: item.text || label,
+        options,
+        answer_options: options,
+        answerMode: item.answerMode || item.answer_mode || "",
+        normalAnswers,
+        source: item.source || { source_id: item.source_id || "ACTIVE_PATIENT_CHECKLIST" }
+      };
+      if (sectionKey === "physical_exam") {
+        return {
+          ...base,
+          item_type: "physical_exam_maneuver",
+          technique: item.technique || label,
+          findings_options: item.findings_options || options
+        };
+      }
+      return {
+        ...base,
+        item_type: "history_question",
+        text: item.text || label
+      };
+    }
+
+    function patientChecklistPatchPayload(sectionKey = patientChecklistPatchSectionKey()) {
+      const groups = patientChecklistPatchGroupKeys(sectionKey);
+      return {
+        [groups.required]: patientChecklistPatchEntries(sectionKey).map((entry) => patchItemPayloadFromChecklistEntry(sectionKey, entry)),
+        [groups.conditional]: []
+      };
+    }
+
+    function extractPatientChecklistPatchJson(text = "") {
+      const raw = extractStructuredRefinementJson(text);
+      return raw?.schema === workupSectionPatchSchema ? raw : null;
+    }
+
+    function patientChecklistPatchValidation(text = "", { sectionKey = "", allowNoOperations = true } = {}) {
+      const clean = String(text || "").trim();
+      if (!clean) return { status: "empty", patch: null, payload: null, message: "No patient checklist patch pasted yet." };
+      const patch = extractPatientChecklistPatchJson(clean);
+      if (!patch) return { status: "empty", patch: null, payload: null, message: `No ${workupSectionPatchSchema} JSON detected.` };
+      const patchWorkupId = String(patch.workupId || patch.workup_id || "").replace(/\s+/g, " ").trim();
+      const expectedWorkupId = String(state.selectedWorkupModuleId || "").replace(/\s+/g, " ").trim();
+      if (patchWorkupId && expectedWorkupId && patchWorkupId !== expectedWorkupId) {
+        return { status: "error", patch, payload: null, message: `Patch is for ${patchWorkupId}, but ${expectedWorkupId} is selected.` };
+      }
+      const expectedSectionKey = String(sectionKey || patientChecklistPatchSectionKey()).trim();
+      const targetSectionKey = String(patch.sectionKey || patch.section_key || expectedSectionKey).trim();
+      if (targetSectionKey && expectedSectionKey && targetSectionKey !== expectedSectionKey) {
+        return { status: "error", patch, payload: null, message: `Patch is for ${targetSectionKey}, but ${expectedSectionKey} is selected.` };
+      }
+      const operations = Array.isArray(patch.operations) ? patch.operations : [];
+      if (!operations.length && allowNoOperations) {
+        return { status: "noop", patch, payload: patientChecklistPatchPayload(targetSectionKey), message: "Patch returned no row operations." };
+      }
+      try {
+        const payload = applyWorkupSectionPatch(patientChecklistPatchPayload(targetSectionKey), patch, {
+          workupId: state.selectedWorkupModuleId || "",
+          sectionKey: expectedSectionKey
+        });
+        return {
+          status: "ready",
+          patch,
+          payload,
+          message: `${operations.length} ${targetSectionKey === "physical_exam" ? "exam" : "history"} operation${operations.length === 1 ? "" : "s"} ready for this patient.`
+        };
+      } catch (error) {
+        return {
+          status: "error",
+          patch,
+          payload: null,
+          message: error instanceof Error ? error.message : "Patient checklist patch could not be validated."
+        };
+      }
+    }
+
+    function setPatientChecklistPatchStatus(message = "", tone = "") {
+      if (elements.patientChecklistPatchStatus) {
+        elements.patientChecklistPatchStatus.textContent = message;
+        elements.patientChecklistPatchStatus.dataset.state = tone || "";
+      }
+    }
+
+    function renderPatientChecklistPatchPreview(text = elements.patientChecklistPatchInput?.value || "", container = elements.patientChecklistPatchPreview, options = {}) {
+      if (!container) return { status: "empty" };
+      const summary = patientChecklistPatchValidation(text, options);
+      container.innerHTML = "";
+      container.dataset.status = summary.status === "noop" ? "empty" : summary.status;
+      if (summary.status === "empty" || !String(text || "").trim()) {
+        container.textContent = summary.message;
+      } else {
+        const strong = document.createElement("strong");
+        strong.textContent = summary.status === "ready"
+          ? "Patient checklist patch ready"
+          : summary.status === "noop"
+            ? "No checklist changes returned"
+            : "Needs review";
+        const detail = document.createElement("div");
+        detail.textContent = summary.message;
+        container.append(strong, detail);
+        if (summary.patch?.operations?.length) {
+          const list = document.createElement("ul");
+          for (const operation of summary.patch.operations.slice(0, 6)) {
+            const item = document.createElement("li");
+            const label = operation.item?.label || operation.item?.text || operation.item?.technique || operation.itemId || operation.item_id || "row";
+            item.textContent = `${String(operation.op || "").toUpperCase()}: ${label}`;
+            list.appendChild(item);
+          }
+          container.appendChild(list);
+        }
+      }
+      if (container === elements.patientChecklistPatchPreview && elements.applyPatientChecklistPatchButton) {
+        elements.applyPatientChecklistPatchButton.disabled = summary.status !== "ready";
+      }
+      return summary;
+    }
+
+    const patientPatchOperationReservedKeys = new Set(["op", "item", "itemId", "item_id", "groupKey", "group_key", "fromGroupKey", "from_group_key", "toGroupKey", "to_group_key"]);
+
+    function patientPatchItemFields(operation = {}) {
+      const direct = Object.fromEntries(
+        Object.entries(operation || {})
+          .filter(([key]) => !patientPatchOperationReservedKeys.has(key))
+          .map(([key, value]) => [key, value])
+      );
+      const nested = operation.item && typeof operation.item === "object" && !Array.isArray(operation.item)
+        ? operation.item
+        : {};
+      return { ...direct, ...nested };
+    }
+
+    function optionsFromPatchItem(rawItem = {}, fallbackOptions = []) {
+      const sources = [
+        rawItem.options,
+        rawItem.answer_options,
+        rawItem.answerOptions,
+        rawItem.findings_options,
+        rawItem.findingsOptions,
+        rawItem.normalAnswers,
+        rawItem.normal_answers,
+        fallbackOptions
+      ];
+      for (const source of sources) {
+        const parsed = optionFromItemValue(source);
+        if (parsed.length) return parsed;
+      }
+      return [];
+    }
+
+    function patientChecklistItemFromPatch(sectionKey, rawItem = {}, existingItem = {}, existingSection = null) {
+      const kind = patientChecklistPatchKind(sectionKey);
+      const fallbackLabel = existingItem.label || itemText(existingItem) || "";
+      const label = String(rawItem.label || rawItem.text || rawItem.technique || rawItem.action || fallbackLabel || "").replace(/\s+/g, " ").trim();
+      if (!label) throw new Error("Patch item requires a label, text, or technique.");
+      const existingOptions = existingSection ? checklistOptionsForItem(existingSection, existingItem) : uniqueChecklistOptions(existingItem.options || existingItem.answer_options || []);
+      const options = optionsFromPatchItem(rawItem, existingOptions);
+      const finalOptions = options.length ? options : (kind === "exam" ? ["Normal", "Abnormal", "Unable to assess"] : ["No", "Yes", "Other ___"]);
+      const itemId = String(rawItem.id || rawItem.item_id || existingItem.id || "").trim();
+      const item = {
+        ...existingItem,
+        ...rawItem,
+        id: uniquePatientChecklistItemId(label, kind, itemId),
+        label,
+        text: rawItem.text || label,
+        category: kind === "exam" ? "exam" : "bedside",
+        options: finalOptions,
+        rawValue: finalOptions.join(" / "),
+        answer_options: rawItem.answer_options || finalOptions,
+        answerMode: rawItem.answerMode || rawItem.answer_mode || existingItem.answerMode || existingItem.answer_mode || "multi",
+        normalAnswers: uniqueChecklistOptions(rawItem.normalAnswers || rawItem.normal_answers || existingItem.normalAnswers || existingItem.normal_answers || []),
+        exclusiveGroups: Array.isArray(rawItem.exclusiveGroups || rawItem.exclusive_groups)
+          ? (rawItem.exclusiveGroups || rawItem.exclusive_groups).map((group) => optionFromItemValue(group)).filter((group) => group.length >= 2)
+          : existingItem.exclusiveGroups || existingItem.exclusive_groups || [],
+        patientSpecific: true,
+        source_id: rawItem.source_id || rawItem.source?.source_id || existingItem.source_id || "OPENEVIDENCE_PATIENT_PATCH",
+        source: rawItem.source || existingItem.source || { source_id: "OPENEVIDENCE_PATIENT_PATCH", title: "OpenEvidence patient checklist patch" },
+        rationale: String(rawItem.rationale || rawItem.reason || existingItem.rationale || "").trim(),
+        diagnosticPurpose: String(rawItem.rationale || existingItem.diagnosticPurpose || "Patient-specific OpenEvidence checklist patch accepted for clinician verification.").trim(),
+        diagnostic_purpose: String(rawItem.rationale || existingItem.diagnostic_purpose || "Patient-specific OpenEvidence checklist patch accepted for clinician verification.").trim(),
+        managementImplication: existingItem.managementImplication || existingItem.management_implication || "Positive or abnormal finding should be reconciled with the supervising clinician plan.",
+        management_implication: existingItem.management_implication || existingItem.managementImplication || "Positive or abnormal finding should be reconciled with the supervising clinician plan.",
+        tags: uniqueChecklistOptions([
+          ...(Array.isArray(existingItem.tags) ? existingItem.tags : []),
+          ...(Array.isArray(rawItem.tags) ? rawItem.tags : []),
+          "open_evidence_patient_patch",
+          kind === "exam" ? "patient_exam_edit" : "patient_history_edit"
+        ])
+      };
+      if (kind === "exam") {
+        item.technique = rawItem.technique || label;
+        item.findings_options = rawItem.findings_options || finalOptions;
+      }
+      return item;
+    }
+
+    function findPatientChecklistPatchEntry(sectionKey, itemId = "") {
+      const targetId = String(itemId || "").trim();
+      if (!targetId) throw new Error("Patch update/remove operation requires itemId.");
+      const matches = patientChecklistPatchEntries(sectionKey).filter((entry) => String(entry.item?.id || "").trim() === targetId);
+      if (!matches.length) throw new Error(`Patch itemId "${targetId}" did not match a ${sectionKey === "physical_exam" ? "physical exam" : "history"} checklist row.`);
+      if (matches.length > 1) throw new Error(`Patch itemId "${targetId}" matched multiple active checklist rows; update/remove is ambiguous.`);
+      return matches[0];
+    }
+
+    function applyPatientChecklistPatchText(text = elements.patientChecklistPatchInput?.value || "", { fromEvidenceWorkbench = false } = {}) {
+      if (!state.sections.length) {
+        setPatientChecklistPatchStatus("Build the patient checklist before applying patch operations.", "error");
+        setStatus("Build the patient checklist before applying patch operations.");
+        return false;
+      }
+      const summary = patientChecklistPatchValidation(text, {});
+      if (summary.status !== "ready") {
+        setPatientChecklistPatchStatus(summary.message, summary.status === "error" ? "error" : "");
+        setStatus(summary.message);
+        renderPatientChecklistPatchPreview(text);
+        return false;
+      }
+      const patch = summary.patch;
+      const sectionKey = String(patch.sectionKey || patch.section_key || patientChecklistPatchSectionKey()).trim();
+      const kind = patientChecklistPatchKind(sectionKey);
+      const snapshot = snapshotChecklistResponseArtifacts();
+      try {
+        for (const operation of patch.operations || []) {
+          const op = String(operation.op || "").toLowerCase();
+          if (op === "add") {
+            const rawItem = operation.item || {};
+            const duplicateId = String(rawItem.id || rawItem.item_id || "").trim();
+            if (duplicateId && allChecklistEntries().some(({ item }) => String(item.id || "").trim() === duplicateId)) {
+              throw new Error(`Patch add item id "${duplicateId}" already exists in the active checklist.`);
+            }
+            const section = patientChecklistEditSection(kind);
+            section.items.push(patientChecklistItemFromPatch(sectionKey, rawItem, {}, section));
+            continue;
+          }
+          const itemId = String(operation.itemId || operation.item_id || "").trim();
+          const entry = findPatientChecklistPatchEntry(sectionKey, itemId);
+          if (op === "remove") {
+            entry.section.items.splice(entry.itemIndex, 1);
+            continue;
+          }
+          if (op === "update") {
+            const itemPatch = patientPatchItemFields(operation);
+            if (!Object.keys(itemPatch).length) throw new Error(`Patch update item "${itemId}" requires changed item fields.`);
+            const updated = patientChecklistItemFromPatch(sectionKey, { ...entry.item, ...itemPatch, id: itemId }, entry.item, entry.section);
+            if (String(updated.id || "") !== itemId) throw new Error(`Patch update item "${itemId}" cannot change its stable id.`);
+            entry.section.items[entry.itemIndex] = updated;
+            continue;
+          }
+          throw new Error(`Unsupported patch operation "${operation.op || ""}".`);
+        }
+        state.openEvidenceSummaries[CHECKLIST_IMPROVEMENT_TASK_ID] = String(text || "").trim();
+        if (fromEvidenceWorkbench && elements.patientChecklistPatchInput && document.activeElement !== elements.patientChecklistPatchInput) {
+          elements.patientChecklistPatchInput.value = String(text || "").trim();
+        }
+        const successMessage = `${patch.operations.length} patient checklist patch operation${patch.operations.length === 1 ? "" : "s"} applied.`;
+        finalizePatientChecklistEdit(snapshot, successMessage);
+        setPatientChecklistPatchStatus(successMessage, "success");
+        renderPatientChecklistPatchPreview(elements.patientChecklistPatchInput?.value || "");
+        return true;
+      } catch (error) {
+        setPatientChecklistPatchStatus(error instanceof Error ? error.message : "Patient checklist patch could not be applied.", "error");
+        setStatus(error instanceof Error ? error.message : "Patient checklist patch could not be applied.");
+        return false;
+      }
+    }
+
+    function patientChecklistPatchPromptRows(sectionKey = patientChecklistPatchSectionKey()) {
+      const groups = patientChecklistPatchGroupKeys(sectionKey);
+      return patientChecklistPatchEntries(sectionKey).map((entry) => ({
+        itemId: entry.item.id,
+        groupKey: groups.required,
+        label: entry.item.label || itemText(entry.item),
+        answerMode: entry.item.answerMode || entry.item.answer_mode || "",
+        options: checklistOptionsForItem(entry.section, entry.item),
+        normalAnswers: uniqueChecklistOptions(entry.item.normalAnswers || entry.item.normal_answers || []),
+        patientSpecific: Boolean(entry.item.patientSpecific || entry.item.patient_specific),
+        currentAnswer: itemFindingText(entry.key) || ""
+      }));
+    }
+
+    function patientChecklistPatchPrompt(sectionKey = patientChecklistPatchSectionKey()) {
+      if (!state.sections.length) buildChecklistFromWorkup({ navigate: false });
+      ensurePatientChecklistItemIds();
+      const selectedModule = moduleById(state.selectedWorkupModuleId);
+      const groups = patientChecklistPatchGroupKeys(sectionKey);
+      const itemType = sectionKey === "physical_exam" ? "physical_exam_maneuver" : "history_question";
+      const rows = patientChecklistPatchPromptRows(sectionKey);
+      const sectionName = sectionKey === "physical_exam" ? "physical exam" : "history questions";
+      return [
+        "You are refining one active patient's bedside checklist.",
+        "Return only valid JSON. Do not include prose, markdown citations, :contentReference markers, or a reference list.",
+        "Do not regenerate the full checklist. Do not output workup_refinement_v1. Do not modify any section except the selected section.",
+        "",
+        `workupId: ${state.selectedWorkupModuleId || ""}`,
+        `sectionKey: ${sectionKey}`,
+        `selectedWorkupTitle: ${moduleLabel(selectedModule) || "Selected workup"}`,
+        `selectedSection: ${sectionName}`,
+        "",
+        "Use this schema:",
+        JSON.stringify({
+          schema: workupSectionPatchSchema,
+          workupId: state.selectedWorkupModuleId || "",
+          sectionKey,
+          summary: "Brief reason for the row changes.",
+          operations: [
+            { op: "add", groupKey: groups.conditional, item: { id: "stable_snake_case_id", item_type: itemType, label: "Question or exam item", answerMode: "single or multi", options: ["Normal/No option", "Abnormal/Yes option"], normalAnswers: ["Normal/No option"], rationale: "Why this matters for this patient." } },
+            { op: "update", itemId: "exact_existing_itemId", label: "Revised row text" },
+            { op: "remove", itemId: "exact_existing_itemId" }
+          ]
+        }, null, 2),
+        "",
+        `Allowed groupKey values for add: ${groups.required}, ${groups.conditional}. Prefer ${groups.conditional} for patient-only additions.`,
+        "For update/remove, use an exact itemId from current_rows_json. Do not invent itemIds for existing rows.",
+        "If no changes are useful, return operations: [].",
+        "",
+        "<deidentified_patient_context>",
+        checklistPatientSummaryText(),
+        "</deidentified_patient_context>",
+        "",
+        "<current_rows_json>",
+        JSON.stringify(rows, null, 2),
+        "</current_rows_json>"
+      ].join("\n");
+    }
+
+    function copyPatientChecklistPatchPrompt() {
+      if (!state.sections.length) {
+        buildChecklistFromWorkup({ navigate: false });
+      }
+      if (!state.sections.length) {
+        setStatus("Build the patient checklist before copying a patch prompt.");
+        return false;
+      }
+      const sectionKey = patientChecklistPatchSectionKey();
+      const text = patientChecklistPatchPrompt(sectionKey);
+      openPhiOverlay({
+        title: "PHI safety check for patient checklist patch prompt",
+        copy: "Review the patient-specific checklist patch prompt before copying externally.",
+        text,
+        onConfirm: () => copyText(text)
+      });
+      setPatientChecklistPatchStatus(`${sectionKey === "physical_exam" ? "Physical exam" : "History"} patch prompt ready to copy.`, "success");
+      return true;
     }
 
     function renderWorkspaceChecklistDirectory(container) {
@@ -28073,7 +28607,7 @@ Rules:
         `Current checklist sections: ${sectionCount}`,
         `Current checklist items: ${itemCount}`,
         `Rows currently supporting multi-select: ${multiCount}`,
-        "Return the full replacement checklist in workup_refinement_v1 JSON so it can be reviewed, edited, and saved locally."
+        "Return small workup_section_patch_v1 operations only. Do not regenerate the full checklist. Default/canonical edits belong in Workup Studio; this patient flow is patient-only."
       ].join("\n");
     }
 
@@ -28201,12 +28735,24 @@ Rules:
       }
       const report = state.workup ? formatComplaintCdsReport(state.workup) : "";
       const sourceContext = reviewedSourceContextText();
+      const patchChecklistRows = task.id === CHECKLIST_IMPROVEMENT_TASK_ID && state.sections.length
+        ? [
+          state.checklistText,
+          "",
+          "<current_row_ids_json>",
+          JSON.stringify({
+            physical_exam: patientChecklistPatchPromptRows("physical_exam"),
+            history_questions: patientChecklistPatchPromptRows("history_questions")
+          }, null, 2),
+          "</current_row_ids_json>"
+        ].join("\n")
+        : state.checklistText;
       const context = {
         sourceContext,
-        currentChecklist: state.checklistText,
+        currentChecklist: patchChecklistRows,
         checklistPatientSummary: checklistPatientSummaryText(),
         checklistAuditSummary: checklistAuditSummaryText(),
-        refinementNotes: "Output a complete replacement checklist/workup as fenced JSON using schema workup_refinement_v1. Mark patient-specific rows with patientSpecific true; otherwise use patientSpecific false.",
+        refinementNotes: "Output only workup_section_patch_v1 JSON patch operations for one selected section. Default to physical_exam when the clinician is asking about exam rows. Do not output workup_refinement_v1 unless explicitly asked for legacy full replacement.",
         complaintCdsReport: report,
         compiledFindings: buildFinalUpdateText(),
         objectiveData: objectiveDataContextText(),
@@ -28357,11 +28903,22 @@ Rules:
     }
 
     function syncWorkupRefinementPreview(text = elements.patientWorkupRefinementInput?.value || "") {
+      const patchSummary = renderPatientChecklistPatchPreview(text, elements.patientWorkupRefinementPreview, {});
+      if (patchSummary?.status === "ready") {
+        if (elements.patientApplyWorkupRefinementButton) elements.patientApplyWorkupRefinementButton.disabled = false;
+        if (elements.patientSaveDefaultWorkupRefinementButton) elements.patientSaveDefaultWorkupRefinementButton.disabled = true;
+        return patchSummary;
+      }
+      const patchDetected = Boolean(extractPatientChecklistPatchJson(text));
+      if (patchDetected) {
+        if (elements.patientApplyWorkupRefinementButton) elements.patientApplyWorkupRefinementButton.disabled = true;
+        if (elements.patientSaveDefaultWorkupRefinementButton) elements.patientSaveDefaultWorkupRefinementButton.disabled = true;
+        return patchSummary;
+      }
       const summary = renderStructuredRefinementPreview(elements.patientWorkupRefinementPreview, text);
       const ready = summary?.status === "ready";
-      for (const button of [elements.patientApplyWorkupRefinementButton, elements.patientSaveDefaultWorkupRefinementButton].filter(Boolean)) {
-        button.disabled = !ready;
-      }
+      if (elements.patientApplyWorkupRefinementButton) elements.patientApplyWorkupRefinementButton.disabled = !ready;
+      if (elements.patientSaveDefaultWorkupRefinementButton) elements.patientSaveDefaultWorkupRefinementButton.disabled = !ready;
       return summary;
     }
 
@@ -28369,12 +28926,16 @@ Rules:
 	      const cleanAnswer = String(answerText || "").trim();
 	      const changeSummary = changes || { additions: [], removals: [] };
 	      const totalChanges = changeSummary.additions.length + changeSummary.removals.length;
+        const patchSummary = isChecklistReview ? patientChecklistPatchValidation(cleanAnswer) : { status: "empty" };
+        const patchReady = patchSummary.status === "ready";
         const structuredSummary = isChecklistReview ? structuredRefinementSummary(cleanAnswer) : { status: "empty" };
         const structuredReady = structuredSummary.status === "ready";
         const treeSummary = isDecisionTree ? decisionTreeImportSummary(cleanAnswer) : { status: "empty" };
         const treeReady = treeSummary.status === "ready";
 	      const label = !cleanAnswer
 	        ? "Paste answer first"
+          : patchReady
+            ? "Apply patch"
           : structuredReady
             ? "Apply JSON + rebuild"
           : treeReady
@@ -28385,10 +28946,10 @@ Rules:
 	            ? "Unsupported format"
 	            : "Structured JSON only";
         for (const button of [elements.patientApplyEvidenceRefinementButton].filter(Boolean)) {
-          button.disabled = isDecisionTree ? !treeReady : !structuredReady;
+          button.disabled = isDecisionTree ? !treeReady : isChecklistReview ? !(patchReady || structuredReady) : !structuredReady;
         }
         for (const button of [elements.patientSaveDefaultEvidenceRefinementButton].filter(Boolean)) {
-          button.disabled = isDecisionTree ? !treeReady : !structuredReady;
+          button.disabled = isDecisionTree ? !treeReady : !structuredReady || patchReady;
         }
 	    }
 
@@ -28399,7 +28960,7 @@ Rules:
 	      const answerText = String(text || "").trim();
       if (elements.patientEvidenceChangeHint) {
         elements.patientEvidenceChangeHint.textContent = isChecklistReview
-	          ? "Paste structured workup_refinement_v1 JSON, then apply to this patient or save it as a vault checklist override. Canonical default edits belong in Workup Studio."
+	          ? "Paste structured workup_section_patch_v1 JSON to apply patient-only row edits. Older workup_refinement_v1 replacements still parse as a fallback. Canonical default edits belong in Workup Studio."
             : isDecisionTree
               ? "Paste raw decision-tree JSON, then apply it or save it as the workup pathway."
 	            : "Edit the prompt template above; copied prompts resolve patient variables at copy time.";
@@ -28439,6 +29000,11 @@ Rules:
 	        syncOpenEvidenceApplyButtons({ isChecklistReview, isDecisionTree, answerText });
 	        return;
 	      }
+        if (extractPatientChecklistPatchJson(answerText)) {
+          for (const container of previewContainers) renderPatientChecklistPatchPreview(answerText, container);
+          syncOpenEvidenceApplyButtons({ isChecklistReview, isDecisionTree, answerText });
+          return;
+        }
         const structuredSummary = structuredRefinementSummary(answerText);
         if (structuredSummary.status === "ready") {
           for (const container of previewContainers) renderStructuredRefinementPreview(container, answerText);
@@ -28515,12 +29081,12 @@ Rules:
       }
       const answerLabel = document.querySelector('label[for="patientEvidenceAnswerInput"]');
       if (answerLabel) {
-        answerLabel.textContent = isDecisionTree ? "Decision-tree JSON" : "Structured checklist refinement JSON";
+        answerLabel.textContent = isDecisionTree ? "Decision-tree JSON" : "Structured checklist patch JSON";
       }
       if (elements.patientEvidenceAnswerInput) {
         elements.patientEvidenceAnswerInput.placeholder = isDecisionTree
           ? "Paste the raw OpenEvidence decision-tree JSON here. Fenced JSON and mildly malformed markdown artifacts will be normalized for review."
-          : "Paste only structured JSON for the selected paste-back task. Other OpenEvidence reports are copied out, not saved here.";
+          : "Paste workup_section_patch_v1 JSON for patient-only checklist row edits. Older workup_refinement_v1 JSON still parses as a fallback.";
       }
       if (elements.patientApplyEvidenceRefinementButton) {
         elements.patientApplyEvidenceRefinementButton.textContent = isDecisionTree ? "Apply tree" : "Apply to this patient";
@@ -28613,6 +29179,18 @@ Rules:
       return true;
     }
 
+    function applyChecklistReviewPasteBack(text = "", scope = "patient") {
+      const answerText = String(text || "").trim();
+      if (extractPatientChecklistPatchJson(answerText)) {
+        if (scope === "default") {
+          setStatus("Patient checklist patch operations are patient-only. Use Workup Studio to edit default workup sections.");
+          return false;
+        }
+        return applyPatientChecklistPatchText(answerText, { fromEvidenceWorkbench: true });
+      }
+      return applyStructuredRefinementText(answerText, scope);
+    }
+
     function currentRefinementInputText() {
       const active = [elements.patientWorkupRefinementInput, elements.patientEvidenceAnswerInput]
         .filter(Boolean)
@@ -28635,6 +29213,7 @@ Rules:
 	      saveOpenEvidenceAnswerForSelectedTask(answerText, { announce: false });
         if (task.id === CHECKLIST_IMPROVEMENT_TASK_ID) {
           try {
+            if (extractPatientChecklistPatchJson(answerText)) return applyPatientChecklistPatchText(answerText, { fromEvidenceWorkbench: true });
             const structured = parseStructuredWorkupRefinement(answerText);
             if (structured) return applyStructuredRefinementText(answerText, "patient");
           } catch (error) {
@@ -30555,18 +31134,8 @@ Rules:
         setPatientWorkupPane("pathway");
         openDecisionTreeEditor({ importJson: true });
       });
-      elements.patientCopyChecklistRefinementPromptButton?.addEventListener("click", () => {
-        state.selectedTaskId = CHECKLIST_IMPROVEMENT_TASK_ID;
-        renderOpenEvidence();
-        const { task } = getOpenEvidencePromptText();
-        const text = resolvedOpenEvidencePromptText();
-        openPhiOverlay({
-          title: "PHI safety check for checklist refinement prompt",
-          copy: `Review the ${taskLabel(task)} prompt before copying externally.`,
-          text,
-          onConfirm: () => copyText(text)
-        });
-      });
+      elements.patientCopyChecklistRefinementPromptButton?.addEventListener("click", copyPatientChecklistPatchPrompt);
+      elements.patientCopyChecklistRefinementPromptDrawerButton?.addEventListener("click", copyPatientChecklistPatchPrompt);
       elements.patientOpenEvidenceFromRefinementButton?.addEventListener("click", () => {
         window.open("https://www.openevidence.com/", "_blank", "noopener,noreferrer");
       });
@@ -30609,7 +31178,7 @@ Rules:
         syncWorkupRefinementPreview(elements.patientWorkupRefinementInput.value);
       });
       elements.patientApplyWorkupRefinementButton?.addEventListener("click", () => {
-        if (applyStructuredRefinementText(elements.patientWorkupRefinementInput?.value || "", "patient")) {
+        if (applyChecklistReviewPasteBack(elements.patientWorkupRefinementInput?.value || "", "patient")) {
           setPatientTab("checklist", { focusPanel: true });
         }
       });
@@ -30655,6 +31224,19 @@ Rules:
       elements.addPatientChecklistItemButton?.addEventListener("click", addPatientChecklistItemFromEditor);
       elements.savePatientChecklistItemButton?.addEventListener("click", saveSelectedPatientChecklistItem);
       elements.removePatientChecklistItemButton?.addEventListener("click", removeSelectedPatientChecklistItem);
+      elements.patientChecklistPatchSectionSelect?.addEventListener("change", () => {
+        renderPatientChecklistPatchPreview(elements.patientChecklistPatchInput?.value || "");
+      });
+      elements.copyPatientChecklistPatchPromptButton?.addEventListener("click", copyPatientChecklistPatchPrompt);
+      elements.openPatientChecklistPatchEvidenceButton?.addEventListener("click", () => {
+        window.open("https://www.openevidence.com/", "_blank", "noopener,noreferrer");
+      });
+      elements.patientChecklistPatchInput?.addEventListener("input", () => {
+        renderPatientChecklistPatchPreview(elements.patientChecklistPatchInput.value);
+      });
+      elements.applyPatientChecklistPatchButton?.addEventListener("click", () => {
+        applyPatientChecklistPatchText(elements.patientChecklistPatchInput?.value || "");
+      });
       $("#findingsOpenChecklistButton")?.addEventListener("click", () => {
         saveSelectedPatientDrafts();
         if (!state.sections.length) {
@@ -30695,7 +31277,7 @@ Rules:
             }
             return;
           }
-          if (applyStructuredRefinementText(text, "patient")) {
+          if (applyChecklistReviewPasteBack(text, "patient")) {
             setPatientTab("checklist", { focusPanel: true });
           }
         });
@@ -30707,7 +31289,7 @@ Rules:
             }
             return;
           }
-          if (applyStructuredRefinementText(text, "default")) {
+          if (applyChecklistReviewPasteBack(text, "default")) {
             setPatientTab("checklist", { focusPanel: true });
           }
         });
@@ -30720,6 +31302,11 @@ Rules:
         });
         elements.decisionTreeSearchInput?.addEventListener("input", () => {
           decisionTreeSearch = elements.decisionTreeSearchInput.value.slice(0, 120).trim();
+          renderWorkupDecisionSurfaces();
+        });
+        elements.decisionTreeHighlightPathToggle?.addEventListener("click", () => {
+          decisionTreeHighlightActivePath = !decisionTreeHighlightActivePath;
+          syncDecisionTreeHighlightToggle();
           renderWorkupDecisionSurfaces();
         });
         elements.decisionTreeJsonInput?.addEventListener("input", () => {

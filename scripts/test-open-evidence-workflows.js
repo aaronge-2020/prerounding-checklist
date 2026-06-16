@@ -68,7 +68,7 @@ const outputContracts = {
     "open_evidence_rounds_pasteback_v1"
   ],
   final_rounds_update: ["Assume the attending heard the full presentation yesterday", "III. ASSESSMENT AND PLAN", "changes management", "APP_PASTE_BACK_JSON", "open_evidence_rounds_pasteback_v1"],
-  checklist_improvement_review: ["Output only one fenced JSON block", "\"schema\": \"workup_refinement_v1\"", "\"answerMode\": \"single or multi\"", "\"normalAnswers\""],
+  checklist_improvement_review: ["Output only one fenced JSON block", "\"schema\": \"workup_section_patch_v1\"", "\"operations\"", "\"itemId\""],
   decision_tree_builder: [
     "You are designing a compact clinical management algorithm, not a guideline summary.",
     "Create a protocol-style decision tree for:",
@@ -289,9 +289,10 @@ assert.ok(!checklistImprovementPrompt.prompt.includes("<local_guideline_pathway>
 assert.ok(!checklistImprovementPrompt.prompt.includes("<evidence_retrieval_summary>"), "checklist improvement prompt must not include evidence retrieval summaries");
 assert.ok(!checklistImprovementPrompt.prompt.includes("John Smith"), "checklist improvement prompt must not leak raw source text");
 assert.ok(checklistImprovementPrompt.prompt.includes("full HPI are intentionally excluded"), "checklist improvement prompt should state the HPI boundary");
-assert.ok(checklistImprovementPrompt.prompt.includes("workup_refinement_v1"), "checklist improvement prompt should request structured replacement JSON");
+assert.ok(checklistImprovementPrompt.prompt.includes("workup_section_patch_v1"), "checklist improvement prompt should request structured patch JSON");
+assert.ok(!checklistImprovementPrompt.prompt.includes("\"schema\": \"workup_refinement_v1\""), "checklist improvement prompt should not request the legacy full replacement schema");
 assert.ok(checklistImprovementPrompt.prompt.includes("Output only one fenced JSON block"), "checklist improvement prompt should be paste-back friendly");
-assert.ok(checklistImprovementPrompt.prompt.includes("patientSpecific true"), "checklist improvement prompt should support patient-only rows");
+assert.ok(checklistImprovementPrompt.prompt.includes("Update/remove: use exact itemId"), "checklist improvement prompt should require exact stable row IDs for targeted edits");
 assert.ok(checklistImprovementPrompt.reviewText.includes("Selected local workup"), "PHI review text should include the compact patient summary");
 assert.ok(checklistImprovementPrompt.reviewText.includes("How is your nausea today?"), "PHI review text should include the current checklist");
 assert.ok(!checklistImprovementPrompt.reviewText.includes("John Smith"), "PHI review text should not scan or expose withheld raw source text for checklist improvement");

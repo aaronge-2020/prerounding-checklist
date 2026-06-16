@@ -49,6 +49,15 @@ async function showPatientWorkupsPane(page) {
   });
 }
 
+async function showPatientPathwayPane(page) {
+  await page.evaluate(() => document.querySelector('#patientWorkupPanel .target-pane-switcher [data-workup-pane-target="pathway"]')?.click());
+  await page.waitForFunction(() => {
+    const panel = document.querySelector("#patientWorkupPanel");
+    const toggle = document.querySelector("#decisionTreeHighlightPathToggle");
+    return panel?.dataset.activePane === "pathway" && Boolean(toggle?.getBoundingClientRect().height);
+  });
+}
+
 function startServer() {
   const server = createServer(async (request, response) => {
     try {
@@ -1235,6 +1244,41 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
   await page.waitForFunction((moduleId) => document.querySelector("#patientWorkupSelect")?.value === moduleId, chestPainId);
   const selectedLabel = await page.textContent("#patientValidatedIntentLabel");
   assert(/chest pain/i.test(selectedLabel), `selecting a workup result should update the patient workup, got ${selectedLabel}`);
+  await showPatientPathwayPane(page);
+  await page.waitForFunction(() => document.querySelector("#patientDecisionTreePanel")?._cytoscape?.nodes?.().length > 0);
+  const patientTreeAudit = await page.evaluate(() => {
+    const cy = document.querySelector("#patientDecisionTreePanel")?._cytoscape;
+    const fontSizes = cy ? cy.nodes().map((node) => Number.parseFloat(String(node.style("font-size") || "0"))) : [];
+    const dataInsufficientEdges = cy ? cy.edges().filter((edge) => /data insufficient/i.test(String(edge.data("label") || ""))).length : 0;
+    return {
+      cytoscapeReady: Boolean(cy && cy.nodes().length),
+      floatingToolbars: document.querySelectorAll("#patientDecisionTreePanel .cytoscape-tree-toolbar").length,
+      topFitButtons: document.querySelectorAll("#fitDecisionTreeButton").length,
+      topZoomInButtons: document.querySelectorAll("#zoomInDecisionTreeButton").length,
+      topZoomOutButtons: document.querySelectorAll("#zoomOutDecisionTreeButton").length,
+      minFontSize: fontSizes.length ? Math.min(...fontSizes) : 0,
+      dataInsufficientEdges
+    };
+  });
+  assert(patientTreeAudit.cytoscapeReady, `patient tree should render through Cytoscape: ${JSON.stringify(patientTreeAudit)}`);
+  assert(patientTreeAudit.floatingToolbars === 0, `patient tree should not duplicate the top zoom toolbar: ${JSON.stringify(patientTreeAudit)}`);
+  assert(patientTreeAudit.topFitButtons === 1, `patient tree should have one fit button: ${JSON.stringify(patientTreeAudit)}`);
+  assert(patientTreeAudit.topZoomInButtons === 1, `patient tree should have one zoom-in button: ${JSON.stringify(patientTreeAudit)}`);
+  assert(patientTreeAudit.topZoomOutButtons === 1, `patient tree should have one zoom-out button: ${JSON.stringify(patientTreeAudit)}`);
+  assert(patientTreeAudit.minFontSize >= 15, `patient tree node text should be readable by default: ${JSON.stringify(patientTreeAudit)}`);
+  assert(patientTreeAudit.dataInsufficientEdges <= 1, `patient tree should collapse repeated data-insufficient branches: ${JSON.stringify(patientTreeAudit)}`);
+  await page.click("#decisionTreeHighlightPathToggle");
+  await page.waitForFunction(() => document.querySelector("#decisionTreeHighlightPathToggle")?.getAttribute("aria-pressed") === "false");
+  const highlightOffAudit = await page.evaluate(() => {
+    const cy = document.querySelector("#patientDecisionTreePanel")?._cytoscape;
+    return {
+      ariaPressed: document.querySelector("#decisionTreeHighlightPathToggle")?.getAttribute("aria-pressed"),
+      allHighlightOff: cy ? cy.elements().every((entry) => entry.data("highlightActivePath") === "no") : false
+    };
+  });
+  assert(highlightOffAudit.allHighlightOff, `highlight toggle should turn active-path styling off: ${JSON.stringify(highlightOffAudit)}`);
+  await page.click("#decisionTreeHighlightPathToggle");
+  await page.waitForFunction(() => document.querySelector("#decisionTreeHighlightPathToggle")?.getAttribute("aria-pressed") === "true");
 
   await clickPatientTab(page, "checklist");
   checklistPanelButtons = await page.locator('#patientChecklistPanel:not([hidden]) .checklist-command-grid button:visible').allTextContents();
@@ -1310,6 +1354,74 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
   await page.waitForFunction(() => {
     const text = document.querySelector("#workspaceChecklistDirectory")?.textContent || "";
     return /new exertional chest pressure/i.test(text) && !/focal rash/i.test(text);
+  });
+  await page.selectOption("#patientChecklistPatchSectionSelect", "physical_exam");
+  await page.click("#copyPatientChecklistPatchPromptButton");
+  await page.waitForSelector("#phiOverlay:not([hidden])");
+  const checklistPatchPromptPreview = await page.textContent("#phiPreviewText");
+  assert(/workup_section_patch_v1/.test(checklistPatchPromptPreview) && /physical_exam/.test(checklistPatchPromptPreview) && /itemId/.test(checklistPatchPromptPreview), "patient checklist patch prompt should expose schema, target section, and exact row IDs");
+  await page.click("#closePhiOverlayButton");
+  const examPatchAdd = {
+    schema: "workup_section_patch_v1",
+    workupId: chestPainId,
+    sectionKey: "physical_exam",
+    summary: "Add a patient-specific volume exam row.",
+    operations: [
+      {
+        op: "add",
+        groupKey: "conditionalExam",
+        item: {
+          id: "patient_specific_jvp_patch",
+          item_type: "physical_exam_maneuver",
+          label: "Assess JVP with patient at 45 degrees",
+          technique: "Assess JVP with patient at 45 degrees",
+          answerMode: "single",
+          options: ["Not elevated", "Elevated", "Unable to assess"],
+          normalAnswers: ["Not elevated"],
+          rationale: "Clarifies volume status for this patient."
+        }
+      }
+    ]
+  };
+  await page.fill("#patientChecklistPatchInput", JSON.stringify(examPatchAdd, null, 2));
+  await page.waitForFunction(() => /patch ready/i.test(document.querySelector("#patientChecklistPatchPreview")?.textContent || ""));
+  await page.click("#applyPatientChecklistPatchButton");
+  await page.waitForFunction(() => /Assess JVP with patient at 45 degrees/i.test(document.querySelector("#workspaceChecklistDirectory")?.textContent || ""));
+  const examPatchUpdate = {
+    schema: "workup_section_patch_v1",
+    workupId: chestPainId,
+    sectionKey: "physical_exam",
+    summary: "Refine the patient-specific volume exam row.",
+    operations: [
+      {
+        op: "update",
+        itemId: "patient_specific_jvp_patch",
+        label: "Assess JVP and hepatojugular reflux",
+        technique: "Assess JVP and hepatojugular reflux",
+        options: ["Not elevated", "Elevated JVP", "Positive hepatojugular reflux", "Unable to assess"],
+        normalAnswers: ["Not elevated"]
+      }
+    ]
+  };
+  await page.fill("#patientChecklistPatchInput", JSON.stringify(examPatchUpdate, null, 2));
+  await page.waitForFunction(() => /patch ready/i.test(document.querySelector("#patientChecklistPatchPreview")?.textContent || ""));
+  await page.click("#applyPatientChecklistPatchButton");
+  await page.waitForFunction(() => /hepatojugular reflux/i.test(document.querySelector("#workspaceChecklistDirectory")?.textContent || ""));
+  const examPatchRemove = {
+    schema: "workup_section_patch_v1",
+    workupId: chestPainId,
+    sectionKey: "physical_exam",
+    summary: "Remove the patient-specific volume exam row.",
+    operations: [
+      { op: "remove", itemId: "patient_specific_jvp_patch" }
+    ]
+  };
+  await page.fill("#patientChecklistPatchInput", JSON.stringify(examPatchRemove, null, 2));
+  await page.waitForFunction(() => /patch ready/i.test(document.querySelector("#patientChecklistPatchPreview")?.textContent || ""));
+  await page.click("#applyPatientChecklistPatchButton");
+  await page.waitForFunction(() => {
+    const text = document.querySelector("#workspaceChecklistDirectory")?.textContent || "";
+    return /new exertional chest pressure/i.test(text) && !/hepatojugular reflux/i.test(text);
   });
 
   await page.locator("#workspaceChecklistDirectory .workspace-checklist-jump").first().click();
