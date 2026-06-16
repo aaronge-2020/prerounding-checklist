@@ -68,7 +68,7 @@ const outputContracts = {
     "open_evidence_rounds_pasteback_v1"
   ],
   final_rounds_update: ["Assume the attending heard the full presentation yesterday", "III. ASSESSMENT AND PLAN", "changes management", "APP_PASTE_BACK_JSON", "open_evidence_rounds_pasteback_v1"],
-  checklist_improvement_review: ["Output only one fenced JSON block", "\"schema\": \"workup_section_patch_v1\"", "\"operations\"", "\"itemId\""],
+  checklist_improvement_review: ["Output only one fenced JSON block", "Preserve underscores exactly", "\"schema\": \"workup_section_patch_v1\"", "\"operations\"", "\"itemId\""],
   decision_tree_builder: [
     "You are designing a compact clinical management algorithm, not a guideline summary.",
     "Create a protocol-style decision tree for:",
@@ -292,6 +292,7 @@ assert.ok(checklistImprovementPrompt.prompt.includes("full HPI are intentionally
 assert.ok(checklistImprovementPrompt.prompt.includes("workup_section_patch_v1"), "checklist improvement prompt should request structured patch JSON");
 assert.ok(!checklistImprovementPrompt.prompt.includes("\"schema\": \"workup_refinement_v1\""), "checklist improvement prompt should not request the legacy full replacement schema");
 assert.ok(checklistImprovementPrompt.prompt.includes("Output only one fenced JSON block"), "checklist improvement prompt should be paste-back friendly");
+assert.ok(checklistImprovementPrompt.prompt.includes("Preserve underscores exactly"), "checklist improvement prompt should guard against markdown emphasis corrupting identifiers");
 assert.ok(checklistImprovementPrompt.prompt.includes("Update/remove: use exact itemId"), "checklist improvement prompt should require exact stable row IDs for targeted edits");
 assert.ok(checklistImprovementPrompt.reviewText.includes("Selected local workup"), "PHI review text should include the compact patient summary");
 assert.ok(checklistImprovementPrompt.reviewText.includes("How is your nausea today?"), "PHI review text should include the current checklist");

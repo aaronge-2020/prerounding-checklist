@@ -1437,6 +1437,38 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
     const text = document.querySelector("#workspaceChecklistDirectory")?.textContent || "";
     return /new exertional chest pressure/i.test(text) && !/hepatojugular reflux/i.test(text);
   });
+  const mangledOpenEvidencePatch = "```json\n" + `{
+    "schema": "workup*section*patch*v1",*
+    "workupId": "${chestPainId.replace(/_/g, "*")}",*
+    "sectionKey": "physical*exam",*
+    "summary": "Add an orthostatic vital-sign exam row from malformed OpenEvidence JSON.",
+    "operations":
+    {
+      "op": "add",
+      "groupKey": "conditionalExam",
+      "item": {
+        "id": "patient*specific*orthostatic*patch",*
+        "item*type": "physical*exam*maneuver",*
+        "label": "Assess orthostatic vital signs",
+        "answerMode": "single",
+        "options":
+        "No orthostatic change",
+        "Orthostatic hypotension",
+        "Unable to assess"
+        ],
+        "normalAnswers":
+        "No orthostatic change"
+        ],
+        "rationale": "Clarifies bedside volume status for this patient."
+      }
+    }
+  ]
+  }` + "\n```";
+  await page.fill("#patientChecklistPatchInput", mangledOpenEvidencePatch);
+  await page.waitForFunction(() => /patch ready/i.test(document.querySelector("#patientChecklistPatchPreview")?.textContent || ""));
+  await page.waitForFunction(() => /formatting was repaired/i.test(document.querySelector("#patientChecklistPatchPreview")?.textContent || ""));
+  await page.click("#applyPatientChecklistPatchButton");
+  await page.waitForFunction(() => /Assess orthostatic vital signs/i.test(document.querySelector("#workspaceChecklistDirectory")?.textContent || ""));
 
   await page.locator("#workspaceChecklistDirectory .workspace-checklist-jump").first().click();
   await page.waitForSelector("#bedsideView:not([hidden])");

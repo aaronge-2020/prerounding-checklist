@@ -24363,9 +24363,134 @@ Rules:
       };
     }
 
+    function structuredJsonObjectCandidates(text = "") {
+      const source = String(text || "").trim();
+      if (!source) return [];
+      const candidates = [];
+      const fencedPattern = /```(?:json)?\s*([\s\S]*?)```/gi;
+      let fencedMatch;
+      while ((fencedMatch = fencedPattern.exec(source))) {
+        const fencedBody = String(fencedMatch[1] || "").trim();
+        if (fencedBody.startsWith("{")) candidates.push(fencedBody);
+      }
+      const firstBrace = source.indexOf("{");
+      const lastBrace = source.lastIndexOf("}");
+      if (firstBrace >= 0 && lastBrace > firstBrace) {
+        candidates.push(source.slice(firstBrace, lastBrace + 1).trim());
+      }
+      return Array.from(new Set(candidates));
+    }
+
+    function parseStructuredJsonCandidate(candidate = "") {
+      try {
+        const parsed = JSON.parse(candidate);
+        return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : null;
+      } catch {
+        return null;
+      }
+    }
+
+    const openEvidencePatchIdentifierKeys = new Set([
+      "schema",
+      "workupId",
+      "workup_id",
+      "sectionKey",
+      "section_key",
+      "groupKey",
+      "group_key",
+      "fromGroupKey",
+      "from_group_key",
+      "toGroupKey",
+      "to_group_key",
+      "itemId",
+      "item_id",
+      "id",
+      "item_type",
+      "source_id"
+    ]);
+
+    const openEvidencePatchArrayKeys = new Set([
+      "options",
+      "answerOptions",
+      "answer_options",
+      "findingsOptions",
+      "findings_options",
+      "normalAnswers",
+      "normal_answers",
+      "exclusiveGroups",
+      "exclusive_groups",
+      "citations",
+      "tags"
+    ]);
+
+    function repairOpenEvidencePatchCandidate(candidate = "") {
+      let repaired = String(candidate || "").trim();
+      if (!repaired) return "";
+      repaired = repaired
+        .replace(/\r\n/g, "\n")
+        .replace(/[“”]/g, "\"")
+        .replace(/[‘’]/g, "'")
+        .replace(/:contentReference\[[^\]]+\]\{[^}]*\}/g, "");
+      repaired = repaired.replace(/"([A-Za-z0-9][A-Za-z0-9*_-]*\*[A-Za-z0-9*_-]*)"/g, (_, token) => JSON.stringify(token.replace(/\*/g, "_")));
+      repaired = repaired
+        .replace(/,\s*\*/g, ",")
+        .replace(/"\s*\*/g, "\"")
+        .replace(/:\s*\*/g, ":")
+        .replace(/^\s*\*\s*$/gm, "");
+      repaired = repaired.replace(/"operations"\s*:\s*\{\s*"op"\s*:/g, "\"operations\": [ { \"op\":");
+      repaired = repaired.replace(/"(options|normalAnswers|normal_answers|answerOptions|answer_options|findingsOptions|findings_options|exclusiveGroups|exclusive_groups|citations|tags)"\s*:\s*(?=")/g, "\"$1\": [ ");
+      repaired = repaired.replace(/,\s*([}\]])/g, "$1");
+      return repaired;
+    }
+
+    function normalizeOpenEvidencePatchKey(key = "") {
+      return String(key || "").replace(/\*/g, "_");
+    }
+
+    function normalizeOpenEvidencePatchValue(key = "", value) {
+      const normalizedKey = normalizeOpenEvidencePatchKey(key);
+      if (Array.isArray(value)) return value.map((entry) => normalizeOpenEvidencePatchValue("", entry));
+      if (value && typeof value === "object") return normalizeOpenEvidencePatchObject(value);
+      if (typeof value === "string" && openEvidencePatchIdentifierKeys.has(normalizedKey)) {
+        return value.replace(/\*/g, "_").trim();
+      }
+      return value;
+    }
+
+    function normalizeOpenEvidencePatchObject(raw = {}) {
+      if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
+      const normalized = {};
+      for (const [key, value] of Object.entries(raw)) {
+        const normalizedKey = normalizeOpenEvidencePatchKey(key);
+        normalized[normalizedKey] = normalizeOpenEvidencePatchValue(normalizedKey, value);
+      }
+      if (normalized.operations && !Array.isArray(normalized.operations)) {
+        normalized.operations = [normalized.operations];
+      }
+      for (const key of openEvidencePatchArrayKeys) {
+        if (Object.prototype.hasOwnProperty.call(normalized, key) && !Array.isArray(normalized[key])) {
+          normalized[key] = optionFromItemValue(normalized[key]);
+        }
+      }
+      return normalized;
+    }
+
     function extractPatientChecklistPatchJson(text = "") {
-      const raw = extractStructuredRefinementJson(text);
-      return raw?.schema === workupSectionPatchSchema ? raw : null;
+      for (const candidate of structuredJsonObjectCandidates(text)) {
+        const attempts = [
+          { text: candidate, repaired: false },
+          { text: repairOpenEvidencePatchCandidate(candidate), repaired: true }
+        ].filter((attempt) => attempt.text);
+        for (const attempt of attempts) {
+          const raw = parseStructuredJsonCandidate(attempt.text);
+          const normalized = normalizeOpenEvidencePatchObject(raw);
+          if (normalized?.schema === workupSectionPatchSchema) {
+            if (attempt.repaired && attempt.text !== candidate) normalized.__openEvidenceJsonRepaired = true;
+            return normalized;
+          }
+        }
+      }
+      return null;
     }
 
     function patientChecklistPatchValidation(text = "", { sectionKey = "", allowNoOperations = true } = {}) {
@@ -24396,7 +24521,7 @@ Rules:
           status: "ready",
           patch,
           payload,
-          message: `${operations.length} ${targetSectionKey === "physical_exam" ? "exam" : "history"} operation${operations.length === 1 ? "" : "s"} ready for this patient.`
+          message: `${operations.length} ${targetSectionKey === "physical_exam" ? "exam" : "history"} operation${operations.length === 1 ? "" : "s"} ready for this patient.${patch.__openEvidenceJsonRepaired ? " OpenEvidence formatting was repaired before validation." : ""}`
         };
       } catch (error) {
         return {
@@ -24622,7 +24747,8 @@ Rules:
       const sectionName = sectionKey === "physical_exam" ? "physical exam" : "history questions";
       return [
         "You are refining one active patient's bedside checklist.",
-        "Return only valid JSON. Do not include prose, markdown citations, :contentReference markers, or a reference list.",
+        "Return one fenced ```json code block only. Do not include prose, markdown citations, :contentReference markers, or a reference list.",
+        "Preserve underscores exactly; no stray asterisks. JSON.parse must pass. operations/options/normalAnswers must be bracketed arrays.",
         "Do not regenerate the full checklist. Do not output workup_refinement_v1. Do not modify any section except the selected section.",
         "",
         `workupId: ${state.selectedWorkupModuleId || ""}`,
@@ -26653,19 +26779,9 @@ Rules:
     }
 
     function extractStructuredRefinementJson(text = "") {
-      const source = String(text || "").trim();
-      if (!source) return null;
-      const fenced = source.match(/```(?:json)?\s*([\s\S]*?)```/i);
-      const candidates = [
-        fenced?.[1],
-        source.slice(source.indexOf("{"), source.lastIndexOf("}") + 1)
-      ].filter((candidate) => candidate && candidate.trim().startsWith("{"));
-      for (const candidate of candidates) {
-        try {
-          return JSON.parse(candidate);
-        } catch {
-          // Try the next candidate.
-        }
+      for (const candidate of structuredJsonObjectCandidates(text)) {
+        const parsed = parseStructuredJsonCandidate(candidate);
+        if (parsed) return parsed;
       }
       return null;
     }
