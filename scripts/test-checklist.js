@@ -6,6 +6,7 @@ import {
   auditChecklistTraceability,
   buildCleanupPrompt,
   buildLocalChecklistFromWorkup,
+  checklistItemOptions,
   checklistPrompt,
   expandedLocalBedsideQuestionItems,
   groupChecklistSectionsByOrganSystem,
@@ -162,6 +163,67 @@ assert.deepEqual(
   moduleChecklistFailures,
   [],
   `Every bundled validated workup module should build a parseable organ-system bedside checklist:\n${moduleChecklistFailures.join("\n")}`
+);
+
+const mismatchedChestLocationOptions = checklistItemOptions(
+  {
+    label: "Where is the chest discomfort located?",
+    options: "Pressure-heavy / Sharp or pleuritic / Burning or reflux-like / Tight or crushing / Other ___"
+  },
+  "bedside",
+  "Where is the chest discomfort located?"
+);
+assert.ok(
+  /Central or left chest/i.test(mismatchedChestLocationOptions)
+    && /Right chest/i.test(mismatchedChestLocationOptions)
+    && /Epigastric/i.test(mismatchedChestLocationOptions)
+    && !/Pressure-heavy|Sharp or pleuritic/i.test(mismatchedChestLocationOptions),
+  "chest pain location questions should not preserve mismatched quality-style answer options"
+);
+
+const mismatchedChestQualityOptions = checklistItemOptions(
+  {
+    label: "What does the chest discomfort feel like?",
+    options: "Central or left chest / Right chest / Epigastric / Back / Other location ___ / Unsure"
+  },
+  "bedside",
+  "What does the chest discomfort feel like?"
+);
+assert.ok(
+  /Pressure or heaviness/i.test(mismatchedChestQualityOptions)
+    && /Sharp or pleuritic/i.test(mismatchedChestQualityOptions)
+    && !/Central or left chest/i.test(mismatchedChestQualityOptions),
+  "chest pain quality questions should not preserve mismatched location answer options"
+);
+
+const chestPainModule = complaintModules.find((module) => module.id === "chest_pain_v1");
+assert.ok(chestPainModule, "adult chest pain workup module should be bundled");
+const chestPainWorkup = evaluateComplaintCds("adult chest pain pressure tightness pleuritic chest discomfort", {}, { module: chestPainModule, modules: [chestPainModule] });
+const chestPainChecklist = buildLocalChecklistFromWorkup(
+  { complaintResult: chestPainWorkup, recommendation: chestPainWorkup?.recommendation },
+  { allowGenericFallbacks: true, maxBedsideQuestions: 18, maxExamItems: 15, includeSafetyInExamChecklist: true }
+);
+const chestPainItems = parseChecklist(chestPainChecklist)
+  .flatMap((section) => section.items || [])
+  .filter((item) => item.category === "bedside");
+const chestPainOptionsByLabel = new Map(chestPainItems.map((item) => [
+  item.label,
+  checklistItemOptions(item, "bedside", item.label)
+]));
+assert.ok(
+  /Pressure or heaviness/i.test(chestPainOptionsByLabel.get("What does the chest discomfort feel like?") || "")
+    && !/Central or left chest/i.test(chestPainOptionsByLabel.get("What does the chest discomfort feel like?") || ""),
+  "generated chest pain quality row should use quality options only"
+);
+assert.ok(
+  /Central or left chest/i.test(chestPainOptionsByLabel.get("Where is the chest discomfort located?") || "")
+    && !/Pressure or heaviness|Sharp or pleuritic/i.test(chestPainOptionsByLabel.get("Where is the chest discomfort located?") || ""),
+  "generated chest pain location row should use location options only"
+);
+assert.ok(
+  /No radiation/i.test(chestPainOptionsByLabel.get("Does the chest discomfort radiate?") || "")
+    && !/Central or left chest|Pressure or heaviness/i.test(chestPainOptionsByLabel.get("Does the chest discomfort radiate?") || ""),
+  "generated chest pain radiation row should use radiation options only"
 );
 
 assert.equal(itemsByCategory(dkaSections, "bedside").length, 12, "DKA sample should atomize compound bedside questions");
@@ -337,6 +399,7 @@ const unsupportedLocalChecklist = buildLocalChecklistFromWorkup({});
 assert.equal(unsupportedLocalChecklist, "", "local checklist generation should block unsupported/no-intent workups instead of emitting generic defaults");
 
 const generatedBadAtomicLabels = [];
+const generatedQuestionOptionMismatches = [];
 for (const module of complaintModules) {
   const result = evaluateComplaintCds(module.label || module.title || module.id, {}, { module });
   const checklist = buildLocalChecklistFromWorkup(
@@ -348,10 +411,19 @@ for (const module of complaintModules) {
       if (/^Any not present\?$/i.test(item.label || "")) {
         generatedBadAtomicLabels.push(`${module.id}: ${item.label}`);
       }
+      const label = item.label || "";
+      const options = checklistItemOptions(item, item.category || section.category, label);
+      if ((item.category || section.category) === "bedside"
+        && /\b(?:where|located|location|site|area|worst)\b/i.test(label)
+        && /\b(?:pressure|pleuritic|crushing|reflux-like|heaviness)\b/i.test(options)
+        && !/\b(?:central|right|left|epigastric|diffuse|localized|location)\b/i.test(options)) {
+        generatedQuestionOptionMismatches.push(`${module.id}: ${label} -> ${options}`);
+      }
     }
   }
 }
 assert.deepEqual(generatedBadAtomicLabels, [], "generated local checklists should not turn generic option text into patient questions");
+assert.deepEqual(generatedQuestionOptionMismatches, [], "generated local checklists should not attach pain-quality answers to location questions");
 
 const broadFeverSourceQuestion = {
   id: "REQ-infection-source-severity-history",
@@ -944,7 +1016,7 @@ assert.ok(
 assert.ok(
   appHtml.includes('id="exportPhoneContextButton"')
     && appHtml.includes('id="importPhoneFindingsButton"')
-    && appHtml.includes("code-paired local bundles"),
+    && appHtml.includes("code-paired local bundle"),
   "desktop-to-phone checklist handoff should be explicit and local-first"
 );
 assert.ok(
@@ -992,7 +1064,7 @@ assert.ok(
 );
 assert.ok(
   appHtml.includes('id="workspaceFindingsGateNotice"')
-    && appHtml.includes("Answer at least one bedside checklist item before recording findings here")
+    && appHtml.includes("Build the bedside checklist before sending or returning phone findings.")
     && appHtml.includes("findingsUnlocked"),
   "patient findings should be gated behind checklist-derived findings"
 );

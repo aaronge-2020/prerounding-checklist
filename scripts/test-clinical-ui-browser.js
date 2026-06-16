@@ -1273,7 +1273,7 @@ try {
 	  }));
 	  assert(patientEvidenceApplyState.status === "ready", `patient Evidence change preview should show supported changes: ${JSON.stringify(patientEvidenceApplyState)}`);
 	  assert(/Apply to this patient/i.test(patientEvidenceApplyState.patientButton) && !patientEvidenceApplyState.patientDisabled, `patient Evidence patient-only apply should be enabled: ${JSON.stringify(patientEvidenceApplyState)}`);
-	  assert(/Save as default/i.test(patientEvidenceApplyState.defaultButton) && !patientEvidenceApplyState.defaultDisabled, `patient Evidence default save should be enabled: ${JSON.stringify(patientEvidenceApplyState)}`);
+	  assert(/Save vault override/i.test(patientEvidenceApplyState.defaultButton) && !patientEvidenceApplyState.defaultDisabled, `patient Evidence vault override save should be enabled: ${JSON.stringify(patientEvidenceApplyState)}`);
 	  await page.click("#patientApplyEvidenceRefinementButton");
 	  await page.waitForFunction(() => document.body.dataset.view === "workspace" && document.body.dataset.patientTab === "checklist");
 	  await page.waitForFunction(() => /testosterone, steroid, opioid/i.test(document.querySelector("#workspaceChecklistPreviewList")?.textContent || document.body.innerText || ""));

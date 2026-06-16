@@ -1091,11 +1091,38 @@ function componentPresenceOptions(component = "") {
 function itemSpecificBedsideOptions(label = "") {
   const text = String(label || "").toLowerCase();
   const subject = optionSubjectFromQuestion(label);
+  const normalized = normalizedListText(label);
   if (/main concern|team to know|question for team/.test(text)) {
     return "Symptom concern / Treatment concern / Discharge concern / Question for team / Other ___";
   }
   if (/new or worsening symptom/.test(text)) {
     return "No new symptom / New symptom / Worsening symptom / Unsure / Other ___";
+  }
+  if (/\b(?:chest pain|chest pressure|chest discomfort|discomfort)\b/.test(text)) {
+    if (/\b(?:where|located|location|site|area|worst)\b/.test(normalized)) {
+      return "Central or left chest / Right chest / Epigastric / Back / Diffuse / Other location ___ / Unsure";
+    }
+    if (/\b(?:what does|feel like|quality|character)\b/.test(normalized)) {
+      return "Pressure or heaviness / Sharp or pleuritic / Burning or reflux-like / Tight or crushing / Other quality ___ / Unsure";
+    }
+    if (/\b(?:radiat|jaw|arm|shoulder)\b/.test(normalized)) {
+      return "No radiation / Arm radiation / Jaw radiation / Back radiation / Shoulder radiation / Multiple sites / Other ___";
+    }
+    if (/\b(?:relieved by rest|rest relief|better with rest)\b/.test(normalized)) {
+      return "Not relieved by rest / Partially relieved / Fully relieved / Unsure / Other ___";
+    }
+    if (/\b(?:when|start|started|onset|ongoing|resolved|recurrent|duration|how long)\b/.test(normalized)) {
+      return "New today or acute onset / 1-2 days / 3 or more days / Ongoing now / Resolved / Recurrent episodes / Unknown / Other ___";
+    }
+  }
+  if (/\b(?:where|located|location|site|area|worst)\b/.test(normalized) && /\b(?:pain|ache|discomfort|tender|stiffness)\b/.test(normalized)) {
+    return "Localized / Diffuse / Moved location / Location ___ / Unknown / Other ___";
+  }
+  if (/\b(?:what does|feel like|quality|character)\b/.test(normalized) && /\b(?:pain|ache|discomfort)\b/.test(normalized)) {
+    return "Pressure or heaviness / Sharp or pleuritic / Burning / Tight or cramping / Other quality ___ / Unsure";
+  }
+  if (/\b(?:radiat|jaw|arm|shoulder)\b/.test(normalized) && /\b(?:pain|ache|discomfort)\b/.test(normalized)) {
+    return "No radiation / Arm radiation / Jaw radiation / Back radiation / Shoulder radiation / Multiple sites / Other ___";
   }
   if (/breath|short of breath|dyspnea|orthopnea|lying flat|pnd|oxygen/.test(text)) {
     return "No breathing trouble / With activity / At rest / Lying flat or PND / Higher oxygen need / Other ___";
@@ -1191,6 +1218,74 @@ function itemSpecificExamOptions(label = "") {
 function itemSpecificChecklistOptions(item = {}, kind = "", label = "") {
   const itemLabel = label || item.label || item.text || item.displayLabel || "";
   return kind === "bedside" ? itemSpecificBedsideOptions(itemLabel) : itemSpecificExamOptions(itemLabel);
+}
+
+function bedsideQuestionOptionIntent(label = "") {
+  const text = normalizedListText(label);
+  if (!text) {
+    return "";
+  }
+  const painContext = /\b(?:chest|pain|ache|discomfort|pressure|tender|stiffness)\b/.test(text);
+  if (painContext && /\b(?:where|located|location|site|area|worst)\b/.test(text)) {
+    return "location";
+  }
+  if (painContext && /\b(?:what does|feel like|quality|character)\b/.test(text)) {
+    return "quality";
+  }
+  if (painContext && /\b(?:radiat|jaw|arm|shoulder)\b/.test(text)) {
+    return "radiation";
+  }
+  if (/\b(?:chest pain|chest pressure|chest discomfort|discomfort)\b/.test(text)
+    && /\b(?:when|start|started|onset|ongoing|resolved|recurrent|duration|how long)\b/.test(text)) {
+    return "timing";
+  }
+  if (/\b(?:chest pain|chest pressure|chest discomfort|discomfort)\b/.test(text)
+    && /\b(?:relieved by rest|rest relief|better with rest)\b/.test(text)) {
+    return "rest-relief";
+  }
+  return "";
+}
+
+function bedsideOptionIntentFlags(value = "") {
+  const text = normalizedListText(optionLabels(value, ""));
+  return {
+    quality: /\b(?:pressure|heaviness|heavy|sharp|pleuritic|burning|reflux|tight|crushing|quality)\b/.test(text),
+    location: /\b(?:central|left chest|right chest|epigastric|substernal|sternal|back|diffuse|localized|location|site|area)\b/.test(text),
+    radiation: /\b(?:radiation|radiate|arm|jaw|shoulder|multiple sites)\b/.test(text),
+    timing: /\b(?:today|acute onset|1 2 days|3 or more days|ongoing|resolved|recurrent|duration|unknown)\b/.test(text),
+    restRelief: /\b(?:relieved by rest|partially relieved|fully relieved|not relieved|rest)\b/.test(text)
+  };
+}
+
+function checklistOptionsMismatchLabel(rawOptions = "", kind = "", label = "") {
+  if (kind !== "bedside") {
+    return false;
+  }
+  const intent = bedsideQuestionOptionIntent(label);
+  if (!intent) {
+    return false;
+  }
+  const labels = checklistOptionLabels(rawOptions);
+  if (!labels.length) {
+    return false;
+  }
+  const flags = bedsideOptionIntentFlags(rawOptions);
+  if (intent === "location") {
+    return (flags.quality || flags.radiation || flags.timing || flags.restRelief) && !flags.location;
+  }
+  if (intent === "quality") {
+    return (flags.location || flags.radiation || flags.timing || flags.restRelief) && !flags.quality;
+  }
+  if (intent === "radiation") {
+    return (flags.quality || flags.location || flags.timing || flags.restRelief) && !flags.radiation;
+  }
+  if (intent === "timing") {
+    return (flags.quality || flags.location || flags.radiation || flags.restRelief) && !flags.timing;
+  }
+  if (intent === "rest-relief") {
+    return (flags.quality || flags.location || flags.radiation || flags.timing) && !flags.restRelief;
+  }
+  return false;
 }
 
 function examAtom(label, options = "") {
@@ -1296,6 +1391,7 @@ export function checklistItemOptions(item = {}, kind = "", label = "") {
   const fallback = itemSpecificChecklistOptions(item, kind, label);
   const normalized = optionLabels(rawOptions, fallback);
   return hasGenericOnlyChecklistOptions(rawOptions || normalized, kind)
+    || checklistOptionsMismatchLabel(rawOptions || normalized, kind, label)
     ? fallback
     : normalized;
 }
