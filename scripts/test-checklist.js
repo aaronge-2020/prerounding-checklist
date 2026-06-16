@@ -950,6 +950,13 @@ assert.ok(
   "desktop-to-phone checklist handoff should be explicit and local-first"
 );
 assert.ok(
+  appHtml.includes("phoneHandoffPayloadMatchesCurrentChecklist")
+    && appHtml.includes("clearStalePhonePayload")
+    && appHtml.includes("String(payload.checklistFingerprint || \"\") === phoneChecklistFingerprint()")
+    && appHtml.includes("phoneReturnQr3"),
+  "phone handoff should reject stale checklist bundles and use the compact return QR format"
+);
+assert.ok(
   appHtml.includes("Editable smart-phrase template")
     && appHtml.includes('id="promptVariableBar"')
     && appHtml.includes("promptTemplatesByTaskId")

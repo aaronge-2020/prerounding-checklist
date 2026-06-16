@@ -1,6 +1,7 @@
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
 import { extname, resolve } from "node:path";
+import { gunzipSync } from "node:zlib";
 import { chromium } from "playwright";
 
 const root = process.cwd();
@@ -27,6 +28,23 @@ function decodeLocalBundle(encoded) {
 
 function encodeLocalBundle(payload) {
   return Buffer.from(JSON.stringify(payload), "utf8").toString("base64");
+}
+
+function decodeBase64UrlText(encoded) {
+  const normalized = String(encoded || "").replace(/-/g, "+").replace(/_/g, "/");
+  const padded = normalized.padEnd(normalized.length + ((4 - (normalized.length % 4)) % 4), "=");
+  return Buffer.from(padded, "base64").toString("utf8");
+}
+
+function decodeCompactReturnQrToken(token) {
+  const text = String(token || "").trim();
+  if (text.startsWith("rgz.")) {
+    const normalized = text.slice(4).replace(/-/g, "+").replace(/_/g, "/");
+    const padded = normalized.padEnd(normalized.length + ((4 - (normalized.length % 4)) % 4), "=");
+    return JSON.parse(gunzipSync(Buffer.from(padded, "base64")).toString("utf8"));
+  }
+  if (text.startsWith("rj.")) return JSON.parse(decodeBase64UrlText(text.slice(3)));
+  throw new Error("Unsupported return QR token");
 }
 
 async function clickPatientTab(page, tabName) {
@@ -801,10 +819,19 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   await phonePage.waitForSelector("#bedsideCompletionQrCode svg", { timeout: 45000 });
   const returnQrText = await phonePage.evaluate(() => document.querySelector("#bedsideCompletionPanel")?.dataset.qrText || "");
   assert(/^(?:rgz|rj)\./.test(returnQrText), "completed phone return QR should expose a compact local return token");
+  const compactReturnPayload = decodeCompactReturnQrToken(returnQrText);
+  const returnQrVersionAudit = {
+    compactVersion: compactReturnPayload?.v || "",
+    rawTokenLength: returnQrText.length,
+    encodedAnswerRows: Array.isArray(compactReturnPayload?.a) ? compactReturnPayload.a.length : 0,
+    tokenPrefix: returnQrText.slice(0, 4)
+  };
+  assert(returnQrVersionAudit.compactVersion === "phoneReturnQr3" && returnQrVersionAudit.encodedAnswerRows >= 20 && returnQrVersionAudit.rawTokenLength < 1200, `compact v3 return QR should encode answers without an oversized token: ${JSON.stringify(returnQrVersionAudit)}`);
   const completionAudit = await phonePage.evaluate(() => ({
     title: document.querySelector("#bedsideCompletionTitle")?.textContent || "",
     progress: document.querySelector("#bedsideMobileProgress")?.textContent || "",
     hasQr: Boolean(document.querySelector("#bedsideCompletionQrCode svg")),
+    qrBoxWidth: Math.round(document.querySelector("#bedsideCompletionQrCode")?.getBoundingClientRect().width || 0),
     copyText: document.querySelector("#completionCopyPhoneReturnPayloadButton")?.textContent || "",
     reviewVisible: Boolean(document.querySelector("#completionReviewFindingsButton")?.getBoundingClientRect().height),
     addNoteVisible: Boolean(document.querySelector("#completionAddBedsideNoteButton")?.getBoundingClientRect().height),
@@ -812,7 +839,7 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
     summaryRows: document.querySelectorAll(".bedside-completion-summary-row").length
   }));
   assert(/Findings ready/i.test(completionAudit.title) && /26\/26 answered/i.test(completionAudit.progress), `completed phone screen should default to findings-ready QR state: ${JSON.stringify(completionAudit)}`);
-  assert(completionAudit.hasQr && /Copy findings for computer/i.test(completionAudit.copyText) && !completionAudit.reviewVisible && completionAudit.addNoteVisible && completionAudit.maximizeVisible && completionAudit.summaryRows >= 1, `completed phone screen should show QR, copy fallback, note capture, maximize, and summary without desktop review: ${JSON.stringify(completionAudit)}`);
+  assert(completionAudit.hasQr && completionAudit.qrBoxWidth >= 240 && /Copy findings for computer/i.test(completionAudit.copyText) && !completionAudit.reviewVisible && completionAudit.addNoteVisible && completionAudit.maximizeVisible && completionAudit.summaryRows >= 1, `completed phone screen should show a large QR, copy fallback, note capture, maximize, and summary without desktop review: ${JSON.stringify(completionAudit)}`);
   await phonePage.click("#maximizeBedsideReturnQrButton");
   await phonePage.waitForSelector("#phoneReturnQrOverlay:not([hidden])");
   await phonePage.waitForSelector("#phoneReturnQrCode svg", { timeout: 45000 });

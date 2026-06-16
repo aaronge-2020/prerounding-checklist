@@ -12688,6 +12688,271 @@
         font-weight: 760;
         white-space: nowrap;
       }
+
+    }
+
+    @media (max-width: 640px) {
+      body[data-view="bedside"] #bedsideView:not([hidden]) {
+          padding-bottom: 82px;
+        }
+
+        body[data-view="bedside"] .bedside-mobile-top {
+          grid-template-columns: 34px minmax(0, 1fr) 42px;
+          gap: 8px;
+          min-height: 58px;
+          padding: 8px 12px;
+        }
+
+        body[data-view="bedside"] .bedside-mobile-top .brand-mark {
+          width: 32px;
+          height: 32px;
+          border-radius: 7px;
+        }
+
+        body[data-view="bedside"] .bedside-mobile-top > div {
+          gap: 1px 6px;
+        }
+
+        body[data-view="bedside"] .bedside-mobile-top strong {
+          font-size: 14px;
+          line-height: 1.15;
+        }
+
+        body[data-view="bedside"] #bedsideMobileSubtitle {
+          font-size: 11px;
+          line-height: 1.2;
+        }
+
+        body[data-view="bedside"] .bedside-mobile-progress {
+          font-size: 11px;
+        }
+
+        body[data-view="bedside"] #bedsideMobileMenuButton {
+          width: 40px;
+          height: 34px;
+          border-radius: 7px;
+          font-size: 11px;
+        }
+
+        body[data-view="bedside"] .bedside-workbar {
+          gap: 8px;
+          padding: 8px 10px;
+        }
+
+        body[data-view="bedside"] #checklistSectionTabs.section-tab-strip {
+          display: flex !important;
+          gap: 6px;
+          overflow-x: auto;
+          scrollbar-width: none;
+          padding-bottom: 1px;
+        }
+
+        body[data-view="bedside"] #checklistSectionTabs.section-tab-strip::-webkit-scrollbar {
+          display: none;
+        }
+
+        body[data-view="bedside"] .section-tab-strip button {
+          flex: 0 0 auto;
+          min-width: 72px;
+          min-height: 32px;
+          padding: 5px 8px;
+          font-size: 11px;
+        }
+
+        body[data-view="bedside"] .checklist-search-box {
+          min-height: 36px;
+        }
+
+        body[data-view="bedside"] .checklist-search-box input {
+          height: 32px;
+          font-size: 12px;
+        }
+
+        body[data-view="bedside"] .checklist-filter-grid {
+          gap: 6px;
+        }
+
+        body[data-view="bedside"] .checklist-filter-grid button {
+          min-height: 34px;
+          padding: 5px 4px;
+          font-size: 11px;
+        }
+
+        body[data-view="bedside"] .checklist-section header {
+          min-height: 38px;
+          padding: 0 10px;
+        }
+
+        body[data-view="bedside"] .checklist-section h2 {
+          font-size: 11px;
+        }
+
+        body[data-view="bedside"] .checklist-section header .status-chip,
+        body[data-view="bedside"] .section-normal-button {
+          font-size: 11px;
+        }
+
+        body[data-view="bedside"] .checklist-row,
+        body[data-view="bedside"] .checklist-row.is-search-match {
+          grid-template-columns: 22px 18px minmax(0, 1fr) 30px;
+          gap: 0 6px;
+          padding: 9px 10px 10px;
+        }
+
+        body[data-view="bedside"] .checklist-row-status-marker {
+          width: 20px;
+          height: 20px;
+        }
+
+        body[data-view="bedside"] .checklist-row-index {
+          font-size: 13px;
+        }
+
+        body[data-view="bedside"] .checklist-question-header {
+          padding-right: 26px;
+        }
+
+        body[data-view="bedside"] .checklist-question {
+          font-size: 12.5px;
+          line-height: 1.22;
+        }
+
+        body[data-view="bedside"] .checklist-response {
+          margin-top: 6px;
+        }
+
+        body[data-view="bedside"] .answer-group {
+          gap: 5px;
+        }
+
+        body[data-view="bedside"] .answer-chip,
+        body[data-view="bedside"] .answer-more-chip {
+          min-height: 36px;
+          border-radius: 6px;
+          padding: 5px 7px;
+          font-size: 11.5px;
+          line-height: 1.15;
+        }
+
+        body[data-view="bedside"] .answer-select {
+          min-height: 38px;
+          font-size: 12px;
+        }
+
+        body[data-view="bedside"] .answer-selected-text {
+          font-size: 11px;
+        }
+
+        body[data-view="bedside"] .endorsement-row {
+          min-height: 38px;
+          gap: 6px;
+        }
+
+        body[data-view="bedside"] .endorsement-label,
+        body[data-view="bedside"] .endorsement-button {
+          font-size: 11.5px;
+        }
+
+        body[data-view="bedside"] .endorsement-button {
+          min-height: 36px;
+          min-width: 52px;
+        }
+
+        body[data-view="bedside"] .checklist-note-toggle {
+          min-height: 32px;
+          font-size: 11px;
+        }
+
+        body[data-view="bedside"] .bedside-bottom-bar {
+          min-height: 70px;
+          padding: 7px 10px calc(7px + env(safe-area-inset-bottom));
+        }
+
+        body[data-view="bedside"] .bedside-bottom-bar .btn {
+          min-height: 44px;
+          font-size: 12px;
+        }
+
+        body[data-view="bedside"][data-bedside-complete="true"] .bedside-completion-panel:not([hidden]) {
+          gap: 10px;
+          padding: 16px 18px 22px;
+        }
+
+        body[data-view="bedside"] .bedside-completion-hero {
+          gap: 6px;
+        }
+
+        body[data-view="bedside"] .bedside-completion-check {
+          width: 42px;
+          height: 42px;
+        }
+
+        body[data-view="bedside"] .bedside-completion-check::after {
+          font-size: 30px;
+        }
+
+        body[data-view="bedside"] .bedside-completion-hero h2 {
+          font-size: 21px;
+        }
+
+        body[data-view="bedside"] .bedside-completion-hero p {
+          font-size: 13px;
+        }
+
+        body[data-view="bedside"] .bedside-completion-qr-card {
+          gap: 8px;
+          padding: 12px 10px;
+        }
+
+        body[data-view="bedside"] .bedside-completion-qr-head h3 {
+          margin-left: 0;
+          justify-self: start;
+          font-size: 15px;
+        }
+
+        body[data-view="bedside"] #maximizeBedsideReturnQrButton {
+          min-height: 32px;
+          font-size: 11px;
+        }
+
+        body[data-view="bedside"] .bedside-completion-qr-code {
+          width: min(78vw, 270px);
+          max-width: 270px;
+          padding: 9px;
+        }
+
+        body[data-view="bedside"] .bedside-completion-copy {
+          min-height: 50px;
+          font-size: 14px;
+        }
+
+        body[data-view="bedside"] .bedside-completion-actions .btn {
+          min-height: 46px;
+          font-size: 12px;
+        }
+
+        body[data-view="bedside"] .bedside-completion-summary {
+          margin-inline: -18px;
+        }
+
+        body[data-view="bedside"] .bedside-completion-summary-head,
+        body[data-view="bedside"] .bedside-completion-summary-row {
+          min-height: 50px;
+          padding: 8px 14px;
+        }
+
+        body[data-view="bedside"] .bedside-completion-summary-row {
+          grid-template-columns: 34px minmax(0, 1fr) auto;
+        }
+
+        body[data-view="bedside"] .bedside-completion-summary-row > .icon-box:last-child {
+          display: none;
+        }
+
+        body[data-view="bedside"] .bedside-completion-status {
+          padding: 5px 7px;
+          font-size: 11px;
+        }
     }
   </style>
 </head>
@@ -16925,8 +17190,7 @@
         return true;
       }
       state.checklistCatalogStale = true;
-      state.transferCode = "";
-      state.phonePayload = "";
+      invalidatePhonePayloadAfterChecklistEdit();
       renderHandoff();
       setStatus("A newer server workup is available. Rebuild the checklist before sending it to a phone.");
       saveState();
@@ -20676,14 +20940,13 @@ Rules:
       state.answers = {};
       state.itemNotes = {};
       state.reviewedChecklistKeys = {};
-      state.transferCode = "";
-      state.phonePayload = "";
-	      checklistFilter = "all";
-	      checklistSearch = "";
-	      checklistSectionFocus = false;
-	      activeChecklistKey = "";
-	      openChecklistNoteKey = "";
-	    }
+      invalidatePhonePayloadAfterChecklistEdit();
+      checklistFilter = "all";
+      checklistSearch = "";
+      checklistSectionFocus = false;
+      activeChecklistKey = "";
+      openChecklistNoteKey = "";
+    }
 
     function setChecklistBuildDisabled(disabled) {
       const shouldDisable = Boolean(disabled) || !activePatient().id;
@@ -24295,14 +24558,14 @@ Rules:
       return item;
     }
 
-    function invalidatePhonePayloadAfterChecklistEdit() {
-      state.transferCode = "";
+    function invalidatePhonePayloadAfterChecklistEdit({ clearCode = false } = {}) {
+      if (clearCode) state.transferCode = "";
       state.phonePayload = "";
       const patientId = activePatient().id;
       if (!patientId) return;
       updatePatient(patientId, (patient) => ({
         ...patient,
-        phoneBundleCode: "",
+        phoneBundleCode: clearCode ? "" : patient.phoneBundleCode,
         phoneBundlePayload: ""
       }));
     }
@@ -25823,8 +26086,7 @@ Rules:
     function markPatientDerivedArtifactsStale() {
       state.scrubbedText = "";
       state.deidCounts = {};
-      state.transferCode = "";
-      state.phonePayload = "";
+      invalidatePhonePayloadAfterChecklistEdit({ clearCode: true });
     }
 
     function saveWorkspaceContext({ announce = true } = {}) {
@@ -29694,8 +29956,39 @@ Rules:
       return normalizeTransferCode(state.transferCode) || normalizeTransferCode(activePatient()?.phoneBundleCode);
     }
 
+    function phoneHandoffPayloadMatchesCurrentChecklist(encoded = "") {
+      const text = String(encoded || "").trim();
+      if (!text) return false;
+      try {
+        const payload = decodePayload(text);
+        return payload?.version === "local-phone-handoff-v1"
+          && String(payload.checklistFingerprint || "") === phoneChecklistFingerprint();
+      } catch {
+        return false;
+      }
+    }
+
+    function clearStalePhonePayload(encoded = "") {
+      const text = String(encoded || "");
+      if (!text || state.phonePayload === text) {
+        state.phonePayload = "";
+      }
+      const patient = activePatient();
+      if (patient?.id && (!text || patient.phoneBundlePayload === text)) {
+        updatePatient(patient.id, (current) => ({
+          ...current,
+          phoneBundleCode: current.phoneBundleCode,
+          phoneBundlePayload: ""
+        }));
+      }
+    }
+
     function currentPhonePayload() {
-      return state.phonePayload || activePatient()?.phoneBundlePayload || "";
+      const payload = state.phonePayload || activePatient()?.phoneBundlePayload || "";
+      if (!payload) return "";
+      if (phoneHandoffPayloadMatchesCurrentChecklist(payload)) return payload;
+      clearStalePhonePayload(payload);
+      return "";
     }
 
     function phonePayloadTransferText() {
@@ -30737,8 +31030,7 @@ Rules:
       if (!state.sections.length) {
         const built = buildChecklistFromWorkup({ navigate: false });
         if (!built || !state.sections.length) {
-          state.transferCode = "";
-          state.phonePayload = "";
+          invalidatePhonePayloadAfterChecklistEdit({ clearCode: true });
           renderHandoff();
           setStatus(`Select a validated workup for ${activePatient().title} before preparing phone handoff.`);
           saveState();
@@ -30886,17 +31178,123 @@ Rules:
       });
     }
 
+    function compactAnswerKeyParts(key = "") {
+      const match = String(key || "").match(/^(\d+):(\d+)$/);
+      return match ? [Number(match[1]), Number(match[2])] : null;
+    }
+
+    function checklistEntryForParts(sectionIndex, itemIndex) {
+      const section = state.sections?.[sectionIndex];
+      const item = section?.items?.[itemIndex];
+      return section && item ? { key: answerKey(sectionIndex, itemIndex), sectionIndex, itemIndex, section, item } : null;
+    }
+
+    function compactAnswerComponent(key, value) {
+      const entry = checklistEntryForKey(key);
+      if (!entry) return String(value || "");
+      const answerText = String(value || "").trim();
+      const options = checklistOptionsForItem(entry.section, entry.item);
+      const optionIndex = options.findIndex((option) => normalizedAnswerComponent(option) === normalizedAnswerComponent(answerText));
+      if (optionIndex >= 0) return optionIndex;
+      const endorsementStatus = endorsementEntryStatus(answerText);
+      if (endorsementStatus) {
+        const [component] = answerText.split(":");
+        const components = endorsementComponentsForItem(entry.section, entry.item, options);
+        const componentIndex = components.findIndex((candidate) => normalizedAnswerComponent(candidate) === normalizedAnswerComponent(component));
+        if (componentIndex >= 0) return ["@", componentIndex, endorsementStatus === "positive" ? 1 : 0];
+      }
+      return answerText;
+    }
+
+    function expandCompactAnswerComponent(key, value) {
+      const parts = compactAnswerKeyParts(key);
+      const entry = parts ? checklistEntryForParts(parts[0], parts[1]) : checklistEntryForKey(key);
+      if (!entry) return String(value || "");
+      if (typeof value === "number") {
+        const options = checklistOptionsForItem(entry.section, entry.item);
+        return options[value] || "";
+      }
+      if (Array.isArray(value) && value[0] === "@") {
+        const options = checklistOptionsForItem(entry.section, entry.item);
+        const components = endorsementComponentsForItem(entry.section, entry.item, options);
+        const component = components[Number(value[1])];
+        return component ? endorsementEntry(component, Number(value[2]) === 1 ? "positive" : "negative") : "";
+      }
+      return String(value || "");
+    }
+
+    function compactChecklistAnswerRows(answers = {}) {
+      const rows = [];
+      for (const [key, value] of Object.entries(plainObject(answers) ? answers : {})) {
+        const parts = compactAnswerKeyParts(key);
+        if (!parts) continue;
+        const values = answerValueList(value).map((entry) => compactAnswerComponent(key, entry)).filter((entry) => entry !== "");
+        if (!values.length) continue;
+        rows.push([parts[0], parts[1], values.length === 1 ? values[0] : values]);
+      }
+      return rows;
+    }
+
+    function expandCompactChecklistAnswerRows(rows = []) {
+      if (plainObject(rows)) return rows;
+      const answers = {};
+      if (!Array.isArray(rows)) return answers;
+      for (const row of rows) {
+        if (!Array.isArray(row) || row.length < 3) continue;
+        const sectionIndex = Number(row[0]);
+        const itemIndex = Number(row[1]);
+        if (!Number.isInteger(sectionIndex) || !Number.isInteger(itemIndex)) continue;
+        const key = answerKey(sectionIndex, itemIndex);
+        const encoded = row[2];
+        const values = Array.isArray(encoded) && encoded[0] !== "@"
+          ? encoded.map((entry) => expandCompactAnswerComponent(key, entry)).filter(Boolean)
+          : [expandCompactAnswerComponent(key, encoded)].filter(Boolean);
+        if (values.length === 1) {
+          answers[key] = values[0];
+        } else if (values.length > 1) {
+          answers[key] = values;
+        }
+      }
+      return answers;
+    }
+
+    function compactChecklistNoteRows(notes = {}) {
+      const rows = [];
+      for (const [key, value] of Object.entries(plainObject(notes) ? notes : {})) {
+        const parts = compactAnswerKeyParts(key);
+        const note = String(value || "").trim();
+        if (parts && note) rows.push([parts[0], parts[1], note]);
+      }
+      return rows;
+    }
+
+    function expandCompactChecklistNoteRows(rows = []) {
+      if (plainObject(rows)) return rows;
+      const notes = {};
+      if (!Array.isArray(rows)) return notes;
+      for (const row of rows) {
+        if (!Array.isArray(row) || row.length < 3) continue;
+        const sectionIndex = Number(row[0]);
+        const itemIndex = Number(row[1]);
+        const note = String(row[2] || "").trim();
+        if (Number.isInteger(sectionIndex) && Number.isInteger(itemIndex) && note) {
+          notes[answerKey(sectionIndex, itemIndex)] = note;
+        }
+      }
+      return notes;
+    }
+
     function compactPhoneReturnPayloadForQr() {
       const payload = createPhoneReturnPayloadObject();
       if (!payload) return null;
       const answers = plainObject(payload.answers) ? payload.answers : {};
       const itemNotes = plainObject(payload.itemNotes) ? payload.itemNotes : {};
       const compact = {
-        v: "phoneReturnQr2",
+        v: "phoneReturnQr3",
         c: payload.code || "",
         f: payload.checklistFingerprint || "",
-        a: answers,
-        n: itemNotes
+        a: compactChecklistAnswerRows(answers),
+        n: compactChecklistNoteRows(itemNotes)
       };
       if (payload.bedsideNote) compact.b = payload.bedsideNote;
       if (!Object.keys(answers).length && !Object.keys(itemNotes).length && payload.findingsText) compact.x = payload.findingsText;
@@ -30905,7 +31303,8 @@ Rules:
 
     function expandCompactPhoneReturnPayloadForQr(compact = {}) {
       if (compact?.version === "local-phone-return-v1") return compact;
-      if (!["phoneReturnQr1", "phoneReturnQr2"].includes(compact?.v)) throw new Error("This QR code is not a phone return bundle.");
+      if (!["phoneReturnQr1", "phoneReturnQr2", "phoneReturnQr3"].includes(compact?.v)) throw new Error("This QR code is not a phone return bundle.");
+      const compactRows = compact?.v === "phoneReturnQr3";
       return {
         version: "local-phone-return-v1",
         code: compact.c || "",
@@ -30914,8 +31313,8 @@ Rules:
         workupModuleId: compact.w || "",
         checklistWorkupModuleId: compact.cw || compact.w || "",
         checklistFingerprint: compact.f || "",
-        answers: plainObject(compact.a) ? compact.a : {},
-        itemNotes: plainObject(compact.n) ? compact.n : {},
+        answers: compactRows ? expandCompactChecklistAnswerRows(compact.a) : (plainObject(compact.a) ? compact.a : {}),
+        itemNotes: compactRows ? expandCompactChecklistNoteRows(compact.n) : (plainObject(compact.n) ? compact.n : {}),
         bedsideNote: compact.b || "",
         objectiveData: "",
         findingsText: compact.x || ""
@@ -31141,8 +31540,9 @@ Rules:
     }
 
     function renderHandoff() {
-      elements.phoneTransferCode.textContent = currentPhoneTransferCode() || "Not generated";
-      elements.phonePayload.value = currentPhonePayload();
+      const payload = currentPhonePayload();
+      elements.phoneTransferCode.textContent = payload ? (currentPhoneTransferCode() || "Not generated") : "Not generated";
+      elements.phonePayload.value = payload;
       void renderPhoneQrCode();
     }
 
