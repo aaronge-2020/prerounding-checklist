@@ -1,44 +1,53 @@
-# Bedside Checklist Design QA
+# Phone Bedside And Return QR Design QA
 
 final result: passed
 
-Reference image: `/var/folders/dg/wr1k4k0942q6gr0vqnc6c5bm0000gn/T/codex-clipboard-461870e5-ead6-4dbb-8443-3206ce7b39be.png`
+Source visual truth paths:
+- Active bedside exam concept: `C:\Users\AARONG~1\AppData\Local\Temp\codex-clipboard-eb2bd200-8e2b-4189-9d51-2909fa3241f3.png`
+- Completed return QR concept: `C:\Users\AARONG~1\AppData\Local\Temp\codex-clipboard-8f4a4bc7-e38c-4e74-8e3d-29af676a6056.png`
 
-Implementation screenshots:
-- Desktop native-size capture: `/tmp/checklist-ui-qa/bedside-desktop-v2.png` at 1586x992
-- Search state capture: `/tmp/checklist-ui-qa/bedside-search-v2.png`
-- Mobile capture: `/tmp/checklist-ui-qa/bedside-mobile-v2.png`
+Implementation screenshot paths:
+- Active bedside phone: `C:\Users\Aaron Ge\AppData\Local\Temp\prerounding-phone-ui-qa\phone-bedside-active-final.png`
+- Completed return QR phone: `C:\Users\Aaron Ge\AppData\Local\Temp\prerounding-phone-ui-qa\phone-return-qr-complete-final.png`
+- Maximized return QR modal: `C:\Users\Aaron Ge\AppData\Local\Temp\prerounding-phone-ui-qa\phone-return-qr-maximized-final.png`
 
-QA method:
-- Browser plugin tools were unavailable in this thread, so Playwright Chromium was used as the fallback renderer.
-- The reference and final screenshots were inspected with `view_image`.
-- The app was captured at the reference image's native dimensions, 1586x992.
+Viewport and state:
+- 390x844 phone viewport.
+- Active bedside state: demo DKA consult loaded on phone, bedside exam in progress, first cardiopulmonary findings answered, long answer sets collapsed behind `More`.
+- Completed QR state: all 26 findings answered, phone defaults to Return QR.
+- Maximized QR state: Return QR opened from the completed screen with the fullscreen QR layout.
 
-Comparison points checked:
-- Header: matches the compact Bedside checklist title plus Reset, Mark all reviewed, Settings, and overflow controls.
-- Summary strip: uses the reference metric language and rhythm: Overall progress, Answered, Positive, Review, Open, Next open.
-- Workbar: large search field, segmented All/Open/Positives/Review filter, and compact clear-section action remain aligned in a single row.
-- Main surface: left section rail, center two-column checklist grid, and right findings rail match the reference panel structure.
-- Row controls: text `+`, `Note`, and `x` controls were replaced by icon-only comment buttons; all visible note buttons contain SVG icons and no visible stray text.
-- Row noise: status pills and uppercase row subtitles are hidden in normal section view; subtitles appear only during search results when context is useful.
-- Section navigation: section rail clicks focus the main pane to the selected section; search and filters still work globally.
-- Findings rail: large bedside note editor is removed from the desktop rail; a compact findings summary and functional Copy to note action match the reference workflow.
-- Responsive behavior: desktop and mobile captures have no horizontal overflow; mobile answer groups keep usable widths.
+Full-view comparison evidence:
+- Active bedside side-by-side: `C:\Users\Aaron Ge\AppData\Local\Temp\prerounding-phone-ui-qa\comparison-active-bedside.png`
+- Completed QR side-by-side: `C:\Users\Aaron Ge\AppData\Local\Temp\prerounding-phone-ui-qa\comparison-completed-qr.png`
 
-Functional checks:
-- Search narrows the checklist to matching rows.
-- Row note toggle opens the editor, stores note text, and preserves the icon button.
-- Copy to note populates the local bedside note state.
-- Mark all reviewed marks open rows reviewed without creating clinical answers.
-- Reset clears answers, row notes, and reviewed-open markers.
-- Review findings still opens the final update path.
+Focused region evidence:
+- Maximized QR modal was inspected separately at `C:\Users\Aaron Ge\AppData\Local\Temp\prerounding-phone-ui-qa\phone-return-qr-maximized-final.png` because the reference includes a default QR state but the user added the maximize requirement. The close button audit reported `closeClipped: false`, and the QR fills most of the viewport.
 
-Intentional deviations:
-- The rendered seeded QA checklist contains fewer generated items than the reference concept, so the center pane can look sparser for that fixture. The production layout supports denser sections like the reference.
-- The clear-section action remains available instead of replacing it with a nonfunctional Default order dropdown.
+**Findings**
+- No actionable P0/P1/P2 issues remain.
 
-Material mismatches fixed:
-- Removed the empty-looking row buttons.
-- Replaced noisy row status labels with dot status treatment.
-- Reworked the header, summary strip, section focus, and right rail to match the accepted concept.
-- Fixed mobile answer-chip squeezing.
+**Required Fidelity Surfaces**
+- Fonts and typography: implementation uses the app's existing Inter/system stack with matching bold hierarchy, compact labels, and no visible clipped button labels after the final pass.
+- Spacing and layout rhythm: phone bedside now removes the left rail, uses the full viewport width, preserves the reference header-stepper-controls-section order, and keeps four compact exam rows fully usable above the fixed bottom actions at 390x844.
+- Colors and visual tokens: teal, pale teal, amber positive state, white cards, and light dividers match the reference palette and the existing app tokens.
+- Image quality and asset fidelity: the reference uses UI icons and QR codes rather than raster illustrations. App icons render from the existing icon system; QR codes are generated live from the local payload.
+- Copy and content: primary copy matches the requested flow: `Findings ready`, `Return QR`, `Copy findings for computer`, `Review findings`, `Add bedside note`, and `Maximize QR`.
+
+**Patches Made Since Previous QA**
+- Removed the mobile bedside sidebar rail from the active and completed phone states.
+- Added the completed `Findings ready` phone state with inline Return QR and copy fallback directly underneath.
+- Added `Maximize QR` from the completed phone state and a fullscreen QR modal with copy fallback.
+- Compacted active bedside exam rows while keeping all real clinical answer options reachable through a mobile-only `More` affordance.
+- Shortened phone-only section labels and answer labels to avoid chopped text.
+- Updated QR and handoff tests to follow the current desktop Findings-panel route.
+- Fixed the maximized QR modal close button so it does not wrap or clip.
+
+**Functional Checks**
+- `npm.cmd run test:syntax` passed.
+- `npm.cmd run test:clinical-ui` passed.
+- `npm.cmd run test:desktop-ui` passed and covers desktop-to-phone handoff, phone QR entry, completed Return QR, maximize QR, fallback copy, and responsive layout checks.
+
+**Follow-up Polish**
+- P3: Real DKA sections and answer sets differ from the static concept, so tabs and rows are not exact content matches (`Resp`, `Endo`, `GI/GU`, `ID`, `All` rather than `Resp`, `Cardio`, `Neuro`, `Skin`, `All`). This is accepted because the implementation is data-driven and preserves all clinical options.
+- P3: The real Return QR is denser than the concept QR because it encodes the local findings payload. The maximized QR path addresses scanability.

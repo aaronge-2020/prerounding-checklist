@@ -206,10 +206,8 @@ async function openFreshPage(browser, baseUrl, viewport, { preloadLocalStorage =
   return { context, page };
 }
 
-async function openPhoneScannerPageWithMockQr(browser, baseUrl, qrText) {
-  const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
-  await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: baseUrl });
-  await context.addInitScript((textToScan) => {
+async function installMockQrCamera(page, qrText) {
+  await page.evaluate((textToScan) => {
     const drawQrToCanvas = () => {
       const canvas = document.createElement("canvas");
       canvas.width = 720;
@@ -241,10 +239,16 @@ async function openPhoneScannerPageWithMockQr(browser, baseUrl, qrText) {
       }
     });
   }, qrText);
+}
+
+async function openPhoneScannerPageWithMockQr(browser, baseUrl, qrText) {
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
+  await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: baseUrl });
   const page = await context.newPage();
   await page.goto(`${baseUrl}/index.html?freshScanner=${Date.now()}`);
   await page.evaluate(() => localStorage.clear());
   await page.goto(`${baseUrl}/index.html`);
+  await installMockQrCamera(page, qrText);
   await page.waitForFunction(() => document.body.dataset.view === "vaultAccess");
   return { context, page };
 }
@@ -483,7 +487,16 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   } else {
     await desktopPage.click("#workspaceChecklistPhoneButton");
   }
-  await desktopPage.waitForSelector("#handoffView:not([hidden])");
+  await desktopPage.waitForFunction(() => {
+    const visible = (selector) => {
+      const element = document.querySelector(selector);
+      if (!element) return false;
+      const rect = element.getBoundingClientRect();
+      const style = getComputedStyle(element);
+      return !element.hidden && style.display !== "none" && style.visibility !== "hidden" && rect.width > 0 && rect.height > 0;
+    };
+    return visible("#handoffView") || visible("#patientFindingsPanel");
+  });
   await desktopPage.waitForFunction(() => document.querySelector("#phonePayload")?.value.length > 100);
   await desktopPage.waitForSelector("#phoneQrCode svg", { timeout: 45000 });
   const desktopPayload = await desktopPage.inputValue("#phonePayload");
@@ -524,14 +537,16 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   const qrPhoneAudit = await qrPhonePage.evaluate(() => ({
     view: document.body.dataset.view,
     caseTitle: document.querySelector("#bedsideMobileCaseTitle")?.textContent?.trim() || "",
-    subhead: document.querySelector(".bedside-mobile-top span:last-child")?.textContent?.trim() || "",
+    subhead: document.querySelector("#bedsideMobileSubtitle")?.textContent?.trim() || "",
+    progress: document.querySelector("#bedsideMobileProgress")?.textContent?.trim() || "",
     rowCount: document.querySelectorAll(".checklist-row").length,
     hash: window.location.hash,
     storageKeys: Object.keys(localStorage)
   }));
   assert(qrPhoneAudit.view === "bedside", `QR link should bypass vault entry and open bedside view: ${JSON.stringify(qrPhoneAudit)}`);
   assert(/Demo - DKA consult/i.test(qrPhoneAudit.caseTitle), `QR link should preserve case title: ${JSON.stringify(qrPhoneAudit)}`);
-  assert(/history questions and exam findings/i.test(qrPhoneAudit.subhead), `QR bedside screen should emphasize history and exam scope: ${JSON.stringify(qrPhoneAudit)}`);
+  assert(/bedside physical exam/i.test(qrPhoneAudit.subhead), `QR bedside screen should match the selected bedside exam design: ${JSON.stringify(qrPhoneAudit)}`);
+  assert(/\d+\/\d+ answered/i.test(qrPhoneAudit.progress), `QR bedside screen should show mobile progress in the header: ${JSON.stringify(qrPhoneAudit)}`);
   assert(qrPhoneAudit.rowCount >= 8, `QR link should load checklist rows: ${JSON.stringify(qrPhoneAudit)}`);
   assert(qrPhoneAudit.hash === "", `QR phone import should clear payload fragment after load: ${JSON.stringify(qrPhoneAudit)}`);
   assert(qrPhoneAudit.storageKeys.length === 0, `QR phone session should not write patient data to localStorage: ${JSON.stringify(qrPhoneAudit)}`);
@@ -610,6 +625,51 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   });
   assert(answerMode, "phone checklist should expose an answer control");
   await phonePage.waitForFunction(() => /[1-9]\d*\/\d+ answered/.test(document.querySelector("#answeredCount")?.textContent || ""));
+  await phonePage.evaluate(() => {
+    for (const row of document.querySelectorAll(".checklist-row")) {
+      if (row.classList.contains("is-answered")) continue;
+      const chip = row.querySelector(".answer-chip");
+      if (chip) {
+        chip.click();
+        continue;
+      }
+      const endorsement = row.querySelector(".endorsement-button");
+      if (endorsement) {
+        endorsement.click();
+        continue;
+      }
+      const select = row.querySelector("select.answer-select");
+      if (select && select.options.length > 1) {
+        select.selectedIndex = 1;
+        select.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+    }
+  });
+  await phonePage.waitForFunction(() => document.body.dataset.bedsideComplete === "true");
+  await phonePage.waitForSelector("#bedsideCompletionPanel:not([hidden])");
+  await phonePage.waitForSelector("#bedsideCompletionQrCode svg", { timeout: 45000 });
+  const returnQrText = await phonePage.evaluate(() => document.querySelector("#bedsideCompletionPanel")?.dataset.qrText || "");
+  assert(/phoneReturn=/.test(returnQrText), "completed phone return QR should expose a local return token");
+  const completionAudit = await phonePage.evaluate(() => ({
+    title: document.querySelector("#bedsideCompletionTitle")?.textContent || "",
+    progress: document.querySelector("#bedsideMobileProgress")?.textContent || "",
+    hasQr: Boolean(document.querySelector("#bedsideCompletionQrCode svg")),
+    copyText: document.querySelector("#completionCopyPhoneReturnPayloadButton")?.textContent || "",
+    maximizeVisible: Boolean(document.querySelector("#maximizeBedsideReturnQrButton")?.getBoundingClientRect().height),
+    summaryRows: document.querySelectorAll(".bedside-completion-summary-row").length
+  }));
+  assert(/Findings ready/i.test(completionAudit.title) && /26\/26 answered/i.test(completionAudit.progress), `completed phone screen should default to findings-ready QR state: ${JSON.stringify(completionAudit)}`);
+  assert(completionAudit.hasQr && /Copy findings for computer/i.test(completionAudit.copyText) && completionAudit.maximizeVisible && completionAudit.summaryRows >= 1, `completed phone screen should show QR, copy fallback, maximize, and summary: ${JSON.stringify(completionAudit)}`);
+  await phonePage.click("#maximizeBedsideReturnQrButton");
+  await phonePage.waitForSelector("#phoneReturnQrOverlay:not([hidden])");
+  await phonePage.waitForSelector("#phoneReturnQrCode svg", { timeout: 45000 });
+  const phoneReturnQrAudit = await phonePage.evaluate(() => ({
+    status: document.querySelector("#phoneReturnQrStatus")?.textContent || "",
+    hasQr: Boolean(document.querySelector("#phoneReturnQrCode svg")),
+    isMaximized: document.querySelector("#phoneReturnQrOverlay")?.classList.contains("is-qr-maximized") || false,
+    copyButtonVisible: Boolean(document.querySelector("#copyPhoneReturnPayloadButton")?.getBoundingClientRect().height)
+  }));
+  assert(phoneReturnQrAudit.hasQr && phoneReturnQrAudit.isMaximized && phoneReturnQrAudit.copyButtonVisible, `phone return QR modal should render maximized QR and fallback copy: ${JSON.stringify(phoneReturnQrAudit)}`);
   await phonePage.click("#copyPhoneReturnPayloadButton");
   await phonePage.waitForSelector("#phiOverlay:not([hidden])");
   await phonePage.click("#confirmPhiActionButton");
@@ -660,6 +720,19 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   assert(!/Imported phone findings/i.test(staleChecklistDesktopAudit.finalText), `stale checklist return bundle should not update final text: ${JSON.stringify(staleChecklistDesktopAudit)}`);
   assert(staleChecklistDesktopAudit.answeredRows === 0, `stale checklist return bundle should not merge answers: ${JSON.stringify(staleChecklistDesktopAudit)}`);
 
+  await installMockQrCamera(desktopPage, returnQrText);
+  await desktopPage.click("#startReturnQrScannerButton");
+  await desktopPage.waitForFunction(() => /Phone checklist answers imported/i.test(document.querySelector("#handoffStatus")?.textContent || ""), null, { timeout: 45000 });
+  const desktopScannerAudit = await desktopPage.evaluate(() => ({
+    scannerStatus: document.querySelector("#returnQrScannerStatus")?.textContent || "",
+    handoffStatus: document.querySelector("#handoffStatus")?.textContent || "",
+    importValue: document.querySelector("#phoneImportInput")?.value || "",
+    answeredRows: document.querySelectorAll(".checklist-row.is-answered").length
+  }));
+  assert(/imported/i.test(desktopScannerAudit.scannerStatus), `desktop scanner should report imported phone QR: ${JSON.stringify(desktopScannerAudit)}`);
+  assert(/phoneReturn=/.test(desktopScannerAudit.importValue), `desktop scanner should place scanned QR text in the import box: ${JSON.stringify(desktopScannerAudit)}`);
+  assert(desktopScannerAudit.answeredRows >= 1, `desktop scanner should merge answered checklist rows: ${JSON.stringify(desktopScannerAudit)}`);
+
   await desktopPage.fill("#phoneImportInput", staleItemReturnPayload);
   await desktopPage.click("#importPhoneFindingsButton");
   await desktopPage.waitForFunction(() => /Phone checklist answers imported/i.test(document.querySelector("#handoffStatus")?.textContent || ""));
@@ -687,7 +760,9 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
   const unbuiltHandoffAudit = await page.evaluate(() => ({
     checklistStatus: document.querySelector("#workspaceChecklistStatus")?.textContent || "",
     sendHidden: document.querySelector("#workspaceChecklistPhoneButton")?.hidden,
-    findingsSendHidden: document.querySelector("#workspaceSendPhoneButton")?.hidden,
+    findingsSendHidden: document.querySelector("#workspaceSendPhoneButton")
+      ? Boolean(document.querySelector("#workspaceSendPhoneButton")?.hidden)
+      : true,
     handoffHidden: document.querySelector("#workspaceHandoffButton")?.hidden
   }));
   assert(
@@ -1075,10 +1150,22 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
     await clickPatientTab(page, "handoff");
     await page.waitForSelector("#patientPhonePanel:not([hidden])");
     await page.click("#workspaceHandoffButton");
+    await page.waitForFunction(() => {
+      const visible = (selector) => {
+        const element = document.querySelector(selector);
+        if (!element) return false;
+        const rect = element.getBoundingClientRect();
+        const style = getComputedStyle(element);
+        return !element.hidden && style.display !== "none" && style.visibility !== "hidden" && rect.width > 0 && rect.height > 0;
+      };
+      return visible("#handoffView") || visible("#patientFindingsPanel");
+    });
   } else {
     await page.click("#workspaceChecklistPhoneButton");
+    await page.waitForSelector("#workspaceView:not([hidden])");
+    await page.waitForFunction(() => document.body.dataset.patientTab === "findings");
+    await page.waitForSelector("#patientFindingsPanel:not([hidden])");
   }
-  await page.waitForSelector("#handoffView:not([hidden])");
   await page.waitForFunction(() => document.querySelector("#phonePayload")?.value.length > 100);
   const phoneCode = await page.textContent("#phoneTransferCode");
   assert(/^[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(phoneCode.trim()), `phone handoff should generate a pairing code, got ${phoneCode}`);

@@ -642,8 +642,28 @@ try {
   await page.click("#closeQuickDeidButton");
 
   await page.click("#buildChecklistButton");
-  await page.waitForSelector("#handoffView:not([hidden])");
-  await page.click("#useLaptopChecklistButton");
+  const checklistRouteHandle = await page.waitForFunction(() => {
+    const visible = (selector) => {
+      const element = document.querySelector(selector);
+      if (!element) return "";
+      const rect = element.getBoundingClientRect();
+      const style = getComputedStyle(element);
+      if (element.hidden || style.display === "none" || style.visibility === "hidden" || rect.width <= 0 || rect.height <= 0) return "";
+      return selector;
+    };
+    return visible("#handoffView") ? "handoff" : visible("#patientFindingsPanel") ? "findings" : "";
+  });
+  const checklistRoute = await checklistRouteHandle.jsonValue();
+  if (checklistRoute === "handoff") {
+    await page.click("#useLaptopChecklistButton");
+  } else {
+    await page.evaluate(() => {
+      const details = document.querySelector(".findings-manual-notes");
+      if (details) details.open = true;
+    });
+    await page.waitForSelector("#findingsOpenChecklistButton:visible");
+    await page.click("#findingsOpenChecklistButton");
+  }
   await page.waitForSelector("#bedsideView:not([hidden])");
   await page.waitForSelector(".checklist-row .answer-chip, .checklist-row .answer-select");
   const defaultChecklistLayout = await page.evaluate(() => {
