@@ -36,33 +36,47 @@ function decodeBase64UrlText(encoded) {
   return Buffer.from(padded, "base64").toString("utf8");
 }
 
-const base45Alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:";
-const base45Lookup = new Map([...base45Alphabet].map((char, index) => [char, index]));
+const base42Alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ$*-./:";
+const base42Lookup = new Map([...base42Alphabet].map((char, index) => [char, index]));
+const legacyBase45Alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:";
+const legacyBase45Lookup = new Map([...legacyBase45Alphabet].map((char, index) => [char, index]));
 
-function decodeBase45Bytes(encoded = "") {
+function decodeBaseQrBytesWithAlphabet(encoded = "", alphabetLookup = base42Lookup, base = 42) {
   const text = String(encoded || "");
-  if (text.length % 3 === 1) throw new Error("Invalid base45 text");
+  if (text.length % 3 === 1) throw new Error("Invalid base-QR text");
   const bytes = [];
   for (let index = 0; index < text.length; index += 3) {
-    const first = base45Lookup.get(text[index]);
-    const second = base45Lookup.get(text[index + 1]);
-    if (first === undefined || second === undefined) throw new Error("Invalid base45 text");
+    const first = alphabetLookup.get(text[index]);
+    const second = alphabetLookup.get(text[index + 1]);
+    if (first === undefined || second === undefined) throw new Error("Invalid base-QR text");
     if (index + 2 < text.length) {
-      const third = base45Lookup.get(text[index + 2]);
-      if (third === undefined) throw new Error("Invalid base45 text");
-      const decoded = first + second * 45 + third * 45 * 45;
+      const third = alphabetLookup.get(text[index + 2]);
+      if (third === undefined) throw new Error("Invalid base-QR text");
+      const decoded = first + second * base + third * base * base;
       bytes.push(Math.floor(decoded / 256), decoded % 256);
     } else {
-      bytes.push(first + second * 45);
+      bytes.push(first + second * base);
     }
   }
   return Buffer.from(bytes);
 }
 
+function decodeBaseQrBytes(encoded = "") {
+  try {
+    return decodeBaseQrBytesWithAlphabet(encoded, base42Lookup, 42);
+  } catch (error) {
+    try {
+      return decodeBaseQrBytesWithAlphabet(encoded, legacyBase45Lookup, 45);
+    } catch {
+      throw error;
+    }
+  }
+}
+
 function decodeCompactReturnQrToken(token) {
   const text = String(token || "").trim();
   if (text.startsWith("R:")) {
-    return JSON.parse(gunzipSync(decodeBase45Bytes(text.slice(2))).toString("utf8"));
+    return JSON.parse(gunzipSync(decodeBaseQrBytes(text.slice(2))).toString("utf8"));
   }
   if (text.startsWith("rgz.")) {
     const normalized = text.slice(4).replace(/-/g, "+").replace(/_/g, "/");
@@ -261,7 +275,38 @@ async function openFreshPage(browser, baseUrl, viewport, { preloadLocalStorage =
 
 async function installMockQrCamera(page, qrText, options = {}) {
   await page.evaluate(({ textToScan, options: cameraOptions }) => {
-    const drawQrToCanvas = () => {
+    const scanTexts = (Array.isArray(textToScan) ? textToScan : [textToScan]).map((value) => String(value || "")).filter(Boolean);
+    const qrModeForText = (text = "") => (/^[0-9A-Z $%*+\-./:]+$/.test(String(text || "")) ? "Alphanumeric" : "Byte");
+    const qrTokenFromText = (text = "") => {
+      const direct = String(text || "").match(/(?:^|[#?&])(?:B|phoneBundle|qr)=((?:G:|gz\.|j\.)[^&#]+)/);
+      if (direct) return direct[1];
+      const returnDirect = String(text || "").match(/(?:^|[#?&])(?:phoneReturn|returnBundle)=((?:R:|rgz\.|rj\.)[^&#]+)/);
+      if (returnDirect) return returnDirect[1];
+      try {
+        const url = new URL(String(text || ""), window.location.href);
+        const params = new URLSearchParams((url.hash || url.search || "").replace(/^[#?]/, ""));
+        const chunk = params.get("D");
+        if (chunk) return chunk;
+      } catch {
+        // Fall through to direct payload handling.
+      }
+      if (/^(?:G:|R:|gz\.|j\.|rgz\.|rj\.)/.test(String(text || ""))) return String(text || "");
+      return "";
+    };
+    const addQrData = (qr, text) => {
+      const token = qrTokenFromText(text);
+      const tokenIndex = token ? String(text).indexOf(token) : -1;
+      if (tokenIndex >= 0) {
+        const prefix = String(text).slice(0, tokenIndex);
+        const suffix = String(text).slice(tokenIndex + token.length);
+        if (prefix) qr.addData(prefix, "Byte");
+        qr.addData(token, qrModeForText(token));
+        if (suffix) qr.addData(suffix, "Byte");
+        return;
+      }
+      qr.addData(text, qrModeForText(text));
+    };
+    const drawQrToCanvas = (scanText = scanTexts[0] || "") => {
       const canvas = document.createElement("canvas");
       canvas.width = cameraOptions.width || 1280;
       canvas.height = cameraOptions.height || (cameraOptions.phoneScreen || cameraOptions.desktopScreen ? 720 : 1280);
@@ -297,7 +342,7 @@ async function installMockQrCamera(page, qrText, options = {}) {
         context2d.strokeRect(phoneRect.left, phoneRect.top, phoneRect.width, phoneRect.height);
       }
       const qr = window.qrcode(0, "L");
-      qr.addData(textToScan, "Byte");
+      addQrData(qr, scanText);
       qr.make();
       const modules = qr.getModuleCount();
       const margin = 12;
@@ -323,13 +368,15 @@ async function installMockQrCamera(page, qrText, options = {}) {
       return canvas;
     };
     const state = { requests: [], appliedConstraints: [] };
+    state.sourceFrameCount = scanTexts.length;
     window.__mockQrCameraState = state;
     Object.defineProperty(navigator, "mediaDevices", {
       configurable: true,
       value: {
         getUserMedia: async (constraints) => {
           state.requests.push(constraints);
-          const canvas = drawQrToCanvas();
+          let frameIndex = 0;
+          const canvas = drawQrToCanvas(scanTexts[frameIndex]);
           try {
             const reader = new window.ZXingBrowser.BrowserQRCodeReader();
             const decoded = await reader.decodeFromCanvas(canvas);
@@ -347,9 +394,19 @@ async function installMockQrCamera(page, qrText, options = {}) {
           const stream = canvas.captureStream(10);
           const [track] = stream.getVideoTracks();
           if (track) {
-            const frameInterval = window.setInterval(() => {
+            const paintNextFrame = () => {
+              if (scanTexts.length > 1) {
+                frameIndex = (frameIndex + 1) % scanTexts.length;
+                const nextCanvas = drawQrToCanvas(scanTexts[frameIndex]);
+                const context = canvas.getContext("2d");
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                context.drawImage(nextCanvas, 0, 0);
+              }
               track.requestFrame?.();
-            }, 100);
+            };
+            const frameInterval = window.setInterval(() => {
+              paintNextFrame();
+            }, cameraOptions.frameMs || 250);
             const stopTrack = track.stop.bind(track);
             track.stop = () => {
               window.clearInterval(frameInterval);
@@ -640,7 +697,11 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
     hasQr: Boolean(document.querySelector("#phoneQrCode svg")),
     qrLink: document.querySelector("#phoneQrPanel")?.dataset.qrLink || "",
     qrText: document.querySelector("#phoneQrPanel")?.dataset.qrText || "",
+    qrScanTexts: JSON.parse(document.querySelector("#phoneQrPanel")?.dataset.qrScanTexts || "[]"),
+    qrToken: document.querySelector("#phoneQrPanel")?.dataset.qrToken || "",
     qrModules: Number(document.querySelector("#phoneQrPanel")?.dataset.qrModules || 0),
+    qrMaxModules: Number(document.querySelector("#phoneQrPanel")?.dataset.qrMaxModules || 0),
+    qrChunks: Number(document.querySelector("#phoneQrPanel")?.dataset.qrChunks || 0),
     qrJsonLength: Number(document.querySelector("#phoneQrPanel")?.dataset.qrJsonLength || 0),
     qrTokenLength: Number(document.querySelector("#phoneQrPanel")?.dataset.qrTokenLength || 0),
     qrStatus: document.querySelector("#phoneQrStatus")?.textContent || "",
@@ -654,16 +715,17 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
     downloadText: document.querySelector("#downloadPhonePayloadButton")?.textContent || ""
   }));
   const qrViewBoxSize = Number(desktopQrAudit.qrViewBox.match(/0 0 ([\d.]+) /)?.[1] || 0);
-  assert(desktopQrAudit.hasQr && /opens directly into bedside mode/i.test(desktopQrAudit.qrStatus), `desktop handoff should render QR as the primary action: ${JSON.stringify(desktopQrAudit)}`);
-  assert(desktopQrAudit.qrModules > 0 && desktopQrAudit.qrModules <= 125, `desktop QR should keep exact answer choices without exceeding the robust scanner density budget: ${JSON.stringify(desktopQrAudit)}`);
+  assert(desktopQrAudit.hasQr && /opens? (?:directly into )?bedside mode|open bedside mode/i.test(desktopQrAudit.qrStatus), `desktop handoff should render QR as the primary action: ${JSON.stringify(desktopQrAudit)}`);
+  assert(desktopQrAudit.qrChunks >= 2 && desktopQrAudit.qrScanTexts.length === desktopQrAudit.qrChunks, `desktop QR should split dense checklist payloads into multiple scanner-friendly frames: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
+  assert(desktopQrAudit.qrModules > 0 && desktopQrAudit.qrMaxModules > 0 && desktopQrAudit.qrMaxModules <= 73, `desktop QR chunks should stay under the low-density scanner budget: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
   assert(desktopQrAudit.qrJsonLength > 0 && desktopQrAudit.qrTokenLength > 0 && desktopQrAudit.qrTokenLength < 2200, `desktop QR payload should stay compact enough for phone cameras: ${JSON.stringify(desktopQrAudit)}`);
-  assert(qrViewBoxSize > 0 && qrViewBoxSize <= 540, `desktop QR should keep exact answer choices without extreme density: ${JSON.stringify(desktopQrAudit)}`);
+  assert(qrViewBoxSize > 0 && qrViewBoxSize <= 420, `desktop QR should render small, low-version frames instead of one dense symbol: ${JSON.stringify(desktopQrAudit)}`);
   assert(desktopQrAudit.qrBoxWidth >= Math.min(520, qrViewBoxSize), `desktop QR should render large enough for phone cameras: ${JSON.stringify(desktopQrAudit)}`);
   assert(desktopQrAudit.regenerateVisible && desktopQrAudit.copyVisible && desktopQrAudit.downloadVisible, `desktop handoff should expose regenerate/copy/download secondary actions: ${JSON.stringify(desktopQrAudit)}`);
   assert(/^Regenerate$/i.test(desktopQrAudit.regenerateText.trim()) && /Copy bundle/i.test(desktopQrAudit.copyText) && /^Download$/i.test(desktopQrAudit.downloadText.trim()), `desktop secondary actions should be simple regenerate/copy/download labels: ${JSON.stringify(desktopQrAudit)}`);
-  assert(desktopQrAudit.qrLink.includes("#phoneBundle="), `desktop QR panel should expose the deep link for tests: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
-  assert(/^(?:G:|gz\.|j\.)/.test(desktopQrAudit.qrText), `desktop QR itself should use the compact scanner token: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
-  assert(desktopQrAudit.qrText.length < desktopQrAudit.qrLink.length, `compact QR token should be shorter than the deep link: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
+  assert(desktopQrAudit.qrLink.includes("#B=G:"), `desktop QR panel should expose the deep link for tests: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
+  assert(desktopQrAudit.qrScanTexts.every((text) => /#C=/.test(text) && /&D=/.test(text)), `desktop QR itself should be a sequence of chunk URLs for the in-app scanner: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
+  assert(/^G:/.test(desktopQrAudit.qrToken) && desktopQrAudit.qrToken.length < desktopQrAudit.qrLink.length, `desktop QR URL should preserve a compact token segment: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
   assert(/^[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(desktopCode), `desktop handoff should generate a pairing code, got ${desktopCode}`);
   assert(/^[a-f0-9]{8}$/.test(desktopBundle.checklistFingerprint || ""), `desktop handoff should include a compact checklist fingerprint, got ${desktopBundle.checklistFingerprint}`);
   assert(desktopBundle.checklistWorkupSignature === undefined, "phone handoff should not send the full canonical workup signature.");
@@ -694,11 +756,12 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   assert(qrPhoneAudit.storageKeys.length === 0, `QR phone session should not write patient data to localStorage: ${JSON.stringify(qrPhoneAudit)}`);
   await qrPhoneContext.close();
 
-  const { context: scannerContext, page: scannerPage } = await openPhoneScannerPageWithMockQr(browser, baseUrl, desktopQrAudit.qrText, {
+  const { context: scannerContext, page: scannerPage } = await openPhoneScannerPageWithMockQr(browser, baseUrl, desktopQrAudit.qrScanTexts, {
     desktopScreen: true,
     lowContrast: true,
     glare: true,
-    qrScale: 0.58
+    qrScale: 0.58,
+    frameMs: 180
   });
   await scannerPage.click("#startPhoneQrScannerButton");
   try {
