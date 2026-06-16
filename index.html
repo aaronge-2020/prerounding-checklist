@@ -6401,16 +6401,24 @@
     }
 
     .patient-card {
-      align-items: flex-start;
-      gap: 10px;
-      min-height: 66px;
-      padding: 8px 10px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 8px;
+      min-height: 62px;
+      padding: 9px 10px;
       border: 1px solid var(--line);
       border-radius: 7px;
       background: var(--surface);
       color: var(--ink);
+      cursor: pointer;
       text-align: left;
       width: 100%;
+    }
+
+    .patient-card:hover {
+      border-color: var(--line-strong);
+      background: #fbfdfd;
     }
 
     .patient-card.is-active,
@@ -6431,7 +6439,8 @@
     }
 
     .patient-main {
-      flex: 1;
+      display: grid;
+      gap: 3px;
       min-width: 0;
     }
 
@@ -6444,10 +6453,45 @@
       white-space: nowrap;
     }
 
-    .patient-main span {
+    .patient-card-title-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .patient-card-status {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 21px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #f6faf9;
+      color: #526971;
+      padding: 2px 7px;
+      font-size: 11px;
+      font-weight: 820;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .patient-card-status.is-current {
+      border-color: #b8ddd5;
+      background: var(--teal-soft);
+      color: var(--teal-dark);
+    }
+
+    .patient-card-status.is-discharged {
+      border-color: var(--line);
+      background: #f1f3f3;
+      color: #6a777b;
+    }
+
+    .patient-main > span {
       color: var(--muted);
-      font-size: 14px;
-      margin-top: 2px;
+      font-size: 13px;
     }
 
     .patient-progress {
@@ -6459,9 +6503,10 @@
     .patient-card-actions {
       display: flex;
       flex-wrap: wrap;
+      align-self: start;
       justify-content: flex-end;
       gap: 6px;
-      min-width: 94px;
+      min-width: 0;
     }
 
     .patient-card-actions .btn {
@@ -7369,7 +7414,6 @@
     }
 
     .patient-workup-chip {
-      margin-top: 6px;
       width: fit-content;
       max-width: 220px;
       overflow: hidden;
@@ -9114,6 +9158,85 @@
       margin: 0 11px 11px;
     }
 
+    .patient-checklist-editor {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    .patient-checklist-editor[hidden] {
+      display: none;
+    }
+
+    .patient-checklist-editor-body {
+      display: grid;
+      gap: 10px;
+      padding: 0 11px 11px;
+    }
+
+    .patient-checklist-editor-grid {
+      display: grid;
+      grid-template-columns: minmax(180px, 0.95fr) minmax(130px, 0.55fr);
+      gap: 10px;
+      align-items: end;
+    }
+
+    .patient-checklist-editor-grid .is-wide {
+      grid-column: 1 / -1;
+    }
+
+    .patient-checklist-editor label {
+      display: grid;
+      gap: 5px;
+      min-width: 0;
+      color: #24404a;
+      font-size: 12px;
+      font-weight: 820;
+    }
+
+    .patient-checklist-editor select,
+    .patient-checklist-editor input,
+    .patient-checklist-editor textarea {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid var(--line-strong);
+      border-radius: 7px;
+      background: #ffffff;
+      color: var(--ink);
+      font: inherit;
+    }
+
+    .patient-checklist-editor select,
+    .patient-checklist-editor input {
+      min-height: 38px;
+      padding: 8px 9px;
+    }
+
+    .patient-checklist-editor textarea {
+      min-height: 58px;
+      padding: 9px;
+      resize: vertical;
+      line-height: 1.35;
+    }
+
+    .patient-checklist-editor-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .patient-checklist-editor-actions .vault-status-line {
+      min-height: 0;
+      margin-left: auto;
+      font-size: 12px;
+      text-align: right;
+    }
+
     .findings-manual-notes .findings-grid {
       padding: 0 11px;
     }
@@ -9128,6 +9251,16 @@
         display: grid;
         gap: 10px;
         margin-bottom: 10px;
+      }
+
+      .patient-checklist-editor-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .patient-checklist-editor-actions .vault-status-line {
+        width: 100%;
+        margin-left: 0;
+        text-align: left;
       }
 
       .handoff-phone-loader {
@@ -13080,6 +13213,41 @@
                   <button class="btn btn-secondary" id="workspaceChecklistSecondaryButton" type="button">Choose workup</button>
                   <button class="btn btn-secondary" id="workspaceChecklistPhoneButton" type="button">Send checklist to phone</button>
                 </div>
+                <div class="patient-checklist-editor" id="patientChecklistEditor" hidden>
+                  <div class="workspace-checklist-directory-head">
+                    <strong>Patient-specific checklist edits</strong>
+                    <span>History and exam rows for this patient only</span>
+                  </div>
+                  <div class="patient-checklist-editor-body">
+                    <div class="patient-checklist-editor-grid">
+                      <label for="patientChecklistEditItemSelect">
+                        New or selected row
+                        <select id="patientChecklistEditItemSelect"></select>
+                      </label>
+                      <label for="patientChecklistEditTypeSelect">
+                        Row type
+                        <select id="patientChecklistEditTypeSelect">
+                          <option value="history">History question</option>
+                          <option value="exam">Physical exam item</option>
+                        </select>
+                      </label>
+                      <label class="is-wide" for="patientChecklistEditTextInput">
+                        Question or exam item
+                        <textarea id="patientChecklistEditTextInput" maxlength="700" placeholder="Add the patient-specific history question or physical exam item."></textarea>
+                      </label>
+                      <label class="is-wide" for="patientChecklistEditOptionsInput">
+                        Answer choices or findings
+                        <input id="patientChecklistEditOptionsInput" type="text" maxlength="500" placeholder="No / Yes / Other ___">
+                      </label>
+                    </div>
+                    <div class="patient-checklist-editor-actions">
+                      <button class="btn btn-primary" id="addPatientChecklistItemButton" type="button">Add question</button>
+                      <button class="btn btn-secondary" id="savePatientChecklistItemButton" type="button">Save selected</button>
+                      <button class="btn btn-secondary" id="removePatientChecklistItemButton" type="button">Remove selected</button>
+                      <div class="vault-status-line" id="patientChecklistEditStatus" aria-live="polite"></div>
+                    </div>
+                  </div>
+                </div>
                 <ul class="compact-list" id="workspaceChecklistPreviewList"></ul>
                 <div class="workspace-checklist-directory" id="workspaceChecklistDirectory" hidden></div>
               </section>
@@ -14330,6 +14498,7 @@
     const views = ["workspace", "intake", "deid", "workup", "studio", "evidence", "handoff", "bedside", "final", "privacy"];
     const patientTabOrder = ["overview", "today", "context", "workup", "checklist", "findings", "evidence", "handoff"];
     const desktopPatientTabFallbacks = {
+      today: "context",
       handoff: "checklist"
     };
     const LAYOUT_PREFS_KEY = "prerounding-layout-preferences-v1";
@@ -14683,6 +14852,15 @@
       workspaceOpenBedsideChecklistButton: $("#workspaceOpenBedsideChecklistButton"),
       workspaceChecklistSecondaryButton: $("#workspaceChecklistSecondaryButton"),
       workspaceChecklistPhoneButton: $("#workspaceChecklistPhoneButton"),
+      patientChecklistEditor: $("#patientChecklistEditor"),
+      patientChecklistEditItemSelect: $("#patientChecklistEditItemSelect"),
+      patientChecklistEditTypeSelect: $("#patientChecklistEditTypeSelect"),
+      patientChecklistEditTextInput: $("#patientChecklistEditTextInput"),
+      patientChecklistEditOptionsInput: $("#patientChecklistEditOptionsInput"),
+      addPatientChecklistItemButton: $("#addPatientChecklistItemButton"),
+      savePatientChecklistItemButton: $("#savePatientChecklistItemButton"),
+      removePatientChecklistItemButton: $("#removePatientChecklistItemButton"),
+      patientChecklistEditStatus: $("#patientChecklistEditStatus"),
       phoneChecklistLauncher: $("#phoneChecklistLauncher"),
       phoneChecklistWorkupTitle: $("#phoneChecklistWorkupTitle"),
       phoneChecklistRefinementStatus: $("#phoneChecklistRefinementStatus"),
@@ -14846,6 +15024,7 @@
     let checklistSearch = "";
     let phoneChecklistWorkupSearch = "";
     let openEvidenceTaskSearch = "";
+    let patientChecklistEditSelection = "";
     let checklistSectionFocus = false;
     let bedsideCompletionReviewMode = false;
     let activeChecklistKey = "";
@@ -20267,7 +20446,22 @@ Rules:
       return Boolean(window.matchMedia?.("(max-width: 760px)").matches);
     }
 
+    function patientHasFollowUpContext(patient = activePatient()) {
+      if (!patient?.id) return false;
+      if (state.todayModeByPatientId?.[patient.id] === "returning") return true;
+      const existingCase = state.patientContinuityCases?.[patient.id]
+        ? normalizeContinuityCase(state.patientContinuityCases[patient.id])
+        : normalizeContinuityCase({});
+      const today = todayDateKey();
+      if ((existingCase.days || []).some((day) => String(day.date || "") < today)) return true;
+      const draft = state.patientDrafts?.[patient.id];
+      if (String(draft?.continuity || "").trim()) return true;
+      const admittedDate = String(patient.admittedAt || "").slice(0, 10);
+      return Boolean(admittedDate && admittedDate < today);
+    }
+
     function patientTabAvailableOnDevice(tabName) {
+      if (tabName === "today") return patientHasFollowUpContext();
       return tabName !== "handoff" || isCompactPatientDevice();
     }
 
@@ -23193,6 +23387,382 @@ Rules:
       scrollChecklistEntry(key);
     }
 
+    function patientChecklistEditConfig(kind = "history") {
+      const normalizedKind = kind === "exam" ? "exam" : "history";
+      return normalizedKind === "exam"
+        ? {
+          kind: "exam",
+          itemCategory: "exam",
+          sectionTitle: "Patient exam additions",
+          sectionShortTitle: "Patient exam",
+          organSystemKey: "patient_exam_edits",
+          defaultOptions: ["Normal", "Abnormal", "Unable to assess"],
+          addLabel: "Add exam item",
+          saveLabel: "Save exam item",
+          textPlaceholder: "Add the patient-specific physical exam item.",
+          optionPlaceholder: "Normal / Abnormal / Unable to assess"
+        }
+        : {
+          kind: "history",
+          itemCategory: "bedside",
+          sectionTitle: "Patient interview additions",
+          sectionShortTitle: "Patient interview",
+          organSystemKey: "patient_history_edits",
+          defaultOptions: ["No", "Yes", "Other ___"],
+          addLabel: "Add question",
+          saveLabel: "Save question",
+          textPlaceholder: "Add the patient-specific history question.",
+          optionPlaceholder: "No / Yes / Other ___"
+        };
+    }
+
+    function patientChecklistKindForEntry(section = {}, item = {}) {
+      return checklistKind(section, item) === "exam" ? "exam" : "history";
+    }
+
+    function patientChecklistEntryValue(sectionIndex, itemIndex) {
+      return `${sectionIndex}:${itemIndex}`;
+    }
+
+    function parsePatientChecklistEntryValue(value = "") {
+      const [sectionText, itemTextValue] = String(value || "").split(":");
+      const sectionIndex = Number(sectionText);
+      const itemIndex = Number(itemTextValue);
+      if (!Number.isInteger(sectionIndex) || !Number.isInteger(itemIndex)) return null;
+      const section = state.sections?.[sectionIndex];
+      const item = section?.items?.[itemIndex];
+      if (!section || !item) return null;
+      return { key: answerKey(sectionIndex, itemIndex), sectionIndex, itemIndex, section, item };
+    }
+
+    function selectedPatientChecklistEditorEntry() {
+      return parsePatientChecklistEntryValue(patientChecklistEditSelection);
+    }
+
+    function patientChecklistEditorEntries() {
+      return allChecklistEntries();
+    }
+
+    function setPatientChecklistEditStatus(message = "", tone = "") {
+      if (!elements.patientChecklistEditStatus) return;
+      elements.patientChecklistEditStatus.textContent = message;
+      elements.patientChecklistEditStatus.dataset.state = tone || "";
+    }
+
+    function syncPatientChecklistEditorControls() {
+      const config = patientChecklistEditConfig(elements.patientChecklistEditTypeSelect?.value);
+      if (elements.addPatientChecklistItemButton) elements.addPatientChecklistItemButton.textContent = config.addLabel;
+      if (elements.savePatientChecklistItemButton) elements.savePatientChecklistItemButton.textContent = config.saveLabel;
+      if (elements.patientChecklistEditTextInput) {
+        elements.patientChecklistEditTextInput.placeholder = config.textPlaceholder;
+      }
+      if (elements.patientChecklistEditOptionsInput) {
+        elements.patientChecklistEditOptionsInput.placeholder = config.optionPlaceholder;
+      }
+      const hasChecklist = Boolean(state.sections?.length);
+      const hasSelection = Boolean(selectedPatientChecklistEditorEntry());
+      for (const control of [
+        elements.patientChecklistEditItemSelect,
+        elements.patientChecklistEditTypeSelect,
+        elements.patientChecklistEditTextInput,
+        elements.patientChecklistEditOptionsInput,
+        elements.addPatientChecklistItemButton
+      ]) {
+        if (control) control.disabled = !hasChecklist;
+      }
+      if (elements.savePatientChecklistItemButton) elements.savePatientChecklistItemButton.disabled = !hasChecklist || !hasSelection;
+      if (elements.removePatientChecklistItemButton) elements.removePatientChecklistItemButton.disabled = !hasChecklist || !hasSelection;
+    }
+
+    function fillPatientChecklistEditorFromEntry(entry = null) {
+      if (!entry) {
+        patientChecklistEditSelection = "";
+        if (elements.patientChecklistEditItemSelect) elements.patientChecklistEditItemSelect.value = "";
+        syncPatientChecklistEditorControls();
+        return;
+      }
+      const kind = patientChecklistKindForEntry(entry.section, entry.item);
+      patientChecklistEditSelection = patientChecklistEntryValue(entry.sectionIndex, entry.itemIndex);
+      if (elements.patientChecklistEditItemSelect) elements.patientChecklistEditItemSelect.value = patientChecklistEditSelection;
+      if (elements.patientChecklistEditTypeSelect) elements.patientChecklistEditTypeSelect.value = kind;
+      if (elements.patientChecklistEditTextInput) {
+        elements.patientChecklistEditTextInput.value = entry.item.label || itemText(entry.item);
+      }
+      if (elements.patientChecklistEditOptionsInput) {
+        elements.patientChecklistEditOptionsInput.value = checklistOptionsForItem(entry.section, entry.item).join(" / ");
+      }
+      syncPatientChecklistEditorControls();
+    }
+
+    function renderPatientChecklistEditor() {
+      const editor = elements.patientChecklistEditor;
+      if (!editor) return;
+      const hasChecklist = Boolean(state.sections?.length);
+      editor.hidden = !hasChecklist;
+      if (!hasChecklist) {
+        patientChecklistEditSelection = "";
+        setPatientChecklistEditStatus("");
+        syncPatientChecklistEditorControls();
+        return;
+      }
+      const entries = patientChecklistEditorEntries();
+      const select = elements.patientChecklistEditItemSelect;
+      const currentSelectionExists = entries.some((entry) => patientChecklistEntryValue(entry.sectionIndex, entry.itemIndex) === patientChecklistEditSelection);
+      if (!currentSelectionExists) patientChecklistEditSelection = "";
+      if (select) {
+        select.innerHTML = "";
+        const emptyOption = document.createElement("option");
+        emptyOption.value = "";
+        emptyOption.textContent = "New patient-specific row";
+        select.appendChild(emptyOption);
+        for (const [entryIndex, entry] of entries.entries()) {
+          const option = document.createElement("option");
+          option.value = patientChecklistEntryValue(entry.sectionIndex, entry.itemIndex);
+          const kindLabel = patientChecklistKindForEntry(entry.section, entry.item) === "exam" ? "Exam" : "History";
+          option.textContent = `${entryIndex + 1}. ${kindLabel} - ${entry.item.label || itemText(entry.item)}`;
+          select.appendChild(option);
+        }
+        select.value = patientChecklistEditSelection;
+      }
+      const selectedEntry = selectedPatientChecklistEditorEntry();
+      if (selectedEntry) {
+        fillPatientChecklistEditorFromEntry(selectedEntry);
+      } else {
+        syncPatientChecklistEditorControls();
+      }
+    }
+
+    function clearPatientChecklistEditorDraft(kind = elements.patientChecklistEditTypeSelect?.value || "history") {
+      patientChecklistEditSelection = "";
+      if (elements.patientChecklistEditItemSelect) elements.patientChecklistEditItemSelect.value = "";
+      if (elements.patientChecklistEditTypeSelect) elements.patientChecklistEditTypeSelect.value = patientChecklistEditConfig(kind).kind;
+      if (elements.patientChecklistEditTextInput) elements.patientChecklistEditTextInput.value = "";
+      if (elements.patientChecklistEditOptionsInput) elements.patientChecklistEditOptionsInput.value = "";
+      syncPatientChecklistEditorControls();
+    }
+
+    function ensurePatientChecklistItemIds() {
+      const usedIds = new Set();
+      for (const section of state.sections || []) {
+        for (const item of section.items || []) {
+          const id = String(item?.id || "").trim();
+          if (id) usedIds.add(id);
+        }
+      }
+      for (const [sectionIndex, section] of (state.sections || []).entries()) {
+        for (const [itemIndex, item] of (section.items || []).entries()) {
+          if (!item || String(item.id || "").trim()) continue;
+          const label = item.label || itemText(item) || `item_${sectionIndex + 1}_${itemIndex + 1}`;
+          const base = `patient_checklist_${refinementSlug(label, `item_${sectionIndex + 1}_${itemIndex + 1}`)}`;
+          let candidate = base;
+          let suffix = 2;
+          while (usedIds.has(candidate)) {
+            candidate = `${base}_${suffix}`;
+            suffix += 1;
+          }
+          item.id = candidate;
+          usedIds.add(candidate);
+        }
+      }
+    }
+
+    function snapshotChecklistResponseArtifacts() {
+      ensurePatientChecklistItemIds();
+      return {
+        entries: allChecklistEntries().map(({ key, item }) => ({ key, id: String(item?.id || "").trim() })),
+        answers: { ...(state.answers || {}) },
+        itemNotes: { ...(state.itemNotes || {}) },
+        reviewedChecklistKeys: { ...(state.reviewedChecklistKeys || {}) },
+        expandedKeys: Array.from(expandedPhoneAnswerKeys),
+        activeChecklistKey,
+        openChecklistNoteKey
+      };
+    }
+
+    function remapChecklistResponseArtifacts(snapshot = {}) {
+      const newKeyById = new Map();
+      for (const { key, item } of allChecklistEntries()) {
+        const id = String(item?.id || "").trim();
+        if (id && !newKeyById.has(id)) newKeyById.set(id, key);
+      }
+      const oldIdByKey = new Map((snapshot.entries || []).map((entry) => [entry.key, entry.id]));
+      const remapObject = (source = {}) => {
+        const next = {};
+        for (const [oldKey, value] of Object.entries(source || {})) {
+          const id = oldIdByKey.get(oldKey);
+          const newKey = id ? newKeyById.get(id) : "";
+          if (newKey) next[newKey] = value;
+        }
+        return filterCurrentChecklistMap(next).values;
+      };
+      state.answers = remapObject(snapshot.answers);
+      state.itemNotes = remapObject(snapshot.itemNotes);
+      state.reviewedChecklistKeys = remapObject(snapshot.reviewedChecklistKeys);
+      const nextExpanded = new Set();
+      for (const oldKey of snapshot.expandedKeys || []) {
+        const id = oldIdByKey.get(oldKey);
+        const newKey = id ? newKeyById.get(id) : "";
+        if (newKey) nextExpanded.add(newKey);
+      }
+      expandedPhoneAnswerKeys.clear();
+      for (const key of nextExpanded) expandedPhoneAnswerKeys.add(key);
+      const remappedActiveId = oldIdByKey.get(snapshot.activeChecklistKey);
+      activeChecklistKey = remappedActiveId ? newKeyById.get(remappedActiveId) || "" : "";
+      if (!activeChecklistKey) activeChecklistKey = allChecklistEntries()[0]?.key || "";
+      const remappedNoteId = oldIdByKey.get(snapshot.openChecklistNoteKey);
+      openChecklistNoteKey = remappedNoteId ? newKeyById.get(remappedNoteId) || "" : "";
+    }
+
+    function patientChecklistEditSection(kind = "history") {
+      const config = patientChecklistEditConfig(kind);
+      let section = (state.sections || []).find((entry) => entry?.patientChecklistEditSection === config.kind || entry?.organSystemKey === config.organSystemKey);
+      if (section) return section;
+      section = {
+        title: config.sectionTitle,
+        shortTitle: config.sectionShortTitle,
+        category: config.itemCategory,
+        organSystemKey: config.organSystemKey,
+        schemaVersion: "patient-checklist-edit-v1",
+        patientChecklistEditSection: config.kind,
+        items: []
+      };
+      state.sections.push(section);
+      return section;
+    }
+
+    function normalizedPatientChecklistEditOptions(kind = "history") {
+      const config = patientChecklistEditConfig(kind);
+      const typedOptions = uniqueChecklistOptions(splitChecklistOptions(elements.patientChecklistEditOptionsInput?.value || ""));
+      return typedOptions.length ? typedOptions : [...config.defaultOptions];
+    }
+
+    function uniquePatientChecklistItemId(label = "", kind = "history", existingId = "") {
+      const currentId = String(existingId || "").trim();
+      if (currentId) return currentId;
+      const usedIds = new Set(allChecklistEntries().map(({ item }) => String(item?.id || "").trim()).filter(Boolean));
+      const base = `patient_${kind}_${refinementSlug(label, "item")}`;
+      let candidate = base;
+      let suffix = 2;
+      while (usedIds.has(candidate)) {
+        candidate = `${base}_${suffix}`;
+        suffix += 1;
+      }
+      return candidate;
+    }
+
+    function patientChecklistEditorItem(kind = "history", existingItem = {}) {
+      const config = patientChecklistEditConfig(kind);
+      const label = String(elements.patientChecklistEditTextInput?.value || "").replace(/\s+/g, " ").trim();
+      if (!label) throw new Error(config.kind === "exam" ? "Enter the exam item before saving." : "Enter the history question before saving.");
+      const options = normalizedPatientChecklistEditOptions(config.kind);
+      const item = {
+        ...existingItem,
+        id: uniquePatientChecklistItemId(label, config.kind, existingItem.id),
+        label,
+        text: label,
+        category: config.itemCategory,
+        options,
+        rawValue: options.join(" / "),
+        answerMode: existingItem.answerMode || existingItem.answer_mode || "multi",
+        patientSpecific: true,
+        source_id: existingItem.source_id || "PATIENT_SPECIFIC_CHECKLIST_EDIT",
+        source: existingItem.source || { source_id: "PATIENT_SPECIFIC_CHECKLIST_EDIT", title: "Patient-specific checklist edit" },
+        diagnosticPurpose: existingItem.diagnosticPurpose || "Patient-specific interview or exam row added during bedside workflow.",
+        diagnostic_purpose: existingItem.diagnostic_purpose || "Patient-specific interview or exam row added during bedside workflow.",
+        managementImplication: existingItem.managementImplication || "Positive or abnormal finding should be reconciled with the supervising clinician plan.",
+        management_implication: existingItem.management_implication || "Positive or abnormal finding should be reconciled with the supervising clinician plan.",
+        tags: uniqueChecklistOptions([
+          ...(Array.isArray(existingItem.tags) ? existingItem.tags : []),
+          "patient_specific",
+          config.kind === "exam" ? "patient_exam_edit" : "patient_history_edit"
+        ])
+      };
+      if (config.kind === "exam") {
+        item.findings_options = options;
+        item.answer_options = options;
+      } else {
+        item.answer_options = options;
+      }
+      return item;
+    }
+
+    function invalidatePhonePayloadAfterChecklistEdit() {
+      state.transferCode = "";
+      state.phonePayload = "";
+      const patientId = activePatient().id;
+      if (!patientId) return;
+      updatePatient(patientId, (patient) => ({
+        ...patient,
+        phoneBundleCode: "",
+        phoneBundlePayload: ""
+      }));
+    }
+
+    function finalizePatientChecklistEdit(snapshot, message) {
+      state.sections = (state.sections || []).filter((section) => Array.isArray(section.items) && section.items.length);
+      remapChecklistResponseArtifacts(snapshot);
+      state.checklistText = formatChecklistSectionsText(state.sections);
+      state.checklistCatalogStale = false;
+      invalidatePhonePayloadAfterChecklistEdit();
+      renderChecklist();
+      renderHandoff();
+      renderFinalUpdate();
+      renderPatientWorkspace();
+      renderCaseStatus();
+      saveState();
+      setPatientChecklistEditStatus(message, "success");
+      setStatus(message);
+    }
+
+    function addPatientChecklistItemFromEditor() {
+      if (!state.sections.length) {
+        setPatientChecklistEditStatus("Build the patient checklist before adding rows.", "error");
+        return;
+      }
+      try {
+        const kind = patientChecklistEditConfig(elements.patientChecklistEditTypeSelect?.value).kind;
+        const snapshot = snapshotChecklistResponseArtifacts();
+        const section = patientChecklistEditSection(kind);
+        const item = patientChecklistEditorItem(kind);
+        section.items.push(item);
+        const sectionIndex = state.sections.indexOf(section);
+        patientChecklistEditSelection = patientChecklistEntryValue(sectionIndex, section.items.length - 1);
+        finalizePatientChecklistEdit(snapshot, kind === "exam" ? "Exam item added for this patient." : "History question added for this patient.");
+      } catch (error) {
+        setPatientChecklistEditStatus(error instanceof Error ? error.message : "Checklist row could not be added.", "error");
+      }
+    }
+
+    function saveSelectedPatientChecklistItem() {
+      const entry = selectedPatientChecklistEditorEntry();
+      if (!entry) {
+        setPatientChecklistEditStatus("Select a checklist row to update.", "error");
+        return;
+      }
+      try {
+        const kind = patientChecklistEditConfig(elements.patientChecklistEditTypeSelect?.value).kind;
+        const snapshot = snapshotChecklistResponseArtifacts();
+        entry.section.items[entry.itemIndex] = patientChecklistEditorItem(kind, entry.item);
+        patientChecklistEditSelection = patientChecklistEntryValue(entry.sectionIndex, entry.itemIndex);
+        finalizePatientChecklistEdit(snapshot, kind === "exam" ? "Exam item updated for this patient." : "History question updated for this patient.");
+      } catch (error) {
+        setPatientChecklistEditStatus(error instanceof Error ? error.message : "Checklist row could not be updated.", "error");
+      }
+    }
+
+    function removeSelectedPatientChecklistItem() {
+      const entry = selectedPatientChecklistEditorEntry();
+      if (!entry) {
+        setPatientChecklistEditStatus("Select a checklist row to remove.", "error");
+        return;
+      }
+      const snapshot = snapshotChecklistResponseArtifacts();
+      entry.section.items.splice(entry.itemIndex, 1);
+      const kind = patientChecklistKindForEntry(entry.section, entry.item);
+      clearPatientChecklistEditorDraft(kind);
+      finalizePatientChecklistEdit(snapshot, kind === "exam" ? "Exam item removed for this patient." : "History question removed for this patient.");
+    }
+
     function renderWorkspaceChecklistDirectory(container) {
       if (!container) return;
       container.innerHTML = "";
@@ -23531,7 +24101,7 @@ Rules:
       const stored = state.todayModeByPatientId?.[patient.id];
       if (stored === "new" || stored === "returning") return stored;
       const patientCase = patientContinuityCase(patient, { create: false });
-      return (patientCase.days || []).some((day) => day.date < todayDateKey()) ? "returning" : "new";
+      return (patientCase.days || []).some((day) => day.date < todayDateKey()) || patientHasFollowUpContext(patient) ? "returning" : "new";
     }
 
     function setTodayWorkflowMode(mode = "new") {
@@ -23914,12 +24484,13 @@ Rules:
         }
       }
       renderWorkspaceChecklistDirectory(elements.workspaceChecklistDirectory);
+      renderPatientChecklistEditor();
       syncWorkupSelectors();
       syncWorkupConcernInputs();
       renderPhoneChecklistLauncher();
       syncSelectedPatientInputs();
       renderObjectiveDataSurfaces();
-      renderTodayCockpit();
+      if (patientHasFollowUpContext(patient)) renderTodayCockpit();
       if (!hasPatient) setChecklistBuildDisabled(true);
       renderPatientTabs();
       renderPatientScopeBars();
@@ -23966,18 +24537,25 @@ Rules:
         row.setAttribute("role", "group");
         row.setAttribute("aria-label", `${patient.title}, ${isDischarged ? "discharged" : "active"}`);
         row.setAttribute("aria-current", patient.id === state.activePatientId ? "true" : "false");
+        row.tabIndex = 0;
         if (!isDischarged && patient.id === state.activePatientId) row.classList.add("is-active");
         const main = document.createElement("div");
         main.className = "patient-main";
+        const titleRow = document.createElement("div");
+        titleRow.className = "patient-card-title-row";
         const title = document.createElement("strong");
         title.textContent = isDischarged ? `${patient.title} (discharged)` : patient.title;
+        const status = document.createElement("span");
+        status.className = `patient-card-status ${isDischarged ? "is-discharged" : patient.id === state.activePatientId ? "is-current" : ""}`;
+        status.textContent = isDischarged ? "Discharged" : patient.id === state.activePatientId ? "Current" : "Open";
+        titleRow.append(title, status);
         const detail = document.createElement("span");
         detail.textContent = patient.oneLine;
         const workupChip = document.createElement("span");
         const patientModule = moduleById(patientSelectedWorkupModuleId(patient));
         workupChip.className = `patient-workup-chip ${patientModule ? "is-selected" : "is-empty"}`;
         workupChip.textContent = patientModule ? moduleLabel(patientModule) : "No workup selected";
-        main.append(title, detail, workupChip);
+        main.append(titleRow, detail, workupChip);
         const actions = document.createElement("div");
         actions.className = "patient-card-actions";
         if (isDischarged) {
@@ -23991,15 +24569,6 @@ Rules:
           });
           actions.appendChild(remove);
         } else {
-          const open = document.createElement("button");
-          open.className = patient.id === state.activePatientId ? "btn btn-primary" : "btn btn-secondary";
-          open.type = "button";
-          open.textContent = patient.id === state.activePatientId ? "Open" : "Select";
-          open.addEventListener("click", (event) => {
-            event.stopPropagation();
-            selectPatient(patient.id);
-          });
-          actions.appendChild(open);
           if (state.sessionMode !== "single") {
             const discharge = document.createElement("button");
             discharge.className = "btn btn-secondary";
@@ -24012,8 +24581,19 @@ Rules:
             actions.appendChild(discharge);
           }
         }
-        row.append(main, actions);
+        row.append(main);
+        if (actions.childElementCount) row.append(actions);
         row.addEventListener("click", () => {
+          if (isDischarged) {
+            setStatus(`${patient.title} is discharged. Remove it from the roster or admit the patient again.`);
+            return;
+          }
+          selectPatient(patient.id);
+        });
+        row.addEventListener("keydown", (event) => {
+          if (event.target.closest?.("button")) return;
+          if (event.key !== "Enter" && event.key !== " ") return;
+          event.preventDefault();
           if (isDischarged) {
             setStatus(`${patient.title} is discharged. Remove it from the roster or admit the patient again.`);
             return;
@@ -29762,6 +30342,22 @@ Rules:
       elements.workspaceChecklistPhoneButton?.addEventListener("click", () => {
         preparePhoneHandoff();
       });
+      elements.patientChecklistEditItemSelect?.addEventListener("change", () => {
+        patientChecklistEditSelection = elements.patientChecklistEditItemSelect.value || "";
+        const entry = selectedPatientChecklistEditorEntry();
+        if (entry) {
+          fillPatientChecklistEditorFromEntry(entry);
+        } else {
+          clearPatientChecklistEditorDraft(elements.patientChecklistEditTypeSelect?.value || "history");
+          setPatientChecklistEditStatus("");
+        }
+      });
+      elements.patientChecklistEditTypeSelect?.addEventListener("change", () => {
+        syncPatientChecklistEditorControls();
+      });
+      elements.addPatientChecklistItemButton?.addEventListener("click", addPatientChecklistItemFromEditor);
+      elements.savePatientChecklistItemButton?.addEventListener("click", saveSelectedPatientChecklistItem);
+      elements.removePatientChecklistItemButton?.addEventListener("click", removeSelectedPatientChecklistItem);
       $("#findingsOpenChecklistButton")?.addEventListener("click", () => {
         saveSelectedPatientDrafts();
         if (!state.sections.length) {

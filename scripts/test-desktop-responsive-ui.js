@@ -369,6 +369,9 @@ async function testDemoCaseLoader(browser, baseUrl) {
     title: document.querySelector("#caseTitle")?.textContent?.trim() || "",
     workspaceTitle: document.querySelector("#patientWorkspaceTitle")?.textContent?.trim() || "",
     oneLine: document.querySelector("#patientWorkspaceOneLine")?.textContent?.trim() || "",
+    visibleTabs: Array.from(document.querySelectorAll(".patient-task-strip [role='tab']"))
+      .filter((tab) => !tab.hidden && getComputedStyle(tab).display !== "none")
+      .map((tab) => tab.textContent?.trim() || ""),
     admission: document.querySelector("#workspaceAdmissionInput")?.value || "",
     labs: document.querySelector("#workspaceLabsMedsInput")?.value || "",
     workupValue: document.querySelector("#patientWorkupSelect")?.value || "",
@@ -377,6 +380,7 @@ async function testDemoCaseLoader(browser, baseUrl) {
   }));
   assert(demoAudit.title.includes("Demo - DKA consult"), `demo should select the synthetic patient: ${JSON.stringify(demoAudit)}`);
   assert(/Synthetic adult case - no saved data/i.test(demoAudit.oneLine), `demo one-line copy should identify no-save synthetic data: ${JSON.stringify(demoAudit)}`);
+  assert(!demoAudit.visibleTabs.includes("Today"), `new no-save demo should not show the follow-up Today tab: ${JSON.stringify(demoAudit)}`);
   assert(/Synthetic demo case only/i.test(demoAudit.admission) && /possible DKA|vomiting|insulin/i.test(demoAudit.admission), `demo admission context should be prefilled: ${JSON.stringify(demoAudit)}`);
   assert(/glucose 318|anion gap 22|beta-hydroxybutyrate 4\.2/i.test(demoAudit.labs), `demo labs should be prefilled with synthetic objective context: ${JSON.stringify(demoAudit)}`);
   assert(demoAudit.workupValue === "hyperglycemia_possible_dka_v1" && !demoAudit.buildDisabled, `demo should start with the DKA workup selected and ready to build: ${JSON.stringify(demoAudit)}`);
@@ -966,8 +970,34 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
   const tabLabels = await page.locator(".patient-task-strip [role='tab']:visible").allTextContents();
   const expectedTabLabels = viewport.width < 760
     ? ""
-    : "Summary|Today|Context|Workup|Checklist|Findings|Evidence";
+    : "Summary|Context|Workup|Checklist|Findings|Evidence";
   assert(tabLabels.join("|") === expectedTabLabels, `patient tabs should match device workflow order, got ${tabLabels.join("|")}`);
+  if (viewport.width >= 760) {
+    await page.evaluate(() => document.querySelector('[data-patient-tab="today"]')?.click());
+    await page.waitForFunction(() => document.body.dataset.patientTab === "context");
+    await page.fill("#workspaceContinuityInput", "Following from yesterday: oxygen weaned overnight; repeat labs and antibiotic plan due today.");
+    await page.click("#saveContinuityButton");
+    await page.waitForFunction(() => Array.from(document.querySelectorAll(".patient-task-strip [role='tab']"))
+      .filter((tab) => !tab.hidden && getComputedStyle(tab).display !== "none")
+      .map((tab) => tab.textContent?.trim() || "")
+      .includes("Today"));
+    const followedTabLabels = await page.locator(".patient-task-strip [role='tab']:visible").allTextContents();
+    assert(followedTabLabels.join("|") === "Summary|Today|Context|Workup|Checklist|Findings|Evidence", `followed patient should show Today after continuity is saved, got ${followedTabLabels.join("|")}`);
+    await clickPatientTab(page, "today");
+    const followedTodayAudit = await page.evaluate(() => ({
+      patientTab: document.body.dataset.patientTab,
+      modeHelp: document.querySelector("#todayModeHelp")?.textContent || "",
+      returningPressed: document.querySelector('[data-today-mode="returning"]')?.getAttribute("aria-pressed") || "",
+      continuity: document.querySelector("#workspaceContinuityInput")?.value || ""
+    }));
+    assert(
+      followedTodayAudit.patientTab === "today"
+        && followedTodayAudit.returningPressed === "true"
+        && /last 24 hours/i.test(followedTodayAudit.modeHelp),
+      `followed patient Today tab should open in 24h update mode: ${JSON.stringify(followedTodayAudit)}`
+    );
+    await clickPatientTab(page, "overview");
+  }
   const phoneTabAudit = await page.evaluate(() => {
     const tab = document.querySelector('[data-patient-tab="handoff"]');
     const rect = tab?.getBoundingClientRect();
@@ -1261,6 +1291,27 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
   assert(!checklistDirectoryAudit.hidden, `built checklist tab should show an all-question directory: ${JSON.stringify(checklistDirectoryAudit)}`);
   assert(checklistDirectoryAudit.sections >= 1 && checklistDirectoryAudit.buttons >= 8, `checklist directory should expose the full built checklist, not a tiny preview: ${JSON.stringify(checklistDirectoryAudit)}`);
   assert(checklistDirectoryAudit.clipped.length === 0, `checklist directory rows should not clip labels: ${JSON.stringify(checklistDirectoryAudit)}`);
+
+  await page.waitForSelector("#patientChecklistEditor:not([hidden])");
+  await page.selectOption("#patientChecklistEditTypeSelect", "history");
+  await page.fill("#patientChecklistEditTextInput", "Any new exertional chest pressure since arrival?");
+  await page.fill("#patientChecklistEditOptionsInput", "No / Yes / Unclear / Other ___");
+  await page.click("#addPatientChecklistItemButton");
+  await page.waitForFunction(() => /new exertional chest pressure/i.test(document.querySelector("#workspaceChecklistDirectory")?.textContent || ""));
+  await page.selectOption("#patientChecklistEditTypeSelect", "exam");
+  await page.fill("#patientChecklistEditTextInput", "Check reproducible chest wall tenderness");
+  await page.fill("#patientChecklistEditOptionsInput", "Absent / Present / Unable to assess");
+  await page.click("#addPatientChecklistItemButton");
+  await page.waitForFunction(() => /reproducible chest wall tenderness/i.test(document.querySelector("#workspaceChecklistDirectory")?.textContent || ""));
+  await page.fill("#patientChecklistEditTextInput", "Check reproducible chest wall tenderness and focal rash");
+  await page.click("#savePatientChecklistItemButton");
+  await page.waitForFunction(() => /focal rash/i.test(document.querySelector("#workspaceChecklistDirectory")?.textContent || ""));
+  await page.click("#removePatientChecklistItemButton");
+  await page.waitForFunction(() => {
+    const text = document.querySelector("#workspaceChecklistDirectory")?.textContent || "";
+    return /new exertional chest pressure/i.test(text) && !/focal rash/i.test(text);
+  });
+
   await page.locator("#workspaceChecklistDirectory .workspace-checklist-jump").first().click();
   await page.waitForSelector("#bedsideView:not([hidden])");
   await page.waitForFunction(() => document.querySelector(".checklist-row.is-active")?.getBoundingClientRect().height > 0);
