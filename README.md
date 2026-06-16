@@ -24,6 +24,7 @@ Privacy-first browser app for inpatient pre-rounding. The app helps turn pasted 
 - `medical-knowledge/`: reviewed source-of-truth clinical knowledge JSON.
 - `medical-knowledge-db.js`: generated app bundle built from `medical-knowledge/`.
 - `scripts/`: tests, generators, validators, and build helpers.
+- `vendor/`: local browser bundles used directly by `index.html`; `npm run test:syntax` fails if a vendored `.js` file is no longer loaded.
 - `reports/`: validation/provenance reports that need to stay with the repo; routine generated reports are ignored.
 
 ## Medical Knowledge Workflow

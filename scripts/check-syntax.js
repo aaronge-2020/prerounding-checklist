@@ -1,9 +1,11 @@
-import { mkdtempSync, readFileSync, rmSync, writeFileSync, existsSync } from "node:fs";
+import { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 
-const files = [
+const packageJson = JSON.parse(readFileSync("package.json", "utf8"));
+
+const coreFiles = [
   "checklist.js",
   "clinical-intents.js",
   "complaint-cds.js",
@@ -19,46 +21,16 @@ const files = [
   "workup-authoring.js",
   "utils/supabase/env.js",
   "utils/supabase/node.js",
+  "scripts/deid-adversarial.js",
   "scripts/deid-fixtures.js",
-  "scripts/build-medical-knowledge-db.js",
-  "scripts/import-medical-knowledge.js",
-  "scripts/export-medical-knowledge.js",
-  "scripts/grant-workup-access.js",
-  "scripts/deploy-supabase-workup-authoring.js",
-  "scripts/check-supabase-auth-readiness.js",
-  "scripts/build-physical-exam-evidence.js",
-  "scripts/audit-evidence-checklist.js",
-  "scripts/evidence-eval.js",
-  "scripts/iterate-clinical-workups.js",
-  "scripts/generate-clinical-pathway-trees.js",
-  "scripts/hand-polish-clinical-pathway-trees.js",
-  "scripts/audit-clinical-pathway-trees.js",
-  "scripts/audit-clinical-cutoff-gaps.js",
-  "scripts/generate-endocrine-workups.js",
-  "scripts/install-endocrine-workups.js",
-  "scripts/test-endocrine-knowledge.js",
-  "scripts/benchmark-embedding-models.js",
-  "scripts/test-complaint-cds.js",
-  "scripts/test-medical-knowledge-db.js",
-  "scripts/test-workup-authoring.js",
-  "scripts/test-workup-studio-auth.js",
-  "scripts/test-workup-studio-ui.js",
-  "scripts/test-supabase-config.js",
-  "scripts/test-clinical-intents.js",
-  "scripts/test-open-evidence-workflows.js",
-  "scripts/test-embedding-recall.js",
-  "scripts/test-evidence-adversarial.js",
-  "scripts/test-evidence-eval.js",
-  "scripts/test-evidence.js",
-  "scripts/test-labs.js",
-  "scripts/test-checklist.js",
-  "scripts/test-deid.js",
-  "scripts/benchmark-deid.js",
-  "scripts/check-syntax.js",
-  "scripts/test-clinical-ui-browser.js",
-  "scripts/test-desktop-responsive-ui.js",
-  "scripts/test-vault-state-machine.js"
+  "scripts/evidence-eval.js"
 ];
+
+const packageScriptFiles = Object.values(packageJson.scripts || {}).flatMap((command) => (
+  [...String(command).matchAll(/\bnode\s+([^\s&|]+\.js)\b/g)].map((match) => match[1].replaceAll("\\", "/"))
+));
+
+const files = [...new Set([...coreFiles, ...packageScriptFiles])].sort();
 
 function runNodeCheck(file) {
   if (!existsSync(file)) return;
@@ -75,6 +47,20 @@ for (const file of files) {
 }
 
 const html = readFileSync("index.html", "utf8");
+
+const loadedVendorScripts = new Set(
+  [...html.matchAll(/<script\s+src="\.\/vendor\/([^"]+\.js)"/g)].map((match) => match[1])
+);
+for (const scriptName of loadedVendorScripts) {
+  if (!existsSync(`vendor/${scriptName}`)) {
+    throw new Error(`Vendor script is referenced but missing: vendor/${scriptName}`);
+  }
+}
+for (const entry of readdirSync("vendor", { withFileTypes: true })) {
+  if (entry.isFile() && entry.name.endsWith(".js") && !loadedVendorScripts.has(entry.name)) {
+    throw new Error(`Unused vendored script should be removed or loaded explicitly: vendor/${entry.name}`);
+  }
+}
 
 if (/fonts\.googleapis\.com|fonts\.gstatic\.com/.test(html)) {
   throw new Error("Do not load third-party Google Fonts in the clinical app shell.");

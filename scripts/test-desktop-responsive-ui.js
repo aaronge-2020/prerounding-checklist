@@ -206,39 +206,103 @@ async function openFreshPage(browser, baseUrl, viewport, { preloadLocalStorage =
   return { context, page };
 }
 
-async function installMockQrCamera(page, qrText) {
-  await page.evaluate((textToScan) => {
+async function installMockQrCamera(page, qrText, options = {}) {
+  await page.evaluate(({ textToScan, options: cameraOptions }) => {
     const drawQrToCanvas = () => {
       const canvas = document.createElement("canvas");
-      canvas.width = 720;
-      canvas.height = 720;
+      canvas.width = cameraOptions.width || (cameraOptions.phoneScreen ? 1280 : 1280);
+      canvas.height = cameraOptions.height || (cameraOptions.phoneScreen ? 720 : 1280);
       const context2d = canvas.getContext("2d");
-      context2d.fillStyle = "#ffffff";
+      context2d.fillStyle = cameraOptions.phoneScreen ? "#17282d" : "#ffffff";
       context2d.fillRect(0, 0, canvas.width, canvas.height);
+      const phoneRect = cameraOptions.phoneScreen
+        ? {
+          width: Math.min(520, canvas.width * 0.52),
+          height: Math.min(650, canvas.height * 0.86)
+        }
+        : { width: canvas.width, height: canvas.height };
+      phoneRect.left = Math.floor((canvas.width - phoneRect.width) / 2);
+      phoneRect.top = Math.floor((canvas.height - phoneRect.height) / 2);
+      if (cameraOptions.phoneScreen) {
+        context2d.fillStyle = "#eff4f3";
+        context2d.fillRect(phoneRect.left, phoneRect.top, phoneRect.width, phoneRect.height);
+        context2d.strokeStyle = "#091519";
+        context2d.lineWidth = 16;
+        context2d.strokeRect(phoneRect.left, phoneRect.top, phoneRect.width, phoneRect.height);
+      }
       const qr = window.qrcode(0, "L");
       qr.addData(textToScan, "Byte");
       qr.make();
       const modules = qr.getModuleCount();
       const margin = 12;
-      const cell = Math.max(2, Math.floor(Math.min(canvas.width, canvas.height) / (modules + margin * 2)));
+      const scanArea = Math.min(phoneRect.width, phoneRect.height) * (cameraOptions.qrScale || 1);
+      const cell = Math.max(2, Math.floor(scanArea / (modules + margin * 2)));
       const size = modules * cell;
-      const left = Math.floor((canvas.width - size) / 2);
-      const top = Math.floor((canvas.height - size) / 2);
-      context2d.fillStyle = "#000000";
+      const left = Math.floor(phoneRect.left + (phoneRect.width - size) / 2);
+      const top = Math.floor(phoneRect.top + (phoneRect.height - size) / 2);
+      context2d.fillStyle = cameraOptions.lowContrast ? "#505b5d" : "#000000";
       for (let row = 0; row < modules; row += 1) {
         for (let column = 0; column < modules; column += 1) {
           if (qr.isDark(row, column)) context2d.fillRect(left + column * cell, top + row * cell, cell, cell);
         }
       }
+      if (cameraOptions.glare) {
+        context2d.save();
+        context2d.translate(canvas.width / 2, canvas.height / 2);
+        context2d.rotate(-Math.PI / 7);
+        context2d.fillStyle = "rgba(255, 255, 255, 0.18)";
+        context2d.fillRect(-canvas.width / 2, -36, canvas.width, 72);
+        context2d.restore();
+      }
       return canvas;
     };
+    const state = { requests: [], appliedConstraints: [] };
+    window.__mockQrCameraState = state;
     Object.defineProperty(navigator, "mediaDevices", {
       configurable: true,
       value: {
-        getUserMedia: async () => drawQrToCanvas().captureStream(10)
+        getUserMedia: async (constraints) => {
+          state.requests.push(constraints);
+          const canvas = drawQrToCanvas();
+          try {
+            const reader = new window.ZXingBrowser.BrowserQRCodeReader();
+            const decoded = await reader.decodeFromCanvas(canvas);
+            state.sourceDecodeLength = String(typeof decoded.getText === "function" ? decoded.getText() : decoded.text || decoded.data || "").length;
+          } catch (error) {
+            state.sourceDecodeError = `${error?.name || "Error"}:${error?.message || ""}`;
+            try {
+              const context = canvas.getContext("2d", { willReadFrequently: true });
+              const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+              state.sourceJsQrDecodeLength = String(window.jsQR?.(imageData.data, canvas.width, canvas.height, { inversionAttempts: "attemptBoth" })?.data || "").length;
+            } catch (jsQrError) {
+              state.sourceJsQrDecodeError = `${jsQrError?.name || "Error"}:${jsQrError?.message || ""}`;
+            }
+          }
+          const stream = canvas.captureStream(10);
+          const [track] = stream.getVideoTracks();
+          if (track) {
+            const frameInterval = window.setInterval(() => {
+              track.requestFrame?.();
+            }, 100);
+            const stopTrack = track.stop.bind(track);
+            track.stop = () => {
+              window.clearInterval(frameInterval);
+              stopTrack();
+            };
+            track.getCapabilities = () => ({
+              focusMode: ["manual", "continuous"],
+              exposureMode: ["manual", "continuous"],
+              whiteBalanceMode: ["manual", "continuous"]
+            });
+            track.applyConstraints = async (constraintsToApply) => {
+              state.appliedConstraints.push(constraintsToApply);
+            };
+          }
+          return stream;
+        }
       }
     });
-  }, qrText);
+  }, { textToScan: qrText, options });
 }
 
 async function openPhoneScannerPageWithMockQr(browser, baseUrl, qrText) {
@@ -554,7 +618,57 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
 
   const { context: scannerContext, page: scannerPage } = await openPhoneScannerPageWithMockQr(browser, baseUrl, qrLink);
   await scannerPage.click("#startPhoneQrScannerButton");
-  await scannerPage.waitForSelector("#bedsideView:not([hidden])", { timeout: 45000 });
+  try {
+    await scannerPage.waitForSelector("#bedsideView:not([hidden])", { timeout: 45000 });
+  } catch (error) {
+    const scannerFailureAudit = await scannerPage.evaluate(async () => {
+      const video = document.querySelector("#phoneQrScannerVideo");
+      let manualDecodeLength = 0;
+      let manualDecodeError = "";
+      let manualJsQrDecodeLength = 0;
+      let manualJsQrDecodeError = "";
+      try {
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, (video?.videoWidth || 0) * 2);
+        canvas.height = Math.max(1, (video?.videoHeight || 0) * 2);
+        const context = canvas.getContext("2d", { willReadFrequently: true });
+        context.imageSmoothingEnabled = false;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const reader = new window.ZXingBrowser.BrowserQRCodeReader();
+        const decoded = await reader.decodeFromCanvas(canvas);
+        manualDecodeLength = String(typeof decoded.getText === "function" ? decoded.getText() : decoded.text || decoded.data || "").length;
+      } catch (error) {
+        manualDecodeError = `${error?.name || "Error"}:${error?.message || ""}`;
+        try {
+          const canvas = document.createElement("canvas");
+          canvas.width = Math.max(1, (video?.videoWidth || 0) * 2);
+          canvas.height = Math.max(1, (video?.videoHeight || 0) * 2);
+          const context = canvas.getContext("2d", { willReadFrequently: true });
+          context.imageSmoothingEnabled = false;
+          context.drawImage(video, 0, 0, canvas.width, canvas.height);
+          const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+          manualJsQrDecodeLength = String(window.jsQR?.(imageData.data, canvas.width, canvas.height, { inversionAttempts: "attemptBoth" })?.data || "").length;
+        } catch (jsQrError) {
+          manualJsQrDecodeError = `${jsQrError?.name || "Error"}:${jsQrError?.message || ""}`;
+        }
+      }
+      return {
+        view: document.body.dataset.view,
+        scannerStatus: document.querySelector("#phoneQrScannerStatus")?.textContent || "",
+        entryStatus: document.querySelector("#phoneBundleEntryStatus")?.textContent || "",
+        hasVideo: Boolean(video?.srcObject),
+        videoWidth: video?.videoWidth || 0,
+        videoHeight: video?.videoHeight || 0,
+        readyState: video?.readyState || 0,
+        manualDecodeLength,
+        manualDecodeError,
+        manualJsQrDecodeLength,
+        manualJsQrDecodeError,
+        mockState: window.__mockQrCameraState || null
+      };
+    });
+    throw new Error(`camera scanner should open bedside view from the QR feed: ${JSON.stringify(scannerFailureAudit)}`);
+  }
   await scannerPage.waitForFunction(() => document.querySelectorAll(".checklist-row").length >= 8);
   await assertNoLayoutBreakage(scannerPage, "phone QR camera scanner bedside checklist");
   const scannerAudit = await scannerPage.evaluate(() => ({
@@ -649,7 +763,7 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   await phonePage.waitForSelector("#bedsideCompletionPanel:not([hidden])");
   await phonePage.waitForSelector("#bedsideCompletionQrCode svg", { timeout: 45000 });
   const returnQrText = await phonePage.evaluate(() => document.querySelector("#bedsideCompletionPanel")?.dataset.qrText || "");
-  assert(/phoneReturn=/.test(returnQrText), "completed phone return QR should expose a local return token");
+  assert(/^(?:rgz|rj)\./.test(returnQrText), "completed phone return QR should expose a compact local return token");
   const completionAudit = await phonePage.evaluate(() => ({
     title: document.querySelector("#bedsideCompletionTitle")?.textContent || "",
     progress: document.querySelector("#bedsideMobileProgress")?.textContent || "",
@@ -720,18 +834,27 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   assert(!/Imported phone findings/i.test(staleChecklistDesktopAudit.finalText), `stale checklist return bundle should not update final text: ${JSON.stringify(staleChecklistDesktopAudit)}`);
   assert(staleChecklistDesktopAudit.answeredRows === 0, `stale checklist return bundle should not merge answers: ${JSON.stringify(staleChecklistDesktopAudit)}`);
 
-  await installMockQrCamera(desktopPage, returnQrText);
+  await installMockQrCamera(desktopPage, returnQrText, {
+    phoneScreen: true,
+    lowContrast: true,
+    glare: true,
+    qrScale: 0.86
+  });
   await desktopPage.click("#startReturnQrScannerButton");
   await desktopPage.waitForFunction(() => /Phone checklist answers imported/i.test(document.querySelector("#handoffStatus")?.textContent || ""), null, { timeout: 45000 });
   const desktopScannerAudit = await desktopPage.evaluate(() => ({
     scannerStatus: document.querySelector("#returnQrScannerStatus")?.textContent || "",
     handoffStatus: document.querySelector("#handoffStatus")?.textContent || "",
     importValue: document.querySelector("#phoneImportInput")?.value || "",
-    answeredRows: document.querySelectorAll(".checklist-row.is-answered").length
+    answeredRows: document.querySelectorAll(".checklist-row.is-answered").length,
+    firstFacingMode: window.__mockQrCameraState?.requests?.[0]?.video?.facingMode?.ideal || "",
+    appliedConstraints: JSON.stringify(window.__mockQrCameraState?.appliedConstraints || [])
   }));
   assert(/imported/i.test(desktopScannerAudit.scannerStatus), `desktop scanner should report imported phone QR: ${JSON.stringify(desktopScannerAudit)}`);
-  assert(/phoneReturn=/.test(desktopScannerAudit.importValue), `desktop scanner should place scanned QR text in the import box: ${JSON.stringify(desktopScannerAudit)}`);
+  assert(/^(?:rgz|rj)\./.test(desktopScannerAudit.importValue) || /phoneReturn=/.test(desktopScannerAudit.importValue), `desktop scanner should place scanned QR text in the import box: ${JSON.stringify(desktopScannerAudit)}`);
   assert(desktopScannerAudit.answeredRows >= 1, `desktop scanner should merge answered checklist rows: ${JSON.stringify(desktopScannerAudit)}`);
+  assert(desktopScannerAudit.firstFacingMode === "user", `desktop return scanner should prefer the user-facing laptop camera: ${JSON.stringify(desktopScannerAudit)}`);
+  assert(/focusMode.*continuous|continuous.*focusMode/.test(desktopScannerAudit.appliedConstraints), `desktop return scanner should request continuous focus when available: ${JSON.stringify(desktopScannerAudit)}`);
 
   await desktopPage.fill("#phoneImportInput", staleItemReturnPayload);
   await desktopPage.click("#importPhoneFindingsButton");
