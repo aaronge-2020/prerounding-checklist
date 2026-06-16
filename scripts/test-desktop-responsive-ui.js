@@ -206,6 +206,49 @@ async function openFreshPage(browser, baseUrl, viewport, { preloadLocalStorage =
   return { context, page };
 }
 
+async function openPhoneScannerPageWithMockQr(browser, baseUrl, qrText) {
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
+  await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: baseUrl });
+  await context.addInitScript((textToScan) => {
+    const drawQrToCanvas = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = 720;
+      canvas.height = 720;
+      const context2d = canvas.getContext("2d");
+      context2d.fillStyle = "#ffffff";
+      context2d.fillRect(0, 0, canvas.width, canvas.height);
+      const qr = window.qrcode(0, "L");
+      qr.addData(textToScan, "Byte");
+      qr.make();
+      const modules = qr.getModuleCount();
+      const margin = 12;
+      const cell = Math.max(2, Math.floor(Math.min(canvas.width, canvas.height) / (modules + margin * 2)));
+      const size = modules * cell;
+      const left = Math.floor((canvas.width - size) / 2);
+      const top = Math.floor((canvas.height - size) / 2);
+      context2d.fillStyle = "#000000";
+      for (let row = 0; row < modules; row += 1) {
+        for (let column = 0; column < modules; column += 1) {
+          if (qr.isDark(row, column)) context2d.fillRect(left + column * cell, top + row * cell, cell, cell);
+        }
+      }
+      return canvas;
+    };
+    Object.defineProperty(navigator, "mediaDevices", {
+      configurable: true,
+      value: {
+        getUserMedia: async () => drawQrToCanvas().captureStream(10)
+      }
+    });
+  }, qrText);
+  const page = await context.newPage();
+  await page.goto(`${baseUrl}/index.html?freshScanner=${Date.now()}`);
+  await page.evaluate(() => localStorage.clear());
+  await page.goto(`${baseUrl}/index.html`);
+  await page.waitForFunction(() => document.body.dataset.view === "vaultAccess");
+  return { context, page };
+}
+
 async function createVault(page, password = "rounding-passphrase") {
   await page.waitForSelector("#createVaultSection:not([hidden])");
   await page.fill("#newVaultNameInput", "Medicine responsive QA");
@@ -450,6 +493,8 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
     hasQr: Boolean(document.querySelector("#phoneQrCode svg")),
     qrLink: document.querySelector("#phoneQrPanel")?.dataset.qrLink || "",
     qrStatus: document.querySelector("#phoneQrStatus")?.textContent || "",
+    qrViewBox: document.querySelector("#phoneQrCode svg")?.getAttribute("viewBox") || "",
+    qrBoxWidth: document.querySelector("#phoneQrCode")?.getBoundingClientRect().width || 0,
     regenerateVisible: !document.querySelector("#exportPhoneContextButton")?.hidden,
     copyVisible: !document.querySelector("#copyPhonePayloadButton")?.hidden,
     downloadVisible: !document.querySelector("#downloadPhonePayloadButton")?.hidden,
@@ -457,7 +502,10 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
     copyText: document.querySelector("#copyPhonePayloadButton")?.textContent || "",
     downloadText: document.querySelector("#downloadPhonePayloadButton")?.textContent || ""
   }));
+  const qrViewBoxSize = Number(desktopQrAudit.qrViewBox.match(/0 0 ([\d.]+) /)?.[1] || 0);
   assert(desktopQrAudit.hasQr && /opens directly into bedside mode/i.test(desktopQrAudit.qrStatus), `desktop handoff should render QR as the primary action: ${JSON.stringify(desktopQrAudit)}`);
+  assert(qrViewBoxSize > 0 && qrViewBoxSize <= 600, `desktop QR should avoid unscannable density: ${JSON.stringify(desktopQrAudit)}`);
+  assert(desktopQrAudit.qrBoxWidth >= 300, `desktop QR should render large enough for phone cameras: ${JSON.stringify(desktopQrAudit)}`);
   assert(desktopQrAudit.regenerateVisible && desktopQrAudit.copyVisible && desktopQrAudit.downloadVisible, `desktop handoff should expose regenerate/copy/download secondary actions: ${JSON.stringify(desktopQrAudit)}`);
   assert(/^Regenerate$/i.test(desktopQrAudit.regenerateText.trim()) && /Copy bundle/i.test(desktopQrAudit.copyText) && /^Download$/i.test(desktopQrAudit.downloadText.trim()), `desktop secondary actions should be simple regenerate/copy/download labels: ${JSON.stringify(desktopQrAudit)}`);
   assert(desktopQrAudit.qrLink.includes("#phoneBundle="), `desktop QR panel should expose the deep link for tests: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
@@ -488,6 +536,23 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   assert(qrPhoneAudit.hash === "", `QR phone import should clear payload fragment after load: ${JSON.stringify(qrPhoneAudit)}`);
   assert(qrPhoneAudit.storageKeys.length === 0, `QR phone session should not write patient data to localStorage: ${JSON.stringify(qrPhoneAudit)}`);
   await qrPhoneContext.close();
+
+  const { context: scannerContext, page: scannerPage } = await openPhoneScannerPageWithMockQr(browser, baseUrl, qrLink);
+  await scannerPage.click("#startPhoneQrScannerButton");
+  await scannerPage.waitForSelector("#bedsideView:not([hidden])", { timeout: 45000 });
+  await scannerPage.waitForFunction(() => document.querySelectorAll(".checklist-row").length >= 8);
+  await assertNoLayoutBreakage(scannerPage, "phone QR camera scanner bedside checklist");
+  const scannerAudit = await scannerPage.evaluate(() => ({
+    view: document.body.dataset.view,
+    caseTitle: document.querySelector("#bedsideMobileCaseTitle")?.textContent?.trim() || "",
+    rowCount: document.querySelectorAll(".checklist-row").length,
+    storageKeys: Object.keys(localStorage)
+  }));
+  assert(scannerAudit.view === "bedside", `camera scanner should open bedside view from the QR feed: ${JSON.stringify(scannerAudit)}`);
+  assert(/Demo - DKA consult/i.test(scannerAudit.caseTitle), `camera scanner should preserve case title: ${JSON.stringify(scannerAudit)}`);
+  assert(scannerAudit.rowCount >= 8, `camera scanner should load checklist rows: ${JSON.stringify(scannerAudit)}`);
+  assert(scannerAudit.storageKeys.length === 0, `camera scanner session should not write patient data to localStorage: ${JSON.stringify(scannerAudit)}`);
+  await scannerContext.close();
 
   const { context: phoneContext, page: phonePage } = await openFreshPage(
     browser,

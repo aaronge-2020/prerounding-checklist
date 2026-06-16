@@ -301,6 +301,8 @@ try {
     const orders = document.querySelector("#patientWorkupPanel .target-inspector-rail");
     const workups = document.querySelector("#patientWorkupPanel .target-workup-selector");
     const buildButton = document.querySelector("#patientBuildChecklistButton");
+    const actionBar = document.querySelector("#patientWorkupPanel .target-pathway-bottom-actions");
+    const body = document.querySelector("#patientWorkupPanel .target-workup-body");
     const controls = Array.from(document.querySelectorAll("#patientWorkupPanel .target-pathway-toolbar input, #patientWorkupPanel .target-pathway-toolbar button, #patientWorkupPanel .target-pathway-toolbar select"))
       .filter((node) => getComputedStyle(node).display !== "none");
     const clippedControls = controls.map((node) => {
@@ -315,17 +317,21 @@ try {
       };
     }).filter((entry) => entry.clipped);
     const buildBox = buildButton?.getBoundingClientRect();
+    const actionBox = actionBar?.getBoundingClientRect();
+    const bodyBox = body?.getBoundingClientRect();
     return {
       activePane: panel?.dataset.activePane || "",
       pathwayVisible: Boolean(pathway && getComputedStyle(pathway).display !== "none" && pathway.getBoundingClientRect().height > 0),
       ordersHidden: Boolean(orders && getComputedStyle(orders).display === "none"),
       workupsHidden: Boolean(workups && getComputedStyle(workups).display === "none"),
       buildChecklistVisible: Boolean(buildBox && buildBox.width > 0 && buildBox.height > 0 && buildBox.right <= window.innerWidth + 1),
+      actionBarBeforeBody: Boolean(actionBox && bodyBox && actionBox.bottom <= bodyBox.top + 1),
       clippedControls
     };
   });
   assert(smallPathwayAudit.activePane === "pathway" && smallPathwayAudit.pathwayVisible && smallPathwayAudit.ordersHidden && smallPathwayAudit.workupsHidden, `1024px workup default pane should keep the pathway visible: ${JSON.stringify(smallPathwayAudit)}`);
   assert(smallPathwayAudit.buildChecklistVisible, `Build checklist should remain visible at 1024px: ${JSON.stringify(smallPathwayAudit)}`);
+  assert(smallPathwayAudit.actionBarBeforeBody, `Workup action bar should sit before the pane body instead of floating over the pathway: ${JSON.stringify(smallPathwayAudit)}`);
   assert(smallPathwayAudit.clippedControls.length === 0, `Decision-tree controls should not be clipped at 1024px: ${JSON.stringify(smallPathwayAudit)}`);
   await page.click('#patientWorkupPanel .target-pane-switcher [data-workup-pane-target="orders"]');
   await page.waitForFunction(() => document.querySelector("#patientWorkupPanel")?.dataset.activePane === "orders");
@@ -334,9 +340,13 @@ try {
     activePane: document.querySelector("#patientWorkupPanel")?.dataset.activePane || "",
     ordersVisible: getComputedStyle(document.querySelector("#patientWorkupPanel .target-inspector-rail")).display !== "none",
     pathwayHidden: getComputedStyle(document.querySelector("#patientWorkupPanel .target-pathway-main")).display === "none",
-    ordersText: document.querySelector("#patientWorkupOrdersPanel")?.innerText || ""
+    ordersText: document.querySelector("#patientWorkupOrdersPanel")?.innerText || "",
+    visibleOrderHeadings: Array.from(document.querySelectorAll("#patientWorkupPanel .target-inspector-head strong, #patientWorkupOrdersPanel .workup-orders-head strong"))
+      .filter((node) => getComputedStyle(node).display !== "none" && node.getBoundingClientRect().height > 0)
+      .map((node) => node.textContent?.trim() || "")
   }));
   assert(smallOrdersAudit.activePane === "orders" && smallOrdersAudit.ordersVisible && smallOrdersAudit.pathwayHidden && /Beta-hydroxybutyrate|Orders/i.test(smallOrdersAudit.ordersText), `Orders pane should be accessible at 1024px: ${JSON.stringify(smallOrdersAudit)}`);
+  assert(smallOrdersAudit.visibleOrderHeadings.length === 1, `Orders pane should show one clear heading at tablet width: ${JSON.stringify(smallOrdersAudit)}`);
   await page.click('#patientWorkupPanel .target-pane-switcher [data-workup-pane-target="workups"]');
   await page.waitForFunction(() => document.querySelector("#patientWorkupPanel")?.dataset.activePane === "workups");
   await assertNoHorizontalOverflow(page, "patient Workup tab 1024px workups pane");
@@ -510,6 +520,20 @@ try {
     },
     activationRules: {}
   });
+  await page.click("#patientWorkupPanel .target-more-actions summary");
+  await page.waitForSelector("#openDecisionTreeImportButton", { state: "visible" });
+  const moreMenuAudit = await page.evaluate(() => {
+    const summary = document.querySelector("#patientWorkupPanel .target-more-actions summary");
+    const menu = document.querySelector("#patientWorkupPanel .target-more-menu");
+    const summaryBox = summary?.getBoundingClientRect();
+    const menuBox = menu?.getBoundingClientRect();
+    return {
+      summaryBottom: Math.round(summaryBox?.bottom || 0),
+      menuTop: Math.round(menuBox?.top || 0),
+      opensDown: Boolean(summaryBox && menuBox && menuBox.top >= summaryBox.bottom - 1)
+    };
+  });
+  assert(moreMenuAudit.opensDown, `More menu should open downward from the action bar: ${JSON.stringify(moreMenuAudit)}`);
   await page.click("#openDecisionTreeImportButton");
   await page.waitForFunction(() => {
     const input = document.querySelector("#decisionTreeJsonInput");

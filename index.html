@@ -700,6 +700,7 @@
       flex-direction: column;
       min-height: 0;
       overflow-y: auto;
+      overflow-x: hidden;
       z-index: 6;
     }
 
@@ -1424,13 +1425,13 @@
     .phone-qr-code {
       display: grid;
       place-items: center;
-      width: min(100%, 248px);
-      max-width: 248px;
+      width: min(100%, 420px);
+      max-width: 420px;
       aspect-ratio: 1;
       border: 1px solid var(--line);
       border-radius: 7px;
       background: #fff;
-      padding: 10px;
+      padding: 12px;
     }
 
     .phone-qr-code svg {
@@ -7417,10 +7418,30 @@
       line-height: 1.1;
     }
 
+    .target-step-number {
+      display: inline-grid;
+      place-items: center;
+      flex: 0 0 auto;
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: #e5f4f2;
+      color: var(--target-accent-dark);
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
     .target-pane-switcher button[aria-selected="true"] {
       border-color: var(--target-accent);
       background: #eefaf8;
       color: var(--target-accent-dark);
+    }
+
+    .target-pane-switcher button[aria-selected="true"] .target-step-number,
+    .target-pathway-bottom-actions .btn-primary .target-step-number {
+      background: var(--target-accent);
+      color: #ffffff;
     }
 
     .target-workup-body {
@@ -7457,6 +7478,10 @@
     }
 
     #patientWorkupPanel[data-workup-selected="false"] .target-pathway-bottom-actions {
+      display: none;
+    }
+
+    #patientWorkupPanel[data-workup-selected="false"] #decisionTreeEditorPanel {
       display: none;
     }
 
@@ -7663,7 +7688,7 @@
 
     .target-pathway-main {
       display: grid;
-      grid-template-rows: auto auto minmax(0, 1fr) auto;
+      grid-template-rows: auto auto minmax(0, 1fr);
       min-width: 0;
       min-height: 0;
       border-right: 1px solid var(--target-grid);
@@ -7683,17 +7708,17 @@
     }
 
     .target-pathway-bottom-actions {
-      position: sticky;
-      bottom: 0;
-      z-index: 3;
+      position: relative;
+      z-index: 7;
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
       gap: 8px;
       min-width: 0;
-      border-top: 1px solid var(--target-grid);
-      background: #ffffff;
-      padding: 10px 12px;
-      box-shadow: 0 -10px 24px rgba(16, 45, 54, 0.06);
+      border-bottom: 1px solid var(--target-grid);
+      background: #fbfcfc;
+      padding: 10px 14px;
+      box-shadow: none;
     }
 
     .target-pathway-bottom-actions .btn,
@@ -7749,7 +7774,7 @@
     .target-more-menu {
       position: absolute;
       right: 0;
-      bottom: calc(100% + 8px);
+      top: calc(100% + 8px);
       display: grid;
       gap: 6px;
       width: min(300px, calc(100vw - 28px));
@@ -7758,6 +7783,7 @@
       background: #ffffff;
       padding: 8px;
       box-shadow: 0 10px 28px rgba(20, 45, 54, 0.16);
+      z-index: 20;
     }
 
     .target-pathway-toolbar {
@@ -8127,14 +8153,15 @@
     #decisionTreeEditorPanel {
       display: grid;
       grid-template-columns: minmax(0, 1fr);
-      gap: 0;
+      gap: 10px;
       width: 100%;
       max-width: 100%;
       min-width: 0;
       margin: 0;
-      order: 1;
-      align-self: start;
-      overflow: auto;
+      border-bottom: 1px solid var(--target-grid);
+      background: #f7fbfa;
+      padding: 12px 14px;
+      overflow: visible;
       overflow-x: hidden;
     }
 
@@ -8149,9 +8176,9 @@
     #patientWorkupPanel.is-importing .decision-tree-json-panel {
       display: grid;
       width: 100%;
-      max-width: 100%;
+      max-width: min(100%, 980px);
       min-width: 0;
-      margin-bottom: 12px;
+      margin: 0;
     }
 
     #patientWorkupPanel .decision-tree-node-editor {
@@ -8459,7 +8486,7 @@
       }
 
       .target-pathway-main {
-        grid-template-rows: auto auto minmax(360px, 1fr) auto;
+        grid-template-rows: auto auto minmax(360px, 1fr);
       }
 
       .target-pathway-head {
@@ -8506,6 +8533,10 @@
       .target-inspector-head strong {
         color: #18323c;
         font-size: 16px;
+      }
+
+      #patientWorkupPanel[data-active-pane="orders"] #patientWorkupOrdersPanel .workup-orders-head {
+        display: none;
       }
     }
 
@@ -11398,11 +11429,11 @@
 
         <section class="vault-access-section" id="phoneBundleEntrySection" aria-labelledby="phoneBundleEntryTitle">
           <h2 id="phoneBundleEntryTitle">Scan desktop QR</h2>
-          <p class="muted">Open the handoff screen on your computer, then scan its QR code here.</p>
+          <p class="muted">Open the handoff screen on your computer, then tap Scan QR code here.</p>
           <div class="phone-scanner-panel">
             <div class="phone-scanner-frame">
               <video class="phone-qr-scanner-video" id="phoneQrScannerVideo" playsinline muted hidden></video>
-              <div class="phone-scanner-empty" id="phoneQrScannerEmpty">Ready to scan the desktop QR code.</div>
+              <div class="phone-scanner-empty" id="phoneQrScannerEmpty">Tap Scan QR code to start the camera.</div>
             </div>
             <div class="phone-scanner-actions">
               <button class="btn btn-primary" id="startPhoneQrScannerButton" type="button">Scan QR code</button>
@@ -11742,10 +11773,99 @@
                     </div>
                   </div>
                 </div>
-                <div class="target-pane-switcher" role="tablist" aria-label="Workup panes">
-                  <button type="button" data-workup-pane-target="workups" role="tab" aria-selected="false"><span class="icon-box" data-icon="search" aria-hidden="true"></span>Workups</button>
-                  <button class="is-active" type="button" data-workup-pane-target="pathway" role="tab" aria-selected="true"><span class="icon-box" data-icon="git-branch" aria-hidden="true"></span>Pathway</button>
-                  <button type="button" data-workup-pane-target="orders" role="tab" aria-selected="false"><span class="icon-box" data-icon="clipboard-check" aria-hidden="true"></span>Orders</button>
+                <div class="target-pane-switcher" role="tablist" aria-label="Workup sequence">
+                  <button type="button" data-workup-pane-target="workups" role="tab" aria-selected="false"><span class="target-step-number" aria-hidden="true">1</span><span>Choose workup</span></button>
+                  <button class="is-active" type="button" data-workup-pane-target="pathway" role="tab" aria-selected="true"><span class="target-step-number" aria-hidden="true">2</span><span>Pathway</span></button>
+                  <button type="button" data-workup-pane-target="orders" role="tab" aria-selected="false"><span class="target-step-number" aria-hidden="true">3</span><span>Results</span></button>
+                </div>
+                <div class="target-pathway-bottom-actions" aria-label="Workup actions">
+                  <button class="btn btn-primary" id="patientBuildChecklistButton" type="button"><span class="target-step-number" aria-hidden="true">4</span>Build checklist</button>
+                  <button class="btn btn-secondary" id="patientOpenEvidenceFromWorkupButton" type="button"><span class="icon-box" data-icon="message-square" aria-hidden="true"></span>Open prompts</button>
+                  <details class="target-more-actions">
+                    <summary>More <span class="icon-box" data-icon="chevron-down" aria-hidden="true"></span></summary>
+                    <div class="target-more-menu">
+                      <button class="target-tool-card" id="patientCopyWorkupButton" type="button"><span class="icon-box" data-icon="copy" aria-hidden="true"></span><span><strong>Copy workup</strong><small>Copy this workup summary</small></span></button>
+                      <button class="target-tool-card" id="openDecisionTreeImportButton" type="button"><span class="icon-box" data-icon="upload" aria-hidden="true"></span><span><strong>Import pathway</strong><small>Paste OpenEvidence tree JSON</small></span></button>
+                      <button class="target-tool-card" id="patientCopyChecklistRefinementPromptButton" type="button"><span class="icon-box" data-icon="clipboard-check" aria-hidden="true"></span><span><strong>Refine checklist with OpenEvidence</strong><small>Paste JSON to update</small></span></button>
+                      <button class="target-tool-card" id="patientWorkupMarkNormalButton" type="button"><span class="icon-box" data-icon="check-square" aria-hidden="true"></span><span><strong>Mark section normal</strong><small>Fill normal answers for unanswered items</small></span></button>
+                      <button class="target-tool-card" id="patientManageDefaultsButton" type="button"><span class="icon-box" data-icon="settings" aria-hidden="true"></span><span><strong>Manage saved defaults</strong><small>Default checklist and pathway settings</small></span></button>
+                    </div>
+                  </details>
+                  <button class="btn btn-secondary" id="saveDecisionTreeSourceButton" type="button" hidden>Save to source file</button>
+                </div>
+                <div class="decision-tree-editor-grid" id="decisionTreeEditorPanel" hidden>
+                  <div class="decision-tree-json-panel">
+                    <div class="panel-title-row">
+                      <h3>Import OpenEvidence JSON</h3>
+                      <span class="meta-tag">clinical_pathway_tree_v1</span>
+                    </div>
+                    <p class="muted">Paste the raw pathway JSON from OpenEvidence here, review the preview, then apply only clinical_pathway_tree_v1 to this workup.</p>
+                    <div class="button-row">
+                      <button class="btn btn-secondary" id="copyDecisionTreePromptButton" type="button">Prompt</button>
+                      <button class="btn btn-secondary" id="applyDecisionTreeJsonButton" type="button">Apply tree only</button>
+                      <button class="btn btn-primary" id="saveDecisionTreeDefaultButton" type="button">Vault default</button>
+                    </div>
+                    <textarea id="decisionTreeJsonInput" maxlength="200000" spellcheck="false" aria-describedby="localTextEntryHelp" placeholder="Paste raw OpenEvidence decision-tree JSON here."></textarea>
+                    <div class="evidence-change-preview" id="decisionTreeImportPreview" aria-live="polite">No decision tree JSON pasted yet.</div>
+                    <div class="decision-tree-local-actions">
+                      <button class="btn btn-secondary" id="saveDecisionTreeLocalFileButton" type="button">Save source tree only</button>
+                      <button class="btn btn-secondary" id="downloadDecisionTreeModuleButton" type="button">Download</button>
+                      <button class="btn btn-secondary" id="exportDecisionTreeJsonDrawerButton" type="button">Export</button>
+                    </div>
+                  </div>
+                  <div class="decision-tree-node-editor" id="decisionTreeNodeEditor">
+                    <div class="target-node-editor-head">
+                      <strong>Selected node</strong>
+                    </div>
+                    <label for="decisionTreeNodeLabelInput">Label</label>
+                    <textarea id="decisionTreeNodeLabelInput" maxlength="1000" spellcheck="false" placeholder="Select a node in the tree"></textarea>
+                    <label for="decisionTreeNodeTypeSelect">Type</label>
+                    <select id="decisionTreeNodeTypeSelect">
+                      <option value="action">Action</option>
+                      <option value="decision">Decision</option>
+                      <option value="endpoint">Endpoint</option>
+                    </select>
+                    <label for="decisionTreeEdgeLabelInput">Edge criteria (from parent)</label>
+                    <textarea id="decisionTreeEdgeLabelInput" maxlength="1000" spellcheck="false" placeholder="Criteria that trigger this branch"></textarea>
+                    <div class="decision-tree-rule-grid">
+                      <label for="decisionTreeRuleSourceSelect">Rule source</label>
+                      <select id="decisionTreeRuleSourceSelect">
+                        <option value="">Infer from edge label</option>
+                        <option value="objective">Objective field</option>
+                        <option value="checklist">Checklist finding</option>
+                      </select>
+                      <label for="decisionTreeRuleFieldInput">Field / text</label>
+                      <input id="decisionTreeRuleFieldInput" type="text" maxlength="120" placeholder="glucose, potassium, finding text">
+                      <label for="decisionTreeRuleOperatorSelect">Operator</label>
+                      <select id="decisionTreeRuleOperatorSelect">
+                        <option value="">Contains / documented</option>
+                        <option value=">=">&gt;=</option>
+                        <option value=">">&gt;</option>
+                        <option value="<=">&lt;=</option>
+                        <option value="<">&lt;</option>
+                        <option value="=">=</option>
+                        <option value="contains">Contains</option>
+                        <option value="present">Present</option>
+                      </select>
+                      <label for="decisionTreeRuleValueInput">Value</label>
+                      <input id="decisionTreeRuleValueInput" type="text" maxlength="120" placeholder="600, yes, positive">
+                    </div>
+                    <div class="button-row">
+                      <button class="btn btn-secondary" id="updateDecisionTreeNodeButton" type="button">Update node</button>
+                      <button class="btn btn-secondary" id="addDecisionTreeChildButton" type="button">Add child</button>
+                      <button class="btn btn-secondary" id="addDecisionTreeSiblingButton" type="button">Add sibling</button>
+                    </div>
+                    <div class="button-row">
+                      <button class="btn btn-secondary" id="moveDecisionTreeNodeUpButton" type="button">Move up</button>
+                      <button class="btn btn-secondary" id="moveDecisionTreeNodeDownButton" type="button">Move down</button>
+                      <button class="btn btn-danger" id="deleteDecisionTreeNodeButton" type="button">Delete</button>
+                    </div>
+                    <div class="target-node-footer">
+                      <label>Node ID <input id="decisionTreeNodeIdDisplay" type="text" readonly value="root"></label>
+                      <div><span>Last updated</span><strong id="decisionTreeUpdatedAtLabel">This session</strong></div>
+                      <div><span>By</span><strong>You</strong></div>
+                    </div>
+                  </div>
                 </div>
                 <div class="target-workup-body">
                   <aside class="target-workup-selector workup-router">
@@ -11810,21 +11930,6 @@
                       </div>
                     </div>
                     <section class="workup-tree-panel" id="patientDecisionTreePanel" aria-label="Patient live workup decision tree"></section>
-                    <div class="target-pathway-bottom-actions" aria-label="Workup actions">
-                      <button class="btn btn-primary" id="patientBuildChecklistButton" type="button"><span class="icon-box" data-icon="clipboard" aria-hidden="true"></span>Build checklist</button>
-                      <button class="btn btn-secondary" id="patientCopyWorkupButton" type="button"><span class="icon-box" data-icon="copy" aria-hidden="true"></span>Copy workup</button>
-                      <button class="btn btn-secondary" id="patientOpenEvidenceFromWorkupButton" type="button"><span class="icon-box" data-icon="message-square" aria-hidden="true"></span>Open prompts</button>
-                      <button class="btn btn-secondary" id="openDecisionTreeImportButton" type="button"><span class="icon-box" data-icon="upload" aria-hidden="true"></span>Import pathway</button>
-                      <button class="btn btn-secondary" id="saveDecisionTreeSourceButton" type="button" hidden>Save to source file</button>
-                      <details class="target-more-actions">
-                        <summary>More actions <span class="icon-box" data-icon="chevron-down" aria-hidden="true"></span></summary>
-                        <div class="target-more-menu">
-                          <button class="target-tool-card" id="patientCopyChecklistRefinementPromptButton" type="button"><span class="icon-box" data-icon="clipboard-check" aria-hidden="true"></span><span><strong>Refine checklist with OpenEvidence</strong><small>Paste JSON to update</small></span></button>
-                          <button class="target-tool-card" id="patientWorkupMarkNormalButton" type="button"><span class="icon-box" data-icon="check-square" aria-hidden="true"></span><span><strong>Mark section normal</strong><small>Fill normal answers for unanswered items</small></span></button>
-                          <button class="target-tool-card" id="patientManageDefaultsButton" type="button"><span class="icon-box" data-icon="settings" aria-hidden="true"></span><span><strong>Manage saved defaults</strong><small>Default checklist and pathway settings</small></span></button>
-                        </div>
-                      </details>
-                    </div>
                   </main>
                   <button class="column-resize-handle" type="button" aria-label="Resize orders and results column" aria-orientation="vertical" title="Drag to resize orders and results" data-layout-resize-key="patientWorkupOrders" data-resize-side="right" data-resize-min="280" data-resize-max="520"></button>
                   <aside class="target-inspector-rail">
@@ -11833,82 +11938,6 @@
                       <button class="target-icon-button" type="button" data-workup-pane-target="pathway" aria-label="Collapse orders and results"><span class="icon-box" data-icon="chevron-right" aria-hidden="true"></span></button>
                     </div>
                     <section class="workup-orders-panel" id="patientWorkupOrdersPanel" aria-label="Patient workup orders and results"></section>
-                    <div class="decision-tree-editor-grid" id="decisionTreeEditorPanel" hidden>
-                      <div class="decision-tree-json-panel">
-                        <div class="panel-title-row">
-                          <h3>Import OpenEvidence JSON</h3>
-                          <span class="meta-tag">clinical_pathway_tree_v1</span>
-                        </div>
-                        <p class="muted">Paste the raw pathway JSON from OpenEvidence here, review the preview, then apply only clinical_pathway_tree_v1 to this workup.</p>
-                        <div class="button-row">
-                          <button class="btn btn-secondary" id="copyDecisionTreePromptButton" type="button">Prompt</button>
-                          <button class="btn btn-secondary" id="applyDecisionTreeJsonButton" type="button">Apply tree only</button>
-                          <button class="btn btn-primary" id="saveDecisionTreeDefaultButton" type="button">Vault default</button>
-                        </div>
-                        <textarea id="decisionTreeJsonInput" maxlength="200000" spellcheck="false" aria-describedby="localTextEntryHelp" placeholder="Paste raw OpenEvidence decision-tree JSON here."></textarea>
-                        <div class="evidence-change-preview" id="decisionTreeImportPreview" aria-live="polite">No decision tree JSON pasted yet.</div>
-                        <div class="decision-tree-local-actions">
-                          <button class="btn btn-secondary" id="saveDecisionTreeLocalFileButton" type="button">Save source tree only</button>
-                          <button class="btn btn-secondary" id="downloadDecisionTreeModuleButton" type="button">Download</button>
-                          <button class="btn btn-secondary" id="exportDecisionTreeJsonDrawerButton" type="button">Export</button>
-                        </div>
-                      </div>
-                      <div class="decision-tree-node-editor" id="decisionTreeNodeEditor">
-                        <div class="target-node-editor-head">
-                          <strong>Selected node</strong>
-                        </div>
-                        <label for="decisionTreeNodeLabelInput">Label</label>
-                        <textarea id="decisionTreeNodeLabelInput" maxlength="1000" spellcheck="false" placeholder="Select a node in the tree"></textarea>
-                        <label for="decisionTreeNodeTypeSelect">Type</label>
-                        <select id="decisionTreeNodeTypeSelect">
-                          <option value="action">Action</option>
-                          <option value="decision">Decision</option>
-                          <option value="endpoint">Endpoint</option>
-                        </select>
-                        <label for="decisionTreeEdgeLabelInput">Edge criteria (from parent)</label>
-                        <textarea id="decisionTreeEdgeLabelInput" maxlength="1000" spellcheck="false" placeholder="Criteria that trigger this branch"></textarea>
-                        <div class="decision-tree-rule-grid">
-                          <label>Rule source
-                            <select id="decisionTreeRuleSourceSelect">
-                              <option value="">Infer from edge label</option>
-                              <option value="objective">Objective field</option>
-                              <option value="checklist">Checklist finding</option>
-                            </select>
-                          </label>
-                          <label>Field / text
-                            <input id="decisionTreeRuleFieldInput" maxlength="120" placeholder="glucose, potassium, finding text">
-                          </label>
-                          <label>Operator
-                            <select id="decisionTreeRuleOperatorSelect">
-                              <option value="">Contains / documented</option>
-                              <option value=">=">&gt;=</option>
-                              <option value=">">&gt;</option>
-                              <option value="<=">&lt;=</option>
-                              <option value="<">&lt;</option>
-                              <option value="=">=</option>
-                              <option value="contains">Contains</option>
-                              <option value="present">Present</option>
-                            </select>
-                          </label>
-                          <label>Value
-                            <input id="decisionTreeRuleValueInput" maxlength="120" placeholder="600, yes, positive">
-                          </label>
-                        </div>
-                        <div class="button-row">
-                          <button class="btn btn-secondary" id="updateDecisionTreeNodeButton" type="button">Update node</button>
-                          <button class="btn btn-secondary" id="addDecisionTreeChildButton" type="button">Add child</button>
-                          <button class="btn btn-secondary" id="addDecisionTreeSiblingButton" type="button">Add sibling</button>
-                          <button class="btn btn-secondary" id="moveDecisionTreeNodeUpButton" type="button">Move up</button>
-                          <button class="btn btn-secondary" id="moveDecisionTreeNodeDownButton" type="button">Move down</button>
-                          <button class="btn btn-secondary" id="deleteDecisionTreeNodeButton" type="button">Delete</button>
-                        </div>
-                        <div class="target-node-footer">
-                          <label>Node ID <input id="decisionTreeNodeIdDisplay" readonly value="root"></label>
-                          <div><span>Last updated</span><strong id="decisionTreeUpdatedAtLabel">This session</strong></div>
-                          <div><span>By</span><strong>You</strong></div>
-                        </div>
-                      </div>
-                    </div>
                     <div class="notice success" id="patientWorkupBuildStatus">Workup assembled from local medical knowledge base.</div>
                     <div class="workup-refinement-panel" id="patientWorkupRefinementPanel">
                       <div class="panel-title-row">
@@ -13680,11 +13709,15 @@
       quickDeidPreview: $("#quickDeidPreview")
     };
 
+    const PHONE_QR_SCAN_MODULE_LIMIT = 125;
+    const PHONE_QR_SCANNER_GUIDANCE_DELAY_MS = 8000;
+
     let pendingPhiAction = null;
     let latestPhoneQrLink = "";
     let phoneQrRenderSequence = 0;
     let phoneQrScannerStream = null;
     let phoneQrScannerFrame = 0;
+    let phoneQrScannerGuidanceTimer = 0;
     let phoneQrScannerCanvas = null;
     let phoneQrScannerCanvasContext = null;
     let pendingDischargePatientId = "";
@@ -15165,6 +15198,10 @@
       const normalized = ["workups", "pathway", "orders"].includes(pane) ? pane : "pathway";
       if (!elements.patientWorkupPanel) return normalized;
       elements.patientWorkupPanel.dataset.activePane = normalized;
+      elements.patientWorkupPanel.querySelector(".target-more-actions")?.removeAttribute("open");
+      if (normalized !== "pathway" && elements.patientWorkupPanel.classList.contains("is-importing")) {
+        closeDecisionTreeEditor({ render: false });
+      }
       $$("[data-workup-pane-target]", elements.patientWorkupPanel).forEach((button) => {
         const selected = button.dataset.workupPaneTarget === normalized;
         if (button.getAttribute("role") === "tab") {
@@ -21213,11 +21250,20 @@
       if (elements.moveDecisionTreeNodeDownButton) elements.moveDecisionTreeNodeDownButton.disabled = !selected?.parent || siblingIndex < 0 || siblingIndex >= (selected.parent.children || []).length - 1;
     }
 
+    function closeDecisionTreeEditor({ render = false } = {}) {
+      const patientWorkupPanel = patientWorkupPanelElement();
+      patientWorkupPanel?.classList.remove("is-importing", "is-tree-editing");
+      if (elements.decisionTreeEditorPanel) elements.decisionTreeEditorPanel.hidden = true;
+      decisionTreeEditMode = false;
+      if (render) renderWorkupDecisionSurfaces();
+    }
+
     function openDecisionTreeEditor({ importJson = false } = {}) {
       decisionTreeEditMode = true;
       const patientWorkupPanel = patientWorkupPanelElement();
       if (patientWorkupPanel) {
         patientWorkupPanel.classList.toggle("is-importing", Boolean(importJson));
+        patientWorkupPanel.querySelector(".target-more-actions")?.removeAttribute("open");
       }
       renderWorkupDecisionSurfaces();
       renderDecisionTreeEditor();
@@ -26036,11 +26082,12 @@
         section.category || "",
         section.organSystemKey || "",
         (section.items || []).map((item) => {
+          // rawValue duplicates option text and makes camera QR codes much harder to scan.
           const row = [
             item.id || "",
             item.label || itemText(item),
             item.category || "",
-            item.rawValue || "",
+            "",
             item.hasNotes ? 1 : 0
           ];
           if (includeOptions) row.push(checklistOptionsForItem(section, item));
@@ -26203,6 +26250,28 @@
       };
     }
 
+    function phoneQrStatusHint(url = "", modules = 0) {
+      const hints = [];
+      if (modules > PHONE_QR_SCAN_MODULE_LIMIT) hints.push("Move closer if scanning is slow.");
+      try {
+        const hostname = new URL(url, window.location.href).hostname.toLowerCase();
+        if (["localhost", "127.0.0.1", "::1"].includes(hostname)) {
+          hints.push("For local testing, open this app on the phone and use Scan QR code.");
+        }
+      } catch {
+        // Status hints should never block QR rendering.
+      }
+      return hints.length ? ` ${hints.join(" ")}` : "";
+    }
+
+    function renderPhoneQrCandidate({ link, qr, attempt }) {
+      latestPhoneQrLink = link.url;
+      elements.phoneQrPanel.dataset.qrLink = link.url;
+      elements.phoneQrCode.classList.remove("is-unavailable");
+      elements.phoneQrCode.innerHTML = qr.svg;
+      elements.phoneQrStatus.textContent = `${link.itemCount} checklist items ready. Scan with the phone camera or in-app scanner; it opens directly into bedside mode (${attempt.label}).${phoneQrStatusHint(link.url, qr.modules)}`;
+    }
+
     async function renderPhoneQrCode() {
       if (!elements.phoneQrPanel || !elements.phoneQrCode || !elements.phoneQrStatus) return;
       latestPhoneQrLink = "";
@@ -26223,22 +26292,27 @@
         { includeOptions: false, label: "standard answer choices" }
       ];
       let lastError = null;
-      for (const attempt of attempts) {
+      let bestCandidate = null;
+      for (let index = 0; index < attempts.length; index += 1) {
+        const attempt = attempts[index];
         try {
           const link = await createPhoneQrDeepLink(attempt);
           const qr = phoneQrSvgForUrl(link.url);
+          const candidate = { link, qr, attempt };
+          if (!bestCandidate || qr.modules < bestCandidate.qr.modules) bestCandidate = candidate;
+          if (qr.modules > PHONE_QR_SCAN_MODULE_LIMIT && index < attempts.length - 1) continue;
           if (sequence !== phoneQrRenderSequence) return;
-          latestPhoneQrLink = link.url;
-          elements.phoneQrPanel.dataset.qrLink = link.url;
-          elements.phoneQrCode.classList.remove("is-unavailable");
-          elements.phoneQrCode.innerHTML = qr.svg;
-          elements.phoneQrStatus.textContent = `${link.itemCount} checklist items ready. Scan with the phone camera; it opens directly into bedside mode (${attempt.label}).`;
+          renderPhoneQrCandidate(candidate);
           return;
         } catch (error) {
           lastError = error;
         }
       }
       if (sequence !== phoneQrRenderSequence) return;
+      if (bestCandidate) {
+        renderPhoneQrCandidate(bestCandidate);
+        return;
+      }
       elements.phoneQrCode.classList.add("is-unavailable");
       elements.phoneQrCode.textContent = "QR too large";
       elements.phoneQrStatus.textContent = "This checklist is too large for a QR code. Use Copy for phone, then tap Paste & open on the phone.";
@@ -26302,6 +26376,22 @@
       setVaultStatus(elements.phoneQrScannerStatus, message, tone);
     }
 
+    function clearPhoneQrScannerGuidanceTimer() {
+      if (!phoneQrScannerGuidanceTimer) return;
+      window.clearTimeout(phoneQrScannerGuidanceTimer);
+      phoneQrScannerGuidanceTimer = 0;
+    }
+
+    function schedulePhoneQrScannerGuidance() {
+      clearPhoneQrScannerGuidanceTimer();
+      phoneQrScannerGuidanceTimer = window.setTimeout(() => {
+        phoneQrScannerGuidanceTimer = 0;
+        if (phoneQrScannerStream) {
+          setPhoneQrScannerStatus("Still scanning. Move closer until the QR code fills most of the frame.");
+        }
+      }, PHONE_QR_SCANNER_GUIDANCE_DELAY_MS);
+    }
+
     function setPhoneQrScannerActive(active) {
       if (elements.phoneQrScannerVideo) elements.phoneQrScannerVideo.hidden = !active;
       if (elements.phoneQrScannerEmpty) elements.phoneQrScannerEmpty.hidden = active;
@@ -26310,6 +26400,7 @@
     }
 
     function stopPhoneQrScanner({ announce = true } = {}) {
+      clearPhoneQrScannerGuidanceTimer();
       if (phoneQrScannerFrame) {
         window.cancelAnimationFrame(phoneQrScannerFrame);
         phoneQrScannerFrame = 0;
@@ -26324,6 +26415,59 @@
       }
       setPhoneQrScannerActive(false);
       if (announce) setPhoneQrScannerStatus("Scanner stopped.");
+    }
+
+    async function requestPhoneQrScannerStream() {
+      const attempts = [
+        {
+          audio: false,
+          video: {
+            facingMode: { ideal: "environment" },
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          }
+        },
+        { audio: false, video: { facingMode: "environment" } },
+        { audio: false, video: true }
+      ];
+      let lastError = null;
+      for (const constraints of attempts) {
+        try {
+          return await navigator.mediaDevices.getUserMedia(constraints);
+        } catch (error) {
+          lastError = error;
+        }
+      }
+      throw lastError || new Error("Camera could not start.");
+    }
+
+    function preparePhoneQrScannerVideo(video) {
+      video.muted = true;
+      video.playsInline = true;
+      video.setAttribute("muted", "");
+      video.setAttribute("playsinline", "");
+      video.setAttribute("autoplay", "");
+    }
+
+    function waitForPhoneQrScannerVideoReady(video, timeoutMs = 3000) {
+      if (!video || video.readyState >= 2 && video.videoWidth && video.videoHeight) return Promise.resolve(true);
+      return new Promise((resolve) => {
+        let done = false;
+        const finish = (ready) => {
+          if (done) return;
+          done = true;
+          window.clearTimeout(timeout);
+          video?.removeEventListener("loadedmetadata", onReady);
+          video?.removeEventListener("canplay", onReady);
+          resolve(ready);
+        };
+        const onReady = () => {
+          if (video.readyState >= 2 && video.videoWidth && video.videoHeight) finish(true);
+        };
+        const timeout = window.setTimeout(() => finish(false), timeoutMs);
+        video?.addEventListener("loadedmetadata", onReady);
+        video?.addEventListener("canplay", onReady);
+      });
     }
 
     function decodePhoneQrScannerFrame() {
@@ -26366,6 +26510,10 @@
 
     async function startPhoneQrScanner() {
       if (!elements.phoneQrScannerVideo) return;
+      if (window.isSecureContext === false) {
+        setPhoneQrScannerStatus("Camera scanning needs HTTPS on phones. Use a secure app URL or the manual paste fallback.", "error");
+        return;
+      }
       if (!navigator.mediaDevices?.getUserMedia) {
         setPhoneQrScannerStatus("Camera access is not available in this browser. Use the phone camera app or manual paste fallback.", "error");
         return;
@@ -26377,24 +26525,26 @@
       stopPhoneQrScanner({ announce: false });
       try {
         setPhoneQrScannerStatus("Requesting camera access.");
-        phoneQrScannerStream = await navigator.mediaDevices.getUserMedia({
-          audio: false,
-          video: {
-            facingMode: { ideal: "environment" },
-            width: { ideal: 1280 },
-            height: { ideal: 720 }
-          }
-        });
+        phoneQrScannerStream = await requestPhoneQrScannerStream();
+        preparePhoneQrScannerVideo(elements.phoneQrScannerVideo);
         elements.phoneQrScannerVideo.srcObject = phoneQrScannerStream;
         setPhoneQrScannerActive(true);
+        setPhoneQrScannerStatus("Camera starting. Point it at the desktop QR.");
         await elements.phoneQrScannerVideo.play();
-        setPhoneQrScannerStatus("Scanning. Hold the desktop QR inside the frame.");
+        await waitForPhoneQrScannerVideoReady(elements.phoneQrScannerVideo);
+        setPhoneQrScannerStatus("Scanning. Fill most of the frame with the desktop QR.");
+        schedulePhoneQrScannerGuidance();
         phoneQrScannerFrame = window.requestAnimationFrame(scanPhoneQrScannerFrame);
       } catch (error) {
         stopPhoneQrScanner({ announce: false });
-        const message = error instanceof Error && error.name === "NotAllowedError"
+        const errorName = error instanceof Error ? error.name : "";
+        const message = errorName === "NotAllowedError"
           ? "Camera permission was denied. Use the phone camera app or manual paste fallback."
-          : "Camera could not start. Use the phone camera app or manual paste fallback.";
+          : ["NotFoundError", "OverconstrainedError"].includes(errorName)
+            ? "No usable camera was found. Use the phone camera app or manual paste fallback."
+            : errorName === "NotReadableError"
+              ? "The camera is busy in another app. Close it, then try Scan QR code again."
+              : "Camera could not start. Use the phone camera app or manual paste fallback.";
         setPhoneQrScannerStatus(message, "error");
       }
     }
@@ -27191,7 +27341,7 @@
       elements.patientOpenEvidenceFromWorkupButton?.addEventListener("click", () => setPatientTab("evidence", { focusPanel: true }));
       elements.patientWorkupMarkNormalButton?.addEventListener("click", () => setPatientTab("checklist", { focusPanel: true }));
       elements.patientManageDefaultsButton?.addEventListener("click", () => {
-        setPatientWorkupPane("orders");
+        setPatientWorkupPane("pathway");
         openDecisionTreeEditor({ importJson: true });
       });
       elements.patientCopyChecklistRefinementPromptButton?.addEventListener("click", () => {
@@ -27335,7 +27485,7 @@
           }
         });
         elements.openDecisionTreeImportButton?.addEventListener("click", () => {
-          setPatientWorkupPane("orders");
+          setPatientWorkupPane("pathway");
           openDecisionTreeEditor({ importJson: true });
         });
         elements.saveDecisionTreeSourceButton?.addEventListener("click", () => {
