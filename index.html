@@ -15603,6 +15603,9 @@
     const PHONE_QR_DIRECT_TOKEN_LIMIT = 520;
     const PHONE_QR_CHUNK_TOKEN_SIZE = 260;
     const PHONE_QR_CAROUSEL_INTERVAL_MS = 850;
+    const PHONE_HANDOFF_MAILBOX_TTL_MS = 10 * 60 * 1000;
+    const PHONE_HANDOFF_MAILBOX_ID_BYTES = 16;
+    const PHONE_HANDOFF_MAILBOX_KEY_BYTES = 32;
     const PHONE_RETURN_QR_SCAN_MODULE_LIMIT = 155;
     const PHONE_QR_SCANNER_GUIDANCE_DELAY_MS = 8000;
     const RETURN_QR_SCANNER_GUIDANCE_DELAY_MS = 6000;
@@ -30244,6 +30247,143 @@ Rules:
       return url;
     }
 
+    function randomBase64Url(byteLength) {
+      const bytes = new Uint8Array(byteLength);
+      crypto.getRandomValues(bytes);
+      return base64UrlEncodeBytes(bytes);
+    }
+
+    function phoneHandoffMailboxConfigured() {
+      return Boolean(normalizeSupabaseUrl(WORKUP_STUDIO_DEFAULT_BACKEND.url) && WORKUP_STUDIO_DEFAULT_BACKEND.publishableKey);
+    }
+
+    function phoneHandoffMailboxHeaders() {
+      const publishableKey = WORKUP_STUDIO_DEFAULT_BACKEND.publishableKey;
+      return {
+        apikey: publishableKey,
+        authorization: `Bearer ${publishableKey}`,
+        "content-type": "application/json"
+      };
+    }
+
+    async function phoneHandoffMailboxRpc(name, body = {}) {
+      if (!phoneHandoffMailboxConfigured()) throw new Error("Online QR handoff is not configured.");
+      const path = `/rest/v1/rpc/${encodeURIComponent(name)}`;
+      const response = await fetch(`${normalizeSupabaseUrl(WORKUP_STUDIO_DEFAULT_BACKEND.url)}${path}`, {
+        method: "POST",
+        cache: "no-store",
+        headers: phoneHandoffMailboxHeaders(),
+        body: JSON.stringify(body)
+      });
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(workupStudioSupabaseErrorMessage({ method: "POST", path, status: response.status, responseText: text }));
+      }
+      const text = await response.text();
+      return text ? JSON.parse(text) : null;
+    }
+
+    function phoneHandoffMailboxLinkFromText(raw = "") {
+      const text = String(raw || "").trim();
+      const readLink = (value = "") => {
+        if (!value) return null;
+        const params = new URLSearchParams(value.replace(/^[#?]/, ""));
+        const handoff = String(params.get("H") || "").trim();
+        const [id, key] = handoff.split(".");
+        if (!id || !key || handoff.split(".").length !== 2) return null;
+        if (!/^[A-Za-z0-9_-]{16,64}$/.test(id) || !/^[A-Za-z0-9_-]{32,64}$/.test(key)) return null;
+        return { id, key };
+      };
+      try {
+        const url = new URL(text, window.location.href);
+        return readLink(url.hash) || readLink(url.search);
+      } catch {
+        return readLink(text);
+      }
+    }
+
+    async function importAesGcmMailboxKey(keyText, usages) {
+      return crypto.subtle.importKey(
+        "raw",
+        base64UrlDecodeBytes(keyText),
+        { name: "AES-GCM" },
+        false,
+        usages
+      );
+    }
+
+    async function encryptPhoneHandoffMailboxPayload(payload) {
+      const key = randomBase64Url(PHONE_HANDOFF_MAILBOX_KEY_BYTES);
+      const iv = randomBase64Url(12);
+      const cryptoKey = await importAesGcmMailboxKey(key, ["encrypt"]);
+      const json = JSON.stringify(payload || {});
+      const encoded = new TextEncoder().encode(json);
+      const ciphertext = await crypto.subtle.encrypt(
+        { name: "AES-GCM", iv: base64UrlDecodeBytes(iv) },
+        cryptoKey,
+        encoded
+      );
+      return {
+        key,
+        iv,
+        ciphertext: base64UrlEncodeBytes(new Uint8Array(ciphertext)),
+        jsonLength: json.length
+      };
+    }
+
+    async function decryptPhoneHandoffMailboxPayload(record, keyText) {
+      if (!record?.ciphertext || !record?.iv) throw new Error("This handoff link has expired. Generate a fresh QR code.");
+      const cryptoKey = await importAesGcmMailboxKey(keyText, ["decrypt"]);
+      const plaintext = await crypto.subtle.decrypt(
+        { name: "AES-GCM", iv: base64UrlDecodeBytes(record.iv) },
+        cryptoKey,
+        base64UrlDecodeBytes(record.ciphertext)
+      );
+      return JSON.parse(new TextDecoder().decode(plaintext) || "{}");
+    }
+
+    async function createPhoneHandoffMailboxLink({ kind, payload, itemCount = 0, answeredCount = 0, noteCount = 0 } = {}) {
+      if (!["phone", "return"].includes(kind)) throw new Error("Invalid handoff mailbox kind.");
+      const id = randomBase64Url(PHONE_HANDOFF_MAILBOX_ID_BYTES);
+      const expiresAt = new Date(Date.now() + PHONE_HANDOFF_MAILBOX_TTL_MS).toISOString();
+      const encrypted = await encryptPhoneHandoffMailboxPayload({
+        v: "phoneHandoffMailbox1",
+        kind,
+        payload
+      });
+      await phoneHandoffMailboxRpc("put_phone_handoff_mailbox", {
+        p_id: id,
+        p_ciphertext: encrypted.ciphertext,
+        p_iv: encrypted.iv,
+        p_expires_at: expiresAt
+      });
+      const url = currentPhoneQrBaseUrl();
+      url.hash = `H=${id}.${encrypted.key}`;
+      return {
+        url: url.toString(),
+        text: url.toString(),
+        qrText: url.toString(),
+        qrToken: `${id}.${encrypted.key}`,
+        mailbox: true,
+        kind,
+        itemCount,
+        answeredCount,
+        noteCount,
+        jsonLength: encrypted.jsonLength,
+        expiresAt
+      };
+    }
+
+    async function phoneHandoffMailboxPayloadFromText(raw = "", { expectedKind = "" } = {}) {
+      const link = phoneHandoffMailboxLinkFromText(raw);
+      if (!link) return null;
+      const record = await phoneHandoffMailboxRpc("get_phone_handoff_mailbox", { p_id: link.id });
+      const envelope = await decryptPhoneHandoffMailboxPayload(record, link.key);
+      if (envelope?.v !== "phoneHandoffMailbox1") throw new Error("This handoff link is not a supported checklist bundle.");
+      if (expectedKind && envelope.kind !== expectedKind) throw new Error("This handoff QR is for a different transfer direction.");
+      return envelope.payload || null;
+    }
+
     function trimCompactQrRow(row = []) {
       while (row.length && (row[row.length - 1] === "" || row[row.length - 1] === 0 || row[row.length - 1] === null || row[row.length - 1] === undefined)) {
         row.pop();
@@ -30528,8 +30668,19 @@ Rules:
     }
 
     async function phonePayloadFromQrDeepLink(raw = "") {
+      const mailboxPayload = await phoneHandoffMailboxPayloadFromText(raw, { expectedKind: "phone" });
+      if (mailboxPayload) return expandCompactPhoneHandoffPayloadForQr(mailboxPayload);
       const token = phoneQrTokenFromText(raw);
       return token ? decodePhoneQrToken(token) : null;
+    }
+
+    async function createPhoneQrMailboxDeepLink({ includeOptions = true } = {}) {
+      const compact = compactPhoneHandoffPayloadForQr({ includeOptions });
+      return createPhoneHandoffMailboxLink({
+        kind: "phone",
+        payload: compact,
+        itemCount: (state.sections || []).reduce((sum, section) => sum + (section.items || []).length, 0)
+      });
     }
 
     async function createPhoneQrDeepLink({ includeOptions = true } = {}) {
@@ -30693,7 +30844,9 @@ Rules:
         elements.phoneQrCode.innerHTML = display.qr.svg;
       };
       showDisplay(firstDisplay, 0);
-      if (renderedDisplays.length > 1) {
+      if (link.mailbox) {
+        elements.phoneQrStatus.textContent = `${link.itemCount} checklist items ready. One-scan encrypted handoff is ready; scan this QR with the phone camera or the in-app scanner to open bedside mode.`;
+      } else if (renderedDisplays.length > 1) {
         let displayIndex = 0;
         phoneQrCarouselTimer = window.setInterval(() => {
           displayIndex = (displayIndex + 1) % renderedDisplays.length;
@@ -30729,7 +30882,7 @@ Rules:
       elements.phoneQrPanel.hidden = false;
       elements.phoneQrCode.classList.add("is-unavailable");
       elements.phoneQrCode.textContent = "Building QR";
-      elements.phoneQrStatus.textContent = "Compressing the bedside checklist for phone scan.";
+      elements.phoneQrStatus.textContent = "Preparing a one-scan encrypted handoff link.";
       const attempts = [
         { includeOptions: true, label: "answer choices preserved" }
       ];
@@ -30737,6 +30890,29 @@ Rules:
       let bestCandidate = null;
       for (let index = 0; index < attempts.length; index += 1) {
         const attempt = attempts[index];
+        try {
+          const mailboxLink = await createPhoneQrMailboxDeepLink(attempt);
+          const mailboxQr = qrSvgForText(mailboxLink.qrText, {
+            title: "Bedside checklist handoff QR code",
+            alt: "Scan to open the bedside checklist on your phone"
+          });
+          if (sequence !== phoneQrRenderSequence) return;
+          renderPhoneQrCandidate({
+            link: mailboxLink,
+            displays: [{
+              payload: { text: mailboxLink.qrText, segment: mailboxLink.qrToken, label: "mailbox", index: 0, total: 1 },
+              qr: mailboxQr
+            }],
+            attempt: { ...attempt, label: "one-scan encrypted handoff" },
+            sequence
+          });
+          return;
+        } catch (error) {
+          lastError = error;
+          if (sequence === phoneQrRenderSequence) {
+            elements.phoneQrStatus.textContent = "Online one-scan handoff is unavailable. Building the offline fallback QR.";
+          }
+        }
         try {
           const link = await createPhoneQrDeepLink(attempt);
           const payloads = phoneQrDisplayPayloadsForLink(link);
@@ -30809,7 +30985,7 @@ Rules:
         setPhoneQrScannerStatus("That QR is one frame of a split transfer. Tap Scan QR code and keep the camera on the desktop until all frames are captured.");
         return true;
       }
-      if (!phoneQrTokenFromText(window.location.href)) return false;
+      if (!phoneHandoffMailboxLinkFromText(window.location.href) && !phoneQrTokenFromText(window.location.href)) return false;
       try {
         const payload = await phonePayloadFromQrDeepLink(window.location.href);
         if (!payload) return false;
@@ -31909,6 +32085,8 @@ Rules:
     }
 
     async function phoneReturnPayloadFromQrText(raw = "") {
+      const mailboxPayload = await phoneHandoffMailboxPayloadFromText(raw, { expectedKind: "return" });
+      if (mailboxPayload) return expandCompactPhoneReturnPayloadForQr(mailboxPayload);
       const token = phoneReturnTokenFromText(raw);
       return token ? decodePhoneReturnQrToken(token) : null;
     }
@@ -31916,6 +32094,16 @@ Rules:
     async function createPhoneReturnQrText() {
       const compact = compactPhoneReturnPayloadForQr();
       if (!compact) return null;
+      try {
+        return await createPhoneHandoffMailboxLink({
+          kind: "return",
+          payload: compact,
+          answeredCount: Array.isArray(compact.a) ? compact.a.length : Object.keys(compact.a || {}).length,
+          noteCount: Array.isArray(compact.n) ? compact.n.length : Object.keys(compact.n || {}).length
+        });
+      } catch (error) {
+        console.warn("Online phone return handoff could not be created; using local QR fallback.", error);
+      }
       const encoded = await encodePhoneReturnQrToken(compact);
       return {
         text: encoded.token,
@@ -31955,10 +32143,12 @@ Rules:
         if (panel) panel.dataset.qrText = link.text;
         code.classList.remove("is-unavailable");
         code.innerHTML = qr.svg;
-        const densityHint = qr.modules > PHONE_RETURN_QR_SCAN_MODULE_LIMIT
+        const densityHint = !link.mailbox && qr.modules > PHONE_RETURN_QR_SCAN_MODULE_LIMIT
           ? " Move closer if the laptop camera struggles, or use Copy bundle."
           : "";
-        status.textContent = `${link.answeredCount} answered item${link.answeredCount === 1 ? "" : "s"} ready for laptop scan.${densityHint}`;
+        status.textContent = link.mailbox
+          ? `${link.answeredCount} answered item${link.answeredCount === 1 ? "" : "s"} ready. One-scan encrypted return is ready for the laptop.`
+          : `${link.answeredCount} answered item${link.answeredCount === 1 ? "" : "s"} ready for laptop scan.${densityHint}`;
       } catch (error) {
         if (trackLatest && sequence !== phoneReturnQrRenderSequence) return;
         if (trackLatest) latestPhoneReturnQrText = "";
@@ -32060,6 +32250,7 @@ Rules:
     function looksLikePhoneBundleText(raw) {
       const text = String(raw || "").trim();
       if (!text) return false;
+      if (phoneHandoffMailboxLinkFromText(text)) return true;
       if (phoneReturnTokenFromText(text)) return true;
       if (/^(?:R:|rgz\.|rj\.)/.test(text)) return true;
       if (text.startsWith("{")) {
