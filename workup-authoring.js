@@ -1,5 +1,6 @@
 export const workupChangeSetSchema = "workup_change_set_v1";
 export const workupAuthoringSnapshotSchema = "workup_authoring_snapshot_v1";
+export const workupSectionPatchSchema = "workup_section_patch_v1";
 
 export const workupSectionDefinitions = [
   {
@@ -228,6 +229,182 @@ export function applySectionPayloadToModule(module = {}, sectionKey = "", payloa
     }
   }
   return nextModule;
+}
+
+function defaultItemTypeForPatchSection(sectionKey = "") {
+  if (sectionKey === "history_questions") return "history_question";
+  if (sectionKey === "physical_exam") return "physical_exam_maneuver";
+  return "workup_item";
+}
+
+function patchItemId(item = {}) {
+  return cleanString(item.id || item.item_id || "");
+}
+
+function normalizePatchGroupKey(groupKey = "", definition = null) {
+  const key = cleanString(groupKey);
+  if (!definition?.moduleFields?.includes(key)) {
+    throw new Error(`Invalid groupKey "${key || "(missing)"}" for ${definition?.key || "selected section"}.`);
+  }
+  return key;
+}
+
+function normalizePatchItemForAdd(item = {}, sectionKey = "") {
+  if (!item || typeof item !== "object" || Array.isArray(item)) {
+    throw new Error("Patch add operation requires an item object.");
+  }
+  const next = cloneJson(item);
+  const id = patchItemId(next);
+  if (!id) throw new Error("Patch add operation requires item.id or item.item_id.");
+  const label = cleanString(next.label || next.text || next.technique || next.action);
+  if (!label) throw new Error(`Patch add operation for ${id} requires a label, text, technique, or action.`);
+  const expectedType = defaultItemTypeForPatchSection(sectionKey);
+  const itemType = cleanString(next.item_type || expectedType);
+  if (sectionKey === "history_questions" && itemType !== "history_question") {
+    throw new Error(`History patch add item ${id} must have item_type "history_question".`);
+  }
+  if (sectionKey === "physical_exam" && itemType !== "physical_exam_maneuver") {
+    throw new Error(`Physical exam patch add item ${id} must have item_type "physical_exam_maneuver".`);
+  }
+  next.id = id;
+  next.item_type = itemType;
+  if (sectionKey === "history_questions") {
+    next.label = cleanString(next.label || next.text || label);
+    next.text = cleanString(next.text || next.label);
+  }
+  if (sectionKey === "physical_exam") {
+    next.label = cleanString(next.label || next.technique || label);
+    next.technique = cleanString(next.technique || next.label);
+  }
+  return next;
+}
+
+function findPatchItem(payload = {}, definition = null, itemId = "", groupKey = "") {
+  const targetId = cleanString(itemId);
+  if (!targetId) throw new Error("Patch update/remove operation requires itemId.");
+  const groups = groupKey
+    ? [normalizePatchGroupKey(groupKey, definition)]
+    : definition.moduleFields;
+  const matches = [];
+  for (const group of groups) {
+    const items = Array.isArray(payload[group]) ? payload[group] : [];
+    items.forEach((item, index) => {
+      if (patchItemId(item) === targetId) matches.push({ groupKey: group, index, item });
+    });
+  }
+  if (!matches.length) throw new Error(`Patch itemId "${targetId}" did not match any item in ${definition.key}.`);
+  if (matches.length > 1) throw new Error(`Patch itemId "${targetId}" matched multiple items in ${definition.key}; update/remove is ambiguous.`);
+  return matches[0];
+}
+
+const patchOperationReservedKeys = new Set([
+  "op",
+  "item",
+  "itemId",
+  "item_id",
+  "groupKey",
+  "group_key",
+  "fromGroupKey",
+  "from_group_key",
+  "toGroupKey",
+  "to_group_key"
+]);
+
+export function applyWorkupSectionPatch(payload = {}, patch = {}, { workupId = "", sectionKey = "" } = {}) {
+  if (!patch || typeof patch !== "object" || Array.isArray(patch)) {
+    throw new Error("Workup section patch must be a JSON object.");
+  }
+  if (patch.schema !== workupSectionPatchSchema) {
+    throw new Error(`Workup section patch must use schema "${workupSectionPatchSchema}".`);
+  }
+  const patchWorkupId = cleanString(patch.workupId || patch.workup_id);
+  const expectedWorkupId = cleanString(workupId);
+  if (patchWorkupId && expectedWorkupId && patchWorkupId !== expectedWorkupId) {
+    throw new Error(`Patch is for ${patchWorkupId}, but ${expectedWorkupId} is selected.`);
+  }
+  const patchSectionKey = cleanString(patch.sectionKey || patch.section_key);
+  const expectedSectionKey = cleanString(sectionKey);
+  if (patchSectionKey && expectedSectionKey && patchSectionKey !== expectedSectionKey) {
+    throw new Error(`Patch is for ${patchSectionKey}, but ${expectedSectionKey} is selected.`);
+  }
+  const activeSectionKey = patchSectionKey || expectedSectionKey;
+  if (!["history_questions", "physical_exam"].includes(activeSectionKey)) {
+    throw new Error("Patch imports are supported only for history_questions and physical_exam.");
+  }
+  const definition = workupSectionDefinition(activeSectionKey);
+  if (!definition || definition.kind !== "items") {
+    throw new Error(`Patch section ${activeSectionKey} is not an editable item section.`);
+  }
+  const operations = Array.isArray(patch.operations) ? patch.operations : [];
+  if (!operations.length) throw new Error("Patch must include at least one operation.");
+
+  const next = {};
+  for (const field of definition.moduleFields) {
+    next[field] = Array.isArray(payload?.[field]) ? cloneJson(payload[field]) : [];
+  }
+
+  operations.forEach((operation, index) => {
+    if (!operation || typeof operation !== "object" || Array.isArray(operation)) {
+      throw new Error(`Patch operation ${index + 1} must be an object.`);
+    }
+    const op = cleanString(operation.op).toLowerCase();
+    if (!["add", "update", "remove"].includes(op)) {
+      throw new Error(`Patch operation ${index + 1} has unsupported op "${operation.op || ""}".`);
+    }
+    if (op === "add") {
+      const groupKey = normalizePatchGroupKey(operation.groupKey || operation.group_key, definition);
+      const item = normalizePatchItemForAdd(operation.item, activeSectionKey);
+      const duplicate = definition.moduleFields
+        .flatMap((field) => next[field])
+        .some((candidate) => patchItemId(candidate) === item.id);
+      if (duplicate) throw new Error(`Patch add item id "${item.id}" already exists in ${activeSectionKey}.`);
+      next[groupKey].push(item);
+      return;
+    }
+
+    const itemId = cleanString(operation.itemId || operation.item_id);
+    const sourceGroupKey = op === "remove"
+      ? cleanString(operation.fromGroupKey || operation.from_group_key || operation.groupKey || operation.group_key)
+      : cleanString(operation.fromGroupKey || operation.from_group_key);
+    const match = findPatchItem(next, definition, itemId, sourceGroupKey);
+    if (op === "remove") {
+      next[match.groupKey].splice(match.index, 1);
+      return;
+    }
+
+    const targetGroupKey = operation.toGroupKey || operation.to_group_key
+      ? normalizePatchGroupKey(operation.toGroupKey || operation.to_group_key, definition)
+      : (operation.groupKey || operation.group_key
+        ? normalizePatchGroupKey(operation.groupKey || operation.group_key, definition)
+        : match.groupKey);
+    const directItemPatch = Object.fromEntries(
+      Object.entries(operation)
+        .filter(([key]) => !patchOperationReservedKeys.has(key))
+        .map(([key, value]) => [key, cloneJson(value)])
+    );
+    const nestedItemPatch = operation.item && typeof operation.item === "object" && !Array.isArray(operation.item)
+      ? cloneJson(operation.item)
+      : {};
+    const itemPatch = { ...directItemPatch, ...nestedItemPatch };
+    if (!Object.keys(itemPatch).length) {
+      throw new Error(`Patch update item "${itemId}" requires changed item fields directly on the operation or inside item.`);
+    }
+    const updated = { ...cloneJson(match.item), ...itemPatch };
+    const updatedId = patchItemId(updated);
+    if (updatedId && updatedId !== itemId) {
+      throw new Error(`Patch update item "${itemId}" cannot change its stable id to "${updatedId}".`);
+    }
+    updated.id = itemId;
+    if (updated.item_id && updated.item_id !== itemId) delete updated.item_id;
+    if (targetGroupKey === match.groupKey) {
+      next[match.groupKey][match.index] = updated;
+    } else {
+      next[match.groupKey].splice(match.index, 1);
+      next[targetGroupKey].push(updated);
+    }
+  });
+
+  return next;
 }
 
 export function makeWorkupChangeSet({

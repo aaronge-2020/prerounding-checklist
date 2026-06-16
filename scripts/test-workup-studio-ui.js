@@ -486,6 +486,9 @@ try {
     search: "acro",
     statusFilter: "all",
     changeSets: [],
+    promptTemplatesBySection: {
+      "hyperglycemia_possible_dka_v1::clinical_pathway_tree_v1": 'You are helping improve a reviewed clinical workup knowledge base.\n"schema": "workup_section_update_v1"\n"payload": {"root": {"id": "legacy_root"}}\nCurrent selected-section payload:\n{"root":{"id":"legacy_root"}}'
+    },
     backend: {
       url: "https://studio-test.supabase.co",
       anonKey: "stale-key",
@@ -661,9 +664,19 @@ try {
   assert.match(await page.textContent("#workupStudioPublishImportButton"), /Reviewer publish locked/, "Locked publish button should not imply local approval works.");
   const pathwayPrompt = await page.inputValue("#workupStudioOpenEvidencePromptOutput");
   assert.equal(await page.locator("#workupStudioOpenEvidencePromptOutput").evaluate((node) => node.readOnly), false, "AI prompt textarea should be editable.");
-  assert.match(pathwayPrompt, /workup_section_update_v1/, "Workup Studio should generate a paste-ready OpenEvidence section schema.");
-  assert.match(pathwayPrompt, /clinical_pathway_tree_v1/, "Pathway prompt should be scoped to the selected tree section.");
-  assert.match(pathwayPrompt, /Do not include patient-specific details/, "OpenEvidence prompt should guard against PHI.");
+  assert.match(pathwayPrompt, /Create one compact protocol-style clinical pathway tree/, "Pathway prompt should use the compact tree generator.");
+  assert.match(pathwayPrompt, /Workup: hyperglycemia_possible_dka_v1 - /, "Pathway prompt should name the selected workup without dumping the current tree.");
+  assert.match(pathwayPrompt, /"boxText"/, "Pathway prompt should request compact display text on every node.");
+  assert.match(pathwayPrompt, /Every child of a decision node must have edgeLabel/, "Pathway prompt should keep decision-edge wording.");
+  assert.match(pathwayPrompt, /6-12 visible nodes/, "Pathway prompt should keep the compact node budget.");
+  assert.match(pathwayPrompt, /Avoid bland labels/, "Pathway prompt should discourage generic node labels.");
+  assert.match(pathwayPrompt, /ASCII operators/, "Pathway prompt should avoid threshold symbol encoding issues.");
+  assert.doesNotMatch(pathwayPrompt, /requiredQuestions|conditionalQuestions|requiredExam|conditionalExam/, "Pathway prompt must not request history or physical exam arrays.");
+  assert.doesNotMatch(pathwayPrompt, /Current clinical_pathway_tree|Full local pathway JSON|Current selected-section payload|workup_section_update_v1|Supabase current DKA root/, "Pathway prompt should not include current-tree context or legacy replacement schema.");
+  assert.doesNotMatch(pathwayPrompt, /"supabase_root"|"legacy_root"/, "Pathway prompt should not paste raw current-tree JSON ids or stale saved prompt ids.");
+  assert.ok(pathwayPrompt.length < 1800, `Pathway prompt should stay short enough to avoid truncation; saw ${pathwayPrompt.length} chars.`);
+  const storedPromptTemplates = await page.evaluate(() => JSON.parse(localStorage.getItem("prerounding-workup-authoring-v1") || "{}").promptTemplatesBySection || {});
+  assert(!storedPromptTemplates["hyperglycemia_possible_dka_v1::clinical_pathway_tree_v1"], "Legacy saved tree prompt should be pruned from local Workup Studio state.");
   const editedPromptSentinel = `COPY_SENTINEL_${Date.now()}`;
   await setTextareaValue(page, "#workupStudioOpenEvidencePromptOutput", `${pathwayPrompt}\n\nReviewer focus: ${editedPromptSentinel}`);
   await page.click("#workupStudioCopyPromptButton");
@@ -671,7 +684,7 @@ try {
   await page.click("#workupStudioResetPromptButton");
   const resetPathwayPrompt = await page.inputValue("#workupStudioOpenEvidencePromptOutput");
   assert.doesNotMatch(resetPathwayPrompt, new RegExp(editedPromptSentinel), "Reset should restore the generated section prompt.");
-  assert.match(resetPathwayPrompt, /clinical_pathway_tree_v1/, "Reset prompt should still target the selected pathway section.");
+  assert.match(resetPathwayPrompt, /Create one compact protocol-style clinical pathway tree/, "Reset prompt should still target only the selected pathway tree section.");
   const authoringRequestsBeforeLocalDraft = authoringTableRequestCount(supabaseRequests);
   await page.click("#workupStudioSaveTreeDraftButton");
   await page.fill("#workupStudioImportInput", JSON.stringify({
@@ -685,7 +698,6 @@ try {
       children: []
     }
   }));
-  await page.click("#workupStudioPreviewImportButton");
   await page.click("#workupStudioAcceptImportButton");
   await page.evaluate(() => document.querySelector("#workupStudioLoadBackendDraftsButton")?.click());
   await page.evaluate(() => document.querySelector("#workupStudioPublishImportButton")?.click());
@@ -836,36 +848,81 @@ try {
         {
           id: "studio_ketones",
           edgeLabel: "DKA concern",
-          label: "Classify DKA/HHS with serum beta-hydroxybutyrate, venous pH, bicarbonate, anion gap, potassium, sodium-corrected osmolality, creatinine, and mental status.",
+          label: "DKA criteria: beta-hydroxybutyrate >=3.0 plus pH/bicarbonate",
+          boxText: "Classify DKA when glucose >=200 mg/dL or known diabetes plus beta-hydroxybutyrate >=3.0 mmol/L or urine ketones >=2+ and pH <7.3 or bicarbonate <18 mmol/L; check potassium before insulin.",
           type: "action",
-          children: []
+          children: [
+            {
+              id: "studio_potassium_stop",
+              edgeLabel: "K <3.5 mmol/L",
+              label: "Potassium safety: hold insulin when K <3.5",
+              boxText: "Hold insulin and replace potassium 10 mmol/h until K >3.5 mmol/L; monitor on telemetry when clinically indicated.",
+              type: "action",
+              children: [
+                {
+                  id: "studio_insulin_bundle",
+                  edgeLabel: "K >=3.5 mmol/L",
+                  label: "Start IV insulin 0.1 units/kg/h",
+                  boxText: "Start regular insulin 0.1 units/kg/h; add dextrose when glucose <250 mg/dL and continue insulin until ketones clear and pH/bicarbonate resolves.",
+                  type: "action",
+                  children: [
+                    {
+                      id: "studio_reassessment",
+                      edgeLabel: "Active treatment",
+                      label: "Reassess glucose q1-2h and labs q4h",
+                      boxText: "Check bedside glucose q1-2h and electrolytes, creatinine, beta-hydroxybutyrate, and venous pH about q4h; escalate for shock, hypoglycemia, K <3.5, or no improvement after 4-6 h.",
+                      type: "decision",
+                      children: [
+                        {
+                          id: "studio_transition",
+                          edgeLabel: "Resolved",
+                          label: "Transition after DKA resolution",
+                          boxText: "Give basal insulin 1-2 h before stopping IV insulin; ensure eating, stable potassium, treated trigger, sick-day education, ketone testing, and follow-up.",
+                          type: "endpoint",
+                          children: []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         }
       ]
     }
   };
 
   await page.fill("#workupStudioImportInput", JSON.stringify(graph, null, 2));
-  await page.click("#workupStudioPreviewImportButton");
-  await page.waitForFunction(() => /2 clinical nodes will replace only clinical_pathway_tree_v1/.test(document.querySelector("#workupStudioDiffPreview")?.textContent || ""));
   await page.click("#workupStudioAcceptImportButton");
   await page.click("#workupStudioPublishImportButton");
   await page.waitForFunction(() => Number(document.querySelector("#workupStudioDraftCount")?.textContent || "0") >= 1);
   await page.waitForSelector("#workupStudioPathwayTreePanel .decision-tree-node-g[data-node-id='studio_ketones']");
-  await page.waitForFunction(() => /Classify DKA\/HHS/.test(document.querySelector("#workupStudioItemList")?.textContent || ""));
+  await page.waitForFunction(() => /DKA criteria: beta-hydroxybutyrate/.test(document.querySelector("#workupStudioItemList")?.textContent || ""));
   const renderedTreeAudit = await page.evaluate(() => ({
     treeNodeCount: document.querySelectorAll("#workupStudioPathwayTreePanel .decision-tree-node-g").length,
     legacyListButtonCount: document.querySelectorAll("#workupStudioItemList .studio-item-button").length,
     selectedNodeId: document.querySelector("#workupStudioPathwayNodeIdDisplay")?.value || "",
     editorBodyMode: document.querySelector(".studio-editor-body")?.classList.contains("is-pathway-editor") || false,
-    treeText: document.querySelector("#workupStudioPathwayTreePanel")?.textContent || ""
+    treeText: document.querySelector("#workupStudioPathwayTreePanel")?.textContent || "",
+    nodeDetailTextCount: document.querySelectorAll("#workupStudioPathwayTreePanel .decision-tree-node-detail").length,
+    treeScrollerOverflowY: getComputedStyle(document.querySelector("#workupStudioPathwayTreePanel .d3-decision-tree")).overflowY,
+    treeScrollerClientHeight: document.querySelector("#workupStudioPathwayTreePanel .d3-decision-tree")?.clientHeight || 0,
+    treeScrollerScrollHeight: document.querySelector("#workupStudioPathwayTreePanel .d3-decision-tree")?.scrollHeight || 0,
+    treeSvgHeight: Number(document.querySelector("#workupStudioPathwayTreePanel .d3-decision-tree svg")?.getAttribute("height") || 0)
   }));
   assert(renderedTreeAudit.treeNodeCount >= 2, `Pathway Studio should render an editable tree canvas, not just item rows: ${JSON.stringify(renderedTreeAudit)}`);
   assert.equal(renderedTreeAudit.legacyListButtonCount, 0, `Pathway Studio should not render the old long section-item list: ${JSON.stringify(renderedTreeAudit)}`);
   assert.equal(renderedTreeAudit.editorBodyMode, true, "Pathway Studio should switch the editor body into tree-editing mode.");
+  assert(renderedTreeAudit.nodeDetailTextCount >= 4, `Pathway Studio node cards should render clinical boxText detail lines: ${JSON.stringify(renderedTreeAudit)}`);
+  assert.match(renderedTreeAudit.treeText, /beta-hydroxybutyrate >=3\.0|K <3\.5|0\.1 units\/kg\/h/, `Pathway Studio tree cards should show clinical thresholds and doses from boxText: ${JSON.stringify(renderedTreeAudit)}`);
+  assert(/auto|scroll/.test(renderedTreeAudit.treeScrollerOverflowY) && renderedTreeAudit.treeScrollerScrollHeight > renderedTreeAudit.treeScrollerClientHeight + 20, `Pathway Studio tree canvas should be vertically scrollable for deeper trees: ${JSON.stringify(renderedTreeAudit)}`);
+  assert(renderedTreeAudit.treeSvgHeight >= renderedTreeAudit.treeScrollerScrollHeight - 2, `Pathway Studio SVG should size to the full graph height: ${JSON.stringify(renderedTreeAudit)}`);
   const pathwayItemListText = await page.textContent("#workupStudioItemList");
   assert.doesNotMatch(pathwayItemListText || "", /Missing data needed/i, "Workup Studio should hide internal missing-data guards from the pathway outline.");
   await page.locator("#workupStudioPathwayTreePanel .decision-tree-node-g[data-node-id='studio_ketones']").click();
   await page.waitForFunction(() => document.querySelector("#workupStudioPathwayNodeIdDisplay")?.value === "studio_ketones");
+  await page.waitForFunction(() => /beta-hydroxybutyrate >=3\.0/.test(document.querySelector("#workupStudioPathwayNodeDetailInput")?.value || ""));
   await page.waitForSelector("#workupStudioPathwayTreePanel .decision-tree-node-g[data-node-id='studio_ketones'] .decision-tree-inline-label");
   const inlineNodeLabel = page.locator("#workupStudioPathwayTreePanel .decision-tree-node-g[data-node-id='studio_ketones'] .decision-tree-inline-label");
   await inlineNodeLabel.fill("Canvas inline edit: classify DKA/HHS severity with reviewed criteria.");
@@ -902,12 +959,14 @@ try {
   }), "Supabase rendered-tree layout draft insert");
   await page.fill("#workupStudioPathwayNodeLabelInput", "Direct tree edit: classify DKA/HHS severity with reviewed criteria.");
   await page.fill("#workupStudioPathwayEdgeLabelInput", "Direct tree edit branch criteria");
+  await page.fill("#workupStudioPathwayNodeDetailInput", "Direct tree edit detail: potassium must be >=3.5 mmol/L before insulin, then start 0.1 units/kg/h with q1-2h glucose checks.");
   const postedRowsBeforeTreeEdit = supabaseRequests.postedRows.length;
   await page.click("#workupStudioSaveTreeDraftButton");
   await waitForCondition(() => supabaseRequests.postedRows.length > postedRowsBeforeTreeEdit && supabaseRequests.postedRows.some((row) => (
     row.section_key === "clinical_pathway_tree_v1"
     && row.review_status === "draft"
     && /Direct tree edit: classify DKA\/HHS severity/.test(JSON.stringify(row.after_snapshot || {}))
+    && /potassium must be >=3\.5 mmol\/L/.test(JSON.stringify(row.after_snapshot || {}))
   )), "Supabase direct rendered-tree draft insert");
   const directTreeEditRow = [...supabaseRequests.postedRows].reverse().find((row) => row.section_key === "clinical_pathway_tree_v1" && /Direct tree edit: classify DKA\/HHS severity/.test(JSON.stringify(row.after_snapshot || {})));
   assert.ok(directTreeEditRow, "Rendered-tree edit should save a clinical_pathway_tree_v1 draft row.");
@@ -924,7 +983,7 @@ try {
   assert.ok(directTreeEditedNode, "Rendered-tree edit should keep the selected node id in the saved tree.");
   assert.equal(directTreeEditedNode.label, "Direct tree edit: classify DKA/HHS severity with reviewed criteria.", "Rendered-tree node edit should update the selected node label.");
   assert.equal(directTreeEditedNode.edgeLabel, "Direct tree edit branch criteria", "Rendered-tree node edit should update the selected branch criteria.");
-  await page.waitForFunction(() => /Supabase synced/.test(document.querySelector("#workupStudioDiffPreview")?.textContent || ""));
+  assert.match(directTreeEditedNode.boxText || "", /potassium must be >=3\.5 mmol\/L/, "Rendered-tree node edit should update the selected node detail shown on the card.");
   await waitForCondition(() => supabaseRequests.postedRows.length >= 2, "Supabase draft insert");
   await waitForCondition(() => supabaseRequests.canonicalRows.some((entry) => entry.table === "pathway_trees"), "Supabase pathway tree publish");
   await waitForCondition(() => supabaseRequests.catalogWorkupCount >= 3, "canonical catalog refresh after pathway publish");
@@ -962,21 +1021,148 @@ try {
   }));
   assert(historyToolbarAudit.toolbarVisible && historyToolbarAudit.addVisible && historyToolbarAudit.duplicateVisible && historyToolbarAudit.deleteVisible, `History item toolbar should expose search/add/duplicate/delete controls: ${JSON.stringify(historyToolbarAudit)}`);
   assert(historyToolbarAudit.toolbarOverflow <= 1, `History item toolbar should fit inside the editor pane: ${JSON.stringify(historyToolbarAudit)}`);
+  const studioCanvasLayoutAudit = await page.evaluate(() => {
+    const workspace = document.querySelector(".workspace");
+    const studioView = document.querySelector("#studioView");
+    const shell = document.querySelector(".studio-shell");
+    const railRect = document.querySelector(".studio-rail")?.getBoundingClientRect();
+    const sectionRect = document.querySelector(".studio-section-rail")?.getBoundingClientRect();
+    const editorRect = document.querySelector(".studio-editor")?.getBoundingClientRect();
+    const inspectorRect = document.querySelector(".studio-inspector")?.getBoundingClientRect();
+    const shellRect = shell?.getBoundingClientRect();
+    const editorForm = document.querySelector("#workupStudioEditor");
+    return {
+      viewportHeight: window.innerHeight,
+      workspaceExcess: workspace ? workspace.scrollHeight - workspace.clientHeight : null,
+      studioViewExcess: studioView ? studioView.scrollHeight - studioView.clientHeight : null,
+      shellHeight: Math.round(shellRect?.height || 0),
+      shellBottom: Math.round(shellRect?.bottom || 0),
+      railHeight: Math.round(railRect?.height || 0),
+      sectionHeight: Math.round(sectionRect?.height || 0),
+      editorHeight: Math.round(editorRect?.height || 0),
+      inspectorHeight: Math.round(inspectorRect?.height || 0),
+      firstRowHeight: Math.round((Math.max(railRect?.bottom || 0, sectionRect?.bottom || 0, editorRect?.bottom || 0))
+        - (Math.min(railRect?.top || 0, sectionRect?.top || 0, editorRect?.top || 0))),
+      firstRowBottom: Math.round(Math.max(railRect?.bottom || 0, sectionRect?.bottom || 0, editorRect?.bottom || 0)),
+      inspectorTop: Math.round(inspectorRect?.top || 0),
+      editorFormClientHeight: editorForm?.clientHeight || 0,
+      editorFormScrollHeight: editorForm?.scrollHeight || 0
+    };
+  });
+  assert(studioCanvasLayoutAudit.workspaceExcess <= 2, `Workup Studio should not make the whole workspace a tall scrolling canvas: ${JSON.stringify(studioCanvasLayoutAudit)}`);
+  assert(studioCanvasLayoutAudit.studioViewExcess <= 2, `Workup Studio view should stay viewport-bounded with internal column scroll: ${JSON.stringify(studioCanvasLayoutAudit)}`);
+  assert(studioCanvasLayoutAudit.railHeight <= studioCanvasLayoutAudit.firstRowHeight + 1, `Workup list column should stay in the bounded Studio row: ${JSON.stringify(studioCanvasLayoutAudit)}`);
+  assert(studioCanvasLayoutAudit.sectionHeight <= studioCanvasLayoutAudit.firstRowHeight + 1, `Section column should stay in the bounded Studio row: ${JSON.stringify(studioCanvasLayoutAudit)}`);
+  assert(studioCanvasLayoutAudit.inspectorTop >= studioCanvasLayoutAudit.firstRowBottom - 1, `Stacked prompt workbench should sit below the bounded editor row: ${JSON.stringify(studioCanvasLayoutAudit)}`);
+  assert(studioCanvasLayoutAudit.editorFormScrollHeight > studioCanvasLayoutAudit.editorFormClientHeight, `Long item editor form should scroll internally instead of expanding the page: ${JSON.stringify(studioCanvasLayoutAudit)}`);
+  const historyItemLayoutAudit = await page.evaluate(() => {
+    const paneRect = document.querySelector(".studio-item-pane")?.getBoundingClientRect();
+    const editorRect = document.querySelector("#workupStudioEditor")?.getBoundingClientRect();
+    const rows = Array.from(document.querySelectorAll("#workupStudioItemList .studio-item-button"));
+    const lastRowRect = rows.at(-1)?.getBoundingClientRect();
+    return {
+      rowCount: rows.length,
+      paneHeight: Math.round(paneRect?.height || 0),
+      emptyBelowLastRow: paneRect && lastRowRect ? Math.round(paneRect.bottom - lastRowRect.bottom) : null,
+      formGap: paneRect && editorRect ? Math.round(editorRect.top - paneRect.bottom) : null
+    };
+  });
+  assert(historyItemLayoutAudit.rowCount > 0, `History item table should render editable rows: ${JSON.stringify(historyItemLayoutAudit)}`);
+  assert(historyItemLayoutAudit.emptyBelowLastRow <= 64, `History item table should not reserve a large blank grid row below its content: ${JSON.stringify(historyItemLayoutAudit)}`);
+  assert(historyItemLayoutAudit.formGap <= 12, `History item editor should sit directly below the compact item table: ${JSON.stringify(historyItemLayoutAudit)}`);
   await page.fill("#workupStudioItemSearchInput", "insulin");
   await page.waitForFunction(() => document.activeElement?.id === "workupStudioItemSearchInput");
   const filteredHistoryCount = await page.locator("#workupStudioItemList .studio-item-button").count();
   assert(filteredHistoryCount > 0, "History item search should keep matching rows visible.");
   await page.fill("#workupStudioItemSearchInput", "");
   const historyPrompt = await page.inputValue("#workupStudioOpenEvidencePromptOutput");
+  assert.match(await page.textContent("#workupStudioToolbarAddItemButton"), /Add question/, "History toolbar should use question-specific add copy.");
+  assert.match(historyPrompt, /workup_section_patch_v1/, "History prompt should request patch operations instead of full section replacement.");
+  assert.match(historyPrompt, /Reviewer request:/, "History prompt should include an explicit reviewer request slot.");
+  assert.match(historyPrompt, /Patient tailoring context:/, "History prompt should include concise de-identified patient context.");
+  assert.match(historyPrompt, /possible DKA|missed basal insulin|glucose 318/i, "History prompt should include basic patient details for tailoring.");
+  assert.doesNotMatch(historyPrompt, /Demo - DKA consult|single-patient/, "History prompt should not include local patient labels or ids.");
+  assert.match(historyPrompt, /Existing section inventory:/, "History prompt should include a compact section inventory.");
+  assert.match(historyPrompt, /requiredQuestions \| id:supabase_missed_insulin \| label:/, "History prompt inventory should expose exact item ids for targeted updates.");
+  assert.doesNotMatch(historyPrompt, /Current selected-section payload:|"tags"\s*:|"version_date"\s*:/, "History prompt should not paste the full section JSON payload.");
   assert.match(historyPrompt, /requiredQuestions|conditionalQuestions/, "History prompt should be scoped to history question arrays.");
-  assert.doesNotMatch(historyPrompt, /requiredExam|conditionalExam/, "History prompt should not include physical exam arrays.");
+  assert.doesNotMatch(historyPrompt, /"requiredExam"\s*:|"conditionalExam"\s*:/, "History prompt should not include physical exam payload arrays.");
+  assert.doesNotMatch(historyPrompt, /stable_question_id/, "History prompt should not seed fake add operations that the model may copy.");
   assert.match(historyPrompt, /answerMode/, "History prompt should request structured answer mode metadata.");
+  assert.match(historyPrompt, /never "multiple"/, "History prompt should enforce local answerMode vocabulary.");
+  assert.match(historyPrompt, /changed row fields directly on the operation/, "History prompt should describe concise direct update fields.");
+  assert.match(historyPrompt, /do not include OpenEvidence citation markup/, "History prompt should reject citation markup artifacts.");
   assert.match(historyPrompt, /normalAnswers/, "History prompt should request structured normal answer metadata.");
+  assert.match(historyPrompt, /operations": \[\]/, "History prompt should define no-change behavior.");
+  assert(historyPrompt.split("Existing section inventory:")[0].trim().split("\n").length <= 44, "History prompt instructions should stay concise before the inventory.");
+  assert(historyPrompt.length < 9000, `History prompt should stay concise; saw ${historyPrompt.length} chars.`);
+  const postedRowsBeforeHistoryPatch = supabaseRequests.postedRows.length;
+  await page.fill("#workupStudioImportInput", JSON.stringify({
+    schema: "workup_section_patch_v1",
+    workupId: "hyperglycemia_possible_dka_v1",
+    sectionKey: "history_questions",
+    summary: "Patch current missed insulin question rationale only.",
+    operations: [
+      {
+        op: "update",
+        itemId: "supabase_missed_insulin",
+        item: {
+          rationale: "Patch import: missed insulin changes DKA risk and discharge readiness."
+        }
+      }
+    ]
+  }));
+  await page.click("#workupStudioAcceptImportButton");
+  await waitForCondition(() => supabaseRequests.postedRows.length > postedRowsBeforeHistoryPatch && supabaseRequests.postedRows.some((row) => (
+    row.section_key === "history_questions"
+    && /Patch import: missed insulin/.test(JSON.stringify(row.after_snapshot || {}))
+    && !("requiredExam" in (row.after_snapshot || {}))
+    && !("conditionalExam" in (row.after_snapshot || {}))
+  )), "Supabase history patch import draft insert");
   await page.locator("#workupStudioSectionTabs button", { hasText: "Physical exam" }).click();
   await page.waitForSelector("#workupStudioItemLabelInput");
   const physicalExamPrompt = await page.inputValue("#workupStudioOpenEvidencePromptOutput");
+  assert.match(await page.textContent("#workupStudioToolbarAddItemButton"), /Add exam item/, "Physical exam toolbar should use exam-specific add copy.");
+  assert.match(physicalExamPrompt, /workup_section_patch_v1/, "Physical exam prompt should request patch operations instead of full section replacement.");
+  assert.match(physicalExamPrompt, /Reviewer request:/, "Physical exam prompt should include an explicit reviewer request slot.");
+  assert.match(physicalExamPrompt, /Patient tailoring context:/, "Physical exam prompt should include concise de-identified patient context.");
+  assert.match(physicalExamPrompt, /possible DKA|HR 112|glucose 318/i, "Physical exam prompt should include basic patient details for tailoring.");
+  assert.doesNotMatch(physicalExamPrompt, /Demo - DKA consult|single-patient/, "Physical exam prompt should not include local patient labels or ids.");
+  assert.match(physicalExamPrompt, /Existing section inventory:/, "Physical exam prompt should include a compact section inventory.");
+  assert.match(physicalExamPrompt, /requiredExam \| id:/, "Physical exam prompt inventory should expose exact exam item ids for targeted updates.");
+  assert.doesNotMatch(physicalExamPrompt, /Current selected-section payload:|"tags"\s*:|"version_date"\s*:/, "Physical exam prompt should not paste the full section JSON payload.");
   assert.match(physicalExamPrompt, /requiredExam|conditionalExam/, "Physical exam prompt should be scoped to exam maneuver arrays.");
-  assert.doesNotMatch(physicalExamPrompt, /requiredQuestions|conditionalQuestions/, "Physical exam prompt should not include history question arrays.");
+  assert.doesNotMatch(physicalExamPrompt, /"requiredQuestions"\s*:|"conditionalQuestions"\s*:/, "Physical exam prompt should not include history question payload arrays.");
+  assert.doesNotMatch(physicalExamPrompt, /stable_exam_item_id/, "Physical exam prompt should not seed fake add operations that the model may copy.");
+  assert.match(physicalExamPrompt, /never "multiple"/, "Physical exam prompt should enforce local answerMode vocabulary.");
+  assert.match(physicalExamPrompt, /changed row fields directly on the operation/, "Physical exam prompt should describe concise direct update fields.");
+  assert.match(physicalExamPrompt, /do not include OpenEvidence citation markup/, "Physical exam prompt should reject citation markup artifacts.");
+  assert.match(physicalExamPrompt, /operations": \[\]/, "Physical exam prompt should define no-change behavior.");
+  assert(physicalExamPrompt.split("Existing section inventory:")[0].trim().split("\n").length <= 44, "Physical exam prompt instructions should stay concise before the inventory.");
+  assert(physicalExamPrompt.length < 9000, `Physical exam prompt should stay concise; saw ${physicalExamPrompt.length} chars.`);
+  const postedRowsBeforeExamPatch = supabaseRequests.postedRows.length;
+  await page.fill("#workupStudioImportInput", JSON.stringify({
+    schema: "workup_section_patch_v1",
+    workupId: "hyperglycemia_possible_dka_v1",
+    sectionKey: "physical_exam",
+    summary: "Patch current work of breathing exam rationale only.",
+    operations: [
+      {
+        op: "update",
+        itemId: "supabase_work_of_breathing",
+        item: {
+          rationale: "Patch import: work of breathing changes escalation threshold."
+        }
+      }
+    ]
+  }));
+  await page.click("#workupStudioAcceptImportButton");
+  await waitForCondition(() => supabaseRequests.postedRows.length > postedRowsBeforeExamPatch && supabaseRequests.postedRows.some((row) => (
+    row.section_key === "physical_exam"
+    && /Patch import: work of breathing/.test(JSON.stringify(row.after_snapshot || {}))
+    && !("requiredQuestions" in (row.after_snapshot || {}))
+    && !("conditionalQuestions" in (row.after_snapshot || {}))
+  )), "Supabase physical exam patch import draft insert");
   await page.locator("#workupStudioSectionTabs button", { hasText: "History questions" }).click();
   await page.waitForSelector("#workupStudioItemLabelInput");
   await page.selectOption("#workupStudioItemGroupSelect", "conditionalQuestions");

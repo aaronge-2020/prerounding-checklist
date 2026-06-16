@@ -70,14 +70,18 @@ const outputContracts = {
   final_rounds_update: ["Assume the attending heard the full presentation yesterday", "III. ASSESSMENT AND PLAN", "changes management", "APP_PASTE_BACK_JSON", "open_evidence_rounds_pasteback_v1"],
   checklist_improvement_review: ["Output only one fenced JSON block", "\"schema\": \"workup_refinement_v1\"", "\"answerMode\": \"single or multi\"", "\"normalAnswers\""],
   decision_tree_builder: [
-    "Return only the raw JSON object",
-    "\"schema\": \"clinical_pathway_tree_v1\"",
-    "Every node must have a unique string \"id\"",
+    "You are designing a compact clinical management algorithm, not a guideline summary.",
+    "Create a protocol-style decision tree for:",
+    "Return only valid JSON.",
+    "\"schema\": \"clinical_pathway_tree_v2\"",
+    "\"style\": \"compact_protocol_algorithm\"",
+    "\"boxText\"",
+    "Every child of a decision node must include:",
+    "Algorithm architecture:",
     "\"edgeLabel\"",
-    "clinically deep management pathway",
     "source_metadata",
-    "missing-data endpoints",
-    "activationRules"
+    "Would this fit on one page?",
+    "one-node-per-lab trees"
   ],
   medication_safety: ["5Rs", "right medication", "right dose", "right route", "right time/frequency"],
   find_exception: ["Use at most 4 bullets total.", "Prefix every bullet with EXCEPTION, CONTRAINDICATION, PREREQUISITE, or SPECIAL-POPULATION."],
@@ -93,12 +97,19 @@ openEvidenceTasks.forEach((task) => {
   assert.ok(task.requiredContext, `${task.id} should declare required context`);
   assert.ok(task.outputKind, `${task.id} should declare output kind`);
   const built = buildOpenEvidencePrompt(task.id, baseContext);
-  const maxPromptLength = task.id === "decision_tree_builder" ? 6500 : 5200;
+  const maxPromptLength = task.id === "decision_tree_builder" ? 9000 : 5200;
   assert.ok(built.prompt.length < maxPromptLength, `${task.id} base prompt should stay compact enough to review; saw ${built.prompt.length} chars`);
-  assert.ok(built.prompt.includes("<task_boundary>"), `${task.id} prompt should define a unique task boundary`);
-  assert.ok(built.prompt.includes("Primary purpose:"), `${task.id} prompt should define a primary purpose`);
-  assert.ok(built.prompt.includes("Do not use this task for:"), `${task.id} prompt should name exclusions to prevent redundant task use`);
-  assert.ok(built.prompt.includes("<clinical_safety_rules>"), `${task.id} prompt should include safety rules`);
+  if (task.id !== "decision_tree_builder") {
+    assert.ok(built.prompt.includes("<task_boundary>"), `${task.id} prompt should define a unique task boundary`);
+    assert.ok(built.prompt.includes("Primary purpose:"), `${task.id} prompt should define a primary purpose`);
+    assert.ok(built.prompt.includes("Do not use this task for:"), `${task.id} prompt should name exclusions to prevent redundant task use`);
+    assert.ok(built.prompt.includes("<clinical_safety_rules>"), `${task.id} prompt should include safety rules`);
+  } else {
+    assert.ok(built.prompt.startsWith("You are designing a compact clinical management algorithm"), "decision-tree prompt should use the supplied compact algorithm prompt exactly");
+    assert.ok(!built.prompt.includes("Existing pathway JSON, if available:\n"), "decision-tree prompt should not include the existing-tree context heading");
+    assert.ok(!built.prompt.includes("Objective workup data, if available:\n"), "decision-tree prompt should not include objective-data context bloat");
+    assert.ok(!built.prompt.includes('Add "activationRules"'), "decision-tree prompt should not restore the old activationRules request");
+  }
   if (task.id !== "decision_tree_builder") {
     assert.ok(built.prompt.includes("<usefulness_rules>"), `${task.id} prompt should include usefulness rules`);
     assert.ok(
@@ -122,14 +133,16 @@ openEvidenceTasks.forEach((task) => {
       `${task.id} prompt should avoid padded headings and sections`
     );
   }
-  assert.ok(
-    built.prompt.includes("Local validated clinical intents and reviewed evidence remain authoritative"),
-    `${task.id} prompt should preserve the local validated-intent authority boundary`
-  );
-  assert.ok(
-    built.prompt.includes("unless the selected task is Checklist improvement review"),
-    `${task.id} prompt should scope bedside checklist rewriting to the structured checklist task`
-  );
+  if (task.id !== "decision_tree_builder") {
+    assert.ok(
+      built.prompt.includes("Local validated clinical intents and reviewed evidence remain authoritative"),
+      `${task.id} prompt should preserve the local validated-intent authority boundary`
+    );
+    assert.ok(
+      built.prompt.includes("unless the selected task is Checklist improvement review"),
+      `${task.id} prompt should scope bedside checklist rewriting to the structured checklist task`
+    );
+  }
   assert.ok(!built.prompt.includes("<local_guideline_pathway>"), `${task.id} prompt should not paste local guideline pathway dumps into OpenEvidence`);
   assert.ok(!built.prompt.includes("<evidence_retrieval_summary>"), `${task.id} prompt should not paste local evidence retrieval summaries into OpenEvidence`);
   assert.ok(!built.prompt.includes("Use exactly these sections:"), `${task.id} prompt should not require broad fixed section inventories`);
@@ -245,6 +258,16 @@ for (const task of openEvidenceTasks) {
   );
   assert.ok(!built.prompt.includes("Generated boilerplate line 1799"), `${task.id} prompt should drop repeated chart boilerplate`);
 }
+
+const oversizedDecisionTreePrompt = buildOpenEvidencePrompt("decision_tree_builder", oversizedContext).prompt;
+assert.ok(
+  oversizedDecisionTreePrompt.length < 7000,
+  `decision-tree prompt should stay short and omit existing trees; saw ${oversizedDecisionTreePrompt.length}`
+);
+assert.ok(!oversizedDecisionTreePrompt.includes("Existing pathway summarized"), "decision-tree prompt should not include existing-tree summaries");
+assert.ok(!oversizedDecisionTreePrompt.includes("Existing pathway JSON"), "decision-tree prompt should not include existing-tree JSON context");
+assert.ok(!oversizedDecisionTreePrompt.includes("node_599"), "decision-tree prompt should not include tail raw node ids from huge local trees");
+assert.ok(!oversizedDecisionTreePrompt.includes("Branch 599"), "decision-tree prompt should not include tail raw branch labels from huge local trees");
 
 const missingItemsPrompt = buildOpenEvidencePrompt("what_am_i_missing", baseContext);
 assert.ok(missingItemsPrompt.prompt.includes("UNVALIDATED GAP"), "blind-spot prompt should keep a local-review gap prefix");

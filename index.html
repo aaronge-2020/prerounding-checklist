@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f4f7f7">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-src 'none'; script-src 'self' 'unsafe-inline'; worker-src 'self'; connect-src 'self' https://*.supabase.co http://127.0.0.1:* http://localhost:*; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:">
   <title>Pre-Rounding Checklist Builder</title>
   <style>
@@ -2967,6 +2971,17 @@
       pointer-events: none;
     }
 
+    .decision-tree-node-g .decision-tree-node-label {
+      font-size: 12.5px;
+      font-weight: 820;
+    }
+
+    .decision-tree-node-g .decision-tree-node-detail {
+      fill: #506a72;
+      font-size: 10.8px;
+      font-weight: 620;
+    }
+
     .decision-tree-inline-label-wrap {
       overflow: hidden;
     }
@@ -3362,7 +3377,7 @@
       display: grid;
       grid-template-columns: minmax(220px, var(--studio-workups-w)) 12px minmax(170px, var(--studio-sections-w)) 12px minmax(360px, 1fr) 12px minmax(320px, var(--studio-inspector-w));
       width: 100%;
-      height: auto;
+      height: 100%;
       min-height: 0;
       border: 0;
       border-radius: 0;
@@ -3587,9 +3602,10 @@
     .studio-editor-body {
       display: grid;
       grid-template-columns: minmax(0, 1fr);
-      grid-template-rows: minmax(260px, 0.58fr) minmax(250px, 0.42fr);
+      grid-template-rows: auto minmax(0, 1fr);
       gap: 10px;
       min-height: 0;
+      overflow: hidden;
     }
 
     .studio-editor-body.is-pathway-editor {
@@ -3610,6 +3626,8 @@
     .studio-item-pane {
       display: grid;
       grid-template-rows: auto minmax(0, 1fr);
+      align-self: start;
+      max-height: min(42vh, 390px);
       overflow: hidden;
     }
 
@@ -3757,11 +3775,17 @@
 
     .studio-pathway-tree-panel .d3-decision-tree {
       min-height: 520px;
+      height: clamp(520px, 64vh, 760px);
+      overflow: auto;
+      overscroll-behavior: contain;
+      touch-action: pan-x pan-y;
     }
 
     .studio-pathway-tree-panel .d3-decision-tree svg {
-      height: 580px;
-      min-height: 520px;
+      width: auto;
+      min-width: 100%;
+      height: auto;
+      min-height: 100%;
     }
 
     .studio-pathway-tree-panel .decision-tree-node-g {
@@ -3923,7 +3947,6 @@
     }
 
     .studio-pathway-summary,
-    .studio-diff-preview,
     .studio-save-panel,
     .studio-validation-list,
     .studio-provenance,
@@ -4000,37 +4023,11 @@
       background: #c47a0a;
     }
 
-    .studio-workbench-step[data-step="4"] .studio-step-mark {
-      background: #6b52aa;
-    }
-
     .studio-workbench-step h2 {
       margin: 0;
       color: #18323c;
       font-size: 16px;
       line-height: 1.2;
-    }
-
-    .studio-diff-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      min-width: 0;
-      margin-bottom: 8px;
-    }
-
-    .studio-diff-title {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-    }
-
-    .studio-diff-body {
-      display: grid;
-      gap: 3px;
-      min-width: 0;
     }
 
     .studio-prompt-panel textarea {
@@ -4123,13 +4120,13 @@
     @media (max-width: 1180px) {
       body[data-view="studio"] .workspace,
       body[data-view="studio"] #studioView {
-        overflow: auto;
+        overflow: hidden;
       }
 
       body[data-view="studio"] #studioView:not([hidden]) {
-        height: auto;
+        height: 100vh;
         min-height: 100vh;
-        grid-template-rows: auto auto auto;
+        grid-template-rows: auto auto minmax(0, 1fr);
       }
 
       .studio-topbar {
@@ -4151,8 +4148,10 @@
 
       .studio-shell {
         grid-template-columns: minmax(200px, var(--studio-workups-w)) 8px minmax(170px, var(--studio-sections-w)) 8px minmax(0, 1fr);
+        grid-template-rows: minmax(0, 1fr) minmax(180px, 280px);
+        height: 100%;
         min-width: 0;
-        overflow: visible;
+        overflow: hidden;
       }
 
       .studio-shell > .column-resize-handle {
@@ -4169,6 +4168,7 @@
       .studio-editor,
       .studio-inspector {
         padding: 10px;
+        min-height: 0;
       }
 
       .studio-editor {
@@ -4178,6 +4178,7 @@
       .studio-inspector {
         grid-column: 1 / -1;
         border-top: 1px solid var(--line);
+        overflow: auto;
       }
 
       .studio-topbar .btn,
@@ -4230,6 +4231,7 @@
 
       .studio-shell {
         grid-template-columns: 1fr;
+        grid-template-rows: none;
         height: auto;
         min-height: 0;
         overflow: visible;
@@ -4274,7 +4276,7 @@
       }
 
       .studio-editor {
-        min-height: 620px;
+        min-height: 0;
       }
 
       .studio-item-toolbar #workupStudioToolbarDuplicateItemButton {
@@ -4319,11 +4321,12 @@
       }
 
       .studio-editor {
-        min-height: 720px;
+        min-height: 0;
       }
 
       .studio-item-pane {
-        min-height: 260px;
+        min-height: 0;
+        max-height: min(52vh, 360px);
       }
 
       .studio-item-table-head,
@@ -4365,13 +4368,13 @@
     @media (min-width: 1181px) and (max-width: 1500px) {
       body[data-view="studio"] .workspace,
       body[data-view="studio"] #studioView {
-        overflow: auto;
+        overflow: hidden;
       }
 
       body[data-view="studio"] #studioView:not([hidden]) {
-        height: auto;
+        height: 100vh;
         min-height: 100vh;
-        grid-template-rows: auto auto auto;
+        grid-template-rows: auto auto minmax(0, 1fr);
       }
 
       .studio-topbar {
@@ -4389,7 +4392,9 @@
 
       .studio-shell {
         grid-template-columns: minmax(220px, var(--studio-workups-w)) 12px minmax(180px, var(--studio-sections-w)) 12px minmax(0, 1fr);
-        overflow: visible;
+        grid-template-rows: minmax(0, 1fr) minmax(180px, 300px);
+        height: 100%;
+        overflow: hidden;
       }
 
       .studio-shell > .column-resize-handle:nth-child(6) {
@@ -4403,6 +4408,8 @@
       .studio-inspector {
         grid-column: 1 / -1;
         border-top: 1px solid var(--line);
+        min-height: 0;
+        overflow: auto;
       }
     }
 
@@ -12923,17 +12930,17 @@
                         <h3>Refine checklist</h3>
                         <span class="meta-tag">Structured paste-back</span>
                       </div>
-                      <p class="muted">Copy the checklist improvement prompt, paste the structured JSON response here, then apply it to this patient or save it as this workup's vault default.</p>
+                      <p class="muted">Copy the checklist improvement prompt, paste the structured JSON response here, then apply it as a patient checklist override. Canonical workup questions and exam items are edited in Workup Studio.</p>
                       <div class="button-row">
                         <button class="btn btn-secondary" id="patientCopyChecklistRefinementPromptDrawerButton" type="button">Copy refinement prompt</button>
                         <button class="btn btn-secondary" id="patientOpenEvidenceFromRefinementButton" type="button">Open OpenEvidence</button>
                       </div>
-                      <label for="patientWorkupRefinementInput">Structured workup_refinement_v1 JSON</label>
-                      <textarea id="patientWorkupRefinementInput" maxlength="12000" aria-describedby="localTextEntryHelp" placeholder="Paste the fenced workup_refinement_v1 JSON from OpenEvidence here."></textarea>
+                      <label for="patientWorkupRefinementInput">Structured patient checklist override JSON</label>
+                      <textarea id="patientWorkupRefinementInput" maxlength="12000" aria-describedby="localTextEntryHelp" placeholder="Paste fenced workup_refinement_v1 JSON for this patient's checklist here."></textarea>
                       <div class="evidence-change-preview" id="patientWorkupRefinementPreview" aria-live="polite">No structured refinement pasted yet.</div>
                       <div class="button-row">
                         <button class="btn btn-secondary" id="patientApplyWorkupRefinementButton" type="button">Apply to this patient</button>
-                        <button class="btn btn-primary" id="patientSaveDefaultWorkupRefinementButton" type="button">Save as default for this workup</button>
+                        <button class="btn btn-primary" id="patientSaveDefaultWorkupRefinementButton" type="button">Save vault checklist override</button>
                       </div>
                     </div>
                   </aside>
@@ -13043,7 +13050,7 @@
 	                      <div class="evidence-change-preview" id="patientEvidenceChangePreview" aria-live="polite"></div>
 	                      <div class="button-row patient-evidence-answer-actions">
 	                        <button class="btn btn-secondary" id="patientApplyEvidenceRefinementButton" type="button">Apply to this patient</button>
-	                        <button class="btn btn-primary" id="patientSaveDefaultEvidenceRefinementButton" type="button">Save as default</button>
+	                        <button class="btn btn-primary" id="patientSaveDefaultEvidenceRefinementButton" type="button">Save vault override</button>
 	                      </div>
                     </div>
                   </div>
@@ -13413,18 +13420,11 @@
               </div>
               <label for="workupStudioImportInput">Paste selected-section result</label>
               <textarea id="workupStudioImportInput" spellcheck="false" placeholder="Paste the structured JSON result for the selected section."></textarea>
-              <div class="button-row">
-                <button class="btn btn-secondary" id="workupStudioPreviewImportButton" type="button">Preview diff</button>
-              </div>
             </section>
 
-            <section class="studio-diff-preview studio-workbench-step" id="workupStudioDiffPreview" data-step="3" data-title="Preview diff" aria-live="polite">
-              No draft change set selected.
-            </section>
-
-            <section class="studio-save-panel studio-workbench-step" data-step="4" aria-labelledby="workupStudioSaveHeading">
+            <section class="studio-save-panel studio-workbench-step" data-step="3" aria-labelledby="workupStudioSaveHeading">
               <div class="studio-workbench-head">
-                <span class="studio-step-mark" aria-hidden="true">4</span>
+                <span class="studio-step-mark" aria-hidden="true">3</span>
                 <div>
                   <h2 id="workupStudioSaveHeading">Save draft</h2>
                   <p class="muted">Reviewer publishing stays locked until permission is verified.</p>
@@ -13952,7 +13952,7 @@
     import { openEvidenceTasks, buildOpenEvidencePrompt, compactOpenEvidenceContext } from "./open-evidence-workflows.js";
     import { extractRoundsPasteBack } from "./open-evidence-results.js";
     import { appendOrUpdateContinuityDay, buildCarryForwardBlock, buildSmartUpdateReview, classifySmartUpdateSections, createContinuityCase, formatDailyInputs, latestContinuityDay, normalizeContinuityCase, normalizeDailyInputs, smartSectionsToDailyInputs } from "./continuity.js";
-    import { applySectionPayloadToModule, applyWorkupChangeSet, collectModuleSourceIds, collectSourceIdsFromValue, flattenPathwayNodes, makeWorkupChangeSet, sectionPayloadFromModule, workupSectionDefinitions } from "./workup-authoring.js";
+    import { applySectionPayloadToModule, applyWorkupChangeSet, applyWorkupSectionPatch, collectModuleSourceIds, collectSourceIdsFromValue, flattenPathwayNodes, makeWorkupChangeSet, sectionPayloadFromModule, workupSectionDefinitions, workupSectionPatchSchema } from "./workup-authoring.js";
 
     const baseComplaintModulesById = new Map(complaintModules.map((module) => [module.id, module]));
     const LEGACY_STORAGE_KEY = "prerounding-redesign-state-v1";
@@ -14530,10 +14530,8 @@
       workupStudioRegeneratePromptButton: $("#workupStudioRegeneratePromptButton"),
       workupStudioOpenEvidenceButton: $("#workupStudioOpenEvidenceButton"),
       workupStudioImportInput: $("#workupStudioImportInput"),
-      workupStudioPreviewImportButton: $("#workupStudioPreviewImportButton"),
       workupStudioAcceptImportButton: $("#workupStudioAcceptImportButton"),
       workupStudioPublishImportButton: $("#workupStudioPublishImportButton"),
-      workupStudioDiffPreview: $("#workupStudioDiffPreview"),
       workupStudioJsonDrawer: $("#workupStudioJsonDrawer"),
       workupStudioJsonPreview: $("#workupStudioJsonPreview"),
       workupStudioSettingsCommandButton: $("#workupStudioSettingsCommandButton"),
@@ -17625,7 +17623,9 @@
           workupStudioState.changeSets = Array.isArray(saved.changeSets) ? saved.changeSets.filter((entry) => entry?.schema === "workup_change_set_v1") : [];
           invalidateWorkupModuleCaches();
           workupStudioState.promptTemplatesBySection = saved.promptTemplatesBySection && typeof saved.promptTemplatesBySection === "object" && !Array.isArray(saved.promptTemplatesBySection)
-            ? Object.fromEntries(Object.entries(saved.promptTemplatesBySection).map(([key, value]) => [String(key).slice(0, 240), String(value || "").slice(0, WORKUP_STUDIO_PROMPT_TEMPLATE_MAX_CHARS)]))
+            ? Object.fromEntries(Object.entries(saved.promptTemplatesBySection)
+              .map(([key, value]) => [String(key).slice(0, 240), String(value || "").slice(0, WORKUP_STUDIO_PROMPT_TEMPLATE_MAX_CHARS)])
+              .filter(([key, value]) => !legacyWorkupStudioPromptTemplate(workupStudioSectionKeyFromPromptTemplateKey(key), value)))
             : {};
           workupStudioState.backend = {
             ...emptyWorkupStudioBackendState(),
@@ -17871,11 +17871,222 @@
       return sectionIds.length ? sectionIds : sourceIds.slice(0, 8);
     }
 
+    function compactWorkupStudioPromptLine(value = "", maxLength = 220) {
+      const text = String(value || "").replace(/\s+/g, " ").trim();
+      if (!text) return "";
+      return text.length > maxLength ? `${text.slice(0, Math.max(0, maxLength - 3)).trim()}...` : text;
+    }
+
+    function workupStudioPromptOptionLabels(values = []) {
+      const rows = Array.isArray(values) ? values : [];
+      return rows.map((entry) => {
+        if (entry && typeof entry === "object" && !Array.isArray(entry)) {
+          return entry.label || entry.value || "";
+        }
+        return String(entry || "");
+      }).map((entry) => String(entry || "").trim()).filter(Boolean).slice(0, 8).join(", ");
+    }
+
+    function workupStudioPromptWhenSummary(item = {}) {
+      const when = item?.when;
+      if (!when || typeof when !== "object" || Array.isArray(when)) return "";
+      const parts = [];
+      if (Array.isArray(when.termsAny) && when.termsAny.length) {
+        parts.push(`termsAny:${when.termsAny.slice(0, 6).join(",")}`);
+      }
+      if (Array.isArray(when.answersAny) && when.answersAny.length) {
+        const answerRows = when.answersAny.slice(0, 3).map((entry) => {
+          const values = Array.isArray(entry?.value) ? entry.value : [entry?.value].filter(Boolean);
+          return `${entry?.id || "answer"}=${values.slice(0, 5).join("|")}`;
+        });
+        if (answerRows.length) parts.push(`answersAny:${answerRows.join(";")}`);
+      }
+      return compactWorkupStudioPromptLine(parts.join("; "), 180);
+    }
+
+    function workupStudioSectionInventoryText(payload = {}, definition = studioSectionDefinition()) {
+      if (!definition?.moduleFields?.length) return "No editable items in this section.";
+      const rows = [];
+      for (const groupKey of definition.moduleFields) {
+        const items = Array.isArray(payload?.[groupKey]) ? payload[groupKey] : [];
+        for (const item of items) {
+          const id = item?.id || item?.item_id || "missing_id";
+          const label = item?.label || item?.text || item?.technique || item?.action || "Unlabeled item";
+          const mode = item?.answerMode || item?.answer_mode || "n/a";
+          const options = definition.key === "physical_exam"
+            ? workupStudioPromptOptionLabels(item?.findings_options || item?.findingsOptions || item?.options)
+            : workupStudioPromptOptionLabels(item?.options);
+          const normal = workupStudioPromptOptionLabels(item?.normalAnswers || item?.normal_answers);
+          const sourceId = item?.source?.source_id || item?.source_id || "";
+          const when = workupStudioPromptWhenSummary(item);
+          const fields = [
+            groupKey,
+            `id:${id}`,
+            `label:${label}`,
+            `mode:${mode}`,
+            options ? `options:${options}` : "",
+            normal ? `normal:${normal}` : "",
+            sourceId ? `source:${sourceId}` : "",
+            when ? `when:${when}` : ""
+          ].filter(Boolean);
+          rows.push(`- ${compactWorkupStudioPromptLine(fields.join(" | "), 520)}`);
+        }
+      }
+      return rows.length ? rows.join("\n") : "No current rows in this section.";
+    }
+
+    function workupStudioPatientTailoringContext(module = selectedWorkupStudioModule()) {
+      const patient = activePatient();
+      if (!patient?.id) return "";
+      const draft = patientDraft(patient);
+      const removeLocalId = (value = "") => {
+        const localId = String(patient.localId || "").trim();
+        return localId ? String(value || "").split(localId).join("[ID]") : String(value || "");
+      };
+      const objectiveContext = module?.id && module.id === state.selectedWorkupModuleId
+        ? objectiveDataContextText()
+        : "";
+      const usefulObjectiveContext = objectiveContext.split(/\n+/).length > 1 ? objectiveContext : "";
+      const oneLine = /no saved data|new admission|no patient selected/i.test(patient.oneLine || "")
+        ? ""
+        : patient.oneLine;
+      const rawLines = [
+        oneLine ? `Demographics/setting: ${removeLocalId(oneLine)}` : "",
+        `Concern/workup: ${patient.concern || state.concern || moduleLabel(module)}`,
+        `Care setting: ${state.setting}; population: ${state.population}`,
+        state.modifiers?.length ? `Clinical modifiers: ${state.modifiers.slice(0, 5).join(", ")}` : "",
+        draft.admission || patient.intake || patient.context?.History
+          ? `Clinical summary: ${draft.admission || patient.intake || patient.context?.History}`
+          : "",
+        patient.context?.Vitals ? `Vitals/bedside concern: ${patient.context.Vitals}` : "",
+        draft.labsMeds || patient.context?.Labs || patient.context?.Meds
+          ? `Labs/meds: ${draft.labsMeds || [patient.context?.Labs, patient.context?.Meds].filter(Boolean).join("; ")}`
+          : "",
+        usefulObjectiveContext
+      ].filter(Boolean);
+      const redacted = deidentifyTextStructuredOnly(rawLines.join("\n")).text || "";
+      return redacted.split(/\n+/)
+        .map((line) => compactWorkupStudioPromptLine(line.replace(/^\s*[-*]\s*/, ""), 220))
+        .filter(Boolean)
+        .slice(0, 6)
+        .map((line) => `- ${line}`)
+        .join("\n");
+    }
+
+    function workupStudioPathwayBuilderPrompt(module) {
+      const workupTitle = moduleLabel(module) || "[insert]";
+      const workupId = module?.id || "[insert]";
+      const sourceIds = collectModuleSourceIds(module || {}).slice(0, 8);
+      const sourceLine = sourceIds.length ? `\nPreferred source_ids: ${sourceIds.join(", ")}\n` : "\n";
+      return `Create one compact protocol-style clinical pathway tree.
+
+Workup: ${workupId} - ${workupTitle}
+${sourceLine}
+Reviewer request: [replace this line with the exact tree goal before sending]
+
+Return only valid JSON. No history/exam rows, current-tree payloads, PHI, prose, markdown links, or citation markup.
+
+Schema:
+{"schema":"clinical_pathway_tree_v2","workupId":"${workupId}","title":"${workupTitle}","style":"compact_protocol_algorithm","source_metadata":[],"root":{"id":"root","label":"","type":"action","boxText":"","source_ids":[],"children":[]}}
+
+Node shape:
+{"id":"stable_unique_id","label":"specific box title with the key threshold/action","type":"action|decision|endpoint","boxText":"specific action, threshold, dose, monitoring interval, escalation trigger, or stopping/disposition criterion","source_ids":[],"children":[]}
+
+Rules:
+- Every child of a decision node must have edgeLabel with the branch criterion.
+- Include only nodes that change management, urgency, safety, reassessment, or disposition.
+- Merge related criteria/treatments; branch only when the next action differs.
+- Avoid missing-data, generic assess/consider, documentation-only, one-lab-per-node, and vague endpoint nodes.
+- Avoid bland labels like "Activate pathway" or "Classify crisis"; include the clinical threshold, bundle, or disposition in label.
+- Aim for 6-12 visible nodes that fit on one protocol page.
+- Use ASCII operators such as >=, <=, >, < instead of special symbols.
+- Make thresholds, doses, monitoring intervals, escalation triggers, and stopping criteria explicit in boxText when guideline-supported.`;
+    }
+
+    function legacyWorkupStudioPromptTemplate(sectionKey = "", template = "") {
+      const text = String(template || "");
+      if (!text.trim()) return false;
+      if (sectionKey === "clinical_pathway_tree_v1") {
+        return /workup_section_update_v1/.test(text)
+          || /Current selected-section payload:/i.test(text)
+          || /"payload"\s*:\s*\{\s*"root"/.test(text)
+          || text.length > 6000;
+      }
+      return false;
+    }
+
+    function workupStudioSectionKeyFromPromptTemplateKey(key = "") {
+      return String(key || "").split("::").pop() || "";
+    }
+
     function workupStudioOpenEvidencePrompt() {
       const module = selectedWorkupStudioModule();
       const definition = studioSectionDefinition();
       if (!module || !definition) return "Select a workup and section first.";
       const payload = studioSectionPayload(module, definition.key);
+      if (definition.kind === "pathway") {
+        return workupStudioPathwayBuilderPrompt(module);
+      }
+      if (["history_questions", "physical_exam"].includes(definition.key)) {
+        const expectedItemType = definition.key === "history_questions" ? "history_question" : "physical_exam_maneuver";
+        const groupsText = definition.moduleFields.join(", ");
+        const sectionName = definition.key === "history_questions" ? "history questions" : "physical exam";
+        const excludedPeerSection = definition.key === "history_questions"
+          ? "physical exam groups requiredExam/conditionalExam"
+          : "history groups requiredQuestions/conditionalQuestions";
+        const clinicalUseRule = definition.key === "history_questions"
+          ? "Add only bedside history questions that change diagnostic probability, urgency, treatment safety, discharge readiness, or follow-up."
+          : "Add only focused, student-performable physical exam maneuvers that change diagnostic probability, urgency, treatment safety, disposition, or bedside escalation.";
+        const newItemRequirements = definition.key === "history_questions"
+          ? 'New history items need id, item_type:"history_question", label, text, answerMode, options, normalAnswers, rationale, and source.source_id when known.'
+          : 'New exam items need id, item_type:"physical_exam_maneuver", label, technique, answerMode, findings_options, normalAnswers, rationale, and source.source_id when known.';
+        const patientContext = workupStudioPatientTailoringContext(module);
+        const sectionInventoryText = workupStudioSectionInventoryText(payload, definition);
+        const responseSkeleton = [
+          "{",
+          `  "schema": "${workupSectionPatchSchema}",`,
+          `  "workupId": "${module.id}",`,
+          `  "sectionKey": "${definition.key}",`,
+          `  "summary": "One sentence explaining the ${sectionName} patch.",`,
+          '  "operations": []',
+          "}"
+        ].join("\n");
+        return [
+          `Patch only the selected ${sectionName} section of a reviewed clinical workup knowledge base.`,
+          "Reviewer request: [replace this line with the exact add/update/remove goal before sending]",
+          `Goal: Use the patient context to produce the smallest useful patch for this bedside workflow. Keep saved row wording de-identified and reusable unless the reviewer explicitly asks for patient-specific wording.`,
+          `Scope: ${definition.key}; allowed groups: ${groupsText}; allowed operations: add, update, remove. Do not output ${excludedPeerSection}, pathway tree JSON, safety checks, tests, management, sources-only edits, review tests, or full section replacements.`,
+          "Do not include PHI, direct identifiers, exact dates, locations, or chart excerpts in the JSON output.",
+          "Return only one fenced JSON block. No prose outside the JSON block.",
+          "",
+          `Workup: ${module.id} - ${moduleLabel(module)}`,
+          `Selected section: ${definition.key} (${definition.label})`,
+          patientContext ? `Patient tailoring context:\n${patientContext}` : "Patient tailoring context: No active patient context available.",
+          "",
+          "Rules:",
+          "- Start from the reviewer request. If the request line is still a placeholder, make at most one high-confidence, non-duplicative gap fix.",
+          "- Prefer one operation; use at most three unless the request explicitly asks for more or a dependent condition must stay aligned.",
+          `- ${clinicalUseRule}`,
+          `- Use schema "${workupSectionPatchSchema}" with operations add, update, remove only.`,
+          `- add requires groupKey plus one complete ${expectedItemType} item; update requires itemId plus changed row fields only; remove requires itemId.`,
+          "- For update, place changed row fields directly on the operation, e.g. answerMode or normalAnswers; do not include unchanged fields.",
+          `- Move an item by setting groupKey or toGroupKey to one of: ${groupsText}.`,
+          '- Preserve existing ids, answerMode, option values, source objects, tags, and condition values unless the reviewer request requires changing them.',
+          '- Use only answerMode "single", "multi", or "endorsement"; use "multi", never "multiple".',
+          "- Keep summary as plain text; do not include OpenEvidence citation markup such as :contentReference or oaicite.",
+          "- Do not add a row for a concept already covered by an existing item; update the exact existing itemId instead.",
+          `- ${newItemRequirements}`,
+          "- If changing an option value referenced by a when condition, update the dependent when condition in the same patch; otherwise leave conditions alone.",
+          "- Operations must be real changes only; omit example operations you do not need.",
+          '- If no useful non-duplicative change is needed, return "operations": [] and explain why in summary.',
+          "",
+          "Response shape:",
+          responseSkeleton,
+          "",
+          "Existing section inventory:",
+          sectionInventoryText
+        ].join("\n");
+      }
       const currentPayloadText = JSON.stringify(payload, null, 2);
       const responseTemplate = {
         schema: "workup_section_update_v1",
@@ -17885,9 +18096,7 @@
         sourceIds: studioSourceIdsForCurrentSection(),
         payload
       };
-      const sectionRules = definition.kind === "pathway"
-        ? "For payload, return one complete clinical_pathway_tree_v1 object with schema, workupId/workup_id, title, source_ids, activationRules, root, and children. Use short actionable node labels. Do not include placeholder labels like 'Missing data needed' unless hidden in missing_data_needed metadata."
-        : definition.kind === "items"
+      const sectionRules = definition.kind === "items"
           ? `For payload, return only these arrays: ${definition.moduleFields.join(", ")}. Preserve existing item ids when revising; add stable ids for new rows. Each item should include id, label, item_type, answerMode, clinically specific options for bedside questions, findings_options for physical exam maneuvers, normalAnswers when a default normal response is safe, and source metadata when possible.`
           : definition.kind === "sources"
             ? "For payload, return module_source_ids and any source_ids that should be associated with this workup. Do not invent citations."
@@ -17919,7 +18128,14 @@
     }
 
     function workupStudioSavedPromptTemplate(moduleId = workupStudioState.selectedModuleId, sectionKey = workupStudioState.sectionKey) {
-      return workupStudioState.promptTemplatesBySection?.[workupStudioPromptTemplateKey(moduleId, sectionKey)] || "";
+      const key = workupStudioPromptTemplateKey(moduleId, sectionKey);
+      const saved = workupStudioState.promptTemplatesBySection?.[key] || "";
+      if (legacyWorkupStudioPromptTemplate(sectionKey, saved)) {
+        delete workupStudioState.promptTemplatesBySection[key];
+        saveWorkupStudioState();
+        return "";
+      }
+      return saved;
     }
 
     function syncWorkupStudioPromptOutput({ force = false } = {}) {
@@ -18007,6 +18223,12 @@
       if (!candidate || typeof candidate !== "object" || Array.isArray(candidate)) {
         throw new Error(`${definition.label} result must be a JSON object.`);
       }
+      if (candidate.schema === workupSectionPatchSchema) {
+        return applyWorkupSectionPatch(studioSectionPayload(module, definition.key), candidate, {
+          workupId: module.id,
+          sectionKey: definition.key
+        });
+      }
       if (definition.kind === "items") {
         const normalized = {};
         for (const field of definition.moduleFields) {
@@ -18044,7 +18266,7 @@
 
     function parseWorkupStudioOpenEvidenceResult(text = elements.workupStudioImportInput?.value || "") {
       const raw = rawJsonObjectFromText(text);
-      if (!raw) throw new Error("Paste a JSON object from OpenEvidence before previewing.");
+      if (!raw) throw new Error("Paste a JSON object from OpenEvidence before saving.");
       const module = selectedWorkupStudioModule();
       const definition = studioSectionDefinition();
       const payload = normalizeOpenEvidenceSectionPayload(raw, module, definition);
@@ -18061,24 +18283,6 @@
           pastedAt: new Date().toISOString()
         }
       };
-    }
-
-    function summarizeWorkupStudioPayload(payload, definition = studioSectionDefinition()) {
-      if (definition.kind === "pathway") {
-        const count = visibleDecisionTreeFlatNodes(payload?.root).length;
-        return `${count} clinical node${count === 1 ? "" : "s"} will replace only clinical_pathway_tree_v1`;
-      }
-      if (definition.kind === "items") {
-        const count = definition.moduleFields.reduce((sum, field) => sum + (Array.isArray(payload?.[field]) ? payload[field].length : 0), 0);
-        return `${count} row${count === 1 ? "" : "s"} will replace only ${definition.label.toLowerCase()}`;
-      }
-      if (definition.kind === "sources") {
-        const count = Array.isArray(payload?.module_source_ids) ? payload.module_source_ids.length : 0;
-        return `${count} source ID${count === 1 ? "" : "s"} will update only provenance`;
-      }
-      const count = (Array.isArray(payload?.gold_cases) ? payload.gold_cases.length : 0)
-        + (Array.isArray(payload?.synthetic_patient_scenarios) ? payload.synthetic_patient_scenarios.length : 0);
-      return `${count} review case${count === 1 ? "" : "s"} will update only review tests`;
     }
 
     function stableWorkupStudioItemId(item = {}, fallback = "item") {
@@ -18356,7 +18560,7 @@
         sectionKey,
         beforeSnapshot: sectionPayloadFromModule(original, sectionKey),
         afterSnapshot: afterPayload,
-        sourceIds: studioSourceIdsForCurrentSection(),
+        sourceIds: Array.from(new Set([...studioSourceIdsForCurrentSection(), ...collectSourceIdsFromValue(afterPayload, [])])),
         reviewStatus: "draft",
         exportReady: false,
         authorId: workupStudioBackendSignedIn() ? workupStudioState.backend.userId : null,
@@ -18596,6 +18800,9 @@
       node.label = String($("#workupStudioPathwayNodeLabelInput")?.value || node.label || "Pathway step").replace(/\s+/g, " ").trim();
       node.type = $("#workupStudioPathwayNodeTypeSelect")?.value || node.type || "action";
       node.edgeLabel = String($("#workupStudioPathwayEdgeLabelInput")?.value || "").replace(/\s+/g, " ").trim();
+      const detailValue = String($("#workupStudioPathwayNodeDetailInput")?.value || "").replace(/\s+/g, " ").trim();
+      if (detailValue) node.boxText = detailValue;
+      else delete node.boxText;
       if (node.type === "endpoint") node.children = [];
       const source = $("#workupStudioPathwayRuleSourceSelect")?.value || "";
       nextGraph.activationRules = { ...(nextGraph.activationRules || {}) };
@@ -18732,6 +18939,8 @@
         </div>
         <label for="workupStudioPathwayEdgeLabelInput">Branch criteria from parent</label>
         <textarea id="workupStudioPathwayEdgeLabelInput" maxlength="1400"></textarea>
+        <label for="workupStudioPathwayNodeDetailInput">Node detail shown on card</label>
+        <textarea id="workupStudioPathwayNodeDetailInput" maxlength="2400"></textarea>
         <div class="decision-tree-rule-grid">
           <label>Rule source
             <select id="workupStudioPathwayRuleSourceSelect">
@@ -18774,6 +18983,7 @@
       $("#workupStudioPathwayNodeLabelInput").value = node?.label || "";
       $("#workupStudioPathwayNodeTypeSelect").value = node?.type || "action";
       $("#workupStudioPathwayEdgeLabelInput").value = node?.edgeLabel || "";
+      $("#workupStudioPathwayNodeDetailInput").value = decisionTreeNodeDetailText(node || {});
       $("#workupStudioPathwayRuleSourceSelect").value = rule.source || "";
       $("#workupStudioPathwayRuleFieldInput").value = rule.fieldId || rule.field || "";
       $("#workupStudioPathwayRuleOperatorSelect").value = rule.operator || "";
@@ -19205,6 +19415,11 @@
 
     function renderStudioItemEditor(module) {
       const definition = studioSectionDefinition();
+      const addItemLabel = definition.key === "history_questions"
+        ? "Add question"
+        : definition.key === "physical_exam"
+          ? "Add exam item"
+          : "Add item";
       const allItems = studioSectionItems(module, definition.key);
       const query = String(workupStudioState.itemSearch || "").trim().toLowerCase();
       const items = query
@@ -19224,7 +19439,7 @@
           <span class="icon-box" data-icon="search" aria-hidden="true"></span>
           <input id="workupStudioItemSearchInput" type="search" autocomplete="off" placeholder="Search items">
         </label>
-        <button class="btn btn-primary" id="workupStudioToolbarAddItemButton" type="button"><span class="icon-box" data-icon="plus" aria-hidden="true"></span> Add item</button>
+        <button class="btn btn-primary" id="workupStudioToolbarAddItemButton" type="button"><span class="icon-box" data-icon="plus" aria-hidden="true"></span> ${addItemLabel}</button>
         <button class="btn btn-secondary" id="workupStudioToolbarDuplicateItemButton" type="button"><span class="icon-box" data-icon="copy" aria-hidden="true"></span> Duplicate</button>
         <button class="btn btn-secondary" id="workupStudioToolbarDeleteItemButton" type="button"><span class="icon-box" data-icon="trash" aria-hidden="true"></span> Delete</button>
       `;
@@ -19325,7 +19540,7 @@
           <p class="muted">This section has no editable rows yet.</p>
           <label for="workupStudioAddItemGroupSelect">Add to group</label>
           <select id="workupStudioAddItemGroupSelect"></select>
-          <button class="btn btn-primary" id="workupStudioAddItemButton" type="button">Add section item</button>
+          <button class="btn btn-primary" id="workupStudioAddItemButton" type="button">${addItemLabel}</button>
         `;
         populateWorkupStudioItemGroupSelect($("#workupStudioAddItemGroupSelect"), definition, definition.moduleFields[0]);
         $("#workupStudioAddItemButton")?.addEventListener("click", () => {
@@ -19390,7 +19605,7 @@
         </div>
         <div class="studio-form-actions">
           <button class="btn btn-primary" id="workupStudioSaveItemDraftButton" type="button">Save section draft</button>
-          <button class="btn btn-secondary" id="workupStudioAddItemButton" type="button">Add after selected</button>
+          <button class="btn btn-secondary" id="workupStudioAddItemButton" type="button">${addItemLabel}</button>
           <button class="btn btn-danger" id="workupStudioDeleteItemButton" type="button">Remove</button>
         </div>
       `;
@@ -19487,7 +19702,6 @@
       const module = selectedWorkupStudioModule();
       if (!module) return;
       const sourceIds = collectModuleSourceIds(module);
-      const latest = workupStudioLatestChangeSet();
       if (elements.workupStudioProvenance) {
         elements.workupStudioProvenance.innerHTML = "";
         const list = document.createElement("ul");
@@ -19521,34 +19735,6 @@
         }
       }
       syncWorkupStudioPromptOutput();
-      if (elements.workupStudioDiffPreview) {
-        elements.workupStudioDiffPreview.innerHTML = "";
-        const head = document.createElement("div");
-        head.className = "studio-diff-head";
-        const titleWrap = document.createElement("div");
-        titleWrap.className = "studio-diff-title";
-        const step = document.createElement("span");
-        step.className = "studio-step-mark";
-        step.setAttribute("aria-hidden", "true");
-        step.textContent = "3";
-        const title = document.createElement("h2");
-        title.textContent = "Preview diff";
-        titleWrap.append(step, title);
-        const stateChip = document.createElement("span");
-        stateChip.className = "status-chip";
-        stateChip.textContent = latest ? "Draft ready" : "No draft";
-        head.append(titleWrap, stateChip);
-        const body = document.createElement("div");
-        body.className = "studio-diff-body";
-        const strong = document.createElement("strong");
-        strong.textContent = latest ? "Latest section change set" : "No draft change set selected";
-        const detail = document.createElement("div");
-        detail.textContent = latest
-          ? `${latest.review_status || latest.reviewStatus} | ${studioSectionDefinition().label} | ${(latest.source_ids || latest.sourceIds || []).length} source ID${(latest.source_ids || latest.sourceIds || []).length === 1 ? "" : "s"} | ${latest.syncStatus === "synced" ? "Supabase synced" : latest.syncStatus === "error" ? "Supabase sync failed" : workupStudioBackendSignedIn() ? "Supabase pending" : "local only"}`
-          : "Save a section draft to preview the patch contract.";
-        body.append(strong, detail);
-        elements.workupStudioDiffPreview.append(head, body);
-      }
       if (elements.workupStudioJsonPreview) {
         const envelope = {
           schema_version: "medical_knowledge_database_v1",
@@ -19584,48 +19770,18 @@
       hydrateIcons();
     }
 
-    function previewWorkupStudioImport() {
-      const module = selectedWorkupStudioModule();
-      if (!module) return null;
+    function acceptWorkupStudioImport({ publish = false } = {}) {
+      if (!selectedWorkupStudioModule()) {
+        setStatus("Select a workup before saving an OpenEvidence result.");
+        return false;
+      }
+      let parsed;
       try {
-        const parsed = parseWorkupStudioOpenEvidenceResult();
-        if (elements.workupStudioDiffPreview) {
-          const detail = summarizeWorkupStudioPayload(parsed.payload, studioSectionDefinition());
-          elements.workupStudioDiffPreview.innerHTML = "";
-          const head = document.createElement("div");
-          head.className = "studio-diff-head";
-          const titleWrap = document.createElement("div");
-          titleWrap.className = "studio-diff-title";
-          const step = document.createElement("span");
-          step.className = "studio-step-mark";
-          step.setAttribute("aria-hidden", "true");
-          step.textContent = "3";
-          const title = document.createElement("h2");
-          title.textContent = "Preview diff";
-          titleWrap.append(step, title);
-          const stateChip = document.createElement("span");
-          stateChip.className = "status-chip";
-          stateChip.textContent = "Ready";
-          head.append(titleWrap, stateChip);
-          const body = document.createElement("div");
-          body.className = "studio-diff-body";
-          const strong = document.createElement("strong");
-          strong.textContent = "OpenEvidence result ready";
-          const line = document.createElement("div");
-          line.textContent = `${detail} for ${moduleLabel(module)}.`;
-          body.append(strong, line);
-          elements.workupStudioDiffPreview.append(head, body);
-        }
-        return parsed;
+        parsed = parseWorkupStudioOpenEvidenceResult();
       } catch (error) {
         setStatus(error instanceof Error ? error.message : "Unable to parse OpenEvidence JSON.");
-        return null;
+        return false;
       }
-    }
-
-    function acceptWorkupStudioImport({ publish = false } = {}) {
-      const parsed = previewWorkupStudioImport();
-      if (!parsed) return false;
       const changeSet = saveWorkupStudioChangeSet(parsed.payload, {
         importedEvidence: parsed.importedEvidence,
         sync: !publish
@@ -20953,6 +21109,14 @@
       };
       for (const field of [
         "source_ids",
+        "boxText",
+        "details",
+        "doses",
+        "thresholds",
+        "monitoring",
+        "escalation",
+        "stoppingCriteria",
+        "disposition",
         "criteria",
         "action",
         "endpoint_type",
@@ -21612,14 +21776,50 @@
       return clean.split(/\s+/).slice(0, 14).join(" ");
     }
 
-    function decisionTreeNodeRenderBox(entry) {
-      const text = decisionTreeGraphNodeLabel(entry?.data);
-      const wrapChars = text.length > 260 ? 62 : text.length > 190 ? 56 : text.length > 120 ? 46 : 34;
-      const lines = wrapTreeText(text, wrapChars);
+    function decisionTreeNodeDetailText(node = {}) {
+      const label = String(node.label || "").replace(/\s+/g, " ").trim();
+      const candidates = [
+        node.boxText,
+        node.action,
+        node.details,
+        Array.isArray(node.parallel_actions) ? node.parallel_actions.join("; ") : "",
+        node.criteria && typeof node.criteria === "object" ? node.criteria.description : "",
+        node.monitoring_plan
+      ];
+      for (const candidate of candidates) {
+        const clean = typeof candidate === "string" ? candidate.replace(/\s+/g, " ").trim() : "";
+        if (clean && clean !== label) return clean;
+      }
+      return "";
+    }
+
+    function compactDecisionTreeNodeDetail(text = "", maxChars = 360) {
+      const clean = String(text || "").replace(/\s+/g, " ").trim();
+      if (clean.length <= maxChars) return clean;
+      const sentenceCut = clean.slice(0, maxChars + 1).search(/[.;]\s+\S*$/);
+      if (sentenceCut > 120) return `${clean.slice(0, sentenceCut + 1).trim()} ...`;
+      return `${clean.slice(0, maxChars).trim().replace(/[,;:]\s*$/, "")} ...`;
+    }
+
+    function decisionTreeNodeRenderBox(entry, options = {}) {
+      const labelText = decisionTreeGraphNodeLabel(entry?.data);
+      const showDetail = options.showDetail === true;
+      const detailText = showDetail ? compactDecisionTreeNodeDetail(decisionTreeNodeDetailText(entry?.data), options.detailMaxChars || 360) : "";
+      const labelWrapChars = labelText.length > 160 ? 46 : 34;
+      const labelLines = wrapTreeText(labelText, labelWrapChars, showDetail ? 2 : Infinity).slice(0, showDetail ? 2 : Infinity);
+      const detailLines = detailText ? wrapTreeText(detailText, 52).slice(0, 5) : [];
+      if (detailLines.length && detailText.length > detailLines.join(" ").length) {
+        detailLines[detailLines.length - 1] = `${detailLines[detailLines.length - 1].replace(/\s*\.*$/, "")} ...`;
+      }
+      const lines = [...labelLines, ...detailLines];
       const longestLine = lines.reduce((max, line) => Math.max(max, line.length), 0);
-      const width = Math.min(720, Math.max(250, longestLine * 7.7 + 56));
-      const height = Math.max(108, 62 + lines.length * 16);
-      return { width, height, lines };
+      const width = showDetail
+        ? Math.min(520, Math.max(330, longestLine * 6.4 + 58))
+        : Math.min(720, Math.max(250, longestLine * 7.7 + 56));
+      const height = showDetail
+        ? Math.max(142, 64 + labelLines.length * 16 + detailLines.length * 14)
+        : Math.max(108, 62 + labelLines.length * 16);
+      return { width, height, lines, labelLines, detailLines };
     }
 
     function decisionTreeNodeBox(entry) {
@@ -21727,7 +21927,10 @@
       const width = Math.max(680, container.getBoundingClientRect().width || 680);
       const root = d3.hierarchy(graph.root, (node) => node.collapsed ? [] : visibleDecisionTreeChildren(node));
       root.descendants().forEach((entry) => {
-        entry.data._renderBox = decisionTreeNodeRenderBox(entry);
+        entry.data._renderBox = decisionTreeNodeRenderBox(entry, {
+          showDetail: isStudioPathwayTree,
+          detailMaxChars: isStudioPathwayTree ? 420 : 0
+        });
       });
       const maxNodeWidth = Math.max(...root.descendants().map((entry) => decisionTreeNodeBox(entry).width), 230);
       const maxNodeHeight = Math.max(...root.descendants().map((entry) => decisionTreeNodeBox(entry).height), 96);
@@ -21768,8 +21971,12 @@
             : 620;
       const graphWidth = Math.max(width, maxX - minX + 96);
       const graphHeight = Math.max(viewportHeight, maxY - minY + 96);
+      const svgViewportWidth = isStudioPathwayTree ? graphWidth : width;
+      const svgViewportHeight = isStudioPathwayTree ? graphHeight : viewportHeight;
       const svg = d3.select(mount).append("svg")
-        .attr("viewBox", `0 0 ${width} ${viewportHeight}`)
+        .attr("viewBox", `0 0 ${svgViewportWidth} ${svgViewportHeight}`)
+        .attr("width", svgViewportWidth)
+        .attr("height", svgViewportHeight)
         .attr("role", "img")
         .attr("aria-label", `${graph.title} editable decision tree`);
       const zoomLayer = svg.append("g").attr("class", "decision-tree-zoom-layer");
@@ -21833,7 +22040,10 @@
           selectNode(entry.data.id);
         });
       node.append("title")
-        .text((entry) => entry.data.label || entry.data.id || "Pathway step");
+        .text((entry) => [
+          entry.data.label || entry.data.id || "Pathway step",
+          decisionTreeNodeDetailText(entry.data)
+        ].filter(Boolean).join("\n"));
       node.append("rect")
         .attr("x", (entry) => -(decisionTreeNodeBox(entry).width / 2))
         .attr("y", (entry) => -(decisionTreeNodeBox(entry).height / 2))
@@ -21900,10 +22110,20 @@
             .on("change blur", commitInlineLabel);
           return;
         }
-        for (const [lineIndex, line] of box.lines.entries()) {
+        for (const [lineIndex, line] of box.labelLines.entries()) {
           group.append("text")
+            .attr("class", "decision-tree-node-label")
             .attr("x", 0)
             .attr("y", -(box.height / 2) + 46 + lineIndex * 16)
+            .attr("text-anchor", "middle")
+            .text(line);
+        }
+        const detailStartY = -(box.height / 2) + 52 + box.labelLines.length * 16;
+        for (const [lineIndex, line] of box.detailLines.entries()) {
+          group.append("text")
+            .attr("class", "decision-tree-node-detail")
+            .attr("x", 0)
+            .attr("y", detailStartY + lineIndex * 14)
             .attr("text-anchor", "middle")
             .text(line);
         }
@@ -21964,6 +22184,9 @@
         const overviewScale = Math.max(fittedScale, Math.min(Math.max(preferredFloor, fittedScale), safeScale));
         return rootFocusedTransform(overviewScale);
       };
+      const studioFullCanvasTransform = () => d3.zoomIdentity
+        .translate(48 - minX, 48 - minY)
+        .scale(1);
       const zoom = d3.zoom()
         .scaleExtent([0.25, 7])
         .translateExtent([[minX - maxNodeWidth * 2, minY - maxNodeHeight * 2], [maxX + maxNodeWidth * 2, maxY + maxNodeHeight * 2]])
@@ -21975,10 +22198,11 @@
         zoomLayer.attr("transform", event.transform);
       });
       svg.call(zoom);
-      if (isPatientDecisionTree) {
-        mount.style.touchAction = "pan-y";
+      if (isPatientDecisionTree || isStudioPathwayTree) {
+        mount.style.touchAction = isStudioPathwayTree ? "pan-x pan-y" : "pan-y";
         mount.addEventListener("wheel", (event) => {
           if (event.ctrlKey) return;
+          if (isStudioPathwayTree) return;
           event.preventDefault();
           window.scrollBy({ top: event.deltaY, left: event.deltaX, behavior: "auto" });
         }, { passive: false });
@@ -21993,7 +22217,9 @@
         ? fitTransform()
         : options.initialView === "fit-readable"
           ? readableFitTransform(Number(options.minInitialScale) || 0.44)
-          : isPatientDecisionTree && !decisionTreeUserZoomed && !explicitOptionZoom
+          : isStudioPathwayTree
+            ? studioFullCanvasTransform()
+            : isPatientDecisionTree && !decisionTreeUserZoomed && !explicitOptionZoom
             ? readableOverviewTransform()
             : rootFocusedTransform(Math.min(7, Math.max(0.25, activeZoom || 1)));
       svg.call(zoom.transform, initialTreeTransform);
@@ -22040,7 +22266,14 @@
             activeNodeDrag = null;
             d3.select(event.currentTarget).classed("is-dragging", false);
             event.currentTarget.releasePointerCapture?.(event.pointerId);
-            if (moved) {
+            if (!moved) {
+              if (typeof options.onSelectNode === "function") {
+                options.onSelectNode(entry.data.id);
+              } else {
+                selectedDecisionTreeNodeId = entry.data.id;
+                if (allowInlineEdit) renderDecisionTreeEditor();
+              }
+            } else {
               entry.data._dragJustEnded = true;
               if (typeof options.onMoveNode === "function") {
                 options.onMoveNode(entry.data.id, entry.x, entry.y);
@@ -26897,7 +27130,7 @@
 	      const answerText = String(text || "").trim();
       if (elements.patientEvidenceChangeHint) {
         elements.patientEvidenceChangeHint.textContent = isChecklistReview
-	          ? "Paste structured workup_refinement_v1 JSON, then apply to this patient or save as the workup default."
+	          ? "Paste structured workup_refinement_v1 JSON, then apply to this patient or save it as a vault checklist override. Canonical default edits belong in Workup Studio."
             : isDecisionTree
               ? "Paste raw decision-tree JSON, then apply it or save it as the workup pathway."
 	            : "Edit the prompt template above; copied prompts resolve patient variables at copy time.";
@@ -27024,7 +27257,7 @@
         elements.patientApplyEvidenceRefinementButton.textContent = isDecisionTree ? "Apply tree" : "Apply to this patient";
       }
       if (elements.patientSaveDefaultEvidenceRefinementButton) {
-        elements.patientSaveDefaultEvidenceRefinementButton.textContent = isDecisionTree ? "Save tree default" : "Save as default";
+        elements.patientSaveDefaultEvidenceRefinementButton.textContent = isDecisionTree ? "Save tree default" : "Save vault override";
       }
 	      syncOpenEvidenceTaskSearchInputs();
       syncOpenEvidenceAnswerFields();
@@ -28863,7 +29096,6 @@
         saveWorkupStudioState();
         renderWorkupStudio();
       });
-      elements.workupStudioPreviewImportButton?.addEventListener("click", previewWorkupStudioImport);
       elements.workupStudioAcceptImportButton?.addEventListener("click", () => acceptWorkupStudioImport());
       elements.workupStudioPublishImportButton?.addEventListener("click", approveLatestWorkupStudioChangeSet);
       elements.workupStudioOpenEvidencePromptOutput?.addEventListener("input", saveWorkupStudioPromptOverride);

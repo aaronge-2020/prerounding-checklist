@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 import {
+  applyWorkupSectionPatch,
   applyWorkupChangeSet,
   buildWorkupAuthoringSnapshot,
   cloneJson,
@@ -9,7 +10,8 @@ import {
   makeWorkupChangeSet,
   sectionPayloadFromModule,
   validateAuthoringSnapshotNoPatientData,
-  workupSectionDefinitions
+  workupSectionDefinitions,
+  workupSectionPatchSchema
 } from "../workup-authoring.js";
 
 function readJson(relativePath) {
@@ -161,6 +163,172 @@ assert.deepEqual(
   draftExport.envelope.module.clinical_pathway_tree_v1,
   originalModule.clinical_pathway_tree_v1,
   "Draft change sets should not export unless explicitly included."
+);
+
+const historyPayload = {
+  requiredQuestions: [
+    {
+      id: "missed_insulin",
+      item_type: "history_question",
+      label: "Any missed insulin?",
+      text: "Any missed insulin?",
+      answerMode: "single",
+      options: ["No", "Yes"],
+      normalAnswers: ["No"]
+    }
+  ],
+  conditionalQuestions: [
+    {
+      id: "supply_barrier",
+      item_type: "history_question",
+      label: "Any insulin supply barrier?",
+      text: "Any insulin supply barrier?",
+      answerMode: "single",
+      options: ["No", "Yes"],
+      normalAnswers: ["No"]
+    }
+  ]
+};
+const historyPatched = applyWorkupSectionPatch(historyPayload, {
+  schema: workupSectionPatchSchema,
+  workupId: originalModule.id,
+  sectionKey: "history_questions",
+  summary: "Add vomiting question, revise missed insulin, move supply barrier, and remove the duplicate barrier row.",
+  operations: [
+    {
+      op: "add",
+      groupKey: "conditionalQuestions",
+      item: {
+        id: "vomiting_oral_intake_since_last_check",
+        item_type: "history_question",
+        label: "Any vomiting, poor oral intake, or inability to keep fluids down since last check?",
+        text: "Any vomiting, poor oral intake, or inability to keep fluids down since last check?",
+        answerMode: "multi",
+        options: ["No", "Vomiting", "Poor oral intake", "Unable to keep fluids down", "Other ___"],
+        normalAnswers: ["No"],
+        rationale: "Changes dehydration, ketosis risk, and discharge readiness.",
+        source: { source_id: "ADA_HYPERGLYCEMIC_CRISES_2024" }
+      }
+    },
+    {
+      op: "update",
+      itemId: "missed_insulin",
+      item: {
+        label: "Any missed basal or bolus insulin?",
+        options: ["No missed doses", "Missed basal insulin", "Missed bolus insulin", "Other ___"]
+      }
+    },
+    {
+      op: "update",
+      itemId: "supply_barrier",
+      groupKey: "requiredQuestions",
+      item: {
+        rationale: "Changes discharge readiness and medication access planning."
+      }
+    },
+    {
+      op: "remove",
+      itemId: "vomiting_oral_intake_since_last_check",
+      groupKey: "conditionalQuestions"
+    }
+  ]
+}, {
+  workupId: originalModule.id,
+  sectionKey: "history_questions"
+});
+assert.equal(historyPatched.requiredQuestions.length, 2, "History patch should move one conditional question into requiredQuestions.");
+assert.equal(historyPatched.conditionalQuestions.length, 0, "History patch should remove the added conditional question by exact id.");
+assert.equal(historyPatched.requiredQuestions[0].label, "Any missed basal or bolus insulin?", "History update should edit the matched item in place.");
+assert.equal(historyPatched.requiredQuestions[1].id, "supply_barrier", "History update with groupKey should move the matched item to the destination group.");
+
+const directFieldHistoryPatch = applyWorkupSectionPatch(historyPayload, {
+  schema: workupSectionPatchSchema,
+  workupId: originalModule.id,
+  sectionKey: "history_questions",
+  summary: "Add answer metadata using concise direct update fields.",
+  operations: [
+    {
+      op: "update",
+      itemId: "missed_insulin",
+      answerMode: "multi",
+      normalAnswers: ["no_missed_doses"]
+    }
+  ]
+}, {
+  workupId: originalModule.id,
+  sectionKey: "history_questions"
+});
+assert.equal(directFieldHistoryPatch.requiredQuestions[0].answerMode, "multi", "History update should accept changed fields directly on the operation.");
+assert.deepEqual(directFieldHistoryPatch.requiredQuestions[0].normalAnswers, ["no_missed_doses"], "Direct update fields should be applied to the matched history item.");
+
+const examPatched = applyWorkupSectionPatch({
+  requiredExam: [],
+  conditionalExam: []
+}, {
+  schema: workupSectionPatchSchema,
+  workupId: originalModule.id,
+  sectionKey: "physical_exam",
+  summary: "Add focused perfusion exam.",
+  operations: [
+    {
+      op: "add",
+      groupKey: "requiredExam",
+      item: {
+        id: "peripheral_perfusion_exam",
+        item_type: "physical_exam_maneuver",
+        label: "Assess peripheral perfusion",
+        technique: "Assess peripheral perfusion",
+        answerMode: "single",
+        findings_options: ["Expected or baseline", "Delayed capillary refill or cool extremities", "Unable to assess"],
+        normalAnswers: ["Expected or baseline"],
+        rationale: "Changes hypovolemia and shock escalation."
+      }
+    }
+  ]
+}, {
+  workupId: originalModule.id,
+  sectionKey: "physical_exam"
+});
+assert.equal(examPatched.requiredExam[0].item_type, "physical_exam_maneuver", "Physical exam patch should add an exam maneuver only to exam groups.");
+assert.equal(examPatched.requiredExam[0].technique, "Assess peripheral perfusion");
+
+assert.throws(
+  () => applyWorkupSectionPatch(historyPayload, { schema: workupSectionPatchSchema, workupId: "wrong", sectionKey: "history_questions", operations: [{ op: "remove", itemId: "missed_insulin" }] }, { workupId: originalModule.id, sectionKey: "history_questions" }),
+  /Patch is for wrong/,
+  "Patch must reject wrong workupId."
+);
+assert.throws(
+  () => applyWorkupSectionPatch(historyPayload, { schema: workupSectionPatchSchema, workupId: originalModule.id, sectionKey: "physical_exam", operations: [{ op: "remove", itemId: "missed_insulin" }] }, { workupId: originalModule.id, sectionKey: "history_questions" }),
+  /physical_exam/,
+  "Patch must reject wrong sectionKey."
+);
+assert.throws(
+  () => applyWorkupSectionPatch(historyPayload, { schema: workupSectionPatchSchema, workupId: originalModule.id, sectionKey: "history_questions", operations: [{ op: "add", groupKey: "requiredExam", item: { id: "bad", item_type: "history_question", label: "Bad?" } }] }, { workupId: originalModule.id, sectionKey: "history_questions" }),
+  /Invalid groupKey/,
+  "Patch must reject invalid groupKey."
+);
+assert.throws(
+  () => applyWorkupSectionPatch(historyPayload, { schema: workupSectionPatchSchema, workupId: originalModule.id, sectionKey: "history_questions", operations: [{ op: "remove" }] }, { workupId: originalModule.id, sectionKey: "history_questions" }),
+  /requires itemId/,
+  "Patch must reject update/remove without itemId."
+);
+assert.throws(
+  () => applyWorkupSectionPatch(historyPayload, { schema: workupSectionPatchSchema, workupId: originalModule.id, sectionKey: "history_questions", operations: [{ op: "update", itemId: "missed_insulin" }] }, { workupId: originalModule.id, sectionKey: "history_questions" }),
+  /requires changed item fields/,
+  "Patch must reject update operations without changed fields."
+);
+assert.throws(
+  () => applyWorkupSectionPatch(historyPayload, { schema: workupSectionPatchSchema, workupId: originalModule.id, sectionKey: "history_questions", operations: [{ op: "update", itemId: "missed_insulin", item: { id: "renamed_id" } }] }, { workupId: originalModule.id, sectionKey: "history_questions" }),
+  /cannot change its stable id/,
+  "Patch updates must not rename stable item ids."
+);
+assert.throws(
+  () => applyWorkupSectionPatch({
+    requiredQuestions: [{ id: "duplicate", item_type: "history_question", label: "A?" }],
+    conditionalQuestions: [{ id: "duplicate", item_type: "history_question", label: "B?" }]
+  }, { schema: workupSectionPatchSchema, workupId: originalModule.id, sectionKey: "history_questions", operations: [{ op: "remove", itemId: "duplicate" }] }, { workupId: originalModule.id, sectionKey: "history_questions" }),
+  /ambiguous/,
+  "Patch must reject ambiguous exact-id matches."
 );
 
 const approvedButNotReadySnapshot = buildWorkupAuthoringSnapshot({

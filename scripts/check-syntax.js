@@ -192,7 +192,6 @@ for (const requiredId of [
   "workupStudioOpenEvidencePromptOutput",
   "workupStudioCopyPromptButton",
   "workupStudioOpenEvidenceButton",
-  "workupStudioPreviewImportButton",
   "workupStudioAcceptImportButton",
   "workupStudioPublishImportButton",
   "workupStudioExportPatchButton",

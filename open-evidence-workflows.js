@@ -22,8 +22,8 @@ const DEFAULT_CONTEXT_LIMITS = {
   selected_workup_title: 240,
   selectedWorkupId: 120,
   selected_workup_id: 120,
-  decisionTreeJson: 10000,
-  decision_tree_json: 10000
+  decisionTreeJson: 3200,
+  decision_tree_json: 3200
 };
 
 const TASK_CONTEXT_LIMIT_OVERRIDES = {
@@ -46,8 +46,8 @@ const TASK_CONTEXT_LIMIT_OVERRIDES = {
     new_bedside_findings: 7000
   },
   decision_tree_builder: {
-    decisionTreeJson: 14000,
-    decision_tree_json: 14000,
+    decisionTreeJson: 3200,
+    decision_tree_json: 3200,
     sourceContext: 3000,
     source_context: 3000
   }
@@ -86,6 +86,10 @@ Each array item must be a concise de-identified string. Put only facts or recomm
 
 function clean(value) {
   return String(value || "").trim();
+}
+
+function jsonStringContent(value) {
+  return clean(value).replace(/\\/g, "\\\\").replace(/"/g, '\\"');
 }
 
 function contextLimitsForTask(taskId = "") {
@@ -180,10 +184,10 @@ export function compactOpenEvidenceContext(context = {}, taskId = "") {
     if (typeof context[field] === "string") {
       compacted[field] = compactPromptText(context[field], {
         maxChars,
-        maxLines: /^(?:sourceContext|source_context|currentChecklist|current_checklist|decisionTreeJson|decision_tree_json)$/.test(field) ? 180 : 90,
-        headLines: /^(?:decisionTreeJson|decision_tree_json)$/.test(field) ? 40 : 24,
-        tailLines: /^(?:sourceContext|source_context|decisionTreeJson|decision_tree_json)$/.test(field) ? 28 : 16,
-        lineMaxChars: /^(?:decisionTreeJson|decision_tree_json)$/.test(field) ? 900 : 700
+        maxLines: /^(?:sourceContext|source_context|currentChecklist|current_checklist)$/.test(field) ? 180 : 90,
+        headLines: 24,
+        tailLines: /^(?:sourceContext|source_context)$/.test(field) ? 28 : 16,
+        lineMaxChars: 700
       });
     }
   }
@@ -688,67 +692,84 @@ Do not include identifiers, exact dates, room numbers, medical record numbers, o
 }
 
 function decisionTreeBuilderPrompt(context) {
-  return [
-    `<role>
-Clinical guideline extraction assistant creating a reviewed management pathway for a clinician-maintained local workup.
-</role>
+  const workupTitle = clean(context.selectedWorkupTitle) || "[INSERT WORKUP TITLE]";
+  const workupId = clean(context.selectedWorkupId) || "[INSERT WORKUP ID]";
+  return `You are designing a compact clinical management algorithm, not a guideline summary.
 
-${taskBoundary({
-  primary: "Extract the latest clinical guidelines and format the management pathway as importable decision-tree JSON.",
-  notFor: [
-    "writing a rounds report",
-    "editing the bedside checklist",
-    "creating patient-specific orders without guideline support",
-    "returning prose, markdown explanation, or a reference essay"
-  ]
-})}
+Create a protocol-style decision tree for:
+WORKUP_TITLE: ${workupTitle}
+WORKUP_ID: ${workupId}
 
-<task>
-Extract the latest clinical guidelines for ${clean(context.selectedWorkupTitle) || "{{selected_workup_title}}"}.
+Style target:
+AHA/ACLS, UpToDate, or society-protocol algorithm. Each node should be a diagram box that a clinician can act on.
 
-Format the clinical management pathway as a single, valid JSON object optimized for a hierarchical node-link graph.
-The output must be a clinically deep management pathway, not a shallow outline. Use the existing tree only as context to replace or improve it.
-</task>`,
-    commonClinicalRules,
-    abbreviationRules,
-    block("selected_workup_title", context.selectedWorkupTitle),
-    block("selected_workup_id", context.selectedWorkupId),
-    block("objective_data", context.objectiveData),
-    block("existing_decision_tree_json", context.decisionTreeJson),
-    `<output_format>
-Follow this structural schema exactly:
-- Return only the raw JSON object. Do not include introductory text, concluding text, markdown fences, comments, or citations outside JSON.
-- Every node must have a unique string "id".
-- Every node must have a "label" with brief clinical text.
-- Every node must have a "type" equal to "action", "decision", or "endpoint".
-- Every node must include a "children" array containing the next logical node objects down the pathway.
-- For nodes where type == "decision", each child object within the "children" array must include an "edgeLabel" string indicating the specific clinical criteria required to trigger that path.
-- Include enough depth to be at least as detailed as a sepsis pathway that branches through initial stabilization, likelihood/mimic checks, no-shock versus shock bundles, source control, vasopressors, refractory shock, glucose, renal support, stewardship, reassessment, de-escalation, and stopping criteria.
-- Cover initial assessment, red flags/instability, diagnostic confirmation, mimics/exclusions, severity/risk stratification, first-line management, escalation/emergency actions, contraindications/special populations, monitoring/reassessment, de-escalation/stopping criteria, disposition, follow-up, and safety-netting.
-- Include missing-data endpoints that name the exact patient data needed when symptoms, exam, vitals, labs, imaging/results, medications, comorbidities, demographics, pregnancy status, or workup findings are unavailable.
-- Every actionable branch, threshold, escalation rule, disposition recommendation, endpoint, and stopping/de-escalation rule must cite "source_ids". Add top-level "source_metadata" rows for every source_id with title, URL or DOI, year, access date, citation text, and review status.
-- Add "activationRules" for structured traversal from patient context. Use objective fields and explicit operators for thresholds whenever possible, for example lactate >= 4, glucose >= 180, oxygen saturation below a threshold, positive imaging, pregnancy status documented, or renal function documented.
-- Every root-to-leaf path must end in an actionable endpoint: diagnostic step, treatment, escalation/disposition, monitoring/reassessment, follow-up, safety-net instruction, or clinician-review handoff.
-- Do not collapse the pathway to a generic "assess, test, treat, follow up" chain. If guideline evidence is uncertain, inaccessible, conflicting, or local-policy-dependent, route that branch to a clinician-review endpoint and say what input is needed.
+Core rule:
+A node exists only if it changes management, determines urgency, starts a treatment bundle, stops unsafe treatment, defines reassessment, or determines disposition.
 
-Use this exact top-level app schema:
+Do not generate:
+- "missing data" nodes
+- generic "assess" nodes
+- generic "consider" nodes
+- "clinician review" nodes without a specific trigger and action
+- one-node-per-lab trees
+- one-node-per-criterion trees
+- vague endpoints like "treat DKA," "monitor," or "follow up"
+
+Instead:
+- Combine related diagnostic criteria in one decision box.
+- Combine related treatments into one action box.
+- Combine monitoring frequency, response targets, and escalation triggers into one reassessment box.
+- Put exact thresholds and doses in the box text when guideline-supported.
+- Branch only when the next action is different.
+
+Return only valid JSON.
+
+Schema:
 {
-  "schema": "clinical_pathway_tree_v1",
-  "workupId": "${clean(context.selectedWorkupId) || "module_id"}",
-  "title": "${clean(context.selectedWorkupTitle) || "Workup title"}",
+  "schema": "clinical_pathway_tree_v2",
+  "workupId": "${jsonStringContent(workupId)}",
+  "title": "${jsonStringContent(workupTitle)}",
+  "style": "compact_protocol_algorithm",
+  "source_metadata": [],
   "root": {
     "id": "root",
-    "label": "Brief text",
+    "label": "",
     "type": "action",
+    "boxText": "",
+    "source_ids": [],
     "children": []
-  },
-  "activationRules": {}
+  }
 }
 
-Keep labels brief enough to fit a node-link graph, but preserve clinical specificity. Put branch criteria in edgeLabel, not in the child label when possible.
-Do not include patient identifiers, exact dates, room numbers, medical record numbers, or site names.
-</output_format>`
-  ].filter(Boolean).join("\n\n");
+Every node:
+{
+  "id": "stable_unique_id",
+  "label": "short box title",
+  "type": "action | decision | endpoint",
+  "boxText": "clinically specific display text; may include multiple bullets or semicolon-separated actions",
+  "source_ids": [],
+  "children": []
+}
+
+Every child of a decision node must include:
+"edgeLabel": "specific branch criterion"
+
+Algorithm architecture:
+1. Activation box: who enters the pathway.
+2. Unstable/red-flag decision: identifies immediate high-acuity care.
+3. Classification decision: combines diagnostic criteria that separate major pathways.
+4. Safety-stop decision: only if a treatment can cause harm without a prerequisite.
+5. Treatment bundle: exact first-line management, doses, thresholds, and exceptions.
+6. Reassessment decision: response targets, monitoring frequency, and failure criteria.
+7. Transition/disposition endpoint: stopping criteria, discharge/follow-up, safety net.
+
+Quality test before final output:
+- Would this fit on one page?
+- Is each box worth showing in a diagram?
+- Does every branch change management?
+- Does every treatment box say exactly what to do?
+- Are doses, thresholds, monitoring intervals, escalation triggers, and stopping criteria explicit?
+- Are any nodes just documentation, missing-data bookkeeping, or guideline trivia? If yes, delete or merge them.`;
 }
 
 export const openEvidenceTasks = [
@@ -781,16 +802,20 @@ export function buildOpenEvidencePrompt(taskId, context = {}) {
   const promptIncludesPatientContext = /<deidentified_patient_context>/i.test(prompt);
   const promptIncludesFindings = /<new_bedside_findings>/i.test(prompt);
   const promptIncludesObjective = /<objective_data>/i.test(prompt);
-  const promptIncludesWorkupTitle = /<selected_workup_title>/i.test(prompt);
-  const promptIncludesDecisionTree = /<existing_decision_tree_json>/i.test(prompt) || /<decision_tree_json>/i.test(prompt);
-  const sourceIncluded = promptIncludesSource || promptIncludesChecklist || promptIncludesPatientContext || promptIncludesFindings || promptIncludesObjective || promptIncludesWorkupTitle || promptIncludesDecisionTree;
+  const promptIncludesPathwayTemplate = /(?:Generate an up-to-date clinical management pathway for:|Create a concise, guideline-based management pathway for:|Create a protocol-style decision tree for:)/i.test(prompt);
+  const promptIncludesWorkupTitle = /<selected_workup_title>/i.test(prompt) || promptIncludesPathwayTemplate;
+  const promptIncludesWorkupId = /<selected_workup_id>/i.test(prompt) || (promptIncludesPathwayTemplate && /"workupId":/i.test(prompt));
+  const promptIncludesNewObjective = promptIncludesPathwayTemplate && /Objective workup data, if available:/i.test(prompt);
+  const promptIncludesDecisionTree = /<existing_decision_tree_json>/i.test(prompt) || /<decision_tree_json>/i.test(prompt) || (promptIncludesPathwayTemplate && /Existing pathway JSON, if available:/i.test(prompt));
+  const sourceIncluded = promptIncludesSource || promptIncludesChecklist || promptIncludesPatientContext || promptIncludesFindings || promptIncludesObjective || promptIncludesNewObjective || promptIncludesWorkupTitle || promptIncludesWorkupId || promptIncludesDecisionTree;
   const reviewText = [
     promptIncludesSource ? compactContext.sourceContext : "",
     promptIncludesPatientContext ? compactContext.checklistPatientSummary : "",
     promptIncludesChecklist ? compactContext.currentChecklist : "",
     promptIncludesFindings ? compactContext.compiledFindings : "",
-    promptIncludesObjective ? compactContext.objectiveData : "",
+    promptIncludesObjective || promptIncludesNewObjective ? compactContext.objectiveData : "",
     promptIncludesWorkupTitle ? compactContext.selectedWorkupTitle : "",
+    promptIncludesWorkupId ? compactContext.selectedWorkupId : "",
     promptIncludesDecisionTree ? compactContext.decisionTreeJson : ""
   ].filter((value) => clean(value)).join("\n\n");
   return {
