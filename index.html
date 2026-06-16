@@ -24754,6 +24754,29 @@ Rules:
       });
     }
 
+    function patientChecklistPatchPromptRowLine(row = {}, { includeOptions = false } = {}) {
+      const details = [
+        row.itemId || "missing_id",
+        row.sectionKey || "",
+        row.groupKey || "",
+        row.sectionTitle || "",
+        row.label || "Checklist row",
+        row.currentAnswer ? `current answer: ${row.currentAnswer}` : "unanswered"
+      ].filter(Boolean);
+      if (includeOptions && Array.isArray(row.options) && row.options.length) {
+        details.push(`options: ${row.options.join(" / ")}`);
+      }
+      if (includeOptions && Array.isArray(row.normalAnswers) && row.normalAnswers.length) {
+        details.push(`normal: ${row.normalAnswers.join(" / ")}`);
+      }
+      return `- ${details.join(" | ")}`;
+    }
+
+    function patientChecklistPatchPromptRowsText(rows = [], { includeOptions = false } = {}) {
+      if (!rows.length) return "- No current rows.";
+      return rows.map((row) => patientChecklistPatchPromptRowLine(row, { includeOptions })).join("\n");
+    }
+
     function patientChecklistPatchPrompt(sectionKey = patientChecklistPatchSectionKey()) {
       if (!state.sections.length) buildChecklistFromWorkup({ navigate: false });
       ensurePatientChecklistItemIds();
@@ -24764,17 +24787,35 @@ Rules:
       const fullRows = patientChecklistPatchFullChecklistRows();
       const sectionName = sectionKey === "physical_exam" ? "physical exam" : "history questions";
       return [
-        "You are refining one active patient's bedside checklist.",
-        "Return one fenced ```json code block only. Do not include prose, markdown citations, :contentReference markers, or a reference list.",
-        "Preserve underscores exactly; no stray asterisks. JSON.parse must pass. operations/options/normalAnswers must be bracketed arrays.",
-        "Do not regenerate the full checklist. Do not output workup_refinement_v1. Do not modify any section except the selected section.",
+        "Clinical question:",
+        `For this de-identified adult patient being evaluated for ${moduleLabel(selectedModule) || "the selected condition"}, what ${sectionName} checklist rows should be added, removed, or reworded to improve bedside assessment for that condition?`,
+        "This is a clinical checklist-quality question. Focus on bedside history and physical exam findings that affect severity, hydration/perfusion, mental status, infectious or medication triggers, oral intake, safety, disposition readiness, and duplicate/redundant rows when relevant.",
+        `Only return changes for the selected section: ${sectionKey}. Use the full checklist only to avoid duplicate or redundant suggestions.`,
         "",
         `workupId: ${state.selectedWorkupModuleId || ""}`,
         `sectionKey: ${sectionKey}`,
         `selectedWorkupTitle: ${moduleLabel(selectedModule) || "Selected workup"}`,
         `selectedSection: ${sectionName}`,
         "",
-        "Use this schema:",
+        "<deidentified_patient_context>",
+        checklistPatientSummaryText(),
+        "</deidentified_patient_context>",
+        "",
+        "<editable_target_rows>",
+        patientChecklistPatchPromptRowsText(rows, { includeOptions: true }),
+        "</editable_target_rows>",
+        "",
+        "<full_current_checklist>",
+        `totalRows: ${fullRows.length}`,
+        patientChecklistPatchPromptRowsText(fullRows),
+        "</full_current_checklist>",
+        "",
+        "Answer format:",
+        "Return one fenced ```json code block only. No prose, markdown citations, :contentReference markers, or reference list.",
+        "The code block must be valid JSON. Preserve underscores exactly; no stray asterisks. operations/options/normalAnswers must be bracketed arrays.",
+        "Do not regenerate the full checklist. Do not output workup_refinement_v1.",
+        "",
+        "Use this JSON schema:",
         JSON.stringify({
           schema: workupSectionPatchSchema,
           workupId: state.selectedWorkupModuleId || "",
@@ -24788,26 +24829,10 @@ Rules:
         }, null, 2),
         "",
         `Allowed groupKey values for add: ${groups.required}, ${groups.conditional}. Prefer ${groups.conditional} for patient-only additions.`,
-        "Use full_checklist_json to avoid duplicate additions across both history and physical exam rows.",
-        "For update/remove, use an exact itemId from target_rows_json only. Do not update/remove rows outside the selected section.",
+        "Use full_current_checklist to avoid duplicate additions across both history and physical exam rows.",
+        "For update/remove, use an exact itemId from editable_target_rows only. Do not update/remove rows outside the selected section.",
         "Do not invent itemIds for existing rows.",
-        "If no changes are useful, return operations: [].",
-        "",
-        "<deidentified_patient_context>",
-        checklistPatientSummaryText(),
-        "</deidentified_patient_context>",
-        "",
-        "<target_rows_json>",
-        JSON.stringify(rows, null, 2),
-        "</target_rows_json>",
-        "",
-        "<full_checklist_json>",
-        JSON.stringify({
-          totalRows: fullRows.length,
-          selectedSection: sectionKey,
-          rows: fullRows
-        }, null, 2),
-        "</full_checklist_json>"
+        "If no changes are useful, return operations: []."
       ].join("\n");
     }
 

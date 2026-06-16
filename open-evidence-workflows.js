@@ -625,23 +625,15 @@ Do not include low-yield distractions or padding.
 function checklistImprovementPrompt(context) {
   const workupId = clean(context.selectedWorkupId) || "selected local workup id if known";
   return [
-    `<role>
-Clinician-review checklist editor.
-</role>
+    `<clinical_question>
+Clinical question: For this de-identified patient, what bedside history or physical exam rows should be added, removed, or reworded to improve the selected workup assessment?
+Focus on bedside findings, severity signals, safety checks, triggers, and redundant rows. The JSON block is only the paste-back format.
+</clinical_question>
 
-${taskBoundary({
-  primary: "Return small patch operations for one patient checklist section.",
-  notFor: [
-    "regenerating the full checklist",
-    "editing default/canonical workup rows",
-    "writing a patient management plan",
-    "summarizing the full chart"
-  ]
-})}
-
-<task>
-Return only needed add/update/remove operations. Default to physical_exam for exam-row requests. Do not regenerate other sections.
-</task>`,
+<task_boundary>
+Primary purpose: Useful bedside checklist edits for one patient.
+Do not use this task for: checklist regeneration, default edits, management plans, or chart summaries.
+</task_boundary>`,
     commonClinicalRules,
     abbreviationRules,
     usefulnessRules,
@@ -655,7 +647,7 @@ Raw chart text and identifiers were withheld. Use only the compact de-identified
 </privacy_boundary>
 
 <output_format>
-Output only one fenced JSON block. Do not include prose before or after it. Do not include :contentReference markers or citation prose.
+Output only one fenced JSON block with the clinically useful checklist edits. Do not include prose before or after it. Do not include :contentReference markers or citation prose.
 Fence as \`\`\`json. Preserve underscores exactly; no stray asterisks. JSON.parse must pass. "operations", "options", and "normalAnswers" must be bracketed arrays.
 Use this exact top-level schema:
 {
