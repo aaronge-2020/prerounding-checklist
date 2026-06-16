@@ -1337,6 +1337,18 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
   assert(checklistDirectoryAudit.clipped.length === 0, `checklist directory rows should not clip labels: ${JSON.stringify(checklistDirectoryAudit)}`);
 
   await page.waitForSelector("#patientChecklistEditor:not([hidden])");
+  const compactEditAudit = await page.evaluate(() => ({
+    manualClosed: !document.querySelector("#patientChecklistManualEditDetails")?.open,
+    patchClosed: !document.querySelector("#patientChecklistPatchPanel")?.open,
+    manualTextVisible: Boolean(document.querySelector("#patientChecklistEditTextInput")?.getBoundingClientRect().height),
+    patchInputVisible: Boolean(document.querySelector("#patientChecklistPatchInput")?.getBoundingClientRect().height),
+    editorHeight: Math.round(document.querySelector("#patientChecklistEditor")?.getBoundingClientRect().height || 0)
+  }));
+  assert(compactEditAudit.manualClosed && compactEditAudit.patchClosed, `patient edit tools should be collapsed by default: ${JSON.stringify(compactEditAudit)}`);
+  assert(!compactEditAudit.manualTextVisible && !compactEditAudit.patchInputVisible, `collapsed edit tools should hide large text inputs: ${JSON.stringify(compactEditAudit)}`);
+  assert(compactEditAudit.editorHeight <= 180, `collapsed edit shelf should stay compact: ${JSON.stringify(compactEditAudit)}`);
+  await page.click("#patientChecklistManualEditDetails > summary");
+  await page.waitForSelector("#patientChecklistManualEditDetails[open]");
   await page.selectOption("#patientChecklistEditTypeSelect", "history");
   await page.fill("#patientChecklistEditTextInput", "Any new exertional chest pressure since arrival?");
   await page.fill("#patientChecklistEditOptionsInput", "No / Yes / Unclear / Other ___");
@@ -1355,6 +1367,8 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
     const text = document.querySelector("#workspaceChecklistDirectory")?.textContent || "";
     return /new exertional chest pressure/i.test(text) && !/focal rash/i.test(text);
   });
+  await page.click("#patientChecklistPatchPanel > summary");
+  await page.waitForSelector("#patientChecklistPatchPanel[open]");
   await page.selectOption("#patientChecklistPatchSectionSelect", "physical_exam");
   await page.click("#copyPatientChecklistPatchPromptButton");
   await page.waitForSelector("#phiOverlay:not([hidden])");

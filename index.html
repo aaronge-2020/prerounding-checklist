@@ -9213,8 +9213,73 @@
 
     .patient-checklist-editor-body {
       display: grid;
+      gap: 8px;
+      padding: 0 10px 10px;
+    }
+
+    .patient-checklist-edit-disclosure {
+      border: 1px solid #d7e5e7;
+      border-radius: 7px;
+      background: #fbfdfd;
+      overflow: hidden;
+    }
+
+    .patient-checklist-edit-disclosure summary {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      min-height: 46px;
+      padding: 9px 11px;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .patient-checklist-edit-disclosure summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .patient-checklist-edit-disclosure summary::after {
+      content: "Expand";
+      border: 1px solid #c9dbde;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #24404a;
+      padding: 5px 9px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .patient-checklist-edit-disclosure[open] summary::after {
+      content: "Collapse";
+      background: #eef7f7;
+      border-color: #8dbdc1;
+      color: #0b5f5a;
+    }
+
+    .patient-checklist-edit-disclosure summary > div {
+      display: grid;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .patient-checklist-edit-disclosure summary strong {
+      color: #17333d;
+      font-size: 13px;
+    }
+
+    .patient-checklist-edit-disclosure summary span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .patient-checklist-disclosure-body {
+      display: grid;
       gap: 10px;
-      padding: 0 11px 11px;
+      padding: 10px 11px 11px;
+      border-top: 1px solid #d7e5e7;
+      background: #ffffff;
     }
 
     .patient-checklist-editor-grid {
@@ -9277,15 +9342,12 @@
     }
 
     .patient-checklist-patch-panel {
-      display: grid;
-      gap: 10px;
-      border-top: 1px solid var(--line);
-      padding-top: 11px;
+      display: block;
     }
 
     .patient-checklist-patch-head {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(170px, 0.34fr);
+      grid-template-columns: minmax(170px, 0.34fr) minmax(0, 1fr);
       gap: 10px;
       align-items: end;
     }
@@ -9294,6 +9356,13 @@
       display: grid;
       gap: 3px;
       min-width: 0;
+    }
+
+    .patient-checklist-patch-head > .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-start;
     }
 
     .patient-checklist-patch-head strong {
@@ -9308,7 +9377,7 @@
     }
 
     .patient-checklist-patch-panel textarea {
-      min-height: 112px;
+      min-height: 86px;
       font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
       font-size: 12px;
       line-height: 1.45;
@@ -13300,61 +13369,75 @@
                     <span>History and exam rows for this patient only</span>
                   </div>
                   <div class="patient-checklist-editor-body">
-                    <div class="patient-checklist-editor-grid">
-                      <label for="patientChecklistEditItemSelect">
-                        New or selected row
-                        <select id="patientChecklistEditItemSelect"></select>
-                      </label>
-                      <label for="patientChecklistEditTypeSelect">
-                        Row type
-                        <select id="patientChecklistEditTypeSelect">
-                          <option value="history">History question</option>
-                          <option value="exam">Physical exam item</option>
-                        </select>
-                      </label>
-                      <label class="is-wide" for="patientChecklistEditTextInput">
-                        Question or exam item
-                        <textarea id="patientChecklistEditTextInput" maxlength="700" placeholder="Add the patient-specific history question or physical exam item."></textarea>
-                      </label>
-                      <label class="is-wide" for="patientChecklistEditOptionsInput">
-                        Answer choices or findings
-                        <input id="patientChecklistEditOptionsInput" type="text" maxlength="500" placeholder="No / Yes / Other ___">
-                      </label>
-                    </div>
-                    <div class="patient-checklist-editor-actions">
-                      <button class="btn btn-primary" id="addPatientChecklistItemButton" type="button">Add question</button>
-                      <button class="btn btn-secondary" id="savePatientChecklistItemButton" type="button">Save selected</button>
-                      <button class="btn btn-secondary" id="removePatientChecklistItemButton" type="button">Remove selected</button>
-                      <div class="vault-status-line" id="patientChecklistEditStatus" aria-live="polite"></div>
-                    </div>
-                    <div class="patient-checklist-patch-panel" id="patientChecklistPatchPanel">
-                      <div class="patient-checklist-patch-head">
+                    <details class="patient-checklist-edit-disclosure" id="patientChecklistManualEditDetails">
+                      <summary>
+                        <div>
+                          <strong>Manual row edit</strong>
+                          <span>Add, revise, or remove one patient-specific history/exam row.</span>
+                        </div>
+                      </summary>
+                      <div class="patient-checklist-disclosure-body">
+                        <div class="patient-checklist-editor-grid">
+                          <label for="patientChecklistEditItemSelect">
+                            New or selected row
+                            <select id="patientChecklistEditItemSelect"></select>
+                          </label>
+                          <label for="patientChecklistEditTypeSelect">
+                            Row type
+                            <select id="patientChecklistEditTypeSelect">
+                              <option value="history">History question</option>
+                              <option value="exam">Physical exam item</option>
+                            </select>
+                          </label>
+                          <label class="is-wide" for="patientChecklistEditTextInput">
+                            Question or exam item
+                            <textarea id="patientChecklistEditTextInput" maxlength="700" placeholder="Add the patient-specific history question or physical exam item."></textarea>
+                          </label>
+                          <label class="is-wide" for="patientChecklistEditOptionsInput">
+                            Answer choices or findings
+                            <input id="patientChecklistEditOptionsInput" type="text" maxlength="500" placeholder="No / Yes / Other ___">
+                          </label>
+                        </div>
+                        <div class="patient-checklist-editor-actions">
+                          <button class="btn btn-primary" id="addPatientChecklistItemButton" type="button">Add question</button>
+                          <button class="btn btn-secondary" id="savePatientChecklistItemButton" type="button">Save selected</button>
+                          <button class="btn btn-secondary" id="removePatientChecklistItemButton" type="button">Remove selected</button>
+                          <div class="vault-status-line" id="patientChecklistEditStatus" aria-live="polite"></div>
+                        </div>
+                      </div>
+                    </details>
+                    <details class="patient-checklist-edit-disclosure patient-checklist-patch-panel" id="patientChecklistPatchPanel">
+                      <summary>
                         <div>
                           <strong>OpenEvidence row patch</strong>
-                          <span>Copy a prompt, paste returned operations, then apply only those changes to this patient.</span>
+                          <span>Copy a prompt, paste operations, and apply only those row changes.</span>
                         </div>
-                        <label for="patientChecklistPatchSectionSelect">
-                          Target
-                          <select id="patientChecklistPatchSectionSelect">
-                            <option value="physical_exam" selected>Physical exam</option>
-                            <option value="history_questions">History questions</option>
-                          </select>
+                      </summary>
+                      <div class="patient-checklist-disclosure-body">
+                        <div class="patient-checklist-patch-head">
+                          <label for="patientChecklistPatchSectionSelect">
+                            Target
+                            <select id="patientChecklistPatchSectionSelect">
+                              <option value="physical_exam" selected>Physical exam</option>
+                              <option value="history_questions">History questions</option>
+                            </select>
+                          </label>
+                          <div class="button-row">
+                            <button class="btn btn-secondary" id="copyPatientChecklistPatchPromptButton" type="button">Copy prompt</button>
+                            <button class="btn btn-secondary" id="openPatientChecklistPatchEvidenceButton" type="button">Open OpenEvidence</button>
+                          </div>
+                        </div>
+                        <label for="patientChecklistPatchInput">
+                          Patch JSON
+                          <textarea id="patientChecklistPatchInput" maxlength="20000" spellcheck="false" aria-describedby="localTextEntryHelp" placeholder="Paste workup_section_patch_v1 JSON here."></textarea>
                         </label>
+                        <div class="evidence-change-preview" id="patientChecklistPatchPreview" aria-live="polite">No patient checklist patch pasted yet.</div>
+                        <div class="patient-checklist-editor-actions">
+                          <button class="btn btn-primary" id="applyPatientChecklistPatchButton" type="button">Apply patch to this patient</button>
+                          <div class="vault-status-line" id="patientChecklistPatchStatus" aria-live="polite"></div>
+                        </div>
                       </div>
-                      <div class="button-row">
-                        <button class="btn btn-secondary" id="copyPatientChecklistPatchPromptButton" type="button">Copy OpenEvidence patch prompt</button>
-                        <button class="btn btn-secondary" id="openPatientChecklistPatchEvidenceButton" type="button">Open OpenEvidence</button>
-                      </div>
-                      <label for="patientChecklistPatchInput">
-                        Patch JSON
-                        <textarea id="patientChecklistPatchInput" maxlength="20000" spellcheck="false" aria-describedby="localTextEntryHelp" placeholder="Paste workup_section_patch_v1 JSON here."></textarea>
-                      </label>
-                      <div class="evidence-change-preview" id="patientChecklistPatchPreview" aria-live="polite">No patient checklist patch pasted yet.</div>
-                      <div class="patient-checklist-editor-actions">
-                        <button class="btn btn-primary" id="applyPatientChecklistPatchButton" type="button">Apply patch to this patient</button>
-                        <div class="vault-status-line" id="patientChecklistPatchStatus" aria-live="polite"></div>
-                      </div>
-                    </div>
+                    </details>
                   </div>
                 </div>
                 <ul class="compact-list" id="workspaceChecklistPreviewList"></ul>
