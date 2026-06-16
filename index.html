@@ -3132,7 +3132,8 @@
       display: grid;
     }
 
-    #patientWorkupPanel.is-tree-editing #patientDecisionTreePanel .d3-decision-tree {
+    #patientWorkupPanel.is-tree-editing #patientDecisionTreePanel .d3-decision-tree,
+    #patientWorkupPanel.is-tree-editing #patientDecisionTreePanel .cytoscape-tree-shell {
       min-height: 560px;
     }
 
@@ -3809,6 +3810,10 @@
       background-size: 28px 28px;
       overflow: hidden;
       touch-action: none;
+    }
+
+    .cytoscape-tree-shell.is-dragging {
+      cursor: grabbing;
     }
 
     .cytoscape-tree-canvas {
@@ -8235,6 +8240,16 @@
       background-size: 18px 18px;
     }
 
+    #patientDecisionTreePanel .cytoscape-tree-shell {
+      min-height: 0;
+      height: 100%;
+      border: 0;
+      border-radius: 0;
+      background-color: #ffffff;
+      background-image: radial-gradient(circle at 1px 1px, rgba(151, 177, 184, 0.26) 1px, transparent 0);
+      background-size: 18px 18px;
+    }
+
     #patientDecisionTreePanel .d3-decision-tree svg {
       height: 100%;
       min-height: 0;
@@ -8244,7 +8259,8 @@
     #patientDecisionTreePanel .decision-tree-readable-outline {
       position: absolute;
       right: 16px;
-      bottom: 16px;
+      top: 88px;
+      bottom: auto;
       z-index: 3;
       width: min(460px, calc(100% - 32px));
       max-height: min(42%, 420px);
@@ -8833,6 +8849,10 @@
       }
 
       #patientDecisionTreePanel .d3-decision-tree {
+        min-height: 360px;
+      }
+
+      #patientDecisionTreePanel .cytoscape-tree-shell {
         min-height: 360px;
       }
 
@@ -18248,31 +18268,32 @@
     function workupStudioPathwayBuilderPrompt(module) {
       const workupTitle = moduleLabel(module) || "[insert]";
       const workupId = module?.id || "[insert]";
-      const sourceIds = collectModuleSourceIds(module || {}).slice(0, 8);
-      const sourceLine = sourceIds.length ? `\nPreferred source_ids: ${sourceIds.join(", ")}\n` : "\n";
+      const sourceIds = collectModuleSourceIds(module || {}).slice(0, 4);
+      const sourceLine = sourceIds.length ? `\nSource_ids: ${sourceIds.join(", ")}\n` : "\n";
       return `Create one compact protocol-style clinical pathway tree.
 
 Workup: ${workupId} - ${workupTitle}
 ${sourceLine}
-Reviewer request: [replace this line with the exact tree goal before sending]
+Goal: [replace with exact tree goal]
 
-Return only valid JSON. No history/exam rows, current-tree payloads, PHI, prose, markdown links, or citation markup.
+Return only valid JSON. No history/exam rows, current-tree payloads, PHI, prose, links, or citations.
 
 Schema:
-{"schema":"clinical_pathway_tree_v2","workupId":"${workupId}","title":"${workupTitle}","style":"compact_protocol_algorithm","source_metadata":[],"root":{"id":"root","label":"","type":"action","boxText":"","source_ids":[],"children":[]}}
+{"schema":"clinical_pathway_tree_v2","workupId":"${workupId}","title":"${workupTitle}","root":{"id":"root","label":"","type":"action","boxText":"","source_ids":[],"children":[]}}
 
 Node shape:
-{"id":"stable_unique_id","label":"specific box title with the key threshold/action","type":"action|decision|endpoint","boxText":"specific action, threshold, dose, monitoring interval, escalation trigger, or stopping/disposition criterion","source_ids":[],"children":[]}
+{"id":"stable_unique_id","label":"specific box title with key threshold/action","type":"action|decision|endpoint","boxText":"action, threshold, dose, monitoring interval, escalation trigger, or stopping/disposition criterion","source_ids":[],"children":[]}
 
 Rules:
-- Every child of a decision node must have edgeLabel with the branch criterion.
-- Include only nodes that change management, urgency, safety, reassessment, or disposition.
-- Merge related criteria/treatments; branch only when the next action differs.
+- Every child of a decision node must have edgeLabel, but keep it arrow-sized: Yes, No, Stable, Worsening, DKA, HHS, K >=3.5, pH <7.3.
+- Do not put sentences, lists, or multi-clause criteria in edgeLabel. Move the full criterion into the child node label and boxText.
+- Only include nodes that change management, urgency, safety, reassessment, or disposition.
+- Merge criteria/treatments; branch only when the next action differs.
 - Avoid missing-data, generic assess/consider, documentation-only, one-lab-per-node, and vague endpoint nodes.
 - Avoid bland labels like "Activate pathway" or "Classify crisis"; include the clinical threshold, bundle, or disposition in label.
 - Aim for 6-12 visible nodes that fit on one protocol page.
 - Use ASCII operators such as >=, <=, >, < instead of special symbols.
-- Make thresholds, doses, monitoring intervals, escalation triggers, and stopping criteria explicit in boxText when guideline-supported.`;
+- Put thresholds, doses, monitoring intervals, escalation triggers, and stopping criteria in boxText when guideline-supported.`;
     }
 
     function legacyWorkupStudioPromptTemplate(sectionKey = "", template = "") {
@@ -21357,17 +21378,83 @@ Rules:
       return [];
     }
 
+    function conciseClinicalThresholdLabel(text = "") {
+      const clean = String(text || "").replace(/\s+/g, " ").trim();
+      if (!clean) return "";
+      const labAliases = [
+        [/beta[-\s]?hydroxybutyrate|BHB/i, "BHB"],
+        [/potassium|K\+/i, "K"],
+        [/bicarbonate|HCO3/i, "HCO3"],
+        [/glucose/i, "Glucose"],
+        [/osmolality|osmolarity/i, "Osm"],
+        [/\bpH\b/i, "pH"],
+        [/\bTSH\b/i, "TSH"],
+        [/free T4|FT4/i, "FT4"],
+        [/calcium|\bCa\b/i, "Ca"],
+        [/prolactin/i, "PRL"],
+        [/cortisol/i, "Cortisol"],
+        [/aldosterone/i, "Aldo"],
+        [/renin/i, "Renin"],
+        [/\bA1c\b|HbA1c/i, "A1c"]
+      ];
+      for (const [pattern, label] of labAliases) {
+        if (!pattern.test(clean)) continue;
+        const aliasSource = pattern.source;
+        const comparison = clean.match(new RegExp(`(?:${aliasSource})[^.;,]{0,36}?(>=|<=|>|<|=)\\s*(-?\\d+(?:\\.\\d+)?)`, "i"))
+          || clean.match(new RegExp(`(>=|<=|>|<|=)\\s*(-?\\d+(?:\\.\\d+)?)[^.;,]{0,36}?(?:${aliasSource})`, "i"));
+        if (comparison) return `${label} ${comparison[1]}${comparison[2]}`;
+        const below = clean.match(new RegExp(`(?:${aliasSource})[^.;,]{0,36}?\\b(?:below|under|less than)\\s+(-?\\d+(?:\\.\\d+)?)`, "i"))
+          || clean.match(new RegExp(`\\b(?:below|under|less than)\\s+(-?\\d+(?:\\.\\d+)?)[^.;,]{0,36}?(?:${aliasSource})`, "i"));
+        if (below) return `${label} <${below[1]}`;
+        const above = clean.match(new RegExp(`(?:${aliasSource})[^.;,]{0,36}?\\b(?:above|over|greater than|exceeds?)\\s+(-?\\d+(?:\\.\\d+)?)`, "i"))
+          || clean.match(new RegExp(`\\b(?:above|over|greater than|exceeds?)\\s+(-?\\d+(?:\\.\\d+)?)[^.;,]{0,36}?(?:${aliasSource})`, "i"));
+        if (above) return `${label} >${above[1]}`;
+      }
+      const generic = clean.match(/\b([A-Za-z][A-Za-z0-9+/\-.]{0,14})\s*(>=|<=|>|<|=)\s*(-?\d+(?:\.\d+)?)/);
+      return generic ? `${generic[1]} ${generic[2]}${generic[3]}` : "";
+    }
+
+    function clinicalPathwayShortEdgeLabel(text = "") {
+      const clean = String(text || "").replace(/\s+/g, " ").trim();
+      if (!clean) return "";
+      const direct = clean.replace(/\s+([,.;:])/g, "$1");
+      const words = direct.split(/\s+/).filter(Boolean);
+      if (direct.length <= 28 && words.length <= 5) return direct;
+      const threshold = conciseClinicalThresholdLabel(direct);
+      if (threshold) return threshold;
+      if (/^yes\b/i.test(direct)) return "Yes";
+      if (/^no\b/i.test(direct)) return "No";
+      if (/\bmissing|insufficient|unavailable|pending\b/i.test(direct)) return "Data missing";
+      if (/\bshock|hypoperfusion|unstable|toxic|emergency|urgent|crisis\b/i.test(direct)) return "Urgent";
+      if (/\bworsen|deteriorat|no improvement|persistent\b/i.test(direct)) return "Worsening";
+      if (/\bimprov|resolv|stable|response\b/i.test(direct)) return "Improving";
+      if (/\bde-?escalat|stop|narrow|wean\b/i.test(direct)) return "De-escalate";
+      if (/\bdischarge|follow-?up|safety[-\s]?net|lower acuity\b/i.test(direct)) return "Follow-up";
+      if (/\balternate|competing|mimic|exclusion|contradict\b/i.test(direct)) return "Alternate";
+      if (/\bpregnan|postpartum|contraindicat|renal|hepatic|allerg|modifier|special population\b/i.test(direct)) return "Review";
+      if (/\bDKA\b/i.test(direct)) return "DKA";
+      if (/\bHHS\b/i.test(direct)) return "HHS";
+      if (/\binfection|sepsis|probable|definite\b/i.test(direct)) return "Likely";
+      if (/\blow[-\s]?risk|outpatient|supportive\b/i.test(direct)) return "Low risk";
+      const firstClause = direct.split(/[.;:]/)[0].trim();
+      const firstWords = firstClause.split(/\s+/).filter(Boolean);
+      if (firstClause.length <= 34 && firstWords.length <= 5) return firstClause;
+      return firstWords.slice(0, 3).join(" ") || "Criteria met";
+    }
+
     function sanitizeClinicalPathwayNode(rawNode = {}, seen = new Set(), fallbackId = "node", incomingEdgeLabel = "") {
       const label = String(rawNode.label || rawNode.text || rawNode.action || rawNode.title || fallbackId).replace(/\s+/g, " ").trim();
       const type = ["action", "decision", "endpoint"].includes(String(rawNode.type || "").toLowerCase())
         ? String(rawNode.type).toLowerCase()
         : normalizeTreeChildren(rawNode.children).length ? "decision" : "endpoint";
       const id = ensureUniqueTreeId(rawNode.id || label || fallbackId, seen);
+      const rawEdgeLabel = String(rawNode.edgeLabel || rawNode.edge_label || incomingEdgeLabel || "").replace(/\s+/g, " ").trim();
+      const shortEdgeLabel = clinicalPathwayShortEdgeLabel(rawEdgeLabel);
       const node = {
         id,
         label: label || titleFromId(id),
         type,
-        edgeLabel: String(rawNode.edgeLabel || rawNode.edge_label || incomingEdgeLabel || "").replace(/\s+/g, " ").trim(),
+        edgeLabel: shortEdgeLabel,
         collapsed: Boolean(rawNode.collapsed),
         children: []
       };
@@ -21382,6 +21469,8 @@ Rules:
         "stoppingCriteria",
         "disposition",
         "criteria",
+        "branchCriteria",
+        "edgeLabelRaw",
         "action",
         "endpoint_type",
         "missing_data_needed",
@@ -21400,6 +21489,10 @@ Rules:
       if (rawNode.internal_traversal_guard !== undefined) {
         node.internal_traversal_guard = Boolean(rawNode.internal_traversal_guard);
       }
+      if (rawEdgeLabel && rawEdgeLabel !== shortEdgeLabel) {
+        node.edgeLabelRaw = rawEdgeLabel;
+        node.branchCriteria = rawEdgeLabel;
+      }
       const rawLayout = rawNode.layout && typeof rawNode.layout === "object" ? rawNode.layout : null;
       const layoutX = Number(rawLayout?.x);
       const layoutY = Number(rawLayout?.y);
@@ -21416,6 +21509,8 @@ Rules:
       if (node.endpoint_type === "missing_data_needed") {
         node.label = "Hidden traversal metadata";
         node.edgeLabel = "Hidden traversal metadata";
+        delete node.edgeLabelRaw;
+        delete node.branchCriteria;
         node.action = "Hidden metadata only; omitted from the clinical pathway outline and graph.";
         node.internal_traversal_guard = true;
         node.display = {
@@ -21857,6 +21952,7 @@ Rules:
       const clone = JSON.parse(JSON.stringify(graph || {}));
       const rows = objectiveDataRows();
       const maxDepth = Number.isFinite(Number(options.maxDepth)) ? Number(options.maxDepth) : 2;
+      const compact = options.compact === true;
       let displayRoot = clone.root;
       let guard = 0;
       while (displayRoot && guard < 8) {
@@ -21908,7 +22004,7 @@ Rules:
           .filter((child) => !isInternalDecisionTreeNode(child) || child.endpoint_type === "missing_data_needed")
           .slice()
           .sort((a, b) => childPriority(a) - childPriority(b));
-        const limit = depth === 0 ? 3 : depth === 1 && node.type !== "endpoint" ? 1 : 0;
+        const limit = depth === 0 ? (compact ? 2 : 3) : depth === 1 && node.type !== "endpoint" ? 1 : 0;
         next.children = children.slice(0, limit).map((child) => cloneDisplayNode(child, depth + 1));
         return next;
       };
@@ -22015,17 +22111,7 @@ Rules:
 
     function decisionTreeGraphEdgeLabel(text = "") {
       const clean = String(text || "").replace(/\s+/g, " ").trim();
-      if (clean.length <= 220) return clean;
-      const segments = clean.split(/;\s*/).map((segment) => segment.trim()).filter(Boolean);
-      const summary = [];
-      for (const segment of segments) {
-        const next = [...summary, segment].join("; ");
-        if (next.length > 190) break;
-        summary.push(segment);
-        if (summary.length >= 2) break;
-      }
-      const compact = summary.join("; ") || clean.split(/\s+/).slice(0, 24).join(" ");
-      return `${compact}; additional criteria apply`;
+      return clinicalPathwayShortEdgeLabel(clean);
     }
 
     function decisionTreeGraphNodeLabel(node = {}) {
@@ -22042,6 +22128,7 @@ Rules:
 
     function decisionTreeNodeDetailText(node = {}) {
       const label = String(node.label || "").replace(/\s+/g, " ").trim();
+      const branchCriteria = String(node.branchCriteria || node.edgeLabelRaw || "").replace(/\s+/g, " ").trim();
       const candidates = [
         node.boxText,
         node.action,
@@ -22050,11 +22137,22 @@ Rules:
         node.criteria && typeof node.criteria === "object" ? node.criteria.description : "",
         node.monitoring_plan
       ];
+      let primaryDetail = "";
       for (const candidate of candidates) {
         const clean = typeof candidate === "string" ? candidate.replace(/\s+/g, " ").trim() : "";
-        if (clean && clean !== label) return clean;
+        if (clean && clean !== label) {
+          primaryDetail = clean;
+          break;
+        }
       }
-      return "";
+      const parts = [];
+      if (branchCriteria && branchCriteria !== label && branchCriteria !== node.edgeLabel) {
+        parts.push(`Criteria: ${branchCriteria}`);
+      }
+      if (primaryDetail && !normalizedAnswerComponent(parts.join(" ")).includes(normalizedAnswerComponent(primaryDetail))) {
+        parts.push(primaryDetail);
+      }
+      return parts.join(" ");
     }
 
     function compactDecisionTreeNodeDetail(text = "", maxChars = 360) {
@@ -22068,26 +22166,25 @@ Rules:
     function cytoscapeStudioTreeNodePayload(node = {}) {
       const type = String(node.type || "action").toLowerCase();
       const title = decisionTreeGraphNodeLabel(node);
-      const detail = compactDecisionTreeNodeDetail(decisionTreeNodeDetailText(node), 260);
-      const wrappedTitle = wrapTreeText(title, 36, 3).slice(0, 3);
-      const wrappedDetail = detail ? wrapTreeText(detail, 48, 4).slice(0, 4) : [];
+      const detail = compactDecisionTreeNodeDetail(decisionTreeNodeDetailText(node), 360);
+      const wrappedTitle = wrapTreeText(title, 38, 3).slice(0, 3);
+      const wrappedDetail = detail ? wrapTreeText(detail, 52, 6).slice(0, 6) : [];
       const label = [
-        type.toUpperCase(),
         ...wrappedTitle,
         ...(wrappedDetail.length ? ["", ...wrappedDetail] : [])
       ].join("\n");
-      const height = Math.min(238, Math.max(112, 48 + wrappedTitle.length * 16 + wrappedDetail.length * 14 + (wrappedDetail.length ? 10 : 0)));
+      const height = Math.min(292, Math.max(122, 52 + wrappedTitle.length * 17 + wrappedDetail.length * 15 + (wrappedDetail.length ? 12 : 0)));
       return {
         label,
         detail,
-        width: 340,
+        width: 390,
+        textMaxWidth: 338,
         height
       };
     }
 
     function cytoscapeStudioEdgeLabel(text = "") {
-      const compact = compactDecisionTreeNodeDetail(decisionTreeGraphEdgeLabel(text), 128);
-      return compact.length > 128 ? `${compact.slice(0, 125).replace(/\s+\S*$/, "")}...` : compact;
+      return decisionTreeGraphEdgeLabel(text);
     }
 
     function cytoscapeStudioTreeElements(graph = {}) {
@@ -22105,9 +22202,18 @@ Rules:
             id: nodeId,
             label: payload.label,
             type: String(node.type || "action").toLowerCase(),
+            state: String(node.state || "pending"),
             detail: payload.detail,
             title: String(node.label || node.id || "Pathway step"),
+            searchText: normalizedAnswerComponent([
+              node.label,
+              node.edgeLabel,
+              node.branchCriteria,
+              node.edgeLabelRaw,
+              payload.detail
+            ].filter(Boolean).join(" ")),
             width: payload.width,
+            textMaxWidth: payload.textMaxWidth,
             height: payload.height
           };
           const layoutX = Number(node.layout?.x);
@@ -22128,7 +22234,9 @@ Rules:
                 id: `${parentId}__${nodeId}`,
                 source: parentId,
                 target: nodeId,
-                label: cytoscapeStudioEdgeLabel(node.edgeLabel || "")
+                label: cytoscapeStudioEdgeLabel(node.edgeLabel || ""),
+                fullLabel: node.edgeLabelRaw || node.branchCriteria || node.edgeLabel || "",
+                state: String(node.state || "pending")
               }
             });
           }
@@ -22142,6 +22250,7 @@ Rules:
 
     function renderCytoscapeStudioPathwayTree(container, graph, options = {}) {
       const cytoscape = window.cytoscape;
+      container._cytoscape = null;
       if (!cytoscape) {
         const fallback = document.createElement("div");
         fallback.className = "cytoscape-tree-fallback";
@@ -22149,6 +22258,7 @@ Rules:
         container.appendChild(fallback);
         return;
       }
+      const isPatientDecisionTree = container.id === "patientDecisionTreePanel";
       const shell = document.createElement("div");
       shell.className = "cytoscape-tree-shell";
       shell.dataset.renderer = "cytoscape";
@@ -22163,6 +22273,7 @@ Rules:
       readable.className = "sr-only";
       const { nodes, edges } = cytoscapeStudioTreeElements(graph);
       shell.dataset.nodeCount = String(nodes.length);
+      shell.dataset.mode = isPatientDecisionTree ? "patient" : "studio";
       readable.textContent = nodes.map((entry) => entry.data.label.replace(/\n+/g, " ")).join(" | ");
       const makeButton = (label, title, action) => {
         const button = document.createElement("button");
@@ -22223,9 +22334,9 @@ Rules:
         container: canvas,
         elements: [...nodes, ...edges],
         minZoom: 0.25,
-        maxZoom: 2.2,
+        maxZoom: 7,
         boxSelectionEnabled: false,
-        autoungrabify: false,
+        autoungrabify: options.disableDrag === true,
         layout: { name: "preset" },
         style: [
           {
@@ -22245,7 +22356,7 @@ Rules:
               "padding": 16,
               "text-halign": "center",
               "text-margin-y": 0,
-              "text-max-width": 300,
+              "text-max-width": "data(textMaxWidth)",
               "text-valign": "center",
               "text-wrap": "wrap"
             }
@@ -22279,9 +22390,39 @@ Rules:
             }
           },
           {
+            selector: "node.is-search-match",
+            style: {
+              "border-color": "#174d59",
+              "border-style": "dashed",
+              "border-width": 3
+            }
+          },
+          {
+            selector: "node[state = 'active']",
+            style: {
+              "background-color": "#f0fbf9",
+              "border-color": "#087d75",
+              "border-width": 2.6
+            }
+          },
+          {
+            selector: "node[state = 'warning']",
+            style: {
+              "background-color": "#fff8ed",
+              "border-color": "#d88417",
+              "border-width": 2.4
+            }
+          },
+          {
+            selector: "node[state = 'inactive']",
+            style: {
+              "opacity": 0.52
+            }
+          },
+          {
             selector: "edge",
             style: {
-              "curve-style": "bezier",
+              "curve-style": "taxi",
               "line-color": "#adc8ce",
               "target-arrow-color": "#adc8ce",
               "target-arrow-shape": "triangle",
@@ -22296,9 +22437,34 @@ Rules:
               "text-background-color": "#fbfdfd",
               "text-background-opacity": 0.86,
               "text-background-padding": 3,
-              "text-max-width": 150,
-              "text-rotation": "autorotate",
+              "text-max-width": 84,
+              "text-rotation": "none",
               "text-wrap": "wrap"
+            }
+          },
+          {
+            selector: "edge[state = 'active']",
+            style: {
+              "line-color": "#087d75",
+              "target-arrow-color": "#087d75",
+              "width": 2.6,
+              "color": "#174d59"
+            }
+          },
+          {
+            selector: "edge[state = 'warning']",
+            style: {
+              "line-color": "#d88417",
+              "line-style": "dashed",
+              "target-arrow-color": "#d88417",
+              "width": 2.2,
+              "color": "#7b4f11"
+            }
+          },
+          {
+            selector: "edge[state = 'inactive']",
+            style: {
+              "opacity": 0.5
             }
           }
         ]
@@ -22307,8 +22473,15 @@ Rules:
       shell._cytoscape = cy;
       const hasDagre = typeof window.cytoscapeDagre === "function";
       const layoutOptions = hasDagre
-        ? { name: "dagre", rankDir: "TB", rankSep: 112, nodeSep: 78, edgeSep: 24, fit: false, animate: false, nodeDimensionsIncludeLabels: true }
-        : { name: "breadthfirst", directed: true, spacingFactor: 1.45, fit: false, animate: false };
+        ? { name: "dagre", rankDir: "TB", rankSep: 138, nodeSep: 104, edgeSep: 36, fit: false, animate: false, nodeDimensionsIncludeLabels: true }
+        : { name: "breadthfirst", directed: true, spacingFactor: 1.72, fit: false, animate: false };
+      const setZoomControlValue = (zoomValue) => {
+        if (!isPatientDecisionTree || !elements.decisionTreeZoomSelect) return;
+        const nearest = [...elements.decisionTreeZoomSelect.options]
+          .map((option) => Number(option.value))
+          .reduce((best, value) => Math.abs(value - zoomValue) < Math.abs(best - zoomValue) ? value : best, 1);
+        elements.decisionTreeZoomSelect.value = String(nearest);
+      };
       const selectNode = (nodeId) => {
         cy.nodes().removeClass("is-selected");
         if (!nodeId) return;
@@ -22318,41 +22491,137 @@ Rules:
           shell.dataset.selectedNodeId = nodeId;
         }
       };
+      const applySearchHighlight = () => {
+        const query = normalizedAnswerComponent(options.searchText || "");
+        cy.nodes().removeClass("is-search-match");
+        if (!query) return;
+        cy.nodes().filter((node) => String(node.data("searchText") || "").includes(query)).addClass("is-search-match");
+      };
       const applySavedPositions = () => {
+        if (options.applySavedLayout !== true) return;
         cy.nodes().forEach((node) => {
           const x = Number(node.data("layoutX"));
           const y = Number(node.data("layoutY"));
           if (Number.isFinite(x) && Number.isFinite(y)) node.position({ x, y });
         });
       };
+      const updateSyncedZoom = () => {
+        if (!isPatientDecisionTree) return;
+        decisionTreeZoom = cy.zoom();
+        setZoomControlValue(decisionTreeZoom);
+      };
+      const setTreeZoom = (zoomValue, { user = true } = {}) => {
+        const level = Math.min(cy.maxZoom(), Math.max(cy.minZoom(), Number(zoomValue) || 1));
+        if (user && isPatientDecisionTree) decisionTreeUserZoomed = true;
+        cy.stop();
+        cy.zoom({
+          level,
+          renderedPosition: {
+            x: Math.max(1, canvas.clientWidth / 2),
+            y: Math.max(1, canvas.clientHeight / 2)
+          }
+        });
+        updateSyncedZoom();
+      };
       const fitGraph = (duration = 120) => {
         if (!cy.elements().length) return;
         cy.stop();
-        cy.animate({ fit: { eles: cy.elements(), padding: 56 } }, { duration });
+        const padding = Number(options.fitPadding) || (isPatientDecisionTree ? 42 : 64);
+        const minReadableZoom = Number(options.minFitZoom) || (isPatientDecisionTree
+          ? (window.innerWidth < 760 ? 0.56 : 0.62)
+          : 0.58);
+        const maxFitZoom = Number(options.maxFitZoom) || (isPatientDecisionTree ? 1.04 : 1.08);
+        const focusRootNode = (rootNode) => {
+          if (!rootNode?.nonempty?.()) return;
+          cy.center(rootNode);
+          const rendered = rootNode.renderedPosition();
+          const targetY = isPatientDecisionTree
+            ? Math.min(Math.max(128, canvas.clientHeight * 0.36), Math.max(1, canvas.clientHeight / 2))
+            : Math.min(Math.max(132, canvas.clientHeight * 0.28), Math.max(1, canvas.clientHeight / 2));
+          cy.panBy({ x: 0, y: Math.round(targetY - rendered.y) });
+        };
+        const finish = () => {
+          if (cy.zoom() < minReadableZoom) {
+            const rootNode = graph.root?.id ? cy.$id(graph.root.id) : cy.nodes().first();
+            const renderedPosition = rootNode?.nonempty?.()
+              ? { x: Math.max(1, canvas.clientWidth / 2), y: Math.min(Math.max(96, canvas.clientHeight * 0.24), Math.max(1, canvas.clientHeight / 2)) }
+              : { x: Math.max(1, canvas.clientWidth / 2), y: Math.max(1, canvas.clientHeight / 2) };
+            cy.zoom({ level: minReadableZoom, renderedPosition });
+            focusRootNode(rootNode);
+          } else if (cy.zoom() > maxFitZoom) {
+            cy.zoom({
+              level: maxFitZoom,
+              renderedPosition: {
+                x: Math.max(1, canvas.clientWidth / 2),
+                y: Math.max(1, canvas.clientHeight / 2)
+              }
+            });
+          }
+          updateSyncedZoom();
+        };
+        if (duration > 0) {
+          cy.animate({ fit: { eles: cy.elements(), padding } }, { duration, complete: finish });
+        } else {
+          cy.fit(cy.elements(), padding);
+          finish();
+        }
       };
       const runLayout = () => {
         cy.layout({
           ...layoutOptions,
           stop: () => {
             applySavedPositions();
+            if (options.disableDrag === true) cy.nodes().ungrabify();
+            else cy.nodes().unlock().grabify();
             selectNode(options.selectedNodeId);
+            applySearchHighlight();
             fitGraph(0);
           }
         }).run();
       };
       toolbar.append(
-        makeButton("-", "Zoom out", () => cy.animate({ zoom: Math.max(cy.minZoom(), cy.zoom() / 1.18), center: { eles: cy.elements() } }, { duration: 120 })),
-        makeButton("+", "Zoom in", () => cy.animate({ zoom: Math.min(cy.maxZoom(), cy.zoom() * 1.18), center: { eles: cy.elements() } }, { duration: 120 })),
+        makeButton("-", "Zoom out", () => setTreeZoom(cy.zoom() / 1.18)),
+        makeButton("+", "Zoom in", () => setTreeZoom(cy.zoom() * 1.18)),
         divider(),
         makeButton("Fit", "Fit pathway", () => fitGraph(120)),
         makeButton("Reset", "Reset layout", () => runLayout())
       );
+      cy.on("zoom", updateSyncedZoom);
+      if (isPatientDecisionTree) {
+        if (elements.fitDecisionTreeButton) {
+          elements.fitDecisionTreeButton.onclick = () => {
+            decisionTreeUserZoomed = false;
+            fitGraph(120);
+          };
+        }
+        if (elements.decisionTreeZoomSelect) {
+          setZoomControlValue(decisionTreeZoom || 1);
+          const handleDecisionTreeZoomSelect = () => {
+            setTreeZoom(Number(elements.decisionTreeZoomSelect.value) || 1);
+          };
+          elements.decisionTreeZoomSelect.oninput = handleDecisionTreeZoomSelect;
+          elements.decisionTreeZoomSelect.onchange = handleDecisionTreeZoomSelect;
+        }
+        if (elements.zoomInDecisionTreeButton) {
+          elements.zoomInDecisionTreeButton.onclick = () => {
+            const current = decisionTreeZoom || cy.zoom() || 1;
+            setTreeZoom(current + (current >= 2 ? 0.5 : 0.25));
+          };
+        }
+        if (elements.zoomOutDecisionTreeButton) {
+          elements.zoomOutDecisionTreeButton.onclick = () => {
+            const current = decisionTreeZoom || cy.zoom() || 1;
+            setTreeZoom(current - (current > 2 ? 0.5 : 0.25));
+          };
+        }
+      }
       cy.on("tap", "node", (event) => {
         const nodeId = event.target.id();
         selectNode(nodeId);
         if (typeof options.onSelectNode === "function") options.onSelectNode(nodeId);
       });
       let activeDraggedNodeId = "";
+      let activeDragStartPosition = null;
       const saveDraggedNodeLayout = (node) => {
         const position = node.position();
         if (typeof options.onMoveNode === "function") options.onMoveNode(node.id(), position.x, position.y);
@@ -22362,15 +22631,35 @@ Rules:
       });
       cy.on("dragfree", "node", (event) => {
         if (activeDraggedNodeId !== event.target.id()) return;
-        saveDraggedNodeLayout(event.target);
+        const position = event.target.position();
+        const moved = activeDragStartPosition
+          ? Math.abs(position.x - activeDragStartPosition.x) + Math.abs(position.y - activeDragStartPosition.y) > 1
+          : true;
+        if (moved) saveDraggedNodeLayout(event.target);
         activeDraggedNodeId = "";
+        activeDragStartPosition = null;
       });
-      cy.on("grab", "node", () => shell.classList.add("is-dragging"));
+      cy.on("grab", "node", (event) => {
+        activeDraggedNodeId = event.target.id();
+        activeDragStartPosition = { ...event.target.position() };
+        shell.classList.add("is-dragging");
+      });
       cy.on("free", "node", (event) => {
         shell.classList.remove("is-dragging");
-        if (activeDraggedNodeId !== event.target.id()) return;
-        saveDraggedNodeLayout(event.target);
+        const position = event.target.position();
+        const movedFromGrab = activeDragStartPosition
+          ? Math.abs(position.x - activeDragStartPosition.x) + Math.abs(position.y - activeDragStartPosition.y) > 1
+          : false;
+        const savedX = Number(event.target.data("layoutX"));
+        const savedY = Number(event.target.data("layoutY"));
+        const movedFromSavedLayout = Number.isFinite(savedX) && Number.isFinite(savedY)
+          ? Math.abs(position.x - savedX) + Math.abs(position.y - savedY) > 1
+          : movedFromGrab;
+        if ((activeDraggedNodeId === event.target.id() && movedFromGrab) || movedFromSavedLayout) {
+          saveDraggedNodeLayout(event.target);
+        }
         activeDraggedNodeId = "";
+        activeDragStartPosition = null;
       });
       if (window.ResizeObserver) {
         const observer = new ResizeObserver(() => {
@@ -22985,10 +23274,18 @@ Rules:
       }
       container.append(traversalPanel);
       if (showCanvas) {
-        const patientCanvasOptions = isPatientPanel && window.innerWidth < 1180
-          ? { maxDepth: 1 }
+        const panelWidth = container.getBoundingClientRect().width || window.innerWidth;
+        const useCompactPatientTree = isPatientPanel && (window.innerWidth < 1180 || panelWidth < 760);
+        const patientCanvasOptions = useCompactPatientTree
+          ? { maxDepth: 1, compact: panelWidth < 760 }
           : {};
-        renderDecisionTreeGraph(container, isPatientPanel ? patientDecisionTreeCanvasGraph(graph, patientCanvasOptions) : graph);
+        renderCytoscapeStudioPathwayTree(container, isPatientPanel ? patientDecisionTreeCanvasGraph(graph, patientCanvasOptions) : graph, {
+          disableDrag: isPatientPanel,
+          fitPadding: isPatientPanel ? 42 : 64,
+          minFitZoom: isPatientPanel ? (panelWidth < 760 ? 0.96 : 0.86) : 0.58,
+          searchText: isPatientPanel ? decisionTreeSearch : "",
+          selectedNodeId: selectedDecisionTreeNodeId
+        });
         renderDecisionTreeReadableOutline(container, graph);
       } else {
         const preview = document.createElement("ol");

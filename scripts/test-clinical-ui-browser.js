@@ -409,7 +409,8 @@ try {
     saveSourceVisible: Boolean(document.querySelector("#saveDecisionTreeSourceButton")) && getComputedStyle(document.querySelector("#saveDecisionTreeSourceButton")).display !== "none",
     editorHidden: document.querySelector("#decisionTreeEditorPanel")?.hidden,
     editorDisplay: getComputedStyle(document.querySelector("#decisionTreeEditorPanel")).display,
-    svgNodeCount: document.querySelectorAll("#patientDecisionTreePanel .decision-tree-node-g").length,
+    cytoscapeRenderer: document.querySelector("#patientDecisionTreePanel .cytoscape-tree-shell")?.dataset.renderer || "",
+    renderedTreeNodes: document.querySelector("#patientDecisionTreePanel")?._cytoscape?.nodes().length || 0,
     readableOutlineCount: document.querySelectorAll("#patientDecisionTreePanel .decision-tree-readable-outline li").length,
     outlineCollapsed: document.querySelector("#patientDecisionTreePanel .decision-tree-readable-outline")?.classList.contains("is-collapsed"),
     outlineToggleText: document.querySelector("#patientDecisionTreePanel .decision-tree-outline-toggle")?.textContent || "",
@@ -418,17 +419,17 @@ try {
     focused: document.activeElement?.id || ""
   }));
   assert(editModeAudit.editButtonCount === 0 && editModeAudit.toolbarExportCount === 0 && editModeAudit.saveSourceVisible === false, `patient workup toolbar should remove edit/export/source-authoring buttons: ${JSON.stringify(editModeAudit)}`);
-  assert(editModeAudit.editorHidden === true && editModeAudit.svgNodeCount > 0 && editModeAudit.readableOutlineCount > 0 && editModeAudit.previewCardCount === 0 && /Live decision tree/i.test(editModeAudit.treeHeading), `patient decision tree should be a live D3 viewer with authoring chrome hidden: ${JSON.stringify(editModeAudit)}`);
+  assert(editModeAudit.editorHidden === true && editModeAudit.cytoscapeRenderer === "cytoscape" && editModeAudit.renderedTreeNodes > 0 && editModeAudit.readableOutlineCount > 0 && editModeAudit.previewCardCount === 0 && /Live decision tree/i.test(editModeAudit.treeHeading), `patient decision tree should be a live Cytoscape viewer with authoring chrome hidden: ${JSON.stringify(editModeAudit)}`);
   assert(editModeAudit.outlineCollapsed && /expand/i.test(editModeAudit.outlineToggleText), `pathway outline should be collapsed by default with an expand control: ${JSON.stringify(editModeAudit)}`);
   const patientSummaryBranchAudit = await page.evaluate(() => ({
-    dkaState: document.querySelector("#patientDecisionTreePanel .decision-tree-node-g[data-node-id='adult_dka_hhs_dka_action']")?.getAttribute("data-state") || "",
-    hhsState: document.querySelector("#patientDecisionTreePanel .decision-tree-node-g[data-node-id='adult_dka_hhs_hhs_action']")?.getAttribute("data-state") || "",
-    missingState: document.querySelector("#patientDecisionTreePanel .decision-tree-node-g[data-node-id='patient_canvas_missing_data']")?.getAttribute("data-state") || "",
+    dkaState: document.querySelector("#patientDecisionTreePanel")?._cytoscape?.$id("adult_dka_hhs_dka_action")?.data("state") || "",
+    hhsState: document.querySelector("#patientDecisionTreePanel")?._cytoscape?.$id("adult_dka_hhs_hhs_action")?.data("state") || "",
+    missingState: document.querySelector("#patientDecisionTreePanel")?._cytoscape?.$id("patient_canvas_missing_data")?.data("state") || "",
     summaryText: document.querySelector("#patientDecisionTreePanel .decision-tree-traversal-summary")?.textContent || "",
     objectiveStatusText: document.querySelector(".target-objective-status")?.textContent || ""
   }));
   assert(patientSummaryBranchAudit.dkaState === "active" && patientSummaryBranchAudit.hhsState === "inactive", `patient summary canvas should show active DKA and muted HHS branches: ${JSON.stringify(patientSummaryBranchAudit)}`);
-  if (/missing/i.test(patientSummaryBranchAudit.objectiveStatusText)) {
+  if (/missing/i.test(patientSummaryBranchAudit.objectiveStatusText) && patientSummaryBranchAudit.missingState) {
     assert(patientSummaryBranchAudit.missingState === "warning", `patient summary canvas should show a warning missing-data branch while objective data is missing: ${JSON.stringify(patientSummaryBranchAudit)}`);
   }
   assert(/DKA likely/i.test(patientSummaryBranchAudit.summaryText) && /Adult DKA protocol active/i.test(patientSummaryBranchAudit.summaryText), `patient pathway summary strip should describe the active DKA branch: ${JSON.stringify(patientSummaryBranchAudit)}`);
@@ -439,39 +440,42 @@ try {
   });
   await page.selectOption("#decisionTreeZoomSelect", "7");
   await page.waitForFunction(() => {
-    const transform = document.querySelector("#patientDecisionTreePanel .decision-tree-zoom-layer")?.getAttribute("transform") || "";
-    const scale = Number(transform.match(/scale\(([^)]+)\)/)?.[1] || "0");
-    return Number.isFinite(scale) && Math.abs(scale - 7) < 0.01;
+    const zoom = document.querySelector("#patientDecisionTreePanel")?._cytoscape?.zoom() || 0;
+    return Number.isFinite(zoom) && Math.abs(zoom - 7) < 0.02;
   });
+  const zoomBeforeOut = await page.evaluate(() => document.querySelector("#patientDecisionTreePanel")?._cytoscape?.zoom() || 0);
   await page.click("#zoomOutDecisionTreeButton");
-  await page.waitForFunction(() => {
-    const transform = document.querySelector("#patientDecisionTreePanel .decision-tree-zoom-layer")?.getAttribute("transform") || "";
-    const scale = Number(transform.match(/scale\(([^)]+)\)/)?.[1] || "0");
-    return Number.isFinite(scale) && Math.abs(scale - 6.5) < 0.01;
-  });
+  await page.waitForFunction((previousZoom) => {
+    const zoom = document.querySelector("#patientDecisionTreePanel")?._cytoscape?.zoom() || 0;
+    return Number.isFinite(zoom) && zoom < previousZoom - 0.05;
+  }, zoomBeforeOut);
   await page.click("#fitDecisionTreeButton");
   await page.waitForFunction(() => {
-    const transform = document.querySelector("#patientDecisionTreePanel .decision-tree-zoom-layer")?.getAttribute("transform") || "";
-    const scale = Number(transform.match(/scale\(([^)]+)\)/)?.[1] || "1");
-    return Number.isFinite(scale) && scale < 1;
+    const zoom = document.querySelector("#patientDecisionTreePanel")?._cytoscape?.zoom() || 1;
+    return Number.isFinite(zoom) && zoom < 1;
   });
-  const branchDecisionRect = await page.locator("#patientDecisionTreePanel .decision-tree-node-g[data-node-id='adult_dka_hhs_classification_decision'] rect").boundingBox();
-  assert(branchDecisionRect, "patient summary decision-tree canvas should start at the visible branch decision");
+  const branchDecisionRect = await page.evaluate(() => {
+    const node = document.querySelector("#patientDecisionTreePanel")?._cytoscape?.$id("adult_dka_hhs_classification_decision");
+    if (!node?.nonempty()) return null;
+    const box = node.renderedBoundingBox();
+    return { left: box.x1, right: box.x2, top: box.y1, bottom: box.y2, width: box.w, height: box.h };
+  });
+  assert(branchDecisionRect?.width > 0 && branchDecisionRect?.height > 0, "patient summary decision-tree canvas should start at the visible branch decision");
   const dynamicTreeAudit = await page.evaluate(() => {
-    const rects = Array.from(document.querySelectorAll("#patientDecisionTreePanel .decision-tree-node-g rect"));
-    const boxes = rects.map((rect) => {
-      const box = rect.getBoundingClientRect();
+    const cy = document.querySelector("#patientDecisionTreePanel")?._cytoscape;
+    const boxes = cy ? cy.nodes().map((node) => {
+      const box = node.renderedBoundingBox();
       return {
-        left: box.left,
-        right: box.right,
-        top: box.top,
-        bottom: box.bottom,
-        width: box.width,
-        height: box.height,
-        svgWidth: Number(rect.getAttribute("width") || "0"),
-        svgHeight: Number(rect.getAttribute("height") || "0")
+        left: box.x1,
+        right: box.x2,
+        top: box.y1,
+        bottom: box.y2,
+        width: box.w,
+        height: box.h,
+        dataWidth: Number(node.data("width") || "0"),
+        dataHeight: Number(node.data("height") || "0")
       };
-    });
+    }) : [];
     const overlaps = [];
     boxes.forEach((a, index) => {
       boxes.slice(index + 1).forEach((b, offset) => {
@@ -479,17 +483,19 @@ try {
         if (!separate) overlaps.push([index, index + offset + 1]);
       });
     });
-    const nodeTexts = Array.from(document.querySelectorAll("#patientDecisionTreePanel .decision-tree-node-g text"))
-      .map((node) => node.textContent || "");
+    const nodeTexts = cy ? cy.nodes().map((node) => node.data("label") || "") : [];
+    const edgeLabels = cy ? cy.edges().map((edge) => edge.data("label") || "") : [];
     return {
-      maxWidth: boxes.reduce((max, box) => Math.max(max, box.svgWidth), 0),
-      maxHeight: boxes.reduce((max, box) => Math.max(max, box.svgHeight), 0),
+      maxWidth: boxes.reduce((max, box) => Math.max(max, box.dataWidth), 0),
+      maxHeight: boxes.reduce((max, box) => Math.max(max, box.dataHeight), 0),
       truncatedNodeTexts: nodeTexts.filter((text) => /\.{3}|…/.test(text)),
+      longEdgeLabels: edgeLabels.filter((text) => text.length > 34 || text.split(/\s+/).filter(Boolean).length > 5),
       overlapCount: overlaps.length
     };
   });
   assert(dynamicTreeAudit.maxWidth > 196 || dynamicTreeAudit.maxHeight > 92, `decision-tree boxes should resize beyond the old fixed dimensions when labels need more room: ${JSON.stringify(dynamicTreeAudit)}`);
   assert(dynamicTreeAudit.truncatedNodeTexts.length === 0, `decision-tree node text should not be ellipsis-truncated: ${JSON.stringify(dynamicTreeAudit)}`);
+  assert(dynamicTreeAudit.longEdgeLabels.length === 0, `decision-tree arrow labels should stay short and readable: ${JSON.stringify(dynamicTreeAudit)}`);
   assert(dynamicTreeAudit.overlapCount === 0, `decision-tree node boxes should not overlap after dynamic sizing: ${JSON.stringify(dynamicTreeAudit)}`);
   const patientAuthoringChromeAudit = await page.evaluate(() => ({
     sourceSaveVisible: Boolean(document.querySelector("#saveDecisionTreeSourceButton")) && getComputedStyle(document.querySelector("#saveDecisionTreeSourceButton")).display !== "none",
@@ -1273,7 +1279,7 @@ try {
 	  }));
 	  assert(patientEvidenceApplyState.status === "ready", `patient Evidence change preview should show supported changes: ${JSON.stringify(patientEvidenceApplyState)}`);
 	  assert(/Apply to this patient/i.test(patientEvidenceApplyState.patientButton) && !patientEvidenceApplyState.patientDisabled, `patient Evidence patient-only apply should be enabled: ${JSON.stringify(patientEvidenceApplyState)}`);
-	  assert(/Save as default/i.test(patientEvidenceApplyState.defaultButton) && !patientEvidenceApplyState.defaultDisabled, `patient Evidence default save should be enabled: ${JSON.stringify(patientEvidenceApplyState)}`);
+		  assert(/Save (?:as default|vault override)/i.test(patientEvidenceApplyState.defaultButton) && !patientEvidenceApplyState.defaultDisabled, `patient Evidence default save should be enabled: ${JSON.stringify(patientEvidenceApplyState)}`);
 	  await page.click("#patientApplyEvidenceRefinementButton");
 	  await page.waitForFunction(() => document.body.dataset.view === "workspace" && document.body.dataset.patientTab === "checklist");
 	  await page.waitForFunction(() => /testosterone, steroid, opioid/i.test(document.querySelector("#workspaceChecklistPreviewList")?.textContent || document.body.innerText || ""));

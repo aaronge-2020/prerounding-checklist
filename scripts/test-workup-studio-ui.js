@@ -672,6 +672,8 @@ try {
   assert.match(pathwayPrompt, /Workup: hyperglycemia_possible_dka_v1 - /, "Pathway prompt should name the selected workup without dumping the current tree.");
   assert.match(pathwayPrompt, /"boxText"/, "Pathway prompt should request compact display text on every node.");
   assert.match(pathwayPrompt, /Every child of a decision node must have edgeLabel/, "Pathway prompt should keep decision-edge wording.");
+  assert.match(pathwayPrompt, /keep it arrow-sized/i, "Pathway prompt should require short arrow labels.");
+  assert.match(pathwayPrompt, /Move the full criterion into the child node label and boxText/i, "Pathway prompt should keep criteria inside node boxes.");
   assert.match(pathwayPrompt, /6-12 visible nodes/, "Pathway prompt should keep the compact node budget.");
   assert.match(pathwayPrompt, /Avoid bland labels/, "Pathway prompt should discourage generic node labels.");
   assert.match(pathwayPrompt, /ASCII operators/, "Pathway prompt should avoid threshold symbol encoding issues.");
@@ -943,8 +945,9 @@ try {
   assert.deepEqual(toolbarHoverAudit.buttonLabels, ["Zoom out", "Zoom in", "Fit pathway", "Reset layout"], `Hover toolbar should expose zoom and layout controls: ${JSON.stringify(toolbarHoverAudit)}`);
   assert.equal(toolbarHoverAudit.opacity, "1", `Hover toolbar should be visible on graph hover: ${JSON.stringify(toolbarHoverAudit)}`);
   assert.equal(toolbarHoverAudit.insideTopArea, true, `Hover toolbar should stay in the top tree area: ${JSON.stringify(toolbarHoverAudit)}`);
+  const studioZoomBeforeIn = await page.evaluate(() => document.querySelector("#workupStudioPathwayTreePanel")?._cytoscape?.zoom() || 0);
   await page.locator("#workupStudioPathwayTreePanel .cytoscape-tree-toolbar button[aria-label='Zoom in']").click();
-  await page.waitForFunction((beforeZoom) => (document.querySelector("#workupStudioPathwayTreePanel")?._cytoscape?.zoom() || 0) > beforeZoom, renderedTreeAudit.zoom);
+  await page.waitForFunction((beforeZoom) => (document.querySelector("#workupStudioPathwayTreePanel")?._cytoscape?.zoom() || 0) > beforeZoom, studioZoomBeforeIn);
   const pathwayItemListText = await page.textContent("#workupStudioItemList");
   assert.doesNotMatch(pathwayItemListText || "", /Missing data needed/i, "Workup Studio should hide internal missing-data guards from the pathway outline.");
   const ketoneClickPoint = await cytoscapeNodeScreenPoint(page, "studio_ketones");
