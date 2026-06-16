@@ -1572,8 +1572,8 @@
     .phone-qr-code {
       display: grid;
       place-items: center;
-      width: min(100%, 420px);
-      max-width: 420px;
+      width: min(100%, 640px);
+      max-width: 640px;
       aspect-ratio: 1;
       border: 1px solid var(--line);
       border-radius: 7px;
@@ -4963,6 +4963,64 @@
       background: var(--teal-soft);
       color: var(--teal-dark);
       outline: none;
+    }
+
+    .phone-import-summary {
+      display: grid;
+      gap: 10px;
+      border: 1px solid #d7e5e3;
+      border-radius: 8px;
+      background: #f7fbfa;
+      padding: 12px;
+    }
+
+    .phone-import-summary-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .phone-import-summary-head strong {
+      color: #10232c;
+      font-size: 13px;
+    }
+
+    .phone-import-summary-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .phone-import-summary-row {
+      display: grid;
+      gap: 4px;
+      border-top: 1px solid #e1ecea;
+      padding-top: 8px;
+    }
+
+    .phone-import-summary-row:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .phone-import-summary-row span {
+      color: #5d6f78;
+      font-size: 11px;
+      font-weight: 760;
+      text-transform: uppercase;
+    }
+
+    .phone-import-summary-row strong {
+      color: #10232c;
+      font-size: 13px;
+      line-height: 1.3;
+    }
+
+    .phone-import-summary-row p {
+      margin: 0;
+      color: #31505b;
+      font-size: 12px;
+      line-height: 1.35;
     }
 
     #patientEvidencePromptPreview {
@@ -13801,6 +13859,13 @@
                       </div>
                       <span class="evidence-change-hint" id="patientEvidenceChangeHint">Paste a reviewed answer to update the checklist locally.</span>
                     </div>
+                    <div class="phone-import-summary" id="phoneImportSummaryPanel" hidden>
+                      <div class="phone-import-summary-head">
+                        <strong>Imported phone answers</strong>
+                        <span class="meta-tag" id="phoneImportSummaryCount">0 answers</span>
+                      </div>
+                      <div class="phone-import-summary-list" id="phoneImportSummaryList"></div>
+                    </div>
                     <div class="prompt-workbench-toolbar">
                       <label for="patientEvidencePromptPreview">Editable smart-phrase template</label>
                       <p class="sr-only">Task boundary: Output contract: Context preview:</p>
@@ -15069,6 +15134,7 @@
 	      transferCode: "",
       phonePayload: "",
       importedFindings: "",
+      importedPhoneAnswerSummary: [],
       activePatientId: "",
       patientSearch: "",
       activePatientTab: "overview",
@@ -15429,6 +15495,9 @@
       patientEvidenceTaskCount: $("#patientEvidenceTaskCount"),
       sharedPromptWorkbench: $("#sharedPromptWorkbench"),
       promptVariableBar: $("#promptVariableBar"),
+      phoneImportSummaryPanel: $("#phoneImportSummaryPanel"),
+      phoneImportSummaryCount: $("#phoneImportSummaryCount"),
+      phoneImportSummaryList: $("#phoneImportSummaryList"),
       patientEvidencePromptPreview: $("#patientEvidencePromptPreview"),
       patientSelectedTaskTitle: $("#patientSelectedTaskTitle"),
       patientSelectedTaskCopy: $("#patientSelectedTaskCopy"),
@@ -16071,13 +16140,17 @@
 	      state.lastChecklistRefinementCount = 0;
 	      state.lastChecklistRefinementAdditionCount = 0;
 	      state.lastChecklistRefinementRemovalCount = 0;
-	      state.transferCode = "";
+      state.transferCode = "";
       state.phonePayload = "";
       state.importedFindings = "";
+      state.importedPhoneAnswerSummary = [];
     }
 
     function normalizeState({ lock = false } = {}) {
       state.servicePreferences = normalizeServicePreferences(state.servicePreferences);
+      if (!Array.isArray(state.importedPhoneAnswerSummary)) {
+        state.importedPhoneAnswerSummary = [];
+      }
       if (!state.itemNotes || typeof state.itemNotes !== "object" || Array.isArray(state.itemNotes)) {
         state.itemNotes = {};
       }
@@ -16213,6 +16286,7 @@
 	        "transferCode",
         "phonePayload",
         "importedFindings",
+        "importedPhoneAnswerSummary",
         "activePatientId",
         "patientSearch",
         "activePatientTab",
@@ -16246,8 +16320,8 @@
     }
 
     function vaultPayload() {
-	      const { vaultName, patients, lastPatientSeq, scrubbedText, deidCounts, workup, workupRows, selectedWorkupRow, selectedWorkupModuleId, checklistText, sections, checklistWorkupModuleId, checklistWorkupSignature, checklistCatalogStale, answers, itemNotes, reviewedChecklistKeys, bedsideNote, selectedTaskId, openEvidenceSummaries, lastChecklistRefinementCount, lastChecklistRefinementAdditionCount, lastChecklistRefinementRemovalCount, transferCode, phonePayload, importedFindings, activePatientId, patientSearch, activePatientTab, todayModeByPatientId, patientDrafts, patientContinuityCases, patientWorkupSelections, workupRefinementsByModuleId, patientWorkupRefinements, patientObjectiveData, decisionTreeGraphsByModuleId, promptTemplatesByTaskId, currentView, sourceMode, concern, modifiers, clinicalModifierDetails, setting, population } = state;
-	      return { vaultName, patients, lastPatientSeq, scrubbedText, deidCounts, workup, workupRows, selectedWorkupRow, selectedWorkupModuleId, checklistText, sections, checklistWorkupModuleId, checklistWorkupSignature, checklistCatalogStale, answers, itemNotes, reviewedChecklistKeys, bedsideNote, selectedTaskId, openEvidenceSummaries, lastChecklistRefinementCount, lastChecklistRefinementAdditionCount, lastChecklistRefinementRemovalCount, transferCode, phonePayload, importedFindings, activePatientId, patientSearch, activePatientTab, todayModeByPatientId, patientDrafts, patientContinuityCases, patientWorkupSelections, workupRefinementsByModuleId, patientWorkupRefinements, patientObjectiveData, decisionTreeGraphsByModuleId, promptTemplatesByTaskId, currentView, sourceMode, concern, modifiers, clinicalModifierDetails, setting, population };
+	      const { vaultName, patients, lastPatientSeq, scrubbedText, deidCounts, workup, workupRows, selectedWorkupRow, selectedWorkupModuleId, checklistText, sections, checklistWorkupModuleId, checklistWorkupSignature, checklistCatalogStale, answers, itemNotes, reviewedChecklistKeys, bedsideNote, selectedTaskId, openEvidenceSummaries, lastChecklistRefinementCount, lastChecklistRefinementAdditionCount, lastChecklistRefinementRemovalCount, transferCode, phonePayload, importedFindings, importedPhoneAnswerSummary, activePatientId, patientSearch, activePatientTab, todayModeByPatientId, patientDrafts, patientContinuityCases, patientWorkupSelections, workupRefinementsByModuleId, patientWorkupRefinements, patientObjectiveData, decisionTreeGraphsByModuleId, promptTemplatesByTaskId, currentView, sourceMode, concern, modifiers, clinicalModifierDetails, setting, population } = state;
+	      return { vaultName, patients, lastPatientSeq, scrubbedText, deidCounts, workup, workupRows, selectedWorkupRow, selectedWorkupModuleId, checklistText, sections, checklistWorkupModuleId, checklistWorkupSignature, checklistCatalogStale, answers, itemNotes, reviewedChecklistKeys, bedsideNote, selectedTaskId, openEvidenceSummaries, lastChecklistRefinementCount, lastChecklistRefinementAdditionCount, lastChecklistRefinementRemovalCount, transferCode, phonePayload, importedFindings, importedPhoneAnswerSummary, activePatientId, patientSearch, activePatientTab, todayModeByPatientId, patientDrafts, patientContinuityCases, patientWorkupSelections, workupRefinementsByModuleId, patientWorkupRefinements, patientObjectiveData, decisionTreeGraphsByModuleId, promptTemplatesByTaskId, currentView, sourceMode, concern, modifiers, clinicalModifierDetails, setting, population };
     }
 
     function saveState() {
@@ -20940,6 +21014,7 @@ Rules:
       state.answers = {};
       state.itemNotes = {};
       state.reviewedChecklistKeys = {};
+      state.importedPhoneAnswerSummary = [];
       invalidatePhonePayloadAfterChecklistEdit();
       checklistFilter = "all";
       checklistSearch = "";
@@ -26072,6 +26147,7 @@ Rules:
 	      state.lastChecklistRefinementAdditionCount = 0;
 	      state.lastChecklistRefinementRemovalCount = 0;
 	      state.importedFindings = "";
+	      state.importedPhoneAnswerSummary = [];
       syncWorkupConcernInputs(state.concern);
       syncWorkupSelectors();
       if (fillInputs) syncSelectedPatientInputs();
@@ -29665,11 +29741,55 @@ Rules:
 	      updateOpenEvidenceChangePreview(currentOpenEvidenceAnswerText() || savedAnswer);
 	    }
 
+    function importedAnswerSummaryRows(answers = {}, itemNotes = {}) {
+      const rows = [];
+      const keys = new Set([
+        ...Object.keys(plainObject(answers) ? answers : {}),
+        ...Object.keys(plainObject(itemNotes) ? itemNotes : {})
+      ]);
+      for (const key of keys) {
+        const entry = checklistEntryForKey(key);
+        if (!entry) continue;
+        const values = answerValueList(answers[key]).filter(Boolean);
+        const note = String(itemNotes[key] || "").trim();
+        if (!values.length && !note) continue;
+        rows.push({
+          key,
+          section: entry.section.title || entry.section.shortTitle || "Checklist",
+          question: entry.item.label || itemText(entry.item),
+          answer: values.join(", "),
+          note
+        });
+      }
+      return rows;
+    }
+
+    function renderImportedPhoneAnswerSummary() {
+      const rows = Array.isArray(state.importedPhoneAnswerSummary) ? state.importedPhoneAnswerSummary : [];
+      if (!elements.phoneImportSummaryPanel || !elements.phoneImportSummaryList || !elements.phoneImportSummaryCount) return;
+      elements.phoneImportSummaryPanel.hidden = !rows.length;
+      elements.phoneImportSummaryCount.textContent = `${rows.length} answer${rows.length === 1 ? "" : "s"}`;
+      elements.phoneImportSummaryList.innerHTML = "";
+      for (const row of rows.slice(0, 40)) {
+        const item = document.createElement("div");
+        item.className = "phone-import-summary-row";
+        const section = document.createElement("span");
+        section.textContent = row.section || "Checklist";
+        const question = document.createElement("strong");
+        question.textContent = row.question || "Checklist question";
+        const answer = document.createElement("p");
+        answer.textContent = [row.answer ? `Answer: ${row.answer}` : "", row.note ? `Note: ${row.note}` : ""].filter(Boolean).join(" | ");
+        item.append(section, question, answer);
+        elements.phoneImportSummaryList.appendChild(item);
+      }
+    }
+
 	    function renderOpenEvidence() {
 	      renderTaskStrip(elements.workupTaskStrip, 6);
 	      const matchingTasks = filteredOpenEvidenceTasks();
       renderTaskStrip(elements.patientEvidenceTaskStrip, openEvidenceTasks.length, { searchable: true });
       renderPromptVariableBar();
+      renderImportedPhoneAnswerSummary();
       const { task, text } = getOpenEvidencePromptText();
 	      if (elements.patientSelectedTaskTitle) elements.patientSelectedTaskTitle.textContent = taskLabel(task);
 	      if (elements.patientSelectedTaskCopy) elements.patientSelectedTaskCopy.textContent = taskDescription(task);
@@ -30119,6 +30239,7 @@ Rules:
         t: activePatient().title || $("#caseTitle")?.textContent || "Phone checklist",
         w: state.selectedWorkupModuleId || activePatient().workupModuleId || "",
         cw: state.checklistWorkupModuleId || state.selectedWorkupModuleId || activePatient().workupModuleId || "",
+        f: phoneChecklistFingerprint(),
         o: includeOptions ? 1 : 0,
         s: compactChecklistSectionsForQr({ includeOptions })
       };
@@ -30132,6 +30253,7 @@ Rules:
     function expandCompactPhoneHandoffPayloadForQr(compact = {}) {
       if (compact?.version === "local-phone-handoff-v1") return compact;
       if (compact?.v !== "phoneQr1") throw new Error("This QR code is not a bedside checklist bundle.");
+      const sections = expandCompactChecklistSectionsForQr(compact.s);
       return {
         version: "local-phone-handoff-v1",
         code: compact.c || "",
@@ -30139,10 +30261,10 @@ Rules:
         caseTitle: compact.t || "Phone checklist",
         workupModuleId: compact.w || "",
         checklistWorkupModuleId: compact.cw || compact.w || "",
-        checklistFingerprint: "",
+        checklistFingerprint: compact.f || phoneChecklistFingerprint({ sections, workupModuleId: compact.cw || compact.w || "" }),
         scrubbedContext: "",
         checklistText: "",
-        sections: expandCompactChecklistSectionsForQr(compact.s),
+        sections,
         answers: plainObject(compact.a) ? compact.a : {},
         itemNotes: plainObject(compact.n) ? compact.n : {},
         objectiveData: "",
@@ -30275,8 +30397,7 @@ Rules:
       elements.phoneQrCode.textContent = "Building QR";
       elements.phoneQrStatus.textContent = "Compressing the bedside checklist for phone scan.";
       const attempts = [
-        { includeOptions: true, label: "answer choices preserved" },
-        { includeOptions: false, label: "standard answer choices" }
+        { includeOptions: true, label: "answer choices preserved" }
       ];
       let lastError = null;
       let bestCandidate = null;
@@ -30847,7 +30968,11 @@ Rules:
       const sectionSummary = (Array.isArray(sections) ? sections : []).map((section) => ({
         title: section?.title || "",
         count: Array.isArray(section?.items) ? section.items.length : 0,
-        labels: (Array.isArray(section?.items) ? section.items : []).map((item) => item?.label || item?.text || item?.question || item?.id || "")
+        items: (Array.isArray(section?.items) ? section.items : []).map((item) => ({
+          id: item?.id || "",
+          label: item?.label || item?.text || item?.question || "",
+          options: checklistOptionsForItem(section, item)
+        }))
       }));
       return compactStringFingerprint(JSON.stringify({
         workupModuleId: workupModuleId || "",
@@ -30971,7 +31096,8 @@ Rules:
           admittedAt: new Date().toISOString(),
           localId: "",
           phoneBundleCode: bundleCode,
-          phoneBundlePayload: encoded
+          phoneBundlePayload: encoded,
+          phoneChecklistFingerprint: String(payload.checklistFingerprint || "")
         };
         state.patients = [patient];
         state.activePatientId = patient.id;
@@ -30989,6 +31115,7 @@ Rules:
         state.reviewedChecklistKeys = {};
         state.bedsideNote = String(payload.bedsideNote || "");
         state.importedFindings = "";
+        state.importedPhoneAnswerSummary = [];
         activeChecklistKey = "";
         checklistFilter = "all";
         checklistSearch = "";
@@ -31046,7 +31173,7 @@ Rules:
         caseTitle: $("#caseTitle").textContent,
         workupModuleId: state.selectedWorkupModuleId || activePatient().workupModuleId || "",
         checklistWorkupModuleId: state.checklistWorkupModuleId || state.selectedWorkupModuleId || activePatient().workupModuleId || "",
-        checklistFingerprint: phoneChecklistFingerprint(),
+        checklistFingerprint: activePatient()?.phoneChecklistFingerprint || phoneChecklistFingerprint(),
         scrubbedContext: reviewedSourceContextText(),
         checklistText: state.checklistText,
         sections: state.sections,
@@ -31059,7 +31186,8 @@ Rules:
       updatePatient(activePatient().id, (patient) => ({
         ...patient,
         phoneBundleCode: state.transferCode,
-        phoneBundlePayload: state.phonePayload
+        phoneBundlePayload: state.phonePayload,
+        phoneChecklistFingerprint: payload.checklistFingerprint
       }));
       renderHandoff();
       setHandoffStatus(`Phone bundle ready for ${activePatient().title}.`, "success");
@@ -31183,27 +31311,47 @@ Rules:
       return match ? [Number(match[1]), Number(match[2])] : null;
     }
 
+    function checklistItemIdentity(section, item) {
+      return compactStringFingerprint(JSON.stringify({
+        id: item?.id || "",
+        label: item?.label || item?.text || item?.question || "",
+        options: checklistOptionsForItem(section, item)
+      }));
+    }
+
     function checklistEntryForParts(sectionIndex, itemIndex) {
       const section = state.sections?.[sectionIndex];
       const item = section?.items?.[itemIndex];
       return section && item ? { key: answerKey(sectionIndex, itemIndex), sectionIndex, itemIndex, section, item } : null;
     }
 
-    function compactAnswerComponent(key, value) {
-      const entry = checklistEntryForKey(key);
-      if (!entry) return String(value || "");
-      const answerText = String(value || "").trim();
-      const options = checklistOptionsForItem(entry.section, entry.item);
-      const optionIndex = options.findIndex((option) => normalizedAnswerComponent(option) === normalizedAnswerComponent(answerText));
-      if (optionIndex >= 0) return optionIndex;
-      const endorsementStatus = endorsementEntryStatus(answerText);
-      if (endorsementStatus) {
-        const [component] = answerText.split(":");
-        const components = endorsementComponentsForItem(entry.section, entry.item, options);
-        const componentIndex = components.findIndex((candidate) => normalizedAnswerComponent(candidate) === normalizedAnswerComponent(component));
-        if (componentIndex >= 0) return ["@", componentIndex, endorsementStatus === "positive" ? 1 : 0];
+    function checklistEntryForIdentity(identity = "") {
+      const target = String(identity || "");
+      if (!target) return null;
+      for (const [sectionIndex, section] of (state.sections || []).entries()) {
+        for (const [itemIndex, item] of (section.items || []).entries()) {
+          if (checklistItemIdentity(section, item) === target) {
+            return { key: answerKey(sectionIndex, itemIndex), sectionIndex, itemIndex, section, item };
+          }
+        }
       }
-      return answerText;
+      return null;
+    }
+
+    function checklistEntryForImportedRow(row = []) {
+      if (!Array.isArray(row) || row.length < 3) return null;
+      const sectionIndex = Number(row[0]);
+      const itemIndex = Number(row[1]);
+      if (!Number.isInteger(sectionIndex) || !Number.isInteger(itemIndex)) return null;
+      const identity = row.length >= 4 ? String(row[2] || "") : "";
+      const positioned = checklistEntryForParts(sectionIndex, itemIndex);
+      if (!identity) return positioned;
+      if (positioned && checklistItemIdentity(positioned.section, positioned.item) === identity) return positioned;
+      return checklistEntryForIdentity(identity);
+    }
+
+    function compactAnswerComponent(key, value) {
+      return String(value || "").trim();
     }
 
     function expandCompactAnswerComponent(key, value) {
@@ -31228,9 +31376,11 @@ Rules:
       for (const [key, value] of Object.entries(plainObject(answers) ? answers : {})) {
         const parts = compactAnswerKeyParts(key);
         if (!parts) continue;
+        const entry = checklistEntryForParts(parts[0], parts[1]);
+        if (!entry) continue;
         const values = answerValueList(value).map((entry) => compactAnswerComponent(key, entry)).filter((entry) => entry !== "");
         if (!values.length) continue;
-        rows.push([parts[0], parts[1], values.length === 1 ? values[0] : values]);
+        rows.push([parts[0], parts[1], checklistItemIdentity(entry.section, entry.item), values.length === 1 ? values[0] : values]);
       }
       return rows;
     }
@@ -31241,11 +31391,10 @@ Rules:
       if (!Array.isArray(rows)) return answers;
       for (const row of rows) {
         if (!Array.isArray(row) || row.length < 3) continue;
-        const sectionIndex = Number(row[0]);
-        const itemIndex = Number(row[1]);
-        if (!Number.isInteger(sectionIndex) || !Number.isInteger(itemIndex)) continue;
-        const key = answerKey(sectionIndex, itemIndex);
-        const encoded = row[2];
+        const entry = checklistEntryForImportedRow(row);
+        if (!entry) continue;
+        const key = entry.key;
+        const encoded = row.length >= 4 ? row[3] : row[2];
         const values = Array.isArray(encoded) && encoded[0] !== "@"
           ? encoded.map((entry) => expandCompactAnswerComponent(key, entry)).filter(Boolean)
           : [expandCompactAnswerComponent(key, encoded)].filter(Boolean);
@@ -31262,8 +31411,9 @@ Rules:
       const rows = [];
       for (const [key, value] of Object.entries(plainObject(notes) ? notes : {})) {
         const parts = compactAnswerKeyParts(key);
+        const entry = parts ? checklistEntryForParts(parts[0], parts[1]) : null;
         const note = String(value || "").trim();
-        if (parts && note) rows.push([parts[0], parts[1], note]);
+        if (parts && entry && note) rows.push([parts[0], parts[1], checklistItemIdentity(entry.section, entry.item), note]);
       }
       return rows;
     }
@@ -31274,12 +31424,9 @@ Rules:
       if (!Array.isArray(rows)) return notes;
       for (const row of rows) {
         if (!Array.isArray(row) || row.length < 3) continue;
-        const sectionIndex = Number(row[0]);
-        const itemIndex = Number(row[1]);
-        const note = String(row[2] || "").trim();
-        if (Number.isInteger(sectionIndex) && Number.isInteger(itemIndex) && note) {
-          notes[answerKey(sectionIndex, itemIndex)] = note;
-        }
+        const entry = checklistEntryForImportedRow(row);
+        const note = String((row.length >= 4 ? row[3] : row[2]) || "").trim();
+        if (entry && note) notes[entry.key] = note;
       }
       return notes;
     }
@@ -31466,6 +31613,12 @@ Rules:
       showView("evidence");
     }
 
+    function openPromptsAfterPhoneImport() {
+      if (isPhoneWorkflowDevice()) return;
+      openFinalFindingsReview();
+      setStatus("Phone findings imported. Opening prompts for final review.");
+    }
+
     function showCompletionBedsideNote() {
       document.body.dataset.bedsideNoteOpen = "true";
       if (elements.bedsidePhoneNoteInput) {
@@ -31582,6 +31735,7 @@ Rules:
           setBedsideNoteValue(payload.bedsideNote);
         }
         state.importedFindings = payload.bedsideNote || payload.findingsText || "Imported phone findings";
+        state.importedPhoneAnswerSummary = importedAnswerSummaryRows(filteredAnswers.values, filteredItemNotes.values);
         const ignoredCount = filteredAnswers.ignoredCount + filteredItemNotes.ignoredCount;
         const ignoredCopy = ignoredCount
           ? ` ${ignoredCount} stale phone item${ignoredCount === 1 ? "" : "s"} ignored.`
@@ -31597,11 +31751,14 @@ Rules:
           return false;
         }
         state.importedFindings = raw;
+        state.importedPhoneAnswerSummary = [];
         setHandoffStatus("Plain bedside findings imported into final review.", "success");
       }
       renderChecklist();
       renderFinalUpdate();
+      renderImportedPhoneAnswerSummary();
       saveState();
+      openPromptsAfterPhoneImport();
       return true;
     }
 
