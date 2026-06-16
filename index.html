@@ -24723,18 +24723,35 @@ Rules:
       }
     }
 
-    function patientChecklistPatchPromptRows(sectionKey = patientChecklistPatchSectionKey()) {
+    function patientChecklistPatchPromptRow(sectionKey, entry, { includeOptions = true } = {}) {
       const groups = patientChecklistPatchGroupKeys(sectionKey);
-      return patientChecklistPatchEntries(sectionKey).map((entry) => ({
+      const row = {
         itemId: entry.item.id,
+        sectionKey,
         groupKey: groups.required,
+        sectionTitle: entry.section.title || entry.section.shortTitle || entry.section.organSystemKey || "",
         label: entry.item.label || itemText(entry.item),
         answerMode: entry.item.answerMode || entry.item.answer_mode || "",
-        options: checklistOptionsForItem(entry.section, entry.item),
-        normalAnswers: uniqueChecklistOptions(entry.item.normalAnswers || entry.item.normal_answers || []),
         patientSpecific: Boolean(entry.item.patientSpecific || entry.item.patient_specific),
         currentAnswer: itemFindingText(entry.key) || ""
-      }));
+      };
+      if (includeOptions) {
+        row.options = checklistOptionsForItem(entry.section, entry.item);
+        row.normalAnswers = uniqueChecklistOptions(entry.item.normalAnswers || entry.item.normal_answers || []);
+      }
+      return row;
+    }
+
+    function patientChecklistPatchPromptRows(sectionKey = patientChecklistPatchSectionKey()) {
+      return patientChecklistPatchEntries(sectionKey).map((entry) => patientChecklistPatchPromptRow(sectionKey, entry));
+    }
+
+    function patientChecklistPatchFullChecklistRows() {
+      ensurePatientChecklistItemIds();
+      return allChecklistEntries().map((entry) => {
+        const rowSectionKey = patientChecklistKindForEntry(entry.section, entry.item) === "exam" ? "physical_exam" : "history_questions";
+        return patientChecklistPatchPromptRow(rowSectionKey, entry, { includeOptions: false });
+      });
     }
 
     function patientChecklistPatchPrompt(sectionKey = patientChecklistPatchSectionKey()) {
@@ -24744,6 +24761,7 @@ Rules:
       const groups = patientChecklistPatchGroupKeys(sectionKey);
       const itemType = sectionKey === "physical_exam" ? "physical_exam_maneuver" : "history_question";
       const rows = patientChecklistPatchPromptRows(sectionKey);
+      const fullRows = patientChecklistPatchFullChecklistRows();
       const sectionName = sectionKey === "physical_exam" ? "physical exam" : "history questions";
       return [
         "You are refining one active patient's bedside checklist.",
@@ -24770,16 +24788,26 @@ Rules:
         }, null, 2),
         "",
         `Allowed groupKey values for add: ${groups.required}, ${groups.conditional}. Prefer ${groups.conditional} for patient-only additions.`,
-        "For update/remove, use an exact itemId from current_rows_json. Do not invent itemIds for existing rows.",
+        "Use full_checklist_json to avoid duplicate additions across both history and physical exam rows.",
+        "For update/remove, use an exact itemId from target_rows_json only. Do not update/remove rows outside the selected section.",
+        "Do not invent itemIds for existing rows.",
         "If no changes are useful, return operations: [].",
         "",
         "<deidentified_patient_context>",
         checklistPatientSummaryText(),
         "</deidentified_patient_context>",
         "",
-        "<current_rows_json>",
+        "<target_rows_json>",
         JSON.stringify(rows, null, 2),
-        "</current_rows_json>"
+        "</target_rows_json>",
+        "",
+        "<full_checklist_json>",
+        JSON.stringify({
+          totalRows: fullRows.length,
+          selectedSection: sectionKey,
+          rows: fullRows
+        }, null, 2),
+        "</full_checklist_json>"
       ].join("\n");
     }
 
@@ -28934,14 +28962,23 @@ Rules:
       }
       const report = state.workup ? formatComplaintCdsReport(state.workup) : "";
       const sourceContext = reviewedSourceContextText();
+      const fullChecklistRows = task.id === CHECKLIST_IMPROVEMENT_TASK_ID && state.sections.length
+        ? patientChecklistPatchFullChecklistRows()
+        : [];
       const patchChecklistRows = task.id === CHECKLIST_IMPROVEMENT_TASK_ID && state.sections.length
         ? [
           state.checklistText,
           "",
           "<current_row_ids_json>",
           JSON.stringify({
-            physical_exam: patientChecklistPatchPromptRows("physical_exam"),
-            history_questions: patientChecklistPatchPromptRows("history_questions")
+            target_sections: {
+              physical_exam: patientChecklistPatchPromptRows("physical_exam"),
+              history_questions: patientChecklistPatchPromptRows("history_questions")
+            },
+            full_checklist: {
+              totalRows: fullChecklistRows.length,
+              rows: fullChecklistRows
+            }
           }, null, 2),
           "</current_row_ids_json>"
         ].join("\n")

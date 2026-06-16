@@ -1374,6 +1374,9 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
   await page.waitForSelector("#phiOverlay:not([hidden])");
   const checklistPatchPromptPreview = await page.textContent("#phiPreviewText");
   assert(/workup_section_patch_v1/.test(checklistPatchPromptPreview) && /physical_exam/.test(checklistPatchPromptPreview) && /itemId/.test(checklistPatchPromptPreview), "patient checklist patch prompt should expose schema, target section, and exact row IDs");
+  assert(/<target_rows_json>/.test(checklistPatchPromptPreview) && /<full_checklist_json>/.test(checklistPatchPromptPreview), "patient checklist patch prompt should include both editable target rows and full checklist context");
+  assert(/new exertional chest pressure/i.test(checklistPatchPromptPreview), "physical exam patch prompt should include current history rows in the full checklist context");
+  assert(/Do not update\/remove rows outside the selected section/i.test(checklistPatchPromptPreview), "patient checklist patch prompt should keep cross-section context read-only");
   await page.click("#closePhiOverlayButton");
   const examPatchAdd = {
     schema: "workup_section_patch_v1",
