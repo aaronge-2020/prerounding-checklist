@@ -15209,6 +15209,7 @@
     const PHONE_QR_SCANNER_GUIDANCE_DELAY_MS = 8000;
     const RETURN_QR_SCANNER_GUIDANCE_DELAY_MS = 6000;
     const QR_SCANNER_DECODE_DELAY_MS = 90;
+    const QR_SCANNER_CROP_FACTORS = [1, 0.82, 0.62, 0.48];
 
     let pendingPhiAction = null;
     let latestPhoneQrLink = "";
@@ -29839,6 +29840,7 @@ Rules:
       url.hash = hashParams.toString();
       return {
         url: url.toString(),
+        qrText: encoded.token,
         itemCount: (state.sections || []).reduce((sum, section) => sum + (section.items || []).length, 0),
         includeOptions,
         compressed: encoded.compressed,
@@ -29889,9 +29891,10 @@ Rules:
     function renderPhoneQrCandidate({ link, qr, attempt }) {
       latestPhoneQrLink = link.url;
       elements.phoneQrPanel.dataset.qrLink = link.url;
+      elements.phoneQrPanel.dataset.qrText = link.qrText || link.url;
       elements.phoneQrCode.classList.remove("is-unavailable");
       elements.phoneQrCode.innerHTML = qr.svg;
-      elements.phoneQrStatus.textContent = `${link.itemCount} checklist items ready. Scan with the phone camera or in-app scanner; it opens directly into bedside mode (${attempt.label}).${phoneQrStatusHint(link.url, qr.modules)}`;
+      elements.phoneQrStatus.textContent = `${link.itemCount} checklist items ready. Scan with the in-app phone scanner; it opens directly into bedside mode (${attempt.label}). Use Copy QR link for the phone camera app.${phoneQrStatusHint(link.url, qr.modules)}`;
     }
 
     async function renderPhoneQrCode() {
@@ -29900,6 +29903,7 @@ Rules:
       phoneQrRenderSequence += 1;
       const sequence = phoneQrRenderSequence;
       elements.phoneQrPanel.dataset.qrLink = "";
+      elements.phoneQrPanel.dataset.qrText = "";
       if (!currentPhonePayload()) {
         elements.phoneQrPanel.hidden = true;
         elements.phoneQrCode.innerHTML = "";
@@ -29919,7 +29923,7 @@ Rules:
         const attempt = attempts[index];
         try {
           const link = await createPhoneQrDeepLink(attempt);
-          const qr = phoneQrSvgForUrl(link.url);
+          const qr = phoneQrSvgForUrl(link.qrText || link.url);
           const candidate = { link, qr, attempt };
           if (!bestCandidate || qr.modules < bestCandidate.qr.modules) bestCandidate = candidate;
           if (qr.modules > PHONE_QR_SCAN_MODULE_LIMIT && index < attempts.length - 1) continue;
@@ -30039,6 +30043,10 @@ Rules:
       return typeof window.ZXingBrowser?.BrowserQRCodeReader === "function";
     }
 
+    function localQrScannerAvailable() {
+      return zxingQrScannerAvailable() || typeof window.jsQR === "function" || typeof window.BarcodeDetector === "function";
+    }
+
     function createZxingQrReader() {
       return new window.ZXingBrowser.BrowserQRCodeReader(undefined, {
         delayBetweenScanAttempts: QR_SCANNER_DECODE_DELAY_MS,
@@ -30090,6 +30098,17 @@ Rules:
         const capabilities = controls.streamVideoCapabilitiesGet(() => true) || {};
         const constraints = cameraTrackEnhancementConstraints(capabilities);
         if (constraints) await controls.streamVideoConstraintsApply(constraints);
+      } catch {
+        // Camera capability hints are best-effort; unsupported browsers can still scan normally.
+      }
+    }
+
+    async function applyStreamCameraHints(stream) {
+      const [track] = stream?.getVideoTracks?.() || [];
+      if (!track?.getCapabilities || !track.applyConstraints) return;
+      try {
+        const constraints = cameraTrackEnhancementConstraints(track.getCapabilities() || {});
+        if (constraints) await track.applyConstraints(constraints);
       } catch {
         // Camera capability hints are best-effort; unsupported browsers can still scan normally.
       }
@@ -30155,17 +30174,19 @@ Rules:
     async function decodeQrTextFromCanvas(reader, canvas) {
       const nativeText = await nativeQrDecodeFromCanvas(canvas);
       if (nativeText) return nativeText;
-      try {
-        const zxingText = zxingResultText(await reader.decodeFromCanvas(canvas)).trim();
-        if (zxingText) return zxingText;
-      } catch {
-        // Fall through to jsQR for QR patterns ZXing cannot locate in this frame.
+      if (reader) {
+        try {
+          const zxingText = zxingResultText(await reader.decodeFromCanvas(canvas)).trim();
+          if (zxingText) return zxingText;
+        } catch {
+          // Fall through to jsQR for QR patterns ZXing cannot locate in this frame.
+        }
       }
       return jsQrDecodeFromCanvas(canvas);
     }
 
-    function startZxingFullFrameFallback({ video, onDecoded, isDecoded }) {
-      const reader = createZxingQrReader();
+    function startFullFrameQrFallback({ video, onDecoded, isDecoded }) {
+      const reader = zxingQrScannerAvailable() ? createZxingQrReader() : null;
       const canvas = document.createElement("canvas");
       const context = canvas.getContext("2d", { willReadFrequently: true });
       let stopped = false;
@@ -30185,17 +30206,25 @@ Rules:
         }
         busy = true;
         try {
-          const scale = Math.max(video.videoWidth, video.videoHeight) < 1200 ? 2 : 1;
-          const targetWidth = Math.max(1, Math.floor(video.videoWidth * scale));
-          const targetHeight = Math.max(1, Math.floor(video.videoHeight * scale));
-          if (canvas.width !== targetWidth) canvas.width = targetWidth;
-          if (canvas.height !== targetHeight) canvas.height = targetHeight;
-          context.imageSmoothingEnabled = false;
-          context.drawImage(video, 0, 0, targetWidth, targetHeight);
-          const text = await decodeQrTextFromCanvas(reader, canvas);
-          if (text && !isDecoded()) {
-            await onDecoded(text);
-            return;
+          const sourceWidth = video.videoWidth;
+          const sourceHeight = video.videoHeight;
+          for (const cropFactor of QR_SCANNER_CROP_FACTORS) {
+            const cropWidth = Math.max(1, Math.floor(sourceWidth * cropFactor));
+            const cropHeight = Math.max(1, Math.floor(sourceHeight * cropFactor));
+            const cropLeft = Math.max(0, Math.floor((sourceWidth - cropWidth) / 2));
+            const cropTop = Math.max(0, Math.floor((sourceHeight - cropHeight) / 2));
+            const scale = Math.max(cropWidth, cropHeight) < 1200 ? 2 : 1;
+            const targetWidth = Math.max(1, Math.floor(cropWidth * scale));
+            const targetHeight = Math.max(1, Math.floor(cropHeight * scale));
+            if (canvas.width !== targetWidth) canvas.width = targetWidth;
+            if (canvas.height !== targetHeight) canvas.height = targetHeight;
+            context.imageSmoothingEnabled = false;
+            context.drawImage(video, cropLeft, cropTop, cropWidth, cropHeight, 0, 0, targetWidth, targetHeight);
+            const text = await decodeQrTextFromCanvas(reader, canvas);
+            if (text && !isDecoded()) {
+              await onDecoded(text);
+              return;
+            }
           }
         } catch {
           // The primary ZXing video loop keeps reporting scan misses; this fallback only acts on a positive decode.
@@ -30223,6 +30252,46 @@ Rules:
       };
     }
 
+    async function startManualQrScanner({ video, preferredFacingMode = "environment", onDecoded }) {
+      if (!video) throw new Error("Scanner video element is missing.");
+      preparePhoneQrScannerVideo(video);
+      let lastError = null;
+      let decoded = false;
+      for (const constraints of qrScannerConstraintAttempts(preferredFacingMode)) {
+        let stream = null;
+        try {
+          stream = await navigator.mediaDevices.getUserMedia(constraints);
+          video.srcObject = stream;
+          await video.play();
+          await applyStreamCameraHints(stream);
+          const stopFallback = startFullFrameQrFallback({
+            video,
+            isDecoded: () => decoded,
+            onDecoded: async (text) => {
+              if (decoded) return;
+              decoded = true;
+              await onDecoded(text);
+            }
+          });
+          return {
+            stop() {
+              stopFallback?.();
+              for (const track of stream.getTracks()) track.stop();
+              video.pause();
+              video.srcObject = null;
+            }
+          };
+        } catch (error) {
+          lastError = error;
+          if (stream) {
+            for (const track of stream.getTracks()) track.stop();
+          }
+          video.srcObject = null;
+        }
+      }
+      throw lastError || new Error("Camera could not start.");
+    }
+
     async function startZxingQrScanner({ video, preferredFacingMode = "environment", onDecoded }) {
       if (!video) throw new Error("Scanner video element is missing.");
       const reader = createZxingQrReader();
@@ -30238,7 +30307,7 @@ Rules:
             void onDecoded(text, callbackControls);
           });
           await applyZxingScannerCameraHints(controls);
-          const stopFallback = startZxingFullFrameFallback({
+          const stopFallback = startFullFrameQrFallback({
             video,
             isDecoded: () => decoded,
             onDecoded: async (text) => {
@@ -30255,6 +30324,17 @@ Rules:
       throw lastError || new Error("Camera could not start.");
     }
 
+    async function startRobustQrScanner(options) {
+      if (zxingQrScannerAvailable()) {
+        try {
+          return await startZxingQrScanner(options);
+        } catch (error) {
+          console.warn("ZXing QR scanner could not start; falling back to local frame scanner.", error);
+        }
+      }
+      return startManualQrScanner(options);
+    }
+
     async function startPhoneQrScanner() {
       if (!elements.phoneQrScannerVideo) return;
       if (window.isSecureContext === false) {
@@ -30265,8 +30345,8 @@ Rules:
         setPhoneQrScannerStatus("Camera access is not available in this browser. Use the phone camera app or manual paste fallback.", "error");
         return;
       }
-      if (!zxingQrScannerAvailable()) {
-        setPhoneQrScannerStatus("The ZXing QR scanner did not load. Use the phone camera app or manual paste fallback.", "error");
+      if (!localQrScannerAvailable()) {
+        setPhoneQrScannerStatus("The local QR scanner did not load. Use the manual paste fallback.", "error");
         return;
       }
       stopPhoneQrScanner({ announce: false });
@@ -30274,7 +30354,7 @@ Rules:
         setPhoneQrScannerStatus("Requesting camera access.");
         setPhoneQrScannerActive(true);
         setPhoneQrScannerStatus("Camera starting. Point it at the desktop QR.");
-        phoneQrScannerControls = await startZxingQrScanner({
+        phoneQrScannerControls = await startRobustQrScanner({
           video: elements.phoneQrScannerVideo,
           preferredFacingMode: "environment",
           onDecoded: async (scannedText) => {
@@ -30354,8 +30434,8 @@ Rules:
         setReturnQrScannerStatus("Camera access is not available in this browser. Use Paste from clipboard instead.", "error");
         return;
       }
-      if (!zxingQrScannerAvailable()) {
-        setReturnQrScannerStatus("The ZXing QR scanner did not load. Use Paste from clipboard instead.", "error");
+      if (!localQrScannerAvailable()) {
+        setReturnQrScannerStatus("The local QR scanner did not load. Use Paste from clipboard instead.", "error");
         return;
       }
       stopReturnQrScanner({ announce: false });
@@ -30363,7 +30443,7 @@ Rules:
         setReturnQrScannerStatus("Requesting camera access.");
         setReturnQrScannerActive(true);
         setReturnQrScannerStatus("Camera starting. Point it at the QR on your phone.");
-        returnQrScannerControls = await startZxingQrScanner({
+        returnQrScannerControls = await startRobustQrScanner({
           video: elements.returnQrScannerVideo,
           preferredFacingMode: "user",
           onDecoded: async (scannedText) => {

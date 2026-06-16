@@ -219,17 +219,22 @@ async function installMockQrCamera(page, qrText, options = {}) {
   await page.evaluate(({ textToScan, options: cameraOptions }) => {
     const drawQrToCanvas = () => {
       const canvas = document.createElement("canvas");
-      canvas.width = cameraOptions.width || (cameraOptions.phoneScreen ? 1280 : 1280);
-      canvas.height = cameraOptions.height || (cameraOptions.phoneScreen ? 720 : 1280);
+      canvas.width = cameraOptions.width || 1280;
+      canvas.height = cameraOptions.height || (cameraOptions.phoneScreen || cameraOptions.desktopScreen ? 720 : 1280);
       const context2d = canvas.getContext("2d");
-      context2d.fillStyle = cameraOptions.phoneScreen ? "#17282d" : "#ffffff";
+      context2d.fillStyle = cameraOptions.phoneScreen || cameraOptions.desktopScreen ? "#17282d" : "#ffffff";
       context2d.fillRect(0, 0, canvas.width, canvas.height);
       const phoneRect = cameraOptions.phoneScreen
         ? {
           width: Math.min(520, canvas.width * 0.52),
           height: Math.min(650, canvas.height * 0.86)
         }
-        : { width: canvas.width, height: canvas.height };
+        : cameraOptions.desktopScreen
+          ? {
+            width: Math.min(760, canvas.width * 0.64),
+            height: Math.min(640, canvas.height * 0.82)
+          }
+          : { width: canvas.width, height: canvas.height };
       phoneRect.left = Math.floor((canvas.width - phoneRect.width) / 2);
       phoneRect.top = Math.floor((canvas.height - phoneRect.height) / 2);
       if (cameraOptions.phoneScreen) {
@@ -238,13 +243,21 @@ async function installMockQrCamera(page, qrText, options = {}) {
         context2d.strokeStyle = "#091519";
         context2d.lineWidth = 16;
         context2d.strokeRect(phoneRect.left, phoneRect.top, phoneRect.width, phoneRect.height);
+      } else if (cameraOptions.desktopScreen) {
+        context2d.fillStyle = "#0e1b20";
+        context2d.fillRect(phoneRect.left - 30, phoneRect.top - 26, phoneRect.width + 60, phoneRect.height + 52);
+        context2d.fillStyle = "#f8fbfa";
+        context2d.fillRect(phoneRect.left, phoneRect.top, phoneRect.width, phoneRect.height);
+        context2d.strokeStyle = "#2d3c41";
+        context2d.lineWidth = 10;
+        context2d.strokeRect(phoneRect.left, phoneRect.top, phoneRect.width, phoneRect.height);
       }
       const qr = window.qrcode(0, "L");
       qr.addData(textToScan, "Byte");
       qr.make();
       const modules = qr.getModuleCount();
       const margin = 12;
-      const scanArea = Math.min(phoneRect.width, phoneRect.height) * (cameraOptions.qrScale || 1);
+      const scanArea = Math.min(phoneRect.width, phoneRect.height) * (cameraOptions.qrScale || (cameraOptions.desktopScreen ? 0.66 : 1));
       const cell = Math.max(2, Math.floor(scanArea / (modules + margin * 2)));
       const size = modules * cell;
       const left = Math.floor(phoneRect.left + (phoneRect.width - size) / 2);
@@ -314,14 +327,14 @@ async function installMockQrCamera(page, qrText, options = {}) {
   }, { textToScan: qrText, options });
 }
 
-async function openPhoneScannerPageWithMockQr(browser, baseUrl, qrText) {
+async function openPhoneScannerPageWithMockQr(browser, baseUrl, qrText, cameraOptions = {}) {
   const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
   await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: baseUrl });
   const page = await context.newPage();
   await page.goto(`${baseUrl}/index.html?freshScanner=${Date.now()}`);
   await page.evaluate(() => localStorage.clear());
   await page.goto(`${baseUrl}/index.html`);
-  await installMockQrCamera(page, qrText);
+  await installMockQrCamera(page, qrText, cameraOptions);
   await page.waitForFunction(() => document.body.dataset.view === "vaultAccess");
   return { context, page };
 }
@@ -582,6 +595,7 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   const desktopQrAudit = await desktopPage.evaluate(() => ({
     hasQr: Boolean(document.querySelector("#phoneQrCode svg")),
     qrLink: document.querySelector("#phoneQrPanel")?.dataset.qrLink || "",
+    qrText: document.querySelector("#phoneQrPanel")?.dataset.qrText || "",
     qrStatus: document.querySelector("#phoneQrStatus")?.textContent || "",
     qrViewBox: document.querySelector("#phoneQrCode svg")?.getAttribute("viewBox") || "",
     qrBoxWidth: document.querySelector("#phoneQrCode")?.getBoundingClientRect().width || 0,
@@ -599,6 +613,8 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   assert(desktopQrAudit.regenerateVisible && desktopQrAudit.copyVisible && desktopQrAudit.downloadVisible, `desktop handoff should expose regenerate/copy/download secondary actions: ${JSON.stringify(desktopQrAudit)}`);
   assert(/^Regenerate$/i.test(desktopQrAudit.regenerateText.trim()) && /Copy bundle/i.test(desktopQrAudit.copyText) && /^Download$/i.test(desktopQrAudit.downloadText.trim()), `desktop secondary actions should be simple regenerate/copy/download labels: ${JSON.stringify(desktopQrAudit)}`);
   assert(desktopQrAudit.qrLink.includes("#phoneBundle="), `desktop QR panel should expose the deep link for tests: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
+  assert(/^(?:gz|j)\./.test(desktopQrAudit.qrText), `desktop QR itself should use the compact scanner token: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
+  assert(desktopQrAudit.qrText.length < desktopQrAudit.qrLink.length, `compact QR token should be shorter than the deep link: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
   assert(/^[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(desktopCode), `desktop handoff should generate a pairing code, got ${desktopCode}`);
   assert(/^[a-f0-9]{8}$/.test(desktopBundle.checklistFingerprint || ""), `desktop handoff should include a compact checklist fingerprint, got ${desktopBundle.checklistFingerprint}`);
   assert(desktopBundle.checklistWorkupSignature === undefined, "phone handoff should not send the full canonical workup signature.");
@@ -629,7 +645,12 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   assert(qrPhoneAudit.storageKeys.length === 0, `QR phone session should not write patient data to localStorage: ${JSON.stringify(qrPhoneAudit)}`);
   await qrPhoneContext.close();
 
-  const { context: scannerContext, page: scannerPage } = await openPhoneScannerPageWithMockQr(browser, baseUrl, qrLink);
+  const { context: scannerContext, page: scannerPage } = await openPhoneScannerPageWithMockQr(browser, baseUrl, desktopQrAudit.qrText, {
+    desktopScreen: true,
+    lowContrast: true,
+    glare: true,
+    qrScale: 0.58
+  });
   await scannerPage.click("#startPhoneQrScannerButton");
   try {
     await scannerPage.waitForSelector("#bedsideView:not([hidden])", { timeout: 45000 });
