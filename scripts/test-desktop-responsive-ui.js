@@ -1473,6 +1473,45 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
   await page.waitForFunction(() => /formatting was repaired/i.test(document.querySelector("#patientChecklistPatchPreview")?.textContent || ""));
   await page.click("#applyPatientChecklistPatchButton");
   await page.waitForFunction(() => /Assess orthostatic vital signs/i.test(document.querySelector("#workspaceChecklistDirectory")?.textContent || ""));
+  const htmlEmMangleIdentifier = (value) => {
+    let open = false;
+    return String(value || "").replace(/_/g, () => {
+      open = !open;
+      return open ? "<em>" : "</em>";
+    });
+  };
+  const htmlEmOpenEvidencePatch = "```json\n" + `{
+    "schema": "workup<em>section</em>patch<em>v1",</em>
+    "workupId": "${htmlEmMangleIdentifier(chestPainId)}",</em>
+    "sectionKey": "physical<em>exam",</em>
+    "summary": "Add a breath odor row from HTML emphasis-mangled OpenEvidence JSON.",
+    "operations":
+    {
+      "op": "add",
+      "groupKey": "conditionalExam",
+      "item": {
+        "id": "patient<em>specific</em>breath<em>odor</em>patch",
+        "item<em>type": "physical</em>exam<em>maneuver",</em>
+        "label": "Assess breath odor for acetone smell",
+        "answerMode": "single",
+        "options":
+        "No acetone odor",
+        "Acetone odor present",
+        "Unable to assess"
+        ],
+        "normalAnswers":
+        "No acetone odor"
+        ],
+        "rationale": "OpenEvidence sometimes renders underscores as HTML emphasis tags."
+      }
+    }
+  ]
+  }` + "\n```";
+  await page.fill("#patientChecklistPatchInput", htmlEmOpenEvidencePatch);
+  await page.waitForFunction(() => /patch ready/i.test(document.querySelector("#patientChecklistPatchPreview")?.textContent || ""));
+  await page.waitForFunction(() => /formatting was repaired/i.test(document.querySelector("#patientChecklistPatchPreview")?.textContent || ""));
+  await page.click("#applyPatientChecklistPatchButton");
+  await page.waitForFunction(() => /Assess breath odor for acetone smell/i.test(document.querySelector("#workspaceChecklistDirectory")?.textContent || ""));
 
   await page.locator("#workspaceChecklistDirectory .workspace-checklist-jump").first().click();
   await page.waitForSelector("#bedsideView:not([hidden])");

@@ -24430,13 +24430,17 @@ Rules:
         .replace(/\r\n/g, "\n")
         .replace(/[“”]/g, "\"")
         .replace(/[‘’]/g, "'")
-        .replace(/:contentReference\[[^\]]+\]\{[^}]*\}/g, "");
+        .replace(/:contentReference\[[^\]]+\]\{[^}]*\}/g, "")
+        .replace(/&lt;\s*\/?\s*em\s*&gt;/gi, "_")
+        .replace(/<\s*\/?\s*em\s*>/gi, "_")
+        .replace(/&quot;/gi, "\"")
+        .replace(/&#39;|&apos;/gi, "'");
       repaired = repaired.replace(/"([A-Za-z0-9][A-Za-z0-9*_-]*\*[A-Za-z0-9*_-]*)"/g, (_, token) => JSON.stringify(token.replace(/\*/g, "_")));
       repaired = repaired
-        .replace(/,\s*\*/g, ",")
-        .replace(/"\s*\*/g, "\"")
-        .replace(/:\s*\*/g, ":")
-        .replace(/^\s*\*\s*$/gm, "");
+        .replace(/,\s*[_*]+/g, ",")
+        .replace(/"\s*[_*]+/g, "\"")
+        .replace(/:\s*[_*]+/g, ":")
+        .replace(/^\s*[_*]+\s*$/gm, "");
       repaired = repaired.replace(/"operations"\s*:\s*\{\s*"op"\s*:/g, "\"operations\": [ { \"op\":");
       repaired = repaired.replace(/"(options|normalAnswers|normal_answers|answerOptions|answer_options|findingsOptions|findings_options|exclusiveGroups|exclusive_groups|citations|tags)"\s*:\s*(?=")/g, "\"$1\": [ ");
       repaired = repaired.replace(/,\s*([}\]])/g, "$1");
@@ -24444,7 +24448,12 @@ Rules:
     }
 
     function normalizeOpenEvidencePatchKey(key = "") {
-      return String(key || "").replace(/\*/g, "_");
+      return String(key || "")
+        .replace(/&lt;\s*\/?\s*em\s*&gt;/gi, "_")
+        .replace(/<\s*\/?\s*em\s*>/gi, "_")
+        .replace(/\*/g, "_")
+        .replace(/_+/g, "_")
+        .replace(/^_+|_+$/g, "");
     }
 
     function normalizeOpenEvidencePatchValue(key = "", value) {
@@ -24452,7 +24461,13 @@ Rules:
       if (Array.isArray(value)) return value.map((entry) => normalizeOpenEvidencePatchValue("", entry));
       if (value && typeof value === "object") return normalizeOpenEvidencePatchObject(value);
       if (typeof value === "string" && openEvidencePatchIdentifierKeys.has(normalizedKey)) {
-        return value.replace(/\*/g, "_").trim();
+        return value
+          .replace(/&lt;\s*\/?\s*em\s*&gt;/gi, "_")
+          .replace(/<\s*\/?\s*em\s*>/gi, "_")
+          .replace(/\*/g, "_")
+          .replace(/_+/g, "_")
+          .replace(/^_+|_+$/g, "")
+          .trim();
       }
       return value;
     }
@@ -24812,7 +24827,7 @@ Rules:
         "",
         "Answer format:",
         "Return one fenced ```json code block only. No prose, markdown citations, :contentReference markers, or reference list.",
-        "The code block must be valid JSON. Preserve underscores exactly; no stray asterisks. operations/options/normalAnswers must be bracketed arrays.",
+        "The code block must be valid JSON. Use literal underscores, not asterisks or HTML emphasis tags. operations/options/normalAnswers must be bracketed arrays.",
         "Do not regenerate the full checklist. Do not output workup_refinement_v1.",
         "",
         "Use this JSON schema:",

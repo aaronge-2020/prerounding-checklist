@@ -648,7 +648,7 @@ Raw chart text and identifiers were withheld. Use only the compact de-identified
 
 <output_format>
 Output only one fenced JSON block with the clinically useful checklist edits. Do not include prose before or after it. Do not include :contentReference markers or citation prose.
-Fence as \`\`\`json. Preserve underscores exactly; no stray asterisks. JSON.parse must pass. "operations", "options", and "normalAnswers" must be bracketed arrays.
+Fence as \`\`\`json. Use literal underscores, not asterisks or HTML emphasis tags. JSON.parse must pass. "operations", "options", and "normalAnswers" must be bracketed arrays.
 Use this exact top-level schema:
 {
   "schema": "workup_section_patch_v1",
