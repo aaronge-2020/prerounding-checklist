@@ -3796,6 +3796,97 @@
       cursor: grabbing;
     }
 
+    .cytoscape-tree-shell {
+      position: relative;
+      min-height: 520px;
+      height: clamp(520px, 68vh, 780px);
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background:
+        linear-gradient(rgba(24, 50, 60, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(24, 50, 60, 0.045) 1px, transparent 1px),
+        #fbfdfd;
+      background-size: 28px 28px;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    .cytoscape-tree-canvas {
+      width: 100%;
+      height: 100%;
+      outline: 0;
+    }
+
+    .cytoscape-tree-toolbar {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      z-index: 4;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      max-width: calc(100% - 20px);
+      padding: 6px;
+      border: 1px solid rgba(184, 204, 209, 0.84);
+      border-radius: 7px;
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 12px 30px rgba(24, 50, 60, 0.12);
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, -6px);
+      transition: opacity 120ms ease, transform 120ms ease;
+      backdrop-filter: blur(8px);
+    }
+
+    .cytoscape-tree-shell:hover .cytoscape-tree-toolbar,
+    .cytoscape-tree-shell:focus-within .cytoscape-tree-toolbar,
+    .cytoscape-tree-shell[data-toolbar-visible="true"] .cytoscape-tree-toolbar {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate(-50%, 0);
+    }
+
+    .cytoscape-tree-toolbar button {
+      display: inline-grid;
+      place-items: center;
+      min-width: 34px;
+      min-height: 30px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      background: transparent;
+      color: #18323c;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .cytoscape-tree-toolbar button:hover,
+    .cytoscape-tree-toolbar button:focus-visible {
+      border-color: #b8ccd1;
+      background: #eef7f7;
+      outline: 0;
+    }
+
+    .cytoscape-tree-toolbar .toolbar-divider {
+      width: 1px;
+      height: 22px;
+      background: #d8e4e6;
+    }
+
+    .cytoscape-tree-fallback {
+      display: grid;
+      place-items: center;
+      min-height: 240px;
+      border: 1px dashed #b8ccd1;
+      border-radius: 7px;
+      background: #f8fbfb;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+    }
+
     .studio-pathway-node-actions {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
@@ -13941,6 +14032,8 @@
   </div>
 
   <script src="./vendor/d3.v7.min.js"></script>
+  <script src="./vendor/cytoscape-3.34.0.min.js"></script>
+  <script src="./vendor/cytoscape-dagre-4.0.0.min.js"></script>
   <script src="./vendor/qrcode-generator-2.0.4.js"></script>
   <script src="./vendor/zxing-browser-0.2.0.min.js"></script>
   <script src="./vendor/jsQR-1.4.0.js"></script>
@@ -18867,7 +18960,7 @@ Rules:
       const title = document.createElement("strong");
       title.textContent = graph.title || `${moduleLabel(module)} pathway`;
       const detail = document.createElement("span");
-      detail.textContent = `${nodes.length} visible node${nodes.length === 1 ? "" : "s"}. Click a node, edit its label on the canvas, or use the detail editor below; drag from the node header to adjust layout.`;
+      detail.textContent = `${nodes.length} visible node${nodes.length === 1 ? "" : "s"}. Click a node to edit details below, drag nodes to adjust layout, or hover at the top for zoom controls.`;
       text.append(title, detail);
       const badge = document.createElement("span");
       badge.className = "status-chip";
@@ -18875,35 +18968,12 @@ Rules:
       head.append(text, badge);
       treePanel.append(head);
       elements.workupStudioItemList.appendChild(treePanel);
-      renderDecisionTreeGraph(treePanel, graph, {
+      renderCytoscapeStudioPathwayTree(treePanel, graph, {
         selectedNodeId: node?.id,
-        allowInlineEdit: true,
-        initialView: "root",
-        zoom: 0.9,
-        xGap: 58,
-        yGap: 76,
-        onSelectNode: (nodeId, interaction = {}) => {
+        onSelectNode: (nodeId) => {
           workupStudioState.selectedPathwayNodeId = nodeId;
           saveWorkupStudioState();
-          if (interaction.render === false) return;
           renderWorkupStudioEditor();
-        },
-        onEditNodeLabel: (nodeId, label) => {
-          const nextLabel = String(label || "").replace(/\s+/g, " ").trim();
-          if (!nextLabel) {
-            setStatus("Pathway node label cannot be empty.");
-            renderWorkupStudioEditor();
-            return false;
-          }
-          const editorNodeId = $("#workupStudioPathwayNodeIdDisplay")?.value || "";
-          const nextGraph = editorNodeId === nodeId
-            ? studioPathwayGraphFromEditor(graph)
-            : JSON.parse(JSON.stringify(graph));
-          const entry = flattenDecisionTree(nextGraph.root).find(({ node: candidate }) => candidate.id === nodeId);
-          if (!entry) return false;
-          entry.node.label = nextLabel;
-          nextGraph.updatedAt = new Date().toISOString();
-          return saveWorkupStudioPathwayGraph(nextGraph, { selectedNodeId: nodeId });
         },
         onMoveNode: (nodeId, x, y) => {
           saveWorkupStudioPathwayNodeLayout(graph, nodeId, x, y);
@@ -21799,6 +21869,328 @@ Rules:
       const sentenceCut = clean.slice(0, maxChars + 1).search(/[.;]\s+\S*$/);
       if (sentenceCut > 120) return `${clean.slice(0, sentenceCut + 1).trim()} ...`;
       return `${clean.slice(0, maxChars).trim().replace(/[,;:]\s*$/, "")} ...`;
+    }
+
+    function cytoscapeStudioTreeNodePayload(node = {}) {
+      const type = String(node.type || "action").toLowerCase();
+      const title = decisionTreeGraphNodeLabel(node);
+      const detail = compactDecisionTreeNodeDetail(decisionTreeNodeDetailText(node), 260);
+      const wrappedTitle = wrapTreeText(title, 36, 3).slice(0, 3);
+      const wrappedDetail = detail ? wrapTreeText(detail, 48, 4).slice(0, 4) : [];
+      const label = [
+        type.toUpperCase(),
+        ...wrappedTitle,
+        ...(wrappedDetail.length ? ["", ...wrappedDetail] : [])
+      ].join("\n");
+      const height = Math.min(238, Math.max(112, 48 + wrappedTitle.length * 16 + wrappedDetail.length * 14 + (wrappedDetail.length ? 10 : 0)));
+      return {
+        label,
+        detail,
+        width: 340,
+        height
+      };
+    }
+
+    function cytoscapeStudioEdgeLabel(text = "") {
+      const compact = compactDecisionTreeNodeDetail(decisionTreeGraphEdgeLabel(text), 128);
+      return compact.length > 128 ? `${compact.slice(0, 125).replace(/\s+\S*$/, "")}...` : compact;
+    }
+
+    function cytoscapeStudioTreeElements(graph = {}) {
+      const nodes = [];
+      const edges = [];
+      const seen = new Set();
+      const visit = (node, parentId = "") => {
+        if (!node) return;
+        const nodeId = String(node.id || `node_${nodes.length + 1}`).trim();
+        const internal = isInternalDecisionTreeNode(node);
+        let nextParentId = parentId;
+        if (!internal) {
+          const payload = cytoscapeStudioTreeNodePayload(node);
+          const data = {
+            id: nodeId,
+            label: payload.label,
+            type: String(node.type || "action").toLowerCase(),
+            detail: payload.detail,
+            title: String(node.label || node.id || "Pathway step"),
+            width: payload.width,
+            height: payload.height
+          };
+          const layoutX = Number(node.layout?.x);
+          const layoutY = Number(node.layout?.y);
+          if (Number.isFinite(layoutX) && Number.isFinite(layoutY)) {
+            data.layoutX = layoutX;
+            data.layoutY = layoutY;
+          }
+          nodes.push({
+            group: "nodes",
+            data
+          });
+          seen.add(nodeId);
+          if (parentId && seen.has(parentId)) {
+            edges.push({
+              group: "edges",
+              data: {
+                id: `${parentId}__${nodeId}`,
+                source: parentId,
+                target: nodeId,
+                label: cytoscapeStudioEdgeLabel(node.edgeLabel || "")
+              }
+            });
+          }
+          nextParentId = nodeId;
+        }
+        for (const child of node.children || []) visit(child, nextParentId);
+      };
+      visit(graph.root);
+      return { nodes, edges };
+    }
+
+    function renderCytoscapeStudioPathwayTree(container, graph, options = {}) {
+      const cytoscape = window.cytoscape;
+      if (!cytoscape) {
+        const fallback = document.createElement("div");
+        fallback.className = "cytoscape-tree-fallback";
+        fallback.textContent = "Pathway tree renderer unavailable.";
+        container.appendChild(fallback);
+        return;
+      }
+      const shell = document.createElement("div");
+      shell.className = "cytoscape-tree-shell";
+      shell.dataset.renderer = "cytoscape";
+      shell.tabIndex = 0;
+      const canvas = document.createElement("div");
+      canvas.className = "cytoscape-tree-canvas";
+      canvas.setAttribute("aria-label", `${graph.title || "Clinical pathway"} graph canvas. Hover near the top for zoom controls.`);
+      const toolbar = document.createElement("div");
+      toolbar.className = "cytoscape-tree-toolbar";
+      toolbar.setAttribute("aria-label", "Pathway tree zoom controls");
+      const readable = document.createElement("div");
+      readable.className = "sr-only";
+      const { nodes, edges } = cytoscapeStudioTreeElements(graph);
+      shell.dataset.nodeCount = String(nodes.length);
+      readable.textContent = nodes.map((entry) => entry.data.label.replace(/\n+/g, " ")).join(" | ");
+      const makeButton = (label, title, action) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = label;
+        button.title = title;
+        button.setAttribute("aria-label", title);
+        button.addEventListener("click", (event) => {
+          event.preventDefault();
+          shell.dataset.toolbarVisible = "true";
+          action();
+        });
+        return button;
+      };
+      const divider = () => {
+        const node = document.createElement("span");
+        node.className = "toolbar-divider";
+        node.setAttribute("aria-hidden", "true");
+        return node;
+      };
+      shell.append(canvas, toolbar, readable);
+      container.appendChild(shell);
+      let toolbarHideTimer = 0;
+      let toolbarPinnedUntil = 0;
+      const showTreeToolbar = (holdMs = 0) => {
+        window.clearTimeout(toolbarHideTimer);
+        if (holdMs) toolbarPinnedUntil = Date.now() + holdMs;
+        shell.dataset.toolbarVisible = "true";
+        toolbar.style.transition = "none";
+        toolbar.style.opacity = "1";
+        toolbar.style.pointerEvents = "auto";
+        toolbar.style.transform = "translate(-50%, 0)";
+      };
+      const hideTreeToolbarSoon = () => {
+        window.clearTimeout(toolbarHideTimer);
+        toolbarHideTimer = window.setTimeout(() => {
+          if (Date.now() < toolbarPinnedUntil) {
+            hideTreeToolbarSoon();
+            return;
+          }
+          if (shell.matches(":hover") || shell.contains(document.activeElement)) return;
+          delete shell.dataset.toolbarVisible;
+          toolbar.style.transition = "";
+          toolbar.style.opacity = "";
+          toolbar.style.pointerEvents = "";
+          toolbar.style.transform = "";
+        }, 260);
+      };
+      shell.addEventListener("pointerenter", () => showTreeToolbar());
+      shell.addEventListener("pointerdown", () => showTreeToolbar(1800), { capture: true });
+      shell.addEventListener("pointerleave", hideTreeToolbarSoon);
+      shell.addEventListener("focusin", () => showTreeToolbar());
+      shell.addEventListener("focusout", hideTreeToolbarSoon);
+      toolbar.addEventListener("pointerenter", () => showTreeToolbar());
+      toolbar.addEventListener("pointerleave", hideTreeToolbarSoon);
+
+      const cy = cytoscape({
+        container: canvas,
+        elements: [...nodes, ...edges],
+        minZoom: 0.25,
+        maxZoom: 2.2,
+        boxSelectionEnabled: false,
+        autoungrabify: false,
+        layout: { name: "preset" },
+        style: [
+          {
+            selector: "node",
+            style: {
+              "shape": "round-rectangle",
+              "width": "data(width)",
+              "height": "data(height)",
+              "background-color": "#ffffff",
+              "border-color": "#b8ccd1",
+              "border-width": 1.2,
+              "color": "#13262e",
+              "font-size": 11,
+              "font-weight": 700,
+              "label": "data(label)",
+              "line-height": 1.18,
+              "padding": 16,
+              "text-halign": "center",
+              "text-margin-y": 0,
+              "text-max-width": 300,
+              "text-valign": "center",
+              "text-wrap": "wrap"
+            }
+          },
+          {
+            selector: "node[type = 'decision']",
+            style: {
+              "background-color": "#f7fbfb",
+              "border-color": "#6b9fa8"
+            }
+          },
+          {
+            selector: "node[type = 'action']",
+            style: {
+              "background-color": "#fffdf7",
+              "border-color": "#d4b76e"
+            }
+          },
+          {
+            selector: "node[type = 'endpoint']",
+            style: {
+              "background-color": "#f7fbf8",
+              "border-color": "#78a887"
+            }
+          },
+          {
+            selector: "node.is-selected",
+            style: {
+              "border-color": "#174d59",
+              "border-width": 3
+            }
+          },
+          {
+            selector: "edge",
+            style: {
+              "curve-style": "bezier",
+              "line-color": "#adc8ce",
+              "target-arrow-color": "#adc8ce",
+              "target-arrow-shape": "triangle",
+              "target-distance-from-node": 2,
+              "width": 1.4,
+              "color": "#31525b",
+              "font-size": 9,
+              "font-weight": 700,
+              "label": "data(label)",
+              "line-height": 1.15,
+              "source-distance-from-node": 2,
+              "text-background-color": "#fbfdfd",
+              "text-background-opacity": 0.86,
+              "text-background-padding": 3,
+              "text-max-width": 150,
+              "text-rotation": "autorotate",
+              "text-wrap": "wrap"
+            }
+          }
+        ]
+      });
+      container._cytoscape = cy;
+      shell._cytoscape = cy;
+      const hasDagre = typeof window.cytoscapeDagre === "function";
+      const layoutOptions = hasDagre
+        ? { name: "dagre", rankDir: "TB", rankSep: 112, nodeSep: 78, edgeSep: 24, fit: false, animate: false, nodeDimensionsIncludeLabels: true }
+        : { name: "breadthfirst", directed: true, spacingFactor: 1.45, fit: false, animate: false };
+      const selectNode = (nodeId) => {
+        cy.nodes().removeClass("is-selected");
+        if (!nodeId) return;
+        const target = cy.$id(nodeId);
+        if (target.nonempty()) {
+          target.addClass("is-selected");
+          shell.dataset.selectedNodeId = nodeId;
+        }
+      };
+      const applySavedPositions = () => {
+        cy.nodes().forEach((node) => {
+          const x = Number(node.data("layoutX"));
+          const y = Number(node.data("layoutY"));
+          if (Number.isFinite(x) && Number.isFinite(y)) node.position({ x, y });
+        });
+      };
+      const fitGraph = (duration = 120) => {
+        if (!cy.elements().length) return;
+        cy.stop();
+        cy.animate({ fit: { eles: cy.elements(), padding: 56 } }, { duration });
+      };
+      const runLayout = () => {
+        cy.layout({
+          ...layoutOptions,
+          stop: () => {
+            applySavedPositions();
+            selectNode(options.selectedNodeId);
+            fitGraph(0);
+          }
+        }).run();
+      };
+      toolbar.append(
+        makeButton("-", "Zoom out", () => cy.animate({ zoom: Math.max(cy.minZoom(), cy.zoom() / 1.18), center: { eles: cy.elements() } }, { duration: 120 })),
+        makeButton("+", "Zoom in", () => cy.animate({ zoom: Math.min(cy.maxZoom(), cy.zoom() * 1.18), center: { eles: cy.elements() } }, { duration: 120 })),
+        divider(),
+        makeButton("Fit", "Fit pathway", () => fitGraph(120)),
+        makeButton("Reset", "Reset layout", () => runLayout())
+      );
+      cy.on("tap", "node", (event) => {
+        const nodeId = event.target.id();
+        selectNode(nodeId);
+        if (typeof options.onSelectNode === "function") options.onSelectNode(nodeId);
+      });
+      let activeDraggedNodeId = "";
+      const saveDraggedNodeLayout = (node) => {
+        const position = node.position();
+        if (typeof options.onMoveNode === "function") options.onMoveNode(node.id(), position.x, position.y);
+      };
+      cy.on("drag", "node", (event) => {
+        activeDraggedNodeId = event.target.id();
+      });
+      cy.on("dragfree", "node", (event) => {
+        if (activeDraggedNodeId !== event.target.id()) return;
+        saveDraggedNodeLayout(event.target);
+        activeDraggedNodeId = "";
+      });
+      cy.on("grab", "node", () => shell.classList.add("is-dragging"));
+      cy.on("free", "node", (event) => {
+        shell.classList.remove("is-dragging");
+        if (activeDraggedNodeId !== event.target.id()) return;
+        saveDraggedNodeLayout(event.target);
+        activeDraggedNodeId = "";
+      });
+      if (window.ResizeObserver) {
+        const observer = new ResizeObserver(() => {
+          window.requestAnimationFrame(() => {
+            if (!cy.destroyed()) {
+              cy.resize();
+              fitGraph(0);
+            }
+          });
+        });
+        observer.observe(shell);
+        cy.on("destroy", () => observer.disconnect());
+      }
+      window.requestAnimationFrame(runLayout);
     }
 
     function decisionTreeNodeRenderBox(entry, options = {}) {

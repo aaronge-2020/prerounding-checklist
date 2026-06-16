@@ -70,8 +70,11 @@ async function assertPathwayEditorControlsContained(page, label) {
       };
     }).filter((entry) => entry.left < Math.round((formRect?.left || 0) - 1)
       || entry.right > Math.round((formRect?.right || 0) + 1));
-    const selectedRect = document.querySelector("#workupStudioPathwayTreePanel .decision-tree-node-g[data-selected='true'] rect")?.getBoundingClientRect();
-    const inlineEditor = document.querySelector("#workupStudioPathwayTreePanel .decision-tree-inline-label")?.getBoundingClientRect();
+    const treeShell = document.querySelector("#workupStudioPathwayTreePanel .cytoscape-tree-shell");
+    const shellRect = treeShell?.getBoundingClientRect();
+    const toolbar = document.querySelector("#workupStudioPathwayTreePanel .cytoscape-tree-toolbar");
+    const toolbarRect = toolbar?.getBoundingClientRect();
+    const toolbarStyle = toolbar ? getComputedStyle(toolbar) : null;
     return {
       viewportWidth: document.documentElement.clientWidth,
       form: formRect ? {
@@ -80,28 +83,25 @@ async function assertPathwayEditorControlsContained(page, label) {
         width: Math.round(formRect.width)
       } : null,
       offenders,
-      inlineInsideNode: Boolean(selectedRect && inlineEditor
-        && inlineEditor.top >= selectedRect.top - 1
-        && inlineEditor.left >= selectedRect.left - 1
-        && inlineEditor.right <= selectedRect.right + 1
-        && inlineEditor.bottom <= selectedRect.bottom + 1),
-      inlineEditor: inlineEditor ? {
-        left: Math.round(inlineEditor.left),
-        right: Math.round(inlineEditor.right),
-        top: Math.round(inlineEditor.top),
-        bottom: Math.round(inlineEditor.bottom)
+      treeShell: shellRect ? {
+        left: Math.round(shellRect.left),
+        right: Math.round(shellRect.right),
+        top: Math.round(shellRect.top),
+        bottom: Math.round(shellRect.bottom)
       } : null,
-      selectedNode: selectedRect ? {
-        left: Math.round(selectedRect.left),
-        right: Math.round(selectedRect.right),
-        top: Math.round(selectedRect.top),
-        bottom: Math.round(selectedRect.bottom)
-      } : null
+      toolbarInsideShell: Boolean(shellRect && toolbarRect
+        && toolbarRect.left >= shellRect.left - 1
+        && toolbarRect.right <= shellRect.right + 1
+        && toolbarRect.top >= shellRect.top - 1
+        && toolbarRect.bottom <= shellRect.bottom + 64),
+      toolbarHiddenUntilHover: toolbarStyle ? toolbarStyle.opacity === "0" && toolbarStyle.pointerEvents === "none" : false
     };
   });
   assert.ok(audit.form?.width > 0, `${label}: pathway editor form should be visible: ${JSON.stringify(audit)}`);
   assert.deepEqual(audit.offenders, [], `${label}: pathway editor controls should stay inside the editor form: ${JSON.stringify(audit)}`);
-  assert.equal(audit.inlineInsideNode, true, `${label}: inline pathway textbox should stay inside the selected rendered node: ${JSON.stringify(audit)}`);
+  assert.ok(audit.treeShell?.right > audit.treeShell?.left, `${label}: Cytoscape tree shell should be visible: ${JSON.stringify(audit)}`);
+  assert.equal(audit.toolbarInsideShell, true, `${label}: hover toolbar should stay inside the tree shell top area: ${JSON.stringify(audit)}`);
+  assert.equal(audit.toolbarHiddenUntilHover, true, `${label}: hover toolbar should stay tucked away until pointer/focus: ${JSON.stringify(audit)}`);
 }
 
 async function waitForCondition(callback, label, timeoutMs = 5000) {
@@ -118,6 +118,32 @@ async function setTextareaValue(page, selector, value) {
     node.value = nextValue;
     node.dispatchEvent(new Event("input", { bubbles: true }));
   }, value);
+}
+
+async function waitForCytoscapeNode(page, nodeId) {
+  await page.waitForFunction((id) => {
+    const cy = document.querySelector("#workupStudioPathwayTreePanel")?._cytoscape;
+    const node = cy?.$id(id);
+    if (!cy || !node?.nonempty()) return false;
+    const position = node.renderedPosition();
+    return Number.isFinite(position.x) && Number.isFinite(position.y);
+  }, nodeId);
+}
+
+async function cytoscapeNodeScreenPoint(page, nodeId) {
+  const point = await page.evaluate((id) => {
+    const cy = document.querySelector("#workupStudioPathwayTreePanel")?._cytoscape;
+    const node = cy?.$id(id);
+    if (!cy || !node?.nonempty()) return null;
+    const position = node.renderedPosition();
+    const rect = cy.container().getBoundingClientRect();
+    return {
+      x: rect.left + position.x,
+      y: rect.top + position.y
+    };
+  }, nodeId);
+  assert.ok(point, `Cytoscape node ${nodeId} should have a rendered screen point.`);
+  return point;
 }
 
 function authoringTableRequestCount(requests) {
@@ -524,32 +550,10 @@ try {
     searchValue: document.querySelector("#workupStudioSearchInput")?.value || "",
     sectionTitle: document.querySelector("#workupStudioTopSectionTitle")?.textContent?.trim() || "",
     commandbarActions: Array.from(document.querySelectorAll(".studio-commandbar button")).map((button) => button.textContent?.trim()),
-    renderedTreeNodes: document.querySelectorAll("#workupStudioPathwayTreePanel .decision-tree-node-g").length,
+    renderedTreeNodes: document.querySelector("#workupStudioPathwayTreePanel")?._cytoscape?.nodes().length || 0,
     legacyItemRows: document.querySelectorAll("#workupStudioItemList .studio-item-button").length,
     editorBodyMode: document.querySelector(".studio-editor-body")?.classList.contains("is-pathway-editor") || false,
-    inlineEditorBounds: (() => {
-      const selectedRect = document.querySelector("#workupStudioPathwayTreePanel .decision-tree-node-g[data-selected='true'] rect")?.getBoundingClientRect();
-      const inlineEditor = document.querySelector("#workupStudioPathwayTreePanel .decision-tree-inline-label")?.getBoundingClientRect();
-      if (!selectedRect || !inlineEditor) return null;
-      return {
-        editorInsideNode: inlineEditor.top >= selectedRect.top - 1
-          && inlineEditor.left >= selectedRect.left - 1
-          && inlineEditor.right <= selectedRect.right + 1
-          && inlineEditor.bottom <= selectedRect.bottom + 1,
-        selectedRect: {
-          top: Math.round(selectedRect.top),
-          right: Math.round(selectedRect.right),
-          bottom: Math.round(selectedRect.bottom),
-          left: Math.round(selectedRect.left)
-        },
-        inlineEditor: {
-          top: Math.round(inlineEditor.top),
-          right: Math.round(inlineEditor.right),
-          bottom: Math.round(inlineEditor.bottom),
-          left: Math.round(inlineEditor.left)
-        }
-      };
-    })(),
+    cytoscapeRenderer: document.querySelector("#workupStudioPathwayTreePanel .cytoscape-tree-shell")?.dataset.renderer || "",
     navCollapsed: document.body.dataset.navCollapsed,
     shellLeft: Math.round(document.querySelector(".studio-shell")?.getBoundingClientRect().left ?? -1),
     shellRight: Math.round(document.querySelector(".studio-shell")?.getBoundingClientRect().right ?? -1),
@@ -563,9 +567,9 @@ try {
   assert.deepEqual(patientWorkupStudioAudit.commandbarActions, ["Workup settings", "Export", "Import", "Audit log"], `Studio commandbar should expose the concept actions without redundant controls: ${JSON.stringify(patientWorkupStudioAudit)}`);
   assert.match(patientWorkupStudioAudit.topBackendStatus, /Backend status: sign in to sync|Synced as/i, `Top backend status should be concise and not clip a long auth paragraph: ${JSON.stringify(patientWorkupStudioAudit)}`);
   assert(patientWorkupStudioAudit.renderedTreeNodes > 0, `Pathway section should render the tree canvas immediately: ${JSON.stringify(patientWorkupStudioAudit)}`);
+  assert.equal(patientWorkupStudioAudit.cytoscapeRenderer, "cytoscape", `Pathway section should use the Cytoscape renderer: ${JSON.stringify(patientWorkupStudioAudit)}`);
   assert.equal(patientWorkupStudioAudit.legacyItemRows, 0, `Pathway section should not show the old long item list: ${JSON.stringify(patientWorkupStudioAudit)}`);
   assert.equal(patientWorkupStudioAudit.editorBodyMode, true, "Pathway section should use tree editing mode on Studio entry.");
-  assert(patientWorkupStudioAudit.inlineEditorBounds?.editorInsideNode, `Selected tree node inline editor should stay inside the rendered node card: ${JSON.stringify(patientWorkupStudioAudit.inlineEditorBounds)}`);
   assert.equal(patientWorkupStudioAudit.navCollapsed, "false", `Studio should start with the persistent menu expanded on desktop: ${JSON.stringify(patientWorkupStudioAudit)}`);
   assert(patientWorkupStudioAudit.shellLeft >= 180 && patientWorkupStudioAudit.shellLeft <= 380, `Studio shell should start after the resizable primary sidebar on desktop: ${JSON.stringify(patientWorkupStudioAudit)}`);
   assert(Math.abs(patientWorkupStudioAudit.shellRight - patientWorkupStudioAudit.viewportWidth) <= 2, `Studio shell should end at the viewport edge without a right gutter: ${JSON.stringify(patientWorkupStudioAudit)}`);
@@ -897,55 +901,62 @@ try {
   await page.click("#workupStudioAcceptImportButton");
   await page.click("#workupStudioPublishImportButton");
   await page.waitForFunction(() => Number(document.querySelector("#workupStudioDraftCount")?.textContent || "0") >= 1);
-  await page.waitForSelector("#workupStudioPathwayTreePanel .decision-tree-node-g[data-node-id='studio_ketones']");
-  await page.waitForFunction(() => /DKA criteria: beta-hydroxybutyrate/.test(document.querySelector("#workupStudioItemList")?.textContent || ""));
+  await waitForCytoscapeNode(page, "studio_ketones");
+  await page.waitForFunction(() => {
+    const cy = document.querySelector("#workupStudioPathwayTreePanel")?._cytoscape;
+    const labels = cy?.nodes().map((node) => node.data("label")).join("\n") || "";
+    return /DKA criteria: beta-hydroxybutyrate/.test(labels);
+  });
   const renderedTreeAudit = await page.evaluate(() => ({
-    treeNodeCount: document.querySelectorAll("#workupStudioPathwayTreePanel .decision-tree-node-g").length,
+    treeNodeCount: document.querySelector("#workupStudioPathwayTreePanel")?._cytoscape?.nodes().length || 0,
     legacyListButtonCount: document.querySelectorAll("#workupStudioItemList .studio-item-button").length,
     selectedNodeId: document.querySelector("#workupStudioPathwayNodeIdDisplay")?.value || "",
     editorBodyMode: document.querySelector(".studio-editor-body")?.classList.contains("is-pathway-editor") || false,
-    treeText: document.querySelector("#workupStudioPathwayTreePanel")?.textContent || "",
-    nodeDetailTextCount: document.querySelectorAll("#workupStudioPathwayTreePanel .decision-tree-node-detail").length,
-    treeScrollerOverflowY: getComputedStyle(document.querySelector("#workupStudioPathwayTreePanel .d3-decision-tree")).overflowY,
-    treeScrollerClientHeight: document.querySelector("#workupStudioPathwayTreePanel .d3-decision-tree")?.clientHeight || 0,
-    treeScrollerScrollHeight: document.querySelector("#workupStudioPathwayTreePanel .d3-decision-tree")?.scrollHeight || 0,
-    treeSvgHeight: Number(document.querySelector("#workupStudioPathwayTreePanel .d3-decision-tree svg")?.getAttribute("height") || 0)
+    renderer: document.querySelector("#workupStudioPathwayTreePanel .cytoscape-tree-shell")?.dataset.renderer || "",
+    treeText: document.querySelector("#workupStudioPathwayTreePanel")?._cytoscape?.nodes().map((node) => node.data("label")).join("\n") || "",
+    nodeDetailTextCount: document.querySelector("#workupStudioPathwayTreePanel")?._cytoscape?.nodes().filter((node) => String(node.data("detail") || "").trim()).length || 0,
+    shellClientHeight: document.querySelector("#workupStudioPathwayTreePanel .cytoscape-tree-shell")?.clientHeight || 0,
+    toolbarOpacityBeforeHover: getComputedStyle(document.querySelector("#workupStudioPathwayTreePanel .cytoscape-tree-toolbar")).opacity,
+    toolbarPointerEventsBeforeHover: getComputedStyle(document.querySelector("#workupStudioPathwayTreePanel .cytoscape-tree-toolbar")).pointerEvents,
+    zoom: document.querySelector("#workupStudioPathwayTreePanel")?._cytoscape?.zoom() || 0
   }));
   assert(renderedTreeAudit.treeNodeCount >= 2, `Pathway Studio should render an editable tree canvas, not just item rows: ${JSON.stringify(renderedTreeAudit)}`);
   assert.equal(renderedTreeAudit.legacyListButtonCount, 0, `Pathway Studio should not render the old long section-item list: ${JSON.stringify(renderedTreeAudit)}`);
   assert.equal(renderedTreeAudit.editorBodyMode, true, "Pathway Studio should switch the editor body into tree-editing mode.");
-  assert(renderedTreeAudit.nodeDetailTextCount >= 4, `Pathway Studio node cards should render clinical boxText detail lines: ${JSON.stringify(renderedTreeAudit)}`);
+  assert.equal(renderedTreeAudit.renderer, "cytoscape", `Pathway Studio should use the Cytoscape renderer: ${JSON.stringify(renderedTreeAudit)}`);
+  assert(renderedTreeAudit.nodeDetailTextCount >= 4, `Pathway Studio Cytoscape nodes should keep clinical boxText details in their labels: ${JSON.stringify(renderedTreeAudit)}`);
   assert.match(renderedTreeAudit.treeText, /beta-hydroxybutyrate >=3\.0|K <3\.5|0\.1 units\/kg\/h/, `Pathway Studio tree cards should show clinical thresholds and doses from boxText: ${JSON.stringify(renderedTreeAudit)}`);
-  assert(/auto|scroll/.test(renderedTreeAudit.treeScrollerOverflowY) && renderedTreeAudit.treeScrollerScrollHeight > renderedTreeAudit.treeScrollerClientHeight + 20, `Pathway Studio tree canvas should be vertically scrollable for deeper trees: ${JSON.stringify(renderedTreeAudit)}`);
-  assert(renderedTreeAudit.treeSvgHeight >= renderedTreeAudit.treeScrollerScrollHeight - 2, `Pathway Studio SVG should size to the full graph height: ${JSON.stringify(renderedTreeAudit)}`);
+  assert(renderedTreeAudit.shellClientHeight >= 500, `Pathway Studio tree shell should provide a full graph workspace: ${JSON.stringify(renderedTreeAudit)}`);
+  assert.equal(renderedTreeAudit.toolbarOpacityBeforeHover, "0", `Pathway Studio zoom toolbar should be hidden before hover: ${JSON.stringify(renderedTreeAudit)}`);
+  assert.equal(renderedTreeAudit.toolbarPointerEventsBeforeHover, "none", `Hidden toolbar should not catch pointer events before hover: ${JSON.stringify(renderedTreeAudit)}`);
+  await page.hover("#workupStudioPathwayTreePanel .cytoscape-tree-shell");
+  await page.waitForFunction(() => getComputedStyle(document.querySelector("#workupStudioPathwayTreePanel .cytoscape-tree-toolbar")).opacity === "1");
+  const toolbarHoverAudit = await page.evaluate(() => {
+    const shell = document.querySelector("#workupStudioPathwayTreePanel .cytoscape-tree-shell")?.getBoundingClientRect();
+    const toolbar = document.querySelector("#workupStudioPathwayTreePanel .cytoscape-tree-toolbar")?.getBoundingClientRect();
+    return {
+      buttonLabels: Array.from(document.querySelectorAll("#workupStudioPathwayTreePanel .cytoscape-tree-toolbar button")).map((button) => button.getAttribute("aria-label")),
+      opacity: getComputedStyle(document.querySelector("#workupStudioPathwayTreePanel .cytoscape-tree-toolbar")).opacity,
+      insideTopArea: Boolean(shell && toolbar && toolbar.top >= shell.top - 1 && toolbar.bottom <= shell.top + 58 && toolbar.left >= shell.left - 1 && toolbar.right <= shell.right + 1)
+    };
+  });
+  assert.deepEqual(toolbarHoverAudit.buttonLabels, ["Zoom out", "Zoom in", "Fit pathway", "Reset layout"], `Hover toolbar should expose zoom and layout controls: ${JSON.stringify(toolbarHoverAudit)}`);
+  assert.equal(toolbarHoverAudit.opacity, "1", `Hover toolbar should be visible on graph hover: ${JSON.stringify(toolbarHoverAudit)}`);
+  assert.equal(toolbarHoverAudit.insideTopArea, true, `Hover toolbar should stay in the top tree area: ${JSON.stringify(toolbarHoverAudit)}`);
+  await page.locator("#workupStudioPathwayTreePanel .cytoscape-tree-toolbar button[aria-label='Zoom in']").click();
+  await page.waitForFunction((beforeZoom) => (document.querySelector("#workupStudioPathwayTreePanel")?._cytoscape?.zoom() || 0) > beforeZoom, renderedTreeAudit.zoom);
   const pathwayItemListText = await page.textContent("#workupStudioItemList");
   assert.doesNotMatch(pathwayItemListText || "", /Missing data needed/i, "Workup Studio should hide internal missing-data guards from the pathway outline.");
-  await page.locator("#workupStudioPathwayTreePanel .decision-tree-node-g[data-node-id='studio_ketones']").click();
+  const ketoneClickPoint = await cytoscapeNodeScreenPoint(page, "studio_ketones");
+  await page.mouse.click(ketoneClickPoint.x, ketoneClickPoint.y);
   await page.waitForFunction(() => document.querySelector("#workupStudioPathwayNodeIdDisplay")?.value === "studio_ketones");
   await page.waitForFunction(() => /beta-hydroxybutyrate >=3\.0/.test(document.querySelector("#workupStudioPathwayNodeDetailInput")?.value || ""));
-  await page.waitForSelector("#workupStudioPathwayTreePanel .decision-tree-node-g[data-node-id='studio_ketones'] .decision-tree-inline-label");
-  const inlineNodeLabel = page.locator("#workupStudioPathwayTreePanel .decision-tree-node-g[data-node-id='studio_ketones'] .decision-tree-inline-label");
-  await inlineNodeLabel.fill("Canvas inline edit: classify DKA/HHS severity with reviewed criteria.");
-  const postedRowsBeforeInlineNodeEdit = supabaseRequests.postedRows.length;
-  await inlineNodeLabel.press(process.platform === "darwin" ? "Meta+Enter" : "Control+Enter");
-  await waitForCondition(() => supabaseRequests.postedRows.length > postedRowsBeforeInlineNodeEdit && supabaseRequests.postedRows.some((row) => {
-    if (row.section_key !== "clinical_pathway_tree_v1" || row.review_status !== "draft") return false;
-    const stack = [row.after_snapshot?.root].filter(Boolean);
-    while (stack.length) {
-      const entry = stack.shift();
-      if (entry?.id === "studio_ketones" && entry.label === "Canvas inline edit: classify DKA/HHS severity with reviewed criteria.") return true;
-      stack.push(...(Array.isArray(entry?.children) ? entry.children : []));
-    }
-    return false;
-  }), "Supabase rendered-tree inline label draft insert");
-  await page.waitForSelector("#workupStudioPathwayTreePanel .decision-tree-node-g[data-node-id='studio_ketones'] .decision-tree-inline-label");
-  await page.waitForFunction(() => document.querySelector("#workupStudioPathwayNodeLabelInput")?.value === "Canvas inline edit: classify DKA/HHS severity with reviewed criteria.");
   const postedRowsBeforeLayoutDrag = supabaseRequests.postedRows.length;
-  const ketoneNodeBox = await page.locator("#workupStudioPathwayTreePanel .decision-tree-node-g[data-node-id='studio_ketones'] rect").boundingBox();
-  assert.ok(ketoneNodeBox, "Rendered pathway node should have a draggable screen box.");
-  await page.mouse.move(ketoneNodeBox.x + ketoneNodeBox.width / 2, ketoneNodeBox.y + 8);
+  await waitForCytoscapeNode(page, "studio_ketones");
+  const ketoneDragPoint = await cytoscapeNodeScreenPoint(page, "studio_ketones");
+  await page.mouse.move(ketoneDragPoint.x, ketoneDragPoint.y);
   await page.mouse.down();
-  await page.mouse.move(ketoneNodeBox.x + ketoneNodeBox.width / 2 + 28, ketoneNodeBox.y + 26, { steps: 4 });
+  await page.mouse.move(ketoneDragPoint.x + 32, ketoneDragPoint.y + 26, { steps: 5 });
   await page.mouse.up();
   await waitForCondition(() => supabaseRequests.postedRows.length > postedRowsBeforeLayoutDrag && supabaseRequests.postedRows.some((row) => {
     if (row.section_key !== "clinical_pathway_tree_v1") return false;
