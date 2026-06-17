@@ -4346,6 +4346,107 @@
       line-height: 1.35;
     }
 
+    .studio-new-workup-button {
+      white-space: nowrap;
+      gap: 6px;
+      font-size: 13px;
+      padding: 6px 14px;
+    }
+
+    .studio-modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0, 0, 0, 0.48);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 64px;
+      overflow-y: auto;
+    }
+
+    .studio-modal-overlay[hidden] {
+      display: none;
+    }
+
+    .studio-modal {
+      background: var(--bg-hi, #fff);
+      border-radius: 12px;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
+      width: min(720px, calc(100vw - 48px));
+      max-height: calc(100vh - 96px);
+      overflow-y: auto;
+    }
+
+    .studio-modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px 12px;
+      border-bottom: 1px solid var(--border, #e2e8f0);
+    }
+
+    .studio-modal-head h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .studio-modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      line-height: 1;
+      cursor: pointer;
+      color: var(--fg-muted, #64748b);
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+
+    .studio-modal-close:hover {
+      background: var(--bg-hover, #f1f5f9);
+    }
+
+    .studio-modal-body {
+      padding: 20px 24px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .studio-modal-body label {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .studio-modal-body textarea,
+    .studio-modal-body input,
+    .studio-modal-body select {
+      font-family: inherit;
+      font-size: 14px;
+      padding: 8px 12px;
+      border: 1px solid var(--border, #e2e8f0);
+      border-radius: 8px;
+      background: var(--bg, #fff);
+    }
+
+    .studio-modal-body textarea {
+      min-height: 120px;
+      resize: vertical;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .studio-modal-body .muted {
+      font-size: 13px;
+      color: var(--fg-muted, #64748b);
+      margin: 0;
+      line-height: 1.45;
+    }
+
     @media (max-width: 1320px) {
       .studio-topbar {
         grid-template-columns: 220px minmax(220px, 1fr) minmax(190px, 0.72fr) minmax(220px, 0.8fr) auto;
@@ -23682,6 +23783,267 @@ Rules:
       hydrateIcons();
     }
 
+    function showNewWorkupDialog() {
+      if (!elements.workupStudioNewWorkupDialog) return;
+      elements.workupStudioNewWorkupDialog.hidden = false;
+      elements.workupStudioNewWorkupComplaintInput.value = "";
+      elements.workupStudioNewWorkupIdInput.value = "";
+      elements.workupStudioNewWorkupTriggersInput.value = "";
+      elements.workupStudioNewWorkupPromptOutput.value = "";
+      elements.workupStudioNewWorkupPasteInput.value = "";
+      elements.workupStudioNewWorkupCreateButton.disabled = true;
+      elements.workupStudioNewWorkupParseStatus.textContent = "";
+      elements.workupStudioNewWorkupComplaintInput.focus();
+    }
+
+    function hideNewWorkupDialog() {
+      if (!elements.workupStudioNewWorkupDialog) return;
+      elements.workupStudioNewWorkupDialog.hidden = true;
+    }
+
+    function _newWorkupTemplatePrompt(complaint, workupId, triggers, population, setting) {
+      return `You are a clinical decision support authoring assistant. Create a complete workup module for the complaint "${complaint}" following this exact JSON schema.
+
+Return ONLY valid JSON (no markdown, no explanation). The JSON must match this structure:
+
+{
+  "schema_version": "medical_knowledge_database_v1",
+  "artifact_type": "complaint_cds_module",
+  "complaint_cds_schema_version": "complaint-cds-artifact-v1",
+  "module": {
+    "id": "${workupId}",
+    "schema_version": "complaint-cds-artifact-v1",
+    "label": "${complaint}",
+    "complaint_group": "${complaint.toLowerCase().replace(/\\s+/g, '_')}",
+    "version": "0.1.0",
+    "status": "draft",
+    "population": { "age_group": "${population}", "setting": "${setting}" },
+    "triggers": ${JSON.stringify(triggers)},
+    "redFlags": [
+      { "id": "redflag_1", "label": "Destabilizing vital signs", "criteria": "HR > 130, SBP < 90, RR > 30, SpO2 < 90%", "action": "Escalate to rapid response or ICU", "source": { "source_id": "LOCAL_CLINICAL_PATHWAY", "source_section": "Red flags", "evidence_strength": "guideline/consensus", "version_date": "2024" } }
+    ],
+    "safetyChecks": [
+      { "id": "safety_1", "label": "Allergies reviewed", "detail": "Confirm no known drug allergies before ordering" },
+      { "id": "safety_2", "label": "Code status confirmed", "detail": "Verify code status and advance directives" }
+    ],
+    "requiredQuestions": [
+      { "id": "hx_1", "label": "Onset and duration", "question": "When did this start? Has it been constant or intermittent?", "item_type": "history_question", "required": true, "source": { "source_id": "LOCAL_CLINICAL_PATHWAY", "source_section": "History", "evidence_strength": "consensus", "version_date": "2024" } },
+      { "id": "hx_2", "label": "Severity and progression", "question": "How severe is it on a 1-10 scale? Is it getting better, worse, or staying the same?", "item_type": "history_question", "required": true, "source": { "source_id": "LOCAL_CLINICAL_PATHWAY", "source_section": "History", "evidence_strength": "consensus", "version_date": "2024" } },
+      { "id": "hx_3", "label": "Associated symptoms", "question": "What other symptoms are you experiencing?", "item_type": "history_question", "required": true, "source": { "source_id": "LOCAL_CLINICAL_PATHWAY", "source_section": "History", "evidence_strength": "consensus", "version_date": "2024" } },
+      { "id": "hx_4", "label": "Pertinent PMH", "question": "Relevant past medical history for this complaint?", "item_type": "history_question", "required": true, "source": { "source_id": "LOCAL_CLINICAL_PATHWAY", "source_section": "History", "evidence_strength": "consensus", "version_date": "2024" } },
+      { "id": "hx_5", "label": "Medications", "question": "Current medications including recent changes?", "item_type": "history_question", "required": true, "source": { "source_id": "LOCAL_CLINICAL_PATHWAY", "source_section": "History", "evidence_strength": "consensus", "version_date": "2024" } }
+    ],
+    "conditionalQuestions": [],
+    "requiredExam": [
+      { "id": "exam_1", "label": "Vital signs", "technique": "Review full set of vitals including orthostatics if indicated", "item_type": "physical_exam_maneuver", "required": true, "source": { "source_id": "LOCAL_CLINICAL_PATHWAY", "source_section": "Physical exam", "evidence_strength": "guideline/consensus", "version_date": "2024" } },
+      { "id": "exam_2", "label": "General appearance", "technique": "Assess general appearance, distress, work of breathing", "item_type": "physical_exam_maneuver", "required": true, "source": { "source_id": "LOCAL_CLINICAL_PATHWAY", "source_section": "Physical exam", "evidence_strength": "consensus", "version_date": "2024" } },
+      { "id": "exam_3", "label": "Focused system exam", "technique": "Perform focused exam of the relevant organ system(s)", "item_type": "physical_exam_maneuver", "required": true, "source": { "source_id": "LOCAL_CLINICAL_PATHWAY", "source_section": "Physical exam", "evidence_strength": "guideline/consensus", "version_date": "2024" } }
+    ],
+    "conditionalExam": [],
+    "initialTests": [
+      { "id": "test_1", "label": "Basic labs", "test": "CBC, BMP, LFTs", "item_type": "lab_test", "required": true, "source": { "source_id": "LOCAL_CLINICAL_PATHWAY", "source_section": "Initial workup", "evidence_strength": "guideline/consensus", "version_date": "2024" } }
+    ],
+    "dispositionRules": [],
+    "differentialBuckets": [],
+    "clinical_pathway_tree_v1": {
+      "schema": "clinical_pathway_tree_v1",
+      "workupId": "${workupId}",
+      "title": "${complaint} clinical pathway",
+      "source_ids": ["LOCAL_CLINICAL_PATHWAY"],
+      "activationRules": {},
+      "root": {
+        "id": "root",
+        "label": "${complaint}: initial assessment",
+        "type": "decision",
+        "children": [
+          { "id": "branch_1", "label": "Stable, outpatient management appropriate", "type": "action", "edgeLabel": "Stable", "children": [] },
+          { "id": "branch_2", "label": "Requires inpatient workup and management", "type": "action", "edgeLabel": "Requires admission", "children": [] },
+          { "id": "branch_3", "label": "Critical - needs immediate intervention", "type": "endpoint", "edgeLabel": "Unstable", "children": [] }
+        ]
+      }
+    }
+  }
+}
+
+Rules:
+1. Use evidence-based, guideline-backed content appropriate for ${setting} ${population} patients.
+2. Include 5-8 required history questions specific to this complaint.
+3. Include 3-6 focused physical exam maneuvers.
+4. Include 2-4 red flags with actionable criteria and escalation steps.
+5. Include appropriate lab tests and imaging for initial workup.
+6. Add 2-3 differential diagnostic buckets.
+7. The pathway tree should have at least 3 terminal branches covering stable, admit, and critical dispositions.
+8. All items must have source attribution with source_id, source_section, evidence_strength, and version_date.
+9. Return ONLY the JSON object - no markdown fences, no explanatory text.`;
+    }
+
+    function generateNewWorkupAIPrompt() {
+      const complaint = String(elements.workupStudioNewWorkupComplaintInput?.value || "").trim();
+      const workupId = String(elements.workupStudioNewWorkupIdInput?.value || "").trim().toLowerCase().replace(/[^a-z0-9_]+/g, "_").replace(/_+/g, "_").replace(/^_|_$/g, "");
+      const triggersRaw = String(elements.workupStudioNewWorkupTriggersInput?.value || complaint).trim();
+      const triggers = triggersRaw.split(/[,;]+/).map((s) => s.trim()).filter(Boolean);
+      const population = elements.workupStudioNewWorkupPopulationSelect?.value || "adult";
+      const setting = elements.workupStudioNewWorkupSettingSelect?.value || "clinician support";
+
+      if (!complaint) {
+        setStatus("Enter a complaint name before generating the AI prompt.");
+        return;
+      }
+      if (!workupId) {
+        setStatus("Enter a workup ID (slug) before generating the AI prompt.");
+        return;
+      }
+
+      elements.workupStudioNewWorkupIdInput.value = workupId;
+      elements.workupStudioNewWorkupTriggersInput.value = triggers.join(", ");
+
+      const prompt = _newWorkupTemplatePrompt(complaint, workupId, triggers.length ? triggers : [complaint.toLowerCase()], population, setting);
+      elements.workupStudioNewWorkupPromptOutput.value = prompt;
+      setStatus("AI prompt generated for new workup: " + complaint);
+    }
+
+    function validateNewWorkupPasteInput() {
+      const raw = String(elements.workupStudioNewWorkupPasteInput?.value || "").trim();
+      elements.workupStudioNewWorkupCreateButton.disabled = true;
+      elements.workupStudioNewWorkupParseStatus.textContent = "";
+      if (!raw) return;
+      try {
+        const parsed = JSON.parse(raw);
+        const module = parsed?.module || parsed;
+        if (!module || typeof module !== "object" || !module.id) {
+          elements.workupStudioNewWorkupParseStatus.textContent = "JSON parsed but missing module.id. Does it follow the workup schema?";
+          return;
+        }
+        const itemCount = (Array.isArray(module.requiredQuestions) ? module.requiredQuestions.length : 0)
+          + (Array.isArray(module.requiredExam) ? module.requiredExam.length : 0)
+          + (Array.isArray(module.redFlags) ? module.redFlags.length : 0);
+        elements.workupStudioNewWorkupParseStatus.textContent = `Valid workup JSON detected: "${module.label || module.id}" with ${itemCount}+ items. Ready to create.`;
+        elements.workupStudioNewWorkupCreateButton.disabled = false;
+      } catch {
+        elements.workupStudioNewWorkupParseStatus.textContent = "Invalid JSON. Paste the complete AI response as valid JSON.";
+      }
+    }
+
+    async function createNewWorkupFromAI() {
+      const raw = String(elements.workupStudioNewWorkupPasteInput?.value || "").trim();
+      if (!raw) {
+        setStatus("Paste the AI-generated workup JSON before creating.");
+        return;
+      }
+      let parsed;
+      try {
+        parsed = JSON.parse(raw);
+      } catch (error) {
+        setStatus("Invalid JSON. Fix the pasted content and try again.");
+        return;
+      }
+      const envelope = parsed?.module ? parsed : { module: parsed };
+      const module = envelope.module;
+      if (!module?.id) {
+        setStatus("The pasted JSON is missing a module.id field.");
+        return;
+      }
+      if (!module.label) module.label = titleFromId(module.id);
+      if (!module.version) module.version = "0.1.0";
+      if (!module.status) module.status = "draft";
+      if (!module.schema_version) module.schema_version = "complaint-cds-artifact-v1";
+
+      const existingModule = rawModuleById(module.id);
+      if (existingModule) {
+        setStatus(`Workup "${module.id}" already exists. Use a different workup ID or edit the existing one.`);
+        return;
+      }
+
+      setStatus(`Creating new workup "${module.label}"...`);
+      const workupRow = {
+        id: module.id,
+        title: module.label,
+        version: module.version,
+        status: module.status,
+        complaint_group: module.complaint_group || "",
+        population: module.population || module.applicability || {},
+        source_ids: collectModuleSourceIds(module),
+        payload: {
+          schema_version: module.schema_version || "medical_knowledge_database_v1",
+          artifact_type: "complaint_cds_module",
+          triggers: module.triggers || [],
+          applicability: module.applicability || module.population || null
+        }
+      };
+
+      if (workupStudioBackendSignedIn() && workupStudioCanReview()) {
+        try {
+          const now = new Date().toISOString();
+          await upsertWorkupStudioRows("workups", { ...workupRow, updated_at: now });
+          for (const definition of workupSectionDefinitions) {
+            const payload = sectionPayloadFromModule(module, definition.key);
+            const sourceIds = collectSourceIdsFromValue(payload, []);
+            await upsertWorkupStudioRows("workup_sections", {
+              id: `${module.id}:${definition.key}`,
+              workup_id: module.id,
+              section_key: definition.key,
+              label: definition.label,
+              description: definition.description,
+              kind: definition.kind,
+              sort_order: workupSectionDefinitions.findIndex((s) => s.key === definition.key),
+              payload,
+              source_ids: sourceIds,
+              updated_at: now
+            });
+            if (definition.kind === "pathway" && payload?.root) {
+              const treeId = `${module.id}:clinical_pathway_tree_v1`;
+              await upsertWorkupStudioRows("pathway_trees", {
+                id: treeId,
+                workup_id: module.id,
+                section_key: definition.key,
+                title: payload.title || module.label,
+                status: "draft",
+                source_ids: sourceIds,
+                activation_rules: payload.activationRules || {},
+                payload,
+                updated_at: now
+              });
+              const nodeRows = flattenPathwayNodes(payload.root, { treeId }).map((row) => ({ ...row, updated_at: now }));
+              await upsertWorkupStudioRows("pathway_nodes", nodeRows);
+            } else if (definition.kind === "items") {
+              const itemRows = [];
+              for (const groupKey of definition.moduleFields) {
+                (Array.isArray(module[groupKey]) ? module[groupKey] : []).forEach((item, index) => {
+                  itemRows.push({
+                    id: `${module.id}:${groupKey}:${item.id || (groupKey + "_" + (index + 1))}`,
+                    workup_id: module.id,
+                    section_key: definition.key,
+                    group_key: groupKey,
+                    item_id: item.id || (groupKey + "_" + (index + 1)),
+                    item_type: item.item_type || "",
+                    label: item.label || item.text || item.action || "",
+                    sort_order: index,
+                    source_ids: collectSourceIdsFromValue(item, []),
+                    payload: item,
+                    updated_at: now
+                  });
+                });
+              }
+              if (itemRows.length) await upsertWorkupStudioRows("workup_items", itemRows);
+            }
+          }
+          await loadSupabaseWorkupCatalog({ force: true });
+          setStatus(`Workup "${module.label}" created in Supabase and available to all users.`);
+        } catch (error) {
+          setStatus(`Supabase push failed: ${error.message}. Workup saved locally only.`);
+        }
+      }
+
+      supabaseWorkupCatalog.modulesById.set(module.id, module);
+      invalidateWorkupModuleCaches();
+      workupStudioState.selectedModuleId = module.id;
+      workupStudioState.sectionKey = "clinical_pathway_tree_v1";
+      saveWorkupStudioStateNow();
+      hideNewWorkupDialog();
+      renderWorkupStudio();
+      setStatus(`New workup "${module.label}" created and ready to edit.`);
+    }
+
     function acceptWorkupStudioImport({ publish = false } = {}) {
       if (!selectedWorkupStudioModule()) {
         setStatus("Select a workup before saving an OpenEvidence result.");
@@ -30348,6 +30710,11 @@ Rules:
         rowsElement.appendChild(button);
       }
       const selected = state.workupRows.find((row) => row.key === state.selectedWorkupRow) || state.workupRows[0];
+      const items = selected?.items || [];
+      const showAllLimit = 15;
+      const showAllKey = `_showAll_${selected?.key || "workup"}`;
+      const expanded = state[showAllKey] !== false && items.length <= showAllLimit ? true : Boolean(state[showAllKey]);
+      const visibleItems = expanded ? items : items.slice(0, showAllLimit);
       detailElement.innerHTML = "";
       const detailLabel = document.createElement("span");
       detailLabel.className = "meta-tag";
@@ -30356,12 +30723,31 @@ Rules:
       title.textContent = selected ? selected.title : "Workup details";
       const list = document.createElement("ol");
       list.className = "compact-list";
-      for (const item of (selected?.items || []).slice(0, 8)) {
+      for (const item of visibleItems) {
         const li = document.createElement("li");
-        li.textContent = itemText(item);
+        const text = itemText(item);
+        const sourceId = item?.source?.source_id || item?.source_id || item?.sourceId || "";
+        if (sourceId && sourceId !== "LOCAL_CLINICAL_PATHWAY" && sourceId !== "local") {
+          li.innerHTML = `<span>${escapeHtml(text)}</span> <span class="meta-tag">${escapeHtml(sourceId)}</span>`;
+        } else {
+          li.textContent = text;
+        }
         list.appendChild(li);
       }
       detailElement.append(detailLabel, title, list);
+      if (items.length > showAllLimit) {
+        const toggle = document.createElement("button");
+        toggle.type = "button";
+        toggle.className = "btn btn-secondary";
+        toggle.style.marginTop = "8px";
+        toggle.textContent = expanded ? `Show fewer (${items.length} total)` : `Show all ${items.length} items`;
+        toggle.addEventListener("click", () => {
+          state[showAllKey] = !expanded;
+          renderWorkupRows();
+          saveState();
+        });
+        detailElement.appendChild(toggle);
+      }
     }
 
 	    function renderWorkupSummary() {
@@ -30416,7 +30802,11 @@ Rules:
           listElement.appendChild(li);
         }
       }
-      const buildStatus = `Workup assembled from local medical knowledge base with ${state.workupRows.reduce((sum, row) => sum + row.items.length, 0)} reviewed items.`;
+      const selectedModule = moduleById(state.selectedWorkupModuleId);
+      const sourceCount = selectedModule ? collectModuleSourceIds(selectedModule).length : 0;
+      const moduleVersion = selectedModule ? moduleVersionLabel(selectedModule) : "";
+      const catalogNote = supabaseWorkupCatalog.modulesById.has(state.selectedWorkupModuleId) ? " from Supabase catalog" : " from local bundle";
+      const buildStatus = `Workup assembled${catalogNote} (v${moduleVersion}, ${sourceCount} sources) with ${state.workupRows.reduce((sum, row) => sum + row.items.length, 0)} reviewed items across ${state.workupRows.length} categories.`;
       if (elements.workupBuildStatus) elements.workupBuildStatus.textContent = buildStatus;
       if (elements.patientWorkupBuildStatus) elements.patientWorkupBuildStatus.textContent = buildStatus;
 	      renderSelectedWorkupCard();
@@ -39109,6 +39499,9 @@ Rules:
     applyWorkupStudioChromeState();
     hydrateIcons();
     bindEvents();
+    window.addEventListener("beforeunload", () => {
+      saveWorkupStudioStateNow();
+    });
     void hydratePublicWorkupCatalogOnStartup();
     void captureWorkupStudioOAuthRedirect().then((handled) => {
       if (!handled) void ensureWorkupStudioBackendSession();
