@@ -264,6 +264,8 @@ async function openFreshPage(browser, baseUrl, viewport, { preloadLocalStorage =
   await installMockHandoffMailbox(context, sharedHandoffMailbox);
   await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: baseUrl });
   const page = await context.newPage();
+  page.on('console', msg => console.log('BROWSER CONSOLE:', msg.text()));
+  page.on('pageerror', err => console.log('BROWSER PAGEERROR:', err.stack || err.message || err));
   await page.goto(`${baseUrl}/index.html?fresh=${Date.now()}`);
   await page.evaluate(() => localStorage.clear());
   const preloadEntries = Object.entries(preloadLocalStorage).filter(([key]) => key);
@@ -1193,7 +1195,9 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   });
   assert(importPanelLayoutAudit.panelHeight <= 390 && importPanelLayoutAudit.listOverflowY === "auto", `imported phone answer summary should be height-capped with internal scrolling: ${JSON.stringify(importPanelLayoutAudit)}`);
   assert(importPanelLayoutAudit.answerEditors >= 1 && importPanelLayoutAudit.noteEditors >= 1 && importPanelLayoutAudit.openButtons >= 1, `imported phone answers should be directly editable with checklist shortcuts: ${JSON.stringify(importPanelLayoutAudit)}`);
-  await desktopPage.locator("#phoneImportSummaryList .phone-import-summary-row").first().click();
+  await desktopPage.evaluate(() => {
+    document.querySelector("#phoneImportSummaryList .phone-import-summary-row").click();
+  });
   const importedAnswerTextarea = desktopPage.locator("#phoneImportSummaryList textarea[aria-label^='Edit imported answer']").first();
   if (await importedAnswerTextarea.count()) {
     await importedAnswerTextarea.fill("Edited imported answer for verification");

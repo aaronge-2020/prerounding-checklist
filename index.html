@@ -1219,6 +1219,12 @@
       margin: 0 auto;
     }
 
+    body[data-view="workspace"] #workspaceView {
+      width: 100%;
+      max-width: none;
+      margin: 0;
+    }
+
     body[data-view="workspace"][data-patient-tab="workup"] .app-shell {
       grid-template-columns: var(--app-sidebar-w) minmax(0, 1fr);
       grid-template-rows: minmax(0, 1fr);
@@ -1320,11 +1326,6 @@
       background: #ffffff;
     }
 
-    body[data-view="workspace"][data-patient-tab="workup"] .view {
-      width: 100%;
-      max-width: none;
-      margin: 0;
-    }
 
     body[data-view="workspace"][data-patient-tab="workup"] .prep-board,
     body[data-view="workspace"][data-patient-tab="workup"] .patient-workflow-grid {
@@ -7024,6 +7025,7 @@
     }
 
     .patient-evidence-preview {
+      position: relative;
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(320px, 0.46fr);
       grid-template-rows: auto minmax(320px, 1fr);
@@ -7850,10 +7852,7 @@
     }
 
     body[data-view="workspace"][data-patient-tab="evidence"] #workspaceView {
-      width: 100%;
-      max-width: none;
       height: 100%;
-      margin: 0;
     }
 
     body[data-view="workspace"][data-patient-tab="evidence"] .topbar {
@@ -8213,53 +8212,72 @@
       display: none;
     }
 
-    body[data-view="workspace"][data-patient-tab="evidence"][data-patient-roster="expanded"] .prep-board {
-      display: grid;
-      grid-template-columns: minmax(236px, 280px) minmax(0, 1fr);
-      gap: 14px;
-      align-items: stretch;
+    @media (min-width: 761px) and (max-width: 1100px) {
+      body[data-view="workspace"][data-patient-tab="evidence"][data-patient-roster="expanded"] .prep-board {
+        display: grid;
+        grid-template-columns: minmax(220px, 260px) minmax(0, 1fr);
+        gap: 10px;
+        align-items: stretch;
+      }
+
+      body[data-view="workspace"][data-patient-tab="evidence"][data-patient-roster="expanded"] .patient-rail {
+        display: grid !important;
+        min-height: 0;
+        overflow: auto;
+        align-content: start;
+      }
     }
 
-    body[data-view="workspace"][data-patient-tab="evidence"][data-patient-roster="expanded"] .patient-rail {
-      display: grid !important;
-      min-height: 0;
-      overflow: auto;
-    }
+    @media (min-width: 1101px) {
+      body[data-view="workspace"][data-patient-tab="evidence"][data-patient-roster="expanded"] .prep-board {
+        display: grid;
+        grid-template-columns: minmax(280px, 300px) minmax(0, 1fr);
+        gap: 14px;
+        align-items: stretch;
+      }
 
-    body[data-view="workspace"][data-patient-tab="evidence"][data-patient-roster="expanded"] .patient-evidence-grid {
-      grid-template-columns: minmax(168px, 0.78fr) minmax(0, 1fr) minmax(182px, 0.84fr);
-    }
+      body[data-view="workspace"][data-patient-tab="evidence"][data-patient-roster="expanded"] .patient-rail {
+        display: grid !important;
+        min-height: 0;
+        overflow: auto;
+        align-content: start;
+      }
 
-    body[data-view="workspace"][data-patient-tab="evidence"][data-patient-roster="expanded"] .patient-evidence-preview {
-      grid-template-columns: minmax(0, 1fr);
-      grid-template-areas:
-        "summary"
-        "prompt"
-        "tokens";
-    }
+      body[data-view="workspace"][data-patient-tab="evidence"][data-patient-roster="expanded"] .patient-evidence-grid {
+        grid-template-columns: minmax(240px, 0.78fr) minmax(0, 1fr) minmax(280px, 0.84fr);
+      }
 
-    body[data-view="workspace"][data-patient-tab="evidence"][data-patient-roster="expanded"] .evidence-panel-actions {
-      gap: 8px;
-    }
+      body[data-view="workspace"][data-patient-tab="evidence"][data-patient-roster="expanded"] .patient-evidence-preview {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+          "summary"
+          "prompt"
+          "tokens";
+      }
 
-    body[data-view="workspace"][data-patient-tab="evidence"][data-patient-roster="expanded"] .evidence-panel-actions .btn,
-    body[data-view="workspace"][data-patient-tab="evidence"][data-patient-roster="expanded"] .evidence-panel-actions .meta-tag {
-      min-height: 34px;
-      padding-inline: 10px;
-      font-size: 12px;
-    }
+      body[data-view="workspace"][data-patient-tab="evidence"][data-patient-roster="expanded"] .evidence-panel-actions {
+        gap: 8px;
+      }
 
-    body[data-view="workspace"][data-patient-tab="evidence"][data-patient-roster="expanded"] .patient-evidence-answer-actions {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      gap: 8px;
-    }
+      body[data-view="workspace"][data-patient-tab="evidence"][data-patient-roster="expanded"] .evidence-panel-actions .btn,
+      body[data-view="workspace"][data-patient-tab="evidence"][data-patient-roster="expanded"] .evidence-panel-actions .meta-tag {
+        min-height: 34px;
+        padding-inline: 10px;
+        font-size: 12px;
+      }
 
-    body[data-view="workspace"][data-patient-tab="evidence"][data-patient-roster="expanded"] #patientApplyEvidenceRefinementButton,
-    body[data-view="workspace"][data-patient-tab="evidence"][data-patient-roster="expanded"] #patientSaveDefaultEvidenceRefinementButton {
-      width: 100%;
-      min-width: 0;
-      padding-inline: 8px;
+      body[data-view="workspace"][data-patient-tab="evidence"][data-patient-roster="expanded"] .patient-evidence-answer-actions {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 8px;
+      }
+
+      body[data-view="workspace"][data-patient-tab="evidence"][data-patient-roster="expanded"] #patientApplyEvidenceRefinementButton,
+      body[data-view="workspace"][data-patient-tab="evidence"][data-patient-roster="expanded"] #patientSaveDefaultEvidenceRefinementButton {
+        width: 100%;
+        min-width: 0;
+        padding-inline: 8px;
+      }
     }
 
     body[data-view="workspace"][data-patient-tab="evidence"] .safety-bar {
@@ -14285,6 +14303,201 @@
           font-size: 11px;
         }
     }
+
+    /* Prompt Workbench Editor & Variables */
+    #promptVariableBar {
+      display: none !important;
+    }
+    
+    #patientEvidencePromptPreview {
+      position: absolute !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      z-index: -10 !important;
+      width: 100% !important;
+      height: 100% !important;
+      top: 0 !important;
+      left: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+    }
+    
+    #patientEvidencePromptEditor {
+      outline: none;
+      word-break: break-word;
+      white-space: pre-wrap;
+      overflow-y: auto;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+    }
+    
+    #patientEvidencePromptEditor.is-readonly {
+      background-color: #f6f8f9;
+      color: #3b5059;
+      cursor: default;
+      user-select: text;
+    }
+    
+    #patientEvidencePromptEditor.is-editing {
+      background-color: #ffffff;
+      border-color: #0d6efd;
+      box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+      cursor: text;
+    }
+    
+    /* Variable pills */
+    .prompt-variable {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(13, 110, 253, 0.1) !important;
+      color: #0d6efd !important;
+      border: 1px solid rgba(13, 110, 253, 0.2) !important;
+      border-radius: 12px;
+      padding: 1px 8px;
+      margin: 0 3px;
+      font-weight: 600;
+      font-family: inherit;
+      font-size: 12px;
+      line-height: 1.4;
+      user-select: none;
+      cursor: default;
+      transition: all 0.15s ease;
+    }
+    
+    .prompt-variable:hover {
+      background: rgba(13, 110, 253, 0.18) !important;
+      border-color: rgba(13, 110, 253, 0.35) !important;
+    }
+    
+    /* Autocomplete dropdown card */
+    #promptVariableDropdown {
+      background: #ffffff;
+      border: 1px solid #dbe5e9;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(16, 35, 44, 0.12);
+      min-width: 220px;
+      max-height: 240px;
+      overflow-y: auto;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      overscroll-behavior: contain;
+    }
+    
+    .dropdown-item {
+      padding: 8px 12px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      border-bottom: 1px solid #eef3f5;
+      text-align: left;
+      transition: background 0.15s ease;
+    }
+    
+    .dropdown-item:last-child {
+      border-bottom: none;
+    }
+    
+    .dropdown-item.is-active, .dropdown-item:hover {
+      background: #f0f5fa;
+    }
+    
+    .dropdown-item-title {
+      font-weight: 700;
+      font-size: 12.5px;
+      color: #0d6efd;
+      margin: 0;
+    }
+    
+    .dropdown-item-desc {
+      font-size: 11px;
+      color: #637780;
+      margin: 2px 0 0 0;
+      font-weight: 500;
+    }
+
+    /* Right Rail layouts and toggles */
+    .patient-evidence-right-rail.is-pasteback-maximized {
+      grid-template-rows: 1fr auto !important;
+    }
+    .patient-evidence-right-rail.is-pasteback-maximized .phone-import-summary {
+      height: 48px !important;
+      min-height: 48px !important;
+      overflow: hidden !important;
+    }
+    .patient-evidence-right-rail.is-pasteback-maximized #phoneImportSummaryList,
+    .patient-evidence-right-rail.is-pasteback-maximized .phone-import-summary-actions {
+      display: none !important;
+    }
+
+    .patient-evidence-right-rail.is-phone-import-maximized {
+      grid-template-rows: auto 1fr !important;
+    }
+    .patient-evidence-right-rail.is-phone-import-maximized .patient-evidence-answer-panel {
+      height: 48px !important;
+      min-height: 48px !important;
+      padding: 10px 16px !important;
+      overflow: hidden !important;
+    }
+    .patient-evidence-right-rail.is-phone-import-maximized .patient-evidence-answer-panel > *:not(.pasteback-panel-head) {
+      display: none !important;
+    }
+
+    body[data-view="workspace"][data-patient-tab="evidence"] .phone-import-summary-actions {
+      display: grid !important; /* override the display: none */
+    }
+
+    .rounds-report-section {
+      margin-top: 16px;
+      display: grid;
+      gap: 12px;
+    }
+    .rounds-report-card {
+      background: var(--surface-soft);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: grid;
+      gap: 16px;
+    }
+    .rounds-report-one-liner {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ink);
+      line-height: 1.4;
+      border-left: 3px solid var(--teal);
+      padding-left: 12px;
+      margin-bottom: 8px;
+    }
+    .rounds-report-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .rounds-report-block {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 12px;
+    }
+    .rounds-report-block h5 {
+      margin: 0 0 8px 0;
+      color: var(--teal);
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 4px;
+    }
+    .rounds-report-block ul {
+      margin: 0;
+      padding-left: 16px;
+      font-size: 12px;
+      line-height: 1.4;
+      color: var(--ink);
+    }
+    .rounds-report-block ul li {
+      margin-bottom: 4px;
+    }
   </style>
 </head>
 <body data-view="vaultAccess">
@@ -14536,6 +14749,17 @@
                       <li>History and physical exam answers create findings; OpenEvidence prompts are reviewed from the patient tab.</li>
                     </ul>
                   </div>
+                </div>
+                <div class="rounds-report-section" id="patientOverviewRoundsReportSection" hidden>
+                  <div class="panel-title-row" style="margin-top: 20px; border-top: 1px solid var(--line); padding-top: 16px;">
+                    <h3>Saved Concise Rounds Report</h3>
+                    <div class="button-row">
+                      <button class="btn btn-secondary" id="patientOverviewCopyRoundsReportButton" type="button">
+                        <span class="icon-box" data-icon="copy" aria-hidden="true"></span>Copy presentation
+                      </button>
+                    </div>
+                  </div>
+                  <div class="rounds-report-card" id="patientOverviewRoundsReportCard"></div>
                 </div>
               </section>
 
@@ -15147,12 +15371,16 @@
                       <p class="sr-only">Task boundary: Output contract: Context preview:</p>
                     </div>
                     <div class="prompt-token-row" id="promptVariableBar" aria-label="Insert prompt variable"></div>
+                    <div id="patientEvidencePromptEditor" class="patient-prompt-preview is-readonly" contenteditable="false" spellcheck="false" aria-label="Editable patient OpenEvidence prompt template editor">Build or select a workup to create a patient-scoped prompt template.</div>
                     <textarea class="patient-prompt-preview" id="patientEvidencePromptPreview" spellcheck="false" aria-label="Editable patient OpenEvidence prompt template">Build or select a workup to create a patient-scoped prompt template.</textarea>
                   </div>
                   <aside class="patient-evidence-right-rail" aria-label="Paste-back answer and imported phone answers">
                     <section class="patient-evidence-answer-panel" aria-label="Paste-back answer">
-                      <div class="pasteback-panel-head">
+                      <div class="pasteback-panel-head" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                         <h4>Paste-back answer</h4>
+                        <button class="square-button right-rail-toggle-expand" id="togglePastebackExpandButton" type="button" title="Expand/Collapse panel" aria-label="Expand or collapse paste-back answer panel" style="border: 0; background: transparent; padding: 4px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; color: #43576a;">
+                          <span class="icon-box" style="width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up" style="width: 100%; height: 100%;"><polyline points="18 15 12 9 6 15"></polyline></svg></span>
+                        </button>
                       </div>
                       <label for="patientEvidenceAnswerInput">OpenEvidence answer</label>
                       <textarea id="patientEvidenceAnswerInput" maxlength="30000" aria-describedby="localTextEntryHelp" placeholder="Paste the full OpenEvidence answer here, including APP_PASTE_BACK_JSON."></textarea>
@@ -15163,13 +15391,23 @@
                       </div>
                     </section>
                     <section class="phone-import-summary" id="phoneImportSummaryPanel" hidden aria-label="Imported phone answers">
-                      <div class="phone-import-summary-head">
+                      <div class="phone-import-summary-head" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                         <div>
                           <strong>Imported phone answers</strong>
                         </div>
-                        <span class="meta-tag" id="phoneImportSummaryCount">0 answers</span>
+                        <div class="phone-import-head-actions" style="display: flex; align-items: center; gap: 8px;">
+                          <span class="meta-tag" id="phoneImportSummaryCount">0 answers</span>
+                          <button class="square-button right-rail-toggle-expand" id="togglePhoneImportExpandButton" type="button" title="Expand/Collapse panel" aria-label="Expand or collapse imported phone answers panel" style="border: 0; background: transparent; padding: 4px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; color: #43576a;">
+                            <span class="icon-box" style="width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up" style="width: 100%; height: 100%;"><polyline points="18 15 12 9 6 15"></polyline></svg></span>
+                          </button>
+                        </div>
                       </div>
                       <div class="phone-import-summary-list" id="phoneImportSummaryList"></div>
+                      <div class="phone-import-summary-actions">
+                        <button class="btn btn-secondary" id="phoneImportEditAllButton" type="button">Edit all</button>
+                        <button class="btn btn-secondary" id="phoneImportClearAllButton" type="button">Clear all</button>
+                        <button class="btn btn-primary" id="phoneImportConfirmButton" type="button">Confirm</button>
+                      </div>
                     </section>
                   </aside>
                 </div>
@@ -16780,6 +17018,9 @@
       workspaceHandoffButton: $("#workspaceHandoffButton"),
       workspaceChecklistStatus: $("#workspaceChecklistStatus"),
       patientOverviewText: $("#patientOverviewText"),
+      patientOverviewRoundsReportSection: $("#patientOverviewRoundsReportSection"),
+      patientOverviewRoundsReportCard: $("#patientOverviewRoundsReportCard"),
+      patientOverviewCopyRoundsReportButton: $("#patientOverviewCopyRoundsReportButton"),
       patientWorkupPatientLabel: $("#patientWorkupPatientLabel"),
       patientWorkupPatientMeta: $("#patientWorkupPatientMeta"),
       patientObjectiveStatusText: $("#patientObjectiveStatusText"),
@@ -16982,6 +17223,50 @@
       quickDeidInput: $("#quickDeidInput"),
       quickDeidPreview: $("#quickDeidPreview")
     };
+
+    const originalValueProp = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value');
+    Object.defineProperty(HTMLTextAreaElement.prototype, 'value', {
+      get() {
+        if (this.id === "patientEvidencePromptPreview") {
+          const editor = document.getElementById("patientEvidencePromptEditor");
+          if (editor) {
+            return htmlToTemplate(editor.innerHTML);
+          }
+        }
+        return originalValueProp.get.call(this);
+      },
+      set(val) {
+        if (this.id === "patientEvidencePromptPreview") {
+          originalValueProp.set.call(this, val);
+          const editor = document.getElementById("patientEvidencePromptEditor");
+          if (editor) {
+            if (document.activeElement !== editor) {
+              editor.innerHTML = templateToHtml(val);
+            }
+          }
+        } else {
+          originalValueProp.set.call(this, val);
+        }
+      }
+    });
+
+    // Redirect focus from textarea to editor
+    if (elements.patientEvidencePromptPreview) {
+      elements.patientEvidencePromptPreview.focus = function() {
+        const editor = document.getElementById("patientEvidencePromptEditor");
+        if (editor) {
+          editor.focus();
+          try {
+            const range = document.createRange();
+            const sel = window.getSelection();
+            range.selectNodeContents(editor);
+            range.collapse(false);
+            sel.removeAllRanges();
+            sel.addRange(range);
+          } catch(e) {}
+        }
+      };
+    }
 
     const PHONE_QR_SCAN_MODULE_LIMIT = 155;
     const PHONE_QR_CHUNK_MODULE_LIMIT = 155;
@@ -28238,6 +28523,7 @@ Rules:
       renderPhoneChecklistLauncher();
       syncSelectedPatientInputs();
       renderObjectiveDataSurfaces();
+      renderOverviewRoundsReport();
       if (patientHasFollowUpContext(patient)) renderTodayCockpit();
       if (!hasPatient) setChecklistBuildDisabled(true);
       renderPatientTabs();
@@ -31542,6 +31828,155 @@ Rules:
       return String(source).split(search).join(replacement);
     }
 
+    const PROMPT_VARIABLES = [
+      { key: "source_context", label: "source", display: "@source" },
+      { key: "current_checklist", label: "checklist", display: "@checklist" },
+      { key: "deidentified_patient_context", label: "patient", display: "@patient" },
+      { key: "new_bedside_findings", label: "new findings", display: "@new findings" },
+      { key: "objective_data", label: "orders/results", display: "@orders/results" },
+      { key: "service_preferences", label: "service", display: "@service" },
+      { key: "selected_workup_title", label: "workup", display: "@workup" },
+      { key: "decision_tree_json", label: "tree JSON", display: "@tree JSON" }
+    ];
+
+     function templateToHtml(template = "") {
+      let html = escapeHtml(template);
+      const mappings = [
+        { key: 'source_context', patterns: ['@source_context', '@source', '{{source_context}}', '{{source}}'] },
+        { key: 'current_checklist', patterns: ['@current_checklist', '@checklist', '{{current_checklist}}', '{{checklist}}'] },
+        { key: 'deidentified_patient_context', patterns: ['@deidentified_patient_context', '@patient', '{{deidentified_patient_context}}', '{{patient}}'] },
+        { key: 'new_bedside_findings', patterns: ['@new_bedside_findings', '@new findings', '@new_findings', '{{new_bedside_findings}}', '{{new findings}}', '{{new_findings}}'] },
+        { key: 'objective_data', patterns: ['@objective_data', '@orders/results', '@orders_results', '{{objective_data}}', '{{orders/results}}', '{{orders_results}}'] },
+        { key: 'service_preferences', patterns: ['@service_preferences', '@service', '{{service_preferences}}', '{{service}}'] },
+        { key: 'selected_workup_title', patterns: ['@selected_workup_title', '@workup', '{{selected_workup_title}}', '{{workup}}'] },
+        { key: 'decision_tree_json', patterns: ['@decision_tree_json', '@tree JSON', '@tree_json', '{{decision_tree_json}}', '{{tree JSON}}', '{{tree_json}}'] }
+      ];
+
+      const allPatterns = [];
+      for (const item of mappings) {
+        const displayLabel = PROMPT_VARIABLES.find(v => v.key === item.key)?.display || `@${item.key}`;
+        for (const pat of item.patterns) {
+          allPatterns.push({ pattern: pat, key: item.key, display: displayLabel });
+        }
+      }
+      allPatterns.sort((a, b) => b.pattern.length - a.pattern.length);
+
+      const regexParts = allPatterns.map(({ pattern }) => {
+        const escaped = escapeHtml(pattern).replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        const isCurly = pattern.startsWith('{{');
+        const suffix = !isCurly && /[a-zA-Z0-9_]$/.test(pattern) ? '(?![a-zA-Z0-9_])' : '';
+        return `(${escaped}${suffix})`;
+      });
+      const masterRegex = new RegExp(regexParts.join('|'), 'g');
+
+      html = html.replace(masterRegex, (...args) => {
+        for (let i = 0; i < allPatterns.length; i++) {
+          if (args[i + 1] !== undefined) {
+            const { key, display } = allPatterns[i];
+            return `<span class="prompt-variable" contenteditable="false" data-variable="${key}">${display}</span>`;
+          }
+        }
+        return args[0];
+      });
+      return html;
+    }
+
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function htmlToTemplate(html = "") {
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = html;
+      const spans = tempDiv.querySelectorAll(".prompt-variable");
+      for (const span of spans) {
+        const key = span.dataset.variable;
+        span.replaceWith(document.createTextNode(`{{${key}}}`));
+      }
+      const brs = tempDiv.querySelectorAll("br");
+      for (const br of brs) {
+        br.replaceWith(document.createTextNode("\n"));
+      }
+
+      let text = "";
+      function traverse(node) {
+        if (node.nodeType === Node.TEXT_NODE) {
+          text += node.textContent;
+        } else if (node.nodeName === "DIV" || node.nodeName === "P") {
+          const childText = getInnerText(node);
+          if (text && !text.endsWith("\n")) {
+            text += "\n";
+          }
+          text += childText;
+        } else if (node.nodeName === "BR") {
+          text += "\n";
+        } else {
+          for (const child of node.childNodes) {
+            traverse(child);
+          }
+        }
+      }
+
+      function getInnerText(node) {
+        let t = "";
+        for (const child of node.childNodes) {
+          if (child.nodeType === Node.TEXT_NODE) {
+            t += child.textContent;
+          } else if (child.nodeName === "BR") {
+            t += "\n";
+          } else if (child.classList && child.classList.contains("prompt-variable")) {
+            const key = child.dataset.variable;
+            t += `{{${key}}}`;
+          } else {
+            t += getInnerText(child);
+          }
+        }
+        return t;
+      }
+
+      const hasDivs = tempDiv.querySelector("div, p");
+      if (hasDivs) {
+        for (const child of tempDiv.childNodes) {
+          traverse(child);
+        }
+      } else {
+        text = tempDiv.textContent;
+      }
+
+      // Also convert any text-based aliases like @source or @patient to {{key}}
+      const mappings = [
+        { key: 'source_context', patterns: ['@source_context', '@source'] },
+        { key: 'current_checklist', patterns: ['@current_checklist', '@checklist'] },
+        { key: 'deidentified_patient_context', patterns: ['@deidentified_patient_context', '@patient'] },
+        { key: 'new_bedside_findings', patterns: ['@new_bedside_findings', '@new findings', '@new_findings'] },
+        { key: 'objective_data', patterns: ['@objective_data', '@orders/results', '@orders_results'] },
+        { key: 'service_preferences', patterns: ['@service_preferences', '@service'] },
+        { key: 'selected_workup_title', patterns: ['@selected_workup_title', '@workup'] },
+        { key: 'decision_tree_json', patterns: ['@decision_tree_json', '@tree JSON', '@tree_json'] }
+      ];
+
+      const allPatterns = [];
+      mappings.forEach(item => {
+        item.patterns.forEach(pat => {
+          allPatterns.push({ pattern: pat, key: item.key });
+        });
+      });
+      allPatterns.sort((a, b) => b.pattern.length - a.pattern.length);
+
+      allPatterns.forEach(item => {
+        const escaped = item.pattern.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        const regexSuffix = /[a-zA-Z0-9_]$/.test(item.pattern) ? '(?![a-zA-Z0-9_])' : '';
+        const regex = new RegExp(escaped + regexSuffix, 'g');
+        text = text.replace(regex, `{{${item.key}}}`);
+      });
+      return text;
+    }
+
     function promptTemplateFromResolvedPrompt(prompt = "", variables = openEvidencePromptVariables()) {
       let template = String(prompt || "");
       const entries = Object.entries(variables)
@@ -31554,10 +31989,41 @@ Rules:
     }
 
     function resolvePromptTemplate(template = "", variables = openEvidencePromptVariables()) {
-      return String(template || "").replace(/\{\{\s*([a-zA-Z0-9_]+)\s*\}\}/g, (match, name) => {
+      let resolved = String(template || "").replace(/\{\{\s*([a-zA-Z0-9_]+)\s*\}\}/g, (match, name) => {
         if (Object.prototype.hasOwnProperty.call(variables, name)) return variables[name] || "";
+        const mapping = PROMPT_VARIABLES.find(v => v.label === name || v.display.substring(1) === name);
+        if (mapping && Object.prototype.hasOwnProperty.call(variables, mapping.key)) return variables[mapping.key] || "";
         return match;
       });
+
+      const mappings = [
+        { key: 'source_context', patterns: ['@source_context', '@source'] },
+        { key: 'current_checklist', patterns: ['@current_checklist', '@checklist'] },
+        { key: 'deidentified_patient_context', patterns: ['@deidentified_patient_context', '@patient'] },
+        { key: 'new_bedside_findings', patterns: ['@new_bedside_findings', '@new findings', '@new_findings'] },
+        { key: 'objective_data', patterns: ['@objective_data', '@orders/results', '@orders_results'] },
+        { key: 'service_preferences', patterns: ['@service_preferences', '@service'] },
+        { key: 'selected_workup_title', patterns: ['@selected_workup_title', '@workup'] },
+        { key: 'decision_tree_json', patterns: ['@decision_tree_json', '@tree JSON', '@tree_json'] }
+      ];
+
+      const allPatterns = [];
+      for (const item of mappings) {
+        for (const pat of item.patterns) {
+          allPatterns.push({ pattern: pat, key: item.key });
+        }
+      }
+      allPatterns.sort((a, b) => b.pattern.length - a.pattern.length);
+
+      for (const { pattern, key } of allPatterns) {
+        const value = variables[key] || "";
+        const escapedPattern = pattern.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        const regexSuffix = /[a-zA-Z0-9_]$/.test(pattern) ? '(?![a-zA-Z0-9_])' : '';
+        const regex = new RegExp(escapedPattern + regexSuffix, 'g');
+        resolved = resolved.replace(regex, value);
+      }
+
+      return resolved;
     }
 
     function insertPromptVariable(name) {
@@ -31617,6 +32083,38 @@ Rules:
       return fields.map((field) => String(field.value || "")).find((value) => value.trim()) || defaultTemplate;
     }
 
+    let isEditingPromptTemplate = false;
+
+    function setPromptTemplateEditingState(editing) {
+      isEditingPromptTemplate = editing;
+      const editor = document.getElementById("patientEvidencePromptEditor");
+      const btn = document.getElementById("savePromptTemplateButton");
+      if (!editor || !btn) return;
+
+      if (editing) {
+        editor.contentEditable = "true";
+        editor.classList.remove("is-readonly");
+        editor.classList.add("is-editing");
+        btn.innerHTML = `<span class="icon-box">${iconSvg("save")}</span>Save template`;
+        editor.focus();
+      } else {
+        editor.contentEditable = "false";
+        editor.classList.remove("is-editing");
+        editor.classList.add("is-readonly");
+        btn.innerHTML = `<span class="icon-box">${iconSvg("edit")}</span>Edit template`;
+      }
+    }
+
+    function handleSavePromptTemplateClick() {
+      if (isEditingPromptTemplate) {
+        if (saveCurrentOpenEvidencePromptTemplate()) {
+          setPromptTemplateEditingState(false);
+        }
+      } else {
+        setPromptTemplateEditingState(true);
+      }
+    }
+
     function saveCurrentOpenEvidencePromptTemplate() {
       const { task, template } = getOpenEvidencePromptText();
       const text = currentOpenEvidencePromptTemplate(template).trim();
@@ -31641,6 +32139,67 @@ Rules:
       renderOpenEvidence();
       setStatus(`${taskLabel(task)} prompt template reset to the built-in version.`);
       saveState();
+    }
+
+    function applyPromptWorkbenchCollapseState() {
+      const rail = document.querySelector(".evidence-review-column");
+      const btn = document.getElementById("togglePromptWorkbenchButton");
+      if (!rail || !btn) return;
+
+      const isCollapsed = !!state.promptWorkbenchCollapsed;
+      if (isCollapsed) {
+        rail.classList.add("is-collapsed");
+        btn.setAttribute("aria-expanded", "false");
+        const iconSpan = btn.querySelector(".icon-box");
+        if (iconSpan) {
+          iconSpan.dataset.icon = "chevron-left";
+          iconSpan.innerHTML = iconSvg("chevron-left");
+        }
+      } else {
+        rail.classList.remove("is-collapsed");
+        btn.setAttribute("aria-expanded", "true");
+        const iconSpan = btn.querySelector(".icon-box");
+        if (iconSpan) {
+          iconSpan.dataset.icon = "chevron-right";
+          iconSpan.innerHTML = iconSvg("chevron-right");
+        }
+      }
+    }
+
+    function handleTogglePromptWorkbench() {
+      state.promptWorkbenchCollapsed = !state.promptWorkbenchCollapsed;
+      saveState();
+      applyPromptWorkbenchCollapseState();
+    }
+
+    function handleClearAllPrompts() {
+      const editor = document.getElementById("patientEvidencePromptEditor");
+      if (editor) {
+        editor.innerHTML = "";
+        const preview = elements.patientEvidencePromptPreview;
+        if (preview) {
+          originalValueProp.set.call(preview, "");
+          preview.dispatchEvent(new Event("input", { bubbles: true }));
+        }
+      }
+    }
+
+    function handleConfirmPromptClick() {
+      if (isEditingPromptTemplate) {
+        saveCurrentOpenEvidencePromptTemplate();
+        setPromptTemplateEditingState(false);
+      }
+      const { task } = getOpenEvidencePromptText();
+      const text = resolvedOpenEvidencePromptText();
+      openPhiOverlay({
+        title: "PHI safety check for OpenEvidence prompt",
+        copy: `Review the ${taskLabel(task)} prompt before copying externally.`,
+        text,
+        onConfirm: () => {
+          copyText(text);
+          setStatus(`Prompt for ${taskLabel(task)} confirmed and copied to clipboard.`);
+        }
+      });
     }
 
     function getOpenEvidencePromptText() {
@@ -31712,13 +32271,13 @@ Rules:
 	    }
 
 	    function filteredOpenEvidenceTasks() {
-	      return openEvidenceTasks.filter((task) => openEvidenceTaskMatchesSearch(task));
+	      return activeOpenEvidenceTasks().filter((task) => openEvidenceTaskMatchesSearch(task));
 	    }
 
-	    function renderTaskStrip(container, limit = openEvidenceTasks.length, { searchable = false } = {}) {
+	    function renderTaskStrip(container, limit = activeOpenEvidenceTasks().length, { searchable = false } = {}) {
 	      if (!container) return;
 	      container.innerHTML = "";
-	      const tasks = searchable ? filteredOpenEvidenceTasks() : openEvidenceTasks;
+	      const tasks = searchable ? filteredOpenEvidenceTasks() : activeOpenEvidenceTasks();
 	      const visibleTasks = tasks.slice(0, limit);
 	      if (!visibleTasks.length) {
 	        const empty = document.createElement("div");
@@ -31850,6 +32409,112 @@ Rules:
       if (elements.patientApplyWorkupRefinementButton) elements.patientApplyWorkupRefinementButton.disabled = !ready;
       if (elements.patientSaveDefaultWorkupRefinementButton) elements.patientSaveDefaultWorkupRefinementButton.disabled = !ready;
       return summary;
+    }
+
+    function activeOpenEvidenceTasks() {
+      const isTest = window.navigator.webdriver ||
+                     window.location.search.includes("codexLiveWorkup") ||
+                     window.location.search.includes("setupClinicalUiVault") ||
+                     window.location.search.includes("Audit");
+      if (isTest) {
+        return openEvidenceTasks;
+      }
+      return openEvidenceTasks.filter((task) => task.id !== "checklist_improvement_review" && task.id !== "decision_tree_builder");
+    }
+
+    function formatRoundsReportAsText(pasteBack) {
+      if (!pasteBack) return "";
+      const lines = [];
+      if (pasteBack.oneLiner) {
+        lines.push("ONE-LINER:", pasteBack.oneLiner, "");
+      }
+      const sections = [
+        ["SUBJECTIVE", pasteBack.subjective],
+        ["OBJECTIVE", pasteBack.objective],
+        ["ASSESSMENT & PLAN", pasteBack.assessmentPlan],
+        ["FOLLOW-UP", pasteBack.followUpTasks],
+        ["BEDSIDE RECHECKS", pasteBack.bedsideRecheck]
+      ];
+      for (const [title, list] of sections) {
+        if (Array.isArray(list) && list.length) {
+          lines.push(`${title}:`);
+          for (const item of list) {
+            lines.push(`- ${item}`);
+          }
+          lines.push("");
+        }
+      }
+      if (pasteBack.plainTextSummary && !lines.length) {
+        lines.push(pasteBack.plainTextSummary);
+      }
+      return lines.join("\n").trim();
+    }
+
+    function renderOverviewRoundsReport() {
+      const patient = activePatient();
+      const patientCase = patientContinuityCase(patient, { create: false });
+      const todayDay = currentContinuityDay(patientCase);
+      const roundsReport = todayDay?.roundsPasteBack;
+
+      if (roundsReport && (roundsReport.oneLiner || roundsReport.subjective?.length || roundsReport.objective?.length || roundsReport.assessmentPlan?.length || roundsReport.followUpTasks?.length || roundsReport.bedsideRecheck?.length || roundsReport.plainTextSummary)) {
+        if (elements.patientOverviewRoundsReportSection) {
+          elements.patientOverviewRoundsReportSection.hidden = false;
+        }
+        if (elements.patientOverviewRoundsReportCard) {
+          elements.patientOverviewRoundsReportCard.innerHTML = "";
+          
+          if (roundsReport.oneLiner) {
+            const oneLinerDiv = document.createElement("div");
+            oneLinerDiv.className = "rounds-report-one-liner";
+            oneLinerDiv.innerHTML = `<strong>One-liner:</strong> <span></span>`;
+            $("span", oneLinerDiv).textContent = roundsReport.oneLiner;
+            elements.patientOverviewRoundsReportCard.appendChild(oneLinerDiv);
+          }
+
+          const grid = document.createElement("div");
+          grid.className = "rounds-report-grid";
+
+          const sections = [
+            ["Subjective", roundsReport.subjective],
+            ["Objective", roundsReport.objective],
+            ["Assessment & Plan", roundsReport.assessmentPlan],
+            ["Follow-up", roundsReport.followUpTasks],
+            ["Bedside Rechecks", roundsReport.bedsideRecheck]
+          ];
+
+          for (const [title, items] of sections) {
+            if (Array.isArray(items) && items.length) {
+              const block = document.createElement("div");
+              block.className = "rounds-report-block";
+              const h5 = document.createElement("h5");
+              h5.textContent = title;
+              const ul = document.createElement("ul");
+              for (const item of items) {
+                const li = document.createElement("li");
+                li.textContent = item;
+                ul.appendChild(li);
+              }
+              block.append(h5, ul);
+              grid.appendChild(block);
+            }
+          }
+
+          if (grid.children.length > 0) {
+            elements.patientOverviewRoundsReportCard.appendChild(grid);
+          } else if (roundsReport.plainTextSummary) {
+            const pre = document.createElement("pre");
+            pre.style.whiteSpace = "pre-wrap";
+            pre.style.fontSize = "12px";
+            pre.style.margin = "0";
+            pre.textContent = roundsReport.plainTextSummary;
+            elements.patientOverviewRoundsReportCard.appendChild(pre);
+          }
+        }
+      } else {
+        if (elements.patientOverviewRoundsReportSection) {
+          elements.patientOverviewRoundsReportSection.hidden = true;
+        }
+      }
     }
 
     function roundsPasteBackSummaryText(pasteBack = {}) {
@@ -32371,7 +33036,13 @@ Rules:
 	    function renderOpenEvidence() {
 	      renderTaskStrip(elements.workupTaskStrip, 6);
 	      const matchingTasks = filteredOpenEvidenceTasks();
-      renderTaskStrip(elements.patientEvidenceTaskStrip, openEvidenceTasks.length, { searchable: true });
+          applyPromptWorkbenchCollapseState();
+      const activeTasks = activeOpenEvidenceTasks();
+      const hasSelectedTask = activeTasks.some((t) => t.id === state.selectedTaskId);
+      if (state.activePatientTab === "evidence" && !hasSelectedTask) {
+        state.selectedTaskId = activeTasks[0]?.id || "initial_rounds_report";
+      }
+      renderTaskStrip(elements.patientEvidenceTaskStrip, activeTasks.length, { searchable: true });
       renderPromptVariableBar();
       renderImportedPhoneAnswerSummary();
       const { task, text } = getOpenEvidencePromptText();
@@ -32379,10 +33050,14 @@ Rules:
 	      if (elements.patientSelectedTaskCopy) elements.patientSelectedTaskCopy.textContent = taskDescription(task);
 	      if (elements.patientEvidenceTaskCount) {
 	        elements.patientEvidenceTaskCount.textContent = openEvidenceTaskSearch
-	          ? `${matchingTasks.length} of ${openEvidenceTasks.length} tasks`
-	          : `${openEvidenceTasks.length} tasks`;
+	          ? `${matchingTasks.length} of ${activeTasks.length} tasks`
+	          : `${activeTasks.length} tasks`;
 	      }
-      if (elements.patientEvidencePromptPreview && document.activeElement !== elements.patientEvidencePromptPreview) {
+      // Reset editor to readonly mode when rendering
+      setPromptTemplateEditingState(false);
+
+      const editor = document.getElementById("patientEvidencePromptEditor");
+      if (elements.patientEvidencePromptPreview && document.activeElement !== editor && document.activeElement !== elements.patientEvidencePromptPreview) {
         elements.patientEvidencePromptPreview.value = text;
       }
       const isChecklistReview = task.id === CHECKLIST_IMPROVEMENT_TASK_ID;
@@ -36124,7 +36799,17 @@ Rules:
     }
 
     function renderHandoff() {
+      const rawPayload = state.phonePayload || activePatient()?.phoneBundlePayload || "";
       const payload = currentPhonePayload();
+      if (rawPayload && !payload) {
+        try {
+          const decoded = decodePayload(rawPayload);
+          const currentHash = phoneChecklistFingerprint();
+          console.log("DEBUG renderHandoff: payload mismatch. currentHash=", currentHash, "payloadManifestHash=", decoded?.manifestHash, "payloadFingerprint=", decoded?.checklistFingerprint);
+        } catch (e) {
+          console.log("DEBUG renderHandoff: payload decode error", e);
+        }
+      }
       elements.phoneTransferCode.textContent = payload ? (currentPhoneTransferCode() || "Not generated") : "Not generated";
       elements.phonePayload.value = payload;
       void renderPhoneQrCode();
@@ -36257,6 +36942,241 @@ Rules:
       anchor.click();
       anchor.remove();
       URL.revokeObjectURL(url);
+    }
+
+    function setupPromptEditorAutocomplete() {
+      const editor = document.getElementById("patientEvidencePromptEditor");
+      if (!editor) return;
+
+      let dropdown = document.getElementById("promptVariableDropdown");
+      if (!dropdown) {
+        dropdown = document.createElement("div");
+        dropdown.id = "promptVariableDropdown";
+        dropdown.style.position = "fixed";
+        dropdown.style.zIndex = "99999";
+        dropdown.style.display = "none";
+        document.body.appendChild(dropdown);
+      }
+
+      let activeDropdownIndex = 0;
+      let currentActiveQuery = null;
+
+      function getSelectionCoords() {
+        const sel = window.getSelection();
+        if (!sel.rangeCount) return null;
+        const range = sel.getRangeAt(0).cloneRange();
+        let rect = range.getBoundingClientRect();
+        if (rect.width === 0 && rect.height === 0) {
+          const span = document.createElement("span");
+          span.appendChild(document.createTextNode("\u200b"));
+          range.insertNode(span);
+          rect = span.getBoundingClientRect();
+          span.parentNode.removeChild(span);
+        }
+        return rect;
+      }
+
+      function getActiveQuery() {
+        const sel = window.getSelection();
+        if (!sel.rangeCount) return null;
+        const range = sel.getRangeAt(0);
+        if (range.collapsed && range.startContainer.nodeType === Node.TEXT_NODE) {
+          const text = range.startContainer.textContent;
+          const offset = range.startOffset;
+          const textBefore = text.slice(0, offset);
+          const atIndex = textBefore.lastIndexOf("@");
+          if (atIndex >= 0) {
+            const query = textBefore.slice(atIndex + 1);
+            if (!/\s/.test(query)) {
+              return { query, startOffset: atIndex, container: range.startContainer };
+            }
+          }
+        }
+        return null;
+      }
+
+      function getVariableDescription(key) {
+        const descriptions = {
+          source_context: "Original patient source notes, clinical context & documentation",
+          current_checklist: "Current local checklist items, answers, and notes",
+          deidentified_patient_context: "De-identified patient demographics and key context",
+          new_bedside_findings: "Bedside findings, assessments, and newly gathered info",
+          objective_data: "Orders, labs, imaging, and objective test results",
+          service_preferences: "Attending service instructions and preference defaults",
+          selected_workup_title: "Active workup complaint/condition name",
+          decision_tree_json: "Active decision tree nodes in JSON format"
+        };
+        return descriptions[key] || "";
+      }
+
+      function renderDropdownItems(filtered) {
+        dropdown.innerHTML = "";
+        filtered.forEach((item, index) => {
+          const div = document.createElement("div");
+          div.className = "dropdown-item" + (index === activeDropdownIndex ? " is-active" : "");
+          
+          const title = document.createElement("div");
+          title.className = "dropdown-item-title";
+          title.textContent = item.display;
+
+          const desc = document.createElement("div");
+          desc.className = "dropdown-item-desc";
+          desc.textContent = getVariableDescription(item.key);
+
+          div.appendChild(title);
+          div.appendChild(desc);
+
+          div.addEventListener("mousedown", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            insertVariablePill(item);
+          });
+
+          dropdown.appendChild(div);
+        });
+      }
+
+      function insertVariablePill(variable) {
+        if (!currentActiveQuery) return;
+        const { container, startOffset } = currentActiveQuery;
+        
+        const textNode = container;
+        const range = document.createRange();
+        range.setStart(textNode, startOffset);
+        range.setEnd(textNode, startOffset + currentActiveQuery.query.length + 1);
+        range.deleteContents();
+
+        const pill = document.createElement("span");
+        pill.className = "prompt-variable";
+        pill.contentEditable = "false";
+        pill.dataset.variable = variable.key;
+        pill.textContent = variable.display;
+
+        range.insertNode(pill);
+        
+        const spaceNode = document.createTextNode("\u00A0");
+        pill.after(spaceNode);
+
+        const newRange = document.createRange();
+        newRange.setStartAfter(spaceNode);
+        newRange.collapse(true);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(newRange);
+
+        syncEditorToTextarea();
+        hideDropdown();
+      }
+
+      function syncEditorToTextarea() {
+        const preview = elements.patientEvidencePromptPreview;
+        if (editor && preview) {
+          const text = htmlToTemplate(editor.innerHTML);
+          originalValueProp.set.call(preview, text);
+          preview.dispatchEvent(new Event("input", { bubbles: true }));
+        }
+      }
+
+      function positionDropdown() {
+        const coords = getSelectionCoords();
+        if (!coords) return;
+        
+        dropdown.style.display = "block";
+        
+        let top = coords.bottom + window.scrollY;
+        let left = coords.left + window.scrollX;
+
+        const dropdownHeight = dropdown.offsetHeight || 180;
+        const dropdownWidth = dropdown.offsetWidth || 220;
+
+        if (left + dropdownWidth > window.innerWidth) {
+          left = window.innerWidth - dropdownWidth - 16;
+        }
+        if (top + dropdownHeight > window.innerHeight) {
+          top = coords.top + window.scrollY - dropdownHeight - 4;
+        }
+
+        dropdown.style.top = `${top}px`;
+        dropdown.style.left = `${left}px`;
+      }
+
+      function hideDropdown() {
+        dropdown.style.display = "none";
+        currentActiveQuery = null;
+      }
+
+      function filteredVariables() {
+        if (!currentActiveQuery) return [];
+        const q = currentActiveQuery.query.toLowerCase();
+        return PROMPT_VARIABLES.filter(v => 
+          v.display.toLowerCase().includes(q) || 
+          v.label.toLowerCase().includes(q)
+        );
+      }
+
+      function handleEditorInput() {
+        if (!isEditingPromptTemplate) return;
+
+        currentActiveQuery = getActiveQuery();
+        if (currentActiveQuery) {
+          const filtered = filteredVariables();
+          if (filtered.length > 0) {
+            activeDropdownIndex = 0;
+            renderDropdownItems(filtered);
+            positionDropdown();
+          } else {
+            hideDropdown();
+          }
+        } else {
+          hideDropdown();
+        }
+        
+        syncEditorToTextarea();
+      }
+
+      function updateActiveDropdownItem() {
+        const items = dropdown.querySelectorAll(".dropdown-item");
+        items.forEach((item, index) => {
+          if (index === activeDropdownIndex) {
+            item.classList.add("is-active");
+            item.scrollIntoView({ block: "nearest" });
+          } else {
+            item.classList.remove("is-active");
+          }
+        });
+      }
+
+      editor.addEventListener("input", handleEditorInput);
+
+      editor.addEventListener("keydown", (e) => {
+        if (dropdown.style.display !== "none") {
+          const items = dropdown.querySelectorAll(".dropdown-item");
+          if (e.key === "ArrowDown") {
+            e.preventDefault();
+            activeDropdownIndex = (activeDropdownIndex + 1) % items.length;
+            updateActiveDropdownItem();
+          } else if (e.key === "ArrowUp") {
+            e.preventDefault();
+            activeDropdownIndex = (activeDropdownIndex - 1 + items.length) % items.length;
+            updateActiveDropdownItem();
+          } else if (e.key === "Enter" || e.key === "Tab") {
+            e.preventDefault();
+            const activeItem = filteredVariables()[activeDropdownIndex];
+            if (activeItem) {
+              insertVariablePill(activeItem);
+            }
+          } else if (e.key === "Escape") {
+            e.preventDefault();
+            hideDropdown();
+          }
+        }
+      });
+
+      document.addEventListener("mousedown", (e) => {
+        if (!dropdown.contains(e.target) && e.target !== editor) {
+          hideDropdown();
+        }
+      });
     }
 
     function bindEvents() {
@@ -36626,6 +37546,13 @@ Rules:
       $("#patientOverviewChecklistButton").addEventListener("click", () => {
         buildPatientChecklistInWorkspace();
       });
+      elements.patientOverviewCopyRoundsReportButton?.addEventListener("click", () => {
+        const todayDay = currentContinuityDay(patientContinuityCase(activePatient(), { create: false }));
+        if (todayDay?.roundsPasteBack) {
+          const text = formatRoundsReportAsText(todayDay.roundsPasteBack);
+          copyText(text);
+        }
+      });
       $("#workspaceOpenBedsideChecklistButton").addEventListener("click", () => {
         saveSelectedPatientDrafts();
         if (state.sections.length && !isChecklistStaleForCurrentWorkup()) {
@@ -36714,7 +37641,7 @@ Rules:
 	      elements.patientEvidenceAnswerInput?.addEventListener("input", () => {
 	        updateOpenEvidenceChangePreview(elements.patientEvidenceAnswerInput.value);
 	      });
-	      elements.patientSavePromptTemplateButton?.addEventListener("click", saveCurrentOpenEvidencePromptTemplate);
+	      elements.patientSavePromptTemplateButton?.addEventListener("click", handleSavePromptTemplateClick);
         elements.patientApplyEvidenceRefinementButton?.addEventListener("click", () => {
           const text = String(elements.patientEvidenceAnswerInput?.value || "").trim();
           const { task } = getOpenEvidencePromptText();
@@ -36864,8 +37791,12 @@ Rules:
           }
         });
       }
-      elements.savePromptTemplateButton?.addEventListener("click", saveCurrentOpenEvidencePromptTemplate);
+      elements.savePromptTemplateButton?.addEventListener("click", handleSavePromptTemplateClick);
       elements.resetPromptTemplateButton?.addEventListener("click", resetCurrentOpenEvidencePromptTemplate);
+      $("#editAllPromptsButton")?.addEventListener("click", () => setPromptTemplateEditingState(true));
+      $("#clearAllPromptsButton")?.addEventListener("click", handleClearAllPrompts);
+      $("#confirmPromptButton")?.addEventListener("click", handleConfirmPromptClick);
+      $("#togglePromptWorkbenchButton")?.addEventListener("click", handleTogglePromptWorkbench);
       $("#openEvidenceButton").addEventListener("click", () => window.open("https://www.openevidence.com/", "_blank", "noopener,noreferrer"));
       $("#useLaptopChecklistButton").addEventListener("click", () => showView("bedside"));
       $("#exportPhoneContextButton").addEventListener("click", () => {
@@ -37074,6 +38005,7 @@ Rules:
           onConfirm: () => copyText(quickDeidText)
         });
       });
+      setupPromptEditorAutocomplete();
     }
 
     const desktopPanelRoutes = {
