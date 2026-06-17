@@ -9,7 +9,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon.png">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-src 'none'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://cdn.jsdelivr.net blob:; worker-src 'self' blob:; connect-src 'self' https://*.supabase.co http://127.0.0.1:* http://localhost:* https://cdn.jsdelivr.net https://huggingface.co https://*.huggingface.co https://*.hf.co https://cdn-lfs.huggingface.co https://cas-bridge.xethub.hf.co https://*.xethub.hf.co https://huggingface.co/* https://cdn-lfs.hf.co; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-src 'none'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://cdn.jsdelivr.net blob:; worker-src 'self' blob:; connect-src 'self' https://*.supabase.co http://127.0.0.1:* http://localhost:* https://cdn.jsdelivr.net https://huggingface.co https://*.huggingface.co https://*.hf.co https://cdn-lfs.huggingface.co https://cas-bridge.xethub.hf.co https://*.xethub.hf.co https://huggingface.co/* https://cdn-lfs.hf.co https://hf-mirror.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:">
   <title>Pre-Rounding Checklist Builder</title>
   <style>
     :root {
@@ -16730,7 +16730,22 @@
               if (!update.ready && update.message) setLoading(update.message);
             }
           });
-          loadedModel = await _deidModelInstance.loadModel();
+          try {
+            loadedModel = await _deidModelInstance.loadModel();
+          } catch (cdnError) {
+            console.warn("HuggingFace CDN unavailable, trying mirror...", cdnError.message);
+            transformers.env.remoteHost = "https://hf-mirror.com";
+            transformers.env.remotePathTemplate = "{model}/resolve/{revision}/{file}";
+            _deidModelInstance = createDeidentifier({
+              pipelineFactory: pipeline,
+              mode: "hybrid",
+              device: "webgpu",
+              onModelStatus: (update) => {
+                if (!update.ready && update.message) setLoading(update.message);
+              }
+            });
+            loadedModel = await _deidModelInstance.loadModel();
+          }
         }
         _deidModelReady = true;
         _deidModelLoading = false;
