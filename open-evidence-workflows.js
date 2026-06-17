@@ -295,36 +295,37 @@ function initialRoundsPrompt(context) {
   return buildPatientPrompt(
     context,
     `${taskBoundary({
-  primary: "Summarize the de-identified case below into a concise structured format, citing relevant evidence and guidelines from OpenEvidence.",
+  primary: "Using OpenEvidence, summarize the de-identified case below into a concise structured SOAP-format report, citing relevant evidence and guidelines.",
   notFor: [
-    "a comprehensive full note",
-    "a medication-only review",
+    "a comprehensive full SOAP note",
+    "a medication-only safety audit",
     "a teaching handout",
-    "a discharge-only review",
-    "a second-opinion blind-spot audit"
+    "a discharge readiness review",
+    "a blind-spot second opinion"
   ]
 })}
 
 <clinical_question>
-Using OpenEvidence, produce a concise evidence-informed case summary. Reference current guidelines and literature where they support key points. Avoid repeating facts across sections unless the repetition changes interpretation.
+Produce a concise evidence-informed case summary in SOAP format. Avoid redundancy. Include each detail only if it changes the clinical story, objective interpretation, or management.
 </clinical_question>`,
     `<output_format>
 Use concise bullets only, organized exactly as:
 I. SUBJECTIVE
-- One-liner summary of the case
-- Presenting concern / reason for consult / care to date
-- Medications, grouped by indication
-- Relevant history (psychosocial, family, social)
+- One-liner
+- HPI / consult question / management to date
+- Medications and allergies, grouped by indication
+- Relevant psychosocial, family, and social history
 II. OBJECTIVE
 - Vitals
 - Physical exam
-- Labs and trends
+- Laboratory data and trends
 - Imaging / other workup
 III. ASSESSMENT AND PLAN
-- Case summary
-- Problem list with evidence-informed considerations per active problem
-Include an inline citation to current guideline or literature where OpenEvidence supports the point.
-Keep subjective and objective sections brief; include only what shapes interpretation.
+- Summary of patient
+- Problem list with management plan / workup for each active problem
+For each management recommendation, include an inline citation to current guideline or literature when OpenEvidence can support it.
+Keep subjective and objective sections as short as possible without losing management-changing details.
+Do not repeat the same fact in multiple sections unless it changes a separate management decision.
 </output_format>
 
 ${roundsPasteBackContract}`
@@ -335,36 +336,36 @@ function fullRoundsReportPrompt(context) {
   return buildPatientPrompt(
     context,
     `${taskBoundary({
-  primary: "Produce a thorough evidence-informed structured summary of the de-identified case below, citing relevant guidelines and literature.",
+  primary: "Using OpenEvidence, produce a thorough evidence-informed structured summary of the de-identified case below in full SOAP format, citing relevant guidelines and literature.",
   notFor: [
-    "a short highlights-only summary",
-    "a medication-only review",
+    "a short highlights-only report; use the concise rounds report for that",
+    "a medication-only safety audit",
     "a teaching handout",
-    "a discharge-only review",
-    "a second-opinion blind-spot audit"
+    "a discharge readiness-only review",
+    "a blind-spot second opinion"
   ]
 })}
 
 <clinical_question>
-Using OpenEvidence, create a complete structured case summary. Include all details needed for clinical understanding, with evidence citations. Avoid verbatim chart repetition and avoid repeating data unless the repetition changes interpretation.
+Create a complete structured case summary in SOAP format. Include all details needed to understand the case, with evidence citations. Avoid copied chart narrative and avoid repeating data unless the repetition changes interpretation.
 </clinical_question>`,
     `<output_format>
 Use concise bullets only, organized exactly as:
 I. SUBJECTIVE
-- One-liner summary
-- Presenting concern / reason for consult / care to date
-- Medications, grouped by indication
-- Relevant history (psychosocial, family, social)
+- One-liner
+- HPI / consult question / management to date
+- Medications and allergies, grouped by indication
+- Relevant psychosocial, family, and social history
 II. OBJECTIVE
 - Vitals
 - Physical exam
-- Labs and trends
+- Laboratory data and trends
 - Imaging / other workup
 III. ASSESSMENT AND PLAN
-- Case summary
-- Problem list with evidence-informed considerations per active problem
-Include important negatives, trends, medication context, and contingencies when they shape interpretation.
-Include an inline citation to current guideline or literature where OpenEvidence supports the point.
+- Summary of patient
+- Problem list with management plan / workup for each active problem
+Include important negatives, trends, medication context, and contingencies when they matter to the team's management.
+For each management recommendation, include an inline citation to current guideline or literature when OpenEvidence can support it.
 Do not add a separate reference list unless inline citations would be unclear.
 </output_format>
 
@@ -375,12 +376,12 @@ ${roundsPasteBackContract}`
 function finalRoundsPrompt(context) {
   return [
     taskBoundary({
-      primary: "Using the de-identified case context below (which follows from earlier in this conversation), identify what new findings or changes are most relevant and what current evidence says about them.",
+      primary: "Using the de-identified case context below and prior context from earlier in this conversation, identify what changed in the last 24 hours and what current evidence says about how it changes management.",
       notFor: [
-        "re-summarizing the full case from scratch",
-        "inventing new facts or diagnoses",
-        "rewriting a bedside checklist",
-        "a broad teaching or guideline review"
+        "re-summarizing the full chart from scratch",
+        "adding unsupported new diagnoses or orders",
+        "rewriting the local bedside checklist",
+        "performing a broad teaching or guideline review"
       ]
     }),
     EVIDENCE_GUARDRAILS,
@@ -390,11 +391,11 @@ function finalRoundsPrompt(context) {
 Use concise bullets only.
 Use the case context already provided earlier in this conversation; do not repeat stable background.
 Organize exactly as:
-I. SUBJECTIVE - only new symptoms, interval events, or reported changes
-II. OBJECTIVE - only new vitals, exam changes, labs/trends, imaging, or procedures
-III. ASSESSMENT AND PLAN - for each change in the last 24 hours, note what current evidence or guidelines suggest
-Include "no evidence-supported change" only when a new result might otherwise appear to require action.
-Use inline citations to guidelines/literature only for new evidence-supported points.
+I. SUBJECTIVE - only new symptoms, interval events, or patient-reported changes
+II. OBJECTIVE - only new vitals, exam changes, labs/trends, imaging, medication administrations, or procedures
+III. ASSESSMENT AND PLAN - each bullet must state what changed in the last 24 hours and whether/how it changes management
+Include "no management change" only when a new result might otherwise appear to require action.
+Use inline guideline/literature citations only for new management recommendations or changed thresholds.
 </output_format>
 
 ${roundsPasteBackContract}`
@@ -403,24 +404,25 @@ ${roundsPasteBackContract}`
 
 function medicationSafetyPrompt(context) {
   const question = `${taskBoundary({
-  primary: "Using OpenEvidence, review the medication information in the de-identified case below for evidence-supported safety considerations.",
+  primary: "Using OpenEvidence, review the medication information in the de-identified case below for evidence-supported medication safety considerations, addressing the 5Rs on every active medication.",
   notFor: [
     "a general assessment and plan",
-    "a discharge review except medication or supply barriers",
+    "a discharge checklist except medication or supply barriers",
     "a broad blind-spot review unrelated to medications"
   ]
 })}
 
 <clinical_question>
-Using the medication and case information provided, identify evidence-supported medication safety considerations: dosing relative to renal/hepatic/age/weight status, known interactions, duplicate therapy, disease-lab mismatches, peri-procedural timing, prophylaxis gaps, and home-medication restart considerations. For each, cite the evidence or guideline that supports the concern.
+Using the medication and case information provided, identify evidence-supported medication safety considerations: verify right patient/context, right medication, right dose, right route, and right time/frequency for every active medication when data are available. Check whether medications are being given as ordered; dose/frequency fit with renal/hepatic/weight/age status; medication has a clear indication; the selected medication is appropriate for the case's active problems; duplicate therapy; disease/lab mismatches; held/refused/delayed/missing administrations; order/MAR mismatches; interactions; peri-procedural timing; prophylaxis gaps; and home medication restart/hold questions. Cite the evidence or guideline that supports each concern.
 </clinical_question>`;
 
   const output = `<output_format>
 Use concise bullets only, grouped by medication or medication class.
-For each medication, note any evidence-supported safety consideration.
-Prefix each item with: VERIFY, DOSE, INDICATION, INTERACTION, or MONITOR.
-Include an inline citation for each evidence-based concern.
-Do not include non-medication issues unless they directly relate to medication safety evidence.
+For each active medication with enough context, address the 5Rs: right patient/context, right medication, right dose, right route, right time/frequency.
+For each issue, state: medication/class; what is mismatched, missing, unsafe, or unclear; why it matters; what to verify or change.
+Use prefixes only when helpful: VERIFY, HOLD/RESTART, DOSE, INDICATION, INTERACTION, MONITOR, ESCALATE.
+Include "no issue found" only for a high-risk medication where the MAR and notes clearly support all 5Rs.
+Do not include non-medication problems unless they directly change medication safety.
 </output_format>`;
 
   const fullOutput = `${output}
@@ -471,24 +473,25 @@ function exceptionPrompt(context) {
   return buildPatientPrompt(
     context,
     `${taskBoundary({
-  primary: "Using OpenEvidence, identify evidence-supported exceptions, contraindications, or special-population considerations relevant to the de-identified case below.",
+  primary: "Using OpenEvidence's current guidance, identify case-specific guideline exceptions, contraindications, competing risks, missing prerequisites, and special-population caveats for the de-identified case below.",
   notFor: [
     "reconfirming the whole guideline pathway",
     "writing a general problem-based plan",
-    "a medication-only review",
+    "performing a medication-only audit",
     "teaching basic illness scripts"
   ]
 })}
 
 <clinical_question>
-What guideline exceptions, contraindications, competing risks, missing prerequisites, or special-population issues does current evidence identify for the clinical scenario described below? Cite the specific evidence or guideline for each point.
+Find evidence-supported exceptions, contraindications, competing risks, missing prerequisites, or special-population issues that could change routine guidance for this clinical scenario. Cite the specific evidence or guideline for each point.
 </clinical_question>`,
     `<output_format>
 Use at most 4 bullets total.
-Prefix each with EXCEPTION, CONTRAINDICATION, PREREQUISITE, or SPECIAL-POPULATION.
-Include only points where current evidence or guidelines support a departure from standard pathways.
-If a citation is essential, include it inline.
+Prefix every bullet with EXCEPTION, CONTRAINDICATION, PREREQUISITE, or SPECIAL-POPULATION.
+Include only exceptions, competing risks, missing prerequisites, or special-population issues that alter a default pathway for this case.
+If a citation is essential, include it inline; do not create a citation section or reference list.
 Do not restate standard guideline recommendations unless needed to explain the exception.
+Do not write a broad guideline summary.
 </output_format>
 
 ${guidelineExceptionsPasteBackContract}`
@@ -499,24 +502,25 @@ function attendingPlanPrompt(context) {
   return buildPatientPrompt(
     context,
     `${taskBoundary({
-  primary: "Using OpenEvidence, identify evidence-supported management considerations for the de-identified case below, organized by active problem.",
+  primary: "Using OpenEvidence, provide evidence-supported management recommendations for the de-identified case below, based on current guidelines and literature.",
   notFor: [
     "a compact rounds presentation script",
-    "a medication-only review",
+    "a medication-only safety check",
     "a teaching handout",
     "a discharge logistics checklist"
   ]
 })}
 
 <clinical_question>
-For each active problem in the case below, what do current guidelines and literature recommend regarding management approach, diagnostic workup, monitoring thresholds, and factors that would change the plan? Cite your sources.
+What do current guidelines and literature recommend for management approach, diagnostic workup, monitoring/escalation thresholds, and factors that would change the plan for each active problem in this case? Use OpenEvidence's current guideline/literature access for recommendation support and thresholds.
 </clinical_question>`,
     `<output_format>
-Use concise bullets only, organized by active problem.
-For each problem, note evidence-supported considerations: management approach, diagnostic workup, monitoring and escalation thresholds.
-Include an inline citation to the latest guideline or literature OpenEvidence can support for each recommendation.
-State uncertainty explicitly and avoid inventing facts.
-Do not write a full SOAP note; focus on evidence for each problem.
+Use concise bullets only.
+Organize by active problem.
+For each problem, include management recommendations, diagnostic workup, monitoring/escalation thresholds, and what would change the plan.
+For each recommendation, include an inline citation to the latest guideline or literature OpenEvidence can support.
+State uncertainty explicitly and avoid inventing orders or facts.
+Do not write a full SOAP note; focus on management.
 </output_format>
 
 ${attendingPlanPasteBackContract}`
@@ -527,29 +531,29 @@ function teachingPrompt(context) {
   return buildPatientPrompt(
     context,
     `${taskBoundary({
-  primary: "Using OpenEvidence, explain the key clinical concepts and reasoning for the de-identified case below in plain language suitable for a medical learner.",
+  primary: "Using OpenEvidence, explain the clinical reasoning for the de-identified case below in SOAP format, suitable for a new third-year medical student learning the case.",
   notFor: [
-    "a directive management plan",
-    "a medication review",
+    "a directive attending plan",
+    "a medication safety audit",
     "a guideline citation audit",
-    "a discharge checklist",
+    "a discharge readiness checklist",
     "a blind-spot review"
   ]
 })}
 
 <clinical_question>
-Using the case below as a worked example, explain the clinical reasoning: why key symptoms, exam findings, labs, imaging, and management choices matter. Spell out abbreviations and define terms. Reference supporting evidence or guidelines where applicable.
+Explain this case following the full SOAP structure. Expand medical abbreviations, define terms, and explain why each clinically important detail matters. Reference supporting evidence or guidelines where applicable.
 </clinical_question>`,
     `<output_format>
 Use SOAP headings:
 I. SUBJECTIVE
 II. OBJECTIVE
 III. ASSESSMENT AND PLAN
-Within each section, use bullets with short plain-language explanations suitable for a medical learner.
-Spell out abbreviations and briefly define them on first use.
-Explain the clinical reasoning behind important findings and choices.
-Keep the explanation patient-specific; do not write a generic textbook chapter.
-Do not include a reading plan or external links unless directly needed to explain a cited recommendation.
+Within each section, use bullets with short explanations in plain language for a brand-new third-year medical student.
+Spell out all non-obvious abbreviations and briefly define them on first use.
+Explain the clinical reasoning behind important symptoms, exam findings, lab trends, imaging, medications, and management choices.
+Include enough background for the learner to understand the case, but keep it patient-specific rather than a generic textbook chapter.
+Do not include a reading plan or external links unless directly needed to explain a cited management recommendation.
 </output_format>
 
 ${teachingExplanationPasteBackContract}`
@@ -560,10 +564,10 @@ function dischargePrompt(context) {
   return buildPatientPrompt(
     context,
     `${taskBoundary({
-  primary: "Using OpenEvidence, identify evidence-supported discharge readiness and transition considerations for the de-identified case below.",
+  primary: "Using OpenEvidence, identify evidence-supported discharge readiness and transition safety considerations for the de-identified case below.",
   notFor: [
     "a full inpatient assessment and plan",
-    "a medication-only review except discharge medications and supplies",
+    "a medication-only safety audit except discharge medications and supplies",
     "a teaching handout",
     "a general blind-spot review",
     "a guideline currency audit"
@@ -571,13 +575,14 @@ function dischargePrompt(context) {
 })}
 
 <clinical_question>
-What evidence or guidelines inform discharge readiness, transition barriers, follow-up needs, supplies, counseling, and return precautions for the clinical scenario described below?
+What evidence or guidelines inform discharge readiness, transition barriers, follow-up, supplies, counseling, and unresolved safety issues for the clinical scenario described below?
 </clinical_question>`,
     `<output_format>
 Use at most 5 bullets total.
-Prefix each with BARRIER, SUPPLY, FOLLOW-UP, COUNSEL, or RETURN.
-Include only evidence-supported discharge considerations relevant to this case.
-Do not include citations or a reference list.
+Prefix every bullet with BARRIER, SUPPLY, FOLLOW-UP, COUNSEL, or RETURN.
+Include only discharge-limiting barriers, medication/supply/access issues, follow-up or handoff needs, counseling that changes safety, or return precautions.
+Do not include inpatient tasks unless they determine discharge readiness.
+Do not include citations or a reference list. Do not include source names, journal names, society names, evidence grades, or bracketed citation markers.
 Do not rewrite the inpatient plan except where it directly affects discharge readiness.
 </output_format>
 
@@ -589,25 +594,27 @@ function missingPrompt(context) {
   return buildPatientPrompt(
     context,
     `${taskBoundary({
-  primary: "Using OpenEvidence, identify evidence-supported clinical considerations that may be easily overlooked in the de-identified case below.",
+  primary: "Using OpenEvidence, provide a second-look audit of the de-identified case below that finds evidence-supported omissions not already covered by other specialized reviews.",
   notFor: [
-    "a complete case report",
-    "a full management plan",
-    "a medication-only review unless a medication issue is a major blind spot",
+    "a complete rounds report",
+    "a full attending assessment and plan",
+    "a medication-only audit unless a medication issue is a major blind spot",
     "a guideline citation review",
     "a teaching guide",
-    "a discharge checklist unless discharge is the main concern"
+    "a discharge checklist unless discharge is the main blind spot"
   ]
 })}
 
 <clinical_question>
-For the case below, what evidence or guidelines suggest diagnostic considerations, monitoring items, red flags, or follow-up steps that are commonly missed? Cite sources for each point.
+Find evidence-supported blind spots for this case: diagnostic considerations, monitoring gaps, red flags, missing follow-up data, communication gaps, and escalation triggers. For each point, cite the relevant evidence or guideline.
 </clinical_question>`,
     `<output_format>
 Use at most 5 bullets total.
-Prefix each with MISS, VERIFY, ESCALATE, or UNVALIDATED GAP.
-Include only evidence-supported points.
-Include an inline citation for each evidence-based concern.
+Prefix every bullet with MISS, VERIFY, ESCALATE, ASK, or UNVALIDATED GAP.
+Include only true blind spots that could change diagnosis, treatment, monitoring, escalation, disposition, communication, or local checklist review.
+Only use ASK when the answer requires team judgment or unavailable context. Put self-checkable facts under VERIFY.
+Label every bedside checklist addition idea with the UNVALIDATED GAP prefix.
+Include an inline citation for each evidence-based point.
 Do not include low-yield distractions or padding.
 </output_format>
 
@@ -708,28 +715,34 @@ Do not include identifiers, exact dates, room numbers, medical record numbers, o
 function decisionTreeBuilderPrompt(context) {
   const workupTitle = clean(context.selectedWorkupTitle) || "[INSERT WORKUP TITLE]";
   const workupId = clean(context.selectedWorkupId) || "[INSERT WORKUP ID]";
-  return `Using OpenEvidence, produce a structured evidence-based clinical pathway for the condition below. The output should be compact, guideline-supported JSON.
+  return `Using OpenEvidence, produce a compact, evidence-based clinical management pathway, not a guideline summary.
 
-Condition: ${workupTitle}
-Workup ID: ${workupId}
+Create a protocol-style decision tree for:
+WORKUP_TITLE: ${workupTitle}
+WORKUP_ID: ${workupId}
 
 <guidance>
-Each node should reflect a decision or action point supported by current evidence or guidelines.
-A node is included only if evidence supports that it determines urgency, starts a treatment approach, stops an unsafe approach, defines reassessment criteria, or determines appropriate disposition.
+Style target: AHA/ACLS, UpToDate, or society-protocol algorithm. Each node should be a diagram box a clinician can act on.
+
+Core rule:
+A node exists only if it changes management, determines urgency, starts a treatment bundle, stops unsafe treatment, defines reassessment, or determines disposition.
 </guidance>
 
 Do not include:
-- nodes for missing data
-- generic "assess" or "consider" nodes without specific triggers
-- one node per lab or criterion
-- vague endpoints
+- "missing data" nodes
+- generic "assess" nodes
+- generic "consider" nodes
+- "clinician review" nodes without a specific trigger and action
+- one-node-per-lab trees
+- one-node-per-criterion trees
+- vague endpoints like "treat DKA," "monitor," or "follow up"
 
 Instead:
-- Combine related diagnostic criteria into one decision node.
-- Combine related treatment evidence into one action node.
-- Combine monitoring intervals, response targets, and escalation triggers into one reassessment node.
-- Put evidence-supported thresholds and doses in the node text.
-- Branch only when evidence supports a different next step.
+- Combine related diagnostic criteria in one decision box.
+- Combine related treatments into one action box.
+- Combine monitoring frequency, response targets, and escalation triggers into one reassessment box.
+- Put exact thresholds and doses in the box text when guideline-supported.
+- Branch only when the next action is different.
 
 Return only valid JSON.
 
@@ -755,7 +768,7 @@ Every node:
   "id": "stable_unique_id",
   "label": "short box title",
   "type": "action | decision | endpoint",
-  "boxText": "specific display text reflecting evidence; may include multiple bullets or semicolon-separated actions",
+  "boxText": "clinically specific display text; may include multiple bullets or semicolon-separated actions",
   "source_ids": [],
   "children": []
 }
@@ -764,20 +777,21 @@ Every child of a decision node must include:
 "edgeLabel": "specific branch criterion"
 
 Algorithm architecture:
-1. Activation: who enters the pathway.
-2. Unstable/red-flag decision: identifies immediate high-acuity care needs.
-3. Classification decision: combines diagnostic criteria that separate major evidence-based pathways.
-4. Safety-stop decision: only if evidence supports that a treatment can cause harm without a prerequisite.
-5. Treatment: evidence-supported first-line approach, doses, thresholds, and exceptions.
-6. Reassessment decision: response targets, monitoring frequency, and failure criteria per evidence.
-7. Transition/disposition: stopping criteria, discharge/follow-up, safety net per evidence.
+1. Activation box: who enters the pathway.
+2. Unstable/red-flag decision: identifies immediate high-acuity care.
+3. Classification decision: combines diagnostic criteria that separate major pathways.
+4. Safety-stop decision: only if a treatment can cause harm without a prerequisite.
+5. Treatment bundle: exact first-line management, doses, thresholds, and exceptions.
+6. Reassessment decision: response targets, monitoring frequency, and failure criteria.
+7. Transition/disposition endpoint: stopping criteria, discharge/follow-up, safety net.
 
 Quality test before final output:
 - Would this fit on one page?
 - Is each box worth showing in a diagram?
-- Does every branch point reflect evidence?
-- Does every treatment node specify what evidence supports?
-- Are thresholds, monitoring intervals, and stopping criteria evidence-based?`;
+- Does every branch change management?
+- Does every treatment box say exactly what to do?
+- Are doses, thresholds, monitoring intervals, escalation triggers, and stopping criteria explicit?
+- Are any nodes just documentation, missing-data bookkeeping, or guideline trivia? If yes, delete or merge them.`;
 }
 
 export const openEvidenceTasks = [

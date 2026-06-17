@@ -60,7 +60,7 @@ const baseContext = {
 };
 
 const outputContracts = {
-  initial_rounds_report: ["I. SUBJECTIVE", "III. ASSESSMENT AND PLAN", "inline citation", "APP_PASTE_BACK_JSON", "open_evidence_rounds_pasteback_v1"],
+  initial_rounds_report: ["I. SUBJECTIVE", "III. ASSESSMENT AND PLAN", "management recommendation", "APP_PASTE_BACK_JSON", "open_evidence_rounds_pasteback_v1"],
   full_rounds_report: [
     "I. SUBJECTIVE",
     "II. OBJECTIVE",
@@ -69,26 +69,28 @@ const outputContracts = {
     "APP_PASTE_BACK_JSON",
     "open_evidence_rounds_pasteback_v1"
   ],
-  final_rounds_update: ["do not repeat stable background", "III. ASSESSMENT AND PLAN", "note what current evidence or guidelines suggest", "APP_PASTE_BACK_JSON", "open_evidence_rounds_pasteback_v1"],
+  final_rounds_update: ["do not repeat stable background", "III. ASSESSMENT AND PLAN", "what changed in the last 24 hours", "changes management", "APP_PASTE_BACK_JSON", "open_evidence_rounds_pasteback_v1"],
   checklist_improvement_review: ["<clinical_question>", "\"schema\": \"workup_section_patch_v1\"", "\"operations\"", "\"itemId\""],
   decision_tree_builder: [
-    "Using OpenEvidence, produce a structured evidence-based clinical pathway",
+    "evidence-based clinical management pathway",
+    "Create a protocol-style decision tree for:",
     "Return only valid JSON.",
     "\"schema\": \"clinical_pathway_tree_v2\"",
     "\"style\": \"compact_protocol_algorithm\"",
     "\"boxText\"",
     "Every child of a decision node must include:",
-    "edgeLabel",
+    "Algorithm architecture:",
+    "\"edgeLabel\"",
     "source_metadata",
     "Would this fit on one page?",
-    "\"edgeLabel\""
+    "one-node-per-lab trees"
   ],
-  medication_safety: ["dosing relative to renal/hepatic/age/weight", "evidence or guideline that supports the concern"],
-  find_exception: ["Use at most 4 bullets total.", "Prefix each with EXCEPTION, CONTRAINDICATION, PREREQUISITE, or SPECIAL-POPULATION."],
-  attending_plan: ["evidence-supported management considerations", "latest guideline or literature", "organized by active problem"],
-  teaching_explanation: ["Use SOAP headings", "suitable for a medical learner", "Spell out abbreviations and briefly define"],
-  discharge_checklist: ["Use at most 5 bullets total.", "Prefix each with BARRIER, SUPPLY, FOLLOW-UP, COUNSEL, or RETURN."],
-  what_am_i_missing: ["Use at most 5 bullets total.", "Prefix each with MISS, VERIFY, ESCALATE, or UNVALIDATED GAP."]
+  medication_safety: ["5Rs", "right medication", "right dose", "right route", "right time/frequency"],
+  find_exception: ["Use at most 4 bullets total.", "Prefix every bullet with EXCEPTION, CONTRAINDICATION, PREREQUISITE, or SPECIAL-POPULATION."],
+  attending_plan: ["management recommendations", "latest guideline or literature", "Organize by active problem"],
+  teaching_explanation: ["Use SOAP headings", "brand-new third-year medical student", "Spell out all non-obvious abbreviations"],
+  discharge_checklist: ["Use at most 5 bullets total.", "Prefix every bullet with BARRIER, SUPPLY, FOLLOW-UP, COUNSEL, or RETURN."],
+  what_am_i_missing: ["Use at most 5 bullets total.", "Prefix every bullet with MISS, VERIFY, ESCALATE, ASK, or UNVALIDATED GAP."]
 };
 
 openEvidenceTasks.forEach((task) => {
@@ -109,7 +111,7 @@ openEvidenceTasks.forEach((task) => {
     assert.ok(built.prompt.includes("Do not include:"), `${task.id} prompt should name exclusions`);
     assert.ok(built.prompt.includes("<guidance>"), `${task.id} prompt should include evidence guidance`);
   } else if (task.id === "decision_tree_builder") {
-    assert.ok(built.prompt.startsWith("Using OpenEvidence, produce a structured evidence-based clinical pathway"), "decision-tree prompt should use the supplied compact pathway prompt");
+    assert.ok(built.prompt.startsWith("Using OpenEvidence, produce a compact, evidence-based clinical management pathway"), "decision-tree prompt should use the supplied compact pathway prompt");
     assert.ok(!built.prompt.includes("Existing pathway JSON, if available:\n"), "decision-tree prompt should not include the existing-tree context heading");
     assert.ok(!built.prompt.includes("Objective workup data, if available:\n"), "decision-tree prompt should not include objective-data context bloat");
     assert.ok(!built.prompt.includes('Add "activationRules"'), "decision-tree prompt should not restore the old activationRules request");
@@ -256,6 +258,10 @@ assert.ok(!oversizedDecisionTreePrompt.includes("Branch 599"), "decision-tree pr
 
 const missingItemsPrompt = buildOpenEvidencePrompt("what_am_i_missing", baseContext);
 assert.ok(missingItemsPrompt.prompt.includes("UNVALIDATED GAP"), "blind-spot prompt should keep a local-review gap prefix");
+assert.ok(
+  missingItemsPrompt.prompt.includes("ASK, or UNVALIDATED GAP"),
+  "blind-spot prompt should keep the ASK prefix for team-judgment items"
+);
 
 const checklistImprovementPrompt = buildOpenEvidencePrompt("checklist_improvement_review", {
   ...baseContext,

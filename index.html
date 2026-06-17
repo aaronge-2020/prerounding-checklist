@@ -15743,6 +15743,7 @@
               <h2>Workups</h2>
               <p class="muted">Choose a reviewed module, then edit one section at a time.</p>
               </div>
+              <button class="btn btn-primary studio-new-workup-button" id="workupStudioNewWorkupButton" type="button"><span class="icon-box" data-icon="plus" aria-hidden="true"></span> New</button>
             </div>
             <div class="studio-search">
               <label for="workupStudioSearchInput">Find workup</label>
@@ -15934,6 +15935,63 @@
               </details>
             </section>
           </aside>
+          <div class="studio-modal-overlay" id="workupStudioNewWorkupDialog" hidden role="dialog" aria-modal="true" aria-labelledby="workupStudioNewWorkupDialogTitle">
+            <div class="studio-modal" aria-label="Create a new workup">
+              <div class="studio-modal-head">
+                <h2 id="workupStudioNewWorkupDialogTitle">New Workup</h2>
+                <button class="studio-modal-close" id="workupStudioNewWorkupDialogClose" type="button" aria-label="Close">&times;</button>
+              </div>
+              <div class="studio-modal-body">
+                <p class="muted">Create a new clinical workup module using AI. Enter the complaint details below, generate an AI prompt, paste the structured response, and the workup will be saved locally (and to Supabase for others if you are signed in).</p>
+                <div class="studio-source-grid">
+                  <label for="workupStudioNewWorkupComplaintInput">Complaint / condition name
+                    <input id="workupStudioNewWorkupComplaintInput" maxlength="180" placeholder="e.g. Hyperglycemia, possible DKA">
+                  </label>
+                  <label for="workupStudioNewWorkupIdInput">Workup ID (slug)
+                    <input id="workupStudioNewWorkupIdInput" maxlength="160" pattern="[a-z0-9_]+" placeholder="e.g. hyperglycemia_possible_dka_v1">
+                  </label>
+                </div>
+                <div class="studio-source-grid">
+                  <label for="workupStudioNewWorkupPopulationSelect">Population
+                    <select id="workupStudioNewWorkupPopulationSelect">
+                      <option value="adult">Adult</option>
+                      <option value="pediatric">Pediatric</option>
+                      <option value="general">General</option>
+                    </select>
+                  </label>
+                  <label for="workupStudioNewWorkupSettingSelect">Setting
+                    <select id="workupStudioNewWorkupSettingSelect">
+                      <option value="clinician support">Clinician support</option>
+                      <option value="inpatient">Inpatient</option>
+                      <option value="outpatient">Outpatient</option>
+                      <option value="emergency">Emergency</option>
+                    </select>
+                  </label>
+                </div>
+                <label for="workupStudioNewWorkupTriggersInput">Trigger keywords (comma-separated)
+                  <input id="workupStudioNewWorkupTriggersInput" maxlength="420" placeholder="e.g. dka, hyperglycemia, diabetes, high blood sugar, anion gap">
+                </label>
+                <div class="button-row">
+                  <button class="btn btn-primary" id="workupStudioNewWorkupGeneratePromptButton" type="button">Generate AI prompt</button>
+                </div>
+                <label for="workupStudioNewWorkupPromptOutput">AI prompt (copy this to OpenEvidence or another clinical AI)
+                  <textarea id="workupStudioNewWorkupPromptOutput" readonly spellcheck="false" rows="8" placeholder="Fill in the fields above and click Generate AI prompt."></textarea>
+                </label>
+                <div class="button-row">
+                  <button class="btn btn-secondary" id="workupStudioNewWorkupCopyPromptButton" type="button">Copy prompt</button>
+                  <button class="btn btn-secondary" id="workupStudioNewWorkupOpenEvidenceButton" type="button">Open OpenEvidence</button>
+                </div>
+                <label for="workupStudioNewWorkupPasteInput">Paste AI-generated workup JSON
+                  <textarea id="workupStudioNewWorkupPasteInput" spellcheck="false" rows="10" placeholder="Paste the full AI-generated workup module JSON here. It should be a valid complaint_cds_module with history questions, physical exam, pathway tree, red flags, etc."></textarea>
+                </label>
+                <div id="workupStudioNewWorkupParseStatus" class="muted"></div>
+                <div class="button-row">
+                  <button class="btn btn-primary" id="workupStudioNewWorkupCreateButton" type="button" disabled>Create workup</button>
+                  <button class="btn btn-secondary" id="workupStudioNewWorkupCancelButton" type="button">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -16405,6 +16463,8 @@
     const WORKUP_STUDIO_PROMPT_TEMPLATE_MAX_CHARS = 500000;
     const WORKUP_STUDIO_SOURCE_TO_LIVE_TARGET_MS = 600000;
     const WORKUP_STUDIO_PUBLIC_VISIBILITY_TARGET_MS = 60000;
+    const WORKUP_STUDIO_PATHWAY_POSITIONS_KEY = "prerounding-workup-pathway-positions-v1";
+    const WORKUP_STUDIO_STATE_SAVE_DEBOUNCE_MS = 300;
     const WORKUP_STUDIO_DEFAULT_BACKEND = Object.freeze({
       url: "https://hajjuzpnlvpetsleuxwb.supabase.co",
       publishableKey: "sb_publishable_-rugOaCgl3r9abyuX7TICA_JQ0KQLhn"
@@ -16858,9 +16918,10 @@
     }
     let _deidRunning = false;
     async function deidentifyText(rawText, callbacks = {}) {
+      if (_deidRunning) return deidentifyTextStructuredOnly(rawText, new Date());
       if (_deidModelReady) {
+        _deidRunning = true;
         try {
-          _deidRunning = true;
           if (elements.deidContextModelStatus) {
             elements.deidContextModelStatus.className = "status-chip is-warning";
             elements.deidContextModelStatus.textContent = "Processing...";
@@ -16871,6 +16932,8 @@
           }
           if (elements.quickDeidPreview && elements.quickDeidPreview.querySelector(".deid-spinner")) {
             await new Promise((resolve) => setTimeout(resolve, 30));
+          } else if (elements.deidPreview && elements.deidPreview.querySelector(".deid-spinner")) {
+            await new Promise((resolve) => setTimeout(resolve, 30));
           } else {
             await new Promise((resolve) => requestAnimationFrame(resolve));
           }
@@ -16878,10 +16941,10 @@
             mode: "hybrid",
             onProgress: callbacks.onProgress || null
           });
-          _deidRunning = false;
           return result;
         } catch {
           _deidModelReady = false;
+        } finally {
           _deidRunning = false;
         }
       }
@@ -16977,6 +17040,8 @@
     let workupStudioSessionRefreshPromise = null;
     let workupStudioCatalogHydrationPromises = new Map();
     let workupCatalogResumeRefreshAttemptAt = 0;
+    let _workupStudioStateSaveTimer = null;
+    let _workupStudioPathwayPositions = {};
     let supabaseWorkupCatalog = {
       modulesById: new Map(),
       sourcesById: new Map(),
@@ -19525,6 +19590,113 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
       return module.version ? `v${String(module.version).replace(/^v/i, "")}` : "v1.0";
     }
 
+    function _stripPathwayLayoutsFromGraph(graph) {
+      if (!graph || typeof graph !== "object") return graph;
+      const stripped = JSON.parse(JSON.stringify(graph));
+      if (!stripped.root) return stripped;
+      const visit = (node) => {
+        if (node?.layout) {
+          const moduleId = stripped.workupId || stripped.workup_id || workupStudioState.selectedModuleId;
+          if (!_workupStudioPathwayPositions[moduleId]) _workupStudioPathwayPositions[moduleId] = {};
+          _workupStudioPathwayPositions[moduleId][node.id] = { x: node.layout.x, y: node.layout.y };
+          delete node.layout;
+        }
+        if (Array.isArray(node?.children)) node.children.forEach(visit);
+      };
+      visit(stripped.root);
+      return stripped;
+    }
+
+    function _restorePathwayLayoutsToGraph(graph, moduleId = "") {
+      if (!graph?.root) return graph;
+      const id = moduleId || graph.workupId || graph.workup_id || workupStudioState.selectedModuleId;
+      const positions = _workupStudioPathwayPositions[id];
+      if (!positions || !Object.keys(positions).length) return graph;
+      const visit = (node) => {
+        const pos = positions[node.id];
+        if (pos && Number.isFinite(pos.x) && Number.isFinite(pos.y)) {
+          node.layout = { x: Math.round(pos.x), y: Math.round(pos.y) };
+        }
+        if (Array.isArray(node?.children)) node.children.forEach(visit);
+      };
+      visit(graph.root);
+      return graph;
+    }
+
+    function _collectPathwayPositionsFromChangeSets(changeSets = []) {
+      const positions = {};
+      for (const cs of changeSets) {
+        if (!cs || (cs.sectionKey || cs.section_key) !== "clinical_pathway_tree_v1") continue;
+        const moduleId = cs.workupId || cs.workup_id;
+        if (!moduleId) continue;
+        const graph = cs.afterSnapshot ?? cs.after_snapshot;
+        if (!graph?.root) continue;
+        const visit = (node) => {
+          if (node?.layout && Number.isFinite(node.layout.x) && Number.isFinite(node.layout.y)) {
+            if (!positions[moduleId]) positions[moduleId] = {};
+            positions[moduleId][node.id] = { x: Math.round(node.layout.x), y: Math.round(node.layout.y) };
+          }
+          if (Array.isArray(node?.children)) node.children.forEach(visit);
+        };
+        visit(graph.root);
+      }
+      return positions;
+    }
+
+    function _saveWorkupStudioPathwayPositions() {
+      try {
+        localStorage.setItem(WORKUP_STUDIO_PATHWAY_POSITIONS_KEY, JSON.stringify(_workupStudioPathwayPositions));
+      } catch {
+        // Storage may be full; positions are non-critical
+      }
+    }
+
+    function _loadWorkupStudioPathwayPositions() {
+      try {
+        const raw = JSON.parse(localStorage.getItem(WORKUP_STUDIO_PATHWAY_POSITIONS_KEY) || "{}");
+        _workupStudioPathwayPositions = (raw && typeof raw === "object" && !Array.isArray(raw)) ? raw : {};
+      } catch {
+        _workupStudioPathwayPositions = {};
+      }
+    }
+
+    function _flushWorkupStudioState() {
+      const strippedChangeSets = workupStudioState.changeSets.map((cs) => {
+        if ((cs.sectionKey || cs.section_key) !== "clinical_pathway_tree_v1") return cs;
+        const stripped = { ...cs };
+        if (stripped.beforeSnapshot) stripped.beforeSnapshot = _stripPathwayLayoutsFromGraph(stripped.beforeSnapshot);
+        if (stripped.afterSnapshot) stripped.afterSnapshot = _stripPathwayLayoutsFromGraph(stripped.afterSnapshot);
+        if (stripped.before_snapshot) stripped.before_snapshot = _stripPathwayLayoutsFromGraph(stripped.before_snapshot);
+        if (stripped.after_snapshot) stripped.after_snapshot = _stripPathwayLayoutsFromGraph(stripped.after_snapshot);
+        if (Array.isArray(stripped.operations)) {
+          stripped.operations = stripped.operations.map((op) => {
+            if (op?.op === "replace_section") {
+              const cleanOp = { ...op };
+              if (cleanOp.before) cleanOp.before = _stripPathwayLayoutsFromGraph(cleanOp.before);
+              if (cleanOp.after) cleanOp.after = _stripPathwayLayoutsFromGraph(cleanOp.after);
+              return cleanOp;
+            }
+            return op;
+          });
+        }
+        return stripped;
+      });
+      _saveWorkupStudioPathwayPositions();
+      localStorage.setItem(WORKUP_AUTHORING_STORAGE_KEY, JSON.stringify({
+        selectedModuleId: workupStudioState.selectedModuleId,
+        sectionKey: workupStudioState.sectionKey,
+        search: workupStudioState.search,
+        itemSearch: workupStudioState.itemSearch,
+        statusFilter: workupStudioState.statusFilter,
+        navOpen: workupStudioState.navOpen,
+        selectedItemId: workupStudioState.selectedItemId,
+        selectedPathwayNodeId: workupStudioState.selectedPathwayNodeId,
+        changeSets: strippedChangeSets,
+        promptTemplatesBySection: workupStudioState.promptTemplatesBySection,
+        backend: workupStudioState.backend
+      }));
+    }
+
     function emptyWorkupStudioBackendState() {
       return {
         url: WORKUP_STUDIO_DEFAULT_BACKEND.url,
@@ -20535,6 +20707,28 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
           workupStudioState.selectedItemId = String(saved.selectedItemId || "");
           workupStudioState.selectedPathwayNodeId = String(saved.selectedPathwayNodeId || "").slice(0, 160);
           workupStudioState.changeSets = Array.isArray(saved.changeSets) ? saved.changeSets.filter((entry) => entry?.schema === "workup_change_set_v1") : [];
+          _loadWorkupStudioPathwayPositions();
+          workupStudioState.changeSets = workupStudioState.changeSets.map((cs) => {
+            if ((cs.sectionKey || cs.section_key) !== "clinical_pathway_tree_v1") return cs;
+            const restored = { ...cs };
+            const moduleId = cs.workupId || cs.workup_id || "";
+            if (restored.beforeSnapshot) restored.beforeSnapshot = _restorePathwayLayoutsToGraph(restored.beforeSnapshot, moduleId);
+            if (restored.afterSnapshot) restored.afterSnapshot = _restorePathwayLayoutsToGraph(restored.afterSnapshot, moduleId);
+            if (restored.before_snapshot) restored.before_snapshot = _restorePathwayLayoutsToGraph(restored.before_snapshot, moduleId);
+            if (restored.after_snapshot) restored.after_snapshot = _restorePathwayLayoutsToGraph(restored.after_snapshot, moduleId);
+            if (Array.isArray(restored.operations)) {
+              restored.operations = restored.operations.map((op) => {
+                if (op?.op === "replace_section") {
+                  const cleanOp = { ...op };
+                  if (cleanOp.before) cleanOp.before = _restorePathwayLayoutsToGraph(cleanOp.before, moduleId);
+                  if (cleanOp.after) cleanOp.after = _restorePathwayLayoutsToGraph(cleanOp.after, moduleId);
+                  return cleanOp;
+                }
+                return op;
+              });
+            }
+            return restored;
+          });
           invalidateWorkupModuleCaches();
           workupStudioState.promptTemplatesBySection = saved.promptTemplatesBySection && typeof saved.promptTemplatesBySection === "object" && !Array.isArray(saved.promptTemplatesBySection)
             ? Object.fromEntries(Object.entries(saved.promptTemplatesBySection)
@@ -20565,19 +20759,19 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
     }
 
     function saveWorkupStudioState() {
-      localStorage.setItem(WORKUP_AUTHORING_STORAGE_KEY, JSON.stringify({
-        selectedModuleId: workupStudioState.selectedModuleId,
-        sectionKey: workupStudioState.sectionKey,
-        search: workupStudioState.search,
-        itemSearch: workupStudioState.itemSearch,
-        statusFilter: workupStudioState.statusFilter,
-        navOpen: workupStudioState.navOpen,
-        selectedItemId: workupStudioState.selectedItemId,
-        selectedPathwayNodeId: workupStudioState.selectedPathwayNodeId,
-        changeSets: workupStudioState.changeSets,
-        promptTemplatesBySection: workupStudioState.promptTemplatesBySection,
-        backend: workupStudioState.backend
-      }));
+      if (_workupStudioStateSaveTimer !== null) return;
+      _workupStudioStateSaveTimer = setTimeout(() => {
+        _workupStudioStateSaveTimer = null;
+        _flushWorkupStudioState();
+      }, WORKUP_STUDIO_STATE_SAVE_DEBOUNCE_MS);
+    }
+
+    function saveWorkupStudioStateNow() {
+      if (_workupStudioStateSaveTimer !== null) {
+        clearTimeout(_workupStudioStateSaveTimer);
+        _workupStudioStateSaveTimer = null;
+      }
+      _flushWorkupStudioState();
     }
 
     function changeSetToSupabaseRow(changeSet = {}) {
@@ -22162,7 +22356,7 @@ Rules:
       changeSet.reviewerId = workupStudioState.backend.userId;
       changeSet.reviewer_id = workupStudioState.backend.userId;
       changeSet.syncStatus = "pending";
-      saveWorkupStudioState();
+      saveWorkupStudioStateNow();
       renderWorkupStudio();
       await persistWorkupStudioChangeSet(changeSet);
       await workupStudioSupabaseRequest(`/rest/v1/change_sets?id=eq.${encodeURIComponent(changeSet.id)}`, {
@@ -22192,7 +22386,7 @@ Rules:
       }
       changeSet.syncStatus = "synced";
       changeSet.syncedAt = new Date().toISOString();
-      saveWorkupStudioState();
+      saveWorkupStudioStateNow();
       renderWorkupStudio();
       if (announce) {
         const sourceReview = changeSet.importedEvidence?.sourceReview || changeSet.imported_evidence?.sourceReview || null;
@@ -22260,7 +22454,7 @@ Rules:
         changeSet
       ];
       invalidateWorkupModuleCaches();
-      saveWorkupStudioState();
+      saveWorkupStudioStateNow();
       if (refreshConsumers) refreshWorkupConsumersAfterAuthoringChange(original.id);
       renderWorkupStudio();
       const canSyncCurrentWorkup = workupStudioCanEditWorkup(original.id);
@@ -22528,13 +22722,28 @@ Rules:
         : JSON.parse(JSON.stringify(graph));
       const entry = flattenDecisionTree(nextGraph.root).find(({ node }) => node.id === nodeId);
       if (!entry) return false;
-      entry.node.layout = {
-        ...(entry.node.layout || {}),
-        x: Math.round(Number(x) || 0),
-        y: Math.round(Number(y) || 0)
-      };
-      nextGraph.updatedAt = new Date().toISOString();
-      return saveWorkupStudioPathwayGraph(nextGraph, { selectedNodeId: nodeId });
+      const roundX = Math.round(Number(x) || 0);
+      const roundY = Math.round(Number(y) || 0);
+      entry.node.layout = { ...(entry.node.layout || {}), x: roundX, y: roundY };
+      const moduleId = workupStudioState.selectedModuleId;
+      if (!_workupStudioPathwayPositions[moduleId]) _workupStudioPathwayPositions[moduleId] = {};
+      _workupStudioPathwayPositions[moduleId][nodeId] = { x: roundX, y: roundY };
+      const latest = workupStudioState.changeSets.find((cs) =>
+        (cs.sectionKey || cs.section_key) === "clinical_pathway_tree_v1"
+        && (cs.workupId || cs.workup_id) === moduleId
+      );
+      if (latest) {
+        const targetNode = flattenDecisionTree(nextGraph.root).find(({ node }) => node.id === nodeId);
+        if (targetNode) {
+          if (latest.afterSnapshot) latest.afterSnapshot = nextGraph;
+          if (latest.after_snapshot) latest.after_snapshot = nextGraph;
+          if (Array.isArray(latest.operations)) {
+            latest.operations = latest.operations.map((op) => op.op === "replace_section" ? { ...op, after: nextGraph } : op);
+          }
+        }
+      }
+      saveWorkupStudioState();
+      return true;
     }
 
     function renderStudioPathwayEditor(module) {
@@ -29264,6 +29473,10 @@ Rules:
         setStatus("De-ID model is still loading. Please wait.");
         return;
       }
+      if (_deidRunning) {
+        setStatus("De-identification is already in progress.");
+        return;
+      }
       saveWorkspaceContext({ announce: false });
       if (!getSourceText().trim()) {
         if (elements.deidPreview) elements.deidPreview.textContent = EMPTY_CONTEXT_MESSAGE;
@@ -29272,8 +29485,19 @@ Rules:
         setPatientTab("context");
         return;
       }
+      const saveBtn = elements.savePatientContextButton;
+      if (saveBtn) saveBtn.disabled = true;
+      if (elements.deidPreview) {
+        elements.deidPreview.innerHTML = '<div class="deid-processing-indicator"><div class="deid-spinner" aria-label="Processing de-identification"></div><div class="deid-progress-bar" style="width:180px;"><div class="deid-progress-fill" style="width:5%;"></div></div><div class="deid-progress-message" id="workspaceDeidProgressMsg">Starting local de-identification...</div></div>';
+      }
       setStatus("Running local de-identification...");
-      deidentifyText(getSourceText()).then((result) => {
+      const updateProgress = (pct, msg) => {
+        const fill = elements.deidPreview?.querySelector(".deid-progress-fill");
+        const msgEl = document.getElementById("workspaceDeidProgressMsg");
+        if (fill) fill.style.width = `${Math.max(2, Math.round(pct * 100))}%`;
+        if (msgEl) msgEl.textContent = msg || "";
+      };
+      deidentifyText(getSourceText(), { onProgress: ({ percent, message }) => updateProgress(percent, message) }).then((result) => {
         applyDeidResult(result, { announce: false });
         if (_deidModelReady && elements.deidContextModelStatus) {
           elements.deidContextModelStatus.className = "status-chip is-success";
@@ -29283,15 +29507,25 @@ Rules:
           elements.deidContinuityModelStatus.className = "status-chip is-success";
           elements.deidContinuityModelStatus.textContent = "Model ready";
         }
+        if (saveBtn) saveBtn.disabled = false;
         setStatus("Patient context saved and de-identified locally. Review the redacted preview below.");
         setPatientTab("context");
         elements.workspaceDeidReviewPanel?.setAttribute("open", "");
+      }).catch(() => {
+        if (saveBtn) saveBtn.disabled = false;
+        if (elements.deidPreview) elements.deidPreview.textContent = "De-identification failed. Try again.";
+        setStatus("De-identification failed.");
+        setPatientTab("context");
       });
     }
 
     function runWorkspaceContinuityDeid() {
       if (_deidModelLoading) {
         setStatus("De-ID model is still loading. Please wait.");
+        return;
+      }
+      if (_deidRunning) {
+        setStatus("De-identification is already in progress.");
         return;
       }
       saveWorkspaceContinuity({ announce: false });
@@ -29302,8 +29536,19 @@ Rules:
         setPatientTab("context");
         return;
       }
+      const saveBtn = elements.saveContinuityButton;
+      if (saveBtn) saveBtn.disabled = true;
+      if (elements.deidPreview) {
+        elements.deidPreview.innerHTML = '<div class="deid-processing-indicator"><div class="deid-spinner" aria-label="Processing de-identification"></div><div class="deid-progress-bar" style="width:180px;"><div class="deid-progress-fill" style="width:5%;"></div></div><div class="deid-progress-message" id="continuityDeidProgressMsg">Starting local de-identification...</div></div>';
+      }
       setStatus("Running local de-identification...");
-      deidentifyText(getSourceText()).then((result) => {
+      const updateProgress = (pct, msg) => {
+        const fill = elements.deidPreview?.querySelector(".deid-progress-fill");
+        const msgEl = document.getElementById("continuityDeidProgressMsg");
+        if (fill) fill.style.width = `${Math.max(2, Math.round(pct * 100))}%`;
+        if (msgEl) msgEl.textContent = msg || "";
+      };
+      deidentifyText(getSourceText(), { onProgress: ({ percent, message }) => updateProgress(percent, message) }).then((result) => {
         applyDeidResult(result, { announce: false });
         if (_deidModelReady && elements.deidContextModelStatus) {
           elements.deidContextModelStatus.className = "status-chip is-success";
@@ -29313,9 +29558,15 @@ Rules:
           elements.deidContinuityModelStatus.className = "status-chip is-success";
           elements.deidContinuityModelStatus.textContent = "Model ready";
         }
+        if (saveBtn) saveBtn.disabled = false;
         setStatus("Continuity update saved and de-identified locally. Review the redacted preview below.");
         setPatientTab("context");
         elements.workspaceDeidReviewPanel?.setAttribute("open", "");
+      }).catch(() => {
+        if (saveBtn) saveBtn.disabled = false;
+        if (elements.deidPreview) elements.deidPreview.textContent = "De-identification failed. Try again.";
+        setStatus("De-identification failed.");
+        setPatientTab("context");
       });
     }
 
@@ -37986,6 +38237,29 @@ Rules:
       });
       elements.workupStudioSignOutButton?.addEventListener("click", signOutWorkupStudioSupabase);
       elements.workupStudioTopSignOutButton?.addEventListener("click", signOutWorkupStudioSupabase);
+      elements.workupStudioNewWorkupButton?.addEventListener("click", showNewWorkupDialog);
+      elements.workupStudioNewWorkupDialogClose?.addEventListener("click", hideNewWorkupDialog);
+      elements.workupStudioNewWorkupCancelButton?.addEventListener("click", hideNewWorkupDialog);
+      elements.workupStudioNewWorkupGeneratePromptButton?.addEventListener("click", generateNewWorkupAIPrompt);
+      elements.workupStudioNewWorkupCopyPromptButton?.addEventListener("click", () => {
+        const prompt = elements.workupStudioNewWorkupPromptOutput?.value || "";
+        if (prompt) {
+          copyText(prompt);
+          setStatus("AI prompt copied for new workup creation.");
+        }
+      });
+      elements.workupStudioNewWorkupOpenEvidenceButton?.addEventListener("click", () => {
+        window.open("https://www.openevidence.com/", "_blank", "noopener,noreferrer");
+      });
+      elements.workupStudioNewWorkupPasteInput?.addEventListener("input", () => {
+        validateNewWorkupPasteInput();
+      });
+      elements.workupStudioNewWorkupCreateButton?.addEventListener("click", () => {
+        void createNewWorkupFromAI();
+      });
+      elements.workupStudioNewWorkupDialog?.addEventListener("click", (event) => {
+        if (event.target === elements.workupStudioNewWorkupDialog) hideNewWorkupDialog();
+      });
       window.addEventListener("online", () => {
         void refreshSupabaseWorkupCatalogForCurrentSession({ force: true });
       });
