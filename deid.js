@@ -2821,6 +2821,10 @@ export function createDeidentifier(options = {}) {
   const modelCandidates = options.modelCandidates || [
     { modelId: options.primaryModelId || DEFAULT_PRIMARY_MODEL_ID, options: withStableRuntime({ dtype }) },
     { modelId: options.primaryModelId || DEFAULT_PRIMARY_MODEL_ID, options: withStableRuntime({}) },
+    { modelId: options.fallbackModelId || I2B2_CLINICALBERT_MODEL_ID, options: withStableRuntime({ dtype }) },
+    { modelId: options.fallbackModelId || I2B2_CLINICALBERT_MODEL_ID, options: withStableRuntime({}) },
+    { modelId: options.fallbackModelId || MULTILANG_PII_MODEL_ID, options: withStableRuntime({ dtype }) },
+    { modelId: options.fallbackModelId || MULTILANG_PII_MODEL_ID, options: withStableRuntime({}) },
     { modelId: options.fallbackModelId || DEFAULT_FALLBACK_MODEL_ID, options: withStableRuntime({ dtype }) },
     { modelId: options.fallbackModelId || DEFAULT_FALLBACK_MODEL_ID, options: withStableRuntime({}) }
   ].filter((candidate) => candidate.modelId);
