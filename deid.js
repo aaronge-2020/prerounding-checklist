@@ -1723,7 +1723,10 @@ export function collectTemporalEntities(rawText) {
   return mergeEntities(entities, text);
 }
 
-function chooseCurrentSourceDate(temporalEntities) {
+function chooseCurrentSourceDate(temporalEntities, currentDate = null) {
+  if (currentDate) {
+    return new Date(currentDate);
+  }
   const parsedEntities = temporalEntities
     .map((entity) => ({
       entity,
@@ -1867,7 +1870,7 @@ function formatRelativeTemporalPlaceholder(entity, currentSourceDate, fallbackYe
   );
 }
 
-function buildDateTimeline(rawText, entities) {
+function buildDateTimeline(rawText, entities, currentDate = null) {
   const dateEntities = mergeEntities([...entities, ...collectTemporalEntities(rawText)], rawText)
     .filter((entity) => entity.label === "DATE")
     .map((entity) => {
@@ -1880,7 +1883,7 @@ function buildDateTimeline(rawText, entities) {
     ...info.entity,
     span: info.span,
     temporal: info.temporal
-  })));
+  })), currentDate);
   const fallbackYear = currentSourceDate ? currentSourceDate.getUTCFullYear() : new Date().getFullYear();
   const placeholdersByEntity = new Map();
 
@@ -1901,12 +1904,12 @@ function makeDateTimelinePlaceholder(entity, dateTimeline) {
   return dateTimeline.get(`${entity.start}:${entity.end}`) || "[DATE]";
 }
 
-export function redactFromEntities(rawText, entities) {
+export function redactFromEntities(rawText, entities, currentDate = null) {
   let cursor = 0;
   let output = "";
   const temporalEntities = collectTemporalEntities(rawText);
   const allEntities = mergeEntities([...entities, ...temporalEntities], rawText);
-  const dateTimeline = buildDateTimeline(rawText, allEntities);
+  const dateTimeline = buildDateTimeline(rawText, allEntities, currentDate);
 
   allEntities.forEach((entity) => {
     output += rawText.slice(cursor, entity.start);
@@ -1964,14 +1967,14 @@ function normalizeDayLabelTimes(text) {
   });
 }
 
-function replaceTemporalEntitiesWithRelativeText(text) {
+function replaceTemporalEntitiesWithRelativeText(text, currentDate = null) {
   const sourceText = String(text || "");
   const entities = collectTemporalEntities(sourceText);
   if (!entities.length) {
     return sourceText;
   }
 
-  const currentSourceDate = chooseCurrentSourceDate(entities);
+  const currentSourceDate = chooseCurrentSourceDate(entities, currentDate);
   const fallbackYear = currentSourceDate ? currentSourceDate.getUTCFullYear() : new Date().getFullYear();
   let cursor = 0;
   let output = "";
@@ -1999,10 +2002,10 @@ export function cleanupDeidArtifacts(text) {
     .trim();
 }
 
-export function normalizeResidualTemporalPhi(text) {
+export function normalizeResidualTemporalPhi(text, currentDate = null) {
   const withoutArtifacts = cleanupDeidArtifacts(text);
   const withoutLegacy = normalizeLegacyDatePlaceholders(withoutArtifacts);
-  const withoutExactDates = replaceTemporalEntitiesWithRelativeText(withoutLegacy);
+  const withoutExactDates = replaceTemporalEntitiesWithRelativeText(withoutLegacy, currentDate);
   return cleanupDeidArtifacts(normalizeDayLabelTimes(withoutExactDates));
 }
 
@@ -2620,8 +2623,8 @@ function expandIdentityGraphEntities(rawText, seedEntities, maxPasses = 3) {
   return { entities, graph };
 }
 
-function deidentifyFromEntities(rawText, entities, modelResult = { modelId: null, modelStatus: "structured only" }) {
-  const text = redactFromEntities(rawText, entities);
+function deidentifyFromEntities(rawText, entities, modelResult = { modelId: null, modelStatus: "structured only" }, currentDate = null) {
+  const text = redactFromEntities(rawText, entities, currentDate);
   const counts = summarizeEntities(entities);
   const residualWarnings = scanResidualPhi(text);
   const residualFlags = residualWarnings.slice(0, 12).map(formatPhiWarning);
@@ -2646,9 +2649,9 @@ function formatPhiWarning(warning) {
   return `${label}: ${warning.type} - ${warning.snippet}`;
 }
 
-export function deidentifyTextStructuredOnly(rawText) {
+export function deidentifyTextStructuredOnly(rawText, currentDate = null) {
   const { entities } = expandIdentityGraphEntities(rawText, addStructuredSafeHarborEntities(rawText, []));
-  return deidentifyFromEntities(rawText, entities, { modelId: null, modelStatus: "structured only" });
+  return deidentifyFromEntities(rawText, entities, { modelId: null, modelStatus: "structured only" }, currentDate);
 }
 
 export function createDeidentifier(options = {}) {
@@ -2787,7 +2790,7 @@ export function createDeidentifier(options = {}) {
     reportProgress(onProgress, { stage: "starting", message: "Starting local de-identification...", percent: 0.02 });
     if (mode === "structured-only") {
       reportProgress(onProgress, { stage: "structured", message: "Running structured redaction...", percent: 0.25 });
-      return deidentifyTextStructuredOnly(rawText);
+      return deidentifyTextStructuredOnly(rawText, new Date());
     }
 
     const modelResult = await detectModelEntities(rawText, { onProgress });

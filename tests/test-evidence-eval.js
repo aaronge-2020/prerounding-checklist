@@ -8,7 +8,7 @@ import {
   formatEvaluationReport,
   loadEvaluationFixtures,
   writeEvaluationReport
-} from "./evidence-eval.js";
+} from "../scripts/evidence-eval.js";
 
 const fixtures = loadEvaluationFixtures();
 const suite = evaluateRetrievalSuite(fixtures);

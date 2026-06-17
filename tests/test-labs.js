@@ -7,7 +7,7 @@ import {
 } from "../labs.js";
 
 function fixture(name) {
-  return readFileSync(new URL(`../fixtures/labs/${name}`, import.meta.url), "utf8");
+  return readFileSync(new URL(`./fixtures/labs/${name}`, import.meta.url), "utf8");
 }
 
 function latestFor(timeline, label) {

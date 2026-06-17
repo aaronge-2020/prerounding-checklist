@@ -5,7 +5,7 @@ import {
   buildMedicalKnowledgeDatabase,
   loadMedicalKnowledgeDatabase,
   validateMedicalKnowledgeDatabase
-} from "./build-medical-knowledge-db.js";
+} from "../scripts/build-medical-knowledge-db.js";
 import {
   complaintModules,
   complaintSourceRegistry,

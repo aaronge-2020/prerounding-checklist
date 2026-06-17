@@ -22,7 +22,7 @@ import {
   buildRun as buildClinicalWorkupIterationRun,
   formatMarkdown as formatClinicalWorkupIterationMarkdown,
   loadCatalog as loadClinicalWorkupIterationCatalog
-} from "./iterate-clinical-workups.js";
+} from "../scripts/iterate-clinical-workups.js";
 import {
   buildRecommendedExamChecklist,
   isBasicSafetyCheckEntry,

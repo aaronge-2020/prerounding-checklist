@@ -2,7 +2,7 @@ import { writeFileSync } from "node:fs";
 import {
   evaluateRetrievalSuite,
   loadEvaluationFixtures
-} from "./evidence-eval.js";
+} from "../scripts/evidence-eval.js";
 import {
   embeddingModelRegistry,
   normalizeEmbeddingSettings

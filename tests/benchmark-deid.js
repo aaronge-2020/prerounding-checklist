@@ -8,7 +8,7 @@ import {
   createDeidentifier,
   deidentifyTextStructuredOnly
 } from "../deid.js";
-import { makeSyntheticCases } from "./deid-fixtures.js";
+import { makeSyntheticCases } from "../scripts/deid-fixtures.js";
 
 env.allowLocalModels = false;
 env.allowRemoteModels = true;

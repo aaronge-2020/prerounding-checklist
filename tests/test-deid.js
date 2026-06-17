@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { createDeidentifier, deidentifyTextStructuredOnly, modelPredictionsToEntities, normalizeResidualTemporalPhi, scanResidualPhi } from "../deid.js";
-import { assertDeidCase } from "./deid-adversarial.js";
-import { clinicalGuardTerms, makeAdversarialCases, makeDemoLikeCase, makeSyntheticCases } from "./deid-fixtures.js";
+import { assertDeidCase } from "../scripts/deid-adversarial.js";
+import { clinicalGuardTerms, makeAdversarialCases, makeDemoLikeCase, makeSyntheticCases } from "../scripts/deid-fixtures.js";
 
 function countNeedle(text, needle) {
   if (!needle) {

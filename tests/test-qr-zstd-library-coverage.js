@@ -7,7 +7,7 @@ import {
   compactReturnPayloadForManifest,
   compactWorkupPayloadForManifest,
   fnv64Bytes
-} from "./build-qr-zstd-dictionary.js";
+} from "../scripts/build-qr-zstd-dictionary.js";
 import {
   QR_DEFAULT_REGISTRY_HASH,
   QR_DEFAULT_REGISTRY_MODULE_COUNT,

@@ -16789,7 +16789,7 @@
       if (!_deidModelInstance) {
         _loadDeidModel().then(() => {}).catch(() => {});
       }
-      return deidentifyTextStructuredOnly(rawText);
+      return deidentifyTextStructuredOnly(rawText, new Date());
     }
 
     const state = {

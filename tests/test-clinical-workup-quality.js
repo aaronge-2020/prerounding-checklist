@@ -23,7 +23,7 @@ import {
   formatConciseClinicalWorkupReport,
   formatConciseExamRecommendationReport
 } from "../workup-report.js";
-import { buildRun, loadCatalog } from "./iterate-clinical-workups.js";
+import { buildRun, loadCatalog } from "../scripts/iterate-clinical-workups.js";
 
 const QUALITY_GOAL = "attending-level tiered bedside workup";
 
