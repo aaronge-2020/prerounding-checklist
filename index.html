@@ -1177,6 +1177,21 @@
       stroke-width: 1.8;
     }
 
+    .btn .icon-box {
+      width: 16px;
+      height: 16px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: currentColor;
+    }
+
+    .btn .icon-box svg {
+      width: 15px;
+      height: 15px;
+      stroke-width: 2;
+    }
+
     .vault-mini {
       margin-top: auto;
       padding: 10px;
@@ -7221,28 +7236,23 @@
     body[data-view="workspace"][data-patient-tab="evidence"] .brand > .status-chip,
     body[data-view="workspace"][data-patient-tab="evidence"] .brand > .optional-text,
     body[data-view="workspace"][data-patient-tab="evidence"] .topbar-center,
-    body[data-view="workspace"][data-patient-tab="evidence"] .topbar-actions > :not(.evidence-top-action) {
+    body[data-view="workspace"][data-patient-tab="evidence"] .topbar-actions > :not(.evidence-top-action):not(#lockVaultButton) {
       display: none !important;
     }
 
     body[data-view="workspace"][data-patient-tab="evidence"] .topbar-actions {
-      gap: 12px;
+      gap: 8px;
     }
 
     body[data-view="workspace"][data-patient-tab="evidence"] .topbar-actions .evidence-top-action {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      min-height: 46px;
-      padding-inline: 18px;
-      border-radius: 6px;
-      font-size: 14px;
-      font-weight: 820;
-    }
-
-    body[data-view="workspace"][data-patient-tab="evidence"] #topEvidenceEditButton {
-      width: 48px;
-      padding: 0;
+      gap: 7px;
+      min-height: 40px;
+      padding-inline: 14px;
+      border-radius: 7px;
+      font-size: 13.5px;
+      font-weight: 750;
     }
 
     body[data-view="workspace"][data-patient-tab="evidence"] .topbar-actions .icon-box,
@@ -7918,31 +7928,21 @@
       display: none !important;
     }
 
-    body[data-view="workspace"][data-patient-tab="evidence"] #topDemoCaseButton,
-    body[data-view="workspace"][data-patient-tab="evidence"] #topEvidenceChecklistButton,
-    body[data-view="workspace"][data-patient-tab="evidence"] #topEvidenceDischargeButton,
-    body[data-view="workspace"][data-patient-tab="evidence"] #topEvidenceEditButton,
+    body[data-view="workspace"][data-patient-tab="evidence"] .topbar-actions .evidence-top-action,
     body[data-view="workspace"][data-patient-tab="evidence"] #lockVaultButton {
       display: inline-flex !important;
     }
 
     body[data-view="workspace"][data-patient-tab="evidence"] .topbar-actions {
-      gap: 10px;
+      gap: 8px;
     }
 
-    body[data-view="workspace"][data-patient-tab="evidence"] .topbar-actions .btn,
-    body[data-view="workspace"][data-patient-tab="evidence"] .topbar-actions .square-button {
-      min-height: 50px;
+    body[data-view="workspace"][data-patient-tab="evidence"] .topbar-actions .btn {
+      min-height: 40px;
       border-radius: 7px;
-      padding-inline: 18px;
-      font-size: 14px;
-      font-weight: 820;
-    }
-
-    body[data-view="workspace"][data-patient-tab="evidence"] #topEvidenceEditButton {
-      width: 48px;
-      min-width: 48px;
-      padding: 0;
+      padding-inline: 14px;
+      font-size: 13.5px;
+      font-weight: 750;
     }
 
     body[data-view="workspace"][data-patient-tab="evidence"] .patient-task-strip {
@@ -14644,10 +14644,10 @@
         <button class="btn btn-secondary" id="topDemoCaseButton" type="button">Demo case</button>
         <button class="btn btn-secondary" id="topQuickDeidButton" type="button">Quick de-ID</button>
         <button class="btn btn-secondary" id="topClinicalWorkupButton" type="button">Patient workup</button>
+        <button class="btn btn-secondary evidence-top-action" id="topEvidenceEditButton" type="button"><span class="icon-box" data-icon="edit" aria-hidden="true"></span>Edit</button>
+        <button class="btn btn-secondary evidence-top-action" id="topEvidenceDischargeButton" type="button"><span class="icon-box" data-icon="log-out" aria-hidden="true"></span>Discharge</button>
         <button class="btn btn-primary evidence-top-action" id="topEvidenceChecklistButton" type="button"><span class="icon-box" data-icon="clipboard-check" aria-hidden="true"></span>Open checklist</button>
-        <button class="btn btn-secondary evidence-top-action" id="topEvidenceDischargeButton" type="button">Discharge</button>
-        <button class="square-button evidence-top-action" id="topEvidenceEditButton" type="button" aria-label="Edit patient context"><span class="icon-box" data-icon="edit" aria-hidden="true"></span></button>
-        <button class="btn btn-secondary" id="lockVaultButton" type="button">Lock vault</button>
+        <button class="btn btn-secondary" id="lockVaultButton" type="button"><span class="icon-box" data-icon="lock" aria-hidden="true"></span>Lock vault</button>
       </div>
     </header>
 
@@ -18787,7 +18787,9 @@
         send: '<path d="M4 4l17 8-17 8 4-8z"></path><path d="M8 12h13"></path>',
         "git-branch": '<circle cx="6" cy="6" r="3"></circle><circle cx="18" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><path d="M6 9v6M9 6h6"></path>',
         activity: '<path d="M3 12h4l2-6 4 12 2-6h6"></path>',
-        info: '<circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7h.01"></path>'
+        info: '<circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7h.01"></path>',
+        lock: '<rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path>',
+        "log-out": '<path d="M16 17l5-5-5-5"></path><path d="M21 12H9"></path><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>'
       };
       return `<svg viewBox="0 0 24 24" aria-hidden="true">${paths[name] || paths.info}</svg>`;
     }
