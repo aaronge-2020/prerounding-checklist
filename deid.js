@@ -672,6 +672,7 @@ const clinicalInstructionAnchorWords = new Set([
 
 
 
+
 // ── Auto-import clinical guard vocabulary (built from MeSH + RxNorm) ──
 // To update: npm run build:clinical-guard-full
 import {
@@ -1111,13 +1112,6 @@ function isLikelyNonNamePhrase(rawText, start, end) {
   }
 
   const words = clinicalWordsFromNormalized(normalized);
-  if (normalized && normalized.includes("north") && normalized.includes("valley")) {
-    console.log("  DEBUG NVC leak: normalized=", normalized);
-    const ws = clinicalWordsFromNormalized(normalized);
-    for (const w of ws) {
-      console.log("    word:", w, "nNCW:", nonNameClinicalWords.has(w), "cAW:", clinicalAnchorWords.has(w), "MW:", medicationNameWords.has(w));
-    }
-  }
   return words.length >= 2 && words.length <= 5 && words.every((word) => nonNameClinicalWords.has(word));
 }
 
