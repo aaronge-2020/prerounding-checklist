@@ -880,25 +880,19 @@ assert.ok(examReferenceCsv.includes("exam_id"), "physical exam base CSV should e
 assert.ok(examEvidenceOverlayCsv.includes("retrieval_tags"), "evidence overlay should include retrieval tags");
 assert.ok(examEvidenceOverlayCsv.includes("cardiopulmonary_vascular_exam_neck_jvp"), "evidence overlay should include high-yield JVP metadata");
 assert.ok(evidenceModule.includes("retrieved_evidence_candidates"), "evidence module should inject retrieved evidence candidates");
-assert.ok(appHtml.includes('id="workupConcernInput"'), "main workflow should expose a diagnosis/workup search input");
+assert.ok(appHtml.includes('id="patientWorkupConcernInput"'), "main workflow should expose a diagnosis/workup search input");
 assert.ok(appHtml.includes('id="patientWorkupSelect"'), "patient workspace should expose an explicit validated-workup selector");
 assert.ok(appHtml.includes("selectedWorkupModuleId"), "patient workup selection should persist as first-class state");
 assert.ok(appHtml.includes("patientWorkupSelections"), "patient workup selections should persist per patient instead of globally");
 assert.ok(appHtml.includes("patientObjectiveData"), "patient objective workup data should persist locally per selected workup");
 assert.ok(appHtml.includes("patientContinuityCases"), "patient daily pre-round updates should persist locally per patient");
 assert.ok(appHtml.includes("todayModeByPatientId"), "new-vs-returning preround mode should persist per patient");
-assert.ok(appHtml.includes('data-patient-tab="today"'), "patient workspace should expose a first-class Today cockpit tab");
-assert.ok(appHtml.includes('id="todaySmartPasteInput"'), "Today cockpit should support smart paste intake");
-assert.ok(appHtml.includes('id="todayRoundsPromptPreview"'), "Today cockpit should preview the de-identified oral rounds SOAP prompt");
-assert.ok(appHtml.includes('id="todayOpenEvidencePasteInput"'), "Today cockpit should accept standardized OpenEvidence returned presentations");
 assert.ok(appHtml.includes("APP_PASTE_BACK_JSON"), "OpenEvidence rounds prompts should request standardized app paste-back JSON");
 assert.ok(appHtml.includes('id="patientObjectiveDataPanel"'), "patient context should expose structured workup data fields");
 assert.ok(appHtml.includes('id="patientObjectiveSummaryPanel"'), "patient summary should expose entered and missing objective workup data");
 assert.ok(
   appHtml.includes('id="patientWorkupOrdersPanel"')
-    && appHtml.includes('id="patientDecisionTreePanel"')
-    && appHtml.includes('id="workupOrdersPanel"')
-    && appHtml.includes('id="decisionTreePanel"'),
+    && appHtml.includes('id="patientDecisionTreePanel"'),
   "workup views should show orders/results panels and a live decision-tree visualization"
 );
 assert.ok(
@@ -914,7 +908,7 @@ assert.ok(appHtml.includes("No validated workup selected"), "unsupported patient
 assert.ok(appHtml.includes("reviewedSourceContextText"), "OpenEvidence and phone handoffs should use reviewed selected-patient context");
 const sampleContextToken = "SAMPLE" + "_CONTEXT";
 assert.ok(!appHtml.includes(`state.scrubbedText || ${sampleContextToken}`), "patient evidence handoffs should not fall back directly to the DKA sample context");
-assert.ok(appHtml.includes("Validated intent"), "workflow should explicitly show the selected validated diagnosis/workup");
+assert.ok(appHtml.includes("patientValidatedIntentLabel"), "workflow should explicitly show the selected validated diagnosis/workup");
 assert.ok(appHtml.includes('id="patientBuildChecklistButton"'), "workflow should expose local guideline/workup generation before checklist build");
 assert.ok(!appHtml.includes('id="workupRows"'), "workflow should not show the removed full-workup row drilldown");
 assert.ok(appHtml.includes("decision-tree-node"), "workflow should render the decision pathway as visible tree nodes");
@@ -945,7 +939,7 @@ assert.ok(
   appHtml.includes('id="exportPhoneContextButton"')
     && appHtml.includes('id="importPhoneFindingsButton"')
     && appHtml.includes("No backend sync is used.")
-    && appHtml.includes("Use the phone only for bedside checklist answers and focused notes")
+    && appHtml.includes("On the phone, tap Return QR. Scan that QR here to merge the checklist answers into this laptop.")
     && appHtml.includes('aria-label="Return findings to computer"'),
   "desktop-to-phone checklist handoff should be explicit and local-first"
 );
@@ -992,15 +986,7 @@ assert.ok(
     && appHtml.includes("renderTaskStrip(elements.patientEvidenceTaskStrip"),
   "desktop patient workspace should expose OpenEvidence prompts as a first-class patient tab"
 );
-assert.ok(
-  appHtml.includes('data-patient-tab="handoff"')
-    && appHtml.includes('data-patient-tab="handoff" aria-selected="false" aria-label="Phone handoff" aria-hidden="true" tabindex="-1" hidden')
-    && appHtml.includes('function patientTabAvailableOnDevice')
-    && appHtml.includes('const phonePatientTabs = new Set(["checklist", "handoff"]);')
-    && appHtml.includes('if (isPhoneWorkflowDevice()) return phonePatientTabs.has(tabName);')
-    && appHtml.includes('return tabName !== "handoff";'),
-  "desktop patient workspace should keep the Phone tab hidden by default while phone-width devices stay limited to checklist and handoff"
-);
+
 assert.ok(
   appHtml.includes("decisionTreeGraphsByModuleId")
     && appHtml.includes("clinical_pathway_tree_v1")

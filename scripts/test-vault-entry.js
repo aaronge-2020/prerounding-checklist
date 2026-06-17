@@ -9,7 +9,7 @@ const requiredSnippets = [
   "Open vault",
   "Start single patient",
   "Local patient roster",
-  "Select a patient, then work admission, continuity, bedside findings, checklist, and handoff.",
+  "Select a patient, then work through context, workup, checklist, findings, and evidence.",
   "Admit patient",
   "Discharge",
   "New admission context",

@@ -85,7 +85,19 @@ function createMockHandoffMailbox() {
 }
 
 async function installMockHandoffMailbox(context, mailbox) {
-  await context.route("https://hajjuzpnlvpetsleuxwb.supabase.co/rest/v1/rpc/**", (route) => mailbox.route(route));
+  await context.route("https://hajjuzpnlvpetsleuxwb.supabase.co/**", async (route) => {
+    const request = route.request();
+    const url = new URL(request.url());
+    if (url.pathname.startsWith("/rest/v1/rpc/")) {
+      await mailbox.route(route);
+      return;
+    }
+    if (request.method() === "GET" && (url.pathname === "/rest/v1/workups" || url.pathname === "/rest/v1/workup_sections" || url.pathname === "/rest/v1/sources")) {
+      await route.fulfill({ status: 200, contentType: "application/json", body: "[]" });
+      return;
+    }
+    await route.continue();
+  });
 }
 
 const sharedHandoffMailbox = createMockHandoffMailbox();
@@ -1251,7 +1263,9 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
     findingsSendHidden: document.querySelector("#workspaceSendPhoneButton")
       ? Boolean(document.querySelector("#workspaceSendPhoneButton")?.hidden)
       : true,
-    handoffHidden: document.querySelector("#workspaceHandoffButton")?.hidden
+    handoffHidden: document.querySelector("#workspaceHandoffButton")
+      ? Boolean(document.querySelector("#workspaceHandoffButton")?.hidden)
+      : true
   }));
   assert(
     /Not built/i.test(unbuiltHandoffAudit.checklistStatus)

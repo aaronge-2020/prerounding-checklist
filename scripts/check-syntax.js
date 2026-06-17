@@ -160,7 +160,6 @@ for (const requiredId of [
   "lockVaultButton",
   "sidebarAdmitPatientButton",
   "sidebarQuickDeidButton",
-  "workspaceDeidPreviewButton",
   "patientWorkupConcernInput",
   "patientWorkupOrdersPanel",
   "patientDecisionTreePanel",

@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -6406,6 +6406,32 @@
 
     .bedside-phone-note-panel {
       display: none;
+    }
+
+    body[data-view="bedside"][data-bedside-note-open="true"] .bedside-phone-note-panel {
+      display: grid;
+      gap: 6px;
+      margin: 0;
+      padding: 10px 14px 12px;
+      border: 0;
+      border-bottom: 1px solid #d8e3e1;
+      background: #fbfdfd;
+    }
+
+    body[data-view="bedside"] .bedside-phone-note-panel label {
+      color: #27434b;
+      font-size: 13px;
+      font-weight: 780;
+    }
+
+    body[data-view="bedside"] #bedsidePhoneNoteInput {
+      width: 100%;
+      min-height: 88px;
+      border: 1px solid #d5e2df;
+      border-radius: 7px;
+      background: #ffffff;
+      padding: 9px 10px;
+      font-size: 13px;
     }
 
     #evidenceReviewItems {
@@ -14820,11 +14846,13 @@
             </div>
             <div class="patient-task-strip" role="tablist" aria-label="Selected patient workspace tabs">
               <button type="button" role="tab" data-patient-tab="overview" aria-selected="true" aria-label="Overview"><span class="tab-icon icon-box" data-icon="calendar" aria-hidden="true"></span><span>Summary</span></button>
+              <button type="button" role="tab" data-patient-tab="today" aria-selected="false"><span class="tab-icon icon-box" data-icon="list" aria-hidden="true"></span><span>Today</span></button>
               <button type="button" role="tab" data-patient-tab="context" aria-selected="false"><span class="tab-icon icon-box" data-icon="users" aria-hidden="true"></span><span>Context</span></button>
               <button type="button" role="tab" data-patient-tab="workup" aria-selected="false"><span class="tab-icon icon-box" data-icon="file-text" aria-hidden="true"></span><span>Workup</span></button>
               <button type="button" role="tab" data-patient-tab="checklist" aria-selected="false"><span class="tab-icon icon-box" data-icon="check-square" aria-hidden="true"></span><span>Checklist</span></button>
               <button type="button" role="tab" data-patient-tab="findings" aria-selected="false"><span class="tab-icon icon-box" data-icon="activity" aria-hidden="true"></span><span>Findings</span></button>
               <button type="button" role="tab" data-patient-tab="evidence" aria-selected="false" aria-label="OpenEvidence prompts"><span class="tab-icon icon-box" data-icon="clipboard-check" aria-hidden="true"></span><span>Evidence</span></button>
+              <button type="button" role="tab" data-patient-tab="handoff" aria-selected="false" aria-label="Phone handoff" aria-hidden="true" tabindex="-1" hidden>Phone</button>
             </div>
             <div class="patient-workflow-grid">
               <section class="workflow-panel workflow-panel-wide" id="patientOverviewPanel" data-patient-panel="overview">
@@ -14864,6 +14892,101 @@
                 </div>
               </section>
 
+              <section class="workflow-panel workflow-panel-wide today-cockpit" id="patientTodayPanel" data-patient-panel="today" hidden>
+                <div class="today-cockpit-head">
+                  <div>
+                    <div class="panel-title-row">
+                      <h3>Today's pre-round cockpit</h3>
+                      <span class="meta-tag" id="todayDateLabel">Today</span>
+                    </div>
+                    <p class="muted" id="todayModeHelp" style="margin: 2px 0 0;">Paste today's reviewed chart details, save the local update, then build the bedside checklist and rounds prompt.</p>
+                  </div>
+                  <div class="today-mode-toggle" aria-label="Today's workflow mode">
+                    <button type="button" data-today-mode="new" aria-pressed="true">New patient</button>
+                    <button type="button" data-today-mode="returning" aria-pressed="false">24h update</button>
+                  </div>
+                </div>
+
+                <div class="today-status-grid" id="todayStatusGrid" aria-label="Pre-round readiness">
+                  <div class="today-status-card"><span>Baseline</span><strong id="todayBaselineStatus">Not saved</strong></div>
+                  <div class="today-status-card"><span>Today</span><strong id="todayInputStatus">No update</strong></div>
+                  <div class="today-status-card"><span>Workup</span><strong id="todayWorkupStatus">Not selected</strong></div>
+                  <div class="today-status-card"><span>Bedside</span><strong id="todayChecklistStatus">Not built</strong></div>
+                  <div class="today-status-card"><span>Prompt</span><strong id="todayPromptStatus">Not ready</strong></div>
+                </div>
+
+                <div class="today-paste-grid">
+                  <div>
+                    <label for="todaySmartPasteInput">Smart paste</label>
+                    <textarea id="todaySmartPasteInput" maxlength="16000" aria-describedby="localTextEntryHelp" placeholder="Optional: paste one block with headings like Today note:, Labs:, Updated MAR:, Overnight events:, Subjective change:."></textarea>
+                    <div class="button-row">
+                      <button class="btn btn-secondary" id="todaySortPasteButton" type="button">Sort paste into fields</button>
+                      <button class="btn btn-secondary" id="todayClearPasteButton" type="button">Clear paste</button>
+                    </div>
+                  </div>
+                  <div>
+                    <label for="todayRoundsPromptPreview">Rounds SOAP prompt preview</label>
+                    <textarea id="todayRoundsPromptPreview" spellcheck="false" readonly aria-label="De-identified oral rounds SOAP prompt preview"></textarea>
+                    <div class="button-row today-prompt-actions">
+                      <button class="btn btn-primary" id="todayCopyRoundsPromptButton" type="button">Copy rounds prompt</button>
+                      <button class="btn btn-secondary" id="todayOpenEvidenceButton" type="button">Open OpenEvidence</button>
+                    </div>
+                    <label for="todayOpenEvidencePasteInput">OpenEvidence returned presentation</label>
+                    <textarea id="todayOpenEvidencePasteInput" maxlength="30000" aria-describedby="localTextEntryHelp" placeholder="Paste the full OpenEvidence result. The app will look for APP_PASTE_BACK_JSON with schema open_evidence_rounds_pasteback_v1."></textarea>
+                    <div class="button-row">
+                      <button class="btn btn-secondary" id="todayApplyOpenEvidenceButton" type="button">Record returned summary</button>
+                      <span class="meta-tag" id="todayPasteBackStatus">No returned summary</span>
+                    </div>
+                    <div class="evidence-change-preview" id="todayRoundsPasteBackPreview" data-status="empty" aria-live="polite">No concise rounds report saved yet.</div>
+                  </div>
+                </div>
+
+                <div class="today-baseline-grid">
+                  <div>
+                    <label for="todayBaselineSummaryInput">Stable baseline summary</label>
+                    <textarea id="todayBaselineSummaryInput" maxlength="4000" aria-describedby="localTextEntryHelp" placeholder="One-liner, hospital course, stable background to carry forward."></textarea>
+                  </div>
+                  <div>
+                    <label for="todayActiveProblemsInput">Active problems and selected workups</label>
+                    <textarea id="todayActiveProblemsInput" maxlength="4000" aria-describedby="localTextEntryHelp" placeholder="Problem list, selected workup, current major management questions."></textarea>
+                  </div>
+                  <div>
+                    <label for="todayYesterdayPlanInput">Yesterday plan</label>
+                    <textarea id="todayYesterdayPlanInput" maxlength="4000" aria-describedby="localTextEntryHelp" placeholder="Plans or contingencies you want today's update to carry forward."></textarea>
+                  </div>
+                  <div>
+                    <label for="todayPendingItemsInput">Pending items</label>
+                    <textarea id="todayPendingItemsInput" maxlength="4000" aria-describedby="localTextEntryHelp" placeholder="Pending labs, imaging, consult questions, discharge barriers, or watch items."></textarea>
+                  </div>
+                </div>
+
+                <div class="today-input-grid">
+                  <div>
+                    <label for="todayNoteInput">Recent note or SOAP update</label>
+                    <textarea id="todayNoteInput" maxlength="8000" aria-describedby="localTextEntryHelp"></textarea>
+                  </div>
+                  <div>
+                    <label for="todayLabsInput">Most recent labs/results</label>
+                    <textarea id="todayLabsInput" maxlength="8000" aria-describedby="localTextEntryHelp"></textarea>
+                  </div>
+                  <div>
+                    <label for="todayMarInput">MAR / meds in last 24 hours</label>
+                    <textarea id="todayMarInput" maxlength="8000" aria-describedby="localTextEntryHelp"></textarea>
+                  </div>
+                  <div>
+                    <label for="todayOvernightInput">Overnight events and subjective changes</label>
+                    <textarea id="todayOvernightInput" maxlength="8000" aria-describedby="localTextEntryHelp"></textarea>
+                  </div>
+                </div>
+
+                <div class="button-row">
+                  <button class="btn btn-primary" id="saveTodayUpdateButton" type="button">Save today's update</button>
+                  <button class="btn btn-secondary" id="todayBuildChecklistButton" type="button">Build bedside checklist</button>
+                  <button class="btn btn-secondary" id="todayAnswerChecklistButton" type="button">Answer checklist</button>
+                  <button class="btn btn-secondary" id="todayOpenPromptWorkbenchButton" type="button">Open prompt workbench</button>
+                </div>
+                <ul class="today-review-list" id="todayUpdateReviewList" aria-live="polite"></ul>
+              </section>
 
               <section class="workflow-panel" id="patientAdmissionPanel" data-patient-panel="context" hidden>
                 <div class="panel-title-row">
@@ -14876,8 +14999,7 @@
                 <label for="workspaceLabsMedsInput">Labs, medications, and safety context</label>
                 <textarea id="workspaceLabsMedsInput" maxlength="8000" aria-describedby="localTextEntryHelp"></textarea>
                 <div class="button-row">
-                  <button class="btn btn-secondary" id="savePatientContextButton" type="button">Save patient context</button>
-                  <button class="btn btn-secondary" id="workspaceDeidPreviewButton" type="button">Run local de-ID</button>
+                  <button class="btn btn-primary" id="savePatientContextButton" type="button">De-identify & Save Context</button>
                 </div>
                 <details class="deid-review-panel" id="workspaceDeidReviewPanel">
                   <summary>Review local de-ID preview</summary>
@@ -14896,13 +15018,26 @@
                 <label for="workspaceContinuityInput">Overnight events, interval changes, and follow-up items</label>
                 <textarea id="workspaceContinuityInput" maxlength="8000" aria-describedby="localTextEntryHelp"></textarea>
                 <div class="button-row">
-                  <button class="btn btn-secondary" id="saveContinuityButton" type="button">Save continuity update</button>
+                  <button class="btn btn-primary" id="saveContinuityButton" type="button">De-identify & Save Continuity</button>
                 </div>
               </section>
 
               <section class="workflow-panel workflow-panel-wide objective-data-panel" id="patientObjectiveDataPanel" data-patient-panel="context" hidden></section>
 
+              <section class="workflow-panel workflow-panel-wide" id="patientPhonePanel" data-patient-panel="handoff" hidden>
+                <div class="panel-title-row">
+                  <h3>Phone bedside handoff</h3>
+                  <span class="meta-tag">Local bundle</span>
+                </div>
+                <p class="muted">Use the phone only for bedside checklist answers and focused notes. Prep, review, and final synthesis stay on desktop.</p>
+                <div class="button-row">
+                  <button class="btn btn-secondary" id="workspaceFinalReviewButton" type="button">Open OpenEvidence prompts</button>
+                  <button class="btn btn-primary" id="workspaceHandoffButton" type="button">Open phone handoff</button>
+                </div>
+              </section>
+
               <section class="workflow-panel workflow-panel-wide findings-handoff-panel" id="patientFindingsPanel" data-patient-panel="findings" hidden>
+                <div id="finalUpdatePreview" style="display:none;" aria-hidden="true"></div>
                 <div class="panel-title-row">
                   <h3>Phone findings</h3>
                   <span class="meta-tag">QR handoff</span>
@@ -16429,11 +16564,15 @@
     ]);
     const modifierOptions = clinicalModifierOptions.map((option) => option.label);
     const views = ["workspace", "studio", "bedside", "handoff", "privacy"];
-    const patientTabOrder = ["overview", "context", "workup", "checklist", "findings", "evidence"];
-    const desktopPatientTabFallbacks = {};
-    const phonePatientTabs = new Set(["checklist"]);
+    const patientTabOrder = ["overview", "today", "context", "workup", "checklist", "findings", "evidence", "handoff"];
+    const desktopPatientTabFallbacks = {
+      today: "context",
+      handoff: "checklist"
+    };
+    const phonePatientTabs = new Set(["checklist", "handoff"]);
     const phonePatientTabFallbacks = {
       overview: "checklist",
+      today: "checklist",
       context: "checklist",
       workup: "checklist",
       findings: "checklist",
@@ -23400,7 +23539,9 @@ Rules:
     }
 
     function patientTabAvailableOnDevice(tabName) {
-      return phonePatientTabs.has(tabName) ? isPhoneWorkflowDevice() : !isPhoneWorkflowDevice();
+      if (isPhoneWorkflowDevice()) return phonePatientTabs.has(tabName);
+      if (tabName === "today") return patientHasFollowUpContext();
+      return tabName !== "handoff";
     }
 
     function coercePatientTabForDevice(tabName = state.activePatientTab) {
@@ -23947,7 +24088,7 @@ Rules:
       head.className = "workup-orders-head";
       const text = document.createElement("div");
       const title = document.createElement("strong");
-      title.textContent = compact ? "Orders & Results" : "Orders and results";
+      title.textContent = compact ? "Orders and results" : "Orders and results";
       const subtitle = document.createElement("span");
       subtitle.textContent = "Document the workup data that changes the pathway.";
       text.append(title, subtitle);
@@ -27513,16 +27654,20 @@ Rules:
         ].join("\n");
       }
       const rows = patientChecklistPatchPromptRows(meta.sectionKey);
+      const fullRows = patientChecklistPatchFullChecklistRows();
       const blocks = [
         `Checklist scope: ${meta.sectionKey}`,
         `selectedSection: ${meta.sectionName}`,
         "",
-        "<target_section_rows>",
+        "<editable_target_rows>",
         patientChecklistPatchPromptRowsText(rows, { includeOptions: true }),
-        "</target_section_rows>"
+        "</editable_target_rows>",
+        "",
+        "<full_current_checklist>",
+        `totalRows: ${fullRows.length}`,
+        patientChecklistPatchPromptRowsText(fullRows),
+        "</full_current_checklist>"
       ];
-      const otherLabels = patientChecklistPatchOtherSectionLabels(meta.sectionKey);
-      if (otherLabels) blocks.push("", otherLabels);
       return blocks.join("\n");
     }
 
@@ -27642,7 +27787,9 @@ Rules:
         meta.isAll
           ? "Allowed sectionKey values: history_questions, physical_exam. Return a separate JSON block for each section that needs changes."
           : `Allowed groupKey values for add: ${groups.required}, ${groups.conditional}. Prefer ${groups.conditional} for patient-only additions.`,
-        "For update/remove, use an exact itemId from the matching section rows only. Do not update/remove rows outside the targeted section.",
+        meta.isAll
+          ? "For update/remove, use an exact itemId from the matching section rows only. Do not update/remove rows outside the targeted section."
+          : "For update/remove, use an exact itemId from editable_target_rows only. Do not update/remove rows outside the selected section.",
         "Do not invent itemIds for existing rows.",
         "If no changes are useful, return operations: []."
       ].join("\n");
@@ -28375,6 +28522,10 @@ Rules:
         elements.workspaceChecklistPhoneButton.hidden = !checklistBuilt;
         elements.workspaceChecklistPhoneButton.disabled = !hasPatient || !checklistBuilt || checklistStale;
       }
+      if (elements.workspaceHandoffButton) {
+        elements.workspaceHandoffButton.hidden = !checklistBuilt;
+        elements.workspaceHandoffButton.disabled = !hasPatient || !checklistBuilt || checklistStale;
+      }
       if (elements.workspaceChecklistReadyNotice) {
         elements.workspaceChecklistReadyNotice.textContent = checklistStale
           ? `A newer server workup is available for ${patient.title}. Rebuild before answering or sending to phone.`
@@ -28404,7 +28555,6 @@ Rules:
       if (patientHasFollowUpContext(patient)) renderTodayCockpit();
       if (!hasPatient) setChecklistBuildDisabled(true);
       renderPatientTabs();
-      renderPatientScopeBars();
     }
 
     function renderPatientContext() {
@@ -28530,7 +28680,19 @@ Rules:
       state.concern = selectedModule ? moduleLabel(selectedModule) : patient.concern || "";
       phoneChecklistWorkupSearch = state.concern;
       state.modifiers = Array.isArray(patient.modifiers) && patient.modifiers.length ? [...patient.modifiers] : ["Vomiting", "Poor intake"];
-      state.activePatientTab = "overview";
+      const patientCase = patientContinuityCase(patient, { create: false });
+      const todayDay = currentContinuityDay(patientCase);
+      const roundsReport = todayDay?.roundsPasteBack;
+      const hasSummary = roundsReport && (
+        roundsReport.oneLiner ||
+        (Array.isArray(roundsReport.subjective) && roundsReport.subjective.length) ||
+        (Array.isArray(roundsReport.objective) && roundsReport.objective.length) ||
+        (Array.isArray(roundsReport.assessmentPlan) && roundsReport.assessmentPlan.length) ||
+        (Array.isArray(roundsReport.followUpTasks) && roundsReport.followUpTasks.length) ||
+        (Array.isArray(roundsReport.bedsideRecheck) && roundsReport.bedsideRecheck.length) ||
+        roundsReport.plainTextSummary
+      );
+      state.activePatientTab = hasSummary ? "overview" : "context";
       state.scrubbedText = "";
       state.deidCounts = {};
       state.workup = null;
@@ -28699,7 +28861,24 @@ Rules:
         return;
       }
       const result = deidentifyTextStructuredOnly(getSourceText());
-      applyDeidResult(result, { announce: true });
+      applyDeidResult(result, { announce: false });
+      setStatus("Patient context saved and de-identified locally. Review the redacted preview below.");
+      setPatientTab("context");
+      elements.workspaceDeidReviewPanel?.setAttribute("open", "");
+    }
+
+    function runWorkspaceContinuityDeid() {
+      saveWorkspaceContinuity({ announce: false });
+      if (!getSourceText().trim()) {
+        if (elements.deidPreview) elements.deidPreview.textContent = EMPTY_CONTEXT_MESSAGE;
+        if (elements.deidModelStatus) elements.deidModelStatus.textContent = "Waiting";
+        setStatus("Add continuity update text before running local de-ID.");
+        setPatientTab("context");
+        return;
+      }
+      const result = deidentifyTextStructuredOnly(getSourceText());
+      applyDeidResult(result, { announce: false });
+      setStatus("Continuity update saved and de-identified locally. Review the redacted preview below.");
       setPatientTab("context");
       elements.workspaceDeidReviewPanel?.setAttribute("open", "");
     }
@@ -29487,12 +29666,12 @@ Rules:
 	    function renderWorkupSummary() {
 	      if (!state.workup) {
 	        const intentName = "No validated workup selected";
-        elements.workupIntentTitle.textContent = intentName;
-        elements.validatedIntentLabel.textContent = intentName;
-        elements.selectedModifierSummary.textContent = "No results documented";
-        elements.patientWorkupIntentTitle.textContent = intentName;
-        elements.patientValidatedIntentLabel.textContent = intentName;
-        elements.patientSelectedModifierSummary.textContent = elements.selectedModifierSummary.textContent;
+        if (elements.workupIntentTitle) elements.workupIntentTitle.textContent = intentName;
+        if (elements.validatedIntentLabel) elements.validatedIntentLabel.textContent = intentName;
+        if (elements.selectedModifierSummary) elements.selectedModifierSummary.textContent = "No results documented";
+        if (elements.patientWorkupIntentTitle) elements.patientWorkupIntentTitle.textContent = intentName;
+        if (elements.patientValidatedIntentLabel) elements.patientValidatedIntentLabel.textContent = intentName;
+        if (elements.patientSelectedModifierSummary) elements.patientSelectedModifierSummary.textContent = "No results documented";
         for (const listElement of [elements.workupSummaryList, elements.patientWorkupSummaryList].filter(Boolean)) {
           listElement.innerHTML = "";
           for (const line of [
@@ -29507,7 +29686,7 @@ Rules:
         }
         const buildStatus = "No local workup is selected for this patient. Select one from the validated workup list before generating checklist items.";
         if (elements.workupBuildStatus) elements.workupBuildStatus.textContent = buildStatus;
-        elements.patientWorkupBuildStatus.textContent = buildStatus;
+        if (elements.patientWorkupBuildStatus) elements.patientWorkupBuildStatus.textContent = buildStatus;
         renderSelectedWorkupCard();
         setChecklistBuildDisabled(true);
         renderObjectiveDataSurfaces({ includeEditor: false });
@@ -29515,12 +29694,12 @@ Rules:
       }
       const intentName = state.workup?.module?.title || state.workup?.module?.label || state.workup?.module?.name || "Selected validated workup";
       const pathwayStatus = objectiveStatusLine(objectiveDataRows()) || "No required result fields";
-      elements.workupIntentTitle.textContent = intentName;
-      elements.validatedIntentLabel.textContent = intentName;
-      elements.selectedModifierSummary.textContent = pathwayStatus;
-      elements.patientWorkupIntentTitle.textContent = intentName;
-      elements.patientValidatedIntentLabel.textContent = intentName;
-      elements.patientSelectedModifierSummary.textContent = elements.selectedModifierSummary.textContent;
+      if (elements.workupIntentTitle) elements.workupIntentTitle.textContent = intentName;
+      if (elements.validatedIntentLabel) elements.validatedIntentLabel.textContent = intentName;
+      if (elements.selectedModifierSummary) elements.selectedModifierSummary.textContent = pathwayStatus;
+      if (elements.patientWorkupIntentTitle) elements.patientWorkupIntentTitle.textContent = intentName;
+      if (elements.patientValidatedIntentLabel) elements.patientValidatedIntentLabel.textContent = intentName;
+      if (elements.patientSelectedModifierSummary) elements.patientSelectedModifierSummary.textContent = pathwayStatus;
       for (const listElement of [elements.workupSummaryList, elements.patientWorkupSummaryList].filter(Boolean)) {
         listElement.innerHTML = "";
       }
@@ -29538,7 +29717,7 @@ Rules:
       }
       const buildStatus = `Workup assembled from local medical knowledge base with ${state.workupRows.reduce((sum, row) => sum + row.items.length, 0)} reviewed items.`;
       if (elements.workupBuildStatus) elements.workupBuildStatus.textContent = buildStatus;
-      elements.patientWorkupBuildStatus.textContent = buildStatus;
+      if (elements.patientWorkupBuildStatus) elements.patientWorkupBuildStatus.textContent = buildStatus;
 	      renderSelectedWorkupCard();
 	      setChecklistBuildDisabled(false);
 	      renderObjectiveDataSurfaces({ includeEditor: false });
@@ -37448,8 +37627,8 @@ Rules:
         }
         showView("bedside");
       });
-      $("#savePatientContextButton").addEventListener("click", () => saveWorkspaceContext());
-      $("#saveContinuityButton").addEventListener("click", () => saveWorkspaceContinuity());
+      $("#savePatientContextButton").addEventListener("click", () => runWorkspaceDeid());
+      $("#saveContinuityButton").addEventListener("click", () => runWorkspaceContinuityDeid());
 	      $("#savePatientFindingsButton").addEventListener("click", () => saveWorkspaceFindings());
 	      $("#patientOpenEvidenceBoardButton")?.addEventListener("click", () => {
           const expanded = elements.sharedPromptWorkbench?.dataset.mode === "full";
@@ -37600,9 +37779,16 @@ Rules:
             }
           }, 140);
         });
-      $("#workspaceDeidPreviewButton").addEventListener("click", () => runWorkspaceDeid());
+
       $("#workspaceSendPhoneButton")?.addEventListener("click", () => {
         preparePhoneHandoff();
+      });
+      $("#workspaceHandoffButton")?.addEventListener("click", () => {
+        preparePhoneHandoff();
+      });
+      $("#workspaceFinalReviewButton")?.addEventListener("click", () => {
+        state.selectedTaskId = "final_rounds_update";
+        showView("evidence");
       });
       $("#evidenceToHandoffButton")?.addEventListener("click", () => preparePhoneHandoff());
       $("#copyPromptButton").addEventListener("click", () => {
@@ -37799,8 +37985,8 @@ Rules:
           onConfirm: () => copyText(text)
         });
       });
-      $("#downloadFinalUpdateButton").addEventListener("click", () => downloadFile("pre-rounding-final-update.txt", buildFinalUpdateText()));
-      $("#finalToEvidenceButton").addEventListener("click", () => showView("evidence"));
+      $("#downloadFinalUpdateButton")?.addEventListener("click", () => downloadFile("pre-rounding-final-update.txt", buildFinalUpdateText()));
+      $("#finalToEvidenceButton")?.addEventListener("click", () => showView("evidence"));
       $("#topPhiReviewButton").addEventListener("click", () => openPhiOverlay({
         title: "PHI review before copy",
         copy: "Use this overlay before any copy or export action.",
