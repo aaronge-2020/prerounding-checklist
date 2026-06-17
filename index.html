@@ -8012,9 +8012,11 @@
     body[data-view="workspace"][data-patient-tab="evidence"] .patient-evidence-answer-panel:not([hidden]) {
       display: grid !important;
       grid-area: auto !important;
-      grid-template-rows: auto auto minmax(122px, 1fr) minmax(78px, auto) auto;
+      grid-template-rows: auto auto auto auto auto;
       gap: 8px;
       position: static;
+      min-height: 0;
+      overflow-y: auto;
       padding: 18px 16px 14px;
       border: 0;
       border-bottom: 1px solid #d8e2e6;
@@ -8043,7 +8045,8 @@
     body[data-view="workspace"][data-patient-tab="evidence"] #patientEvidenceAnswerInput {
       width: 100%;
       min-height: 122px;
-      resize: none;
+      max-height: 180px;
+      resize: vertical;
       border: 1px solid #cfdbe0;
       border-radius: 6px;
       background: #ffffff;
@@ -8056,6 +8059,7 @@
 
     body[data-view="workspace"][data-patient-tab="evidence"] .patient-evidence-answer-panel .evidence-change-preview {
       min-height: 78px;
+      overflow-wrap: anywhere;
       border-color: #9ed4ce;
       background: #e7f7f5;
       color: #14243a;
@@ -8100,8 +8104,20 @@
       color: var(--teal);
     }
 
+    body[data-view="workspace"][data-patient-tab="evidence"] .patient-evidence-answer-panel .evidence-change-preview > div {
+      overflow-wrap: anywhere;
+    }
+
+    body[data-view="workspace"][data-patient-tab="evidence"] .patient-evidence-answer-panel .evidence-change-preview > div:last-child {
+      margin-top: 6px;
+      color: #526577;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
     body[data-view="workspace"][data-patient-tab="evidence"] .patient-evidence-answer-actions {
       justify-content: flex-end;
+      flex-shrink: 0;
       margin-top: 4px;
     }
 
