@@ -90,6 +90,48 @@ The JSON must use schema "open_evidence_rounds_pasteback_v1" and this shape:
 Each array item must be a concise de-identified string. Put only facts or recommendations already supported by the prompt or current OpenEvidence citations.
 </local_app_paste_back_contract>`;
 
+const medicationSafetyPasteBackContract = `<local_app_paste_back_contract>
+After the human-readable safety audit, include exactly one fenced JSON block labeled APP_PASTE_BACK_JSON.
+The JSON must use schema "medication_safety_pasteback_v1" and this shape:
+{"schema":"medication_safety_pasteback_v1","issues":[],"plainTextSummary":""}
+Each issue must be a concise de-identified string prefixed with VERIFY, HOLD/RESTART, DOSE, INDICATION, INTERACTION, MONITOR, or ESCALATE, stating the medication, the concern, and why it matters.
+</local_app_paste_back_contract>`;
+
+const guidelineExceptionsPasteBackContract = `<local_app_paste_back_contract>
+After the human-readable list, include exactly one fenced JSON block labeled APP_PASTE_BACK_JSON.
+The JSON must use schema "guideline_exceptions_pasteback_v1" and this shape:
+{"schema":"guideline_exceptions_pasteback_v1","exceptions":[],"plainTextSummary":""}
+Each exception must be a concise de-identified string prefixed with EXCEPTION, CONTRAINDICATION, PREREQUISITE, or SPECIAL-POPULATION.
+</local_app_paste_back_contract>`;
+
+const attendingPlanPasteBackContract = `<local_app_paste_back_contract>
+After the human-readable plan, include exactly one fenced JSON block labeled APP_PASTE_BACK_JSON.
+The JSON must use schema "open_evidence_rounds_pasteback_v1" and this shape:
+{"schema":"open_evidence_rounds_pasteback_v1","presentationType":"attending_plan","oneLiner":"","subjective":[],"objective":[],"assessmentPlan":[],"followUpTasks":[],"bedsideRecheck":[],"plainTextSummary":""}
+assessmentPlan entries are the management recommendations per problem. Each array item must be a concise de-identified string.
+</local_app_paste_back_contract>`;
+
+const teachingExplanationPasteBackContract = `<local_app_paste_back_contract>
+After the human-readable teaching report, include exactly one fenced JSON block labeled APP_PASTE_BACK_JSON.
+The JSON must use schema "open_evidence_rounds_pasteback_v1" and this shape:
+{"schema":"open_evidence_rounds_pasteback_v1","presentationType":"teaching_explanation","oneLiner":"","subjective":[],"objective":[],"assessmentPlan":[],"followUpTasks":[],"bedsideRecheck":[],"plainTextSummary":""}
+Each array item must be a concise de-identified teaching point string.
+</local_app_paste_back_contract>`;
+
+const dischargeReadinessPasteBackContract = `<local_app_paste_back_contract>
+After the human-readable list, include exactly one fenced JSON block labeled APP_PASTE_BACK_JSON.
+The JSON must use schema "discharge_readiness_pasteback_v1" and this shape:
+{"schema":"discharge_readiness_pasteback_v1","barriers":[],"supplies":[],"followUpNeeds":[],"counseling":[],"returnPrecautions":[],"plainTextSummary":""}
+Each array item must be a concise de-identified string.
+</local_app_paste_back_contract>`;
+
+const blindSpotPasteBackContract = `<local_app_paste_back_contract>
+After the human-readable list, include exactly one fenced JSON block labeled APP_PASTE_BACK_JSON.
+The JSON must use schema "blind_spot_pasteback_v1" and this shape:
+{"schema":"blind_spot_pasteback_v1","misses":[],"verifies":[],"escalations":[],"asks":[],"unvalidatedGaps":[],"plainTextSummary":""}
+Each array item must be a concise de-identified string.
+</local_app_paste_back_contract>`;
+
 function clean(value) {
   return String(value || "").trim();
 }
@@ -423,10 +465,13 @@ Include "no issue found" only for a high-risk medication where the MAR and notes
 Do not include non-medication problems unless they directly change medication safety.
 </output_format>`;
 
+  const fullOutput = `${output}
+
+${medicationSafetyPasteBackContract}`;
   if (context.sameConversationReady && !context.forceIncludeSourceForMedicationSafety) {
-    return buildSameConversationPrompt(context, task, output);
+    return buildSameConversationPrompt(context, task, fullOutput);
   }
-  return buildPatientPrompt(context, task, output);
+  return buildPatientPrompt(context, task, fullOutput);
 }
 
 function guidelinePrompt(context) {
@@ -492,7 +537,9 @@ If a citation is essential, include it inline; do not create a citation section 
 Separate self-checkable facts from true team questions. Do not ask the team for labs, vitals, or medication details the student can verify directly.
 Do not restate standard guideline recommendations unless needed to explain the exception.
 Do not write a broad guideline summary.
-</output_format>`
+</output_format>
+
+${guidelineExceptionsPasteBackContract}`
   );
 }
 
@@ -523,7 +570,9 @@ For each problem, include management recommendations, diagnostic workup, monitor
 For each recommendation, include an inline citation to the latest guideline or literature OpenEvidence can support.
 State uncertainty explicitly and avoid inventing orders or facts.
 Do not write a full SOAP note; focus on management.
-</output_format>`
+</output_format>
+
+${attendingPlanPasteBackContract}`
   );
 }
 
@@ -558,7 +607,9 @@ Spell out all non-obvious abbreviations and briefly define them on first use.
 Explain the clinical reasoning behind important symptoms, exam findings, lab trends, imaging, medications, and management choices.
 Include enough background for the learner to understand the case, but keep it patient-specific rather than a generic textbook chapter.
 Do not include a reading plan or external links unless directly needed to explain a cited management recommendation.
-</output_format>`
+</output_format>
+
+${teachingExplanationPasteBackContract}`
   );
 }
 
@@ -590,7 +641,9 @@ Include only discharge-limiting barriers, medication/supply/access issues, follo
 Do not include inpatient tasks unless they determine discharge readiness.
 Do not include citations or a reference list. Do not include source names, journal names, society names, evidence grades, or bracketed citation markers.
 Do not rewrite the inpatient plan except where it directly affects discharge readiness.
-</output_format>`
+</output_format>
+
+${dischargeReadinessPasteBackContract}`
   );
 }
 
@@ -624,7 +677,9 @@ Only use ASK when the answer requires team judgment or unavailable context. Put 
 Label every bedside checklist addition idea with the UNVALIDATED GAP prefix.
 Do not perform a guideline review or literature search. Do not include citations or a reference list.
 Do not include low-yield distractions or padding.
-</output_format>`
+</output_format>
+
+${blindSpotPasteBackContract}`
   );
 }
 
@@ -802,17 +857,17 @@ Quality test before final output:
 }
 
 export const openEvidenceTasks = [
-  { id: "initial_rounds_report", label: "Concise rounds report", category: "Rounds", requiredContext: "source", outputKind: "rounds_report", promptBuilder: initialRoundsPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Initial rounds report prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
-  { id: "full_rounds_report", label: "Full rounds report", category: "Rounds", requiredContext: "source", outputKind: "full_rounds_report", promptBuilder: fullRoundsReportPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Full rounds report prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
-  { id: "final_rounds_update", label: "Final rounds update", category: "Rounds", requiredContext: "findings", outputKind: "rounds_update", promptBuilder: finalRoundsPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Final rounds update prompt copied. Paste it into OpenEvidence.", requiresSameConversation: true },
-  { id: "checklist_improvement_review", label: "Checklist improvement review", category: "Checklist", requiredContext: "checklist_refinement", outputKind: "checklist_improvement_review", promptBuilder: checklistImprovementPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Checklist improvement prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
-  { id: "decision_tree_builder", label: "Decision tree builder", category: "Pathway", requiredContext: "decision_tree", outputKind: "decision_tree_json", promptBuilder: decisionTreeBuilderPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Decision tree builder prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
-  { id: "medication_safety", label: "Medication safety", category: "Safety", requiredContext: "medication_context", outputKind: "medication_safety", promptBuilder: medicationSafetyPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Medication safety prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
-  { id: "find_exception", label: "Find exception", category: "Guidelines", requiredContext: "source", outputKind: "guideline_exceptions", promptBuilder: exceptionPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Exception-finding prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
-  { id: "attending_plan", label: "Attending-level plan", category: "Reasoning", requiredContext: "source", outputKind: "attending_plan", promptBuilder: attendingPlanPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Attending-level plan prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
-  { id: "teaching_explanation", label: "Teaching explanation", category: "Teaching", requiredContext: "source", outputKind: "teaching", promptBuilder: teachingPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Teaching explanation prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
-  { id: "discharge_checklist", label: "Discharge readiness review", category: "Discharge", requiredContext: "source", outputKind: "discharge_checklist", promptBuilder: dischargePrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Discharge readiness prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
-  { id: "what_am_i_missing", label: "What am I missing?", category: "Safety", requiredContext: "source", outputKind: "missing_items", promptBuilder: missingPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Blind-spot prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false }
+  { id: "initial_rounds_report", label: "Concise rounds report", category: "Rounds", requiredContext: "source", outputKind: "rounds_report", pasteBackSchema: "open_evidence_rounds_pasteback_v1", promptBuilder: initialRoundsPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Initial rounds report prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
+  { id: "full_rounds_report", label: "Full rounds report", category: "Rounds", requiredContext: "source", outputKind: "full_rounds_report", pasteBackSchema: "open_evidence_rounds_pasteback_v1", promptBuilder: fullRoundsReportPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Full rounds report prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
+  { id: "final_rounds_update", label: "Final rounds update", category: "Rounds", requiredContext: "findings", outputKind: "rounds_update", pasteBackSchema: "open_evidence_rounds_pasteback_v1", promptBuilder: finalRoundsPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Final rounds update prompt copied. Paste it into OpenEvidence.", requiresSameConversation: true },
+  { id: "checklist_improvement_review", label: "Checklist improvement review", category: "Checklist", requiredContext: "checklist_refinement", outputKind: "checklist_improvement_review", pasteBackSchema: "workup_section_patch_v1", promptBuilder: checklistImprovementPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Checklist improvement prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
+  { id: "decision_tree_builder", label: "Decision tree builder", category: "Pathway", requiredContext: "decision_tree", outputKind: "decision_tree_json", pasteBackSchema: "clinical_pathway_tree_v2", promptBuilder: decisionTreeBuilderPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Decision tree builder prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
+  { id: "medication_safety", label: "Medication safety", category: "Safety", requiredContext: "medication_context", outputKind: "medication_safety", pasteBackSchema: "medication_safety_pasteback_v1", promptBuilder: medicationSafetyPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Medication safety prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
+  { id: "find_exception", label: "Find exception", category: "Guidelines", requiredContext: "source", outputKind: "guideline_exceptions", pasteBackSchema: "guideline_exceptions_pasteback_v1", promptBuilder: exceptionPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Exception-finding prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
+  { id: "attending_plan", label: "Attending-level plan", category: "Reasoning", requiredContext: "source", outputKind: "attending_plan", pasteBackSchema: "open_evidence_rounds_pasteback_v1", promptBuilder: attendingPlanPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Attending-level plan prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
+  { id: "teaching_explanation", label: "Teaching explanation", category: "Teaching", requiredContext: "source", outputKind: "teaching", pasteBackSchema: "open_evidence_rounds_pasteback_v1", promptBuilder: teachingPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Teaching explanation prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
+  { id: "discharge_checklist", label: "Discharge readiness review", category: "Discharge", requiredContext: "source", outputKind: "discharge_checklist", pasteBackSchema: "discharge_readiness_pasteback_v1", promptBuilder: dischargePrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Discharge readiness prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
+  { id: "what_am_i_missing", label: "What am I missing?", category: "Safety", requiredContext: "source", outputKind: "missing_items", pasteBackSchema: "blind_spot_pasteback_v1", promptBuilder: missingPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Blind-spot prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false }
 ];
 
 export function getOpenEvidenceTask(taskId) {

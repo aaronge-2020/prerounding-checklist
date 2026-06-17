@@ -1,5 +1,19 @@
 export const openEvidenceResultSchemaVersion = "open-evidence-task-result-v1";
 export const openEvidenceRoundsPasteBackSchema = "open_evidence_rounds_pasteback_v1";
+export const medicationSafetyPasteBackSchema = "medication_safety_pasteback_v1";
+export const guidelineExceptionsPasteBackSchema = "guideline_exceptions_pasteback_v1";
+export const dischargeReadinessPasteBackSchema = "discharge_readiness_pasteback_v1";
+export const blindSpotPasteBackSchema = "blind_spot_pasteback_v1";
+export const workupSectionPatchSchema = "workup_section_patch_v1";
+export const clinicalPathwayTreeV2Schema = "clinical_pathway_tree_v2";
+
+const ALL_PASTE_BACK_SCHEMAS = new Set([
+  openEvidenceRoundsPasteBackSchema,
+  medicationSafetyPasteBackSchema,
+  guidelineExceptionsPasteBackSchema,
+  dischargeReadinessPasteBackSchema,
+  blindSpotPasteBackSchema
+]);
 
 const checklistStartPattern = /\bBEDSIDE QUESTION CHECKLIST\b/i;
 const checklistEndPattern = /\bTARGETED PHYSICAL EXAM CHECKLIST\b/i;
@@ -193,6 +207,98 @@ export function normalizeRoundsPasteBack(value = {}) {
   };
 }
 
+export function normalizeMedicationSafetyPasteBack(value = {}) {
+  const list = (items) => Array.isArray(items)
+    ? items.map((item) => cleanLine(item)).filter(Boolean).slice(0, 24)
+    : [];
+  return {
+    schema: medicationSafetyPasteBackSchema,
+    issues: list(value.issues),
+    plainTextSummary: normalizeBody(value.plainTextSummary)
+  };
+}
+
+export function normalizeGuidelineExceptionsPasteBack(value = {}) {
+  const list = (items) => Array.isArray(items)
+    ? items.map((item) => cleanLine(item)).filter(Boolean).slice(0, 12)
+    : [];
+  return {
+    schema: guidelineExceptionsPasteBackSchema,
+    exceptions: list(value.exceptions),
+    plainTextSummary: normalizeBody(value.plainTextSummary)
+  };
+}
+
+export function normalizeDischargeReadinessPasteBack(value = {}) {
+  const list = (items) => Array.isArray(items)
+    ? items.map((item) => cleanLine(item)).filter(Boolean).slice(0, 12)
+    : [];
+  return {
+    schema: dischargeReadinessPasteBackSchema,
+    barriers: list(value.barriers),
+    supplies: list(value.supplies),
+    followUpNeeds: list(value.followUpNeeds),
+    counseling: list(value.counseling),
+    returnPrecautions: list(value.returnPrecautions),
+    plainTextSummary: normalizeBody(value.plainTextSummary)
+  };
+}
+
+export function normalizeBlindSpotPasteBack(value = {}) {
+  const list = (items) => Array.isArray(items)
+    ? items.map((item) => cleanLine(item)).filter(Boolean).slice(0, 12)
+    : [];
+  return {
+    schema: blindSpotPasteBackSchema,
+    misses: list(value.misses),
+    verifies: list(value.verifies),
+    escalations: list(value.escalations),
+    asks: list(value.asks),
+    unvalidatedGaps: list(value.unvalidatedGaps),
+    plainTextSummary: normalizeBody(value.plainTextSummary)
+  };
+}
+
+function normalizeBySchema(parsed) {
+  const schema = normalizeSchemaToken(parsed?.schema);
+  switch (schema) {
+    case openEvidenceRoundsPasteBackSchema:
+      return normalizeRoundsPasteBack(parsed);
+    case medicationSafetyPasteBackSchema:
+      return normalizeMedicationSafetyPasteBack(parsed);
+    case guidelineExceptionsPasteBackSchema:
+      return normalizeGuidelineExceptionsPasteBack(parsed);
+    case dischargeReadinessPasteBackSchema:
+      return normalizeDischargeReadinessPasteBack(parsed);
+    case blindSpotPasteBackSchema:
+      return normalizeBlindSpotPasteBack(parsed);
+    default:
+      return null;
+  }
+}
+
+export function extractPasteBack(text = "") {
+  const normalized = normalizeBody(text);
+  if (!normalized) return null;
+  const fencedPattern = /```(?:json)?\s*([\s\S]*?)```/gi;
+  for (const match of normalized.matchAll(fencedPattern)) {
+    const parsed = parseJsonCandidate(match[1]);
+    const normalizedSchema = normalizeSchemaToken(parsed?.schema);
+    if (ALL_PASTE_BACK_SCHEMAS.has(normalizedSchema)) {
+      return normalizeBySchema(parsed);
+    }
+  }
+  const inlineCandidates = normalized.match(/\{[\s\S]*?"schema"\s*:\s*"[^"]*"[\s\S]*?\}/g) || [];
+  for (const candidate of inlineCandidates) {
+    const parsed = parseJsonCandidate(candidate);
+    const normalizedSchema = normalizeSchemaToken(parsed?.schema);
+    if (ALL_PASTE_BACK_SCHEMAS.has(normalizedSchema)) {
+      return normalizeBySchema(parsed);
+    }
+  }
+  return null;
+}
+
 function concernPriority(sectionTitle) {
   const title = titleKey(sectionTitle);
   if (/HIGH PRIORITY|URGENT|VERIFY BEFORE ROUNDS/.test(title)) {
@@ -235,6 +341,12 @@ function acceptedSummaryFromSections(sections = [], outputKind = "general") {
 }
 
 export function normalizeOpenEvidenceTaskResult(result = {}) {
+  let pasteBack = null;
+  if (result.roundsPasteBack) {
+    pasteBack = normalizeRoundsPasteBack(result.roundsPasteBack);
+  } else if (result.pasteBack) {
+    pasteBack = result.pasteBack;
+  }
   return {
     schemaVersion: openEvidenceResultSchemaVersion,
     taskId: cleanLine(result.taskId),
@@ -245,7 +357,7 @@ export function normalizeOpenEvidenceTaskResult(result = {}) {
     citations: Array.isArray(result.citations) ? result.citations : [],
     concerns: Array.isArray(result.concerns) ? result.concerns : [],
     checklistText: String(result.checklistText || "").trim(),
-    roundsPasteBack: result.roundsPasteBack ? normalizeRoundsPasteBack(result.roundsPasteBack) : null,
+    roundsPasteBack: pasteBack,
     acceptedSummary: String(result.acceptedSummary || "").trim(),
     reviewStatus: ["accepted", "needs_review", "rejected"].includes(result.reviewStatus) ? result.reviewStatus : "needs_review"
   };
@@ -258,9 +370,13 @@ export function parseOpenEvidenceResult({ taskId = "", outputKind = "general", s
     ? extractChecklistText(normalizedText)
     : "";
   const citations = extractCitations(normalizedText);
-  const roundsPasteBack = /^rounds|full_rounds_report|rounds_update|attending_plan$/i.test(outputKind)
+  const roundsPasteBack = /^rounds|full_rounds_report|rounds_update|attending_plan|teaching$/i.test(outputKind)
     ? extractRoundsPasteBack(normalizedText)
     : null;
+  const pasteBack = /^(?:medication_safety|guideline_exceptions|discharge_checklist|missing_items)$/i.test(outputKind)
+    ? extractPasteBack(normalizedText)
+    : null;
+  const mergedPasteBack = roundsPasteBack || pasteBack;
   const concerns = outputKind === "medication_safety"
     ? extractConcerns(sections)
     : outputKind === "missing_items"
@@ -275,7 +391,8 @@ export function parseOpenEvidenceResult({ taskId = "", outputKind = "general", s
     citations,
     concerns,
     checklistText,
-    roundsPasteBack,
+    roundsPasteBack: mergedPasteBack,
+    pasteBack: mergedPasteBack,
     acceptedSummary: acceptedSummaryFromSections(sections, outputKind),
     reviewStatus: "needs_review"
   });

@@ -4725,6 +4725,12 @@
       white-space: nowrap;
     }
 
+    .task-card .ready[data-state="pasted"] {
+      border-color: #b7d9c8;
+      background: #e6f5ec;
+      color: #0d7a3e;
+    }
+
     .task-card .task-card-description {
       grid-column: 1 / -1;
       margin-top: 2px;
@@ -6464,15 +6470,43 @@
       position: static;
       z-index: 8;
       align-items: center;
-      justify-content: space-between;
-      gap: 18px;
+      gap: 8px;
       min-width: 0;
-      padding: 8px 18px;
+      padding: 8px 14px;
       border-top: 1px solid #e5c77e;
       background: #fff8e9;
       color: #33454b;
-      font-size: 14px;
-      line-height: 1.3;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .safety-bar-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .safety-bar-dismiss {
+      flex-shrink: 0;
+      width: 26px;
+      height: 26px;
+      display: inline-grid;
+      place-items: center;
+      border: 0;
+      border-radius: 5px;
+      background: transparent;
+      color: #5d6f78;
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .safety-bar-dismiss:hover {
+      background: rgba(168, 100, 5, 0.12);
+      color: var(--amber);
+    }
+
+    .safety-bar.is-dismissed {
+      display: none !important;
     }
 
     .safety-bar strong {
@@ -7553,10 +7587,10 @@
       font-weight: 820;
     }
 
-    body[data-view="workspace"][data-patient-tab="evidence"] .patient-evidence-grid .task-card .ready[data-state="waiting"] {
-      border-color: #f3d69a;
-      background: #fff7e8;
-      color: #a86405;
+    body[data-view="workspace"][data-patient-tab="evidence"] .patient-evidence-grid .task-card .ready[data-state="pasted"] {
+      border-color: #b7d9c8;
+      background: #e6f5ec;
+      color: #0d7a3e;
     }
 
     body[data-view="workspace"][data-patient-tab="evidence"] .patient-evidence-preview {
@@ -7824,7 +7858,9 @@
       grid-column: 1 / -1;
       font-size: 13px;
       font-weight: 780;
-      line-height: 1.25;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
 
     body[data-view="workspace"][data-patient-tab="evidence"] .phone-import-summary-fields {
@@ -8228,14 +8264,17 @@
     body[data-view="workspace"][data-patient-tab="evidence"] .phone-import-summary-row {
       grid-template-columns: minmax(0, 1fr) auto 20px;
       align-items: center;
-      min-height: 42px;
+      min-height: 48px;
+      gap: 10px;
       padding: 10px 10px;
     }
 
     body[data-view="workspace"][data-patient-tab="evidence"] .phone-import-summary-row strong {
       grid-column: 1;
       font-size: 13px;
-      line-height: 1.25;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
 
     body[data-view="workspace"][data-patient-tab="evidence"] .phone-import-answer-badge {
@@ -12026,7 +12065,7 @@
       }
 
       .safety-bar {
-        display: block;
+        display: flex;
       }
 
       .patient-scope-bar {
@@ -13734,7 +13773,7 @@
       }
 
       body[data-view="bedside"] .checklist-row.is-answered .checklist-row-status-marker::after {
-        content: "âœ“";
+        content: "✓";
         color: #ffffff;
         font-size: 15px;
         font-weight: 900;
@@ -13976,7 +14015,7 @@
       }
 
       body[data-view="bedside"] .bedside-completion-check::after {
-        content: "âœ“";
+        content: "✓";
         color: var(--teal-dark);
         font-size: 38px;
         font-weight: 760;
@@ -14895,6 +14934,12 @@
                     </div>
                   </div>
                   <div class="rounds-report-card" id="patientOverviewRoundsReportCard"></div>
+                </div>
+                <div class="rounds-report-section" id="patientOverviewPasteBackSection" hidden>
+                  <div class="panel-title-row" style="margin-top: 20px; border-top: 1px solid var(--line); padding-top: 16px;">
+                    <h3>Saved Task Results</h3>
+                  </div>
+                  <div class="rounds-report-card" id="patientOverviewPasteBackCard"></div>
                 </div>
               </section>
 
@@ -15881,11 +15926,11 @@
             <strong>Bedside checklist</strong>
           </div>
           <button class="bedside-step is-complete" type="button" data-bedside-step-view="deid">
-            <span class="bedside-step-index">âœ“</span>
+            <span class="bedside-step-index">✓</span>
             <span><strong>1 Source &amp; Context</strong><span>De-ID complete</span><span class="bedside-step-mobile-label">Context</span></span>
           </button>
           <button class="bedside-step is-complete" type="button" data-bedside-step-view="workup">
-            <span class="bedside-step-index">âœ“</span>
+            <span class="bedside-step-index">✓</span>
             <span><strong>2 Build Checklist</strong><span>Evidence-linked</span><span class="bedside-step-mobile-label">Checklist</span></span>
           </button>
           <button class="bedside-step" type="button" aria-current="step" data-bedside-step-view="bedside">
@@ -16206,9 +16251,9 @@
       </section>
     </section>
 
-    <footer class="safety-bar">
-      <div><strong>Safety note:</strong> Do not paste patient identifiers into knowledge tools. This app is for educational and operational support only. Verify all recommendations at bedside.</div>
-      <div>All data stays on this device by default. Not a substitute for clinical judgment.</div>
+    <footer class="safety-bar" id="safetyBar">
+      <div class="safety-bar-text"><strong>Safety note:</strong> Do not paste patient identifiers into knowledge tools. This app is for educational and operational support only. Verify all recommendations at bedside. All data stays on this device by default. Not a substitute for clinical judgment.</div>
+      <button class="safety-bar-dismiss" id="dismissSafetyBarButton" type="button" title="Dismiss safety note" aria-label="Dismiss safety note">&times;</button>
     </footer>
   </main>
 
@@ -16293,7 +16338,7 @@
     import { buildLocalChecklistFromWorkup, checklistItemOptions, groupChecklistSectionsByOrganSystem, parseChecklist } from "./checklist.js";
     import { clinicalIntentRegistry, getClinicalIntentById } from "./clinical-intents.js";
     import { openEvidenceTasks, buildOpenEvidencePrompt, compactOpenEvidenceContext } from "./open-evidence-workflows.js";
-    import { extractRoundsPasteBack } from "./open-evidence-results.js";
+    import { extractRoundsPasteBack, extractPasteBack } from "./open-evidence-results.js";
     import { appendOrUpdateContinuityDay, buildCarryForwardBlock, buildSmartUpdateReview, classifySmartUpdateSections, createContinuityCase, formatDailyInputs, latestContinuityDay, normalizeContinuityCase, normalizeDailyInputs, smartSectionsToDailyInputs } from "./continuity.js";
     import { applySectionPayloadToModule, applyWorkupChangeSet, applyWorkupSectionPatch, collectModuleSourceIds, collectSourceIdsFromValue, flattenPathwayNodes, makeWorkupChangeSet, sectionPayloadFromModule, workupSectionDefinitions, workupSectionPatchSchema } from "./workup-authoring.js";
     import { init as initQrZstd, createCCtx as createQrZstdCCtx, createDCtx as createQrZstdDCtx, freeCCtx as freeQrZstdCCtx, freeDCtx as freeQrZstdDCtx, compressUsingDict as zstdCompressUsingDict, decompressUsingDict as zstdDecompressUsingDict } from "./vendor/zstd-wasm/index.web.js";
@@ -17123,6 +17168,8 @@
       patientOverviewRoundsReportSection: $("#patientOverviewRoundsReportSection"),
       patientOverviewRoundsReportCard: $("#patientOverviewRoundsReportCard"),
       patientOverviewCopyRoundsReportButton: $("#patientOverviewCopyRoundsReportButton"),
+      patientOverviewPasteBackSection: $("#patientOverviewPasteBackSection"),
+      patientOverviewPasteBackCard: $("#patientOverviewPasteBackCard"),
       patientWorkupPatientLabel: $("#patientWorkupPatientLabel"),
       patientWorkupPatientMeta: $("#patientWorkupPatientMeta"),
       patientObjectiveStatusText: $("#patientObjectiveStatusText"),
@@ -23654,7 +23701,7 @@ Rules:
       elements.patientSelectedWorkupBadge.className = `workup-match-badge ${selected ? "is-recommended" : "is-low"}`;
       elements.patientSelectedWorkupItemCount.textContent = selected ? String(moduleItemCount(selected)) : "0";
       elements.patientSelectedWorkupPopulation.textContent = selected ? titleFromId(modulePopulationLabel(selected)) : "Not set";
-      elements.patientSelectedWorkupVersion.textContent = selected ? moduleVersionLabel(selected) : "â€”";
+      elements.patientSelectedWorkupVersion.textContent = selected ? moduleVersionLabel(selected) : "—";
     }
 
     function populatePatientWorkupSelect(query = state.concern) {
@@ -28842,6 +28889,7 @@ Rules:
       syncSelectedPatientInputs();
       renderObjectiveDataSurfaces();
       renderOverviewRoundsReport();
+      renderOverviewPasteBackResults();
       if (patientHasFollowUpContext(patient)) renderTodayCockpit();
       if (!hasPatient) setChecklistBuildDisabled(true);
       renderPatientTabs();
@@ -31734,7 +31782,7 @@ Rules:
         copy.append(title, count);
         const status = document.createElement("span");
         status.className = "bedside-completion-status";
-        status.textContent = sectionAnswered === section.items.length ? "âœ“ Complete" : `${section.items.length - sectionAnswered} open`;
+        status.textContent = sectionAnswered === section.items.length ? "✓ Complete" : `${section.items.length - sectionAnswered} open`;
         const chevron = document.createElement("span");
         chevron.className = "icon-box";
         chevron.innerHTML = iconSvg("chevron-right");
@@ -31757,7 +31805,7 @@ Rules:
       document.body.dataset.bedsideComplete = String(showCompletion);
       if (elements.bedsideCompletionPanel) elements.bedsideCompletionPanel.hidden = !showCompletion;
       if (elements.bedsideMobileProgress) {
-        elements.bedsideMobileProgress.textContent = `${answered}/${totalItems} answered${isComplete ? " âœ“" : ""}`;
+        elements.bedsideMobileProgress.textContent = `${answered}/${totalItems} answered${isComplete ? " ✓" : ""}`;
       }
       if (elements.bedsideMobileSubtitle) {
         elements.bedsideMobileSubtitle.textContent = isComplete ? "" : "Bedside physical exam";
@@ -31769,11 +31817,11 @@ Rules:
       const updateIndex = updateStep?.querySelector(".bedside-step-index");
       if (bedsideStep && bedsideIndex) {
         bedsideStep.classList.toggle("is-complete", isComplete);
-        bedsideIndex.textContent = isComplete ? "âœ“" : "3";
+        bedsideIndex.textContent = isComplete ? "✓" : "3";
       }
       if (updateStep && updateIndex) {
         updateStep.classList.toggle("is-complete", isComplete);
-        updateIndex.textContent = isComplete ? "âœ“" : "4";
+        updateIndex.textContent = isComplete ? "✓" : "4";
       }
       if (showCompletion) {
         renderBedsideCompletionSummary(totalItems, answered);
@@ -32167,6 +32215,10 @@ Rules:
     function isRoundsPasteBackTask(task = selectedTask()) {
       return ROUNDS_PASTE_BACK_TASK_IDS.has(task?.id)
         || /^(?:rounds_report|full_rounds_report|rounds_update)$/i.test(String(task?.outputKind || ""));
+    }
+
+    function taskHasPasteBack(task = selectedTask()) {
+      return Boolean(task?.pasteBackSchema);
     }
 
     function checklistPatientSummaryText() {
@@ -32691,11 +32743,16 @@ Rules:
         const description = document.createElement("span");
         description.className = "task-card-description";
         description.textContent = taskDescription(task);
-        const ready = document.createElement("span");
-        ready.className = "ready";
-        ready.textContent = task.id === "final_rounds_update" ? "Waiting" : "Ready";
-        ready.dataset.state = task.id === "final_rounds_update" ? "waiting" : "ready";
-        button.append(icon, strong, span, description, ready);
+        const hasPastedResult = Boolean(state.openEvidenceSummaries?.[task.id]);
+        if (hasPastedResult) {
+          const pasted = document.createElement("span");
+          pasted.className = "ready";
+          pasted.textContent = "Pasted";
+          pasted.dataset.state = "pasted";
+          button.append(icon, strong, span, description, pasted);
+        } else {
+          button.append(icon, strong, span, description);
+        }
         button.addEventListener("click", () => {
           state.selectedTaskId = task.id;
           renderOpenEvidence();
@@ -32901,6 +32958,55 @@ Rules:
       }
     }
 
+    function renderOverviewPasteBackResults() {
+      const section = elements.patientOverviewPasteBackSection;
+      const card = elements.patientOverviewPasteBackCard;
+      if (!section || !card) return;
+      const summaries = state.openEvidenceSummaries || {};
+      const taskResults = [];
+      for (const task of openEvidenceTasks) {
+        const rawText = summaries[task.id];
+        if (!rawText) continue;
+        const pasteBack = extractPasteBack(rawText) || extractRoundsPasteBack(rawText);
+        if (!pasteBack) continue;
+        const summaryText = pasteBack.plainTextSummary || "";
+        const keyCounts = [];
+        for (const [key, value] of Object.entries(pasteBack)) {
+          if (key === "schema" || key === "presentationType" || key === "plainTextSummary") continue;
+          if (Array.isArray(value) && value.length) {
+            keyCounts.push(`${value.length} ${key.replace(/([A-Z])/g, " $1").toLowerCase().trim()}`);
+          } else if (typeof value === "string" && value) {
+            keyCounts.push(key.replace(/([A-Z])/g, " $1").toLowerCase().trim());
+          }
+        }
+        taskResults.push({ task, summaryText, keyCounts, pasteBack });
+      }
+      if (taskResults.length) {
+        section.hidden = false;
+        card.innerHTML = "";
+        for (const { task, summaryText, keyCounts, pasteBack } of taskResults) {
+          const item = document.createElement("div");
+          item.className = "rounds-report-block";
+          const h5 = document.createElement("h5");
+          h5.textContent = task.label;
+          const detail = document.createElement("p");
+          detail.style.fontSize = "12px";
+          detail.style.color = "var(--muted)";
+          detail.style.margin = "2px 0 4px";
+          detail.textContent = keyCounts.length ? keyCounts.join(", ") : "Result saved";
+          const summary = document.createElement("p");
+          summary.style.fontSize = "12px";
+          summary.style.margin = "0";
+          summary.textContent = summaryText.length > 240 ? summaryText.slice(0, 237) + "..." : (summaryText || "See task result tab for details.");
+          item.append(h5, detail, summary);
+          card.appendChild(item);
+        }
+      } else {
+        section.hidden = true;
+        card.innerHTML = "";
+      }
+    }
+
     function roundsPasteBackSummaryText(pasteBack = {}) {
       const normalized = pasteBack || {};
       return String(normalized.plainTextSummary || "").trim() || [
@@ -32955,6 +33061,40 @@ Rules:
       return { status: "ready", pasteBack };
     }
 
+    function renderGenericPasteBackPreview(container, pasteBack, { saved = false } = {}) {
+      if (!container || !pasteBack) return { status: "empty", pasteBack: null };
+      container.innerHTML = "";
+      container.dataset.status = "ready";
+      const title = document.createElement("strong");
+      const readyTitleText = saved ? "Paste-back result saved" : "Paste-back result ready";
+      title.textContent = readyTitleText;
+      title.className = "evidence-change-summary-title";
+      const detail = document.createElement("div");
+      const summary = pasteBack.plainTextSummary || "";
+      const keyCounts = [];
+      for (const [key, value] of Object.entries(pasteBack)) {
+        if (key === "schema" || key === "presentationType" || key === "plainTextSummary") continue;
+        if (Array.isArray(value) && value.length) {
+          keyCounts.push(`${value.length} ${key.replace(/([A-Z])/g, " $1").toLowerCase().trim()}`);
+        } else if (typeof value === "string" && value) {
+          keyCounts.push(key.replace(/([A-Z])/g, " $1").toLowerCase().trim());
+        }
+      }
+      detail.textContent = keyCounts.length ? keyCounts.join(", ") : (summary || "Result parsed");
+      const icon = document.createElement("span");
+      icon.className = "icon-box";
+      icon.setAttribute("aria-hidden", "true");
+      icon.innerHTML = iconSvg("check-circle");
+      title.prepend(icon);
+      const meta = document.createElement("div");
+      meta.className = "evidence-paste-back-meta";
+      if (summary) {
+        meta.textContent = summary.length > 200 ? summary.slice(0, 197) + "..." : summary;
+      }
+      container.append(title, detail, meta);
+      return { status: "ready", pasteBack };
+    }
+
     function saveRoundsPasteBackForActivePatient(pasteBack, { taskId = state.selectedTaskId, rawAnswerText = "", announce = true } = {}) {
       const patient = activePatient();
       if (!patient.id) {
@@ -32994,10 +33134,27 @@ Rules:
       return true;
     }
 
-	    function syncOpenEvidenceApplyButtons({ isChecklistReview = false, isDecisionTree = false, isRoundsPasteBack = false, answerText = "", changes = null } = {}) {
-	      const cleanAnswer = String(answerText || "").trim();
-	      const changeSummary = changes || { additions: [], removals: [] };
-	      const totalChanges = changeSummary.additions.length + changeSummary.removals.length;
+    function saveGenericPasteBackForActivePatient(pasteBack, { taskId = state.selectedTaskId, rawAnswerText = "", announce = true } = {}) {
+      if (!pasteBack) {
+        setStatus("Paste APP_PASTE_BACK_JSON before saving.");
+        return false;
+      }
+      if (rawAnswerText && taskId) {
+        state.openEvidenceSummaries = {
+          ...(state.openEvidenceSummaries || {}),
+          [taskId]: rawAnswerText
+        };
+      }
+      renderOpenEvidence();
+      saveState();
+      if (announce) setStatus("Result saved locally.");
+      return true;
+    }
+
+    function syncOpenEvidenceApplyButtons({ isChecklistReview = false, isDecisionTree = false, isRoundsPasteBack = false, isGenericPasteBack = false, genericPasteBackReady = false, answerText = "", changes = null } = {}) {
+      const cleanAnswer = String(answerText || "").trim();
+      const changeSummary = changes || { additions: [], removals: [] };
+      const totalChanges = changeSummary.additions.length + changeSummary.removals.length;
         const patchSummary = isChecklistReview ? patientChecklistPatchValidation(cleanAnswer) : { status: "empty" };
         const patchReady = patchSummary.status === "ready";
         const structuredSummary = isChecklistReview ? structuredRefinementSummary(cleanAnswer) : { status: "empty" };
@@ -33005,70 +33162,109 @@ Rules:
         const treeSummary = isDecisionTree ? decisionTreeImportSummary(cleanAnswer) : { status: "empty" };
         const treeReady = treeSummary.status === "ready";
         const roundsReady = isRoundsPasteBack ? Boolean(extractRoundsPasteBack(cleanAnswer)) : false;
-	      const label = !cleanAnswer
-	        ? "Paste answer first"
+      const label = !cleanAnswer
+        ? "Paste answer first"
           : roundsReady
             ? "Save rounds report"
+          : isGenericPasteBack && genericPasteBackReady
+            ? "Save result"
           : patchReady
             ? "Apply patch"
           : structuredReady
             ? "Apply JSON + rebuild"
           : treeReady
             ? "Apply tree"
-	        : isChecklistReview && totalChanges
-	          ? `Apply ${totalChanges} legacy change${totalChanges === 1 ? "" : "s"}`
-	          : isChecklistReview || isDecisionTree
-	            ? "Unsupported format"
-	            : "Structured JSON only";
+            : isChecklistReview && totalChanges
+              ? `Apply ${totalChanges} legacy change${totalChanges === 1 ? "" : "s"}`
+              : isChecklistReview || isDecisionTree
+                ? "Unsupported format"
+                : isGenericPasteBack
+                  ? "APP_PASTE_BACK_JSON not found"
+                  : "Structured JSON only";
         for (const button of [elements.patientApplyEvidenceRefinementButton].filter(Boolean)) {
-          button.disabled = isRoundsPasteBack ? !roundsReady : isDecisionTree ? !treeReady : isChecklistReview ? !(patchReady || structuredReady) : !structuredReady;
+          button.disabled = isRoundsPasteBack ? !roundsReady : isGenericPasteBack ? !genericPasteBackReady : isDecisionTree ? !treeReady : isChecklistReview ? !(patchReady || structuredReady) : !structuredReady;
         }
         for (const button of [elements.patientSaveDefaultEvidenceRefinementButton].filter(Boolean)) {
-          button.disabled = isRoundsPasteBack ? true : isDecisionTree ? !treeReady : !structuredReady || patchReady;
+          button.disabled = isRoundsPasteBack ? true : isGenericPasteBack ? true : isDecisionTree ? !treeReady : !structuredReady || patchReady;
         }
-	    }
+    }
 
-	    function updateOpenEvidenceChangePreview(text = currentOpenEvidenceAnswerText()) {
-	      const { task } = getOpenEvidencePromptText();
-	      const isChecklistReview = task.id === CHECKLIST_IMPROVEMENT_TASK_ID;
-	      const isDecisionTree = task.id === DECISION_TREE_TASK_ID;
-	      const isRoundsPasteBack = isRoundsPasteBackTask(task);
-	      const answerText = String(text || "").trim();
+    function updateOpenEvidenceChangePreview(text = currentOpenEvidenceAnswerText()) {
+      const { task } = getOpenEvidencePromptText();
+      const isChecklistReview = task.id === CHECKLIST_IMPROVEMENT_TASK_ID;
+      const isDecisionTree = task.id === DECISION_TREE_TASK_ID;
+      const isRoundsPasteBack = isRoundsPasteBackTask(task);
+      const isGenericPasteBack = !isChecklistReview && !isDecisionTree && !isRoundsPasteBack && taskHasPasteBack(task);
+      const answerText = String(text || "").trim();
       if (elements.patientEvidenceChangeHint) {
         elements.patientEvidenceChangeHint.textContent = isChecklistReview
-	          ? "Paste structured workup_section_patch_v1 JSON to apply patient-only row edits. Older workup_refinement_v1 replacements still parse as a fallback. Canonical default edits belong in Workup Studio."
+              ? "Paste structured workup_section_patch_v1 JSON to apply patient-only row edits. Older workup_refinement_v1 replacements still parse as a fallback. Canonical default edits belong in Workup Studio."
             : isDecisionTree
               ? "Paste raw decision-tree JSON, then apply it or save it as the workup pathway."
               : isRoundsPasteBack
                 ? "Paste the OpenEvidence result with APP_PASTE_BACK_JSON to save the concise rounds report to today's patient update."
-	              : "Edit the prompt template above; copied prompts resolve patient variables at copy time.";
+                : isGenericPasteBack
+                  ? `Paste the OpenEvidence result with APP_PASTE_BACK_JSON to save the ${task.label.toLowerCase()} result.`
+                  : "Edit the prompt template above; copied prompts resolve patient variables at copy time.";
       }
         const previewContainers = [elements.patientEvidenceChangePreview].filter(Boolean);
         for (const container of previewContainers) container.innerHTML = "";
-	      if (!answerText) {
+      if (!answerText) {
           if (isRoundsPasteBack) {
             const savedPasteBack = currentContinuityDay(patientContinuityCase(activePatient(), { create: false }))?.roundsPasteBack || null;
             for (const container of previewContainers) renderRoundsPasteBackPreview(container, savedPasteBack, { saved: Boolean(savedPasteBack) });
             syncOpenEvidenceApplyButtons({ isChecklistReview, isDecisionTree, isRoundsPasteBack, answerText });
             return;
           }
+          if (isGenericPasteBack) {
+            const savedAnswer = String(state.openEvidenceSummaries?.[task.id] || "");
+            for (const container of previewContainers) {
+              if (savedAnswer) {
+                const pasteBack = extractPasteBack(savedAnswer);
+                if (pasteBack) {
+                  renderGenericPasteBackPreview(container, pasteBack, { saved: true });
+                } else {
+                  container.dataset.status = "saved";
+                  container.textContent = "Result saved (no structured paste-back JSON detected).";
+                }
+              } else {
+                container.dataset.status = "empty";
+                container.textContent = `No ${task.label.toLowerCase()} result saved yet.`;
+              }
+            }
+            syncOpenEvidenceApplyButtons({ isChecklistReview, isDecisionTree, isRoundsPasteBack, answerText, isGenericPasteBack });
+            return;
+          }
           for (const container of previewContainers) {
-	          container.dataset.status = "empty";
-	          container.textContent = isChecklistReview
-	            ? "No reviewed answer pasted yet."
+              container.dataset.status = "empty";
+              container.textContent = isChecklistReview
+                ? "No reviewed answer pasted yet."
               : isDecisionTree
                 ? "No decision-tree JSON pasted yet."
-	            : "No reviewed answer saved for this task yet.";
+                : "No reviewed answer saved for this task yet.";
           }
-	        syncOpenEvidenceApplyButtons({ isChecklistReview, isDecisionTree, isRoundsPasteBack, answerText });
-	        return;
-	      }
-	      if (isRoundsPasteBack) {
+          syncOpenEvidenceApplyButtons({ isChecklistReview, isDecisionTree, isRoundsPasteBack, answerText, isGenericPasteBack });
+          return;
+      }
+      if (isRoundsPasteBack) {
           for (const container of previewContainers) renderRoundsPasteBackPreview(container, answerText);
-	        syncOpenEvidenceApplyButtons({ isChecklistReview, isDecisionTree, isRoundsPasteBack, answerText });
-	        return;
-	      }
-	      if (isDecisionTree) {
+          syncOpenEvidenceApplyButtons({ isChecklistReview, isDecisionTree, isRoundsPasteBack, answerText });
+          return;
+      }
+      if (isGenericPasteBack) {
+          const pasteBack = extractPasteBack(answerText);
+          for (const container of previewContainers) {
+            if (pasteBack) {
+              renderGenericPasteBackPreview(container, pasteBack, { saved: true });
+            } else {
+              container.dataset.status = "unsupported";
+              container.textContent = "APP_PASTE_BACK_JSON not found. Paste the full OpenEvidence response with the fenced JSON block.";
+            }
+          }
+          syncOpenEvidenceApplyButtons({ isChecklistReview, isDecisionTree, isRoundsPasteBack, answerText, isGenericPasteBack, genericPasteBackReady: Boolean(pasteBack) });
+          return;
+      }
+      if (isDecisionTree) {
           for (const container of previewContainers) {
             const summary = decisionTreeImportSummary(answerText);
             container.dataset.status = summary.status;
@@ -33078,17 +33274,17 @@ Rules:
             detail.textContent = summary.message;
             container.append(strong, detail);
           }
-	        syncOpenEvidenceApplyButtons({ isChecklistReview, isDecisionTree, isRoundsPasteBack, answerText });
-	        return;
-	      }
-	      if (!isChecklistReview) {
+          syncOpenEvidenceApplyButtons({ isChecklistReview, isDecisionTree, isRoundsPasteBack, answerText });
+          return;
+      }
+      if (!isChecklistReview) {
           for (const container of previewContainers) {
-	          container.dataset.status = "empty";
-	          container.textContent = "Paste-back is only used for checklist refinement JSON or decision-tree JSON. Other OpenEvidence outputs are copied out, not saved here.";
+              container.dataset.status = "empty";
+              container.textContent = "Paste-back is only used for checklist refinement JSON or decision-tree JSON. Other OpenEvidence outputs are copied out, not saved here.";
           }
-	        syncOpenEvidenceApplyButtons({ isChecklistReview, isDecisionTree, isRoundsPasteBack, answerText });
-	        return;
-	      }
+          syncOpenEvidenceApplyButtons({ isChecklistReview, isDecisionTree, isRoundsPasteBack, answerText });
+          return;
+      }
         if (extractPatientChecklistPatchJson(answerText)) {
           for (const container of previewContainers) renderPatientChecklistPatchPreview(answerText, container);
           syncOpenEvidenceApplyButtons({ isChecklistReview, isDecisionTree, isRoundsPasteBack, answerText });
@@ -33132,20 +33328,20 @@ Rules:
 	      syncOpenEvidenceApplyButtons({ isChecklistReview, isDecisionTree, isRoundsPasteBack, answerText, changes });
 	    }
 
-	    function syncOpenEvidenceAnswerFields() {
-	      const { task } = getOpenEvidencePromptText();
-	      const savedAnswer = task.id === CHECKLIST_IMPROVEMENT_TASK_ID || isRoundsPasteBackTask(task)
+    function syncOpenEvidenceAnswerFields() {
+      const { task } = getOpenEvidencePromptText();
+      const savedAnswer = taskHasPasteBack(task)
           ? String(state.openEvidenceSummaries?.[task.id] || "")
           : "";
-	      for (const field of openEvidenceAnswerFields()) {
-	        if (document.activeElement !== field) field.value = savedAnswer;
-	      }
+      for (const field of openEvidenceAnswerFields()) {
+        if (document.activeElement !== field) field.value = savedAnswer;
+      }
         if (task.id === CHECKLIST_IMPROVEMENT_TASK_ID && elements.patientWorkupRefinementInput && document.activeElement !== elements.patientWorkupRefinementInput) {
           elements.patientWorkupRefinementInput.value = savedAnswer;
           syncWorkupRefinementPreview(savedAnswer);
         }
-	      updateOpenEvidenceChangePreview(currentOpenEvidenceAnswerText() || savedAnswer);
-	    }
+      updateOpenEvidenceChangePreview(currentOpenEvidenceAnswerText() || savedAnswer);
+    }
 
     function importedAnswerSummaryRows(answers = {}, itemNotes = {}) {
       const rows = [];
@@ -33447,39 +33643,42 @@ Rules:
       const isChecklistReview = task.id === CHECKLIST_IMPROVEMENT_TASK_ID;
       const isDecisionTree = task.id === DECISION_TREE_TASK_ID;
       const isRoundsPasteBack = isRoundsPasteBackTask(task);
+      const isGenericPasteBack = !isChecklistReview && !isDecisionTree && !isRoundsPasteBack && taskHasPasteBack(task);
       if (elements.patientEvidenceChecklistSectionField) {
         elements.patientEvidenceChecklistSectionField.hidden = !isChecklistReview;
       }
       syncPatientChecklistPatchSectionSelects();
       for (const panel of [document.querySelector(".evidence-review-column"), document.querySelector(".patient-evidence-answer-panel")].filter(Boolean)) {
-        panel.hidden = !(isChecklistReview || isDecisionTree || isRoundsPasteBack);
+        panel.hidden = !(isChecklistReview || isDecisionTree || isRoundsPasteBack || isGenericPasteBack);
       }
       const answerLabel = document.querySelector('label[for="patientEvidenceAnswerInput"]');
       if (answerLabel) {
-        answerLabel.textContent = isRoundsPasteBack ? "OpenEvidence answer" : isDecisionTree ? "Decision-tree JSON" : "Structured checklist patch JSON";
+        answerLabel.textContent = isRoundsPasteBack ? "OpenEvidence answer" : isDecisionTree ? "Decision-tree JSON" : isGenericPasteBack ? "OpenEvidence answer" : "Structured checklist patch JSON";
       }
       if (elements.patientEvidenceAnswerInput) {
         elements.patientEvidenceAnswerInput.placeholder = isDecisionTree
           ? "Paste the raw OpenEvidence decision-tree JSON here. Fenced JSON and mildly malformed markdown artifacts will be normalized for review."
           : isRoundsPasteBack
             ? "Paste the full OpenEvidence result or APP_PASTE_BACK_JSON block with schema open_evidence_rounds_pasteback_v1."
+          : isGenericPasteBack
+            ? `Paste the full OpenEvidence result or APP_PASTE_BACK_JSON block with schema ${task.pasteBackSchema}.`
           : "Paste workup_section_patch_v1 JSON for patient-only checklist row edits. Older workup_refinement_v1 JSON still parses as a fallback.";
       }
       if (elements.patientApplyEvidenceRefinementButton) {
         elements.patientApplyEvidenceRefinementButton.textContent = "";
-        if (isRoundsPasteBack) {
+        if (isRoundsPasteBack || isGenericPasteBack) {
           const saveIcon = document.createElement("span");
           saveIcon.className = "icon-box";
           saveIcon.setAttribute("aria-hidden", "true");
           saveIcon.innerHTML = iconSvg("save");
-          elements.patientApplyEvidenceRefinementButton.append(saveIcon, document.createTextNode("Save rounds report"));
+          elements.patientApplyEvidenceRefinementButton.append(saveIcon, document.createTextNode(isRoundsPasteBack ? "Save rounds report" : "Save result"));
         } else {
           elements.patientApplyEvidenceRefinementButton.textContent = isDecisionTree ? "Apply tree" : "Apply to this patient";
         }
       }
       if (elements.patientSaveDefaultEvidenceRefinementButton) {
         elements.patientSaveDefaultEvidenceRefinementButton.textContent = isDecisionTree ? "Save tree default" : "Save vault override";
-        elements.patientSaveDefaultEvidenceRefinementButton.hidden = isRoundsPasteBack;
+        elements.patientSaveDefaultEvidenceRefinementButton.hidden = isRoundsPasteBack || isGenericPasteBack;
       }
 	      syncOpenEvidenceTaskSearchInputs();
       syncOpenEvidenceAnswerFields();
@@ -38007,6 +38206,15 @@ Rules:
             saveRoundsPasteBackForActivePatient(pasteBack, { taskId: task.id, rawAnswerText: text });
             return;
           }
+          if (!isRoundsPasteBackTask(task) && taskHasPasteBack(task)) {
+            const pasteBack = extractPasteBack(text);
+            if (pasteBack) {
+              saveGenericPasteBackForActivePatient(pasteBack, { taskId: task.id, rawAnswerText: text });
+            } else {
+              setStatus("APP_PASTE_BACK_JSON not found. Paste the full OpenEvidence response.");
+            }
+            return;
+          }
           if (task.id === DECISION_TREE_TASK_ID) {
             if (applyDecisionTreeJson(text, { saveDefault: false })) {
               setPatientTab("workup", { focusPanel: true });
@@ -38020,8 +38228,8 @@ Rules:
         elements.patientSaveDefaultEvidenceRefinementButton?.addEventListener("click", () => {
           const text = String(elements.patientEvidenceAnswerInput?.value || "").trim();
           const { task } = getOpenEvidencePromptText();
-          if (isRoundsPasteBackTask(task)) {
-            setStatus("Rounds reports are saved to the active patient day, not as vault defaults.");
+          if (isRoundsPasteBackTask(task) || (taskHasPasteBack(task) && !isRoundsPasteBackTask(task) && task.id !== DECISION_TREE_TASK_ID)) {
+            setStatus("Results are saved to the active patient, not as vault defaults.");
             return;
           }
           if (task.id === DECISION_TREE_TASK_ID) {
@@ -38357,6 +38565,16 @@ Rules:
           onConfirm: () => copyText(quickDeidText)
         });
       });
+      $("#dismissSafetyBarButton")?.addEventListener("click", () => {
+        const bar = document.getElementById("safetyBar");
+        if (bar) bar.classList.add("is-dismissed");
+        document.body.style.setProperty("--footer-h", "0px");
+        localStorage.setItem("prerounding-safety-bar-dismissed", "1");
+      });
+      if (localStorage.getItem("prerounding-safety-bar-dismissed") === "1") {
+        document.getElementById("safetyBar")?.classList.add("is-dismissed");
+        document.body.style.setProperty("--footer-h", "0px");
+      }
       setupPromptEditorAutocomplete();
     }
 
