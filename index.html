@@ -16706,7 +16706,6 @@
             _deidModelInstance = createDeidentifier({
               pipelineFactory: pipeline,
               mode: "hybrid",
-              device: "webgpu",
               onModelStatus: (update) => {
                 if (!update.ready && update.message) setLoading(update.message);
               }
@@ -16725,7 +16724,6 @@
           _deidModelInstance = createDeidentifier({
             pipelineFactory: pipeline,
             mode: "hybrid",
-            device: "webgpu",
             onModelStatus: (update) => {
               if (!update.ready && update.message) setLoading(update.message);
             }
@@ -16739,7 +16737,6 @@
             _deidModelInstance = createDeidentifier({
               pipelineFactory: pipeline,
               mode: "hybrid",
-              device: "webgpu",
               onModelStatus: (update) => {
                 if (!update.ready && update.message) setLoading(update.message);
               }
