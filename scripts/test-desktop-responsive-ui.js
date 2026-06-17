@@ -933,6 +933,44 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   assert(phoneLoadedAudit.rowCount >= 8, `phone bundle should load checklist rows: ${JSON.stringify(phoneLoadedAudit)}`);
   assert(!phoneLoadedAudit.stepperVisible && !phoneLoadedAudit.reviewFindingsVisible, `phone bedside mode should not expose desktop workflow or review controls: ${JSON.stringify(phoneLoadedAudit)}`);
   assert(phoneLoadedAudit.storageKeys.every((key) => key === publicCatalogCacheKey), `phone bundle session should persist only public catalog cache storage: ${JSON.stringify(phoneLoadedAudit)}`);
+  const phoneBottomBarAudit = await phonePage.evaluate(() => {
+    const bar = document.querySelector(".bedside-bottom-bar");
+    const barRect = bar?.getBoundingClientRect();
+    const visibleButtons = Array.from(document.querySelectorAll(".bedside-bottom-bar .btn"))
+      .map((button) => {
+        const rect = button.getBoundingClientRect();
+        return {
+          text: button.textContent.replace(/\s+/g, " ").trim(),
+          x: Math.round(rect.x),
+          y: Math.round(rect.y),
+          width: Math.round(rect.width),
+          height: Math.round(rect.height),
+          visible: Boolean(rect.width && rect.height)
+        };
+      })
+      .filter((button) => button.visible)
+      .sort((left, right) => left.x - right.x);
+    return {
+      barHeight: Math.round(barRect?.height || 0),
+      barTop: Math.round(barRect?.top || 0),
+      viewportHeight: window.innerHeight,
+      paddingBottom: Number.parseFloat(getComputedStyle(document.querySelector("#bedsideView")).paddingBottom || "0"),
+      labels: visibleButtons.map((button) => button.text),
+      buttonWidths: visibleButtons.map((button) => button.width),
+      buttonHeights: visibleButtons.map((button) => button.height)
+    };
+  });
+  assert(phoneBottomBarAudit.labels.join("|") === "Note|Next exam|Return QR", `phone bedside action bar should expose compact Note, Next exam, and Return QR actions: ${JSON.stringify(phoneBottomBarAudit)}`);
+  assert(phoneBottomBarAudit.barHeight <= 84 && phoneBottomBarAudit.paddingBottom >= phoneBottomBarAudit.barHeight + 16, `phone bedside action bar should be compact and leave scroll clearance: ${JSON.stringify(phoneBottomBarAudit)}`);
+  assert(phoneBottomBarAudit.buttonWidths.every((width) => width >= 82), `phone bedside action buttons should have usable tap targets without one oversized QR button: ${JSON.stringify(phoneBottomBarAudit)}`);
+  await phonePage.click("#quickBedsideNoteButton");
+  await phonePage.waitForSelector("body[data-bedside-note-open=\"true\"] #bedsidePhoneNotePanel");
+  await phonePage.fill("#bedsidePhoneNoteInput", "Patient mentioned new overnight dizziness.");
+  const quickNoteAudit = await phonePage.evaluate(() => ({
+    notePanelVisible: Boolean(document.querySelector("#bedsidePhoneNotePanel")?.getBoundingClientRect().height),
+    noteValue: document.querySelector("#bedsidePhoneNoteInput")?.value || ""
+  }));
+  assert(quickNoteAudit.notePanelVisible && /overnight dizziness/i.test(quickNoteAudit.noteValue), `quick note button should open and save the shared bedside note field: ${JSON.stringify(quickNoteAudit)}`);
 
   const answerMode = await phonePage.evaluate(() => {
     const chip = document.querySelector(".checklist-row .answer-chip");
@@ -1102,6 +1140,30 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   assert(desktopScannerAudit.answeredRows >= 1, `desktop scanner should merge answered checklist rows: ${JSON.stringify(desktopScannerAudit)}`);
   assert(desktopScannerAudit.firstFacingMode === "user", `desktop return scanner should prefer the user-facing laptop camera: ${JSON.stringify(desktopScannerAudit)}`);
   assert(/focusMode.*continuous|continuous.*focusMode/.test(desktopScannerAudit.appliedConstraints), `desktop return scanner should request continuous focus when available: ${JSON.stringify(desktopScannerAudit)}`);
+  const importPanelLayoutAudit = await desktopPage.evaluate(() => {
+    const panel = document.querySelector("#phoneImportSummaryPanel");
+    const list = document.querySelector("#phoneImportSummaryList");
+    const panelRect = panel?.getBoundingClientRect();
+    const listStyle = list ? getComputedStyle(list) : null;
+    return {
+      panelHeight: Math.round(panelRect?.height || 0),
+      maxHeight: getComputedStyle(panel).maxHeight,
+      listOverflowY: listStyle?.overflowY || "",
+      answerEditors: document.querySelectorAll("#phoneImportSummaryList textarea[aria-label^='Edit imported answer']").length,
+      noteEditors: document.querySelectorAll("#phoneImportSummaryList textarea[aria-label^='Edit imported note']").length,
+      openButtons: document.querySelectorAll("#phoneImportSummaryList .phone-import-open-item").length
+    };
+  });
+  assert(importPanelLayoutAudit.panelHeight <= 390 && importPanelLayoutAudit.listOverflowY === "auto", `imported phone answer summary should be height-capped with internal scrolling: ${JSON.stringify(importPanelLayoutAudit)}`);
+  assert(importPanelLayoutAudit.answerEditors >= 1 && importPanelLayoutAudit.noteEditors >= 1 && importPanelLayoutAudit.openButtons >= 1, `imported phone answers should be directly editable with checklist shortcuts: ${JSON.stringify(importPanelLayoutAudit)}`);
+  const importedAnswerEditor = desktopPage.locator("#phoneImportSummaryList textarea[aria-label^='Edit imported answer']").first();
+  await importedAnswerEditor.fill("Edited imported answer for verification");
+  await importedAnswerEditor.blur();
+  await desktopPage.waitForFunction(() => /Edited imported answer for verification/i.test(document.querySelector("#finalUpdatePreview")?.textContent || ""));
+  const importedNoteEditor = desktopPage.locator("#phoneImportSummaryList textarea[aria-label^='Edit imported note']").first();
+  await importedNoteEditor.fill("Edited imported note for verification");
+  await importedNoteEditor.blur();
+  await desktopPage.waitForFunction(() => /Edited imported note for verification/i.test(document.querySelector("#finalUpdatePreview")?.textContent || ""));
 
   await clickPatientTab(desktopPage, "findings");
   await desktopPage.waitForSelector("#patientFindingsPanel:not([hidden])");

@@ -4968,10 +4968,13 @@
     .phone-import-summary {
       display: grid;
       gap: 10px;
+      grid-template-rows: auto minmax(0, 1fr);
+      max-height: min(380px, 48vh);
       border: 1px solid #d7e5e3;
       border-radius: 8px;
       background: #f7fbfa;
       padding: 12px;
+      overflow: hidden;
     }
 
     .phone-import-summary-head {
@@ -4989,11 +4992,17 @@
     .phone-import-summary-list {
       display: grid;
       gap: 8px;
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding-right: 4px;
     }
 
     .phone-import-summary-row {
       display: grid;
-      gap: 4px;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 6px 10px;
+      align-items: start;
       border-top: 1px solid #e1ecea;
       padding-top: 8px;
     }
@@ -5011,6 +5020,7 @@
     }
 
     .phone-import-summary-row strong {
+      grid-column: 1 / -1;
       color: #10232c;
       font-size: 13px;
       line-height: 1.3;
@@ -5021,6 +5031,44 @@
       color: #31505b;
       font-size: 12px;
       line-height: 1.35;
+    }
+
+    .phone-import-summary-fields {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: end;
+    }
+
+    .phone-import-field {
+      display: grid;
+      gap: 4px;
+    }
+
+    .phone-import-field span {
+      font-size: 10px;
+      letter-spacing: 0;
+    }
+
+    .phone-import-field textarea {
+      width: 100%;
+      min-height: 42px;
+      max-height: 96px;
+      resize: vertical;
+      border: 1px solid #cfdedb;
+      border-radius: 7px;
+      background: #ffffff;
+      color: #19323c;
+      padding: 8px 9px;
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .phone-import-open-item {
+      min-height: 42px;
+      padding-inline: 10px;
+      white-space: nowrap;
     }
 
     #patientEvidencePromptPreview {
@@ -6233,7 +6281,7 @@
 
     .bedside-bottom-bar {
       display: grid;
-      grid-template-columns: 130px 150px minmax(0, 1fr) 150px 170px 150px;
+      grid-template-columns: 130px 150px 120px minmax(0, 1fr) 150px 170px 150px;
       align-items: center;
       gap: 12px;
       margin: 10px 14px 12px;
@@ -10607,6 +10655,18 @@
         min-width: 0;
       }
 
+      .phone-import-summary {
+        max-height: min(360px, 52vh);
+      }
+
+      .phone-import-summary-fields {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .phone-import-open-item {
+        width: 100%;
+      }
+
       .page-head {
         display: grid;
         grid-template-columns: minmax(0, 1fr);
@@ -11441,7 +11501,7 @@
     }
 
     body[data-view="bedside"] .bedside-bottom-bar {
-      grid-template-columns: 120px 136px minmax(0, 1fr) 136px 150px 130px;
+      grid-template-columns: 120px 136px 112px minmax(0, 1fr) 136px 150px 130px;
       gap: 10px;
       min-height: 58px;
       margin: 0;
@@ -11958,39 +12018,49 @@
         right: 0;
         bottom: 0;
         z-index: 12;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 8px;
-        min-height: 126px;
-        padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+        grid-template-columns: 0.78fr 1.05fr 0.88fr;
+        gap: 7px;
+        min-height: 68px;
+        padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
         border: 1px solid #dfe8e6;
         background: #ffffff;
       }
 
       body[data-view="bedside"] .bedside-bottom-bar .btn {
-        min-height: 54px;
+        min-height: 48px;
         border-radius: 7px;
-        padding: 7px 8px;
+        padding: 7px 6px;
         font-size: 12px;
         line-height: 1.15;
       }
 
-      body[data-view="bedside"] #showPhoneReturnQrButton {
+      body[data-view="bedside"] #quickBedsideNoteButton {
         order: 1;
-        grid-column: 1 / -1;
+        display: inline-flex;
+      }
+
+      body[data-view="bedside"] #bottomNextUnansweredChecklistButton {
+        order: 2;
+        display: inline-flex;
         border-color: var(--teal);
         background: var(--teal);
         color: #ffffff;
       }
 
-      body[data-view="bedside"] #bottomNextUnansweredChecklistButton {
-        order: 2;
+      body[data-view="bedside"] #showPhoneReturnQrButton {
+        order: 3;
+        display: inline-flex;
+        border-color: var(--teal);
+        background: #ffffff;
+        color: var(--teal-dark);
       }
 
       body[data-view="bedside"] #clearAllChecklistButton {
-        order: 3;
+        order: 4;
       }
 
       body[data-view="bedside"] #copyFindingsToBedsideNoteButton,
+      body[data-view="bedside"] #clearAllChecklistButton,
       body[data-view="bedside"] #reviewFindingsButton {
         display: none;
       }
@@ -12023,7 +12093,7 @@
       }
 
       body[data-view="bedside"] #bedsideView:not([hidden]) {
-        padding-bottom: 88px;
+        padding-bottom: 96px;
       }
 
       body[data-view="bedside"] .bedside-mobile-top {
@@ -12480,20 +12550,27 @@
       }
 
       body[data-view="bedside"] .bedside-bottom-bar {
-        grid-template-columns: 1fr 1fr;
-        min-height: 78px;
-        padding: 8px 14px calc(8px + env(safe-area-inset-bottom));
+        grid-template-columns: 0.78fr 1.06fr 0.88fr;
+        gap: 7px;
+        min-height: 68px;
+        padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
       }
 
       body[data-view="bedside"] .bedside-bottom-bar .btn {
-        min-height: 50px;
+        min-height: 48px;
         border-radius: 8px;
-        font-size: 14px;
+        padding-inline: 6px;
+        font-size: 12px;
         font-weight: 820;
       }
 
-      body[data-view="bedside"] #bottomNextUnansweredChecklistButton {
+      body[data-view="bedside"] #quickBedsideNoteButton {
         order: 1;
+        display: inline-flex;
+      }
+
+      body[data-view="bedside"] #bottomNextUnansweredChecklistButton {
+        order: 2;
         display: inline-flex;
         border-color: var(--teal);
         background: var(--teal);
@@ -12501,7 +12578,7 @@
       }
 
       body[data-view="bedside"] #showPhoneReturnQrButton {
-        order: 2;
+        order: 3;
         display: inline-flex;
         border-color: var(--teal);
         background: #ffffff;
@@ -12751,7 +12828,7 @@
 
     @media (max-width: 640px) {
       body[data-view="bedside"] #bedsideView:not([hidden]) {
-          padding-bottom: 82px;
+          padding-bottom: 96px;
         }
 
         body[data-view="bedside"] .bedside-mobile-top {
@@ -14478,6 +14555,10 @@
             <span class="icon-box" data-icon="file-text" aria-hidden="true"></span>
             <span>Copy findings</span>
           </button>
+          <button class="btn btn-secondary bedside-quick-note-button" id="quickBedsideNoteButton" type="button">
+            <span class="icon-box" data-icon="edit" aria-hidden="true"></span>
+            <span>Note</span>
+          </button>
           <div class="bedside-local-note">Findings stay local on this device until you copy the final update.</div>
           <button class="btn btn-secondary" id="showPhoneReturnQrButton" type="button">Return QR</button>
           <button class="btn btn-secondary bedside-bottom-next" id="bottomNextUnansweredChecklistButton" type="button">Next exam</button>
@@ -15536,6 +15617,7 @@
       completionReviewFindingsButton: $("#completionReviewFindingsButton"),
       completionAddBedsideNoteButton: $("#completionAddBedsideNoteButton"),
       copyFindingsToBedsideNoteButton: $("#copyFindingsToBedsideNoteButton"),
+      quickBedsideNoteButton: $("#quickBedsideNoteButton"),
       showPhoneReturnQrButton: $("#showPhoneReturnQrButton"),
       copyPhoneReturnPayloadButton: $("#copyPhoneReturnPayloadButton"),
       nextOpenChecklistLabel: $("#nextOpenChecklistLabel"),
@@ -29766,11 +29848,56 @@ Rules:
           key,
           section: entry.section.title || entry.section.shortTitle || "Checklist",
           question: entry.item.label || itemText(entry.item),
-          answer: values.join(", "),
+          answer: values.join("; "),
           note
         });
       }
       return rows;
+    }
+
+    function editedImportedAnswerValue(text = "") {
+      const values = String(text || "")
+        .split(/[;\n]+/)
+        .map((entry) => entry.trim())
+        .filter(Boolean);
+      return values.length > 1 ? values : values[0] || "";
+    }
+
+    function syncImportedAnswerSummaryRow(key) {
+      const rows = Array.isArray(state.importedPhoneAnswerSummary) ? [...state.importedPhoneAnswerSummary] : [];
+      const rowIndex = rows.findIndex((row) => row?.key === key);
+      if (rowIndex < 0) return;
+      const nextRow = importedAnswerSummaryRows(
+        state.answers?.[key] ? { [key]: state.answers[key] } : {},
+        state.itemNotes?.[key] ? { [key]: state.itemNotes[key] } : {}
+      )[0];
+      if (nextRow) rows[rowIndex] = nextRow;
+      else rows.splice(rowIndex, 1);
+      state.importedPhoneAnswerSummary = rows;
+    }
+
+    function commitImportedPhoneAnswerEdit(key, answerText, noteText, { rerender = false } = {}) {
+      if (!key || !checklistEntryForKey(key)) return;
+      commitChecklistAnswer(key, editedImportedAnswerValue(answerText));
+      const note = String(noteText || "").trim();
+      if (note) state.itemNotes[key] = note;
+      else delete state.itemNotes[key];
+      syncImportedAnswerSummaryRow(key);
+      renderFinalUpdate();
+      saveState();
+      if (rerender) renderImportedPhoneAnswerSummary();
+    }
+
+    function openImportedPhoneAnswerItem(key) {
+      if (!key || !checklistEntryForKey(key)) return;
+      activeChecklistKey = key;
+      checklistFilter = "all";
+      checklistSearch = "";
+      checklistSectionFocus = false;
+      if (elements.checklistSearchInput) elements.checklistSearchInput.value = "";
+      showView("bedside");
+      renderChecklist();
+      scrollChecklistEntry(key);
     }
 
     function renderImportedPhoneAnswerSummary() {
@@ -29786,9 +29913,41 @@ Rules:
         section.textContent = row.section || "Checklist";
         const question = document.createElement("strong");
         question.textContent = row.question || "Checklist question";
-        const answer = document.createElement("p");
-        answer.textContent = [row.answer ? `Answer: ${row.answer}` : "", row.note ? `Note: ${row.note}` : ""].filter(Boolean).join(" | ");
-        item.append(section, question, answer);
+        const fields = document.createElement("div");
+        fields.className = "phone-import-summary-fields";
+        const answerField = document.createElement("label");
+        answerField.className = "phone-import-field";
+        const answerLabel = document.createElement("span");
+        answerLabel.textContent = "Answer:";
+        const answerInput = document.createElement("textarea");
+        answerInput.value = row.answer || "";
+        answerInput.rows = 1;
+        answerInput.maxLength = 1600;
+        answerInput.spellcheck = false;
+        answerInput.setAttribute("aria-label", `Edit imported answer for ${row.question || "checklist question"}`);
+        answerField.append(answerLabel, answerInput);
+        const noteField = document.createElement("label");
+        noteField.className = "phone-import-field";
+        const noteLabel = document.createElement("span");
+        noteLabel.textContent = "Note:";
+        const noteInput = document.createElement("textarea");
+        noteInput.value = row.note || "";
+        noteInput.rows = 1;
+        noteInput.maxLength = 1200;
+        noteInput.setAttribute("aria-label", `Edit imported note for ${row.question || "checklist question"}`);
+        noteField.append(noteLabel, noteInput);
+        const openButton = document.createElement("button");
+        openButton.className = "btn btn-secondary phone-import-open-item";
+        openButton.type = "button";
+        openButton.textContent = "Open item";
+        openButton.addEventListener("click", () => openImportedPhoneAnswerItem(row.key));
+        const commitEdit = (options = {}) => commitImportedPhoneAnswerEdit(row.key, answerInput.value, noteInput.value, options);
+        answerInput.addEventListener("input", () => commitEdit());
+        noteInput.addEventListener("input", () => commitEdit());
+        answerInput.addEventListener("blur", () => commitEdit({ rerender: true }));
+        noteInput.addEventListener("blur", () => commitEdit({ rerender: true }));
+        fields.append(answerField, noteField, openButton);
+        item.append(section, question, fields);
         elements.phoneImportSummaryList.appendChild(item);
       }
     }
@@ -33656,6 +33815,7 @@ Rules:
       });
       elements.bedsideMoreActionsButton?.addEventListener("click", () => preparePhoneHandoff());
       elements.copyFindingsToBedsideNoteButton?.addEventListener("click", copyFindingsToBedsideNote);
+      elements.quickBedsideNoteButton?.addEventListener("click", showCompletionBedsideNote);
       elements.showPhoneReturnQrButton?.addEventListener("click", openPhoneReturnQrOverlay);
       elements.completionCopyPhoneReturnPayloadButton?.addEventListener("click", copyPhoneReturnPayload);
       elements.completionReviewFindingsButton?.addEventListener("click", openFinalFindingsReview);

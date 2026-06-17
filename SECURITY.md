@@ -4,7 +4,9 @@ This project is a local-first clinical workflow aid. It is designed to reduce PH
 
 ## Current App Safeguards
 
-- No app backend or cloud service receives pasted chart text, saved vault data, patient workspaces, or generated prompts by default.
+- Pasted chart text, saved vault data, patient workspaces, and generated prompts are not uploaded for routine local review.
+- Phone handoff QR codes use direct local QR payloads when they fit. When a one-scan payload would be too large, the app can use an encrypted short-lived Supabase mailbox link, with split local QR frames as the fallback if that online mailbox is unavailable.
+- The encrypted mailbox stores ciphertext and IV only, while the decryption key is carried in the QR link fragment. Even so, an organization should treat any mailbox payload that contains ePHI as cloud handling of ePHI for HIPAA/vendor-review purposes.
 - No analytics, telemetry, tracking pixels, ad scripts, or third-party font loads are included.
 - The default de-identification mode is structured-only and does not download model assets.
 - The optional enhanced de-identification model is explicit opt-in and may download third-party code/model assets before running locally in the browser.
@@ -21,7 +23,7 @@ HIPAA compliance depends on the full operating environment, not only app code. B
 - HIPAA Security Rule risk analysis and risk management for the deployed workflow.
 - Which users may access the app and on which managed devices.
 - Whether any external tool receiving pasted text is approved for the intended use.
-- Business Associate Agreement status for vendors that create, receive, maintain, or transmit PHI on behalf of the organization.
+- Business Associate Agreement status for vendors that create, receive, maintain, or transmit PHI on behalf of the organization, including any cloud mailbox used for QR handoff.
 - Audit, incident response, breach notification, retention, backup, and device loss procedures.
 - Training and policy language that tells users not to paste PHI into unapproved external tools.
 
