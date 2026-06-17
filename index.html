@@ -37788,7 +37788,7 @@ Rules:
 	        renderFinalUpdate();
 	        saveState();
 	      };
-	      elements.bedsideNoteInput.addEventListener("input", handleBedsideNoteInput);
+	      elements.bedsideNoteInput?.addEventListener("input", handleBedsideNoteInput);
 	      elements.bedsidePhoneNoteInput?.addEventListener("input", handleBedsideNoteInput);
       $("#copyFinalUpdateButton")?.addEventListener("click", () => {
         const text = buildFinalUpdateText();
