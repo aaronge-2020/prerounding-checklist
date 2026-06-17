@@ -1,8 +1,9 @@
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
 import { readFileSync } from "node:fs";
-import { readFile } from "node:fs/promises";
-import { extname, resolve } from "node:path";
+import { mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { extname, join, resolve } from "node:path";
 import { chromium } from "playwright";
 
 const root = process.cwd();
@@ -348,6 +349,10 @@ try {
                 id: "supabase_root",
                 label: "Supabase current DKA root",
                 type: "action",
+                source_id: "SUPABASE_SOURCE_V2",
+                source_section: "Supabase current pathway",
+                rationale: "Current reviewed source-backed root for public catalog hydration.",
+                reviewer_status: "reviewed",
                 children: []
               },
               activationRules: {}
@@ -447,6 +452,10 @@ try {
                 id: "loaded_author_root",
                 label: "Loaded author draft: verify DKA/HHS triage inputs",
                 type: "decision",
+                source_id: "ADA_HYPERGLYCEMIC_CRISES_2024",
+                source_section: "Hyperglycemic crises triage",
+                rationale: "Reviewer draft keeps the crisis triage root source-backed.",
+                reviewer_status: "draft_from_source",
                 children: []
               }
             },
@@ -669,9 +678,12 @@ try {
   assert.match(await page.textContent("#workupStudioPublishImportButton"), /Reviewer publish locked/, "Locked publish button should not imply local approval works.");
   const pathwayPrompt = await page.inputValue("#workupStudioOpenEvidencePromptOutput");
   assert.equal(await page.locator("#workupStudioOpenEvidencePromptOutput").evaluate((node) => node.readOnly), false, "AI prompt textarea should be editable.");
-  assert.match(pathwayPrompt, /Create one compact protocol-style clinical pathway tree/, "Pathway prompt should use the compact tree generator.");
+  assert.match(pathwayPrompt, /Extract one compact protocol-style clinical pathway tree/, "Pathway prompt should use the source-backed tree extractor.");
   assert.match(pathwayPrompt, /Workup: hyperglycemia_possible_dka_v1 - /, "Pathway prompt should name the selected workup without dumping the current tree.");
   assert.match(pathwayPrompt, /"boxText"/, "Pathway prompt should request compact display text on every node.");
+  assert.match(pathwayPrompt, /source_id/, "Pathway prompt should require source IDs on every generated node.");
+  assert.match(pathwayPrompt, /source_section/, "Pathway prompt should require source sections on every generated node.");
+  assert.match(pathwayPrompt, /reviewer_status/, "Pathway prompt should require reviewer status on every generated node.");
   assert.match(pathwayPrompt, /Every child of a decision node must have edgeLabel/, "Pathway prompt should keep decision-edge wording.");
   assert.match(pathwayPrompt, /keep it arrow-sized/i, "Pathway prompt should require short arrow labels.");
   assert.match(pathwayPrompt, /Move the full criterion into the child node label and boxText/i, "Pathway prompt should keep criteria inside node boxes.");
@@ -681,7 +693,7 @@ try {
   assert.doesNotMatch(pathwayPrompt, /requiredQuestions|conditionalQuestions|requiredExam|conditionalExam/, "Pathway prompt must not request history or physical exam arrays.");
   assert.doesNotMatch(pathwayPrompt, /Current clinical_pathway_tree|Full local pathway JSON|Current selected-section payload|workup_section_update_v1|Supabase current DKA root/, "Pathway prompt should not include current-tree context or legacy replacement schema.");
   assert.doesNotMatch(pathwayPrompt, /"supabase_root"|"legacy_root"/, "Pathway prompt should not paste raw current-tree JSON ids or stale saved prompt ids.");
-  assert.ok(pathwayPrompt.length < 1800, `Pathway prompt should stay short enough to avoid truncation; saw ${pathwayPrompt.length} chars.`);
+  assert.ok(pathwayPrompt.length < 2800, `Pathway prompt should stay short enough to avoid truncation; saw ${pathwayPrompt.length} chars.`);
   const storedPromptTemplates = await page.evaluate(() => JSON.parse(localStorage.getItem("prerounding-workup-authoring-v1") || "{}").promptTemplatesBySection || {});
   assert(!storedPromptTemplates["hyperglycemia_possible_dka_v1::clinical_pathway_tree_v1"], "Legacy saved tree prompt should be pruned from local Workup Studio state.");
   const editedPromptSentinel = `COPY_SENTINEL_${Date.now()}`;
@@ -691,7 +703,7 @@ try {
   await page.click("#workupStudioResetPromptButton");
   const resetPathwayPrompt = await page.inputValue("#workupStudioOpenEvidencePromptOutput");
   assert.doesNotMatch(resetPathwayPrompt, new RegExp(editedPromptSentinel), "Reset should restore the generated section prompt.");
-  assert.match(resetPathwayPrompt, /Create one compact protocol-style clinical pathway tree/, "Reset prompt should still target only the selected pathway tree section.");
+  assert.match(resetPathwayPrompt, /Extract one compact protocol-style clinical pathway tree/, "Reset prompt should still target only the selected pathway tree section.");
   const authoringRequestsBeforeLocalDraft = authoringTableRequestCount(supabaseRequests);
   await page.click("#workupStudioSaveTreeDraftButton");
   await page.fill("#workupStudioImportInput", JSON.stringify({
@@ -803,8 +815,11 @@ try {
   assert.equal(supabaseRequests.getChangeSetsCount, 1, "Sign-in should load RLS-filtered backend change sets.");
   assert.match(await page.textContent("#workupStudioList"), /Supabase Hyperglycemia Workup/, "Verified reviewers should see the Supabase canonical workup catalog.");
   assert.equal(await page.locator("#workupStudioLoadBackendDraftsButton").isDisabled(), false, "Backend draft loading should only unlock after permission checks.");
-  assert.equal(await page.locator("#workupStudioPublishImportButton").isDisabled(), false, "Reviewer account should unlock editor publish.");
-  assert.match(await page.textContent("#workupStudioPublishImportButton"), /Publish latest draft/, "Reviewer button should accurately describe publishing.");
+  assert.equal(await page.locator("#workupStudioPublishImportButton").isDisabled(), true, "Reviewer publish should stay locked until source attestation is checked.");
+  assert.match(await page.locator("#workupStudioPublishImportButton").getAttribute("title"), /attestation is required/i, "Locked reviewer publish should explain the attestation gate.");
+  await page.check("#workupStudioSourceAttestationCheckbox");
+  await page.waitForFunction(() => !document.querySelector("#workupStudioPublishImportButton")?.disabled);
+  assert.match(await page.textContent("#workupStudioPublishImportButton"), /Publish latest draft/, "Reviewer button should accurately describe publishing once source gates pass.");
   assert.equal(await page.locator("#workupStudioSignOutButton").isHidden(), false, "Sign out should appear after verified Workup Studio permission.");
   const loadedAuthorPublishHeaderBaseline = supabaseRequests.catalogWorkupAuthHeaders.length;
   const loadedAuthorPublishWorkupSearchBaseline = supabaseRequests.catalogWorkupSearches.length;
@@ -832,6 +847,71 @@ try {
   const loadedAuthorDraftRow = supabaseRequests.postedRows.find((row) => row.id === "loaded-author-draft");
   assert.equal(loadedAuthorDraftRow.author_id, fakeAuthorUserId, "Reviewer publish must preserve the original draft author.");
   assert.equal(loadedAuthorDraftRow.reviewer_id, fakeUserId, "Reviewer publish should record the reviewer separately.");
+
+  const invalidSchemaGraph = {
+    schema: "clinical_pathway_tree_v1",
+    workupId: "hyperglycemia_possible_dka_v1",
+    title: "Invalid schema gate fixture",
+    source_ids: ["ADA_HYPERGLYCEMIC_CRISES_2024"],
+    root: {
+      id: "invalid_schema_root",
+      label: "Invalid schema root",
+      type: "decision",
+      source_id: "ADA_HYPERGLYCEMIC_CRISES_2024",
+      source_section: "Schema gate section",
+      rationale: "Fixture root for schema gate.",
+      reviewer_status: "draft_from_source",
+      children: [
+        {
+          id: "invalid_schema_child",
+          label: "Child without edge label should fail schema validation",
+          type: "action",
+          source_id: "ADA_HYPERGLYCEMIC_CRISES_2024",
+          source_section: "Schema gate section",
+          rationale: "Fixture child for schema gate.",
+          reviewer_status: "draft_from_source",
+          children: []
+        }
+      ]
+    }
+  };
+  const canonicalRowsBeforeInvalidSchema = supabaseRequests.canonicalRows.length;
+  await page.fill("#workupStudioImportInput", JSON.stringify(invalidSchemaGraph, null, 2));
+  await page.click("#workupStudioAcceptImportButton");
+  await page.waitForFunction(() => document.querySelector("#workupStudioPublishImportButton")?.disabled);
+  assert.match(await page.locator("#workupStudioPublishImportButton").getAttribute("title"), /Schema validation failed: Pathway node invalid_schema_child must include edgeLabel/i, "Invalid pathway schema should block reviewer publish.");
+  await page.evaluate(() => document.querySelector("#workupStudioPublishImportButton")?.click());
+  await page.waitForTimeout(100);
+  assert.equal(supabaseRequests.canonicalRows.length, canonicalRowsBeforeInvalidSchema, "Schema-blocked pathway publish must not write canonical Supabase rows.");
+
+  const transientSourceSentinel = `TRANSIENT_SOURCE_TEXT_${Date.now()}`;
+  await page.fill("#workupStudioSourceIdInput", "ADA_HYPERGLYCEMIC_CRISES_2024");
+  await page.fill("#workupStudioSourceSectionInput", "Hyperglycemic crises diagnostic and treatment pathway");
+  await page.fill("#workupStudioSourceCitationInput", "ADA/EASD/JBDS/AACE/DTS hyperglycemic crises consensus report");
+  await page.fill("#workupStudioSourceUrlInput", "https://diabetesjournals.org/care/article/47/8/1257/156808/Hyperglycemic-Crises-in-Adults-With-Diabetes-A");
+  await page.fill("#workupStudioSourceVersionInput", "2024 consensus report; accessed 2026-06-17");
+  await page.selectOption("#workupStudioSourceAccessModeSelect", "licensed_transient");
+  const transientSourceDir = await mkdtemp(join(tmpdir(), "workup-source-"));
+  const transientSourcePath = join(transientSourceDir, "source-packet.txt");
+  await writeFile(transientSourcePath, `${transientSourceSentinel}: source pathway says to classify DKA, HHS, potassium safety, insulin, monitoring, transition, and disposition.`);
+  await page.setInputFiles("#workupStudioSourceFileInput", transientSourcePath);
+  await page.waitForFunction((sentinel) => document.querySelector("#workupStudioSourceTextInput")?.value.includes(sentinel), transientSourceSentinel);
+  await page.click("#workupStudioBuildSourcePromptButton");
+  await page.waitForFunction((sentinel) => document.querySelector("#workupStudioOpenEvidencePromptOutput")?.value.includes(sentinel), transientSourceSentinel);
+  const sourcePrompt = await page.inputValue("#workupStudioOpenEvidencePromptOutput");
+  assert.match(sourcePrompt, /Every visible node, including root, must include source_id, source_section, rationale, and reviewer_status/, "Build From Source prompt should require node-level provenance.");
+  assert.match(sourcePrompt, /raw_source_stored":false/, "Build From Source prompt should mark raw source as transient.");
+  assert.equal(await page.evaluate((sentinel) => Object.values(localStorage).join("\n").includes(sentinel), transientSourceSentinel), false, "Transient source text must not be saved to localStorage while building a prompt.");
+
+  const decorateSourceNodes = (node, rationale = "Source-backed pathway node changes workup management.") => {
+    if (!node) return;
+    node.source_id = node.source_id || "ADA_HYPERGLYCEMIC_CRISES_2024";
+    node.source_ids = node.source_ids || ["ADA_HYPERGLYCEMIC_CRISES_2024"];
+    node.source_section = node.source_section || "Hyperglycemic crises diagnostic and treatment pathway";
+    node.rationale = node.rationale || rationale;
+    node.reviewer_status = node.reviewer_status || "draft_from_source";
+    (node.children || []).forEach((child) => decorateSourceNodes(child, rationale));
+  };
 
   const graph = {
     schema: "clinical_pathway_tree_v1",
@@ -899,9 +979,17 @@ try {
       ]
     }
   };
+  decorateSourceNodes(graph.root);
 
   await page.fill("#workupStudioImportInput", JSON.stringify(graph, null, 2));
   await page.click("#workupStudioAcceptImportButton");
+  await page.waitForFunction((sentinel) => {
+    const sourceText = document.querySelector("#workupStudioSourceTextInput")?.value || "";
+    const promptText = document.querySelector("#workupStudioOpenEvidencePromptOutput")?.value || "";
+    return !sourceText.includes(sentinel) && !promptText.includes(sentinel);
+  }, transientSourceSentinel);
+  assert.equal(await page.evaluate((sentinel) => Object.values(localStorage).join("\n").includes(sentinel), transientSourceSentinel), false, "Transient source text must not be saved after accepting a draft.");
+  const patchedRowsBeforeSourcePublish = supabaseRequests.patchedRows.length;
   await page.click("#workupStudioPublishImportButton");
   await page.waitForFunction(() => Number(document.querySelector("#workupStudioDraftCount")?.textContent || "0") >= 1);
   await waitForCytoscapeNode(page, "studio_ketones");
@@ -1009,12 +1097,39 @@ try {
   assert.equal(importedPathwayRow.review_status, "approved");
   assert.equal(importedPathwayRow.export_ready, true);
   assert.equal(importedPathwayRow.section_key, "clinical_pathway_tree_v1");
+  assert.equal(importedPathwayRow.imported_evidence?.sourceReview?.rawSourceStored, false, "Approved source-backed draft should record that raw source text was not stored.");
+  assert.equal(importedPathwayRow.imported_evidence?.sourceReview?.attestationAccepted, true, "Approved source-backed draft should record reviewer attestation.");
+  assert.match(importedPathwayRow.imported_evidence?.sourceReview?.sourceWorkflowStartedAt || "", /^\d{4}-\d{2}-\d{2}T/, "Approved source-backed draft should record the source workflow start time.");
+  assert.match(importedPathwayRow.imported_evidence?.sourceReview?.sourcePromptBuiltAt || "", /^\d{4}-\d{2}-\d{2}T/, "Approved source-backed draft should record when the source extraction prompt was built.");
+  assert.equal(importedPathwayRow.imported_evidence?.sourceReview?.sourceToLiveTargetMs, 600000, "Approved source-backed draft should carry the under-10-minute source-to-live target.");
+  assert.doesNotMatch(JSON.stringify(importedPathwayRow), new RegExp(transientSourceSentinel), "Approved draft row must not contain transient source text.");
   assert.ok(supabaseRequests.canonicalRows.some((entry) => entry.table === "workup_sections" && entry.rows.some((row) => row.section_key === "clinical_pathway_tree_v1")), "Publishing should update canonical workup_sections.");
   assert.ok(supabaseRequests.canonicalRows.some((entry) => entry.table === "pathway_nodes" && entry.rows.length >= 1), "Publishing should update canonical pathway_nodes.");
   assert.ok(supabaseRequests.canonicalRows.some((entry) => entry.table === "workups" && entry.rows.some((row) => /^(?:mvp|active|published|reviewed)$/.test(row.status || ""))), "Publishing should patch the canonical workup into a public-catalog status.");
+  await waitForCondition(() => supabaseRequests.patchedRows.slice(patchedRowsBeforeSourcePublish).some((row) => row.imported_evidence?.publicCatalogVerification?.verified), "Supabase public catalog verification evidence patch");
+  const sourceVerificationPatch = supabaseRequests.patchedRows.slice(patchedRowsBeforeSourcePublish).find((row) => row.imported_evidence?.publicCatalogVerification?.verified);
+  assert.equal(sourceVerificationPatch.imported_evidence.publicCatalogVerification.workupId, "hyperglycemia_possible_dka_v1", "Public verification evidence should identify the published workup.");
+  assert.equal(sourceVerificationPatch.imported_evidence.publicCatalogVerification.targetMs, 60000, "Public verification evidence should preserve the 60-second visibility target.");
+  assert.ok(Number.isFinite(sourceVerificationPatch.imported_evidence.publicCatalogVerification.visibilityMs), "Public verification evidence should include measured visibility latency.");
+  assert.ok(sourceVerificationPatch.imported_evidence.publicCatalogVerification.visibilityMs <= 60000, "Public verification latency should meet the 60-second target in the mocked fresh-device path.");
+  assert.equal(sourceVerificationPatch.imported_evidence.sourceReview.rawSourceStored, false, "Public verification patch should still keep raw source text out of Supabase.");
+  assert.equal(sourceVerificationPatch.imported_evidence.sourceReview.attestationAccepted, true, "Public verification patch should retain reviewer attestation.");
+  assert.equal(sourceVerificationPatch.imported_evidence.sourceReview.sourceToLiveTargetMs, 600000, "Public verification patch should preserve the under-10-minute target.");
+  assert.ok(Number.isFinite(sourceVerificationPatch.imported_evidence.sourceReview.sourceToLiveMs), "Public verification patch should include measured source-to-live time.");
+  assert.equal(sourceVerificationPatch.imported_evidence.sourceReview.sourceToLiveWithinTarget, true, "Mocked source-backed publish should meet the under-10-minute target.");
+  assert.doesNotMatch(JSON.stringify(sourceVerificationPatch), new RegExp(transientSourceSentinel), "Public verification patch must not contain transient source text.");
   const importedTreeDraft = JSON.stringify(importedPathwayRow.after_snapshot || {});
   assert.doesNotMatch(importedTreeDraft, /Missing data needed: glucose and ketones/i, "Imported missing-data placeholders should be sanitized out of stored pathway text.");
   assert.match(importedTreeDraft, /Hidden traversal metadata/i, "Imported missing-data guards should remain as hidden traversal metadata.");
+  const visibleImportedNodes = [];
+  const collectVisibleImportedNodes = (node) => {
+    if (!node || node.internal_traversal_guard || node.display?.visible_in_graph === false) return;
+    visibleImportedNodes.push(node);
+    (node.children || []).forEach(collectVisibleImportedNodes);
+  };
+  collectVisibleImportedNodes(importedPathwayRow.after_snapshot?.root);
+  assert.ok(visibleImportedNodes.length >= 5, "Imported pathway should have visible source-backed nodes.");
+  assert.ok(visibleImportedNodes.every((node) => node.source_id && node.source_section && node.rationale && node.reviewer_status), `Every visible imported node should retain source_id, source_section, rationale, and reviewer_status: ${JSON.stringify(visibleImportedNodes)}`);
 
   await page.locator("#workupStudioSectionTabs button", { hasText: "History questions" }).click();
   await page.waitForSelector("#workupStudioItemLabelInput");
@@ -1198,15 +1313,22 @@ try {
   assert.deepEqual(editedHistoryQuestion.options, ["No missed doses", "Missed basal insulin", "Missed bolus insulin", "Vomiting", "Poor oral intake", "Other ___"]);
   assert.deepEqual(editedHistoryQuestion.normalAnswers, ["No missed doses"]);
 
+  const patchedRowsBeforeHistoryPublish = supabaseRequests.patchedRows.length;
   await page.click("#workupStudioPublishImportButton");
-  await waitForCondition(() => supabaseRequests.patchedRows.length >= 1, "Supabase approval patch");
-  assert.deepEqual(supabaseRequests.patchedRows.at(-1), {
+  await waitForCondition(() => supabaseRequests.patchedRows.slice(patchedRowsBeforeHistoryPublish).some((row) => row.review_status === "approved"), "Supabase approval patch");
+  const historyApprovalPatch = supabaseRequests.patchedRows.slice(patchedRowsBeforeHistoryPublish).find((row) => row.review_status === "approved");
+  assert.deepEqual(historyApprovalPatch, {
     review_status: "approved",
     export_ready: true,
     reviewer_id: fakeUserId,
-    reviewed_at: supabaseRequests.patchedRows.at(-1).reviewed_at
+    reviewed_at: historyApprovalPatch.reviewed_at
   });
-  assert.match(supabaseRequests.patchedRows.at(-1).reviewed_at, /^\d{4}-\d{2}-\d{2}T/);
+  assert.match(historyApprovalPatch.reviewed_at, /^\d{4}-\d{2}-\d{2}T/);
+  await waitForCondition(() => supabaseRequests.patchedRows.slice(patchedRowsBeforeHistoryPublish).some((row) => row.imported_evidence?.publicCatalogVerification?.verified), "Supabase history public catalog evidence patch");
+  const historyVerificationPatch = supabaseRequests.patchedRows.slice(patchedRowsBeforeHistoryPublish).find((row) => row.imported_evidence?.publicCatalogVerification?.verified);
+  assert.equal(historyVerificationPatch.imported_evidence.publicCatalogVerification.workupId, "hyperglycemia_possible_dka_v1", "History publish should also persist fresh-device public verification evidence.");
+  assert.equal(historyVerificationPatch.imported_evidence.publicCatalogVerification.targetMs, 60000, "History publish should enforce the same 60-second public visibility target.");
+  assert.ok(Number.isFinite(historyVerificationPatch.imported_evidence.publicCatalogVerification.visibilityMs), "History publish should record measured public catalog visibility latency.");
   await waitForCondition(() => supabaseRequests.canonicalRows.some((entry) => entry.table === "workup_items" && entry.rows.some((row) => row.section_key === "history_questions")), "Supabase history item publish");
   const publishedHistoryRows = supabaseRequests.canonicalRows.find((entry) => entry.table === "workup_items" && entry.rows.some((row) => row.section_key === "history_questions"))?.rows || [];
   const publishedHistoryQuestion = publishedHistoryRows.find((row) => row.section_key === "history_questions" && row.group_key === "conditionalQuestions");

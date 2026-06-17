@@ -1,53 +1,39 @@
-# Phone Bedside And Return QR Design QA
+# Evidence Prompt Workbench Design QA
 
 final result: passed
 
-Source visual truth paths:
-- Active bedside exam concept: `C:\Users\AARONG~1\AppData\Local\Temp\codex-clipboard-eb2bd200-8e2b-4189-9d51-2909fa3241f3.png`
-- Completed return QR concept: `C:\Users\AARONG~1\AppData\Local\Temp\codex-clipboard-8f4a4bc7-e38c-4e74-8e3d-29af676a6056.png`
+Source visual truth path:
+- `C:\Users\AARONG~1\AppData\Local\Temp\codex-clipboard-328ec3b3-5f2d-478b-8fbe-759b59dc1a87.png`
 
-Implementation screenshot paths:
-- Active bedside phone: `C:\Users\Aaron Ge\AppData\Local\Temp\prerounding-phone-ui-qa\phone-bedside-active-final.png`
-- Completed return QR phone: `C:\Users\Aaron Ge\AppData\Local\Temp\prerounding-phone-ui-qa\phone-return-qr-complete-final.png`
-- Maximized return QR modal: `C:\Users\Aaron Ge\AppData\Local\Temp\prerounding-phone-ui-qa\phone-return-qr-maximized-final.png`
+Implementation screenshot path:
+- `C:\Users\Aaron Ge\Documents\GitHub\prerounding-checklist\artifacts\evidence-empty-state.png`
 
 Viewport and state:
-- 390x844 phone viewport.
-- Active bedside state: demo DKA consult loaded on phone, bedside exam in progress, first cardiopulmonary findings answered, long answer sets collapsed behind `More`.
-- Completed QR state: all 26 findings answered, phone defaults to Return QR.
-- Maximized QR state: Return QR opened from the completed screen with the fullscreen QR layout.
+- 1680x940 desktop viewport.
+- Demo DKA consult loaded through the normal no-save demo flow.
+- Evidence tab selected with Final rounds update selected.
+- Paste-back answer and imported phone answers are empty by default. This intentionally differs from the populated reference values because the user clarified that counts and pasted content must reflect actual app state, not mock screenshot data.
 
-Full-view comparison evidence:
-- Active bedside side-by-side: `C:\Users\Aaron Ge\AppData\Local\Temp\prerounding-phone-ui-qa\comparison-active-bedside.png`
-- Completed QR side-by-side: `C:\Users\Aaron Ge\AppData\Local\Temp\prerounding-phone-ui-qa\comparison-completed-qr.png`
+Required comparison points:
+- App shell: left product brand, centered patient title, top actions, persistent vault sidebar, horizontal patient tabs, and bottom safety/status bar match the reference structure.
+- Workbench layout: three-column prompt task list, selected prompt editor, and right paste-back rail match the target container model and spacing at desktop size.
+- Prompt task list: search, copy/OpenEvidence buttons, selected Final rounds update state, Ready/Waiting chips, row dividers, and scroll behavior match the reference interaction pattern.
+- Paste-back rail: empty state is honest by default; pasting valid `APP_PASTE_BACK_JSON` switches the preview to `Concise rounds report ready` and enables `Save rounds report`.
+- Imported phone answers: hidden when no imported phone rows exist; real imported rows render as grouped, collapsible, editable answer summaries instead of a fabricated `24 answers` count.
 
-Focused region evidence:
-- Maximized QR modal was inspected separately at `C:\Users\Aaron Ge\AppData\Local\Temp\prerounding-phone-ui-qa\phone-return-qr-maximized-final.png` because the reference includes a default QR state but the user added the maximize requirement. The close button audit reported `closeClipped: false`, and the QR fills most of the viewport.
+Above-the-fold copy diff:
+- Preserved source copy: `Pre-Rounding Checklist Builder`, `Local-first rounds workspace`, `Demo - DKA consult`, `Demo case`, `Open checklist`, `Discharge`, `Lock vault`, `Prompt workbench`, `Prompt tasks`, `Final rounds update`, `Paste-back answer`, `OpenEvidence answer`.
+- Intentional runtime copy: the populated reference text in the paste-back textarea, ready card, and imported answer count is replaced by empty-state copy until real data exists.
 
-**Findings**
-- No actionable P0/P1/P2 issues remain.
-
-**Required Fidelity Surfaces**
-- Fonts and typography: implementation uses the app's existing Inter/system stack with matching bold hierarchy, compact labels, and no visible clipped button labels after the final pass.
-- Spacing and layout rhythm: phone bedside now removes the left rail, uses the full viewport width, preserves the reference header-stepper-controls-section order, and keeps four compact exam rows fully usable above the fixed bottom actions at 390x844.
-- Colors and visual tokens: teal, pale teal, amber positive state, white cards, and light dividers match the reference palette and the existing app tokens.
-- Image quality and asset fidelity: the reference uses UI icons and QR codes rather than raster illustrations. App icons render from the existing icon system; QR codes are generated live from the local payload.
-- Copy and content: primary copy matches the requested flow: `Findings ready`, `Return QR`, `Copy findings for computer`, `Review findings`, `Add bedside note`, and `Maximize QR`.
-
-**Patches Made Since Previous QA**
-- Removed the mobile bedside sidebar rail from the active and completed phone states.
-- Added the completed `Findings ready` phone state with inline Return QR and copy fallback directly underneath.
-- Added `Maximize QR` from the completed phone state and a fullscreen QR modal with copy fallback.
-- Compacted active bedside exam rows while keeping all real clinical answer options reachable through a mobile-only `More` affordance.
-- Shortened phone-only section labels and answer labels to avoid chopped text.
-- Updated QR and handoff tests to follow the current desktop Findings-panel route.
-- Fixed the maximized QR modal close button so it does not wrap or clip.
-
-**Functional Checks**
+Functional checks:
+- Browser/IAB verification loaded `http://127.0.0.1:5187/index.html?view=evidence&codexDesignQa=1`.
+- Empty-state audit reported: selected task `Final rounds update`, empty answer textarea, preview status `empty`, imported row count `0`, imported phone panel hidden.
+- Paste-back audit: valid `open_evidence_rounds_pasteback_v1` JSON parsed, preview status changed to `ready`, and `Save rounds report` enabled.
+- Save audit: clicking `Save rounds report` stored the concise rounds report to the current patient update and announced success.
 - `npm.cmd run test:syntax` passed.
-- `npm.cmd run test:clinical-ui` passed.
-- `npm.cmd run test:desktop-ui` passed and covers desktop-to-phone handoff, phone QR entry, completed Return QR, maximize QR, fallback copy, and responsive layout checks.
+- `npm.cmd run test:open-evidence` passed.
 
-**Follow-up Polish**
-- P3: Real DKA sections and answer sets differ from the static concept, so tabs and rows are not exact content matches (`Resp`, `Endo`, `GI/GU`, `ID`, `All` rather than `Resp`, `Cardio`, `Neuro`, `Skin`, `All`). This is accepted because the implementation is data-driven and preserves all clinical options.
-- P3: The real Return QR is denser than the concept QR because it encodes the local findings payload. The maximized QR path addresses scanability.
+Known non-evidence test issue:
+- `npm.cmd run test:desktop-ui` currently fails in `testPhoneBundleRoundTrip` while waiting for the desktop-to-phone QR handoff payload/QR. This is outside the Evidence prompt workbench route changed here and occurs in a worktree with several pre-existing QR/handoff-related dirty files.
+
+No P0/P1/P2 evidence-workbench issues remain.

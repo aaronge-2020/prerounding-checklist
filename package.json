@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "npm run build:medical-knowledge",
+    "build:qr-dictionary": "node scripts/build-qr-zstd-dictionary.js",
     "build:evidence": "node scripts/build-physical-exam-evidence.js",
     "test": "npm run test:core && npm run test:clinical && npm run test:evidence-suite",
     "test:core": "npm run test:syntax && npm run test:deid && npm run test:labs && npm run test:checklist && npm run test:vault-entry && npm run test:vault-state && npm run test:continuity",
@@ -39,6 +40,8 @@
     "test:evidence:adversarial": "node scripts/test-evidence-adversarial.js",
     "test:workup-quality": "node scripts/test-clinical-workup-quality.js",
     "test:desktop-ui": "node scripts/test-desktop-responsive-ui.js",
+    "test:qr-optimizer": "node scripts/test-qr-zstd-dictionary.js && node scripts/test-qr-zstd-library-coverage.js",
+    "test:qr-library": "node scripts/test-qr-zstd-library-coverage.js",
     "test:intent-workup-audit": "node scripts/test-clinical-intent-workup-audit.js",
     "iterate:clinical-workups": "node scripts/iterate-clinical-workups.js --out=reports/clinical-workup-audit-current.md --json=reports/clinical-workup-audit-current.json --latest-out=reports/clinical-workup-audit-latest.md --latest-json=reports/clinical-workup-audit-latest.json",
     "generate:clinical-pathways": "node scripts/hand-polish-clinical-pathway-trees.js",
@@ -58,6 +61,7 @@
     "test:syntax": "node scripts/check-syntax.js"
   },
   "dependencies": {
+    "@bokuweb/zstd-wasm": "^0.0.27",
     "@huggingface/transformers": "4.2.0",
     "@supabase/ssr": "^0.12.0",
     "@supabase/supabase-js": "^2.108.2",

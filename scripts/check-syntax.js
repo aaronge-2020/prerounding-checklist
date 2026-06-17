@@ -49,7 +49,10 @@ for (const file of files) {
 const html = readFileSync("index.html", "utf8");
 
 const loadedVendorScripts = new Set(
-  [...html.matchAll(/<script\s+src="\.\/vendor\/([^"]+\.js)"/g)].map((match) => match[1])
+  [
+    ...[...html.matchAll(/<script\s+src="\.\/vendor\/([^"]+\.js)"/g)].map((match) => match[1]),
+    ...[...html.matchAll(/from\s+"\.\/vendor\/([^"]+\.js)"/g)].map((match) => match[1])
+  ]
 );
 for (const scriptName of loadedVendorScripts) {
   if (!existsSync(`vendor/${scriptName}`)) {
@@ -94,7 +97,7 @@ for (const requiredDirective of [
   "object-src 'none'",
   "form-action 'none'",
   "frame-src 'none'",
-  "script-src 'self' 'unsafe-inline'",
+  "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'",
   "worker-src 'self'",
   "connect-src 'self'",
   "style-src 'self' 'unsafe-inline'",

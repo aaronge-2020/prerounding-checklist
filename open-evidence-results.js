@@ -117,11 +117,43 @@ function extractChecklistText(text = "") {
 function parseJsonCandidate(value = "") {
   const text = String(value || "").trim();
   if (!text) return null;
-  try {
-    return JSON.parse(text);
-  } catch {
-    return null;
+  const attempts = Array.from(new Set([
+    text,
+    repairRoundsPasteBackJsonText(text)
+  ].filter(Boolean)));
+  for (const candidate of attempts) {
+    try {
+      return JSON.parse(candidate);
+    } catch {
+      // Try the next repaired candidate.
+    }
   }
+  return null;
+}
+
+function repairRoundsPasteBackJsonText(value = "") {
+  let text = String(value || "").trim();
+  if (!text) return "";
+  text = text
+    .replace(/<\/?em>/gi, "_")
+    .replace(/<\/?i>/gi, "_")
+    .replace(/&lt;\/?em&gt;/gi, "_")
+    .replace(/&lt;\/?i&gt;/gi, "_")
+    .replace(/"schema"\s*:\s*"open\*evidence\*rounds\*pasteback\*v1"/gi, '"schema":"open_evidence_rounds_pasteback_v1"')
+    .replace(/"presentationType"\s*:\s*"oral\*rounds\*soap"/gi, '"presentationType":"oral_rounds_soap"');
+  for (const field of ["subjective", "objective", "assessmentPlan", "followUpTasks", "bedsideRecheck"]) {
+    const pattern = new RegExp(`("${field}"\\s*:\\s*)(?=")`, "g");
+    text = text.replace(pattern, "$1[");
+  }
+  return text;
+}
+
+function normalizeSchemaToken(value = "") {
+  return cleanLine(value)
+    .replace(/<\/?em>/gi, "_")
+    .replace(/<\/?i>/gi, "_")
+    .replace(/\*/g, "_")
+    .replace(/_+/g, "_");
 }
 
 export function extractRoundsPasteBack(text = "") {
@@ -130,13 +162,18 @@ export function extractRoundsPasteBack(text = "") {
   const fencedPattern = /```(?:json)?\s*([\s\S]*?)```/gi;
   for (const match of normalized.matchAll(fencedPattern)) {
     const parsed = parseJsonCandidate(match[1]);
-    if (parsed?.schema === openEvidenceRoundsPasteBackSchema) {
+    if (normalizeSchemaToken(parsed?.schema) === openEvidenceRoundsPasteBackSchema) {
       return normalizeRoundsPasteBack(parsed);
     }
   }
-  const inlineMatch = normalized.match(/\{\s*"schema"\s*:\s*"open_evidence_rounds_pasteback_v1"[\s\S]*\}/);
-  const parsed = parseJsonCandidate(inlineMatch?.[0] || "");
-  return parsed?.schema === openEvidenceRoundsPasteBackSchema ? normalizeRoundsPasteBack(parsed) : null;
+  const inlineCandidates = normalized.match(/\{[\s\S]*?"schema"\s*:\s*"[^"]*"[\s\S]*?\}/g) || [];
+  for (const candidate of inlineCandidates) {
+    const parsed = parseJsonCandidate(candidate);
+    if (normalizeSchemaToken(parsed?.schema) === openEvidenceRoundsPasteBackSchema) {
+      return normalizeRoundsPasteBack(parsed);
+    }
+  }
+  return null;
 }
 
 export function normalizeRoundsPasteBack(value = {}) {

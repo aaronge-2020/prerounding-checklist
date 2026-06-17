@@ -348,11 +348,41 @@ const roundsParsedResult = parseOpenEvidenceResult({
 });
 assert.equal(roundsParsedResult.roundsPasteBack.plainTextSummary, "DKA improving; verify potassium and discharge supplies.");
 
+const repairedRoundsPasteBack = extractRoundsPasteBack(`{
+  "schema": "open<em>evidence</em>rounds<em>pasteback</em>v1",
+  "presentationType": "oral<em>rounds</em>soap",
+  "oneLiner": "Adult with diabetes admitted for moderate DKA.",
+  "subjective":
+    "Missed basal insulin",
+    "Needs sick-day education"
+  ],
+  "objective":
+    "Glucose 318",
+    "Anion gap 22"
+  ],
+  "assessmentPlan":
+    "Continue insulin until resolution criteria met"
+  ],
+  "followUpTasks":
+    "Trend BMP and VBG"
+  ],
+  "bedsideRecheck":
+    "Volume status"
+  ],
+  "plainTextSummary": "Moderate DKA; trend labs and confirm insulin access."
+}`);
+assert.equal(repairedRoundsPasteBack.schema, "open_evidence_rounds_pasteback_v1");
+assert.equal(repairedRoundsPasteBack.presentationType, "oral_rounds_soap");
+assert.deepEqual(repairedRoundsPasteBack.subjective, ["Missed basal insulin", "Needs sick-day education"]);
+
 assert.equal(getOpenEvidenceTask("not_a_task"), null, "unknown task lookup should return null");
 
 const appHtml = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 assert.ok(appHtml.includes("promptTemplatesByTaskId"), "OpenEvidence prompt templates should persist as first-class local state");
 assert.ok(appHtml.includes("todayOpenEvidencePasteInput"), "Today cockpit should accept standardized OpenEvidence rounds paste-back");
+assert.ok(appHtml.includes("todayRoundsPasteBackPreview"), "Today cockpit should render the saved concise rounds report JSON");
+assert.ok(appHtml.includes("Save rounds report"), "OpenEvidence review tab should save rounds paste-back JSON");
+assert.ok(appHtml.includes("saveRoundsPasteBackForActivePatient"), "app should persist rounds paste-back JSON to active patient state");
 assert.ok(appHtml.includes("extractRoundsPasteBack"), "Today cockpit should parse standardized OpenEvidence rounds paste-back locally");
 assert.ok(appHtml.includes("resolvePromptTemplate"), "OpenEvidence copy should resolve editable template variables before copying");
 assert.ok(appHtml.includes("Editable smart-phrase template"), "OpenEvidence review tab should show editable smart-phrase prompt templates");

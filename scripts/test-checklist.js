@@ -954,11 +954,15 @@ assert.ok(
     && appHtml.includes("clearStalePhonePayload")
     && appHtml.includes("payloadManifestHash === currentManifestHash")
     && appHtml.includes("assertMatchingPhoneChecklistManifest")
-    && appHtml.includes("phoneQr3")
+    && appHtml.includes("phoneQr4")
     && appHtml.includes("phoneChecklistManifestPatchOperations")
-    && appHtml.includes("phoneReturnQr5")
+    && appHtml.includes("phoneReturnQr6")
+    && appHtml.includes("QR_ZSTD_DICTIONARY_HASH")
+    && appHtml.includes("zstd-dict")
+    && appHtml.includes("W2Z:")
+    && appHtml.includes("A2Z:")
     && appHtml.includes("R5:"),
-  "phone handoff should reject stale checklist manifests, sync default-workup patches, and use the compact bitset return QR format"
+  "phone handoff should reject stale checklist manifests, sync default-workup patches, use the fixed local zstd dictionary QR codec, and keep legacy return QR fallback decoding"
 );
 assert.ok(
   appHtml.includes("Editable smart-phrase template")

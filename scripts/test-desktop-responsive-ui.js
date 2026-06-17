@@ -14,7 +14,9 @@ const mimeTypes = new Map([
   [".css", "text/css; charset=utf-8"],
   [".json", "application/json; charset=utf-8"],
   [".png", "image/png"],
-  [".svg", "image/svg+xml"]
+  [".svg", "image/svg+xml"],
+  [".wasm", "application/wasm"],
+  [".bin", "application/octet-stream"]
 ]);
 
 function assert(condition, message) {
@@ -280,10 +282,12 @@ async function installMockQrCamera(page, qrText, options = {}) {
     const scanTexts = (Array.isArray(textToScan) ? textToScan : [textToScan]).map((value) => String(value || "")).filter(Boolean);
     const qrModeForText = (text = "") => (/^[0-9A-Z $%*+\-./:]+$/.test(String(text || "")) ? "Alphanumeric" : "Byte");
     const qrTokenFromText = (text = "") => {
-      const direct = String(text || "").match(/(?:^|[#?&])(?:B|phoneBundle|qr)=((?:B4:|G:|gz\.|j\.)[^&#]+)/);
+      const direct = String(text || "").match(/(?:^|[#?&])(?:B|phoneBundle|qr)=((?:W2Z:|W1[RDBZ]:|B4:|G:|gz\.|j\.)[^&#]+)/);
       if (direct) return direct[1];
-      const returnDirect = String(text || "").match(/(?:^|[#?&])(?:phoneReturn|returnBundle)=((?:R5:|R4:|R:|rgz\.|rj\.)[^&#]+)/);
+      const returnDirect = String(text || "").match(/(?:^|[#?&])(?:phoneReturn|returnBundle)=((?:A2Z:|A1[RDBZ]:|R5:|R4:|R:|rgz\.|rj\.)[^&#]+)/);
       if (returnDirect) return returnDirect[1];
+      const rawChunk = String(text || "").match(/^[WA]C1%[A-F0-9]{8}%[0-9A-Z]+%[0-9A-Z]+%([0-9A-Z$*\-./:]+)$/);
+      if (rawChunk) return rawChunk[1];
       try {
         const url = new URL(String(text || ""), window.location.href);
         const params = new URLSearchParams((url.hash || url.search || "").replace(/^[#?]/, ""));
@@ -292,7 +296,7 @@ async function installMockQrCamera(page, qrText, options = {}) {
       } catch {
         // Fall through to direct payload handling.
       }
-      if (/^(?:B4:|G:|R5:|R4:|R:|gz\.|j\.|rgz\.|rj\.)/.test(String(text || ""))) return String(text || "");
+      if (/^(?:W2Z:|A2Z:|W1[RDBZ]:|A1[RDBZ]:|B4:|G:|R5:|R4:|R:|gz\.|j\.|rgz\.|rj\.)/.test(String(text || ""))) return String(text || "");
       return "";
     };
     const addQrData = (qr, text) => {
@@ -751,6 +755,11 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
     qrChunks: Number(document.querySelector("#phoneQrPanel")?.dataset.qrChunks || 0),
     qrJsonLength: Number(document.querySelector("#phoneQrPanel")?.dataset.qrJsonLength || 0),
     qrTokenLength: Number(document.querySelector("#phoneQrPanel")?.dataset.qrTokenLength || 0),
+    qrCodec: document.querySelector("#phoneQrPanel")?.dataset.qrCodec || "",
+    qrCodecFormat: document.querySelector("#phoneQrPanel")?.dataset.qrCodecFormat || "",
+    qrRawCborBytes: Number(document.querySelector("#phoneQrPanel")?.dataset.qrRawCborBytes || 0),
+    qrCompressedBytes: Number(document.querySelector("#phoneQrPanel")?.dataset.qrCompressedBytes || 0),
+    qrCodecCandidates: JSON.parse(document.querySelector("#phoneQrPanel")?.dataset.qrCodecCandidates || "[]"),
     qrStatus: document.querySelector("#phoneQrStatus")?.textContent || "",
     qrViewBox: document.querySelector("#phoneQrCode svg")?.getAttribute("viewBox") || "",
     qrBoxWidth: document.querySelector("#phoneQrCode")?.getBoundingClientRect().width || 0,
@@ -770,9 +779,17 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   assert(desktopQrAudit.qrBoxWidth >= Math.min(520, qrViewBoxSize), `desktop QR should render large enough for phone cameras: ${JSON.stringify(desktopQrAudit)}`);
   assert(desktopQrAudit.regenerateVisible && desktopQrAudit.copyVisible && desktopQrAudit.downloadVisible, `desktop handoff should expose regenerate/copy/download secondary actions: ${JSON.stringify(desktopQrAudit)}`);
   assert(/^Regenerate$/i.test(desktopQrAudit.regenerateText.trim()) && /Copy bundle/i.test(desktopQrAudit.copyText) && /^Download$/i.test(desktopQrAudit.downloadText.trim()), `desktop secondary actions should be simple regenerate/copy/download labels: ${JSON.stringify(desktopQrAudit)}`);
-  assert(/#B=B4:/.test(desktopQrAudit.qrLink) && desktopQrAudit.qrText === desktopQrAudit.qrLink, `desktop QR should expose the direct local CBOR deep link for tests: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
-  assert(desktopQrAudit.qrScanTexts.every((text) => /#B=B4:/.test(text)), `desktop QR itself should be a single direct local CBOR URL: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
-  assert(/^B4:[0-9A-Z$*\-./:]+$/.test(desktopQrAudit.qrToken), `desktop QR token should be a deflated CBOR alphanumeric local payload: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
+  assert(/#B=(?:W2Z:|W1[RDBZ]:|B4:)/.test(desktopQrAudit.qrLink), `desktop QR link should remain copyable as a browser deep link: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
+  assert(desktopQrAudit.qrText === desktopQrAudit.qrToken && desktopQrAudit.qrScanTexts.every((text) => text === desktopQrAudit.qrToken), `desktop QR itself should render the raw compact alphanumeric token for the in-app scanner: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
+  assert(/^W2Z:[0-9A-Z$*\-./:]+$/.test(desktopQrAudit.qrToken), `desktop QR token should use the fixed zstd-dictionary workup prefix: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
+  assert(desktopQrAudit.qrCodec && desktopQrAudit.qrCodecFormat && desktopQrAudit.qrRawCborBytes > 0 && desktopQrAudit.qrCompressedBytes > 0, `desktop QR should expose payload-size telemetry: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
+  {
+    const validCandidates = desktopQrAudit.qrCodecCandidates.filter((candidate) => candidate.supported && candidate.roundTrip && candidate.tokenLength > 0);
+    assert(desktopQrAudit.qrCodec === "Z" && desktopQrAudit.qrCodecFormat === "zstd-dict", `desktop QR should use the fixed local zstd dictionary codec: ${JSON.stringify(desktopQrAudit)}`);
+    assert(validCandidates.length === 1 && validCandidates[0].format === "zstd-dict" && /^[a-f0-9]{16}$/.test(validCandidates[0].dictionaryHash || ""), `desktop QR should record one fixed dictionary codec candidate: ${JSON.stringify(desktopQrAudit.qrCodecCandidates)}`);
+    const chosen = validCandidates.find((candidate) => candidate.chosen);
+    assert(chosen && desktopQrAudit.qrTokenLength === chosen.tokenLength, `desktop QR telemetry should match the fixed zstd-dict token: ${JSON.stringify({ chosen, candidates: desktopQrAudit.qrCodecCandidates })}`);
+  }
   assert(/^[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(desktopCode), `desktop handoff should generate a pairing code, got ${desktopCode}`);
   assert(/^[a-f0-9]{16}$/.test(desktopBundle.manifestHash || ""), `desktop handoff should include a deterministic checklist manifest hash, got ${desktopBundle.manifestHash}`);
   assert(desktopBundle.checklistFingerprint === desktopBundle.manifestHash && desktopBundle.checklistManifestHash === desktopBundle.manifestHash, `desktop handoff should use the manifest hash consistently: ${JSON.stringify({ manifestHash: desktopBundle.manifestHash, checklistManifestHash: desktopBundle.checklistManifestHash, checklistFingerprint: desktopBundle.checklistFingerprint })}`);
@@ -806,7 +823,7 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
     storageKeys: Object.keys(localStorage)
   }));
   assert(qrPhoneAudit.view === "bedside", `QR link should bypass vault entry and open bedside view: ${JSON.stringify(qrPhoneAudit)}`);
-  assert(/Demo - DKA consult/i.test(qrPhoneAudit.caseTitle), `QR link should preserve case title: ${JSON.stringify(qrPhoneAudit)}`);
+  assert(/Phone checklist/i.test(qrPhoneAudit.caseTitle) && !/Demo - DKA consult/i.test(qrPhoneAudit.caseTitle), `QR sync should avoid carrying the desktop case title in the camera payload: ${JSON.stringify(qrPhoneAudit)}`);
   assert(/bedside physical exam/i.test(qrPhoneAudit.subhead), `QR bedside screen should match the selected bedside exam design: ${JSON.stringify(qrPhoneAudit)}`);
   assert(/\d+\/\d+ answered/i.test(qrPhoneAudit.progress), `QR bedside screen should show mobile progress in the header: ${JSON.stringify(qrPhoneAudit)}`);
   assert(qrPhoneAudit.rowCount >= 8, `QR link should load checklist rows: ${JSON.stringify(qrPhoneAudit)}`);
@@ -891,7 +908,7 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
     storageKeys: Object.keys(localStorage)
   }));
   assert(scannerAudit.view === "bedside", `camera scanner should open bedside view from the QR feed: ${JSON.stringify(scannerAudit)}`);
-  assert(/Demo - DKA consult/i.test(scannerAudit.caseTitle), `camera scanner should preserve case title: ${JSON.stringify(scannerAudit)}`);
+  assert(/Phone checklist/i.test(scannerAudit.caseTitle) && !/Demo - DKA consult/i.test(scannerAudit.caseTitle), `camera scanner QR sync should avoid carrying the desktop case title: ${JSON.stringify(scannerAudit)}`);
   assert(scannerAudit.rowCount >= 8, `camera scanner should load checklist rows: ${JSON.stringify(scannerAudit)}`);
   assert(scannerAudit.storageKeys.length === 0, `camera scanner session should not write patient data to localStorage: ${JSON.stringify(scannerAudit)}`);
   await scannerContext.close();
@@ -1017,7 +1034,30 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   await phonePage.waitForSelector("#bedsideCompletionPanel:not([hidden])");
   await phonePage.waitForSelector("#bedsideCompletionQrCode svg", { timeout: 45000 });
   const returnQrText = await phonePage.evaluate(() => document.querySelector("#bedsideCompletionPanel")?.dataset.qrText || "");
-  assert(/^R5:/.test(returnQrText) && !/#H=/.test(returnQrText), `completed phone return QR should be a direct local bitset return token in HIPAA-restricted mode: ${returnQrText.slice(0, 120)}`);
+  const returnQrAudit = await phonePage.evaluate(() => ({
+    qrText: document.querySelector("#bedsideCompletionPanel")?.dataset.qrText || "",
+    qrScanTexts: JSON.parse(document.querySelector("#bedsideCompletionPanel")?.dataset.qrScanTexts || "[]"),
+    qrToken: document.querySelector("#bedsideCompletionPanel")?.dataset.qrToken || "",
+    qrModules: Number(document.querySelector("#bedsideCompletionPanel")?.dataset.qrModules || 0),
+    qrMaxModules: Number(document.querySelector("#bedsideCompletionPanel")?.dataset.qrMaxModules || 0),
+    qrChunks: Number(document.querySelector("#bedsideCompletionPanel")?.dataset.qrChunks || 0),
+    qrTokenLength: Number(document.querySelector("#bedsideCompletionPanel")?.dataset.qrTokenLength || 0),
+    qrCodec: document.querySelector("#bedsideCompletionPanel")?.dataset.qrCodec || "",
+    qrCodecFormat: document.querySelector("#bedsideCompletionPanel")?.dataset.qrCodecFormat || "",
+    qrRawCborBytes: Number(document.querySelector("#bedsideCompletionPanel")?.dataset.qrRawCborBytes || 0),
+    qrCompressedBytes: Number(document.querySelector("#bedsideCompletionPanel")?.dataset.qrCompressedBytes || 0),
+    qrCodecCandidates: JSON.parse(document.querySelector("#bedsideCompletionPanel")?.dataset.qrCodecCandidates || "[]")
+  }));
+  assert(/^A2Z:/.test(returnQrAudit.qrToken) && returnQrAudit.qrText === returnQrAudit.qrToken && !/#H=/.test(returnQrText), `completed phone return QR should be a direct fixed zstd-dictionary local bitset return token in HIPAA-restricted mode: ${JSON.stringify(returnQrAudit).slice(0, 500)}`);
+  assert(returnQrAudit.qrChunks === 1 && returnQrAudit.qrMaxModules <= 155, `completed phone return QR should stay one frame whenever possible: ${JSON.stringify(returnQrAudit).slice(0, 500)}`);
+  assert(returnQrAudit.qrCodec && returnQrAudit.qrCodecFormat && returnQrAudit.qrRawCborBytes > 0 && returnQrAudit.qrCompressedBytes > 0, `completed phone return QR should expose payload-size telemetry: ${JSON.stringify(returnQrAudit).slice(0, 500)}`);
+  {
+    const validCandidates = returnQrAudit.qrCodecCandidates.filter((candidate) => candidate.supported && candidate.roundTrip && candidate.tokenLength > 0);
+    assert(returnQrAudit.qrCodec === "Z" && returnQrAudit.qrCodecFormat === "zstd-dict", `return QR should use the fixed local zstd dictionary codec: ${JSON.stringify(returnQrAudit)}`);
+    assert(validCandidates.length === 1 && validCandidates[0].format === "zstd-dict" && /^[a-f0-9]{16}$/.test(validCandidates[0].dictionaryHash || ""), `return QR should record one fixed dictionary codec candidate: ${JSON.stringify(returnQrAudit.qrCodecCandidates)}`);
+    const chosen = validCandidates.find((candidate) => candidate.chosen);
+    assert(chosen && returnQrAudit.qrTokenLength === chosen.tokenLength, `return QR telemetry should match the fixed zstd-dict token: ${JSON.stringify({ chosen, candidates: returnQrAudit.qrCodecCandidates })}`);
+  }
   assert(mailbox.store.size === 0, `HIPAA-restricted default should not upload phone return findings to the encrypted mailbox: ${mailbox.store.size}`);
   const completionAudit = await phonePage.evaluate(() => ({
     title: document.querySelector("#bedsideCompletionTitle")?.textContent || "",
@@ -1130,10 +1170,10 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
     appliedConstraints: JSON.stringify(window.__mockQrCameraState?.appliedConstraints || [])
   }));
   assert(desktopScannerAudit.view === "workspace" && desktopScannerAudit.patientTab === "evidence" && /Final rounds update/i.test(desktopScannerAudit.selectedPrompt) && desktopScannerAudit.promptVisible, `desktop should open the final prompts screen after phone QR import: ${JSON.stringify(desktopScannerAudit)}`);
-  assert(desktopScannerAudit.importSummaryVisible && desktopScannerAudit.importSummaryCount >= 1 && /Answer:/i.test(desktopScannerAudit.importSummaryText), `desktop prompts screen should summarize imported phone answers for confirmation: ${JSON.stringify(desktopScannerAudit)}`);
+  assert(desktopScannerAudit.importSummaryVisible && desktopScannerAudit.importSummaryCount >= 1 && /Answer/i.test(desktopScannerAudit.importSummaryText), `desktop prompts screen should summarize imported phone answers for confirmation: ${JSON.stringify(desktopScannerAudit)}`);
   assert(/Opening prompts/i.test(desktopScannerAudit.liveStatus), `desktop should announce prompt navigation after phone import: ${JSON.stringify(desktopScannerAudit)}`);
   assert(/imported/i.test(desktopScannerAudit.scannerStatus), `desktop scanner should report imported phone QR: ${JSON.stringify(desktopScannerAudit)}`);
-  assert(/^R5:/.test(desktopScannerAudit.importValue), `desktop scanner should place scanned direct bitset return QR text in the import box: ${JSON.stringify(desktopScannerAudit)}`);
+  assert(/^A2Z:/.test(desktopScannerAudit.importValue), `desktop scanner should place scanned direct fixed zstd-dictionary bitset return QR text in the import box: ${JSON.stringify(desktopScannerAudit)}`);
   assert(desktopScannerAudit.answeredRows >= 1, `desktop scanner should merge answered checklist rows: ${JSON.stringify(desktopScannerAudit)}`);
   assert(desktopScannerAudit.firstFacingMode === "user", `desktop return scanner should prefer the user-facing laptop camera: ${JSON.stringify(desktopScannerAudit)}`);
   assert(/focusMode.*continuous|continuous.*focusMode/.test(desktopScannerAudit.appliedConstraints), `desktop return scanner should request continuous focus when available: ${JSON.stringify(desktopScannerAudit)}`);
@@ -1146,18 +1186,31 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
       panelHeight: Math.round(panelRect?.height || 0),
       maxHeight: getComputedStyle(panel).maxHeight,
       listOverflowY: listStyle?.overflowY || "",
-      answerEditors: document.querySelectorAll("#phoneImportSummaryList textarea[aria-label^='Edit imported answer']").length,
-      noteEditors: document.querySelectorAll("#phoneImportSummaryList textarea[aria-label^='Edit imported note']").length,
+      answerEditors: document.querySelectorAll("#phoneImportSummaryList select[aria-label^='Edit imported answer'], #phoneImportSummaryList textarea[aria-label^='Edit imported answer']").length,
+      noteEditors: document.querySelectorAll("#phoneImportSummaryList input[aria-label^='Edit imported note'], #phoneImportSummaryList textarea[aria-label^='Edit imported note']").length,
       openButtons: document.querySelectorAll("#phoneImportSummaryList .phone-import-open-item").length
     };
   });
   assert(importPanelLayoutAudit.panelHeight <= 390 && importPanelLayoutAudit.listOverflowY === "auto", `imported phone answer summary should be height-capped with internal scrolling: ${JSON.stringify(importPanelLayoutAudit)}`);
   assert(importPanelLayoutAudit.answerEditors >= 1 && importPanelLayoutAudit.noteEditors >= 1 && importPanelLayoutAudit.openButtons >= 1, `imported phone answers should be directly editable with checklist shortcuts: ${JSON.stringify(importPanelLayoutAudit)}`);
-  const importedAnswerEditor = desktopPage.locator("#phoneImportSummaryList textarea[aria-label^='Edit imported answer']").first();
-  await importedAnswerEditor.fill("Edited imported answer for verification");
-  await importedAnswerEditor.blur();
-  await desktopPage.waitForFunction(() => /Edited imported answer for verification/i.test(document.querySelector("#finalUpdatePreview")?.textContent || ""));
-  const importedNoteEditor = desktopPage.locator("#phoneImportSummaryList textarea[aria-label^='Edit imported note']").first();
+  await desktopPage.locator("#phoneImportSummaryList .phone-import-summary-row").first().click();
+  const importedAnswerTextarea = desktopPage.locator("#phoneImportSummaryList textarea[aria-label^='Edit imported answer']").first();
+  if (await importedAnswerTextarea.count()) {
+    await importedAnswerTextarea.fill("Edited imported answer for verification");
+    await importedAnswerTextarea.blur();
+    await desktopPage.waitForFunction(() => /Edited imported answer for verification/i.test(document.querySelector("#finalUpdatePreview")?.textContent || ""));
+  } else {
+    const importedAnswerSelect = desktopPage.locator("#phoneImportSummaryList select[aria-label^='Edit imported answer']").first();
+    const selectedValue = await importedAnswerSelect.evaluate((select) => {
+      const options = Array.from(select.options).map((option) => option.value).filter(Boolean);
+      return options[Math.min(1, Math.max(options.length - 1, 0))] || "";
+    });
+    if (selectedValue) {
+      await importedAnswerSelect.selectOption(selectedValue);
+      await desktopPage.waitForFunction((value) => (document.querySelector("#finalUpdatePreview")?.textContent || "").includes(value), selectedValue);
+    }
+  }
+  const importedNoteEditor = desktopPage.locator("#phoneImportSummaryList input[aria-label^='Edit imported note'], #phoneImportSummaryList textarea[aria-label^='Edit imported note']").first();
   await importedNoteEditor.fill("Edited imported note for verification");
   await importedNoteEditor.blur();
   await desktopPage.waitForFunction(() => /Edited imported note for verification/i.test(document.querySelector("#finalUpdatePreview")?.textContent || ""));
