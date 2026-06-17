@@ -498,30 +498,25 @@ ${guidelineExceptionsPasteBackContract}`
 function attendingPlanPrompt(context) {
   return buildPatientPrompt(
     context,
-    `<role>
-Attending physician giving a concise assessment and plan to help a learner understand safe next steps.
-</role>
-
-${taskBoundary({
-  primary: "Give patient-specific management recommendations based on current guidelines and literature.",
+    `${taskBoundary({
+  primary: "Using OpenEvidence, identify evidence-supported management considerations for the de-identified case below, organized by active problem.",
   notFor: [
     "a compact rounds presentation script",
-    "a medication-only safety check",
+    "a medication-only review",
     "a teaching handout",
     "a discharge logistics checklist"
   ]
 })}
 
-<task>
-Create concise attending-level management recommendations from supported facts. Use OpenEvidence's current guideline/literature access for recommendation support and thresholds.
-</task>`,
+<clinical_question>
+For each active problem in the case below, what do current guidelines and literature recommend regarding management approach, diagnostic workup, monitoring thresholds, and factors that would change the plan? Cite your sources.
+</clinical_question>`,
     `<output_format>
-Use concise bullets only.
-Organize by active problem.
-For each problem, include management recommendations, diagnostic workup, monitoring/escalation thresholds, and what would change the plan.
-For each recommendation, include an inline citation to the latest guideline or literature OpenEvidence can support.
-State uncertainty explicitly and avoid inventing orders or facts.
-Do not write a full SOAP note; focus on management.
+Use concise bullets only, organized by active problem.
+For each problem, note evidence-supported considerations: management approach, diagnostic workup, monitoring and escalation thresholds.
+Include an inline citation to the latest guideline or literature OpenEvidence can support for each recommendation.
+State uncertainty explicitly and avoid inventing facts.
+Do not write a full SOAP note; focus on evidence for each problem.
 </output_format>
 
 ${attendingPlanPasteBackContract}`
@@ -531,34 +526,30 @@ ${attendingPlanPasteBackContract}`
 function teachingPrompt(context) {
   return buildPatientPrompt(
     context,
-    `<role>
-Attending physician teaching an early third-year medical student.
-</role>
-
-${taskBoundary({
-  primary: "Explain the full SOAP report so a new third-year medical student can understand the case and reasoning.",
+    `${taskBoundary({
+  primary: "Using OpenEvidence, explain the key clinical concepts and reasoning for the de-identified case below in plain language suitable for a medical learner.",
   notFor: [
-    "a directive attending plan",
-    "a medication safety audit",
+    "a directive management plan",
+    "a medication review",
     "a guideline citation audit",
-    "a discharge readiness checklist",
+    "a discharge checklist",
     "a blind-spot review"
   ]
 })}
 
-<task>
-Create a teaching report that follows the full SOAP structure, expands medical abbreviations, and explains why each clinically important detail matters.
-</task>`,
+<clinical_question>
+Using the case below as a worked example, explain the clinical reasoning: why key symptoms, exam findings, labs, imaging, and management choices matter. Spell out abbreviations and define terms. Reference supporting evidence or guidelines where applicable.
+</clinical_question>`,
     `<output_format>
 Use SOAP headings:
 I. SUBJECTIVE
 II. OBJECTIVE
 III. ASSESSMENT AND PLAN
-Within each section, use bullets with short explanations in plain language for a brand-new third-year medical student.
-Spell out all non-obvious abbreviations and briefly define them on first use.
-Explain the clinical reasoning behind important symptoms, exam findings, lab trends, imaging, medications, and management choices.
-Include enough background for the learner to understand the case, but keep it patient-specific rather than a generic textbook chapter.
-Do not include a reading plan or external links unless directly needed to explain a cited management recommendation.
+Within each section, use bullets with short plain-language explanations suitable for a medical learner.
+Spell out abbreviations and briefly define them on first use.
+Explain the clinical reasoning behind important findings and choices.
+Keep the explanation patient-specific; do not write a generic textbook chapter.
+Do not include a reading plan or external links unless directly needed to explain a cited recommendation.
 </output_format>
 
 ${teachingExplanationPasteBackContract}`
@@ -568,30 +559,25 @@ ${teachingExplanationPasteBackContract}`
 function dischargePrompt(context) {
   return buildPatientPrompt(
     context,
-    `<role>
-Attending physician checking discharge readiness and transition safety.
-</role>
-
-${taskBoundary({
-  primary: "Assess whether the patient is approaching a safe transition out of the hospital and what barriers remain.",
+    `${taskBoundary({
+  primary: "Using OpenEvidence, identify evidence-supported discharge readiness and transition considerations for the de-identified case below.",
   notFor: [
     "a full inpatient assessment and plan",
-    "a medication-only safety audit except discharge medications and supplies",
+    "a medication-only review except discharge medications and supplies",
     "a teaching handout",
     "a general blind-spot review",
     "a guideline currency audit"
   ]
 })}
 
-<task>
-Identify case-specific discharge readiness, transition barriers, follow-up, supplies, counseling, and unresolved safety issues.
-</task>`,
+<clinical_question>
+What evidence or guidelines inform discharge readiness, transition barriers, follow-up needs, supplies, counseling, and return precautions for the clinical scenario described below?
+</clinical_question>`,
     `<output_format>
 Use at most 5 bullets total.
-Prefix every bullet with BARRIER, SUPPLY, FOLLOW-UP, COUNSEL, or RETURN.
-Include only discharge-limiting barriers, medication/supply/access issues, follow-up or handoff needs, counseling that changes safety, or return precautions.
-Do not include inpatient tasks unless they determine discharge readiness.
-Do not include citations or a reference list. Do not include source names, journal names, society names, evidence grades, or bracketed citation markers.
+Prefix each with BARRIER, SUPPLY, FOLLOW-UP, COUNSEL, or RETURN.
+Include only evidence-supported discharge considerations relevant to this case.
+Do not include citations or a reference list.
 Do not rewrite the inpatient plan except where it directly affects discharge readiness.
 </output_format>
 
@@ -602,32 +588,26 @@ ${dischargeReadinessPasteBackContract}`
 function missingPrompt(context) {
   return buildPatientPrompt(
     context,
-    `<role>
-Attending physician pressure-testing a medical student's prerounding plan.
-</role>
-
-${taskBoundary({
-  primary: "Provide a second-look safety and reasoning audit that finds important omissions not already covered by the specialized tasks.",
+    `${taskBoundary({
+  primary: "Using OpenEvidence, identify evidence-supported clinical considerations that may be easily overlooked in the de-identified case below.",
   notFor: [
-    "a complete rounds report",
-    "a full attending assessment and plan",
-    "a medication-only audit unless a medication issue is a major blind spot",
+    "a complete case report",
+    "a full management plan",
+    "a medication-only review unless a medication issue is a major blind spot",
     "a guideline citation review",
     "a teaching guide",
-    "a discharge checklist unless discharge is the main blind spot"
+    "a discharge checklist unless discharge is the main concern"
   ]
 })}
 
-<task>
-Find high-yield blind spots: diagnostic misses, monitoring gaps, red flags, missing follow-up data, communication gaps, escalation triggers, and locally unvalidated checklist gaps.
-</task>`,
+<clinical_question>
+For the case below, what evidence or guidelines suggest diagnostic considerations, monitoring items, red flags, or follow-up steps that are commonly missed? Cite sources for each point.
+</clinical_question>`,
     `<output_format>
 Use at most 5 bullets total.
-Prefix every bullet with MISS, VERIFY, ESCALATE, ASK, or UNVALIDATED GAP.
-Include only true blind spots that could change diagnosis, treatment, monitoring, escalation, disposition, communication, or local checklist review.
-Only use ASK when the answer requires team judgment or unavailable context. Put self-checkable facts under VERIFY.
-Label every bedside checklist addition idea with the UNVALIDATED GAP prefix.
-Do not perform a guideline review or literature search. Do not include citations or a reference list.
+Prefix each with MISS, VERIFY, ESCALATE, or UNVALIDATED GAP.
+Include only evidence-supported points.
+Include an inline citation for each evidence-based concern.
 Do not include low-yield distractions or padding.
 </output_format>
 
@@ -673,9 +653,7 @@ If both sections need edits, return two fenced JSON blocks.`
     : "Output only one fenced JSON block with the clinically useful checklist edits.";
   return [
     clinicalQuestion,
-    commonClinicalRules,
-    abbreviationRules,
-    usefulnessRules,
+    EVIDENCE_GUARDRAILS,
     context.userContext || "",
     block("deidentified_patient_context", context.checklistPatientSummary),
     block("objective_data", context.objectiveData),
@@ -730,33 +708,28 @@ Do not include identifiers, exact dates, room numbers, medical record numbers, o
 function decisionTreeBuilderPrompt(context) {
   const workupTitle = clean(context.selectedWorkupTitle) || "[INSERT WORKUP TITLE]";
   const workupId = clean(context.selectedWorkupId) || "[INSERT WORKUP ID]";
-  return `You are designing a compact clinical management algorithm, not a guideline summary.
+  return `Using OpenEvidence, produce a structured evidence-based clinical pathway for the condition below. The output should be compact, guideline-supported JSON.
 
-Create a protocol-style decision tree for:
-WORKUP_TITLE: ${workupTitle}
-WORKUP_ID: ${workupId}
+Condition: ${workupTitle}
+Workup ID: ${workupId}
 
-Style target:
-AHA/ACLS, UpToDate, or society-protocol algorithm. Each node should be a diagram box that a clinician can act on.
+<guidance>
+Each node should reflect a decision or action point supported by current evidence or guidelines.
+A node is included only if evidence supports that it determines urgency, starts a treatment approach, stops an unsafe approach, defines reassessment criteria, or determines appropriate disposition.
+</guidance>
 
-Core rule:
-A node exists only if it changes management, determines urgency, starts a treatment bundle, stops unsafe treatment, defines reassessment, or determines disposition.
-
-Do not generate:
-- "missing data" nodes
-- generic "assess" nodes
-- generic "consider" nodes
-- "clinician review" nodes without a specific trigger and action
-- one-node-per-lab trees
-- one-node-per-criterion trees
-- vague endpoints like "treat DKA," "monitor," or "follow up"
+Do not include:
+- nodes for missing data
+- generic "assess" or "consider" nodes without specific triggers
+- one node per lab or criterion
+- vague endpoints
 
 Instead:
-- Combine related diagnostic criteria in one decision box.
-- Combine related treatments into one action box.
-- Combine monitoring frequency, response targets, and escalation triggers into one reassessment box.
-- Put exact thresholds and doses in the box text when guideline-supported.
-- Branch only when the next action is different.
+- Combine related diagnostic criteria into one decision node.
+- Combine related treatment evidence into one action node.
+- Combine monitoring intervals, response targets, and escalation triggers into one reassessment node.
+- Put evidence-supported thresholds and doses in the node text.
+- Branch only when evidence supports a different next step.
 
 Return only valid JSON.
 
@@ -782,7 +755,7 @@ Every node:
   "id": "stable_unique_id",
   "label": "short box title",
   "type": "action | decision | endpoint",
-  "boxText": "clinically specific display text; may include multiple bullets or semicolon-separated actions",
+  "boxText": "specific display text reflecting evidence; may include multiple bullets or semicolon-separated actions",
   "source_ids": [],
   "children": []
 }
@@ -791,21 +764,20 @@ Every child of a decision node must include:
 "edgeLabel": "specific branch criterion"
 
 Algorithm architecture:
-1. Activation box: who enters the pathway.
-2. Unstable/red-flag decision: identifies immediate high-acuity care.
-3. Classification decision: combines diagnostic criteria that separate major pathways.
-4. Safety-stop decision: only if a treatment can cause harm without a prerequisite.
-5. Treatment bundle: exact first-line management, doses, thresholds, and exceptions.
-6. Reassessment decision: response targets, monitoring frequency, and failure criteria.
-7. Transition/disposition endpoint: stopping criteria, discharge/follow-up, safety net.
+1. Activation: who enters the pathway.
+2. Unstable/red-flag decision: identifies immediate high-acuity care needs.
+3. Classification decision: combines diagnostic criteria that separate major evidence-based pathways.
+4. Safety-stop decision: only if evidence supports that a treatment can cause harm without a prerequisite.
+5. Treatment: evidence-supported first-line approach, doses, thresholds, and exceptions.
+6. Reassessment decision: response targets, monitoring frequency, and failure criteria per evidence.
+7. Transition/disposition: stopping criteria, discharge/follow-up, safety net per evidence.
 
 Quality test before final output:
 - Would this fit on one page?
 - Is each box worth showing in a diagram?
-- Does every branch change management?
-- Does every treatment box say exactly what to do?
-- Are doses, thresholds, monitoring intervals, escalation triggers, and stopping criteria explicit?
-- Are any nodes just documentation, missing-data bookkeeping, or guideline trivia? If yes, delete or merge them.`;
+- Does every branch point reflect evidence?
+- Does every treatment node specify what evidence supports?
+- Are thresholds, monitoring intervals, and stopping criteria evidence-based?`;
 }
 
 export const openEvidenceTasks = [
