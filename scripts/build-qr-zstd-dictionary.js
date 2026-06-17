@@ -2,9 +2,10 @@ import { spawn } from "node:child_process";
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { complaintModules } from "../complaint-cds.js";
+import { complaintModules, evaluateComplaintCds } from "../complaint-cds.js";
 import { buildLocalChecklistFromWorkup, checklistItemOptions, checklistPrompt, groupChecklistSectionsByOrganSystem, newAdmissionChecklistPrompt, parseChecklist } from "../checklist.js";
 import { openEvidenceTasks } from "../open-evidence-workflows.js";
+import { clinicalIntentRegistry } from "../clinical-intents.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, "..");
@@ -436,6 +437,51 @@ export async function buildQrZstdTrainingCorpus() {
     samples.push(stableJsonStringify(compactWorkupPayloadForManifest(manifest)));
     samples.push(stableJsonStringify(compactWorkupPayloadForManifest(manifest, "", "", { includeRepresentativePatch: true })));
     samples.push(stableJsonStringify(compactReturnPayloadForManifest(manifest)));
+  }
+
+  const validatedIntents = clinicalIntentRegistry.filter((intent) => intent.status === "validated");
+  for (const intent of validatedIntents) {
+    if (!intent.complaint_module_id) continue;
+    const module = complaintModules.find((m) => m.id === intent.complaint_module_id);
+    if (!module) continue;
+    try {
+      const complaintResult = evaluateComplaintCds(
+        intent.label,
+        {},
+        {
+          module,
+          modules: [module],
+          validatedIntents: [intent],
+          setting: "General medicine",
+          population: intent.intent_id.includes("pediatric") ? "Pediatric" : "Adult"
+        }
+      );
+      const checklist = buildLocalChecklistFromWorkup(
+        { complaintResult, recommendation: complaintResult?.recommendation || module, selectedIntents: [intent] },
+        { allowGenericFallbacks: true, maxBedsideQuestions: 18, maxExamItems: 15, includeSafetyInExamChecklist: true }
+      );
+      if (!checklist) continue;
+      const parsedSections = parseChecklist(checklist);
+      let sections = parsedSections;
+      try {
+        sections = groupChecklistSectionsByOrganSystem(parsedSections, { throwOnError: true });
+      } catch {
+        sections = parsedSections;
+      }
+      const manifest = manifestForSections(sections, module.id || "");
+      samples.push([
+        intent.intent_id,
+        intent.label,
+        (intent.aliases || []).join(" "),
+        checklist
+      ].filter(Boolean).join("\n"));
+      samples.push(stableJsonStringify(manifest));
+      samples.push(stableJsonStringify(compactWorkupPayloadForManifest(manifest)));
+      samples.push(stableJsonStringify(compactWorkupPayloadForManifest(manifest, "", "", { includeRepresentativePatch: true })));
+      samples.push(stableJsonStringify(compactReturnPayloadForManifest(manifest)));
+    } catch (error) {
+      console.warn(`Warning: Failed to generate checklist for intent ${intent.intent_id}:`, error?.message || error);
+    }
   }
 
   const registrySource = stableJsonStringify({

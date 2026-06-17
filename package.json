@@ -6,6 +6,7 @@
   "scripts": {
     "build": "npm run build:medical-knowledge",
     "build:qr-dictionary": "node scripts/build-qr-zstd-dictionary.js",
+    "check:qr-dictionary": "node scripts/check-qr-dictionary.js",
     "build:evidence": "node scripts/build-physical-exam-evidence.js",
     "test": "npm run test:core && npm run test:clinical && npm run test:evidence-suite",
     "test:core": "npm run test:syntax && npm run test:deid && npm run test:labs && npm run test:checklist && npm run test:vault-entry && npm run test:vault-state && npm run test:continuity",
