@@ -11,7 +11,6 @@ const coreFiles = [
   "complaint-cds.js",
   "continuity.js",
   "deid.js",
-  "deid-worker.js",
   "embedding-recall.js",
   "evidence.js",
   "labs.js",

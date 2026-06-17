@@ -54,8 +54,6 @@
     "test:endocrine-knowledge": "node scripts/test-endocrine-knowledge.js",
     "test:embedding": "node scripts/test-embedding-recall.js",
     "test:clinical-ui": "node scripts/test-clinical-ui-browser.js",
-    "test:deid:adversarial": "node scripts/test-deid-adversarial.js",
-    "generate:deid:adversarial": "node scripts/generate-deid-adversarial-cases.js",
     "benchmark:deid": "node scripts/benchmark-deid.js",
     "benchmark:deid:large": "node scripts/benchmark-deid.js --include-large",
     "benchmark:embedding": "node scripts/benchmark-embedding-models.js",

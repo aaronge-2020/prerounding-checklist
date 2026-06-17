@@ -34,7 +34,6 @@ const overlayRows = parseCsv(readFileSync("data/evidence/exam_evidence_overlay.c
 const legacyOverlayRows = parseCsv(readFileSync("data/physical-exam/physical_exam_evidence_overlay.csv", "utf8"));
 const acceptedCatalogAdditionRows = parseCsv(readFileSync("data/evidence/accepted_exam_catalog_additions.csv", "utf8"));
 const tagRows = parseCsv(readFileSync("data/evidence/retrieval_tag_dictionary.csv", "utf8"));
-const queueRows = parseCsv(readFileSync("data/evidence/priority_enrichment_queue.csv", "utf8"));
 const sourceRows = parseCsv(readFileSync("data/evidence/source_registry.csv", "utf8"));
 const gapRows = parseCsv(readFileSync("data/evidence/catalog_gap_registry.csv", "utf8"));
 const sourceIds = new Set(sourceRows.map((row) => row.source_id));
@@ -297,7 +296,6 @@ assert.ok(
 );
 assert.ok(overlayRows.length >= 75 && overlayRows.length <= 100, "first overlay wave should contain 75 to 100 rows");
 assert.ok(mergedOverlayRows.length >= overlayRows.length, "legacy physical overlay should supplement the requested evidence overlay");
-assert.ok(queueRows.length >= 75 && queueRows.length <= 100, "priority queue should contain 75 to 100 rows");
 
 const overlayIds = new Set();
 overlayRows.forEach((row) => {
@@ -350,10 +348,6 @@ assert.ok(adrenalTags.includes("adrenal_insufficiency"), "adrenal context should
 assert.ok(!adrenalTags.includes("AKI"), "single-word renal trigger should not match inside adrenal");
 const stomachCrampTags = extractEvidenceTags(expandEvidenceContextText("Stomach cramps after dinner."), tagRows).map((match) => match.tag);
 assert.ok(stomachCrampTags.includes("abdominal_pain"), "lay term stomach cramps should expand to abdominal pain evidence tags");
-
-queueRows.forEach((row) => {
-  assert.ok(overlayIds.has(row.exam_id), `${row.exam_id} in priority queue should exist in overlay`);
-});
 
 const mergedVisualAcuity = catalog.find((candidate) => candidate.base?.exam_id === "neuro_cranial_nerves_cn_ii_visual_acuity");
 assert.ok(mergedVisualAcuity, "merged catalog should include visual acuity");

@@ -5,7 +5,7 @@ Reference data lives here so the repo root stays focused on the browser app modu
 ## Folders
 
 - `physical-exam/`: the physical exam maneuver catalog and generated overlay used by the legacy student exam reference flow.
-- `evidence/`: retrieval overlay data, source registry rows, tag dictionary rows, priority queue rows, and evaluation fixtures used by `evidence.js` and the evidence test scripts.
+- `evidence/`: retrieval overlay data, source registry rows, tag dictionary rows, and evaluation fixtures used by `evidence.js` and the evidence test scripts.
 
 ## Maintenance
 

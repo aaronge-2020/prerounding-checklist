@@ -99,7 +99,6 @@ export const evidenceFileUrls = {
   acceptedCatalogAdditions: "data/evidence/accepted_exam_catalog_additions.csv",
   tags: "data/evidence/retrieval_tag_dictionary.csv",
   sources: "data/evidence/source_registry.csv",
-  queue: "data/evidence/priority_enrichment_queue.csv",
   gaps: "data/evidence/catalog_gap_registry.csv"
 };
 

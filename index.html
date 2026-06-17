@@ -14708,6 +14708,19 @@
       </div>
     </div>
   </section>
+  <script>
+    (function() {
+      try {
+        var meta = JSON.parse(localStorage.getItem("prerounding-local-vault-meta-v2") || "null");
+        var hasVault = !!(meta && meta.salt && meta.version === 2);
+        var compact = window.matchMedia && window.matchMedia("(max-width: 760px)").matches;
+        var openSection = document.getElementById("openVaultSection");
+        var createSection = document.getElementById("createVaultSection");
+        if (openSection) openSection.hidden = compact || !hasVault;
+        if (createSection) createSection.hidden = compact || hasVault;
+      } catch(e) {}
+    })();
+  </script>
   <a class="skip-link" href="#workspaceRoot">Skip to workspace content</a>
   <button class="layout-nav-float" id="layoutNavFloatButton" type="button" aria-label="Show menu" title="Show menu">
     <span class="icon-box" data-icon="menu" aria-hidden="true"></span>
