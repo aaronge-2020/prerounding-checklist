@@ -388,6 +388,12 @@
       gap: 12px;
     }
 
+    .vault-access-section-footer {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+    }
+
     .field-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -14615,6 +14621,9 @@
             <button class="btn btn-primary" id="openVaultButton" type="submit">Open vault</button>
             <div class="vault-status-line" id="openVaultStatus" aria-live="polite"></div>
           </form>
+          <div class="vault-access-section-footer">
+            <button class="btn btn-danger" id="deleteVaultButton" type="button">Delete vault &amp; start over</button>
+          </div>
         </section>
 
         <section class="vault-access-section" id="createVaultSection" aria-labelledby="createVaultTitle">
@@ -16569,6 +16578,7 @@
       phoneQrScannerStatus: $("#phoneQrScannerStatus"),
       vaultSettingsButton: $("#vaultSettingsButton"),
       lockVaultButton: $("#lockVaultButton"),
+      deleteVaultButton: $("#deleteVaultButton"),
       statusLive: $("#statusLive"),
       patientSearchInput: $("#patientSearchInput"),
       patientSearchButton: $("#patientSearchButton"),
@@ -18000,6 +18010,7 @@
       document.body.dataset.vaultEntryDevice = compactEntry ? "phone" : "desktop";
       if (elements.openVaultSection) elements.openVaultSection.hidden = compactEntry || !hasVault;
       if (elements.createVaultSection) elements.createVaultSection.hidden = compactEntry || hasVault;
+      if (elements.deleteVaultButton) elements.deleteVaultButton.hidden = compactEntry || !hasVault;
       if (elements.singlePatientWorkflowButton?.closest("section")) {
         elements.singlePatientWorkflowButton.closest("section").hidden = compactEntry;
       }
@@ -18252,6 +18263,23 @@
       state.todayModeByPatientId = {};
       state.patientWorkupSelections = {};
       state.patientSearch = "";
+      resetWorkflowArtifacts();
+      state.sessionMode = "locked";
+      showVaultAccess();
+    }
+
+    function deleteVault() {
+      localStorage.removeItem(VAULT_META_KEY);
+      localStorage.removeItem(VAULT_DATA_KEY);
+      vaultCryptoKey = null;
+      state.patients = [];
+      state.activePatientId = "";
+      state.patientDrafts = {};
+      state.patientContinuityCases = {};
+      state.todayModeByPatientId = {};
+      state.patientWorkupSelections = {};
+      state.patientSearch = "";
+      state.vaultName = "";
       resetWorkflowArtifacts();
       state.sessionMode = "locked";
       showVaultAccess();
@@ -37025,6 +37053,7 @@ Rules:
         stopReturnQrScanner({ announce: false });
       });
       elements.lockVaultButton?.addEventListener("click", lockVault);
+      elements.deleteVaultButton?.addEventListener("click", deleteVault);
       elements.patientAdmissionForm?.addEventListener("submit", admitPatientFromForm);
       elements.closeAdmissionOverlayButton?.addEventListener("click", closeAdmissionOverlay);
       elements.cancelAdmissionButton?.addEventListener("click", closeAdmissionOverlay);
@@ -37980,9 +38009,8 @@ Rules:
     void captureWorkupStudioOAuthRedirect().then((handled) => {
       if (!handled) void ensureWorkupStudioBackendSession();
     });
-    void loadPhoneQrDeepLinkFromLocation().then((handled) => {
-      if (!handled) showVaultAccess();
-    });
+    showVaultAccess();
+    void loadPhoneQrDeepLinkFromLocation();
   </script>
 </body>
 </html>
