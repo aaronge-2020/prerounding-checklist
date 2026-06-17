@@ -1846,7 +1846,7 @@ if (uiSource.includes("prerounding-redesign-state-v1")) {
     "Task boundary:",
     "Output contract:",
     "Context preview:",
-    "code-paired local bundles",
+    "code-paired local bundle",
     "not HIPAA certification"
   ]) {
     assert.ok(uiSource.includes(requiredSnippet), `Redesigned workup UI guardrail missing: ${requiredSnippet}`);

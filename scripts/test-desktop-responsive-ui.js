@@ -282,7 +282,7 @@ async function installMockQrCamera(page, qrText, options = {}) {
     const qrTokenFromText = (text = "") => {
       const direct = String(text || "").match(/(?:^|[#?&])(?:B|phoneBundle|qr)=((?:G:|gz\.|j\.)[^&#]+)/);
       if (direct) return direct[1];
-      const returnDirect = String(text || "").match(/(?:^|[#?&])(?:phoneReturn|returnBundle)=((?:R:|rgz\.|rj\.)[^&#]+)/);
+      const returnDirect = String(text || "").match(/(?:^|[#?&])(?:phoneReturn|returnBundle)=((?:R4:|R:|rgz\.|rj\.)[^&#]+)/);
       if (returnDirect) return returnDirect[1];
       try {
         const url = new URL(String(text || ""), window.location.href);
@@ -292,7 +292,7 @@ async function installMockQrCamera(page, qrText, options = {}) {
       } catch {
         // Fall through to direct payload handling.
       }
-      if (/^(?:G:|R:|gz\.|j\.|rgz\.|rj\.)/.test(String(text || ""))) return String(text || "");
+      if (/^(?:G:|R4:|R:|gz\.|j\.|rgz\.|rj\.)/.test(String(text || ""))) return String(text || "");
       return "";
     };
     const addQrData = (qr, text) => {
@@ -675,7 +675,51 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   await desktopPage.waitForFunction(() => document.body.dataset.view === "workspace" && document.body.dataset.patientTab === "context");
   await clickPatientTab(desktopPage, "checklist");
   await desktopPage.click("#workspaceOpenBedsideChecklistButton");
-  await desktopPage.waitForFunction(() => /items built/.test(document.querySelector("#workspaceChecklistStatus")?.textContent || ""));
+  await desktopPage.waitForFunction(() => {
+    const phoneButton = document.querySelector("#workspaceChecklistPhoneButton");
+    return phoneButton && !phoneButton.hidden && !phoneButton.disabled;
+  });
+  if (await desktopPage.locator("#bedsideView:not([hidden])").isVisible().catch(() => false)) {
+    await desktopPage.click("#bedsideHeaderSettingsButton");
+    await desktopPage.waitForSelector("#workspaceView:not([hidden])");
+  }
+  await clickPatientTab(desktopPage, "checklist");
+  await desktopPage.waitForSelector("#patientChecklistEditor:not([hidden])");
+  const initialChecklistRowLabels = await desktopPage.evaluate(() => (
+    Array.from(document.querySelector("#patientChecklistEditItemSelect")?.options || [])
+      .map((option) => option.textContent || "")
+      .filter((text) => /^\d+\.\s+History\s+-\s+/.test(text))
+      .map((text) => text.replace(/^\d+\.\s+History\s+-\s+/, "").trim())
+  ));
+  const removedHistoryLabel = initialChecklistRowLabels[1] || "";
+  await desktopPage.click("#patientChecklistManualEditDetails summary");
+  await desktopPage.selectOption("#patientChecklistEditTypeSelect", "history");
+  await desktopPage.fill("#patientChecklistEditTextInput", "Any new trouble obtaining insulin supplies before discharge?");
+  await desktopPage.fill("#patientChecklistEditOptionsInput", "No / Yes / Unsure / Other ___");
+  await desktopPage.click("#addPatientChecklistItemButton");
+  await desktopPage.waitForFunction(() => /History question added/i.test(document.querySelector("#patientChecklistEditStatus")?.textContent || ""));
+  const patientChecklistPatch = {
+    schema: "workup_section_patch_v1",
+    workupId: "hyperglycemia_possible_dka_v1",
+    sectionKey: "history_questions",
+    summary: "Synthetic laptop edit patch for QR manifest sync.",
+    operations: [
+      {
+        op: "update",
+        itemId: "s1i0",
+        label: "Any vomiting, missed insulin, pump issue, or ketone symptoms today?",
+        options: ["No", "Vomiting", "Missed insulin", "Pump issue", "Ketone symptoms", "Unsure", "Other ___"],
+        answerMode: "multi"
+      },
+      { op: "remove", itemId: "s1i1" }
+    ]
+  };
+  await desktopPage.click("#patientChecklistPatchPanel summary");
+  await desktopPage.selectOption("#patientChecklistPatchSectionSelect", "history_questions");
+  await desktopPage.fill("#patientChecklistPatchInput", JSON.stringify(patientChecklistPatch, null, 2));
+  await desktopPage.waitForFunction(() => !document.querySelector("#applyPatientChecklistPatchButton")?.disabled);
+  await desktopPage.click("#applyPatientChecklistPatchButton");
+  await desktopPage.waitForFunction(() => /2 patient checklist patch operations applied/i.test(document.querySelector("#patientChecklistPatchStatus")?.textContent || ""));
   if (await desktopPage.locator("#bedsideView:not([hidden])").isVisible().catch(() => false)) {
     await desktopPage.click("#bedsideMoreActionsButton");
   } else {
@@ -718,19 +762,28 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
     downloadText: document.querySelector("#downloadPhonePayloadButton")?.textContent || ""
   }));
   const qrViewBoxSize = Number(desktopQrAudit.qrViewBox.match(/0 0 ([\d.]+) /)?.[1] || 0);
-  assert(desktopQrAudit.hasQr && /one-scan encrypted handoff/i.test(desktopQrAudit.qrStatus), `desktop handoff should render the one-scan mailbox QR as the primary action: ${JSON.stringify(desktopQrAudit)}`);
-  assert(desktopQrAudit.qrChunks === 1 && desktopQrAudit.qrScanTexts.length === 1, `desktop QR should use a single mailbox QR frame instead of a carousel: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
-  assert(desktopQrAudit.qrModules > 0 && desktopQrAudit.qrMaxModules > 0 && desktopQrAudit.qrMaxModules <= 61, `desktop mailbox QR should stay comfortably low-density: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
-  assert(desktopQrAudit.qrJsonLength > 0 && desktopQrAudit.qrTokenLength > 0 && desktopQrAudit.qrText.length < 180, `desktop QR should carry only a short mailbox pointer and key: ${JSON.stringify(desktopQrAudit)}`);
-  assert(qrViewBoxSize > 0 && qrViewBoxSize <= 420, `desktop QR should render small, low-version frames instead of one dense symbol: ${JSON.stringify(desktopQrAudit)}`);
+  assert(desktopQrAudit.hasQr && /direct local/i.test(desktopQrAudit.qrStatus), `desktop handoff should render the direct local QR as the primary action: ${JSON.stringify(desktopQrAudit)}`);
+  assert(desktopQrAudit.qrChunks === 1 && desktopQrAudit.qrScanTexts.length === 1, `desktop QR should use a single direct local QR frame instead of a carousel: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
+  assert(desktopQrAudit.qrModules > 0 && desktopQrAudit.qrMaxModules > 0 && desktopQrAudit.qrMaxModules <= 117, `desktop direct QR should stay within the one-scan module budget: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
+  assert(desktopQrAudit.qrJsonLength > 0 && desktopQrAudit.qrTokenLength > 0 && desktopQrAudit.qrText.length < 900, `desktop QR should directly encode a compact workup patch rather than a huge full bundle: ${JSON.stringify(desktopQrAudit)}`);
+  assert(qrViewBoxSize > 0 && qrViewBoxSize <= 620, `desktop QR should render a scannable one-frame symbol instead of a dense multi-frame carousel: ${JSON.stringify(desktopQrAudit)}`);
   assert(desktopQrAudit.qrBoxWidth >= Math.min(520, qrViewBoxSize), `desktop QR should render large enough for phone cameras: ${JSON.stringify(desktopQrAudit)}`);
   assert(desktopQrAudit.regenerateVisible && desktopQrAudit.copyVisible && desktopQrAudit.downloadVisible, `desktop handoff should expose regenerate/copy/download secondary actions: ${JSON.stringify(desktopQrAudit)}`);
   assert(/^Regenerate$/i.test(desktopQrAudit.regenerateText.trim()) && /Copy bundle/i.test(desktopQrAudit.copyText) && /^Download$/i.test(desktopQrAudit.downloadText.trim()), `desktop secondary actions should be simple regenerate/copy/download labels: ${JSON.stringify(desktopQrAudit)}`);
-  assert(desktopQrAudit.qrLink.includes("#H=") && desktopQrAudit.qrText === desktopQrAudit.qrLink, `desktop QR should expose the one-scan mailbox deep link for tests: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
-  assert(desktopQrAudit.qrScanTexts.every((text) => /#H=/.test(text)), `desktop QR itself should be a single mailbox URL: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
-  assert(/^[A-Za-z0-9_-]{16,64}\.[A-Za-z0-9_-]{32,64}$/.test(desktopQrAudit.qrToken), `desktop QR token should contain only mailbox id and decryption key: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
+  assert(desktopQrAudit.qrLink.includes("#B=G:") && desktopQrAudit.qrText === desktopQrAudit.qrLink, `desktop QR should expose the direct local deep link for tests: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
+  assert(desktopQrAudit.qrScanTexts.every((text) => /#B=G:/.test(text)), `desktop QR itself should be a single direct local URL: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
+  assert(/^G:[0-9A-Z$*\-./:]+$/.test(desktopQrAudit.qrToken), `desktop QR token should be a compressed alphanumeric local payload: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
   assert(/^[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(desktopCode), `desktop handoff should generate a pairing code, got ${desktopCode}`);
-  assert(/^[a-f0-9]{8}$/.test(desktopBundle.checklistFingerprint || ""), `desktop handoff should include a compact checklist fingerprint, got ${desktopBundle.checklistFingerprint}`);
+  assert(/^[a-f0-9]{16}$/.test(desktopBundle.manifestHash || ""), `desktop handoff should include a deterministic checklist manifest hash, got ${desktopBundle.manifestHash}`);
+  assert(desktopBundle.checklistFingerprint === desktopBundle.manifestHash && desktopBundle.checklistManifestHash === desktopBundle.manifestHash, `desktop handoff should use the manifest hash consistently: ${JSON.stringify({ manifestHash: desktopBundle.manifestHash, checklistManifestHash: desktopBundle.checklistManifestHash, checklistFingerprint: desktopBundle.checklistFingerprint })}`);
+  assert(desktopBundle.manifest?.schema === "phone-checklist-manifest-v1" && desktopBundle.manifest.sections?.length >= 1, "desktop handoff should sync an explicit phone checklist manifest before answers are returned.");
+  assert(desktopBundle.manifest.sections.every((section) => section.items?.every((item) => item.id && item.label && Array.isArray(item.options))), "desktop handoff sections should be manifest-shaped rows with stable ids, labels, and options.");
+  const desktopManifestText = JSON.stringify(desktopBundle.manifest);
+  assert(desktopManifestText.includes("Any new trouble obtaining insulin supplies before discharge?"), "desktop manifest should record manually added patient-specific checklist questions.");
+  assert(desktopManifestText.includes("Any vomiting, missed insulin, pump issue, or ketone symptoms today?"), "desktop manifest should record JSON patch updates to checklist questions.");
+  if (removedHistoryLabel) {
+    assert(!desktopManifestText.includes(removedHistoryLabel), `desktop manifest should record JSON patch removals, but still included ${removedHistoryLabel}`);
+  }
   assert(desktopBundle.checklistWorkupSignature === undefined, "phone handoff should not send the full canonical workup signature.");
 
   const qrLink = desktopQrAudit.qrLink;
@@ -748,6 +801,7 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
     subhead: document.querySelector("#bedsideMobileSubtitle")?.textContent?.trim() || "",
     progress: document.querySelector("#bedsideMobileProgress")?.textContent?.trim() || "",
     rowCount: document.querySelectorAll(".checklist-row").length,
+    bodyText: document.body.innerText,
     hash: window.location.hash,
     storageKeys: Object.keys(localStorage)
   }));
@@ -756,6 +810,11 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   assert(/bedside physical exam/i.test(qrPhoneAudit.subhead), `QR bedside screen should match the selected bedside exam design: ${JSON.stringify(qrPhoneAudit)}`);
   assert(/\d+\/\d+ answered/i.test(qrPhoneAudit.progress), `QR bedside screen should show mobile progress in the header: ${JSON.stringify(qrPhoneAudit)}`);
   assert(qrPhoneAudit.rowCount >= 8, `QR link should load checklist rows: ${JSON.stringify(qrPhoneAudit)}`);
+  assert(qrPhoneAudit.bodyText.includes("Any new trouble obtaining insulin supplies before discharge?"), "QR phone checklist should include the manual laptop row add.");
+  assert(qrPhoneAudit.bodyText.includes("Any vomiting, missed insulin, pump issue, or ketone symptoms today?"), "QR phone checklist should include the JSON patch laptop row update.");
+  if (removedHistoryLabel) {
+    assert(!qrPhoneAudit.bodyText.includes(removedHistoryLabel), `QR phone checklist should omit the JSON patch removed row: ${removedHistoryLabel}`);
+  }
   assert(qrPhoneAudit.hash === "", `QR phone import should clear payload fragment after load: ${JSON.stringify(qrPhoneAudit)}`);
   assert(qrPhoneAudit.storageKeys.length === 0, `QR phone session should not write patient data to localStorage: ${JSON.stringify(qrPhoneAudit)}`);
   await qrPhoneContext.close();
@@ -822,7 +881,7 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
     throw new Error(`camera scanner should open bedside view from the QR feed: ${JSON.stringify(scannerFailureAudit)}`);
   }
   const phoneScannerElapsedMs = Date.now() - phoneScannerStartedAt;
-  assert(phoneScannerElapsedMs < 3000, `phone in-app scanner should complete one-scan mailbox import in under 3 seconds, took ${phoneScannerElapsedMs}ms`);
+  assert(phoneScannerElapsedMs < 3000, `phone in-app scanner should complete one-scan direct local import in under 3 seconds, took ${phoneScannerElapsedMs}ms`);
   await scannerPage.waitForFunction(() => document.querySelectorAll(".checklist-row").length >= 8);
   await assertNoLayoutBreakage(scannerPage, "phone QR camera scanner bedside checklist");
   const scannerAudit = await scannerPage.evaluate(() => ({
@@ -955,10 +1014,15 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   const returnPayload = await phonePage.evaluate(async () => navigator.clipboard.readText());
   assert(returnPayload.length > 100, "phone return payload should copy to clipboard after PHI review");
   const mismatchedReturn = decodeLocalBundle(returnPayload);
-  assert(mismatchedReturn.checklistFingerprint === desktopBundle.checklistFingerprint, "phone return bundle should preserve the laptop checklist fingerprint.");
+  assert(mismatchedReturn.manifestHash === desktopBundle.manifestHash && mismatchedReturn.checklistFingerprint === desktopBundle.manifestHash, "phone return bundle should preserve the laptop checklist manifest hash.");
   mismatchedReturn.code = "WRNG-0000";
   const mismatchedReturnPayload = encodeLocalBundle(mismatchedReturn);
-  const staleChecklistReturn = { ...decodeLocalBundle(returnPayload), checklistFingerprint: "00000000" };
+  const staleChecklistReturn = {
+    ...decodeLocalBundle(returnPayload),
+    manifestHash: "0000000000000000",
+    checklistManifestHash: "0000000000000000",
+    checklistFingerprint: "0000000000000000"
+  };
   const staleChecklistReturnPayload = encodeLocalBundle(staleChecklistReturn);
   const staleItemReturn = decodeLocalBundle(returnPayload);
   staleItemReturn.answers = { ...(staleItemReturn.answers || {}), "999:999": "Injected stale answer" };

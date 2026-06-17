@@ -32,7 +32,7 @@ const requiredSnippets = [
   "Bundle code mismatch",
   "Returned phone bundle code",
   "PHI review before copy",
-  "code-paired local bundles"
+  "code-paired local bundle"
 ];
 
 const requiredPrivacySnippets = [

@@ -15600,7 +15600,7 @@
 
     const PHONE_QR_SCAN_MODULE_LIMIT = 117;
     const PHONE_QR_CHUNK_MODULE_LIMIT = 73;
-    const PHONE_QR_DIRECT_TOKEN_LIMIT = 520;
+    const PHONE_QR_DIRECT_TOKEN_LIMIT = 1100;
     const PHONE_QR_CHUNK_TOKEN_SIZE = 260;
     const PHONE_QR_CAROUSEL_INTERVAL_MS = 850;
     const PHONE_HANDOFF_MAILBOX_TTL_MS = 10 * 60 * 1000;
@@ -30090,8 +30090,16 @@ Rules:
       if (!text) return false;
       try {
         const payload = decodePayload(text);
+        const currentManifestHash = phoneChecklistFingerprint();
+        const currentLegacyFingerprint = legacyPhoneChecklistFingerprint();
+        const payloadManifestHash = String(payload?.manifestHash || payload?.checklistManifestHash || "").trim();
+        const payloadFingerprint = String(payload?.checklistFingerprint || "").trim();
         return payload?.version === "local-phone-handoff-v1"
-          && String(payload.checklistFingerprint || "") === phoneChecklistFingerprint();
+          && (
+            payloadManifestHash === currentManifestHash
+            || payloadFingerprint === currentManifestHash
+            || payloadFingerprint === currentLegacyFingerprint
+          );
       } catch {
         return false;
       }
@@ -30210,6 +30218,28 @@ Rules:
           throw error;
         }
       }
+    }
+
+    function base45EncodeBytes(bytes = new Uint8Array()) {
+      let output = "";
+      for (let index = 0; index < bytes.length; index += 2) {
+        if (index + 1 < bytes.length) {
+          let value = bytes[index] * 256 + bytes[index + 1];
+          const first = value % 45;
+          value = Math.floor(value / 45);
+          const second = value % 45;
+          const third = Math.floor(value / 45);
+          output += LEGACY_BASE45_ALPHABET[first] + LEGACY_BASE45_ALPHABET[second] + LEGACY_BASE45_ALPHABET[third];
+        } else {
+          const value = bytes[index];
+          output += LEGACY_BASE45_ALPHABET[value % 45] + LEGACY_BASE45_ALPHABET[Math.floor(value / 45)];
+        }
+      }
+      return output;
+    }
+
+    function base45DecodeBytes(value = "") {
+      return decodeBaseQrBytesWithAlphabet(value, LEGACY_BASE45_LOOKUP, 45);
     }
 
     async function gzipTextToBytes(text = "") {
@@ -30549,18 +30579,263 @@ Rules:
       }).filter((section) => section.items.length);
     }
 
+    function defaultChecklistSectionsForWorkupModule(workupModuleId = "") {
+      const module = moduleById(workupModuleId);
+      if (!module) return [];
+      const complaintResult = fallbackComplaintResult(module, moduleLabel(module) || module.id || workupModuleId);
+      const checklistText = buildLocalChecklistFromWorkup(
+        { complaintResult, recommendation: complaintResult?.recommendation },
+        { allowGenericFallbacks: true, maxBedsideQuestions: 18, maxExamItems: 15, includeSafetyInExamChecklist: true }
+      );
+      const parsedSections = parseChecklist(checklistText).filter((section) => Array.isArray(section.items) && section.items.length);
+      return groupChecklistSectionsByOrganSystem(parsedSections, { throwOnError: true });
+    }
+
+    function defaultPhoneChecklistManifestForWorkup(workupModuleId = "") {
+      const sections = defaultChecklistSectionsForWorkupModule(workupModuleId);
+      return buildPhoneChecklistManifest({ sections, workupModuleId });
+    }
+
+    function manifestSectionMeta(section = {}) {
+      return {
+        id: String(section?.id || ""),
+        title: section?.title || "",
+        shortTitle: section?.shortTitle || section?.title || "",
+        category: section?.category || "",
+        organSystemKey: section?.organSystemKey || ""
+      };
+    }
+
+    function sameStringArray(first = [], second = []) {
+      return first.length === second.length && first.every((value, index) => value === second[index]);
+    }
+
+    function sameManifestSectionMeta(first = {}, second = {}) {
+      return stableJsonStringify(manifestSectionMeta(first)) === stableJsonStringify(manifestSectionMeta(second));
+    }
+
+    function sameManifestItem(first = {}, second = {}) {
+      return stableJsonStringify(first || {}) === stableJsonStringify(second || {});
+    }
+
+    function compactManifestSectionPatch(section = {}) {
+      return trimCompactQrRow([
+        section.id || "",
+        section.title || "",
+        section.shortTitle && section.shortTitle !== section.title ? section.shortTitle : "",
+        section.category || "",
+        section.organSystemKey || ""
+      ]);
+    }
+
+    function expandManifestSectionPatch(row = [], fallbackIndex = 0) {
+      const [id, title, shortTitle, category, organSystemKey] = Array.isArray(row) ? row : [];
+      const sectionTitle = title || `Checklist section ${fallbackIndex + 1}`;
+      return {
+        id: id || `section_${fallbackIndex + 1}`,
+        title: sectionTitle,
+        shortTitle: shortTitle || sectionTitle,
+        category: category || "",
+        organSystemKey: organSystemKey || "",
+        items: []
+      };
+    }
+
+    function compactManifestItemPatch(item = {}) {
+      return trimCompactQrRow([
+        item.id || "",
+        item.label || item.text || "",
+        compactChecklistCategory(item.category || item.kind || ""),
+        Array.isArray(item.options) && item.options.length ? item.options : 0,
+        compactChecklistAnswerMode(item.answerMode || item.answer_mode || ""),
+        item.hasNotes ? 1 : 0,
+        item.patientSpecific ? 1 : 0,
+        item.source_id || ""
+      ]);
+    }
+
+    function expandManifestItemPatch(row = [], fallbackIndex = 0, section = {}) {
+      const [id, label, categoryCode, optionsValue, answerModeCode, hasNotes, patientSpecific, sourceId] = Array.isArray(row) ? row : [];
+      const category = expandCompactChecklistCategory(categoryCode, String(label || "").trim().endsWith("?") ? "bedside" : "exam");
+      const answerMode = expandCompactChecklistAnswerMode(answerModeCode);
+      const itemLabel = label || `Checklist item ${fallbackIndex + 1}`;
+      const derivedOptions = derivedQrChecklistOptions(itemLabel, category, answerMode);
+      const options = Array.isArray(optionsValue) && optionsValue.length
+        ? uniqueChecklistOptions(optionsValue)
+        : (derivedOptions.length ? derivedOptions : ["Needs review"]);
+      const item = {
+        id: id || `qr_item_${fallbackIndex + 1}`,
+        label: itemLabel,
+        text: itemLabel,
+        category,
+        options,
+        answer_options: options,
+        findings_options: options,
+        rawValue: options.join(" / "),
+        answerMode,
+        hasNotes: Boolean(hasNotes)
+      };
+      if (patientSpecific) item.patientSpecific = true;
+      if (sourceId) {
+        item.source_id = String(sourceId);
+        item.source = { source_id: String(sourceId) };
+      }
+      return compactChecklistItemForManifest(
+        { ...section, category },
+        item,
+        fallbackIndex
+      );
+    }
+
+    function manifestSectionById(manifest = {}) {
+      return new Map((manifest.sections || []).map((section, index) => [String(section.id || `section_${index + 1}`), section]));
+    }
+
+    function manifestItemById(section = {}) {
+      return new Map((section.items || []).map((item, index) => [String(item.id || `item_${index + 1}`), item]));
+    }
+
+    function phoneChecklistManifestPatchOperations(currentManifest = {}, baseManifest = {}) {
+      const operations = [];
+      const currentSections = Array.isArray(currentManifest.sections) ? currentManifest.sections : [];
+      const baseSections = Array.isArray(baseManifest.sections) ? baseManifest.sections : [];
+      const currentSectionMap = manifestSectionById(currentManifest);
+      const baseSectionMap = manifestSectionById(baseManifest);
+
+      for (const baseSection of baseSections) {
+        if (!currentSectionMap.has(baseSection.id)) operations.push(["rs", baseSection.id]);
+      }
+
+      currentSections.forEach((section, sectionIndex) => {
+        const baseSection = baseSectionMap.get(section.id);
+        if (!baseSection) {
+          operations.push(["as", sectionIndex, compactManifestSectionPatch(section)]);
+        } else if (!sameManifestSectionMeta(section, baseSection)) {
+          operations.push(["us", section.id, compactManifestSectionPatch(section)]);
+        }
+
+        const currentItemMap = manifestItemById(section);
+        const baseItemMap = manifestItemById(baseSection || {});
+        for (const baseItem of baseSection?.items || []) {
+          if (!currentItemMap.has(baseItem.id)) operations.push(["ri", section.id, baseItem.id]);
+        }
+        (section.items || []).forEach((item, itemIndex) => {
+          const baseItem = baseItemMap.get(item.id);
+          if (!baseItem) {
+            operations.push(["ai", section.id, itemIndex, compactManifestItemPatch(item)]);
+          } else if (!sameManifestItem(item, baseItem)) {
+            operations.push(["ui", section.id, item.id, compactManifestItemPatch(item)]);
+          }
+        });
+
+        const currentItemOrder = (section.items || []).map((item) => item.id);
+        const baseRemainingItemOrder = (baseSection?.items || [])
+          .map((item) => item.id)
+          .filter((id) => currentItemMap.has(id));
+        if (!sameStringArray(currentItemOrder, baseRemainingItemOrder)) {
+          operations.push(["oi", section.id, currentItemOrder]);
+        }
+      });
+
+      const currentSectionOrder = currentSections.map((section) => section.id);
+      const baseRemainingSectionOrder = baseSections
+        .map((section) => section.id)
+        .filter((id) => currentSectionMap.has(id));
+      if (!sameStringArray(currentSectionOrder, baseRemainingSectionOrder)) {
+        operations.push(["os", currentSectionOrder]);
+      }
+      return operations;
+    }
+
+    function reorderById(items = [], orderedIds = []) {
+      const byId = new Map(items.map((item) => [String(item.id || ""), item]));
+      const ordered = [];
+      for (const id of orderedIds || []) {
+        if (byId.has(id)) {
+          ordered.push(byId.get(id));
+          byId.delete(id);
+        }
+      }
+      return ordered.concat(Array.from(byId.values()));
+    }
+
+    function applyPhoneChecklistManifestPatch(baseManifest = {}, operations = []) {
+      const manifest = JSON.parse(JSON.stringify(baseManifest || {}));
+      manifest.schema = "phone-checklist-manifest-v1";
+      manifest.sections = Array.isArray(manifest.sections) ? manifest.sections : [];
+      const findSection = (sectionId) => manifest.sections.find((section) => section.id === sectionId);
+      for (const operation of Array.isArray(operations) ? operations : []) {
+        const [op, first, second, third] = Array.isArray(operation) ? operation : [];
+        if (op === "rs") {
+          manifest.sections = manifest.sections.filter((section) => section.id !== first);
+          continue;
+        }
+        if (op === "as") {
+          const section = expandManifestSectionPatch(second, Number(first) || 0);
+          const index = Math.max(0, Math.min(Number(first) || 0, manifest.sections.length));
+          manifest.sections.splice(index, 0, section);
+          continue;
+        }
+        if (op === "us") {
+          const section = findSection(first);
+          if (!section) throw new Error("Checklist patch referenced a missing section.");
+          const updated = expandManifestSectionPatch(second, manifest.sections.indexOf(section));
+          Object.assign(section, { ...updated, items: section.items || [] });
+          continue;
+        }
+        if (op === "ri") {
+          const section = findSection(first);
+          if (!section) throw new Error("Checklist patch referenced a missing section.");
+          section.items = (section.items || []).filter((item) => item.id !== second);
+          continue;
+        }
+        if (op === "ai") {
+          const section = findSection(first);
+          if (!section) throw new Error("Checklist patch referenced a missing section.");
+          section.items = Array.isArray(section.items) ? section.items : [];
+          const item = expandManifestItemPatch(third, Number(second) || 0, section);
+          const index = Math.max(0, Math.min(Number(second) || 0, section.items.length));
+          section.items.splice(index, 0, item);
+          continue;
+        }
+        if (op === "ui") {
+          const section = findSection(first);
+          if (!section) throw new Error("Checklist patch referenced a missing section.");
+          const itemIndex = (section.items || []).findIndex((item) => item.id === second);
+          if (itemIndex < 0) throw new Error("Checklist patch referenced a missing item.");
+          section.items[itemIndex] = expandManifestItemPatch(third, itemIndex, section);
+          continue;
+        }
+        if (op === "oi") {
+          const section = findSection(first);
+          if (!section) throw new Error("Checklist patch referenced a missing section.");
+          section.items = reorderById(section.items || [], Array.isArray(second) ? second : []);
+          continue;
+        }
+        if (op === "os") {
+          manifest.sections = reorderById(manifest.sections, Array.isArray(first) ? first : []);
+          continue;
+        }
+        throw new Error("Checklist patch contained an unsupported operation.");
+      }
+      manifest.sections = manifest.sections.filter((section) => Array.isArray(section.items) && section.items.length);
+      return manifest;
+    }
+
     function compactPhoneHandoffPayloadForQr({ includeOptions = true } = {}) {
       const validKeys = currentChecklistAnswerKeySet();
       const answers = filterCurrentChecklistMap(state.answers, validKeys).values;
       const itemNotes = filterCurrentChecklistMap(state.itemNotes, validKeys).values;
       const workupModuleId = state.selectedWorkupModuleId || activePatient().workupModuleId || "";
       const checklistWorkupModuleId = state.checklistWorkupModuleId || workupModuleId;
+      const manifestHash = phoneChecklistManifestHash({ workupModuleId: checklistWorkupModuleId });
       const payload = {
         v: "phoneQr2",
         c: currentPhoneTransferCode(),
         t: activePatient().title || $("#caseTitle")?.textContent || "Phone checklist",
         w: workupModuleId,
-        f: phoneChecklistFingerprint(),
+        m: manifestHash,
+        f: manifestHash,
         s: compactChecklistSectionsForQr2({ includeOptions })
       };
       if (checklistWorkupModuleId && checklistWorkupModuleId !== workupModuleId) payload.cw = checklistWorkupModuleId;
@@ -30571,9 +30846,89 @@ Rules:
       return payload;
     }
 
+    function compactPhoneHandoffDeltaPayloadForQr({ includeOptions = true } = {}) {
+      if (!includeOptions) return null;
+      const workupModuleId = state.selectedWorkupModuleId || activePatient().workupModuleId || "";
+      const checklistWorkupModuleId = state.checklistWorkupModuleId || workupModuleId;
+      if (!checklistWorkupModuleId) return null;
+      let baseManifest;
+      try {
+        baseManifest = defaultPhoneChecklistManifestForWorkup(checklistWorkupModuleId);
+      } catch {
+        return null;
+      }
+      if (!baseManifest?.sections?.length) return null;
+      const currentManifest = buildPhoneChecklistManifest({
+        sections: state.sections,
+        workupModuleId: checklistWorkupModuleId
+      });
+      const operations = phoneChecklistManifestPatchOperations(currentManifest, baseManifest);
+      let patchedManifest;
+      try {
+        patchedManifest = applyPhoneChecklistManifestPatch(baseManifest, operations);
+      } catch {
+        return null;
+      }
+      const manifestHash = phoneChecklistManifestHash({ manifest: currentManifest });
+      if (phoneChecklistManifestHash({ manifest: patchedManifest }) !== manifestHash) return null;
+      const baseHash = phoneChecklistManifestHash({ manifest: baseManifest });
+      const validKeys = currentChecklistAnswerKeySet();
+      const answers = filterCurrentChecklistMap(state.answers, validKeys).values;
+      const itemNotes = filterCurrentChecklistMap(state.itemNotes, validKeys).values;
+      const payload = {
+        v: "phoneQr3",
+        c: currentPhoneTransferCode(),
+        t: activePatient().title || $("#caseTitle")?.textContent || "Phone checklist",
+        w: workupModuleId,
+        cw: checklistWorkupModuleId,
+        b: baseHash,
+        m: manifestHash,
+        f: manifestHash,
+        p: operations
+      };
+      if (workupModuleId === checklistWorkupModuleId) delete payload.cw;
+      if (Object.keys(answers).length) payload.a = answers;
+      if (Object.keys(itemNotes).length) payload.n = itemNotes;
+      const bedsideNote = readBedsideNoteValue();
+      if (bedsideNote) payload.bed = bedsideNote;
+      return payload;
+    }
+
     function expandCompactPhoneHandoffPayloadForQr(compact = {}) {
       if (compact?.version === "local-phone-handoff-v1") return compact;
-      if (!["phoneQr1", "phoneQr2"].includes(compact?.v)) throw new Error("This QR code is not a bedside checklist bundle.");
+      if (!["phoneQr1", "phoneQr2", "phoneQr3"].includes(compact?.v)) throw new Error("This QR code is not a bedside checklist bundle.");
+      if (compact.v === "phoneQr3") {
+        const workupModuleId = compact.cw || compact.w || "";
+        const baseManifest = defaultPhoneChecklistManifestForWorkup(workupModuleId);
+        const baseHash = phoneChecklistManifestHash({ manifest: baseManifest });
+        if (compact.b && compact.b !== baseHash) {
+          throw new Error("This phone has a different default workup version. Use the full copied bundle or refresh the app before scanning.");
+        }
+        const manifest = applyPhoneChecklistManifestPatch(baseManifest, compact.p || []);
+        const manifestHash = phoneChecklistManifestHash({ manifest });
+        if ((compact.m || compact.f) && manifestHash !== (compact.m || compact.f)) {
+          throw new Error("Checklist patch QR did not reconstruct the laptop checklist. Generate a fresh QR code.");
+        }
+        return {
+          version: "local-phone-handoff-v1",
+          code: compact.c || "",
+          createdAt: compact.d || new Date().toISOString(),
+          caseTitle: compact.t || "Phone checklist",
+          workupModuleId: compact.w || "",
+          checklistWorkupModuleId: compact.cw || compact.w || "",
+          manifest,
+          manifestHash,
+          checklistManifestHash: manifestHash,
+          checklistFingerprint: manifestHash,
+          scrubbedContext: "",
+          checklistText: "",
+          sections: manifest.sections || [],
+          answers: plainObject(compact.a) ? compact.a : {},
+          itemNotes: plainObject(compact.n) ? compact.n : {},
+          objectiveData: "",
+          bedsideNote: compact.bed || ""
+        };
+      }
       const sections = compact.v === "phoneQr2"
         ? expandCompactChecklistSectionsForQr2(compact.s)
         : expandCompactChecklistSectionsForQr(compact.s);
@@ -30584,7 +30939,9 @@ Rules:
         caseTitle: compact.t || "Phone checklist",
         workupModuleId: compact.w || "",
         checklistWorkupModuleId: compact.cw || compact.w || "",
-        checklistFingerprint: compact.f || phoneChecklistFingerprint({ sections, workupModuleId: compact.cw || compact.w || "" }),
+        manifestHash: compact.m || compact.f || "",
+        checklistManifestHash: compact.m || compact.f || "",
+        checklistFingerprint: compact.f || compact.m || phoneChecklistFingerprint({ sections, workupModuleId: compact.cw || compact.w || "" }),
         scrubbedContext: "",
         checklistText: "",
         sections,
@@ -30683,9 +31040,27 @@ Rules:
       });
     }
 
+    function phoneHandoffCompactPayloadCandidatesForQr({ includeOptions = true } = {}) {
+      const candidates = [];
+      const delta = compactPhoneHandoffDeltaPayloadForQr({ includeOptions });
+      if (delta) candidates.push({ payload: delta, label: "workup patch", format: "delta" });
+      candidates.push({
+        payload: compactPhoneHandoffPayloadForQr({ includeOptions }),
+        label: includeOptions ? "full checklist" : "full checklist without custom options",
+        format: "full"
+      });
+      return candidates;
+    }
+
     async function createPhoneQrDeepLink({ includeOptions = true } = {}) {
-      const compact = compactPhoneHandoffPayloadForQr({ includeOptions });
-      const encoded = await encodePhoneQrToken(compact);
+      const encodedCandidates = [];
+      for (const candidate of phoneHandoffCompactPayloadCandidatesForQr({ includeOptions })) {
+        const encoded = await encodePhoneQrToken(candidate.payload);
+        encodedCandidates.push({ ...candidate, encoded });
+      }
+      encodedCandidates.sort((first, second) => first.encoded.token.length - second.encoded.token.length);
+      const best = encodedCandidates[0];
+      const encoded = best.encoded;
       const url = currentPhoneQrBaseUrl();
       url.hash = `B=${encoded.token}`;
       return {
@@ -30694,6 +31069,8 @@ Rules:
         qrToken: encoded.token,
         itemCount: (state.sections || []).reduce((sum, section) => sum + (section.items || []).length, 0),
         includeOptions,
+        format: best.format,
+        label: best.label,
         compressed: encoded.compressed,
         jsonLength: encoded.jsonLength
       };
@@ -30882,7 +31259,7 @@ Rules:
       elements.phoneQrPanel.hidden = false;
       elements.phoneQrCode.classList.add("is-unavailable");
       elements.phoneQrCode.textContent = "Building QR";
-      elements.phoneQrStatus.textContent = "Preparing a one-scan encrypted handoff link.";
+      elements.phoneQrStatus.textContent = "Preparing a direct local checklist QR.";
       const attempts = [
         { includeOptions: true, label: "answer choices preserved" }
       ];
@@ -30890,6 +31267,29 @@ Rules:
       let bestCandidate = null;
       for (let index = 0; index < attempts.length; index += 1) {
         const attempt = attempts[index];
+        try {
+          const link = await createPhoneQrDeepLink(attempt);
+          const payloads = phoneQrDisplayPayloadsForLink(link);
+          const displays = payloads.map((payload) => ({
+            payload,
+            qr: payload.total > 1 ? phoneQrSvgForDisplayPayload(payload) : phoneQrSvgForLink(link)
+          }));
+          const maxModules = displays.reduce((max, display) => Math.max(max, display.qr.modules || 0), 0);
+          const candidate = { link, displays, attempt, maxModules };
+          if (!bestCandidate || maxModules < bestCandidate.maxModules) bestCandidate = candidate;
+          const moduleLimit = payloads.length > 1 ? PHONE_QR_CHUNK_MODULE_LIMIT : PHONE_QR_SCAN_MODULE_LIMIT;
+          if (payloads.length === 1 && maxModules <= moduleLimit) {
+            if (sequence !== phoneQrRenderSequence) return;
+            renderPhoneQrCandidate({
+              ...candidate,
+              attempt: { ...attempt, label: link.label ? `direct local ${link.label}` : "direct local handoff" },
+              sequence
+            });
+            return;
+          }
+        } catch (error) {
+          lastError = error;
+        }
         try {
           const mailboxLink = await createPhoneQrMailboxDeepLink(attempt);
           const mailboxQr = qrSvgForText(mailboxLink.qrText, {
@@ -30910,31 +31310,17 @@ Rules:
         } catch (error) {
           lastError = error;
           if (sequence === phoneQrRenderSequence) {
-            elements.phoneQrStatus.textContent = "Online one-scan handoff is unavailable. Building the offline fallback QR.";
+            elements.phoneQrStatus.textContent = "One-frame local QR is too large and online handoff is unavailable. Preparing split local QR frames.";
           }
-        }
-        try {
-          const link = await createPhoneQrDeepLink(attempt);
-          const payloads = phoneQrDisplayPayloadsForLink(link);
-          const displays = payloads.map((payload) => ({
-            payload,
-            qr: payload.total > 1 ? phoneQrSvgForDisplayPayload(payload) : phoneQrSvgForLink(link)
-          }));
-          const maxModules = displays.reduce((max, display) => Math.max(max, display.qr.modules || 0), 0);
-          const candidate = { link, displays, attempt, maxModules };
-          if (!bestCandidate || maxModules < bestCandidate.maxModules) bestCandidate = candidate;
-          const moduleLimit = payloads.length > 1 ? PHONE_QR_CHUNK_MODULE_LIMIT : PHONE_QR_SCAN_MODULE_LIMIT;
-          if (maxModules > moduleLimit && index < attempts.length - 1) continue;
-          if (sequence !== phoneQrRenderSequence) return;
-          renderPhoneQrCandidate({ ...candidate, sequence });
-          return;
-        } catch (error) {
-          lastError = error;
         }
       }
       if (sequence !== phoneQrRenderSequence) return;
       if (bestCandidate) {
-        renderPhoneQrCandidate({ ...bestCandidate, sequence });
+        renderPhoneQrCandidate({
+          ...bestCandidate,
+          attempt: { ...bestCandidate.attempt, label: bestCandidate.link?.label ? `direct local ${bestCandidate.link.label}` : bestCandidate.attempt.label },
+          sequence
+        });
         return;
       }
       elements.phoneQrCode.classList.add("is-unavailable");
@@ -31533,7 +31919,88 @@ Rules:
       return (hash >>> 0).toString(16).padStart(8, "0");
     }
 
-    function phoneChecklistFingerprint({ sections = state.sections, workupModuleId = state.checklistWorkupModuleId || state.selectedWorkupModuleId } = {}) {
+    function compactStringFingerprint64(value = "") {
+      let hash = 0xcbf29ce484222325n;
+      const prime = 0x100000001b3n;
+      const mask = 0xffffffffffffffffn;
+      const text = String(value || "");
+      for (let index = 0; index < text.length; index += 1) {
+        hash ^= BigInt(text.charCodeAt(index));
+        hash = (hash * prime) & mask;
+      }
+      return hash.toString(16).padStart(16, "0");
+    }
+
+    function stableJsonValue(value) {
+      if (Array.isArray(value)) return value.map(stableJsonValue);
+      if (value && typeof value === "object") {
+        return Object.keys(value)
+          .sort()
+          .reduce((accumulator, key) => {
+            const nextValue = value[key];
+            if (nextValue !== undefined) accumulator[key] = stableJsonValue(nextValue);
+            return accumulator;
+          }, {});
+      }
+      if (typeof value === "number" && !Number.isFinite(value)) return null;
+      return value ?? null;
+    }
+
+    function stableJsonStringify(value) {
+      return JSON.stringify(stableJsonValue(value));
+    }
+
+    function compactChecklistItemForManifest(section = {}, item = {}, index = 0) {
+      const label = item?.label || itemText(item) || `Checklist item ${index + 1}`;
+      const kind = checklistKind(section, item);
+      const options = checklistOptionsForItem(section, item);
+      const answerMode = item?.answerMode || item?.answer_mode || item?.selectionMode || item?.selection_mode || "";
+      const compact = {
+        id: String(item?.id || `item_${index + 1}`),
+        label,
+        text: label,
+        category: kind,
+        kind,
+        options,
+        rawValue: options.join(" / "),
+        hasNotes: Boolean(item?.hasNotes)
+      };
+      if (answerMode) compact.answerMode = String(answerMode);
+      if (kind === "exam") {
+        compact.findings_options = options;
+        compact.answer_options = options;
+      } else {
+        compact.answer_options = options;
+      }
+      if (item?.patientSpecific) compact.patientSpecific = true;
+      if (item?.source_id || item?.source?.source_id) compact.source_id = String(item.source_id || item.source.source_id || "");
+      return compact;
+    }
+
+    function buildPhoneChecklistManifest({ sections = state.sections, workupModuleId = state.checklistWorkupModuleId || state.selectedWorkupModuleId } = {}) {
+      return {
+        schema: "phone-checklist-manifest-v1",
+        workupModuleId: String(workupModuleId || ""),
+        sections: (Array.isArray(sections) ? sections : [])
+          .map((section, sectionIndex) => ({
+            id: String(section?.id || `section_${sectionIndex + 1}`),
+            title: section?.title || `Checklist section ${sectionIndex + 1}`,
+            shortTitle: section?.shortTitle || section?.title || `Section ${sectionIndex + 1}`,
+            category: section?.category || "",
+            organSystemKey: section?.organSystemKey || "",
+            items: (Array.isArray(section?.items) ? section.items : [])
+              .map((item, itemIndex) => compactChecklistItemForManifest(section, item, itemIndex))
+          }))
+          .filter((section) => section.items.length)
+      };
+    }
+
+    function phoneChecklistManifestHash({ manifest = null, sections = state.sections, workupModuleId = state.checklistWorkupModuleId || state.selectedWorkupModuleId } = {}) {
+      const source = manifest || buildPhoneChecklistManifest({ sections, workupModuleId });
+      return compactStringFingerprint64(stableJsonStringify(source));
+    }
+
+    function legacyPhoneChecklistFingerprint({ sections = state.sections, workupModuleId = state.checklistWorkupModuleId || state.selectedWorkupModuleId } = {}) {
       const sectionSummary = (Array.isArray(sections) ? sections : []).map((section) => ({
         title: section?.title || "",
         count: Array.isArray(section?.items) ? section.items.length : 0,
@@ -31549,16 +32016,33 @@ Rules:
       }));
     }
 
-    function assertMatchingChecklistFingerprint(payloadFingerprint, mismatchMessage) {
-      const incoming = String(payloadFingerprint || "").trim();
+    function phoneChecklistFingerprint(options = {}) {
+      return phoneChecklistManifestHash(options);
+    }
+
+    function currentPhoneManifestHash() {
+      return String(activePatient()?.phoneChecklistManifestHash || activePatient()?.phoneChecklistFingerprint || phoneChecklistFingerprint() || "").trim();
+    }
+
+    function assertMatchingPhoneChecklistManifest(payload = {}, mismatchMessage) {
+      const incomingManifestHash = String(payload?.manifestHash || payload?.checklistManifestHash || payload?.mh || "").trim();
+      const incomingFingerprint = String(payload?.checklistFingerprint || payload?.f || "").trim();
       const expected = phoneChecklistFingerprint();
-      if (!incoming) {
-        throw new Error("Returned phone bundle is missing its checklist fingerprint. Generate a fresh phone bundle from the laptop.");
+      const expectedLegacy = legacyPhoneChecklistFingerprint();
+      if (!incomingManifestHash && !incomingFingerprint) {
+        throw new Error("Returned phone bundle is missing its checklist manifest hash. Generate a fresh phone bundle from the laptop.");
       }
-      if (incoming !== expected) {
+      if (incomingManifestHash && incomingManifestHash !== expected) {
+        throw new Error(mismatchMessage || "Returned phone bundle was created from a different checklist manifest. Generate a fresh phone bundle after rebuilding the laptop checklist.");
+      }
+      if (incomingFingerprint && incomingFingerprint !== expected && incomingFingerprint !== expectedLegacy) {
         throw new Error(mismatchMessage || "Returned phone bundle was created from a different checklist. Generate a fresh phone bundle after rebuilding the laptop checklist.");
       }
       return expected;
+    }
+
+    function assertMatchingChecklistFingerprint(payloadFingerprint, mismatchMessage) {
+      return assertMatchingPhoneChecklistManifest({ checklistFingerprint: payloadFingerprint }, mismatchMessage);
     }
 
     function currentChecklistAnswerKeySet() {
@@ -31644,11 +32128,33 @@ Rules:
         if (!bundleCode) {
           throw new Error("Desktop phone bundle is missing its pairing code. Generate a fresh phone bundle from the laptop.");
         }
-        if (!Array.isArray(payload.sections) || !payload.sections.length) {
+        const payloadSections = Array.isArray(payload.sections)
+          ? payload.sections
+          : Array.isArray(payload.manifest?.sections)
+            ? payload.manifest.sections
+            : [];
+        if (!payloadSections.length) {
           throw new Error("The bundle does not contain checklist sections.");
         }
         const caseTitle = String(payload.caseTitle || "Phone interview").trim().slice(0, 120) || "Phone interview";
         const workupModuleId = String(payload.workupModuleId || "").trim();
+        const checklistWorkupModuleId = String(payload.checklistWorkupModuleId || workupModuleId || "");
+        const hasEmbeddedManifest = Boolean(payload.manifest && Array.isArray(payload.manifest.sections));
+        const manifest = hasEmbeddedManifest
+          ? payload.manifest
+          : buildPhoneChecklistManifest({ sections: payloadSections, workupModuleId: checklistWorkupModuleId || workupModuleId });
+        const computedManifestHash = hasEmbeddedManifest ? phoneChecklistManifestHash({ manifest }) : "";
+        const payloadManifestHash = String(payload.manifestHash || payload.checklistManifestHash || "").trim();
+        const payloadFingerprint = String(payload.checklistFingerprint || "").trim();
+        if (hasEmbeddedManifest && payloadManifestHash && payloadManifestHash !== computedManifestHash) {
+          throw new Error("Desktop phone bundle manifest hash does not match its checklist. Generate a fresh phone bundle from the laptop.");
+        }
+        if (hasEmbeddedManifest && payloadFingerprint && payloadFingerprint !== computedManifestHash && payloadFingerprint !== legacyPhoneChecklistFingerprint({ sections: payloadSections, workupModuleId: checklistWorkupModuleId || workupModuleId })) {
+          throw new Error("Desktop phone bundle checklist fingerprint does not match its manifest. Generate a fresh phone bundle from the laptop.");
+        }
+        const manifestHash = payloadManifestHash
+          || computedManifestHash
+          || phoneChecklistManifestHash({ sections: payloadSections, workupModuleId: checklistWorkupModuleId || workupModuleId });
         resetNoSaveSession("Phone interview session");
         const patient = {
           id: "phone-interview",
@@ -31666,7 +32172,8 @@ Rules:
           localId: "",
           phoneBundleCode: bundleCode,
           phoneBundlePayload: encoded,
-          phoneChecklistFingerprint: String(payload.checklistFingerprint || "")
+          phoneChecklistManifestHash: manifestHash,
+          phoneChecklistFingerprint: manifestHash
         };
         state.patients = [patient];
         state.activePatientId = patient.id;
@@ -31675,8 +32182,8 @@ Rules:
         state.selectedWorkupModuleId = workupModuleId;
         state.scrubbedText = String(payload.scrubbedContext || "");
         state.checklistText = String(payload.checklistText || "");
-        state.sections = payload.sections;
-        state.checklistWorkupModuleId = String(payload.checklistWorkupModuleId || workupModuleId || "");
+        state.sections = payloadSections;
+        state.checklistWorkupModuleId = checklistWorkupModuleId;
         state.checklistWorkupSignature = "";
         state.checklistCatalogStale = false;
         state.answers = plainObject(payload.answers) ? { ...payload.answers } : {};
@@ -31735,6 +32242,11 @@ Rules:
       }
       state.bedsideNote = readBedsideNoteValue();
       state.transferCode = randomCode();
+      const manifest = buildPhoneChecklistManifest({
+        sections: state.sections,
+        workupModuleId: state.checklistWorkupModuleId || state.selectedWorkupModuleId || activePatient().workupModuleId || ""
+      });
+      const manifestHash = phoneChecklistManifestHash({ manifest });
       const payload = {
         version: "local-phone-handoff-v1",
         code: state.transferCode,
@@ -31742,13 +32254,15 @@ Rules:
         caseTitle: $("#caseTitle").textContent,
         workupModuleId: state.selectedWorkupModuleId || activePatient().workupModuleId || "",
         checklistWorkupModuleId: state.checklistWorkupModuleId || state.selectedWorkupModuleId || activePatient().workupModuleId || "",
-        checklistFingerprint: activePatient()?.phoneChecklistFingerprint || phoneChecklistFingerprint(),
-        scrubbedContext: reviewedSourceContextText(),
-        checklistText: state.checklistText,
-        sections: state.sections,
+        manifest,
+        manifestHash,
+        checklistManifestHash: manifestHash,
+        checklistFingerprint: manifestHash,
+        scrubbedContext: "",
+        checklistText: "",
         answers: state.answers,
         itemNotes: state.itemNotes,
-        objectiveData: objectiveDataContextText(),
+        objectiveData: "",
         bedsideNote: state.bedsideNote
       };
       state.phonePayload = encodePayload(payload);
@@ -31756,7 +32270,8 @@ Rules:
         ...patient,
         phoneBundleCode: state.transferCode,
         phoneBundlePayload: state.phonePayload,
-        phoneChecklistFingerprint: payload.checklistFingerprint
+        phoneChecklistManifestHash: manifestHash,
+        phoneChecklistFingerprint: manifestHash
       }));
       renderHandoff();
       setHandoffStatus(`Phone bundle ready for ${activePatient().title}.`, "success");
@@ -31841,6 +32356,7 @@ Rules:
         setStatus(message);
         return null;
       }
+      const manifestHash = currentPhoneManifestHash();
       return {
         version: "local-phone-return-v1",
         code,
@@ -31848,7 +32364,9 @@ Rules:
         caseTitle: activePatient().title,
         workupModuleId: state.selectedWorkupModuleId || activePatient().workupModuleId || "",
         checklistWorkupModuleId: state.checklistWorkupModuleId || state.selectedWorkupModuleId || activePatient().workupModuleId || "",
-        checklistFingerprint: activePatient()?.phoneChecklistFingerprint || phoneChecklistFingerprint(),
+        manifestHash,
+        checklistManifestHash: manifestHash,
+        checklistFingerprint: manifestHash,
         answers: state.answers,
         itemNotes: state.itemNotes,
         bedsideNote: state.bedsideNote,
@@ -31920,7 +32438,19 @@ Rules:
     }
 
     function compactAnswerComponent(key, value) {
-      return String(value || "").trim();
+      const text = String(value || "").trim();
+      const entry = checklistEntryForKey(key);
+      if (!text || !entry) return text;
+      const options = checklistOptionsForItem(entry.section, entry.item);
+      const optionIndex = options.findIndex((option) => normalizedAnswerComponent(option) === normalizedAnswerComponent(text));
+      if (optionIndex >= 0) return optionIndex;
+      const endorsementMatch = text.match(/^(.+?):\s*(endorses|denies|endorsed|not endorsed)$/i);
+      if (endorsementMatch) {
+        const components = endorsementComponentsForItem(entry.section, entry.item, options);
+        const componentIndex = components.findIndex((component) => normalizedAnswerComponent(component) === normalizedAnswerComponent(endorsementMatch[1]));
+        if (componentIndex >= 0) return ["@", componentIndex, /^endorse/i.test(endorsementMatch[2]) ? 1 : 0];
+      }
+      return text;
     }
 
     function expandCompactAnswerComponent(key, value) {
@@ -32000,17 +32530,76 @@ Rules:
       return notes;
     }
 
+    function compactChecklistAnswerRowsV4(answers = {}) {
+      const rows = [];
+      for (const [key, value] of Object.entries(plainObject(answers) ? answers : {})) {
+        const parts = compactAnswerKeyParts(key);
+        if (!parts || !checklistEntryForParts(parts[0], parts[1])) continue;
+        const values = answerValueList(value).map((entry) => compactAnswerComponent(key, entry)).filter((entry) => entry !== "");
+        if (!values.length) continue;
+        rows.push([parts[0], parts[1], values.length === 1 ? values[0] : values]);
+      }
+      return rows;
+    }
+
+    function expandCompactAnswerValueList(key, encoded) {
+      if (Array.isArray(encoded) && encoded[0] !== "@") {
+        return encoded.map((entry) => expandCompactAnswerComponent(key, entry)).filter(Boolean);
+      }
+      return [expandCompactAnswerComponent(key, encoded)].filter(Boolean);
+    }
+
+    function expandCompactChecklistAnswerRowsV4(rows = []) {
+      const answers = {};
+      if (!Array.isArray(rows)) return answers;
+      for (const row of rows) {
+        if (!Array.isArray(row) || row.length < 3) continue;
+        const entry = checklistEntryForParts(Number(row[0]), Number(row[1]));
+        if (!entry) continue;
+        const values = expandCompactAnswerValueList(entry.key, row[2]);
+        if (values.length === 1) {
+          answers[entry.key] = values[0];
+        } else if (values.length > 1) {
+          answers[entry.key] = values;
+        }
+      }
+      return answers;
+    }
+
+    function compactChecklistNoteRowsV4(notes = {}) {
+      const rows = [];
+      for (const [key, value] of Object.entries(plainObject(notes) ? notes : {})) {
+        const parts = compactAnswerKeyParts(key);
+        const note = String(value || "").trim();
+        if (parts && checklistEntryForParts(parts[0], parts[1]) && note) rows.push([parts[0], parts[1], note]);
+      }
+      return rows;
+    }
+
+    function expandCompactChecklistNoteRowsV4(rows = []) {
+      const notes = {};
+      if (!Array.isArray(rows)) return notes;
+      for (const row of rows) {
+        if (!Array.isArray(row) || row.length < 3) continue;
+        const entry = checklistEntryForParts(Number(row[0]), Number(row[1]));
+        const note = String(row[2] || "").trim();
+        if (entry && note) notes[entry.key] = note;
+      }
+      return notes;
+    }
+
     function compactPhoneReturnPayloadForQr() {
       const payload = createPhoneReturnPayloadObject();
       if (!payload) return null;
       const answers = plainObject(payload.answers) ? payload.answers : {};
       const itemNotes = plainObject(payload.itemNotes) ? payload.itemNotes : {};
       const compact = {
-        v: "phoneReturnQr3",
+        v: "phoneReturnQr4",
         c: payload.code || "",
-        f: payload.checklistFingerprint || "",
-        a: compactChecklistAnswerRows(answers),
-        n: compactChecklistNoteRows(itemNotes)
+        m: payload.manifestHash || payload.checklistManifestHash || payload.checklistFingerprint || "",
+        f: payload.checklistFingerprint || payload.manifestHash || "",
+        a: compactChecklistAnswerRowsV4(answers),
+        n: compactChecklistNoteRowsV4(itemNotes)
       };
       if (payload.bedsideNote) compact.b = payload.bedsideNote;
       if (!Object.keys(answers).length && !Object.keys(itemNotes).length && payload.findingsText) compact.x = payload.findingsText;
@@ -32019,8 +32608,9 @@ Rules:
 
     function expandCompactPhoneReturnPayloadForQr(compact = {}) {
       if (compact?.version === "local-phone-return-v1") return compact;
-      if (!["phoneReturnQr1", "phoneReturnQr2", "phoneReturnQr3"].includes(compact?.v)) throw new Error("This QR code is not a phone return bundle.");
+      if (!["phoneReturnQr1", "phoneReturnQr2", "phoneReturnQr3", "phoneReturnQr4"].includes(compact?.v)) throw new Error("This QR code is not a phone return bundle.");
       const compactRows = compact?.v === "phoneReturnQr3";
+      const indexedRows = compact?.v === "phoneReturnQr4";
       return {
         version: "local-phone-return-v1",
         code: compact.c || "",
@@ -32028,9 +32618,11 @@ Rules:
         caseTitle: compact.t || "Phone findings",
         workupModuleId: compact.w || "",
         checklistWorkupModuleId: compact.cw || compact.w || "",
-        checklistFingerprint: compact.f || "",
-        answers: compactRows ? expandCompactChecklistAnswerRows(compact.a) : (plainObject(compact.a) ? compact.a : {}),
-        itemNotes: compactRows ? expandCompactChecklistNoteRows(compact.n) : (plainObject(compact.n) ? compact.n : {}),
+        manifestHash: compact.m || "",
+        checklistManifestHash: compact.m || "",
+        checklistFingerprint: compact.f || compact.m || "",
+        answers: indexedRows ? expandCompactChecklistAnswerRowsV4(compact.a) : compactRows ? expandCompactChecklistAnswerRows(compact.a) : (plainObject(compact.a) ? compact.a : {}),
+        itemNotes: indexedRows ? expandCompactChecklistNoteRowsV4(compact.n) : compactRows ? expandCompactChecklistNoteRows(compact.n) : (plainObject(compact.n) ? compact.n : {}),
         bedsideNote: compact.b || "",
         objectiveData: "",
         findingsText: compact.x || ""
@@ -32041,6 +32633,13 @@ Rules:
       const json = JSON.stringify(compactPayload);
       const gzippedBytes = await gzipTextToBytes(json);
       if (gzippedBytes) {
+        if (compactPayload?.v === "phoneReturnQr4") {
+          return {
+            token: `R4:${base45EncodeBytes(gzippedBytes)}`,
+            compressed: true,
+            jsonLength: json.length
+          };
+        }
         return {
           token: `R:${baseQrEncodeBytes(gzippedBytes)}`,
           compressed: true,
@@ -32056,6 +32655,9 @@ Rules:
 
     async function decodePhoneReturnQrToken(token = "") {
       const text = String(token || "").trim();
+      if (text.startsWith("R4:")) {
+        return expandCompactPhoneReturnPayloadForQr(JSON.parse(await gunzipBytesToText(base45DecodeBytes(text.slice(3)))));
+      }
       if (text.startsWith("R:")) {
         return expandCompactPhoneReturnPayloadForQr(JSON.parse(await gunzipBytesToText(baseQrDecodeBytes(text.slice(2)))));
       }
@@ -32070,7 +32672,7 @@ Rules:
 
     function phoneReturnTokenFromText(raw = "") {
       const text = String(raw || "").trim();
-      if (/^(?:R:|rgz\.|rj\.)/.test(text)) return text;
+      if (/^(?:R4:|R:|rgz\.|rj\.)/.test(text)) return text;
       const parseParams = (value = "") => {
         if (!value) return "";
         const params = new URLSearchParams(value.replace(/^[#?]/, ""));
@@ -32252,7 +32854,7 @@ Rules:
       if (!text) return false;
       if (phoneHandoffMailboxLinkFromText(text)) return true;
       if (phoneReturnTokenFromText(text)) return true;
-      if (/^(?:R:|rgz\.|rj\.)/.test(text)) return true;
+      if (/^(?:R4:|R:|rgz\.|rj\.)/.test(text)) return true;
       if (text.startsWith("{")) {
         try {
           const parsed = JSON.parse(text);
@@ -32315,7 +32917,7 @@ Rules:
         if (expectedCode && incomingCode !== expectedCode) {
           throw new Error(`Returned phone bundle code ${incomingCode} does not match this laptop handoff code ${expectedCode}.`);
         }
-        assertMatchingChecklistFingerprint(payload.checklistFingerprint);
+        assertMatchingPhoneChecklistManifest(payload);
         const validChecklistKeys = currentChecklistAnswerKeySet();
         const filteredAnswers = filterCurrentChecklistMap(payload.answers, validChecklistKeys);
         const filteredItemNotes = filterCurrentChecklistMap(payload.itemNotes, validChecklistKeys);

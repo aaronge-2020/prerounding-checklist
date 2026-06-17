@@ -952,9 +952,13 @@ assert.ok(
 assert.ok(
   appHtml.includes("phoneHandoffPayloadMatchesCurrentChecklist")
     && appHtml.includes("clearStalePhonePayload")
-    && appHtml.includes("String(payload.checklistFingerprint || \"\") === phoneChecklistFingerprint()")
-    && appHtml.includes("phoneReturnQr3"),
-  "phone handoff should reject stale checklist bundles and use the compact return QR format"
+    && appHtml.includes("payloadManifestHash === currentManifestHash")
+    && appHtml.includes("assertMatchingPhoneChecklistManifest")
+    && appHtml.includes("phoneQr3")
+    && appHtml.includes("phoneChecklistManifestPatchOperations")
+    && appHtml.includes("phoneReturnQr4")
+    && appHtml.includes("R4:"),
+  "phone handoff should reject stale checklist manifests, sync default-workup patches, and use the compact indexed return QR format"
 );
 assert.ok(
   appHtml.includes("Editable smart-phrase template")
