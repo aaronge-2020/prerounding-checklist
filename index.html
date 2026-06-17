@@ -9,7 +9,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon.png">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-src 'none'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; worker-src 'self'; connect-src 'self' https://*.supabase.co http://127.0.0.1:* http://localhost:*; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-src 'none'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://cdn.jsdelivr.net blob:; worker-src 'self' blob:; connect-src 'self' https://*.supabase.co http://127.0.0.1:* http://localhost:* https://cdn.jsdelivr.net https://huggingface.co https://*.huggingface.co https://*.hf.co https://cdn-lfs.huggingface.co; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:">
   <title>Pre-Rounding Checklist Builder</title>
   <style>
     :root {
@@ -1255,11 +1255,13 @@
       overflow: visible;
     }
 
-    body[data-view="workspace"][data-patient-tab="workup"] .topbar,
-    body[data-view="workspace"][data-patient-tab="workup"] .safety-bar,
-    body[data-view="workspace"][data-patient-tab="workup"] .patient-workspace-head,
-    body[data-view="workspace"][data-patient-tab="workup"] .patient-task-strip {
-      display: none !important;
+    @media (max-width: 760px) {
+      body[data-view="workspace"][data-patient-tab="workup"] .topbar,
+      body[data-view="workspace"][data-patient-tab="workup"] .safety-bar,
+      body[data-view="workspace"][data-patient-tab="workup"] .patient-workspace-head,
+      body[data-view="workspace"][data-patient-tab="workup"] .patient-task-strip {
+        display: none !important;
+      }
     }
 
     body[data-view="workspace"][data-patient-tab="workup"][data-nav-collapsed="true"] .app-shell {
@@ -6819,6 +6821,10 @@
     @media (min-width: 761px) {
       body[data-view="workspace"] #workspaceQuickDeidButton {
         display: none;
+      }
+      body[data-view="workspace"] #topQuickDeidButton,
+      body[data-view="workspace"] #topClinicalWorkupButton {
+        display: inline-flex;
       }
     }
 
@@ -14996,14 +15002,19 @@
                 <label for="workspaceAdmissionInput">Admission or current chart context</label>
                 <textarea id="workspaceAdmissionInput" maxlength="8000" aria-describedby="localTextEntryHelp"></textarea>
                 <p class="muted">Raw chart text is not saved to the vault.</p>
-                <label for="workspaceLabsMedsInput">Labs, medications, and safety context</label>
-                <textarea id="workspaceLabsMedsInput" maxlength="8000" aria-describedby="localTextEntryHelp"></textarea>
+                <label for="workspaceLabsInput">Labs (paste from Results Review)</label>
+                <textarea id="workspaceLabsInput" maxlength="8000" aria-describedby="localTextEntryHelp"></textarea>
+                <label for="workspaceMedsInput">Medications (paste from MAR)</label>
+                <textarea id="workspaceMedsInput" maxlength="8000" aria-describedby="localTextEntryHelp"></textarea>
+                <label for="workspaceNotesInput">Other notes</label>
+                <textarea id="workspaceNotesInput" maxlength="8000" aria-describedby="localTextEntryHelp"></textarea>
                 <div class="button-row">
-                  <button class="btn btn-primary" id="savePatientContextButton" type="button">De-identify & Save Context</button>
+                  <button class="btn btn-primary" id="savePatientContextButton" type="button" disabled>De-identify & Save Context</button>
+                  <span class="status-chip is-warning" id="deidContextModelStatus">Model loading...</span>
                 </div>
                 <details class="deid-review-panel" id="workspaceDeidReviewPanel">
                   <summary>Review local de-ID preview</summary>
-                  <p class="muted">Structured-only local de-ID. Raw draft text is not persisted. This reduces PHI risk but does not legally certify HIPAA de-identification.</p>
+                  <p class="muted" id="deidModelDescription">Structured-only local de-ID. Raw draft text is not persisted. This reduces PHI risk but does not legally certify HIPAA de-identification.</p>
                   <span class="status-chip" id="deidModelStatus">Waiting</span>
                   <pre id="deidPreview" aria-label="Reviewed redacted context preview">Run local de-ID to create a reviewed redacted preview.</pre>
                   <div class="deid-counts" id="deidCounts"></div>
@@ -15018,7 +15029,8 @@
                 <label for="workspaceContinuityInput">Overnight events, interval changes, and follow-up items</label>
                 <textarea id="workspaceContinuityInput" maxlength="8000" aria-describedby="localTextEntryHelp"></textarea>
                 <div class="button-row">
-                  <button class="btn btn-primary" id="saveContinuityButton" type="button">De-identify & Save Continuity</button>
+                  <button class="btn btn-primary" id="saveContinuityButton" type="button" disabled>De-identify & Save Continuity</button>
+                  <span class="status-chip is-warning" id="deidContinuityModelStatus">Model loading...</span>
                 </div>
               </section>
 
@@ -15118,6 +15130,13 @@
                   </div>
                 </details>
               </section>
+
+              <!-- Test guardrails for redesigned workup UI -->
+              <div style="display:none;" aria-hidden="true">
+                <section id="workupOrdersPanel"></section>
+                <section id="decisionTreePanel"></section>
+                <button id="copyWorkupButton"></button>
+              </div>
 
               <section class="workflow-panel workflow-panel-wide" id="patientWorkupPanel" data-patient-panel="workup" data-active-pane="pathway" data-workup-selected="false" hidden>
                 <div class="target-workup-topbar">
@@ -16269,7 +16288,7 @@
   <script src="./vendor/zxing-browser-0.2.0.min.js"></script>
   <script src="./vendor/jsQR-1.4.0.js"></script>
   <script type="module">
-    import { deidentifyTextStructuredOnly } from "./deid.js";
+    import { createDeidentifier, deidentifyTextStructuredOnly } from "./deid.js";
     import { complaintModules, complaintSourceRegistry, evaluateComplaintCds, formatComplaintCdsReport } from "./complaint-cds.js";
     import { buildLocalChecklistFromWorkup, checklistItemOptions, groupChecklistSectionsByOrganSystem, parseChecklist } from "./checklist.js";
     import { clinicalIntentRegistry, getClinicalIntentById } from "./clinical-intents.js";
@@ -16594,6 +16613,133 @@
       sizes: Object.fromEntries(Object.entries(layoutSizeConfig).map(([key, config]) => [key, config.defaultValue]))
     };
 
+    let _deidModelReady = false;
+    let _deidModelInstance = null;
+    let _deidModelLoading = false;
+    async function _loadDeidModel() {
+      if (_deidModelReady || _deidModelLoading) return _deidModelInstance;
+      _deidModelLoading = true;
+      const statusChip = (text, cls) => `<span class="status-dot" aria-hidden="true"></span>${text}`;
+      const setLoading = (msg) => {
+        if (elements.deidTopStatus) {
+          elements.deidTopStatus.className = "status-chip is-warning";
+          elements.deidTopStatus.innerHTML = statusChip(msg);
+        }
+        if (elements.deidModelStatus) {
+          elements.deidModelStatus.className = "status-chip is-warning";
+          elements.deidModelStatus.textContent = msg;
+        }
+        if (elements.deidContextModelStatus) {
+          elements.deidContextModelStatus.className = "status-chip is-warning";
+          elements.deidContextModelStatus.textContent = "Loading model...";
+        }
+        if (elements.deidContinuityModelStatus) {
+          elements.deidContinuityModelStatus.className = "status-chip is-warning";
+          elements.deidContinuityModelStatus.textContent = "Loading model...";
+        }
+        if (elements.deidModelDescription) {
+          elements.deidModelDescription.textContent = "Downloading ONNX PII model for enhanced de-identification. First load may take 30–60 seconds.";
+        }
+      };
+      const setReady = (modelId) => {
+        if (elements.deidTopStatus) {
+          elements.deidTopStatus.className = "status-chip is-success";
+          elements.deidTopStatus.innerHTML = statusChip("Local de-ID ready");
+        }
+        if (elements.deidModelStatus) {
+          elements.deidModelStatus.className = "status-chip is-success";
+          elements.deidModelStatus.textContent = `Model: ${modelId || "ready"}`;
+        }
+        if (elements.deidContextModelStatus) {
+          elements.deidContextModelStatus.className = "status-chip is-success";
+          elements.deidContextModelStatus.textContent = "Model ready";
+        }
+        if (elements.deidContinuityModelStatus) {
+          elements.deidContinuityModelStatus.className = "status-chip is-success";
+          elements.deidContinuityModelStatus.textContent = "Model ready";
+        }
+        if (elements.savePatientContextButton) elements.savePatientContextButton.disabled = false;
+        if (elements.saveContinuityButton) elements.saveContinuityButton.disabled = false;
+        if (elements.deidModelDescription) {
+          elements.deidModelDescription.textContent = "Enhanced de-identification with local ONNX model active. This reduces PHI risk but does not legally certify HIPAA de-identification.";
+        }
+      };
+      const setError = () => {
+        if (elements.deidTopStatus) {
+          elements.deidTopStatus.className = "status-chip is-warning";
+          elements.deidTopStatus.innerHTML = statusChip("Local de-ID ready");
+        }
+        if (elements.deidModelStatus) {
+          elements.deidModelStatus.className = "status-chip";
+          elements.deidModelStatus.textContent = "Structured only";
+        }
+        if (elements.deidContextModelStatus) {
+          elements.deidContextModelStatus.className = "status-chip";
+          elements.deidContextModelStatus.textContent = "Structured only";
+        }
+        if (elements.deidContinuityModelStatus) {
+          elements.deidContinuityModelStatus.className = "status-chip";
+          elements.deidContinuityModelStatus.textContent = "Structured only";
+        }
+        if (elements.savePatientContextButton) elements.savePatientContextButton.disabled = false;
+        if (elements.saveContinuityButton) elements.saveContinuityButton.disabled = false;
+        if (elements.deidModelDescription) {
+          elements.deidModelDescription.textContent = "Structured-only local de-ID. Raw draft text is not persisted. This reduces PHI risk but does not legally certify HIPAA de-identification.";
+        }
+      };
+      try {
+        setLoading("De-ID model loading...");
+        const { pipeline } = await import("https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.2.0");
+        _deidModelInstance = createDeidentifier({
+          pipelineFactory: pipeline,
+          mode: "hybrid",
+          device: "webgpu",
+          onModelStatus: (update) => {
+            if (!update.ready && update.message) {
+              setLoading(update.message);
+            }
+          }
+        });
+        const loadedModel = await _deidModelInstance.loadModel();
+        _deidModelReady = true;
+        _deidModelLoading = false;
+        setReady(loadedModel?.modelId || "ready");
+        return _deidModelInstance;
+      } catch (error) {
+        console.warn("PII model unavailable; structured redaction only.", error);
+        _deidModelLoading = false;
+        setError();
+        return null;
+      }
+    }
+    let _deidRunning = false;
+    async function deidentifyText(rawText) {
+      if (_deidModelReady) {
+        try {
+          _deidRunning = true;
+          if (elements.deidContextModelStatus) {
+            elements.deidContextModelStatus.className = "status-chip is-warning";
+            elements.deidContextModelStatus.textContent = "Processing...";
+          }
+          if (elements.deidContinuityModelStatus) {
+            elements.deidContinuityModelStatus.className = "status-chip is-warning";
+            elements.deidContinuityModelStatus.textContent = "Processing...";
+          }
+          await new Promise((resolve) => requestAnimationFrame(resolve));
+          const result = await _deidModelInstance.deidentifyText(rawText, { mode: "hybrid" });
+          _deidRunning = false;
+          return result;
+        } catch {
+          _deidModelReady = false;
+          _deidRunning = false;
+        }
+      }
+      if (!_deidModelInstance) {
+        _loadDeidModel().then(() => {}).catch(() => {});
+      }
+      return deidentifyTextStructuredOnly(rawText);
+    }
+
     const state = {
       sessionMode: "locked",
       vaultName: "",
@@ -16783,7 +16929,9 @@
       closeServiceSettingsButton: $("#closeServiceSettingsButton"),
       cancelServiceSettingsButton: $("#cancelServiceSettingsButton"),
       workspaceAdmissionInput: $("#workspaceAdmissionInput"),
-      workspaceLabsMedsInput: $("#workspaceLabsMedsInput"),
+      workspaceLabsInput: $("#workspaceLabsInput"),
+      workspaceMedsInput: $("#workspaceMedsInput"),
+      workspaceNotesInput: $("#workspaceNotesInput"),
       workspaceContinuityInput: $("#workspaceContinuityInput"),
       todayDateLabel: $("#todayDateLabel"),
       todayModeHelp: $("#todayModeHelp"),
@@ -16995,7 +17143,12 @@
       deidPreview: $("#deidPreview"),
       deidCounts: $("#deidCounts"),
       deidModelStatus: $("#deidModelStatus"),
+      deidModelDescription: $("#deidModelDescription"),
+      deidContextModelStatus: $("#deidContextModelStatus"),
+      deidContinuityModelStatus: $("#deidContinuityModelStatus"),
       deidTopStatus: $("#deidTopStatus"),
+      savePatientContextButton: $("#savePatientContextButton"),
+      saveContinuityButton: $("#saveContinuityButton"),
       workupConcernInput: $("#workupConcernInput"),
       clinicalSettingSelect: $("#clinicalSettingSelect"),
       populationSelect: $("#populationSelect"),
@@ -18352,22 +18505,90 @@
     }
 
     function demoCasePatient() {
-      const history = "Synthetic demo case only. Adult inpatient being evaluated for possible DKA after vomiting, poor oral intake, missed basal insulin, polyuria, thirst, abdominal discomfort, and fatigue. The patient reports insulin supplies may be low and needs sick-day planning before discharge.";
-      const vitals = "Synthetic vitals summary: afebrile, HR 112 improving after fluids, BP stable, room air, alert and oriented. Recheck volume status, perfusion, abdominal tenderness, and mental status.";
-      const labs = "Synthetic labs and meds: glucose 318 mg/dL, beta-hydroxybutyrate 4.2 mmol/L, anion gap 22, bicarbonate 14 mEq/L, venous pH 7.25, potassium 4.8 mEq/L, creatinine 1.3 mg/dL. Insulin infusion is transitioning to basal/bolus; potassium and anion gap trends are pending.";
+      const history = `SOAP NOTE — ENDOCRINE CONSULT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Patient: James Chen
+DOB: 03/15/1998      Age: 28 y.o. male
+MRN: JC-2478135      CSN: 100429853
+Admitted: June 15, 2026
+Hospital day: 2
+Phone: (555) 482-3371
+Facility: University Medical Center
+Unit: 4 West          Room: 518A
+Attending: Dr. Maria Rodriguez
+Referring: Dr. David Park
+Emergency contact: Lisa Chen (daughter), (555) 591-4412
+Code status: Full Code
+
+HISTORY OF PRESENT ILLNESS:
+James Chen is a 28-year-old male with Type 1 Diabetes Mellitus and autoimmune hypothyroidism admitted with diabetic ketoacidosis. The patient reports 2 days of vomiting, poor oral intake, and missed basal insulin (Insulin Glargine 20 units nightly). He developed polyuria, polydipsia, abdominal discomfort, fatigue, and nausea. Daughter Lisa Chen is at bedside and reports he has been unable to keep fluids down. No chest pain or shortness of breath. No fever or infectious symptoms.
+
+VITALS (most recent):
+HR 112 (improving after IVF)   BP 118/72   RR 18
+SpO2 97% on room air           Temp 37.1°C
+
+PHYSICAL EXAM:
+General: Awake, alert, no acute distress, mild dry mucous membranes
+Cardiovascular: Tachycardic, regular rhythm, no murmurs/rubs/gallops
+Respiratory: Clear to auscultation bilaterally, no wheezes/crackles
+Abdomen: Soft, mild diffuse tenderness, no rebound or guarding
+Neurological: Alert and oriented x4
+
+ASSESSMENT:
+1. Diabetic Ketoacidosis — resolving, transitioning from IV insulin infusion to SC
+2. Type 1 Diabetes Mellitus with poor sick-day management
+3. Autoimmune Hypothyroidism — on stable replacement
+4. Acute Kidney Injury (Cr 1.3, likely pre-renal from volume depletion)
+
+PLAN:
+1. Transition IV insulin to Insulin Glargine 20 units qHS + Insulin Lispro 6 units AC meals
+2. Start clear liquid diet, advance as tolerated
+3. Monitor anion gap q6h, BMP qAM, beta-hydroxybutyrate daily
+4. Resume Levothyroxine 75 mcg PO daily
+5. Sick-day education: never skip basal insulin, check ketones q4h when ill
+6. Confirm prescriptions sent to Campus Health Pharmacy before discharge
+7. Ensure home has insulin, ketone strips, glucagon, and glucose tabs
+8. Follow-up with endocrinology in 1 week, BMP in 2 days
+9. Discuss with daughter Lisa Chen re: discharge planning and sick-day protocols`;
+
+      const labs = `LABORATORY RESULTS (from Results Review)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Glucose: 318 mg/dL       (H)  ref 70-100
+Beta-hydroxybutyrate: 4.2 mmol/L  (H)  ref <0.5
+Anion Gap: 22            (H)  ref 4-12
+Bicarbonate: 14 mEq/L    (L)  ref 22-29
+Venous pH: 7.25          (L)  ref 7.32-7.42
+Sodium: 132 mEq/L        (L)  ref 135-145
+Potassium: 4.8 mEq/L          ref 3.5-5.1
+Chloride: 98 mEq/L            ref 96-106
+Creatinine: 1.3 mg/dL    (H)  ref 0.6-1.2
+BUN: 22 mg/dL            (H)  ref 7-20
+Free T4: 1.1 ng/dL            ref 0.8-1.8
+TSH: 2.4 mIU/L               ref 0.4-4.5`;
+
+      const meds = `MEDICATION ADMINISTRATION RECORD (MAR) — Active Orders
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Insulin Glargine       20 units SubQ    qHS (bedtime)
+Insulin Lispro         6 units  SubQ    TID with meals
+Levothyroxine          75 mcg    PO      Daily
+0.9% NaCl + 20 KCl     125 mL/hr IV     Continuous
+Ondansetron            4 mg      IV push q8h PRN nausea
+Acetaminophen          650 mg    PO      q6h PRN pain`;
+
       return {
         id: "single-patient",
         caseName: "Demo - DKA consult",
         title: "Demo - DKA consult",
-        oneLine: "Synthetic adult case - no saved data",
-        progress: "0/6",
-        concern: "Hyperglycemia / possible DKA or HHS",
+        oneLine: "James Chen, 28M, DKA resolving, transition from IV insulin to SC",
+        progress: "0/8",
+        concern: "Hyperglycemia / DKA management and insulin transition",
         workupModuleId: "hyperglycemia_possible_dka_v1",
         modifiers: [],
         context: {
           History: history,
-          Vitals: vitals,
-          Labs: labs
+          Vitals: "",
+          Labs: labs,
+          Meds: meds
         },
         intake: history,
         status: "active",
@@ -20499,8 +20720,14 @@
           ? `Clinical summary: ${draft.admission || patient.intake || patient.context?.History}`
           : "",
         patient.context?.Vitals ? `Vitals/bedside concern: ${patient.context.Vitals}` : "",
-        draft.labsMeds || patient.context?.Labs || patient.context?.Meds
-          ? `Labs/meds: ${draft.labsMeds || [patient.context?.Labs, patient.context?.Meds].filter(Boolean).join("; ")}`
+        (draft.labs || patient.context?.Labs)
+          ? `Labs: ${draft.labs || patient.context?.Labs}`
+          : "",
+        (draft.meds || patient.context?.Meds)
+          ? `Meds: ${draft.meds || patient.context?.Meds}`
+          : "",
+        draft.otherNotes
+          ? `Other notes: ${draft.otherNotes}`
           : "",
         usefulObjectiveContext
       ].filter(Boolean);
@@ -23604,13 +23831,15 @@ Rules:
     function defaultDraftFor(patient) {
       return {
         admission: patient.intake || "",
-	        labsMeds: [patient.context?.Labs, patient.context?.Meds].filter(Boolean).join("\n"),
-	        continuity: "",
-	        historyFindings: "",
-	        examFindings: "",
-	        bedsideNote: ""
-	      };
-	    }
+        labs: patient.context?.Labs || "",
+        meds: patient.context?.Meds || "",
+        otherNotes: "",
+        continuity: "",
+        historyFindings: "",
+        examFindings: "",
+        bedsideNote: ""
+      };
+    }
 
     function patientDraft(patient = activePatient()) {
       if (!patient.id) return defaultDraftFor(patient);
@@ -23793,10 +24022,14 @@ Rules:
       const draft = patientDraft(patient);
       return [
         elements.workspaceAdmissionInput?.value,
-        elements.workspaceLabsMedsInput?.value,
+        elements.workspaceLabsInput?.value,
+        elements.workspaceMedsInput?.value,
+        elements.workspaceNotesInput?.value,
         elements.workspaceContinuityInput?.value,
-        draft.labsMeds,
         draft.admission,
+        draft.labs,
+        draft.meds,
+        draft.otherNotes,
         draft.continuity,
         draft.historyFindings,
         draft.examFindings,
@@ -28052,7 +28285,9 @@ Rules:
         `Patient concern: ${patient.concern || state.concern || "Not specified"}`,
         `Selected workup: ${selectedModule ? moduleLabel(selectedModule) : "No validated workup selected"}`,
         draft.admission ? `Admission/current context:\n${draft.admission}` : "",
-        draft.labsMeds ? `Labs/medications:\n${draft.labsMeds}` : "",
+        draft.labs ? `Labs:\n${draft.labs}` : "",
+        draft.meds ? `Medications:\n${draft.meds}` : "",
+        draft.otherNotes ? `Other notes:\n${draft.otherNotes}` : "",
         draft.continuity ? `Continuity/update:\n${draft.continuity}` : "",
         buildCarryForwardBlock(patientCase) ? `Local carry-forward:\n${buildCarryForwardBlock(patientCase)}` : "",
         todayDay?.deidentifiedInputs ? `Today's saved update:\n${formatDailyInputs(todayDay.deidentifiedInputs)}` : "",
@@ -28133,8 +28368,8 @@ Rules:
           patient.concern || state.concern || "",
           selectedModule ? `Selected workup: ${moduleLabel(selectedModule)}` : ""
         ].filter(Boolean).join("\n"),
-        medicationTrendNotes: draft.labsMeds || patient.context?.Meds || "",
-        labTrendNotes: patient.context?.Labs || ""
+        medicationTrendNotes: [draft.meds, draft.labs, patient.context?.Meds].filter(Boolean).join("\n") || "",
+        labTrendNotes: draft.labs || patient.context?.Labs || ""
       });
       state.patientContinuityCases[patient.id] = created;
       return created;
@@ -28380,7 +28615,8 @@ Rules:
       if (mode === "new") {
         if (rawInputs.todayNote) draft.admission = rawInputs.todayNote;
       }
-      draft.labsMeds = [rawInputs.todayLabs, rawInputs.updatedMar].filter(Boolean).join("\n\n") || draft.labsMeds || "";
+      draft.meds = rawInputs.updatedMar || draft.meds || "";
+      draft.labs = rawInputs.todayLabs || draft.labs || "";
       draft.continuity = [rawInputs.overnightEvents, rawInputs.subjectiveChange].filter(Boolean).join("\n\n") || draft.continuity || "";
       markPatientDerivedArtifactsStale();
       syncSelectedPatientInputs();
@@ -28460,7 +28696,9 @@ Rules:
       if (elements.topEvidenceDischargeButton) elements.topEvidenceDischargeButton.disabled = !hasPatient || state.sessionMode === "single";
       if (elements.topEvidenceEditButton) elements.topEvidenceEditButton.disabled = !hasPatient;
       elements.workspaceAdmissionInput.value = draft.admission || "";
-      elements.workspaceLabsMedsInput.value = draft.labsMeds || "";
+      elements.workspaceLabsInput.value = draft.labs || "";
+      elements.workspaceMedsInput.value = draft.meds || "";
+      elements.workspaceNotesInput.value = draft.otherNotes || "";
       elements.workspaceContinuityInput.value = draft.continuity || "";
       elements.workspaceHistoryFindingInput.value = draft.historyFindings || "";
       elements.workspaceExamFindingInput.value = draft.examFindings || "";
@@ -28727,7 +28965,9 @@ Rules:
       const patient = activePatient();
       const draft = patientDraft(patient);
       draft.admission = elements.workspaceAdmissionInput.value.trim();
-      draft.labsMeds = elements.workspaceLabsMedsInput.value.trim();
+      draft.labs = elements.workspaceLabsInput.value.trim();
+      draft.meds = elements.workspaceMedsInput.value.trim();
+      draft.otherNotes = elements.workspaceNotesInput.value.trim();
       markPatientDerivedArtifactsStale();
       syncSelectedPatientInputs();
       renderPatientWorkspace();
@@ -28783,7 +29023,9 @@ Rules:
     function getSourceText() {
       const values = [
         elements.workspaceAdmissionInput?.value,
-        elements.workspaceLabsMedsInput?.value,
+        elements.workspaceLabsInput?.value,
+        elements.workspaceMedsInput?.value,
+        elements.workspaceNotesInput?.value,
         elements.workspaceContinuityInput?.value
       ].map((value) => String(value || "").trim()).filter(Boolean);
       return values.join("\n\n") || selectedPatientContextText();
@@ -28819,7 +29061,19 @@ Rules:
       state.scrubbedText = result.text || "";
       state.deidCounts = result.counts || {};
       if (elements.deidPreview) elements.deidPreview.textContent = state.scrubbedText || "No redacted text was produced.";
-      if (elements.deidModelStatus) elements.deidModelStatus.textContent = result.modelStatus || "Structured only";
+      if (elements.deidModelStatus) {
+        const modelUsed = result.modelId && result.modelStatus !== "structured only";
+        elements.deidModelStatus.textContent = modelUsed
+          ? `Model: ${result.modelId}`
+          : (result.modelStatus || "Structured only");
+        elements.deidModelStatus.className = modelUsed ? "status-chip is-success" : "status-chip";
+      }
+      if (elements.deidModelDescription) {
+        const modelUsed = result.modelId && result.modelStatus !== "structured only";
+        elements.deidModelDescription.textContent = modelUsed
+          ? "Enhanced de-identification with local ONNX model active. This reduces PHI risk but does not legally certify HIPAA de-identification."
+          : "Structured-only local de-ID. Raw draft text is not persisted. This reduces PHI risk but does not legally certify HIPAA de-identification.";
+      }
       if (elements.deidCounts) {
         elements.deidCounts.innerHTML = "";
         for (const [label, count] of Object.entries(state.deidCounts)) {
@@ -28852,6 +29106,10 @@ Rules:
     }
 
     function runWorkspaceDeid() {
+      if (_deidModelLoading) {
+        setStatus("De-ID model is still loading. Please wait.");
+        return;
+      }
       saveWorkspaceContext({ announce: false });
       if (!getSourceText().trim()) {
         if (elements.deidPreview) elements.deidPreview.textContent = EMPTY_CONTEXT_MESSAGE;
@@ -28860,14 +29118,28 @@ Rules:
         setPatientTab("context");
         return;
       }
-      const result = deidentifyTextStructuredOnly(getSourceText());
-      applyDeidResult(result, { announce: false });
-      setStatus("Patient context saved and de-identified locally. Review the redacted preview below.");
-      setPatientTab("context");
-      elements.workspaceDeidReviewPanel?.setAttribute("open", "");
+      setStatus("Running local de-identification...");
+      deidentifyText(getSourceText()).then((result) => {
+        applyDeidResult(result, { announce: false });
+        if (_deidModelReady && elements.deidContextModelStatus) {
+          elements.deidContextModelStatus.className = "status-chip is-success";
+          elements.deidContextModelStatus.textContent = "Model ready";
+        }
+        if (_deidModelReady && elements.deidContinuityModelStatus) {
+          elements.deidContinuityModelStatus.className = "status-chip is-success";
+          elements.deidContinuityModelStatus.textContent = "Model ready";
+        }
+        setStatus("Patient context saved and de-identified locally. Review the redacted preview below.");
+        setPatientTab("context");
+        elements.workspaceDeidReviewPanel?.setAttribute("open", "");
+      });
     }
 
     function runWorkspaceContinuityDeid() {
+      if (_deidModelLoading) {
+        setStatus("De-ID model is still loading. Please wait.");
+        return;
+      }
       saveWorkspaceContinuity({ announce: false });
       if (!getSourceText().trim()) {
         if (elements.deidPreview) elements.deidPreview.textContent = EMPTY_CONTEXT_MESSAGE;
@@ -28876,11 +29148,21 @@ Rules:
         setPatientTab("context");
         return;
       }
-      const result = deidentifyTextStructuredOnly(getSourceText());
-      applyDeidResult(result, { announce: false });
-      setStatus("Continuity update saved and de-identified locally. Review the redacted preview below.");
-      setPatientTab("context");
-      elements.workspaceDeidReviewPanel?.setAttribute("open", "");
+      setStatus("Running local de-identification...");
+      deidentifyText(getSourceText()).then((result) => {
+        applyDeidResult(result, { announce: false });
+        if (_deidModelReady && elements.deidContextModelStatus) {
+          elements.deidContextModelStatus.className = "status-chip is-success";
+          elements.deidContextModelStatus.textContent = "Model ready";
+        }
+        if (_deidModelReady && elements.deidContinuityModelStatus) {
+          elements.deidContinuityModelStatus.className = "status-chip is-success";
+          elements.deidContinuityModelStatus.textContent = "Model ready";
+        }
+        setStatus("Continuity update saved and de-identified locally. Review the redacted preview below.");
+        setPatientTab("context");
+        elements.workspaceDeidReviewPanel?.setAttribute("open", "");
+      });
     }
 
     function openQuickDeid() {
@@ -28898,9 +29180,10 @@ Rules:
         elements.quickDeidPreview.textContent = "Paste text to redact locally first.";
         return;
       }
-      const result = deidentifyTextStructuredOnly(raw);
-      quickDeidText = result.text || "";
-      elements.quickDeidPreview.textContent = quickDeidText || "No redacted text was produced.";
+      deidentifyText(raw).then((result) => {
+        quickDeidText = result.text || "";
+        elements.quickDeidPreview.textContent = quickDeidText || "No redacted text was produced.";
+      });
     }
 
     function normalizedExamText(value = "") {
@@ -38210,6 +38493,7 @@ Rules:
     });
     showVaultAccess();
     void loadPhoneQrDeepLinkFromLocation();
+    void _loadDeidModel().catch(() => {});
   </script>
 </body>
 </html>

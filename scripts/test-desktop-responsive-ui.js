@@ -516,15 +516,18 @@ async function testDemoCaseLoader(browser, baseUrl) {
       .filter((tab) => !tab.hidden && getComputedStyle(tab).display !== "none")
       .map((tab) => tab.textContent?.trim() || ""),
     admission: document.querySelector("#workspaceAdmissionInput")?.value || "",
-    labs: document.querySelector("#workspaceLabsMedsInput")?.value || "",
+    labs: [
+      document.querySelector("#workspaceLabsInput")?.value || "",
+      document.querySelector("#workspaceMedsInput")?.value || ""
+    ].filter(Boolean).join("\n"),
     workupValue: document.querySelector("#patientWorkupSelect")?.value || "",
     buildDisabled: document.querySelector("#patientBuildChecklistButton")?.disabled || false,
     status: document.querySelector("#statusLive")?.textContent?.trim() || ""
   }));
   assert(demoAudit.title.includes("Demo - DKA consult"), `demo should select the synthetic patient: ${JSON.stringify(demoAudit)}`);
-  assert(/Synthetic adult case - no saved data/i.test(demoAudit.oneLine), `demo one-line copy should identify no-save synthetic data: ${JSON.stringify(demoAudit)}`);
+  assert(/James Chen, 28M, DKA/i.test(demoAudit.oneLine), `demo one-line copy should identify DKA consult: ${JSON.stringify(demoAudit)}`);
   assert(!demoAudit.visibleTabs.includes("Today"), `new no-save demo should not show the follow-up Today tab: ${JSON.stringify(demoAudit)}`);
-  assert(/Synthetic demo case only/i.test(demoAudit.admission) && /possible DKA|vomiting|insulin/i.test(demoAudit.admission), `demo admission context should be prefilled: ${JSON.stringify(demoAudit)}`);
+  assert(/SOAP NOTE/i.test(demoAudit.admission) && /James Chen|DKA|vomiting|insulin/i.test(demoAudit.admission), `demo admission context should be prefilled: ${JSON.stringify(demoAudit)}`);
   assert(/glucose 318|anion gap 22|beta-hydroxybutyrate 4\.2/i.test(demoAudit.labs), `demo labs should be prefilled with synthetic objective context: ${JSON.stringify(demoAudit)}`);
   assert(demoAudit.workupValue === "hyperglycemia_possible_dka_v1" && !demoAudit.buildDisabled, `demo should start with the DKA workup selected and ready to build: ${JSON.stringify(demoAudit)}`);
   assert(/fake|disappears/i.test(demoAudit.status), `demo status should explain fake/no-save behavior: ${JSON.stringify(demoAudit)}`);

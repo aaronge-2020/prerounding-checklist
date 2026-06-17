@@ -180,7 +180,6 @@ try {
       }
       await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(rows.workups) });
       if (authenticated) requests.authenticatedFulfilled = true;
-      else requests.publicFulfilled = true;
       return;
     }
     if (url.pathname === "/rest/v1/workup_sections" && request.method() === "GET") {
@@ -193,6 +192,7 @@ try {
       requests.sourceSearches.push({ authenticated, search: decodeURIComponent(url.search) });
       if (!authenticated) await delay(500);
       await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(rows.sources) });
+      if (!authenticated) requests.publicFulfilled = true;
       return;
     }
     if (url.pathname === "/rest/v1/change_sets" && request.method() === "GET") {

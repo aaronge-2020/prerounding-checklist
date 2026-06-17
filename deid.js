@@ -169,6 +169,37 @@ const nonNameClinicalWords = new Set([
   "urology", "vascular", "vital", "vitals", "warfarin", "wbc", "white", "wound"
 ]);
 
+const commonFirstNames = new Set([
+  "aaron", "abigail", "adam", "adrian", "alan", "albert", "alex", "alexander", "alexandra", "alice",
+  "alicia", "allison", "amanda", "amber", "amy", "andrea", "andrew", "angela", "ann", "anna", "anne",
+  "anthony", "antonio", "arthur", "ashley", "austin", "barbara", "benjamin", "betty", "beverly",
+  "bill", "billy", "bobby", "bonnie", "brandon", "brenda", "brian", "brittany", "bruce", "bryan",
+  "caleb", "carl", "carla", "carlos", "carol", "carolyn", "carrie", "catherine", "charles", "charlotte",
+  "cheryl", "chris", "christina", "christine", "christopher", "cindy", "clara", "clarence", "connie",
+  "craig", "crystal", "curtis", "cynthia", "dale", "dan", "daniel", "danielle", "david", "dawn",
+  "deborah", "debra", "denise", "dennis", "diana", "diane", "donald", "donna", "doris", "dorothy",
+  "douglas", "dylan", "earl", "edith", "edna", "edward", "elaine", "elizabeth", "ellen", "emily",
+  "emma", "eric", "erica", "erin", "ernest", "ethan", "eugene", "evelyn", "florence", "frances",
+  "frank", "fred", "gabriel", "gary", "george", "gerald", "gloria", "grace", "gregory", "hannah",
+  "harold", "harry", "heather", "helen", "henry", "howard", "irene", "isabella", "jack", "jacob",
+  "jacqueline", "james", "jamie", "jane", "janet", "janice", "jason", "jean", "jeffrey", "jennifer",
+  "jeremy", "jerry", "jesse", "jessica", "jill", "jimmy", "joan", "joe", "john", "johnny", "jonathan",
+  "jordan", "jose", "joseph", "joshua", "joyce", "juan", "judith", "judy", "julia", "julie", "justin",
+  "karen", "katherine", "kathleen", "kathryn", "kathy", "kayla", "keith", "kelly", "kenneth", "kevin",
+  "kim", "kimberly", "kyle", "larry", "laura", "lauren", "lawrence", "lee", "leslie", "lillian",
+  "linda", "lisa", "logan", "lori", "louis", "louise", "lucas", "lynn", "madison", "margaret",
+  "maria", "marie", "marilyn", "marjorie", "mark", "martha", "martin", "mary", "mason", "matthew",
+  "megan", "melissa", "michael", "michelle", "mike", "mildred", "nancy", "natalie", "nathan",
+  "nicholas", "nicole", "noah", "norma", "norman", "olivia", "pamela", "patricia", "patrick", "paul",
+  "paula", "peter", "philip", "phillip", "phyllis", "rachel", "ralph", "randy", "raymond", "rebecca",
+  "richard", "rita", "robert", "robin", "rodney", "roger", "ronald", "rose", "roy", "ruby", "russell",
+  "ruth", "ryan", "samantha", "samuel", "sandra", "sara", "sarah", "scott", "sean", "shannon",
+  "sharon", "shawn", "shirley", "sophia", "stacy", "stephanie", "stephen", "steve", "steven", "sue",
+  "susan", "tammy", "taylor", "teresa", "terry", "theresa", "thomas", "tiffany", "timothy", "tina",
+  "todd", "tom", "tony", "travis", "tyler", "victor", "victoria", "vincent", "virginia", "walter",
+  "wanda", "wayne", "wendy", "william", "willie", "zachary"
+]);
+
 const clinicalAnchorWords = new Set([
   "absolute", "albumin", "alk", "alkaline", "anion", "antibiotic", "anticoagulation", "arterial",
   "ast", "atypical", "basophils", "base", "bicarbonate", "bilirubin", "blood", "bun", "burr",
@@ -2410,6 +2441,12 @@ function findFuzzyIdentityForCandidate(candidate, graph) {
   )) || null;
 }
 
+function hasProseContinuationAfterName(rawText, end) {
+  const after = rawText.slice(end, Math.min(rawText.length, end + 80));
+  const firstWord = after.match(/^[\s,;:.!?-]*(\w+)/)?.[1] || "";
+  return /^(?:was|were|is|are|has|had|have|came|went|arrived|left|departed|presented|reported|stated|said|told|spoke|called|denied|endorsed|complained|asked|requested|received|underwent|developed|began|started|stopped|continued|remained|became|felt|noted|showed|demonstrated|required|needed|wanted|tried|failed|agreed|refused|decided|planned|expected|hoped|thought|believed|knew|found|gave|took|made|got|put|went|followed|walked|ran|sat|stood|lay|slept|ate|drank|used|tolerated|a|an|the|in|on|at|to|for|with|from|by|about|after|before|during|and|or|but|not|also|now|then|today|yesterday|will|would|should|could|can|may|might|who|that|which|this|these|those|his|her|their|our|my|your|its|no|yes|very|just|quite|rather|still|yet|already|soon|currently|currently|initially|subsequently|eventually|finally)$/i.test(firstWord);
+}
+
 function shouldAutoPromoteStandalonePersonName(candidate) {
   const parsed = parsePersonName(candidate);
   if (!parsed) {
@@ -2422,7 +2459,7 @@ function shouldAutoPromoteStandalonePersonName(candidate) {
   const surnameLength = normalizeNameLoose(parsed.surname).length;
   return Boolean(parsed.title) ||
     isDistinctiveSurname(parsed.surname) ||
-    hasMiddleInitial && surnameLength >= 6;
+    (hasMiddleInitial && surnameLength >= 6);
 }
 
 function promoteResidualNameEntities(rawText, entities, graph) {
@@ -2447,7 +2484,13 @@ function promoteResidualNameEntities(rawText, entities, graph) {
       const alias = findAliasForCandidate(candidate, graph.aliases);
       const fuzzyIdentity = alias ? null : findFuzzyIdentityForCandidate(candidate, graph);
       const standalonePersonName = !alias && !fuzzyIdentity && shouldAutoPromoteStandalonePersonName(candidate);
-      if (!alias && !fuzzyIdentity && !standalonePersonName && !hasStrongNameContext(rawText, start, end)) {
+      const parsedCandidate = parsePersonName(candidate);
+      const proseNameSignal = !alias && !fuzzyIdentity && !standalonePersonName &&
+        parsedCandidate && parsedCandidate.realParts.length >= 2 &&
+        parsedCandidate.realParts.every(isLikelyHumanNamePart) &&
+        (hasProseContinuationAfterName(rawText, end) ||
+         (parsedCandidate.first && commonFirstNames.has(normalizeNameKey(parsedCandidate.first))));
+      if (!alias && !fuzzyIdentity && !standalonePersonName && !proseNameSignal && !hasStrongNameContext(rawText, start, end)) {
         continue;
       }
       if (alias?.requiresStrongContext && !hasStrongNameContext(rawText, start, end)) {
@@ -2455,7 +2498,7 @@ function promoteResidualNameEntities(rawText, entities, graph) {
       }
       const label = alias?.label || fuzzyIdentity?.label || refineNameLabel("NAME", rawText, start, end);
       const source = alias ? "alias repeat" : fuzzyIdentity ? "fuzzy alias" : "residual auto-fix";
-      const context = alias ? "known identity alias" : fuzzyIdentity ? `near ${fuzzyIdentity.surname}` : standalonePersonName ? "standalone person name pattern" : "strong name context";
+      const context = alias ? "known identity alias" : fuzzyIdentity ? `near ${fuzzyIdentity.surname}` : standalonePersonName ? "standalone person name pattern" : proseNameSignal ? "prose name signal" : "strong name context";
       pushPatternEntity(entities, rawText, label, start, end, source, context);
     }
   });
