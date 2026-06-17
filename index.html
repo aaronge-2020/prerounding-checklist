@@ -1804,6 +1804,48 @@
       background: var(--teal);
     }
 
+    @keyframes deid-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .deid-spinner {
+      width: 28px;
+      height: 28px;
+      border: 3px solid #d8e2e6;
+      border-top-color: var(--teal);
+      border-radius: 50%;
+      animation: deid-spin 0.7s linear infinite;
+    }
+
+    .deid-progress-bar {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #e8edf0;
+      overflow: hidden;
+    }
+
+    .deid-progress-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: var(--teal);
+      transition: width 0.2s ease;
+    }
+
+    .deid-processing-indicator {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 12px;
+    }
+
+    .deid-processing-indicator .deid-progress-message {
+      color: #43576a;
+      font-size: 12px;
+      text-align: center;
+    }
+
     .clinical-panel {
       overflow: hidden;
       box-shadow: var(--shadow);
@@ -8321,7 +8363,12 @@
     }
 
     body[data-view="workspace"][data-patient-tab="evidence"] .phone-import-summary-actions {
-      display: none;
+      display: grid;
+      grid-template-columns: minmax(92px, 0.68fr) minmax(92px, 0.68fr) minmax(0, 1.2fr);
+      gap: 10px;
+      padding: 14px 12px;
+      border-top: 1px solid #d8e2e6;
+      background: #ffffff;
     }
 
     @media (min-width: 761px) and (max-width: 1100px) {
@@ -16810,7 +16857,7 @@
       }
     }
     let _deidRunning = false;
-    async function deidentifyText(rawText) {
+    async function deidentifyText(rawText, callbacks = {}) {
       if (_deidModelReady) {
         try {
           _deidRunning = true;
@@ -16822,8 +16869,15 @@
             elements.deidContinuityModelStatus.className = "status-chip is-warning";
             elements.deidContinuityModelStatus.textContent = "Processing...";
           }
-          await new Promise((resolve) => requestAnimationFrame(resolve));
-          const result = await _deidModelInstance.deidentifyText(rawText, { mode: "hybrid" });
+          if (elements.quickDeidPreview && elements.quickDeidPreview.querySelector(".deid-spinner")) {
+            await new Promise((resolve) => setTimeout(resolve, 30));
+          } else {
+            await new Promise((resolve) => requestAnimationFrame(resolve));
+          }
+          const result = await _deidModelInstance.deidentifyText(rawText, {
+            mode: "hybrid",
+            onProgress: callbacks.onProgress || null
+          });
           _deidRunning = false;
           return result;
         } catch {
@@ -29280,9 +29334,22 @@ Rules:
         elements.quickDeidPreview.textContent = "Paste text to redact locally first.";
         return;
       }
-      deidentifyText(raw).then((result) => {
+      const runBtn = document.getElementById("quickDeidRunButton");
+      if (runBtn) runBtn.disabled = true;
+      elements.quickDeidPreview.innerHTML = '<div class="deid-processing-indicator"><div class="deid-spinner" aria-label="Processing de-identification"></div><div class="deid-progress-bar" style="width:180px;"><div class="deid-progress-fill" style="width:5%;"></div></div><div class="deid-progress-message" id="quickDeidProgressMsg">Starting local de-identification...</div></div>';
+      const updateProgress = (pct, msg) => {
+        const fill = elements.quickDeidPreview.querySelector(".deid-progress-fill");
+        const msgEl = document.getElementById("quickDeidProgressMsg");
+        if (fill) fill.style.width = `${Math.max(2, Math.round(pct * 100))}%`;
+        if (msgEl) msgEl.textContent = msg || "";
+      };
+      deidentifyText(raw, { onProgress: ({ percent, message }) => updateProgress(percent, message) }).then((result) => {
         quickDeidText = result.text || "";
         elements.quickDeidPreview.textContent = quickDeidText || "No redacted text was produced.";
+        if (runBtn) runBtn.disabled = false;
+      }).catch(() => {
+        elements.quickDeidPreview.textContent = "De-identification failed. Try again or use structured-only mode.";
+        if (runBtn) runBtn.disabled = false;
       });
     }
 
@@ -33609,7 +33676,18 @@ Rules:
       renderFinalUpdate();
       renderOpenEvidence();
       saveState();
-      setStatus(`${rows.length} imported phone answer${rows.length === 1 ? "" : "s"} confirmed for the final rounds update.`);
+      const count = rows.length;
+      // Show a visible chip confirmation
+      if (elements.phoneImportSummaryCount) {
+        const originalText = elements.phoneImportSummaryCount.textContent;
+        elements.phoneImportSummaryCount.className = "status-chip is-success";
+        elements.phoneImportSummaryCount.textContent = `${count} confirmed`;
+        setTimeout(() => {
+          elements.phoneImportSummaryCount.className = "meta-tag";
+          elements.phoneImportSummaryCount.textContent = originalText;
+        }, 2000);
+      }
+      setStatus(`${count} imported phone answer${count === 1 ? "" : "s"} confirmed for the final rounds update.`);
       requestAnimationFrame(() => elements.patientEvidencePromptPreview?.focus());
     }
 

@@ -62,26 +62,12 @@ const TASK_CONTEXT_LIMIT_OVERRIDES = {
 const HIGH_VALUE_CONTEXT_LINE_PATTERN = /\b(?:chief complaint|one-liner|assessment|plan|problem|diagnos|subjective|objective|hpi|history|hospital course|interval|overnight|event|vital|temperature|heart rate|blood pressure|respiratory|oxygen|exam|lab|sodium|potassium|creatinine|glucose|anion gap|bicarb|wbc|hemoglobin|platelet|lactate|troponin|culture|imaging|x-?ray|ct\b|mri\b|ultrasound|medication|mar\b|antibiotic|insulin|allerg|consult|procedure|discharge|follow.?up|pending|intake|output|urine|diet|pain|mental status|baseline|active problem|workup)\b/i;
 const LOW_VALUE_CONTEXT_LINE_PATTERN = /^(?:page \d+|printed|generated|electronically signed|signed by|cosigned by|dictated by|confidentiality notice|copyright|fax|phone|address|insurance|billing|encounter id|account|medical record|mrn|dob|room|bed|visit number|result status|specimen received|reference range|normal range)\b/i;
 
-const commonClinicalRules = `<clinical_safety_rules>
-Use only de-identified context in this prompt or earlier in this OpenEvidence conversation.
-Do not invent facts, identifiers, orders, diagnoses, results, responses, or consultant recommendations.
-Separate facts from interpretation, preserve uncertainty, and frame possible actions as items to verify or consider with the treating team.
-Local validated clinical intents and reviewed evidence remain authoritative for bedside questions/exams. Do not write, rewrite, or silently expand bedside checklist rows unless the selected task is Checklist improvement review; that task must output only the requested structured JSON patch or replacement.
-</clinical_safety_rules>`;
-
-const abbreviationRules = `<abbreviation_rules>
-Spell out non-obvious abbreviations on first use. Medication dose units may stay abbreviated with exact doses.
-</abbreviation_rules>`;
-
-const usefulnessRules = `<usefulness_rules>
-Output only management-changing items: items that could change diagnosis, treatment, monitoring, escalation/disposition, medication safety, discharge, or what the student says or asks on rounds.
-Omit no-action, likely-okay, unchanged, low-yield, background, broad review, citation padding, and filler.
-If nothing changes management, output exactly: NO MANAGEMENT-CHANGING ITEMS FOUND.
-Use concise bullets or short lines only. Respect each task's cap. Each item must state the action or decision and why it matters.
-Do not include conversational follow-up offers, closing questions, disclaimers, filler, or background reviews.
-Do not ask the team about facts the student can usually verify directly in the chart, medication administration record, bedside assessment, local checklist, labs, vitals, imaging, intake/output, orders, or notes.
-Use only the prefixes or headings requested by the task; do not add empty headings or sections.
-</usefulness_rules>`;
+const EVIDENCE_GUARDRAILS = `<guidance>
+A de-identified clinical case for educational use follows below.
+Answer using OpenEvidence's current guidelines and literature. Base your response on evidence you can cite.
+Do not fabricate facts, patient identifiers, diagnoses, or clinical data not present in the context or your sources.
+Distinguish what evidence supports from what is uncertain or not yet verified.
+</guidance>`;
 
 const roundsPasteBackContract = `<local_app_paste_back_contract>
 After the human-readable rounds presentation, include exactly one fenced JSON block labeled APP_PASTE_BACK_JSON.
@@ -253,16 +239,16 @@ function taskBoundary({ primary, notFor = [] } = {}) {
     .filter(Boolean)
     .join("\n");
   return [
-    "<task_boundary>",
-    primary ? `Primary purpose: ${clean(primary)}` : "",
-    exclusions ? `Do not use this task for:\n${exclusions}` : "",
-    "</task_boundary>"
+    "<scope>",
+    primary ? `What to answer: ${clean(primary)}` : "",
+    exclusions ? `Do not include:\n${exclusions}` : "",
+    "</scope>"
   ].filter(Boolean).join("\n");
 }
 
 function sourceContextBlock(context) {
   return [
-    block("context_type", context.contextType || "De-identified patient context for rounds preparation."),
+    block("context_type", context.contextType || "De-identified case for evidence review."),
     context.labChronologyBlock ? block("lab_chronology", context.labChronologyBlock) : "",
     block("source_context", context.sourceContext)
   ].filter(Boolean).join("\n\n");
@@ -270,7 +256,7 @@ function sourceContextBlock(context) {
 
 function findingsContextBlock(context) {
   return [
-    context.sameConversationReady ? block("same_conversation_context", "Use the initial rounds report and patient context already provided earlier in this same OpenEvidence conversation.") : "",
+    context.sameConversationReady ? block("same_conversation_context", "The de-identified case context was provided earlier in this conversation. Use that context.") : "",
     block("new_bedside_findings", context.compiledFindings),
     context.sourceContext && !context.sameConversationReady ? sourceContextBlock(context) : ""
   ].filter(Boolean).join("\n\n");
@@ -279,9 +265,7 @@ function findingsContextBlock(context) {
 function buildPatientPrompt(context, taskInstructions, finalInstruction) {
   return [
     taskInstructions,
-    commonClinicalRules,
-    abbreviationRules,
-    usefulnessRules,
+    EVIDENCE_GUARDRAILS,
     context.userContext || "",
     sourceContextBlock(context),
     finalInstruction
@@ -291,11 +275,9 @@ function buildPatientPrompt(context, taskInstructions, finalInstruction) {
 function buildSameConversationPrompt(context, taskInstructions, finalInstruction) {
   return [
     taskInstructions,
-    commonClinicalRules,
-    abbreviationRules,
-    usefulnessRules,
+    EVIDENCE_GUARDRAILS,
     context.userContext || "",
-    block("same_conversation_context", "Use the de-identified patient context already provided earlier in this same OpenEvidence conversation. Do not ask for the full source context again unless it is truly missing."),
+    block("same_conversation_context", "The de-identified case context was provided earlier in this conversation. Use that context; do not ask for it again."),
     finalInstruction
   ].filter(Boolean).join("\n\n");
 }
@@ -312,42 +294,37 @@ function parseTaskResult(task, text, context = {}) {
 function initialRoundsPrompt(context) {
   return buildPatientPrompt(
     context,
-    `<role>
-Attending physician and clerkship coach helping a medical student prepare a concise attending-ready rounds presentation.
-</role>
-
-${taskBoundary({
-  primary: "Turn de-identified chart context into a concise SOAP-format rounds report with a merged assessment/plan.",
+    `${taskBoundary({
+  primary: "Summarize the de-identified case below into a concise structured format, citing relevant evidence and guidelines from OpenEvidence.",
   notFor: [
-    "a comprehensive full SOAP note",
-    "a medication-only safety audit",
+    "a comprehensive full note",
+    "a medication-only review",
     "a teaching handout",
-    "a discharge readiness review",
-    "a blind-spot second opinion"
+    "a discharge-only review",
+    "a second-opinion blind-spot audit"
   ]
 })}
 
-<task>
-Create a concise report the student can deliver to an attending on rounds. Avoid redundancy. Include each detail only if it changes the clinical story, objective interpretation, or management.
-</task>`,
+<clinical_question>
+Using OpenEvidence, produce a concise evidence-informed case summary. Reference current guidelines and literature where they support key points. Avoid repeating facts across sections unless the repetition changes interpretation.
+</clinical_question>`,
     `<output_format>
 Use concise bullets only, organized exactly as:
 I. SUBJECTIVE
-- One-liner
-- HPI / consult question / management to date
-- Medications and allergies, grouped by indication
-- Relevant psychosocial, family, and social history
+- One-liner summary of the case
+- Presenting concern / reason for consult / care to date
+- Medications, grouped by indication
+- Relevant history (psychosocial, family, social)
 II. OBJECTIVE
 - Vitals
 - Physical exam
-- Laboratory data and trends
+- Labs and trends
 - Imaging / other workup
 III. ASSESSMENT AND PLAN
-- Summary of patient
-- Problem list with management plan / workup for each active problem
-For each management recommendation, include an inline citation to current guideline or literature when OpenEvidence can support it.
-Keep subjective and objective sections as short as possible without losing management-changing details.
-Do not repeat the same fact in multiple sections unless it changes a separate management decision.
+- Case summary
+- Problem list with evidence-informed considerations per active problem
+Include an inline citation to current guideline or literature where OpenEvidence supports the point.
+Keep subjective and objective sections brief; include only what shapes interpretation.
 </output_format>
 
 ${roundsPasteBackContract}`
@@ -357,41 +334,37 @@ ${roundsPasteBackContract}`
 function fullRoundsReportPrompt(context) {
   return buildPatientPrompt(
     context,
-    `<role>
-Attending physician and clerkship coach helping a medical student prepare a complete SOAP rounds report.
-</role>
-
-${taskBoundary({
-  primary: "Turn de-identified chart context into a full SOAP-format rounds report with all clinically relevant details.",
+    `${taskBoundary({
+  primary: "Produce a thorough evidence-informed structured summary of the de-identified case below, citing relevant guidelines and literature.",
   notFor: [
-    "a short highlights-only report; use the concise rounds report for that",
-    "a medication-only safety audit",
+    "a short highlights-only summary",
+    "a medication-only review",
     "a teaching handout",
-    "a discharge readiness-only review",
-    "a blind-spot second opinion"
+    "a discharge-only review",
+    "a second-opinion blind-spot audit"
   ]
 })}
 
-<task>
-Create a full rounds report in SOAP format. Include all details needed to understand the patient, but avoid copied chart narrative and avoid repeating data unless the repetition changes interpretation.
-</task>`,
+<clinical_question>
+Using OpenEvidence, create a complete structured case summary. Include all details needed for clinical understanding, with evidence citations. Avoid verbatim chart repetition and avoid repeating data unless the repetition changes interpretation.
+</clinical_question>`,
     `<output_format>
 Use concise bullets only, organized exactly as:
 I. SUBJECTIVE
-- One-liner
-- HPI / consult question / management to date
-- Medications and allergies, grouped by indication
-- Relevant psychosocial, family, and social history
+- One-liner summary
+- Presenting concern / reason for consult / care to date
+- Medications, grouped by indication
+- Relevant history (psychosocial, family, social)
 II. OBJECTIVE
 - Vitals
 - Physical exam
-- Laboratory data and trends
+- Labs and trends
 - Imaging / other workup
 III. ASSESSMENT AND PLAN
-- Summary of patient
-- Problem list with management plan / workup for each active problem
-Include important negatives, trends, medication context, and contingencies when they matter to the team's management.
-For each management recommendation, include an inline citation to current guideline or literature when OpenEvidence can support it.
+- Case summary
+- Problem list with evidence-informed considerations per active problem
+Include important negatives, trends, medication context, and contingencies when they shape interpretation.
+Include an inline citation to current guideline or literature where OpenEvidence supports the point.
 Do not add a separate reference list unless inline citations would be unclear.
 </output_format>
 
@@ -401,32 +374,27 @@ ${roundsPasteBackContract}`
 
 function finalRoundsPrompt(context) {
   return [
-    `<role>
-Attending physician and clerkship coach updating yesterday's rounds presentation.
-</role>`,
     taskBoundary({
-      primary: "Create a very short SOAP-format 24-hour rounds update focused on what changed and how it changes management.",
+      primary: "Using the de-identified case context below (which follows from earlier in this conversation), identify what new findings or changes are most relevant and what current evidence says about them.",
       notFor: [
-        "re-summarizing the full chart from scratch",
-        "adding unsupported new diagnoses or orders",
-        "rewriting the local bedside checklist",
-        "performing a broad teaching or guideline review"
+        "re-summarizing the full case from scratch",
+        "inventing new facts or diagnoses",
+        "rewriting a bedside checklist",
+        "a broad teaching or guideline review"
       ]
     }),
-    commonClinicalRules,
-    abbreviationRules,
-    usefulnessRules,
+    EVIDENCE_GUARDRAILS,
     context.userContext || "",
     findingsContextBlock(context),
     `<output_format>
 Use concise bullets only.
-Assume the attending heard the full presentation yesterday; do not repeat stable background.
+Use the case context already provided earlier in this conversation; do not repeat stable background.
 Organize exactly as:
-I. SUBJECTIVE - only new symptoms, interval events, or patient-reported changes
-II. OBJECTIVE - only new vitals, exam changes, labs/trends, imaging, medication administrations, or procedures
-III. ASSESSMENT AND PLAN - each bullet must state what changed in the last 24 hours and whether/how it changes management
-Include "no management change" only when a new result might otherwise appear to require action.
-Use inline guideline/literature citations only for new management recommendations or changed thresholds.
+I. SUBJECTIVE - only new symptoms, interval events, or reported changes
+II. OBJECTIVE - only new vitals, exam changes, labs/trends, imaging, or procedures
+III. ASSESSMENT AND PLAN - for each change in the last 24 hours, note what current evidence or guidelines suggest
+Include "no evidence-supported change" only when a new result might otherwise appear to require action.
+Use inline citations to guidelines/literature only for new evidence-supported points.
 </output_format>
 
 ${roundsPasteBackContract}`
@@ -434,44 +402,34 @@ ${roundsPasteBackContract}`
 }
 
 function medicationSafetyPrompt(context) {
-  const task = `<role>
-Attending physician and medication safety reviewer helping a student prepare for rounds.
-</role>
-
-${taskBoundary({
-  primary: "Audit the medication administration record and notes for 5Rs medication safety on every active medication.",
+  const question = `${taskBoundary({
+  primary: "Using OpenEvidence, review the medication information in the de-identified case below for evidence-supported safety considerations.",
   notFor: [
     "a general assessment and plan",
-    "a discharge checklist except medication or supply barriers",
+    "a discharge review except medication or supply barriers",
     "a broad blind-spot review unrelated to medications"
   ]
 })}
 
-<task>
-Compare ordered medications, administration record details, and note context. Verify right patient/context, right medication, right dose, right route, and right time/frequency for every active medication when data are available.
-</task>
-
-<safety_focus>
-Check whether medications are being given as ordered; dose/frequency fit with renal/hepatic/weight/age status; medication has a clear indication; the selected medication is appropriate for this patient's active problems; duplicate therapy; disease/lab mismatches; held/refused/delayed/missing administrations; order/MAR mismatches; interactions; peri-procedural timing; prophylaxis gaps; and home medication restart/hold questions.
-</safety_focus>`;
+<clinical_question>
+Using the medication and case information provided, identify evidence-supported medication safety considerations: dosing relative to renal/hepatic/age/weight status, known interactions, duplicate therapy, disease-lab mismatches, peri-procedural timing, prophylaxis gaps, and home-medication restart considerations. For each, cite the evidence or guideline that supports the concern.
+</clinical_question>`;
 
   const output = `<output_format>
-Use concise bullets only.
-Group by medication or medication class.
-For each active medication with enough context, address the 5Rs: right patient/context, right medication, right dose, right route, right time/frequency.
-For each issue, state: medication/class; what is mismatched, missing, unsafe, or unclear; why it matters; what to verify or change.
-Use prefixes only when helpful: VERIFY, HOLD/RESTART, DOSE, INDICATION, INTERACTION, MONITOR, ESCALATE.
-Include "no issue found" only for a high-risk medication where the MAR and notes clearly support all 5Rs.
-Do not include non-medication problems unless they directly change medication safety.
+Use concise bullets only, grouped by medication or medication class.
+For each medication, note any evidence-supported safety consideration.
+Prefix each item with: VERIFY, DOSE, INDICATION, INTERACTION, or MONITOR.
+Include an inline citation for each evidence-based concern.
+Do not include non-medication issues unless they directly relate to medication safety evidence.
 </output_format>`;
 
   const fullOutput = `${output}
 
 ${medicationSafetyPasteBackContract}`;
   if (context.sameConversationReady && !context.forceIncludeSourceForMedicationSafety) {
-    return buildSameConversationPrompt(context, task, fullOutput);
+    return buildSameConversationPrompt(context, question, fullOutput);
   }
-  return buildPatientPrompt(context, task, fullOutput);
+  return buildPatientPrompt(context, question, fullOutput);
 }
 
 function guidelinePrompt(context) {
@@ -512,31 +470,25 @@ Do not write a broad guideline summary, practice-guideline narrative, or referen
 function exceptionPrompt(context) {
   return buildPatientPrompt(
     context,
-    `<role>
-Attending physician looking for guideline exceptions, contraindications, and special-population caveats.
-</role>
-
-${taskBoundary({
-  primary: "Find patient-specific reasons a normally appropriate guideline or default pathway may need modification.",
+    `${taskBoundary({
+  primary: "Using OpenEvidence, identify evidence-supported exceptions, contraindications, or special-population considerations relevant to the de-identified case below.",
   notFor: [
     "reconfirming the whole guideline pathway",
     "writing a general problem-based plan",
-    "performing a medication-only audit",
+    "a medication-only review",
     "teaching basic illness scripts"
   ]
 })}
 
-<task>
-Find case-specific exceptions, contraindications, competing risks, missing prerequisites, or special-population issues that could change routine guidance.
-</task>`,
+<clinical_question>
+What guideline exceptions, contraindications, competing risks, missing prerequisites, or special-population issues does current evidence identify for the clinical scenario described below? Cite the specific evidence or guideline for each point.
+</clinical_question>`,
     `<output_format>
 Use at most 4 bullets total.
-Prefix every bullet with EXCEPTION, CONTRAINDICATION, PREREQUISITE, or SPECIAL-POPULATION.
-Include only exceptions, competing risks, missing prerequisites, or special-population issues that alter a default pathway for this patient.
-If a citation is essential, include it inline; do not create a citation section or reference list.
-Separate self-checkable facts from true team questions. Do not ask the team for labs, vitals, or medication details the student can verify directly.
+Prefix each with EXCEPTION, CONTRAINDICATION, PREREQUISITE, or SPECIAL-POPULATION.
+Include only points where current evidence or guidelines support a departure from standard pathways.
+If a citation is essential, include it inline.
 Do not restate standard guideline recommendations unless needed to explain the exception.
-Do not write a broad guideline summary.
 </output_format>
 
 ${guidelineExceptionsPasteBackContract}`

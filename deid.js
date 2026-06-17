@@ -2650,8 +2650,63 @@ function formatPhiWarning(warning) {
 }
 
 export function deidentifyTextStructuredOnly(rawText, currentDate = null) {
-  const { entities } = expandIdentityGraphEntities(rawText, addStructuredSafeHarborEntities(rawText, []));
+  const bracketEntities = collectBracketedPlaceholderEntities(rawText);
+  const { entities } = expandIdentityGraphEntities(rawText, addStructuredSafeHarborEntities(rawText, bracketEntities));
   return deidentifyFromEntities(rawText, entities, { modelId: null, modelStatus: "structured only" }, currentDate);
+}
+
+const BRACKET_LABEL_MAP = {
+  "NAME": "NAME",
+  "PATIENT NAME": "PATIENT NAME",
+  "PATIENT": "PATIENT NAME",
+  "PROVIDER NAME": "PROVIDER NAME",
+  "PROVIDER": "PROVIDER NAME",
+  "DOCTOR": "PROVIDER NAME",
+  "DR": "PROVIDER NAME",
+  "CONTACT": "CONTACT NAME",
+  "CONTACT NAME": "CONTACT NAME",
+  "ORGANIZATION": "ORGANIZATION",
+  "ORG": "ORGANIZATION",
+  "FACILITY": "FACILITY",
+  "HOSPITAL": "FACILITY",
+  "CLINIC": "FACILITY",
+  "LOCATION": "LOCATION",
+  "ADDRESS": "ADDRESS",
+  "PHONE": "PHONE",
+  "EMAIL": "EMAIL",
+  "MRN": "MRN",
+  "MEDICAL RECORD": "MRN",
+  "DOB": "DOB",
+  "DATE OF BIRTH": "DOB",
+  "AGE": "AGE",
+  "DATE": "DATE",
+  "ID": "ID",
+  "ROOM": "ROOM",
+  "URL": "URL",
+  "IP": "IP",
+  "SSN": "ID",
+  "LICENSE": "ID"
+};
+
+function collectBracketedPlaceholderEntities(rawText) {
+  const entities = [];
+  const pattern = /\[([^\]]+)\]/g;
+  let match;
+  while ((match = pattern.exec(rawText)) !== null) {
+    const bracketContent = match[1].trim();
+    const upperContent = bracketContent.toUpperCase();
+    const label = BRACKET_LABEL_MAP[upperContent] || "NAME";
+    entities.push({
+      start: match.index,
+      end: match.index + match[0].length,
+      label,
+      placeholder: `[${label}]`,
+      score: 1,
+      source: "bracketed placeholder",
+      context: match[0]
+    });
+  }
+  return entities;
 }
 
 export function createDeidentifier(options = {}) {
@@ -2788,6 +2843,9 @@ export function createDeidentifier(options = {}) {
     const mode = runOptions.mode || options.mode || "hybrid";
     const onProgress = runOptions.onProgress;
     reportProgress(onProgress, { stage: "starting", message: "Starting local de-identification...", percent: 0.02 });
+
+    const bracketEntities = collectBracketedPlaceholderEntities(rawText);
+
     if (mode === "structured-only") {
       reportProgress(onProgress, { stage: "structured", message: "Running structured redaction...", percent: 0.25 });
       return deidentifyTextStructuredOnly(rawText, new Date());
@@ -2803,7 +2861,7 @@ export function createDeidentifier(options = {}) {
     }
 
     reportProgress(onProgress, { stage: "structured", message: "Running structured redaction and date conversion...", percent: 0.76 });
-    let structuredEntities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(addStructuredSafeHarborEntities(rawText, []), rawText));
+    let structuredEntities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(addStructuredSafeHarborEntities(rawText, bracketEntities), rawText));
     modelEntities = modelEntities.filter((entity) => !overlapsAny(entity, structuredEntities));
     reportProgress(onProgress, { stage: "aliases", message: "Checking repeated names and aliases...", percent: 0.84 });
     const { entities } = expandIdentityGraphEntities(rawText, [...structuredEntities, ...modelEntities]);
