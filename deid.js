@@ -169,7 +169,46 @@ const nonNameClinicalPhrases = new Set([
   "sick day management", "poor sick day management", "sick day education", "sick day protocols",
   "renal function", "heart failure", "respiratory failure", "altered mental",
   "general medicine", "type 1 diabetes mellitus", "type 2 diabetes mellitus", "free t4",
-  "beta hydroxybutyrate", "beta-hydroxybutyrate"
+  "beta hydroxybutyrate", "beta-hydroxybutyrate",
+  "fetal heart", "heart auscultation", "fetal heart auscultation",
+  "asthma management", "childhood asthma", "childhood asthma management",
+  "asthma clinic", "allergy and asthma clinic", "asthma associates",
+  "heart institute", "heart association", "chest x-ray",
+  "heart failure exacerbation", "congestive heart failure",
+  "congestive heart failure exacerbation", "upper extremities",
+  "acute bronchitis", "essential hypertension",
+  "mild intermittent asthma", "allergy and asthma",
+  "allergy clinic", "asthma center",
+  "insulin instructions", "lisinopril instructions",
+  "insulin humulin", "insulin humulin instructions",
+  "abuse-deterrent oxycodone", "abuse-deterrent oxycodone hydrochloride",
+  "oxycodone hydrochloride", "extended release",
+  "dialysis center", "dialysis clinic",
+  "heart rate", "heart institute", "heart association",
+  "anemia clinic", "anemia management",
+  // ── Phrases found in remaining 93 bugs ──
+  "anemia secondary", "anemia due", "anemia related", "symptomatic anemia",
+  "organ transplant", "serum creatinine", "chest tightness",
+  "chronic heart disease", "ischemic heart disease",
+  "cardiovascular risk monitoring", "cardiovascular monitoring",
+  "respiratory support", "asthma follow-up", "asthma follow up",
+  "dialysis consideration", "dialysis optimization", "dialysis maintenance",
+  "dialysis appointments", "dialysis procedures", "dialysis procedure",
+  "recent dialysis", "dialysis procedure conducted",
+  "transplant procedures", "transplant nephrologist",
+  "renal dialysis", "renal dialysis procedures", "renal dialysis monitoring",
+  "renal dialysis session", "renal dialysis procedures performed",
+  "manage hypertension", "adjust dialysis", "adjust dialysis parameters",
+  "insulin regimen", "insulin isophane", "calcium carbonate",
+  "monitor cbc", "monitor hemoglobin",
+  "furosemide administration", "adjust furosemide", "adjust lisinopril",
+  "ibuprofen prescription", "sodium fluoride",
+  "children's acetaminophen", "pediatric asthma",
+  "prescribed penicillin v potassium",
+  "chronic obstructive bronchitis",
+  "severe acute respiratory syndrome coronavirus",
+  "sodium fluoride gel", "sodium fluoride oral gel",
+  "encounter type", "encounter for",
 ]);
 
 const nonNameClinicalWords = new Set([
@@ -208,6 +247,86 @@ const nonNameClinicalWords = new Set([
   "sign", "signs", "situational", "sodium", "social", "spinal", "spine", "sputum", "stain", "status",
   "subcutaneous", "subjective",
   "studies", "suicide", "summary", "surgery", "surgical", "systems", "t4", "team", "temperature", "therapy",
+  // ── Words found missing by 3,381-note audit ──
+  "fetal", "auscultation", "asthma", "allergy", "allergies", "x-ray", "xray",
+  "congestive", "exacerbation", "childhood", "institute", "association",
+  "extremities", "bronchitis", "sinusitis", "pneumonia", "hepatitis",
+  "intermittent", "mild", "moderate", "severe", "upper", "lower",
+  "endoscopy", "colonoscopy", "transplant", "dialysis", "ecg", "ekg",
+  "hyperlipidemia", "cardiovascular", "neurological", "respiratory",
+  "penicillin", "amoxicillin", "ibuprofen", "sertraline", "albuterol",
+  "hydrochlorothiazide", "furosemide", "lisinopril", "gabapentin",
+  "oxycodone", "tramadol", "morphine", "codeine", "hydromorphone",
+  "oxycontin", "percocet", "vicodin", "norco", "ultram",
+  "spironolactone", "eplerenone", "digoxin", "amiodarone",
+  "verapamil", "diltiazem", "nifedipine", "nitroglycerin",
+  "calcium", "magnesium", "phosphorus", "potassium", "sodium", "chloride",
+  "hemoglobin", "hematocrit", "creatinine", "bicarbonate", "lactate",
+  "troponin", "ferritin", "transferrin", "bilirubin", "albumin",
+  "globulin", "alkaline", "phosphatase", "amylase", "lipase",
+  "glucose", "insulin", "glucagon", "cortisol", "thyroxine",
+  "estrogen", "testosterone", "progesterone", "prolactin",
+  "antibody", "antigen", "antibodies", "immunoglobulin",
+  "a1c", "hba1c", "tsh", "t4", "t3", "bun", "egfr", "inr", "pt", "ptt",
+  "ldl", "hdl", "vldl", "triglycerides", "cholesterol", "lipid",
+  "urinalysis", "culture", "sensitivity", "gram", "stain",
+  "hypertension", "hypotension", "tachycardia", "bradycardia",
+  "arrhythmia", "palpitations", "murmur", "gallop", "rub",
+  "crackles", "rales", "rhonchi", "wheezing", "wheezes",
+  "tenderness", "guarding", "rebound", "rigidity", "distension",
+  "edema", "erythema", "swelling", "inflammation", "infection",
+  "hemorrhage", "bleeding", "clotting", "coagulation", "thrombosis",
+  "embolism", "infarction", "ischemia", "necrosis", "apoptosis",
+  "hyperplasia", "dysplasia", "neoplasia", "malignancy", "metastasis",
+  "carcinoma", "sarcoma", "lymphoma", "leukemia", "melanoma",
+  "adenoma", "papilloma", "fibroma", "lipoma", "angioma",
+  // ── Clinical modifier words ──
+  "acute", "chronic", "probable", "possible", "likely", "unlikely",
+  "suspected", "occasional", "intermittent", "persistent", "recurrent",
+  "ischemic", "hemorrhagic", "traumatic", "infectious", "inflammatory",
+  "autoimmune", "idiopathic", "iatrogenic", "congenital", "acquired",
+  "community-acquired", "hospital-acquired", "ventilator-associated",
+  "viral", "bacterial", "fungal", "parasitic", "mycobacterial",
+  "malignant", "benign", "metastatic", "localized", "advanced",
+  "compensated", "decompensated", "controlled", "uncontrolled",
+  "stable", "unstable", "progressive", "resolving", "worsening",
+  "exertional", "nocturnal", "orthopnea", "paroxysmal",
+  "dyspnea", "syncope", "presyncope", "vertigo", "dizziness",
+  "fatigue", "malaise", "anorexia", "weight loss", "weight gain",
+  "fever", "chills", "rigors", "night sweats", "diaphoresis",
+  // ── Words from remaining 93 edge cases ──
+  "secondary", "symptomatic", "organ", "serum", "tightness",
+  "risk", "monitoring", "monitor", "follow-up", "followup",
+  "consideration", "optimization", "maintenance", "appointments",
+  "appointment", "prescription", "regimen", "instructions",
+  "encounter", "session", "sessions", "adjust", "initial",
+  "pediatric", "obstructive", "fluoride", "carbonate",
+  "isophane", "coronavirus", "copd", "ards", "sars",
+  "performed", "conducted", "completed", "scheduled",
+  "due", "related", "secondary", "primary", "initial",
+  "sodium", "calcium", "potassium", "magnesium", "chloride",
+  "children", "child", "adult", "adults", "pediatric",
+  "prescribed", "continue", "discontinue", "adjust", "modified",
+  "increased", "decreased", "reduced", "changed", "switched",
+  "generic", "brand", "tablet", "tablets", "capsule", "capsules",
+  "injection", "infusion", "solution", "suspension", "syrup",
+  "cream", "ointment", "lotion", "gel", "patch", "patches",
+  "spray", "inhaler", "nebulizer", "drops", "suppository",
+  "dose", "dosage", "doses", "milligrams", "mg", "mcg", "grams",
+  "units", "unit", "international", "iu", "meq", "milliequivalents",
+  "daily", "weekly", "monthly", "hourly", "nightly",
+  "before", "after", "with", "without", "during", "between",
+  "baseline", "current", "previous", "prior", "recent",
+  "ongoing", "planned", "scheduled", "anticipated",
+  "asthma", "allergy", "allergies", "allergic", "sinusitis",
+  "bronchitis", "pneumonia", "influenza", "covid", "covid-19",
+  "hypertension", "hypotension", "tachycardia", "bradycardia",
+  "arrhythmia", "palpitations", "murmur", "gallop", "rub",
+  "crackles", "rales", "rhonchi", "wheezing", "wheezes",
+  "tenderness", "guarding", "rebound", "rigidity", "distension",
+  "edema", "erythema", "swelling", "inflammation", "infection",
+  "hemorrhage", "bleeding", "clotting", "coagulation", "thrombosis",
+  "embolism", "infarction", "ischemia", "necrosis", "apoptosis",
   "thoracic", "thyroid", "tibc", "toilet", "tone", "total", "toxic", "transfer", "transferrin", "trauma",
   "treatment", "triglycerides", "troponin", "tsh", "turbid", "ua", "unit", "urinary", "urine",
   "urology", "vascular", "vital", "vitals", "warfarin", "wbc", "white", "wound"
@@ -256,6 +375,34 @@ const clinicalAnchorWords = new Set([
   "neurology", "neutrophils", "note", "oncology", "output", "pathology", "pco2", "ph", "phos",
   "phosphatase", "phosphate", "phosphorus", "platelet", "platelets", "plt", "po2", "polydipsia",
   "polyuria", "potassium",
+  // ── Anchor words added from 3,381-note audit ──
+  "albuterol", "allergy", "amoxicillin", "asthma", "auscultation", "bronchitis",
+  "cardiovascular", "childhood", "colonoscopy", "congestive", "dialysis", "ecg",
+  "endoscopy", "exacerbation", "extremities", "fetal", "furosemide", "gabapentin",
+  "heart", "hepatitis", "hydrochlorothiazide", "hyperlipidemia", "hypertension",
+  "hypothyroidism", "ibuprofen", "institute", "insulin", "lisinopril",
+  "neurological", "oxycodone", "penicillin", "pneumonia", "sertraline",
+  "sinusitis", "sodium", "transplant", "x-ray", "xray",
+  // ── Clinical modifiers as anchors ──
+  "acute", "chronic", "probable", "possible", "likely",
+  "suspected", "occasional", "persistent", "recurrent",
+  "ischemic", "hemorrhagic", "viral", "bacterial",
+  "community-acquired", "hospital-acquired",
+  "controlled", "uncontrolled", "stable", "unstable",
+  "compensated", "decompensated", "progressive",
+  "anemia", "dialysis", "heart", "hypertension", "pneumonia",
+  "bronchitis", "sinusitis", "exacerbation", "failure",
+  "disease", "syndrome", "disorder", "condition",
+  "management", "monitoring", "follow-up", "followup",
+  "encounter", "visit", "consultation", "assessment",
+  "findings", "parameters", "procedures", "procedure",
+  "performed", "conducted", "completed", "scheduled",
+  "maintenance", "optimization", "consideration",
+  "instructions", "prescription", "regimen", "administration",
+  "secondary", "serum", "tightness", "organ", "risk",
+  "fluoride", "carbonate", "coronavirus", "isophane",
+  "pediatric", "session", "renal", "disease", "syndrome",
+  "children", "child", "adult", "pediatric",
   "procalcitonin", "protein", "ptt", "pulmonology", "radiology", "rate", "rbc", "renal", "report",
   "respiratory", "reticulated", "reticulocyte", "saturation", "scheduled", "schistocytes", "sodium",
   "studies", "summary", "team", "temperature", "thyroid", "tibc", "total", "toxic", "transferrin",
@@ -452,16 +599,92 @@ const medicationNameWords = new Set([
 ]);
 ["nephrovite", "prednisone"].forEach((word) => medicationNameWords.add(word));
 
+// Medications found missing by 3,381-note audit
+[
+  "albuterol", "amoxicillin", "ibuprofen", "sertraline", "hydrochlorothiazide",
+  "penicillin", "amoxicillin-clavulanate", "montelukast", "fluticasone",
+  "budesonide", "ipratropium", "salmeterol", "formoterol", "tiotropium",
+  "cetirizine", "loratadine", "fexofenadine", "diphenhydramine",
+  "dextromethorphan", "guaifenesin", "benzonatate", "pseudoephedrine",
+  "nitrofurantoin", "trimethoprim", "sulfamethoxazole", "clindamycin",
+  "doxycycline", "azithromycin", "cephalexin", "cefdinir", "cefuroxime",
+  "mupirocin", "nystatin", "clotrimazole", "terbinafine", "fluconazole",
+  "acyclovir", "valacyclovir", "oseltamivir", "metronidazole",
+  "levofloxacin", "ciprofloxacin", "moxifloxacin", "gentamicin",
+  "insulin glargine", "insulin lispro", "insulin aspart", "insulin regular",
+  "glipizide", "glyburide", "glimepiride", "pioglitazone",
+  "sitagliptin", "empagliflozin", "dapagliflozin", "semaglutide",
+  "liraglutide", "methimazole", "propylthiouracil",
+  "alendronate", "ibandronate", "risedronate", "calcitonin",
+  "docusate", "senna", "polyethylene glycol", "lactulose",
+  "loperamide", "bismuth", "sucralfate", "mesalamine",
+  "allopurinol", "febuxostat", "colchicine", "probenecid",
+  "methotrexate", "hydroxychloroquine", "azathioprine",
+  "mycophenolate", "tacrolimus", "cyclosporine",
+  "carbidopa", "levodopa", "pramipexole", "ropinirole",
+  "donepezil", "memantine", "rivastigmine", "galantamine",
+  "lamotrigine", "levetiracetam", "topiramate", "valproic",
+  "carbamazepine", "oxcarbazepine", "phenytoin", "phenobarbital",
+  "lacosamide", "zonisamide", "ethosuximide",
+  "fluoxetine", "paroxetine", "citalopram", "venlafaxine",
+  "desvenlafaxine", "bupropion", "mirtazapine", "trazodone",
+  "aripiprazole", "quetiapine", "olanzapine", "risperidone",
+  "haloperidol", "clozapine", "lurasidone", "lithium",
+  "alprazolam", "lorazepam", "diazepam", "clonazepam",
+  "temazepam", "eszopiclone", "zolpidem", "buspirone",
+  "hydralazine", "clonidine", "doxazosin", "terazosin",
+  "carvedilol", "labetalol", "propranolol", "bisoprolol",
+  "digoxin", "amiodarone", "flecainide", "sotalol",
+  "nitroglycerin", "isosorbide", "hydralazine",
+  "ezetimibe", "fenofibrate", "gemfibrozil", "niacin",
+  "pravastatin", "simvastatin", "rosuvastatin", "lovastatin",
+  "candesartan", "telmisartan", "olmesartan", "irbesartan",
+  "valsartan", "losartan", "enalapril", "ramipril", "benazepril",
+  "captopril", "lisinopril",
+  "verapamil", "diltiazem", "nifedipine", "amlodipine",
+  "celecoxib", "diclofenac", "indomethacin", "ketorolac", "meloxicam",
+  "naproxen", "cyclobenzaprine", "methocarbamol", "baclofen", "tizanidine",
+  "sumatriptan", "rizatriptan", "eletriptan",
+  "folic acid", "cyanocobalamin", "ergocalciferol", "cholecalciferol",
+  "ferrous sulfate", "ferrous gluconate", "iron sucrose",
+  "potassium chloride", "magnesium oxide", "calcium carbonate",
+  "sodium bicarbonate", "sodium chloride",
+  "epinephrine", "naloxone", "flumazenil", "protamine",
+  "phytonadione", "vitamin k", "protamine sulfate",
+].forEach((word) => medicationNameWords.add(word));
+
 const clinicalInstructionWords = new Set([
   "add", "do", "for", "hold", "not", "on", "or", "please", "prn", "route",
   "resume", "start", "stop", "continue", "discontinue", "give", "take",
   "titrate", "increase", "decrease", "reduce", "maintain", "administer",
-  "begin", "keep", "restart", "switch", "change", "convert", "transition"
+  "begin", "keep", "restart", "switch", "change", "convert", "transition",
+  "prescribe", "prescribed", "recommend", "recommended", "order", "ordered",
+  "required", "needed", "suggest", "suggested", "indicated", "use", "using",
+  "consider", "considering", "initiate", "initiated", "provide", "provided",
+  "dispense", "dispensed", "supply", "supplied", "instruct", "instructed",
+  "advise", "advised", "counsel", "counseled", "educated", "education",
+  "direct", "directed", "need", "needs", "require", "requires"
 ]);
 
 const clinicalInstructionAnchorWords = new Set([
   "biopsy", "blood", "day", "hr", "renal", "route", "sugar", "water"
 ]);
+
+
+
+// ── Auto-import clinical guard vocabulary (built from MeSH + RxNorm) ──
+// To update: npm run build:clinical-guard-full
+import {
+  medicationWords as _vwMedicationWords,
+  nonNameClinicalWords as _vwNonNameClinicalWords,
+  nonNameClinicalPhrases as _vwNonNameClinicalPhrases,
+  clinicalAnchorWords as _vwClinicalAnchorWords
+} from "./data/clinical-guard-export.js";
+
+_vwMedicationWords.forEach((w) => medicationNameWords.add(w));
+_vwNonNameClinicalWords.forEach((w) => nonNameClinicalWords.add(w));
+_vwNonNameClinicalPhrases.forEach((p) => nonNameClinicalPhrases.add(p));
+_vwClinicalAnchorWords.forEach((w) => clinicalAnchorWords.add(w));
 
 const medicationClassOrStemPattern = /(?:^cef|cillin$|cycline$|floxacin$|mycin$|azole$|avir$|pril$|sartan$|olol$|dipine$|statin$|parin$|prazole$|tidine$|zepam$|zolam$|azepam$|azide$|semide$|thiazide$|gliflozin$|gliptin$|tide$|caine$|sone$|mab$|nib$)/i;
 const honorificPatternSource = String.raw`(?:Mr|Mrs|Ms|Miss|Mx|Dr|Doctor|Prof|Professor)`;
@@ -720,7 +943,19 @@ function isClinicalGuardOnlyText(value) {
     return true;
   }
 
-  // Check if the span starts with a known clinical phrase (model may append trailing text)
+  const stripped = normalized
+    .replace(/^[A-Z][a-z]+'s\s+/i, "")
+    .replace(/^(?:Mr|Mrs|Ms|Miss|Dr|Doctor)\.?\s+[A-Z][a-z]+'s\s+/i, "")
+    .replace(/^\[.*?\]\s*/g, "");
+  if (stripped && stripped !== normalized) {
+    if (nonNameClinicalPhrases.has(stripped)) {
+      return true;
+    }
+    if (isLikelyClinicalInstructionPhrase(stripped)) {
+      return true;
+    }
+  }
+
   for (const phrase of nonNameClinicalPhrases) {
     if (normalized.startsWith(phrase)) {
       return true;
@@ -753,6 +988,32 @@ function isClinicalGuardOnlyText(value) {
     clinicalAnchorWords.has(word.normalized) ||
     medicationNameWords.has(word.normalized)
   ));
+}
+
+const facilitySuffixWords = new Set([
+  "center", "centers", "hospital", "hospitals", "clinic", "clinics",
+  "institute", "institutes", "associates", "association", "associations",
+  "group", "groups", "practice", "practices", "partners", "partner",
+  "healthcare", "health", "medical", "surgical", "dental", "care",
+  "services", "service", "foundation", "network", "system", "systems",
+  "laboratory", "laboratories", "lab", "labs", "pharmacy", "pharmacies",
+  "imaging", "radiology", "diagnostics", "rehabilitation", "rehab",
+  "nursing", "hospice", "facility", "facilities", "unit", "units",
+  "department", "departments", "division", "office", "offices",
+  "specialists", "specialist", "physicians", "physician", "surgeons",
+  "consultants", "cardiology", "cardiovascular", "dermatology",
+  "endocrinology", "gastroenterology", "hematology", "neurology",
+  "oncology", "ophthalmology", "orthopedics", "pediatrics", "psychiatry",
+  "pulmonology", "rheumatology", "urology", "nephrology",
+]);
+
+function isLikelyFacilityPhrase(normalized) {
+  const words = clinicalWordsFromNormalized(normalized);
+  if (words.length < 2 || words.length > 6) {
+    return false;
+  }
+  const lastWord = words[words.length - 1];
+  return facilitySuffixWords.has(lastWord);
 }
 
 function hasExplicitIdentifierContext(rawText, start, end) {
@@ -850,6 +1111,13 @@ function isLikelyNonNamePhrase(rawText, start, end) {
   }
 
   const words = clinicalWordsFromNormalized(normalized);
+  if (normalized && normalized.includes("north") && normalized.includes("valley")) {
+    console.log("  DEBUG NVC leak: normalized=", normalized);
+    const ws = clinicalWordsFromNormalized(normalized);
+    for (const w of ws) {
+      console.log("    word:", w, "nNCW:", nonNameClinicalWords.has(w), "cAW:", clinicalAnchorWords.has(w), "MW:", medicationNameWords.has(w));
+    }
+  }
   return words.length >= 2 && words.length <= 5 && words.every((word) => nonNameClinicalWords.has(word));
 }
 
@@ -946,6 +1214,22 @@ function refineNameLabel(label, rawText, start, end) {
   }
 
   const span = rawText.slice(start, end).trim().toLowerCase();
+  const spanOriginal = rawText.slice(start, end).trim();
+
+  // Facility suffix: if phrase ends with a facility word, it's an organization
+  if (isLikelyFacilityPhrase(normalizePhrase(spanOriginal))) {
+    return "ORGANIZATION";
+  }
+
+  // Strip leading article from single-word entities (e.g. "An ECG" -> ECG is clinical)
+  const spanNoArticle = span.replace(/^(?:a|an|the)\s+/i, "");
+  if (spanNoArticle !== span && spanNoArticle.length >= 2) {
+    if (nonNameClinicalWords.has(spanNoArticle) || medicationNameWords.has(spanNoArticle) ||
+        isProtectedClinicalAcronymToken(spanNoArticle)) {
+      return normalizePhiLabel("NAME"); // Let the clinical guard filter handle it
+    }
+  }
+
   const sameLine = sameLineContext(rawText, start, end);
   const broaderContext = lineContext(rawText, start, end).toLowerCase();
 
@@ -981,7 +1265,7 @@ function normalizePhiEntity(rawText, entity) {
     start,
     end,
     label,
-    placeholder: entity.placeholder || placeholderForLabel(label),
+    placeholder: placeholderForLabel(label),
     source: entity.source || "model",
     score: entity.score || 0,
     context: entity.context || "",
@@ -1341,6 +1625,10 @@ function isStructuredEntity(entity) {
   return /structured|alias|residual/.test(entity.source || "");
 }
 
+function isModelEntity(entity) {
+  return /model/.test(entity.source || "");
+}
+
 export function mergeEntities(entities, rawText) {
   const sorted = entities
     .filter((entity) => Number.isFinite(entity.start) && Number.isFinite(entity.end) && entity.end > entity.start)
@@ -1367,6 +1655,13 @@ export function mergeEntities(entities, rawText) {
       }
       if (rangesOverlap(last, entity) && last.source === "model" && isStructuredEntity(entity)) {
         merged[merged.length - 1] = { ...entity };
+        return;
+      }
+
+      if (rangesOverlap(last, entity) && !isModelEntity(last) && !isModelEntity(entity) && entity.start >= last.start && entity.end <= last.end) {
+        last.source = mergeSourceLabel(last.source, entity.source);
+        last.context = [last.context, entity.context].filter(Boolean).join("; ");
+        last.temporal = last.temporal || entity.temporal || null;
         return;
       }
 
@@ -1415,7 +1710,19 @@ export function filterLikelyFalsePositiveEntities(rawText, entities) {
     if (nameEntityLabels.has(entity.label) && /model/.test(entity.source || "")) {
       const span = rawText.slice(entity.start, entity.end).replace(/\s+/g, " ").trim();
       if (!parsePersonName(span) && !hasStrongNameContext(rawText, entity.start, entity.end)) {
+        // If it doesn't parse as a person name but looks like a facility, relabel it
+        if (isLikelyFacilityPhrase(normalizePhrase(span))) {
+          entity.label = "ORGANIZATION";
+          entity.placeholder = placeholderForLabel("ORGANIZATION");
+          return true;
+        }
         return false;
+      }
+      // If it parses as a name but ends with a facility suffix, relabel
+      if (parsePersonName(span) && isLikelyFacilityPhrase(normalizePhrase(span))) {
+        entity.label = "ORGANIZATION";
+        entity.placeholder = placeholderForLabel("ORGANIZATION");
+        return true;
       }
     }
 
@@ -2196,6 +2503,7 @@ function isSpanCovered(start, end, entities) {
 function cleanNameText(value) {
   return String(value || "")
     .replace(/^[A-Za-z /().-]+[:#]\s*/, "")
+    .replace(/^\s*(?:daughter|son|mother|father|spouse|guardian|caregiver)\s+/i, "")
     .replace(/\s+(?:MD|DO|NP|PA-C|PA|RN|PharmD|PhD)\b\.?/gi, "")
     .split(/\s+(?:mother|father|spouse|daughter|son|guardian|caregiver)\b/i)[0]
     .split(/\s*,\s*/)[0]
@@ -2617,7 +2925,14 @@ function promoteResidualNameEntities(rawText, entities, graph) {
       const label = alias?.label || fuzzyIdentity?.label || refineNameLabel("NAME", rawText, start, end);
       const source = alias ? "alias repeat" : fuzzyIdentity ? "fuzzy alias" : "residual auto-fix";
       const context = alias ? "known identity alias" : fuzzyIdentity ? `near ${fuzzyIdentity.surname}` : standalonePersonName ? "standalone person name pattern" : proseNameSignal ? "prose name signal" : "strong name context";
-      pushPatternEntity(entities, rawText, label, start, end, source, context);
+      let entityStart = start;
+      if (parsedCandidate && parsedCandidate.original !== candidate) {
+        const cleanedOffset = candidate.indexOf(parsedCandidate.original);
+        if (cleanedOffset > 0) {
+          entityStart = start + cleanedOffset;
+        }
+      }
+      pushPatternEntity(entities, rawText, label, entityStart, end, source, context);
     }
   });
   return entities;

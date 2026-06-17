@@ -55,6 +55,10 @@
     "test:embedding": "node tests/test-embedding-recall.js",
     "test:clinical-ui": "node tests/test-clinical-ui-browser.js",
     "benchmark:deid": "node tests/benchmark-deid.js",
+    "build:mesh-vocabulary": "node scripts/build-mesh-vocabulary.js",
+    "build:clinical-guard-vocabulary": "node scripts/build-clinical-guard-vocabulary.js",
+    "apply:clinical-guard-vocabulary": "node scripts/apply-clinical-guard-vocabulary.js --install",
+    "build:clinical-guard-full": "npm run build:mesh-vocabulary && npm run build:clinical-guard-vocabulary && npm run apply:clinical-guard-vocabulary",
     "benchmark:deid:large": "node tests/benchmark-deid.js --include-large",
     "benchmark:embedding": "node tests/benchmark-embedding-models.js",
     "test:syntax": "node scripts/check-syntax.js"

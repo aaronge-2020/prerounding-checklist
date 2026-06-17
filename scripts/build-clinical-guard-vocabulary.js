@@ -4,6 +4,8 @@
  *
  * Sources (all free/open, no auth):
  *   - RxNorm API (medication names, brand names, generic names)
+ *   - NLM MeSH (disease, anatomy, procedure terminology)
+ *     (run node scripts/build-mesh-vocabulary.js first to download)
  *   - UMLS Specialist Lexicon medical abbreviations
  *   - Hardcoded medical term lists curated from clinical guidelines
  *
@@ -379,6 +381,27 @@ async function buildVocabulary() {
   const abbreviations = getMedicalAbbreviations();
   for (const abbr of abbreviations) {
     conditionWords.add(abbr.toLowerCase());
+  }
+
+  // --- MeSH terminology (if available from build-mesh-vocabulary.js) ---
+  const MESH_FILE = join(DATA_DIR, "clinical-guard-mesh-terms.json");
+  if (existsSync(MESH_FILE)) {
+    console.log("Loading MeSH terminology...");
+    try {
+      const mesh = JSON.parse(readFileSync(MESH_FILE, "utf-8"));
+      if (mesh.words && mesh.words.length > 0) {
+        for (const word of mesh.words) {
+          conditionWords.add(word);
+        }
+        console.log(`  MeSH: merged ${mesh.words.length} words, ${(mesh.phrases || []).length} phrases`);
+      } else {
+        console.log(`  MeSH: file exists but no terms (year ${mesh._mesh_year || "?"})`);
+      }
+    } catch (e) {
+      console.log(`  MeSH: failed to load (${e.message})`);
+    }
+  } else {
+    console.log("MeSH: data/clinical-guard-mesh-terms.json not found (run node scripts/build-mesh-vocabulary.js first)");
   }
 
   // --- Medications as phrases ---
