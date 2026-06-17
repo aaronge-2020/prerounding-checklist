@@ -36799,17 +36799,7 @@ Rules:
     }
 
     function renderHandoff() {
-      const rawPayload = state.phonePayload || activePatient()?.phoneBundlePayload || "";
       const payload = currentPhonePayload();
-      if (rawPayload && !payload) {
-        try {
-          const decoded = decodePayload(rawPayload);
-          const currentHash = phoneChecklistFingerprint();
-          console.log("DEBUG renderHandoff: payload mismatch. currentHash=", currentHash, "payloadManifestHash=", decoded?.manifestHash, "payloadFingerprint=", decoded?.checklistFingerprint);
-        } catch (e) {
-          console.log("DEBUG renderHandoff: payload decode error", e);
-        }
-      }
       elements.phoneTransferCode.textContent = payload ? (currentPhoneTransferCode() || "Not generated") : "Not generated";
       elements.phonePayload.value = payload;
       void renderPhoneQrCode();
