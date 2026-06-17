@@ -956,9 +956,9 @@ assert.ok(
     && appHtml.includes("assertMatchingPhoneChecklistManifest")
     && appHtml.includes("phoneQr3")
     && appHtml.includes("phoneChecklistManifestPatchOperations")
-    && appHtml.includes("phoneReturnQr4")
-    && appHtml.includes("R4:"),
-  "phone handoff should reject stale checklist manifests, sync default-workup patches, and use the compact indexed return QR format"
+    && appHtml.includes("phoneReturnQr5")
+    && appHtml.includes("R5:"),
+  "phone handoff should reject stale checklist manifests, sync default-workup patches, and use the compact bitset return QR format"
 );
 assert.ok(
   appHtml.includes("Editable smart-phrase template")

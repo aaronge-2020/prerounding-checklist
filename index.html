@@ -15681,7 +15681,8 @@
     };
 
     const PHONE_QR_SCAN_MODULE_LIMIT = 155;
-    const PHONE_QR_CHUNK_MODULE_LIMIT = 73;
+    const PHONE_QR_CHUNK_MODULE_LIMIT = 155;
+    const PHONE_QR_MAX_CHUNKS = 3;
     const PHONE_QR_DIRECT_TOKEN_LIMIT = 2600;
     const PHONE_QR_CHUNK_TOKEN_SIZE = 260;
     const PHONE_QR_CAROUSEL_INTERVAL_MS = 850;
@@ -30294,6 +30295,62 @@ Rules:
       return JSON.stringify({ code: currentPhoneTransferCode(), payload }, null, 2);
     }
 
+    async function phoneTransferCryptoKey(code, saltBytes, usages = ["encrypt"]) {
+      const normalizedCode = normalizeTransferCode(code);
+      if (!normalizedCode) throw new Error("Generate a phone handoff code before creating an encrypted local bundle.");
+      const material = await crypto.subtle.importKey(
+        "raw",
+        new TextEncoder().encode(normalizedCode),
+        "PBKDF2",
+        false,
+        ["deriveKey"]
+      );
+      return crypto.subtle.deriveKey(
+        { name: "PBKDF2", salt: saltBytes, iterations: 160000, hash: "SHA-256" },
+        material,
+        { name: "AES-GCM", length: 256 },
+        false,
+        usages
+      );
+    }
+
+    async function encryptedPhonePayloadTransferText() {
+      const transferText = phonePayloadTransferText();
+      const code = currentPhoneTransferCode();
+      if (!transferText || !code) return "";
+      const salt = new Uint8Array(16);
+      const iv = new Uint8Array(12);
+      crypto.getRandomValues(salt);
+      crypto.getRandomValues(iv);
+      const key = await phoneTransferCryptoKey(code, salt, ["encrypt"]);
+      const ciphertext = await crypto.subtle.encrypt(
+        { name: "AES-GCM", iv },
+        key,
+        new TextEncoder().encode(transferText)
+      );
+      return JSON.stringify({
+        version: "encrypted-local-phone-handoff-v1",
+        kdf: "PBKDF2-SHA256",
+        iterations: 160000,
+        alg: "AES-GCM-256",
+        salt: base64UrlEncodeBytes(salt),
+        iv: base64UrlEncodeBytes(iv),
+        ciphertext: base64UrlEncodeBytes(new Uint8Array(ciphertext))
+      }, null, 2);
+    }
+
+    async function decryptEncryptedPhonePayloadTransferText(wrapper = {}, code = "") {
+      if (wrapper?.version !== "encrypted-local-phone-handoff-v1") return "";
+      const normalizedCode = normalizeTransferCode(code);
+      if (!normalizedCode) throw new Error("Enter the laptop handoff code to open this encrypted local bundle.");
+      const salt = base64UrlDecodeBytes(wrapper.salt || "");
+      const iv = base64UrlDecodeBytes(wrapper.iv || "");
+      const ciphertext = base64UrlDecodeBytes(wrapper.ciphertext || "");
+      const key = await phoneTransferCryptoKey(normalizedCode, salt, ["decrypt"]);
+      const plaintext = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, ciphertext);
+      return new TextDecoder().decode(plaintext);
+    }
+
     function base64UrlEncodeBytes(bytes) {
       let binary = "";
       const chunkSize = 0x8000;
@@ -30428,6 +30485,144 @@ Rules:
 
     async function gunzipBase64UrlToText(value = "") {
       return gunzipBytesToText(base64UrlDecodeBytes(value));
+    }
+
+    function concatBytes(parts = []) {
+      const totalLength = parts.reduce((sum, part) => sum + part.length, 0);
+      const output = new Uint8Array(totalLength);
+      let offset = 0;
+      for (const part of parts) {
+        output.set(part, offset);
+        offset += part.length;
+      }
+      return output;
+    }
+
+    function cborHeader(major, value) {
+      const head = major << 5;
+      if (value < 24) return Uint8Array.of(head | value);
+      if (value <= 0xff) return Uint8Array.of(head | 24, value);
+      if (value <= 0xffff) return Uint8Array.of(head | 25, value >> 8, value & 0xff);
+      if (value <= 0xffffffff) return Uint8Array.of(head | 26, (value >>> 24) & 0xff, (value >>> 16) & 0xff, (value >>> 8) & 0xff, value & 0xff);
+      throw new Error("Compact QR payload contains an unsupported integer.");
+    }
+
+    function cborEncode(value) {
+      if (value === null || value === undefined) return Uint8Array.of(0xf6);
+      if (value === false) return Uint8Array.of(0xf4);
+      if (value === true) return Uint8Array.of(0xf5);
+      if (value instanceof Uint8Array) return concatBytes([cborHeader(2, value.length), value]);
+      if (typeof value === "number") {
+        if (!Number.isInteger(value)) throw new Error("Compact QR payload contains a non-integer number.");
+        return value >= 0 ? cborHeader(0, value) : cborHeader(1, -1 - value);
+      }
+      if (typeof value === "string") {
+        const bytes = new TextEncoder().encode(value);
+        return concatBytes([cborHeader(3, bytes.length), bytes]);
+      }
+      if (Array.isArray(value)) {
+        return concatBytes([cborHeader(4, value.length), ...value.map((entry) => cborEncode(entry))]);
+      }
+      if (typeof value === "object") {
+        const entries = Object.entries(value)
+          .filter(([, entry]) => entry !== undefined)
+          .sort(([left], [right]) => left.localeCompare(right));
+        return concatBytes([
+          cborHeader(5, entries.length),
+          ...entries.flatMap(([key, entry]) => [cborEncode(key), cborEncode(entry)])
+        ]);
+      }
+      throw new Error("Compact QR payload contains an unsupported value.");
+    }
+
+    function cborReadLength(bytes, offset, additional) {
+      if (additional < 24) return { value: additional, offset };
+      if (additional === 24) return { value: bytes[offset], offset: offset + 1 };
+      if (additional === 25) return { value: (bytes[offset] << 8) | bytes[offset + 1], offset: offset + 2 };
+      if (additional === 26) {
+        return {
+          value: ((bytes[offset] * 0x1000000) + ((bytes[offset + 1] << 16) | (bytes[offset + 2] << 8) | bytes[offset + 3])) >>> 0,
+          offset: offset + 4
+        };
+      }
+      throw new Error("Compact QR payload uses unsupported CBOR length.");
+    }
+
+    function cborDecode(bytes = new Uint8Array()) {
+      const decodeAt = (offset) => {
+        const first = bytes[offset++];
+        const major = first >> 5;
+        const additional = first & 31;
+        if (major === 7) {
+          if (additional === 20) return { value: false, offset };
+          if (additional === 21) return { value: true, offset };
+          if (additional === 22) return { value: null, offset };
+          throw new Error("Compact QR payload contains unsupported simple value.");
+        }
+        const length = cborReadLength(bytes, offset, additional);
+        offset = length.offset;
+        if (major === 0) return { value: length.value, offset };
+        if (major === 1) return { value: -1 - length.value, offset };
+        if (major === 2) {
+          const value = bytes.slice(offset, offset + length.value);
+          return { value, offset: offset + length.value };
+        }
+        if (major === 3) {
+          const value = new TextDecoder().decode(bytes.slice(offset, offset + length.value));
+          return { value, offset: offset + length.value };
+        }
+        if (major === 4) {
+          const value = [];
+          for (let index = 0; index < length.value; index += 1) {
+            const decoded = decodeAt(offset);
+            value.push(decoded.value);
+            offset = decoded.offset;
+          }
+          return { value, offset };
+        }
+        if (major === 5) {
+          const value = {};
+          for (let index = 0; index < length.value; index += 1) {
+            const keyDecoded = decodeAt(offset);
+            const valueDecoded = decodeAt(keyDecoded.offset);
+            value[String(keyDecoded.value)] = valueDecoded.value;
+            offset = valueDecoded.offset;
+          }
+          return { value, offset };
+        }
+        throw new Error("Compact QR payload contains unsupported CBOR type.");
+      };
+      const decoded = decodeAt(0);
+      if (decoded.offset !== bytes.length) throw new Error("Compact QR payload has trailing bytes.");
+      return decoded.value;
+    }
+
+    async function deflateBytes(bytes = new Uint8Array()) {
+      if (typeof CompressionStream !== "function") return null;
+      const compressed = new Blob([bytes])
+        .stream()
+        .pipeThrough(new CompressionStream("deflate"));
+      const buffer = await new Response(compressed).arrayBuffer();
+      return new Uint8Array(buffer);
+    }
+
+    async function inflateBytes(bytes = new Uint8Array()) {
+      if (typeof DecompressionStream !== "function") {
+        throw new Error("This browser cannot open compressed QR checklist links. Use Copy for phone instead.");
+      }
+      const inflated = new Blob([bytes])
+        .stream()
+        .pipeThrough(new DecompressionStream("deflate"));
+      const buffer = await new Response(inflated).arrayBuffer();
+      return new Uint8Array(buffer);
+    }
+
+    async function deflateCborValue(value) {
+      return deflateBytes(cborEncode(value));
+    }
+
+    async function inflateCborValue(bytes = new Uint8Array()) {
+      return cborDecode(await inflateBytes(bytes));
     }
 
     function currentPhoneQrBaseUrl() {
@@ -31113,6 +31308,15 @@ Rules:
     }
 
     async function encodePhoneQrToken(compactPayload) {
+      const deflatedCbor = await deflateCborValue(compactPayload);
+      if (deflatedCbor) {
+        return {
+          token: `B4:${baseQrEncodeBytes(deflatedCbor)}`,
+          compressed: true,
+          binary: true,
+          jsonLength: JSON.stringify(compactPayload).length
+        };
+      }
       const json = JSON.stringify(compactPayload);
       const gzippedBytes = await gzipTextToBytes(json);
       if (gzippedBytes) {
@@ -31131,6 +31335,9 @@ Rules:
 
     async function decodePhoneQrToken(token = "") {
       const text = String(token || "").trim();
+      if (text.startsWith("B4:")) {
+        return expandCompactPhoneHandoffPayloadForQr(await inflateCborValue(baseQrDecodeBytes(text.slice(3))));
+      }
       if (text.startsWith("G:")) {
         return expandCompactPhoneHandoffPayloadForQr(JSON.parse(await gunzipBytesToText(baseQrDecodeBytes(text.slice(2)))));
       }
@@ -31145,7 +31352,7 @@ Rules:
 
     function phoneQrTokenFromText(raw = "") {
       const text = String(raw || "").trim();
-      if (/^(?:G:|gz\.|j\.)/.test(text)) return text;
+      if (/^(?:B4:|G:|gz\.|j\.)/.test(text)) return text;
       const parseParams = (value = "") => {
         if (!value) return "";
         const params = new URLSearchParams(value.replace(/^[#?]/, ""));
@@ -31257,7 +31464,9 @@ Rules:
           total: 1
         }];
       }
-      const chunks = chunkPhoneQrToken(token);
+      if (token.length > PHONE_QR_DIRECT_TOKEN_LIMIT * PHONE_QR_MAX_CHUNKS) return [];
+      const chunks = chunkPhoneQrToken(token, Math.ceil(token.length / PHONE_QR_MAX_CHUNKS));
+      if (!chunks.length || chunks.length > PHONE_QR_MAX_CHUNKS) return [];
       const sessionId = compactStringFingerprint(token).toUpperCase();
       return chunks.map((chunk, index) => {
         const url = currentPhoneQrBaseUrl();
@@ -31430,6 +31639,10 @@ Rules:
         try {
           const link = await createPhoneQrDeepLink(attempt);
           const payloads = phoneQrDisplayPayloadsForLink(link);
+          if (!payloads.length) {
+            lastError = new Error("Local QR payload is too large for the three-frame maximum.");
+            continue;
+          }
           const displays = payloads.map((payload) => ({
             payload,
             qr: payload.total > 1 ? phoneQrSvgForDisplayPayload(payload) : phoneQrSvgForLink(link)
@@ -31438,7 +31651,7 @@ Rules:
           const candidate = { link, displays, attempt, maxModules };
           if (!bestCandidate || maxModules < bestCandidate.maxModules) bestCandidate = candidate;
           const moduleLimit = payloads.length > 1 ? PHONE_QR_CHUNK_MODULE_LIMIT : PHONE_QR_SCAN_MODULE_LIMIT;
-          if (payloads.length === 1 && maxModules <= moduleLimit) {
+          if (payloads.length <= PHONE_QR_MAX_CHUNKS && maxModules <= moduleLimit) {
             if (sequence !== phoneQrRenderSequence) return;
             renderPhoneQrCandidate({
               ...candidate,
@@ -31476,16 +31689,20 @@ Rules:
       }
       if (sequence !== phoneQrRenderSequence) return;
       if (bestCandidate) {
-        renderPhoneQrCandidate({
-          ...bestCandidate,
-          attempt: { ...bestCandidate.attempt, label: bestCandidate.link?.label ? `direct local ${bestCandidate.link.label}` : bestCandidate.attempt.label },
-          sequence
-        });
-        return;
+        const payloadCount = bestCandidate.displays.length;
+        const moduleLimit = payloadCount > 1 ? PHONE_QR_CHUNK_MODULE_LIMIT : PHONE_QR_SCAN_MODULE_LIMIT;
+        if (payloadCount <= PHONE_QR_MAX_CHUNKS && bestCandidate.maxModules <= moduleLimit) {
+          renderPhoneQrCandidate({
+            ...bestCandidate,
+            attempt: { ...bestCandidate.attempt, label: bestCandidate.link?.label ? `direct local ${bestCandidate.link.label}` : bestCandidate.attempt.label },
+            sequence
+          });
+          return;
+        }
       }
       elements.phoneQrCode.classList.add("is-unavailable");
-      elements.phoneQrCode.textContent = "QR too large";
-      elements.phoneQrStatus.textContent = "This checklist is too large for a QR code. Use Copy for phone, then tap Paste & open on the phone.";
+      elements.phoneQrCode.textContent = "Use local file";
+      elements.phoneQrStatus.textContent = lastError?.message || "This checklist is too large for one QR or the three-frame maximum. Use Copy for phone, Share, or Download instead.";
       if (lastError) console.warn("Phone QR could not be generated.", lastError);
     }
 
@@ -31509,6 +31726,22 @@ Rules:
     }
 
     async function loadDesktopPhoneBundleFromAnyText(raw, { source = "entry" } = {}) {
+      const text = String(raw || "").trim();
+      if (text.startsWith("{")) {
+        try {
+          const parsed = JSON.parse(text);
+          if (parsed?.version === "encrypted-local-phone-handoff-v1") {
+            const code = window.prompt("Enter the laptop handoff code shown with this bundle.") || "";
+            const decrypted = await decryptEncryptedPhonePayloadTransferText(parsed, code);
+            return loadDesktopPhoneBundle(decrypted, { source });
+          }
+        } catch (error) {
+          const message = error instanceof Error ? error.message : "Encrypted phone bundle could not be opened.";
+          setPhoneBundleLoadStatus(source, message, "error");
+          setStatus(message);
+          return false;
+        }
+      }
       const qrPayload = await phonePayloadFromQrDeepLink(raw);
       if (qrPayload) return loadDesktopPhoneBundle(encodePayload(qrPayload), { source });
       return loadDesktopPhoneBundle(raw, { source });
@@ -32441,35 +32674,35 @@ Rules:
 
     function copyPhonePayloadForTransfer() {
       if (!currentPhonePayload() && !createPhonePayload()) return;
-      const transferText = phonePayloadTransferText();
       openPhiOverlay({
         title: "PHI safety check for phone bundle",
-        copy: "Review the source text before copying this local phone bundle.",
+        copy: "Review the source text before copying this encrypted local phone bundle.",
         text: reviewedSourceContextText(),
-        actionLabel: "Copy for phone",
+        actionLabel: "Copy encrypted bundle",
         onConfirm: async () => {
+          const transferText = await encryptedPhonePayloadTransferText();
           await copyText(transferText);
-          setHandoffStatus("Copied for phone. On the phone, tap Paste & open.", "success");
+          setHandoffStatus("Encrypted bundle copied. On the phone, paste it and enter the laptop handoff code.", "success");
         }
       });
     }
 
     function sharePhonePayloadForTransfer() {
       if (!currentPhonePayload() && !createPhonePayload()) return;
-      const transferText = phonePayloadTransferText();
       openPhiOverlay({
         title: "PHI safety check for phone bundle",
-        copy: "Review the source text before sharing this local phone bundle.",
+        copy: "Review the source text before sharing this encrypted local phone bundle.",
         text: reviewedSourceContextText(),
-        actionLabel: "Share to phone",
+        actionLabel: "Share encrypted bundle",
         onConfirm: async () => {
+          const transferText = await encryptedPhonePayloadTransferText();
           if (navigator.share) {
             try {
               await navigator.share({
-                title: "Bedside checklist bundle",
+                title: "Encrypted bedside checklist bundle",
                 text: transferText
               });
-              setHandoffStatus("Phone bundle shared.", "success");
+              setHandoffStatus("Encrypted phone bundle shared.", "success");
               return;
             } catch (error) {
               if (error?.name === "AbortError") {
@@ -32479,7 +32712,7 @@ Rules:
             }
           }
           await copyText(transferText);
-          setHandoffStatus("Share is not available here. Bundle copied instead; tap Paste & open on the phone.", "success");
+          setHandoffStatus("Share is not available here. Encrypted bundle copied instead; paste it on the phone and enter the handoff code.", "success");
         }
       });
     }
@@ -32748,7 +32981,92 @@ Rules:
       return notes;
     }
 
-    function compactPhoneReturnPayloadForQr() {
+    function checklistFlatEntries() {
+      return allChecklistEntries();
+    }
+
+    function checklistFlatIndexForKey(key) {
+      return checklistFlatEntries().findIndex((entry) => entry.key === key);
+    }
+
+    function checklistKeyForFlatIndex(index) {
+      return checklistFlatEntries()[Number(index)]?.key || "";
+    }
+
+    function bitsetBytesForIndexes(indexes = [], total = checklistFlatEntries().length) {
+      const bytes = new Uint8Array(Math.ceil(total / 8));
+      for (const index of indexes) {
+        const value = Number(index);
+        if (!Number.isInteger(value) || value < 0 || value >= total) continue;
+        bytes[Math.floor(value / 8)] |= 1 << (value % 8);
+      }
+      return bytes;
+    }
+
+    function indexesFromBitsetBytes(bytes = new Uint8Array(), total = checklistFlatEntries().length) {
+      const indexes = [];
+      const source = bytes instanceof Uint8Array ? bytes : new Uint8Array();
+      for (let index = 0; index < total; index += 1) {
+        if (source[Math.floor(index / 8)] & (1 << (index % 8))) indexes.push(index);
+      }
+      return indexes;
+    }
+
+    function compactChecklistAnswerBitsetPayload(answers = {}) {
+      const rows = [];
+      for (const [key, value] of Object.entries(plainObject(answers) ? answers : {})) {
+        const flatIndex = checklistFlatIndexForKey(key);
+        if (flatIndex < 0) continue;
+        const values = answerValueList(value).map((entry) => compactAnswerComponent(key, entry)).filter((entry) => entry !== "");
+        if (!values.length) continue;
+        rows.push([flatIndex, values.length === 1 ? values[0] : values]);
+      }
+      rows.sort((first, second) => first[0] - second[0]);
+      return {
+        bitset: bitsetBytesForIndexes(rows.map((row) => row[0])),
+        values: rows.map((row) => row[1])
+      };
+    }
+
+    function expandCompactChecklistAnswerBitsetPayload(bitset, values = []) {
+      const answers = {};
+      const indexes = indexesFromBitsetBytes(bitset);
+      indexes.forEach((flatIndex, valueIndex) => {
+        const key = checklistKeyForFlatIndex(flatIndex);
+        if (!key) return;
+        const expandedValues = expandCompactAnswerValueList(key, values[valueIndex]);
+        if (expandedValues.length === 1) {
+          answers[key] = expandedValues[0];
+        } else if (expandedValues.length > 1) {
+          answers[key] = expandedValues;
+        }
+      });
+      return answers;
+    }
+
+    function compactChecklistNoteIndexRows(notes = {}) {
+      const rows = [];
+      for (const [key, value] of Object.entries(plainObject(notes) ? notes : {})) {
+        const flatIndex = checklistFlatIndexForKey(key);
+        const note = String(value || "").trim();
+        if (flatIndex >= 0 && note) rows.push([flatIndex, note]);
+      }
+      return rows.sort((first, second) => first[0] - second[0]);
+    }
+
+    function expandCompactChecklistNoteIndexRows(rows = []) {
+      const notes = {};
+      if (!Array.isArray(rows)) return notes;
+      for (const row of rows) {
+        if (!Array.isArray(row) || row.length < 2) continue;
+        const key = checklistKeyForFlatIndex(row[0]);
+        const note = String(row[1] || "").trim();
+        if (key && note) notes[key] = note;
+      }
+      return notes;
+    }
+
+    function compactPhoneReturnPayloadForQrV4() {
       const payload = createPhoneReturnPayloadObject();
       if (!payload) return null;
       const answers = plainObject(payload.answers) ? payload.answers : {};
@@ -32766,11 +33084,39 @@ Rules:
       return compact;
     }
 
+    function compactPhoneReturnPayloadForQrV5() {
+      const payload = createPhoneReturnPayloadObject();
+      if (!payload) return null;
+      const answers = plainObject(payload.answers) ? payload.answers : {};
+      const itemNotes = plainObject(payload.itemNotes) ? payload.itemNotes : {};
+      const answerPayload = compactChecklistAnswerBitsetPayload(answers);
+      const compact = {
+        v: "phoneReturnQr5",
+        c: payload.code || "",
+        m: payload.manifestHash || payload.checklistManifestHash || payload.checklistFingerprint || "",
+        f: payload.checklistFingerprint || payload.manifestHash || "",
+        q: checklistFlatEntries().length,
+        r: answerPayload.bitset,
+        av: answerPayload.values,
+        n: compactChecklistNoteIndexRows(itemNotes)
+      };
+      if (payload.bedsideNote) compact.b = payload.bedsideNote;
+      if (!Object.keys(answers).length && !Object.keys(itemNotes).length && payload.findingsText) compact.x = payload.findingsText;
+      return compact;
+    }
+
+    function compactPhoneReturnPayloadForQr() {
+      return (typeof CompressionStream === "function" && typeof DecompressionStream === "function")
+        ? compactPhoneReturnPayloadForQrV5()
+        : compactPhoneReturnPayloadForQrV4();
+    }
+
     function expandCompactPhoneReturnPayloadForQr(compact = {}) {
       if (compact?.version === "local-phone-return-v1") return compact;
-      if (!["phoneReturnQr1", "phoneReturnQr2", "phoneReturnQr3", "phoneReturnQr4"].includes(compact?.v)) throw new Error("This QR code is not a phone return bundle.");
+      if (!["phoneReturnQr1", "phoneReturnQr2", "phoneReturnQr3", "phoneReturnQr4", "phoneReturnQr5"].includes(compact?.v)) throw new Error("This QR code is not a phone return bundle.");
       const compactRows = compact?.v === "phoneReturnQr3";
       const indexedRows = compact?.v === "phoneReturnQr4";
+      const bitsetRows = compact?.v === "phoneReturnQr5";
       return {
         version: "local-phone-return-v1",
         code: compact.c || "",
@@ -32781,8 +33127,8 @@ Rules:
         manifestHash: compact.m || "",
         checklistManifestHash: compact.m || "",
         checklistFingerprint: compact.f || compact.m || "",
-        answers: indexedRows ? expandCompactChecklistAnswerRowsV4(compact.a) : compactRows ? expandCompactChecklistAnswerRows(compact.a) : (plainObject(compact.a) ? compact.a : {}),
-        itemNotes: indexedRows ? expandCompactChecklistNoteRowsV4(compact.n) : compactRows ? expandCompactChecklistNoteRows(compact.n) : (plainObject(compact.n) ? compact.n : {}),
+        answers: bitsetRows ? expandCompactChecklistAnswerBitsetPayload(compact.r, compact.av) : indexedRows ? expandCompactChecklistAnswerRowsV4(compact.a) : compactRows ? expandCompactChecklistAnswerRows(compact.a) : (plainObject(compact.a) ? compact.a : {}),
+        itemNotes: bitsetRows ? expandCompactChecklistNoteIndexRows(compact.n) : indexedRows ? expandCompactChecklistNoteRowsV4(compact.n) : compactRows ? expandCompactChecklistNoteRows(compact.n) : (plainObject(compact.n) ? compact.n : {}),
         bedsideNote: compact.b || "",
         objectiveData: "",
         findingsText: compact.x || ""
@@ -32790,6 +33136,21 @@ Rules:
     }
 
     async function encodePhoneReturnQrToken(compactPayload) {
+      if (compactPayload?.v === "phoneReturnQr5") {
+        const deflatedCbor = await deflateCborValue(compactPayload);
+        if (deflatedCbor) {
+          return {
+            token: `R5:${baseQrEncodeBytes(deflatedCbor)}`,
+            compressed: true,
+            binary: true,
+            jsonLength: JSON.stringify({
+              ...compactPayload,
+              r: compactPayload.r instanceof Uint8Array ? `[${compactPayload.r.length} bytes]` : compactPayload.r
+            }).length
+          };
+        }
+        compactPayload = compactPhoneReturnPayloadForQrV4();
+      }
       const json = JSON.stringify(compactPayload);
       const gzippedBytes = await gzipTextToBytes(json);
       if (gzippedBytes) {
@@ -32815,6 +33176,9 @@ Rules:
 
     async function decodePhoneReturnQrToken(token = "") {
       const text = String(token || "").trim();
+      if (text.startsWith("R5:")) {
+        return expandCompactPhoneReturnPayloadForQr(await inflateCborValue(baseQrDecodeBytes(text.slice(3))));
+      }
       if (text.startsWith("R4:")) {
         return expandCompactPhoneReturnPayloadForQr(JSON.parse(await gunzipBytesToText(base45DecodeBytes(text.slice(3)))));
       }
@@ -32832,7 +33196,7 @@ Rules:
 
     function phoneReturnTokenFromText(raw = "") {
       const text = String(raw || "").trim();
-      if (/^(?:R4:|R:|rgz\.|rj\.)/.test(text)) return text;
+      if (/^(?:R5:|R4:|R:|rgz\.|rj\.)/.test(text)) return text;
       const parseParams = (value = "") => {
         if (!value) return "";
         const params = new URLSearchParams(value.replace(/^[#?]/, ""));
@@ -32853,24 +33217,37 @@ Rules:
       return token ? decodePhoneReturnQrToken(token) : null;
     }
 
+    function compactReturnAnswerCount(compact = {}) {
+      if (compact?.v === "phoneReturnQr5") return Array.isArray(compact.av) ? compact.av.length : 0;
+      if (Array.isArray(compact.a)) return compact.a.length;
+      return Object.keys(compact.a || {}).length;
+    }
+
+    function compactReturnNoteCount(compact = {}) {
+      if (Array.isArray(compact.n)) return compact.n.length;
+      return Object.keys(compact.n || {}).length;
+    }
+
     async function createPhoneReturnQrText() {
       const compact = compactPhoneReturnPayloadForQr();
       if (!compact) return null;
-      try {
-        return await createPhoneHandoffMailboxLink({
-          kind: "return",
-          payload: compact,
-          answeredCount: Array.isArray(compact.a) ? compact.a.length : Object.keys(compact.a || {}).length,
-          noteCount: Array.isArray(compact.n) ? compact.n.length : Object.keys(compact.n || {}).length
-        });
-      } catch (error) {
-        console.warn("Online phone return handoff could not be created; using local QR fallback.", error);
+      if (phoneHandoffMailboxConfigured()) {
+        try {
+          return await createPhoneHandoffMailboxLink({
+            kind: "return",
+            payload: compact,
+            answeredCount: compactReturnAnswerCount(compact),
+            noteCount: compactReturnNoteCount(compact)
+          });
+        } catch (error) {
+          console.warn("Online phone return handoff could not be created; using local QR fallback.", error);
+        }
       }
       const encoded = await encodePhoneReturnQrToken(compact);
       return {
         text: encoded.token,
-        answeredCount: Object.keys(compact.a || {}).length,
-        noteCount: Object.keys(compact.n || {}).length,
+        answeredCount: compactReturnAnswerCount(compact),
+        noteCount: compactReturnNoteCount(compact),
         compressed: encoded.compressed,
         jsonLength: encoded.jsonLength
       };
@@ -33014,7 +33391,7 @@ Rules:
       if (!text) return false;
       if (phoneHandoffMailboxLinkFromText(text)) return true;
       if (phoneReturnTokenFromText(text)) return true;
-      if (/^(?:R4:|R:|rgz\.|rj\.)/.test(text)) return true;
+      if (/^(?:R5:|R4:|R:|rgz\.|rj\.)/.test(text)) return true;
       if (text.startsWith("{")) {
         try {
           const parsed = JSON.parse(text);
@@ -33768,9 +34145,10 @@ Rules:
         void copyPhoneQrLinkForTransfer();
       });
       $("#sharePhonePayloadButton")?.addEventListener("click", sharePhonePayloadForTransfer);
-      $("#downloadPhonePayloadButton").addEventListener("click", () => {
+      $("#downloadPhonePayloadButton").addEventListener("click", async () => {
         if (!state.phonePayload && !createPhonePayload()) return;
-        downloadFile("pre-rounding-phone-handoff.json", JSON.stringify({ code: state.transferCode, payload: state.phonePayload }, null, 2), "application/json");
+        const transferText = await encryptedPhonePayloadTransferText();
+        downloadFile("pre-rounding-phone-handoff.encrypted.json", transferText, "application/json");
       });
       $("#importPhoneFindingsButton").addEventListener("click", () => {
         void importPhoneFindings();

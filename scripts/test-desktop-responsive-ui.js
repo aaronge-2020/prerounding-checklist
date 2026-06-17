@@ -280,9 +280,9 @@ async function installMockQrCamera(page, qrText, options = {}) {
     const scanTexts = (Array.isArray(textToScan) ? textToScan : [textToScan]).map((value) => String(value || "")).filter(Boolean);
     const qrModeForText = (text = "") => (/^[0-9A-Z $%*+\-./:]+$/.test(String(text || "")) ? "Alphanumeric" : "Byte");
     const qrTokenFromText = (text = "") => {
-      const direct = String(text || "").match(/(?:^|[#?&])(?:B|phoneBundle|qr)=((?:G:|gz\.|j\.)[^&#]+)/);
+      const direct = String(text || "").match(/(?:^|[#?&])(?:B|phoneBundle|qr)=((?:B4:|G:|gz\.|j\.)[^&#]+)/);
       if (direct) return direct[1];
-      const returnDirect = String(text || "").match(/(?:^|[#?&])(?:phoneReturn|returnBundle)=((?:R4:|R:|rgz\.|rj\.)[^&#]+)/);
+      const returnDirect = String(text || "").match(/(?:^|[#?&])(?:phoneReturn|returnBundle)=((?:R5:|R4:|R:|rgz\.|rj\.)[^&#]+)/);
       if (returnDirect) return returnDirect[1];
       try {
         const url = new URL(String(text || ""), window.location.href);
@@ -292,7 +292,7 @@ async function installMockQrCamera(page, qrText, options = {}) {
       } catch {
         // Fall through to direct payload handling.
       }
-      if (/^(?:G:|R4:|R:|gz\.|j\.|rgz\.|rj\.)/.test(String(text || ""))) return String(text || "");
+      if (/^(?:B4:|G:|R5:|R4:|R:|gz\.|j\.|rgz\.|rj\.)/.test(String(text || ""))) return String(text || "");
       return "";
     };
     const addQrData = (qr, text) => {
@@ -770,9 +770,9 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   assert(desktopQrAudit.qrBoxWidth >= Math.min(520, qrViewBoxSize), `desktop QR should render large enough for phone cameras: ${JSON.stringify(desktopQrAudit)}`);
   assert(desktopQrAudit.regenerateVisible && desktopQrAudit.copyVisible && desktopQrAudit.downloadVisible, `desktop handoff should expose regenerate/copy/download secondary actions: ${JSON.stringify(desktopQrAudit)}`);
   assert(/^Regenerate$/i.test(desktopQrAudit.regenerateText.trim()) && /Copy bundle/i.test(desktopQrAudit.copyText) && /^Download$/i.test(desktopQrAudit.downloadText.trim()), `desktop secondary actions should be simple regenerate/copy/download labels: ${JSON.stringify(desktopQrAudit)}`);
-  assert(desktopQrAudit.qrLink.includes("#B=G:") && desktopQrAudit.qrText === desktopQrAudit.qrLink, `desktop QR should expose the direct local deep link for tests: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
-  assert(desktopQrAudit.qrScanTexts.every((text) => /#B=G:/.test(text)), `desktop QR itself should be a single direct local URL: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
-  assert(/^G:[0-9A-Z$*\-./:]+$/.test(desktopQrAudit.qrToken), `desktop QR token should be a compressed alphanumeric local payload: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
+  assert(/#B=B4:/.test(desktopQrAudit.qrLink) && desktopQrAudit.qrText === desktopQrAudit.qrLink, `desktop QR should expose the direct local CBOR deep link for tests: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
+  assert(desktopQrAudit.qrScanTexts.every((text) => /#B=B4:/.test(text)), `desktop QR itself should be a single direct local CBOR URL: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
+  assert(/^B4:[0-9A-Z$*\-./:]+$/.test(desktopQrAudit.qrToken), `desktop QR token should be a deflated CBOR alphanumeric local payload: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
   assert(/^[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(desktopCode), `desktop handoff should generate a pairing code, got ${desktopCode}`);
   assert(/^[a-f0-9]{16}$/.test(desktopBundle.manifestHash || ""), `desktop handoff should include a deterministic checklist manifest hash, got ${desktopBundle.manifestHash}`);
   assert(desktopBundle.checklistFingerprint === desktopBundle.manifestHash && desktopBundle.checklistManifestHash === desktopBundle.manifestHash, `desktop handoff should use the manifest hash consistently: ${JSON.stringify({ manifestHash: desktopBundle.manifestHash, checklistManifestHash: desktopBundle.checklistManifestHash, checklistFingerprint: desktopBundle.checklistFingerprint })}`);
@@ -1017,7 +1017,7 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   await phonePage.waitForSelector("#bedsideCompletionPanel:not([hidden])");
   await phonePage.waitForSelector("#bedsideCompletionQrCode svg", { timeout: 45000 });
   const returnQrText = await phonePage.evaluate(() => document.querySelector("#bedsideCompletionPanel")?.dataset.qrText || "");
-  assert(/^(?:R4:|R:|rgz\.|rj\.)/.test(returnQrText) && !/#H=/.test(returnQrText), `completed phone return QR should be a direct local return token in HIPAA-restricted mode: ${returnQrText.slice(0, 120)}`);
+  assert(/^R5:/.test(returnQrText) && !/#H=/.test(returnQrText), `completed phone return QR should be a direct local bitset return token in HIPAA-restricted mode: ${returnQrText.slice(0, 120)}`);
   assert(mailbox.store.size === 0, `HIPAA-restricted default should not upload phone return findings to the encrypted mailbox: ${mailbox.store.size}`);
   const completionAudit = await phonePage.evaluate(() => ({
     title: document.querySelector("#bedsideCompletionTitle")?.textContent || "",
@@ -1133,7 +1133,7 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   assert(desktopScannerAudit.importSummaryVisible && desktopScannerAudit.importSummaryCount >= 1 && /Answer:/i.test(desktopScannerAudit.importSummaryText), `desktop prompts screen should summarize imported phone answers for confirmation: ${JSON.stringify(desktopScannerAudit)}`);
   assert(/Opening prompts/i.test(desktopScannerAudit.liveStatus), `desktop should announce prompt navigation after phone import: ${JSON.stringify(desktopScannerAudit)}`);
   assert(/imported/i.test(desktopScannerAudit.scannerStatus), `desktop scanner should report imported phone QR: ${JSON.stringify(desktopScannerAudit)}`);
-  assert(/^(?:R4:|R:|rgz\.|rj\.)/.test(desktopScannerAudit.importValue), `desktop scanner should place scanned direct return QR text in the import box: ${JSON.stringify(desktopScannerAudit)}`);
+  assert(/^R5:/.test(desktopScannerAudit.importValue), `desktop scanner should place scanned direct bitset return QR text in the import box: ${JSON.stringify(desktopScannerAudit)}`);
   assert(desktopScannerAudit.answeredRows >= 1, `desktop scanner should merge answered checklist rows: ${JSON.stringify(desktopScannerAudit)}`);
   assert(desktopScannerAudit.firstFacingMode === "user", `desktop return scanner should prefer the user-facing laptop camera: ${JSON.stringify(desktopScannerAudit)}`);
   assert(/focusMode.*continuous|continuous.*focusMode/.test(desktopScannerAudit.appliedConstraints), `desktop return scanner should request continuous focus when available: ${JSON.stringify(desktopScannerAudit)}`);
