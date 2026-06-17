@@ -453,7 +453,10 @@ const medicationNameWords = new Set([
 ["nephrovite", "prednisone"].forEach((word) => medicationNameWords.add(word));
 
 const clinicalInstructionWords = new Set([
-  "add", "do", "for", "hold", "not", "on", "or", "please", "prn", "route"
+  "add", "do", "for", "hold", "not", "on", "or", "please", "prn", "route",
+  "resume", "start", "stop", "continue", "discontinue", "give", "take",
+  "titrate", "increase", "decrease", "reduce", "maintain", "administer",
+  "begin", "keep", "restart", "switch", "change", "convert", "transition"
 ]);
 
 const clinicalInstructionAnchorWords = new Set([
@@ -717,6 +720,13 @@ function isClinicalGuardOnlyText(value) {
     return true;
   }
 
+  // Check if the span starts with a known clinical phrase (model may append trailing text)
+  for (const phrase of nonNameClinicalPhrases) {
+    if (normalized.startsWith(phrase)) {
+      return true;
+    }
+  }
+
   if (isLikelyClinicalInstructionPhrase(normalized)) {
     return true;
   }
@@ -935,26 +945,32 @@ function refineNameLabel(label, rawText, start, end) {
     return normalized;
   }
 
-  if (normalized !== "NAME") {
-    return normalized;
-  }
-
-  const span = rawText.slice(start, end).trim();
+  const span = rawText.slice(start, end).trim().toLowerCase();
   const sameLine = sameLineContext(rawText, start, end);
   const broaderContext = lineContext(rawText, start, end).toLowerCase();
 
-  if (/\b(?:emergency contact|mother|father|spouse|daughter|son|guardian|caregiver|family)\b/.test(sameLine)) {
+  // Check immediate prefix for contact relationship indicators
+  const prefix = rawText.slice(Math.max(0, start - 60), start).toLowerCase();
+  const isPrefixedContact = /(?:daughter|son|mother|father|spouse|guardian|caregiver)\s*$/.test(prefix) ||
+    /\b(?:emergency contact|caregiver)\s*[:#]\s*$/.test(prefix);
+
+  if (isPrefixedContact || /^(?:daughter|son|mother|father)\s+/i.test(span)) {
     return "CONTACT NAME";
   }
-  if (/^(?:dr|doctor)\.?\s+/i.test(span) || /\b(?:provider|doctor|physician|attending|resident|fellow|consultant|surgeon|pcp|endocrinologist|referring provider|ordering provider|follow-up with)\b/.test(sameLine)) {
-    return "PROVIDER NAME";
+
+  // Provider context: override generic NAME to PROVIDER NAME
+  if (normalized === "NAME") {
+    if (/^(?:dr|doctor)\.?\s+/i.test(span) || /\b(?:provider|doctor|physician|attending|resident|fellow|consultant|surgeon|pcp|endocrinologist|referring provider|ordering provider|follow-up with)\b/.test(prefix)) {
+      return "PROVIDER NAME";
+    }
+    if (/\b(?:one-line summary|overall assessment|patient name|pt name|patient|subjective|admitted|discharge planning)\b/.test(sameLine) ||
+        /\b(?:one-line summary|overall assessment|patient name|pt name|subjective|admitted|discharge planning)\b/.test(broaderContext) ||
+        /\b(?:\d{1,3}\s*(?:y\.?o\.?|yo)|\d{1,3}[- ]year[- ]old|female|male|woman|man|adult)\b/.test(sameLine)) {
+      return "PATIENT NAME";
+    }
   }
-  if (/\b(?:one-line summary|overall assessment|patient name|pt name|patient|subjective|admitted|discharge planning)\b/.test(sameLine) ||
-      /\b(?:one-line summary|overall assessment|patient name|pt name|subjective|admitted|discharge planning)\b/.test(broaderContext) ||
-      /\b(?:\d{1,3}\s*(?:y\.?o\.?|yo)|\d{1,3}[- ]year[- ]old|female|male|woman|man|adult)\b/.test(sameLine)) {
-    return "PATIENT NAME";
-  }
-  return "NAME";
+
+  return normalized;
 }
 
 function normalizePhiEntity(rawText, entity) {
