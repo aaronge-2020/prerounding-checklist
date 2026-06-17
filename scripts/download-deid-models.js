@@ -26,6 +26,33 @@ const MODELS = [
     ]
   },
   {
+    // I2B2 ClinicalBERT: ClinicalBERT fine-tuned on i2b2 2014 de-id (q8 quantized, ~109MB)
+    // 11 HIPAA-safe-harbor entity types, BILOU tagging
+    // From OBI / Alsentzer et al., trained on MIMIC-III clinical notes
+    id: "onnx-community/deid_bert_i2b2-ONNX",
+    files: [
+      "config.json",
+      "tokenizer.json",
+      "tokenizer_config.json",
+      "vocab.txt",
+      "special_tokens_map.json",
+      "onnx/model_quantized.onnx"
+    ]
+  },
+  {
+    // Enhanced PII: multi-language PII NER (q8 quantized, ~279MB)
+    // 25 entity types — broader PHI coverage than Stanford
+    // GIVENNAME, SURNAME, DATE, AGE, PHONE, EMAIL, ORGANIZATION, ADDRESS, etc.
+    id: "onnx-community/multilang-pii-ner-ONNX",
+    files: [
+      "config.json",
+      "tokenizer.json",
+      "tokenizer_config.json",
+      "special_tokens_map.json",
+      "onnx/model_quantized.onnx"
+    ]
+  },
+  {
     // Fallback: small PII detection model (q8 quantized, ~29MB)
     // Mobile-feasible, works on constrained devices
     id: "rtrigoso/bert-small-pii-detection-ONNX",

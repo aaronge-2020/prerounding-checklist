@@ -1,6 +1,8 @@
 export const DEFAULT_PRIMARY_MODEL_ID = "onnx-community/stanford-deidentifier-base-ONNX";
 export const DEFAULT_FALLBACK_MODEL_ID = "rtrigoso/bert-small-pii-detection-ONNX";
 export const OPENMED_MODEL_ID = "sidupadhyay/OpenMed-PII-SuperClinical-Small-44M-v1-ONNX";
+export const MULTILANG_PII_MODEL_ID = "onnx-community/multilang-pii-ner-ONNX";
+export const I2B2_CLINICALBERT_MODEL_ID = "onnx-community/deid_bert_i2b2-ONNX";
 export const DEFAULT_DTYPE = "q8";
 
 export const MODEL_PROFILES = {
@@ -21,6 +23,18 @@ export const MODEL_PROFILES = {
     mobileFeasible: false,
     expectedQuantizedBytes: 283404624,
     notes: "Large clinical PII model; metadata-only in normal benchmark."
+  },
+  multilang: {
+    id: MULTILANG_PII_MODEL_ID,
+    mobileFeasible: false,
+    expectedQuantizedBytes: 279000000,
+    notes: "25-entity multilingual PII NER from ai4privacy dataset; broader entity coverage than Stanford."
+  },
+  i2b2: {
+    id: I2B2_CLINICALBERT_MODEL_ID,
+    mobileFeasible: false,
+    expectedQuantizedBytes: 109651017,
+    notes: "ClinicalBERT fine-tuned on i2b2 2014 de-id; 11 HIPAA entity types, BILOU tagging."
   }
 };
 
@@ -94,7 +108,29 @@ const phiLabelMap = {
   DEVICE_ID: "ID",
   DEVICE_IDENTIFIER: "ID",
   MAC_ADDRESS: "ID",
-  IMEI: "ID"
+  IMEI: "ID",
+  GIVENNAME: "NAME",
+  SURNAME: "NAME",
+  AGE: "AGE",
+  CITY: "LOCATION",
+  STATE: "LOCATION",
+  COUNTY: "LOCATION",
+  COUNTRY: "LOCATION",
+  STREET: "ADDRESS",
+  ZIPCODE: "LOCATION",
+  BUILDINGNUMBER: "ADDRESS",
+  TELEPHONENUM: "PHONE",
+  TITLE: "NAME",
+  TIME: "DATE",
+  USERNAME: "ID",
+  PASSWORD: "ID",
+  ACCOUNTNUMBER: "ID",
+  IDCARDNUMBER: "ID",
+  SOCIALNUMBER: "ID",
+  STAFF: "PROVIDER NAME",
+  HOSP: "FACILITY",
+  PATORG: "ORGANIZATION",
+  OTHERPHI: "PHI"
 };
 
 const nameEntityLabels = new Set(["NAME", "PATIENT NAME", "PROVIDER NAME", "CONTACT NAME"]);
@@ -129,7 +165,9 @@ const nonNameClinicalPhrases = new Set([
   "vancomycin trough", "blood glucose", "urine output", "intake output", "mental status",
   "oxygen saturation", "respiratory rate", "blood pressure", "temperature maximum", "temperature minimum",
   "mean arterial", "arterial pressure", "encephalopathy diabetes", "diabetes mellitus", "acute kidney",
-  "kidney injury", "renal function", "heart failure", "respiratory failure", "altered mental",
+  "kidney injury", "diabetic ketoacidosis", "autoimmune hypothyroidism", "autoimmune thyroiditis",
+  "sick day management", "poor sick day management", "sick day education", "sick day protocols",
+  "renal function", "heart failure", "respiratory failure", "altered mental",
   "general medicine", "type 1 diabetes mellitus", "type 2 diabetes mellitus", "free t4",
   "beta hydroxybutyrate", "beta-hydroxybutyrate"
 ]);
@@ -137,32 +175,38 @@ const nonNameClinicalPhrases = new Set([
 const nonNameClinicalWords = new Set([
   "abdomen", "abdominal", "absolute", "acetaminophen", "action", "active", "activity", "acute", "admission",
   "abnormal", "albumin", "alk", "alkaline", "allergies", "alt", "and", "anion", "anesthesia", "antibiotic",
-  "anticoagulation", "arterial", "assessment", "ast", "atypical", "awareness", "basophils", "base", "basic",
+  "anticoagulation", "arterial", "assessment", "ast", "atypical", "autoimmune", "awareness", "basophils", "base", "basic",
   "beta", "bicarbonate", "bilirubin", "blood", "bladder", "bowel", "brain", "bun", "burr",
   "calcium", "cardiac", "cardiology", "cardiovascular", "catheter", "cbc", "cells", "cervical",
   "chloride", "chief", "clinic", "cloudy", "coagulation", "code", "comment", "complaint", "complete",
   "consult", "coordination", "count", "course", "cranial", "creatinine", "critical", "culture",
   "current", "daily", "decreased", "dermatology", "diabetes", "diagnoses", "diagnosis", "diet", "differential",
-  "dimer", "discharge", "drain", "dvt", "edema", "elevated", "elopement", "elopmement",
+  "dimer", "discharge", "discomfort", "drain", "dvt", "edema", "elevated", "elopement", "elopmement",
   "emergency", "encephalopathy", "endocrine", "endocrinology", "eosinophils", "escitalopram",
   "esr", "exam", "excess", "failure", "fall", "family", "ferritin", "fibrinogen", "follow",
   "free", "gap", "gastroenterology", "general", "glucose", "gram", "granulation", "granulocytes",
   "grans", "gu", "hba1c", "hct", "healthy", "heart", "hematocrit", "hematology",
   "hemoglobin", "hepatology", "hgb", "high", "history", "home", "hospital", "hospitalist", "hour",
-  "hydroxybutyrate", "imaging", "immature", "impression", "infectious", "information", "injury",
-  "inpatient", "intact", "intake", "iron", "kidney", "lab", "laboratory", "labs", "lactate",
+  "hydroxybutyrate", "hyperthyroidism", "hypothyroidism", "imaging", "immature", "impression",
+  "infectious", "information", "injury",
+  "inpatient", "intact", "intake", "iron", "ketoacidosis", "ketones", "kidney", "lab", "laboratory",
+  "labs", "lactate",
   "lactic", "last", "level", "line", "lipase", "liver", "low", "lumbar", "lung", "lungs", "lymphocytes",
   "magnesium", "management", "maximum", "mean", "medical", "medication", "medications", "medicine", "meds",
   "mental", "microbiology", "minimum", "monocytes", "morphology", "motor", "musculoskeletal",
-  "nephrology", "nerve", "neuro", "neurologic", "neurology", "neurosurgery", "neutrophils", "normal",
+  "nausea", "nephrology", "nerve", "neuro", "neurologic", "neurology", "neurosurgery", "neutrophils",
+  "nightly", "normal",
   "note", "objective", "obstetrics", "oncology", "operative", "orthopedics", "outpatient", "output",
   "palliative", "pathology", "past", "pco2", "pediatrics", "ph", "pharmacy", "phos", "phosphatase",
-  "phosphate", "phosphorus", "physical", "platelet", "platelets", "plt", "po2", "potassium",
+  "phosphate", "phosphorus", "physical", "platelet", "platelets", "plt", "po2", "polydipsia",
+  "polyuria", "potassium",
   "precautions", "principal", "prn", "problem", "problems", "procedure", "procalcitonin", "progress",
   "protein", "psychiatry", "pt", "ptt", "pulmonary", "pulmonology", "radiology", "range", "rare", "rate",
-  "rbc", "reading", "red", "referral", "reflex", "renal", "report", "resolved", "respiratory", "reticulated", "reticulocyte",
-  "review", "rheumatology", "risk", "saturation", "scheduled", "schistocytes", "see", "sensory", "severe",
-  "sign", "signs", "situational", "sodium", "social", "spinal", "spine", "sputum", "stain", "status", "subjective",
+  "rbc", "reading", "red", "referral", "reflex", "renal", "report", "resolved", "respiratory",
+  "reticulated", "reticulocyte",
+  "review", "rheumatology", "risk", "saturation", "sc", "scheduled", "schistocytes", "see", "sensory", "severe",
+  "sign", "signs", "situational", "sodium", "social", "spinal", "spine", "sputum", "stain", "status",
+  "subcutaneous", "subjective",
   "studies", "suicide", "summary", "surgery", "surgical", "systems", "t4", "team", "temperature", "therapy",
   "thoracic", "thyroid", "tibc", "toilet", "tone", "total", "toxic", "transfer", "transferrin", "trauma",
   "treatment", "triglycerides", "troponin", "tsh", "turbid", "ua", "unit", "urinary", "urine",
@@ -202,14 +246,16 @@ const commonFirstNames = new Set([
 
 const clinicalAnchorWords = new Set([
   "absolute", "albumin", "alk", "alkaline", "anion", "antibiotic", "anticoagulation", "arterial",
-  "ast", "atypical", "basophils", "base", "bicarbonate", "bilirubin", "blood", "bun", "burr",
+  "ast", "atypical", "autoimmune", "basophils", "base", "bicarbonate", "bilirubin", "blood", "bun", "burr",
   "calcium", "cardiology", "cbc", "chloride", "comment", "consult", "creatinine", "culture", "dimer",
   "eosinophils", "endocrinology", "esr", "excess", "ferritin", "fibrinogen", "gap", "glucose",
-  "heart", "hematocrit", "hematology", "hemoglobin", "hgb", "imaging", "inpatient", "intake",
-  "iron", "kidney", "lab", "laboratory", "labs", "lactate", "lipase", "lymphocytes", "magnesium",
-  "medications", "meds", "mental", "microbiology", "monocytes", "morphology", "nephrology",
+  "heart", "hematocrit", "hematology", "hemoglobin", "hgb", "hypothyroidism", "imaging", "inpatient", "intake",
+  "iron", "ketoacidosis", "ketones", "kidney", "lab", "laboratory", "labs", "lactate", "lipase",
+  "lymphocytes", "magnesium",
+  "medications", "meds", "mental", "microbiology", "monocytes", "morphology", "nausea", "nephrology",
   "neurology", "neutrophils", "note", "oncology", "output", "pathology", "pco2", "ph", "phos",
-  "phosphatase", "phosphate", "phosphorus", "platelet", "platelets", "plt", "po2", "potassium",
+  "phosphatase", "phosphate", "phosphorus", "platelet", "platelets", "plt", "po2", "polydipsia",
+  "polyuria", "potassium",
   "procalcitonin", "protein", "ptt", "pulmonology", "radiology", "rate", "rbc", "renal", "report",
   "respiratory", "reticulated", "reticulocyte", "saturation", "scheduled", "schistocytes", "sodium",
   "studies", "summary", "team", "temperature", "thyroid", "tibc", "total", "toxic", "transferrin",
@@ -862,7 +908,13 @@ function isLikelyAddressFalsePositive(rawText, start, end) {
 function isLikelyIdentifierFalsePositive(rawText, start, end) {
   const span = rawText.slice(start, end).replace(/\s+/g, " ").trim();
   const line = lineAroundSpan(rawText, start, end);
-  return /^(?:COVID-19|COVID19|COOMBS-C3D)$/i.test(span) && isLikelyClinicalResultLine(line);
+  if (/^(?:COVID-19|COVID19|COOMBS-C3D)$/i.test(span) && isLikelyClinicalResultLine(line)) {
+    return true;
+  }
+  if (isLikelyClinicalResultLine(line)) {
+    return true;
+  }
+  return false;
 }
 
 function sentenceBreakIndexForName(span) {
@@ -1177,11 +1229,58 @@ export function addStructuredSafeHarborEntities(rawText, entities = []) {
     { label: "EMAIL", regex: /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi },
     { label: "URL", regex: /\b(?:https?:\/\/|www\.)[^\s<>()]+/gi },
     { label: "IP", regex: /\b(?:25[0-5]|2[0-4]\d|1?\d?\d)(?:\.(?:25[0-5]|2[0-4]\d|1?\d?\d)){3}\b/g },
+    { label: "IP", regex: /\b(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}\b/g },
     { label: "ID", regex: /\b\d{3}-\d{2}-\d{4}\b/g },
+    // Presidio SSN patterns: broader than \d{3}-\d{2}-\d{4}
+    { label: "ID", regex: /\b(\d{3})[- .](\d{2})[- .](\d{4})\b/g },
+    { label: "ID", regex: /\b(\d{5})-(\d{4})\b/g },
+    // NPI: National Provider Identifier (10-digit, starts with 1-4)
+    { label: "ID", regex: /\bNPI\s*[:#]?\s*\d{10}\b/gi },
+    // Medical license number (DEA-like patterns)
+    { label: "ID", regex: /\b(?:DEA|License|Lic|NPI|State License)\s*[:#]\s*([A-Z0-9]{5,16})\b/gi },
+    // Credit card numbers (from Presidio CreditCardRecognizer)
+    { label: "ID", regex: /\b(?!1\d{12}(?!\d))((4\d{3})|(5[0-5]\d{2})|(6\d{3})|(1\d{3})|(3\d{3}))[- ]?(\d{3,4})[- ]?(\d{3,4})[- ]?(\d{3,5})\b/g },
+    // US driver license (from Presidio UsLicenseRecognizer)
+    { label: "ID", regex: /\b(?:[A-Z][0-9]{3,6}|[A-Z][0-9]{5,9}|[A-Z][0-9]{6,8}|[A-Z][0-9]{4,8}|[A-Z][0-9]{9,11}|[A-Z]{1,2}[0-9]{5,6}|H[0-9]{8}|V[0-9]{6}|X[0-9]{8}|[A-Z]{2}[0-9]{2,5}|[A-Z]{2}[0-9]{3,7}|[0-9]{2}[A-Z]{3}[0-9]{5,6}|[A-Z][0-9]{13,14}|[A-Z][0-9]{18}|[A-Z][0-9]{6}R|[A-Z][0-9]{9}|[0-9]{9}[A-Z]|[A-Z]{2}[0-9]{6}[A-Z]|[0-9]{8}[A-Z]{2}|[0-9]{3}[A-Z]{2}[0-9]{4}|[A-Z][0-9][A-Z][0-9][A-Z]|[0-9]{7,8}[A-Z])\b/g, skip: isLikelyIdentifierFalsePositive },
+    // US Passport (9 digits or letter+8 digits from Presidio)
+    { label: "ID", regex: /\b[A-Z][0-9]{8}\b/g },
     { label: "PHONE", regex: /(?:\+?1[-.\s]?)?\(?\b\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g },
-    { label: "DATE", regex: /\b\d{4}-\d{1,2}-\d{1,2}\b/g },
+    // ── Date patterns: comprehensive coverage of clinical date formats ──
+    // ISO 8601: 2026-06-17
+    { label: "DATE", regex: /\b\d{4}-[01]\d-[0-3]\d\b/g },
+    // m/d/yyyy, m/d/yy, mm/dd/yyyy, mm/dd/yy, m/d, mm/dd
     { label: "DATE", regex: /\b(?:0?[1-9]|1[0-2])[/-](?:0?[1-9]|[12]\d|3[01])(?:[/-](?:\d{2}|\d{4}))?\b/g, skip: isLikelyDateFalsePositive },
-    { label: "DATE", regex: /\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2}(?:,?\s+\d{4})?\b/gi },
+    // d/m/yyyy, dd/mm/yyyy, dd/mm/yy, d/m, dd/mm
+    { label: "DATE", regex: /\b(?:0?[1-9]|[12]\d|3[01])[./-](?:0?[1-9]|1[0-2])[./-](?:\d{2}|\d{4})\b/g, skip: isLikelyDateFalsePositive },
+    // yyyy/mm/dd, yyyy-mm-dd, yyyy.mm.dd
+    { label: "DATE", regex: /\b\d{4}[/.-](?:0?[1-9]|1[0-2])[/.-](?:0?[1-9]|[12]\d|3[01])\b/g },
+    // dd-MMM-yyyy, d-MMM-yyyy: 17-Jun-2026, 1-Jan-2026
+    { label: "DATE", regex: /\b(?:0?[1-9]|[12]\d|3[01])-(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)-\d{4}\b/gi },
+    // dd-MMM-yy, d-MMM-yy: 17-Jun-26
+    { label: "DATE", regex: /\b(?:0?[1-9]|[12]\d|3[01])-(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)-\d{2}\b/gi },
+    // dd-MMM, d-MMM: 17-Jun, 1-Jan (bare day+month with hyphen)
+    { label: "DATE", regex: /\b(?:0?[1-9]|[12]\d|3[01])-(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\b/gi },
+    // MMM-yyyy, MMM-yy: Jun-2026, Jun-26
+    { label: "DATE", regex: /\b(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)-(\d{4}|\d{2})\b/gi },
+    // m/yyyy, mm/yyyy: 6/2026, 06/2026
+    { label: "DATE", regex: /\b(?:0?[1-9]|1[0-2])\/\d{4}\b/g },
+    // m/yy, mm/yy: 6/26, 06/26
+    { label: "DATE", regex: /\b(?:0?[1-9]|1[0-2])\/\d{2}\b/g, skip: isLikelyDateFalsePositive },
+    // Month DD, YYYY or Month DD: June 17, 2026 / June 17 / Jun 17 / June 1st
+    { label: "DATE", regex: /\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2}(?:st|nd|rd|th)?(?:,?\s+\d{4})?\b/gi },
+    // Month YYYY / Month 'YY: June 2026, June '26
+    { label: "DATE", regex: /\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+['\u2019]?\d{2,4}\b/gi },
+    // Ordinal + Month: 1st of June, the 3rd of July, 17th of March
+    { label: "DATE", regex: /\b(?:the\s+)?\d{1,2}(?:st|nd|rd|th)\s+of\s+(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)(?:,?\s+\d{4})?\b/gi },
+    // Fiscal quarter: Q1 2026, Q2/2026, 2nd Quarter 2026
+    { label: "DATE", regex: /\bQ[1-4][/\s]?\d{2,4}\b/g },
+    { label: "DATE", regex: /\b(?:1st|2nd|3rd|4th)\s+[Qq]uarter\s+\d{2,4}\b/g },
+    // "last week", "next month", "previous quarter", "past year"
+    { label: "DATE", regex: /\b(?:last|next|this|previous|prior|past|upcoming|following)\s+(?:week|month|quarter|year|semester|trimester|decade|century)\b/gi },
+    // "X days/weeks/months/years ago", "in X days/weeks/months/years"
+    { label: "DATE", regex: /\b(?:in\s+)?(?:\d+|a|one|two|three|four|five|six|seven|eight|nine|ten|several|few)\s+(?:day|week|month|year|hour)s?\s+(?:ago|from now|later|earlier|before|after|hence|henceforth)\b/gi },
+    // "earlier today", "later today", "this morning", "yesterday", "tomorrow"
+    { label: "DATE", regex: /\b(?:yesterday|today|tomorrow|tonight|this\s+(?:morning|afternoon|evening|am|pm))\b/gi },
     { label: "ADDRESS", regex: /\b\d{1,6}[ \t]+[A-Z0-9][A-Za-z0-9.'-]*(?:[ \t]+[A-Za-z0-9.'-]+){0,5}[ \t]+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl|Circle|Cir|Terrace|Ter|Parkway|Pkwy)\b(?:,?[ \t]+[A-Za-z .-]+)?(?:,?[ \t]+[A-Z]{2})?(?:[ \t]+\d{5}(?:-\d{4})?)?/gi, skip: isLikelyAddressFalsePositive },
     { label: "ROOM", regex: /\b(?:Room|Rm|Bed|ICU room|ED room)\b(?!\s*[:#])\s+[A-Z0-9-]*\d[A-Z0-9-]*\b/gi },
     { label: "LOCATION", regex: /\b[A-Z]{2}\s+\d{5}(?:-\d{4})?\b/g },
