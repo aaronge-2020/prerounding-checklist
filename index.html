@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-model-path="./models/">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,7 +9,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon.png">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-src 'none'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://cdn.jsdelivr.net blob:; worker-src 'self' blob:; connect-src 'self' https://*.supabase.co http://127.0.0.1:* http://localhost:* https://cdn.jsdelivr.net https://huggingface.co https://*.huggingface.co https://*.hf.co https://cdn-lfs.huggingface.co; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-src 'none'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://cdn.jsdelivr.net blob:; worker-src 'self' blob:; connect-src 'self' https://*.supabase.co http://127.0.0.1:* http://localhost:* https://cdn.jsdelivr.net https://huggingface.co https://*.huggingface.co https://*.hf.co https://cdn-lfs.huggingface.co https://cas-bridge.xethub.hf.co https://*.xethub.hf.co https://huggingface.co/* https://cdn-lfs.hf.co; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:">
   <title>Pre-Rounding Checklist Builder</title>
   <style>
     :root {
@@ -16687,26 +16687,66 @@
           elements.deidModelDescription.textContent = "Structured-only local de-ID. Raw draft text is not persisted. This reduces PHI risk but does not legally certify HIPAA de-identification.";
         }
       };
+      let loadedModel = null;
+      let lastError = null;
       try {
         setLoading("De-ID model loading...");
-        const { pipeline } = await import("https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.2.0");
-        _deidModelInstance = createDeidentifier({
-          pipelineFactory: pipeline,
-          mode: "hybrid",
-          device: "webgpu",
-          onModelStatus: (update) => {
-            if (!update.ready && update.message) {
-              setLoading(update.message);
-            }
+        const transformers = await import("https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.2.0");
+        transformers.env.useBrowserCache = true;
+        const { pipeline } = transformers;
+
+        const localPath = document.documentElement.dataset.modelPath;
+
+        if (localPath) {
+          setLoading("De-ID model loading (local)...");
+          transformers.env.allowLocalModels = true;
+          transformers.env.allowRemoteModels = false;
+          transformers.env.localModelPath = localPath.replace(/\/$/, "") + "/";
+          try {
+            _deidModelInstance = createDeidentifier({
+              pipelineFactory: pipeline,
+              mode: "hybrid",
+              device: "webgpu",
+              onModelStatus: (update) => {
+                if (!update.ready && update.message) setLoading(update.message);
+              }
+            });
+            loadedModel = await _deidModelInstance.loadModel();
+          } catch (localError) {
+            lastError = localError;
+            console.warn("Local model load failed, trying CDN...", localError.message);
           }
-        });
-        const loadedModel = await _deidModelInstance.loadModel();
+        }
+
+        if (!loadedModel) {
+          setLoading("De-ID model loading (CDN)...");
+          transformers.env.allowLocalModels = false;
+          transformers.env.allowRemoteModels = true;
+          _deidModelInstance = createDeidentifier({
+            pipelineFactory: pipeline,
+            mode: "hybrid",
+            device: "webgpu",
+            onModelStatus: (update) => {
+              if (!update.ready && update.message) setLoading(update.message);
+            }
+          });
+          loadedModel = await _deidModelInstance.loadModel();
+        }
         _deidModelReady = true;
         _deidModelLoading = false;
         setReady(loadedModel?.modelId || "ready");
         return _deidModelInstance;
       } catch (error) {
-        console.warn("PII model unavailable; structured redaction only.", error);
+        const err = error || lastError;
+        const message = String(err?.message || err || "");
+        if (/cors|network|fetch|blocked by|failed to fetch/i.test(message)) {
+          console.warn("PII model blocked by CORS or network policy. Using structured-only de-ID.", message);
+          if (elements.deidContextModelStatus) {
+            elements.deidContextModelStatus.textContent = "Network blocked";
+          }
+        } else {
+          console.warn("PII model unavailable; structured redaction only.", err);
+        }
         _deidModelLoading = false;
         setError();
         return null;
