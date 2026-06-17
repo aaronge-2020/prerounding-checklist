@@ -1703,6 +1703,10 @@ export function filterLikelyFalsePositiveEntities(rawText, entities) {
 
     if (nameEntityLabels.has(entity.label) && /model/.test(entity.source || "")) {
       const span = rawText.slice(entity.start, entity.end).replace(/\s+/g, " ").trim();
+      // Single letters and very short tokens cannot be real person names.
+      if (span.length <= 2 || /^[a-z]$/i.test(span)) {
+        return false;
+      }
       if (!parsePersonName(span) && !hasStrongNameContext(rawText, entity.start, entity.end)) {
         // If it doesn't parse as a person name but looks like a facility, relabel it
         if (isLikelyFacilityPhrase(normalizePhrase(span))) {
