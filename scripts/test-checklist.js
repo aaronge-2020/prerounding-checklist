@@ -915,7 +915,7 @@ assert.ok(appHtml.includes("reviewedSourceContextText"), "OpenEvidence and phone
 const sampleContextToken = "SAMPLE" + "_CONTEXT";
 assert.ok(!appHtml.includes(`state.scrubbedText || ${sampleContextToken}`), "patient evidence handoffs should not fall back directly to the DKA sample context");
 assert.ok(appHtml.includes("Validated intent"), "workflow should explicitly show the selected validated diagnosis/workup");
-assert.ok(appHtml.includes('id="buildChecklistButton"'), "workflow should expose local guideline/workup generation before checklist build");
+assert.ok(appHtml.includes('id="patientBuildChecklistButton"'), "workflow should expose local guideline/workup generation before checklist build");
 assert.ok(!appHtml.includes('id="workupRows"'), "workflow should not show the removed full-workup row drilldown");
 assert.ok(appHtml.includes("decision-tree-node"), "workflow should render the decision pathway as visible tree nodes");
 assert.ok(appHtml.includes("resolveUiComplaintModule"), "UI workup generation should resolve an explicit local module before checklist build");

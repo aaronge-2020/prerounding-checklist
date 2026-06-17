@@ -41,7 +41,9 @@ const baseContext = {
   complaintCdsReport: "Hyperglycemia / possible DKA or HHS v1.1.0\nPotassium rule present.",
   evidenceSummary: "- Respiratory pattern: Kussmaul / normal / distressed",
   checklistPatientSummary: [
-    "This is a compact de-identified checklist-review context. Raw source note text and the full HPI are intentionally excluded.",
+    "De-identified patient context for checklist tailoring.",
+    "Adult with diabetic ketoacidosis, potassium 3.4, insulin infusion, and discharge supply barrier.",
+    "Labs/medications: potassium 3.4, insulin infusion",
     "Selected local workup: Hyperglycemia / possible DKA or HHS",
     "Setting: Endocrinology consult / General medicine",
     "Modifier text, sanitized: discharge supply barrier"
@@ -97,7 +99,11 @@ openEvidenceTasks.forEach((task) => {
   assert.ok(task.requiredContext, `${task.id} should declare required context`);
   assert.ok(task.outputKind, `${task.id} should declare output kind`);
   const built = buildOpenEvidencePrompt(task.id, baseContext);
-  const maxPromptLength = task.id === "decision_tree_builder" ? 9000 : 5200;
+  const maxPromptLength = task.id === "decision_tree_builder"
+    ? 9000
+    : task.id === "checklist_improvement_review"
+      ? 7000
+      : 5200;
   assert.ok(built.prompt.length < maxPromptLength, `${task.id} base prompt should stay compact enough to review; saw ${built.prompt.length} chars`);
   if (task.id !== "decision_tree_builder") {
     assert.ok(built.prompt.includes("<task_boundary>"), `${task.id} prompt should define a unique task boundary`);
@@ -280,16 +286,34 @@ const checklistImprovementPrompt = buildOpenEvidencePrompt("checklist_improvemen
   ...baseContext,
   sourceContext: "Raw HPI from John Smith with room 123 should never be included in this prompt."
 });
+const examOnlyChecklistPrompt = buildOpenEvidencePrompt("checklist_improvement_review", {
+  ...baseContext,
+  checklistSectionKey: "physical_exam",
+  currentChecklist: "Checklist scope: physical_exam\n<target_section_rows>\n- exam_row_1 | physical_exam | requiredExam | Vitals | Mental status | unanswered\n</target_section_rows>"
+});
+const allSectionsChecklistPrompt = buildOpenEvidencePrompt("checklist_improvement_review", {
+  ...baseContext,
+  checklistSectionKey: "all_sections",
+  currentChecklist: "Checklist scope: physical_exam and history_questions\n<physical_exam_rows>\n- exam_row_1\n</physical_exam_rows>\n<history_questions_rows>\n- history_row_1\n</history_questions_rows>"
+});
 assert.equal(checklistImprovementPrompt.requiredContext, "checklist_refinement", "checklist improvement should require the local checklist plus compact context");
 assert.equal(checklistImprovementPrompt.outputKind, "checklist_improvement_review", "checklist improvement should remain the structured checklist refinement task");
 assert.ok(checklistImprovementPrompt.prompt.includes("<current_checklist>"), "checklist improvement prompt should include the current checklist");
-assert.ok(checklistImprovementPrompt.prompt.includes("<deidentified_patient_context>"), "checklist improvement prompt should include compact de-identified context");
-assert.ok(!checklistImprovementPrompt.prompt.includes("<source_context>"), "checklist improvement prompt must not include the full source context");
+assert.ok(checklistImprovementPrompt.prompt.includes("<deidentified_patient_context>"), "checklist improvement prompt should include de-identified patient context");
+assert.ok(checklistImprovementPrompt.prompt.includes("<objective_data>"), "checklist improvement prompt should include structured objective data");
+assert.ok(checklistImprovementPrompt.prompt.includes("<new_bedside_findings>"), "checklist improvement prompt should include bedside findings");
+assert.ok(!checklistImprovementPrompt.prompt.includes("<source_context>"), "checklist improvement prompt must not include the raw source context block");
 assert.ok(!checklistImprovementPrompt.prompt.includes("<local_guideline_pathway>"), "checklist improvement prompt must not include local guideline dumps");
 assert.ok(!checklistImprovementPrompt.prompt.includes("<evidence_retrieval_summary>"), "checklist improvement prompt must not include evidence retrieval summaries");
 assert.ok(!checklistImprovementPrompt.prompt.includes("John Smith"), "checklist improvement prompt must not leak raw source text");
-assert.ok(checklistImprovementPrompt.prompt.includes("full HPI are intentionally excluded"), "checklist improvement prompt should state the HPI boundary");
+assert.ok(checklistImprovementPrompt.prompt.includes("de-identified patient context"), "checklist improvement prompt should include full de-identified context guidance");
+assert.ok(!checklistImprovementPrompt.prompt.includes("full HPI are intentionally excluded"), "checklist improvement prompt should not withhold patient context");
 assert.ok(checklistImprovementPrompt.prompt.includes("workup_section_patch_v1"), "checklist improvement prompt should request structured patch JSON");
+assert.ok(examOnlyChecklistPrompt.prompt.includes("Set sectionKey to physical_exam"), "single-section checklist prompt should scope edits to the selected section");
+assert.ok(examOnlyChecklistPrompt.prompt.includes("<target_section_rows>"), "single-section checklist prompt should include only the focused section rows");
+assert.ok(!examOnlyChecklistPrompt.prompt.includes("BEDSIDE QUESTION CHECKLIST"), "single-section checklist prompt should not include the full rendered checklist text");
+assert.ok(allSectionsChecklistPrompt.prompt.includes("Return one fenced JSON block per section"), "all-sections checklist prompt should allow one patch block per section");
+assert.ok(allSectionsChecklistPrompt.prompt.includes("<physical_exam_rows>"), "all-sections checklist prompt should include both section row blocks");
 assert.ok(!checklistImprovementPrompt.prompt.includes("\"schema\": \"workup_refinement_v1\""), "checklist improvement prompt should not request the legacy full replacement schema");
 assert.ok(checklistImprovementPrompt.prompt.indexOf("<clinical_question>") < checklistImprovementPrompt.prompt.indexOf("<output_format>"), "checklist improvement prompt should present the clinical question before the JSON schema");
 assert.ok(checklistImprovementPrompt.prompt.includes("Output only one fenced JSON block"), "checklist improvement prompt should be paste-back friendly");

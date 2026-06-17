@@ -37,7 +37,13 @@ const TASK_CONTEXT_LIMIT_OVERRIDES = {
   },
   checklist_improvement_review: {
     currentChecklist: 12000,
-    current_checklist: 12000
+    current_checklist: 12000,
+    checklistPatientSummary: 12000,
+    deidentified_patient_context: 12000,
+    objectiveData: 6000,
+    objective_data: 6000,
+    compiledFindings: 4000,
+    new_bedside_findings: 4000
   },
   final_rounds_update: {
     sourceContext: 5000,
@@ -624,36 +630,64 @@ Do not include low-yield distractions or padding.
 
 function checklistImprovementPrompt(context) {
   const workupId = clean(context.selectedWorkupId) || "selected local workup id if known";
-  return [
-    `<clinical_question>
-Clinical question: For this de-identified patient, what bedside history or physical exam rows should be added, removed, or reworded to improve the selected workup assessment?
+  const sectionKey = clean(context.checklistSectionKey) || "physical_exam";
+  const isAll = sectionKey === "all_sections";
+  const exampleSectionKey = isAll ? "physical_exam" : sectionKey;
+  const sectionLabel = isAll
+    ? "history_questions and physical_exam"
+    : sectionKey === "physical_exam"
+      ? "physical exam"
+      : "history";
+  const clinicalQuestion = isAll
+    ? `<clinical_question>
+Clinical question: For this de-identified patient, what bedside history and physical exam rows should be added, removed, or reworded across both checklist sections?
 Focus on bedside findings, severity signals, safety checks, triggers, and redundant rows. The JSON block is only the paste-back format.
 </clinical_question>
 
 <task_boundary>
 Primary purpose: Useful bedside checklist edits for one patient.
 Do not use this task for: checklist regeneration, default edits, management plans, or chart summaries.
-</task_boundary>`,
+</task_boundary>`
+    : `<clinical_question>
+Clinical question: For this de-identified patient, what bedside ${sectionLabel} rows should be added, removed, or reworded to improve the selected workup assessment?
+Focus on bedside findings, severity signals, safety checks, triggers, and redundant rows. The JSON block is only the paste-back format.
+</clinical_question>
+
+<task_boundary>
+Primary purpose: Useful bedside checklist edits for one patient.
+Do not use this task for: checklist regeneration, default edits, management plans, or chart summaries.
+</task_boundary>`;
+  const outputSectionRules = isAll
+    ? `Return one fenced JSON block per section that needs changes. Each block must set sectionKey to physical_exam or history_questions and use itemIds only from that section in current_checklist.
+If both sections need edits, return two fenced JSON blocks.`
+    : `Set sectionKey to ${sectionKey}. Use itemIds only from the ${sectionKey} rows in current_checklist. Do not modify rows outside this section.`;
+  const outputBlockRule = isAll
+    ? "Output one fenced JSON block per section that needs clinically useful checklist edits."
+    : "Output only one fenced JSON block with the clinically useful checklist edits.";
+  return [
+    clinicalQuestion,
     commonClinicalRules,
     abbreviationRules,
     usefulnessRules,
     context.userContext || "",
     block("deidentified_patient_context", context.checklistPatientSummary),
+    block("objective_data", context.objectiveData),
+    block("new_bedside_findings", context.compiledFindings),
     block("current_checklist", context.currentChecklist),
     block("local_checklist_audit", context.checklistAuditSummary),
     block("clinician_refinement_notes", context.refinementNotes),
     `<privacy_boundary>
-Raw chart text and identifiers were withheld. Use only the compact de-identified context and current checklist.
+Use only the de-identified patient context, objective data, bedside findings, and current checklist provided above. Do not invent identifiers, exact dates, room numbers, or facts not supported by the context.
 </privacy_boundary>
 
 <output_format>
-Output only one fenced JSON block with the clinically useful checklist edits. Do not include prose before or after it. Do not include :contentReference markers or citation prose.
+${outputBlockRule} Do not include prose before or after it. Do not include :contentReference markers or citation prose.
 Fence as \`\`\`json. Use literal underscores, not asterisks or HTML emphasis tags. JSON.parse must pass. "operations", "options", and "normalAnswers" must be bracketed arrays.
 Use this exact top-level schema:
 {
   "schema": "workup_section_patch_v1",
   "workupId": "${workupId}",
-  "sectionKey": "physical_exam",
+  "sectionKey": "${exampleSectionKey}",
   "summary": "Brief reason for the row changes.",
   "operations": [
     {
@@ -674,6 +708,7 @@ Use this exact top-level schema:
   ]
 }
 Allowed sectionKey values: history_questions, physical_exam.
+${outputSectionRules}
 Allowed groupKey values: requiredQuestions or conditionalQuestions for history_questions; requiredExam or conditionalExam for physical_exam.
 Allowed op values: add, update, remove.
 Add: include groupKey and complete item. Use item_type "history_question" or "physical_exam_maneuver".

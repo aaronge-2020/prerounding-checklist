@@ -123,7 +123,7 @@ for (const requiredSnippet of [
   "not HIPAA certification",
   "does not legally certify HIPAA de-identification",
   "not a HIPAA certification service",
-  "No app-server upload by default",
+  "No app-server upload",
   "Raw chart text is not saved to the vault",
   "Patients in the open local vault",
   "Open local patient vault",
@@ -135,15 +135,12 @@ for (const requiredSnippet of [
   "Copy after PHI review",
   "PHI safety check for OpenEvidence prompt",
   "PHI safety check for reviewed redacted text",
-  "Standalone local de-ID",
-  "Use this for quick local redaction only. It does not save text or update the chart context or checklist.",
+  "Use this for quick local redaction only. It does not save text or update the patient context or checklist.",
   "Quick de-ID",
-  "Clinical workup",
-  "OpenEvidence review tasks",
-  "Phone handoff",
+  "Patient workup",
+  "Prompt tasks",
   "Bring phone findings back",
-  "Bedside checklist",
-  "Final update review"
+  "Bedside checklist"
 ]) {
   if (!html.includes(requiredSnippet)) {
     throw new Error(`Expected clinical UI guardrail copy not found: ${requiredSnippet}`);
@@ -164,15 +161,12 @@ for (const requiredId of [
   "lockVaultButton",
   "sidebarAdmitPatientButton",
   "sidebarQuickDeidButton",
-  "runDeidButton",
-  "deidBuildChecklistButton",
-  "workupConcernInput",
-  "workupOrdersPanel",
-  "decisionTreePanel",
+  "workspaceDeidPreviewButton",
+  "patientWorkupConcernInput",
   "patientWorkupOrdersPanel",
   "patientDecisionTreePanel",
-  "buildChecklistButton",
-  "copyWorkupButton",
+  "patientBuildChecklistButton",
+  "patientCopyWorkupButton",
   "sharedPromptWorkbench",
   "patientEvidenceTaskStrip",
   "promptVariableBar",
@@ -219,7 +213,6 @@ for (const requiredId of [
   "useLaptopChecklistButton",
   "checklistSections",
   "reviewFindingsButton",
-  "copyFinalUpdateButton",
   "phiOverlay",
   "quickDeidOverlay"
 ]) {

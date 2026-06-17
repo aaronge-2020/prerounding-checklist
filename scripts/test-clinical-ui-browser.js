@@ -201,17 +201,19 @@ try {
   await createVaultWithSyntheticPatients(page, baseUrl, vaultPassword);
   await page.goto(`${baseUrl}/index.html?codexLiveWorkup=${Date.now()}`);
   await unlockVaultIfNeeded(page, vaultPassword);
-  await page.waitForSelector("#workupView:not([hidden])");
-  await page.waitForSelector("#workupOrdersPanel:not([hidden])");
-  await page.waitForSelector("#decisionTreePanel:not([hidden])");
+  await page.waitForSelector("#workspaceView:not([hidden])");
+  await clickPatientTab(page, "workup");
+  await page.waitForSelector("#patientWorkupPanel:not([hidden])");
+  await page.waitForSelector("#patientWorkupOrdersPanel:not([hidden])");
+  await page.waitForSelector("#patientDecisionTreePanel:not([hidden])");
 
   const liveWorkupAudit = await page.evaluate(() => ({
     rowCount: document.querySelectorAll(".workup-row").length,
     modifierCount: document.querySelectorAll(".modifier-chip").length,
-    ordersText: document.querySelector("#workupOrdersPanel")?.textContent || "",
-    treeText: document.querySelector("#decisionTreePanel")?.textContent || "",
-    activeTreeNodes: document.querySelectorAll("#decisionTreePanel .decision-tree-node[data-state='active']").length,
-    pendingTreeNodes: document.querySelectorAll("#decisionTreePanel .decision-tree-node[data-state='pending']").length
+    ordersText: document.querySelector("#patientWorkupOrdersPanel")?.textContent || "",
+    treeText: document.querySelector("#patientDecisionTreePanel")?.textContent || "",
+    activeTreeNodes: document.querySelectorAll("#patientDecisionTreePanel .decision-tree-node[data-state='active']").length,
+    pendingTreeNodes: document.querySelectorAll("#patientDecisionTreePanel .decision-tree-node[data-state='pending']").length
   }));
   assert(liveWorkupAudit.rowCount === 0, `clinical workup should remove the old full-workup row drilldown: ${JSON.stringify(liveWorkupAudit)}`);
   assert(liveWorkupAudit.modifierCount === 0, `clinical workup should remove clinical modifier chips: ${JSON.stringify(liveWorkupAudit)}`);
@@ -219,8 +221,6 @@ try {
   assert(/Live decision tree/i.test(liveWorkupAudit.treeText) && /Active branch/i.test(liveWorkupAudit.treeText) && /Adult hyperglycemia pathway|DKA\/HHS urgency|adult DKA\/HHS context|hyperglycemic crisis/i.test(liveWorkupAudit.treeText), `workup should render a live decision tree with traversal summary: ${JSON.stringify(liveWorkupAudit)}`);
   assert(liveWorkupAudit.activeTreeNodes >= 1 && liveWorkupAudit.pendingTreeNodes >= 1, `decision tree should expose lit and pending path states: ${JSON.stringify(liveWorkupAudit)}`);
 
-  await page.click("#closeToolsButton");
-  await page.waitForSelector("#workspaceView:not([hidden])");
   await clickPatientTab(page, "context");
   await page.waitForSelector("#patientObjectiveDataPanel:not([hidden])");
   const dkaObjectiveLabels = await page.locator("#patientObjectiveDataPanel .objective-field label").allTextContents();
@@ -635,9 +635,10 @@ try {
   assert(postImportAudit.importing === false && postImportAudit.editorHidden === true && postImportAudit.nodeEditorVisible === false && /Imported DKA pathway root/i.test(postImportAudit.treeText), `applying JSON should return to the live patient pathway without node-editing chrome: ${JSON.stringify(postImportAudit)}`);
   await page.goto(`${baseUrl}/index.html?page=workup&afterObjectiveDataAudit=${Date.now()}`);
   await unlockVaultIfNeeded(page, vaultPassword);
-  await page.waitForSelector("#workupView:not([hidden])");
+  await page.waitForSelector("#workspaceView:not([hidden])");
+  await clickPatientTab(page, "workup");
 
-  await page.click("#standaloneDeidButton");
+  await page.click("#topQuickDeidButton");
   await page.fill("#quickDeidInput", "Jane Doe MRN 123456 was admitted 6/8/2026 for DKA. Phone 555-111-2222.");
   await page.click("#quickDeidRunButton");
   const quickPreview = await page.textContent("#quickDeidPreview");
@@ -647,7 +648,7 @@ try {
   await page.click("#closePhiOverlayButton");
   await page.click("#closeQuickDeidButton");
 
-  await page.click("#buildChecklistButton");
+  await page.click("#patientBuildChecklistButton");
   const checklistRouteHandle = await page.waitForFunction(() => {
     const visible = (selector) => {
       const element = document.querySelector(selector);

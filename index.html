@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -7573,6 +7573,25 @@
       font-weight: 760;
     }
 
+    body[data-view="workspace"][data-patient-tab="evidence"] .checklist-focus-select {
+      display: grid;
+      gap: 4px;
+      margin-top: 8px;
+      color: #526577;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    body[data-view="workspace"][data-patient-tab="evidence"] .checklist-focus-select select {
+      min-width: 180px;
+      border: 1px solid #cfdbe0;
+      border-radius: 6px;
+      background: #ffffff;
+      padding: 6px 10px;
+      color: #1d3147;
+      font-size: 13px;
+    }
+
     body[data-view="workspace"][data-patient-tab="evidence"] .prompt-workbench-toolbar {
       display: none;
     }
@@ -10084,6 +10103,52 @@
 
     .target-inspector-head {
       display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    #patientWorkupPanel[data-workup-selected="true"][data-mobile-workup-layout="false"] .target-inspector-head {
+      display: flex;
+    }
+
+    #patientWorkupPanel[data-orders-collapsed="true"][data-mobile-workup-layout="false"] .target-inspector-rail,
+    #patientWorkupPanel[data-orders-collapsed="true"][data-mobile-workup-layout="false"] .target-workup-body > [data-layout-resize-key="patientWorkupOrders"] {
+      display: none;
+    }
+
+    #patientWorkupPanel[data-orders-collapsed="true"][data-mobile-workup-layout="false"] .target-workup-body {
+      grid-template-columns: minmax(230px, var(--patient-workup-selector-w)) 12px minmax(320px, 1fr);
+    }
+
+    #patientWorkupPanel[data-orders-collapsed="true"][data-mobile-workup-layout="false"] .target-pathway-main {
+      border-right: 0;
+    }
+
+    .target-orders-expand-button {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      min-height: 36px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 750;
+      white-space: nowrap;
+    }
+
+    #patientWorkupPanel[data-orders-collapsed="true"][data-mobile-workup-layout="false"] .target-orders-expand-button {
+      display: inline-flex;
+    }
+
+    @media (max-width: 1360px) and (min-width: 1181px) {
+      .target-workup-body {
+        grid-template-columns: minmax(200px, var(--patient-workup-selector-w)) 8px minmax(240px, 1fr) 8px minmax(250px, var(--patient-workup-orders-w));
+      }
+
+      #patientWorkupPanel[data-orders-collapsed="true"][data-mobile-workup-layout="false"] .target-workup-body {
+        grid-template-columns: minmax(200px, var(--patient-workup-selector-w)) 8px minmax(280px, 1fr);
+      }
     }
 
     @media (max-width: 1500px) {
@@ -13631,7 +13696,7 @@
       }
 
       body[data-view="bedside"] .checklist-row.is-answered .checklist-row-status-marker::after {
-        content: "✓";
+        content: "âœ“";
         color: #ffffff;
         font-size: 15px;
         font-weight: 900;
@@ -13873,7 +13938,7 @@
       }
 
       body[data-view="bedside"] .bedside-completion-check::after {
-        content: "✓";
+        content: "âœ“";
         color: var(--teal-dark);
         font-size: 38px;
         font-weight: 760;
@@ -14703,7 +14768,7 @@
             <div class="rail-head">
               <div>
                 <h1 id="workspaceTitle">Local patient roster</h1>
-                <p class="muted" style="margin: 4px 0 0;">Select a patient, then work admission, continuity, bedside findings, checklist, and handoff.</p>
+                <p class="muted" style="margin: 4px 0 0;">Select a patient, then work through context, workup, checklist, findings, and evidence.</p>
               </div>
               <span class="status-chip" id="patientCountLabel">8 cases</span>
             </div>
@@ -14733,13 +14798,11 @@
             </div>
             <div class="patient-task-strip" role="tablist" aria-label="Selected patient workspace tabs">
               <button type="button" role="tab" data-patient-tab="overview" aria-selected="true" aria-label="Overview"><span class="tab-icon icon-box" data-icon="calendar" aria-hidden="true"></span><span>Summary</span></button>
-              <button type="button" role="tab" data-patient-tab="today" aria-selected="false"><span class="tab-icon icon-box" data-icon="list" aria-hidden="true"></span><span>Today</span></button>
               <button type="button" role="tab" data-patient-tab="context" aria-selected="false"><span class="tab-icon icon-box" data-icon="users" aria-hidden="true"></span><span>Context</span></button>
               <button type="button" role="tab" data-patient-tab="workup" aria-selected="false"><span class="tab-icon icon-box" data-icon="file-text" aria-hidden="true"></span><span>Workup</span></button>
               <button type="button" role="tab" data-patient-tab="checklist" aria-selected="false"><span class="tab-icon icon-box" data-icon="check-square" aria-hidden="true"></span><span>Checklist</span></button>
               <button type="button" role="tab" data-patient-tab="findings" aria-selected="false"><span class="tab-icon icon-box" data-icon="activity" aria-hidden="true"></span><span>Findings</span></button>
               <button type="button" role="tab" data-patient-tab="evidence" aria-selected="false" aria-label="OpenEvidence prompts"><span class="tab-icon icon-box" data-icon="clipboard-check" aria-hidden="true"></span><span>Evidence</span></button>
-              <button type="button" role="tab" data-patient-tab="handoff" aria-selected="false" aria-label="Phone handoff" aria-hidden="true" tabindex="-1" hidden>Phone</button>
             </div>
             <div class="patient-workflow-grid">
               <section class="workflow-panel workflow-panel-wide" id="patientOverviewPanel" data-patient-panel="overview">
@@ -14779,101 +14842,6 @@
                 </div>
               </section>
 
-              <section class="workflow-panel workflow-panel-wide today-cockpit" id="patientTodayPanel" data-patient-panel="today" hidden>
-                <div class="today-cockpit-head">
-                  <div>
-                    <div class="panel-title-row">
-                      <h3>Today's pre-round cockpit</h3>
-                      <span class="meta-tag" id="todayDateLabel">Today</span>
-                    </div>
-                    <p class="muted" id="todayModeHelp" style="margin: 2px 0 0;">Paste today's reviewed chart details, save the local update, then build the bedside checklist and rounds prompt.</p>
-                  </div>
-                  <div class="today-mode-toggle" aria-label="Today's workflow mode">
-                    <button type="button" data-today-mode="new" aria-pressed="true">New patient</button>
-                    <button type="button" data-today-mode="returning" aria-pressed="false">24h update</button>
-                  </div>
-                </div>
-
-                <div class="today-status-grid" id="todayStatusGrid" aria-label="Pre-round readiness">
-                  <div class="today-status-card"><span>Baseline</span><strong id="todayBaselineStatus">Not saved</strong></div>
-                  <div class="today-status-card"><span>Today</span><strong id="todayInputStatus">No update</strong></div>
-                  <div class="today-status-card"><span>Workup</span><strong id="todayWorkupStatus">Not selected</strong></div>
-                  <div class="today-status-card"><span>Bedside</span><strong id="todayChecklistStatus">Not built</strong></div>
-                  <div class="today-status-card"><span>Prompt</span><strong id="todayPromptStatus">Not ready</strong></div>
-                </div>
-
-                <div class="today-paste-grid">
-                  <div>
-                    <label for="todaySmartPasteInput">Smart paste</label>
-                    <textarea id="todaySmartPasteInput" maxlength="16000" aria-describedby="localTextEntryHelp" placeholder="Optional: paste one block with headings like Today note:, Labs:, Updated MAR:, Overnight events:, Subjective change:."></textarea>
-                    <div class="button-row">
-                      <button class="btn btn-secondary" id="todaySortPasteButton" type="button">Sort paste into fields</button>
-                      <button class="btn btn-secondary" id="todayClearPasteButton" type="button">Clear paste</button>
-                    </div>
-                  </div>
-                  <div>
-                    <label for="todayRoundsPromptPreview">Rounds SOAP prompt preview</label>
-                    <textarea id="todayRoundsPromptPreview" spellcheck="false" readonly aria-label="De-identified oral rounds SOAP prompt preview"></textarea>
-                    <div class="button-row today-prompt-actions">
-                      <button class="btn btn-primary" id="todayCopyRoundsPromptButton" type="button">Copy rounds prompt</button>
-                      <button class="btn btn-secondary" id="todayOpenEvidenceButton" type="button">Open OpenEvidence</button>
-                    </div>
-                    <label for="todayOpenEvidencePasteInput">OpenEvidence returned presentation</label>
-                    <textarea id="todayOpenEvidencePasteInput" maxlength="30000" aria-describedby="localTextEntryHelp" placeholder="Paste the full OpenEvidence result. The app will look for APP_PASTE_BACK_JSON with schema open_evidence_rounds_pasteback_v1."></textarea>
-                    <div class="button-row">
-                      <button class="btn btn-secondary" id="todayApplyOpenEvidenceButton" type="button">Record returned summary</button>
-                      <span class="meta-tag" id="todayPasteBackStatus">No returned summary</span>
-                    </div>
-                    <div class="evidence-change-preview" id="todayRoundsPasteBackPreview" data-status="empty" aria-live="polite">No concise rounds report saved yet.</div>
-                  </div>
-                </div>
-
-                <div class="today-baseline-grid">
-                  <div>
-                    <label for="todayBaselineSummaryInput">Stable baseline summary</label>
-                    <textarea id="todayBaselineSummaryInput" maxlength="4000" aria-describedby="localTextEntryHelp" placeholder="One-liner, hospital course, stable background to carry forward."></textarea>
-                  </div>
-                  <div>
-                    <label for="todayActiveProblemsInput">Active problems and selected workups</label>
-                    <textarea id="todayActiveProblemsInput" maxlength="4000" aria-describedby="localTextEntryHelp" placeholder="Problem list, selected workup, current major management questions."></textarea>
-                  </div>
-                  <div>
-                    <label for="todayYesterdayPlanInput">Yesterday plan</label>
-                    <textarea id="todayYesterdayPlanInput" maxlength="4000" aria-describedby="localTextEntryHelp" placeholder="Plans or contingencies you want today's update to carry forward."></textarea>
-                  </div>
-                  <div>
-                    <label for="todayPendingItemsInput">Pending items</label>
-                    <textarea id="todayPendingItemsInput" maxlength="4000" aria-describedby="localTextEntryHelp" placeholder="Pending labs, imaging, consult questions, discharge barriers, or watch items."></textarea>
-                  </div>
-                </div>
-
-                <div class="today-input-grid">
-                  <div>
-                    <label for="todayNoteInput">Recent note or SOAP update</label>
-                    <textarea id="todayNoteInput" maxlength="8000" aria-describedby="localTextEntryHelp"></textarea>
-                  </div>
-                  <div>
-                    <label for="todayLabsInput">Most recent labs/results</label>
-                    <textarea id="todayLabsInput" maxlength="8000" aria-describedby="localTextEntryHelp"></textarea>
-                  </div>
-                  <div>
-                    <label for="todayMarInput">MAR / meds in last 24 hours</label>
-                    <textarea id="todayMarInput" maxlength="8000" aria-describedby="localTextEntryHelp"></textarea>
-                  </div>
-                  <div>
-                    <label for="todayOvernightInput">Overnight events and subjective changes</label>
-                    <textarea id="todayOvernightInput" maxlength="8000" aria-describedby="localTextEntryHelp"></textarea>
-                  </div>
-                </div>
-
-                <div class="button-row">
-                  <button class="btn btn-primary" id="saveTodayUpdateButton" type="button">Save today's update</button>
-                  <button class="btn btn-secondary" id="todayBuildChecklistButton" type="button">Build bedside checklist</button>
-                  <button class="btn btn-secondary" id="todayAnswerChecklistButton" type="button">Answer checklist</button>
-                  <button class="btn btn-secondary" id="todayOpenPromptWorkbenchButton" type="button">Open prompt workbench</button>
-                </div>
-                <ul class="today-review-list" id="todayUpdateReviewList" aria-live="polite"></ul>
-              </section>
 
               <section class="workflow-panel" id="patientAdmissionPanel" data-patient-panel="context" hidden>
                 <div class="panel-title-row">
@@ -14882,12 +14850,20 @@
                 </div>
                 <label for="workspaceAdmissionInput">Admission or current chart context</label>
                 <textarea id="workspaceAdmissionInput" maxlength="8000" aria-describedby="localTextEntryHelp"></textarea>
+                <p class="muted">Raw chart text is not saved to the vault.</p>
                 <label for="workspaceLabsMedsInput">Labs, medications, and safety context</label>
                 <textarea id="workspaceLabsMedsInput" maxlength="8000" aria-describedby="localTextEntryHelp"></textarea>
                 <div class="button-row">
                   <button class="btn btn-secondary" id="savePatientContextButton" type="button">Save patient context</button>
                   <button class="btn btn-secondary" id="workspaceDeidPreviewButton" type="button">Run local de-ID</button>
                 </div>
+                <details class="deid-review-panel" id="workspaceDeidReviewPanel">
+                  <summary>Review local de-ID preview</summary>
+                  <p class="muted">Structured-only local de-ID. Raw draft text is not persisted. This reduces PHI risk but does not legally certify HIPAA de-identification.</p>
+                  <span class="status-chip" id="deidModelStatus">Waiting</span>
+                  <pre id="deidPreview" aria-label="Reviewed redacted context preview">Run local de-ID to create a reviewed redacted preview.</pre>
+                  <div class="deid-counts" id="deidCounts"></div>
+                </details>
               </section>
 
               <section class="workflow-panel" id="patientContinuityPanel" data-patient-panel="context" hidden>
@@ -15148,7 +15124,12 @@
                         <h4>Decision pathway</h4>
                         <p>Live pathway that updates from this patient's recorded results and checklist findings.</p>
                       </div>
-                      <div class="target-pathway-actions"></div>
+                      <div class="target-pathway-actions">
+                        <button class="btn btn-secondary target-orders-expand-button" id="expandPatientWorkupOrdersButton" type="button" hidden>
+                          <span class="icon-box" data-icon="chevron-left" aria-hidden="true"></span>
+                          Orders &amp; Results
+                        </button>
+                      </div>
                     </div>
                     <div class="target-pathway-toolbar">
                       <div class="target-search-box">
@@ -15189,7 +15170,7 @@
                   <aside class="target-inspector-rail">
                     <div class="target-inspector-head">
                       <strong>Orders &amp; Results</strong>
-                      <button class="target-icon-button" type="button" data-workup-pane-target="pathway" aria-label="Collapse orders and results"><span class="icon-box" data-icon="chevron-right" aria-hidden="true"></span></button>
+                      <button class="target-icon-button" id="collapsePatientWorkupOrdersButton" type="button" aria-label="Collapse orders and results" aria-expanded="true"><span class="icon-box" data-icon="chevron-right" aria-hidden="true"></span></button>
                     </div>
                     <section class="workup-orders-panel" id="patientWorkupOrdersPanel" aria-label="Patient workup orders and results"></section>
                     <div class="notice success" id="patientWorkupBuildStatus">Workup assembled from local medical knowledge base.</div>
@@ -15218,6 +15199,18 @@
                     <h3>Workup summary</h3>
                     <ul class="compact-list" id="patientWorkupSummaryList"></ul>
                   </div>
+                </div>
+                <div hidden aria-hidden="true">
+                  <select id="clinicalSettingSelect" aria-describedby="clinicalContextHelp" tabindex="-1">
+                    <option>Inpatient - General Medicine</option>
+                    <option>Emergency department</option>
+                    <option>Clinic</option>
+                  </select>
+                  <select id="populationSelect" aria-describedby="clinicalContextHelp" tabindex="-1">
+                    <option>Adult (&gt;=18 years)</option>
+                    <option>Pediatric workups unavailable</option>
+                  </select>
+                  <div id="clinicalContextHelp"></div>
                 </div>
               </section>
 
@@ -15314,6 +15307,7 @@
                             <select id="patientChecklistPatchSectionSelect">
                               <option value="physical_exam" selected>Physical exam</option>
                               <option value="history_questions">History questions</option>
+                              <option value="all_sections">Both sections</option>
                             </select>
                           </label>
                           <div class="button-row">
@@ -15376,6 +15370,14 @@
                         <label for="patientEvidencePromptPreview">Selected prompt</label>
                         <strong id="patientSelectedTaskTitle">Checklist improvement review</strong>
                         <span id="patientSelectedTaskCopy">Pressure-test and update local checklist rows.</span>
+                        <label id="patientEvidenceChecklistSectionField" for="patientEvidenceChecklistSectionSelect" class="checklist-focus-select" hidden>
+                          Checklist focus
+                          <select id="patientEvidenceChecklistSectionSelect" aria-label="Checklist section focus for improvement review">
+                            <option value="physical_exam">Physical exam</option>
+                            <option value="history_questions">History questions</option>
+                            <option value="all_sections">Both sections</option>
+                          </select>
+                        </label>
                       </div>
                       <div class="button-row prompt-template-actions">
                         <button class="btn btn-secondary" id="savePromptTemplateButton" type="button"><span class="icon-box" data-icon="edit" aria-hidden="true"></span>Edit template</button>
@@ -15428,248 +15430,8 @@
                   </aside>
                 </div>
               </section>
-
-              <section class="workflow-panel workflow-panel-wide" id="patientPhonePanel" data-patient-panel="handoff" hidden>
-                <div class="panel-title-row">
-                  <h3>Phone bedside handoff</h3>
-                  <span class="meta-tag">Local bundle</span>
-                </div>
-                <p class="muted">Use the phone only for bedside checklist answers and focused notes. Prep, review, and final synthesis stay on desktop.</p>
-                <div class="button-row">
-                  <button class="btn btn-secondary" id="workspaceFinalReviewButton" type="button">Open OpenEvidence prompts</button>
-                  <button class="btn btn-primary" id="workspaceHandoffButton" type="button">Open phone handoff</button>
-                </div>
-              </section>
             </div>
           </section>
-        </div>
-      </section>
-
-      <section class="view" id="intakeView" hidden aria-labelledby="intakeTitle">
-        <div class="page-head">
-          <div>
-            <h1 id="intakeTitle">Chart intake</h1>
-            <p class="lede">Paste reviewed chart context, de-identify locally, then build the bedside checklist and OpenEvidence tasks from reviewed text.</p>
-            <p class="lede">Raw chart text is not saved to the vault.</p>
-          </div>
-          <div class="button-row">
-            <button class="btn btn-secondary" id="intakeQuickDeidButton" type="button">Standalone de-ID</button>
-            <button class="btn btn-primary" id="intakeWorkupButton" type="button">Clinical workup</button>
-          </div>
-        </div>
-        <div class="intake-grid">
-          <div class="review-panel">
-            <header>
-              <div>
-                <h2>Add chart context</h2>
-                <p class="muted">Use institutionally appropriate text. Raw chart text is not saved to the vault.</p>
-              </div>
-              <span class="status-chip is-success">Local-only input</span>
-            </header>
-            <div class="review-body">
-              <div class="source-toggle" role="group" aria-label="Chart source type">
-                <button type="button" data-source-mode="admission" aria-pressed="true">New admission</button>
-                <button type="button" data-source-mode="continuity" aria-pressed="false">Continuity update</button>
-                <button type="button" data-source-mode="prior" aria-pressed="false">Prior note</button>
-              </div>
-              <div class="form-grid">
-                <div>
-                  <label for="chartInput">Primary chart note</label>
-                  <textarea id="chartInput" spellcheck="true" maxlength="8000" aria-describedby="localTextEntryHelp" placeholder="Paste reviewed admission or progress-note context."></textarea>
-                </div>
-                <div>
-                  <label for="labsInput">Labs and vitals</label>
-                  <textarea id="labsInput" spellcheck="true" maxlength="8000" aria-describedby="localTextEntryHelp" placeholder="Paste reviewed labs, vitals, and trends."></textarea>
-                </div>
-                <div>
-                  <label for="medsInput">Medications and safety context</label>
-                  <textarea id="medsInput" spellcheck="true" maxlength="8000" aria-describedby="localTextEntryHelp" placeholder="Paste reviewed medication and safety context."></textarea>
-                </div>
-                <div>
-                  <label for="handoffInput">Overnight handoff or continuity note</label>
-                  <textarea id="handoffInput" spellcheck="true" maxlength="8000" aria-describedby="localTextEntryHelp" placeholder="Paste reviewed overnight handoff or continuity context."></textarea>
-                </div>
-              </div>
-              <div class="button-row" style="margin-top: 14px;">
-                <button class="btn btn-primary" id="runDeidButton" type="button">Run local de-ID</button>
-                <button class="btn btn-secondary" id="clearIntakeButton" type="button">Clear draft inputs</button>
-              </div>
-            </div>
-          </div>
-          <aside class="side-stack">
-            <div class="panel">
-              <h2>Source quality</h2>
-              <div class="status-grid">
-                <span class="status-chip is-success">Chart note ready</span>
-                <span class="status-chip is-success">Labs included</span>
-                <span class="status-chip is-warning">Verify no PHI before copy</span>
-              </div>
-            </div>
-            <div class="panel">
-              <h2>Next steps</h2>
-              <ol class="compact-list">
-                <li>Run local structured de-ID.</li>
-                <li>Review the redacted preview.</li>
-                <li>Build clinical workup and bedside checklist.</li>
-              </ol>
-            </div>
-          </aside>
-        </div>
-      </section>
-
-      <section class="view" id="deidView" hidden aria-labelledby="deidTitle">
-        <div class="page-head">
-          <div>
-            <h1 id="deidTitle">De-ID review</h1>
-            <p class="lede">Review local redaction before prompts, transfer, or saved summaries. This reduces PHI risk but does not legally certify HIPAA de-identification.</p>
-          </div>
-          <div class="button-row">
-            <button class="btn btn-secondary" id="backToIntakeButton" type="button">Return to chart intake</button>
-            <button class="btn btn-primary" id="deidBuildChecklistButton" type="button">Build checklist</button>
-          </div>
-        </div>
-        <div class="grid-2">
-          <div class="review-panel">
-            <header>
-              <div>
-                <h2>Reviewed redacted context</h2>
-                <p class="muted">Structured-only local de-ID; raw draft text is not persisted.</p>
-              </div>
-              <span class="status-chip" id="deidModelStatus">Waiting</span>
-            </header>
-            <div class="review-body">
-              <pre id="deidPreview" aria-label="Reviewed redacted context preview">Run local de-ID to create a reviewed redacted preview.</pre>
-              <div class="deid-counts" id="deidCounts"></div>
-            </div>
-          </div>
-          <aside class="side-stack">
-            <div class="panel">
-              <h2>PHI review checklist</h2>
-              <ul class="compact-list">
-                <li>Look for names, MRNs, dates, phone numbers, emails, room numbers, and unique identifiers.</li>
-                <li>Copy or export only content your team has reviewed for identifiers.</li>
-                <li>Copy or export only after checking the preview for PHI.</li>
-              </ul>
-            </div>
-            <div class="panel">
-              <h2>Clinical path</h2>
-              <div class="button-row">
-                <button class="btn btn-secondary" id="deidOpenEvidenceButton" type="button">OpenEvidence tasks</button>
-                <button class="btn btn-secondary" id="deidPhoneHandoffButton" type="button">Phone handoff</button>
-              </div>
-            </div>
-          </aside>
-        </div>
-      </section>
-
-      <section class="view" id="workupView" hidden aria-labelledby="clinicalToolsTitle">
-        <div class="clinical-panel" aria-labelledby="clinicalToolsTitle">
-          <div class="clinical-header">
-            <div>
-              <h1 id="clinicalToolsTitle"><span class="icon-box" data-icon="stethoscope"></span>Clinical tools</h1>
-              <p class="muted" style="margin: 4px 0 0;">Local workup, de-ID, and prompt preparation. No app-server upload by default.</p>
-            </div>
-            <button class="btn btn-secondary" id="closeToolsButton" type="button">Close clinical tools</button>
-          </div>
-
-          <div class="module-row">
-            <div class="module-title"><span class="icon-box" data-icon="user"></span>Prompt personalization</div>
-            <div class="module-copy">Set your service, role, priorities, and focus for OpenEvidence prompts.</div>
-            <button class="btn btn-secondary" id="configurePromptButton" type="button">Configure prompts</button>
-          </div>
-          <div class="module-row">
-            <div class="module-title"><span class="icon-box" data-icon="shield"></span>Standalone local de-ID</div>
-            <div class="module-copy">Paste or type chart context to de-identify before using tools.</div>
-            <button class="btn btn-secondary" id="standaloneDeidButton" type="button">Open de-ID</button>
-          </div>
-          <div class="module-row is-open">
-            <div class="module-title"><span class="icon-box" data-icon="stethoscope"></span>Clinical workup</div>
-            <div class="module-copy">Build an evidence-aligned bedside checklist from a validated concern or diagnosis.</div>
-            <span class="chevron" aria-hidden="true">^</span>
-          </div>
-
-          <div class="workup-grid">
-            <div class="workup-column">
-              <span class="step-label">1. Search concern or diagnosis</span>
-              <label for="workupConcernInput">Validated intents only</label>
-              <div class="input-shell">
-                <span class="icon-box" data-icon="search" aria-hidden="true"></span>
-                <input id="workupConcernInput" value="" autocomplete="off" maxlength="160">
-                <button class="clear-button" id="clearConcernButton" type="button" aria-label="Clear concern">x</button>
-              </div>
-              <div class="intent-card">
-                <div class="pill-line">
-                  <span class="status-chip is-success">Validated intent</span>
-                  <span class="status-chip is-success">High priority</span>
-                </div>
-                <strong id="validatedIntentLabel">No workup selected</strong>
-              </div>
-
-              <div class="notice">Select one validated workup. Patient-specific labs, exam findings, and checklist answers drive the live decision pathway.</div>
-            </div>
-
-            <div class="workup-column">
-              <div class="workup-summary-head">
-                <div>
-                  <span class="step-label" style="margin-bottom: 4px;">Validated workup: <span id="workupIntentTitle">No workup selected</span></span>
-                  <div class="muted">Objective data and bedside findings drive the live pathway: <span id="selectedModifierSummary">No results documented</span></div>
-                </div>
-                <span class="status-chip is-success">Knowledge v1.0</span>
-              </div>
-              <div class="meta-tag" id="clinicalWorkupHistoryCountLabel">History source questions: 0</div>
-              <div id="clinicalIntentResults" class="complaint-cds-results" hidden></div>
-              <div id="clinicalIntentSelection" class="complaint-cds-summary" hidden></div>
-              <div id="localWorkupSelection" class="complaint-cds-summary" hidden></div>
-              <div id="localWorkupResults" class="complaint-cds-results" hidden></div>
-              <div class="workup-live-layout">
-                <section class="workup-orders-panel" id="workupOrdersPanel" aria-label="Workup orders and results"></section>
-                <section class="workup-tree-panel" id="decisionTreePanel" aria-label="Live workup decision tree"></section>
-              </div>
-              <div class="notice success" id="workupBuildStatus">Workup assembled from local medical knowledge base.</div>
-            </div>
-
-            <div class="workup-column context-column">
-              <span class="step-label">4. Clinical context</span>
-              <label for="clinicalSettingSelect">Clinical setting</label>
-              <select id="clinicalSettingSelect" aria-describedby="clinicalContextHelp">
-                <option>Inpatient - General Medicine</option>
-                <option>Emergency department</option>
-                <option>Clinic</option>
-              </select>
-              <label for="populationSelect" style="margin-top: 12px;">Population</label>
-              <select id="populationSelect" aria-describedby="clinicalContextHelp">
-                <option>Adult (&gt;=18 years)</option>
-                <option>Pediatric workups unavailable</option>
-              </select>
-              <div class="notice success" id="clinicalContextHelp">Pediatric workups are not available in this build. Use adult tools and clinical judgment.</div>
-              <div class="summary-box" style="margin-top: 14px;">
-                <h3>Workup summary</h3>
-                <ul class="compact-list" id="workupSummaryList"></ul>
-              </div>
-            </div>
-          </div>
-
-          <div class="clinical-action-rail">
-            <button class="btn btn-secondary" id="copyWorkupButton" type="button">Copy workup</button>
-            <button class="btn btn-primary" id="buildChecklistButton" type="button">Build clinical workup</button>
-          </div>
-        </div>
-
-        <div class="grid-3" style="margin-top: 14px;">
-          <div class="panel" style="grid-column: span 2;">
-            <div class="page-head" style="margin-bottom: 10px;">
-              <div>
-                <h2>OpenEvidence review tasks</h2>
-                <p class="muted">Use after local de-ID and PHI review. The bedside checklist stays local.</p>
-              </div>
-              <button class="btn btn-secondary" id="seeAllTasksButton" type="button">See all tasks</button>
-            </div>
-            <div class="task-strip" id="workupTaskStrip" role="group" aria-label="OpenEvidence review tasks"></div>
-          </div>
-          <div class="panel">
-            <h2>Case status</h2>
-            <div class="status-grid" id="caseStatusList"></div>
-          </div>
         </div>
       </section>
 
@@ -15943,11 +15705,11 @@
             <strong>Bedside checklist</strong>
           </div>
           <button class="bedside-step is-complete" type="button" data-bedside-step-view="deid">
-            <span class="bedside-step-index">✓</span>
+            <span class="bedside-step-index">âœ“</span>
             <span><strong>1 Source &amp; Context</strong><span>De-ID complete</span><span class="bedside-step-mobile-label">Context</span></span>
           </button>
           <button class="bedside-step is-complete" type="button" data-bedside-step-view="workup">
-            <span class="bedside-step-index">✓</span>
+            <span class="bedside-step-index">âœ“</span>
             <span><strong>2 Build Checklist</strong><span>Evidence-linked</span><span class="bedside-step-mobile-label">Checklist</span></span>
           </button>
           <button class="bedside-step" type="button" aria-current="step" data-bedside-step-view="bedside">
@@ -16090,43 +15852,6 @@
           <button class="btn btn-secondary" id="showPhoneReturnQrButton" type="button">Return QR</button>
           <button class="btn btn-secondary bedside-bottom-next" id="bottomNextUnansweredChecklistButton" type="button">Next exam</button>
           <button class="btn btn-primary" id="reviewFindingsButton" type="button">Review findings</button>
-        </div>
-      </section>
-
-      <section class="view" id="finalView" hidden aria-labelledby="finalTitle">
-        <div class="page-head">
-          <div>
-            <h1 id="finalTitle">Final update review</h1>
-            <p class="lede">Compile bedside answers, reviewed local notes, and OpenEvidence summaries into a concise update. Copy only after PHI review.</p>
-          </div>
-          <button class="btn btn-warning" id="copyFinalUpdateButton" type="button">Copy after PHI review</button>
-        </div>
-        <div class="final-grid">
-          <div class="review-panel">
-            <header>
-              <div>
-                <h2>Update draft</h2>
-                <p class="muted">Keep copied text reviewed and policy-compliant. Verify all recommendations at bedside.</p>
-              </div>
-              <span class="status-chip is-warning">Review before copy</span>
-            </header>
-            <div class="review-body">
-              <pre id="finalUpdatePreview" aria-label="Final update preview">Answer checklist items or import phone findings to build a final update.</pre>
-            </div>
-          </div>
-          <aside class="side-stack">
-            <div class="panel">
-              <h2>Case status</h2>
-              <div class="status-grid" id="finalCaseStatus"></div>
-            </div>
-            <div class="panel">
-              <h2>Export</h2>
-              <div class="button-row">
-                <button class="btn btn-secondary" id="downloadFinalUpdateButton" type="button">Download reviewed text</button>
-                <button class="btn btn-secondary" id="finalToEvidenceButton" type="button">OpenEvidence follow-up</button>
-              </div>
-            </div>
-          </aside>
         </div>
       </section>
 
@@ -16359,7 +16084,7 @@
       <header>
         <div>
           <h2 id="quickDeidTitle">Standalone local de-ID</h2>
-          <p class="muted">Use this for quick local redaction only. It does not save text or update the chart context or checklist.</p>
+          <p class="muted">Use this for quick local redaction only. It does not save text or update the patient context or checklist.</p>
         </div>
         <button class="btn btn-secondary" id="closeQuickDeidButton" type="button">Close</button>
       </header>
@@ -16681,20 +16406,16 @@
       "older adult frailty"
     ]);
     const modifierOptions = clinicalModifierOptions.map((option) => option.label);
-    const views = ["workspace", "intake", "deid", "workup", "studio", "evidence", "handoff", "bedside", "final", "privacy"];
-    const patientTabOrder = ["overview", "today", "context", "workup", "checklist", "findings", "evidence", "handoff"];
-    const desktopPatientTabFallbacks = {
-      today: "context",
-      handoff: "checklist"
-    };
-    const phonePatientTabs = new Set(["checklist", "handoff"]);
+    const views = ["workspace", "studio", "bedside", "handoff", "privacy"];
+    const patientTabOrder = ["overview", "context", "workup", "checklist", "findings", "evidence"];
+    const desktopPatientTabFallbacks = {};
+    const phonePatientTabs = new Set(["checklist"]);
     const phonePatientTabFallbacks = {
       overview: "checklist",
-      today: "checklist",
       context: "checklist",
       workup: "checklist",
-      findings: "handoff",
-      evidence: "handoff"
+      findings: "checklist",
+      evidence: "checklist"
     };
     const LAYOUT_PREFS_KEY = "prerounding-layout-preferences-v1";
     const layoutSizeConfig = {
@@ -16708,6 +16429,7 @@
     const layoutPrefs = {
       navCollapsed: false,
       workupNavOpen: false,
+      workupOrdersCollapsed: false,
       sizes: Object.fromEntries(Object.entries(layoutSizeConfig).map(([key, config]) => [key, config.defaultValue]))
     };
 
@@ -16937,6 +16659,8 @@
       patientObjectiveDataPanel: $("#patientObjectiveDataPanel"),
       patientWorkupPanel: $("#patientWorkupPanel"),
       patientWorkupOrdersPanel: $("#patientWorkupOrdersPanel"),
+      collapsePatientWorkupOrdersButton: $("#collapsePatientWorkupOrdersButton"),
+      expandPatientWorkupOrdersButton: $("#expandPatientWorkupOrdersButton"),
       patientDecisionTreePanel: $("#patientDecisionTreePanel"),
       decisionTreeEditorPanel: $("#decisionTreeEditorPanel"),
       decisionTreeSearchInput: $("#decisionTreeSearchInput"),
@@ -17086,6 +16810,8 @@
       patientChecklistEditStatus: $("#patientChecklistEditStatus"),
       patientChecklistPatchPanel: $("#patientChecklistPatchPanel"),
       patientChecklistPatchSectionSelect: $("#patientChecklistPatchSectionSelect"),
+      patientEvidenceChecklistSectionSelect: $("#patientEvidenceChecklistSectionSelect"),
+      patientEvidenceChecklistSectionField: $("#patientEvidenceChecklistSectionField"),
       copyPatientChecklistPatchPromptButton: $("#copyPatientChecklistPatchPromptButton"),
       openPatientChecklistPatchEvidenceButton: $("#openPatientChecklistPatchEvidenceButton"),
       patientChecklistPatchInput: $("#patientChecklistPatchInput"),
@@ -17103,6 +16829,7 @@
       phoneChecklistPasteBundleButton: $("#phoneChecklistPasteBundleButton"),
       phoneChecklistLoadBundleButton: $("#phoneChecklistLoadBundleButton"),
       phoneChecklistBundleStatus: $("#phoneChecklistBundleStatus"),
+      workspaceDeidReviewPanel: $("#workspaceDeidReviewPanel"),
       deidPreview: $("#deidPreview"),
       deidCounts: $("#deidCounts"),
       deidModelStatus: $("#deidModelStatus"),
@@ -17116,8 +16843,8 @@
       clinicalIntentSelection: $("#clinicalIntentSelection"),
       localWorkupResults: $("#localWorkupResults"),
       localWorkupSelection: $("#localWorkupSelection"),
-      copyComplaintCdsButton: $("#copyWorkupButton"),
-      runComplaintCdsButton: $("#buildChecklistButton"),
+      copyComplaintCdsButton: $("#patientCopyWorkupButton"),
+      runComplaintCdsButton: $("#patientBuildChecklistButton"),
       workupRows: $("#workupRows"),
       workupDetail: $("#workupDetail"),
       clinicalWorkupHistoryCountLabel: $("#clinicalWorkupHistoryCountLabel"),
@@ -17877,6 +17604,9 @@
       if (!patientTabOrder.includes(state.activePatientTab)) {
         state.activePatientTab = "overview";
       }
+      if (!views.includes(state.currentView)) {
+        state.currentView = "workspace";
+      }
       if (!state.todayModeByPatientId || typeof state.todayModeByPatientId !== "object" || Array.isArray(state.todayModeByPatientId)) {
         state.todayModeByPatientId = {};
       }
@@ -18082,7 +17812,40 @@
         elements.patientWorkupMenuButton.setAttribute("title", layoutPrefs.workupNavOpen ? "Close menu" : "Open menu");
       }
       applyWorkupStudioChromeState();
+      applyWorkupOrdersCollapseState();
       if (persist) saveLayoutPreferences();
+    }
+
+    function workupLayoutUsesPaneSwitcher() {
+      return Boolean(window.matchMedia?.("(max-width: 1180px)")?.matches);
+    }
+
+    function setWorkupOrdersCollapsed(collapsed, { persist = true } = {}) {
+      layoutPrefs.workupOrdersCollapsed = Boolean(collapsed);
+      applyWorkupOrdersCollapseState();
+      if (persist) saveLayoutPreferences();
+      requestAnimationFrame(() => renderWorkupDecisionSurfaces());
+    }
+
+    function toggleWorkupOrdersCollapsed() {
+      setWorkupOrdersCollapsed(!layoutPrefs.workupOrdersCollapsed);
+    }
+
+    function applyWorkupOrdersCollapseState() {
+      const panel = elements.patientWorkupPanel;
+      if (!panel) return;
+      const mobileLayout = workupLayoutUsesPaneSwitcher();
+      panel.dataset.mobileWorkupLayout = mobileLayout ? "true" : "false";
+      const workupSelected = panel.dataset.workupSelected === "true";
+      const collapsed = !mobileLayout && layoutPrefs.workupOrdersCollapsed && workupSelected;
+      panel.dataset.ordersCollapsed = collapsed ? "true" : "false";
+      if (elements.collapsePatientWorkupOrdersButton) {
+        elements.collapsePatientWorkupOrdersButton.hidden = mobileLayout || collapsed || !workupSelected;
+        elements.collapsePatientWorkupOrdersButton.setAttribute("aria-expanded", String(!collapsed));
+      }
+      if (elements.expandPatientWorkupOrdersButton) {
+        elements.expandPatientWorkupOrdersButton.hidden = mobileLayout || !collapsed || !workupSelected;
+      }
     }
 
     function loadLayoutPreferences() {
@@ -18092,6 +17855,7 @@
         if (saved && typeof saved === "object") {
           layoutPrefs.navCollapsed = compactNav ? true : false;
           layoutPrefs.workupNavOpen = Boolean(saved.workupNavOpen);
+          layoutPrefs.workupOrdersCollapsed = Boolean(saved.workupOrdersCollapsed);
           if (saved.sizes && typeof saved.sizes === "object") {
             for (const key of Object.keys(layoutSizeConfig)) {
               layoutPrefs.sizes[key] = clampLayoutSize(key, saved.sizes[key]);
@@ -18130,6 +17894,7 @@
         changed = true;
       }
       if (changed) applyLayoutPreferences({ persist });
+      applyWorkupOrdersCollapseState();
     }
 
     function setLayoutNavCollapsed(collapsed, { announce = true } = {}) {
@@ -18279,10 +18044,10 @@
       const selectedModule = moduleById(state.selectedWorkupModuleId);
       state.concern = selectedModule ? moduleLabel(selectedModule) : patient.concern || "";
       syncWorkupConcernInputs(state.concern);
-      elements.clinicalSettingSelect.value = state.setting;
-      elements.populationSelect.value = state.population;
+      if (elements.clinicalSettingSelect) elements.clinicalSettingSelect.value = state.setting;
+      if (elements.populationSelect) elements.populationSelect.value = state.population;
       setBedsideNoteValue(state.bedsideNote || "");
-      setSourceMode(state.sourceMode, { fill: false });
+      setSourceMode(state.sourceMode);
       renderModifierChips();
       if (patient.id) ensureWorkup();
       applyInitialRouteState(route);
@@ -18295,8 +18060,14 @@
       }
       renderHandoff();
       showView(route.view || "workspace");
-      if ((route.view || "") === "intake" && route.sourceMode) {
-        setSourceMode(route.sourceMode, { fill: true });
+      if (route.prime === "new-admission" || route.prime === "intake-admission" || route.prime === "continuity-intake" || route.prime === "deid") {
+        setPatientTab("context", { announce: false });
+      } else if (route.prime === "workup") {
+        setPatientTab("workup", { announce: false });
+      } else if (route.prime === "evidence" || route.prime === "final" || route.prime === "continuity-final") {
+        setPatientTab("evidence", { announce: false });
+      } else if (route.prime === "handoff") {
+        setPatientTab("findings", { announce: false });
       }
       if (!patient.id) {
         renderPatientRail();
@@ -18663,12 +18434,20 @@
         showVaultAccess();
         return;
       }
+      if (viewName === "intake" || viewName === "deid") {
+        setPatientTab("context");
+        viewName = "workspace";
+      }
+      if (viewName === "workup") {
+        setPatientTab("workup");
+        viewName = "workspace";
+      }
       if (viewName === "final") {
         state.selectedTaskId = "final_rounds_update";
         viewName = "evidence";
       }
       if (viewName === "evidence") {
-        state.activePatientTab = isPhoneWorkflowDevice() ? "handoff" : "evidence";
+        state.activePatientTab = "evidence";
         viewName = "workspace";
       }
       if (viewName === "handoff" && !isCompactPatientDevice()) {
@@ -18690,10 +18469,7 @@
       }
       document.body.dataset.view = nextView;
       renderPatientRosterToggle();
-      if (nextView === "workup") ensureWorkup();
-      if (nextView === "evidence") renderOpenEvidence();
       if (nextView === "bedside") renderChecklist();
-      if (nextView === "final") renderFinalUpdate();
       if (nextView === "handoff") renderHandoff();
       if (nextView === "studio") {
         if (previousView !== "studio") syncWorkupStudioSelectionToActivePatient();
@@ -18709,7 +18485,6 @@
         }
         $("#workspaceRoot")?.scrollTo({ top: 0, left: 0 });
       }
-      renderPatientScopeBars();
       if (nextView !== "workspace") {
         requestAnimationFrame(() => {
           $("#appShell")?.scrollTo({ top: 0, left: 0, behavior: "auto" });
@@ -23409,6 +23184,7 @@ Rules:
       const panel = patientWorkupPanelElement();
       if (panel) panel.dataset.workupSelected = selected ? "true" : "false";
       if (!selected && panel?.dataset.activePane === "orders") setPatientWorkupPane("pathway");
+      applyWorkupOrdersCollapseState();
       if (!elements.patientSelectedWorkupCard) return;
       elements.patientSelectedWorkupCard.classList.toggle("is-empty", !selected);
       elements.patientValidatedIntentLabel.textContent = selected ? moduleLabel(selected) : "No validated workup selected";
@@ -23419,7 +23195,7 @@ Rules:
       elements.patientSelectedWorkupBadge.className = `workup-match-badge ${selected ? "is-recommended" : "is-low"}`;
       elements.patientSelectedWorkupItemCount.textContent = selected ? String(moduleItemCount(selected)) : "0";
       elements.patientSelectedWorkupPopulation.textContent = selected ? titleFromId(modulePopulationLabel(selected)) : "Not set";
-      elements.patientSelectedWorkupVersion.textContent = selected ? moduleVersionLabel(selected) : "—";
+      elements.patientSelectedWorkupVersion.textContent = selected ? moduleVersionLabel(selected) : "â€”";
     }
 
     function populatePatientWorkupSelect(query = state.concern) {
@@ -23543,8 +23319,6 @@ Rules:
     function setChecklistBuildDisabled(disabled) {
       const shouldDisable = Boolean(disabled) || !activePatient().id;
       for (const selector of [
-        "#buildChecklistButton",
-        "#deidBuildChecklistButton",
         "#workspaceBuildChecklistButton",
         "#patientBuildChecklistButton",
         "#patientOverviewChecklistButton",
@@ -23585,9 +23359,7 @@ Rules:
     }
 
     function patientTabAvailableOnDevice(tabName) {
-      if (isPhoneWorkflowDevice()) return phonePatientTabs.has(tabName);
-      if (tabName === "today") return patientHasFollowUpContext();
-      return tabName !== "handoff";
+      return phonePatientTabs.has(tabName) ? isPhoneWorkflowDevice() : !isPhoneWorkflowDevice();
     }
 
     function coercePatientTabForDevice(tabName = state.activePatientTab) {
@@ -23624,9 +23396,7 @@ Rules:
       if (state.activePatientTab === "findings") renderHandoff();
       if (focusPanel) scrollPatientPanelIntoView(state.activePatientTab);
       if (announce) {
-        setStatus(requestedTab === "handoff" && state.activePatientTab !== "handoff"
-          ? "Use Send checklist to phone to open the desktop handoff workflow."
-          : `${activePatient().title} ${state.activePatientTab} tab opened.`);
+        setStatus(`${activePatient().title} ${state.activePatientTab} tab opened.`);
       }
       saveState();
     }
@@ -23646,66 +23416,6 @@ Rules:
       for (const panel of $$("[data-patient-panel]")) {
         const available = patientTabAvailableOnDevice(panel.dataset.patientPanel);
         panel.hidden = !available || panel.dataset.patientPanel !== state.activePatientTab;
-      }
-    }
-
-    function patientScopeCopy(viewName = state.currentView) {
-      const patient = activePatient();
-      const labels = {
-        intake: "Chart intake",
-        deid: "Local de-ID review",
-        workup: "Clinical workup",
-        evidence: "OpenEvidence review",
-        handoff: "Phone bedside handoff",
-        bedside: "Bedside checklist",
-        final: "Final update review"
-      };
-      return {
-        title: `${labels[viewName] || "Patient workspace"} for ${patient.title}`,
-        subtitle: `${patient.oneLine} | ${state.sessionMode === "single" ? "Single-patient session" : "Local vault patient"} | ${patient.concern || "Concern not set"}`
-      };
-    }
-
-    function renderPatientScopeBars() {
-      for (const viewName of ["intake", "deid", "workup", "evidence", "handoff", "bedside", "final"]) {
-        const view = $(`#${viewName}View`);
-        if (!view) continue;
-        let bar = $(".patient-scope-bar", view);
-        if (!bar) {
-          bar = document.createElement("div");
-          bar.className = "patient-scope-bar";
-          const first = view.firstElementChild;
-          view.insertBefore(bar, first);
-        }
-        const copy = patientScopeCopy(viewName);
-        bar.innerHTML = "";
-        const main = document.createElement("div");
-        main.className = "patient-scope-main";
-        const title = document.createElement("strong");
-        title.textContent = copy.title;
-        const subtitle = document.createElement("span");
-        subtitle.textContent = copy.subtitle;
-        main.append(title, subtitle);
-        const actions = document.createElement("div");
-        actions.className = "button-row";
-        const rosterButton = document.createElement("button");
-        rosterButton.className = "btn btn-secondary";
-        rosterButton.type = "button";
-        rosterButton.textContent = "Back to patient";
-        rosterButton.addEventListener("click", () => showView("workspace"));
-        actions.appendChild(rosterButton);
-        if (viewName !== "workup") {
-          const workupButton = document.createElement("button");
-          workupButton.className = "btn btn-secondary";
-          workupButton.type = "button";
-          workupButton.textContent = "Patient workup";
-          workupButton.addEventListener("click", () => {
-            showView("workspace");
-            setPatientTab("workup");
-          });
-          actions.appendChild(workupButton);
-        }
-        bar.append(main, actions);
       }
     }
 
@@ -23903,10 +23613,6 @@ Rules:
         elements.workspaceAdmissionInput?.value,
         elements.workspaceLabsMedsInput?.value,
         elements.workspaceContinuityInput?.value,
-        $("#chartInput")?.value,
-        $("#labsInput")?.value,
-        $("#medsInput")?.value,
-        $("#handoffInput")?.value,
         draft.labsMeds,
         draft.admission,
         draft.continuity,
@@ -23929,7 +23635,7 @@ Rules:
 
     function parsedObjectiveValue(field = {}, text = objectiveSearchText()) {
       const normalized = String(text || "")
-        .replace(/β/gi, "beta")
+        .replace(/Î²/gi, "beta")
         .replace(/\bBHB\b/gi, "beta hydroxybutyrate");
       for (const alias of field.aliases || []) {
         const escaped = escapeObjectiveRegex(alias);
@@ -26796,7 +26502,7 @@ Rules:
 
     function renderWorkupOrderResultSurfaces() {
       const rows = objectiveDataRows();
-      for (const container of [elements.patientWorkupOrdersPanel, elements.workupOrdersPanel].filter(Boolean)) {
+      for (const container of [elements.patientWorkupOrdersPanel].filter(Boolean)) {
         renderWorkupOrdersPanel(container, rows);
       }
       renderWorkupDecisionSurfaces(rows);
@@ -26811,7 +26517,7 @@ Rules:
 
     function renderWorkupDecisionSurfaces(rows = objectiveDataRows()) {
       syncDecisionTreeHighlightToggle();
-      for (const container of [elements.patientDecisionTreePanel, elements.decisionTreePanel].filter(Boolean)) {
+      for (const container of [elements.patientDecisionTreePanel].filter(Boolean)) {
         renderDecisionTreePanel(container, rows);
       }
     }
@@ -27239,13 +26945,49 @@ Rules:
       finalizePatientChecklistEdit(snapshot, kind === "exam" ? "Exam item removed for this patient." : "History question removed for this patient.");
     }
 
+    function normalizePatientChecklistPatchSectionKey(value = "") {
+      const key = String(value || "").trim();
+      return key === "history_questions" || key === "all_sections" ? key : "physical_exam";
+    }
+
     function patientChecklistPatchSectionKey() {
-      const key = String(elements.patientChecklistPatchSectionSelect?.value || "physical_exam").trim();
-      return key === "history_questions" ? "history_questions" : "physical_exam";
+      const fromDom = elements.patientEvidenceChecklistSectionSelect?.value
+        || elements.patientChecklistPatchSectionSelect?.value;
+      return normalizePatientChecklistPatchSectionKey(fromDom || "physical_exam");
+    }
+
+    function syncPatientChecklistPatchSectionSelects(sectionKey = patientChecklistPatchSectionKey()) {
+      const normalized = normalizePatientChecklistPatchSectionKey(sectionKey);
+      for (const select of [elements.patientChecklistPatchSectionSelect, elements.patientEvidenceChecklistSectionSelect].filter(Boolean)) {
+        if (select.value !== normalized) select.value = normalized;
+      }
+      return normalized;
+    }
+
+    function patientChecklistPatchScopeMeta(sectionKey = patientChecklistPatchSectionKey()) {
+      const normalized = normalizePatientChecklistPatchSectionKey(sectionKey);
+      const isAll = normalized === "all_sections";
+      return {
+        sectionKey: normalized,
+        isAll,
+        isSingleSection: !isAll,
+        sectionName: isAll ? "history and physical exam" : normalized === "physical_exam" ? "physical exam" : "history questions",
+        targetSectionKeys: isAll ? ["physical_exam", "history_questions"] : [normalized]
+      };
+    }
+
+    function patientChecklistPatchSectionLabel(sectionKey = patientChecklistPatchSectionKey()) {
+      const labels = {
+        physical_exam: "Physical exam",
+        history_questions: "History questions",
+        all_sections: "Both sections"
+      };
+      return labels[normalizePatientChecklistPatchSectionKey(sectionKey)] || "Checklist";
     }
 
     function patientChecklistPatchKind(sectionKey = patientChecklistPatchSectionKey()) {
-      return sectionKey === "physical_exam" ? "exam" : "history";
+      const normalized = normalizePatientChecklistPatchSectionKey(sectionKey);
+      return normalized === "physical_exam" ? "exam" : normalized === "history_questions" ? "history" : "";
     }
 
     function patientChecklistPatchGroupKeys(sectionKey = patientChecklistPatchSectionKey()) {
@@ -27364,8 +27106,8 @@ Rules:
       if (!repaired) return "";
       repaired = repaired
         .replace(/\r\n/g, "\n")
-        .replace(/[“”]/g, "\"")
-        .replace(/[‘’]/g, "'")
+        .replace(/[â€œâ€]/g, "\"")
+        .replace(/[â€˜â€™]/g, "'")
         .replace(/:contentReference\[[^\]]+\]\{[^}]*\}/g, "")
         .replace(/&lt;\s*\/?\s*em\s*&gt;/gi, "_")
         .replace(/<\s*\/?\s*em\s*>/gi, "_")
@@ -27454,9 +27196,13 @@ Rules:
       if (patchWorkupId && expectedWorkupId && patchWorkupId !== expectedWorkupId) {
         return { status: "error", patch, payload: null, message: `Patch is for ${patchWorkupId}, but ${expectedWorkupId} is selected.` };
       }
-      const expectedSectionKey = String(sectionKey || patientChecklistPatchSectionKey()).trim();
-      const targetSectionKey = String(patch.sectionKey || patch.section_key || expectedSectionKey).trim();
-      if (targetSectionKey && expectedSectionKey && targetSectionKey !== expectedSectionKey) {
+      const expectedSectionKey = normalizePatientChecklistPatchSectionKey(sectionKey || patientChecklistPatchSectionKey());
+      const targetSectionKey = normalizePatientChecklistPatchSectionKey(patch.sectionKey || patch.section_key || expectedSectionKey);
+      if (expectedSectionKey === "all_sections") {
+        if (!["physical_exam", "history_questions"].includes(targetSectionKey)) {
+          return { status: "error", patch, payload: null, message: "Patch sectionKey must be physical_exam or history_questions when both sections are in scope." };
+        }
+      } else if (targetSectionKey && expectedSectionKey && targetSectionKey !== expectedSectionKey) {
         return { status: "error", patch, payload: null, message: `Patch is for ${targetSectionKey}, but ${expectedSectionKey} is selected.` };
       }
       const operations = Array.isArray(patch.operations) ? patch.operations : [];
@@ -27693,6 +27439,60 @@ Rules:
       return row;
     }
 
+    function patientChecklistPatchOtherSectionLabels(sectionKey) {
+      const normalized = normalizePatientChecklistPatchSectionKey(sectionKey);
+      if (normalized === "all_sections") return "";
+      const otherKey = normalized === "physical_exam" ? "history_questions" : "physical_exam";
+      const labels = patientChecklistPatchPromptRows(otherKey).map((row) => row.label).filter(Boolean);
+      if (!labels.length) return "";
+      return [
+        `<other_section_row_labels section="${otherKey}">`,
+        "Do not duplicate these existing rows from the other checklist section:",
+        labels.map((label) => `- ${label}`).join("\n"),
+        "</other_section_row_labels>"
+      ].join("\n");
+    }
+
+    function patientChecklistPatchPromptChecklistText(sectionKey = patientChecklistPatchSectionKey()) {
+      if (!state.sections.length) return state.checklistText || "";
+      const meta = patientChecklistPatchScopeMeta(sectionKey);
+      if (meta.isAll) {
+        const examRows = patientChecklistPatchPromptRows("physical_exam");
+        const historyRows = patientChecklistPatchPromptRows("history_questions");
+        return [
+          "Checklist scope: physical_exam and history_questions",
+          "",
+          "<physical_exam_rows>",
+          patientChecklistPatchPromptRowsText(examRows, { includeOptions: true }),
+          "</physical_exam_rows>",
+          "",
+          "<history_questions_rows>",
+          patientChecklistPatchPromptRowsText(historyRows, { includeOptions: true }),
+          "</history_questions_rows>"
+        ].join("\n");
+      }
+      const rows = patientChecklistPatchPromptRows(meta.sectionKey);
+      const blocks = [
+        `Checklist scope: ${meta.sectionKey}`,
+        `selectedSection: ${meta.sectionName}`,
+        "",
+        "<target_section_rows>",
+        patientChecklistPatchPromptRowsText(rows, { includeOptions: true }),
+        "</target_section_rows>"
+      ];
+      const otherLabels = patientChecklistPatchOtherSectionLabels(meta.sectionKey);
+      if (otherLabels) blocks.push("", otherLabels);
+      return blocks.join("\n");
+    }
+
+    function checklistImprovementRefinementNotes(sectionKey = patientChecklistPatchSectionKey()) {
+      const meta = patientChecklistPatchScopeMeta(sectionKey);
+      if (meta.isAll) {
+        return "Output only workup_section_patch_v1 JSON patch operations. Return one fenced JSON block per section that needs changes (physical_exam and/or history_questions). Use only itemIds from the matching section in current_checklist. Do not output workup_refinement_v1.";
+      }
+      return `Output only workup_section_patch_v1 JSON patch operations for section ${meta.sectionKey}. Do not modify or reference rows outside ${meta.sectionKey}. Do not output workup_refinement_v1 unless explicitly asked for legacy full replacement.`;
+    }
+
     function patientChecklistPatchPromptRows(sectionKey = patientChecklistPatchSectionKey()) {
       return patientChecklistPatchEntries(sectionKey).map((entry) => patientChecklistPatchPromptRow(sectionKey, entry));
     }
@@ -27732,56 +27532,76 @@ Rules:
       if (!state.sections.length) buildChecklistFromWorkup({ navigate: false });
       ensurePatientChecklistItemIds();
       const selectedModule = moduleById(state.selectedWorkupModuleId);
-      const groups = patientChecklistPatchGroupKeys(sectionKey);
-      const itemType = sectionKey === "physical_exam" ? "physical_exam_maneuver" : "history_question";
-      const rows = patientChecklistPatchPromptRows(sectionKey);
-      const fullRows = patientChecklistPatchFullChecklistRows();
-      const sectionName = sectionKey === "physical_exam" ? "physical exam" : "history questions";
-      return [
-        "Clinical question:",
-        `For this de-identified adult patient being evaluated for ${moduleLabel(selectedModule) || "the selected condition"}, what ${sectionName} checklist rows should be added, removed, or reworded to improve bedside assessment for that condition?`,
-        "This is a clinical checklist-quality question. Focus on bedside history and physical exam findings that affect severity, hydration/perfusion, mental status, infectious or medication triggers, oral intake, safety, disposition readiness, and duplicate/redundant rows when relevant.",
-        `Only return changes for the selected section: ${sectionKey}. Use the full checklist only to avoid duplicate or redundant suggestions.`,
-        "",
-        `workupId: ${state.selectedWorkupModuleId || ""}`,
-        `sectionKey: ${sectionKey}`,
-        `selectedWorkupTitle: ${moduleLabel(selectedModule) || "Selected workup"}`,
-        `selectedSection: ${sectionName}`,
-        "",
-        "<deidentified_patient_context>",
-        checklistPatientSummaryText(),
-        "</deidentified_patient_context>",
-        "",
-        "<editable_target_rows>",
-        patientChecklistPatchPromptRowsText(rows, { includeOptions: true }),
-        "</editable_target_rows>",
-        "",
-        "<full_current_checklist>",
-        `totalRows: ${fullRows.length}`,
-        patientChecklistPatchPromptRowsText(fullRows),
-        "</full_current_checklist>",
-        "",
-        "Answer format:",
-        "Return one fenced ```json code block only. No prose, markdown citations, :contentReference markers, or reference list.",
-        "The code block must be valid JSON. Use literal underscores, not asterisks or HTML emphasis tags. operations/options/normalAnswers must be bracketed arrays.",
-        "Do not regenerate the full checklist. Do not output workup_refinement_v1.",
-        "",
-        "Use this JSON schema:",
-        JSON.stringify({
+      const meta = patientChecklistPatchScopeMeta(sectionKey);
+      const groups = meta.isSingleSection ? patientChecklistPatchGroupKeys(meta.sectionKey) : null;
+      const itemType = meta.sectionKey === "physical_exam" ? "physical_exam_maneuver" : meta.sectionKey === "history_questions" ? "history_question" : "history_question or physical_exam_maneuver";
+      const checklistBlock = patientChecklistPatchPromptChecklistText(meta.sectionKey);
+      const scopeInstruction = meta.isAll
+        ? "Review both checklist sections below. Return one workup_section_patch_v1 JSON block for each section that needs changes. If both sections need edits, return two fenced JSON blocks."
+        : `Only return changes for the selected section: ${meta.sectionKey}. Do not modify rows outside this section.`;
+      const clinicalLead = meta.isAll
+        ? `For this de-identified adult patient being evaluated for ${moduleLabel(selectedModule) || "the selected condition"}, what history and physical exam checklist rows should be added, removed, or reworded across both sections?`
+        : `For this de-identified adult patient being evaluated for ${moduleLabel(selectedModule) || "the selected condition"}, what ${meta.sectionName} checklist rows should be added, removed, or reworded to improve bedside assessment for that condition?`;
+      const schemaExample = meta.isAll
+        ? {
           schema: workupSectionPatchSchema,
           workupId: state.selectedWorkupModuleId || "",
-          sectionKey,
+          sectionKey: "physical_exam or history_questions",
+          summary: "Brief reason for the row changes in this section.",
+          operations: [
+            { op: "add", groupKey: "conditionalExam or conditionalQuestions", item: { id: "stable_snake_case_id", item_type: "physical_exam_maneuver or history_question", label: "Row text", answerMode: "single or multi", options: ["Normal/No option", "Abnormal/Yes option"], normalAnswers: ["Normal/No option"], rationale: "Why this matters for this patient." } },
+            { op: "update", itemId: "exact_existing_itemId", label: "Revised row text" },
+            { op: "remove", itemId: "exact_existing_itemId" }
+          ]
+        }
+        : {
+          schema: workupSectionPatchSchema,
+          workupId: state.selectedWorkupModuleId || "",
+          sectionKey: meta.sectionKey,
           summary: "Brief reason for the row changes.",
           operations: [
             { op: "add", groupKey: groups.conditional, item: { id: "stable_snake_case_id", item_type: itemType, label: "Question or exam item", answerMode: "single or multi", options: ["Normal/No option", "Abnormal/Yes option"], normalAnswers: ["Normal/No option"], rationale: "Why this matters for this patient." } },
             { op: "update", itemId: "exact_existing_itemId", label: "Revised row text" },
             { op: "remove", itemId: "exact_existing_itemId" }
           ]
-        }, null, 2),
+        };
+      return [
+        "Clinical question:",
+        clinicalLead,
+        "This is a clinical checklist-quality question. Focus on bedside history and physical exam findings that affect severity, hydration/perfusion, mental status, infectious or medication triggers, oral intake, safety, disposition readiness, and duplicate/redundant rows when relevant.",
+        scopeInstruction,
         "",
-        `Allowed groupKey values for add: ${groups.required}, ${groups.conditional}. Prefer ${groups.conditional} for patient-only additions.`,
-        "Use full_current_checklist to avoid duplicate additions across both history and physical exam rows.",
-        "For update/remove, use an exact itemId from editable_target_rows only. Do not update/remove rows outside the selected section.",
+        `workupId: ${state.selectedWorkupModuleId || ""}`,
+        `sectionKey: ${meta.sectionKey}`,
+        `selectedWorkupTitle: ${moduleLabel(selectedModule) || "Selected workup"}`,
+        `selectedSection: ${meta.sectionName}`,
+        "",
+        "<deidentified_patient_context>",
+        checklistPatientSummaryText(),
+        "</deidentified_patient_context>",
+        buildFinalUpdateText() ? [
+          "",
+          "<new_bedside_findings>",
+          buildFinalUpdateText(),
+          "</new_bedside_findings>"
+        ].join("\n") : "",
+        "",
+        checklistBlock,
+        "",
+        "Answer format:",
+        meta.isAll
+          ? "Return one fenced ```json code block per section that needs changes. No prose, markdown citations, :contentReference markers, or reference list."
+          : "Return one fenced ```json code block only. No prose, markdown citations, :contentReference markers, or reference list.",
+        "The code block must be valid JSON. Use literal underscores, not asterisks or HTML emphasis tags. operations/options/normalAnswers must be bracketed arrays.",
+        "Do not regenerate the full checklist. Do not output workup_refinement_v1.",
+        "",
+        "Use this JSON schema:",
+        JSON.stringify(schemaExample, null, 2),
+        "",
+        meta.isAll
+          ? "Allowed sectionKey values: history_questions, physical_exam. Return a separate JSON block for each section that needs changes."
+          : `Allowed groupKey values for add: ${groups.required}, ${groups.conditional}. Prefer ${groups.conditional} for patient-only additions.`,
+        "For update/remove, use an exact itemId from the matching section rows only. Do not update/remove rows outside the targeted section.",
         "Do not invent itemIds for existing rows.",
         "If no changes are useful, return operations: []."
       ].join("\n");
@@ -27803,7 +27623,7 @@ Rules:
         text,
         onConfirm: () => copyText(text)
       });
-      setPatientChecklistPatchStatus(`${sectionKey === "physical_exam" ? "Physical exam" : "History"} patch prompt ready to copy.`, "success");
+      setPatientChecklistPatchStatus(`${patientChecklistPatchSectionLabel(sectionKey)} patch prompt ready to copy.`, "success");
       return true;
     }
 
@@ -27820,7 +27640,7 @@ Rules:
       const title = document.createElement("strong");
       title.textContent = "All checklist questions";
       const meta = document.createElement("span");
-      meta.textContent = `${totalItems} items · click any row to answer`;
+      meta.textContent = `${totalItems} items Â· click any row to answer`;
       head.append(title, meta);
 
       const list = document.createElement("div");
@@ -28073,13 +27893,9 @@ Rules:
     function syncSelectedPatientInputs() {
       const patient = activePatient();
       const draft = patientDraft(patient);
-      $("#chartInput").value = draft.admission || patient.intake || "";
-      $("#labsInput").value = draft.labsMeds || patient.context?.Labs || "";
-      $("#medsInput").value = patient.context?.Meds || "";
-      $("#handoffInput").value = draft.continuity || "";
-	      setBedsideNoteValue(state.bedsideNote
-	        || draft.bedsideNote
-	        || [draft.historyFindings, draft.examFindings].filter(Boolean).join("\n"));
+      setBedsideNoteValue(state.bedsideNote
+        || draft.bedsideNote
+        || [draft.historyFindings, draft.examFindings].filter(Boolean).join("\n"));
     }
 
     function visibleBedsideNoteInput() {
@@ -28102,8 +27918,9 @@ Rules:
 
     function syncWorkupConcernInputs(value = state.concern) {
       const nextValue = value ?? activePatient().concern ?? "";
-      if (elements.workupConcernInput && elements.workupConcernInput.value !== nextValue) elements.workupConcernInput.value = nextValue;
-      if (elements.patientWorkupConcernInput && elements.patientWorkupConcernInput.value !== nextValue) elements.patientWorkupConcernInput.value = nextValue;
+      if (elements.patientWorkupConcernInput && elements.patientWorkupConcernInput.value !== nextValue) {
+        elements.patientWorkupConcernInput.value = nextValue;
+      }
     }
 
     function todayDateKey(now = new Date()) {
@@ -28287,6 +28104,7 @@ Rules:
     }
 
     function renderTodayCockpit() {
+      if (!elements.todayNoteInput) return;
       const patient = activePatient();
       const hasPatient = Boolean(patient.id);
       const mode = todayWorkflowMode(patient);
@@ -28483,7 +28301,7 @@ Rules:
       if (elements.findingsOpenChecklistButton) {
         elements.findingsOpenChecklistButton.disabled = !checklistBuilt;
       }
-      for (const button of [elements.workspaceSendPhoneButton, elements.workspaceHandoffButton]) {
+      for (const button of [elements.workspaceSendPhoneButton].filter(Boolean)) {
         if (!button) continue;
         button.hidden = !checklistBuilt;
         button.disabled = !hasPatient || !checklistBuilt || checklistStale;
@@ -28760,8 +28578,12 @@ Rules:
     }
 
     function getSourceText() {
-      const values = ["#chartInput", "#labsInput", "#medsInput", "#handoffInput"].map((selector) => $(selector)?.value.trim()).filter(Boolean);
-	      return values.join("\n\n") || selectedPatientContextText();
+      const values = [
+        elements.workspaceAdmissionInput?.value,
+        elements.workspaceLabsMedsInput?.value,
+        elements.workspaceContinuityInput?.value
+      ].map((value) => String(value || "").trim()).filter(Boolean);
+      return values.join("\n\n") || selectedPatientContextText();
     }
 
     const sourceModeTemplates = {
@@ -28785,62 +28607,60 @@ Rules:
       }
     };
 
-    function setSourceMode(mode, { fill = false } = {}) {
+    function setSourceMode(mode) {
       const nextMode = Object.prototype.hasOwnProperty.call(sourceModeTemplates, mode) ? mode : "admission";
       state.sourceMode = nextMode;
-      for (const button of $$("[data-source-mode]")) {
-        button.setAttribute("aria-pressed", String(button.dataset.sourceMode === nextMode));
-      }
-      const template = sourceModeTemplates[nextMode];
-      if (fill || !$("#chartInput").value.trim()) $("#chartInput").value = template.chart;
-      if (fill || !$("#labsInput").value.trim()) $("#labsInput").value = template.labs;
-      if (fill || !$("#medsInput").value.trim()) $("#medsInput").value = template.meds;
-      if (fill || !$("#handoffInput").value.trim()) $("#handoffInput").value = template.handoff;
     }
 
     function applyDeidResult(result, { announce = false } = {}) {
       state.scrubbedText = result.text || "";
       state.deidCounts = result.counts || {};
-      elements.deidPreview.textContent = state.scrubbedText || "No redacted text was produced.";
-      elements.deidModelStatus.textContent = result.modelStatus || "Structured only";
-      elements.deidCounts.innerHTML = "";
-      for (const [label, count] of Object.entries(state.deidCounts)) {
-        const chip = document.createElement("span");
-        chip.className = "status-chip";
-        chip.textContent = `${label}: ${count}`;
-        elements.deidCounts.appendChild(chip);
+      if (elements.deidPreview) elements.deidPreview.textContent = state.scrubbedText || "No redacted text was produced.";
+      if (elements.deidModelStatus) elements.deidModelStatus.textContent = result.modelStatus || "Structured only";
+      if (elements.deidCounts) {
+        elements.deidCounts.innerHTML = "";
+        for (const [label, count] of Object.entries(state.deidCounts)) {
+          const chip = document.createElement("span");
+          chip.className = "status-chip";
+          chip.textContent = `${label}: ${count}`;
+          elements.deidCounts.appendChild(chip);
+        }
       }
-      elements.deidTopStatus.innerHTML = '<span class="status-dot" aria-hidden="true"></span>Local de-ID complete';
+      if (elements.deidTopStatus) {
+        elements.deidTopStatus.innerHTML = '<span class="status-dot" aria-hidden="true"></span>Local de-ID complete';
+      }
       if (announce) setStatus("Local de-ID complete. Review the redacted preview before copying.");
       saveState();
     }
 
     function ensureRedactedContext(mode = state.sourceMode) {
-      setSourceMode(mode, { fill: !getSourceText().trim() });
+      setSourceMode(mode);
       if (!getSourceText().trim()) {
-        elements.deidPreview.textContent = EMPTY_CONTEXT_MESSAGE;
-        elements.deidModelStatus.textContent = "Waiting";
+        if (elements.deidPreview) elements.deidPreview.textContent = EMPTY_CONTEXT_MESSAGE;
+        if (elements.deidModelStatus) elements.deidModelStatus.textContent = "Waiting";
         return;
       }
       if (!state.scrubbedText) {
         applyDeidResult(deidentifyTextStructuredOnly(getSourceText()));
-      } else {
+      } else if (elements.deidPreview) {
         elements.deidPreview.textContent = state.scrubbedText;
         elements.deidTopStatus.innerHTML = '<span class="status-dot" aria-hidden="true"></span>Local de-ID complete';
       }
     }
 
     function runWorkspaceDeid() {
+      saveWorkspaceContext({ announce: false });
       if (!getSourceText().trim()) {
-        elements.deidPreview.textContent = EMPTY_CONTEXT_MESSAGE;
-        elements.deidModelStatus.textContent = "Waiting";
+        if (elements.deidPreview) elements.deidPreview.textContent = EMPTY_CONTEXT_MESSAGE;
+        if (elements.deidModelStatus) elements.deidModelStatus.textContent = "Waiting";
         setStatus("Add reviewed patient context before running local de-ID.");
-        showView("deid");
+        setPatientTab("context");
         return;
       }
       const result = deidentifyTextStructuredOnly(getSourceText());
       applyDeidResult(result, { announce: true });
-      showView("deid");
+      setPatientTab("context");
+      elements.workspaceDeidReviewPanel?.setAttribute("open", "");
     }
 
     function openQuickDeid() {
@@ -29231,19 +29051,19 @@ Rules:
       syncLocalWorkupStep();
       const selected = selectedClinicalIntents();
       const applicabilityIssue = selectedWorkupApplicabilityIssue(selected, selectedKnowledgeModule());
-      const runComplaintCdsButton = elements.runComplaintCdsButton || $("#buildChecklistButton");
+      const runComplaintCdsButton = elements.runComplaintCdsButton || $("#patientBuildChecklistButton");
       if (runComplaintCdsButton) {
         runComplaintCdsButton.disabled = !selected.length || Boolean(applicabilityIssue?.blocking);
       }
       setChecklistBuildDisabled(!selected.length || Boolean(applicabilityIssue?.blocking));
       if (applicabilityIssue?.blocking) {
-        elements.workupBuildStatus.textContent = applicabilityIssue.message;
+        if (elements.workupBuildStatus) elements.workupBuildStatus.textContent = applicabilityIssue.message;
         elements.patientWorkupBuildStatus.textContent = applicabilityIssue.message;
       }
     }
 
     function guardWorkupCopyAction() {
-      const copyComplaintCdsButton = elements.copyComplaintCdsButton || $("#copyWorkupButton");
+      const copyComplaintCdsButton = elements.copyComplaintCdsButton || $("#patientCopyWorkupButton");
       const applicabilityIssue = selectedWorkupApplicabilityIssue();
       if (applicabilityIssue?.blocking) {
         if (copyComplaintCdsButton) copyComplaintCdsButton.disabled = true;
@@ -29348,10 +29168,7 @@ Rules:
 
     function workupConcernInputForCurrentContext(preferredInput) {
       if (preferredInput) return preferredInput;
-      if (document.activeElement === elements.patientWorkupConcernInput) return elements.patientWorkupConcernInput;
-      if (document.activeElement === elements.workupConcernInput) return elements.workupConcernInput;
-      if (state.currentView === "workup") return elements.workupConcernInput;
-      return elements.patientWorkupConcernInput || elements.workupConcernInput;
+      return elements.patientWorkupConcernInput;
     }
 
     function uiValidatedIntentsForModule(module) {
@@ -29485,8 +29302,8 @@ Rules:
       const activeInput = workupConcernInputForCurrentContext(preferredInput);
 	      state.concern = activeInput ? activeInput.value.slice(0, 160) : String(state.concern ?? activePatient().concern ?? "").slice(0, 160).trim();
       syncWorkupConcernInputs(state.concern);
-      state.setting = elements.clinicalSettingSelect.value;
-      state.population = elements.populationSelect.value;
+      state.setting = elements.clinicalSettingSelect?.value || state.setting;
+      state.population = elements.populationSelect?.value || state.population;
       let selectedModule = moduleById(state.selectedWorkupModuleId);
       if (!selectedModule) {
         selectedModule = resolveUiComplaintModule(state.concern);
@@ -29500,7 +29317,7 @@ Rules:
         renderModifierChips();
         renderWorkupRows();
         renderWorkupSummary();
-        renderTaskStrip(elements.workupTaskStrip, 6);
+        if (elements.workupTaskStrip) renderTaskStrip(elements.workupTaskStrip, 6);
         renderCaseStatus();
         setChecklistBuildDisabled(true);
         saveState();
@@ -29514,10 +29331,10 @@ Rules:
         renderModifierChips();
         renderWorkupRows();
         renderWorkupSummary();
-        renderTaskStrip(elements.workupTaskStrip, 6);
+        if (elements.workupTaskStrip) renderTaskStrip(elements.workupTaskStrip, 6);
         renderCaseStatus();
         setChecklistBuildDisabled(true);
-        elements.workupBuildStatus.textContent = applicabilityIssue.message;
+        if (elements.workupBuildStatus) elements.workupBuildStatus.textContent = applicabilityIssue.message;
         elements.patientWorkupBuildStatus.textContent = applicabilityIssue.message;
         setStatus(applicabilityIssue.message);
         saveState();
@@ -29550,7 +29367,7 @@ Rules:
       renderModifierChips();
       renderWorkupRows();
       renderWorkupSummary();
-      renderTaskStrip(elements.workupTaskStrip, 6);
+      if (elements.workupTaskStrip) renderTaskStrip(elements.workupTaskStrip, 6);
       renderCaseStatus();
       refreshClinicalApplicabilityControls();
       saveState();
@@ -29648,7 +29465,7 @@ Rules:
           }
         }
         const buildStatus = "No local workup is selected for this patient. Select one from the validated workup list before generating checklist items.";
-        elements.workupBuildStatus.textContent = buildStatus;
+        if (elements.workupBuildStatus) elements.workupBuildStatus.textContent = buildStatus;
         elements.patientWorkupBuildStatus.textContent = buildStatus;
         renderSelectedWorkupCard();
         setChecklistBuildDisabled(true);
@@ -29679,7 +29496,7 @@ Rules:
         }
       }
       const buildStatus = `Workup assembled from local medical knowledge base with ${state.workupRows.reduce((sum, row) => sum + row.items.length, 0)} reviewed items.`;
-      elements.workupBuildStatus.textContent = buildStatus;
+      if (elements.workupBuildStatus) elements.workupBuildStatus.textContent = buildStatus;
       elements.patientWorkupBuildStatus.textContent = buildStatus;
 	      renderSelectedWorkupCard();
 	      setChecklistBuildDisabled(false);
@@ -31362,7 +31179,7 @@ Rules:
         copy.append(title, count);
         const status = document.createElement("span");
         status.className = "bedside-completion-status";
-        status.textContent = sectionAnswered === section.items.length ? "✓ Complete" : `${section.items.length - sectionAnswered} open`;
+        status.textContent = sectionAnswered === section.items.length ? "âœ“ Complete" : `${section.items.length - sectionAnswered} open`;
         const chevron = document.createElement("span");
         chevron.className = "icon-box";
         chevron.innerHTML = iconSvg("chevron-right");
@@ -31385,7 +31202,7 @@ Rules:
       document.body.dataset.bedsideComplete = String(showCompletion);
       if (elements.bedsideCompletionPanel) elements.bedsideCompletionPanel.hidden = !showCompletion;
       if (elements.bedsideMobileProgress) {
-        elements.bedsideMobileProgress.textContent = `${answered}/${totalItems} answered${isComplete ? " ✓" : ""}`;
+        elements.bedsideMobileProgress.textContent = `${answered}/${totalItems} answered${isComplete ? " âœ“" : ""}`;
       }
       if (elements.bedsideMobileSubtitle) {
         elements.bedsideMobileSubtitle.textContent = isComplete ? "" : "Bedside physical exam";
@@ -31397,11 +31214,11 @@ Rules:
       const updateIndex = updateStep?.querySelector(".bedside-step-index");
       if (bedsideStep && bedsideIndex) {
         bedsideStep.classList.toggle("is-complete", isComplete);
-        bedsideIndex.textContent = isComplete ? "✓" : "3";
+        bedsideIndex.textContent = isComplete ? "âœ“" : "3";
       }
       if (updateStep && updateIndex) {
         updateStep.classList.toggle("is-complete", isComplete);
-        updateIndex.textContent = isComplete ? "✓" : "4";
+        updateIndex.textContent = isComplete ? "âœ“" : "4";
       }
       if (showCompletion) {
         renderBedsideCompletionSummary(totalItems, answered);
@@ -31800,16 +31617,23 @@ Rules:
     function checklistPatientSummaryText() {
       const patient = activePatient();
       const selectedModule = moduleById(state.selectedWorkupModuleId);
-      return [
-        "Compact de-identified checklist-review context. Raw source text, identifiers, exact dates, and full HPI are intentionally excluded.",
+      const chartContext = reviewedSourceContextText();
+      const objectiveBlock = objectiveDataContextText();
+      const sections = [
+        "De-identified patient context for checklist tailoring. Use admission context, labs, medications, continuity updates, bedside findings, and objective data to suggest patient-specific checklist rows.",
         `Patient: ${patient.title || "Selected patient"}`,
         `One-liner: ${patient.oneLine || "Not specified"}`,
         `Selected local workup: ${selectedModule ? moduleLabel(selectedModule) : "No validated workup selected"}`,
         `Setting: ${state.setting}`,
         `Population: ${state.population}`,
-        state.modifiers.length ? `Modifiers: ${state.modifiers.join(", ")}` : "",
-        objectiveDataContextText()
-      ].filter(Boolean).join("\n");
+        state.modifiers.length ? `Modifiers: ${state.modifiers.join(", ")}` : ""
+      ];
+      if (chartContext) sections.push(`Patient chart context:\n${chartContext}`);
+      if (objectiveBlock) sections.push(objectiveBlock);
+      if (!chartContext && !objectiveBlock) {
+        sections.push("No patient context documented yet. Add reviewed context in the Context tab before tailoring checklist rows.");
+      }
+      return sections.filter(Boolean).join("\n\n");
     }
 
     function checklistAuditSummaryText() {
@@ -31829,9 +31653,12 @@ Rules:
 
     function openEvidencePromptVariables(taskId = selectedTask()?.id || "") {
       const selectedModule = moduleById(state.selectedWorkupModuleId);
+      const checklistText = taskId === CHECKLIST_IMPROVEMENT_TASK_ID && state.sections.length
+        ? patientChecklistPatchPromptChecklistText(patientChecklistPatchSectionKey())
+        : state.checklistText;
       return compactOpenEvidenceContext({
         source_context: reviewedSourceContextText(),
-        current_checklist: state.checklistText,
+        current_checklist: checklistText,
         deidentified_patient_context: checklistPatientSummaryText(),
         new_bedside_findings: buildFinalUpdateText(),
         objective_data: objectiveDataContextText(),
@@ -32228,33 +32055,17 @@ Rules:
       }
       const report = state.workup ? formatComplaintCdsReport(state.workup) : "";
       const sourceContext = reviewedSourceContextText();
-      const fullChecklistRows = task.id === CHECKLIST_IMPROVEMENT_TASK_ID && state.sections.length
-        ? patientChecklistPatchFullChecklistRows()
-        : [];
+      const patchSectionKey = patientChecklistPatchSectionKey();
       const patchChecklistRows = task.id === CHECKLIST_IMPROVEMENT_TASK_ID && state.sections.length
-        ? [
-          state.checklistText,
-          "",
-          "<current_row_ids_json>",
-          JSON.stringify({
-            target_sections: {
-              physical_exam: patientChecklistPatchPromptRows("physical_exam"),
-              history_questions: patientChecklistPatchPromptRows("history_questions")
-            },
-            full_checklist: {
-              totalRows: fullChecklistRows.length,
-              rows: fullChecklistRows
-            }
-          }, null, 2),
-          "</current_row_ids_json>"
-        ].join("\n")
+        ? patientChecklistPatchPromptChecklistText(patchSectionKey)
         : state.checklistText;
       const context = {
         sourceContext,
         currentChecklist: patchChecklistRows,
         checklistPatientSummary: checklistPatientSummaryText(),
         checklistAuditSummary: checklistAuditSummaryText(),
-        refinementNotes: "Output only workup_section_patch_v1 JSON patch operations for one selected section. Default to physical_exam when the clinician is asking about exam rows. Do not output workup_refinement_v1 unless explicitly asked for legacy full replacement.",
+        checklistSectionKey: patchSectionKey,
+        refinementNotes: checklistImprovementRefinementNotes(patchSectionKey),
         complaintCdsReport: report,
         compiledFindings: buildFinalUpdateText(),
         objectiveData: objectiveDataContextText(),
@@ -33052,7 +32863,7 @@ Rules:
     }
 
 	    function renderOpenEvidence() {
-	      renderTaskStrip(elements.workupTaskStrip, 6);
+	      if (elements.workupTaskStrip) renderTaskStrip(elements.workupTaskStrip, 6);
 	      const matchingTasks = filteredOpenEvidenceTasks();
           applyPromptWorkbenchCollapseState();
       const activeTasks = activeOpenEvidenceTasks();
@@ -33081,6 +32892,10 @@ Rules:
       const isChecklistReview = task.id === CHECKLIST_IMPROVEMENT_TASK_ID;
       const isDecisionTree = task.id === DECISION_TREE_TASK_ID;
       const isRoundsPasteBack = isRoundsPasteBackTask(task);
+      if (elements.patientEvidenceChecklistSectionField) {
+        elements.patientEvidenceChecklistSectionField.hidden = !isChecklistReview;
+      }
+      syncPatientChecklistPatchSectionSelects();
       for (const panel of [document.querySelector(".evidence-review-column"), document.querySelector(".patient-evidence-answer-panel")].filter(Boolean)) {
         panel.hidden = !(isChecklistReview || isDecisionTree || isRoundsPasteBack);
       }
@@ -33299,15 +33114,16 @@ Rules:
 
     function renderFinalUpdate() {
       readBedsideNoteValue();
-      elements.finalUpdatePreview.textContent = buildFinalUpdateText();
+      if (elements.finalUpdatePreview) {
+        elements.finalUpdatePreview.textContent = buildFinalUpdateText();
+      }
       renderCaseStatus();
     }
 
     function renderCaseStatus() {
       const todayDay = currentContinuityDay(patientContinuityCase(activePatient(), { create: false }));
       const statuses = [
-        ["Chart intake", Boolean(state.scrubbedText)],
-        ["Today saved", Boolean(todayDay)],
+        ["Patient context", Boolean(getSourceText().trim())],
         ["De-ID complete", Boolean(state.scrubbedText)],
         ["Checklist built", Boolean(state.sections.length)],
         ["Bedside findings", answeredChecklistCount() > 0 || Boolean(state.importedFindings)],
@@ -37275,9 +37091,11 @@ Rules:
         setWorkupStudioNavOpen(!workupStudioState.navOpen);
       });
       installLayoutResizers();
-      for (const button of $$("[data-workup-pane-target]", elements.patientWorkupPanel || document)) {
+      for (const button of $$("[data-workup-pane-target][role='tab']", elements.patientWorkupPanel || document)) {
         button.addEventListener("click", () => setPatientWorkupPane(button.dataset.workupPaneTarget));
       }
+      elements.collapsePatientWorkupOrdersButton?.addEventListener("click", () => setWorkupOrdersCollapsed(true));
+      elements.expandPatientWorkupOrdersButton?.addEventListener("click", () => setWorkupOrdersCollapsed(false));
       setPatientWorkupPane(elements.patientWorkupPanel?.dataset.activePane || "pathway");
       elements.workupStudioSearchInput?.addEventListener("input", () => {
         workupStudioState.search = elements.workupStudioSearchInput.value.slice(0, 120);
@@ -37348,7 +37166,7 @@ Rules:
       elements.topPatientRosterButton?.addEventListener("click", togglePatientRosterFromNav);
       for (const button of $$("[data-source-mode]")) {
         button.addEventListener("click", () => {
-          setSourceMode(button.dataset.sourceMode, { fill: true });
+          setSourceMode(button.dataset.sourceMode);
           setStatus(`${button.textContent.trim()} source selected.`);
           saveState();
         });
@@ -37376,31 +37194,7 @@ Rules:
         showView("workspace");
         setPatientTab("workup", { focusPanel: true });
       });
-      $("#intakeQuickDeidButton").addEventListener("click", openQuickDeid);
-      $("#intakeWorkupButton").addEventListener("click", () => {
-        showView("workspace");
-        setPatientTab("workup", { focusPanel: true });
-      });
-      $("#standaloneDeidButton").addEventListener("click", openQuickDeid);
       $("#privacyQuickDeidButton").addEventListener("click", openQuickDeid);
-      $("#runDeidButton").addEventListener("click", runWorkspaceDeid);
-      $("#clearIntakeButton").addEventListener("click", () => {
-        for (const selector of ["#chartInput", "#labsInput", "#medsInput", "#handoffInput"]) $(selector).value = "";
-        setStatus("Draft inputs cleared. Raw text was not saved.");
-      });
-      $("#backToIntakeButton").addEventListener("click", () => showView("intake"));
-      $("#deidBuildChecklistButton").addEventListener("click", () => buildChecklistFromWorkup());
-      $("#deidOpenEvidenceButton").addEventListener("click", () => showView("evidence"));
-      $("#deidPhoneHandoffButton").addEventListener("click", () => showView("handoff"));
-      $("#closeToolsButton").addEventListener("click", () => showView("workspace"));
-      $("#clearConcernButton").addEventListener("click", () => {
-        elements.workupConcernInput.value = "";
-        if (standaloneWorkupSearchTimer) window.clearTimeout(standaloneWorkupSearchTimer);
-        standaloneWorkupSearchTimer = null;
-        updateWorkupSearchOnly(elements.workupConcernInput);
-        renderPatientWorkspace();
-        elements.workupConcernInput.focus();
-      });
       $("#patientClearConcernButton").addEventListener("click", () => {
         elements.patientWorkupConcernInput.value = "";
         if (patientWorkupSearchTimer) window.clearTimeout(patientWorkupSearchTimer);
@@ -37409,12 +37203,9 @@ Rules:
         renderPatientRail();
         elements.patientWorkupConcernInput.focus();
       });
-		      elements.workupConcernInput.addEventListener("input", () => {
-		        scheduleStandaloneWorkupSearch(elements.workupConcernInput);
-		      });
-		      elements.patientWorkupConcernInput.addEventListener("input", () => {
-		        schedulePatientWorkupSearch(elements.patientWorkupConcernInput);
-		      });
+      elements.patientWorkupConcernInput.addEventListener("input", () => {
+        schedulePatientWorkupSearch(elements.patientWorkupConcernInput);
+      });
       elements.patientWorkupSelect.addEventListener("change", () => {
         selectPatientWorkupModule(elements.patientWorkupSelect.value);
       });
@@ -37435,12 +37226,12 @@ Rules:
       elements.phoneChecklistLoadBundleButton?.addEventListener("click", () => {
         void loadDesktopPhoneBundleFromAnyText(elements.phoneChecklistBundleInput?.value || "", { source: "phoneChecklist" });
       });
-      elements.clinicalSettingSelect.addEventListener("change", () => {
+      elements.clinicalSettingSelect?.addEventListener("change", () => {
         clearChecklistArtifacts();
         ensureWorkup();
         renderPatientWorkspace();
       });
-      elements.populationSelect.addEventListener("change", () => {
+      elements.populationSelect?.addEventListener("change", () => {
         clearChecklistArtifacts();
         ensureWorkup();
         renderPatientWorkspace();
@@ -37453,8 +37244,7 @@ Rules:
         refreshClinicalApplicabilityControls();
         saveState();
       });
-      $("#buildChecklistButton").addEventListener("click", () => buildChecklistFromWorkup());
-      $("#copyWorkupButton").addEventListener("click", () => {
+      elements.patientCopyWorkupButton?.addEventListener("click", () => {
         if (!guardWorkupCopyAction()) return;
         ensureWorkup();
         if (!state.workup) {
@@ -37486,7 +37276,6 @@ Rules:
       elements.dischargePatientButton?.addEventListener("click", () => dischargePatient());
       $("#patientBuildChecklistButton").addEventListener("click", buildPatientChecklistInWorkspace);
       elements.patientBuildChecklistRailButton?.addEventListener("click", buildPatientChecklistInWorkspace);
-      $("#patientCopyWorkupButton").addEventListener("click", () => $("#copyWorkupButton").click());
       elements.patientOpenEvidenceFromWorkupButton?.addEventListener("click", () => setPatientTab("evidence", { focusPanel: true }));
       elements.patientWorkupMarkNormalButton?.addEventListener("click", () => setPatientTab("checklist", { focusPanel: true }));
       elements.patientManageDefaultsButton?.addEventListener("click", () => {
@@ -37593,9 +37382,13 @@ Rules:
       elements.addPatientChecklistItemButton?.addEventListener("click", addPatientChecklistItemFromEditor);
       elements.savePatientChecklistItemButton?.addEventListener("click", saveSelectedPatientChecklistItem);
       elements.removePatientChecklistItemButton?.addEventListener("click", removeSelectedPatientChecklistItem);
-      elements.patientChecklistPatchSectionSelect?.addEventListener("change", () => {
+      function handlePatientChecklistPatchSectionChange(event) {
+        syncPatientChecklistPatchSectionSelects(event?.target?.value || patientChecklistPatchSectionKey());
+        renderOpenEvidence();
         renderPatientChecklistPatchPreview(elements.patientChecklistPatchInput?.value || "");
-      });
+      }
+      elements.patientChecklistPatchSectionSelect?.addEventListener("change", handlePatientChecklistPatchSectionChange);
+      elements.patientEvidenceChecklistSectionSelect?.addEventListener("change", handlePatientChecklistPatchSectionChange);
       elements.copyPatientChecklistPatchPromptButton?.addEventListener("click", copyPatientChecklistPatchPrompt);
       elements.openPatientChecklistPatchEvidenceButton?.addEventListener("click", () => {
         window.open("https://www.openevidence.com/", "_blank", "noopener,noreferrer");
@@ -37765,22 +37558,10 @@ Rules:
             }
           }, 140);
         });
-      $("#workspaceDeidPreviewButton").addEventListener("click", () => {
-        saveWorkspaceContext({ announce: false });
-        ensureRedactedContext();
-        showView("deid");
-      });
+      $("#workspaceDeidPreviewButton").addEventListener("click", () => runWorkspaceDeid());
       $("#workspaceSendPhoneButton")?.addEventListener("click", () => {
         preparePhoneHandoff();
       });
-      $("#workspaceHandoffButton").addEventListener("click", () => {
-        preparePhoneHandoff();
-      });
-      $("#workspaceFinalReviewButton").addEventListener("click", () => {
-        state.selectedTaskId = "final_rounds_update";
-        showView("evidence");
-      });
-      $("#seeAllTasksButton").addEventListener("click", () => showView("evidence"));
       $("#evidenceToHandoffButton")?.addEventListener("click", () => preparePhoneHandoff());
       $("#copyPromptButton").addEventListener("click", () => {
         const { task } = getOpenEvidencePromptText();
@@ -37967,7 +37748,7 @@ Rules:
 	      };
 	      elements.bedsideNoteInput.addEventListener("input", handleBedsideNoteInput);
 	      elements.bedsidePhoneNoteInput?.addEventListener("input", handleBedsideNoteInput);
-      $("#copyFinalUpdateButton").addEventListener("click", () => {
+      $("#copyFinalUpdateButton")?.addEventListener("click", () => {
         const text = buildFinalUpdateText();
         openPhiOverlay({
           title: "PHI safety check for final update",
@@ -38018,17 +37799,17 @@ Rules:
 
     const desktopPanelRoutes = {
       b01: { view: "workspace", prime: "dashboard", sourceMode: "admission" },
-      b02: { view: "final", prime: "continuity-final", sourceMode: "continuity" },
+      b02: { view: "evidence", prime: "continuity-final", sourceMode: "continuity" },
       b03: { view: "workup", prime: "workup", sourceMode: "admission" },
       b04: { view: "workspace", prime: "start", sourceMode: "admission" },
       b05: { view: "workspace", prime: "roster", sourceMode: "admission" },
-      b06: { view: "intake", prime: "intake-admission", sourceMode: "admission" },
-      b07: { view: "intake", prime: "intake-admission", sourceMode: "admission" },
-      b08: { view: "deid", prime: "deid", sourceMode: "admission" },
+      b06: { view: "workspace", prime: "intake-admission", sourceMode: "admission" },
+      b07: { view: "workspace", prime: "intake-admission", sourceMode: "admission" },
+      b08: { view: "workspace", prime: "deid", sourceMode: "admission" },
       b09: { view: "evidence", prime: "evidence", sourceMode: "admission" },
       b10: { view: "workup", prime: "workup", sourceMode: "admission" },
-      b11: { view: "intake", prime: "new-admission", sourceMode: "admission" },
-      b12: { view: "intake", prime: "continuity-intake", sourceMode: "continuity" }
+      b11: { view: "workspace", prime: "new-admission", sourceMode: "admission" },
+      b12: { view: "workspace", prime: "continuity-intake", sourceMode: "continuity" }
     };
 
     function queryText() {
@@ -38051,14 +37832,14 @@ Rules:
     function routeForNamedView(viewName) {
       const routes = {
         workspace: { panel: "page-workspace", view: "workspace", prime: "start", sourceMode: "admission" },
-        intake: { panel: "page-intake", view: "intake", prime: "intake-admission", sourceMode: "admission" },
-        deid: { panel: "page-deid", view: "deid", prime: "deid", sourceMode: "admission" },
+        intake: { panel: "page-context", view: "workspace", prime: "intake-admission", sourceMode: "admission" },
+        deid: { panel: "page-deid", view: "workspace", prime: "deid", sourceMode: "admission" },
         workup: { panel: "page-workup", view: "workup", prime: "workup", sourceMode: "admission" },
         studio: { panel: "page-studio", view: "studio", prime: "studio", sourceMode: "admission" },
         evidence: { panel: "page-evidence", view: "evidence", prime: "evidence", sourceMode: "admission" },
         handoff: { panel: "page-handoff", view: "handoff", prime: "handoff", sourceMode: "admission" },
         bedside: { panel: "page-bedside", view: "bedside", prime: "bedside", sourceMode: "admission" },
-        final: { panel: "page-final", view: "final", prime: "final", sourceMode: "continuity" },
+        final: { panel: "page-final", view: "evidence", prime: "final", sourceMode: "continuity" },
         privacy: { panel: "page-privacy", view: "privacy", prime: "start", sourceMode: "admission" }
       };
       return routes[viewName] || null;
@@ -38067,8 +37848,7 @@ Rules:
     function findNamedViewRoute() {
       const params = new URLSearchParams(window.location.search);
       const requested = (params.get("page") || params.get("auditPage") || params.get("view") || "").toLowerCase();
-      if (views.includes(requested)) return routeForNamedView(requested);
-      return null;
+      return routeForNamedView(requested);
     }
 
     function chooseInitialRoute() {
@@ -38154,7 +37934,7 @@ Rules:
 
     function applyInitialRouteState(route) {
       document.body.dataset.panelRoute = route.panel || "default";
-      if (route.sourceMode) setSourceMode(route.sourceMode, { fill: Boolean(route.prime && route.prime !== "start") });
+      if (route.sourceMode) setSourceMode(route.sourceMode);
       if (route.panel === "b09") {
         const medicationTask = openEvidenceTasks.find((task) => /medication safety/i.test(taskLabel(task)));
         if (medicationTask) state.selectedTaskId = medicationTask.id;
@@ -38175,10 +37955,10 @@ Rules:
       } else if (route.prime === "continuity-final") {
         primeChecklistWorkflow({ sourceMode: "continuity", withAnswers: true, withSummary: true });
       } else if (route.prime === "continuity-intake") {
-        setSourceMode("continuity", { fill: true });
+        setSourceMode("continuity");
         ensureRedactedContext("continuity");
       } else if (route.prime === "new-admission" || route.prime === "intake-admission") {
-        setSourceMode("admission", { fill: true });
+        setSourceMode("admission");
       } else if (route.prime === "dashboard") {
         primeChecklistWorkflow({ sourceMode: "admission", withPhone: true });
       }
