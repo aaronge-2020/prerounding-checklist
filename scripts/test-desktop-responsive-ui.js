@@ -1017,11 +1017,8 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   await phonePage.waitForSelector("#bedsideCompletionPanel:not([hidden])");
   await phonePage.waitForSelector("#bedsideCompletionQrCode svg", { timeout: 45000 });
   const returnQrText = await phonePage.evaluate(() => document.querySelector("#bedsideCompletionPanel")?.dataset.qrText || "");
-  assert(/#H=/.test(returnQrText) && returnQrText.length < 180, "completed phone return QR should expose a short one-scan mailbox URL");
-  const returnMailboxToken = new URL(returnQrText, baseUrl).hash.replace(/^#H=/, "");
-  const returnMailboxId = returnMailboxToken.split(".")[0];
-  const storedReturnMailbox = mailbox.store.get(returnMailboxId);
-  assert(storedReturnMailbox?.ciphertext && storedReturnMailbox?.iv, `mailbox return QR should upload encrypted return findings before display: ${JSON.stringify({ returnMailboxId, hasStored: Boolean(storedReturnMailbox) })}`);
+  assert(/^(?:R4:|R:|rgz\.|rj\.)/.test(returnQrText) && !/#H=/.test(returnQrText), `completed phone return QR should be a direct local return token in HIPAA-restricted mode: ${returnQrText.slice(0, 120)}`);
+  assert(mailbox.store.size === 0, `HIPAA-restricted default should not upload phone return findings to the encrypted mailbox: ${mailbox.store.size}`);
   const completionAudit = await phonePage.evaluate(() => ({
     title: document.querySelector("#bedsideCompletionTitle")?.textContent || "",
     progress: document.querySelector("#bedsideMobileProgress")?.textContent || "",
@@ -1110,7 +1107,7 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   await desktopPage.click("#startReturnQrScannerButton");
   await desktopPage.waitForFunction(() => /Phone checklist answers imported/i.test(document.querySelector("#handoffStatus")?.textContent || ""), null, { timeout: 45000 });
   const returnScannerElapsedMs = Date.now() - returnScannerStartedAt;
-  assert(returnScannerElapsedMs < 3000, `desktop return scanner should complete one-scan mailbox import in under 3 seconds, took ${returnScannerElapsedMs}ms`);
+  assert(returnScannerElapsedMs < 3000, `desktop return scanner should complete direct local import in under 3 seconds, took ${returnScannerElapsedMs}ms`);
   await desktopPage.waitForFunction(() => (
     document.body.dataset.view === "workspace"
       && document.body.dataset.patientTab === "evidence"
@@ -1136,7 +1133,7 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   assert(desktopScannerAudit.importSummaryVisible && desktopScannerAudit.importSummaryCount >= 1 && /Answer:/i.test(desktopScannerAudit.importSummaryText), `desktop prompts screen should summarize imported phone answers for confirmation: ${JSON.stringify(desktopScannerAudit)}`);
   assert(/Opening prompts/i.test(desktopScannerAudit.liveStatus), `desktop should announce prompt navigation after phone import: ${JSON.stringify(desktopScannerAudit)}`);
   assert(/imported/i.test(desktopScannerAudit.scannerStatus), `desktop scanner should report imported phone QR: ${JSON.stringify(desktopScannerAudit)}`);
-  assert(/#H=/.test(desktopScannerAudit.importValue), `desktop scanner should place scanned mailbox QR text in the import box: ${JSON.stringify(desktopScannerAudit)}`);
+  assert(/^(?:R4:|R:|rgz\.|rj\.)/.test(desktopScannerAudit.importValue), `desktop scanner should place scanned direct return QR text in the import box: ${JSON.stringify(desktopScannerAudit)}`);
   assert(desktopScannerAudit.answeredRows >= 1, `desktop scanner should merge answered checklist rows: ${JSON.stringify(desktopScannerAudit)}`);
   assert(desktopScannerAudit.firstFacingMode === "user", `desktop return scanner should prefer the user-facing laptop camera: ${JSON.stringify(desktopScannerAudit)}`);
   assert(/focusMode.*continuous|continuous.*focusMode/.test(desktopScannerAudit.appliedConstraints), `desktop return scanner should request continuous focus when available: ${JSON.stringify(desktopScannerAudit)}`);

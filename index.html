@@ -15685,6 +15685,7 @@
     const PHONE_QR_DIRECT_TOKEN_LIMIT = 1100;
     const PHONE_QR_CHUNK_TOKEN_SIZE = 260;
     const PHONE_QR_CAROUSEL_INTERVAL_MS = 850;
+    const PHONE_HANDOFF_CLOUD_MAILBOX_ENABLED = false;
     const PHONE_HANDOFF_MAILBOX_TTL_MS = 10 * 60 * 1000;
     const PHONE_HANDOFF_MAILBOX_ID_BYTES = 16;
     const PHONE_HANDOFF_MAILBOX_KEY_BYTES = 32;
@@ -30443,7 +30444,7 @@ Rules:
     }
 
     function phoneHandoffMailboxConfigured() {
-      return Boolean(normalizeSupabaseUrl(WORKUP_STUDIO_DEFAULT_BACKEND.url) && WORKUP_STUDIO_DEFAULT_BACKEND.publishableKey);
+      return Boolean(PHONE_HANDOFF_CLOUD_MAILBOX_ENABLED && normalizeSupabaseUrl(WORKUP_STUDIO_DEFAULT_BACKEND.url) && WORKUP_STUDIO_DEFAULT_BACKEND.publishableKey);
     }
 
     function phoneHandoffMailboxHeaders() {
@@ -30456,7 +30457,7 @@ Rules:
     }
 
     async function phoneHandoffMailboxRpc(name, body = {}) {
-      if (!phoneHandoffMailboxConfigured()) throw new Error("Online QR handoff is not configured.");
+      if (!phoneHandoffMailboxConfigured()) throw new Error("Online QR handoff is disabled for HIPAA-restricted local transfer.");
       const path = `/rest/v1/rpc/${encodeURIComponent(name)}`;
       const response = await fetch(`${normalizeSupabaseUrl(WORKUP_STUDIO_DEFAULT_BACKEND.url)}${path}`, {
         method: "POST",
@@ -31469,7 +31470,7 @@ Rules:
         } catch (error) {
           lastError = error;
           if (sequence === phoneQrRenderSequence) {
-            elements.phoneQrStatus.textContent = "One-frame local QR is too large and online handoff is unavailable. Preparing split local QR frames.";
+            elements.phoneQrStatus.textContent = "One-frame local QR is too large. HIPAA-restricted mode is preparing split local QR frames instead of cloud handoff.";
           }
         }
       }
