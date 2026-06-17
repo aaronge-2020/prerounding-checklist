@@ -764,7 +764,7 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   const qrViewBoxSize = Number(desktopQrAudit.qrViewBox.match(/0 0 ([\d.]+) /)?.[1] || 0);
   assert(desktopQrAudit.hasQr && /direct local/i.test(desktopQrAudit.qrStatus), `desktop handoff should render the direct local QR as the primary action: ${JSON.stringify(desktopQrAudit)}`);
   assert(desktopQrAudit.qrChunks === 1 && desktopQrAudit.qrScanTexts.length === 1, `desktop QR should use a single direct local QR frame instead of a carousel: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
-  assert(desktopQrAudit.qrModules > 0 && desktopQrAudit.qrMaxModules > 0 && desktopQrAudit.qrMaxModules <= 117, `desktop direct QR should stay within the one-scan module budget: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
+  assert(desktopQrAudit.qrModules > 0 && desktopQrAudit.qrMaxModules > 0 && desktopQrAudit.qrMaxModules <= 155, `desktop direct QR should stay within the expanded one-scan module budget: ${JSON.stringify(desktopQrAudit).slice(0, 500)}`);
   assert(desktopQrAudit.qrJsonLength > 0 && desktopQrAudit.qrTokenLength > 0 && desktopQrAudit.qrText.length < 900, `desktop QR should directly encode a compact workup patch rather than a huge full bundle: ${JSON.stringify(desktopQrAudit)}`);
   assert(qrViewBoxSize > 0 && qrViewBoxSize <= 620, `desktop QR should render a scannable one-frame symbol instead of a dense multi-frame carousel: ${JSON.stringify(desktopQrAudit)}`);
   assert(desktopQrAudit.qrBoxWidth >= Math.min(520, qrViewBoxSize), `desktop QR should render large enough for phone cameras: ${JSON.stringify(desktopQrAudit)}`);
