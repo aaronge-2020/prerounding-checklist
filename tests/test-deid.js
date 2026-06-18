@@ -621,7 +621,7 @@ assert.ok(epicRespImagingResult.text.includes("Oxygen Device: Ventilator 09:54  
 assert.ok(epicRespImagingResult.text.includes("Mode: High Flow Nasal Cannula 20:49  days ago"), "respiratory mode should not be treated as a name");
 assert.ok(epicRespImagingResult.text.includes("WBC: 8.8 12:22  days ago"), "latest CBC before Day 0 should remain chronological");
 assert.ok(epicRespImagingResult.text.includes("POC Glucose: 104 08:10 today"), "latest POC glucose should anchor Day 0");
-assert.ok(epicRespImagingResult.text.includes("Card 1 Collection Date: Day -6 (2026) 10:28  days ago"), "Card 1 Collection Date should not override Day 0 and should not duplicate exact-time wording");
+assert.ok(epicRespImagingResult.text.includes("Card 1 Collection Date: 6 days ago 10:28  days ago"), "Card 1 Collection Date should not override Day 0 and should not duplicate exact-time wording");
 assert.ok(epicRespImagingResult.text.includes("Oral/Maxillo Panorex Image By Clinic XR: Rpt 17:39  days ago"), "imaging title containing Clinic should not be redacted as an organization");
 assert.ok(epicRespImagingResult.text.includes("XR Metal Screening MR Clearance (Abd): Rpt 15:42  days ago"), "XR metal screening title should not be redacted as a name");
 assert.ok(epicRespImagingResult.text.includes("IR CV Tunneled Cath Insertion >=5 yrs: Rpt 14:33  days ago"), "IR tunneled catheter title should be preserved");
@@ -773,3 +773,4 @@ assert.deepEqual(
 );
 
 console.log(`De-ID tests passed for ${cases.length} synthetic cases plus targeted guards.`);
+

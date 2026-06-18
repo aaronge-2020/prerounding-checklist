@@ -1138,6 +1138,18 @@ function isLikelyDateFalsePositive(rawText, start, end) {
     return true;
   }
 
+  // Dot-separated number pairs (e.g. "13.5") are decimal values, not dates.
+  // Dates use / or -, dots appear in lab reference ranges like "13.5-17.5".
+  if (/^\d{1,2}\.\d{1,2}$/.test(span) && !hasDateContext) {
+    return true;
+  }
+
+  // Dot-separated number.twoDigit (e.g. "5.25") — looks like M.YY date but
+  // far more likely to be a decimal lab value unless in a date context line.
+  if (/^\d{1,2}\.\d{2}$/.test(span) && !hasDateContext && !/(?:date|dos|collected|drawn|ordered|admit)/i.test(before + after)) {
+    return true;
+  }
+
   if (isLikelyNonDateSlashMeasurement(rawText, start, end)) {
     return true;
   }
@@ -1760,8 +1772,8 @@ export function filterLikelyFalsePositiveEntities(rawText, entities) {
 function generalizeAgesOver89(text) {
   return text
     .replace(/\bAge\s*[:#]?\s*(?:9[0-9]|1[0-9]{2})\b/gi, "Age: 90 or older")
-    .replace(/\b(?:9[0-9]|1[0-9]{2})[-\s]*(?:year[-\s]*old|years old|yo|y\/o)\b(?:\s*(?:male|female|man|woman|M|F))?/gi, "90 or older")
-    .replace(/\b(?:9[0-9]|1[0-9]{2})\s*(?:M|F)\b/g, "90 or older");
+    .replace(/(?<!\d)(?:9[0-9]|1[0-9]{2})[-\s]*(?:year[-\s]*old|years old|yo|y\/o)\b(?:\s*(?:male|female|man|woman|M|F))?/gi, "90 or older")
+    .replace(/(?<!\d)(?:9[0-9]|1[0-9]{2})\s*(?:M|F)\b/g, "90 or older");
 }
 
 function inferTwoDigitYear(twoDigitValue) {
