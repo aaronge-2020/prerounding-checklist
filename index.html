@@ -246,8 +246,9 @@
     .phone-return-qr-actions .btn {
       width: 100%;
       min-width: 0;
-      white-space: normal;
-      overflow-wrap: anywhere;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       line-height: 1.2;
     }
 
@@ -1735,8 +1736,9 @@
       justify-content: center;
       line-height: 1.2;
       text-align: center;
-      white-space: normal;
-      overflow-wrap: anywhere;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .btn-primary {
@@ -3398,6 +3400,8 @@
       font-size: 20px;
       line-height: 1.15;
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .studio-context-summary,
@@ -3789,7 +3793,6 @@
       gap: 5px;
       padding: 5px 7px;
       font-size: 12px;
-      white-space: nowrap;
     }
 
     .studio-item-toolbar .btn .icon-box {
@@ -4035,10 +4038,7 @@
     .studio-item-button span,
     .studio-item-table-head span {
       min-width: 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
       overflow-wrap: anywhere;
-      white-space: nowrap;
     }
 
     .studio-item-button strong {
@@ -4121,6 +4121,7 @@
       min-width: 0;
       min-height: 76px;
       overflow-x: hidden;
+      overflow-wrap: anywhere;
       resize: vertical;
     }
 
@@ -4174,6 +4175,7 @@
       font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
       font-size: 12px;
       line-height: 1.35;
+      overflow-wrap: anywhere;
     }
 
     .studio-source-grid {
@@ -4222,6 +4224,7 @@
     .studio-inspector textarea {
       min-height: 128px;
       resize: vertical;
+      overflow-wrap: anywhere;
     }
 
     .studio-prompt-panel,
@@ -4280,6 +4283,7 @@
       font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
       font-size: 12px;
       line-height: 1.35;
+      overflow-wrap: anywhere;
     }
 
     .studio-paste-panel textarea {
@@ -4287,6 +4291,7 @@
       font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
       font-size: 12px;
       line-height: 1.35;
+      overflow-wrap: anywhere;
     }
 
     .studio-save-panel .button-row {
@@ -4344,10 +4349,10 @@
       font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
       font-size: 12px;
       line-height: 1.35;
+      overflow-wrap: anywhere;
     }
 
     .studio-new-workup-button {
-      white-space: nowrap;
       gap: 6px;
       font-size: 13px;
       padding: 6px 14px;
@@ -4438,6 +4443,7 @@
       font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
       font-size: 13px;
       line-height: 1.45;
+      overflow-wrap: anywhere;
     }
 
     .studio-modal-body .muted {
@@ -6685,14 +6691,6 @@
       justify-content: space-between;
       gap: 14px;
       margin-bottom: 12px;
-    }
-
-    .modal-card header .btn {
-      flex-shrink: 0;
-      white-space: nowrap;
-      overflow-wrap: normal;
-      width: auto;
-      min-width: fit-content;
     }
 
     .quick-deid-grid {
@@ -16478,7 +16476,7 @@
           <h2 id="phiOverlayTitle">PHI review before copy</h2>
           <p class="muted" id="phiOverlayCopy">Check the preview for identifiers before continuing.</p>
         </div>
-        <button class="btn btn-secondary" id="closePhiOverlayButton" type="button">Close</button>
+        <button class="square-button" id="closePhiOverlayButton" type="button" aria-label="Close PHI overlay">x</button>
       </header>
       <pre id="phiPreviewText" aria-label="PHI review preview"></pre>
       <div class="notice warning">This is PHI risk reduction, not HIPAA certification. Confirm the content is de-identified and institutionally appropriate before sharing externally.</div>
@@ -16496,7 +16494,7 @@
           <h2 id="phoneReturnQrTitle">Return findings to laptop</h2>
           <p class="muted">Show this QR to the laptop scanner. It contains the local bedside answers; it is not uploaded anywhere.</p>
         </div>
-        <button class="btn btn-secondary" id="closePhoneReturnQrButton" type="button">Close</button>
+        <button class="square-button" id="closePhoneReturnQrButton" type="button" aria-label="Close phone return QR">x</button>
       </header>
       <div class="phone-qr-panel" id="phoneReturnQrPanel">
         <div class="phone-qr-code" id="phoneReturnQrCode" aria-label="Phone findings return QR code"></div>
@@ -16521,7 +16519,7 @@
           <h2 id="quickDeidTitle">Standalone local de-ID</h2>
           <p class="muted">Use this for quick local redaction only. It does not save text or update the patient context or checklist.</p>
         </div>
-        <button class="btn btn-secondary" id="closeQuickDeidButton" type="button">Close</button>
+        <button class="square-button" id="closeQuickDeidButton" type="button" aria-label="Close quick de-ID">x</button>
       </header>
       <div class="quick-deid-grid">
         <div>
@@ -17385,6 +17383,22 @@
       workupStudioSignInButton: $("#workupStudioSignInButton"),
       workupStudioLoadBackendDraftsButton: $("#workupStudioLoadBackendDraftsButton"),
       workupStudioSignOutButton: $("#workupStudioSignOutButton"),
+      workupStudioNewWorkupButton: $("#workupStudioNewWorkupButton"),
+      workupStudioNewWorkupDialog: $("#workupStudioNewWorkupDialog"),
+      workupStudioNewWorkupDialogClose: $("#workupStudioNewWorkupDialogClose"),
+      workupStudioNewWorkupComplaintInput: $("#workupStudioNewWorkupComplaintInput"),
+      workupStudioNewWorkupIdInput: $("#workupStudioNewWorkupIdInput"),
+      workupStudioNewWorkupPopulationSelect: $("#workupStudioNewWorkupPopulationSelect"),
+      workupStudioNewWorkupSettingSelect: $("#workupStudioNewWorkupSettingSelect"),
+      workupStudioNewWorkupTriggersInput: $("#workupStudioNewWorkupTriggersInput"),
+      workupStudioNewWorkupGeneratePromptButton: $("#workupStudioNewWorkupGeneratePromptButton"),
+      workupStudioNewWorkupPromptOutput: $("#workupStudioNewWorkupPromptOutput"),
+      workupStudioNewWorkupCopyPromptButton: $("#workupStudioNewWorkupCopyPromptButton"),
+      workupStudioNewWorkupOpenEvidenceButton: $("#workupStudioNewWorkupOpenEvidenceButton"),
+      workupStudioNewWorkupPasteInput: $("#workupStudioNewWorkupPasteInput"),
+      workupStudioNewWorkupParseStatus: $("#workupStudioNewWorkupParseStatus"),
+      workupStudioNewWorkupCreateButton: $("#workupStudioNewWorkupCreateButton"),
+      workupStudioNewWorkupCancelButton: $("#workupStudioNewWorkupCancelButton"),
       workupOrdersPanel: $("#workupOrdersPanel"),
       decisionTreePanel: $("#decisionTreePanel"),
       workspaceFindingsGateNotice: $("#workspaceFindingsGateNotice"),

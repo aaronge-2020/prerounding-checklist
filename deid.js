@@ -2145,7 +2145,8 @@ export function collectTemporalEntities(rawText) {
 
 function chooseCurrentSourceDate(temporalEntities, currentDate = null) {
   if (currentDate) {
-    return new Date(currentDate);
+    const d = new Date(currentDate);
+    return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
   }
   const parsedEntities = temporalEntities
     .map((entity) => ({
@@ -2215,13 +2216,50 @@ function formatMonthRelation(date, currentSourceDate, year) {
   if (!date || !currentSourceDate) {
     return year ? `month in ${year}` : "relative month";
   }
-  const diff = monthDiff(date, currentSourceDate);
-  const absDiff = Math.abs(diff);
-  if (diff === 0) {
-    return `same month as Day 0${year ? ` (${year})` : ""}`;
+  const dayDiff = Math.round((date.getTime() - currentSourceDate.getTime()) / 86400000);
+  return formatRelativeDayDiff(dayDiff, "", "", year);
+}
+
+function formatDayRelation(date, currentSourceDate, year, timeBucket = "", clockTime = "", useExactClockTime = false) {
+  if (!date || !currentSourceDate) {
+    return year ? `relative day (${year})` : "relative day";
   }
-  const direction = diff < 0 ? "before" : "after";
-  return `about ${absDiff} month${absDiff === 1 ? "" : "s"} ${direction} Day 0${year ? ` (${year})` : ""}`;
+  const dayDiff = Math.round((date.getTime() - currentSourceDate.getTime()) / 86400000);
+  return formatRelativeDayDiff(dayDiff, timeBucket, clockTime, year, useExactClockTime);
+}
+
+function formatRelativeDayDiff(dayDiff, timeBucket = "", clockTime = "", year = null, useExactClockTime = false) {
+  const absDiff = Math.abs(dayDiff);
+  const isPast = dayDiff <= 0;
+  const suffix = isPast ? "ago" : "from now";
+
+  let body;
+  if (absDiff === 0) {
+    body = "today";
+  } else if (absDiff <= 30) {
+    body = absDiff === 1 ? "1 day" : `${absDiff} days`;
+  } else if (absDiff <= 365) {
+    const months = Math.round(absDiff / 30.44);
+    body = months === 1 ? "1 month" : `${months} months`;
+  } else {
+    const years = Math.floor(absDiff / 365.25);
+    const remainingDays = Math.round(absDiff - years * 365.25);
+    const months = Math.round(remainingDays / 30.44);
+    if (months === 12) {
+      body = `${years + 1} years`;
+    } else if (months === 0) {
+      body = years === 1 ? "1 year" : `${years} years`;
+    } else {
+      body = `${years} year${years === 1 ? "" : "s"} and ${months} month${months === 1 ? "" : "s"}`;
+    }
+  }
+
+  if (body === "today") {
+    if (useExactClockTime && clockTime) return `${clockTime} today`;
+    return timeBucket ? `${timeBucket} today` : "today";
+  }
+  const timeText = useExactClockTime && clockTime ? ` at ${clockTime}` : timeBucket ? ` ${timeBucket}` : "";
+  return `${body} ${suffix}${timeText}`;
 }
 
 function isInsideLabChronologyBlock(text, start) {
@@ -2256,18 +2294,6 @@ function shouldPreserveExactClinicalTime(entity, rawText = "") {
   return /\b(?:lab|labs|result|results|resulted|issued|reported|verified|received|collected|collection|specimen|drawn|obtained|sample|poc|glucose|bmp|cmp|cbc|chem(?:istry)?|vital|vitals|temp|heart rate|hr\b|resp|spo2|oxygen|bp\b|map\b|wbc|hemoglobin|hematocrit|platelets|sodium|potassium|chloride|creatinine|bun|calcium|magnesium|phosphorus|inr|protime|troponin|lactate|vancomycin|tacrolimus)\b/.test(context);
 }
 
-function formatDayRelation(date, currentSourceDate, year, timeBucket = "", clockTime = "", useExactClockTime = false) {
-  if (!date || !currentSourceDate) {
-    return year ? `relative day (${year})` : "relative day";
-  }
-  const dayDiff = Math.round((date.getTime() - currentSourceDate.getTime()) / 86400000);
-  const dayLabel = `Day ${dayDiff === 0 ? "0" : dayDiff > 0 ? `+${dayDiff}` : String(dayDiff)}`;
-  if (useExactClockTime && clockTime) {
-    return `${clockTime} on ${dayLabel}${year ? ` (${year})` : ""}`;
-  }
-  return `${dayLabel}${timeBucket ? ` ${timeBucket}` : ""}${year ? ` (${year})` : ""}`;
-}
-
 function formatRelativeTemporalPlaceholder(entity, currentSourceDate, fallbackYear = null) {
   const span = entity.span || "";
   const temporal = entity.temporal || parseTemporalSpan(span, entity);
@@ -2286,7 +2312,7 @@ function formatRelativeTemporalPlaceholder(entity, currentSourceDate, fallbackYe
     timelineYear,
     temporal.timeBucket || "",
     temporal.clockTime || "",
-    shouldPreserveExactClinicalTime(entity, entity.rawText || "")
+    Boolean(temporal.clockTime)
   );
 }
 

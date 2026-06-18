@@ -349,14 +349,14 @@ Hospital Course by Date
 5/8 0454: Morning labs drawn
 DOB: 03/14/1998`;
 const timelineDateResult = deidentifyTextStructuredOnly(timelineDateText);
-assert.ok(timelineDateResult.text.includes("Admission date: Day -7 (2026)"), "admission date should preserve relation to current source date");
-assert.ok(timelineDateResult.text.includes("Symptoms changed on Day -1 (2026)"), "yesterday-like change should be clear");
-assert.ok(timelineDateResult.text.includes("Collected: Day 0 (2026)"), "latest lab/vital style date should be labeled as current source date");
-assert.ok(timelineDateResult.text.includes("Follow-up on Day +2 (2026)"), "future date should preserve relation to current source date");
-assert.ok(timelineDateResult.text.includes("Issue resolved on Day -28 (2026)"), "older resolved issue date should preserve day-level relation");
-assert.ok(timelineDateResult.text.includes("PET stress in about 2 months before Day 0 (2026)"), "month/year dates should preserve month relation without exact month");
-assert.ok(timelineDateResult.text.includes("Day -2 (2026): Started treatment"), "course date labels should preserve order");
-assert.ok(timelineDateResult.text.includes("04:54 on Day 0 (2026): Morning labs drawn"), "lab/result-style date-attached time should preserve exact clock time");
+assert.ok(timelineDateResult.text.includes("Admission date: 7 days ago"), "admission date should preserve relation to current source date");
+assert.ok(timelineDateResult.text.includes("Symptoms changed on 1 day ago"), "yesterday-like change should be clear");
+assert.ok(timelineDateResult.text.includes("Collected: today"), "latest lab/vital style date should be labeled as current source date");
+assert.ok(timelineDateResult.text.includes("Follow-up on 2 days from now"), "future date should preserve relation to current source date");
+assert.ok(timelineDateResult.text.includes("Issue resolved on 28 days ago"), "older resolved issue date should preserve day-level relation");
+assert.ok(timelineDateResult.text.includes("PET stress in 2 months ago"), "month/year dates should preserve month relation without exact month");
+assert.ok(timelineDateResult.text.includes("2 days ago: Started treatment"), "course date labels should preserve order");
+assert.ok(timelineDateResult.text.includes("04:54 today: Morning labs drawn"), "lab/result-style date-attached time should preserve exact clock time");
 assert.deepEqual(timelineDateResult.residualWarnings, [], "timeline placeholders should not create PHI warnings");
 assert.ok(!timelineDateResult.text.includes("2026-05-01"), "exact ISO date should not leak");
 assert.ok(!timelineDateResult.text.includes("05/08/2026"), "exact slash date should not leak");
@@ -374,10 +374,10 @@ const crossYearTimelineText = `Hospital Course by Date
 Current labs 1/2 0600: Creatinine stable
 Follow-up on 1/3`;
 const crossYearTimelineResult = deidentifyTextStructuredOnly(crossYearTimelineText);
-assert.ok(crossYearTimelineResult.text.includes("Day -2"), "Dec 31 should resolve to two days before Jan 2, not the following December");
-assert.ok(crossYearTimelineResult.text.includes("Day -1"), "Jan 1 should resolve to one day before Jan 2");
-assert.ok(crossYearTimelineResult.text.includes("Current labs 06:00 on Day 0"), "current shorthand lab date should anchor the chart timeline with exact clock time");
-assert.ok(crossYearTimelineResult.text.includes("Follow-up on Day +1"), "near-future shorthand follow-up should remain chronological");
+assert.ok(crossYearTimelineResult.text.includes("2 days ago"), "Dec 31 should resolve to two days before Jan 2, not the following December");
+assert.ok(crossYearTimelineResult.text.includes("1 day ago"), "Jan 1 should resolve to one day before Jan 2");
+assert.ok(crossYearTimelineResult.text.includes("Current labs 06:00 today"), "current shorthand lab date should anchor the chart timeline with exact clock time");
+assert.ok(crossYearTimelineResult.text.includes("Follow-up on 1 day from now"), "near-future shorthand follow-up should remain chronological");
 assert.ok(!/Day [+-]?(?:36[0-9]|3[7-9]\d)/.test(crossYearTimelineResult.text), "cross-year shorthand dates should not produce near-one-year offsets");
 
 const priorMonthYearAnchorText = `Prior transplant evaluation in 11/2025
@@ -386,11 +386,11 @@ Labs 1/2 0454: Creatinine stable
 12/31: Admitted for monitoring
 1/1: Symptoms improved`;
 const priorMonthYearAnchorResult = deidentifyTextStructuredOnly(priorMonthYearAnchorText);
-assert.ok(priorMonthYearAnchorResult.text.includes("Prior transplant evaluation in about 2 months before Day 0 (2026)"), "prior month/year should make Jan shorthand resolve to the following year");
-assert.ok(priorMonthYearAnchorResult.text.includes("PET stress in about 1 month before Day 0 (2026)"), "month/year history should remain relative to inferred Day 0");
-assert.ok(priorMonthYearAnchorResult.text.includes("Labs 04:54 on Day 0 (2026)"), "no-year current labs should infer the year from prior explicit history and preserve exact clock time");
-assert.ok(priorMonthYearAnchorResult.text.includes("Day -2 (2026): Admitted for monitoring"), "Dec shorthand should attach to the prior year relative to Jan Day 0");
-assert.ok(priorMonthYearAnchorResult.text.includes("Day -1 (2026): Symptoms improved"), "Jan shorthand should stay in the inferred current year");
+assert.ok(priorMonthYearAnchorResult.text.includes("Prior transplant evaluation in 2 months ago"), "prior month/year should make Jan shorthand resolve to the following year");
+assert.ok(priorMonthYearAnchorResult.text.includes("PET stress in 1 month ago"), "month/year history should remain relative to inferred Day 0");
+assert.ok(priorMonthYearAnchorResult.text.includes("Labs 04:54 today"), "no-year current labs should infer the year from prior explicit history and preserve exact clock time");
+assert.ok(priorMonthYearAnchorResult.text.includes("2 days ago: Admitted for monitoring"), "Dec shorthand should attach to the prior year relative to Jan Day 0");
+assert.ok(priorMonthYearAnchorResult.text.includes("1 day ago: Symptoms improved"), "Jan shorthand should stay in the inferred current year");
 assert.ok(!/Day [+-]?(?:36[0-9]|3[7-9]\d)/.test(priorMonthYearAnchorResult.text), "month/year anchors should not create near-one-year offsets");
 
 const sameMorningLabTimeText = `BMP Collected: 06/06/2026 06:12 Na 132, K 3.4, Cr 1.5
