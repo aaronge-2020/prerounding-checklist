@@ -3289,7 +3289,7 @@ export function createDeidentifier(options = {}) {
 
     if (mode === "model-only") {
       reportProgress(onProgress, { stage: "redacting", message: "Creating redacted preview...", percent: 0.9 });
-      return deidentifyFromEntities(rawText, modelEntities, modelResult);
+      return deidentifyFromEntities(rawText, modelEntities, modelResult, new Date());
     }
 
     reportProgress(onProgress, { stage: "structured", message: "Running structured redaction and date conversion...", percent: 0.76 });
@@ -3298,7 +3298,7 @@ export function createDeidentifier(options = {}) {
     reportProgress(onProgress, { stage: "aliases", message: "Checking repeated names and aliases...", percent: 0.84 });
     const { entities } = expandIdentityGraphEntities(rawText, [...structuredEntities, ...modelEntities]);
     reportProgress(onProgress, { stage: "redacting", message: "Creating redacted preview...", percent: 0.92 });
-    const result = deidentifyFromEntities(rawText, entities, modelResult);
+    const result = deidentifyFromEntities(rawText, entities, modelResult, new Date());
     reportProgress(onProgress, { stage: "complete", message: "De-identified preview ready.", percent: 1 });
     return result;
   }
