@@ -29025,7 +29025,7 @@ Rules:
       const contextRows = Object.entries(patient.context || {})
         .map(([label, value]) => `${label}: ${value}`)
         .filter(Boolean);
-      return [
+      const rawContext = [
         patient.title,
         patient.oneLine,
         `Patient concern: ${patient.concern || state.concern || "Not specified"}`,
@@ -29041,10 +29041,16 @@ Rules:
 	        draft.historyFindings ? `Bedside history findings:\n${draft.historyFindings}` : "",
 	        draft.examFindings ? `Bedside exam findings:\n${draft.examFindings}` : "",
 	        draft.bedsideNote ? `Reviewed bedside note:\n${draft.bedsideNote}` : "",
-	        objectiveDataContextText(),
-	        contextRows.length ? `Structured patient facts:\n${contextRows.join("\n")}` : ""
-	      ].filter(Boolean).join("\n\n");
-	    }
+        objectiveDataContextText(),
+        contextRows.length ? `Structured patient facts:\n${contextRows.join("\n")}` : ""
+      ].filter(Boolean).join("\n\n");
+      if (!rawContext.trim()) return "";
+      try {
+        return deidentifyTextStructuredOnly(rawContext, new Date()).text;
+      } catch (_) {
+        return rawContext;
+      }
+    }
 
     function reviewedSourceContextText() {
       return state.scrubbedText || selectedPatientContextText();
@@ -29846,6 +29852,9 @@ Rules:
       }
       if (!state.scrubbedText) {
         applyDeidResult(deidentifyTextStructuredOnly(getSourceText()));
+        for (const el of [elements.workspaceAdmissionInput, elements.workspaceLabsInput, elements.workspaceMedsInput, elements.workspaceNotesInput, elements.workspaceContinuityInput]) {
+          if (el) el.value = "";
+        }
       } else if (elements.deidPreview) {
         elements.deidPreview.textContent = state.scrubbedText;
         elements.deidTopStatus.innerHTML = '<span class="status-dot" aria-hidden="true"></span>Local de-ID complete';
@@ -29883,6 +29892,10 @@ Rules:
       };
       deidentifyText(getSourceText(), { onProgress: ({ percent, message }) => updateProgress(percent, message) }).then((result) => {
         applyDeidResult(result, { announce: false });
+        // Scrub raw PHI from input fields — only the de-identified preview persists.
+        for (const el of [elements.workspaceAdmissionInput, elements.workspaceLabsInput, elements.workspaceMedsInput, elements.workspaceNotesInput, elements.workspaceContinuityInput]) {
+          if (el) el.value = "";
+        }
         if (_deidModelReady && elements.deidContextModelStatus) {
           elements.deidContextModelStatus.className = "status-chip is-success";
           elements.deidContextModelStatus.textContent = "Model ready";
@@ -29934,6 +29947,10 @@ Rules:
       };
       deidentifyText(getSourceText(), { onProgress: ({ percent, message }) => updateProgress(percent, message) }).then((result) => {
         applyDeidResult(result, { announce: false });
+        // Scrub raw PHI from input fields — only the de-identified preview persists.
+        for (const el of [elements.workspaceAdmissionInput, elements.workspaceLabsInput, elements.workspaceMedsInput, elements.workspaceNotesInput, elements.workspaceContinuityInput]) {
+          if (el) el.value = "";
+        }
         if (_deidModelReady && elements.deidContextModelStatus) {
           elements.deidContextModelStatus.className = "status-chip is-success";
           elements.deidContextModelStatus.textContent = "Model ready";
