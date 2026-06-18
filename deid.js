@@ -170,6 +170,7 @@ const nonNameClinicalPhrases = new Set([
   "renal function", "heart failure", "respiratory failure", "altered mental",
   "general medicine", "type 1 diabetes mellitus", "type 2 diabetes mellitus", "free t4",
   "beta hydroxybutyrate", "beta-hydroxybutyrate",
+  "memorial day", "memorial day weekend",
   "fetal heart", "heart auscultation", "fetal heart auscultation",
   "asthma management", "childhood asthma", "childhood asthma management",
   "asthma clinic", "allergy and asthma clinic", "asthma associates",
@@ -672,20 +673,6 @@ const clinicalInstructionAnchorWords = new Set([
 
 
 
-
-// ── Auto-import clinical guard vocabulary (built from MeSH + RxNorm) ──
-// To update: npm run build:clinical-guard-full
-import {
-  medicationWords as _vwMedicationWords,
-  nonNameClinicalWords as _vwNonNameClinicalWords,
-  nonNameClinicalPhrases as _vwNonNameClinicalPhrases,
-  clinicalAnchorWords as _vwClinicalAnchorWords
-} from "./data/clinical-guard-export.js";
-
-_vwMedicationWords.forEach((w) => medicationNameWords.add(w));
-_vwNonNameClinicalWords.forEach((w) => nonNameClinicalWords.add(w));
-_vwNonNameClinicalPhrases.forEach((p) => nonNameClinicalPhrases.add(p));
-_vwClinicalAnchorWords.forEach((w) => clinicalAnchorWords.add(w));
 
 const medicationClassOrStemPattern = /(?:^cef|cillin$|cycline$|floxacin$|mycin$|azole$|avir$|pril$|sartan$|olol$|dipine$|statin$|parin$|prazole$|tidine$|zepam$|zolam$|azepam$|azide$|semide$|thiazide$|gliflozin$|gliptin$|tide$|caine$|sone$|mab$|nib$)/i;
 const honorificPatternSource = String.raw`(?:Mr|Mrs|Ms|Miss|Mx|Dr|Doctor|Prof|Professor)`;
@@ -1208,6 +1195,9 @@ function sentenceBreakIndexForName(span) {
     if (/\b(?:Dr|Doctor|Mr|Mrs|Ms|Miss|Mx|Prof|Professor)\.$/i.test(beforeDot.trim())) {
       continue;
     }
+    if (/\b[A-Za-z]\.[ \t]*$/i.test(beforeDot)) {
+      continue;
+    }
     return match.index + 1;
   }
   return -1;
@@ -1483,6 +1473,12 @@ function constrainPatternEntitySpan(rawText, label, start, end) {
     }
   }
 
+  span = rawText.slice(constrainedStart, constrainedEnd);
+  const credentialsMatch = span.match(/[,\s]+(?:MD|DO|NP|PA-C|PA|RN|PharmD|PhD)\b[.\s]*$/i);
+  if (credentialsMatch) {
+    constrainedEnd = constrainedStart + credentialsMatch.index;
+  }
+
   const leadingPer = rawText.slice(constrainedStart, constrainedEnd).match(/^Per[ \t]+(?=(?:Dr|Doctor)\b)/i);
   if (leadingPer) {
     constrainedStart += leadingPer[0].length;
@@ -1700,6 +1696,22 @@ export function mergeEntities(entities, rawText) {
 
 export function filterLikelyFalsePositiveEntities(rawText, entities) {
   return entities.filter((entity) => {
+    if (entity.label === "ROOM") {
+      const normalized = normalizePhrase(rawText.slice(entity.start, entity.end));
+      const facilitySuffixes = new Set([
+        "center", "hospital", "clinic", "institute", "associates", "association",
+        "group", "practice", "healthcare", "medical", "pharmacy", "lab", "labs",
+        "services", "foundation", "network", "system", "facility", "department",
+        "medicine", "surgery", "care", "partners", "physicians", "specialists",
+      ]);
+      const words = normalized.split(" ").filter(Boolean);
+      if (words.length >= 3 && facilitySuffixes.has(words[words.length - 1])) {
+        entity.label = "FACILITY";
+        entity.placeholder = placeholderForLabel("FACILITY");
+        return true;
+      }
+    }
+
     if (entity.label === "AGE") {
       const age = Number(rawText.slice(entity.start, entity.end).match(/\d{1,3}/)?.[0] || 0);
       return age >= 90;
