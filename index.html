@@ -9,7 +9,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon.png">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-src 'none'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://cdn.jsdelivr.net blob:; worker-src 'self' blob:; connect-src 'self' https://*.supabase.co http://127.0.0.1:* http://localhost:* https://cdn.jsdelivr.net https://huggingface.co https://*.huggingface.co https://*.hf.co https://cdn-lfs.huggingface.co https://cas-bridge.xethub.hf.co https://*.xethub.hf.co https://huggingface.co/* https://cdn-lfs.hf.co https://hf-mirror.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-src 'none'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://cdn.jsdelivr.net blob:; worker-src 'self' blob:; connect-src 'self' http://127.0.0.1:* http://localhost:* https://cdn.jsdelivr.net https://huggingface.co https://*.huggingface.co https://*.hf.co https://cdn-lfs.huggingface.co https://cas-bridge.xethub.hf.co https://*.xethub.hf.co https://huggingface.co/* https://cdn-lfs.hf.co https://hf-mirror.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:">
   <title>Pre-Rounding Checklist Builder</title>
   <style>
     :root {
@@ -4230,7 +4230,7 @@
     .studio-prompt-panel,
     .studio-paste-panel,
     .studio-save-panel,
-    .studio-backend-panel {
+    .studio-proposal-panel {
       display: grid;
       gap: 7px;
     }
@@ -4300,11 +4300,11 @@
       gap: 8px;
     }
 
-    .studio-save-panel #workupStudioPublishImportButton {
+    .studio-save-panel #workupStudioProposeImportButton {
       grid-column: 1 / -1;
     }
 
-    .studio-backend-panel {
+    .studio-proposal-panel {
       min-width: 0;
       border: 1px solid var(--line);
       border-radius: 7px;
@@ -4312,7 +4312,7 @@
       padding: 10px;
     }
 
-    .studio-backend-status {
+    .studio-proposal-status {
       display: flex;
       align-items: center;
       gap: 7px;
@@ -4322,7 +4322,7 @@
       line-height: 1.25;
     }
 
-    .studio-backend-status::before {
+    .studio-proposal-status::before {
       content: "";
       width: 8px;
       height: 8px;
@@ -4331,11 +4331,11 @@
       background: var(--subtle);
     }
 
-    .studio-backend-status[data-state="connected"]::before {
+    .studio-proposal-status[data-state="connected"]::before {
       background: var(--teal);
     }
 
-    .studio-backend-status[data-state="error"]::before {
+    .studio-proposal-status[data-state="error"]::before {
       background: var(--danger);
     }
 
@@ -15829,9 +15829,8 @@
           </div>
           <div class="studio-auth-summary">
             <span id="workupStudioTopReviewerStatus">Local authoring</span>
-            <span id="workupStudioTopBackendStatus">Backend status: local only</span>
+            <span id="workupStudioTopProposalStatus">Proposal path: GitHub</span>
           </div>
-          <button class="btn btn-secondary" id="workupStudioTopSignOutButton" type="button" hidden>Sign out</button>
         </div>
 
         <div class="studio-commandbar">
@@ -15913,7 +15912,7 @@
                 <li>Source metadata</li>
                 <li>Transient source paste</li>
                 <li>AI extraction</li>
-                <li>Reviewer diff and publish</li>
+                <li>Review diff and propose</li>
               </ol>
               <div class="studio-source-grid">
                 <label for="workupStudioSourceIdInput">Source ID
@@ -15952,7 +15951,7 @@
                 <button class="btn btn-secondary" id="workupStudioCreateSourceDraftButton" type="button">Create draft tree</button>
                 <button class="btn btn-secondary" id="workupStudioClearSourceTextButton" type="button">Clear source text</button>
               </div>
-              <div class="notice" id="workupStudioSourceDiscardStatus">Raw source text is transient and excluded from Workup Studio drafts, localStorage, Supabase, repo JSON, and exports.</div>
+              <div class="notice" id="workupStudioSourceDiscardStatus">Raw source text is transient and excluded from Workup Studio drafts, localStorage, GitHub proposals, repo JSON, and exports.</div>
             </section>
 
             <section class="studio-prompt-panel studio-workbench-step" data-step="1" aria-labelledby="workupStudioPromptHeading">
@@ -15991,12 +15990,12 @@
                 <span class="studio-step-mark" aria-hidden="true">3</span>
                 <div>
                   <h2 id="workupStudioSaveHeading">Save draft</h2>
-                  <p class="muted">Reviewer publishing stays locked until permission is verified.</p>
+                  <p class="muted">Save locally, then open a GitHub proposal for maintainer review.</p>
                 </div>
               </div>
               <div class="button-row">
                 <button class="btn btn-primary" id="workupStudioAcceptImportButton" type="button">Save draft</button>
-                <button class="btn btn-primary" id="workupStudioPublishImportButton" type="button" disabled>Publish latest draft</button>
+                <button class="btn btn-primary" id="workupStudioProposeImportButton" type="button" disabled>Propose latest draft</button>
               </div>
               <label class="studio-attestation" for="workupStudioSourceAttestationCheckbox">
                 <input id="workupStudioSourceAttestationCheckbox" type="checkbox">
@@ -16010,18 +16009,17 @@
               <ul id="workupStudioSourceDiffList"></ul>
             </section>
 
-            <section class="studio-backend-panel" id="workupStudioBackendPanel" tabindex="-1">
-              <h2>Backend sync</h2>
-              <div class="studio-backend-status" id="workupStudioBackendStatus" data-state="local">Not connected. Enter an assigned account email to receive a magic link.</div>
-              <div class="notice">Backend: Workup Studio Supabase. Access requires an authenticated account with a reviewer profile or assigned workups.</div>
-              <div class="form-field" id="workupStudioMagicLinkEmailField">
-                <label for="workupStudioMagicLinkEmailInput">Email</label>
-                <input id="workupStudioMagicLinkEmailInput" type="email" autocomplete="email" inputmode="email" placeholder="reviewer@example.com">
+            <section class="studio-proposal-panel" id="workupStudioProposalPanel" tabindex="-1">
+              <h2>GitHub proposals</h2>
+              <div class="studio-proposal-status" id="workupStudioProposalStatus" data-state="local">Drafts save locally. Open a GitHub issue when a change is ready for review.</div>
+              <div class="notice">Workup Studio creates reviewable change-set JSON for GitHub Issues and PRs. Patient data stays out of proposals.</div>
+              <div class="form-field" id="workupStudioContributorField">
+                <label for="workupStudioContributorInput">Contributor</label>
+                <input id="workupStudioContributorInput" type="text" autocomplete="name" placeholder="@github-handle or name">
               </div>
               <div class="button-row">
-                <button class="btn btn-primary" id="workupStudioSignInButton" type="button">Send magic link</button>
-                <button class="btn btn-secondary" id="workupStudioLoadBackendDraftsButton" type="button" hidden disabled>Load drafts</button>
-                <button class="btn btn-secondary" id="workupStudioSignOutButton" type="button" hidden>Sign out</button>
+                <button class="btn btn-primary" id="workupStudioOpenGithubIssueButton" type="button" disabled>Open issue</button>
+                <button class="btn btn-secondary" id="workupStudioCopyGithubIssueButton" type="button" disabled>Copy issue body</button>
               </div>
             </section>
 
@@ -16049,7 +16047,7 @@
                 <button class="studio-modal-close" id="workupStudioNewWorkupDialogClose" type="button" aria-label="Close">&times;</button>
               </div>
               <div class="studio-modal-body">
-                <p class="muted">Create a new clinical workup module using AI. Enter the complaint details below, generate an AI prompt, paste the structured response, and the workup will be saved locally (and to Supabase for others if you are signed in).</p>
+                <p class="muted">Create a new clinical workup module using AI. Enter the complaint details below, generate an AI prompt, paste the structured response, and the workup will be saved locally for GitHub proposal review.</p>
                 <div class="studio-source-grid">
                   <label for="workupStudioNewWorkupComplaintInput">Complaint / condition name
                     <input id="workupStudioNewWorkupComplaintInput" maxlength="180" placeholder="e.g. Hyperglycemia, possible DKA">
@@ -16562,19 +16560,13 @@
     const VAULT_META_KEY = "prerounding-local-vault-meta-v2";
     const VAULT_DATA_KEY = "prerounding-local-vault-data-v1";
     const WORKUP_AUTHORING_STORAGE_KEY = "prerounding-workup-authoring-v1";
-    const WORKUP_AUTHORING_AUTH_PENDING_KEY = "prerounding-workup-authoring-auth-pending-v1";
-    const WORKUP_AUTHORING_PKCE_VERIFIER_KEY = "prerounding-workup-authoring-pkce-verifier-v1";
-    const WORKUP_AUTHORING_OAUTH_PENDING_KEY = "prerounding-workup-authoring-oauth-pending-v1";
-    const PUBLIC_WORKUP_CATALOG_CACHE_KEY = "prerounding-public-workup-catalog-cache-v1";
-    const PUBLIC_WORKUP_CATALOG_CACHE_SCHEMA = "public_workup_catalog_cache_v1";
     const WORKUP_STUDIO_PROMPT_TEMPLATE_MAX_CHARS = 500000;
-    const WORKUP_STUDIO_SOURCE_TO_LIVE_TARGET_MS = 600000;
-    const WORKUP_STUDIO_PUBLIC_VISIBILITY_TARGET_MS = 60000;
     const WORKUP_STUDIO_PATHWAY_POSITIONS_KEY = "prerounding-workup-pathway-positions-v1";
     const WORKUP_STUDIO_STATE_SAVE_DEBOUNCE_MS = 300;
-    const WORKUP_STUDIO_DEFAULT_BACKEND = Object.freeze({
-      url: "https://hajjuzpnlvpetsleuxwb.supabase.co",
-      publishableKey: "sb_publishable_-rugOaCgl3r9abyuX7TICA_JQ0KQLhn"
+    const WORKUP_STUDIO_GITHUB_REPO = Object.freeze({
+      owner: "aaronge-2020",
+      repo: "prerounding-checklist",
+      proposalLabel: "workup-proposal"
     });
     const SERVICE_PREFERENCES_KEY = "prerounding-service-preferences-v1";
     const serviceProfiles = Object.freeze([
@@ -16716,15 +16708,11 @@
       customServiceName: "",
       focusNotes: ""
     });
-    const WORKUP_STUDIO_MAGIC_LINK_PROVIDER = "magic_link";
     const VAULT_KDF_ITERATIONS = 210000;
     const CHECKLIST_IMPROVEMENT_TASK_ID = "checklist_improvement_review";
     const DECISION_TREE_TASK_ID = "decision_tree_builder";
     const ROUNDS_PASTE_BACK_TASK_IDS = new Set(["initial_rounds_report", "full_rounds_report", "final_rounds_update"]);
     const EMPTY_CONTEXT_MESSAGE = "Add reviewed patient context before running de-ID, building a checklist, or preparing a handoff.";
-    const WORKUP_CATALOG_RESUME_REFRESH_INTERVAL_MS = 10 * 60 * 1000;
-    const WORKUP_CATALOG_REFRESH_DEBOUNCE_MS = 30 * 1000;
-
     const clinicalModifierOptions = [
       {
         label: "Vomiting",
@@ -16956,7 +16944,21 @@
 
         const localPath = document.documentElement.dataset.modelPath;
 
-        if (localPath) {
+        const localModelsAvailable = async (basePath) => {
+          const base = String(basePath || "").replace(/\/$/, "");
+          if (!base) return false;
+          try {
+            const response = await fetch(`${base}/onnx-community/stanford-deidentifier-base-ONNX/config.json`, {
+              method: "HEAD",
+              cache: "force-cache"
+            });
+            return response.ok;
+          } catch {
+            return false;
+          }
+        };
+
+        if (localPath && await localModelsAvailable(localPath)) {
           setLoading("De-ID model loading (local)...");
           transformers.env.allowLocalModels = true;
           transformers.env.allowRemoteModels = false;
@@ -17124,41 +17126,16 @@
       selectedItemId: "",
       selectedPathwayNodeId: "",
       changeSets: [],
+      localModules: [],
       promptTemplatesBySection: {},
-      backend: {
-        url: WORKUP_STUDIO_DEFAULT_BACKEND.url,
-        anonKey: WORKUP_STUDIO_DEFAULT_BACKEND.publishableKey,
-        email: "",
-        accessToken: "",
-        refreshToken: "",
-        expiresAt: 0,
-        userId: "",
-        role: "",
-        displayName: "",
-        canReview: false,
-        permittedWorkupIds: [],
-        permissionChecked: false,
-        sessionValidatedAt: "",
-        lastAuthError: "",
-        lastSyncAt: ""
+      github: {
+        contributor: "",
+        lastIssueUrl: "",
+        lastCopiedAt: ""
       }
     };
-    let workupStudioSessionHydrationPromise = null;
-    let workupStudioSessionRefreshPromise = null;
-    let workupStudioCatalogHydrationPromises = new Map();
-    let workupCatalogResumeRefreshAttemptAt = 0;
     let _workupStudioStateSaveTimer = null;
     let _workupStudioPathwayPositions = {};
-    let supabaseWorkupCatalog = {
-      modulesById: new Map(),
-      sourcesById: new Map(),
-      loadedAt: "",
-      status: "local",
-      error: "",
-      accessMode: "",
-      fromCache: false,
-      cacheLoadedAt: ""
-    };
 
     const $ = (selector, root = document) => root.querySelector(selector);
     const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
@@ -17335,8 +17312,7 @@
       workupStudioTopSelectedTitle: $("#workupStudioTopSelectedTitle"),
       workupStudioTopSectionTitle: $("#workupStudioTopSectionTitle"),
       workupStudioTopReviewerStatus: $("#workupStudioTopReviewerStatus"),
-      workupStudioTopBackendStatus: $("#workupStudioTopBackendStatus"),
-      workupStudioTopSignOutButton: $("#workupStudioTopSignOutButton"),
+      workupStudioTopProposalStatus: $("#workupStudioTopProposalStatus"),
       workupStudioSelectedTitle: $("#workupStudioSelectedTitle"),
       workupStudioItemCount: $("#workupStudioItemCount"),
       workupStudioSourceCount: $("#workupStudioSourceCount"),
@@ -17369,20 +17345,19 @@
       workupStudioOpenEvidenceButton: $("#workupStudioOpenEvidenceButton"),
       workupStudioImportInput: $("#workupStudioImportInput"),
       workupStudioAcceptImportButton: $("#workupStudioAcceptImportButton"),
-      workupStudioPublishImportButton: $("#workupStudioPublishImportButton"),
+      workupStudioProposeImportButton: $("#workupStudioProposeImportButton"),
       workupStudioJsonDrawer: $("#workupStudioJsonDrawer"),
       workupStudioJsonPreview: $("#workupStudioJsonPreview"),
       workupStudioSettingsCommandButton: $("#workupStudioSettingsCommandButton"),
       workupStudioExportPatchButton: $("#workupStudioExportPatchButton"),
       workupStudioImportCommandButton: $("#workupStudioImportCommandButton"),
       workupStudioAuditLogButton: $("#workupStudioAuditLogButton"),
-      workupStudioBackendPanel: $("#workupStudioBackendPanel"),
-      workupStudioBackendStatus: $("#workupStudioBackendStatus"),
-      workupStudioMagicLinkEmailField: $("#workupStudioMagicLinkEmailField"),
-      workupStudioMagicLinkEmailInput: $("#workupStudioMagicLinkEmailInput"),
-      workupStudioSignInButton: $("#workupStudioSignInButton"),
-      workupStudioLoadBackendDraftsButton: $("#workupStudioLoadBackendDraftsButton"),
-      workupStudioSignOutButton: $("#workupStudioSignOutButton"),
+      workupStudioProposalPanel: $("#workupStudioProposalPanel"),
+      workupStudioProposalStatus: $("#workupStudioProposalStatus"),
+      workupStudioContributorField: $("#workupStudioContributorField"),
+      workupStudioContributorInput: $("#workupStudioContributorInput"),
+      workupStudioOpenGithubIssueButton: $("#workupStudioOpenGithubIssueButton"),
+      workupStudioCopyGithubIssueButton: $("#workupStudioCopyGithubIssueButton"),
       workupStudioNewWorkupButton: $("#workupStudioNewWorkupButton"),
       workupStudioNewWorkupDialog: $("#workupStudioNewWorkupDialog"),
       workupStudioNewWorkupDialogClose: $("#workupStudioNewWorkupDialogClose"),
@@ -19101,9 +19076,12 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
     function openRebuildChecklistConfirmation({ source = "bedside" } = {}) {
       const patient = activePatient();
       const stale = isChecklistStaleForCurrentWorkup();
+      const staleReason = checklistStaleReasonForCurrentWorkup();
       if (elements.rebuildChecklistConfirmCopy) {
         elements.rebuildChecklistConfirmCopy.textContent = stale
-          ? `Rebuild ${patient.title}'s checklist from the newest server workup before continuing. Current bedside answers will be cleared.`
+          ? staleReason === "workup_changed"
+            ? `Rebuild ${patient.title}'s checklist from the selected workup before continuing. Current bedside answers will be cleared.`
+            : `Rebuild ${patient.title}'s checklist from the newest local workup draft before continuing. Current bedside answers will be cleared.`
           : `Rebuild ${patient.title}'s checklist from the selected workup. Current bedside answers will be cleared.`;
       }
       if (elements.rebuildChecklistConfirmOverlay) {
@@ -19119,10 +19097,13 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
         return false;
       }
       const wasStale = isChecklistStaleForCurrentWorkup();
+      const staleReason = checklistStaleReasonForCurrentWorkup();
       const built = buildChecklistFromWorkup({ navigate: false });
       if (built) {
         setStatus(wasStale
-          ? "Checklist rebuilt from the current server workup."
+          ? staleReason === "workup_changed"
+            ? "Checklist rebuilt from the selected workup."
+            : "Checklist rebuilt from the current local workup draft."
           : "Checklist rebuilt from the selected workup.");
       }
       return built;
@@ -19216,7 +19197,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
       if (nextView === "studio") {
         if (previousView !== "studio") syncWorkupStudioSelectionToActivePatient();
         renderWorkupStudio();
-        void ensureWorkupStudioBackendSession();
+        renderWorkupStudioProposalStatus();
       }
       if (nextView === "workspace") {
         renderPatientRail();
@@ -19386,7 +19367,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
     }
 
     function rawModuleById(moduleId) {
-      return supabaseWorkupCatalog.modulesById.get(moduleId) || baseModuleById(moduleId);
+      return localWorkupModulesById().get(moduleId) || baseModuleById(moduleId);
     }
 
     function localWorkupChangeSetsForModule(moduleId = "") {
@@ -19414,7 +19395,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
         return effectiveComplaintModulesCache.modules;
       }
       const byId = new Map(baseComplaintModulesById);
-      for (const [moduleId, module] of supabaseWorkupCatalog.modulesById.entries()) {
+      for (const [moduleId, module] of localWorkupModulesById().entries()) {
         byId.set(moduleId, module);
       }
       const modules = Array.from(byId.values()).map((module) => effectiveLocalWorkupModule(module));
@@ -19424,9 +19405,6 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
 
     function effectiveSourceRegistry() {
       const byId = new Map(complaintSourceRegistry.map((source) => [source.id || source.source_id, source]));
-      for (const [sourceId, source] of supabaseWorkupCatalog.sourcesById.entries()) {
-        byId.set(sourceId, { ...(byId.get(sourceId) || {}), ...source });
-      }
       return Array.from(byId.values());
     }
 
@@ -19435,7 +19413,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
       if (!key) return null;
       const cached = effectiveModuleByIdCache.get(key);
       if (cached?.version === workupModuleCacheVersion) return cached.module;
-      const module = supabaseWorkupCatalog.modulesById.get(key) || baseModuleById(key);
+      const module = localWorkupModulesById().get(key) || baseModuleById(key);
       const effectiveModule = module ? effectiveLocalWorkupModule(module) : null;
       effectiveModuleByIdCache.set(key, { version: workupModuleCacheVersion, module: effectiveModule });
       return effectiveModule;
@@ -19450,10 +19428,19 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
       return JSON.stringify({
         id: module.id,
         version: module.version || "",
-        updatedAt: module.supabase_updated_at || "",
         sources: module.source_ids || [],
         module
       });
+    }
+
+    function checklistStaleReasonForCurrentWorkup() {
+      if (!state.sections.length || !state.checklistWorkupModuleId) return "";
+      const selected = moduleById(state.selectedWorkupModuleId);
+      if (!selected) return state.selectedWorkupModuleId ? "missing_selected_workup" : "";
+      if (selected.id !== state.checklistWorkupModuleId) return "workup_changed";
+      return state.checklistCatalogStale || state.checklistWorkupSignature !== checklistModuleSignature(selected)
+        ? "local_update"
+        : "";
     }
 
     function checklistHasResponseArtifacts() {
@@ -19470,16 +19457,21 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
     }
 
     function isChecklistStaleForCurrentWorkup() {
-      if (!state.sections.length || !state.checklistWorkupModuleId) return false;
-      const selected = moduleById(state.selectedWorkupModuleId);
-      if (!selected || selected.id !== state.checklistWorkupModuleId) return false;
-      return state.checklistCatalogStale || state.checklistWorkupSignature !== checklistModuleSignature(selected);
+      return Boolean(checklistStaleReasonForCurrentWorkup());
     }
 
     function reconcileChecklistWithCurrentCatalog() {
       if (!state.sections.length || !state.checklistWorkupModuleId) return false;
       const selected = moduleById(state.selectedWorkupModuleId);
-      if (!selected || selected.id !== state.checklistWorkupModuleId) return false;
+      if (!selected) return false;
+      if (selected.id !== state.checklistWorkupModuleId) {
+        state.checklistCatalogStale = true;
+        invalidatePhonePayloadAfterChecklistEdit();
+        renderHandoff();
+        setStatus("The selected workup changed. Rebuild the checklist before sending it to a phone.");
+        saveState();
+        return true;
+      }
       const nextSignature = checklistModuleSignature(selected);
       if (!nextSignature || nextSignature === state.checklistWorkupSignature) {
         state.checklistCatalogStale = false;
@@ -19487,13 +19479,13 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
       }
       if (!checklistHasLocalBedsideWork()) {
         buildChecklistFromWorkup({ navigate: false, announce: false });
-        setStatus(`Checklist refreshed from the current server workup for ${moduleLabel(selected)}.`);
+        setStatus(`Checklist refreshed from the current local workup for ${moduleLabel(selected)}.`);
         return true;
       }
       state.checklistCatalogStale = true;
       invalidatePhonePayloadAfterChecklistEdit();
       renderHandoff();
-      setStatus("A newer server workup is available. Rebuild the checklist before sending it to a phone.");
+      setStatus("A newer local workup draft is available. Rebuild the checklist before sending it to a phone.");
       saveState();
       return true;
     }
@@ -19767,6 +19759,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
     }
 
     function _saveWorkupStudioPathwayPositions() {
+      if (state.sessionMode !== "vault") return;
       try {
         localStorage.setItem(WORKUP_STUDIO_PATHWAY_POSITIONS_KEY, JSON.stringify(_workupStudioPathwayPositions));
       } catch {
@@ -19784,6 +19777,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
     }
 
     function _flushWorkupStudioState() {
+      if (state.sessionMode !== "vault") return;
       const strippedChangeSets = workupStudioState.changeSets.map((cs) => {
         if ((cs.sectionKey || cs.section_key) !== "clinical_pathway_tree_v1") return cs;
         const stripped = { ...cs };
@@ -19815,1010 +19809,186 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
         selectedItemId: workupStudioState.selectedItemId,
         selectedPathwayNodeId: workupStudioState.selectedPathwayNodeId,
         changeSets: strippedChangeSets,
+        localModules: workupStudioState.localModules,
         promptTemplatesBySection: workupStudioState.promptTemplatesBySection,
-        backend: workupStudioState.backend
+        github: workupStudioState.github
       }));
     }
 
-    function emptyWorkupStudioBackendState() {
-      return {
-        url: WORKUP_STUDIO_DEFAULT_BACKEND.url,
-        anonKey: WORKUP_STUDIO_DEFAULT_BACKEND.publishableKey,
-        email: "",
-        accessToken: "",
-        refreshToken: "",
-        expiresAt: 0,
-        userId: "",
-        role: "",
-        displayName: "",
-        canReview: false,
-        permittedWorkupIds: [],
-        permissionChecked: false,
-        sessionValidatedAt: "",
-        lastAuthError: "",
-        catalogLoadedAt: "",
-        catalogWorkupCount: 0,
-        catalogLastError: "",
-        lastSyncAt: ""
-      };
+    function localWorkupModulesById() {
+      const modules = Array.isArray(workupStudioState.localModules) ? workupStudioState.localModules : [];
+      return new Map(modules.filter((module) => module?.id).map((module) => [module.id, module]));
     }
 
-    function normalizeSupabaseUrl(value = "") {
-      const url = String(value || "").trim().replace(/\/+$/g, "");
-      if (!url) return "";
-      try {
-        const parsed = new URL(url);
-        if (!/^https?:$/.test(parsed.protocol)) return "";
-        return parsed.origin;
-      } catch {
-        return "";
+    function upsertLocalWorkupModule(module = {}) {
+      if (!module?.id) return false;
+      const byId = localWorkupModulesById();
+      byId.set(module.id, cloneJson(module));
+      workupStudioState.localModules = Array.from(byId.values()).sort((a, b) => moduleLabel(a).localeCompare(moduleLabel(b)));
+      invalidateWorkupModuleCaches();
+      saveWorkupStudioStateNow();
+      return true;
+    }
+
+    function workupStudioContributor() {
+      return String(workupStudioState.github?.contributor || "").replace(/\s+/g, " ").trim().slice(0, 120);
+    }
+
+    function workupStudioGithubRepoUrl() {
+      return `https://github.com/${WORKUP_STUDIO_GITHUB_REPO.owner}/${WORKUP_STUDIO_GITHUB_REPO.repo}`;
+    }
+
+    function workupStudioGithubIssuesUrl() {
+      return `${workupStudioGithubRepoUrl()}/issues/new`;
+    }
+
+    function githubIssueTitleForChangeSet(changeSet = workupStudioLatestChangeSet()) {
+      const workupId = changeSet?.workupId || changeSet?.workup_id || workupStudioState.selectedModuleId || "workup";
+      const sectionKey = changeSet?.sectionKey || changeSet?.section_key || workupStudioState.sectionKey || "section";
+      const module = moduleById(workupId);
+      const section = workupSectionDefinitions.find((entry) => entry.key === sectionKey);
+      return `Workup update: ${moduleLabel(module) || titleFromId(workupId)} / ${section?.label || titleFromId(sectionKey)}`;
+    }
+
+    function githubIssueBodyForChangeSet(changeSet = workupStudioLatestChangeSet()) {
+      if (!changeSet) return "";
+      const workupId = changeSet.workupId || changeSet.workup_id || "";
+      const sectionKey = changeSet.sectionKey || changeSet.section_key || "";
+      const module = moduleById(workupId);
+      const section = workupSectionDefinitions.find((entry) => entry.key === sectionKey);
+      const contributor = workupStudioContributor();
+      const sourceIds = Array.from(new Set([...(changeSet.sourceIds || []), ...(changeSet.source_ids || [])].filter(Boolean)));
+      const body = [
+        "## Workup Studio Proposal",
+        "",
+        `- Workup: ${moduleLabel(module)} (${workupId})`,
+        `- Section: ${section?.label || titleFromId(sectionKey)} (${sectionKey})`,
+        contributor ? `- Contributor: ${contributor}` : "- Contributor: ",
+        `- Created: ${changeSet.createdAt || changeSet.created_at || new Date().toISOString()}`,
+        sourceIds.length ? `- Source IDs: ${sourceIds.join(", ")}` : "- Source IDs: ",
+        "",
+        "## Reviewer Checklist",
+        "",
+        "- [ ] No patient identifiers, chart text, screenshots, or PHI are included.",
+        "- [ ] Source metadata is sufficient for clinical review.",
+        "- [ ] The JSON below parses as workup_change_set_v1.",
+        "- [ ] A maintainer has applied this change in a PR and run the medical-knowledge tests.",
+        "",
+        "## Change Set JSON",
+        "",
+        "```json",
+        JSON.stringify(changeSet, null, 2),
+        "```"
+      ].join("\n");
+      return body;
+    }
+
+    function githubIssueUrlForChangeSet(changeSet = workupStudioLatestChangeSet()) {
+      if (!changeSet) return "";
+      const url = new URL(workupStudioGithubIssuesUrl());
+      url.searchParams.set("title", githubIssueTitleForChangeSet(changeSet));
+      url.searchParams.set("labels", WORKUP_STUDIO_GITHUB_REPO.proposalLabel);
+      const body = githubIssueBodyForChangeSet(changeSet);
+      const maxInlineBodyChars = 7000;
+      url.searchParams.set("body", body.length > maxInlineBodyChars
+        ? [
+            "Paste the copied Workup Studio proposal body here.",
+            "",
+            "The change-set JSON was too large to fit safely in a URL, so the app copied the full issue body to the clipboard."
+          ].join("\n")
+        : body);
+      return url.toString();
+    }
+
+    async function copyWorkupStudioGithubIssueBody({ announce = true } = {}) {
+      const latest = workupStudioLatestChangeSet();
+      if (!latest) {
+        setStatus("Save a Workup Studio draft before copying a GitHub proposal.");
+        return false;
       }
+      await copyText(githubIssueBodyForChangeSet(latest));
+      workupStudioState.github = {
+        ...(workupStudioState.github || {}),
+        contributor: workupStudioContributor(),
+        lastCopiedAt: new Date().toISOString()
+      };
+      saveWorkupStudioState();
+      renderWorkupStudioProposalStatus();
+      if (announce) setStatus("GitHub issue body copied. Open an issue or paste it into a PR for review.");
+      return true;
     }
 
-    function workupStudioBackendConfigured() {
-      return Boolean(normalizeSupabaseUrl(workupStudioState.backend.url) && workupStudioState.backend.anonKey);
+    async function openWorkupStudioGithubIssue() {
+      const latest = workupStudioLatestChangeSet();
+      if (!latest) {
+        setStatus("Save a Workup Studio draft before opening a GitHub issue.");
+        return false;
+      }
+      const fullBody = githubIssueBodyForChangeSet(latest);
+      const url = githubIssueUrlForChangeSet(latest);
+      if (!url) return false;
+      if (fullBody.length > 7000) {
+        await copyWorkupStudioGithubIssueBody({ announce: false });
+        setStatus("Full proposal copied. GitHub will open with a short placeholder because the JSON is large.");
+      } else {
+        setStatus("Opening a prefilled GitHub issue for the latest Workup Studio draft.");
+      }
+      workupStudioState.github = {
+        ...(workupStudioState.github || {}),
+        contributor: workupStudioContributor(),
+        lastIssueUrl: url
+      };
+      saveWorkupStudioState();
+      window.open(url, "_blank", "noopener,noreferrer");
+      return true;
     }
 
-    function publicWorkupCatalogConfigured() {
-      return Boolean(normalizeSupabaseUrl(WORKUP_STUDIO_DEFAULT_BACKEND.url) && WORKUP_STUDIO_DEFAULT_BACKEND.publishableKey);
-    }
-
-    function workupStudioBackendAuthenticated() {
-      return Boolean(workupStudioBackendConfigured() && workupStudioState.backend.accessToken);
-    }
-
-    function workupStudioBackendSignedIn() {
-      return Boolean(workupStudioBackendAuthenticated() && workupStudioState.backend.userId && workupStudioState.backend.permissionChecked && (workupStudioState.backend.canReview || workupStudioState.backend.permittedWorkupIds?.length));
-    }
-
-    function workupStudioCanReview() {
-      return Boolean(workupStudioBackendSignedIn() && workupStudioState.backend.canReview);
-    }
-
-    function workupStudioCanEditWorkup(workupId = workupStudioState.selectedModuleId) {
-      return Boolean(workupStudioBackendSignedIn() && (workupStudioState.backend.canReview || workupStudioState.backend.permittedWorkupIds?.includes(workupId)));
-    }
-
-    function renderWorkupStudioBackendStatus(message = "") {
-      const connected = workupStudioBackendSignedIn();
-      const catalogSummary = workupStudioState.backend.catalogLoadedAt
-        ? ` ${workupStudioState.backend.catalogWorkupCount || 0} Supabase workup${workupStudioState.backend.catalogWorkupCount === 1 ? "" : "s"} loaded.`
-        : "";
-      const cachedCatalogSummary = workupStudioState.backend.catalogLoadedAt && supabaseWorkupCatalog.fromCache
-        ? `${workupStudioState.backend.catalogWorkupCount || 0} last downloaded public Supabase workup${workupStudioState.backend.catalogWorkupCount === 1 ? "" : "s"} loaded for patient care. ${workupStudioState.backend.catalogLastError ? `Latest public refresh failed: ${workupStudioState.backend.catalogLastError}` : "Refreshing again when online."}`
-        : "";
-      const statusMessage = message
-        || (connected
-          ? `${workupStudioState.backend.canReview ? "Reviewer" : "Author"} signed in as ${workupStudioState.backend.email || "Supabase user"}. ${workupStudioState.backend.canReview ? "Can publish reviewed changes." : `${workupStudioState.backend.permittedWorkupIds.length} assigned workup${workupStudioState.backend.permittedWorkupIds.length === 1 ? "" : "s"}.`}${catalogSummary}`
-          : cachedCatalogSummary
-            ? cachedCatalogSummary
-          : workupStudioState.backend.catalogLoadedAt
-            ? `${workupStudioState.backend.catalogWorkupCount || 0} public Supabase workup${workupStudioState.backend.catalogWorkupCount === 1 ? "" : "s"} loaded for patient care. Sign in to draft or publish.`
-          : workupStudioState.backend.catalogLastError
-            ? `Public Supabase workup refresh failed; using bundled local workups. ${workupStudioState.backend.catalogLastError}`
-          : workupStudioBackendAuthenticated() && workupStudioState.backend.permissionChecked
-            ? "Signed in, but no Workup Studio permission is assigned. Ask a reviewer/admin to grant access."
-          : workupStudioBackendAuthenticated()
-            ? "Saved Supabase session needs permission recheck. Sign in again if revalidation fails."
-          : workupStudioState.backend.lastAuthError
-            ? workupStudioState.backend.lastAuthError
-          : workupStudioBackendConfigured()
-            ? "Not connected. Enter an assigned account email to receive a magic link."
-            : "Workup Studio backend is unavailable in this build.");
-      if (elements.workupStudioBackendStatus) {
-        elements.workupStudioBackendStatus.dataset.state = message && /fail|error|denied|unable/i.test(message)
-          ? "error"
-          : connected
-            ? "connected"
-            : "local";
-        elements.workupStudioBackendStatus.textContent = statusMessage;
+    function renderWorkupStudioProposalStatus(message = "") {
+      const latest = workupStudioLatestChangeSet();
+      const module = latest ? moduleById(latest.workupId || latest.workup_id) : selectedWorkupStudioModule();
+      const sectionKey = latest?.sectionKey || latest?.section_key || workupStudioState.sectionKey;
+      const section = workupSectionDefinitions.find((entry) => entry.key === sectionKey);
+      const draftCount = workupStudioState.changeSets.length;
+      const statusMessage = message || (latest
+        ? `Latest draft is ready to propose on GitHub: ${moduleLabel(module)} / ${section?.label || titleFromId(sectionKey)}.`
+        : draftCount
+          ? `${draftCount} local draft${draftCount === 1 ? "" : "s"} saved. Select a section draft before opening a proposal.`
+          : "Drafts save locally. Open a GitHub issue when a change is ready for review.");
+      if (elements.workupStudioProposalStatus) {
+        elements.workupStudioProposalStatus.dataset.state = latest ? "connected" : "local";
+        elements.workupStudioProposalStatus.textContent = statusMessage;
       }
       if (elements.workupStudioTopReviewerStatus) {
-        elements.workupStudioTopReviewerStatus.textContent = connected
-          ? `${workupStudioState.backend.canReview ? "Reviewer" : "Author"} signed in`
-          : "Local authoring";
+        elements.workupStudioTopReviewerStatus.textContent = "Local authoring";
       }
-      if (elements.workupStudioTopBackendStatus) {
-        elements.workupStudioTopBackendStatus.title = statusMessage;
-        elements.workupStudioTopBackendStatus.textContent = connected
-          ? `Synced as ${workupStudioState.backend.email || "Supabase user"}`
-          : workupStudioBackendConfigured()
-            ? "Backend status: sign in to sync"
-            : "Backend status: unavailable";
+      if (elements.workupStudioTopProposalStatus) {
+        elements.workupStudioTopProposalStatus.title = statusMessage;
+        elements.workupStudioTopProposalStatus.textContent = "Proposal path: GitHub Issues/PRs";
       }
-      if (elements.workupStudioMagicLinkEmailInput) {
-        if (document.activeElement !== elements.workupStudioMagicLinkEmailInput) {
-          elements.workupStudioMagicLinkEmailInput.value = workupStudioState.backend.email || "";
-        }
-        elements.workupStudioMagicLinkEmailInput.disabled = !workupStudioBackendConfigured() || workupStudioBackendSignedIn();
+      if (elements.workupStudioContributorInput && document.activeElement !== elements.workupStudioContributorInput) {
+        elements.workupStudioContributorInput.value = workupStudioContributor();
       }
-      if (elements.workupStudioMagicLinkEmailField) {
-        elements.workupStudioMagicLinkEmailField.hidden = workupStudioBackendSignedIn();
+      if (elements.workupStudioOpenGithubIssueButton) {
+        elements.workupStudioOpenGithubIssueButton.disabled = !latest;
       }
-      if (elements.workupStudioSignInButton) {
-        elements.workupStudioSignInButton.hidden = workupStudioBackendSignedIn();
-        elements.workupStudioSignInButton.disabled = !workupStudioBackendConfigured();
+      if (elements.workupStudioCopyGithubIssueButton) {
+        elements.workupStudioCopyGithubIssueButton.disabled = !latest;
       }
-      if (elements.workupStudioLoadBackendDraftsButton) {
-        elements.workupStudioLoadBackendDraftsButton.disabled = !workupStudioBackendSignedIn();
-        elements.workupStudioLoadBackendDraftsButton.hidden = !workupStudioBackendSignedIn();
+      if (elements.workupStudioProposeImportButton) {
+        const proposalIssues = latest ? workupStudioPathwayProposalIssues(latest) : [];
+        elements.workupStudioProposeImportButton.disabled = !latest || proposalIssues.length > 0;
+        elements.workupStudioProposeImportButton.textContent = latest && !proposalIssues.length ? "Propose latest draft" : "Save draft first";
+        elements.workupStudioProposeImportButton.title = proposalIssues[0] || "Open a GitHub issue for review of the latest saved draft.";
       }
-      if (elements.workupStudioPublishImportButton) {
-        const canReview = workupStudioCanReview();
-        const publishIssues = canReview ? workupStudioPathwayPublishIssues() : [];
-        elements.workupStudioPublishImportButton.disabled = !canReview || publishIssues.length > 0;
-        elements.workupStudioPublishImportButton.textContent = canReview && !publishIssues.length ? "Publish latest draft" : "Reviewer publish locked";
-        elements.workupStudioPublishImportButton.title = !canReview
-          ? "Sign in as a Workup Studio reviewer to publish saved drafts."
-          : publishIssues[0] || "Publish the latest saved draft for the selected workup section to the reviewed knowledge tables.";
-      }
-      if (elements.workupStudioSignOutButton) {
-        elements.workupStudioSignOutButton.hidden = !workupStudioBackendSignedIn();
-      }
-      if (elements.workupStudioTopSignOutButton) {
-        elements.workupStudioTopSignOutButton.hidden = !workupStudioBackendSignedIn();
-      }
-    }
-
-    function ensureWorkupStudioBackendConfig() {
-      const url = normalizeSupabaseUrl(WORKUP_STUDIO_DEFAULT_BACKEND.url);
-      const anonKey = WORKUP_STUDIO_DEFAULT_BACKEND.publishableKey;
-      if (!url || !anonKey) {
-        renderWorkupStudioBackendStatus("Workup Studio backend is unavailable in this build.");
-        setStatus("Workup Studio backend is unavailable in this build.");
-        return false;
-      }
-      workupStudioState.backend = {
-        ...workupStudioState.backend,
-        url,
-        anonKey,
-        lastAuthError: ""
-      };
-      saveWorkupStudioState();
-      return true;
-    }
-
-    function workupStudioAuthRedirectUrl() {
-      const redirectUrl = new URL(`${window.location.origin}${window.location.pathname || "/"}`);
-      redirectUrl.searchParams.set("workupStudioOAuth", "1");
-      return redirectUrl.toString();
-    }
-
-    function normalizeWorkupStudioEmail(value = "") {
-      return String(value || "").trim().toLowerCase();
-    }
-
-    function workupStudioAuthMethodLabel(method = WORKUP_STUDIO_MAGIC_LINK_PROVIDER) {
-      if (method === WORKUP_STUDIO_MAGIC_LINK_PROVIDER || method === "email") return "Magic link";
-      if (method === "google") return "Google";
-      if (method === "github") return "GitHub";
-      return "Supabase";
-    }
-
-    function base64UrlEncode(bytes) {
-      const binary = Array.from(bytes, (byte) => String.fromCharCode(byte)).join("");
-      return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
-    }
-
-    function generateWorkupStudioCodeVerifier() {
-      const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
-      const bytes = new Uint8Array(64);
-      crypto.getRandomValues(bytes);
-      return Array.from(bytes, (byte) => alphabet[byte % alphabet.length]).join("");
-    }
-
-    function saveWorkupStudioPkceVerifier(verifier = "") {
-      localStorage.setItem(WORKUP_AUTHORING_PKCE_VERIFIER_KEY, verifier);
-      sessionStorage.setItem(WORKUP_AUTHORING_PKCE_VERIFIER_KEY, verifier);
-    }
-
-    function readWorkupStudioPkceVerifier() {
-      return localStorage.getItem(WORKUP_AUTHORING_PKCE_VERIFIER_KEY)
-        || sessionStorage.getItem(WORKUP_AUTHORING_PKCE_VERIFIER_KEY)
-        || "";
-    }
-
-    function clearWorkupStudioPkceVerifier() {
-      localStorage.removeItem(WORKUP_AUTHORING_PKCE_VERIFIER_KEY);
-      sessionStorage.removeItem(WORKUP_AUTHORING_PKCE_VERIFIER_KEY);
-    }
-
-    async function createWorkupStudioPkceChallenge() {
-      const verifier = generateWorkupStudioCodeVerifier();
-      if (!crypto?.subtle || typeof TextEncoder === "undefined") {
-        return { verifier, challenge: verifier, method: "plain" };
-      }
-      const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier));
-      return {
-        verifier,
-        challenge: base64UrlEncode(new Uint8Array(digest)),
-        method: "s256"
-      };
-    }
-
-    function workupStudioMagicLinkErrorMessage(status = 0, text = "") {
-      const detail = String(text || "").trim();
-      if (/signup|signups|create_user|not.*allowed|user.*not.*found|invalid login/i.test(detail)) {
-        return "No Supabase user exists for that email yet. Create or invite the user in Supabase Auth, then resend the magic link.";
-      }
-      if (status === 429 || /rate limit|too many/i.test(detail)) {
-        return "Supabase is rate-limiting magic links. Wait a minute, then send another link.";
-      }
-      if (/email provider|smtp|mail/i.test(detail)) {
-        return "Supabase email delivery is not ready yet. Enable the Email provider or SMTP settings in Supabase Auth.";
-      }
-      return detail
-        ? `Unable to send magic link: ${detail.slice(0, 220)}`
-        : "Unable to send magic link. Check that Supabase Email auth is enabled.";
-    }
-
-    function workupStudioOAuthErrorMessage(errorCode = "", description = "", method = WORKUP_STUDIO_MAGIC_LINK_PROVIDER) {
-      const detail = [errorCode, description].filter(Boolean).join(": ");
-      if (/otp|magic|email/i.test(detail)) {
-        return detail || "Unable to finish Supabase magic-link sign-in.";
-      }
-      if (/unsupported provider|provider is not enabled|validation_failed/i.test(detail)) {
-        return "That Supabase sign-in provider is not enabled. Send an email magic link instead.";
-      }
-      return detail || `Unable to finish ${workupStudioAuthMethodLabel(method)} sign-in with Supabase.`;
-    }
-
-    async function sendWorkupStudioMagicLink() {
-      if (!ensureWorkupStudioBackendConfig()) return false;
-      const email = normalizeWorkupStudioEmail(elements.workupStudioMagicLinkEmailInput?.value || workupStudioState.backend.email || "");
-      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        const message = "Enter a valid assigned account email to receive a magic link.";
-        renderWorkupStudioBackendStatus(message);
-        setStatus(message);
-        elements.workupStudioMagicLinkEmailInput?.focus();
-        return false;
-      }
-      workupStudioState.backend = {
-        ...workupStudioState.backend,
-        email,
-        lastAuthError: ""
-      };
-      saveWorkupStudioState();
-      renderWorkupStudioBackendStatus(`Sending magic link to ${email}...`);
-      setStatus("Sending Workup Studio magic link.");
-      try {
-        const pkce = await createWorkupStudioPkceChallenge();
-        const url = new URL(`${normalizeSupabaseUrl(workupStudioState.backend.url)}/auth/v1/otp`);
-        url.searchParams.set("redirect_to", workupStudioAuthRedirectUrl());
-        saveWorkupStudioPkceVerifier(pkce.verifier);
-        localStorage.setItem(WORKUP_AUTHORING_AUTH_PENDING_KEY, WORKUP_STUDIO_MAGIC_LINK_PROVIDER);
-        localStorage.removeItem(WORKUP_AUTHORING_OAUTH_PENDING_KEY);
-        const response = await fetch(url.toString(), {
-          method: "POST",
-          headers: {
-            apikey: workupStudioState.backend.anonKey,
-            "content-type": "application/json"
-          },
-          body: JSON.stringify({
-            email,
-            create_user: false,
-            data: {},
-            gotrue_meta_security: {},
-            code_challenge: pkce.challenge,
-            code_challenge_method: pkce.method
-          })
-        });
-        if (!response.ok) {
-          clearWorkupStudioPkceVerifier();
-          throw new Error(workupStudioMagicLinkErrorMessage(response.status, await response.text()));
-        }
-      } catch (error) {
-        if (error?.name === "AbortError") return false;
-        localStorage.removeItem(WORKUP_AUTHORING_AUTH_PENDING_KEY);
-        const message = error instanceof Error ? error.message : "Unable to send magic link.";
-        clearWorkupStudioAuthSession({ keepEmail: true, authError: message });
-        renderWorkupStudioBackendStatus(message);
-        setStatus(message);
-        return false;
-      }
-      renderWorkupStudioBackendStatus(`Magic link sent to ${email}. Open it from this browser, then Workup Studio will check permissions.`);
-      setStatus("Magic link sent. Check your email, then return here.");
-      return true;
-    }
-
-    function supabaseAuthHeaders() {
-      if (!workupStudioBackendAuthenticated()) {
-        throw new Error("Sign in before connecting to Supabase.");
-      }
-      return {
-        apikey: workupStudioState.backend.anonKey,
-        authorization: `Bearer ${workupStudioState.backend.accessToken}`,
-        "content-type": "application/json"
-      };
-    }
-
-    function workupStudioSupabaseErrorMessage({ method = "GET", path = "", status = 0, responseText = "" } = {}) {
-      const lower = String(responseText || "").toLowerCase();
-      if (/pgrst205|could not find the table|schema cache/.test(lower)) {
-        return "Workup Studio database tables are not installed in Supabase yet. Deploy the authoring migrations, then import the medical knowledge seed data.";
-      }
-      if (/jwt expired|invalid jwt|invalid token|not authenticated/.test(lower) || status === 401) {
-        return "Your Supabase session expired or is invalid. Send a new magic link before connecting to Workup Studio.";
-      }
-      if (/permission denied|violates row-level security|rls|row level security/.test(lower) || status === 403) {
-        return "Supabase blocked this action. This account is not assigned to this workup or does not have reviewer permission.";
-      }
-      return `Supabase ${method} ${path} failed: ${status} ${String(responseText || "").slice(0, 240)}`;
-    }
-
-    function normalizeWorkupStudioSessionExpiresAt(session = {}) {
-      const explicitExpiresAt = Number(session?.expires_at || 0);
-      if (Number.isFinite(explicitExpiresAt) && explicitExpiresAt > 0) {
-        return Math.floor(explicitExpiresAt > 9999999999 ? explicitExpiresAt / 1000 : explicitExpiresAt);
-      }
-      const expiresIn = Number(session?.expires_in || 3600);
-      return Math.floor(Date.now() / 1000) + (Number.isFinite(expiresIn) && expiresIn > 0 ? Math.floor(expiresIn) : 3600);
-    }
-
-    async function workupStudioSupabaseRequest(path, { method = "GET", body = null, prefer = "", requirePermission = true } = {}) {
-      if (!workupStudioBackendConfigured()) throw new Error("Supabase backend is not configured.");
-      if (!workupStudioBackendAuthenticated()) throw new Error("Sign in before connecting to Supabase.");
-      await refreshWorkupStudioSupabaseSession();
-      if (requirePermission && !workupStudioBackendSignedIn()) throw new Error("This account does not have Workup Studio permission.");
-      const fetchWithCurrentSession = () => {
-        const headers = supabaseAuthHeaders();
-        if (prefer) headers.prefer = prefer;
-        return fetch(`${normalizeSupabaseUrl(workupStudioState.backend.url)}${path}`, {
-          method,
-          cache: method === "GET" ? "no-store" : "default",
-          headers,
-          body: body === null ? null : JSON.stringify(body)
-        });
-      };
-      let response = await fetchWithCurrentSession();
-      if (response.status === 401 && await refreshWorkupStudioSupabaseSession({ force: true })) {
-        response = await fetchWithCurrentSession();
-      }
-      if (!response.ok) {
-        const text = await response.text();
-        throw new Error(workupStudioSupabaseErrorMessage({ method, path, status: response.status, responseText: text }));
-      }
-      if (response.status === 204) return null;
-      const text = await response.text();
-      return text ? JSON.parse(text) : null;
-    }
-
-    async function workupCatalogSupabaseRequest(path, { publicOnly = false } = {}) {
-      if (!publicOnly && workupStudioBackendAuthenticated()) {
-        return workupStudioSupabaseRequest(path, { requirePermission: false });
-      }
-      const url = normalizeSupabaseUrl(WORKUP_STUDIO_DEFAULT_BACKEND.url);
-      const publishableKey = WORKUP_STUDIO_DEFAULT_BACKEND.publishableKey;
-      if (!url || !publishableKey) throw new Error("Supabase catalog backend is not configured.");
-      const response = await fetch(`${url}${path}`, {
-        method: "GET",
-        cache: "no-store",
-        headers: {
-          apikey: publishableKey,
-          authorization: `Bearer ${publishableKey}`,
-          "content-type": "application/json"
-        }
-      });
-      if (!response.ok) {
-        const text = await response.text();
-        throw new Error(workupStudioSupabaseErrorMessage({ method: "GET", path, status: response.status, responseText: text }));
-      }
-      const text = await response.text();
-      return text ? JSON.parse(text) : null;
-    }
-
-    async function refreshWorkupStudioSupabaseSession({ force = false } = {}) {
-      const backend = workupStudioState.backend;
-      if (!backend.refreshToken) return false;
-      const expiresAt = Number(backend.expiresAt || 0);
-      const expiresAtSeconds = expiresAt > 9999999999 ? Math.floor(expiresAt / 1000) : expiresAt;
-      if (!force && expiresAtSeconds && Date.now() < (expiresAtSeconds - 60) * 1000) return false;
-      if (!workupStudioSessionRefreshPromise) {
-        workupStudioSessionRefreshPromise = (async () => {
-          const currentBackend = workupStudioState.backend;
-          if (!currentBackend.refreshToken) return false;
-          const response = await fetch(`${normalizeSupabaseUrl(currentBackend.url)}/auth/v1/token?grant_type=refresh_token`, {
-            method: "POST",
-            headers: {
-              apikey: currentBackend.anonKey,
-              "content-type": "application/json"
-            },
-            body: JSON.stringify({ refresh_token: currentBackend.refreshToken })
-          });
-          if (!response.ok) return false;
-          const session = await response.json();
-          workupStudioState.backend = {
-            ...workupStudioState.backend,
-            accessToken: session.access_token || currentBackend.accessToken,
-            refreshToken: session.refresh_token || currentBackend.refreshToken,
-            expiresAt: normalizeWorkupStudioSessionExpiresAt(session),
-            userId: session.user?.id || workupStudioState.backend.userId,
-            email: session.user?.email || workupStudioState.backend.email
-          };
-          saveWorkupStudioState();
-          return Boolean(session.access_token || currentBackend.accessToken);
-        })().finally(() => {
-          workupStudioSessionRefreshPromise = null;
-        });
-      }
-      return workupStudioSessionRefreshPromise;
-    }
-
-    function clearWorkupStudioAuthSession({ keepEmail = true, authError = "" } = {}) {
-      clearSupabaseWorkupCatalog({ render: false });
-      workupStudioState.backend = {
-        ...emptyWorkupStudioBackendState(),
-        email: keepEmail ? workupStudioState.backend.email || "" : "",
-        lastAuthError: authError
-      };
-      saveWorkupStudioState();
-    }
-
-    async function loadWorkupStudioPermissions() {
-      if (!workupStudioBackendAuthenticated()) throw new Error("Sign in before checking Workup Studio permissions.");
-      const encodedUserId = encodeURIComponent(workupStudioState.backend.userId);
-      const [profiles, assignments] = await Promise.all([
-        workupStudioSupabaseRequest(`/rest/v1/workup_author_profiles?select=role,display_name&user_id=eq.${encodedUserId}&limit=1`, { requirePermission: false }),
-        workupStudioSupabaseRequest(`/rest/v1/workup_author_assignments?select=workup_id,role&user_id=eq.${encodedUserId}`, { requirePermission: false })
-      ]);
-      const profile = Array.isArray(profiles) ? profiles[0] : null;
-      const role = String(profile?.role || "author").trim();
-      const permittedWorkupIds = Array.isArray(assignments)
-        ? assignments.map((assignment) => String(assignment.workup_id || "").trim()).filter(Boolean)
-        : [];
-      const canReview = role === "reviewer" || role === "admin";
-      if (!canReview && !permittedWorkupIds.length) {
-        workupStudioState.backend = {
-          ...workupStudioState.backend,
-          role,
-          displayName: profile?.display_name || "",
-          canReview: false,
-          permittedWorkupIds: [],
-          permissionChecked: true,
-          sessionValidatedAt: new Date().toISOString()
-        };
-        saveWorkupStudioState();
-        throw new Error("This signed-in account has no Workup Studio assignment. Ask a reviewer/admin to grant access.");
-      }
-      workupStudioState.backend = {
-        ...workupStudioState.backend,
-        role,
-        displayName: profile?.display_name || "",
-        canReview,
-        permittedWorkupIds,
-        permissionChecked: true,
-        sessionValidatedAt: new Date().toISOString()
-      };
-      saveWorkupStudioState();
-      return workupStudioState.backend;
-    }
-
-    function supabaseSourceRowToRegistrySource(row = {}) {
-      const payload = row.payload && typeof row.payload === "object" ? cloneJson(row.payload) : {};
-      const id = String(row.source_id || row.id || payload.source_id || payload.id || "").trim();
-      return {
-        ...payload,
-        id,
-        source_id: id,
-        title: row.title || payload.title || payload.citation || id,
-        citation: row.citation || payload.citation || payload.preferred_citation || "",
-        url: row.url || payload.url || payload.url_or_doi || "",
-        version: row.version || payload.version || "",
-        date_accessed: row.date_accessed || payload.date_accessed || "",
-        source_type: row.source_type || payload.source_type || payload.source || ""
-      };
-    }
-
-    function supabaseWorkupRowToModule(row = {}, sectionRows = []) {
-      const payload = row.payload && typeof row.payload === "object" ? cloneJson(row.payload) : {};
-      let module = {
-        ...cloneJson(baseModuleById(row.id) || {}),
-        ...payload
-      };
-      module.id = row.id || module.id;
-      module.title = row.title || module.title || module.label || module.id;
-      module.label = row.title || module.label || module.title;
-      module.version = row.version || module.version || "";
-      module.status = row.status || module.status || "draft";
-      module.complaint_group = row.complaint_group || module.complaint_group || "";
-      module.population = row.population && typeof row.population === "object" ? cloneJson(row.population) : (module.population || {});
-      module.source_ids = Array.isArray(row.source_ids) ? cloneJson(row.source_ids) : (module.source_ids || []);
-      module.supabase_updated_at = row.updated_at || "";
-      for (const section of sectionRows.sort((a, b) => Number(a.sort_order || 0) - Number(b.sort_order || 0))) {
-        const sectionKey = String(section.section_key || "").trim();
-        if (!sectionKey) continue;
-        try {
-          module = applySectionPayloadToModule(module, sectionKey, section.payload);
-        } catch {
-          // Ignore unknown future sections so older app bundles can still load the rest of the catalog.
-        }
-      }
-      return module;
-    }
-
-    function validPublicCatalogSnapshot(snapshot) {
-      return Boolean(snapshot
-        && snapshot.schema === PUBLIC_WORKUP_CATALOG_CACHE_SCHEMA
-        && Array.isArray(snapshot.workups)
-        && snapshot.workups.length
-        && Array.isArray(snapshot.sections)
-        && Array.isArray(snapshot.sources));
-    }
-
-    function writePublicWorkupCatalogCache({ workups = [], sections = [], sources = [] } = {}) {
-      if (!Array.isArray(workups) || !workups.length) return false;
-      try {
-        localStorage.setItem(PUBLIC_WORKUP_CATALOG_CACHE_KEY, JSON.stringify({
-          schema: PUBLIC_WORKUP_CATALOG_CACHE_SCHEMA,
-          cachedAt: new Date().toISOString(),
-          workups,
-          sections: Array.isArray(sections) ? sections : [],
-          sources: Array.isArray(sources) ? sources : []
-        }));
-        return true;
-      } catch {
-        return false;
-      }
-    }
-
-    function readPublicWorkupCatalogCache() {
-      try {
-        const snapshot = JSON.parse(localStorage.getItem(PUBLIC_WORKUP_CATALOG_CACHE_KEY) || "null");
-        return validPublicCatalogSnapshot(snapshot) ? snapshot : null;
-      } catch {
-        localStorage.removeItem(PUBLIC_WORKUP_CATALOG_CACHE_KEY);
-        return null;
-      }
-    }
-
-    function applySupabaseWorkupCatalog(
-      { workups = [], sections = [], sources = [] } = {},
-      { persist = workupStudioBackendAuthenticated(), accessMode = "public", fromCache = false, loadedAt = "", clearError = true } = {}
-    ) {
-      if (accessMode === "public" && supabaseWorkupCatalog.accessMode === "authenticated" && workupStudioBackendAuthenticated()) {
-        return supabaseWorkupCatalog;
-      }
-      const sectionsByWorkup = new Map();
-      for (const section of Array.isArray(sections) ? sections : []) {
-        const workupId = String(section.workup_id || "").trim();
-        if (!workupId) continue;
-        if (!sectionsByWorkup.has(workupId)) sectionsByWorkup.set(workupId, []);
-        sectionsByWorkup.get(workupId).push(section);
-      }
-      const modulesById = new Map();
-      for (const row of Array.isArray(workups) ? workups : []) {
-        const module = supabaseWorkupRowToModule(row, sectionsByWorkup.get(row.id) || []);
-        if (module?.id) modulesById.set(module.id, module);
-      }
-      const sourcesById = new Map();
-      for (const row of Array.isArray(sources) ? sources : []) {
-        const source = supabaseSourceRowToRegistrySource(row);
-        if (source.id) sourcesById.set(source.id, source);
-      }
-      supabaseWorkupCatalog = {
-        modulesById,
-        sourcesById,
-        loadedAt: loadedAt || new Date().toISOString(),
-        status: "ready",
-        error: clearError ? "" : supabaseWorkupCatalog.error,
-        accessMode,
-        fromCache,
-        cacheLoadedAt: fromCache ? loadedAt || "" : ""
-      };
-      invalidateWorkupModuleCaches();
-      workupStudioState.backend = {
-        ...workupStudioState.backend,
-        catalogLoadedAt: supabaseWorkupCatalog.loadedAt,
-        catalogWorkupCount: modulesById.size,
-        catalogLastError: clearError ? "" : workupStudioState.backend.catalogLastError
-      };
-      if (persist) saveWorkupStudioState();
-      return supabaseWorkupCatalog;
-    }
-
-    function applyCachedPublicWorkupCatalog({ render = true, clearError = false } = {}) {
-      if (supabaseWorkupCatalog.accessMode === "authenticated" && workupStudioBackendAuthenticated()) return false;
-      const cached = readPublicWorkupCatalogCache();
-      if (!cached) return false;
-      applySupabaseWorkupCatalog(
-        { workups: cached.workups, sections: cached.sections, sources: cached.sources },
-        { persist: false, accessMode: "public", fromCache: true, loadedAt: cached.cachedAt || "", clearError }
-      );
-      if (render) rerenderAfterSupabaseWorkupCatalogSync();
-      return true;
-    }
-
-    function rerenderAfterSupabaseWorkupCatalogSync() {
-      if (state.sessionMode !== "locked") {
-        if (state.selectedWorkupModuleId) ensureWorkup();
-        reconcileChecklistWithCurrentCatalog();
-        renderPatientWorkspace();
-        renderPatientRail();
-        renderOpenEvidence();
-        renderCaseStatus();
-      }
-      renderWorkupStudio();
-      renderWorkupStudioBackendStatus();
-    }
-
-    function clearSupabaseWorkupCatalog({ render = true } = {}) {
-      supabaseWorkupCatalog = {
-        modulesById: new Map(),
-        sourcesById: new Map(),
-        loadedAt: "",
-        status: "local",
-        error: "",
-        accessMode: "",
-        fromCache: false,
-        cacheLoadedAt: ""
-      };
-      invalidateWorkupModuleCaches();
-      workupStudioCatalogHydrationPromises.clear();
-      if (render) rerenderAfterSupabaseWorkupCatalogSync();
-    }
-
-    function supabaseWorkupsCatalogPath({ publicOnly = false } = {}) {
-      const reviewedStatusFilter = publicOnly ? "&status=in.(mvp,active,published,reviewed)" : "";
-      return `/rest/v1/workups?select=id,title,version,status,complaint_group,population,module_path,source_ids,payload,updated_at${reviewedStatusFilter}&order=title.asc&limit=1000`;
-    }
-
-    function postgrestInFilter(values = []) {
-      const clean = Array.from(new Set((Array.isArray(values) ? values : [values])
-        .map((value) => String(value || "").trim())
-        .filter(Boolean)
-        .filter((value) => /^[A-Za-z0-9_.:-]+$/.test(value))));
-      return clean.length ? `in.(${clean.map((value) => `"${value}"`).join(",")})` : "";
-    }
-
-    function supabaseWorkupSectionsCatalogPath({ workupIds = [], publicOnly = false } = {}) {
-      const workupFilter = publicOnly ? postgrestInFilter(workupIds) : "";
-      const filtered = workupFilter ? `&workup_id=${workupFilter}` : "";
-      return `/rest/v1/workup_sections?select=workup_id,section_key,sort_order,payload,source_ids,updated_at${filtered}&order=workup_id.asc,sort_order.asc&limit=10000`;
-    }
-
-    function sourceIdsForCatalogRows(workups = [], sections = []) {
-      const sourceIds = new Set();
-      for (const row of [...(Array.isArray(workups) ? workups : []), ...(Array.isArray(sections) ? sections : [])]) {
-        for (const sourceId of collectSourceIdsFromValue(row, [])) {
-          const normalized = String(sourceId || "").trim();
-          if (normalized) sourceIds.add(normalized);
-        }
-      }
-      return Array.from(sourceIds);
-    }
-
-    function supabaseSourcesCatalogPath({ sourceIds = [], publicOnly = false } = {}) {
-      const sourceFilter = publicOnly ? postgrestInFilter(sourceIds) : "";
-      const filtered = sourceFilter ? `&or=(id.${sourceFilter},source_id.${sourceFilter})` : "";
-      return `/rest/v1/sources?select=id,source_id,title,source_type,url,version,date_accessed,citation,payload,updated_at${filtered}&limit=5000`;
-    }
-
-    async function loadSupabaseWorkupCatalog({ announce = false, force = false, publicOnly = false } = {}) {
-      if (!workupStudioBackendAuthenticated() && !publicWorkupCatalogConfigured()) return false;
-      const authenticatedCatalog = !publicOnly && workupStudioBackendAuthenticated();
-      const accessMode = authenticatedCatalog ? "authenticated" : "public";
-      const readyForMode = supabaseWorkupCatalog.status === "ready"
-        && supabaseWorkupCatalog.loadedAt
-        && (accessMode === "public" || supabaseWorkupCatalog.accessMode === "authenticated");
-      if (!force && readyForMode) return true;
-      if (!workupStudioCatalogHydrationPromises.has(accessMode)) {
-        const hydrationPromise = (async () => {
-          let workups = [];
-          let sections = [];
-          let sources = [];
-          if (authenticatedCatalog) {
-            [workups, sections, sources] = await Promise.all([
-              workupCatalogSupabaseRequest(supabaseWorkupsCatalogPath({ publicOnly: false }), { publicOnly }),
-              workupCatalogSupabaseRequest(supabaseWorkupSectionsCatalogPath({ publicOnly: false }), { publicOnly }),
-              workupCatalogSupabaseRequest(supabaseSourcesCatalogPath({ publicOnly: false }), { publicOnly })
-            ]);
-          } else {
-            workups = await workupCatalogSupabaseRequest(supabaseWorkupsCatalogPath({ publicOnly: true }), { publicOnly });
-            const workupIds = Array.isArray(workups) ? workups.map((workup) => workup.id).filter(Boolean) : [];
-            if (!workupIds.length) {
-              throw new Error("Public Supabase catalog returned no reviewed workups; server seed/import has not published workups for fresh devices yet.");
-            }
-            sections = workupIds.length
-              ? await workupCatalogSupabaseRequest(supabaseWorkupSectionsCatalogPath({ workupIds, publicOnly: true }), { publicOnly })
-              : [];
-            const sourceIds = sourceIdsForCatalogRows(workups, sections);
-            sources = sourceIds.length
-              ? await workupCatalogSupabaseRequest(supabaseSourcesCatalogPath({ sourceIds, publicOnly: true }), { publicOnly })
-              : [];
-          }
-          if (!authenticatedCatalog) writePublicWorkupCatalogCache({ workups, sections, sources });
-          applySupabaseWorkupCatalog({ workups, sections, sources }, { persist: authenticatedCatalog, accessMode, fromCache: false, clearError: true });
-          rerenderAfterSupabaseWorkupCatalogSync();
-          if (announce) setStatus(`Loaded ${supabaseWorkupCatalog.modulesById.size} current Workup Studio workup${supabaseWorkupCatalog.modulesById.size === 1 ? "" : "s"} from Supabase.`);
-          return true;
-        })().catch((error) => {
-          const message = error instanceof Error ? error.message : "Unable to refresh Supabase workups.";
-          supabaseWorkupCatalog = {
-            ...supabaseWorkupCatalog,
-            status: "error",
-            error: message,
-            accessMode: supabaseWorkupCatalog.accessMode || accessMode
-          };
-          workupStudioState.backend = {
-            ...workupStudioState.backend,
-            catalogLastError: message
-          };
-          if (authenticatedCatalog) saveWorkupStudioState();
-          renderWorkupStudioBackendStatus(authenticatedCatalog
-            ? `Signed in, but Supabase workup refresh failed: ${message}`
-            : `Public Supabase workup refresh failed; using bundled local workups. ${message}`);
-          throw error;
-        }).finally(() => {
-          if (workupStudioCatalogHydrationPromises.get(accessMode) === hydrationPromise) {
-            workupStudioCatalogHydrationPromises.delete(accessMode);
-          }
-        });
-        workupStudioCatalogHydrationPromises.set(accessMode, hydrationPromise);
-      }
-      return workupStudioCatalogHydrationPromises.get(accessMode);
-    }
-
-    function hydratePublicWorkupCatalogOnStartup({ force = false } = {}) {
-      if (!publicWorkupCatalogConfigured()) return null;
-      const cachedCatalogApplied = !workupStudioBackendAuthenticated() && applyCachedPublicWorkupCatalog({ render: true, clearError: false });
-      return loadSupabaseWorkupCatalog({ force: force || cachedCatalogApplied, publicOnly: true }).catch((error) => {
-        const message = error instanceof Error ? error.message : "Unable to refresh public Supabase workups.";
-        const hasServerFallback = Boolean(supabaseWorkupCatalog.modulesById.size)
-          || applyCachedPublicWorkupCatalog({ render: true, clearError: false });
-        if (state.currentView === "studio") {
-          setStatus(hasServerFallback
-            ? `Using last downloaded server workups. Public Supabase refresh failed: ${message}`
-            : `Using bundled local workups. Public Supabase refresh failed: ${message}`);
-        }
-        return false;
-      });
-    }
-
-    function supabaseWorkupCatalogAgeMs() {
-      const loadedAt = Date.parse(supabaseWorkupCatalog.loadedAt || "");
-      return Number.isFinite(loadedAt) ? Date.now() - loadedAt : Number.POSITIVE_INFINITY;
-    }
-
-    function refreshSupabaseWorkupCatalogForCurrentSession({ force = false, minAgeMs = WORKUP_CATALOG_RESUME_REFRESH_INTERVAL_MS, announce = false } = {}) {
-      if (!workupStudioBackendAuthenticated() && !publicWorkupCatalogConfigured()) return null;
-      if (!force && supabaseWorkupCatalog.loadedAt && supabaseWorkupCatalogAgeMs() < minAgeMs) return null;
-      const now = Date.now();
-      if (!force && now - workupCatalogResumeRefreshAttemptAt < WORKUP_CATALOG_REFRESH_DEBOUNCE_MS) return null;
-      workupCatalogResumeRefreshAttemptAt = now;
-      const request = workupStudioBackendSignedIn()
-        ? loadSupabaseWorkupCatalog({ force: true, announce })
-        : hydratePublicWorkupCatalogOnStartup({ force: true });
-      return request?.catch?.((error) => {
-        const message = error instanceof Error ? error.message : "Unable to refresh Supabase workups.";
-        setStatus(`Using available workups. Supabase refresh failed: ${message}`);
-        return false;
-      }) || request;
-    }
-
-    async function finishWorkupStudioOAuthSession(session, provider = WORKUP_STUDIO_MAGIC_LINK_PROVIDER) {
-      if (!ensureWorkupStudioBackendConfig()) return false;
-      const accessToken = String(session?.access_token || "").trim();
-      if (!accessToken) return false;
-      workupStudioState.backend = {
-        ...workupStudioState.backend,
-        accessToken,
-        refreshToken: String(session?.refresh_token || ""),
-        expiresAt: normalizeWorkupStudioSessionExpiresAt(session),
-        userId: "",
-        role: "",
-        displayName: "",
-        canReview: false,
-        permittedWorkupIds: [],
-        permissionChecked: false,
-        sessionValidatedAt: "",
-        lastAuthError: "",
-        catalogLoadedAt: "",
-        catalogWorkupCount: 0,
-        catalogLastError: "",
-        lastSyncAt: ""
-      };
-      saveWorkupStudioState();
-      const providerLabel = workupStudioAuthMethodLabel(provider);
-      renderWorkupStudioBackendStatus(`${providerLabel} sign-in returned. Checking Workup Studio permissions...`);
-      const ok = await hydrateWorkupStudioBackendUserFromToken();
-      if (ok) {
-        setStatus(workupStudioState.backend.canReview
-          ? `Signed in with ${providerLabel} as a Workup Studio reviewer.`
-          : `Signed in with ${providerLabel} with ${workupStudioState.backend.permittedWorkupIds.length} assigned workup${workupStudioState.backend.permittedWorkupIds.length === 1 ? "" : "s"}.`);
-        await loadWorkupStudioBackendChangeSets({ announce: false });
-        return true;
-      }
-      setStatus(`${providerLabel} sign-in succeeded, but this account has no Workup Studio permission.`);
-      return false;
-    }
-
-    async function exchangeWorkupStudioPkceCode(authCode = "") {
-      if (!ensureWorkupStudioBackendConfig()) return null;
-      const code = String(authCode || "").trim();
-      if (!code) return null;
-      const verifier = readWorkupStudioPkceVerifier();
-      if (!verifier) {
-        throw new Error("Supabase returned a one-time sign-in code, but this browser does not have the matching verifier. Send a new magic link from this browser and open that link here.");
-      }
-      const response = await fetch(`${normalizeSupabaseUrl(workupStudioState.backend.url)}/auth/v1/token?grant_type=pkce`, {
-        method: "POST",
-        headers: {
-          apikey: workupStudioState.backend.anonKey,
-          "content-type": "application/json"
-        },
-        body: JSON.stringify({
-          auth_code: code,
-          code_verifier: verifier
-        })
-      });
-      clearWorkupStudioPkceVerifier();
-      if (!response.ok) {
-        const text = await response.text();
-        throw new Error(`Unable to exchange Supabase magic-link code: ${response.status} ${text.slice(0, 220)}`);
-      }
-      return response.json();
-    }
-
-    async function captureWorkupStudioOAuthRedirect() {
-      const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
-      const queryParams = new URLSearchParams(window.location.search);
-      const hasOAuthPayload = hashParams.has("access_token")
-        || queryParams.has("access_token")
-        || queryParams.has("code")
-        || hashParams.has("error")
-        || hashParams.has("error_code")
-        || queryParams.get("workupStudioOAuth") === "1"
-        || localStorage.getItem(WORKUP_AUTHORING_AUTH_PENDING_KEY)
-        || localStorage.getItem(WORKUP_AUTHORING_OAUTH_PENDING_KEY);
-      if (!hasOAuthPayload) return false;
-      const pendingProvider = localStorage.getItem(WORKUP_AUTHORING_AUTH_PENDING_KEY)
-        || localStorage.getItem(WORKUP_AUTHORING_OAUTH_PENDING_KEY)
-        || WORKUP_STUDIO_MAGIC_LINK_PROVIDER;
-      localStorage.removeItem(WORKUP_AUTHORING_AUTH_PENDING_KEY);
-      localStorage.removeItem(WORKUP_AUTHORING_OAUTH_PENDING_KEY);
-      const cleanUrl = new URL(window.location.href);
-      cleanUrl.hash = "";
-      cleanUrl.searchParams.delete("workupStudioOAuth");
-      cleanUrl.searchParams.delete("code");
-      cleanUrl.searchParams.delete("type");
-      const error = hashParams.get("error") || queryParams.get("error") || "";
-      const errorCode = hashParams.get("error_code") || queryParams.get("error_code") || error;
-      const description = hashParams.get("error_description") || queryParams.get("error_description") || "";
-      if (error || errorCode || description) {
-        const message = workupStudioOAuthErrorMessage(errorCode, description, pendingProvider);
-        clearWorkupStudioAuthSession({ keepEmail: false, authError: message });
-        renderWorkupStudioBackendStatus(message);
-        setStatus(message);
-        window.history.replaceState({}, document.title, cleanUrl.toString());
-        return false;
-      }
-      let session = null;
-      const authCode = queryParams.get("code") || "";
-      if (authCode) {
-        renderWorkupStudioBackendStatus("Supabase magic link returned. Exchanging sign-in code...");
-        setStatus("Finishing Workup Studio magic-link sign-in.");
-        try {
-          session = await exchangeWorkupStudioPkceCode(authCode);
-        } catch (error) {
-          const message = error instanceof Error ? error.message : "Unable to exchange Supabase magic-link code.";
-          clearWorkupStudioAuthSession({ keepEmail: true, authError: message });
-          renderWorkupStudioBackendStatus(message);
-          setStatus(message);
-          window.history.replaceState({}, document.title, cleanUrl.toString());
-          return false;
-        }
-      }
-      const accessToken = session?.access_token || hashParams.get("access_token") || queryParams.get("access_token") || "";
-      if (!accessToken) {
-        const message = queryParams.get("workupStudioOAuth") === "1"
-          ? "Returned from Supabase, but no session token or sign-in code was present. Send a new magic link from this browser and open that exact link."
-          : "";
-        if (message) {
-          clearWorkupStudioAuthSession({ keepEmail: true, authError: message });
-          renderWorkupStudioBackendStatus(message);
-          setStatus(message);
-        }
-        window.history.replaceState({}, document.title, cleanUrl.toString());
-        return false;
-      }
-      const result = await finishWorkupStudioOAuthSession({
-        access_token: accessToken,
-        refresh_token: session?.refresh_token || hashParams.get("refresh_token") || queryParams.get("refresh_token") || "",
-        expires_in: session?.expires_in || hashParams.get("expires_in") || queryParams.get("expires_in") || "",
-        expires_at: session?.expires_at || hashParams.get("expires_at") || queryParams.get("expires_at") || ""
-      }, pendingProvider);
-      window.history.replaceState({}, document.title, cleanUrl.toString());
-      return result;
-    }
-
-    function signOutWorkupStudioSupabase() {
-      clearSupabaseWorkupCatalog({ render: false });
-      workupStudioState.backend = {
-        ...workupStudioState.backend,
-        accessToken: "",
-        refreshToken: "",
-        expiresAt: 0,
-        userId: "",
-        role: "",
-        displayName: "",
-        canReview: false,
-        permittedWorkupIds: [],
-        permissionChecked: false,
-        sessionValidatedAt: "",
-        lastAuthError: "",
-        catalogLoadedAt: "",
-        catalogWorkupCount: 0,
-        catalogLastError: "",
-        lastSyncAt: ""
-      };
-      saveWorkupStudioState();
-      renderWorkupStudioBackendStatus("Signed out. Drafts will save locally until you sign in again.");
-      setStatus("Signed out of Workup Studio Supabase backend.");
-    }
-
-    async function hydrateWorkupStudioBackendUserFromToken() {
-      if (!workupStudioBackendAuthenticated()) return false;
-      try {
-        renderWorkupStudioBackendStatus("Checking saved Supabase session and Workup Studio permissions...");
-        const user = await workupStudioSupabaseRequest("/auth/v1/user", { requirePermission: false });
-        workupStudioState.backend.userId = user?.id || user?.user?.id || workupStudioState.backend.userId || "";
-        workupStudioState.backend.email = user?.email || user?.user?.email || workupStudioState.backend.email || "";
-        await loadWorkupStudioPermissions();
-        try {
-          await loadSupabaseWorkupCatalog({ force: true });
-        } catch (catalogError) {
-          const message = catalogError instanceof Error ? catalogError.message : "Unable to refresh Supabase workups.";
-          workupStudioState.backend.catalogLastError = message;
-          saveWorkupStudioState();
-          setStatus(`Signed in, but Supabase workup refresh failed: ${message}`);
-        }
-        saveWorkupStudioState();
-        renderWorkupStudioBackendStatus();
-        return true;
-      } catch (error) {
-        const detail = error instanceof Error ? error.message : "Unable to read Supabase user profile.";
-        const message = `Supabase sign-in worked, but Workup Studio access failed: ${detail}`;
-        clearWorkupStudioAuthSession({ authError: message });
-        renderWorkupStudioBackendStatus(message);
-        setStatus(message);
-        return false;
-      }
-    }
-
-    function ensureWorkupStudioBackendSession() {
-      if (!workupStudioBackendAuthenticated()) {
-        if (!supabaseWorkupCatalog.loadedAt && publicWorkupCatalogConfigured()) {
-          return hydratePublicWorkupCatalogOnStartup({ force: true });
-        }
-        return null;
-      }
-      if (workupStudioBackendSignedIn()) {
-        if (!supabaseWorkupCatalog.loadedAt) {
-          return loadSupabaseWorkupCatalog({ force: true }).catch((error) => {
-            renderWorkupStudioBackendStatus(error instanceof Error ? error.message : "Unable to refresh Supabase workups.");
-            return false;
-          });
-        }
-        return null;
-      }
-      if (workupStudioState.backend.permissionChecked) return null;
-      if (!workupStudioSessionHydrationPromise) {
-        workupStudioSessionHydrationPromise = hydrateWorkupStudioBackendUserFromToken()
-          .catch((error) => {
-            renderWorkupStudioBackendStatus(error instanceof Error ? error.message : "Unable to validate saved Supabase session.");
-            return false;
-          })
-          .finally(() => {
-            workupStudioSessionHydrationPromise = null;
-          });
-      }
-      return workupStudioSessionHydrationPromise;
     }
 
     function loadWorkupStudioState() {
       try {
         const saved = JSON.parse(localStorage.getItem(WORKUP_AUTHORING_STORAGE_KEY) || "{}");
         if (saved && typeof saved === "object") {
+          workupStudioState.localModules = Array.isArray(saved.localModules)
+            ? saved.localModules.filter((module) => module?.id && typeof module === "object")
+            : [];
           workupStudioState.selectedModuleId = moduleById(saved.selectedModuleId)?.id || "";
           workupStudioState.sectionKey = workupSectionDefinitions.some((section) => section.key === saved.sectionKey)
             ? saved.sectionKey
@@ -20858,22 +20028,10 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
               .map(([key, value]) => [String(key).slice(0, 240), String(value || "").slice(0, WORKUP_STUDIO_PROMPT_TEMPLATE_MAX_CHARS)])
               .filter(([key, value]) => !legacyWorkupStudioPromptTemplate(workupStudioSectionKeyFromPromptTemplateKey(key), value)))
             : {};
-          workupStudioState.backend = {
-            ...emptyWorkupStudioBackendState(),
-            ...(saved.backend && typeof saved.backend === "object" ? saved.backend : {}),
-            url: WORKUP_STUDIO_DEFAULT_BACKEND.url,
-            anonKey: WORKUP_STUDIO_DEFAULT_BACKEND.publishableKey,
-            role: "",
-            displayName: "",
-            canReview: false,
-            permittedWorkupIds: [],
-            permissionChecked: false,
-            sessionValidatedAt: "",
-            lastAuthError: "",
-            catalogLoadedAt: "",
-            catalogWorkupCount: 0,
-            catalogLastError: "",
-            lastSyncAt: ""
+          workupStudioState.github = {
+            contributor: String(saved.github?.contributor || "").slice(0, 120),
+            lastIssueUrl: String(saved.github?.lastIssueUrl || ""),
+            lastCopiedAt: String(saved.github?.lastCopiedAt || "")
           };
         }
       } catch {
@@ -20895,119 +20053,6 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
         _workupStudioStateSaveTimer = null;
       }
       _flushWorkupStudioState();
-    }
-
-    function changeSetToSupabaseRow(changeSet = {}) {
-      const workupId = changeSet.workup_id || changeSet.workupId;
-      const sectionKey = changeSet.section_key || changeSet.sectionKey;
-      return {
-        id: changeSet.id,
-        schema: changeSet.schema || "workup_change_set_v1",
-        workup_id: workupId,
-        section_key: sectionKey,
-        operations: changeSet.operations || [],
-        before_snapshot: changeSet.before_snapshot ?? changeSet.beforeSnapshot ?? null,
-        after_snapshot: changeSet.after_snapshot ?? changeSet.afterSnapshot,
-        source_ids: changeSet.source_ids || changeSet.sourceIds || [],
-        review_status: changeSet.review_status || changeSet.reviewStatus || "draft",
-        export_ready: Boolean(changeSet.export_ready ?? changeSet.exportReady),
-        author_id: changeSet.author_id || changeSet.authorId || workupStudioState.backend.userId || null,
-        reviewer_id: changeSet.reviewer_id || changeSet.reviewerId || null,
-        reviewer_notes: changeSet.reviewer_notes || changeSet.reviewerNotes || "",
-        imported_evidence: changeSet.imported_evidence ?? changeSet.importedEvidence ?? null,
-        created_at: changeSet.created_at || changeSet.createdAt || new Date().toISOString(),
-        reviewed_at: changeSet.reviewed_at || changeSet.reviewedAt || null,
-        exported_at: changeSet.exported_at || changeSet.exportedAt || null
-      };
-    }
-
-    function supabaseRowToWorkupChangeSet(row = {}) {
-      return {
-        schema: row.schema || "workup_change_set_v1",
-        id: row.id,
-        workupId: row.workup_id,
-        workup_id: row.workup_id,
-        sectionKey: row.section_key,
-        section_key: row.section_key,
-        operations: row.operations || [],
-        beforeSnapshot: row.before_snapshot ?? null,
-        before_snapshot: row.before_snapshot ?? null,
-        afterSnapshot: row.after_snapshot,
-        after_snapshot: row.after_snapshot,
-        sourceIds: row.source_ids || [],
-        source_ids: row.source_ids || [],
-        reviewStatus: row.review_status || "draft",
-        review_status: row.review_status || "draft",
-        exportReady: Boolean(row.export_ready),
-        export_ready: Boolean(row.export_ready),
-        authorId: row.author_id || null,
-        author_id: row.author_id || null,
-        reviewerId: row.reviewer_id || null,
-        reviewer_id: row.reviewer_id || null,
-        reviewerNotes: row.reviewer_notes || "",
-        reviewer_notes: row.reviewer_notes || "",
-        importedEvidence: row.imported_evidence || null,
-        imported_evidence: row.imported_evidence || null,
-        createdAt: row.created_at,
-        created_at: row.created_at,
-        reviewedAt: row.reviewed_at || null,
-        reviewed_at: row.reviewed_at || null,
-        syncedAt: row.created_at || new Date().toISOString(),
-        syncStatus: "synced"
-      };
-    }
-
-    function mergeWorkupStudioChangeSets(remoteChangeSets = []) {
-      const byId = new Map(workupStudioState.changeSets.map((changeSet) => [changeSet.id, changeSet]));
-      remoteChangeSets.forEach((changeSet) => byId.set(changeSet.id, { ...(byId.get(changeSet.id) || {}), ...changeSet }));
-      workupStudioState.changeSets = Array.from(byId.values())
-        .filter((entry) => entry?.schema === "workup_change_set_v1")
-        .sort((a, b) => String(a.created_at || a.createdAt || "").localeCompare(String(b.created_at || b.createdAt || "")));
-      invalidateWorkupModuleCaches();
-      saveWorkupStudioState();
-    }
-
-    async function persistWorkupStudioChangeSet(changeSet) {
-      if (!workupStudioBackendSignedIn()) return false;
-      const workupId = changeSet.workup_id || changeSet.workupId;
-      if (!workupStudioCanEditWorkup(workupId)) throw new Error("This account is not assigned to edit this workup.");
-      const row = changeSetToSupabaseRow(changeSet);
-      row.author_id = row.author_id || workupStudioState.backend.userId;
-      changeSet.authorId = row.author_id;
-      changeSet.author_id = row.author_id;
-      await workupStudioSupabaseRequest("/rest/v1/change_sets?on_conflict=id", {
-        method: "POST",
-        body: [row],
-        prefer: "resolution=merge-duplicates,return=minimal"
-      });
-      changeSet.syncedAt = new Date().toISOString();
-      changeSet.syncStatus = "synced";
-      workupStudioState.backend.lastSyncAt = changeSet.syncedAt;
-      saveWorkupStudioState();
-      renderWorkupStudioBackendStatus();
-      return true;
-    }
-
-    async function loadWorkupStudioBackendChangeSets({ announce = true } = {}) {
-      if (!workupStudioBackendSignedIn()) {
-        renderWorkupStudioBackendStatus("Sign in before loading backend drafts.");
-        return false;
-      }
-      try {
-        renderWorkupStudioBackendStatus("Loading Supabase change sets...");
-        const rows = await workupStudioSupabaseRequest("/rest/v1/change_sets?select=*&order=created_at.asc&limit=1000");
-        mergeWorkupStudioChangeSets((rows || []).map(supabaseRowToWorkupChangeSet));
-        workupStudioState.backend.lastSyncAt = new Date().toISOString();
-        saveWorkupStudioState();
-        renderWorkupStudio();
-        renderWorkupStudioBackendStatus();
-        if (announce) setStatus(`Loaded ${(rows || []).length} Workup Studio change set${(rows || []).length === 1 ? "" : "s"} from Supabase.`);
-        return true;
-      } catch (error) {
-        renderWorkupStudioBackendStatus(error instanceof Error ? error.message : "Unable to load Supabase change sets.");
-        setStatus("Unable to load Workup Studio drafts from Supabase.");
-        return false;
-      }
     }
 
     function workupStudioChangeSetsForModule(moduleId = workupStudioState.selectedModuleId) {
@@ -21063,6 +20108,34 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
         workupStudioState.selectedPathwayNodeId = "";
       }
       saveWorkupStudioState();
+    }
+
+    function syncActivePatientSelectionFromWorkupStudio(moduleId = workupStudioState.selectedModuleId, { announce = true } = {}) {
+      const selected = moduleById(moduleId);
+      if (!selected || !activePatient().id) return selected || null;
+      const previousModuleId = state.selectedWorkupModuleId || "";
+      const shouldRebuildChecklist = Boolean(
+        state.sections.length
+        && state.checklistWorkupModuleId
+        && state.checklistWorkupModuleId !== selected.id
+        && !checklistHasLocalBedsideWork()
+      );
+      setSelectedWorkupModuleId(selected.id);
+      state.concern = moduleLabel(selected);
+      phoneChecklistWorkupSearch = state.concern;
+      syncWorkupConcernInputs(state.concern);
+      ensureWorkup({ preferredInput: elements.patientWorkupConcernInput });
+      if (shouldRebuildChecklist) {
+        buildChecklistFromWorkup({ navigate: false, announce: false });
+      }
+      renderChecklist();
+      renderPatientWorkspace();
+      renderPatientRail();
+      if (announce && previousModuleId !== selected.id) {
+        setStatus(`${moduleLabel(selected)} is now the active patient workup and checklist source.`);
+      }
+      saveState();
+      return selected;
     }
 
     function studioSectionDefinition() {
@@ -21281,7 +20354,6 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
         discardedRawSourceText: true,
         sourceWorkflowStartedAt: timeline.sourceWorkflowStartedAt || null,
         sourcePromptBuiltAt: timeline.sourcePromptBuiltAt || null,
-        sourceToLiveTargetMs: WORKUP_STUDIO_SOURCE_TO_LIVE_TARGET_MS,
         attestationAccepted: Boolean(attestationAccepted)
       };
     }
@@ -21542,7 +20614,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
           id: `source_topic_${index + 1}`,
           label: topic ? `Review source-supported ${topic}` : `Review source-supported pathway step ${index + 1}`,
           edgeLabel: index ? "Then" : "Source match",
-          boxText: "Reviewer should confirm this source-supported step in the rendered tree editor before publishing.",
+          boxText: "Reviewer should confirm this source-supported step in the rendered tree editor before proposal.",
           rationale: "This draft node was created from the source packet so the reviewer can refine the tree without editing JSON."
         };
       }).slice(0, max);
@@ -21613,7 +20685,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
         id: "source_packet_root",
         label: `Confirm ${workupTitle} source scope`,
         type: "action",
-        boxText: "Apply this draft only to patients matching the cited source section; reviewer must refine labels, thresholds, and branch logic before publish.",
+        boxText: "Apply this draft only to patients matching the cited source section; reviewer must refine labels, thresholds, and branch logic before proposal.",
         source_id: packet.sourceId,
         source_ids: [packet.sourceId],
         source_section: packet.sourceSection,
@@ -21680,7 +20752,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
         saveWorkupStudioState();
         if (elements.workupStudioImportInput) elements.workupStudioImportInput.value = "";
         clearWorkupStudioSourceText({ resetPrompt: true });
-        setStatus("Source-backed draft tree created without manual JSON editing. Review the rendered tree, then publish after attestation.");
+        setStatus("Source-backed draft tree created without manual JSON editing. Review the rendered tree, then open a GitHub proposal after attestation.");
       }
       return Boolean(changeSet);
     }
@@ -22079,7 +21151,7 @@ Rules:
         || changeSet?.imported_evidence?.sourceReview?.attestationAccepted);
     }
 
-    function workupStudioPathwayPublishIssues(changeSet = null) {
+    function workupStudioPathwayProposalIssues(changeSet = null) {
       const target = changeSet || workupStudioLatestChangeSet();
       if (!target || (target.sectionKey || target.section_key) !== "clinical_pathway_tree_v1") return [];
       const graph = workupStudioChangeSetAfterSnapshot(target);
@@ -22094,23 +21166,9 @@ Rules:
       if (audit.missingSourceSection.length) issues.push(`Add source_section to every node; missing: ${audit.missingSourceSection.slice(0, 3).join(", ")}.`);
       if (audit.missingRationale.length) issues.push(`Add rationale to every node; missing: ${audit.missingRationale.slice(0, 3).join(", ")}.`);
       if (audit.missingReviewerStatus.length) issues.push(`Add reviewer_status to every node; missing: ${audit.missingReviewerStatus.slice(0, 3).join(", ")}.`);
-      if (audit.unsupported.length) issues.push(`Remove or revise unsupported nodes before publishing: ${audit.unsupported.slice(0, 3).join(", ")}.`);
-      if (!workupStudioSourceAttestationAccepted(target)) issues.push("Reviewer attestation is required before publishing a pathway tree.");
+      if (audit.unsupported.length) issues.push(`Remove or revise unsupported nodes before proposal: ${audit.unsupported.slice(0, 3).join(", ")}.`);
+      if (!workupStudioSourceAttestationAccepted(target)) issues.push("Reviewer attestation is required before proposing a pathway tree.");
       return issues;
-    }
-
-    function markPathwayTreeReviewedForPublish(graph = {}, reviewerStatus = "reviewed_by_workup_studio") {
-      const next = cloneJson(graph || {});
-      const visit = (node) => {
-        if (!node || typeof node !== "object") return;
-        if (!isInternalDecisionTreeNode(node)) {
-          node.reviewer_status = reviewerStatus;
-        }
-        (node.children || []).forEach(visit);
-      };
-      visit(next.root);
-      next.reviewedAt = new Date().toISOString();
-      return next;
     }
 
     function ensureWorkupStudioResultScope(raw = {}, module = selectedWorkupStudioModule(), definition = studioSectionDefinition()) {
@@ -22221,309 +21279,6 @@ Rules:
         .slice(0, 96) || fallback;
     }
 
-    function workupStudioItemRowsFromPayload(workupId, sectionKey, payload = {}) {
-      const definition = workupSectionDefinitions.find((section) => section.key === sectionKey);
-      if (!definition || definition.kind !== "items") return [];
-      const now = new Date().toISOString();
-      return definition.moduleFields.flatMap((groupKey) => (payload[groupKey] || []).map((item, index) => {
-        const itemId = stableWorkupStudioItemId(item, `${groupKey}_${index + 1}`);
-        return {
-          id: `${workupId}:${groupKey}:${itemId}`,
-          workup_id: workupId,
-          section_key: sectionKey,
-          group_key: groupKey,
-          item_id: itemId,
-          item_type: String(item.item_type || ""),
-          label: String(item.label || item.text || item.action || item.technique || itemId).replace(/\s+/g, " ").trim(),
-          sort_order: index,
-          source_ids: collectSourceIdsFromValue(item, []),
-          payload: item,
-          updated_at: now
-        };
-      }));
-    }
-
-    function workupStudioReviewCaseRowsFromPayload(workupId, payload = {}) {
-      const now = new Date().toISOString();
-      return [
-        ...(payload.gold_cases || []).map((row, index) => {
-          const caseId = stableWorkupStudioItemId(row, `gold_${index + 1}`);
-          return {
-            id: `${workupId}:gold:${caseId}`,
-            workup_id: workupId,
-            case_id: caseId,
-            case_type: "gold_case",
-            sort_order: index,
-            payload: row,
-            updated_at: now
-          };
-        }),
-        ...(payload.synthetic_patient_scenarios || []).map((row, index) => {
-          const caseId = stableWorkupStudioItemId({ id: row.scenario_id || row.id }, `scenario_${index + 1}`);
-          return {
-            id: `${workupId}:scenario:${caseId}`,
-            workup_id: workupId,
-            case_id: caseId,
-            case_type: "synthetic_pathway_scenario",
-            sort_order: index,
-            payload: row,
-            updated_at: now
-          };
-        })
-      ];
-    }
-
-    async function upsertWorkupStudioRows(table, rows, onConflict = "id") {
-      const list = Array.isArray(rows) ? rows : [rows];
-      if (!list.length) return true;
-      await workupStudioSupabaseRequest(`/rest/v1/${table}?on_conflict=${encodeURIComponent(onConflict)}`, {
-        method: "POST",
-        body: list,
-        prefer: "resolution=merge-duplicates,return=minimal"
-      });
-      return true;
-    }
-
-    function publicCatalogWorkupStatus(status = "") {
-      const normalized = String(status || "").trim().toLowerCase();
-      return ["mvp", "active", "published", "reviewed"].includes(normalized) ? normalized : "reviewed";
-    }
-
-    async function verifyPublishedWorkupPublicCatalog(workupId) {
-      const id = String(workupId || "").trim();
-      const startedAt = Date.now();
-      if (!id) throw new Error("Public catalog verification failed: missing workup id.");
-      if (!publicWorkupCatalogConfigured()) {
-        throw new Error("Public catalog verification failed: Supabase public catalog backend is not configured.");
-      }
-      const workups = await workupCatalogSupabaseRequest(
-        `/rest/v1/workups?select=id,title,status,source_ids,updated_at&id=eq.${encodeURIComponent(id)}&status=in.(mvp,active,published,reviewed)&limit=1`,
-        { publicOnly: true }
-      );
-      const visibleWorkup = Array.isArray(workups) ? workups.find((row) => String(row.id || "") === id) : null;
-      if (!visibleWorkup) {
-        throw new Error(`Public catalog verification failed for ${id}: fresh devices cannot read the published workup row.`);
-      }
-      const sections = await workupCatalogSupabaseRequest(
-        supabaseWorkupSectionsCatalogPath({ workupIds: [id], publicOnly: true }),
-        { publicOnly: true }
-      );
-      if (!Array.isArray(sections) || !sections.some((row) => String(row.workup_id || "") === id)) {
-        throw new Error(`Public catalog verification failed for ${id}: fresh devices cannot read its section rows.`);
-      }
-      const sourceIds = sourceIdsForCatalogRows([visibleWorkup], sections);
-      let sources = [];
-      if (sourceIds.length) {
-        sources = await workupCatalogSupabaseRequest(
-          supabaseSourcesCatalogPath({ sourceIds, publicOnly: true }),
-          { publicOnly: true }
-        );
-        if (!Array.isArray(sources) || !sources.length) {
-          throw new Error(`Public catalog verification failed for ${id}: fresh devices cannot read referenced source rows.`);
-        }
-      }
-      const visibilityMs = Date.now() - startedAt;
-      if (visibilityMs > WORKUP_STUDIO_PUBLIC_VISIBILITY_TARGET_MS) {
-        throw new Error(`Public catalog verification failed for ${id}: fresh-device visibility took ${visibilityMs} ms, exceeding ${WORKUP_STUDIO_PUBLIC_VISIBILITY_TARGET_MS} ms.`);
-      }
-      return {
-        verified: true,
-        visibilityMs,
-        targetMs: WORKUP_STUDIO_PUBLIC_VISIBILITY_TARGET_MS,
-        workupCount: 1,
-        sectionCount: sections.length,
-        sourceCount: Array.isArray(sources) ? sources.length : 0
-      };
-    }
-
-    function applyWorkupStudioPublicCatalogVerification(changeSet, publicCatalogVerification = {}) {
-      const verifiedAt = new Date().toISOString();
-      const workupId = changeSet.workupId || changeSet.workup_id || "";
-      const verification = {
-        ...publicCatalogVerification,
-        workupId,
-        verifiedAt
-      };
-      const evidence = {
-        ...(changeSet.importedEvidence || changeSet.imported_evidence || {}),
-        publicCatalogVerification: verification
-      };
-      if (evidence.sourceReview) {
-        const sourceReview = { ...evidence.sourceReview };
-        const sourceWorkflowStartedAt = sourceReview.sourceWorkflowStartedAt || sourceReview.sourcePromptBuiltAt || null;
-        const sourceToLiveMs = elapsedMsBetweenIsoDates(sourceWorkflowStartedAt, verifiedAt);
-        evidence.sourceReview = {
-          ...sourceReview,
-          sourceWorkflowStartedAt,
-          sourceLiveVerifiedAt: verifiedAt,
-          sourceToLiveMs,
-          sourceToLiveTargetMs: WORKUP_STUDIO_SOURCE_TO_LIVE_TARGET_MS,
-          sourceToLiveWithinTarget: sourceToLiveMs === null ? null : sourceToLiveMs <= WORKUP_STUDIO_SOURCE_TO_LIVE_TARGET_MS
-        };
-      }
-      changeSet.publicCatalogVerification = verification;
-      changeSet.public_catalog_verification = verification;
-      changeSet.importedEvidence = evidence;
-      changeSet.imported_evidence = evidence;
-      return evidence;
-    }
-
-    async function publishWorkupStudioCanonicalSection(changeSet) {
-      if (!workupStudioCanReview()) throw new Error("Reviewer access is required to publish canonical Workup Studio content.");
-      const workupId = changeSet.workupId || changeSet.workup_id;
-      const sectionKey = changeSet.sectionKey || changeSet.section_key;
-      const definition = workupSectionDefinitions.find((section) => section.key === sectionKey);
-      const payload = workupStudioChangeSetAfterSnapshot(changeSet);
-      if (!workupId || !definition) throw new Error("Cannot publish an unknown workup section.");
-      if (definition.kind === "pathway") {
-        const publishIssues = workupStudioPathwayPublishIssues(changeSet);
-        if (publishIssues.length) throw new Error(publishIssues[0]);
-      }
-      const sourceIds = collectSourceIdsFromValue(payload, []);
-      const now = new Date().toISOString();
-      await upsertWorkupStudioRows("workup_sections", {
-        id: `${workupId}:${sectionKey}`,
-        workup_id: workupId,
-        section_key: sectionKey,
-        label: definition.label,
-        description: definition.description,
-        kind: definition.kind,
-        sort_order: workupSectionDefinitions.findIndex((section) => section.key === sectionKey),
-        payload,
-        source_ids: sourceIds,
-        updated_at: now
-      });
-      if (definition.kind === "pathway") {
-        const treeId = `${workupId}:clinical_pathway_tree_v1`;
-        await upsertWorkupStudioRows("pathway_trees", {
-          id: treeId,
-          workup_id: workupId,
-          section_key: sectionKey,
-          title: payload.title || moduleLabel(moduleById(workupId)) || workupId,
-          status: payload.status || "draft",
-          source_ids: sourceIds,
-          activation_rules: payload.activationRules || payload.activation_rules || {},
-          payload,
-          updated_at: now
-        });
-        await workupStudioSupabaseRequest(`/rest/v1/pathway_nodes?tree_id=eq.${encodeURIComponent(treeId)}`, {
-          method: "DELETE",
-          prefer: "return=minimal"
-        });
-        const nodeRows = flattenPathwayNodes(payload.root, { treeId }).map((row) => ({ ...row, updated_at: now }));
-        await upsertWorkupStudioRows("pathway_nodes", nodeRows);
-      } else if (definition.kind === "items") {
-        await workupStudioSupabaseRequest(`/rest/v1/workup_items?workup_id=eq.${encodeURIComponent(workupId)}&section_key=eq.${encodeURIComponent(sectionKey)}`, {
-          method: "DELETE",
-          prefer: "return=minimal"
-        });
-        await upsertWorkupStudioRows("workup_items", workupStudioItemRowsFromPayload(workupId, sectionKey, payload));
-      } else if (definition.kind === "review") {
-        await workupStudioSupabaseRequest(`/rest/v1/review_cases?workup_id=eq.${encodeURIComponent(workupId)}`, {
-          method: "DELETE",
-          prefer: "return=minimal"
-        });
-        await upsertWorkupStudioRows("review_cases", workupStudioReviewCaseRowsFromPayload(workupId, payload));
-      }
-      const currentWorkupStatus = moduleById(workupId)?.status || "";
-      const workupPatch = {
-        updated_at: now,
-        status: publicCatalogWorkupStatus(currentWorkupStatus)
-      };
-      if (definition.kind === "sources" && Array.isArray(payload.module_source_ids)) {
-        workupPatch.source_ids = payload.module_source_ids;
-      }
-      await workupStudioSupabaseRequest(`/rest/v1/workups?id=eq.${encodeURIComponent(workupId)}`, {
-        method: "PATCH",
-        body: workupPatch,
-        prefer: "return=minimal"
-      });
-      return true;
-    }
-
-    async function publishWorkupStudioChangeSet(changeSet, { announce = true } = {}) {
-      if (!changeSet) return false;
-      if (!workupStudioCanReview()) {
-        setStatus("Sign in as a reviewer before publishing to Supabase.");
-        return false;
-      }
-      const sectionKey = changeSet.sectionKey || changeSet.section_key;
-      if (sectionKey === "clinical_pathway_tree_v1") {
-        const publishIssues = workupStudioPathwayPublishIssues(changeSet);
-        if (publishIssues.length) throw new Error(publishIssues[0]);
-        const reviewedPayload = markPathwayTreeReviewedForPublish(workupStudioChangeSetAfterSnapshot(changeSet));
-        changeSet.afterSnapshot = reviewedPayload;
-        changeSet.after_snapshot = reviewedPayload;
-        if (Array.isArray(changeSet.operations)) {
-          changeSet.operations = changeSet.operations.map((operation) => operation.op === "replace_section"
-            ? { ...operation, after: reviewedPayload }
-            : operation);
-        }
-        changeSet.importedEvidence = {
-          ...(changeSet.importedEvidence || changeSet.imported_evidence || {}),
-          sourceReview: {
-            ...((changeSet.importedEvidence || changeSet.imported_evidence || {}).sourceReview || {}),
-            ...workupStudioSourceMetadataForEvidence({ attestationAccepted: true }),
-            reviewedForPublishAt: new Date().toISOString()
-          }
-        };
-        changeSet.imported_evidence = changeSet.importedEvidence;
-      }
-      const reviewedAt = new Date().toISOString();
-      changeSet.reviewStatus = "approved";
-      changeSet.review_status = "approved";
-      changeSet.exportReady = true;
-      changeSet.export_ready = true;
-      changeSet.reviewedAt = reviewedAt;
-      changeSet.reviewed_at = reviewedAt;
-      changeSet.reviewerId = workupStudioState.backend.userId;
-      changeSet.reviewer_id = workupStudioState.backend.userId;
-      changeSet.syncStatus = "pending";
-      saveWorkupStudioStateNow();
-      renderWorkupStudio();
-      await persistWorkupStudioChangeSet(changeSet);
-      await workupStudioSupabaseRequest(`/rest/v1/change_sets?id=eq.${encodeURIComponent(changeSet.id)}`, {
-        method: "PATCH",
-        body: {
-          review_status: "approved",
-          export_ready: true,
-          reviewer_id: workupStudioState.backend.userId,
-          reviewed_at: reviewedAt
-        },
-        prefer: "return=minimal"
-      });
-      await publishWorkupStudioCanonicalSection(changeSet);
-      const publicCatalogVerification = await verifyPublishedWorkupPublicCatalog(changeSet.workupId || changeSet.workup_id);
-      const importedEvidence = applyWorkupStudioPublicCatalogVerification(changeSet, publicCatalogVerification);
-      await workupStudioSupabaseRequest(`/rest/v1/change_sets?id=eq.${encodeURIComponent(changeSet.id)}`, {
-        method: "PATCH",
-        body: {
-          imported_evidence: importedEvidence
-        },
-        prefer: "return=minimal"
-      });
-      try {
-        await loadSupabaseWorkupCatalog({ force: true });
-      } catch {
-        // Publishing already succeeded; a later signed-in load can refresh the canonical catalog.
-      }
-      changeSet.syncStatus = "synced";
-      changeSet.syncedAt = new Date().toISOString();
-      saveWorkupStudioStateNow();
-      renderWorkupStudio();
-      if (announce) {
-        const sourceReview = changeSet.importedEvidence?.sourceReview || changeSet.imported_evidence?.sourceReview || null;
-        const sourceTimingCopy = Number.isFinite(sourceReview?.sourceToLiveMs)
-          ? ` Source-to-live: ${sourceReview.sourceToLiveMs} ms${sourceReview.sourceToLiveWithinTarget === false ? " (over 10 min target)" : ""}.`
-          : "";
-        const verificationCopy = publicCatalogVerification?.verified
-          ? ` Public catalog verified for fresh devices in ${publicCatalogVerification.visibilityMs} ms (${publicCatalogVerification.sectionCount} section row${publicCatalogVerification.sectionCount === 1 ? "" : "s"}).${sourceTimingCopy}`
-          : "";
-        setStatus(`${studioSectionDefinition().label} published to Supabase for all database-backed users.${verificationCopy}`);
-      }
-      return true;
-    }
-
     function refreshWorkupConsumersAfterAuthoringChange(workupId = workupStudioState.selectedModuleId) {
       if (!workupId) return;
       syncWorkupSelectors();
@@ -22553,13 +21308,14 @@ Rules:
       }
     }
 
-    function saveWorkupStudioChangeSet(afterPayload, { importedEvidence = null, announce = true, sync = true, refreshConsumers = true } = {}) {
+    function saveWorkupStudioChangeSet(afterPayload, { importedEvidence = null, announce = true, refreshConsumers = true } = {}) {
       const original = moduleById(workupStudioState.selectedModuleId);
       if (!original) {
         setStatus("Select a workup before saving a Workup Studio draft.");
         return null;
       }
       const sectionKey = workupStudioState.sectionKey;
+      const contributor = workupStudioContributor();
       const changeSet = makeWorkupChangeSet({
         workupId: original.id,
         sectionKey,
@@ -22568,10 +21324,11 @@ Rules:
         sourceIds: Array.from(new Set([...studioSourceIdsForCurrentSection(), ...collectSourceIdsFromValue(afterPayload, [])])),
         reviewStatus: "draft",
         exportReady: false,
-        authorId: workupStudioBackendSignedIn() ? workupStudioState.backend.userId : null,
-        reviewerNotes: "Created in Workup Studio; reviewer approval required before export.",
+        authorId: contributor || null,
+        reviewerNotes: "Created in Workup Studio; submit through GitHub Issues or a PR for maintainer review.",
         importedEvidence
       });
+      changeSet.syncStatus = "local";
       workupStudioState.changeSets = [
         ...workupStudioState.changeSets.filter((entry) => entry.id !== changeSet.id),
         changeSet
@@ -22580,55 +21337,27 @@ Rules:
       saveWorkupStudioStateNow();
       if (refreshConsumers) refreshWorkupConsumersAfterAuthoringChange(original.id);
       renderWorkupStudio();
-      const canSyncCurrentWorkup = workupStudioCanEditWorkup(original.id);
-      if (sync && canSyncCurrentWorkup) {
-        changeSet.syncStatus = "pending";
-        void persistWorkupStudioChangeSet(changeSet)
-          .then((synced) => {
-            renderWorkupStudio();
-            if (synced && announce) setStatus(`${studioSectionDefinition().label} draft saved, applied locally, and synced to Supabase for ${moduleLabel(original)}.`);
-          })
-          .catch((error) => {
-            changeSet.syncStatus = "error";
-            saveWorkupStudioState();
-            renderWorkupStudio();
-            renderWorkupStudioBackendStatus(error instanceof Error ? error.message : "Supabase save failed.");
-            setStatus("Draft saved locally, but Supabase sync failed. Check backend seed/RLS/auth.");
-          });
-      }
+      renderWorkupStudioProposalStatus();
       if (announce) {
-        setStatus(canSyncCurrentWorkup
-          ? `${studioSectionDefinition().label} draft saved and applied locally; syncing to Supabase...`
-          : workupStudioBackendAuthenticated()
-            ? `${studioSectionDefinition().label} draft saved and applied locally for ${moduleLabel(original)}. This account is not assigned to sync this workup.`
-            : `${studioSectionDefinition().label} draft saved and applied locally for ${moduleLabel(original)}. Sign in with an assigned account to sync it.`);
+        setStatus(`${studioSectionDefinition().label} draft saved and applied locally for ${moduleLabel(original)}. Open a GitHub proposal when it is ready for review.`);
       }
       return changeSet;
     }
 
     function approveLatestWorkupStudioChangeSet() {
-      if (!workupStudioCanReview()) {
-        setStatus("Sign in as a Workup Studio reviewer before approving or publishing drafts.");
-        renderWorkupStudioBackendStatus("Reviewer access is required before publishing Workup Studio changes.");
-        return false;
-      }
       const latest = workupStudioLatestChangeSet();
       if (!latest) {
-        setStatus("Save a Workup Studio draft before publishing.");
+        setStatus("Save a Workup Studio draft before opening a GitHub proposal.");
         return false;
       }
-      void publishWorkupStudioChangeSet(latest)
-        .catch((error) => {
-          const message = error instanceof Error ? error.message : "Supabase publish failed.";
-          latest.syncStatus = "error";
-          saveWorkupStudioState();
-          renderWorkupStudio();
-          renderWorkupStudioBackendStatus(message);
-          setStatus(/Public catalog verification failed/i.test(message)
-            ? "Published to Supabase authoring tables, but fresh-device public catalog verification failed."
-            : "Draft publish failed. Reviewer role or canonical table RLS may be missing.");
-        });
-      setStatus("Publishing latest draft to Supabase...");
+      const proposalIssues = workupStudioPathwayProposalIssues(latest);
+      if (proposalIssues.length) {
+        setStatus(proposalIssues[0]);
+        return false;
+      }
+      void openWorkupStudioGithubIssue().catch((error) => {
+        setStatus(error instanceof Error ? error.message : "Unable to open GitHub proposal.");
+      });
       return true;
     }
 
@@ -22671,6 +21400,7 @@ Rules:
           workupStudioState.selectedItemId = "";
           workupStudioState.selectedPathwayNodeId = "";
           saveWorkupStudioState();
+          syncActivePatientSelectionFromWorkupStudio(module.id);
           renderWorkupStudio();
         });
         elements.workupStudioList.appendChild(button);
@@ -23760,7 +22490,7 @@ Rules:
           if (audit.missingRationale.length) issues.push(`Current tree nodes missing rationale: ${audit.missingRationale.slice(0, 3).join(", ")}.`);
           if (audit.missingReviewerStatus.length) issues.push(`Current tree nodes missing reviewer_status: ${audit.missingReviewerStatus.slice(0, 3).join(", ")}.`);
         }
-        workupStudioPathwayPublishIssues().slice(0, 3).forEach((issue) => issues.push(`Publish gate: ${issue}`));
+        workupStudioPathwayProposalIssues().slice(0, 3).forEach((issue) => issues.push(`Proposal gate: ${issue}`));
         if (!issues.length) issues.push("Section is ready for reviewer inspection.");
         for (const issue of issues) {
           const item = document.createElement("li");
@@ -23800,7 +22530,7 @@ Rules:
       if (elements.workupStudioDraftCount) elements.workupStudioDraftCount.textContent = String(workupStudioChangeSetsForModule(module?.id).length || 0);
       renderWorkupStudioEditor();
       renderWorkupStudioInspector();
-      renderWorkupStudioBackendStatus();
+      renderWorkupStudioProposalStatus();
       applyWorkupStudioChromeState();
       hydrateIcons();
     }
@@ -23976,97 +22706,17 @@ Rules:
         return;
       }
 
-      setStatus(`Creating new workup "${module.label}"...`);
-      const workupRow = {
-        id: module.id,
-        title: module.label,
-        version: module.version,
-        status: module.status,
-        complaint_group: module.complaint_group || "",
-        population: module.population || module.applicability || {},
-        source_ids: collectModuleSourceIds(module),
-        payload: {
-          schema_version: module.schema_version || "medical_knowledge_database_v1",
-          artifact_type: "complaint_cds_module",
-          triggers: module.triggers || [],
-          applicability: module.applicability || module.population || null
-        }
-      };
-
-      if (workupStudioBackendSignedIn() && workupStudioCanReview()) {
-        try {
-          const now = new Date().toISOString();
-          await upsertWorkupStudioRows("workups", { ...workupRow, updated_at: now });
-          for (const definition of workupSectionDefinitions) {
-            const payload = sectionPayloadFromModule(module, definition.key);
-            const sourceIds = collectSourceIdsFromValue(payload, []);
-            await upsertWorkupStudioRows("workup_sections", {
-              id: `${module.id}:${definition.key}`,
-              workup_id: module.id,
-              section_key: definition.key,
-              label: definition.label,
-              description: definition.description,
-              kind: definition.kind,
-              sort_order: workupSectionDefinitions.findIndex((s) => s.key === definition.key),
-              payload,
-              source_ids: sourceIds,
-              updated_at: now
-            });
-            if (definition.kind === "pathway" && payload?.root) {
-              const treeId = `${module.id}:clinical_pathway_tree_v1`;
-              await upsertWorkupStudioRows("pathway_trees", {
-                id: treeId,
-                workup_id: module.id,
-                section_key: definition.key,
-                title: payload.title || module.label,
-                status: "draft",
-                source_ids: sourceIds,
-                activation_rules: payload.activationRules || {},
-                payload,
-                updated_at: now
-              });
-              const nodeRows = flattenPathwayNodes(payload.root, { treeId }).map((row) => ({ ...row, updated_at: now }));
-              await upsertWorkupStudioRows("pathway_nodes", nodeRows);
-            } else if (definition.kind === "items") {
-              const itemRows = [];
-              for (const groupKey of definition.moduleFields) {
-                (Array.isArray(module[groupKey]) ? module[groupKey] : []).forEach((item, index) => {
-                  itemRows.push({
-                    id: `${module.id}:${groupKey}:${item.id || (groupKey + "_" + (index + 1))}`,
-                    workup_id: module.id,
-                    section_key: definition.key,
-                    group_key: groupKey,
-                    item_id: item.id || (groupKey + "_" + (index + 1)),
-                    item_type: item.item_type || "",
-                    label: item.label || item.text || item.action || "",
-                    sort_order: index,
-                    source_ids: collectSourceIdsFromValue(item, []),
-                    payload: item,
-                    updated_at: now
-                  });
-                });
-              }
-              if (itemRows.length) await upsertWorkupStudioRows("workup_items", itemRows);
-            }
-          }
-          await loadSupabaseWorkupCatalog({ force: true });
-          setStatus(`Workup "${module.label}" created in Supabase and available to all users.`);
-        } catch (error) {
-          setStatus(`Supabase push failed: ${error.message}. Workup saved locally only.`);
-        }
-      }
-
-      supabaseWorkupCatalog.modulesById.set(module.id, module);
-      invalidateWorkupModuleCaches();
+      upsertLocalWorkupModule(module);
       workupStudioState.selectedModuleId = module.id;
       workupStudioState.sectionKey = "clinical_pathway_tree_v1";
+      syncActivePatientSelectionFromWorkupStudio(module.id, { announce: false });
       saveWorkupStudioStateNow();
       hideNewWorkupDialog();
       renderWorkupStudio();
       setStatus(`New workup "${module.label}" created and ready to edit.`);
     }
 
-    function acceptWorkupStudioImport({ publish = false } = {}) {
+    function acceptWorkupStudioImport() {
       if (!selectedWorkupStudioModule()) {
         setStatus("Select a workup before saving an OpenEvidence result.");
         return false;
@@ -24079,20 +22729,8 @@ Rules:
         return false;
       }
       const changeSet = saveWorkupStudioChangeSet(parsed.payload, {
-        importedEvidence: parsed.importedEvidence,
-        sync: !publish
+        importedEvidence: parsed.importedEvidence
       });
-      if (publish && changeSet) {
-        void publishWorkupStudioChangeSet(changeSet)
-          .catch((error) => {
-            changeSet.syncStatus = "error";
-            saveWorkupStudioState();
-            renderWorkupStudio();
-            renderWorkupStudioBackendStatus(error instanceof Error ? error.message : "Supabase publish failed.");
-            setStatus("OpenEvidence result saved locally, but Supabase publish failed. Check reviewer role and assignments.");
-          });
-        setStatus("Saving and publishing OpenEvidence result to Supabase...");
-      }
       if (elements.workupStudioImportInput) elements.workupStudioImportInput.value = "";
       if (studioSectionDefinition().kind === "pathway") clearWorkupStudioSourceText({ resetPrompt: true });
       return true;
@@ -24109,16 +22747,12 @@ Rules:
     }
 
     function focusWorkupStudioSettings() {
-      const target = workupStudioBackendSignedIn()
-        ? elements.workupStudioLoadBackendDraftsButton || elements.workupStudioBackendPanel
-        : elements.workupStudioMagicLinkEmailInput || elements.workupStudioBackendPanel;
-      elements.workupStudioBackendPanel?.scrollIntoView({ block: "center", behavior: "smooth" });
+      const target = elements.workupStudioContributorInput || elements.workupStudioProposalPanel;
+      elements.workupStudioProposalPanel?.scrollIntoView({ block: "center", behavior: "smooth" });
       requestAnimationFrame(() => {
         target?.focus?.();
       });
-      setStatus(workupStudioBackendSignedIn()
-        ? "Workup sync settings opened."
-        : "Enter an assigned account email to enable Workup Studio sync.");
+      setStatus("GitHub proposal settings opened.");
     }
 
     function focusWorkupStudioImport() {
@@ -29425,14 +28059,19 @@ Rules:
       if (elements.brandTitle) elements.brandTitle.textContent = "Pre-Rounding Checklist Builder";
       if (elements.brandSubtitle) elements.brandSubtitle.textContent = "Local-first rounds workspace";
       const checklistBuilt = state.sections.length > 0;
-      const checklistStale = isChecklistStaleForCurrentWorkup();
+      const checklistStaleReason = checklistStaleReasonForCurrentWorkup();
+      const checklistStale = Boolean(checklistStaleReason);
       const selectedWorkupReady = Boolean(moduleById(state.selectedWorkupModuleId));
       const selectedWorkup = moduleById(state.selectedWorkupModuleId);
       elements.patientOverviewText.textContent = hasPatient
         ? [
           state.concern || patient.concern || "No concern entered",
           selectedWorkupReady ? `Workup: ${moduleLabel(selectedWorkup)}` : "No workup selected",
-          checklistStale ? "Checklist needs server refresh" : checklistBuilt ? `${checklistTotalCount()} checklist items ready` : "Checklist not built"
+          checklistStale
+            ? checklistStaleReason === "workup_changed"
+              ? "Checklist needs selected workup rebuild"
+              : "Checklist needs local draft refresh"
+            : checklistBuilt ? `${checklistTotalCount()} checklist items ready` : "Checklist not built"
         ].join(" - ")
         : "Open a saved patient from the vault or admit a new patient to start the workflow.";
       elements.patientWorkupPatientLabel.textContent = patient.title;
@@ -29486,12 +28125,16 @@ Rules:
       }
       elements.workspaceChecklistStatus.textContent = state.sections.length
         ? checklistStale
-          ? `${checklistTotalCount()} items built - server update available`
+          ? checklistStaleReason === "workup_changed"
+            ? `${checklistTotalCount()} items built - selected workup changed`
+            : `${checklistTotalCount()} items built - server update available`
           : `${checklistTotalCount()} items built`
         : "Not built";
       if (elements.workspaceOpenBedsideChecklistButton) {
         elements.workspaceOpenBedsideChecklistButton.textContent = checklistStale
-          ? "Rebuild from server workup"
+          ? checklistStaleReason === "workup_changed"
+            ? "Rebuild from selected workup"
+            : "Rebuild from local draft"
           : checklistBuilt
             ? "Answer bedside checklist"
             : selectedWorkupReady
@@ -29518,7 +28161,9 @@ Rules:
       }
       if (elements.workspaceChecklistReadyNotice) {
         elements.workspaceChecklistReadyNotice.textContent = checklistStale
-          ? `A newer server workup is available for ${patient.title}. Rebuild before answering or sending to phone.`
+          ? checklistStaleReason === "workup_changed"
+            ? `${patient.title}'s selected workup changed. Rebuild before answering or sending to phone.`
+            : `A newer local workup draft is available for ${patient.title}. Rebuild before answering or sending to phone.`
           : checklistBuilt
             ? `${checklistTotalCount()} checklist items are built for ${patient.title}. Answer the bedside checklist to record findings.`
             : selectedWorkupReady
@@ -30844,7 +29489,7 @@ Rules:
       const selectedModule = moduleById(state.selectedWorkupModuleId);
       const sourceCount = selectedModule ? collectModuleSourceIds(selectedModule).length : 0;
       const moduleVersion = selectedModule ? moduleVersionLabel(selectedModule) : "";
-      const catalogNote = supabaseWorkupCatalog.modulesById.has(state.selectedWorkupModuleId) ? " from Supabase catalog" : " from local bundle";
+      const catalogNote = localWorkupModulesById().has(state.selectedWorkupModuleId) ? " from local Workup Studio draft" : " from local bundle";
       const buildStatus = `Workup assembled${catalogNote} (v${moduleVersion}, ${sourceCount} sources) with ${state.workupRows.reduce((sum, row) => sum + row.items.length, 0)} reviewed items across ${state.workupRows.length} categories.`;
       if (elements.workupBuildStatus) elements.workupBuildStatus.textContent = buildStatus;
       if (elements.patientWorkupBuildStatus) elements.patientWorkupBuildStatus.textContent = buildStatus;
@@ -35215,33 +33860,12 @@ Rules:
     }
 
     function phoneHandoffMailboxConfigured() {
-      return Boolean(PHONE_HANDOFF_CLOUD_MAILBOX_ENABLED && normalizeSupabaseUrl(WORKUP_STUDIO_DEFAULT_BACKEND.url) && WORKUP_STUDIO_DEFAULT_BACKEND.publishableKey);
-    }
-
-    function phoneHandoffMailboxHeaders() {
-      const publishableKey = WORKUP_STUDIO_DEFAULT_BACKEND.publishableKey;
-      return {
-        apikey: publishableKey,
-        authorization: `Bearer ${publishableKey}`,
-        "content-type": "application/json"
-      };
+      return false;
     }
 
     async function phoneHandoffMailboxRpc(name, body = {}) {
       if (!phoneHandoffMailboxConfigured()) throw new Error("Online QR handoff is disabled for HIPAA-restricted local transfer.");
-      const path = `/rest/v1/rpc/${encodeURIComponent(name)}`;
-      const response = await fetch(`${normalizeSupabaseUrl(WORKUP_STUDIO_DEFAULT_BACKEND.url)}${path}`, {
-        method: "POST",
-        cache: "no-store",
-        headers: phoneHandoffMailboxHeaders(),
-        body: JSON.stringify(body)
-      });
-      if (!response.ok) {
-        const text = await response.text();
-        throw new Error(workupStudioSupabaseErrorMessage({ method: "POST", path, status: response.status, responseText: text }));
-      }
-      const text = await response.text();
-      return text ? JSON.parse(text) : null;
+      throw new Error("Online QR handoff is disabled for this local-first build.");
     }
 
     function phoneHandoffMailboxLinkFromText(raw = "") {
@@ -38124,7 +36748,7 @@ Rules:
 
     function preparePhoneHandoff({ navigate = true } = {}) {
       if (isChecklistStaleForCurrentWorkup()) {
-        setStatus("Rebuild the checklist from the current server workup before sending it to a phone.");
+        setStatus("Rebuild the checklist from the current local workup draft before sending it to a phone.");
         if (navigate) {
           showView("workspace");
           setPatientTab("checklist", { announce: false });
@@ -38621,7 +37245,7 @@ Rules:
         renderWorkupStudio();
       });
       elements.workupStudioAcceptImportButton?.addEventListener("click", () => acceptWorkupStudioImport());
-      elements.workupStudioPublishImportButton?.addEventListener("click", approveLatestWorkupStudioChangeSet);
+      elements.workupStudioProposeImportButton?.addEventListener("click", approveLatestWorkupStudioChangeSet);
       elements.workupStudioBuildSourcePromptButton?.addEventListener("click", buildWorkupStudioSourcePrompt);
       elements.workupStudioCreateSourceDraftButton?.addEventListener("click", createWorkupStudioSourceDraft);
       elements.workupStudioClearSourceTextButton?.addEventListener("click", () => clearWorkupStudioSourceText({ resetPrompt: true }));
@@ -38634,7 +37258,7 @@ Rules:
         void loadWorkupStudioSourceFile();
       });
       elements.workupStudioSourceAttestationCheckbox?.addEventListener("change", () => {
-        renderWorkupStudioBackendStatus();
+        renderWorkupStudioProposalStatus();
       });
       elements.workupStudioOpenEvidencePromptOutput?.addEventListener("input", saveWorkupStudioPromptOverride);
       elements.workupStudioResetPromptButton?.addEventListener("click", resetWorkupStudioPromptTemplate);
@@ -38652,20 +37276,19 @@ Rules:
       elements.workupStudioExportPatchButton?.addEventListener("click", exportWorkupStudioPatch);
       elements.workupStudioImportCommandButton?.addEventListener("click", focusWorkupStudioImport);
       elements.workupStudioAuditLogButton?.addEventListener("click", openWorkupStudioAuditLog);
-      elements.workupStudioSignInButton?.addEventListener("click", () => {
-        void sendWorkupStudioMagicLink();
+      elements.workupStudioOpenGithubIssueButton?.addEventListener("click", () => {
+        void openWorkupStudioGithubIssue();
       });
-      elements.workupStudioMagicLinkEmailInput?.addEventListener("keydown", (event) => {
-        if (event.key === "Enter") {
-          event.preventDefault();
-          void sendWorkupStudioMagicLink();
-        }
+      elements.workupStudioCopyGithubIssueButton?.addEventListener("click", () => {
+        void copyWorkupStudioGithubIssueBody();
       });
-      elements.workupStudioLoadBackendDraftsButton?.addEventListener("click", () => {
-        void loadWorkupStudioBackendChangeSets();
+      elements.workupStudioContributorInput?.addEventListener("input", () => {
+        workupStudioState.github = {
+          ...(workupStudioState.github || {}),
+          contributor: elements.workupStudioContributorInput.value.slice(0, 120)
+        };
+        saveWorkupStudioState();
       });
-      elements.workupStudioSignOutButton?.addEventListener("click", signOutWorkupStudioSupabase);
-      elements.workupStudioTopSignOutButton?.addEventListener("click", signOutWorkupStudioSupabase);
       elements.workupStudioNewWorkupButton?.addEventListener("click", showNewWorkupDialog);
       elements.workupStudioNewWorkupDialogClose?.addEventListener("click", hideNewWorkupDialog);
       elements.workupStudioNewWorkupCancelButton?.addEventListener("click", hideNewWorkupDialog);
@@ -38688,15 +37311,6 @@ Rules:
       });
       elements.workupStudioNewWorkupDialog?.addEventListener("click", (event) => {
         if (event.target === elements.workupStudioNewWorkupDialog) hideNewWorkupDialog();
-      });
-      window.addEventListener("online", () => {
-        void refreshSupabaseWorkupCatalogForCurrentSession({ force: true });
-      });
-      window.addEventListener("focus", () => {
-        void refreshSupabaseWorkupCatalogForCurrentSession();
-      });
-      document.addEventListener("visibilitychange", () => {
-        if (!document.hidden) void refreshSupabaseWorkupCatalogForCurrentSession();
       });
       elements.sidebarPatientRosterButton?.addEventListener("click", togglePatientRosterFromNav);
       elements.topPatientRosterButton?.addEventListener("click", togglePatientRosterFromNav);
@@ -38987,6 +37601,12 @@ Rules:
             saveRoundsPasteBackForActivePatient(pasteBack, { taskId: task.id, rawAnswerText: text });
             return;
           }
+          if (task.id === CHECKLIST_IMPROVEMENT_TASK_ID) {
+            if (applyChecklistReviewPasteBack(text, "patient")) {
+              setPatientTab("checklist", { focusPanel: true });
+            }
+            return;
+          }
           if (!isRoundsPasteBackTask(task) && taskHasPasteBack(task)) {
             const pasteBack = extractPasteBack(text);
             if (pasteBack) {
@@ -39009,7 +37629,7 @@ Rules:
         elements.patientSaveDefaultEvidenceRefinementButton?.addEventListener("click", () => {
           const text = String(elements.patientEvidenceAnswerInput?.value || "").trim();
           const { task } = getOpenEvidencePromptText();
-          if (isRoundsPasteBackTask(task) || (taskHasPasteBack(task) && !isRoundsPasteBackTask(task) && task.id !== DECISION_TREE_TASK_ID)) {
+          if (isRoundsPasteBackTask(task) || (taskHasPasteBack(task) && !isRoundsPasteBackTask(task) && task.id !== DECISION_TREE_TASK_ID && task.id !== CHECKLIST_IMPROVEMENT_TASK_ID)) {
             setStatus("Results are saved to the active patient, not as vault defaults.");
             return;
           }
@@ -39540,10 +38160,6 @@ Rules:
     bindEvents();
     window.addEventListener("beforeunload", () => {
       saveWorkupStudioStateNow();
-    });
-    void hydratePublicWorkupCatalogOnStartup();
-    void captureWorkupStudioOAuthRedirect().then((handled) => {
-      if (!handled) void ensureWorkupStudioBackendSession();
     });
     showVaultAccess();
     void loadPhoneQrDeepLinkFromLocation();

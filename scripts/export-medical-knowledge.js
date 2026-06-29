@@ -6,11 +6,8 @@ import {
   buildWorkupAuthoringSnapshot,
   exportModuleEntriesFromSnapshot
 } from "../workup-authoring.js";
-import { loadSupabaseEnvFiles, hasSupabaseServiceConfig } from "../utils/supabase/env.js";
-import { createSupabaseServiceClient } from "../utils/supabase/node.js";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-loadSupabaseEnvFiles({ cwd: repoRoot });
 const args = new Set(process.argv.slice(2));
 
 function argValue(name, fallback = "") {
@@ -26,6 +23,14 @@ function readJson(relativeOrAbsolutePath) {
   return JSON.parse(readFileSync(absolutePath, "utf8"));
 }
 
+function argValues(name) {
+  const prefix = `${name}=`;
+  return process.argv.slice(2)
+    .filter((arg) => arg.startsWith(prefix))
+    .map((arg) => arg.slice(prefix.length))
+    .filter(Boolean);
+}
+
 function loadLocalSnapshot(changeSets = []) {
   const manifest = readJson("medical-knowledge/manifest.json");
   const sourceRegistry = readJson(manifest.source_registry || "medical-knowledge/source-registry.json");
@@ -36,25 +41,46 @@ function loadLocalSnapshot(changeSets = []) {
   return buildWorkupAuthoringSnapshot({ manifest, sourceRegistry, moduleEntries, changeSets });
 }
 
-async function fetchApprovedChangeSetsFromSupabase() {
-  if (!hasSupabaseServiceConfig()) return [];
-  const supabase = createSupabaseServiceClient();
-  const { data, error } = await supabase
-    .from("change_sets")
-    .select("*")
-    .eq("review_status", "approved")
-    .eq("export_ready", true)
-    .order("created_at", { ascending: true });
-  if (error) throw new Error(`Unable to read approved Supabase change sets: ${error.message}`);
-  return data || [];
-}
-
 function loadSnapshot() {
   const snapshotPath = argValue("--snapshot");
   if (snapshotPath) {
     return readJson(path.resolve(repoRoot, snapshotPath));
   }
   return null;
+}
+
+function normalizeChangeSet(entry = {}) {
+  if (!entry || typeof entry !== "object" || entry.schema !== "workup_change_set_v1") return null;
+  return entry;
+}
+
+function changeSetsFromJson(value) {
+  if (Array.isArray(value)) return value.map(normalizeChangeSet).filter(Boolean);
+  if (value?.schema === "workup_change_set_v1") return [value];
+  if (Array.isArray(value?.change_sets)) return value.change_sets.map(normalizeChangeSet).filter(Boolean);
+  if (Array.isArray(value?.changeSets)) return value.changeSets.map(normalizeChangeSet).filter(Boolean);
+  if (value?.changeSet) return changeSetsFromJson(value.changeSet);
+  return [];
+}
+
+function loadChangeSets() {
+  const paths = [
+    ...argValues("--change-set"),
+    ...argValues("--change-sets")
+  ];
+  const positionalJson = process.argv.slice(2)
+    .filter((arg) => !arg.startsWith("-") && /\.json$/i.test(arg));
+  paths.push(...positionalJson);
+  const changeSets = [];
+  for (const filePath of paths) {
+    const parsed = readJson(path.resolve(repoRoot, filePath));
+    const fromFile = changeSetsFromJson(parsed);
+    if (!fromFile.length) {
+      throw new Error(`${filePath} did not contain a workup_change_set_v1 change set.`);
+    }
+    changeSets.push(...fromFile);
+  }
+  return changeSets;
 }
 
 function writeExportedModules(moduleEntries, { outputDir = "" } = {}) {
@@ -81,13 +107,14 @@ function runNpmScript(scriptName) {
 async function main() {
   const outputDir = argValue("--out-dir");
   let snapshot = loadSnapshot();
+  let loadedChangeSets = [];
   if (!snapshot) {
-    const changeSets = await fetchApprovedChangeSetsFromSupabase();
-    snapshot = loadLocalSnapshot(changeSets);
+    loadedChangeSets = loadChangeSets();
+    snapshot = loadLocalSnapshot(loadedChangeSets);
   }
 
   const exported = exportModuleEntriesFromSnapshot(snapshot, {
-    includeDrafts: args.has("--include-drafts")
+    includeDrafts: args.has("--include-drafts") || loadedChangeSets.length > 0
   });
 
   if (args.has("--check")) {

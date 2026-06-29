@@ -641,6 +641,10 @@ try {
   await page.click("#topQuickDeidButton");
   await page.fill("#quickDeidInput", "Jane Doe MRN 123456 was admitted 6/8/2026 for DKA. Phone 555-111-2222.");
   await page.click("#quickDeidRunButton");
+  await page.waitForFunction(() => {
+    const preview = document.querySelector("#quickDeidPreview")?.textContent || "";
+    return preview.includes("[PATIENT NAME]") && preview.includes("[MRN]");
+  });
   const quickPreview = await page.textContent("#quickDeidPreview");
   assert(quickPreview.includes("[PATIENT NAME]") && quickPreview.includes("[MRN]"), "standalone de-ID should redact structured identifiers");
   await page.click("#quickDeidCopyButton");
@@ -649,28 +653,9 @@ try {
   await page.click("#closeQuickDeidButton");
 
   await page.click("#patientBuildChecklistButton");
-  const checklistRouteHandle = await page.waitForFunction(() => {
-    const visible = (selector) => {
-      const element = document.querySelector(selector);
-      if (!element) return "";
-      const rect = element.getBoundingClientRect();
-      const style = getComputedStyle(element);
-      if (element.hidden || style.display === "none" || style.visibility === "hidden" || rect.width <= 0 || rect.height <= 0) return "";
-      return selector;
-    };
-    return visible("#handoffView") ? "handoff" : visible("#patientFindingsPanel") ? "findings" : "";
-  });
-  const checklistRoute = await checklistRouteHandle.jsonValue();
-  if (checklistRoute === "handoff") {
-    await page.click("#useLaptopChecklistButton");
-  } else {
-    await page.evaluate(() => {
-      const details = document.querySelector(".findings-manual-notes");
-      if (details) details.open = true;
-    });
-    await page.waitForSelector("#findingsOpenChecklistButton:visible");
-    await page.click("#findingsOpenChecklistButton");
-  }
+  await page.waitForFunction(() => document.querySelector('button[data-patient-tab="checklist"]')?.getAttribute("aria-selected") === "true");
+  await page.waitForSelector("#workspaceOpenBedsideChecklistButton:visible");
+  await page.click("#workspaceOpenBedsideChecklistButton");
   await page.waitForSelector("#bedsideView:not([hidden])");
   await page.waitForSelector(".checklist-row .answer-chip, .checklist-row .answer-select");
   const defaultChecklistLayout = await page.evaluate(() => {
@@ -903,7 +888,7 @@ try {
   await page.click("#workspaceOpenBedsideChecklistButton");
   await page.waitForSelector("#bedsideView:not([hidden])");
   await page.waitForFunction(() => document.querySelectorAll("#checklistSections .checklist-row").length >= 20);
-  const patientScopeTitle = await page.textContent("#bedsideView .patient-scope-main strong");
+  const patientScopeTitle = await page.textContent("#bedsideDesktopCaseTitle");
   assert(patientScopeTitle.includes("Case C - CHF exacerbation"), "patient-scoped checklist build should carry the selected case into bedside mode");
   const caseCControlAudit = await page.evaluate(() => {
     const rows = Array.from(document.querySelectorAll("#checklistSections .checklist-row")).map((row) => ({
@@ -1069,7 +1054,7 @@ try {
       }))
       .filter((row) => /Before we evaluated you, did you take any (?:fever medicine|antibiotics)/i.test(row.question));
     return {
-      patientScope: document.querySelector("#bedsideView .patient-scope-main strong")?.textContent?.trim() || "",
+      patientScope: document.querySelector("#bedsideDesktopCaseTitle")?.textContent?.trim() || "",
       rowText,
       feverMedicationRows,
       selectValue: document.querySelector("#patientWorkupSelect")?.value || ""
@@ -1145,11 +1130,22 @@ try {
 	  await page.fill("#patientEvidenceAnswerInput", `\`\`\`json\n${JSON.stringify(structuredSleepRefinement, null, 2)}\n\`\`\``);
     await page.waitForFunction(() => /Structured refinement ready/i.test(document.querySelector("#patientEvidenceChangePreview")?.textContent || ""));
 	  await page.click("#patientApplyEvidenceRefinementButton");
-	  await page.waitForFunction(() => document.body.dataset.patientTab === "checklist" && /snoring|apneas|CPAP/i.test(document.body.innerText || ""));
+	  await page.waitForFunction(() => document.body.dataset.patientTab === "checklist", null, { timeout: 5000 }).catch(() => {});
+	  const checklistRefinementTabAudit = await page.evaluate(() => ({
+	    activeTab: document.body.dataset.patientTab || "",
+	    status: document.querySelector("#statusLive")?.textContent?.trim() || "",
+	    preview: document.querySelector("#patientEvidenceChangePreview")?.textContent?.trim() || "",
+	    selectedTask: document.querySelector("#patientSelectedTaskTitle")?.textContent?.trim() || "",
+	    selectedWorkup: document.querySelector("#patientWorkupSelect")?.value || "",
+	    applyDisabled: document.querySelector("#patientApplyEvidenceRefinementButton")?.disabled || false
+	  }));
+	  assert(checklistRefinementTabAudit.activeTab === "checklist", `OpenEvidence checklist improvement should return to checklist tab: ${JSON.stringify({ ...checklistRefinementTabAudit, diagnostics: browserDiagnostics.slice(-8) })}`);
 	  const checklistRefinementAudit = await page.evaluate(() => {
-	    const rowText = Array.from(document.querySelectorAll("#checklistSections .checklist-row")).map((row) => row.textContent || "").join("\n");
+	    const rowText = document.querySelector("#workspaceChecklistDirectory")?.textContent || "";
 	    return {
 	      status: document.querySelector("#statusLive")?.textContent?.trim() || "",
+	      preview: document.querySelector("#patientEvidenceChangePreview")?.textContent?.trim() || "",
+	      selectedWorkup: document.querySelector("#patientWorkupSelect")?.value || "",
 	      rowText,
 	      savedSummary: Boolean(JSON.parse(localStorage.getItem("prerounding-local-vault-data-v1") || "null"))
 	    };

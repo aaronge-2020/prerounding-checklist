@@ -1,0 +1,45 @@
+name: Workup change proposal
+description: Propose a Workup Studio change-set JSON patch for maintainer review.
+title: "Workup update: "
+labels:
+  - workup-proposal
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Paste the Workup Studio proposal body or attach the exported `workup_change_set_v1` JSON.
+
+        Do not include patient identifiers, chart text, screenshots, or raw licensed source text.
+  - type: input
+    id: workup
+    attributes:
+      label: Workup
+      description: Workup title or ID.
+    validations:
+      required: true
+  - type: input
+    id: section
+    attributes:
+      label: Section
+      description: Pathway, history, physical exam, tests, red flags, management, sources, or review tests.
+    validations:
+      required: true
+  - type: textarea
+    id: change-set
+    attributes:
+      label: Change-set JSON
+      description: Paste the `workup_change_set_v1` JSON block exported from Workup Studio.
+      render: json
+    validations:
+      required: true
+  - type: checkboxes
+    id: review-checklist
+    attributes:
+      label: Safety checklist
+      options:
+        - label: No patient identifiers, chart text, screenshots, or PHI are included.
+          required: true
+        - label: Source metadata is sufficient for clinical review.
+          required: true
+        - label: The JSON parses as `workup_change_set_v1`.
+          required: true

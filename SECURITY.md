@@ -7,7 +7,7 @@ This project is a local-first clinical workflow aid. It is designed to reduce PH
 - Pasted chart text, saved vault data, patient workspaces, and generated prompts are not uploaded for routine local review.
 - Phone handoff QR codes use direct local QR payloads when they fit. If the laptop-to-phone bundle is too large for one QR, the default deployment allows at most three local animated QR frames; larger bundles fall back to encrypted local copy/share/download rather than uploading patient handoff data to a cloud mailbox.
 - Local copy/share/download phone handoff bundles are encrypted with AES-GCM using a key derived from the displayed handoff code. The phone prompts for that code before opening the bundle.
-- The cloud mailbox implementation remains disabled in the default HIPAA-restricted build. If an organization re-enables it for faster one-scan handoff, it should treat mailbox payloads that contain ePHI as cloud handling of ePHI even though the stored payload is encrypted.
+- No cloud mailbox backend is configured in the default HIPAA-restricted build. Larger phone handoffs use local QR/copy/share/download fallbacks instead of uploading patient handoff data.
 - No analytics, telemetry, tracking pixels, ad scripts, or third-party font loads are included.
 - The default de-identification mode is structured-only and does not download model assets.
 - The optional enhanced de-identification model is explicit opt-in and may download third-party code/model assets before running locally in the browser.

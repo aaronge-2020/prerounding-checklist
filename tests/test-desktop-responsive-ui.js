@@ -6,7 +6,6 @@ import { chromium } from "playwright";
 const root = process.cwd();
 const vaultMetaKey = "prerounding-local-vault-meta-v2";
 const vaultDataKey = "prerounding-local-vault-data-v1";
-const publicCatalogCacheKey = "prerounding-public-workup-catalog-cache-v1";
 
 const mimeTypes = new Map([
   [".html", "text/html; charset=utf-8"],
@@ -30,77 +29,6 @@ function decodeLocalBundle(encoded) {
 function encodeLocalBundle(payload) {
   return Buffer.from(JSON.stringify(payload), "utf8").toString("base64");
 }
-
-function createMockHandoffMailbox() {
-  const store = new Map();
-  return {
-    store,
-    async route(route) {
-      const request = route.request();
-      const url = new URL(request.url());
-      if (!url.pathname.includes("/rest/v1/rpc/")) {
-        await route.continue();
-        return;
-      }
-      let body = {};
-      try {
-        body = JSON.parse(request.postData() || "{}");
-      } catch {
-        body = {};
-      }
-      const rpcName = url.pathname.split("/").pop();
-      if (rpcName === "put_phone_handoff_mailbox") {
-        store.set(body.p_id, {
-          ciphertext: body.p_ciphertext,
-          iv: body.p_iv,
-          expires_at: body.p_expires_at
-        });
-        await route.fulfill({
-          status: 200,
-          contentType: "application/json",
-          body: JSON.stringify({ ok: true, expires_at: body.p_expires_at })
-        });
-        return;
-      }
-      if (rpcName === "get_phone_handoff_mailbox") {
-        await route.fulfill({
-          status: 200,
-          contentType: "application/json",
-          body: JSON.stringify(store.get(body.p_id) || null)
-        });
-        return;
-      }
-      if (rpcName === "delete_phone_handoff_mailbox") {
-        const deleted = store.delete(body.p_id);
-        await route.fulfill({
-          status: 200,
-          contentType: "application/json",
-          body: JSON.stringify(deleted)
-        });
-        return;
-      }
-      await route.continue();
-    }
-  };
-}
-
-async function installMockHandoffMailbox(context, mailbox) {
-  await context.route("https://hajjuzpnlvpetsleuxwb.supabase.co/**", async (route) => {
-    const request = route.request();
-    const url = new URL(request.url());
-    if (url.pathname.startsWith("/rest/v1/rpc/")) {
-      await mailbox.route(route);
-      return;
-    }
-    if (request.method() === "GET" && (url.pathname === "/rest/v1/workups" || url.pathname === "/rest/v1/workup_sections" || url.pathname === "/rest/v1/sources")) {
-      await route.fulfill({ status: 200, contentType: "application/json", body: "[]" });
-      return;
-    }
-    await route.continue();
-  });
-}
-
-const sharedHandoffMailbox = createMockHandoffMailbox();
 
 async function clickPatientTab(page, tabName) {
   const selector = `[data-patient-tab="${tabName}"]`;
@@ -173,37 +101,8 @@ function joinedStorage(snapshot) {
   return Object.entries(snapshot).map(([key, value]) => `${key}:${value}`).join("\n");
 }
 
-function publicCatalogCacheFixture() {
-  return JSON.stringify({
-    schema: "public_workup_catalog_cache_v1",
-    cachedAt: "2026-06-15T05:00:00.000Z",
-    workups: [{
-      id: "public_cache_smoke_workup_v1",
-      title: "Public cache smoke workup",
-      version: "cache-smoke-v1",
-      status: "mvp",
-      source_ids: ["PUBLIC_CACHE_SMOKE_SOURCE"],
-      payload: {
-        triggers: ["public cache smoke"],
-        applicability: { age_group: "adult" }
-      },
-      updated_at: "2026-06-15T05:00:00.000Z"
-    }],
-    sections: [],
-    sources: [{
-      id: "PUBLIC_CACHE_SMOKE_SOURCE",
-      source_id: "PUBLIC_CACHE_SMOKE_SOURCE",
-      title: "Public cache smoke source",
-      source_type: "guideline",
-      citation: "Public cache smoke source",
-      payload: { id: "PUBLIC_CACHE_SMOKE_SOURCE", title: "Public cache smoke source" },
-      updated_at: "2026-06-15T05:00:00.000Z"
-    }]
-  });
-}
-
 function unexpectedNoSaveStorageKeys(snapshot) {
-  return Object.keys(snapshot).filter((key) => key !== publicCatalogCacheKey);
+  return Object.keys(snapshot);
 }
 
 function assertNoSavePatientStorage(snapshot, label, forbiddenText = []) {
@@ -273,7 +172,6 @@ async function assertNoLayoutBreakage(page, label) {
 
 async function openFreshPage(browser, baseUrl, viewport, { preloadLocalStorage = {} } = {}) {
   const context = await browser.newContext({ viewport });
-  await installMockHandoffMailbox(context, sharedHandoffMailbox);
   await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: baseUrl });
   const page = await context.newPage();
   page.on('console', msg => console.log('BROWSER CONSOLE:', msg.text()));
@@ -691,7 +589,6 @@ async function testPhoneManualFallbackHome(browser, baseUrl) {
 async function testPhoneBundleRoundTrip(browser, baseUrl) {
   console.log("Checking desktop-to-phone interview handoff");
   const { context: desktopContext, page: desktopPage } = await openFreshPage(browser, baseUrl, { width: 1024, height: 768 });
-  const mailbox = sharedHandoffMailbox;
   await desktopPage.click("#demoCaseButton");
   await desktopPage.waitForFunction(() => document.body.dataset.view === "workspace" && document.body.dataset.patientTab === "context");
   await clickPatientTab(desktopPage, "checklist");
@@ -822,7 +719,6 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
 
   const qrLink = desktopQrAudit.qrLink;
   const qrPhoneContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
-  await installMockHandoffMailbox(qrPhoneContext, mailbox);
   await qrPhoneContext.grantPermissions(["clipboard-read", "clipboard-write"], { origin: baseUrl });
   const qrPhonePage = await qrPhoneContext.newPage();
   await qrPhonePage.goto(qrLink);
@@ -860,7 +756,6 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
     qrScale: 0.58,
     frameMs: 180
   });
-  await installMockHandoffMailbox(scannerContext, mailbox);
   const phoneScannerStartedAt = Date.now();
   await scannerPage.click("#startPhoneQrScannerButton");
   try {
@@ -930,12 +825,7 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   assert(scannerAudit.storageKeys.length === 0, `camera scanner session should not write patient data to localStorage: ${JSON.stringify(scannerAudit)}`);
   await scannerContext.close();
 
-  const { context: phoneContext, page: phonePage } = await openFreshPage(
-    browser,
-    baseUrl,
-    { width: 390, height: 844 },
-    { preloadLocalStorage: { [publicCatalogCacheKey]: publicCatalogCacheFixture() } }
-  );
+  const { context: phoneContext, page: phonePage } = await openFreshPage(browser, baseUrl, { width: 390, height: 844 });
   await assertNoLayoutBreakage(phonePage, "phone bundle vault entry");
   await phonePage.click(".phone-manual-fallback summary");
   await phonePage.waitForFunction(() => document.querySelector(".phone-manual-fallback")?.open === true);
@@ -948,7 +838,7 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
     storageKeys: Object.keys(localStorage)
   }));
   assert(mismatchPhoneAudit.view === "vaultAccess", `mismatched phone bundle should stay on vault entry: ${JSON.stringify(mismatchPhoneAudit)}`);
-  assert(mismatchPhoneAudit.storageKeys.every((key) => key === publicCatalogCacheKey), `rejected phone bundle should persist only public catalog cache storage: ${JSON.stringify(mismatchPhoneAudit)}`);
+  assert(mismatchPhoneAudit.storageKeys.length === 0, `rejected phone bundle should not persist localStorage keys: ${JSON.stringify(mismatchPhoneAudit)}`);
   await phonePage.fill("#phoneBundleEntryInput", JSON.stringify({ code: desktopCode, payload: desktopPayload }, null, 2));
   await phonePage.click("#loadPhoneBundleEntryButton");
   await phonePage.waitForSelector("#bedsideView:not([hidden])");
@@ -966,7 +856,7 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
   assert(/Demo - DKA consult/i.test(phoneLoadedAudit.caseTitle), `phone bundle should preserve case title: ${JSON.stringify(phoneLoadedAudit)}`);
   assert(phoneLoadedAudit.rowCount >= 8, `phone bundle should load checklist rows: ${JSON.stringify(phoneLoadedAudit)}`);
   assert(!phoneLoadedAudit.stepperVisible && !phoneLoadedAudit.reviewFindingsVisible, `phone bedside mode should not expose desktop workflow or review controls: ${JSON.stringify(phoneLoadedAudit)}`);
-  assert(phoneLoadedAudit.storageKeys.every((key) => key === publicCatalogCacheKey), `phone bundle session should persist only public catalog cache storage: ${JSON.stringify(phoneLoadedAudit)}`);
+  assert(phoneLoadedAudit.storageKeys.length === 0, `phone bundle session should not persist localStorage keys: ${JSON.stringify(phoneLoadedAudit)}`);
   const phoneBottomBarAudit = await phonePage.evaluate(() => {
     const bar = document.querySelector(".bedside-bottom-bar");
     const barRect = bar?.getBoundingClientRect();
@@ -1075,7 +965,6 @@ async function testPhoneBundleRoundTrip(browser, baseUrl) {
     const chosen = validCandidates.find((candidate) => candidate.chosen);
     assert(chosen && returnQrAudit.qrTokenLength === chosen.tokenLength, `return QR telemetry should match the fixed zstd-dict token: ${JSON.stringify({ chosen, candidates: returnQrAudit.qrCodecCandidates })}`);
   }
-  assert(mailbox.store.size === 0, `HIPAA-restricted default should not upload phone return findings to the encrypted mailbox: ${mailbox.store.size}`);
   const completionAudit = await phonePage.evaluate(() => ({
     title: document.querySelector("#bedsideCompletionTitle")?.textContent || "",
     progress: document.querySelector("#bedsideMobileProgress")?.textContent || "",
