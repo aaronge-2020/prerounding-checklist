@@ -16948,11 +16948,17 @@
           const base = String(basePath || "").replace(/\/$/, "");
           if (!base) return false;
           try {
-            const response = await fetch(`${base}/onnx-community/stanford-deidentifier-base-ONNX/config.json`, {
+            const configResponse = await fetch(`${base}/onnx-community/stanford-deidentifier-base-ONNX/config.json`, {
               method: "HEAD",
               cache: "force-cache"
             });
-            return response.ok;
+            if (!configResponse.ok) return false;
+            const modelResponse = await fetch(`${base}/onnx-community/stanford-deidentifier-base-ONNX/onnx/model_quantized.onnx`, {
+              method: "HEAD",
+              cache: "force-cache"
+            });
+            const modelSize = Number(modelResponse.headers.get("content-length") || 0);
+            return modelResponse.ok && modelSize > 1_000_000;
           } catch {
             return false;
           }
