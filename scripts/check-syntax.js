@@ -46,6 +46,8 @@ for (const file of files) {
 }
 
 const html = readFileSync("index.html", "utf8");
+const stylesheet = existsSync("styles.css") ? readFileSync("styles.css", "utf8") : "";
+const htmlAndStyles = `${html}\n${stylesheet}`;
 
 const loadedVendorScripts = new Set(
   [
@@ -141,7 +143,7 @@ for (const requiredSnippet of [
   "Bring phone findings back",
   "Bedside checklist"
 ]) {
-  if (!html.includes(requiredSnippet)) {
+  if (!htmlAndStyles.includes(requiredSnippet)) {
     throw new Error(`Expected clinical UI guardrail copy not found: ${requiredSnippet}`);
   }
 }

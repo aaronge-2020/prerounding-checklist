@@ -114,6 +114,44 @@ assert.equal(promptAliasValidation.ok, true, promptAliasValidation.issues.join("
 assert.equal(promptAliasValidation.draft.history_questions[0].question, promptAliasDraft.history_questions[0].prompt);
 assert.ok(!promptAliasValidation.issues.some((issue) => issue.includes("history_questions[0].prompt")));
 
+const nonHistoryAliasDraft = JSON.parse(JSON.stringify(validDraft));
+nonHistoryAliasDraft.safety_checks = [
+  {
+    id: "sc_neuro_symptoms",
+    item_type: "safety_check",
+    label: "Check for severe neurologic symptoms",
+    check: "Assess for seizure, severe confusion, or impaired consciousness.",
+    why_it_matters: "These findings require urgent escalation.",
+    source_ids: ["source_1"]
+  }
+];
+nonHistoryAliasDraft.red_flags = [
+  {
+    id: "rf_severe_symptoms",
+    item_type: "red_flag",
+    label: "Severe neurologic symptoms",
+    finding: "Seizure, coma, or marked confusion.",
+    action: "Escalate urgently for monitored treatment.",
+    source_ids: ["source_1"]
+  }
+];
+nonHistoryAliasDraft.management_disposition = [
+  {
+    id: "md_escalate",
+    item_type: "management_disposition",
+    label: "Escalate new findings",
+    disposition: "Discuss urgent escalation with the supervising clinician.",
+    source_ids: ["source_1"]
+  }
+];
+const nonHistoryAliasValidation = validateWorkupContributionDraft(nonHistoryAliasDraft, { examCatalog });
+assert.equal(nonHistoryAliasValidation.ok, true, nonHistoryAliasValidation.issues.join("\n"));
+assert.equal(nonHistoryAliasValidation.draft.safety_checks[0].action, nonHistoryAliasDraft.safety_checks[0].check);
+assert.equal(nonHistoryAliasValidation.draft.safety_checks[0].rationale, nonHistoryAliasDraft.safety_checks[0].why_it_matters);
+assert.equal(nonHistoryAliasValidation.draft.red_flags[0].action, nonHistoryAliasDraft.red_flags[0].action);
+assert.equal(nonHistoryAliasValidation.draft.management_disposition[0].item_type, "management_change");
+assert.equal(nonHistoryAliasValidation.draft.management_disposition[0].action, nonHistoryAliasDraft.management_disposition[0].disposition);
+
 const unsupported = validateWorkupContributionDraft({
   ...validDraft,
   raw_chart_text: "synthetic text"
@@ -164,7 +202,10 @@ assert.ok(prompt.includes("De-identified clinical context."));
 assert.ok(prompt.includes(WORKUP_CONTRIBUTION_SCHEMA));
 assert.ok(prompt.includes("pending_review"));
 assert.ok(prompt.includes('"question": "Focused bedside question?"'));
-assert.ok(prompt.includes("history_questions items must put the bedside question in question, not prompt"));
+assert.ok(prompt.includes("history_questions: question (never prompt)"));
+assert.ok(prompt.includes("item_type must be \"management_change\" (never \"management_disposition\")"));
+assert.ok(prompt.includes('"item_type": "safety_check"'));
+assert.ok(prompt.includes('"item_type": "red_flag"'));
 assert.ok(!prompt.includes("John Smith"));
 
 const body = prepareGithubIssueBody(validation.draft, validation);

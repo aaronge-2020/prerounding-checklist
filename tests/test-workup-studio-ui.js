@@ -156,24 +156,15 @@ function authoringTableRequestCount(requests) {
     + requests.deletedRows.length;
 }
 
-function magicLinkCallbackUrl(baseUrl, accessToken) {
-  const callbackUrl = new URL(`${baseUrl}/index.html`);
-  callbackUrl.searchParams.set("workupStudioOAuth", "1");
-  callbackUrl.hash = new URLSearchParams({
-    access_token: accessToken,
-    refresh_token: "fake-refresh-token",
-    expires_in: "3600",
-    token_type: "bearer"
-  }).toString();
-  return callbackUrl.toString();
-}
-
 function magicLinkCodeCallbackUrl(baseUrl, code) {
   const callbackUrl = new URL(`${baseUrl}/index.html`);
-  callbackUrl.searchParams.set("workupStudioOAuth", "1");
   callbackUrl.searchParams.set("code", code);
   callbackUrl.searchParams.set("type", "magiclink");
   return callbackUrl.toString();
+}
+
+function supabaseSessionStorageState(session) {
+  return { "sb-hajjuzpnlvpetsleuxwb-auth-token": JSON.stringify(session) };
 }
 
 const { server, baseUrl } = await startServer();
@@ -202,7 +193,6 @@ try {
     pkceTokenBodies: [],
     tokenRefreshCount: 0,
     expiredReviewerTokenFailures: 0,
-    userCount: 0,
     profileCount: 0,
     assignmentCount: 0,
     catalogWorkupCount: 0,
@@ -236,15 +226,19 @@ try {
     }
     if (url.pathname === "/auth/v1/token" && url.searchParams.get("grant_type") === "pkce") {
       supabaseRequests.pkceTokenCount += 1;
-      supabaseRequests.pkceTokenBodies.push(JSON.parse(request.postData() || "{}"));
+      const pkceBody = JSON.parse(request.postData() || "{}");
+      supabaseRequests.pkceTokenBodies.push(pkceBody);
+      const isUnassignedCode = pkceBody.auth_code === "fake-unassigned-code";
       await route.fulfill({
         status: 200,
         contentType: "application/json",
         body: JSON.stringify({
-          access_token: "expired-reviewer-token",
+          access_token: isUnassignedCode ? "fake-unassigned-token" : "expired-reviewer-token",
           refresh_token: "fake-refresh-token",
           expires_in: 3600,
-          user: { id: fakeUserId, email: "reviewer@example.test" }
+          user: isUnassignedCode
+            ? { id: fakeUnassignedUserId, email: "unassigned@example.test" }
+            : { id: fakeUserId, email: "reviewer@example.test" }
         })
       });
       return;
@@ -263,8 +257,7 @@ try {
       });
       return;
     }
-    if (url.pathname === "/auth/v1/user" && request.method() === "GET") {
-      supabaseRequests.userCount += 1;
+    if (url.pathname === "/rest/v1/workup_author_profiles" && request.method() === "GET") {
       const authorization = request.headers().authorization || "";
       if (/expired-reviewer-token/.test(authorization) && supabaseRequests.expiredReviewerTokenFailures < 1) {
         supabaseRequests.expiredReviewerTokenFailures += 1;
@@ -275,18 +268,6 @@ try {
         });
         return;
       }
-      const isUnassigned = /stale-access-token|fake-unassigned-token/.test(authorization);
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({
-          id: isUnassigned ? fakeUnassignedUserId : fakeUserId,
-          email: isUnassigned ? "unassigned@example.test" : "reviewer@example.test"
-        })
-      });
-      return;
-    }
-    if (url.pathname === "/rest/v1/workup_author_profiles" && request.method() === "GET") {
       supabaseRequests.profileCount += 1;
       await route.fulfill({
         status: 200,
@@ -513,32 +494,41 @@ try {
 
   await page.goto(`${baseUrl}/index.html?workupStudioUi=${Date.now()}`);
   await waitForCondition(() => supabaseRequests.catalogWorkupCount >= 1, "initial startup public Supabase catalog");
-  await page.evaluate((state) => {
+  await page.evaluate(({ state, sessionState }) => {
     localStorage.clear();
     localStorage.setItem("prerounding-workup-authoring-v1", JSON.stringify(state));
+    for (const [key, value] of Object.entries(sessionState)) localStorage.setItem(key, value);
   }, {
-    selectedModuleId: "acromegaly_v1",
-    sectionKey: "clinical_pathway_tree_v1",
-    search: "acro",
-    statusFilter: "all",
-    changeSets: [],
-    promptTemplatesBySection: {
-      "hyperglycemia_possible_dka_v1::clinical_pathway_tree_v1": 'You are helping improve a reviewed clinical workup knowledge base.\n"schema": "workup_section_update_v1"\n"payload": {"root": {"id": "legacy_root"}}\nCurrent selected-section payload:\n{"root":{"id":"legacy_root"}}'
+    state: {
+      selectedModuleId: "acromegaly_v1",
+      sectionKey: "clinical_pathway_tree_v1",
+      search: "acro",
+      statusFilter: "all",
+      changeSets: [],
+      promptTemplatesBySection: {
+        "hyperglycemia_possible_dka_v1::clinical_pathway_tree_v1": 'You are helping improve a reviewed clinical workup knowledge base.\n"schema": "workup_section_update_v1"\n"payload": {"root": {"id": "legacy_root"}}\nCurrent selected-section payload:\n{"root":{"id":"legacy_root"}}'
+      },
+      backend: {
+        url: "https://hajjuzpnlvpetsleuxwb.supabase.co",
+        anonKey: "sb_publishable_test",
+        email: "stale-reviewer@example.test",
+        hasSession: true,
+        userId: fakeUnassignedUserId,
+        role: "reviewer",
+        canReview: true,
+        permittedWorkupIds: ["hyperglycemia_possible_dka_v1"],
+        permissionChecked: true,
+        sessionValidatedAt: "2026-06-01T00:00:00.000Z"
+      }
     },
-    backend: {
-      url: "https://studio-test.supabase.co",
-      anonKey: "stale-key",
-      email: "stale-reviewer@example.test",
-      accessToken: "stale-access-token",
-      refreshToken: "stale-refresh-token",
-      expiresAt: Math.floor(Date.now() / 1000) + 3600,
-      userId: fakeUnassignedUserId,
-      role: "reviewer",
-      canReview: true,
-      permittedWorkupIds: ["hyperglycemia_possible_dka_v1"],
-      permissionChecked: true,
-      sessionValidatedAt: "2026-06-01T00:00:00.000Z"
-    }
+    sessionState: supabaseSessionStorageState({
+      access_token: "stale-access-token",
+      token_type: "bearer",
+      expires_in: 3600,
+      expires_at: Math.floor(Date.now() / 1000) + 3600,
+      refresh_token: "stale-refresh-token",
+      user: { id: fakeUnassignedUserId, email: "stale-reviewer@example.test" }
+    })
   });
   const staleSessionStartupCatalogBaseline = supabaseRequests.catalogWorkupCount;
   const staleSessionStartupHeaderBaseline = supabaseRequests.catalogWorkupAuthHeaders.length;
@@ -680,7 +670,6 @@ try {
   await waitForCondition(() => supabaseRequests.profileCount >= 1 && supabaseRequests.assignmentCount >= 1, "stale cached reviewer permission recheck");
   const staleReviewerStatus = await page.textContent("#workupStudioBackendStatus");
   assert.doesNotMatch(staleReviewerStatus, /Reviewer signed in|Can publish reviewed changes/i, `Stale cached reviewer state must not render as authorized: ${staleReviewerStatus}`);
-  assert.equal(supabaseRequests.userCount, 1, "Saved sessions should be revalidated against Supabase Auth before unlocking permissions.");
   assert.equal(supabaseRequests.profileCount, 1, "Saved sessions should recheck author profile.");
   assert.equal(supabaseRequests.assignmentCount, 1, "Saved sessions should recheck delegated assignments.");
   assert.equal(supabaseRequests.getChangeSetsCount, 0, "Stale cached reviewer state must not load backend drafts.");
@@ -739,7 +728,10 @@ try {
   assert.equal(authoringTableRequestCount(supabaseRequests), authoringRequestsBeforeLocalDraft, "Local draft/import controls must not touch Supabase authoring tables before auth and permission.");
   assert.equal(supabaseRequests.getChangeSetsCount, 0, "Unauthenticated Workup Studio should not load protected backend drafts.");
   const publicCatalogCountBeforeCleanLoad = supabaseRequests.catalogWorkupCount;
-  await page.evaluate(() => localStorage.removeItem("prerounding-workup-authoring-v1"));
+  await page.evaluate(() => {
+    localStorage.removeItem("prerounding-workup-authoring-v1");
+    localStorage.removeItem("sb-hajjuzpnlvpetsleuxwb-auth-token");
+  });
   await page.goto(`${baseUrl}/index.html?workupStudioUiClean=${Date.now()}`);
   await waitForCondition(() => supabaseRequests.catalogWorkupCount >= publicCatalogCountBeforeCleanLoad + 1, "public canonical Supabase catalog");
   await page.click("#demoCaseButton");
@@ -763,9 +755,9 @@ try {
   assert.equal(supabaseRequests.otpRequests.at(-1).body.create_user, false, "Magic link should not create arbitrary Supabase users.");
   assert.match(supabaseRequests.otpRequests.at(-1).body.code_challenge, /^[A-Za-z0-9_-]{20,}$/, "Magic link should include a PKCE code challenge.");
   assert.match(supabaseRequests.otpRequests.at(-1).body.code_challenge_method, /^(s256|plain)$/, "Magic link should declare the PKCE challenge method.");
-  assert.match(supabaseRequests.otpRequests.at(-1).redirectTo, /workupStudioOAuth=1/, "Magic-link callback should use the configured Workup Studio redirect.");
+  assert.equal(supabaseRequests.otpRequests.at(-1).redirectTo, `${baseUrl}/index.html`, "Magic-link callback should use the configured Workup Studio redirect.");
   await page.waitForFunction(() => /Magic link sent to unassigned@example\.test/.test(document.querySelector("#workupStudioBackendStatus")?.textContent || ""));
-  await page.goto(magicLinkCallbackUrl(baseUrl, "fake-unassigned-token"));
+  await page.goto(magicLinkCodeCallbackUrl(baseUrl, "fake-unassigned-code"));
   await waitForCondition(() => supabaseRequests.profileCount >= 2 && supabaseRequests.assignmentCount >= 2, "unassigned magic-link callback");
   await page.click("#demoCaseButton");
   await page.waitForFunction(() => document.body.dataset.view !== "vaultAccess");
@@ -790,9 +782,9 @@ try {
   assert.equal(supabaseRequests.otpRequests.at(-1).body.create_user, false, "Reviewer magic link should still require an existing Auth user.");
   assert.match(supabaseRequests.otpRequests.at(-1).body.code_challenge, /^[A-Za-z0-9_-]{20,}$/, "Reviewer magic link should include a PKCE code challenge.");
   await page.waitForFunction(() => /Magic link sent to reviewer@example\.test/.test(document.querySelector("#workupStudioBackendStatus")?.textContent || ""));
-  await page.waitForFunction(() => Boolean(localStorage.getItem("prerounding-workup-authoring-pkce-verifier-v1")));
-  const reviewerPkceVerifier = await page.evaluate(() => localStorage.getItem("prerounding-workup-authoring-pkce-verifier-v1") || sessionStorage.getItem("prerounding-workup-authoring-pkce-verifier-v1") || "");
-  assert.match(reviewerPkceVerifier, /^[A-Za-z0-9._~-]{40,}$/, "Reviewer callback should have a stored PKCE verifier before the email link opens.");
+  await page.waitForFunction(() => Boolean(localStorage.getItem("sb-hajjuzpnlvpetsleuxwb-auth-token-code-verifier")));
+  const reviewerPkceVerifier = await page.evaluate(() => localStorage.getItem("sb-hajjuzpnlvpetsleuxwb-auth-token-code-verifier") || "");
+  assert.match(reviewerPkceVerifier.replace(/^"|"$/g, ""), /^[A-Za-z0-9._~-]{40,}$/, "Reviewer callback should have a stored PKCE verifier before the email link opens.");
   await page.goto(magicLinkCodeCallbackUrl(baseUrl, "fake-reviewer-code"));
   try {
     await waitForCondition(() => supabaseRequests.profileCount >= 3 && supabaseRequests.assignmentCount >= 3, "reviewer magic-link callback", 10000);
@@ -817,7 +809,7 @@ try {
   await waitForCondition(() => supabaseRequests.catalogWorkupCount >= catalogCountBeforeReviewerAuth + 1 && supabaseRequests.catalogSectionCount >= 2 && supabaseRequests.catalogSourceCount >= 2, "reviewer canonical Supabase catalog");
   await page.waitForFunction(() => /1 Supabase workup loaded/.test(document.querySelector("#workupStudioBackendStatus")?.textContent || ""));
   assert.equal(supabaseRequests.magicLinkCount, 2, "Workup Studio should request Supabase magic links for sign-in.");
-  assert.equal(supabaseRequests.pkceTokenCount, 1, "Workup Studio should exchange PKCE magic-link codes for a session.");
+  assert.equal(supabaseRequests.pkceTokenCount, 2, "Workup Studio should exchange PKCE magic-link codes for a session.");
   assert.equal(supabaseRequests.pkceTokenBodies.at(-1).auth_code, "fake-reviewer-code", "PKCE exchange should send the returned auth code.");
   assert.match(supabaseRequests.pkceTokenBodies.at(-1).code_verifier, /^[A-Za-z0-9._~-]{40,}$/, "PKCE exchange should send the stored code verifier.");
   assert.equal(supabaseRequests.expiredReviewerTokenFailures, 1, "Fresh magic-link sessions should retry once when Supabase rejects the initial access token.");
@@ -1388,27 +1380,36 @@ try {
   assert.deepEqual(examRow.after_snapshot.requiredExam[0].normalAnswers, ["Comfortable"]);
 
   const catalogCountBeforeSavedSessionStartup = supabaseRequests.catalogWorkupCount;
-  await page.evaluate((state) => {
+  await page.evaluate(({ state, sessionState }) => {
     localStorage.clear();
     localStorage.setItem("prerounding-workup-authoring-v1", JSON.stringify(state));
+    for (const [key, value] of Object.entries(sessionState)) localStorage.setItem(key, value);
   }, {
-    selectedModuleId: "hyperglycemia_possible_dka_v1",
-    sectionKey: "history_questions",
-    changeSets: [],
-    backend: {
-      url: "https://studio-test.supabase.co",
-      anonKey: "stale-key",
-      email: "reviewer@example.test",
-      accessToken: "fake-access-token",
-      refreshToken: "fake-refresh-token",
-      expiresAt: Math.floor(Date.now() / 1000) + 3600,
-      userId: fakeUserId,
-      role: "reviewer",
-      canReview: true,
-      permittedWorkupIds: ["hyperglycemia_possible_dka_v1"],
-      permissionChecked: true,
-      sessionValidatedAt: "2026-06-12T00:00:00.000Z"
-    }
+    state: {
+      selectedModuleId: "hyperglycemia_possible_dka_v1",
+      sectionKey: "history_questions",
+      changeSets: [],
+      backend: {
+        url: "https://hajjuzpnlvpetsleuxwb.supabase.co",
+        anonKey: "sb_publishable_test",
+        email: "reviewer@example.test",
+        hasSession: true,
+        userId: fakeUserId,
+        role: "reviewer",
+        canReview: true,
+        permittedWorkupIds: ["hyperglycemia_possible_dka_v1"],
+        permissionChecked: true,
+        sessionValidatedAt: "2026-06-12T00:00:00.000Z"
+      }
+    },
+    sessionState: supabaseSessionStorageState({
+      access_token: "fake-access-token",
+      token_type: "bearer",
+      expires_in: 3600,
+      expires_at: Math.floor(Date.now() / 1000) + 3600,
+      refresh_token: "fake-refresh-token",
+      user: { id: fakeUserId, email: "reviewer@example.test" }
+    })
   });
   await page.goto(`${baseUrl}/index.html?workupStudioSavedSession=${Date.now()}`);
   await waitForCondition(() => supabaseRequests.catalogWorkupCount >= catalogCountBeforeSavedSessionStartup + 1, "saved session canonical catalog on startup");

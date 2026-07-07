@@ -109,8 +109,9 @@ let browser;
 try {
   browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({ viewport: { width: 1280, height: 860 } });
-  await context.addInitScript(({ key, state }) => {
+  await context.addInitScript(({ key, state, sessionKey, session }) => {
     localStorage.setItem(key, JSON.stringify(state));
+    localStorage.setItem(sessionKey, JSON.stringify(session));
   }, {
     key: authoringKey,
     state: {
@@ -121,9 +122,6 @@ try {
         url: "https://hajjuzpnlvpetsleuxwb.supabase.co",
         anonKey: "sb_publishable_test",
         email: "reviewer@example.test",
-        accessToken: "fake-access-token",
-        refreshToken: "fake-refresh-token",
-        expiresAt: Math.floor(Date.now() / 1000) + 3600,
         userId: "",
         role: "",
         canReview: false,
@@ -131,6 +129,15 @@ try {
         permissionChecked: false,
         sessionValidatedAt: ""
       }
+    },
+    sessionKey: "sb-hajjuzpnlvpetsleuxwb-auth-token",
+    session: {
+      access_token: "fake-access-token",
+      token_type: "bearer",
+      expires_in: 3600,
+      expires_at: Math.floor(Date.now() / 1000) + 3600,
+      refresh_token: "fake-refresh-token",
+      user: { id: "11111111-1111-4111-8111-111111111111", email: "reviewer@example.test" }
     }
   });
   const page = await context.newPage();

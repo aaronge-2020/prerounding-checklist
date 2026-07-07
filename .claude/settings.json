@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"const fs=require('fs');const c=fs.readFileSync('AGENTS.md','utf8');console.log(JSON.stringify({hookSpecificOutput:{hookEventName:'SessionStart',additionalContext:'Project instructions from AGENTS.md (read in full at session start):\\n\\n'+c}}));\"",
+            "timeout": 15,
+            "statusMessage": "Loading AGENTS.md"
+          }
+        ]
+      }
+    ]
+  }
+}

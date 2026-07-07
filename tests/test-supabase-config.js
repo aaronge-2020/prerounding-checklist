@@ -155,10 +155,10 @@ assert.ok(!html.includes("workupStudioSaveBackendConfigButton"), "Workup Studio 
 assert.ok(!html.includes("workupStudioSupabasePasswordInput"), "Workup Studio should not render password auth.");
 assert.ok(!html.includes("grant_type=password"), "Workup Studio should not use the password grant.");
 assert.ok(html.includes("Send magic link"), "Workup Studio should use email magic-link auth.");
-assert.ok(html.includes("/auth/v1/otp"), "Workup Studio should request Supabase email magic links.");
-assert.ok(html.includes("create_user: false"), "Workup Studio should require existing Supabase Auth users for magic links.");
-assert.ok(html.includes("code_challenge"), "Workup Studio should send a PKCE code challenge for email magic links.");
-assert.ok(html.includes("grant_type=pkce"), "Workup Studio should exchange PKCE auth codes on return.");
+assert.ok(html.includes("workupStudioSupabase.auth.signInWithOtp"), "Workup Studio should request Supabase email magic links via supabase-js.");
+assert.ok(html.includes("shouldCreateUser: false"), "Workup Studio should require existing Supabase Auth users for magic links.");
+assert.ok(html.includes("flowType: \"pkce\""), "Workup Studio should use the PKCE auth flow for email magic links.");
+assert.ok(html.includes("createClient as createSupabaseClient"), "Workup Studio should use the official supabase-js client.");
 assert.ok(!html.includes("/auth/v1/settings"), "Workup Studio should not require social-provider settings before sign-in.");
 assert.ok(!html.includes("auth/v1/authorize"), "Workup Studio should not require a social OAuth provider before sign-in.");
 assert.ok(html.includes("Backend: Workup Studio Supabase"), "Workup Studio should explain that backend access is configured by the app.");

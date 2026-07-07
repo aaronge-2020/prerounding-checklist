@@ -46,6 +46,10 @@ const allowedCommonItemFields = new Set([
   "prompt",
   "text",
   "action",
+  "check",
+  "finding",
+  "disposition",
+  "why_it_matters",
   "technique",
   "maneuver",
   "test_name",
@@ -96,6 +100,13 @@ const allowedSourceFields = new Set([
   "review_owner",
   "currency_status"
 ]);
+
+const itemTypeAliases = {
+  management_disposition: "management_change",
+  disposition: "management_change",
+  redflag: "red_flag",
+  safetycheck: "safety_check"
+};
 
 const itemTypeSet = new Set([
   "history_question",
@@ -169,8 +180,9 @@ function normalizeSource(source = {}, index = 0) {
 }
 
 function normalizeContributionItem(item = {}, sectionKey = "", expectedType = "", index = 0, options = {}) {
-  const rawType = cleanString(item.item_type || expectedType);
-  const label = firstString(item.label, item.question, item.prompt, item.test_name, item.test, item.action, item.technique, item.maneuver, item.text, `${expectedType}_${index + 1}`);
+  const cleanedType = cleanString(item.item_type || expectedType);
+  const rawType = itemTypeAliases[cleanedType] || cleanedType;
+  const label = firstString(item.label, item.question, item.prompt, item.test_name, item.test, item.action, item.check, item.finding, item.disposition, item.technique, item.maneuver, item.text, `${expectedType}_${index + 1}`);
   const normalized = {
     id: firstString(item.id, item.item_id, slugifyContributionId(label, `${sectionKey}_${index + 1}`)),
     item_type: rawType,
@@ -180,8 +192,10 @@ function normalizeContributionItem(item = {}, sectionKey = "", expectedType = ""
     review_status: cleanString(item.review_status || "pending_review")
   };
   if (item.review_notes) normalized.review_notes = cleanString(item.review_notes);
-  if (item.rationale) normalized.rationale = cleanString(item.rationale);
-  if (item.action) normalized.action = cleanString(item.action);
+  const rationaleAlias = firstString(item.rationale, item.why_it_matters);
+  if (rationaleAlias) normalized.rationale = rationaleAlias;
+  const actionAlias = firstString(item.action, item.check, item.finding, item.disposition);
+  if (actionAlias) normalized.action = actionAlias;
   if (item.diagnostic_target) normalized.diagnostic_target = cleanString(item.diagnostic_target);
   if (item.result_changes_management || item.management_change || item.management_implication) {
     normalized.result_changes_management = firstString(item.result_changes_management, item.management_change, item.management_implication);
@@ -449,9 +463,34 @@ export function buildChatAiHandoffPrompt({
       }
     ],
     diagnostic_tests: [],
-    safety_checks: [],
-    red_flags: [],
-    management_disposition: [],
+    safety_checks: [
+      {
+        id: "stable_safety_check_id",
+        item_type: "safety_check",
+        label: "Concise safety check label",
+        action: "What to check or confirm before proceeding.",
+        rationale: "Why this check matters and what it prevents.",
+        source_ids: ["source_id_here"]
+      }
+    ],
+    red_flags: [
+      {
+        id: "stable_red_flag_id",
+        item_type: "red_flag",
+        label: "Concise red flag label",
+        action: "What finding to watch for and the urgent action it triggers.",
+        source_ids: ["source_id_here"]
+      }
+    ],
+    management_disposition: [
+      {
+        id: "stable_management_id",
+        item_type: "management_change",
+        label: "Concise management/disposition label",
+        action: "The management or disposition decision this supports.",
+        source_ids: ["source_id_here"]
+      }
+    ],
     sources: [
       {
         source_id: "source_id_here",
@@ -470,12 +509,128 @@ export function buildChatAiHandoffPrompt({
     currentChecklist ? `Current checklist or section being edited.\n${String(currentChecklist).slice(0, 3000)}` : "",
     validatorErrors.length ? `Validator errors to fix.\n${validatorErrors.map((issue) => `- ${issue}`).join("\n")}` : "",
     pastedJson ? `Pasted JSON to revise.\n${String(pastedJson).slice(0, 6000)}` : "",
-    "Privacy rules: do not include raw chart text, patient identifiers, exact dates, room numbers, MRNs, addresses, contact information, or unnecessary demographics.",
-    "Field-name rules: history_questions items must put the bedside question in question, not prompt. Use item_type exactly as shown. Use source_ids that match sources[].source_id.",
-    "Return only one fenced JSON block. Do not include prose outside the JSON. Use source-backed recommendations and keep all generated content pending_review.",
-    "Use this target schema and field names:",
+    "Privacy rules: no raw chart text, patient identifiers, exact dates, room numbers, MRNs, addresses, contact info, or unnecessary demographics.",
+    [
+      "Required field names — use exactly these, no synonyms:",
+      "- history_questions: question (never prompt)",
+      "- safety_checks / red_flags / management_disposition: action for the main content (never check, finding, or disposition), rationale for justification (never why_it_matters)",
+      "- management_disposition items: item_type must be \"management_change\" (never \"management_disposition\")",
+      "- item_type must exactly match the value shown in the schema below for its section",
+      "- source_ids must match a sources[].source_id in the same draft"
+    ].join("\n"),
+    "Output rules: return exactly one fenced json block, no prose outside it, every item pending_review, every claim source-backed.",
+    "Match this schema exactly — field names, item_type values, and section names must be copied as shown, not paraphrased:",
     JSON.stringify(schemaExample, null, 2)
   ].filter(Boolean).join("\n\n");
+}
+
+function contributionItemSourceIds(item = {}) {
+  return Array.isArray(item.source_ids) ? item.source_ids.filter(Boolean) : [];
+}
+
+function historyQuestionModuleItem(item = {}) {
+  return {
+    id: item.id,
+    item_type: "history_question",
+    label: item.label,
+    text: item.question || item.label,
+    options: item.answer_options?.length ? item.answer_options : ["Yes", "No", "Unknown"],
+    when_to_ask: item.ask_when || "",
+    diagnostic_purpose: item.diagnostic_purpose || "",
+    management_implication: item.result_changes_management || "",
+    tags: item.tags || [],
+    source_ids: contributionItemSourceIds(item)
+  };
+}
+
+function physicalExamModuleItem(item = {}) {
+  return {
+    id: item.id,
+    item_type: "physical_exam_maneuver",
+    label: item.label,
+    technique: item.technique || item.label,
+    action: item.action || item.label,
+    when_to_perform: item.include_when || "",
+    diagnostic_target: item.diagnostic_target || "",
+    management_change: item.result_changes_management || "",
+    exam_id: item.exam_id || "",
+    custom_exam: Boolean(item.custom_exam),
+    tags: item.tags || [],
+    source_ids: contributionItemSourceIds(item)
+  };
+}
+
+function diagnosticTestModuleItem(item = {}) {
+  return {
+    id: item.id,
+    item_type: "diagnostic_test",
+    label: item.label,
+    action: item.test_name || item.label,
+    rationale: item.interpretation || "",
+    diagnostic_target: item.diagnostic_target || "",
+    management_change: item.result_changes_management || "",
+    tags: item.tags || [],
+    source_ids: contributionItemSourceIds(item)
+  };
+}
+
+function actionRationaleModuleItem(item = {}, itemType = "") {
+  return {
+    id: item.id,
+    item_type: itemType,
+    label: item.label,
+    action: item.action || item.label,
+    rationale: item.rationale || "",
+    management_change: item.result_changes_management || "",
+    tags: item.tags || [],
+    source_ids: contributionItemSourceIds(item)
+  };
+}
+
+/**
+ * Converts a validated workup_contribution_v1 draft into the app's internal
+ * complaint-module shape so it can be used immediately in the running app
+ * (local catalog injection) and/or written to the Supabase workup tables.
+ */
+export function moduleFromWorkupContributionDraft(draft = {}, { status = "draft" } = {}) {
+  return {
+    id: draft.workup_id,
+    schema_version: "medical_knowledge_database_v1",
+    label: draft.title,
+    title: draft.title,
+    complaint_group: "",
+    version: "v1_local_draft",
+    status,
+    population: draft.applicability || {},
+    triggers: draft.triggers || [],
+    aliases: draft.aliases || [],
+    differentialBuckets: [],
+    redFlags: (draft.red_flags || []).map((item) => actionRationaleModuleItem(item, "red_flag")),
+    requiredQuestions: (draft.history_questions || []).map(historyQuestionModuleItem),
+    conditionalQuestions: [],
+    requiredExam: (draft.physical_exam_maneuvers || []).map(physicalExamModuleItem),
+    conditionalExam: [],
+    initialTests: (draft.diagnostic_tests || []).map(diagnosticTestModuleItem),
+    dispositionRules: (draft.management_disposition || []).map((item) => actionRationaleModuleItem(item, "management_change")),
+    safetyChecks: (draft.safety_checks || []).map((item) => actionRationaleModuleItem(item, "safety_check")),
+    decisionTrees: [],
+    treatmentOptions: [],
+    clinical_pathway_tree_v1: null,
+    clinical_cutoff_criteria: [],
+    source_ids: (draft.sources || []).map((source) => source.source_id).filter(Boolean)
+  };
+}
+
+export function sourceRowsFromWorkupContributionDraft(draft = {}) {
+  return (draft.sources || []).map((source) => ({
+    id: source.source_id,
+    source_id: source.source_id,
+    title: source.citation || source.source_id,
+    source_type: source.source_type || "guideline",
+    url: source.url_or_doi || "",
+    citation: source.citation || "",
+    payload: source
+  }));
 }
 
 export function prepareGithubIssueBody(draft, validation = { ok: true, issues: [] }) {
