@@ -3327,12 +3327,13 @@
     }
 
     .studio-topbar {
-      height: 56px;
+      min-height: 56px;
+      height: auto;
       display: grid;
-      grid-template-columns: 240px minmax(240px, 1.05fr) minmax(220px, 0.75fr) minmax(280px, 0.9fr) auto;
-      gap: 18px;
+      grid-template-columns: minmax(190px, 0.75fr) minmax(250px, 1.15fr) minmax(170px, 0.7fr) minmax(220px, 0.9fr) auto;
+      gap: 14px;
       align-items: center;
-      padding: 0 24px;
+      padding: 8px 24px;
       border-bottom: 1px solid var(--line);
       background: #ffffff;
     }
@@ -3427,9 +3428,10 @@
       font-size: 15px;
       font-weight: 800;
       line-height: 1.2;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      overflow: visible;
+      overflow-wrap: anywhere;
+      text-overflow: clip;
+      white-space: normal;
     }
 
     .studio-auth-summary span:first-child::before {
@@ -3444,20 +3446,29 @@
     }
 
     .studio-commandbar {
-      height: 40px;
+      min-height: 40px;
+      height: auto;
       justify-content: flex-start;
-      gap: 18px;
-      padding: 0 24px;
+      flex-wrap: wrap;
+      gap: 6px 14px;
+      padding: 6px 24px;
       border-bottom: 1px solid var(--line);
       background: #fbfdfd;
     }
 
     .studio-commandbar .btn {
+      flex: 0 1 auto;
+      gap: 6px;
+      min-width: 0;
       min-height: 30px;
       border: 0;
       background: transparent;
       padding: 4px 0;
       box-shadow: none;
+      overflow: visible;
+      overflow-wrap: anywhere;
+      text-overflow: clip;
+      white-space: normal;
     }
 
     .studio-schema-note {
@@ -3664,9 +3675,10 @@
     .studio-section-tabs .section-tab-copy span {
       display: block;
       min-width: 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      overflow: visible;
+      overflow-wrap: anywhere;
+      text-overflow: clip;
+      white-space: normal;
     }
 
     .studio-section-tabs .section-tab-copy span {
@@ -4295,13 +4307,23 @@
     }
 
     .studio-save-panel .button-row {
-      display: grid;
-      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr);
+      display: flex;
+      flex-wrap: wrap;
       gap: 8px;
     }
 
+    .studio-inspector .button-row .btn,
+    .studio-save-panel .button-row .btn {
+      flex: 1 1 140px;
+      min-width: 0;
+      overflow: visible;
+      overflow-wrap: anywhere;
+      text-overflow: clip;
+      white-space: normal;
+    }
+
     .studio-save-panel #workupStudioPublishImportButton {
-      grid-column: 1 / -1;
+      flex-basis: 100%;
     }
 
     .studio-backend-panel {
@@ -4353,9 +4375,19 @@
     }
 
     .studio-new-workup-button {
-      gap: 6px;
-      font-size: 13px;
-      padding: 6px 14px;
+      width: 40px;
+      min-width: 40px;
+      height: 40px;
+      flex: 0 0 40px;
+      padding: 0;
+      overflow: visible;
+      text-overflow: clip;
+      white-space: normal;
+    }
+
+    .studio-new-workup-button .icon-box {
+      width: 18px;
+      height: 18px;
     }
 
     .studio-modal-overlay {
@@ -8892,6 +8924,23 @@
       line-height: 1.35;
     }
 
+    .workup-picker-empty .workup-picker-actions {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(136px, 1fr));
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .workup-picker-empty .workup-picker-actions .btn {
+      width: 100%;
+      min-width: 0;
+      overflow: visible;
+      overflow-wrap: anywhere;
+      text-overflow: clip;
+      white-space: normal;
+    }
+
     .workup-result-list {
       display: grid;
       gap: 12px;
@@ -9557,6 +9606,14 @@
       border-radius: 0;
       background: transparent;
       padding: 9px 8px;
+    }
+
+    #patientWorkupPanel .workup-result-main strong,
+    #patientWorkupPanel .workup-result-main span {
+      overflow: visible;
+      overflow-wrap: anywhere;
+      text-overflow: clip;
+      white-space: normal;
     }
 
     #patientWorkupPanel .workup-result-row[aria-selected="true"] {
@@ -15137,7 +15194,7 @@
                       <button class="btn btn-secondary" id="todayOpenEvidenceButton" type="button">Open OpenEvidence</button>
                     </div>
                     <label for="todayOpenEvidencePasteInput">OpenEvidence returned presentation</label>
-                    <textarea id="todayOpenEvidencePasteInput" maxlength="30000" aria-describedby="localTextEntryHelp" placeholder="Paste the full OpenEvidence result. The app will look for APP_PASTE_BACK_JSON with schema open_evidence_rounds_pasteback_v1."></textarea>
+                    <textarea id="todayOpenEvidencePasteInput" maxlength="30000" aria-describedby="localTextEntryHelp" placeholder="Paste the full plain-language OpenEvidence result. The app saves it locally as the returned summary."></textarea>
                     <div class="button-row">
                       <button class="btn btn-secondary" id="todayApplyOpenEvidenceButton" type="button">Record returned summary</button>
                       <span class="meta-tag" id="todayPasteBackStatus">No returned summary</span>
@@ -15390,8 +15447,8 @@
                     <summary>More <span class="icon-box" data-icon="chevron-down" aria-hidden="true"></span></summary>
                     <div class="target-more-menu">
                       <button class="target-tool-card" id="patientCopyWorkupButton" type="button"><span class="icon-box" data-icon="copy" aria-hidden="true"></span><span><strong>Copy workup</strong><small>Copy this workup summary</small></span></button>
-                      <button class="target-tool-card" id="openDecisionTreeImportButton" type="button"><span class="icon-box" data-icon="upload" aria-hidden="true"></span><span><strong>Import pathway</strong><small>Paste OpenEvidence tree JSON</small></span></button>
-                      <button class="target-tool-card" id="patientCopyChecklistRefinementPromptButton" type="button"><span class="icon-box" data-icon="clipboard-check" aria-hidden="true"></span><span><strong>Refine checklist with OpenEvidence</strong><small>Paste JSON to update</small></span></button>
+                      <button class="target-tool-card" id="openDecisionTreeImportButton" type="button"><span class="icon-box" data-icon="upload" aria-hidden="true"></span><span><strong>Import pathway</strong><small>Paste ChatGPT/Claude tree JSON</small></span></button>
+                      <button class="target-tool-card" id="patientCopyChecklistRefinementPromptButton" type="button"><span class="icon-box" data-icon="clipboard-check" aria-hidden="true"></span><span><strong>Refine checklist with ChatGPT/Claude</strong><small>Paste JSON to update</small></span></button>
                       <button class="target-tool-card" id="patientWorkupMarkNormalButton" type="button"><span class="icon-box" data-icon="check-square" aria-hidden="true"></span><span><strong>Mark section normal</strong><small>Fill normal answers for unanswered items</small></span></button>
                       <button class="target-tool-card" id="patientManageDefaultsButton" type="button"><span class="icon-box" data-icon="settings" aria-hidden="true"></span><span><strong>Manage saved defaults</strong><small>Default checklist and pathway settings</small></span></button>
                     </div>
@@ -15401,16 +15458,16 @@
                 <div class="decision-tree-editor-grid" id="decisionTreeEditorPanel" hidden>
                   <div class="decision-tree-json-panel">
                     <div class="panel-title-row">
-                      <h3>Import OpenEvidence JSON</h3>
+                      <h3>Import structured pathway JSON</h3>
                       <span class="meta-tag">clinical_pathway_tree_v1</span>
                     </div>
-                    <p class="muted">Paste the raw pathway JSON from OpenEvidence here, review the preview, then apply only clinical_pathway_tree_v1 to this workup.</p>
+                    <p class="muted">Paste pathway JSON from ChatGPT or Claude here, review the preview, then apply only clinical_pathway_tree_v1 to this workup.</p>
                     <div class="button-row">
                       <button class="btn btn-secondary" id="copyDecisionTreePromptButton" type="button">Prompt</button>
                       <button class="btn btn-secondary" id="applyDecisionTreeJsonButton" type="button">Apply tree only</button>
                       <button class="btn btn-primary" id="saveDecisionTreeDefaultButton" type="button">Vault default</button>
                     </div>
-                    <textarea id="decisionTreeJsonInput" maxlength="200000" spellcheck="false" aria-describedby="localTextEntryHelp" placeholder="Paste raw OpenEvidence decision-tree JSON here."></textarea>
+                    <textarea id="decisionTreeJsonInput" maxlength="200000" spellcheck="false" aria-describedby="localTextEntryHelp" placeholder="Paste ChatGPT/Claude decision-tree JSON here."></textarea>
                     <div class="evidence-change-preview" id="decisionTreeImportPreview" aria-live="polite">No decision tree JSON pasted yet.</div>
                     <div class="decision-tree-local-actions">
                       <button class="btn btn-secondary" id="saveDecisionTreeLocalFileButton" type="button">Save source tree only</button>
@@ -15552,12 +15609,27 @@
                     <div class="workup-refinement-panel" id="patientWorkupRefinementPanel">
                       <div class="panel-title-row">
                         <h3>Refine checklist</h3>
-                        <span class="meta-tag">Structured paste-back</span>
+                        <span class="meta-tag">Contribution draft</span>
                       </div>
-                      <p class="muted">Copy a patient checklist patch prompt, paste the structured JSON response here, then apply only those row changes for this patient. Canonical workup questions and exam items are edited in Workup Studio.</p>
+                      <p class="muted">Use ChatGPT or Claude for structured draft JSON, then validate it locally before preparing a GitHub review submission. OpenEvidence is reserved for plain-language evidence checks.</p>
                       <div class="button-row">
-                        <button class="btn btn-secondary" id="patientCopyChecklistRefinementPromptDrawerButton" type="button">Copy patch prompt</button>
-                        <button class="btn btn-secondary" id="patientOpenEvidenceFromRefinementButton" type="button">Open OpenEvidence</button>
+                        <button class="btn btn-secondary" id="patientDraftNewWorkupChatGptButton" type="button">Draft new workup with ChatGPT</button>
+                        <button class="btn btn-secondary" id="patientDraftNewWorkupClaudeButton" type="button">Draft new workup with Claude</button>
+                        <button class="btn btn-secondary" id="patientSuggestHistoryQuestionsButton" type="button">Suggest history questions</button>
+                        <button class="btn btn-secondary" id="patientSuggestExamManeuversButton" type="button">Suggest physical exam maneuvers</button>
+                        <button class="btn btn-secondary" id="patientFixContributionJsonButton" type="button">Fix pasted JSON</button>
+                      </div>
+                      <label for="patientWorkupContributionInput">workup_contribution_v1 JSON</label>
+                      <textarea id="patientWorkupContributionInput" maxlength="18000" aria-describedby="localTextEntryHelp" placeholder="Paste ChatGPT/Claude workup_contribution_v1 JSON here."></textarea>
+                      <div class="evidence-change-preview" id="patientWorkupContributionPreview" aria-live="polite">No contribution JSON pasted yet.</div>
+                      <div class="button-row">
+                        <button class="btn btn-secondary" id="patientValidateContributionButton" type="button">Validate contribution</button>
+                        <button class="btn btn-primary" id="patientPrepareGithubContributionButton" type="button">Prepare GitHub submission</button>
+                      </div>
+                      <p class="muted">Patient-only checklist patches are still supported for local session changes.</p>
+                      <div class="button-row">
+                        <button class="btn btn-secondary" id="patientCopyChecklistRefinementPromptDrawerButton" type="button">Copy local patch prompt</button>
+                        <button class="btn btn-secondary" id="patientOpenEvidenceFromRefinementButton" type="button">Open ChatGPT</button>
                       </div>
                       <label for="patientWorkupRefinementInput">Structured patient checklist patch JSON</label>
                       <textarea id="patientWorkupRefinementInput" maxlength="12000" aria-describedby="localTextEntryHelp" placeholder="Paste fenced workup_section_patch_v1 JSON for this patient's checklist here."></textarea>
@@ -15671,7 +15743,7 @@
                     <details class="patient-checklist-edit-disclosure patient-checklist-patch-panel" id="patientChecklistPatchPanel">
                       <summary>
                         <div>
-                          <strong>OpenEvidence row patch</strong>
+                          <strong>Structured AI row patch</strong>
                           <span>Copy a prompt, paste operations, and apply only those row changes.</span>
                         </div>
                       </summary>
@@ -15687,7 +15759,7 @@
                           </label>
                           <div class="button-row">
                             <button class="btn btn-secondary" id="copyPatientChecklistPatchPromptButton" type="button">Copy prompt</button>
-                            <button class="btn btn-secondary" id="openPatientChecklistPatchEvidenceButton" type="button">Open OpenEvidence</button>
+                            <button class="btn btn-secondary" id="openPatientChecklistPatchEvidenceButton" type="button">Open ChatGPT</button>
                           </div>
                         </div>
                         <label for="patientChecklistPatchInput">
@@ -15767,16 +15839,16 @@
                     <div id="patientEvidencePromptEditor" class="patient-prompt-preview is-readonly" contenteditable="false" spellcheck="false" aria-label="Editable patient OpenEvidence prompt template editor">Build or select a workup to create a patient-scoped prompt template.</div>
                     <textarea class="patient-prompt-preview" id="patientEvidencePromptPreview" spellcheck="false" aria-label="Editable patient OpenEvidence prompt template">Build or select a workup to create a patient-scoped prompt template.</textarea>
                   </div>
-                  <aside class="patient-evidence-right-rail" aria-label="Paste-back answer and imported phone answers">
-                    <section class="patient-evidence-answer-panel" aria-label="Paste-back answer">
+                  <aside class="patient-evidence-right-rail" aria-label="OpenEvidence answer and imported phone answers">
+                    <section class="patient-evidence-answer-panel" aria-label="OpenEvidence answer">
                       <div class="pasteback-panel-head" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                        <h4>Paste-back answer</h4>
+                        <h4>OpenEvidence answer</h4>
                         <button class="square-button right-rail-toggle-expand" id="togglePastebackExpandButton" type="button" title="Expand/Collapse panel" aria-label="Expand or collapse paste-back answer panel" style="border: 0; background: transparent; padding: 4px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; color: #43576a;">
                           <span class="icon-box" style="width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up" style="width: 100%; height: 100%;"><polyline points="18 15 12 9 6 15"></polyline></svg></span>
                         </button>
                       </div>
                       <label for="patientEvidenceAnswerInput">OpenEvidence answer</label>
-                      <textarea id="patientEvidenceAnswerInput" maxlength="30000" aria-describedby="localTextEntryHelp" placeholder="Paste the full OpenEvidence answer here, including APP_PASTE_BACK_JSON."></textarea>
+                      <textarea id="patientEvidenceAnswerInput" maxlength="30000" aria-describedby="localTextEntryHelp" placeholder="Paste the full plain-language OpenEvidence answer here."></textarea>
                       <div class="evidence-change-preview" id="patientEvidenceChangePreview" aria-live="polite"></div>
                       <div class="button-row patient-evidence-answer-actions">
                         <button class="btn btn-secondary" id="patientApplyEvidenceRefinementButton" type="button">Apply to this patient</button>
@@ -15850,7 +15922,7 @@
               <h2>Workups</h2>
               <p class="muted">Choose a reviewed module, then edit one section at a time.</p>
               </div>
-              <button class="btn btn-primary studio-new-workup-button" id="workupStudioNewWorkupButton" type="button"><span class="icon-box" data-icon="plus" aria-hidden="true"></span> New</button>
+              <button class="btn btn-primary studio-new-workup-button" id="workupStudioNewWorkupButton" type="button" aria-label="Create new workup" title="Create new workup"><span class="icon-box" data-icon="plus" aria-hidden="true"></span></button>
             </div>
             <div class="studio-search">
               <label for="workupStudioSearchInput">Find workup</label>
@@ -15970,7 +16042,7 @@
                 <button class="btn btn-primary" id="workupStudioCopyPromptButton" type="button">Copy AI prompt</button>
                 <button class="btn btn-secondary" id="workupStudioResetPromptButton" type="button">Reset</button>
                 <button class="btn btn-secondary" id="workupStudioRegeneratePromptButton" type="button">Regenerate</button>
-                <button class="btn btn-secondary" id="workupStudioOpenEvidenceButton" type="button">Open OpenEvidence</button>
+                <button class="btn btn-secondary" id="workupStudioOpenEvidenceButton" type="button">Open ChatGPT</button>
               </div>
             </section>
 
@@ -16081,19 +16153,19 @@
                 <div class="button-row">
                   <button class="btn btn-primary" id="workupStudioNewWorkupGeneratePromptButton" type="button">Generate AI prompt</button>
                 </div>
-                <label for="workupStudioNewWorkupPromptOutput">AI prompt (copy this to OpenEvidence or another clinical AI)
+                <label for="workupStudioNewWorkupPromptOutput">AI prompt (copy this to ChatGPT or Claude)
                   <textarea id="workupStudioNewWorkupPromptOutput" readonly spellcheck="false" rows="8" placeholder="Fill in the fields above and click Generate AI prompt."></textarea>
                 </label>
                 <div class="button-row">
                   <button class="btn btn-secondary" id="workupStudioNewWorkupCopyPromptButton" type="button">Copy prompt</button>
-                  <button class="btn btn-secondary" id="workupStudioNewWorkupOpenEvidenceButton" type="button">Open OpenEvidence</button>
+                  <button class="btn btn-secondary" id="workupStudioNewWorkupOpenEvidenceButton" type="button">Open ChatGPT</button>
                 </div>
                 <label for="workupStudioNewWorkupPasteInput">Paste AI-generated workup JSON
-                  <textarea id="workupStudioNewWorkupPasteInput" spellcheck="false" rows="10" placeholder="Paste the full AI-generated workup module JSON here. It should be a valid complaint_cds_module with history questions, physical exam, pathway tree, red flags, etc."></textarea>
+                  <textarea id="workupStudioNewWorkupPasteInput" spellcheck="false" rows="10" placeholder="Paste workup_contribution_v1 JSON here. It will be validated locally and prepared for GitHub review instead of installed as reviewed guidance."></textarea>
                 </label>
                 <div id="workupStudioNewWorkupParseStatus" class="muted"></div>
                 <div class="button-row">
-                  <button class="btn btn-primary" id="workupStudioNewWorkupCreateButton" type="button" disabled>Create workup</button>
+                  <button class="btn btn-primary" id="workupStudioNewWorkupCreateButton" type="button" disabled>Prepare review submission</button>
                   <button class="btn btn-secondary" id="workupStudioNewWorkupCancelButton" type="button">Cancel</button>
                 </div>
               </div>
@@ -16553,6 +16625,8 @@
     import { extractRoundsPasteBack, extractPasteBack } from "./open-evidence-results.js";
     import { appendOrUpdateContinuityDay, buildCarryForwardBlock, buildSmartUpdateReview, classifySmartUpdateSections, createContinuityCase, formatDailyInputs, latestContinuityDay, normalizeContinuityCase, normalizeDailyInputs, smartSectionsToDailyInputs } from "./continuity.js";
     import { applySectionPayloadToModule, applyWorkupChangeSet, applyWorkupSectionPatch, collectModuleSourceIds, collectSourceIdsFromValue, flattenPathwayNodes, makeWorkupChangeSet, sectionPayloadFromModule, workupSectionDefinitions, workupSectionPatchSchema } from "./workup-authoring.js";
+    import { WORKUP_CONTRIBUTION_SCHEMA, buildChatAiHandoffPrompt, buildGithubIssueUrl, prepareGithubIssueBody, validateWorkupContributionDraft } from "./workup-contribution.js";
+    import { loadPhysicalExamCatalog } from "./physical-exam-catalog.js";
     import { init as initQrZstd, createCCtx as createQrZstdCCtx, createDCtx as createQrZstdDCtx, freeCCtx as freeQrZstdCCtx, freeDCtx as freeQrZstdDCtx, compressUsingDict as zstdCompressUsingDict, decompressUsingDict as zstdDecompressUsingDict } from "./vendor/zstd-wasm/index.web.js";
     import { QR_DEFAULT_REGISTRY_HASH, QR_ZSTD_DICTIONARY_BASE64, QR_ZSTD_DICTIONARY_BYTES, QR_ZSTD_DICTIONARY_HASH, QR_ZSTD_DICTIONARY_ID } from "./vendor/qr-zstd-dictionary.js";
 
@@ -16576,6 +16650,8 @@
       url: "https://hajjuzpnlvpetsleuxwb.supabase.co",
       publishableKey: "sb_publishable_-rugOaCgl3r9abyuX7TICA_JQ0KQLhn"
     });
+    let workupContributionCatalogPromise = null;
+    let lastContributionValidationIssues = [];
     const SERVICE_PREFERENCES_KEY = "prerounding-service-preferences-v1";
     const serviceProfiles = Object.freeze([
       {
@@ -16720,6 +16796,7 @@
     const VAULT_KDF_ITERATIONS = 210000;
     const CHECKLIST_IMPROVEMENT_TASK_ID = "checklist_improvement_review";
     const DECISION_TREE_TASK_ID = "decision_tree_builder";
+    const PREFILLED_GITHUB_ISSUE_URL_MAX_CHARS = 7600;
     const ROUNDS_PASTE_BACK_TASK_IDS = new Set(["initial_rounds_report", "full_rounds_report", "final_rounds_update"]);
     const EMPTY_CONTEXT_MESSAGE = "Add reviewed patient context before running de-ID, building a checklist, or preparing a handoff.";
     const WORKUP_CATALOG_RESUME_REFRESH_INTERVAL_MS = 10 * 60 * 1000;
@@ -17428,6 +17505,15 @@
       patientWorkupDetail: $("#patientWorkupDetail"),
       patientCopyChecklistRefinementPromptButton: $("#patientCopyChecklistRefinementPromptButton"),
       patientOpenEvidenceFromRefinementButton: $("#patientOpenEvidenceFromRefinementButton"),
+      patientDraftNewWorkupChatGptButton: $("#patientDraftNewWorkupChatGptButton"),
+      patientDraftNewWorkupClaudeButton: $("#patientDraftNewWorkupClaudeButton"),
+      patientSuggestHistoryQuestionsButton: $("#patientSuggestHistoryQuestionsButton"),
+      patientSuggestExamManeuversButton: $("#patientSuggestExamManeuversButton"),
+      patientFixContributionJsonButton: $("#patientFixContributionJsonButton"),
+      patientWorkupContributionInput: $("#patientWorkupContributionInput"),
+      patientWorkupContributionPreview: $("#patientWorkupContributionPreview"),
+      patientValidateContributionButton: $("#patientValidateContributionButton"),
+      patientPrepareGithubContributionButton: $("#patientPrepareGithubContributionButton"),
       patientWorkupRefinementInput: $("#patientWorkupRefinementInput"),
       patientWorkupRefinementPreview: $("#patientWorkupRefinementPreview"),
       patientApplyWorkupRefinementButton: $("#patientApplyWorkupRefinementButton"),
@@ -23823,80 +23909,173 @@ Rules:
       elements.workupStudioNewWorkupDialog.hidden = true;
     }
 
-    function _newWorkupTemplatePrompt(complaint, workupId, triggers, population, setting) {
-      return `You are a clinical decision support authoring assistant. Create a complete workup module for the complaint "${complaint}" following this exact JSON schema.
-
-Return ONLY valid JSON (no markdown, no explanation). The JSON must match this structure:
-
-{
-  "schema_version": "medical_knowledge_database_v1",
-  "artifact_type": "complaint_cds_module",
-  "complaint_cds_schema_version": "complaint-cds-artifact-v1",
-  "module": {
-    "id": "${workupId}",
-    "schema_version": "complaint-cds-artifact-v1",
-    "label": "${complaint}",
-    "complaint_group": "${complaint.toLowerCase().replace(/\\s+/g, '_')}",
-    "version": "0.1.0",
-    "status": "draft",
-    "population": { "age_group": "${population}", "setting": "${setting}" },
-    "triggers": ${JSON.stringify(triggers)},
-    "redFlags": [
-      { "id": "redflag_1", "label": "Destabilizing vital signs", "criteria": "HR > 130, SBP < 90, RR > 30, SpO2 < 90%", "action": "Escalate to rapid response or ICU", "source": { "source_id": "LOCAL_CLINICAL_PATHWAY", "source_section": "Red flags", "evidence_strength": "guideline/consensus", "version_date": "2024" } }
-    ],
-    "safetyChecks": [
-      { "id": "safety_1", "label": "Allergies reviewed", "detail": "Confirm no known drug allergies before ordering" },
-      { "id": "safety_2", "label": "Code status confirmed", "detail": "Verify code status and advance directives" }
-    ],
-    "requiredQuestions": [
-      { "id": "hx_1", "label": "Onset and duration", "question": "When did this start? Has it been constant or intermittent?", "item_type": "history_question", "required": true, "source": { "source_id": "LOCAL_CLINICAL_PATHWAY", "source_section": "History", "evidence_strength": "consensus", "version_date": "2024" } },
-      { "id": "hx_2", "label": "Severity and progression", "question": "How severe is it on a 1-10 scale? Is it getting better, worse, or staying the same?", "item_type": "history_question", "required": true, "source": { "source_id": "LOCAL_CLINICAL_PATHWAY", "source_section": "History", "evidence_strength": "consensus", "version_date": "2024" } },
-      { "id": "hx_3", "label": "Associated symptoms", "question": "What other symptoms are you experiencing?", "item_type": "history_question", "required": true, "source": { "source_id": "LOCAL_CLINICAL_PATHWAY", "source_section": "History", "evidence_strength": "consensus", "version_date": "2024" } },
-      { "id": "hx_4", "label": "Pertinent PMH", "question": "Relevant past medical history for this complaint?", "item_type": "history_question", "required": true, "source": { "source_id": "LOCAL_CLINICAL_PATHWAY", "source_section": "History", "evidence_strength": "consensus", "version_date": "2024" } },
-      { "id": "hx_5", "label": "Medications", "question": "Current medications including recent changes?", "item_type": "history_question", "required": true, "source": { "source_id": "LOCAL_CLINICAL_PATHWAY", "source_section": "History", "evidence_strength": "consensus", "version_date": "2024" } }
-    ],
-    "conditionalQuestions": [],
-    "requiredExam": [
-      { "id": "exam_1", "label": "Vital signs", "technique": "Review full set of vitals including orthostatics if indicated", "item_type": "physical_exam_maneuver", "required": true, "source": { "source_id": "LOCAL_CLINICAL_PATHWAY", "source_section": "Physical exam", "evidence_strength": "guideline/consensus", "version_date": "2024" } },
-      { "id": "exam_2", "label": "General appearance", "technique": "Assess general appearance, distress, work of breathing", "item_type": "physical_exam_maneuver", "required": true, "source": { "source_id": "LOCAL_CLINICAL_PATHWAY", "source_section": "Physical exam", "evidence_strength": "consensus", "version_date": "2024" } },
-      { "id": "exam_3", "label": "Focused system exam", "technique": "Perform focused exam of the relevant organ system(s)", "item_type": "physical_exam_maneuver", "required": true, "source": { "source_id": "LOCAL_CLINICAL_PATHWAY", "source_section": "Physical exam", "evidence_strength": "guideline/consensus", "version_date": "2024" } }
-    ],
-    "conditionalExam": [],
-    "initialTests": [
-      { "id": "test_1", "label": "Basic labs", "test": "CBC, BMP, LFTs", "item_type": "lab_test", "required": true, "source": { "source_id": "LOCAL_CLINICAL_PATHWAY", "source_section": "Initial workup", "evidence_strength": "guideline/consensus", "version_date": "2024" } }
-    ],
-    "dispositionRules": [],
-    "differentialBuckets": [],
-    "clinical_pathway_tree_v1": {
-      "schema": "clinical_pathway_tree_v1",
-      "workupId": "${workupId}",
-      "title": "${complaint} clinical pathway",
-      "source_ids": ["LOCAL_CLINICAL_PATHWAY"],
-      "activationRules": {},
-      "root": {
-        "id": "root",
-        "label": "${complaint}: initial assessment",
-        "type": "decision",
-        "children": [
-          { "id": "branch_1", "label": "Stable, outpatient management appropriate", "type": "action", "edgeLabel": "Stable", "children": [] },
-          { "id": "branch_2", "label": "Requires inpatient workup and management", "type": "action", "edgeLabel": "Requires admission", "children": [] },
-          { "id": "branch_3", "label": "Critical - needs immediate intervention", "type": "endpoint", "edgeLabel": "Unstable", "children": [] }
-        ]
-      }
+    function contributionDraftTitle() {
+      const patient = activePatient();
+      return String(
+        elements.workupStudioNewWorkupComplaintInput?.value
+        || state.concern
+        || patient.concern
+        || moduleLabel(moduleById(state.selectedWorkupModuleId))
+        || "New clinical workup"
+      ).trim();
     }
-  }
-}
 
-Rules:
-1. Use evidence-based, guideline-backed content appropriate for ${setting} ${population} patients.
-2. Include 5-8 required history questions specific to this complaint.
-3. Include 3-6 focused physical exam maneuvers.
-4. Include 2-4 red flags with actionable criteria and escalation steps.
-5. Include appropriate lab tests and imaging for initial workup.
-6. Add 2-3 differential diagnostic buckets.
-7. The pathway tree should have at least 3 terminal branches covering stable, admit, and critical dispositions.
-8. All items must have source attribution with source_id, source_section, evidence_strength, and version_date.
-9. Return ONLY the JSON object - no markdown fences, no explanatory text.`;
+    function contributionDraftWorkupId(title = contributionDraftTitle()) {
+      const explicitId = String(elements.workupStudioNewWorkupIdInput?.value || "").trim();
+      const source = explicitId || title;
+      return source.toLowerCase().replace(/[^a-z0-9_]+/g, "_").replace(/_+/g, "_").replace(/^_|_$/g, "").slice(0, 96) || "new_workup_v1";
+    }
+
+    function contributionDraftTriggers(title = contributionDraftTitle()) {
+      const raw = String(elements.workupStudioNewWorkupTriggersInput?.value || title || state.concern || "").trim();
+      return raw.split(/[,;]+/).map((entry) => entry.trim()).filter(Boolean).slice(0, 12);
+    }
+
+    function minimalContributionContext() {
+      const patient = activePatient();
+      const selectedModule = moduleById(state.selectedWorkupModuleId);
+      const lines = [
+        patient?.oneLine ? `One-liner: ${patient.oneLine}` : "",
+        state.concern ? `Clinical problem: ${state.concern}` : "",
+        selectedModule ? `Closest reviewed local workup: ${moduleLabel(selectedModule)} (${selectedModule.id})` : "",
+        state.setting ? `Setting: ${state.setting}` : "",
+        state.population ? `Population: ${state.population}` : "",
+        checklistPatientSummaryText() ? `De-identified summary: ${checklistPatientSummaryText()}` : ""
+      ].filter(Boolean);
+      return lines.join("\n").slice(0, 1800);
+    }
+
+    function currentContributionPromptOptions(mode = "new_workup", model = "ChatGPT") {
+      const title = contributionDraftTitle();
+      return {
+        mode,
+        model,
+        title,
+        workupId: contributionDraftWorkupId(title),
+        triggers: contributionDraftTriggers(title),
+        population: elements.workupStudioNewWorkupPopulationSelect?.value || state.population || "adult",
+        setting: elements.workupStudioNewWorkupSettingSelect?.value || state.setting || "inpatient",
+        deidentifiedContext: minimalContributionContext(),
+        currentChecklist: state.checklistText || "",
+        validatorErrors: lastContributionValidationIssues,
+        pastedJson: elements.patientWorkupContributionInput?.value || elements.workupStudioNewWorkupPasteInput?.value || ""
+      };
+    }
+
+    function contributionPrompt(mode = "new_workup", model = "ChatGPT") {
+      return buildChatAiHandoffPrompt(currentContributionPromptOptions(mode, model));
+    }
+
+    async function copyContributionPrompt(mode = "new_workup", model = "ChatGPT") {
+      const text = contributionPrompt(mode, model);
+      openPhiOverlay({
+        title: `${model} contribution prompt`,
+        copy: "Review the de-identified contribution prompt before copying it to an external AI tool.",
+        text,
+        actionLabel: `Copy ${model} prompt`,
+        onConfirm: () => copyText(text)
+      });
+      setStatus(`${model} contribution prompt ready to copy.`);
+      return text;
+    }
+
+    async function contributionExamCatalog() {
+      if (!workupContributionCatalogPromise) {
+        workupContributionCatalogPromise = loadPhysicalExamCatalog().catch((error) => {
+          console.warn("Physical exam catalog unavailable for contribution validation.", error);
+          return null;
+        });
+      }
+      return workupContributionCatalogPromise;
+    }
+
+    function renderContributionValidation(validation, container = elements.patientWorkupContributionPreview) {
+      if (!container) return;
+      container.innerHTML = "";
+      if (!validation) {
+        container.textContent = "No contribution JSON pasted yet.";
+        return;
+      }
+      if (validation.ok) {
+        const draft = validation.draft || {};
+        container.innerHTML = "";
+        const strong = document.createElement("strong");
+        strong.textContent = `${WORKUP_CONTRIBUTION_SCHEMA} ready for review`;
+        const summary = document.createElement("p");
+        summary.textContent = `${draft.title || "Untitled workup"} has ${[
+          draft.history_questions?.length || 0,
+          draft.physical_exam_maneuvers?.length || 0,
+          draft.diagnostic_tests?.length || 0,
+          draft.safety_checks?.length || 0,
+          draft.red_flags?.length || 0,
+          draft.management_disposition?.length || 0
+        ].reduce((sum, count) => sum + count, 0)} draft item(s) and ${draft.sources?.length || 0} source(s).`;
+        container.append(strong, summary);
+        return;
+      }
+      const title = document.createElement("strong");
+      title.textContent = "Contribution needs fixes";
+      const list = document.createElement("ul");
+      for (const issue of validation.issues || []) {
+        const item = document.createElement("li");
+        item.textContent = issue;
+        list.appendChild(item);
+      }
+      container.append(title, list);
+    }
+
+    async function validateContributionInput(source = "patient") {
+      const input = source === "studio"
+        ? elements.workupStudioNewWorkupPasteInput
+        : elements.patientWorkupContributionInput;
+      const raw = String(input?.value || "").trim();
+      if (!raw) {
+        const validation = { ok: false, issues: ["missing required field: paste workup_contribution_v1 JSON"], draft: null };
+        renderContributionValidation(validation);
+        return validation;
+      }
+      const examCatalog = await contributionExamCatalog();
+      const validation = validateWorkupContributionDraft(raw, { examCatalog });
+      lastContributionValidationIssues = validation.issues || [];
+      renderContributionValidation(validation, source === "studio" ? null : elements.patientWorkupContributionPreview);
+      if (source === "studio" && elements.workupStudioNewWorkupParseStatus) {
+        elements.workupStudioNewWorkupParseStatus.textContent = validation.ok
+          ? `Valid ${WORKUP_CONTRIBUTION_SCHEMA} detected: "${validation.draft?.title || "Untitled"}". Ready to prepare a GitHub review submission.`
+          : `Contribution needs fixes: ${(validation.issues || []).slice(0, 3).join("; ")}`;
+      }
+      if (source === "studio" && elements.workupStudioNewWorkupCreateButton) {
+        elements.workupStudioNewWorkupCreateButton.disabled = !validation.ok;
+      }
+      return validation;
+    }
+
+    async function prepareGithubContribution(source = "patient") {
+      const input = source === "studio"
+        ? elements.workupStudioNewWorkupPasteInput
+        : elements.patientWorkupContributionInput;
+      const validation = await validateContributionInput(source);
+      if (!validation.ok) {
+        setStatus("Fix contribution validation errors before preparing a GitHub submission.");
+        return false;
+      }
+      const body = prepareGithubIssueBody(validation.draft, validation);
+      const url = buildGithubIssueUrl({ draft: validation.draft, validation });
+      openPhiOverlay({
+        title: "GitHub contribution review",
+        copy: "Review the pending-review contribution issue body. It contains no secrets and should contain no PHI.",
+        text: body,
+        actionLabel: url.length <= PREFILLED_GITHUB_ISSUE_URL_MAX_CHARS ? "Copy and open GitHub issue" : "Copy issue body",
+        onConfirm: async () => {
+          await copyText(body);
+          if (url.length <= PREFILLED_GITHUB_ISSUE_URL_MAX_CHARS) {
+            window.open(url, "_blank", "noopener,noreferrer");
+          }
+        }
+      });
+      setStatus(url.length <= PREFILLED_GITHUB_ISSUE_URL_MAX_CHARS
+        ? "GitHub issue body ready; confirm to copy it and open a prefilled issue."
+        : "GitHub issue body ready; confirm to copy it, then paste it into a new GitHub issue.");
+      return true;
     }
 
     function generateNewWorkupAIPrompt() {
@@ -23919,151 +24098,28 @@ Rules:
       elements.workupStudioNewWorkupIdInput.value = workupId;
       elements.workupStudioNewWorkupTriggersInput.value = triggers.join(", ");
 
-      const prompt = _newWorkupTemplatePrompt(complaint, workupId, triggers.length ? triggers : [complaint.toLowerCase()], population, setting);
+      const prompt = buildChatAiHandoffPrompt({
+        mode: "new_workup",
+        model: "ChatGPT or Claude",
+        title: complaint,
+        workupId,
+        triggers: triggers.length ? triggers : [complaint.toLowerCase()],
+        population,
+        setting,
+        deidentifiedContext: minimalContributionContext()
+      });
       elements.workupStudioNewWorkupPromptOutput.value = prompt;
-      setStatus("AI prompt generated for new workup: " + complaint);
+      setStatus("Contribution prompt generated for new workup: " + complaint);
     }
 
     function validateNewWorkupPasteInput() {
-      const raw = String(elements.workupStudioNewWorkupPasteInput?.value || "").trim();
-      elements.workupStudioNewWorkupCreateButton.disabled = true;
-      elements.workupStudioNewWorkupParseStatus.textContent = "";
-      if (!raw) return;
-      try {
-        const parsed = JSON.parse(raw);
-        const module = parsed?.module || parsed;
-        if (!module || typeof module !== "object" || !module.id) {
-          elements.workupStudioNewWorkupParseStatus.textContent = "JSON parsed but missing module.id. Does it follow the workup schema?";
-          return;
-        }
-        const itemCount = (Array.isArray(module.requiredQuestions) ? module.requiredQuestions.length : 0)
-          + (Array.isArray(module.requiredExam) ? module.requiredExam.length : 0)
-          + (Array.isArray(module.redFlags) ? module.redFlags.length : 0);
-        elements.workupStudioNewWorkupParseStatus.textContent = `Valid workup JSON detected: "${module.label || module.id}" with ${itemCount}+ items. Ready to create.`;
-        elements.workupStudioNewWorkupCreateButton.disabled = false;
-      } catch {
-        elements.workupStudioNewWorkupParseStatus.textContent = "Invalid JSON. Paste the complete AI response as valid JSON.";
-      }
+      if (elements.workupStudioNewWorkupCreateButton) elements.workupStudioNewWorkupCreateButton.disabled = true;
+      if (elements.workupStudioNewWorkupParseStatus) elements.workupStudioNewWorkupParseStatus.textContent = "";
+      void validateContributionInput("studio");
     }
 
     async function createNewWorkupFromAI() {
-      const raw = String(elements.workupStudioNewWorkupPasteInput?.value || "").trim();
-      if (!raw) {
-        setStatus("Paste the AI-generated workup JSON before creating.");
-        return;
-      }
-      let parsed;
-      try {
-        parsed = JSON.parse(raw);
-      } catch (error) {
-        setStatus("Invalid JSON. Fix the pasted content and try again.");
-        return;
-      }
-      const envelope = parsed?.module ? parsed : { module: parsed };
-      const module = envelope.module;
-      if (!module?.id) {
-        setStatus("The pasted JSON is missing a module.id field.");
-        return;
-      }
-      if (!module.label) module.label = titleFromId(module.id);
-      if (!module.version) module.version = "0.1.0";
-      if (!module.status) module.status = "draft";
-      if (!module.schema_version) module.schema_version = "complaint-cds-artifact-v1";
-
-      const existingModule = rawModuleById(module.id);
-      if (existingModule) {
-        setStatus(`Workup "${module.id}" already exists. Use a different workup ID or edit the existing one.`);
-        return;
-      }
-
-      setStatus(`Creating new workup "${module.label}"...`);
-      const workupRow = {
-        id: module.id,
-        title: module.label,
-        version: module.version,
-        status: module.status,
-        complaint_group: module.complaint_group || "",
-        population: module.population || module.applicability || {},
-        source_ids: collectModuleSourceIds(module),
-        payload: {
-          schema_version: module.schema_version || "medical_knowledge_database_v1",
-          artifact_type: "complaint_cds_module",
-          triggers: module.triggers || [],
-          applicability: module.applicability || module.population || null
-        }
-      };
-
-      if (workupStudioBackendSignedIn() && workupStudioCanReview()) {
-        try {
-          const now = new Date().toISOString();
-          await upsertWorkupStudioRows("workups", { ...workupRow, updated_at: now });
-          for (const definition of workupSectionDefinitions) {
-            const payload = sectionPayloadFromModule(module, definition.key);
-            const sourceIds = collectSourceIdsFromValue(payload, []);
-            await upsertWorkupStudioRows("workup_sections", {
-              id: `${module.id}:${definition.key}`,
-              workup_id: module.id,
-              section_key: definition.key,
-              label: definition.label,
-              description: definition.description,
-              kind: definition.kind,
-              sort_order: workupSectionDefinitions.findIndex((s) => s.key === definition.key),
-              payload,
-              source_ids: sourceIds,
-              updated_at: now
-            });
-            if (definition.kind === "pathway" && payload?.root) {
-              const treeId = `${module.id}:clinical_pathway_tree_v1`;
-              await upsertWorkupStudioRows("pathway_trees", {
-                id: treeId,
-                workup_id: module.id,
-                section_key: definition.key,
-                title: payload.title || module.label,
-                status: "draft",
-                source_ids: sourceIds,
-                activation_rules: payload.activationRules || {},
-                payload,
-                updated_at: now
-              });
-              const nodeRows = flattenPathwayNodes(payload.root, { treeId }).map((row) => ({ ...row, updated_at: now }));
-              await upsertWorkupStudioRows("pathway_nodes", nodeRows);
-            } else if (definition.kind === "items") {
-              const itemRows = [];
-              for (const groupKey of definition.moduleFields) {
-                (Array.isArray(module[groupKey]) ? module[groupKey] : []).forEach((item, index) => {
-                  itemRows.push({
-                    id: `${module.id}:${groupKey}:${item.id || (groupKey + "_" + (index + 1))}`,
-                    workup_id: module.id,
-                    section_key: definition.key,
-                    group_key: groupKey,
-                    item_id: item.id || (groupKey + "_" + (index + 1)),
-                    item_type: item.item_type || "",
-                    label: item.label || item.text || item.action || "",
-                    sort_order: index,
-                    source_ids: collectSourceIdsFromValue(item, []),
-                    payload: item,
-                    updated_at: now
-                  });
-                });
-              }
-              if (itemRows.length) await upsertWorkupStudioRows("workup_items", itemRows);
-            }
-          }
-          await loadSupabaseWorkupCatalog({ force: true });
-          setStatus(`Workup "${module.label}" created in Supabase and available to all users.`);
-        } catch (error) {
-          setStatus(`Supabase push failed: ${error.message}. Workup saved locally only.`);
-        }
-      }
-
-      supabaseWorkupCatalog.modulesById.set(module.id, module);
-      invalidateWorkupModuleCaches();
-      workupStudioState.selectedModuleId = module.id;
-      workupStudioState.sectionKey = "clinical_pathway_tree_v1";
-      saveWorkupStudioStateNow();
-      hideNewWorkupDialog();
-      renderWorkupStudio();
-      setStatus(`New workup "${module.label}" created and ready to edit.`);
+      await prepareGithubContribution("studio");
     }
 
     function acceptWorkupStudioImport({ publish = false } = {}) {
@@ -24255,6 +24311,18 @@ Rules:
       `;
       $("strong", empty).textContent = `No exact local ${concern} workup installed`;
       $("span span", empty).textContent = `${prompt.title}. ${prompt.body} Choose the closest reviewed workup below, or leave this unselected until a dedicated module is added.`;
+      const actions = document.createElement("div");
+      actions.className = "button-row workup-picker-actions";
+      actions.innerHTML = `
+        <button class="btn btn-secondary" type="button" data-missing-workup-action="create" data-missing-workup-concern="">Create new workup</button>
+        <button class="btn btn-secondary" type="button" data-missing-workup-action="chatgpt" data-missing-workup-concern="">Draft with ChatGPT</button>
+        <button class="btn btn-secondary" type="button" data-missing-workup-action="claude" data-missing-workup-concern="">Draft with Claude</button>
+        <button class="btn btn-secondary" type="button" data-missing-workup-action="paste" data-missing-workup-concern="">Paste draft JSON</button>
+      `;
+      for (const button of $$("[data-missing-workup-concern]", actions)) {
+        button.dataset.missingWorkupConcern = concern;
+      }
+      empty.appendChild(actions);
       container.appendChild(empty);
     }
 
@@ -24268,6 +24336,35 @@ Rules:
       $("strong", empty).textContent = "Search for a workup";
       $("span span", empty).textContent = "Type at least two characters, or choose one of the suggested reviewed workups below.";
       container.appendChild(empty);
+    }
+
+    function handleMissingWorkupAction(action = "", concern = "") {
+      const title = String(concern || state.concern || activePatient().concern || "New clinical workup").trim();
+      if (title) {
+        state.concern = title;
+        syncWorkupConcernInputs(title);
+      }
+      if (action === "create") {
+        showView("studio");
+        showNewWorkupDialog();
+        if (elements.workupStudioNewWorkupComplaintInput) elements.workupStudioNewWorkupComplaintInput.value = title;
+        if (elements.workupStudioNewWorkupIdInput) elements.workupStudioNewWorkupIdInput.value = contributionDraftWorkupId(title);
+        if (elements.workupStudioNewWorkupTriggersInput) elements.workupStudioNewWorkupTriggersInput.value = contributionDraftTriggers(title).join(", ");
+        generateNewWorkupAIPrompt();
+        return;
+      }
+      if (action === "chatgpt" || action === "claude") {
+        void copyContributionPrompt("new_workup", action === "claude" ? "Claude" : "ChatGPT");
+        return;
+      }
+      if (action === "paste") {
+        setPatientTab("workup", { focusPanel: true });
+        requestAnimationFrame(() => {
+          elements.patientWorkupContributionInput?.scrollIntoView({ block: "center", behavior: "smooth" });
+          elements.patientWorkupContributionInput?.focus();
+        });
+        setStatus(`Paste ${WORKUP_CONTRIBUTION_SCHEMA} JSON, then validate before preparing a GitHub review submission.`);
+      }
     }
 
     function renderPatientWorkupResults(query = state.concern) {
@@ -28379,7 +28476,7 @@ Rules:
           status: "ready",
           patch,
           payload,
-          message: `${operations.length} ${targetSectionKey === "physical_exam" ? "exam" : "history"} operation${operations.length === 1 ? "" : "s"} ready for this patient.${patch.__openEvidenceJsonRepaired ? " OpenEvidence formatting was repaired before validation." : ""}`
+          message: `${operations.length} ${targetSectionKey === "physical_exam" ? "exam" : "history"} operation${operations.length === 1 ? "" : "s"} ready for this patient.${patch.__openEvidenceJsonRepaired ? " Structured AI formatting was repaired before validation." : ""}`
         };
       } catch (error) {
         return {
@@ -28489,11 +28586,11 @@ Rules:
           ? (rawItem.exclusiveGroups || rawItem.exclusive_groups).map((group) => optionFromItemValue(group)).filter((group) => group.length >= 2)
           : existingItem.exclusiveGroups || existingItem.exclusive_groups || [],
         patientSpecific: true,
-        source_id: rawItem.source_id || rawItem.source?.source_id || existingItem.source_id || "OPENEVIDENCE_PATIENT_PATCH",
-        source: rawItem.source || existingItem.source || { source_id: "OPENEVIDENCE_PATIENT_PATCH", title: "OpenEvidence patient checklist patch" },
+        source_id: rawItem.source_id || rawItem.source?.source_id || existingItem.source_id || "STRUCTURED_AI_PATIENT_PATCH",
+        source: rawItem.source || existingItem.source || { source_id: "STRUCTURED_AI_PATIENT_PATCH", title: "Structured AI patient checklist patch" },
         rationale: String(rawItem.rationale || rawItem.reason || existingItem.rationale || "").trim(),
-        diagnosticPurpose: String(rawItem.rationale || existingItem.diagnosticPurpose || "Patient-specific OpenEvidence checklist patch accepted for clinician verification.").trim(),
-        diagnostic_purpose: String(rawItem.rationale || existingItem.diagnostic_purpose || "Patient-specific OpenEvidence checklist patch accepted for clinician verification.").trim(),
+        diagnosticPurpose: String(rawItem.rationale || existingItem.diagnosticPurpose || "Patient-specific structured AI checklist patch accepted for clinician verification.").trim(),
+        diagnostic_purpose: String(rawItem.rationale || existingItem.diagnostic_purpose || "Patient-specific structured AI checklist patch accepted for clinician verification.").trim(),
         managementImplication: existingItem.managementImplication || existingItem.management_implication || "Positive or abnormal finding should be reconciled with the supervising clinician plan.",
         management_implication: existingItem.management_implication || existingItem.managementImplication || "Positive or abnormal finding should be reconciled with the supervising clinician plan.",
         tags: uniqueChecklistOptions([
@@ -28653,9 +28750,9 @@ Rules:
     function checklistImprovementRefinementNotes(sectionKey = patientChecklistPatchSectionKey()) {
       const meta = patientChecklistPatchScopeMeta(sectionKey);
       if (meta.isAll) {
-        return "Output only workup_section_patch_v1 JSON patch operations. Return one fenced JSON block per section that needs changes (physical_exam and/or history_questions). Use only itemIds from the matching section in current_checklist. Do not output workup_refinement_v1.";
+        return "Use OpenEvidence for plain-language evidence review across history and physical exam. Do not output JSON, patch operations, item IDs, or app-specific schema.";
       }
-      return `Output only workup_section_patch_v1 JSON patch operations for section ${meta.sectionKey}. Do not modify or reference rows outside ${meta.sectionKey}. Do not output workup_refinement_v1 unless explicitly asked for legacy full replacement.`;
+      return `Use OpenEvidence for plain-language evidence review of ${meta.sectionName}. Do not output JSON, patch operations, item IDs, or app-specific schema.`;
     }
 
     function patientChecklistPatchPromptRows(sectionKey = patientChecklistPatchSectionKey()) {
@@ -28741,6 +28838,7 @@ Rules:
         `selectedWorkupTitle: ${moduleLabel(selectedModule) || "Selected workup"}`,
         `selectedSection: ${meta.sectionName}`,
         "",
+        "De-identified clinical context.",
         "<deidentified_patient_context>",
         checklistPatientSummaryText(),
         "</deidentified_patient_context>",
@@ -28869,19 +28967,19 @@ Rules:
       if (patientCount && defaultCount) {
         return {
           hasRefinement: true,
-          text: `${patientCount} patient-specific and ${defaultCount} default OpenEvidence checklist item${defaultCount === 1 ? "" : "s"} will be used.`
+          text: `${patientCount} patient-specific and ${defaultCount} default structured checklist item${defaultCount === 1 ? "" : "s"} will be used.`
         };
       }
       if (patientCount) {
         return {
           hasRefinement: true,
-          text: `${patientCount} patient-specific OpenEvidence checklist item${patientCount === 1 ? "" : "s"} will be used.`
+          text: `${patientCount} patient-specific structured checklist item${patientCount === 1 ? "" : "s"} will be used.`
         };
       }
       if (defaultCount) {
         return {
           hasRefinement: true,
-          text: `Computer-modified default available: ${defaultCount} OpenEvidence checklist item${defaultCount === 1 ? "" : "s"} will be used.`
+          text: `Computer-modified default available: ${defaultCount} structured checklist item${defaultCount === 1 ? "" : "s"} will be used.`
         };
       }
       return {
@@ -29249,7 +29347,7 @@ Rules:
         selectedWorkupTitle: selectedModule ? moduleLabel(selectedModule) : state.concern || patient.concern || "selected condition",
         selectedWorkupId: selectedModule?.id || "",
         sameConversationReady: false,
-        userContext: serviceUserContext("Output target: concise oral rounds SOAP presentation for inpatient pre-rounding. Include APP_PASTE_BACK_JSON so this app can record the returned summary locally.")
+        userContext: serviceUserContext("Output target: concise oral rounds SOAP presentation for inpatient pre-rounding. Return plain-language clinical guidance only; do not output JSON or app-specific paste-back blocks.")
       };
       return buildOpenEvidencePrompt(todayPromptTaskId(mode), context).prompt;
     }
@@ -29308,9 +29406,8 @@ Rules:
       if (elements.todayPromptStatus) elements.todayPromptStatus.textContent = prompt ? (todayDay?.roundsPasteBack ? "Returned summary recorded" : "Ready to copy") : "Not ready";
       if (elements.todayPasteBackStatus) {
         const draftPasteBackText = String(elements.todayOpenEvidencePasteInput?.value || "").trim();
-        const draftPasteBack = draftPasteBackText ? extractRoundsPasteBack(draftPasteBackText) : null;
         elements.todayPasteBackStatus.textContent = draftPasteBackText
-          ? draftPasteBack ? "Ready to record" : "APP_PASTE_BACK_JSON not found"
+          ? "Ready to record"
           : todayDay?.roundsPasteBack ? "Returned summary saved" : "No returned summary";
       }
       if (elements.todayRoundsPasteBackPreview) {
@@ -29397,17 +29494,24 @@ Rules:
       const patient = activePatient();
       if (!patient.id) return false;
       const raw = elements.todayOpenEvidencePasteInput?.value || "";
-      const pasteBack = extractRoundsPasteBack(raw);
-      if (!pasteBack) {
-        if (elements.todayPasteBackStatus) elements.todayPasteBackStatus.textContent = "APP_PASTE_BACK_JSON not found";
+      const answerText = String(raw || "").trim();
+      if (!answerText) {
+        if (elements.todayPasteBackStatus) elements.todayPasteBackStatus.textContent = "No returned summary";
         renderRoundsPasteBackPreview(elements.todayRoundsPasteBackPreview, raw);
-        setStatus("Paste the OpenEvidence result with APP_PASTE_BACK_JSON before recording it.");
+        setStatus("Paste the plain-language OpenEvidence answer before recording it.");
         return false;
       }
       saveTodayUpdate({ announce: false });
+      const pasteBack = extractRoundsPasteBack(answerText);
+      if (!pasteBack) {
+        return savePlainOpenEvidenceAnswerForActivePatient(answerText, {
+          taskId: todayPromptTaskId(todayWorkflowMode(patient)),
+          announce: true
+        });
+      }
       const saved = saveRoundsPasteBackForActivePatient(pasteBack, {
         taskId: todayPromptTaskId(todayWorkflowMode(patient)),
-        rawAnswerText: raw,
+        rawAnswerText: answerText,
         announce: false
       });
       if (!saved) return false;
@@ -30990,8 +31094,8 @@ Rules:
         organSystemKey: String(rawItem.organSystemKey || rawItem.organ_system_key || "").trim(),
         originalSectionTitle: "Structured checklist refinement",
         originalSectionCategory: "local-review",
-        source_id: "OPENEVIDENCE_STRUCTURED_REFINEMENT",
-        source: { source_id: "OPENEVIDENCE_STRUCTURED_REFINEMENT", title: "OpenEvidence structured checklist refinement" },
+        source_id: "STRUCTURED_AI_REFINEMENT",
+        source: { source_id: "STRUCTURED_AI_REFINEMENT", title: "Structured AI checklist refinement" },
         diagnosticPurpose: String(rawItem.rationale || "Structured checklist refinement accepted for clinician verification.").trim(),
         diagnostic_purpose: String(rawItem.rationale || "Structured checklist refinement accepted for clinician verification.").trim(),
         managementImplication: "Positive or abnormal finding should be verified against the selected workup, patient context, and supervising clinician plan.",
@@ -31165,12 +31269,12 @@ Rules:
 	        options: suggestion.options,
 	        rawValue: suggestion.options.join(" / "),
 	        organSystemKey: suggestion.organSystemKey,
-	        originalSectionTitle: "OpenEvidence local review",
+	        originalSectionTitle: "Local evidence review",
 	        originalSectionCategory: "local-review",
-	        source_id: "OPENEVIDENCE_LOCAL_REVIEW",
-	        source: { source_id: "OPENEVIDENCE_LOCAL_REVIEW", title: "OpenEvidence local review suggestion" },
-	        diagnosticPurpose: "Locally reviewed OpenEvidence suggestion added for clinician verification, not as a validated pathway row.",
-	        diagnostic_purpose: "Locally reviewed OpenEvidence suggestion added for clinician verification, not as a validated pathway row.",
+	        source_id: "LOCAL_EVIDENCE_REVIEW",
+	        source: { source_id: "LOCAL_EVIDENCE_REVIEW", title: "Local evidence review suggestion" },
+	        diagnosticPurpose: "Locally reviewed evidence suggestion added for clinician verification, not as a validated pathway row.",
+	        diagnostic_purpose: "Locally reviewed evidence suggestion added for clinician verification, not as a validated pathway row.",
 	        managementImplication: "Positive or abnormal finding should be verified against the local workup, patient context, and supervising clinician plan.",
 	        management_implication: "Positive or abnormal finding should be verified against the local workup, patient context, and supervising clinician plan.",
 	        tags: ["open_evidence_local_review", "unvalidated_checklist_suggestion"]
@@ -32960,12 +33064,16 @@ Rules:
     }
 
     function isRoundsPasteBackTask(task = selectedTask()) {
-      return ROUNDS_PASTE_BACK_TASK_IDS.has(task?.id)
-        || /^(?:rounds_report|full_rounds_report|rounds_update)$/i.test(String(task?.outputKind || ""));
+      return taskHasPasteBack(task) && (ROUNDS_PASTE_BACK_TASK_IDS.has(task?.id)
+        || /^(?:rounds_report|full_rounds_report|rounds_update)$/i.test(String(task?.outputKind || "")));
     }
 
     function taskHasPasteBack(task = selectedTask()) {
       return Boolean(task?.pasteBackSchema);
+    }
+
+    function taskIsPlainEvidenceReview(task = selectedTask()) {
+      return !taskHasPasteBack(task);
     }
 
     function checklistPatientSummaryText() {
@@ -33001,7 +33109,7 @@ Rules:
         `Current checklist sections: ${sectionCount}`,
         `Current checklist items: ${itemCount}`,
         `Rows currently supporting multi-select: ${multiCount}`,
-        "Return small workup_section_patch_v1 operations only. Do not regenerate the full checklist. Default/canonical edits belong in Workup Studio; this patient flow is patient-only."
+        "Use this summary to identify evidence-backed gaps or redundant bedside rows. Structured JSON edits are handled separately in the ChatGPT/Claude patch workflow."
       ].join("\n");
     }
 
@@ -33777,13 +33885,13 @@ Rules:
         return { status: "empty", pasteBack: null };
       }
       if (!pasteBack) {
-        container.dataset.status = "unsupported";
+        container.dataset.status = "ready";
         const title = document.createElement("strong");
-        title.textContent = "APP_PASTE_BACK_JSON not detected";
+        title.textContent = saved ? "OpenEvidence answer saved" : "OpenEvidence answer ready";
         const detail = document.createElement("div");
-        detail.textContent = "Paste the full OpenEvidence result or the fenced JSON block with schema open_evidence_rounds_pasteback_v1.";
+        detail.textContent = answerText.length > 240 ? answerText.slice(0, 237) + "..." : answerText;
         container.append(title, detail);
-        return { status: "unsupported", pasteBack: null };
+        return { status: "ready", pasteBack: null, plainText: answerText };
       }
       const sectionCounts = [
         ["Subjective", pasteBack.subjective],
@@ -33881,6 +33989,42 @@ Rules:
       return true;
     }
 
+    function savePlainOpenEvidenceAnswerForActivePatient(answerText, { taskId = state.selectedTaskId, announce = true } = {}) {
+      const patient = activePatient();
+      if (!patient.id) {
+        setStatus("Open a patient before saving an OpenEvidence answer.");
+        return false;
+      }
+      const summary = String(answerText || "").trim();
+      if (!summary) {
+        setStatus("Paste the plain-language OpenEvidence answer before saving.");
+        return false;
+      }
+      let patientCase = patientContinuityCase(patient);
+      const dayPatch = { finalCompiledFindings: summary };
+      if (!currentContinuityDay(patientCase)) {
+        const deidentifiedInputs = deidentifyDailyInputs(todayInputsFromElements());
+        if (Object.values(deidentifiedInputs).some(Boolean)) {
+          dayPatch.deidentifiedInputs = deidentifiedInputs;
+        }
+      }
+      patientCase = appendOrUpdateContinuityDay(patientCase, dayPatch);
+      savePatientContinuityCase(patient.id, patientCase);
+      if (taskId) {
+        state.openEvidenceSummaries = {
+          ...(state.openEvidenceSummaries || {}),
+          [taskId]: summary
+        };
+      }
+      renderPatientWorkspace();
+      renderFinalUpdate();
+      renderTodayCockpit();
+      renderOpenEvidence();
+      saveState();
+      if (announce) setStatus("OpenEvidence answer saved to today's patient update.");
+      return true;
+    }
+
     function saveGenericPasteBackForActivePatient(pasteBack, { taskId = state.selectedTaskId, rawAnswerText = "", announce = true } = {}) {
       if (!pasteBack) {
         setStatus("Paste APP_PASTE_BACK_JSON before saving.");
@@ -33898,7 +34042,7 @@ Rules:
       return true;
     }
 
-    function syncOpenEvidenceApplyButtons({ isChecklistReview = false, isDecisionTree = false, isRoundsPasteBack = false, isGenericPasteBack = false, genericPasteBackReady = false, answerText = "", changes = null } = {}) {
+    function syncOpenEvidenceApplyButtons({ isChecklistReview = false, isDecisionTree = false, isPlainEvidenceReview = false, isRoundsPasteBack = false, isGenericPasteBack = false, genericPasteBackReady = false, answerText = "", changes = null } = {}) {
       const cleanAnswer = String(answerText || "").trim();
       const changeSummary = changes || { additions: [], removals: [] };
       const totalChanges = changeSummary.additions.length + changeSummary.removals.length;
@@ -33909,11 +34053,14 @@ Rules:
         const treeSummary = isDecisionTree ? decisionTreeImportSummary(cleanAnswer) : { status: "empty" };
         const treeReady = treeSummary.status === "ready";
         const roundsReady = isRoundsPasteBack ? Boolean(extractRoundsPasteBack(cleanAnswer)) : false;
+        const plainEvidenceReady = isPlainEvidenceReview && Boolean(cleanAnswer);
       const label = !cleanAnswer
         ? "Paste answer first"
           : roundsReady
             ? "Save rounds report"
           : isGenericPasteBack && genericPasteBackReady
+            ? "Save result"
+          : plainEvidenceReady
             ? "Save result"
           : patchReady
             ? "Apply patch"
@@ -33929,17 +34076,18 @@ Rules:
                   ? "APP_PASTE_BACK_JSON not found"
                   : "Structured JSON only";
         for (const button of [elements.patientApplyEvidenceRefinementButton].filter(Boolean)) {
-          button.disabled = isRoundsPasteBack ? !roundsReady : isGenericPasteBack ? !genericPasteBackReady : isDecisionTree ? !treeReady : isChecklistReview ? !(patchReady || structuredReady) : !structuredReady;
+          button.disabled = isRoundsPasteBack ? !roundsReady : isGenericPasteBack ? !genericPasteBackReady : isPlainEvidenceReview ? !plainEvidenceReady : isDecisionTree ? !treeReady : isChecklistReview ? !(patchReady || structuredReady) : !structuredReady;
         }
         for (const button of [elements.patientSaveDefaultEvidenceRefinementButton].filter(Boolean)) {
-          button.disabled = isRoundsPasteBack ? true : isGenericPasteBack ? true : isDecisionTree ? !treeReady : !structuredReady || patchReady;
+          button.disabled = isRoundsPasteBack ? true : isGenericPasteBack ? true : isPlainEvidenceReview ? true : isDecisionTree ? !treeReady : !structuredReady || patchReady;
         }
     }
 
     function updateOpenEvidenceChangePreview(text = currentOpenEvidenceAnswerText()) {
       const { task } = getOpenEvidencePromptText();
-      const isChecklistReview = task.id === CHECKLIST_IMPROVEMENT_TASK_ID;
-      const isDecisionTree = task.id === DECISION_TREE_TASK_ID;
+      const isPlainEvidenceReview = taskIsPlainEvidenceReview(task);
+      const isChecklistReview = task.id === CHECKLIST_IMPROVEMENT_TASK_ID && !isPlainEvidenceReview;
+      const isDecisionTree = task.id === DECISION_TREE_TASK_ID && !isPlainEvidenceReview;
       const isRoundsPasteBack = isRoundsPasteBackTask(task);
       const isGenericPasteBack = !isChecklistReview && !isDecisionTree && !isRoundsPasteBack && taskHasPasteBack(task);
       const answerText = String(text || "").trim();
@@ -33948,6 +34096,8 @@ Rules:
               ? "Paste structured workup_section_patch_v1 JSON to apply patient-only row edits. Older workup_refinement_v1 replacements still parse as a fallback. Canonical default edits belong in Workup Studio."
             : isDecisionTree
               ? "Paste raw decision-tree JSON, then apply it or save it as the workup pathway."
+              : isPlainEvidenceReview
+                ? "Paste the plain-language OpenEvidence answer to save it locally. Use ChatGPT/Claude JSON flows for structured checklist or pathway edits."
               : isRoundsPasteBack
                 ? "Paste the OpenEvidence result with APP_PASTE_BACK_JSON to save the concise rounds report to today's patient update."
                 : isGenericPasteBack
@@ -33982,6 +34132,15 @@ Rules:
             syncOpenEvidenceApplyButtons({ isChecklistReview, isDecisionTree, isRoundsPasteBack, answerText, isGenericPasteBack });
             return;
           }
+          if (isPlainEvidenceReview) {
+            const savedAnswer = String(state.openEvidenceSummaries?.[task.id] || "");
+            for (const container of previewContainers) {
+              container.dataset.status = savedAnswer ? "saved" : "empty";
+              container.textContent = savedAnswer ? `${task.label} answer saved locally.` : `No ${task.label.toLowerCase()} answer saved yet.`;
+            }
+            syncOpenEvidenceApplyButtons({ isPlainEvidenceReview, answerText });
+            return;
+          }
           for (const container of previewContainers) {
               container.dataset.status = "empty";
               container.textContent = isChecklistReview
@@ -34009,6 +34168,18 @@ Rules:
             }
           }
           syncOpenEvidenceApplyButtons({ isChecklistReview, isDecisionTree, isRoundsPasteBack, answerText, isGenericPasteBack, genericPasteBackReady: Boolean(pasteBack) });
+          return;
+      }
+      if (isPlainEvidenceReview) {
+          for (const container of previewContainers) {
+            container.dataset.status = "ready";
+            const strong = document.createElement("strong");
+            strong.textContent = "Evidence review ready";
+            const detail = document.createElement("div");
+            detail.textContent = "Save the plain-language OpenEvidence answer locally, then use ChatGPT/Claude contribution or patch prompts for structured JSON edits.";
+            container.append(strong, detail);
+          }
+          syncOpenEvidenceApplyButtons({ isPlainEvidenceReview, answerText });
           return;
       }
       if (isDecisionTree) {
@@ -34077,7 +34248,7 @@ Rules:
 
     function syncOpenEvidenceAnswerFields() {
       const { task } = getOpenEvidencePromptText();
-      const savedAnswer = taskHasPasteBack(task)
+      const savedAnswer = taskHasPasteBack(task) || taskIsPlainEvidenceReview(task)
           ? String(state.openEvidenceSummaries?.[task.id] || "")
           : "";
       for (const field of openEvidenceAnswerFields()) {
@@ -34398,24 +34569,27 @@ Rules:
       if (elements.patientEvidencePromptPreview && document.activeElement !== editor && document.activeElement !== elements.patientEvidencePromptPreview) {
         elements.patientEvidencePromptPreview.value = text;
       }
-      const isChecklistReview = task.id === CHECKLIST_IMPROVEMENT_TASK_ID;
-      const isDecisionTree = task.id === DECISION_TREE_TASK_ID;
+      const isPlainEvidenceReview = taskIsPlainEvidenceReview(task);
+      const isChecklistReview = task.id === CHECKLIST_IMPROVEMENT_TASK_ID && !isPlainEvidenceReview;
+      const isDecisionTree = task.id === DECISION_TREE_TASK_ID && !isPlainEvidenceReview;
       const isRoundsPasteBack = isRoundsPasteBackTask(task);
       const isGenericPasteBack = !isChecklistReview && !isDecisionTree && !isRoundsPasteBack && taskHasPasteBack(task);
       if (elements.patientEvidenceChecklistSectionField) {
-        elements.patientEvidenceChecklistSectionField.hidden = !isChecklistReview;
+        elements.patientEvidenceChecklistSectionField.hidden = task.id !== CHECKLIST_IMPROVEMENT_TASK_ID;
       }
       syncPatientChecklistPatchSectionSelects();
       for (const panel of [document.querySelector(".evidence-review-column"), document.querySelector(".patient-evidence-answer-panel")].filter(Boolean)) {
-        panel.hidden = !(isChecklistReview || isDecisionTree || isRoundsPasteBack || isGenericPasteBack);
+        panel.hidden = !(isPlainEvidenceReview || isChecklistReview || isDecisionTree || isRoundsPasteBack || isGenericPasteBack);
       }
       const answerLabel = document.querySelector('label[for="patientEvidenceAnswerInput"]');
       if (answerLabel) {
-        answerLabel.textContent = isRoundsPasteBack ? "OpenEvidence answer" : isDecisionTree ? "Decision-tree JSON" : isGenericPasteBack ? "OpenEvidence answer" : "Structured checklist patch JSON";
+        answerLabel.textContent = isRoundsPasteBack ? "OpenEvidence answer" : isPlainEvidenceReview ? "OpenEvidence answer" : isDecisionTree ? "Decision-tree JSON" : isGenericPasteBack ? "OpenEvidence answer" : "Structured checklist patch JSON";
       }
       if (elements.patientEvidenceAnswerInput) {
         elements.patientEvidenceAnswerInput.placeholder = isDecisionTree
-          ? "Paste the raw OpenEvidence decision-tree JSON here. Fenced JSON and mildly malformed markdown artifacts will be normalized for review."
+          ? "Paste ChatGPT/Claude decision-tree JSON here. Fenced JSON and mildly malformed markdown artifacts will be normalized for review."
+          : isPlainEvidenceReview
+            ? "Paste the plain-language OpenEvidence evidence review here. Structured JSON belongs in the ChatGPT/Claude patch or pathway import flows."
           : isRoundsPasteBack
             ? "Paste the full OpenEvidence result or APP_PASTE_BACK_JSON block with schema open_evidence_rounds_pasteback_v1."
           : isGenericPasteBack
@@ -34424,7 +34598,7 @@ Rules:
       }
       if (elements.patientApplyEvidenceRefinementButton) {
         elements.patientApplyEvidenceRefinementButton.textContent = "";
-        if (isRoundsPasteBack || isGenericPasteBack) {
+        if (isRoundsPasteBack || isGenericPasteBack || isPlainEvidenceReview) {
           const saveIcon = document.createElement("span");
           saveIcon.className = "icon-box";
           saveIcon.setAttribute("aria-hidden", "true");
@@ -34436,7 +34610,7 @@ Rules:
       }
       if (elements.patientSaveDefaultEvidenceRefinementButton) {
         elements.patientSaveDefaultEvidenceRefinementButton.textContent = isDecisionTree ? "Save tree default" : "Save vault override";
-        elements.patientSaveDefaultEvidenceRefinementButton.hidden = isRoundsPasteBack || isGenericPasteBack;
+        elements.patientSaveDefaultEvidenceRefinementButton.hidden = isRoundsPasteBack || isGenericPasteBack || isPlainEvidenceReview;
       }
 	      syncOpenEvidenceTaskSearchInputs();
       syncOpenEvidenceAnswerFields();
@@ -35581,12 +35755,13 @@ Rules:
         compactChecklistAnswerMode(item.answerMode || item.answer_mode || ""),
         item.hasNotes ? 1 : 0,
         item.patientSpecific ? 1 : 0,
-        item.source_id || ""
+        item.source_id || "",
+        item.exam_id || item.examId || item.linkedExamId || ""
       ]);
     }
 
     function expandManifestItemPatch(row = [], fallbackIndex = 0, section = {}) {
-      const [id, label, categoryCode, optionsValue, answerModeCode, hasNotes, patientSpecific, sourceId] = Array.isArray(row) ? row : [];
+      const [id, label, categoryCode, optionsValue, answerModeCode, hasNotes, patientSpecific, sourceId, examId] = Array.isArray(row) ? row : [];
       const category = expandCompactChecklistCategory(categoryCode, String(label || "").trim().endsWith("?") ? "bedside" : "exam");
       const answerMode = expandCompactChecklistAnswerMode(answerModeCode);
       const itemLabel = label || `Checklist item ${fallbackIndex + 1}`;
@@ -35611,6 +35786,7 @@ Rules:
         item.source_id = String(sourceId);
         item.source = { source_id: String(sourceId) };
       }
+      if (examId) item.exam_id = String(examId);
       return compactChecklistItemForManifest(
         { ...section, category },
         item,
@@ -36969,6 +37145,7 @@ Rules:
       const kind = checklistKind(section, item);
       const options = checklistOptionsForItem(section, item);
       const answerMode = item?.answerMode || item?.answer_mode || item?.selectionMode || item?.selection_mode || "";
+      const examId = item?.exam_id || item?.examId || item?.linkedExamId || "";
       const compact = {
         id: String(item?.id || `item_${index + 1}`),
         label,
@@ -36988,6 +37165,7 @@ Rules:
       }
       if (item?.patientSpecific) compact.patientSpecific = true;
       if (item?.source_id || item?.source?.source_id) compact.source_id = String(item.source_id || item.source.source_id || "");
+      if (examId) compact.exam_id = String(examId);
       return compact;
     }
 
@@ -38646,7 +38824,7 @@ Rules:
         setStatus("AI prompt copied for the selected Workup Studio section.");
       });
       elements.workupStudioOpenEvidenceButton?.addEventListener("click", () => {
-        window.open("https://www.openevidence.com/", "_blank", "noopener,noreferrer");
+        window.open("https://chatgpt.com/", "_blank", "noopener,noreferrer");
       });
       elements.workupStudioSettingsCommandButton?.addEventListener("click", focusWorkupStudioSettings);
       elements.workupStudioExportPatchButton?.addEventListener("click", exportWorkupStudioPatch);
@@ -38678,7 +38856,7 @@ Rules:
         }
       });
       elements.workupStudioNewWorkupOpenEvidenceButton?.addEventListener("click", () => {
-        window.open("https://www.openevidence.com/", "_blank", "noopener,noreferrer");
+        window.open("https://chatgpt.com/", "_blank", "noopener,noreferrer");
       });
       elements.workupStudioNewWorkupPasteInput?.addEventListener("input", () => {
         validateNewWorkupPasteInput();
@@ -38808,6 +38986,13 @@ Rules:
           if (selectIntentId) selectClinicalIntent(selectIntentId);
         });
       }
+      if (elements.patientWorkupResults) {
+        elements.patientWorkupResults.addEventListener("click", (event) => {
+          const target = event.target.closest?.("[data-missing-workup-action]");
+          if (!target) return;
+          handleMissingWorkupAction(target.dataset.missingWorkupAction, target.dataset.missingWorkupConcern);
+        });
+      }
       $("#workspaceBuildChecklistButton").addEventListener("click", buildPatientChecklistInWorkspace);
       elements.dischargePatientButton?.addEventListener("click", () => dischargePatient());
       $("#patientBuildChecklistButton").addEventListener("click", buildPatientChecklistInWorkspace);
@@ -38821,7 +39006,28 @@ Rules:
       elements.patientCopyChecklistRefinementPromptButton?.addEventListener("click", copyPatientChecklistPatchPrompt);
       elements.patientCopyChecklistRefinementPromptDrawerButton?.addEventListener("click", copyPatientChecklistPatchPrompt);
       elements.patientOpenEvidenceFromRefinementButton?.addEventListener("click", () => {
-        window.open("https://www.openevidence.com/", "_blank", "noopener,noreferrer");
+        window.open("https://chatgpt.com/", "_blank", "noopener,noreferrer");
+      });
+      elements.patientDraftNewWorkupChatGptButton?.addEventListener("click", () => {
+        void copyContributionPrompt("new_workup", "ChatGPT");
+      });
+      elements.patientDraftNewWorkupClaudeButton?.addEventListener("click", () => {
+        void copyContributionPrompt("new_workup", "Claude");
+      });
+      elements.patientSuggestHistoryQuestionsButton?.addEventListener("click", () => {
+        void copyContributionPrompt("history_questions", "ChatGPT");
+      });
+      elements.patientSuggestExamManeuversButton?.addEventListener("click", () => {
+        void copyContributionPrompt("physical_exam", "ChatGPT");
+      });
+      elements.patientFixContributionJsonButton?.addEventListener("click", () => {
+        void copyContributionPrompt("fix_json", "ChatGPT");
+      });
+      elements.patientValidateContributionButton?.addEventListener("click", () => {
+        void validateContributionInput("patient");
+      });
+      elements.patientPrepareGithubContributionButton?.addEventListener("click", () => {
+        void prepareGithubContribution("patient");
       });
       for (const button of $$("[data-today-mode]")) {
         button.addEventListener("click", () => setTodayWorkflowMode(button.dataset.todayMode));
@@ -38863,6 +39069,13 @@ Rules:
       elements.todayApplyOpenEvidenceButton?.addEventListener("click", applyTodayOpenEvidencePasteBack);
       elements.patientWorkupRefinementInput?.addEventListener("input", () => {
         syncWorkupRefinementPreview(elements.patientWorkupRefinementInput.value);
+      });
+      elements.patientWorkupContributionInput?.addEventListener("input", () => {
+        if (!elements.patientWorkupContributionInput.value.trim()) {
+          renderContributionValidation(null);
+          return;
+        }
+        void validateContributionInput("patient");
       });
       elements.patientApplyWorkupRefinementButton?.addEventListener("click", () => {
         if (applyChecklistReviewPasteBack(elements.patientWorkupRefinementInput?.value || "", "patient")) {
@@ -38927,7 +39140,7 @@ Rules:
       elements.patientEvidenceChecklistSectionSelect?.addEventListener("change", handlePatientChecklistPatchSectionChange);
       elements.copyPatientChecklistPatchPromptButton?.addEventListener("click", copyPatientChecklistPatchPrompt);
       elements.openPatientChecklistPatchEvidenceButton?.addEventListener("click", () => {
-        window.open("https://www.openevidence.com/", "_blank", "noopener,noreferrer");
+        window.open("https://chatgpt.com/", "_blank", "noopener,noreferrer");
       });
       elements.patientChecklistPatchInput?.addEventListener("input", () => {
         renderPatientChecklistPatchPreview(elements.patientChecklistPatchInput.value);
@@ -38996,6 +39209,14 @@ Rules:
             }
             return;
           }
+          if (taskIsPlainEvidenceReview(task)) {
+            if (!text) {
+              setStatus("Paste the plain-language OpenEvidence answer before saving it.");
+              return;
+            }
+            saveOpenEvidenceAnswerForSelectedTask(text);
+            return;
+          }
           if (task.id === DECISION_TREE_TASK_ID) {
             if (applyDecisionTreeJson(text, { saveDefault: false })) {
               setPatientTab("workup", { focusPanel: true });
@@ -39009,6 +39230,10 @@ Rules:
         elements.patientSaveDefaultEvidenceRefinementButton?.addEventListener("click", () => {
           const text = String(elements.patientEvidenceAnswerInput?.value || "").trim();
           const { task } = getOpenEvidencePromptText();
+          if (taskIsPlainEvidenceReview(task)) {
+            setStatus("Evidence review answers are saved locally, not as vault defaults. Use the ChatGPT/Claude JSON workflows for structured default edits.");
+            return;
+          }
           if (isRoundsPasteBackTask(task) || (taskHasPasteBack(task) && !isRoundsPasteBackTask(task) && task.id !== DECISION_TREE_TASK_ID)) {
             setStatus("Results are saved to the active patient, not as vault defaults.");
             return;
@@ -39461,22 +39686,10 @@ Rules:
         state.openEvidenceSummaries.final_rounds_update = [
           "I. SUBJECTIVE",
           "- Better nausea",
-          "...",
-          "",
-          "APP_PASTE_BACK_JSON",
-          "```json",
-          JSON.stringify({
-            schema: "open_evidence_rounds_pasteback_v1",
-            presentationType: "oral_rounds_soap",
-            oneLiner: "Adult with DKA improving on insulin.",
-            subjective: ["Better nausea"],
-            objective: ["Glucose trend improving"],
-            assessmentPlan: ["Continue insulin protocol and replete electrolytes"],
-            followUpTasks: ["Repeat BMP"],
-            bedsideRecheck: ["Volume status"],
-            plainTextSummary: "Adult with DKA improving on insulin."
-          }, null, 2),
-          "```"
+          "II. OBJECTIVE",
+          "- Glucose trend improving",
+          "III. ASSESSMENT AND PLAN",
+          "- Adult with DKA improving on insulin; continue insulin protocol, replete electrolytes, repeat BMP, and reassess volume status."
         ].join("\n");
         state.selectedTaskId = "final_rounds_update";
         state.importedFindings = "Phone findings imported for final review.";

@@ -2263,10 +2263,23 @@ function addUniqueChecklistItem(items, seen, item, kind) {
   }
   seen.add(key);
   seen.add(labelKey);
-  items.push({
+  const checklistItem = {
     label,
     options: checklistItemOptions(item, effectiveKind, label)
-  });
+  };
+  if (item?.id) checklistItem.id = item.id;
+  checklistItem.category = effectiveKind;
+  if (item?.item_type) checklistItem.item_type = item.item_type;
+  const examId = item?.exam_id || item?.examId || item?.linkedExamId;
+  if (effectiveKind === "exam" && examId) checklistItem.exam_id = String(examId);
+  const sourceId = item?.source_id || item?.source?.source_id || (Array.isArray(item?.source_ids) ? item.source_ids[0] : "");
+  if (sourceId) {
+    checklistItem.source_id = String(sourceId);
+    checklistItem.source = { source_id: String(sourceId) };
+  }
+  const answerMode = item?.answerMode || item?.answer_mode || item?.selectionMode || item?.selection_mode;
+  if (answerMode) checklistItem.answerMode = answerMode;
+  items.push(checklistItem);
 }
 
 function recommendationExamItem(entry = {}) {

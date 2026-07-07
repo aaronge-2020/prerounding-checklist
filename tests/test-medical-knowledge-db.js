@@ -39,8 +39,16 @@ readComplaintModuleSourceFiles().forEach(({ file, module }) => {
 });
 
 const medicalKnowledgeSchema = JSON.parse(readFileSync("medical-knowledge/schema/medical-knowledge-database-v1.schema.json", "utf8"));
+const workupContributionSchema = JSON.parse(readFileSync("medical-knowledge/schema/workup-contribution-v1.schema.json", "utf8"));
+const complaintModuleV2Schema = JSON.parse(readFileSync("medical-knowledge/schema/complaint-module-v2.schema.json", "utf8"));
+const workupChangeSetSchema = JSON.parse(readFileSync("medical-knowledge/schema/workup-change-set-v1.schema.json", "utf8"));
 const moduleItemSchema = medicalKnowledgeSchema.$defs.moduleItem;
 assert.ok(Array.isArray(moduleItemSchema.allOf), "module item schema should include item-type-specific requirements");
+assert.equal(workupContributionSchema.properties.schema.const, "workup_contribution_v1", "public contribution schema should be distinct from reviewed modules");
+assert.ok(workupContributionSchema.properties.physical_exam_maneuvers, "public contribution schema should include exam maneuver drafts");
+assert.equal(complaintModuleV2Schema.properties.schema_version.enum[0], "complaint_module_v2", "reviewed production schema should declare complaint_module_v2");
+assert.ok(complaintModuleV2Schema.properties.compatibility_normalization, "reviewed schema should document legacy alias normalization");
+assert.equal(workupChangeSetSchema.properties.schema.const, "workup_change_set_v1", "section change set schema should be available for review workflows");
 
 const stalePhysicalExamLabelPattern = /\b(?:Check capillary refill|Check skin turgor|Check distal extremity warmth|Check neck stiffness|Assess Kussmaul breathing|Assess extremity temperature|Assess skin turgor)\b/i;
 const vaguePhysicalExamLabelPattern = /^(?:Check|Assess|Evaluate|Screen|Review|Document|Perform)\b/i;

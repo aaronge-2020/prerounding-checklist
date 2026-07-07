@@ -110,6 +110,9 @@ async function answerVisibleChecklistRows(page) {
 }
 
 async function main() {
+  const appHtml = await readFile(resolve(root, "index.html"), "utf8");
+  assert(appHtml.includes("item.exam_id || item.examId || item.linkedExamId"), "QR compact rows should preserve physical exam catalog IDs when present");
+  assert(appHtml.includes("compact.exam_id"), "phone checklist manifests should transmit compact exam_id references when present");
   const { server, baseUrl } = await startServer();
   let browser;
   try {

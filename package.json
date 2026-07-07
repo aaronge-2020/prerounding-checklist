@@ -27,7 +27,7 @@
     "check:supabase-auth": "node scripts/check-supabase-auth-readiness.js",
     "check:supabase-public": "node scripts/check-supabase-auth-readiness.js --public-only",
     "test:medical-knowledge": "node tests/test-medical-knowledge-db.js",
-    "test:workup-authoring": "node tests/test-workup-authoring.js",
+    "test:workup-authoring": "node scripts/test-workup-authoring.js",
     "test:workup-studio-auth": "node tests/test-workup-studio-auth.js",
     "test:workup-studio-ui": "node tests/test-workup-studio-ui.js",
     "test:supabase-catalog-race": "node tests/test-supabase-catalog-race.js",

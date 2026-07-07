@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 
 const basePath = "data/physical-exam/physical_exam_reference.csv";
 const overlayPath = "data/physical-exam/physical_exam_evidence_overlay.csv";
-const lastReviewed = "2026-06-06";
+const lastReviewed = "2026-07-06";
 
 const baseColumns = [
   "exam_system",
@@ -12,6 +12,7 @@ const baseColumns = [
   "source_item",
   "patient_instruction_or_setup",
   "examiner_technique",
+  "how_to_perform",
   "observe_or_positive_finding",
   "function_or_clinical_use",
   "suggested_checklist_label",
@@ -66,7 +67,16 @@ const sourceUrls = {
   murphyReview: "https://pmc.ncbi.nlm.nih.gov/articles/PMC6306141/",
   cvaTendernessPubMed: "https://pubmed.ncbi.nlm.nih.gov/36605912/",
   acutePyelo: "https://www.ncbi.nlm.nih.gov/sites/books/NBK519537/",
-  peripheralEdema: "https://pubmed.ncbi.nlm.nih.gov/36379502/"
+  peripheralEdema: "https://pubmed.ncbi.nlm.nih.gov/36379502/",
+  clinicalMethodsPhysicalExam: "https://www.ncbi.nlm.nih.gov/books/NBK361/",
+  clinicalMethodsBook: "https://www.ncbi.nlm.nih.gov/books/NBK201/",
+  merckSkinLesions: "https://www.merckmanuals.com/professional/dermatologic-disorders/approach-to-the-dermatologic-patient/description-of-skin-lesions",
+  ucsdClinicalGuide: "https://sites.ucsd.edu/clinicalmedguide/",
+  ucsdMentalStatus: "https://sites.ucsd.edu/clinicalmedguide/the-mental-status-exam/",
+  ucsdBreast: "https://sites.ucsd.edu/clinicalmedguide/breast-exam/",
+  ucsdPelvic: "https://sites.ucsd.edu/clinicalmedguide/the-pelvic-examination/",
+  ucsdMaleRectal: "https://sites.ucsd.edu/clinicalmedguide/male-genital-rectal-exam/",
+  cdcMilestones: "https://www.cdc.gov/ncbddd/actearly/milestones/index.html"
 };
 
 const highYieldNeuroSourceItems = new Set([
@@ -217,7 +227,7 @@ function buildTags(row) {
     [/\b(pneumonia|infection|fever|sepsis)\b/, ["infection", "sepsis", "pneumonia"]],
     [/\b(heart failure|jvp|pmi|edema|volume overload|cardiomyopathy)\b/, ["heart_failure", "volume_status", "volume_overload", "diuresis"]],
     [/\b(shock|hypotension|syncope|heart rate|blood pressure|pulse)\b/, ["shock", "hemodynamics", "perfusion"]],
-    [/\b(murmur|heart sound|aortic|pulmonic|tricuspid|mitral)\b/, ["murmur", "valvular_disease", "cardiac_auscultation"]],
+    [/\b(murmur|heart sound|aortic area|pulmonic|tricuspid|mitral)\b/, ["murmur", "valvular_disease", "cardiac_auscultation"]],
     [/\b(vascular|carotid|femoral|dorsalis|posterior tibial|limb ischemia)\b/, ["vascular_disease", "peripheral_pulses"]],
     [/\b(diabetes|foot)\b/, ["diabetes_foot", "vascular_screen"]],
     [/\b(abdominal|abdomen|bowel|gi|gu)\b/, ["abdominal_pain", "abdominal_exam"]],
@@ -230,7 +240,16 @@ function buildTags(row) {
     [/\b(gait|romberg|falls|balance|ataxia|cerebellar)\b/, ["falls", "balance", "ataxia"]],
     [/\b(heent|ear|mouth|oropharynx|lymph|thyroid|sinus|sclera)\b/, ["heent_exam"]],
     [/\b(thyroid|endocrine)\b/, ["thyroid_disease", "endocrine"]],
-    [/\b(msk|joint|shoulder|wrist|hand|hip|knee|ankle|foot|back|spine|range of motion)\b/, ["msk_exam", "pain", "functional_status"]]
+    [/\b(mental status|orientation|attention|memory|speech|language|delirium|encephalopathy|consciousness)\b/, ["mental_status", "delirium", "cognitive_exam"]],
+    [/\b(skin|rash|skin lesion|subcutaneous nodule|wound|pressure injury|petechiae|purpura|nail|hair|turgor|capillary refill|cyanosis|clubbing|diaphoresis)\b/, ["skin_exam", "rash", "wound", "perfusion"]],
+    [/\b(lymph|lymph node|axillary|epitrochlear|inguinal|lymphedema)\b/, ["lymphatic_exam", "lymphadenopathy"]],
+    [/\b(breast|nipple|areola|chest wall)\b/, ["breast_exam", "mass", "pain"]],
+    [/\b(genitourinary|penile|scrotal|testicular|urethral|cremasteric|inguinal hernia|hydrocele)\b/, ["gu_exam", "urinary_symptoms", "genital_exam"]],
+    [/\b(pelvic|vulvar|speculum|bimanual|cervical motion|uterine|adnexal|rectovaginal|menstrual|dysmenorrhea)\b/, ["pelvic_exam", "pelvic_pain", "gynecology"]],
+    [/\b(rectal|perianal|prostate|melena|hematochezia|impaction)\b/, ["rectal_exam", "gi_bleed", "constipation"]],
+    [/\b(pediatric|infant|newborn|fontanelle|moro|rooting|suck|barlow|ortolani|tanner|developmental)\b/, ["pediatric_exam", "developmental_screen"]],
+    [/\b(obstetric|pregnancy|fundal height|leopold|fetal heart|uterine tenderness|contractions)\b/, ["obstetric_exam", "pregnancy"]],
+    [/\b(msk|joint|shoulder|wrist|hand|hip|knee|ankle|foot|back|spine|range of motion|lachman|mcmurray|thessaly|spurling|faber|fadir)\b/, ["msk_exam", "pain", "functional_status"]]
   ];
 
   for (const [pattern, additions] of synonymRules) {
@@ -247,6 +266,9 @@ function inferDifficulty(row) {
   if (/jvp|ophthalmoscope|weber|rinne|murphy|psoas|obturator|straight leg|yergason|hawkins|empty can|finkelstein|romberg|heel-to-toe|tandem|reflex|babinski/.test(text)) {
     return "medium";
   }
+  if (/speculum|bimanual|rectal|prostate|genitourinary|pelvic|breast|dix-hallpike|head impulse|skew|corneal reflex|gag|fluorescein|intraocular|fundal height|leopold|fetal heart|barlow|ortolani|hoffman|clonus|spurling|lhermitte|schober|lachman|mcmurray|thessaly|faber|fadir|thompson|talar|watson|apprehension/.test(text)) {
+    return "medium";
+  }
   if (/gait|palpate spleen|percuss liver|auscultate heart/.test(text)) {
     return "medium";
   }
@@ -257,6 +279,9 @@ function inferTimeBurden(row) {
   const text = normalizedText(`${row.maneuver_or_finding} ${row.examiner_technique} ${row.section}`);
   if (/setup|positioning|draping|hygiene/.test(text)) {
     return "0.5";
+  }
+  if (/speculum|bimanual|rectal|prostate|genitourinary|pelvic|breast|general lymph node survey|dix-hallpike|fundal height|leopold|fetal heart|barlow|ortolani/.test(text)) {
+    return "2";
   }
   if (/cranial nerve|gait|romberg|weber|rinne|visual fields|psoas|obturator|murphy|reflex|babinski|ophthalmoscope|spleen|liver span|heart with diaphragm/.test(text)) {
     return "2";
@@ -279,6 +304,13 @@ function inferEquipment(row) {
   if (/cotton|sharp|sensation|light touch/.test(text)) equipment.add("cotton-tipped applicator");
   if (/ophthalmoscope|fundus/.test(text)) equipment.add("ophthalmoscope");
   if (/otoscope|ear canal|nose otoscope/.test(text)) equipment.add("otoscope");
+  if (/fluorescein/.test(text)) equipment.add("fluorescein strip and blue light");
+  if (/intraocular pressure|tonometer/.test(text)) equipment.add("tonometer when trained and available");
+  if (/speculum/.test(text)) equipment.add("speculum");
+  if (/bimanual|rectal|prostate|perianal|pelvic|genitourinary|penile|scrotal|testicular|vulvar|gloves|lubricated/.test(text)) equipment.add("gloves and lubricant as appropriate");
+  if (/monofilament/.test(text)) equipment.add("10 g monofilament");
+  if (/fundal height|measure from pubic/.test(text)) equipment.add("tape measure");
+  if (/fetal heart|doppler|fetoscope/.test(text)) equipment.add("Doppler or fetoscope");
   return equipment.size ? Array.from(equipment).join("; ") : "none";
 }
 
@@ -303,6 +335,17 @@ function inferCondition(row) {
 function inferDiagnosticTarget(row) {
   const text = normalizedText(`${row.exam_system} ${row.section} ${row.region_or_subsection} ${row.maneuver_or_finding} ${row.function_or_clinical_use}`);
   if (/heart rate|respiratory rate|blood pressure/.test(text)) return "bedside vital-sign instability and trend";
+  if (/mental status|level of consciousness|orientation|attention|speech|language|memory|neglect|thought process|mood/.test(text)) return "delirium, encephalopathy, cognition, aphasia, or behavioral safety clue";
+  if (/skin|rash|skin lesion|subcutaneous nodule|wound|pressure injury|petechiae|purpura|nail|hair|turgor|capillary refill|cyanosis|clubbing/.test(text)) return "skin morphology, perfusion, infection, bleeding, hydration, or systemic disease clue";
+  if (/lymph|node|lymphedema/.test(text)) return "localized or generalized lymphadenopathy, infection, malignancy, or lymphatic obstruction clue";
+  if (/breast|nipple|areola|chest wall/.test(text)) return "breast mass, inflammatory, nipple, nodal, or chest wall pain clue";
+  if (/genitourinary|penile|scrotal|testicular|urethral|cremasteric|hydrocele|inguinal hernia/.test(text)) return "GU infection, torsion, hernia, urethral, scrotal, or genital lesion clue";
+  if (/pelvic|vulvar|speculum|bimanual|cervical motion|uterine|adnexal|rectovaginal/.test(text)) return "pelvic source pain, cervicitis, PID, ectopic pregnancy, adnexal mass, or gynecologic bleeding clue";
+  if (/rectal|perianal|prostate|stool|melena|hematochezia|impaction/.test(text)) return "anorectal disease, prostate tenderness, GI bleeding, stool burden, or neurologic tone clue";
+  if (/pediatric|fontanelle|moro|rooting|suck|barlow|ortolani|tanner|developmental/.test(text)) return "pediatric development, newborn neurologic, hip stability, hydration, or pubertal development clue";
+  if (/obstetric|fundal height|leopold|fetal heart|uterine tenderness|contractions/.test(text)) return "pregnancy dating, fetal presentation, fetal status, labor, abruption, or uterine infection clue";
+  if (/meningeal|nuchal|kernig|brudzinski/.test(text)) return "meningeal irritation clue";
+  if (/head impulse|dix-hallpike|skew|vestibular/.test(text)) return "peripheral versus central vestibular syndrome clue";
   if (/jvp/.test(text)) return "elevated right-sided filling pressure or venous congestion";
   if (/edema/.test(text)) return "peripheral edema pattern and volume overload clue";
   if (/\b(?:pulse|pulses|carotid|femoral pulses|dorsalis|posterior tibial)\b/.test(text)) return "perfusion deficit, vascular disease, or limb ischemia clue";
@@ -331,21 +374,40 @@ function inferDiagnosticTarget(row) {
 
 function inferManagementImpact(row) {
   const text = normalizedText(`${row.include_when} ${row.maneuver_or_finding} ${inferDiagnosticTarget(row)}`);
+  if (/skin|rash|skin lesion|subcutaneous nodule|wound|pressure injury|petechiae|purpura|nail|hair|turgor|capillary refill|cyanosis|clubbing/.test(text)) return "Skin and perfusion findings can change isolation, antimicrobial, wound care, hydration, bleeding, oxygenation, or dermatology follow-up decisions.";
+  if (/lymph|lymphadenopathy|lymphedema/.test(text)) return "Nodal or lymphedema findings can change infection-source search, malignancy evaluation, imaging threshold, and follow-up urgency.";
+  if (/breast|nipple|areola|chest wall/.test(text)) return "Breast, nipple, nodal, or chest wall findings can change imaging, antibiotics, malignancy evaluation, pain attribution, or specialist follow-up.";
+  if (/pelvic|vulvar|speculum|bimanual|cervical motion|uterine|adnexal|rectovaginal|genitourinary|penile|scrotal|testicular|urethral|rectal|prostate/.test(text)) return "Sensitive exam findings can change STI testing, pregnancy or ectopic-risk escalation, imaging, antibiotics, urology or gynecology consultation, and safety planning.";
+  if (/pediatric|infant|newborn|fontanelle|moro|rooting|suck|barlow|ortolani|tanner|developmental/.test(text)) return "Pediatric findings can change feeding, hydration, developmental follow-up, hip ultrasound or referral, neurologic escalation, and caregiver counseling.";
+  if (/obstetric|pregnancy|fundal height|leopold|fetal heart|uterine tenderness|contractions/.test(text)) return "Pregnancy exam findings can change fetal assessment urgency, obstetric consultation, labor evaluation, imaging selection, and maternal safety escalation.";
   if (/heart failure|volume overload|jvp|edema|pmi/.test(text)) return "Abnormal congestion findings can support diuresis decisions, escalation of respiratory support assessment, daily volume trending, or need for cardiac evaluation in context.";
   if (/shock|sepsis|blood pressure|heart rate|respiratory rate/.test(text)) return "Abnormal vitals or perfusion findings can trigger urgent reassessment, resuscitation, sepsis/shock pathway review, or escalation.";
-  if (/heart sound|auscultate heart|cardiac|murmur|aortic|pulmonic|tricuspid|mitral|arrhythmia|chest pain/.test(text)) return "New rhythm, murmur, displaced impulse, or extra sound can change telemetry, ECG/echo need, volume strategy, or escalation.";
+  if (/heart sound|auscultate heart|cardiac|murmur|aortic area|pulmonic|tricuspid|mitral|arrhythmia|chest pain/.test(text)) return "New rhythm, murmur, displaced impulse, or extra sound can change telemetry, ECG/echo need, volume strategy, or escalation.";
   if (/\b(?:pneumonia|pleural effusion|dyspnea|lung|pulmonary|respiratory|wheeze|crackle|hypoxia)\b/.test(text)) return "New focal pulmonary findings can prompt oxygen/support reassessment, imaging review, antibiotics/bronchodilator consideration, or escalation.";
   if (/appendicitis|cholecystitis|acute abdomen|rebound|murphy|psoas|obturator/.test(text)) return "Positive acute-abdomen signs can prompt senior review, imaging, surgical consultation, NPO/analgesia planning, or serial abdominal exams.";
   if (/\b(?:abdominal|abdomen|bowel|organomegaly|ascites|ileus)\b/.test(text) || /\b(?:bowel|abdominal)\b.*\bobstruction\b/.test(text)) return "Abnormal abdominal findings can change pain localization, obstruction/ileus concern, imaging threshold, surgical consultation, or need for serial abdominal exams.";
   if (/pyelonephritis|renal colic|aki|cva/.test(text)) return "Renal tenderness or flank findings can support urine testing, imaging consideration, antimicrobial review, obstruction concern, or serial reassessment.";
   if (/stroke|weakness|neuro|cranial|reflex|babinski|gait|romberg|ataxia/.test(text)) return "New focal neurologic findings can prompt urgent localization, stroke/neuro escalation, fall precautions, imaging review, or therapy planning.";
   if (/vascular|pulse|limb ischemia|diabetes foot/.test(text)) return "Pulse or foot abnormalities can prompt vascular/wound evaluation, limb-risk documentation, or perfusion imaging consideration.";
+  if (/skin|rash|skin lesion|subcutaneous nodule|wound|pressure injury|petechiae|purpura|nail|hair|turgor|capillary refill|cyanosis|clubbing/.test(text)) return "Skin and perfusion findings can change isolation, antimicrobial, wound care, hydration, bleeding, oxygenation, or dermatology follow-up decisions.";
+  if (/lymph|lymphadenopathy|lymphedema/.test(text)) return "Nodal or lymphedema findings can change infection-source search, malignancy evaluation, imaging threshold, and follow-up urgency.";
+  if (/breast|nipple|areola|chest wall/.test(text)) return "Breast, nipple, nodal, or chest wall findings can change imaging, antibiotics, malignancy evaluation, pain attribution, or specialist follow-up.";
+  if (/pelvic|vulvar|speculum|bimanual|cervical motion|uterine|adnexal|rectovaginal|genitourinary|penile|scrotal|testicular|urethral|rectal|prostate/.test(text)) return "Sensitive exam findings can change STI testing, pregnancy or ectopic-risk escalation, imaging, antibiotics, urology or gynecology consultation, and safety planning.";
+  if (/pediatric|infant|newborn|fontanelle|moro|rooting|suck|barlow|ortolani|tanner|developmental/.test(text)) return "Pediatric findings can change feeding, hydration, developmental follow-up, hip ultrasound or referral, neurologic escalation, and caregiver counseling.";
+  if (/obstetric|pregnancy|fundal height|leopold|fetal heart|uterine tenderness|contractions/.test(text)) return "Pregnancy exam findings can change fetal assessment urgency, obstetric consultation, labor evaluation, imaging selection, and maternal safety escalation.";
   if (/\b(?:joint|soft tissue|range of motion|shoulder|elbow|wrist|hand|hip|knee|ankle|foot pain|msk|sprain|tenderness|radiculopathy|carpal tunnel|tenosynovitis)\b/.test(text)) return "Focal musculoskeletal findings can change imaging threshold, immobilization, activity restriction, infection/inflammatory concern, specialist referral, or follow-up urgency.";
   return "Abnormal or changed findings improve focused bedside documentation and can prompt targeted reassessment, diagnostics, or escalation in context.";
 }
 
 function inferManagementLink(row) {
   const text = normalizedText(`${row.include_when} ${row.maneuver_or_finding} ${row.section}`);
+  if (/skin|rash|skin lesion|subcutaneous nodule|wound|pressure injury|petechiae|purpura|nail|hair/.test(text)) return sourceUrls.merckSkinLesions;
+  if (/mental status|orientation|attention|memory|speech|language|delirium|consciousness/.test(text)) return sourceUrls.ucsdMentalStatus;
+  if (/breast|nipple|areola/.test(text)) return sourceUrls.ucsdBreast;
+  if (/pelvic|vulvar|speculum|bimanual|cervical motion|uterine|adnexal|rectovaginal/.test(text)) return sourceUrls.ucsdPelvic;
+  if (/genitourinary|penile|scrotal|testicular|urethral|rectal|prostate|perianal/.test(text)) return sourceUrls.ucsdMaleRectal;
+  if (/pediatric|infant|newborn|fontanelle|moro|rooting|barlow|ortolani|tanner|developmental/.test(text)) return sourceUrls.cdcMilestones;
+  if (/obstetric|pregnancy|fundal height|leopold|fetal heart|uterine/.test(text)) return sourceUrls.ucsdClinicalGuide;
   if (/heart failure|volume overload|jvp|pmi|edema|heart sound/.test(text)) return sourceUrls.heartFailureGuideline;
   if (/sepsis|shock|infection|blood pressure|heart rate|respiratory rate/.test(text)) return sourceUrls.sepsisGuideline;
   if (/appendicitis|psoas|obturator/.test(text)) return sourceUrls.appendicitisPubMed;
@@ -359,7 +421,13 @@ function inferManagementLink(row) {
 
 function inferContraindications(row) {
   const text = normalizedText(`${row.maneuver_or_finding} ${row.examiner_technique} ${row.include_when}`);
-  if (/romberg|gait|toe walking|heel walking|tandem/.test(text)) return "Guard closely; avoid unsupported testing when fall risk, severe weakness, or unsafe standing.";
+  if (/romberg|gait|toe walking|heel walking|tandem|pull test|thessaly|trendelenburg|stand on one leg/.test(text)) return "Guard closely; avoid unsupported testing when fall risk, severe weakness, or unsafe standing.";
+  if (/spurling|lhermitte|neck flexion|cervical/.test(text)) return "Avoid provocative cervical maneuvers when trauma, instability, severe neurologic deficit, or vascular concern is present.";
+  if (/dix-hallpike|head impulse|skew/.test(text)) return "Avoid or modify when cervical instability, severe neck pain, unstable vomiting, or unsafe positioning limits testing.";
+  if (/speculum|bimanual|pelvic|vulvar|rectovaginal|genitourinary|penile|scrotal|testicular|rectal|prostate|perianal/.test(text)) return "Perform only with consent, privacy, appropriate chaperone policy, gentle technique, and clear clinical indication; stop for pain or patient preference.";
+  if (/barlow|ortolani|moro|fontanelle|newborn|infant/.test(text)) return "Use gentle age-appropriate technique and stop if pain, instability concern, or caregiver preference limits the exam.";
+  if (/fundal height|leopold|fetal heart|uterine tenderness|pregnancy/.test(text)) return "Avoid prolonged supine positioning in later pregnancy; escalate concerning fetal, uterine, bleeding, or severe pain findings.";
+  if (/fluorescein|intraocular pressure|tonometer|corneal/.test(text)) return "Avoid pressure on an injured globe; use sterile technique and defer tonometry if open globe is possible.";
   if (/blood pressure/.test(text)) return "Use appropriate cuff size and avoid affected limbs when contraindicated by lines, injury, fistula, or surgical precautions.";
   if (/carotid/.test(text)) return "Do not palpate both carotids at once; use caution with syncope, bruits, or known vascular disease.";
   if (/sensory|sharp|cotton/.test(text)) return "Use clean disposable stimulus; avoid skin breakdown or open wounds.";
@@ -368,7 +436,7 @@ function inferContraindications(row) {
   if (/ophthalmoscope|pupill|visual field|extraocular|conjunctiv|sclerae|eye complaint|ocular/.test(text)) return "Limit bright light if severe photophobia or ocular injury; interpret cautiously after eye drops or ocular procedures.";
   if (/stethoscope|auscult/.test(text)) return "Clean equipment before patient contact and interpret cautiously in noisy rooms.";
   if (/psoas|obturator|rebound|murphy|abdominal palpation|light and deep palpation|palpate liver|palpate spleen/.test(text)) return "Use gentle technique; stop if severe pain, guarding, instability, or patient preference limits exam.";
-  if (/mtp squeeze|straight leg|patellar grind|palpation/.test(text)) return "Use gentle technique; stop if severe pain, instability, skin breakdown, or patient preference limits exam.";
+  if (/mtp squeeze|straight leg|patellar grind|palpation|lachman|drawer|mcmurray|faber|fadir|thompson|talar|valgus|varus|apprehension|ober|thomas/.test(text)) return "Use gentle technique; stop if severe pain, instability, skin breakdown, or patient preference limits exam.";
   return "Interpret in clinical context; patient cooperation, pain, body habitus, positioning, and examiner skill may limit reliability.";
 }
 
@@ -408,12 +476,25 @@ function baseOverlay(row) {
 
 function sourceForCuratedRow(row) {
   const text = normalizedText(`${row.section} ${row.region_or_subsection} ${row.maneuver_or_finding} ${row.include_when}`);
+  const identityText = normalizedText(`${row.exam_system} ${row.section} ${row.region_or_subsection} ${row.maneuver_or_finding} ${row.source_item}`);
+  if (/mental status|level of consciousness|orientation|attention|speech|language|memory|mood|affect|thought process|neglect/.test(identityText)) return ["UCSD mental status exam guide; Johns Hopkins neurological exam overview", sourceUrls.ucsdMentalStatus, "teaching_reference"];
+  if (/skin|rash|skin lesion|subcutaneous nodule|wound|pressure injury|petechiae|purpura|blanching|nail|hair|turgor|capillary refill|cyanosis|clubbing|diaphoresis|venous stasis/.test(identityText)) return ["Merck Manual skin lesion description; NCBI Clinical Methods physical examination text", sourceUrls.merckSkinLesions, "teaching_reference"];
+  if (/lymph|axillary|epitrochlear|inguinal|lymphedema/.test(identityText)) return ["NCBI Clinical Methods physical examination text; UCSD clinical medicine guide", sourceUrls.clinicalMethodsPhysicalExam, "teaching_reference"];
+  if (/breast|nipple|areola/.test(identityText)) return ["UCSD breast exam guide", sourceUrls.ucsdBreast, "teaching_reference"];
+  if (/genitourinary|penile|scrotal|testicular|urethral|cremasteric|hydrocele|inguinal hernia/.test(identityText)) return ["UCSD male genital and rectal exam guide", sourceUrls.ucsdMaleRectal, "teaching_reference"];
+  if (/pelvic|vulvar|speculum|bimanual|cervical motion|uterine|adnexal|rectovaginal/.test(identityText)) return ["UCSD pelvic examination guide", sourceUrls.ucsdPelvic, "teaching_reference"];
+  if (/rectal|perianal|prostate|stool/.test(identityText)) return ["UCSD male genital and rectal exam guide", sourceUrls.ucsdMaleRectal, "teaching_reference"];
+  if (/pediatric|infant|newborn|fontanelle|moro|rooting|suck|barlow|ortolani|tanner|developmental/.test(identityText)) return ["CDC developmental milestone resources and public pediatric exam references", sourceUrls.cdcMilestones, "teaching_reference"];
+  if (/obstetric|fundal height|leopold|fetal heart|uterine tenderness|contractions/.test(identityText)) return ["Public clinical examination references for pregnancy and bedside abdominal assessment", sourceUrls.ucsdClinicalGuide, "teaching_reference"];
+  if (/head impulse|dix-hallpike|skew|vestibular|nuchal|kernig|brudzinski|hoffman|clonus|stereognosis|graphesthesia|tremor|muscle tone|corneal reflex|gag reflex/.test(identityText)) return ["Stanford Medicine 25 exam guides; Johns Hopkins neurological exam overview", sourceUrls.stanfordGuides, "teaching_reference"];
+  if (/fluorescein|intraocular pressure|cover-uncover|corneal light|color vision|whispered voice|oral mucous|dentition|nuchal/.test(identityText)) return ["UCSD clinical medicine guide and public HEENT examination references", sourceUrls.ucsdClinicalGuide, "teaching_reference"];
+  if (/abdominal bruits|aortic pulsation|abdominal wall hernia|suprapubic|guarding|fluid wave|shifting dullness|carnett|mcburney|rovsing/.test(identityText)) return ["Open acute abdominal pain review and NCBI Clinical Methods physical examination text", sourceUrls.acuteAbdomenAafp, "guideline"];
   if (/jvp/.test(text)) return ["Stanford Medicine 25 neck vein exam; physical examination systematic review for pulmonary hypertension", sourceUrls.pulmonaryHypertensionReview, "systematic_review"];
   if (/blood pressure/.test(text)) return ["Stanford Medicine 25 blood pressure measurement techniques; Surviving Sepsis Campaign guideline", sourceUrls.stanfordBloodPressure, "guideline"];
   if (/heart rate|respiratory rate/.test(text)) return ["Surviving Sepsis Campaign guideline; vital-sign trend interpreted in clinical context", sourceUrls.sepsisGuideline, "guideline"];
   if (/heart sound|auscultate heart/.test(text)) return ["JAMA Rational Clinical Examination heart failure review; Stanford Medicine 25 cardiac second sounds", sourceUrls.heartFailureRce, "rce_or_meta_analysis"];
   if (/pulmonary|lung|thorax|fremitus/.test(text)) return ["Stanford Medicine 25 pulmonary exam guide", sourceUrls.stanfordPulmonary, "teaching_reference"];
-  if (/aortic|pulmonic|tricuspid|mitral/.test(text)) return ["Stanford Medicine 25 cardiac second sounds", sourceUrls.stanfordCardiac, "teaching_reference"];
+  if (/aortic area|pulmonic|tricuspid|mitral/.test(text)) return ["Stanford Medicine 25 cardiac second sounds", sourceUrls.stanfordCardiac, "teaching_reference"];
   if (/pmi|apical|precordium|cardiac/.test(text)) return ["2022 AHA/ACC/HFSA heart failure guideline; Stanford Medicine 25 cardiac exam resources", sourceUrls.heartFailureGuideline, "guideline"];
   if (/carotid|radial|femoral|dorsalis|posterior tibial|pulse|vascular|edema/.test(text)) return ["2022 AHA/ACC/HFSA heart failure guideline and public vascular/edema review sources", sourceUrls.heartFailureGuideline, "guideline"];
   if (/murphy/.test(text)) return ["Open review of abdominal eponyms; WSES acute calculous cholecystitis guideline", sourceUrls.murphyReview, "systematic_review"];
@@ -473,7 +554,20 @@ function curateOverlay(row, overlay) {
 function shouldCurate(row) {
   if (row.exam_system === "Cardiopulmonary") return true;
   if (row.exam_system === "Abdomen") return true;
-  return row.exam_system === "Neuro" && highYieldNeuroSourceItems.has(row.source_item);
+  if (row.exam_system === "Neuro") return true;
+  if (row.exam_system === "MSK" && row.section === "Advanced Maneuvers") return true;
+  return new Set([
+    "General",
+    "Skin",
+    "Lymphatic",
+    "Breast",
+    "Genitourinary",
+    "Pelvic",
+    "Rectal",
+    "Pediatric",
+    "Obstetric",
+    "HEENT"
+  ]).has(row.exam_system);
 }
 
 const baseCsvText = readFileSync(basePath, "utf8");
@@ -486,7 +580,11 @@ if (missingBaseColumns.length) {
 const examIds = buildExamIds(parsed.rows);
 const rowsWithIds = parsed.rows.map((row, index) => ({ ...row, exam_id: examIds[index] }));
 const baseHeadersWithId = parsed.headers.includes("exam_id") ? parsed.headers : [...parsed.headers, "exam_id"];
-writeFileSync(basePath, stringifyCsv(baseHeadersWithId, rowsWithIds, newlineStyleFor(baseCsvText)), "utf8");
+const sourceHasStableExamIds = parsed.headers.includes("exam_id")
+  && parsed.rows.every((row, index) => row.exam_id === examIds[index]);
+if (!sourceHasStableExamIds) {
+  writeFileSync(basePath, stringifyCsv(baseHeadersWithId, rowsWithIds, newlineStyleFor(baseCsvText)), "utf8");
+}
 
 const overlayRows = rowsWithIds.map((row) => {
   const overlay = baseOverlay(row);
@@ -494,8 +592,8 @@ const overlayRows = rowsWithIds.map((row) => {
 });
 
 const curatedCount = overlayRows.filter((row) => row.evidence_status !== "pending").length;
-if (curatedCount !== 75) {
-  throw new Error(`Expected exactly 75 evidence-populated rows, got ${curatedCount}`);
+if (curatedCount < 75) {
+  throw new Error(`Expected at least 75 evidence-populated rows, got ${curatedCount}`);
 }
 
 writeFileSync(overlayPath, stringifyCsv(overlayColumns, overlayRows, newlineStyleFor(baseCsvText)), "utf8");

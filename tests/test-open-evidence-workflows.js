@@ -60,30 +60,24 @@ const baseContext = {
 };
 
 const outputContracts = {
-  initial_rounds_report: ["I. SUBJECTIVE", "III. ASSESSMENT AND PLAN", "management recommendation", "APP_PASTE_BACK_JSON", "open_evidence_rounds_pasteback_v1"],
+  initial_rounds_report: ["I. SUBJECTIVE", "III. ASSESSMENT AND PLAN", "management recommendation", "Return plain-language clinical guidance only", "Do not return JSON"],
   full_rounds_report: [
     "I. SUBJECTIVE",
     "II. OBJECTIVE",
     "III. ASSESSMENT AND PLAN",
     "Include important negatives, trends, medication context, and contingencies",
-    "APP_PASTE_BACK_JSON",
-    "open_evidence_rounds_pasteback_v1"
+    "Return plain-language clinical guidance only",
+    "Do not return JSON"
   ],
-  final_rounds_update: ["do not repeat stable background", "III. ASSESSMENT AND PLAN", "what changed in the last 24 hours", "changes management", "APP_PASTE_BACK_JSON", "open_evidence_rounds_pasteback_v1"],
-  checklist_improvement_review: ["<clinical_question>", "\"schema\": \"workup_section_patch_v1\"", "\"operations\"", "\"itemId\""],
+  final_rounds_update: ["do not repeat stable background", "III. ASSESSMENT AND PLAN", "what changed in the last 24 hours", "changes management", "Return plain-language clinical guidance only", "Do not return JSON"],
+  checklist_improvement_review: ["<clinical_question>", "plain-language clinical guidance only", "Do not return JSON", "Evidence-backed bedside additions to consider"],
   decision_tree_builder: [
-    "evidence-based clinical management pathway",
-    "Create a protocol-style decision tree for:",
-    "Return only valid JSON.",
-    "\"schema\": \"clinical_pathway_tree_v2\"",
-    "\"style\": \"compact_protocol_algorithm\"",
-    "\"boxText\"",
-    "Every child of a decision node must include:",
-    "Algorithm architecture:",
-    "\"edgeLabel\"",
-    "source_metadata",
-    "Would this fit on one page?",
-    "one-node-per-lab trees"
+    "plain-language clinical pathway question",
+    "What evidence-backed management pathway considerations",
+    "Do not include:",
+    "JSON",
+    "clinical_pathway_tree_v2",
+    "Plain-language bullets only"
   ],
   medication_safety: ["5Rs", "right medication", "right dose", "right route", "right time/frequency"],
   find_exception: ["Use at most 4 bullets total.", "Prefix every bullet with EXCEPTION, CONTRAINDICATION, PREREQUISITE, or SPECIAL-POPULATION."],
@@ -98,6 +92,7 @@ openEvidenceTasks.forEach((task) => {
   assert.equal(typeof task.pasteBackParser, "function", `${task.id} should have a paste-back parser`);
   assert.ok(task.requiredContext, `${task.id} should declare required context`);
   assert.ok(task.outputKind, `${task.id} should declare output kind`);
+  assert.equal(task.pasteBackSchema, "", `${task.id} should not request OpenEvidence paste-back JSON`);
   const built = buildOpenEvidencePrompt(task.id, baseContext);
   const maxPromptLength = task.id === "decision_tree_builder"
     ? 9000
@@ -111,7 +106,7 @@ openEvidenceTasks.forEach((task) => {
     assert.ok(built.prompt.includes("Do not include:"), `${task.id} prompt should name exclusions`);
     assert.ok(built.prompt.includes("<guidance>"), `${task.id} prompt should include evidence guidance`);
   } else if (task.id === "decision_tree_builder") {
-    assert.ok(built.prompt.startsWith("Using OpenEvidence, produce a compact, evidence-based clinical management pathway"), "decision-tree prompt should use the supplied compact pathway prompt");
+    assert.ok(built.prompt.startsWith("Using OpenEvidence, answer a plain-language clinical pathway question"), "decision-tree prompt should ask for plain-language evidence review");
     assert.ok(!built.prompt.includes("Existing pathway JSON, if available:\n"), "decision-tree prompt should not include the existing-tree context heading");
     assert.ok(!built.prompt.includes("Objective workup data, if available:\n"), "decision-tree prompt should not include objective-data context bloat");
     assert.ok(!built.prompt.includes('Add "activationRules"'), "decision-tree prompt should not restore the old activationRules request");
@@ -138,6 +133,9 @@ openEvidenceTasks.forEach((task) => {
   assert.ok(!built.prompt.includes("LIKELY OKAY OR NO ACTION NEEDED"), `${task.id} prompt should not request likely-okay/no-action output`);
   assert.ok(!built.prompt.includes("UNCHANGED ITEMS NOT WORTH REPEATING"), `${task.id} prompt should not request unchanged-item output`);
   assert.ok(!built.prompt.includes("LOW-YIELD DISTRACTIONS TO IGNORE"), `${task.id} prompt should not request low-yield-distraction output`);
+  assert.ok(!built.prompt.includes("include exactly one fenced JSON block"), `${task.id} prompt should not request app paste-back JSON`);
+  assert.ok(!built.prompt.includes("The JSON must use schema"), `${task.id} prompt should not include app schema contracts`);
+  assert.ok(built.prompt.includes("Do not return JSON"), `${task.id} prompt should explicitly prohibit JSON output`);
   (outputContracts[task.id] || []).forEach((snippet) => {
     assert.ok(built.prompt.includes(snippet), `${task.id} should preserve minimal output contract text: ${snippet}`);
   });
@@ -145,6 +143,12 @@ openEvidenceTasks.forEach((task) => {
 });
 
 const builtPromptById = Object.fromEntries(openEvidenceTasks.map((task) => [task.id, buildOpenEvidencePrompt(task.id, baseContext).prompt]));
+assert.ok(builtPromptById.initial_rounds_report.includes("docs/presentation-note-standard.md"), "initial rounds prompt should reference the canonical note standard");
+assert.ok(builtPromptById.full_rounds_report.includes("docs/presentation-note-standard.md"), "full rounds prompt should reference the canonical note standard");
+assert.ok(builtPromptById.final_rounds_update.includes("docs/presentation-note-standard.md"), "final update prompt should reference the canonical note standard");
+assert.ok(!builtPromptById.decision_tree_builder.includes("Return only valid JSON."), "pathway OpenEvidence prompt must not request valid JSON");
+assert.ok(!builtPromptById.decision_tree_builder.includes("\"schema\": \"clinical_pathway_tree_v2\""), "pathway OpenEvidence prompt must not include pathway schema JSON");
+assert.ok(!builtPromptById.decision_tree_builder.includes("\"boxText\""), "pathway OpenEvidence prompt must not include app node fields");
 assert.ok(!ids.has("confirm_guideline"), "Confirm guideline task should be removed because attending-level plan covers guideline-based recommendations");
 assert.ok(!builtPromptById.find_exception.includes("GUIDELINE ALIGNMENT VERDICT"), "exception finding should not duplicate guideline confirmation");
 assert.ok(!builtPromptById.attending_plan.includes("READING PLAN"), "attending plan should not duplicate teaching output");
@@ -278,7 +282,7 @@ const allSectionsChecklistPrompt = buildOpenEvidencePrompt("checklist_improvemen
   currentChecklist: "Checklist scope: physical_exam and history_questions\n<physical_exam_rows>\n- exam_row_1\n</physical_exam_rows>\n<history_questions_rows>\n- history_row_1\n</history_questions_rows>"
 });
 assert.equal(checklistImprovementPrompt.requiredContext, "checklist_refinement", "checklist improvement should require the local checklist plus compact context");
-assert.equal(checklistImprovementPrompt.outputKind, "checklist_improvement_review", "checklist improvement should remain the structured checklist refinement task");
+assert.equal(checklistImprovementPrompt.outputKind, "checklist_evidence_review", "checklist improvement should be an evidence review, not a structured paste-back task");
 assert.ok(checklistImprovementPrompt.prompt.includes("<current_checklist>"), "checklist improvement prompt should include the current checklist");
 assert.ok(checklistImprovementPrompt.prompt.includes("<deidentified_patient_context>"), "checklist improvement prompt should include de-identified patient context");
 assert.ok(checklistImprovementPrompt.prompt.includes("<objective_data>"), "checklist improvement prompt should include structured objective data");
@@ -289,17 +293,20 @@ assert.ok(!checklistImprovementPrompt.prompt.includes("<evidence_retrieval_summa
 assert.ok(!checklistImprovementPrompt.prompt.includes("John Smith"), "checklist improvement prompt must not leak raw source text");
 assert.ok(checklistImprovementPrompt.prompt.includes("de-identified patient context"), "checklist improvement prompt should include full de-identified context guidance");
 assert.ok(!checklistImprovementPrompt.prompt.includes("full HPI are intentionally excluded"), "checklist improvement prompt should not withhold patient context");
-assert.ok(checklistImprovementPrompt.prompt.includes("workup_section_patch_v1"), "checklist improvement prompt should request structured patch JSON");
-assert.ok(examOnlyChecklistPrompt.prompt.includes("Set sectionKey to physical_exam"), "single-section checklist prompt should scope edits to the selected section");
+assert.ok(!checklistImprovementPrompt.prompt.includes("workup_section_patch_v1"), "checklist improvement prompt must not request structured patch JSON");
+assert.ok(!checklistImprovementPrompt.prompt.includes("\"operations\""), "checklist improvement prompt must not ask for patch operations");
+assert.ok(!checklistImprovementPrompt.prompt.includes("\"itemId\""), "checklist improvement prompt must not ask for app item IDs");
+assert.ok(checklistImprovementPrompt.prompt.includes("Do not return JSON"), "checklist improvement prompt should explicitly prohibit JSON");
+assert.ok(examOnlyChecklistPrompt.prompt.includes("Name the target section as physical exam"), "single-section checklist prompt should name the selected section in prose");
 assert.ok(examOnlyChecklistPrompt.prompt.includes("<target_section_rows>"), "single-section checklist prompt should include only the focused section rows");
 assert.ok(!examOnlyChecklistPrompt.prompt.includes("BEDSIDE QUESTION CHECKLIST"), "single-section checklist prompt should not include the full rendered checklist text");
-assert.ok(allSectionsChecklistPrompt.prompt.includes("Return one fenced JSON block per section"), "all-sections checklist prompt should allow one patch block per section");
+assert.ok(!allSectionsChecklistPrompt.prompt.includes("Return one fenced JSON block per section"), "all-sections checklist prompt must not request JSON blocks");
 assert.ok(allSectionsChecklistPrompt.prompt.includes("<physical_exam_rows>"), "all-sections checklist prompt should include both section row blocks");
 assert.ok(!checklistImprovementPrompt.prompt.includes("\"schema\": \"workup_refinement_v1\""), "checklist improvement prompt should not request the legacy full replacement schema");
-assert.ok(checklistImprovementPrompt.prompt.indexOf("<clinical_question>") < checklistImprovementPrompt.prompt.indexOf("<output_format>"), "checklist improvement prompt should present the clinical question before the JSON schema");
-assert.ok(checklistImprovementPrompt.prompt.includes("Output only one fenced JSON block"), "checklist improvement prompt should be paste-back friendly");
-assert.ok(checklistImprovementPrompt.prompt.includes("literal underscores"), "checklist improvement prompt should guard against markdown emphasis corrupting identifiers");
-assert.ok(checklistImprovementPrompt.prompt.includes("Update/remove: use exact itemId"), "checklist improvement prompt should require exact stable row IDs for targeted edits");
+assert.ok(checklistImprovementPrompt.prompt.indexOf("<clinical_question>") < checklistImprovementPrompt.prompt.indexOf("<output_format>"), "checklist improvement prompt should present the clinical question before output guidance");
+assert.ok(!checklistImprovementPrompt.prompt.includes("Output only one fenced JSON block"), "checklist improvement prompt must not be a paste-back prompt");
+assert.ok(!checklistImprovementPrompt.prompt.includes("literal underscores"), "checklist improvement prompt should not include JSON formatting repair rules");
+assert.ok(!checklistImprovementPrompt.prompt.includes("Update/remove: use exact itemId"), "checklist improvement prompt should not require stable row IDs");
 assert.ok(checklistImprovementPrompt.reviewText.includes("Selected local workup"), "PHI review text should include the compact patient summary");
 assert.ok(checklistImprovementPrompt.reviewText.includes("How is your nausea today?"), "PHI review text should include the current checklist");
 assert.ok(!checklistImprovementPrompt.reviewText.includes("John Smith"), "PHI review text should not scan or expose withheld raw source text for checklist improvement");
@@ -384,11 +391,11 @@ assert.equal(getOpenEvidenceTask("not_a_task"), null, "unknown task lookup shoul
 
 const appHtml = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 assert.ok(appHtml.includes("promptTemplatesByTaskId"), "OpenEvidence prompt templates should persist as first-class local state");
-assert.ok(appHtml.includes("todayOpenEvidencePasteInput"), "Today cockpit should accept standardized OpenEvidence rounds paste-back");
-assert.ok(appHtml.includes("todayRoundsPasteBackPreview"), "Today cockpit should render the saved concise rounds report JSON");
-assert.ok(appHtml.includes("Save rounds report"), "OpenEvidence review tab should save rounds paste-back JSON");
-assert.ok(appHtml.includes("saveRoundsPasteBackForActivePatient"), "app should persist rounds paste-back JSON to active patient state");
-assert.ok(appHtml.includes("extractRoundsPasteBack"), "Today cockpit should parse standardized OpenEvidence rounds paste-back locally");
+assert.ok(appHtml.includes("todayOpenEvidencePasteInput"), "Today cockpit should accept returned OpenEvidence answers");
+assert.ok(appHtml.includes("todayRoundsPasteBackPreview"), "Today cockpit should preview returned OpenEvidence answers");
+assert.ok(appHtml.includes("Save result"), "OpenEvidence review tab should save plain answers locally");
+assert.ok(appHtml.includes("savePlainOpenEvidenceAnswerForActivePatient"), "app should persist plain OpenEvidence answers to active patient state");
+assert.ok(appHtml.includes("extractRoundsPasteBack"), "Today cockpit should keep legacy structured paste-back parsing available");
 assert.ok(appHtml.includes("resolvePromptTemplate"), "OpenEvidence copy should resolve editable template variables before copying");
 assert.ok(appHtml.includes("Editable smart-phrase template"), "OpenEvidence review tab should show editable smart-phrase prompt templates");
 assert.ok(appHtml.includes('id="savePromptTemplateButton"'), "OpenEvidence review tab should let users save edited prompt templates");

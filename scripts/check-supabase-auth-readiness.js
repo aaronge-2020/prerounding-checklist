@@ -40,11 +40,14 @@ async function fetchSupabaseText(url, options = {}) {
       text: await response.text()
     };
   } catch (error) {
+    const cause = error && typeof error === "object" && error.cause instanceof Error
+      ? ` (${error.cause.message})`
+      : "";
     return {
       ok: false,
       status: 0,
       location: "",
-      text: error instanceof Error ? error.message : String(error)
+      text: error instanceof Error ? `${error.message}${cause}` : String(error)
     };
   }
 }

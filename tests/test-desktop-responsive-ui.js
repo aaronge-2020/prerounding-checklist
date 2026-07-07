@@ -1502,6 +1502,32 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
     await assertRosterState(true, `workup tab roster ${label}`);
     const focusedWorkupControl = await page.evaluate(() => document.activeElement?.id || "");
     assert(focusedWorkupControl === "patientWorkupConcernInput", `change-workup action should focus the workup search, got ${focusedWorkupControl}`);
+    await showPatientWorkupsPane(page);
+    await page.click("#patientClearConcernButton");
+    await page.fill("#patientWorkupConcernInput", "hypovol");
+    await page.waitForSelector(".workup-picker-empty [data-missing-workup-action]");
+    const missingWorkupActionAudit = await page.evaluate(() => {
+      const buttons = Array.from(document.querySelectorAll(".workup-picker-empty [data-missing-workup-action]"));
+      return {
+        labels: buttons.map((button) => button.textContent?.trim() || ""),
+        clipped: buttons
+          .filter((button) => button.scrollWidth > button.clientWidth + 1 || button.scrollHeight > button.clientHeight + 1)
+          .map((button) => ({
+            label: button.textContent?.trim() || "",
+            width: Math.round(button.getBoundingClientRect().width),
+            scrollWidth: button.scrollWidth,
+            clientWidth: button.clientWidth,
+            scrollHeight: button.scrollHeight,
+            clientHeight: button.clientHeight
+          })),
+        actionGridColumns: getComputedStyle(document.querySelector(".workup-picker-actions")).gridTemplateColumns
+      };
+    });
+    assert(
+      missingWorkupActionAudit.labels.join("|") === "Create new workup|Draft with ChatGPT|Draft with Claude|Paste draft JSON",
+      `missing-workup actions should render full readable labels: ${JSON.stringify(missingWorkupActionAudit)}`
+    );
+    assert(missingWorkupActionAudit.clipped.length === 0, `missing-workup action buttons should not be clipped: ${JSON.stringify(missingWorkupActionAudit)}`);
   }
 
   await clickPatientTab(page, "findings");

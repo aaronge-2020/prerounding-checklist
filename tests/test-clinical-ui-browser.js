@@ -641,12 +641,18 @@ try {
   await page.click("#topQuickDeidButton");
   await page.fill("#quickDeidInput", "Jane Doe MRN 123456 was admitted 6/8/2026 for DKA. Phone 555-111-2222.");
   await page.click("#quickDeidRunButton");
+  await page.waitForFunction(() => {
+    const text = document.querySelector("#quickDeidPreview")?.textContent || "";
+    return text.includes("[PATIENT NAME]") || /failed|try again/i.test(text);
+  }, null, { timeout: 15000 });
   const quickPreview = await page.textContent("#quickDeidPreview");
   assert(quickPreview.includes("[PATIENT NAME]") && quickPreview.includes("[MRN]"), "standalone de-ID should redact structured identifiers");
   await page.click("#quickDeidCopyButton");
   await page.waitForSelector("#phiOverlay:not([hidden])");
   await page.click("#closePhiOverlayButton");
+  await page.waitForFunction(() => document.querySelector("#phiOverlay")?.hidden === true);
   await page.click("#closeQuickDeidButton");
+  await page.waitForFunction(() => document.querySelector("#quickDeidOverlay")?.hidden === true);
 
   await page.click("#patientBuildChecklistButton");
   const checklistRouteHandle = await page.waitForFunction(() => {

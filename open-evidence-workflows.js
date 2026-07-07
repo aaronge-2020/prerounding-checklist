@@ -68,55 +68,9 @@ Answer using OpenEvidence's current guidelines and literature. Base your respons
 Do not fabricate facts, patient identifiers, diagnoses, or clinical data not present in the context or your sources.
 Distinguish what evidence supports from what is uncertain or not yet verified.
 </guidance>`;
+const NOTE_STANDARD_GUIDANCE = "Use docs/presentation-note-standard.md as the canonical local standard for oral presentations, H&Ps, progress notes, follow-up notes, and handoff-style summaries.";
 
-const roundsPasteBackContract = `<local_app_paste_back_contract>
-After the human-readable rounds presentation, include exactly one fenced JSON block labeled APP_PASTE_BACK_JSON.
-The JSON must use schema "open_evidence_rounds_pasteback_v1" and this shape:
-{"schema":"open_evidence_rounds_pasteback_v1","presentationType":"oral_rounds_soap","oneLiner":"","subjective":[],"objective":[],"assessmentPlan":[],"followUpTasks":[],"bedsideRecheck":[],"plainTextSummary":""}
-Each array item must be a concise de-identified string. Put only facts or recommendations already supported by the prompt or current OpenEvidence citations.
-</local_app_paste_back_contract>`;
-
-const medicationSafetyPasteBackContract = `<local_app_paste_back_contract>
-After the human-readable safety audit, include exactly one fenced JSON block labeled APP_PASTE_BACK_JSON.
-The JSON must use schema "medication_safety_pasteback_v1" and this shape:
-{"schema":"medication_safety_pasteback_v1","issues":[],"plainTextSummary":""}
-Each issue must be a concise de-identified string prefixed with VERIFY, HOLD/RESTART, DOSE, INDICATION, INTERACTION, MONITOR, or ESCALATE, stating the medication, the concern, and why it matters.
-</local_app_paste_back_contract>`;
-
-const guidelineExceptionsPasteBackContract = `<local_app_paste_back_contract>
-After the human-readable list, include exactly one fenced JSON block labeled APP_PASTE_BACK_JSON.
-The JSON must use schema "guideline_exceptions_pasteback_v1" and this shape:
-{"schema":"guideline_exceptions_pasteback_v1","exceptions":[],"plainTextSummary":""}
-Each exception must be a concise de-identified string prefixed with EXCEPTION, CONTRAINDICATION, PREREQUISITE, or SPECIAL-POPULATION.
-</local_app_paste_back_contract>`;
-
-const attendingPlanPasteBackContract = `<local_app_paste_back_contract>
-After the human-readable plan, include exactly one fenced JSON block labeled APP_PASTE_BACK_JSON.
-The JSON must use schema "open_evidence_rounds_pasteback_v1" and this shape:
-{"schema":"open_evidence_rounds_pasteback_v1","presentationType":"attending_plan","oneLiner":"","subjective":[],"objective":[],"assessmentPlan":[],"followUpTasks":[],"bedsideRecheck":[],"plainTextSummary":""}
-assessmentPlan entries are the management recommendations per problem. Each array item must be a concise de-identified string.
-</local_app_paste_back_contract>`;
-
-const teachingExplanationPasteBackContract = `<local_app_paste_back_contract>
-After the human-readable teaching report, include exactly one fenced JSON block labeled APP_PASTE_BACK_JSON.
-The JSON must use schema "open_evidence_rounds_pasteback_v1" and this shape:
-{"schema":"open_evidence_rounds_pasteback_v1","presentationType":"teaching_explanation","oneLiner":"","subjective":[],"objective":[],"assessmentPlan":[],"followUpTasks":[],"bedsideRecheck":[],"plainTextSummary":""}
-Each array item must be a concise de-identified teaching point string.
-</local_app_paste_back_contract>`;
-
-const dischargeReadinessPasteBackContract = `<local_app_paste_back_contract>
-After the human-readable list, include exactly one fenced JSON block labeled APP_PASTE_BACK_JSON.
-The JSON must use schema "discharge_readiness_pasteback_v1" and this shape:
-{"schema":"discharge_readiness_pasteback_v1","barriers":[],"supplies":[],"followUpNeeds":[],"counseling":[],"returnPrecautions":[],"plainTextSummary":""}
-Each array item must be a concise de-identified string.
-</local_app_paste_back_contract>`;
-
-const blindSpotPasteBackContract = `<local_app_paste_back_contract>
-After the human-readable list, include exactly one fenced JSON block labeled APP_PASTE_BACK_JSON.
-The JSON must use schema "blind_spot_pasteback_v1" and this shape:
-{"schema":"blind_spot_pasteback_v1","misses":[],"verifies":[],"escalations":[],"asks":[],"unvalidatedGaps":[],"plainTextSummary":""}
-Each array item must be a concise de-identified string.
-</local_app_paste_back_contract>`;
+const PLAIN_OPEN_EVIDENCE_OUTPUT = "Return plain-language clinical guidance only. Do not return JSON, fenced code, APP_PASTE_BACK_JSON, paste-back blocks, or app-specific schemas.";
 
 function clean(value) {
   return String(value || "").trim();
@@ -309,6 +263,7 @@ function initialRoundsPrompt(context) {
 Produce a concise evidence-informed case summary in SOAP format. Avoid redundancy. Include each detail only if it changes the clinical story, objective interpretation, or management.
 </clinical_question>`,
     `<output_format>
+${NOTE_STANDARD_GUIDANCE}
 Use concise bullets only, organized exactly as:
 I. SUBJECTIVE
 - One-liner
@@ -328,7 +283,7 @@ Keep subjective and objective sections as short as possible without losing manag
 Do not repeat the same fact in multiple sections unless it changes a separate management decision.
 </output_format>
 
-${roundsPasteBackContract}`
+${PLAIN_OPEN_EVIDENCE_OUTPUT}`
   );
 }
 
@@ -350,6 +305,7 @@ function fullRoundsReportPrompt(context) {
 Create a complete structured case summary in SOAP format. Include all details needed to understand the case, with evidence citations. Avoid copied chart narrative and avoid repeating data unless the repetition changes interpretation.
 </clinical_question>`,
     `<output_format>
+${NOTE_STANDARD_GUIDANCE}
 Use concise bullets only, organized exactly as:
 I. SUBJECTIVE
 - One-liner
@@ -369,7 +325,7 @@ For each management recommendation, include an inline citation to current guidel
 Do not add a separate reference list unless inline citations would be unclear.
 </output_format>
 
-${roundsPasteBackContract}`
+${PLAIN_OPEN_EVIDENCE_OUTPUT}`
   );
 }
 
@@ -388,6 +344,7 @@ function finalRoundsPrompt(context) {
     context.userContext || "",
     findingsContextBlock(context),
     `<output_format>
+${NOTE_STANDARD_GUIDANCE}
 Use concise bullets only.
 Use the case context already provided earlier in this conversation; do not repeat stable background.
 Organize exactly as:
@@ -398,7 +355,7 @@ Include "no management change" only when a new result might otherwise appear to 
 Use inline guideline/literature citations only for new management recommendations or changed thresholds.
 </output_format>
 
-${roundsPasteBackContract}`
+${PLAIN_OPEN_EVIDENCE_OUTPUT}`
   ].filter(Boolean).join("\n\n");
 }
 
@@ -427,7 +384,7 @@ Do not include non-medication problems unless they directly change medication sa
 
   const fullOutput = `${output}
 
-${medicationSafetyPasteBackContract}`;
+${PLAIN_OPEN_EVIDENCE_OUTPUT}`;
   if (context.sameConversationReady && !context.forceIncludeSourceForMedicationSafety) {
     return buildSameConversationPrompt(context, question, fullOutput);
   }
@@ -494,7 +451,7 @@ Do not restate standard guideline recommendations unless needed to explain the e
 Do not write a broad guideline summary.
 </output_format>
 
-${guidelineExceptionsPasteBackContract}`
+${PLAIN_OPEN_EVIDENCE_OUTPUT}`
   );
 }
 
@@ -523,7 +480,7 @@ State uncertainty explicitly and avoid inventing orders or facts.
 Do not write a full SOAP note; focus on management.
 </output_format>
 
-${attendingPlanPasteBackContract}`
+${PLAIN_OPEN_EVIDENCE_OUTPUT}`
   );
 }
 
@@ -556,7 +513,7 @@ Include enough background for the learner to understand the case, but keep it pa
 Do not include a reading plan or external links unless directly needed to explain a cited management recommendation.
 </output_format>
 
-${teachingExplanationPasteBackContract}`
+${PLAIN_OPEN_EVIDENCE_OUTPUT}`
   );
 }
 
@@ -586,7 +543,7 @@ Do not include citations or a reference list. Do not include source names, journ
 Do not rewrite the inpatient plan except where it directly affects discharge readiness.
 </output_format>
 
-${dischargeReadinessPasteBackContract}`
+${PLAIN_OPEN_EVIDENCE_OUTPUT}`
   );
 }
 
@@ -618,15 +575,13 @@ Include an inline citation for each evidence-based point.
 Do not include low-yield distractions or padding.
 </output_format>
 
-${blindSpotPasteBackContract}`
+${PLAIN_OPEN_EVIDENCE_OUTPUT}`
   );
 }
 
 function checklistImprovementPrompt(context) {
-  const workupId = clean(context.selectedWorkupId) || "selected local workup id if known";
   const sectionKey = clean(context.checklistSectionKey) || "physical_exam";
   const isAll = sectionKey === "all_sections";
-  const exampleSectionKey = isAll ? "physical_exam" : sectionKey;
   const sectionLabel = isAll
     ? "history_questions and physical_exam"
     : sectionKey === "physical_exam"
@@ -634,30 +589,23 @@ function checklistImprovementPrompt(context) {
       : "history";
   const clinicalQuestion = isAll
     ? `<clinical_question>
-Clinical question: For this de-identified patient, what bedside history and physical exam rows should be added, removed, or reworded across both checklist sections?
-Focus on bedside findings, severity signals, safety checks, triggers, and redundant rows. The JSON block is only the paste-back format.
+Clinical question: For this de-identified patient, what bedside history and physical exam considerations would improve clinical verification of the selected workup?
+Focus on source-backed bedside findings, severity signals, safety checks, contraindications, escalation triggers, and redundant rows. Keep the answer plain-language.
 </clinical_question>
 
 <task_boundary>
-Primary purpose: Useful bedside checklist edits for one patient.
-Do not use this task for: checklist regeneration, default edits, management plans, or chart summaries.
+Primary purpose: Evidence and guideline clarification for bedside checklist review.
+Do not use this task for: JSON, patch objects, app schema output, checklist regeneration, default workup edits, or chart summaries.
 </task_boundary>`
     : `<clinical_question>
-Clinical question: For this de-identified patient, what bedside ${sectionLabel} rows should be added, removed, or reworded to improve the selected workup assessment?
-Focus on bedside findings, severity signals, safety checks, triggers, and redundant rows. The JSON block is only the paste-back format.
+Clinical question: For this de-identified patient, what bedside ${sectionLabel} considerations would improve clinical verification of the selected workup?
+Focus on source-backed bedside findings, severity signals, safety checks, contraindications, escalation triggers, and redundant rows. Keep the answer plain-language.
 </clinical_question>
 
 <task_boundary>
-Primary purpose: Useful bedside checklist edits for one patient.
-Do not use this task for: checklist regeneration, default edits, management plans, or chart summaries.
+Primary purpose: Evidence and guideline clarification for bedside checklist review.
+Do not use this task for: JSON, patch objects, app schema output, checklist regeneration, default workup edits, or chart summaries.
 </task_boundary>`;
-  const outputSectionRules = isAll
-    ? `Return one fenced JSON block per section that needs changes. Each block must set sectionKey to physical_exam or history_questions and use itemIds only from that section in current_checklist.
-If both sections need edits, return two fenced JSON blocks.`
-    : `Set sectionKey to ${sectionKey}. Use itemIds only from the ${sectionKey} rows in current_checklist. Do not modify rows outside this section.`;
-  const outputBlockRule = isAll
-    ? "Output one fenced JSON block per section that needs clinically useful checklist edits."
-    : "Output only one fenced JSON block with the clinically useful checklist edits.";
   return [
     clinicalQuestion,
     EVIDENCE_GUARDRAILS,
@@ -673,41 +621,14 @@ Use only the de-identified patient context, objective data, bedside findings, an
 </privacy_boundary>
 
 <output_format>
-${outputBlockRule} Do not include prose before or after it. Do not include :contentReference markers or citation prose.
-Fence as \`\`\`json. Use literal underscores, not asterisks or HTML emphasis tags. JSON.parse must pass. "operations", "options", and "normalAnswers" must be bracketed arrays.
-Use this exact top-level schema:
-{
-  "schema": "workup_section_patch_v1",
-  "workupId": "${workupId}",
-  "sectionKey": "${exampleSectionKey}",
-  "summary": "Brief reason for the row changes.",
-  "operations": [
-    {
-      "op": "add",
-      "groupKey": "conditionalExam",
-      "item": {
-        "id": "stable_snake_case_id",
-        "item_type": "physical_exam_maneuver",
-        "label": "Exam item to add",
-        "answerMode": "single or multi",
-        "options": ["Normal", "Abnormal", "Unable to assess"],
-        "normalAnswers": ["Normal"],
-        "rationale": "Why this item changes bedside verification or management."
-      }
-    },
-    { "op": "update", "itemId": "exact_existing_itemId", "label": "Revised row text" },
-    { "op": "remove", "itemId": "exact_existing_itemId" }
-  ]
-}
-Allowed sectionKey values: history_questions, physical_exam.
-${outputSectionRules}
-Allowed groupKey values: requiredQuestions or conditionalQuestions for history_questions; requiredExam or conditionalExam for physical_exam.
-Allowed op values: add, update, remove.
-Add: include groupKey and complete item. Use item_type "history_question" or "physical_exam_maneuver".
-Update/remove: use exact itemId from the current checklist. Do not invent IDs for existing rows.
-Update: include only changed fields directly on the operation or inside item.
-If no changes are useful, return "operations": [].
-Do not include identifiers, exact dates, room numbers, medical record numbers, or full chart narrative.
+Return plain-language clinical guidance only.
+Do not return JSON, fenced code, patch objects, app-specific schemas, item IDs, or machine-readable output.
+Use concise bullets under these headings:
+1. Evidence-backed bedside additions to consider
+2. Existing checklist rows to de-emphasize or avoid if redundant
+3. Safety, contraindication, escalation, or exception notes
+4. Source-backed uncertainty or what the care team must verify
+Name the target section as ${sectionLabel}, but do not rewrite the checklist for this app.
 </output_format>`
   ].filter(Boolean).join("\n\n");
 }
@@ -715,97 +636,54 @@ Do not include identifiers, exact dates, room numbers, medical record numbers, o
 function decisionTreeBuilderPrompt(context) {
   const workupTitle = clean(context.selectedWorkupTitle) || "[INSERT WORKUP TITLE]";
   const workupId = clean(context.selectedWorkupId) || "[INSERT WORKUP ID]";
-  return `Using OpenEvidence, produce a compact, evidence-based clinical management pathway, not a guideline summary.
+  return `Using OpenEvidence, answer a plain-language clinical pathway question for the selected workup.
 
-Create a protocol-style decision tree for:
+Workup:
 WORKUP_TITLE: ${workupTitle}
 WORKUP_ID: ${workupId}
 
-<guidance>
-Style target: AHA/ACLS, UpToDate, or society-protocol algorithm. Each node should be a diagram box a clinician can act on.
+<clinical_question>
+What evidence-backed management pathway considerations, escalation thresholds, contraindications, exceptions, reassessment points, and disposition considerations should a clinician know for this workup?
+</clinical_question>
 
-Core rule:
-A node exists only if it changes management, determines urgency, starts a treatment bundle, stops unsafe treatment, defines reassessment, or determines disposition.
+<guidance>
+Use current guidelines and citeable literature when available. If thresholds, doses, or monitoring intervals vary by guideline, say so and name the dependency. Keep the answer clinically actionable but not app-specific.
 </guidance>
 
 Do not include:
-- "missing data" nodes
-- generic "assess" nodes
-- generic "consider" nodes
-- "clinician review" nodes without a specific trigger and action
-- one-node-per-lab trees
-- one-node-per-criterion trees
-- vague endpoints like "treat DKA," "monitor," or "follow up"
+- JSON
+- fenced code blocks
+- clinical_pathway_tree_v1 or clinical_pathway_tree_v2
+- node IDs, edge labels, or app schema fields
+- instructions for this app to parse
+- a full chart summary
 
 Instead:
-- Combine related diagnostic criteria in one decision box.
-- Combine related treatments into one action box.
-- Combine monitoring frequency, response targets, and escalation triggers into one reassessment box.
-- Put exact thresholds and doses in the box text when guideline-supported.
-- Branch only when the next action is different.
+- State who enters the pathway.
+- Identify unstable/red-flag findings that require immediate escalation.
+- Summarize classification or diagnostic criteria only when they change management.
+- Name safety stops or contraindications before treatment.
+- Summarize first-line management, reassessment, response targets, escalation triggers, and disposition.
+- Include concise citations or source names when OpenEvidence can support them.
 
-Return only valid JSON.
-
-Schema:
-{
-  "schema": "clinical_pathway_tree_v2",
-  "workupId": "${jsonStringContent(workupId)}",
-  "title": "${jsonStringContent(workupTitle)}",
-  "style": "compact_protocol_algorithm",
-  "source_metadata": [],
-  "root": {
-    "id": "root",
-    "label": "",
-    "type": "action",
-    "boxText": "",
-    "source_ids": [],
-    "children": []
-  }
-}
-
-Every node:
-{
-  "id": "stable_unique_id",
-  "label": "short box title",
-  "type": "action | decision | endpoint",
-  "boxText": "clinically specific display text; may include multiple bullets or semicolon-separated actions",
-  "source_ids": [],
-  "children": []
-}
-
-Every child of a decision node must include:
-"edgeLabel": "specific branch criterion"
-
-Algorithm architecture:
-1. Activation box: who enters the pathway.
-2. Unstable/red-flag decision: identifies immediate high-acuity care.
-3. Classification decision: combines diagnostic criteria that separate major pathways.
-4. Safety-stop decision: only if a treatment can cause harm without a prerequisite.
-5. Treatment bundle: exact first-line management, doses, thresholds, and exceptions.
-6. Reassessment decision: response targets, monitoring frequency, and failure criteria.
-7. Transition/disposition endpoint: stopping criteria, discharge/follow-up, safety net.
-
-Quality test before final output:
-- Would this fit on one page?
-- Is each box worth showing in a diagram?
-- Does every branch change management?
-- Does every treatment box say exactly what to do?
-- Are doses, thresholds, monitoring intervals, escalation triggers, and stopping criteria explicit?
-- Are any nodes just documentation, missing-data bookkeeping, or guideline trivia? If yes, delete or merge them.`;
+<output_format>
+Plain-language bullets only. Do not produce machine-readable output.
+${PLAIN_OPEN_EVIDENCE_OUTPUT}
+</output_format>`;
 }
 
 export const openEvidenceTasks = [
-  { id: "initial_rounds_report", label: "Concise rounds report", category: "Rounds", requiredContext: "source", outputKind: "rounds_report", pasteBackSchema: "open_evidence_rounds_pasteback_v1", promptBuilder: initialRoundsPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Initial rounds report prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
-  { id: "full_rounds_report", label: "Full rounds report", category: "Rounds", requiredContext: "source", outputKind: "full_rounds_report", pasteBackSchema: "open_evidence_rounds_pasteback_v1", promptBuilder: fullRoundsReportPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Full rounds report prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
-  { id: "final_rounds_update", label: "Final rounds update", category: "Rounds", requiredContext: "findings", outputKind: "rounds_update", pasteBackSchema: "open_evidence_rounds_pasteback_v1", promptBuilder: finalRoundsPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Final rounds update prompt copied. Paste it into OpenEvidence.", requiresSameConversation: true },
-  { id: "checklist_improvement_review", label: "Checklist improvement review", category: "Checklist", requiredContext: "checklist_refinement", outputKind: "checklist_improvement_review", pasteBackSchema: "workup_section_patch_v1", promptBuilder: checklistImprovementPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Checklist improvement prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
-  { id: "decision_tree_builder", label: "Decision tree builder", category: "Pathway", requiredContext: "decision_tree", outputKind: "decision_tree_json", pasteBackSchema: "clinical_pathway_tree_v2", promptBuilder: decisionTreeBuilderPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Decision tree builder prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
-  { id: "medication_safety", label: "Medication safety", category: "Safety", requiredContext: "medication_context", outputKind: "medication_safety", pasteBackSchema: "medication_safety_pasteback_v1", promptBuilder: medicationSafetyPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Medication safety prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
-  { id: "find_exception", label: "Find exception", category: "Guidelines", requiredContext: "source", outputKind: "guideline_exceptions", pasteBackSchema: "guideline_exceptions_pasteback_v1", promptBuilder: exceptionPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Exception-finding prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
-  { id: "attending_plan", label: "Attending-level plan", category: "Reasoning", requiredContext: "source", outputKind: "attending_plan", pasteBackSchema: "open_evidence_rounds_pasteback_v1", promptBuilder: attendingPlanPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Attending-level plan prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
-  { id: "teaching_explanation", label: "Teaching explanation", category: "Teaching", requiredContext: "source", outputKind: "teaching", pasteBackSchema: "open_evidence_rounds_pasteback_v1", promptBuilder: teachingPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Teaching explanation prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
-  { id: "discharge_checklist", label: "Discharge readiness review", category: "Discharge", requiredContext: "source", outputKind: "discharge_checklist", pasteBackSchema: "discharge_readiness_pasteback_v1", promptBuilder: dischargePrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Discharge readiness prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
-  { id: "what_am_i_missing", label: "What am I missing?", category: "Safety", requiredContext: "source", outputKind: "missing_items", pasteBackSchema: "blind_spot_pasteback_v1", promptBuilder: missingPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Blind-spot prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false }
+  { id: "initial_rounds_report", label: "Concise rounds report", category: "Rounds", requiredContext: "source", outputKind: "rounds_report", pasteBackSchema: "", promptBuilder: initialRoundsPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Initial rounds report prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
+  { id: "full_rounds_report", label: "Full rounds report", category: "Rounds", requiredContext: "source", outputKind: "full_rounds_report", pasteBackSchema: "", promptBuilder: fullRoundsReportPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Full rounds report prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
+  { id: "final_rounds_update", label: "Final rounds update", category: "Rounds", requiredContext: "findings", outputKind: "rounds_update", pasteBackSchema: "", promptBuilder: finalRoundsPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Final rounds update prompt copied. Paste it into OpenEvidence.", requiresSameConversation: true },
+  { id: "checklist_improvement_review", label: "Checklist evidence review", category: "Checklist", requiredContext: "checklist_refinement", outputKind: "checklist_evidence_review", pasteBackSchema: "", promptBuilder: checklistImprovementPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Checklist evidence-review prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
+  { id: "decision_tree_builder", label: "Pathway evidence review", category: "Pathway", requiredContext: "decision_tree", outputKind: "pathway_evidence_review", pasteBackSchema: "", promptBuilder: decisionTreeBuilderPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Pathway evidence-review prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
+  { id: "medication_safety", label: "Medication safety", category: "Safety", requiredContext: "medication_context", outputKind: "medication_safety", pasteBackSchema: "", promptBuilder: medicationSafetyPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Medication safety prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
+  { id: "find_exception", label: "Find exception", category: "Guidelines", requiredContext: "source", outputKind: "guideline_exceptions", pasteBackSchema: "", promptBuilder: exceptionPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Exception-finding prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
+  { id: "attending_plan", label: "Attending-level plan", category: "Reasoning", requiredContext: "source", outputKind: "attending_plan", pasteBackSchema: "", promptBuilder: attendingPlanPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Attending-level plan prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
+  { id: "teaching_explanation", label: "Teaching explanation", category: "Teaching", requiredContext: "source", outputKind: "teaching", pasteBackSchema: "", promptBuilder: teachingPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Teaching explanation prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
+  { id: "discharge_checklist", label: "Discharge readiness review", category: "Discharge", requiredContext: "source", outputKind: "discharge_checklist", pasteBackSchema: "", promptBuilder: dischargePrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Discharge readiness prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
+  { id: "what_am_i_missing", label: "What am I missing?", category: "Safety", requiredContext: "source", outputKind: "missing_items", pasteBackSchema: "", promptBuilder: missingPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Blind-spot prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false }
 ];
 
 export function getOpenEvidenceTask(taskId) {

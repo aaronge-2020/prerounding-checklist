@@ -568,7 +568,18 @@ try {
     shellLeft: Math.round(document.querySelector(".studio-shell")?.getBoundingClientRect().left ?? -1),
     shellRight: Math.round(document.querySelector(".studio-shell")?.getBoundingClientRect().right ?? -1),
     viewportWidth: document.documentElement.clientWidth,
-    sidebarPointerEvents: getComputedStyle(document.querySelector("#primarySidebar")).pointerEvents
+    sidebarPointerEvents: getComputedStyle(document.querySelector("#primarySidebar")).pointerEvents,
+    clippedStudioControls: Array.from(document.querySelectorAll(".studio-commandbar button, #workupStudioNewWorkupButton, #workupStudioTopBackendStatus"))
+      .filter((node) => {
+        const style = getComputedStyle(node);
+        return style.overflow === "hidden"
+          && style.textOverflow === "ellipsis"
+          && node.scrollWidth > node.clientWidth + 1;
+      })
+      .map((node) => node.id || node.textContent?.trim() || node.tagName),
+    newWorkupButtonText: document.querySelector("#workupStudioNewWorkupButton")?.textContent?.trim() || "",
+    newWorkupButtonLabel: document.querySelector("#workupStudioNewWorkupButton")?.getAttribute("aria-label") || "",
+    newWorkupButtonTitle: document.querySelector("#workupStudioNewWorkupButton")?.getAttribute("title") || ""
   }));
   assert.match(patientWorkupStudioAudit.selectedTitle, /Hyperglycemia/, `Studio should open on the active patient workup, not stale cached selection: ${JSON.stringify(patientWorkupStudioAudit)}`);
   assert.match(patientWorkupStudioAudit.topSelectedTitle, /Hyperglycemia/, `Studio topbar should mirror the active patient workup: ${JSON.stringify(patientWorkupStudioAudit)}`);
@@ -584,6 +595,10 @@ try {
   assert(patientWorkupStudioAudit.shellLeft >= 180 && patientWorkupStudioAudit.shellLeft <= 380, `Studio shell should start after the resizable primary sidebar on desktop: ${JSON.stringify(patientWorkupStudioAudit)}`);
   assert(Math.abs(patientWorkupStudioAudit.shellRight - patientWorkupStudioAudit.viewportWidth) <= 2, `Studio shell should end at the viewport edge without a right gutter: ${JSON.stringify(patientWorkupStudioAudit)}`);
   assert.equal(patientWorkupStudioAudit.sidebarPointerEvents, "auto", `Menu should be usable in Studio when expanded: ${JSON.stringify(patientWorkupStudioAudit)}`);
+  assert.deepEqual(patientWorkupStudioAudit.clippedStudioControls, [], `Studio command/status controls should not render CSS ellipses: ${JSON.stringify(patientWorkupStudioAudit)}`);
+  assert.equal(patientWorkupStudioAudit.newWorkupButtonText, "", `New workup action should be icon-only instead of rendering a clipped text label: ${JSON.stringify(patientWorkupStudioAudit)}`);
+  assert.equal(patientWorkupStudioAudit.newWorkupButtonLabel, "Create new workup", `Icon-only New workup action needs an accessible label: ${JSON.stringify(patientWorkupStudioAudit)}`);
+  assert.equal(patientWorkupStudioAudit.newWorkupButtonTitle, "Create new workup", `Icon-only New workup action needs a visible tooltip title: ${JSON.stringify(patientWorkupStudioAudit)}`);
   const desktopStudioMenuAudit = await page.evaluate(() => {
     const button = document.querySelector("#workupStudioMenuButton");
     const rect = button?.getBoundingClientRect();

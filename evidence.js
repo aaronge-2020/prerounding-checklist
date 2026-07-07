@@ -6673,6 +6673,11 @@ function outsideStrictBundleReason(candidateText, context) {
   if (/\b(?:external ears|otoscope exam|auditory acuity|sinus tenderness|nasal exam)\b/.test(candidateText)) {
     return "Ear, hearing, sinus, or nasal maneuvers need otalgia, hearing loss, ear drainage, vertigo with auditory symptoms, sinus pain, nasal obstruction/congestion, URI, or focused HEENT-source context.";
   }
+  if (/\b(?:eyelids orbit|eyelid|orbit|proptosis|lid lag)\b/.test(candidateText)) {
+    return /\b(?:thyroid|graves|thyrotoxic|hyperthyroid|myxedema)\b/.test(context)
+      ? "Not recommended separately because the thyroid phenotype and thyroid exam rows cover routine thyroid eye/skin screening; use focused orbit/eyelid exam when orbitopathy, proptosis, eye pain, diplopia, or vision symptoms are explicit."
+      : "Orbit or eyelid maneuvers need eye symptoms, trauma, orbital infection concern, thyroid eye disease, proptosis, diplopia, or focused HEENT context.";
+  }
   if (/\b(?:visual acuity|visual fields|extraocular|convergence|pupils|ophthalmoscopic|fundoscopic)\b/.test(candidateText)) {
     return "Eye/cranial-nerve maneuvers need vision change, eye pain/redness, diplopia, headache/papilledema, pituitary/sellar, or focal neurologic context.";
   }
@@ -6681,6 +6686,13 @@ function outsideStrictBundleReason(candidateText, context) {
   }
   if (/\b(?:thyroid exam|thyroid inspection|thyroid palpation|goiter)\b/.test(candidateText)) {
     return "Thyroid exam needs thyroid disease, goiter/nodule, compressive neck symptoms, orbitopathy, thyroid crisis, or a selected thyroid validated intent.";
+  }
+  if (/\b(?:tremor|skin inspection|skin exam|nail pitting|onycholysis|hair distribution|diaphoresis|skin temperature)\b/.test(candidateText)
+    && /\b(?:thyroid|graves|thyrotoxic|hyperthyroid|myxedema)\b/.test(context)) {
+    return "Not recommended separately because the selected thyroid phenotype row covers routine thyroid tremor, skin, hair, and diaphoresis screening; use the generic row only with a patient-specific tremor or dermatologic modifier.";
+  }
+  if (/\b(?:tanner staging|puberty|sexual maturity)\b/.test(candidateText)) {
+    return "Tanner staging is reserved for pediatric, adolescent, delayed puberty, precocious puberty, or reproductive-development contexts and is not a routine adult thyroid-crisis maneuver.";
   }
   if (/\b(?:pronator drift|deltoid strength|biceps strength|triceps strength|wrist extension strength|wrist flexion strength|hip flexion strength|knee extension strength|knee flexion strength|ankle dorsiflexion|ankle plantarflexion|extremity light touch|extremity pinprick|vibration sense|great toe proprioception|babinski|patellar reflex|achilles reflex|brachioradialis reflex|gait|heel walking|toe walking|tandem gait|romberg|finger-to-nose|finger to nose|heel-to-shin|heel to shin|rapid alternating)\b/.test(candidateText)) {
     return "Neuro, gait, strength, sensory, reflex, or coordination maneuvers need focal neurologic deficit, weakness, sensory loss, ataxia/gait concern, cord/radicular symptoms, neuropathy, or diabetic-foot context.";
@@ -6934,6 +6946,8 @@ function recommendationContextOverlap(candidateText, context) {
 function displayTechniqueForCandidate(candidate = {}) {
   const rawTechnique = [
     candidate.technique,
+    candidate.how_to_perform,
+    candidate.base?.how_to_perform,
     candidate.examiner_technique,
     candidate.base?.examiner_technique,
     candidate.maneuver,
@@ -7047,6 +7061,8 @@ function actionSpecificPhysicalExamLabel(candidate = {}, fallbackLabel = "") {
     { pattern: /\bbabinski sign\b/, label: "Test Babinski sign" },
     { pattern: /\bsaddle sensation\b/, label: "Test saddle sensation" },
     { pattern: /\bromberg\b/, label: "Test Romberg" },
+    { pattern: /\bpull test\b/, label: "Test postural pull response" },
+    { pattern: /\btruncal ataxia\b/, label: "Observe truncal ataxia" },
     { pattern: /\btoe walking\b/, label: "Observe toe walking" },
     { pattern: /\bheel walking\b/, label: "Observe heel walking" },
     { pattern: /\btandem gait\b/, label: "Observe tandem gait" },
@@ -7062,6 +7078,7 @@ function actionSpecificPhysicalExamLabel(candidate = {}, fallbackLabel = "") {
     { pattern: /\bgreat toe proprioception\b/, label: "Test great toe proprioception" },
     { pattern: /\bskin lesion inspection\b|\bskin lesions?\b/, label: "Inspect skin lesions" },
     { pattern: /\bskin inspection\b|\bskin exam\b/, label: "Inspect skin" },
+    { pattern: /\bcapillary refill\b/, label: "Press nail bed for capillary refill" },
     { pattern: /\bmucosal lesions?\b/, label: "Inspect mucosa for lesions" },
     { pattern: /\bwound inspection\b|\bwound\b/, label: "Inspect wound" },
     { pattern: /\bscalp exam\b|\bscalp\b/, label: "Inspect scalp" },
@@ -7258,16 +7275,26 @@ function reasonExplainsNonRecommendation(reason = "") {
 
 function postSelectionSuppressedEntry(entry = {}, selectedEntries = [], context = "") {
   const existingReason = entry.reason || entry.suppressionReason || "";
-  if (reasonExplainsNonRecommendation(existingReason)) {
+  const genericNonPromotionReason = /lacks a direct syndrome, organ-system, management, or feasibility match/i.test(existingReason);
+  if (reasonExplainsNonRecommendation(existingReason) && !genericNonPromotionReason) {
     return entry;
   }
+  const entryDisplayLabel = normalizeEvidenceLabel(actionSpecificPhysicalExamLabel(
+    entry.candidate || entry,
+    entry.label || entry.examLabel || entry.maneuver || entry.candidate?.examLabel || entry.candidate?.maneuver || ""
+  ));
+  const labelSelected = selectedEntries.find((selected) => normalizeEvidenceLabel(actionSpecificPhysicalExamLabel(
+    selected.candidate || selected,
+    selected.label || selected.examLabel || selected.maneuver || selected.candidate?.examLabel || selected.candidate?.maneuver || ""
+  )) === entryDisplayLabel);
   const familyKey = recommendationFamilyRedundancyKey(entry.candidate || entry, context);
   const familySelected = selectedEntries.find((selected) => (
     recommendationFamilyRedundancyKey(selected.candidate || selected, context) === familyKey
   ));
   const fallbackReason = outsideStrictBundleReason(candidateManeuverText(entry.candidate || entry), context);
-  const reason = familySelected
-    ? `Not recommended separately because ${familySelected.label || familySelected.exam_id || "a selected item"} covers the same bedside exam family; add a patient-specific modifier before using this lower-priority variant.`
+  const coveringSelection = labelSelected || familySelected;
+  const reason = coveringSelection
+    ? `Not recommended separately because ${coveringSelection.label || coveringSelection.exam_id || "a selected item"} covers the same bedside exam family; add a patient-specific modifier before using this lower-priority variant.`
     : (fallbackReason || "Not included because higher-priority selected items already cover the validated intent within bedside feasibility limits; add a patient-specific modifier or secondary validated intent before using this lower-priority candidate.");
   return {
     ...entry,

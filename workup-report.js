@@ -174,7 +174,7 @@ function appendRecommendationEntry(lines, entry = {}, index = 0, role = "item") 
   appendDetail(lines, "Options/findings", entry.options || entry.findings_options || candidate.examOptions || candidate.findings_options);
   appendDetail(lines, role === "suppressed" ? "Why not recommended" : "Why", entry.reason || entry.rationale || entry.suppressionReason);
   appendDetail(lines, "Diagnostic target", entry.displayDiagnosticTarget || candidate.diagnostic_target);
-  appendDetail(lines, "Technique", entry.technique || candidate.technique || candidate.examiner_technique || candidate.base?.examiner_technique || candidate.maneuver);
+  appendDetail(lines, "Technique", entry.technique || candidate.technique || candidate.how_to_perform || candidate.base?.how_to_perform || candidate.examiner_technique || candidate.base?.examiner_technique || candidate.maneuver);
   appendDetail(lines, "Use when", entry.whenToUse || entry.when_to_use || entry.when_to_use_structured || candidate.when_to_use_structured || candidate.whenToUse || candidate.base?.include_when);
   appendDetail(lines, "Reference thresholds", entry.reference_range_or_threshold || entry.referenceThresholds || entry.reference_thresholds || candidate.reference_range_or_threshold || candidate.reference_thresholds);
   appendDetail(lines, "Management change", entry.displayManagement || candidate.result_changes_management || candidate.management_link);

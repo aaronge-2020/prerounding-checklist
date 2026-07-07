@@ -42,6 +42,10 @@ const catalog = joinEvidenceCatalog(baseRows, mergedOverlayRows, sourceRows, acc
 const loadedEvidenceCatalog = await loadEvidenceCatalog((url) => readFileSync(url, "utf8"));
 
 assert.deepEqual(baseRows, currentRows, "exam_technique_base.csv must preserve the current maneuver catalog exactly");
+assert.ok(
+  currentRows.every((row) => row.how_to_perform && row.how_to_perform.includes("Perform the maneuver:")),
+  "every physical exam reference row should include patient-facing performance instructions"
+);
 assert.ok(loadedEvidenceCatalog.gapRows.length >= 20, "app evidence loader should include catalog gap registry rows");
 assert.ok(
   loadedEvidenceCatalog.gapRows.some((row) => row.gap_exam_id === "GAP-derm-skin-inspection" && row.review_status === "staged_gap"),

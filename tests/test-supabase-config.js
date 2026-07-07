@@ -22,7 +22,7 @@ assert.equal(pkg.scripts["export:medical-knowledge"], "node scripts/export-medic
 assert.equal(pkg.scripts["grant:workup-access"], "node scripts/grant-workup-access.js");
 assert.equal(pkg.scripts["deploy:supabase-workup-authoring"], "node scripts/deploy-supabase-workup-authoring.js");
 assert.equal(pkg.scripts["check:supabase-public"], "node scripts/check-supabase-auth-readiness.js --public-only");
-assert.equal(pkg.scripts["test:supabase-catalog-empty"], "node scripts/test-supabase-catalog-empty.js");
+assert.equal(pkg.scripts["test:supabase-catalog-empty"], "node tests/test-supabase-catalog-empty.js");
 assert.ok(pkg.scripts["test:clinical"].includes("test:supabase-catalog-empty"), "Clinical test suite should cover empty public Supabase catalog fallback.");
 
 const envExample = read(".env.example");

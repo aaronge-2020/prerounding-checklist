@@ -1062,6 +1062,8 @@ function techniqueForEntry(entry) {
   return [
     entry.technique,
     candidate.technique,
+    candidate.how_to_perform,
+    candidate.base?.how_to_perform,
     candidate.examiner_technique,
     candidate.base?.examiner_technique,
     candidate.maneuver,
@@ -1074,6 +1076,8 @@ function primaryTechniqueForEntry(entry = {}) {
   return [
     entry.technique,
     candidate.technique,
+    candidate.how_to_perform,
+    candidate.base?.how_to_perform,
     candidate.examiner_technique,
     candidate.base?.examiner_technique
   ].find((value) => String(value || "").trim()) || "";

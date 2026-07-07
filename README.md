@@ -21,6 +21,9 @@ Privacy-first browser app for inpatient pre-rounding. The app helps turn pasted 
 - `evidence.js`: evidence catalog ranking and recommended bedside checklist logic.
 - `data/`: CSV reference data for physical exam maneuvers, evidence retrieval, source rows, and evidence evaluation.
 - `docs/`: maintainer notes that should stay reviewable and hand-edited.
+- `docs/presentation-note-standard.md`: canonical standard for H&Ps, oral presentations, and follow-up note style.
+- `data/physical-exam/physical_exam_reference.csv`: source physical exam maneuver reference.
+- `data/physical-exam/physical_exam_evidence_overlay.csv`: generated physical exam evidence overlay used by the app.
 - `medical-knowledge/`: reviewed source-of-truth clinical knowledge JSON.
 - `medical-knowledge-db.js`: generated app bundle built from `medical-knowledge/`.
 - `scripts/`: tests, generators, validators, and build helpers.
