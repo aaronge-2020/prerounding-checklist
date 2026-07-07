@@ -1495,7 +1495,7 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
     }));
     assert(phoneSelectedAudit.patientTab === "checklist" && /Chest pain/i.test(phoneSelectedAudit.phoneTitle), `phone workup selection should stay on the checklist launcher: ${JSON.stringify(phoneSelectedAudit)}`);
   } else {
-    assert(checklistPanelButtons.join("|") === "Build checklist from workup|Change workup", `unbuilt checklist panel should expose only build and workup-change paths, got ${checklistPanelButtons.join("|")}`);
+    assert(checklistPanelButtons.join("|") === "Answer bedside checklist|Change workup", `unbuilt checklist panel should expose only open and workup-change paths, got ${checklistPanelButtons.join("|")}`);
     assert(checklistPrimaryEnabled, "checklist build primary should be enabled for the selected workup");
     await page.click("#workspaceChecklistSecondaryButton");
     await page.waitForFunction(() => document.querySelector('button[data-patient-tab="workup"]')?.getAttribute("aria-selected") === "true");
@@ -1689,8 +1689,8 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
     assert(/chest pain/i.test(phoneSelectedLauncher.title) && !phoneSelectedLauncher.disabled, `phone checklist launcher should keep the selected chest-pain workup ready: ${JSON.stringify(phoneSelectedLauncher)}`);
     await page.click("#phoneChecklistPrimaryButton");
   } else {
-    assert(checklistPanelButtons.join("|") === "Build checklist from workup|Change workup", `selected-workup checklist panel should show only build/change actions, got ${checklistPanelButtons.join("|")}`);
-    assert(checklistPrimaryEnabled, "checklist build primary should be enabled after selecting a validated workup");
+    assert(checklistPanelButtons.join("|") === "Answer bedside checklist|Send checklist to phone", `selecting a validated workup should auto-build the checklist and show answer/phone actions, got ${checklistPanelButtons.join("|")}`);
+    assert(checklistPrimaryEnabled, "checklist primary should be enabled after selecting a validated workup");
     await page.click("#workspaceOpenBedsideChecklistButton");
   }
   await page.waitForFunction(() => /items built/.test(document.querySelector("#workspaceChecklistStatus")?.textContent || ""));

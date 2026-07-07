@@ -585,7 +585,7 @@
                   <button type="button" data-workup-pane-target="orders" role="tab" aria-selected="false"><span class="target-step-number" aria-hidden="true">3</span><span>Results</span></button>
                 </div>
                 <div class="target-pathway-bottom-actions" aria-label="Workup actions">
-                  <button class="btn btn-primary" id="patientBuildChecklistButton" type="button"><span class="target-step-number" aria-hidden="true">4</span>Build checklist</button>
+                  <button class="btn btn-primary" id="patientBuildChecklistButton" type="button"><span class="target-step-number" aria-hidden="true">4</span>Open checklist</button>
                   <button class="btn btn-secondary" id="patientOpenEvidenceFromWorkupButton" type="button"><span class="icon-box" data-icon="message-square" aria-hidden="true"></span>Open prompts</button>
                   <details class="target-more-actions">
                     <summary>More <span class="icon-box" data-icon="chevron-down" aria-hidden="true"></span></summary>
@@ -837,7 +837,7 @@
                   </details>
                 </div>
                 <div class="checklist-command-grid">
-                  <button class="btn btn-primary" id="workspaceOpenBedsideChecklistButton" type="button">Build checklist from workup</button>
+                  <button class="btn btn-primary" id="workspaceOpenBedsideChecklistButton" type="button">Select workup first</button>
                   <button class="btn btn-secondary" id="workspaceChecklistSecondaryButton" type="button">Choose workup</button>
                   <button class="btn btn-secondary" id="workspaceChecklistPhoneButton" type="button">Send checklist to phone</button>
                 </div>
@@ -1776,6 +1776,7 @@
     import { createClient as createSupabaseClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
     import { QR_DEFAULT_REGISTRY_HASH, QR_ZSTD_DICTIONARY_HASH } from "./vendor/qr-zstd-dictionary.js";
     import { base64UrlEncodeBytes, base64UrlDecodeBytes, base64UrlEncodeText, base64UrlDecodeText, baseQrEncodeBytes, baseQrDecodeBytes, base45EncodeBytes, base45DecodeBytes, gzipTextToBytes, gunzipBytesToText, gunzipBase64UrlToText, optimizedCborQrToken, decodeOptimizedCborQrToken, inflateCborValue, currentPhoneQrBaseUrl, randomBase64Url } from "./qr-codec.js";
+    import { randomCode, encodePayload, decodePayload, normalizeTransferCode, assertMatchingBundleCode, phoneTransferCryptoKey, decryptEncryptedPhonePayloadTransferText, phoneHandoffMailboxLinkFromText, encryptPhoneHandoffMailboxPayload, decryptPhoneHandoffMailboxPayload } from "./phone-transfer-codec.js";
 
     const baseComplaintModulesById = new Map(complaintModules.map((module) => [module.id, module]));
     const LEGACY_STORAGE_KEY = "prerounding-redesign-state-v1";
@@ -9639,12 +9640,16 @@ Rules:
       syncWorkupConcernInputs(state.concern);
       clearChecklistArtifacts();
       ensureWorkup({ preferredInput: elements.patientWorkupConcernInput });
-      renderChecklist();
-      renderPatientWorkspace();
+      if (selected && activePatient().id) {
+        buildChecklistFromWorkup({ navigate: false, announce: false });
+      } else {
+        renderChecklist();
+        renderPatientWorkspace();
+      }
       renderPatientRail();
       if (announce) {
         setStatus(selected
-          ? `${moduleLabel(selected)} saved as the workup for ${activePatient().title}.`
+          ? `${moduleLabel(selected)} checklist built for ${activePatient().title}.`
           : `Select a validated workup for ${activePatient().title}.`);
       }
       saveState();
@@ -14668,11 +14673,11 @@ Rules:
       elements.workspaceContinuityInput.value = draft.continuity || "";
       elements.workspaceHistoryFindingInput.value = draft.historyFindings || "";
       elements.workspaceExamFindingInput.value = draft.examFindings || "";
-      const primaryRoundsLabel = checklistStale ? "Rebuild checklist" : checklistBuilt ? "Open checklist" : selectedWorkupReady ? "Build checklist" : "Select workup";
+      const primaryRoundsLabel = checklistStale ? "Rebuild checklist" : (checklistBuilt || selectedWorkupReady) ? "Open checklist" : "Select workup";
       const workspaceBuildButton = $("#workspaceBuildChecklistButton");
       const overviewChecklistButton = $("#patientOverviewChecklistButton");
-      if (workspaceBuildButton) workspaceBuildButton.textContent = hasPatient ? primaryRoundsLabel : "Build checklist";
-      if (overviewChecklistButton) overviewChecklistButton.textContent = hasPatient ? primaryRoundsLabel : "Build checklist";
+      if (workspaceBuildButton) workspaceBuildButton.textContent = hasPatient ? primaryRoundsLabel : "Open checklist";
+      if (overviewChecklistButton) overviewChecklistButton.textContent = hasPatient ? primaryRoundsLabel : "Open checklist";
       for (const button of [workspaceBuildButton, overviewChecklistButton, elements.patientBuildChecklistButton, elements.patientBuildChecklistRailButton]) {
         if (button) button.disabled = !hasPatient || (!checklistBuilt && !selectedWorkupReady);
       }
@@ -14706,11 +14711,9 @@ Rules:
       if (elements.workspaceOpenBedsideChecklistButton) {
         elements.workspaceOpenBedsideChecklistButton.textContent = checklistStale
           ? "Rebuild from server workup"
-          : checklistBuilt
+          : (checklistBuilt || selectedWorkupReady)
             ? "Answer bedside checklist"
-            : selectedWorkupReady
-              ? "Build checklist from workup"
-              : "Select workup first";
+            : "Select workup first";
         elements.workspaceOpenBedsideChecklistButton.disabled = !hasPatient || (!checklistBuilt && !selectedWorkupReady);
       }
       if (elements.workspaceChecklistSecondaryButton) {
@@ -14735,16 +14738,14 @@ Rules:
           ? `A newer server workup is available for ${patient.title}. Rebuild before answering or sending to phone.`
           : checklistBuilt
             ? `${checklistTotalCount()} checklist items are built for ${patient.title}. Answer the bedside checklist to record findings.`
-            : selectedWorkupReady
-              ? `No checklist is built for ${patient.title} yet. Build it from the selected workup first.`
-              : `No checklist is built for ${patient.title} yet. Select a validated workup first.`;
+            : `No checklist is built for ${patient.title} yet. Select a validated workup to build one automatically.`;
       }
       if (elements.workspaceChecklistPreviewList) {
         elements.workspaceChecklistPreviewList.innerHTML = "";
         elements.workspaceChecklistPreviewList.hidden = checklistBuilt;
         if (!checklistBuilt) {
           const li = document.createElement("li");
-          li.textContent = selectedWorkupReady ? "Checklist rows appear here after building." : "Choose a validated workup to build checklist rows.";
+          li.textContent = "Choose a validated workup to build checklist rows automatically.";
           elements.workspaceChecklistPreviewList.appendChild(li);
         }
       }
@@ -14916,6 +14917,9 @@ Rules:
       if (fillInputs) syncSelectedPatientInputs();
       renderPatientRail();
       ensureWorkup();
+      if (selectedModule) {
+        buildChecklistFromWorkup({ navigate: false, announce: false });
+      }
       renderHandoff();
       renderFinalUpdate();
       setStatus(`${patient.title} selected. Clinical context and local workup are ready.`);
@@ -19939,39 +19943,8 @@ Rules:
       }
     }
 
-    function randomCode() {
-      const part = () => Math.random().toString(36).slice(2, 6).toUpperCase();
-      return `${part()}-${part()}`;
-    }
-
-    function encodePayload(payload) {
-      const bytes = new TextEncoder().encode(JSON.stringify(payload));
-      let binary = "";
-      for (const byte of bytes) binary += String.fromCharCode(byte);
-      return btoa(binary);
-    }
-
-    function decodePayload(payload) {
-      const binary = atob(payload.trim());
-      const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
-      return JSON.parse(new TextDecoder().decode(bytes));
-    }
-
     function plainObject(value) {
       return Boolean(value && typeof value === "object" && !Array.isArray(value));
-    }
-
-    function normalizeTransferCode(value) {
-      return String(value || "").trim().toUpperCase();
-    }
-
-    function assertMatchingBundleCode(wrapperCode, payloadCode, mismatchMessage) {
-      const wrapper = normalizeTransferCode(wrapperCode);
-      const embedded = normalizeTransferCode(payloadCode);
-      if (wrapper && embedded && wrapper !== embedded) {
-        throw new Error(mismatchMessage || "Bundle code mismatch. Use the payload that matches the displayed code.");
-      }
-      return embedded || wrapper;
     }
 
     function currentPhoneTransferCode() {
@@ -20027,25 +20000,6 @@ Rules:
       return JSON.stringify({ code: currentPhoneTransferCode(), payload }, null, 2);
     }
 
-    async function phoneTransferCryptoKey(code, saltBytes, usages = ["encrypt"]) {
-      const normalizedCode = normalizeTransferCode(code);
-      if (!normalizedCode) throw new Error("Generate a phone handoff code before creating an encrypted local bundle.");
-      const material = await crypto.subtle.importKey(
-        "raw",
-        new TextEncoder().encode(normalizedCode),
-        "PBKDF2",
-        false,
-        ["deriveKey"]
-      );
-      return crypto.subtle.deriveKey(
-        { name: "PBKDF2", salt: saltBytes, iterations: 160000, hash: "SHA-256" },
-        material,
-        { name: "AES-GCM", length: 256 },
-        false,
-        usages
-      );
-    }
-
     async function encryptedPhonePayloadTransferText() {
       const transferText = phonePayloadTransferText();
       const code = currentPhoneTransferCode();
@@ -20069,18 +20023,6 @@ Rules:
         iv: base64UrlEncodeBytes(iv),
         ciphertext: base64UrlEncodeBytes(new Uint8Array(ciphertext))
       }, null, 2);
-    }
-
-    async function decryptEncryptedPhonePayloadTransferText(wrapper = {}, code = "") {
-      if (wrapper?.version !== "encrypted-local-phone-handoff-v1") return "";
-      const normalizedCode = normalizeTransferCode(code);
-      if (!normalizedCode) throw new Error("Enter the laptop handoff code to open this encrypted local bundle.");
-      const salt = base64UrlDecodeBytes(wrapper.salt || "");
-      const iv = base64UrlDecodeBytes(wrapper.iv || "");
-      const ciphertext = base64UrlDecodeBytes(wrapper.ciphertext || "");
-      const key = await phoneTransferCryptoKey(normalizedCode, salt, ["decrypt"]);
-      const plaintext = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, ciphertext);
-      return new TextDecoder().decode(plaintext);
     }
 
     function phoneHandoffMailboxConfigured() {
@@ -20113,65 +20055,6 @@ Rules:
       return text ? JSON.parse(text) : null;
     }
 
-    function phoneHandoffMailboxLinkFromText(raw = "") {
-      const text = String(raw || "").trim();
-      const readLink = (value = "") => {
-        if (!value) return null;
-        const params = new URLSearchParams(value.replace(/^[#?]/, ""));
-        const handoff = String(params.get("H") || "").trim();
-        const [id, key] = handoff.split(".");
-        if (!id || !key || handoff.split(".").length !== 2) return null;
-        if (!/^[A-Za-z0-9_-]{16,64}$/.test(id) || !/^[A-Za-z0-9_-]{32,64}$/.test(key)) return null;
-        return { id, key };
-      };
-      try {
-        const url = new URL(text, window.location.href);
-        return readLink(url.hash) || readLink(url.search);
-      } catch {
-        return readLink(text);
-      }
-    }
-
-    async function importAesGcmMailboxKey(keyText, usages) {
-      return crypto.subtle.importKey(
-        "raw",
-        base64UrlDecodeBytes(keyText),
-        { name: "AES-GCM" },
-        false,
-        usages
-      );
-    }
-
-    async function encryptPhoneHandoffMailboxPayload(payload) {
-      const key = randomBase64Url(PHONE_HANDOFF_MAILBOX_KEY_BYTES);
-      const iv = randomBase64Url(12);
-      const cryptoKey = await importAesGcmMailboxKey(key, ["encrypt"]);
-      const json = JSON.stringify(payload || {});
-      const encoded = new TextEncoder().encode(json);
-      const ciphertext = await crypto.subtle.encrypt(
-        { name: "AES-GCM", iv: base64UrlDecodeBytes(iv) },
-        cryptoKey,
-        encoded
-      );
-      return {
-        key,
-        iv,
-        ciphertext: base64UrlEncodeBytes(new Uint8Array(ciphertext)),
-        jsonLength: json.length
-      };
-    }
-
-    async function decryptPhoneHandoffMailboxPayload(record, keyText) {
-      if (!record?.ciphertext || !record?.iv) throw new Error("This handoff link has expired. Generate a fresh QR code.");
-      const cryptoKey = await importAesGcmMailboxKey(keyText, ["decrypt"]);
-      const plaintext = await crypto.subtle.decrypt(
-        { name: "AES-GCM", iv: base64UrlDecodeBytes(record.iv) },
-        cryptoKey,
-        base64UrlDecodeBytes(record.ciphertext)
-      );
-      return JSON.parse(new TextDecoder().decode(plaintext) || "{}");
-    }
-
     async function createPhoneHandoffMailboxLink({ kind, payload, itemCount = 0, answeredCount = 0, noteCount = 0 } = {}) {
       if (!["phone", "return"].includes(kind)) throw new Error("Invalid handoff mailbox kind.");
       const id = randomBase64Url(PHONE_HANDOFF_MAILBOX_ID_BYTES);
@@ -20180,7 +20063,7 @@ Rules:
         v: "phoneHandoffMailbox1",
         kind,
         payload
-      });
+      }, PHONE_HANDOFF_MAILBOX_KEY_BYTES);
       await phoneHandoffMailboxRpc("put_phone_handoff_mailbox", {
         p_id: id,
         p_ciphertext: encrypted.ciphertext,

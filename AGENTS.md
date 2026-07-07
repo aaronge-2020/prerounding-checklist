@@ -22,6 +22,15 @@ Purpose: let an agent answer "where is X" and "what should I run" without greppi
 
 If you're the user reading this: the most reliable way to stop a session from doing this is to say up front "put this in a new module, don't append to index.html/styles.css" for any new feature, and to ask for a line-count diff before accepting a large change.
 
+## Coding Style: Prefer Pure Functions
+
+Write new logic as pure functions wherever the task allows, and favor a functional style over imperative/stateful code:
+
+1. **Prefer pure functions**: given the same inputs, always return the same output, with no side effects (no mutating arguments, no reading/writing shared/global/module state, no DOM access, no network calls). Push side effects (DOM updates, `state` mutation, network/storage I/O) to thin call sites at the edges, and keep the actual logic (parsing, formatting, validation, ranking, transforms) pure and testable in isolation.
+2. **Favor composition over mutation**: build results with `map`/`filter`/`reduce`/spread and return new objects/arrays rather than mutating inputs in place or accumulating into shared variables.
+3. **New pure helpers belong in the relevant `.js` module, not the inline script.** This aligns with "Do Not Grow The Monoliths Further" below — pure logic is exactly what's easiest to extract and unit-test, so there's rarely a reason to leave it inline. `phone-transfer-codec.js` and `qr-codec.js` are examples of this pattern already applied (pure codec/crypto helpers extracted; only stateful orchestration stays inline in `index.html`).
+4. **It's fine to stay impure at the edges.** Code that inherently needs to touch `state`, the DOM, `localStorage`, or the network (event handlers, render functions, RPC calls) doesn't need to be forced into a pure shape — just keep such code thin and delegate real logic to pure helpers it calls.
+
 ## Do Not Re-Read
 
 | Path | Why | Check this instead |
@@ -62,7 +71,7 @@ Regenerate either map after an edit:
 | Clinical Pathway Graph (cytoscape trees) | 4997-12697 | 15 |
 | Generic Utilities (search/filter/parse/format/validate) | 4811-22307 | 13 |
 | Layout & Navigation Chrome | 3712-11065 | 9 |
-| Supabase & Auth (browser side is direct REST fetch, not the JS SDK) | 4094-6181 | 5 |
+| Supabase & Auth (browser side uses `@supabase/supabase-js` via CDN ESM import for Workup Studio auth) | 4094-6181 | 5 |
 | Continuity (day-over-day carry-forward) | 14398-15031 | 4 |
 | Notes / H&P / Discharge / Presentation | 4359-23211 | 3 |
 | General/App State (uncategorized) | scattered | ~272 |
@@ -83,6 +92,8 @@ index.html (browser entry, <script type="module">)
 ├── workup-authoring.js         (no first-party imports)
 ├── workup-contribution.js      (no first-party imports)
 ├── physical-exam-catalog.js    (no first-party imports)
+├── qr-codec.js                 → vendor/zstd-wasm/index.web.js, vendor/qr-zstd-dictionary.js
+├── phone-transfer-codec.js     → qr-codec.js (base64UrlDecodeBytes)
 └── vendor/zstd-wasm/index.web.js, vendor/qr-zstd-dictionary.js
 
 Not wired into index.html (Node-side / test-only today):
@@ -100,7 +111,7 @@ Privacy-first static browser app for inpatient pre-rounding. Pasted chart contex
 
 - Patient vault data stays encrypted/browser-local; raw chart text is not stored in the vault.
 - Structured-only de-identification can run fully in the browser; an optional local Python path exists separately (see below).
-- Supabase is only for Workup Studio authoring/review and public reviewed workup catalog hydration — never patient data. The browser talks to Supabase via direct REST `fetch` (CSP `connect-src` allows `*.supabase.co`), not the `@supabase/supabase-js` SDK; the SDK is only used Node-side in `utils/supabase/node.js` and `scripts/`.
+- Supabase is only for Workup Studio authoring/review and public reviewed workup catalog hydration — never patient data. `index.html` imports `createClient` from `@supabase/supabase-js` via CDN ESM (`https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm`) for Workup Studio auth (see `workupStudioSupabase` near line 1797); other catalog reads may still use direct REST `fetch` (CSP `connect-src` allows `*.supabase.co`) — check both when tracing Supabase behavior. The SDK is also used Node-side in `utils/supabase/node.js` and `scripts/`.
 - Medical knowledge is reviewed JSON under `medical-knowledge/`, bundled into `medical-knowledge-db.js` by `npm run build:medical-knowledge`.
 
 ## High-Value Files
@@ -119,6 +130,8 @@ Privacy-first static browser app for inpatient pre-rounding. Pasted chart contex
 - `workup-authoring.js`: Workup Studio authoring data model — normalized snapshots, section patches, change sets, export rows, no-patient-data validation.
 - `workup-contribution.js`: community contribution schema/validation and GitHub issue / chat-AI handoff prompt builders for submitting new workups.
 - `physical-exam-catalog.js`: loads the physical exam maneuver catalog for the browser app.
+- `qr-codec.js`: QR/phone-handoff binary codec — base64url, BASE42/legacy-BASE45 QR-safe encodings, gzip, minimal CBOR encode/decode, zstd-dictionary compression (via `vendor/zstd-wasm/`). Extracted from `index.html`'s inline script; all consumers remain in `index.html`.
+- `phone-transfer-codec.js`: pure phone-handoff transfer-code/payload/mailbox helpers — `randomCode`, `encodePayload`/`decodePayload`, `normalizeTransferCode`, `assertMatchingBundleCode`, `phoneTransferCryptoKey`, `decryptEncryptedPhonePayloadTransferText` (PBKDF2 + AES-GCM), `phoneHandoffMailboxLinkFromText`, `importAesGcmMailboxKey`, `encryptPhoneHandoffMailboxPayload`/`decryptPhoneHandoffMailboxPayload`. Extracted from `index.html`; the stateful phone-handoff orchestration (`state`/`activePatient`-dependent functions like `currentPhonePayload`, `encryptedPhonePayloadTransferText`, mailbox RPC network calls) stays inline since it isn't pure. The compact QR checklist manifest/patch cluster (`expandCompactPhoneHandoffPayloadForQr` and neighbors, ~line 20500) is also NOT extracted — it's tightly coupled to checklist-catalog helpers (`checklistOptionsForItem`, `itemText`, `checklistKind`, `buildPhoneChecklistManifest`) used well beyond phone-handoff, so pulling it out needs a real catalog module boundary, not a mechanical cut.
 - `workup-report.js`: compact clinical workup/report formatting. Not wired into `index.html` today (test-only).
 - `checklist-organ-system-schema.js`: organ-system grouping schema used by `checklist.js`.
 - `clinical-intents.js`, `complaint-cds.js`, `evidence.js`, and `medical-knowledge/` are tightly coupled for clinical workup behavior — check them together.

@@ -1004,10 +1004,9 @@ assert.ok(
 assert.ok(
   appHtml.includes('id="workspaceOpenBedsideChecklistButton"')
     && appHtml.includes('id="workspaceChecklistSecondaryButton"')
-    && appHtml.includes("Build checklist from workup")
     && appHtml.includes("Select workup first")
     && appHtml.includes("Answer bedside checklist")
-    && appHtml.includes("Checklist rows appear here after building."),
+    && appHtml.includes("Choose a validated workup to build checklist rows automatically."),
   "patient checklist panel should expose one stateful primary action plus one contextual secondary action"
 );
 assert.ok(
