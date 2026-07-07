@@ -20861,6 +20861,9 @@ Rules:
       const candidates = [];
       const delta = compactPhoneHandoffDeltaPayloadForQr({ includeOptions });
       if (delta) candidates.push({ payload: delta, label: "registry delta", format: "delta" });
+      if (includeOptions) {
+        candidates.push({ payload: compactPhoneHandoffPayloadForQr({ includeOptions }), label: "full checklist", format: "full" });
+      }
       return candidates;
     }
 

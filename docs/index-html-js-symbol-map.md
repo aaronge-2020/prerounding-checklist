@@ -1,6 +1,6 @@
 # index.html Inline Script Symbol Map
 
-Generated lookup table, not narrative docs. Regenerate after edits to the inline `<script type="module">` block (currently `index.html:1765-24466`) with:
+Generated lookup table, not narrative docs. Regenerate after edits to the inline `<script type="module">` block (currently `index.html:1765-24469`) with:
 
 ```
 node scripts/gen-index-html-symbol-map.js
@@ -54,13 +54,13 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | applyChecklistReviewPasteBack | 19810 | Checklist / Complaint CDS / Clinical Intent |
 | applyDecisionTreeJson | 12789 | General/App State |
 | applyDeidResult | 15027 | De-identification & Vault |
-| applyInitialRouteState | 24408 | General/App State |
+| applyInitialRouteState | 24411 | General/App State |
 | applyLayoutPreferences | 3733 | Layout & Navigation Chrome |
 | applyPatientChecklistPatchText | 13729 | Checklist / Complaint CDS / Clinical Intent |
 | applyPhoneChecklistManifestPatch | 20564 | Checklist / Complaint CDS / Clinical Intent |
 | applyPromptWorkbenchCollapseState | 18561 | General/App State |
 | applyServiceFields | 3458 | Service Preferences & Picker |
-| applyStreamCameraHints | 21356 | General/App State |
+| applyStreamCameraHints | 21359 | General/App State |
 | applyStructuredRefinementText | 19777 | General/App State |
 | applyStructuredRefinementToSections | 16265 | General/App State |
 | applySupabaseWorkupCatalog | 5538 | Workup Studio & Contribution |
@@ -71,46 +71,46 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | applyWorkupStudioPublicCatalogVerification | 7419 | Workup Studio & Contribution |
 | applyWorkupStudioSession | 5762 | Workup Studio & Contribution |
 | applyWorkupStudioSessionUnguarded | 5774 | Workup Studio & Contribution |
-| applyZxingScannerCameraHints | 21345 | General/App State |
+| applyZxingScannerCameraHints | 21348 | General/App State |
 | approveLatestWorkupStudioChangeSet | 7689 | Workup Studio & Contribution |
 | asArray | 15680 | General/App State |
 | assertChecklistAnswerState | 16909 | Checklist / Complaint CDS / Clinical Intent |
 | assertMatchingBundleCode | 19968 | General/App State |
-| assertMatchingChecklistFingerprint | 21931 | Checklist / Complaint CDS / Clinical Intent |
-| assertMatchingPhoneChecklistManifest | 21914 | Checklist / Complaint CDS / Clinical Intent |
+| assertMatchingChecklistFingerprint | 21934 | Checklist / Complaint CDS / Clinical Intent |
+| assertMatchingPhoneChecklistManifest | 21917 | Checklist / Complaint CDS / Clinical Intent |
 | base64ToBytes | 3053 | General/App State |
 | baseChecklistOptionsForItem | 16601 | Checklist / Complaint CDS / Clinical Intent |
 | baseComplaintModulesById | 1780 | Checklist / Complaint CDS / Clinical Intent |
 | baseModuleById | 4668 | Checklist / Complaint CDS / Clinical Intent |
-| bindEvents | 23391 | General/App State |
+| bindEvents | 23394 | General/App State |
 | bindServicePicker | 3349 | Service Preferences & Picker |
-| bitsetBytesForIndexes | 22490 | General/App State |
+| bitsetBytesForIndexes | 22493 | General/App State |
 | broadEndorsementQuestion | 16863 | General/App State |
 | buildPatientChecklistInWorkspace | 16558 | Checklist / Complaint CDS / Clinical Intent |
-| buildPhoneChecklistManifest | 21867 | Checklist / Complaint CDS / Clinical Intent |
+| buildPhoneChecklistManifest | 21870 | Checklist / Complaint CDS / Clinical Intent |
 | buildTodayRoundsPrompt | 14439 | General/App State |
 | buildWorkupStudioSourcePrompt | 6441 | Workup Studio & Contribution |
 | bytesToBase64 | 3047 | General/App State |
-| cameraTrackEnhancementConstraints | 21333 | General/App State |
+| cameraTrackEnhancementConstraints | 21336 | General/App State |
 | captureWorkupStudioAuthRedirectError | 5845 | Workup Studio & Contribution |
 | changeSetToSupabaseRow | 5980 | Supabase & Auth |
 | checklistAnswerMetadataForItem | 16636 | Checklist / Complaint CDS / Clinical Intent |
 | checklistAuditSummaryText | 18211 | Checklist / Complaint CDS / Clinical Intent |
-| checklistEntryForIdentity | 22302 | Checklist / Complaint CDS / Clinical Intent |
-| checklistEntryForImportedRow | 22315 | Checklist / Complaint CDS / Clinical Intent |
+| checklistEntryForIdentity | 22305 | Checklist / Complaint CDS / Clinical Intent |
+| checklistEntryForImportedRow | 22318 | Checklist / Complaint CDS / Clinical Intent |
 | checklistEntryForKey | 17181 | Checklist / Complaint CDS / Clinical Intent |
 | checklistEntryForLabel | 10219 | Checklist / Complaint CDS / Clinical Intent |
-| checklistEntryForParts | 22296 | Checklist / Complaint CDS / Clinical Intent |
+| checklistEntryForParts | 22299 | Checklist / Complaint CDS / Clinical Intent |
 | checklistEntryMatchesSearch | 17234 | Checklist / Complaint CDS / Clinical Intent |
 | checklistEntrySearchText | 17212 | Checklist / Complaint CDS / Clinical Intent |
 | checklistFindingForLabel | 10228 | Checklist / Complaint CDS / Clinical Intent |
-| checklistFlatEntries | 22478 | Checklist / Complaint CDS / Clinical Intent |
-| checklistFlatIndexForKey | 22482 | Checklist / Complaint CDS / Clinical Intent |
+| checklistFlatEntries | 22481 | Checklist / Complaint CDS / Clinical Intent |
+| checklistFlatIndexForKey | 22485 | Checklist / Complaint CDS / Clinical Intent |
 | checklistHasLocalBedsideWork | 4753 | Evidence & Physical Exam |
 | checklistHasResponseArtifacts | 4746 | Checklist / Complaint CDS / Clinical Intent |
 | checklistImprovementRefinementNotes | 13860 | Checklist / Complaint CDS / Clinical Intent |
-| checklistItemIdentity | 22288 | Checklist / Complaint CDS / Clinical Intent |
-| checklistKeyForFlatIndex | 22486 | Checklist / Complaint CDS / Clinical Intent |
+| checklistItemIdentity | 22291 | Checklist / Complaint CDS / Clinical Intent |
+| checklistKeyForFlatIndex | 22489 | Checklist / Complaint CDS / Clinical Intent |
 | checklistKind | 16589 | Checklist / Complaint CDS / Clinical Intent |
 | checklistModuleSignature | 4735 | Checklist / Complaint CDS / Clinical Intent |
 | checklistNormalAnswersForItem | 17135 | Checklist / Complaint CDS / Clinical Intent |
@@ -124,12 +124,12 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | checklistStatusLabel | 17122 | Checklist / Complaint CDS / Clinical Intent |
 | checklistTotalCount | 16585 | Checklist / Complaint CDS / Clinical Intent |
 | checklistValuesConflict | 17018 | Checklist / Complaint CDS / Clinical Intent |
-| chooseInitialRoute | 24339 | General/App State |
-| chunkPhoneQrToken | 20900 | QR / Phone Handoff |
+| chooseInitialRoute | 24342 | General/App State |
+| chunkPhoneQrToken | 20903 | QR / Phone Handoff |
 | clampLayoutSize | 3718 | Layout & Navigation Chrome |
 | classifyTodaySmartPaste | 14535 | General/App State |
 | cleanEndorsementComponent | 16774 | General/App State |
-| cleanPhoneQrUrl | 21218 | QR / Phone Handoff |
+| cleanPhoneQrUrl | 21221 | QR / Phone Handoff |
 | cleanWorkupStudioSourceValue | 6293 | Workup Studio & Contribution |
 | clearActiveChecklistSection | 17605 | Checklist / Complaint CDS / Clinical Intent |
 | clearAllChecklistAnswers | 17623 | Checklist / Complaint CDS / Clinical Intent |
@@ -137,8 +137,8 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | clearChecklistResponseArtifacts | 9666 | Checklist / Complaint CDS / Clinical Intent |
 | clearImportedPhoneAnswers | 19613 | QR / Phone Handoff |
 | clearPatientChecklistEditorDraft | 13081 | Checklist / Complaint CDS / Clinical Intent |
-| clearPhoneQrScannerGuidanceTimer | 21255 | QR / Phone Handoff |
-| clearReturnQrScannerGuidanceTimer | 21704 | QR / Phone Handoff |
+| clearPhoneQrScannerGuidanceTimer | 21258 | QR / Phone Handoff |
+| clearReturnQrScannerGuidanceTimer | 21707 | QR / Phone Handoff |
 | clearStalePhonePayload | 20001 | QR / Phone Handoff |
 | clearSupabaseWorkupCatalog | 5608 | Workup Studio & Contribution |
 | clearWorkupStudioAuthSession | 5411 | Workup Studio & Contribution |
@@ -153,31 +153,31 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | closeAllServicePickers | 3273 | Service Preferences & Picker |
 | closeDecisionTreeEditor | 12657 | General/App State |
 | closeDischargeConfirmation | 4365 | Notes / H&P / Discharge |
-| closePhiOverlay | 23122 | General/App State |
-| closePhoneReturnQr | 22893 | QR / Phone Handoff |
+| closePhiOverlay | 23125 | General/App State |
+| closePhoneReturnQr | 22896 | QR / Phone Handoff |
 | closeQuickDeid | 15193 | De-identification & Vault |
 | closeRebuildChecklistConfirmation | 4381 | Checklist / Complaint CDS / Clinical Intent |
 | closeServicePicker | 3262 | Service Preferences & Picker |
 | closeServiceSettings | 3487 | General/App State |
 | closestReviewedModules | 9312 | Checklist / Complaint CDS / Clinical Intent |
 | coercePatientTabForDevice | 9727 | Patient Roster / Admission |
-| collectPhoneQrChunk | 21629 | QR / Phone Handoff |
-| collectQrChunk | 21606 | QR / Phone Handoff |
-| collectReturnQrChunk | 21635 | QR / Phone Handoff |
+| collectPhoneQrChunk | 21632 | QR / Phone Handoff |
+| collectQrChunk | 21609 | QR / Phone Handoff |
+| collectReturnQrChunk | 21638 | QR / Phone Handoff |
 | commitChecklistAnswer | 16926 | Checklist / Complaint CDS / Clinical Intent |
 | commitImportedPhoneAnswerEdit | 19418 | QR / Phone Handoff |
-| compactAnswerComponent | 22327 | General/App State |
-| compactAnswerKeyParts | 22283 | General/App State |
+| compactAnswerComponent | 22330 | General/App State |
+| compactAnswerKeyParts | 22286 | General/App State |
 | compactAnswerMenuItem | 17004 | General/App State |
-| compactChecklistAnswerBitsetPayload | 22509 | Checklist / Complaint CDS / Clinical Intent |
+| compactChecklistAnswerBitsetPayload | 22512 | Checklist / Complaint CDS / Clinical Intent |
 | compactChecklistAnswerMode | 20237 | Checklist / Complaint CDS / Clinical Intent |
-| compactChecklistAnswerRows | 22360 | Checklist / Complaint CDS / Clinical Intent |
-| compactChecklistAnswerRowsV4 | 22420 | Checklist / Complaint CDS / Clinical Intent |
+| compactChecklistAnswerRows | 22363 | Checklist / Complaint CDS / Clinical Intent |
+| compactChecklistAnswerRowsV4 | 22423 | Checklist / Complaint CDS / Clinical Intent |
 | compactChecklistCategory | 20224 | Checklist / Complaint CDS / Clinical Intent |
-| compactChecklistItemForManifest | 21838 | Checklist / Complaint CDS / Clinical Intent |
-| compactChecklistNoteIndexRows | 22541 | Checklist / Complaint CDS / Clinical Intent |
-| compactChecklistNoteRows | 22396 | Checklist / Complaint CDS / Clinical Intent |
-| compactChecklistNoteRowsV4 | 22456 | Checklist / Complaint CDS / Clinical Intent |
+| compactChecklistItemForManifest | 21841 | Checklist / Complaint CDS / Clinical Intent |
+| compactChecklistNoteIndexRows | 22544 | Checklist / Complaint CDS / Clinical Intent |
+| compactChecklistNoteRows | 22399 | Checklist / Complaint CDS / Clinical Intent |
+| compactChecklistNoteRowsV4 | 22459 | Checklist / Complaint CDS / Clinical Intent |
 | compactChecklistSectionsForQr | 20269 | Checklist / Complaint CDS / Clinical Intent |
 | compactChecklistSectionsForQr2 | 20295 | Checklist / Complaint CDS / Clinical Intent |
 | compactDecisionTreeNodeDetail | 11370 | General/App State |
@@ -188,13 +188,13 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | compactPatientCanvasEdgeLabel | 11092 | Lab Timeline |
 | compactPhoneHandoffDeltaPayloadForQr | 20651 | QR / Phone Handoff |
 | compactPhoneHandoffPayloadForQr | 20627 | QR / Phone Handoff |
-| compactPhoneReturnPayloadForQr | 22602 | QR / Phone Handoff |
-| compactPhoneReturnPayloadForQrV4 | 22563 | QR / Phone Handoff |
-| compactPhoneReturnPayloadForQrV6 | 22581 | QR / Phone Handoff |
-| compactReturnAnswerCount | 22705 | General/App State |
-| compactReturnNoteCount | 22711 | Notes / H&P / Discharge |
-| compactStringFingerprint | 21797 | Generic Utilities |
-| compactStringFingerprint64 | 21807 | Generic Utilities |
+| compactPhoneReturnPayloadForQr | 22605 | QR / Phone Handoff |
+| compactPhoneReturnPayloadForQrV4 | 22566 | QR / Phone Handoff |
+| compactPhoneReturnPayloadForQrV6 | 22584 | QR / Phone Handoff |
+| compactReturnAnswerCount | 22708 | General/App State |
+| compactReturnNoteCount | 22714 | Notes / H&P / Discharge |
+| compactStringFingerprint | 21800 | Generic Utilities |
+| compactStringFingerprint64 | 21810 | Generic Utilities |
 | compactWorkupStudioPromptLine | 6185 | Workup Studio & Contribution |
 | compareRuleValue | 11002 | General/App State |
 | complaintModuleForSelectedIntents | 15266 | Checklist / Complaint CDS / Clinical Intent |
@@ -212,31 +212,31 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | contributionPrompt | 8959 | Workup Studio & Contribution |
 | copyContributionPrompt | 8963 | Workup Studio & Contribution |
 | copyPatientChecklistPatchPrompt | 13985 | Checklist / Complaint CDS / Clinical Intent |
-| copyPhonePayloadForTransfer | 22169 | QR / Phone Handoff |
-| copyPhoneQrLinkForTransfer | 21177 | QR / Phone Handoff |
-| copyPhoneReturnPayload | 22270 | QR / Phone Handoff |
-| copyText | 23127 | General/App State |
+| copyPhonePayloadForTransfer | 22172 | QR / Phone Handoff |
+| copyPhoneQrLinkForTransfer | 21180 | QR / Phone Handoff |
+| copyPhoneReturnPayload | 22273 | QR / Phone Handoff |
+| copyText | 23130 | General/App State |
 | copyTodayRoundsPrompt | 14588 | General/App State |
 | countReviewPayloadItems | 7782 | General/App State |
 | createNewWorkupFromAI | 9187 | Workup Studio & Contribution |
 | createPatientFromAdmission | 4303 | Patient Roster / Admission |
 | createPhoneHandoffMailboxLink | 20175 | QR / Phone Handoff |
-| createPhonePayload | 22113 | QR / Phone Handoff |
-| createPhoneQrDeepLink | 20867 | QR / Phone Handoff |
+| createPhonePayload | 22116 | QR / Phone Handoff |
+| createPhoneQrDeepLink | 20870 | QR / Phone Handoff |
 | createPhoneQrMailboxDeepLink | 20851 | QR / Phone Handoff |
-| createPhoneReturnPayload | 22265 | QR / Phone Handoff |
-| createPhoneReturnPayloadObject | 22237 | QR / Phone Handoff |
-| createPhoneReturnQrText | 22716 | QR / Phone Handoff |
+| createPhoneReturnPayload | 22268 | QR / Phone Handoff |
+| createPhoneReturnPayloadObject | 22240 | QR / Phone Handoff |
+| createPhoneReturnQrText | 22719 | QR / Phone Handoff |
 | createVaultFromPassword | 4050 | De-identification & Vault |
 | createWorkupStudioSourceDraft | 6726 | Workup Studio & Contribution |
-| createZxingQrReader | 21300 | QR / Phone Handoff |
-| currentChecklistAnswerKeySet | 21935 | Checklist / Complaint CDS / Clinical Intent |
+| createZxingQrReader | 21303 | QR / Phone Handoff |
+| currentChecklistAnswerKeySet | 21938 | Checklist / Complaint CDS / Clinical Intent |
 | currentContinuityDay | 14359 | Continuity |
 | currentContributionPromptOptions | 8942 | Workup Studio & Contribution |
 | currentDecisionTreeGraph | 10939 | Clinical Pathway Graph |
 | currentModuleEnvelopeWithDecisionTree | 12807 | Checklist / Complaint CDS / Clinical Intent |
 | currentOpenEvidencePromptTemplate | 18496 | Evidence & Physical Exam |
-| currentPhoneManifestHash | 21910 | QR / Phone Handoff |
+| currentPhoneManifestHash | 21913 | QR / Phone Handoff |
 | currentPhonePayload | 20016 | QR / Phone Handoff |
 | currentPhoneTransferCode | 19977 | QR / Phone Handoff |
 | currentRefinementInputText | 19822 | General/App State |
@@ -258,11 +258,11 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | decisionTreeOutlineDetailText | 11949 | General/App State |
 | decisionTreeTraversalSummary | 11229 | General/App State |
 | decodePayload | 19954 | General/App State |
-| decodePhoneBundleInput | 21961 | QR / Phone Handoff |
+| decodePhoneBundleInput | 21964 | QR / Phone Handoff |
 | decodePhoneQrToken | 20763 | QR / Phone Handoff |
-| decodePhoneReturnInput | 22954 | QR / Phone Handoff |
-| decodePhoneReturnQrToken | 22660 | QR / Phone Handoff |
-| decodeQrTextFromCanvas | 21424 | QR / Phone Handoff |
+| decodePhoneReturnInput | 22957 | QR / Phone Handoff |
+| decodePhoneReturnQrToken | 22663 | QR / Phone Handoff |
+| decodeQrTextFromCanvas | 21427 | QR / Phone Handoff |
 | decryptEncryptedPhonePayloadTransferText | 20074 | De-identification & Vault |
 | decryptPhoneHandoffMailboxPayload | 20164 | De-identification & Vault |
 | decryptVaultPayload | 3100 | De-identification & Vault |
@@ -280,7 +280,7 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | dkaDecisionTreeNodes | 10437 | General/App State |
 | downloadDecisionTreeJson | 12825 | General/App State |
 | downloadDecisionTreeModuleJson | 12829 | Checklist / Complaint CDS / Clinical Intent |
-| downloadFile | 23144 | General/App State |
+| downloadFile | 23147 | General/App State |
 | duplicateWorkupStudioSectionItem | 8210 | Workup Studio & Contribution |
 | editedImportedAnswerValue | 19397 | General/App State |
 | effectiveClinicalIntentRegistry | 15246 | Checklist / Complaint CDS / Clinical Intent |
@@ -293,7 +293,7 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | emptyWorkupStudioBackendState | 5110 | Workup Studio & Contribution |
 | encodePayload | 19947 | General/App State |
 | encodePhoneQrToken | 20759 | QR / Phone Handoff |
-| encodePhoneReturnQrToken | 22633 | QR / Phone Handoff |
+| encodePhoneReturnQrToken | 22636 | QR / Phone Handoff |
 | encryptedPhonePayloadTransferText | 20049 | De-identification & Vault |
 | encryptedVaultRecord | 3110 | De-identification & Vault |
 | encryptPhoneHandoffMailboxPayload | 20145 | De-identification & Vault |
@@ -318,20 +318,20 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | evaluateUiComplaintCds | 15810 | Checklist / Complaint CDS / Clinical Intent |
 | evidenceSourceRowAsComplaintSource | 15735 | Evidence & Physical Exam |
 | expandAllImportedAnswerGroups | 19599 | General/App State |
-| expandCompactAnswerComponent | 22343 | General/App State |
-| expandCompactAnswerValueList | 22432 | General/App State |
-| expandCompactChecklistAnswerBitsetPayload | 22525 | Checklist / Complaint CDS / Clinical Intent |
+| expandCompactAnswerComponent | 22346 | General/App State |
+| expandCompactAnswerValueList | 22435 | General/App State |
+| expandCompactChecklistAnswerBitsetPayload | 22528 | Checklist / Complaint CDS / Clinical Intent |
 | expandCompactChecklistAnswerMode | 20245 | Checklist / Complaint CDS / Clinical Intent |
-| expandCompactChecklistAnswerRows | 22374 | Checklist / Complaint CDS / Clinical Intent |
-| expandCompactChecklistAnswerRowsV4 | 22439 | Checklist / Complaint CDS / Clinical Intent |
+| expandCompactChecklistAnswerRows | 22377 | Checklist / Complaint CDS / Clinical Intent |
+| expandCompactChecklistAnswerRowsV4 | 22442 | Checklist / Complaint CDS / Clinical Intent |
 | expandCompactChecklistCategory | 20231 | Checklist / Complaint CDS / Clinical Intent |
-| expandCompactChecklistNoteIndexRows | 22551 | Checklist / Complaint CDS / Clinical Intent |
-| expandCompactChecklistNoteRows | 22407 | Checklist / Complaint CDS / Clinical Intent |
-| expandCompactChecklistNoteRowsV4 | 22466 | Checklist / Complaint CDS / Clinical Intent |
+| expandCompactChecklistNoteIndexRows | 22554 | Checklist / Complaint CDS / Clinical Intent |
+| expandCompactChecklistNoteRows | 22410 | Checklist / Complaint CDS / Clinical Intent |
+| expandCompactChecklistNoteRowsV4 | 22469 | Checklist / Complaint CDS / Clinical Intent |
 | expandCompactChecklistSectionsForQr | 20317 | Checklist / Complaint CDS / Clinical Intent |
 | expandCompactChecklistSectionsForQr2 | 20347 | Checklist / Complaint CDS / Clinical Intent |
 | expandCompactPhoneHandoffPayloadForQr | 20692 | QR / Phone Handoff |
-| expandCompactPhoneReturnPayloadForQr | 22606 | QR / Phone Handoff |
+| expandCompactPhoneReturnPayloadForQr | 22609 | QR / Phone Handoff |
 | expandManifestItemPatch | 20458 | General/App State |
 | expandManifestSectionPatch | 20431 | General/App State |
 | explicitChecklistArray | 16622 | Checklist / Complaint CDS / Clinical Intent |
@@ -344,10 +344,10 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | feverSepsisFallbackGraph | 10779 | Clinical Pathway Graph |
 | fillPatientChecklistEditorFromEntry | 13020 | Checklist / Complaint CDS / Clinical Intent |
 | fillTodayInputFields | 14387 | General/App State |
-| filterCurrentChecklistMap | 21945 | Checklist / Complaint CDS / Clinical Intent |
+| filterCurrentChecklistMap | 21948 | Checklist / Complaint CDS / Clinical Intent |
 | finalizePatientChecklistEdit | 13247 | Checklist / Complaint CDS / Clinical Intent |
-| findDesktopPanelRoute | 24304 | General/App State |
-| findNamedViewRoute | 24333 | General/App State |
+| findDesktopPanelRoute | 24307 | General/App State |
+| findNamedViewRoute | 24336 | General/App State |
 | findPatientChecklistPatchEntry | 13720 | Checklist / Complaint CDS / Clinical Intent |
 | flattenDecisionTree | 10949 | General/App State |
 | flushVaultSave | 3710 | De-identification & Vault |
@@ -370,7 +370,7 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | handleClearAllPrompts | 18592 | General/App State |
 | handleConfirmPromptClick | 18604 | General/App State |
 | handleMissingWorkupAction | 9451 | Workup Studio & Contribution |
-| handlePhoneQrScannerDecodedText | 21641 | QR / Phone Handoff |
+| handlePhoneQrScannerDecodedText | 21644 | QR / Phone Handoff |
 | handleResizeKeydown | 3882 | General/App State |
 | handleSavePromptTemplateClick | 18525 | General/App State |
 | handleTogglePromptWorkbench | 18586 | General/App State |
@@ -384,10 +384,10 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | iconSvg | 4565 | General/App State |
 | importAesGcmMailboxKey | 20135 | General/App State |
 | importedAnswerSummaryRows | 19374 | General/App State |
-| importPhoneFindings | 23090 | QR / Phone Handoff |
-| importPhoneFindingsFromText | 23027 | QR / Phone Handoff |
+| importPhoneFindings | 23093 | QR / Phone Handoff |
+| importPhoneFindingsFromText | 23030 | QR / Phone Handoff |
 | includedItems | 15756 | General/App State |
-| indexesFromBitsetBytes | 22500 | General/App State |
+| indexesFromBitsetBytes | 22503 | General/App State |
 | insertPromptVariable | 18446 | General/App State |
 | installLayoutResizers | 3899 | Layout & Navigation Chrome |
 | invalidatePhonePayloadAfterChecklistEdit | 13235 | Checklist / Complaint CDS / Clinical Intent |
@@ -404,17 +404,17 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | itemFindingText | 17062 | General/App State |
 | itemNote | 17054 | Notes / H&P / Discharge |
 | itemText | 15913 | General/App State |
-| jsQrDecodeFromCanvas | 21411 | QR / Phone Handoff |
+| jsQrDecodeFromCanvas | 21414 | QR / Phone Handoff |
 | jumpToPatientPanel | 14980 | Patient Roster / Admission |
-| legacyPhoneChecklistFingerprint | 21890 | Checklist / Complaint CDS / Clinical Intent |
+| legacyPhoneChecklistFingerprint | 21893 | Checklist / Complaint CDS / Clinical Intent |
 | legacyWorkupStudioPromptTemplate | 6838 | Workup Studio & Contribution |
 | listLocalDraftWorkups | 2432 | Workup Studio & Contribution |
 | loadDemoCase | 4225 | General/App State |
-| loadDesktopPhoneBundle | 22008 | QR / Phone Handoff |
-| loadDesktopPhoneBundleFromAnyText | 21196 | QR / Phone Handoff |
+| loadDesktopPhoneBundle | 22011 | QR / Phone Handoff |
+| loadDesktopPhoneBundleFromAnyText | 21199 | QR / Phone Handoff |
 | loadLayoutPreferences | 3791 | Layout & Navigation Chrome |
 | loadLocalDraftWorkupsOnStartup | 2412 | Workup Studio & Contribution |
-| loadPhoneQrDeepLinkFromLocation | 21229 | QR / Phone Handoff |
+| loadPhoneQrDeepLinkFromLocation | 21232 | QR / Phone Handoff |
 | loadServicePreferences | 3213 | Service Preferences & Picker |
 | loadSupabaseWorkupCatalog | 5660 | Workup Studio & Contribution |
 | loadWorkupStudioBackendChangeSets | 6071 | Workup Studio & Contribution |
@@ -423,10 +423,10 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | loadWorkupStudioState | 5898 | Workup Studio & Contribution |
 | localQrChunkFromText | 20802 | QR / Phone Handoff |
 | localQrChunkText | 20798 | QR / Phone Handoff |
-| localQrScannerAvailable | 21296 | Lab Timeline |
+| localQrScannerAvailable | 21299 | Lab Timeline |
 | localWorkupChangeSetsForModule | 4676 | Workup Studio & Contribution |
 | lockVault | 4245 | De-identification & Vault |
-| looksLikePhoneBundleText | 22981 | QR / Phone Handoff |
+| looksLikePhoneBundleText | 22984 | QR / Phone Handoff |
 | manifestItemById | 20496 | General/App State |
 | manifestSectionById | 20492 | General/App State |
 | manifestSectionMeta | 20399 | General/App State |
@@ -455,8 +455,8 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | moveSelectedDecisionTreeNode | 12772 | General/App State |
 | moveServicePickerActiveOption | 3326 | Service Preferences & Picker |
 | multiSelectChecklistItem | 16983 | Checklist / Complaint CDS / Clinical Intent |
-| nativeQrDecodeFromCanvas | 21400 | QR / Phone Handoff |
-| nativeQrDetectorAvailable | 21381 | Lab Timeline |
+| nativeQrDecodeFromCanvas | 21403 | QR / Phone Handoff |
+| nativeQrDetectorAvailable | 21384 | Lab Timeline |
 | normalizedAnswerComponent | 16709 | General/App State |
 | normalizedChecklistSearch | 17204 | Checklist / Complaint CDS / Clinical Intent |
 | normalizedExamText | 15222 | Evidence & Physical Exam |
@@ -492,12 +492,12 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | openDecisionTreeEditor | 12665 | General/App State |
 | openEvidencePromptFields | 18490 | Evidence & Physical Exam |
 | openEvidencePromptVariables | 18226 | Evidence & Physical Exam |
-| openFinalFindingsReview | 22930 | General/App State |
+| openFinalFindingsReview | 22933 | General/App State |
 | openImportedPhoneAnswerItem | 19430 | QR / Phone Handoff |
-| openPhiOverlay | 23112 | General/App State |
+| openPhiOverlay | 23115 | General/App State |
 | openPhoneChecklistPrimary | 14205 | Checklist / Complaint CDS / Clinical Intent |
-| openPhoneReturnQrOverlay | 22907 | QR / Phone Handoff |
-| openPromptsAfterPhoneImport | 22940 | QR / Phone Handoff |
+| openPhoneReturnQrOverlay | 22910 | QR / Phone Handoff |
+| openPromptsAfterPhoneImport | 22943 | QR / Phone Handoff |
 | openQuickDeid | 15188 | De-identification & Vault |
 | openRebuildChecklistConfirmation | 4385 | Checklist / Complaint CDS / Clinical Intent |
 | openServicePicker | 3315 | Service Preferences & Picker |
@@ -516,8 +516,8 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | parseStructuredWorkupRefinement | 16260 | Workup Studio & Contribution |
 | parseStudioOptionList | 8295 | Workup Studio & Contribution |
 | parseWorkupStudioOpenEvidenceResult | 7271 | Workup Studio & Contribution |
-| pasteDesktopPhoneBundleFromClipboard | 22214 | QR / Phone Handoff |
-| pastePhoneFindingsFromClipboard | 23094 | QR / Phone Handoff |
+| pasteDesktopPhoneBundleFromClipboard | 22217 | QR / Phone Handoff |
+| pastePhoneFindingsFromClipboard | 23097 | QR / Phone Handoff |
 | patchItemPayloadFromChecklistEntry | 13373 | Checklist / Complaint CDS / Clinical Intent |
 | patientById | 3124 | Patient Roster / Admission |
 | patientCanvasBranchState | 11109 | Patient Roster / Admission |
@@ -557,8 +557,8 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | patientWorkupPanelElement | 12608 | Workup Studio & Contribution |
 | payloadCandidateFromOpenEvidenceResult | 7207 | Evidence & Physical Exam |
 | persistWorkupStudioChangeSet | 6050 | Workup Studio & Contribution |
-| phoneChecklistFingerprint | 21906 | Checklist / Complaint CDS / Clinical Intent |
-| phoneChecklistManifestHash | 21885 | Checklist / Complaint CDS / Clinical Intent |
+| phoneChecklistFingerprint | 21909 | Checklist / Complaint CDS / Clinical Intent |
+| phoneChecklistManifestHash | 21888 | Checklist / Complaint CDS / Clinical Intent |
 | phoneChecklistManifestPatchOperations | 20500 | Checklist / Complaint CDS / Clinical Intent |
 | phoneChecklistRefinementSummary | 14066 | Checklist / Complaint CDS / Clinical Intent |
 | phoneHandoffCompactPayloadCandidatesForQr | 20860 | QR / Phone Handoff |
@@ -573,15 +573,15 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | phonePayloadFromQrDeepLink | 20844 | QR / Phone Handoff |
 | phonePayloadTransferText | 20024 | QR / Phone Handoff |
 | phoneQrChunkFromText | 20817 | QR / Phone Handoff |
-| phoneQrDisplayPayloadsForLink | 20909 | QR / Phone Handoff |
-| phoneQrStatusHint | 20998 | QR / Phone Handoff |
-| phoneQrSvgForDisplayPayload | 20991 | QR / Phone Handoff |
-| phoneQrSvgForLink | 20983 | QR / Phone Handoff |
+| phoneQrDisplayPayloadsForLink | 20912 | QR / Phone Handoff |
+| phoneQrStatusHint | 21001 | QR / Phone Handoff |
+| phoneQrSvgForDisplayPayload | 20994 | QR / Phone Handoff |
+| phoneQrSvgForLink | 20986 | QR / Phone Handoff |
 | phoneQrTokenFromText | 20782 | QR / Phone Handoff |
-| phoneReturnPayloadFromQrText | 22698 | QR / Phone Handoff |
-| phoneReturnQrDisplayPayloadsForLink | 22748 | QR / Phone Handoff |
-| phoneReturnQrSvgForDisplayPayload | 22774 | QR / Phone Handoff |
-| phoneReturnTokenFromText | 22682 | QR / Phone Handoff |
+| phoneReturnPayloadFromQrText | 22701 | QR / Phone Handoff |
+| phoneReturnQrDisplayPayloadsForLink | 22751 | QR / Phone Handoff |
+| phoneReturnQrSvgForDisplayPayload | 22777 | QR / Phone Handoff |
+| phoneReturnTokenFromText | 22685 | QR / Phone Handoff |
 | phoneTransferCryptoKey | 20030 | QR / Phone Handoff |
 | plainObject | 19960 | General/App State |
 | populatePatientWorkupSelect | 9561 | Workup Studio & Contribution |
@@ -590,22 +590,22 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | populateWorkupStudioSourceMetadataDefaults | 6378 | Workup Studio & Contribution |
 | postgrestInFilter | 5629 | Generic Utilities |
 | prepareGithubContribution | 9049 | Workup Studio & Contribution |
-| preparePhoneHandoff | 22998 | QR / Phone Handoff |
-| preparePhoneQrScannerVideo | 21367 | QR / Phone Handoff |
+| preparePhoneHandoff | 23001 | QR / Phone Handoff |
+| preparePhoneQrScannerVideo | 21370 | QR / Phone Handoff |
 | prepareWorkspaceAfterUnlock | 3978 | General/App State |
-| primeChecklistWorkflow | 24351 | Checklist / Complaint CDS / Clinical Intent |
+| primeChecklistWorkflow | 24354 | Checklist / Complaint CDS / Clinical Intent |
 | promptTemplateFromResolvedPrompt | 18397 | General/App State |
 | publicCatalogWorkupStatus | 7367 | Workup Studio & Contribution |
 | publicWorkupCatalogConfigured | 5147 | Workup Studio & Contribution |
 | publishNewWorkupToSupabase | 9120 | Workup Studio & Contribution |
 | publishWorkupStudioCanonicalSection | 7451 | Workup Studio & Contribution |
 | publishWorkupStudioChangeSet | 7524 | Workup Studio & Contribution |
-| qrModeForText | 20937 | QR / Phone Handoff |
-| qrScannerConstraintAttempts | 21308 | QR / Phone Handoff |
-| qrSvgForSegments | 20941 | QR / Phone Handoff |
-| qrSvgForText | 20963 | QR / Phone Handoff |
-| qrSvgForTextWithSegment | 20967 | QR / Phone Handoff |
-| queryText | 24300 | General/App State |
+| qrModeForText | 20940 | QR / Phone Handoff |
+| qrScannerConstraintAttempts | 21311 | QR / Phone Handoff |
+| qrSvgForSegments | 20944 | QR / Phone Handoff |
+| qrSvgForText | 20966 | QR / Phone Handoff |
+| qrSvgForTextWithSegment | 20970 | QR / Phone Handoff |
+| queryText | 24303 | General/App State |
 | randomBase64 | 3058 | General/App State |
 | randomCode | 19942 | General/App State |
 | rawJsonObjectFromText | 10716 | General/App State |
@@ -644,7 +644,7 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | renderEvidenceReferenceCards | 17316 | Evidence & Physical Exam |
 | renderFinalUpdate | 19911 | General/App State |
 | renderGenericPasteBackPreview | 19029 | General/App State |
-| renderHandoff | 23020 | General/App State |
+| renderHandoff | 23023 | General/App State |
 | renderImportedPhoneAnswerSummary | 19465 | QR / Phone Handoff |
 | renderModifierChips | 15613 | General/App State |
 | renderObjectiveChips | 10162 | General/App State |
@@ -664,9 +664,9 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | renderPatientWorkupResults | 9480 | Workup Studio & Contribution |
 | renderPhoneChecklistLauncher | 14164 | Checklist / Complaint CDS / Clinical Intent |
 | renderPhoneChecklistWorkupResults | 14101 | Workup Studio & Contribution |
-| renderPhoneQrCandidate | 21024 | QR / Phone Handoff |
-| renderPhoneQrCode | 21070 | QR / Phone Handoff |
-| renderPhoneReturnQrCode | 22781 | QR / Phone Handoff |
+| renderPhoneQrCandidate | 21027 | QR / Phone Handoff |
+| renderPhoneQrCode | 21073 | QR / Phone Handoff |
+| renderPhoneReturnQrCode | 22784 | QR / Phone Handoff |
 | renderPromptVariableBar | 18461 | General/App State |
 | renderRoundsPasteBackPreview | 18987 | General/App State |
 | renderSelectedWorkupCard | 9542 | Workup Studio & Contribution |
@@ -698,8 +698,8 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | rerenderAfterSupabaseWorkupCatalogSync | 5595 | Workup Studio & Contribution |
 | resetCurrentOpenEvidencePromptTemplate | 18551 | Evidence & Physical Exam |
 | resetNoSaveSession | 4100 | Supabase & Auth |
-| resetPhoneQrChunkScanner | 21598 | QR / Phone Handoff |
-| resetReturnQrChunkScanner | 21602 | QR / Phone Handoff |
+| resetPhoneQrChunkScanner | 21601 | QR / Phone Handoff |
+| resetReturnQrChunkScanner | 21605 | QR / Phone Handoff |
 | resetWorkflowArtifacts | 3492 | General/App State |
 | resetWorkupStudioPromptTemplate | 7009 | Workup Studio & Contribution |
 | resolvedOpenEvidencePromptText | 18657 | Evidence & Physical Exam |
@@ -708,7 +708,7 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | restoreState | 3687 | General/App State |
 | reviewedSourceContextText | 14263 | General/App State |
 | roundsPasteBackSummaryText | 18975 | General/App State |
-| routeForNamedView | 24317 | General/App State |
+| routeForNamedView | 24320 | General/App State |
 | runQuickDeid | 15197 | De-identification & Vault |
 | runWorkspaceContinuityDeid | 15133 | De-identification & Vault |
 | runWorkspaceDeid | 15078 | De-identification & Vault |
@@ -747,8 +747,8 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | saveWorkupStudioStateNow | 5972 | Workup Studio & Contribution |
 | scheduleDecisionTreeNodeUpdate | 12709 | General/App State |
 | schedulePatientWorkupSearch | 9619 | Workup Studio & Contribution |
-| schedulePhoneQrScannerGuidance | 21261 | QR / Phone Handoff |
-| scheduleReturnQrScannerGuidance | 21710 | QR / Phone Handoff |
+| schedulePhoneQrScannerGuidance | 21264 | QR / Phone Handoff |
+| scheduleReturnQrScannerGuidance | 21713 | QR / Phone Handoff |
 | scheduleStandaloneWorkupSearch | 9608 | Workup Studio & Contribution |
 | scrollChecklistEntry | 17519 | Checklist / Complaint CDS / Clinical Intent |
 | scrollPatientPanelIntoView | 9692 | Patient Roster / Admission |
@@ -788,7 +788,7 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | setChecklistBuildDisabled | 9679 | Checklist / Complaint CDS / Clinical Intent |
 | setEndorsementAnswer | 16965 | General/App State |
 | setFieldValueIfInactive | 14364 | General/App State |
-| setHandoffStatus | 22000 | General/App State |
+| setHandoffStatus | 22003 | General/App State |
 | setLayoutNavCollapsed | 3840 | Layout & Navigation Chrome |
 | setLayoutSize | 3875 | Layout & Navigation Chrome |
 | setObjectiveDataValue | 10134 | General/App State |
@@ -797,29 +797,29 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | setPatientRosterExpanded | 4544 | Patient Roster / Admission |
 | setPatientTab | 9744 | Patient Roster / Admission |
 | setPatientWorkupPane | 4621 | Workup Studio & Contribution |
-| setPhoneBundleLoadStatus | 21988 | QR / Phone Handoff |
-| setPhoneQrScannerActive | 21271 | QR / Phone Handoff |
-| setPhoneQrScannerStatus | 21251 | QR / Phone Handoff |
-| setPhoneReturnQrMaximized | 22899 | QR / Phone Handoff |
+| setPhoneBundleLoadStatus | 21991 | QR / Phone Handoff |
+| setPhoneQrScannerActive | 21274 | QR / Phone Handoff |
+| setPhoneQrScannerStatus | 21254 | QR / Phone Handoff |
+| setPhoneReturnQrMaximized | 22902 | QR / Phone Handoff |
 | setPromptTemplateEditingState | 18505 | General/App State |
-| setReturnQrScannerActive | 21720 | QR / Phone Handoff |
-| setReturnQrScannerStatus | 21700 | QR / Phone Handoff |
+| setReturnQrScannerActive | 21723 | QR / Phone Handoff |
+| setReturnQrScannerStatus | 21703 | QR / Phone Handoff |
 | setSelectedWorkupModuleId | 4803 | Workup Studio & Contribution |
 | setServiceFields | 3393 | Service Preferences & Picker |
 | setSourceMode | 15022 | General/App State |
 | setStatus | 3714 | General/App State |
 | setTodayWorkflowMode | 14351 | General/App State |
-| setupPromptEditorAutocomplete | 23156 | General/App State |
+| setupPromptEditorAutocomplete | 23159 | General/App State |
 | setVaultStatus | 3040 | De-identification & Vault |
 | setWorkupNavOpen | 3850 | Workup Studio & Contribution |
 | setWorkupOrdersCollapsed | 3763 | Workup Studio & Contribution |
 | setWorkupStudioNavOpen | 3868 | Workup Studio & Contribution |
 | setWorkupStudioSourcePromptBuiltAt | 6305 | Workup Studio & Contribution |
 | setWorkupStudioSourceWorkflowStartedAt | 6297 | Workup Studio & Contribution |
-| sharePhonePayloadForTransfer | 22184 | QR / Phone Handoff |
-| shouldBuildInitialChecklist | 24441 | Checklist / Complaint CDS / Clinical Intent |
+| sharePhonePayloadForTransfer | 22187 | QR / Phone Handoff |
+| shouldBuildInitialChecklist | 24444 | Checklist / Complaint CDS / Clinical Intent |
 | showAllChecklistQuestions | 17636 | Checklist / Complaint CDS / Clinical Intent |
-| showCompletionBedsideNote | 22946 | Evidence & Physical Exam |
+| showCompletionBedsideNote | 22949 | Evidence & Physical Exam |
 | showNewWorkupDialog | 8888 | Workup Studio & Contribution |
 | showVaultAccess | 3933 | De-identification & Vault |
 | showView | 4458 | General/App State |
@@ -832,20 +832,20 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | sourceIdsForCatalogRows | 5643 | Checklist / Complaint CDS / Clinical Intent |
 | sourceRegistryLookup | 17309 | General/App State |
 | splitChecklistOptions | 16593 | Checklist / Complaint CDS / Clinical Intent |
-| stableJsonStringify | 21834 | General/App State |
-| stableJsonValue | 21819 | General/App State |
+| stableJsonStringify | 21837 | General/App State |
+| stableJsonValue | 21822 | General/App State |
 | stableWorkupStudioItemId | 7296 | Workup Studio & Contribution |
-| startFullFrameQrFallback | 21438 | QR / Phone Handoff |
-| startManualQrScanner | 21506 | QR / Phone Handoff |
-| startPhoneQrScanner | 21659 | QR / Phone Handoff |
-| startReturnQrScanner | 21741 | QR / Phone Handoff |
-| startRobustQrScanner | 21587 | QR / Phone Handoff |
+| startFullFrameQrFallback | 21441 | QR / Phone Handoff |
+| startManualQrScanner | 21509 | QR / Phone Handoff |
+| startPhoneQrScanner | 21662 | QR / Phone Handoff |
+| startReturnQrScanner | 21744 | QR / Phone Handoff |
+| startRobustQrScanner | 21590 | QR / Phone Handoff |
 | startSinglePatientWorkflow | 4125 | Patient Roster / Admission |
-| startZxingQrScanner | 21547 | QR / Phone Handoff |
-| stopPhoneQrCarousel | 21012 | QR / Phone Handoff |
-| stopPhoneQrScanner | 21278 | QR / Phone Handoff |
-| stopPhoneReturnQrCarousel | 21018 | QR / Phone Handoff |
-| stopReturnQrScanner | 21727 | QR / Phone Handoff |
+| startZxingQrScanner | 21550 | QR / Phone Handoff |
+| stopPhoneQrCarousel | 21015 | QR / Phone Handoff |
+| stopPhoneQrScanner | 21281 | QR / Phone Handoff |
+| stopPhoneReturnQrCarousel | 21021 | QR / Phone Handoff |
+| stopReturnQrScanner | 21730 | QR / Phone Handoff |
 | storedRefinementsForSelectedWorkup | 16292 | Workup Studio & Contribution |
 | structuredJsonObjectCandidates | 13412 | General/App State |
 | structuredRefinementSummary | 18754 | General/App State |
@@ -930,7 +930,7 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | visibleChecklistEntries | 17253 | Checklist / Complaint CDS / Clinical Intent |
 | visibleDecisionTreeChildren | 11084 | General/App State |
 | visibleDecisionTreeFlatNodes | 11088 | General/App State |
-| withZxingFallbackStop | 21495 | General/App State |
+| withZxingFallbackStop | 21498 | General/App State |
 | workupCatalogSupabaseRequest | 5387 | Workup Studio & Contribution |
 | workupConcernInputForCurrentContext | 15705 | Workup Studio & Contribution |
 | workupExamRows | 10233 | Workup Studio & Contribution |
@@ -1003,5 +1003,5 @@ Covers 988 top-level function/class/const-fn declarations found in the inline mo
 | workupStudioUniqueItemId | 8146 | Workup Studio & Contribution |
 | wrapTreeText | 11299 | General/App State |
 | writePublicWorkupCatalogCache | 5512 | Workup Studio & Contribution |
-| zxingQrScannerAvailable | 21292 | Lab Timeline |
-| zxingResultText | 21375 | General/App State |
+| zxingQrScannerAvailable | 21295 | Lab Timeline |
+| zxingResultText | 21378 | General/App State |
