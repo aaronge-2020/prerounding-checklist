@@ -68,14 +68,8 @@
         "label": { "type": "string", "minLength": 1 },
         "item_type": {
           "enum": [
-            "safety_check",
             "history_question",
-            "physical_exam_maneuver",
-            "red_flag",
-            "diagnostic_test",
-            "management_change",
-            "diagnostic_frame",
-            "catalog_gap"
+            "physical_exam_maneuver"
           ]
         },
         "text": { "type": "string", "minLength": 1 },
@@ -139,62 +133,6 @@
               "limitations",
               "tags"
             ]
-          }
-        },
-        {
-          "if": {
-            "properties": { "item_type": { "const": "safety_check" } },
-            "required": ["item_type"]
-          },
-          "then": {
-            "required": [
-              "action",
-              "rationale",
-              "management_change",
-              "difficulty",
-              "time_burden_minutes",
-              "equipment_needed",
-              "patient_cooperation_required",
-              "limitations",
-              "likelihood_ratio_note",
-              "tags"
-            ]
-          }
-        },
-        {
-          "if": {
-            "properties": { "item_type": { "const": "red_flag" } },
-            "required": ["item_type"]
-          },
-          "then": {
-            "required": ["action", "rationale", "diagnostic_target", "management_change", "LR_plus", "LR_minus", "likelihood_ratio_note", "limitations", "tags"]
-          }
-        },
-        {
-          "if": {
-            "properties": { "item_type": { "const": "diagnostic_test" } },
-            "required": ["item_type"]
-          },
-          "then": {
-            "required": ["action", "rationale", "diagnostic_target", "management_change", "LR_plus", "LR_minus", "likelihood_ratio_note", "limitations", "tags"]
-          }
-        },
-        {
-          "if": {
-            "properties": { "item_type": { "const": "management_change" } },
-            "required": ["item_type"]
-          },
-          "then": {
-            "required": ["action", "rationale", "diagnostic_target", "management_change", "LR_plus", "LR_minus", "likelihood_ratio_note", "limitations", "tags"]
-          }
-        },
-        {
-          "if": {
-            "properties": { "item_type": { "const": "diagnostic_frame" } },
-            "required": ["item_type"]
-          },
-          "then": {
-            "required": ["action", "rationale", "diagnostic_target", "management_change", "LR_plus", "LR_minus", "likelihood_ratio_note", "limitations", "tags"]
           }
         }
       ],

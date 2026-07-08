@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { complaintModules, evaluateComplaintCds } from "../complaint-cds.js";
-import { clinicalIntentRegistry } from "../clinical-intents.js";
+import { complaintModules, evaluateComplaintCds } from "../src/clinical/complaint-cds.js";
+import { clinicalIntentRegistry } from "../src/clinical/clinical-intents.js";
 import {
   auditChecklistTraceability,
   buildCleanupPrompt,
@@ -16,7 +16,7 @@ import {
   validateOrganSystemChecklistSchema,
   parseChecklist,
   validateChecklist
-} from "../checklist.js";
+} from "../src/clinical/checklist.js";
 
 function itemsByCategory(sections, category) {
   return sections.flatMap((section) => section.items).filter((item) => item.category === category);
@@ -831,7 +831,6 @@ assert.ok(newAdmissionChecklistPrompt.includes("No prior subjective/objective/as
 assert.ok(newAdmissionChecklistPrompt.includes("full first-history admission write-up"), "new admission prompt should prioritize first-history write-up gaps");
 
 const appHtml = readFileSync("index.html", "utf8");
-const evidenceModule = readFileSync("evidence.js", "utf8");
 const examReferenceCsv = readFileSync("data/physical-exam/physical_exam_reference.csv", "utf8");
 const examEvidenceOverlayCsv = readFileSync("data/physical-exam/physical_exam_evidence_overlay.csv", "utf8");
 
@@ -879,7 +878,6 @@ function truncatePromptField(value, maxLength = 120) {
 assert.ok(examReferenceCsv.includes("exam_id"), "physical exam base CSV should expose stable exam_id keys");
 assert.ok(examEvidenceOverlayCsv.includes("retrieval_tags"), "evidence overlay should include retrieval tags");
 assert.ok(examEvidenceOverlayCsv.includes("cardiopulmonary_vascular_exam_neck_jvp"), "evidence overlay should include high-yield JVP metadata");
-assert.ok(evidenceModule.includes("retrieved_evidence_candidates"), "evidence module should inject retrieved evidence candidates");
 assert.ok(appHtml.includes('id="patientWorkupConcernInput"'), "main workflow should expose a diagnosis/workup search input");
 assert.ok(appHtml.includes('id="patientWorkupSelect"'), "patient workspace should expose an explicit validated-workup selector");
 assert.ok(appHtml.includes("selectedWorkupModuleId"), "patient workup selection should persist as first-class state");
@@ -891,9 +889,8 @@ assert.ok(appHtml.includes("APP_PASTE_BACK_JSON"), "OpenEvidence rounds prompts 
 assert.ok(appHtml.includes('id="patientObjectiveDataPanel"'), "patient context should expose structured workup data fields");
 assert.ok(appHtml.includes('id="patientObjectiveSummaryPanel"'), "patient summary should expose entered and missing objective workup data");
 assert.ok(
-  appHtml.includes('id="patientWorkupOrdersPanel"')
-    && appHtml.includes('id="patientDecisionTreePanel"'),
-  "workup views should show orders/results panels and a live decision-tree visualization"
+  appHtml.includes('id="patientWorkupOrdersPanel"'),
+  "workup views should show orders/results panels"
 );
 assert.ok(
   appHtml.includes("betaHydroxybutyrate")
@@ -911,7 +908,6 @@ assert.ok(!appHtml.includes(`state.scrubbedText || ${sampleContextToken}`), "pat
 assert.ok(appHtml.includes("patientValidatedIntentLabel"), "workflow should explicitly show the selected validated diagnosis/workup");
 assert.ok(appHtml.includes('id="patientBuildChecklistButton"'), "workflow should expose local guideline/workup generation before checklist build");
 assert.ok(!appHtml.includes('id="workupRows"'), "workflow should not show the removed full-workup row drilldown");
-assert.ok(appHtml.includes("decision-tree-node"), "workflow should render the decision pathway as visible tree nodes");
 assert.ok(appHtml.includes("resolveUiComplaintModule"), "UI workup generation should resolve an explicit local module before checklist build");
 assert.ok(appHtml.includes("evaluateUiComplaintCds"), "UI workup generation should use a guarded complaint-CDS path");
 assert.ok(!appHtml.includes("Paste the initial rounds prompt into OpenEvidence first so"), "main guided flow should not make OpenEvidence the prerequisite before local checklist build");
@@ -987,14 +983,6 @@ assert.ok(
   "desktop patient workspace should expose OpenEvidence prompts as a first-class patient tab"
 );
 
-assert.ok(
-  appHtml.includes("decisionTreeGraphsByModuleId")
-    && appHtml.includes("clinical_pathway_tree_v1")
-    && appHtml.includes('id="decisionTreeJsonInput"')
-    && appHtml.includes('id="saveDecisionTreeLocalFileButton"')
-    && appHtml.includes("./vendor/d3.v7.min.js"),
-  "patient workup should support persisted editable D3 decision-tree pathways"
-);
 assert.ok(
   appHtml.includes('id="workspaceFindingsGateNotice"')
     && appHtml.includes("Build the bedside checklist before sending or returning phone findings.")

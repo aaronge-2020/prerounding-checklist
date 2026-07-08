@@ -5,6 +5,9 @@ node_modules/
 .env.*
 !.env.example
 
+# Raw name-dictionary sources (downloaded by scripts/build-name-dictionary.js)
+data/name-sources/
+
 # Generated/local outputs
 supabase/.temp/
 benchmark-results/

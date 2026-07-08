@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import {
   buildWorkupAuthoringSnapshot,
   validateAuthoringSnapshotNoPatientData
-} from "../workup-authoring.js";
+} from "../src/workup/workup-authoring.js";
 import { loadSupabaseEnvFiles, hasSupabaseServiceConfig } from "../utils/supabase/env.js";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -54,8 +54,6 @@ async function seedSupabase(snapshot) {
   await supabaseRequest("workups", snapshot.workups, "id");
   await supabaseRequest("workup_sections", snapshot.workup_sections, "workup_id,section_key");
   await supabaseRequest("workup_items", snapshot.workup_items, "workup_id,group_key,item_id");
-  await supabaseRequest("pathway_trees", snapshot.pathway_trees, "workup_id,section_key");
-  await supabaseRequest("pathway_nodes", snapshot.pathway_nodes, "tree_id,node_id");
   await supabaseRequest("review_cases", snapshot.review_cases, "workup_id,case_type,case_id");
 }
 
@@ -76,7 +74,7 @@ async function main() {
     mkdirSync(path.dirname(outPath), { recursive: true });
     writeFileSync(outPath, `${JSON.stringify(snapshot, null, 2)}\n`);
     console.log(`Prepared Workup Studio authoring snapshot: ${path.relative(repoRoot, outPath)}`);
-    console.log(`Rows: ${snapshot.workups.length} workups, ${snapshot.workup_items.length} items, ${snapshot.pathway_nodes.length} pathway nodes.`);
+    console.log(`Rows: ${snapshot.workups.length} workups, ${snapshot.workup_items.length} items.`);
     console.log("Set SUPABASE_SERVICE_ROLE_KEY to seed Supabase directly; .env.local can provide the project URL.");
     return;
   }

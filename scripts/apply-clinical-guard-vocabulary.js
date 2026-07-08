@@ -15,7 +15,7 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 const DATA_DIR = join(ROOT, "data");
-const DEID_FILE = join(ROOT, "deid.js");
+const DEID_FILE = join(ROOT, "src", "vault", "deid.js");
 
 // ---------------------------------------------------------------------------
 // Load source data files
@@ -302,7 +302,7 @@ import {
   nonNameClinicalWords as _vwNonNameClinicalWords,
   nonNameClinicalPhrases as _vwNonNameClinicalPhrases,
   clinicalAnchorWords as _vwClinicalAnchorWords
-} from "./data/clinical-guard-export.js";
+} from "../../data/clinical-guard-export.js";
 
 _vwMedicationWords.forEach((w) => medicationNameWords.add(w));
 _vwNonNameClinicalWords.forEach((w) => nonNameClinicalWords.add(w));
@@ -310,7 +310,12 @@ _vwNonNameClinicalPhrases.forEach((p) => nonNameClinicalPhrases.add(p));
 _vwClinicalAnchorWords.forEach((w) => clinicalAnchorWords.add(w));
 `;
 
-  const marker = "const medicationClassOrStemPattern =";
+  // Insertion point: right after deid.js's own imports, before its first function.
+  // (medicationNameWords/nonNameClinicalWords/etc. are imported bindings from
+  // ./deid/lexicons.js as of the src/vault/ split, not local consts — but they're
+  // Set objects, so .add() on the imported reference still mutates the same
+  // underlying Set that deid.js's functions read from.)
+  const marker = "export function normalizePhiLabel(entityOrLabel) {";
   const markerIdx = deidContent.indexOf(marker);
 
   if (markerIdx !== -1) {

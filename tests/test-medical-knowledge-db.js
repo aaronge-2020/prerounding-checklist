@@ -1,6 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync } from "node:fs";
-import { join } from "node:path";
+import { readFileSync } from "node:fs";
 import {
   buildMedicalKnowledgeDatabase,
   loadMedicalKnowledgeDatabase,
@@ -19,25 +18,6 @@ assert.equal(validation.moduleCount, complaintModules.length, "module count shou
 assert.equal(validation.sourceCount, complaintSourceRegistry.length, "source count should match source database");
 assert.equal(medicalKnowledgeDbManifest.schema_version, "medical_knowledge_database_v1");
 
-function readComplaintModuleSourceFiles(dir = "medical-knowledge/complaint-modules") {
-  return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
-    const fullPath = join(dir, entry.name);
-    if (entry.isDirectory()) {
-      return readComplaintModuleSourceFiles(fullPath);
-    }
-    if (!entry.name.endsWith(".json")) {
-      return [];
-    }
-    const raw = JSON.parse(readFileSync(fullPath, "utf8"));
-    return [{ file: fullPath, module: raw.module || raw }];
-  });
-}
-
-readComplaintModuleSourceFiles().forEach(({ file, module }) => {
-  assert.ok((module.decisionTrees || []).length >= 3, `${file} should include source decision-tree support rows`);
-  assert.ok((module.treatmentOptions || []).length >= 3, `${file} should include source treatment-option support rows`);
-});
-
 const medicalKnowledgeSchema = JSON.parse(readFileSync("medical-knowledge/schema/medical-knowledge-database-v1.schema.json", "utf8"));
 const workupContributionSchema = JSON.parse(readFileSync("medical-knowledge/schema/workup-contribution-v1.schema.json", "utf8"));
 const complaintModuleV2Schema = JSON.parse(readFileSync("medical-knowledge/schema/complaint-module-v2.schema.json", "utf8"));
@@ -52,7 +32,6 @@ assert.equal(workupChangeSetSchema.properties.schema.const, "workup_change_set_v
 
 const stalePhysicalExamLabelPattern = /\b(?:Check capillary refill|Check skin turgor|Check distal extremity warmth|Check neck stiffness|Assess Kussmaul breathing|Assess extremity temperature|Assess skin turgor)\b/i;
 const vaguePhysicalExamLabelPattern = /^(?:Check|Assess|Evaluate|Screen|Review|Document|Perform)\b/i;
-const weakSafetyCheckLabelPattern = /^(?:Assess|Check|Evaluate)\b|^(?:Mental status|General appearance)$/i;
 
 function requiredFieldsForSchemaItemType(itemType) {
   return moduleItemSchema.allOf
@@ -61,12 +40,7 @@ function requiredFieldsForSchemaItemType(itemType) {
 }
 [
   ["history_question", ["text", "options", "when_to_ask", "diagnostic_purpose", "management_implication", "likelihood_ratio_note", "tags"]],
-  ["physical_exam_maneuver", ["technique", "findings_options", "when_to_perform", "diagnostic_target", "LR_plus", "LR_minus", "likelihood_ratio_note", "management_change", "difficulty", "time_burden_minutes", "equipment_needed", "patient_cooperation_required", "limitations", "tags"]],
-  ["safety_check", ["action", "rationale", "management_change", "difficulty", "time_burden_minutes", "equipment_needed", "patient_cooperation_required", "limitations", "likelihood_ratio_note", "tags"]],
-  ["red_flag", ["action", "rationale", "diagnostic_target", "management_change", "LR_plus", "LR_minus", "likelihood_ratio_note", "limitations", "tags"]],
-  ["diagnostic_test", ["action", "rationale", "diagnostic_target", "management_change", "LR_plus", "LR_minus", "likelihood_ratio_note", "limitations", "tags"]],
-  ["management_change", ["action", "rationale", "diagnostic_target", "management_change", "LR_plus", "LR_minus", "likelihood_ratio_note", "limitations", "tags"]],
-  ["diagnostic_frame", ["action", "rationale", "diagnostic_target", "management_change", "LR_plus", "LR_minus", "likelihood_ratio_note", "limitations", "tags"]]
+  ["physical_exam_maneuver", ["technique", "findings_options", "when_to_perform", "diagnostic_target", "LR_plus", "LR_minus", "likelihood_ratio_note", "management_change", "difficulty", "time_burden_minutes", "equipment_needed", "patient_cooperation_required", "limitations", "tags"]]
 ].forEach(([itemType, expectedFields]) => {
   expectedFields.forEach((field) => {
     assert.ok(
@@ -122,48 +96,6 @@ complaintModules.forEach((module) => {
           `${module.id}.${group}.${item.id} should explicitly explain unavailable exam LR metadata`
         );
       }
-    });
-  });
-  (module.safetyChecks || []).forEach((item) => {
-    assert.doesNotMatch(
-      String(item.label || ""),
-      weakSafetyCheckLabelPattern,
-      `${module.id}.${item.id} source safety-check label should name a specific bedside action`
-    );
-    [
-      "action",
-      "rationale",
-      "management_change",
-      "difficulty",
-      "time_burden_minutes",
-      "equipment_needed",
-      "patient_cooperation_required",
-      "limitations",
-      "likelihood_ratio_note",
-      "tags"
-    ].forEach((field) => {
-      const value = item[field];
-      assert.ok(value && (!Array.isArray(value) || value.length), `${module.id}.${item.id} source safety check should include ${field}`);
-    });
-  });
-  assert.ok((module.decisionTrees || []).length >= 3, `${module.id} should include decision-tree support rows`);
-  assert.ok((module.treatmentOptions || []).length >= 3, `${module.id} should include treatment-option support rows`);
-  ["redFlags", "initialTests", "dispositionRules", "decisionTrees", "treatmentOptions", "differentialBuckets"].forEach((group) => {
-    (module[group] || []).forEach((item) => {
-      [
-        "action",
-        "rationale",
-        "diagnostic_target",
-        "management_change",
-        "LR_plus",
-        "LR_minus",
-        "likelihood_ratio_note",
-        "limitations",
-        "tags"
-      ].forEach((field) => {
-        const value = item[field];
-        assert.ok(value && (!Array.isArray(value) || value.length), `${module.id}.${group}.${item.id} source decision item should include ${field}`);
-      });
     });
   });
 });
@@ -276,8 +208,8 @@ assert.ok(
 
 assert.doesNotThrow(() => buildMedicalKnowledgeDatabase({ check: true }), "generated medical-knowledge-db.js should be current");
 
-const complaintCdsSource = readFileSync("complaint-cds.js", "utf8");
-assert.ok(/from\s+["']\.\/medical-knowledge-db\.js["']/.test(complaintCdsSource), "complaint CDS logic should import generated medical knowledge");
+const complaintCdsSource = readFileSync("src/clinical/complaint-cds.js", "utf8");
+assert.ok(/from\s+["']\.\.\/\.\.\/medical-knowledge-db\.js["']/.test(complaintCdsSource), "complaint CDS logic should import generated medical knowledge");
 assert.ok(!complaintCdsSource.includes("ADA_HYPERGLYCEMIC_CRISES_2024"), "medical content should not live in complaint-cds.js");
 
 const sourceReference = {
@@ -411,29 +343,11 @@ const badBuildValidation = validateMedicalKnowledgeDatabase({
           tags: ["weakness"],
           source: sourceReference
         }
-      ],
-      redFlags: [
-        { id: "wrong_type_red_flag", label: "Wrong typed red flag", item_type: "history_question", source: sourceReference },
-        { id: "sparse_red_flag", label: "Sparse red flag", item_type: "red_flag", source: sourceReference }
-      ],
-      safetyChecks: [
-        { id: "sparse_safety", label: "Measure heart rate", item_type: "safety_check", source: sourceReference }
-      ],
-      initialTests: [
-        { id: "sparse_test", label: "Sparse diagnostic test", item_type: "diagnostic_test", source: sourceReference }
-      ],
-      dispositionRules: [
-        { id: "sparse_management", label: "Sparse management rule", item_type: "management_change", source: sourceReference }
-      ],
-      differentialBuckets: [
-        { id: "sparse_frame", label: "Sparse diagnostic frame", item_type: "diagnostic_frame", source: sourceReference }
       ]
     }
   ]
 });
 assert.equal(badBuildValidation.ok, false, "build validation should reject bad typed workup source");
-assert.match(badBuildValidation.issues.join("\n"), /item_type must be red_flag/, "build validation should enforce item_type by source section");
-assert.match(badBuildValidation.issues.join("\n"), /basic bedside data\/safety item belongs in safetyChecks/, "build validation should reject vitals inside exam sections");
 assert.match(badBuildValidation.issues.join("\n"), /exam label appears bundled or vague/, "build validation should reject bundled exam labels");
 assert.match(badBuildValidation.issues.join("\n"), /exam label must name a concrete maneuver action/, "build validation should reject vague physical exam action verbs");
 assert.match(badBuildValidation.issues.join("\n"), /invalid LR_plus/, "build validation should reject invalid LR metadata");
@@ -445,17 +359,6 @@ assert.match(badBuildValidation.issues.join("\n"), /missing source governance fi
 assert.match(badBuildValidation.issues.join("\n"), /missing source governance field next_review_due/, "build validation should reject source registry rows without next-review governance");
 assert.match(badBuildValidation.issues.join("\n"), /bad_question missing likelihood_ratio_note/, "build validation should reject history questions without LR interpretation notes");
 assert.match(badBuildValidation.issues.join("\n"), /synthetic_blank_lr_note_exam missing likelihood_ratio_note/, "build validation should reject whitespace-only LR interpretation notes");
-assert.match(badBuildValidation.issues.join("\n"), /sparse_red_flag missing action/, "build validation should reject red flags without action/rationale/tags");
-assert.match(badBuildValidation.issues.join("\n"), /sparse_safety missing action/, "build validation should reject safety checks without action/tags");
-assert.match(badBuildValidation.issues.join("\n"), /sparse_safety missing rationale/, "build validation should reject safety checks without rationale");
-assert.match(badBuildValidation.issues.join("\n"), /sparse_safety missing management_change/, "build validation should reject safety checks without management implication");
-assert.match(badBuildValidation.issues.join("\n"), /sparse_safety missing likelihood_ratio_note/, "build validation should reject safety checks without LR interpretation note");
-assert.match(badBuildValidation.issues.join("\n"), /sparse_test missing action/, "build validation should reject diagnostic tests without action/rationale/tags");
-assert.match(badBuildValidation.issues.join("\n"), /sparse_test missing diagnostic_target/, "build validation should reject diagnostic tests without diagnostic target");
-assert.match(badBuildValidation.issues.join("\n"), /sparse_test missing limitations/, "build validation should reject diagnostic tests without limitations");
-assert.match(badBuildValidation.issues.join("\n"), /sparse_management missing action/, "build validation should reject management rules without action/rationale/tags");
-assert.match(badBuildValidation.issues.join("\n"), /sparse_management missing management_change/, "build validation should reject management rules without explicit management-change metadata");
-assert.match(badBuildValidation.issues.join("\n"), /sparse_frame missing diagnostic_target/, "build validation should reject diagnostic frames without diagnostic target");
 
 const missingApplicabilityValidation = validateMedicalKnowledgeDatabase({
   manifest: {

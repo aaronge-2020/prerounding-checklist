@@ -13,18 +13,66 @@ import {
   sanitizeUnsupportedClinicalIntentGapText,
   selectedValidatedClinicalIntents,
   validateClinicalIntentRegistry
-} from "../clinical-intents.js";
+} from "../src/clinical/clinical-intents.js";
 import {
   complaintModules,
   complaintSourceRegistry
-} from "../complaint-cds.js";
-import {
-  buildRecommendedExamChecklist,
-  joinEvidenceCatalog,
-  mergeLegacyPhysicalExamOverlay,
-  parseCsv,
-  rankEvidenceCandidates
-} from "../evidence.js";
+} from "../src/clinical/complaint-cds.js";
+
+function parseCsv(text) {
+  const rows = [];
+  let row = [];
+  let value = "";
+  let inQuotes = false;
+  const source = String(text || "");
+
+  for (let index = 0; index < source.length; index += 1) {
+    const char = source[index];
+    if (char === "\"") {
+      if (inQuotes && source[index + 1] === "\"") {
+        value += "\"";
+        index += 1;
+      } else {
+        inQuotes = !inQuotes;
+      }
+    } else if (char === "," && !inQuotes) {
+      row.push(value);
+      value = "";
+    } else if ((char === "\n" || char === "\r") && !inQuotes) {
+      if (char === "\r" && source[index + 1] === "\n") {
+        index += 1;
+      }
+      row.push(value);
+      if (row.some((field) => field.trim())) {
+        rows.push(row);
+      }
+      row = [];
+      value = "";
+    } else {
+      value += char;
+    }
+  }
+
+  if (value || row.length) {
+    row.push(value);
+    if (row.some((field) => field.trim())) {
+      rows.push(row);
+    }
+  }
+
+  if (!rows.length) {
+    return [];
+  }
+
+  const headers = rows.shift().map((header) => header.trim());
+  return rows.map((fields) => {
+    const parsed = {};
+    headers.forEach((header, index) => {
+      parsed[header] = (fields[index] || "").trim();
+    });
+    return parsed;
+  });
+}
 
 const evidenceSourceRowsForRegistry = parseCsv(readFileSync("data/evidence/source_registry.csv", "utf8"));
 const knownClinicalSourceIds = new Set([
@@ -590,246 +638,5 @@ assert.match(promptBlock, /review owner: clinical_content_lead/, "OpenEvidence p
 assert.match(promptBlock, /suppress rules:/, "OpenEvidence prompt block should expose selected-intent suppress rules");
 assert.match(promptBlock, /<patient_modifiers>/);
 assert.doesNotMatch(promptBlock, /John Smith|DOB|MRN/i);
-
-const baseRows = parseCsv(readFileSync("data/evidence/exam_technique_base.csv", "utf8"));
-const overlayRows = parseCsv(readFileSync("data/evidence/exam_evidence_overlay.csv", "utf8"));
-const legacyRows = parseCsv(readFileSync("data/physical-exam/physical_exam_evidence_overlay.csv", "utf8"));
-const acceptedCatalogAdditionRows = parseCsv(readFileSync("data/evidence/accepted_exam_catalog_additions.csv", "utf8"));
-const sourceRows = parseCsv(readFileSync("data/evidence/source_registry.csv", "utf8"));
-const tagRows = parseCsv(readFileSync("data/evidence/retrieval_tag_dictionary.csv", "utf8"));
-const catalog = joinEvidenceCatalog(baseRows, mergeLegacyPhysicalExamOverlay(baseRows, overlayRows, legacyRows), sourceRows, acceptedCatalogAdditionRows);
-const dkaCatalog = filterEvidenceCatalogForClinicalIntents(catalog, selected);
-assert.ok(dkaCatalog.some((candidate) => /blood pressure/i.test(candidate.examLabel || "")), "DKA intent should allow vital signs");
-assert.ok(dkaCatalog.some((candidate) => /abdominal palpation/i.test(candidate.examLabel || "")), "DKA intent should allow abdominal exam");
-assert.equal(
-  dkaCatalog.filter((candidate) => /visual acuity/i.test(candidate.examLabel || "")).length,
-  0,
-  "DKA intent filter should not allow unrelated visual acuity rows"
-);
-
-const dkaRanked = rankEvidenceCandidates(dkaCatalog, context, tagRows, {
-  maxCandidates: 80,
-  specialty: "Endocrinology consult"
-});
-const dkaRecommendation = buildRecommendedExamChecklist(context, dkaRanked, {
-  specialty: "Endocrinology consult",
-  maxCoreItems: 24,
-  maxConditionalItems: 36,
-  validatedIntents: selected
-});
-const dkaRecommendedText = [
-  ...dkaRecommendation.coreItems,
-  ...dkaRecommendation.conditionalItems
-].map((entry) => entry.label).join(" | ");
-assert.doesNotMatch(
-  dkaRecommendedText,
-  /PMI|Vibration sense|Visual acuity|Ophthalmoscopic|Pronator drift/i,
-  "DKA intent avoid labels should suppress unrelated cardiac, neuro, and eye maneuvers without explicit modifiers"
-);
-const pronatorCandidate = catalog.find((candidate) => /pronator drift/i.test(candidate.examLabel || ""));
-assert.ok(pronatorCandidate, "test catalog should include pronator drift for avoid-label suppression regression");
-const dkaAvoidRegression = buildRecommendedExamChecklist(context, {
-  candidates: [{
-    ...pronatorCandidate,
-    score: 95,
-    scoreBreakdown: { clinicalRelevance: 80, actionability: 80, diagnosticValue: 80, bedsideFeasibility: 80 },
-    matchedTags: ["diagnostic_safety"]
-  }],
-  matchedTags: []
-}, {
-  specialty: "Endocrinology consult",
-  validatedIntents: selected
-});
-assert.ok(
-  (dkaAvoidRegression.suppressedItems || []).some((entry) => /Pronator drift/i.test(entry.label || "")),
-  "DKA intent should suppress unrelated pronator drift before it can become a recommendation"
-);
-assert.equal(
-  [...dkaAvoidRegression.coreItems, ...dkaAvoidRegression.conditionalItems].filter((entry) => /Pronator drift/i.test(entry.label || "")).length,
-  0,
-  "DKA intent should not recommend pronator drift without focal-neuro modifiers"
-);
-const syntheticAvoidRecommendation = buildRecommendedExamChecklist(context, {
-  candidates: [{
-    exam_id: "TEST-synthetic-avoid",
-    examLabel: "Synthetic avoided maneuver",
-    maneuver: "Synthetic avoided maneuver",
-    examOptions: "Absent / Present / Unable",
-    condition_or_syndrome: "Synthetic",
-    diagnostic_target: "Synthetic avoid-label regression target",
-    result_changes_management: "Would change nothing; this candidate exists only to test selected-intent avoid suppression.",
-    evidence_source_primary: "AHRQ_CALIBRATE_DX",
-    source_citation: "AHRQ diagnostic safety tooling",
-    LR_plus: "n/a",
-    LR_minus: "n/a",
-    evidence_tier: "C",
-    difficulty: "easy",
-    time_burden_minutes: "1",
-    equipment_needed: "none",
-    patient_cooperation_required: "low",
-    limitations: "Synthetic regression candidate.",
-    retrieval_tags: "diagnostic_safety",
-    matchedTags: ["diagnostic_safety"],
-    score: 95,
-    scoreBreakdown: { clinicalRelevance: 80, actionability: 80, diagnosticValue: 80, bedsideFeasibility: 80 }
-  }],
-  matchedTags: []
-}, {
-  specialty: "Endocrinology consult",
-  validatedIntents: [{ ...selected[0], intent_id: "synthetic_avoid_intent_v1", avoid_labels: ["Synthetic avoided maneuver"] }]
-});
-assert.ok(
-  (syntheticAvoidRecommendation.suppressedItems || []).some((entry) => /Synthetic avoided maneuver/i.test(entry.label || "") && /suppress rule/.test(entry.reason || "")),
-  "selected intent suppress rules should suppress matching candidates even when no older suppressor applies"
-);
-
-const dkaFocalContext = buildClinicalIntentRetrievalContext(
-  [getClinicalIntentById("dka_hhs_v1")],
-  "vomiting, tachypnea, dehydration, focal weakness and face droop",
-  "Endocrinology consult",
-  "Adult"
-);
-const dkaFocalRanked = rankEvidenceCandidates(dkaCatalog, dkaFocalContext, tagRows, {
-  maxCandidates: 80,
-  specialty: "Endocrinology consult"
-});
-const dkaFocalRecommendation = buildRecommendedExamChecklist(dkaFocalContext, dkaFocalRanked, {
-  specialty: "Endocrinology consult",
-  maxCoreItems: 24,
-  maxConditionalItems: 36,
-  validatedIntents: selected
-});
-assert.match(
-  dkaFocalRecommendation.conditionalItems.map((entry) => entry.label).join(" | "),
-  /Test pronator drift|Inspect facial symmetry|Test pupillary light response/i,
-  "explicit focal-neuro modifiers should override DKA avoid labels only as conditional safety add-ons"
-);
-
-const abdominalIntent = selectedValidatedClinicalIntents(["abdominal_pain_cramping_v1"]);
-const abdominalContext = buildClinicalIntentRetrievalContext(
-  abdominalIntent,
-  "",
-  "General medicine",
-  "Adult"
-);
-const abdominalCatalog = filterEvidenceCatalogForClinicalIntents(catalog, abdominalIntent);
-const abdominalRanked = rankEvidenceCandidates(abdominalCatalog, abdominalContext, tagRows, {
-  maxCandidates: 80,
-  specialty: "General medicine"
-});
-const abdominalRecommendation = buildRecommendedExamChecklist(abdominalContext, abdominalRanked, {
-  specialty: "General medicine",
-  maxCoreItems: 24,
-  maxConditionalItems: 36,
-  validatedIntents: abdominalIntent
-});
-assert.deepEqual(
-  abdominalRecommendation.activeProfiles.map((profile) => profile.id),
-  ["abdominal_gi"],
-  "validated abdominal intent should activate only its declared clinical bundle"
-);
-const abdominalCoreText = abdominalRecommendation.coreItems
-  .map((entry) => `${entry.label} ${entry.domain} ${entry.reason}`)
-  .join(" | ");
-assert.match(abdominalCoreText, /abdominal palpation|abdominal inspection|bowel sounds/i);
-assert.doesNotMatch(abdominalCoreText, /Inspect oral mucosa|Mouth exam/i, "abdominal cramps should not promote volume/renal mouth exam to core without dehydration modifier");
-assert.doesNotMatch(abdominalCoreText, /sepsis physiology/i, "abdominal cramps should not inherit sepsis rationale without a sepsis intent");
-const abdominalConditionalText = abdominalRecommendation.conditionalItems
-  .map((entry) => `${entry.label} ${entry.domain} ${entry.reason}`)
-  .join(" | ");
-assert.doesNotMatch(abdominalConditionalText, /Lower extremity edema|Otoscope|nodes|fremitus|JVP/i, "abdominal cramps should not show broad tag-only add-ons");
-
-const abdominalDehydrationContext = buildClinicalIntentRetrievalContext(
-  abdominalIntent,
-  "vomiting, poor intake or dehydration",
-  "General medicine",
-  "Adult"
-);
-const abdominalDehydrationRanked = rankEvidenceCandidates(abdominalCatalog, abdominalDehydrationContext, tagRows, {
-  maxCandidates: 80,
-  specialty: "General medicine"
-});
-const abdominalDehydrationRecommendation = buildRecommendedExamChecklist(abdominalDehydrationContext, abdominalDehydrationRanked, {
-  specialty: "General medicine",
-  maxCoreItems: 24,
-  maxConditionalItems: 36,
-  validatedIntents: abdominalIntent
-});
-assert.match(
-  abdominalDehydrationRecommendation.conditionalItems.map((entry) => entry.label).join(" | "),
-  /Inspect oral mucosa/i,
-  "dehydration/vomiting modifier should activate hydration add-ons for abdominal pain"
-);
-
-const heartFailureIntent = selectedValidatedClinicalIntents(["dyspnea_hf_v1"]);
-const heartFailureContext = buildClinicalIntentRetrievalContext(
-  heartFailureIntent,
-  "",
-  "General medicine",
-  "Adult"
-);
-const heartFailureCatalog = filterEvidenceCatalogForClinicalIntents(catalog, heartFailureIntent);
-const heartFailureRanked = rankEvidenceCandidates(heartFailureCatalog, heartFailureContext, tagRows, {
-  maxCandidates: 80,
-  specialty: "General medicine"
-});
-const heartFailureRecommendation = buildRecommendedExamChecklist(heartFailureContext, heartFailureRanked, {
-  specialty: "General medicine",
-  maxCoreItems: 24,
-  maxConditionalItems: 36,
-  validatedIntents: heartFailureIntent
-});
-assert.deepEqual(
-  heartFailureRecommendation.activeProfiles.map((profile) => profile.id),
-  ["dyspnea_hf"],
-  "validated dyspnea/HF intent should activate only its declared bundle"
-);
-const heartFailureCoreLabels = heartFailureRecommendation.coreItems.map((entry) => entry.label).join(" | ");
-const heartFailureSafetyLabels = heartFailureRecommendation.basicSafetyChecks.map((entry) => entry.label).join(" | ");
-assert.match(heartFailureSafetyLabels, /Respiratory rate|Blood pressure|Heart rate/i);
-assert.doesNotMatch(heartFailureCoreLabels, /Respiratory rate|Blood pressure|Heart rate/i, "legacy coreItems alias should remain physical-exam only");
-assert.match(heartFailureCoreLabels, /Auscultate posterior lung fields|Auscultate lateral lung fields|Auscultate anterior lung fields|Inspect posterior thorax|Observe work of breathing/i);
-assert.match(heartFailureCoreLabels, /Inspect jugular venous pressure|Inspect and press lower extremity edema|Auscultate heart sounds|Palpate radial pulses/i);
-const heartSoundsEntry = heartFailureRecommendation.coreItems.find((entry) => /Heart sounds/i.test(entry.label));
-assert.ok(heartSoundsEntry, "HF/dyspnea should include heart sounds when volume/cardiac bundle is selected");
-assert.doesNotMatch(heartSoundsEntry.displayDiagnosticTarget || "", /focal consolidation|effusion|wheeze/i, "heart sounds should not inherit pulmonary diagnostic target");
-assert.doesNotMatch(
-  heartFailureRecommendation.conditionalItems.map((entry) => entry.label).join(" | "),
-  /Aortic area|Pulmonic area|Tricuspid area|Mitral area/i,
-  "HF/dyspnea should not show individual valve-area cards unless murmur/valve modifier is present"
-);
-
-const routineThyroidIntent = selectedValidatedClinicalIntents(["routine_thyroid_disease_v1"]);
-const routineThyroidContext = buildClinicalIntentRetrievalContext(
-  routineThyroidIntent,
-  "Graves disease palpitations heat intolerance eye irritation",
-  "Endocrinology consult",
-  "Adult"
-);
-const routineThyroidCatalog = filterEvidenceCatalogForClinicalIntents(catalog, routineThyroidIntent);
-const routineThyroidRanked = rankEvidenceCandidates(routineThyroidCatalog, routineThyroidContext, tagRows, {
-  maxCandidates: 80,
-  specialty: "Endocrinology consult"
-});
-const routineThyroidRecommendation = buildRecommendedExamChecklist(routineThyroidContext, routineThyroidRanked, {
-  specialty: "Endocrinology consult",
-  maxCoreItems: 24,
-  maxConditionalItems: 36,
-  validatedIntents: routineThyroidIntent
-});
-assert.deepEqual(
-  routineThyroidRecommendation.activeProfiles.map((profile) => profile.id),
-  ["routine_thyroid"],
-  "routine thyroid intent should activate the routine thyroid bundle, not the thyroid-crisis bundle"
-);
-const routineThyroidCoreText = routineThyroidRecommendation.coreItems.map((entry) => `${entry.label} ${entry.domain} ${entry.reason}`).join(" | ");
-const routineThyroidSafetyText = routineThyroidRecommendation.basicSafetyChecks.map((entry) => `${entry.label} ${entry.domain} ${entry.reason}`).join(" | ");
-assert.match(routineThyroidSafetyText, /Blood pressure|Heart rate/i, "routine thyroid should include HR/BP vitals as basic safety data");
-assert.doesNotMatch(routineThyroidCoreText, /Blood pressure|Heart rate/i, "routine thyroid physical-exam alias should not contain vital signs");
-assert.match(routineThyroidCoreText, /Inspect and palpate thyroid|Thyroid exam/i, "routine thyroid should include thyroid inspection/palpation");
-assert.match(routineThyroidCoreText, /Auscultate heart sounds|Palpate radial pulses/i, "Graves with palpitations should include rhythm/perfusion exam");
-assert.doesNotMatch(routineThyroidCoreText, /Inspect jugular venous pressure|JVP|Palpate point of maximal impulse|PMI|Test vibration sense|Vibration sense|Percuss costovertebral angle tenderness|CVA tenderness/i, "routine Graves should not promote unrelated volume, neuro, or GU maneuvers");
-const routineThyroidConditionalText = routineThyroidRecommendation.conditionalItems.map((entry) => entry.label).join(" | ");
-assert.match(routineThyroidConditionalText, /Test pupillary light response|Test extraocular movements|Test visual acuity|Test visual fields/i, "Graves with eye symptoms should include orbitopathy/vision add-ons");
 
 console.log("Clinical intent tests passed.");

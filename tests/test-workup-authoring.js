@@ -6,13 +6,12 @@ import {
   buildWorkupAuthoringSnapshot,
   cloneJson,
   exportModuleEntriesFromSnapshot,
-  isInternalPathwayNode,
   makeWorkupChangeSet,
   sectionPayloadFromModule,
   validateAuthoringSnapshotNoPatientData,
   workupSectionDefinitions,
   workupSectionPatchSchema
-} from "../workup-authoring.js";
+} from "../src/workup/workup-authoring.js";
 
 function readJson(relativePath) {
   return JSON.parse(readFileSync(new URL(`../${relativePath}`, import.meta.url), "utf8"));
@@ -28,15 +27,6 @@ function loadKnowledge() {
   return { manifest, sourceRegistry, moduleEntries };
 }
 
-function collectTreeNodes(root, out = []) {
-  if (!root || typeof root !== "object") return out;
-  out.push(root);
-  for (const child of Array.isArray(root.children) ? root.children : []) {
-    collectTreeNodes(child, out);
-  }
-  return out;
-}
-
 const source = loadKnowledge();
 const snapshot = buildWorkupAuthoringSnapshot(source);
 
@@ -49,24 +39,6 @@ assert.equal(
 );
 assert.ok(snapshot.sources.length > 0, "Source registry rows should be imported for provenance pickers.");
 assert.ok(snapshot.workup_items.length > 0, "Structured section rows should be extracted from modules.");
-assert.ok(snapshot.pathway_trees.length > 0, "Pathway trees should be normalized into pathway_trees.");
-assert.ok(snapshot.pathway_nodes.length > snapshot.pathway_trees.length, "Pathway tree nodes should be flattened for node-level authoring.");
-
-const fullTreeNodes = snapshot.pathway_trees.flatMap((tree) => collectTreeNodes(tree.payload?.root));
-assert.ok(
-  fullTreeNodes.some((node) => isInternalPathwayNode(node)),
-  "Canonical pathway tree payloads should retain internal traversal guards for missing-data routing."
-);
-assert.equal(
-  snapshot.pathway_nodes.some((row) => isInternalPathwayNode(row.payload)),
-  false,
-  "Author-facing pathway_nodes must exclude hidden/internal missing-data guard nodes."
-);
-assert.equal(
-  snapshot.pathway_nodes.some((row) => /^missing data needed/i.test(row.label || "")),
-  false,
-  "Author-facing pathway node labels must not show missing-data placeholder endpoints."
-);
 
 const privacyAudit = validateAuthoringSnapshotNoPatientData(snapshot);
 assert.deepEqual(privacyAudit.issues, [], "Authoring import must not include patient/vault-shaped payload fields.");
@@ -84,50 +56,41 @@ const dkaEntry = source.moduleEntries.find((entry) => entry.envelope.module.id =
 assert.ok(dkaEntry, "Expected DKA workup fixture to exist.");
 const originalEnvelope = dkaEntry.envelope;
 const originalModule = originalEnvelope.module;
-const beforeTree = sectionPayloadFromModule(originalModule, "clinical_pathway_tree_v1");
-const afterTree = cloneJson(beforeTree);
-afterTree.title = `${afterTree.title || originalModule.label} - reviewer draft`;
-afterTree.root = {
-  ...afterTree.root,
-  label: `${afterTree.root.label} [authoring draft]`
+const beforeHistoryPayload = sectionPayloadFromModule(originalModule, "history_questions");
+assert.ok(beforeHistoryPayload.requiredQuestions.length > 0, "DKA workup fixture should have at least one required history question.");
+const afterHistoryPayload = cloneJson(beforeHistoryPayload);
+afterHistoryPayload.requiredQuestions[0] = {
+  ...afterHistoryPayload.requiredQuestions[0],
+  label: `${afterHistoryPayload.requiredQuestions[0].label} [authoring draft]`
 };
 
-const treeChangeSet = makeWorkupChangeSet({
+const historyChangeSet = makeWorkupChangeSet({
   workupId: originalModule.id,
-  sectionKey: "clinical_pathway_tree_v1",
-  beforeSnapshot: beforeTree,
-  afterSnapshot: afterTree,
+  sectionKey: "history_questions",
+  beforeSnapshot: beforeHistoryPayload,
+  afterSnapshot: afterHistoryPayload,
   sourceIds: ["ADA_HYPERGLYCEMIC_CRISES_2024"],
   reviewStatus: "approved",
   exportReady: true,
   reviewerNotes: "Section safety regression fixture."
 });
 
-assert.equal(treeChangeSet.schema, "workup_change_set_v1");
-assert.equal(treeChangeSet.workupId, originalModule.id);
-assert.equal(treeChangeSet.workup_id, originalModule.id);
-assert.equal(treeChangeSet.sectionKey, "clinical_pathway_tree_v1");
-assert.equal(treeChangeSet.section_key, "clinical_pathway_tree_v1");
-assert.equal(treeChangeSet.reviewStatus, "approved");
-assert.equal(treeChangeSet.exportReady, true);
-assert.equal(treeChangeSet.operations.length, 1);
-assert.equal(treeChangeSet.operations[0].op, "replace_section");
+assert.equal(historyChangeSet.schema, "workup_change_set_v1");
+assert.equal(historyChangeSet.workupId, originalModule.id);
+assert.equal(historyChangeSet.workup_id, originalModule.id);
+assert.equal(historyChangeSet.sectionKey, "history_questions");
+assert.equal(historyChangeSet.section_key, "history_questions");
+assert.equal(historyChangeSet.reviewStatus, "approved");
+assert.equal(historyChangeSet.exportReady, true);
+assert.equal(historyChangeSet.operations.length, 1);
+assert.equal(historyChangeSet.operations[0].op, "replace_section");
 
-const changedEnvelope = applyWorkupChangeSet(originalEnvelope, treeChangeSet);
-assert.equal(changedEnvelope.module.clinical_pathway_tree_v1.root.label, afterTree.root.label);
+const changedEnvelope = applyWorkupChangeSet(originalEnvelope, historyChangeSet);
+assert.equal(changedEnvelope.module.requiredQuestions[0].label, afterHistoryPayload.requiredQuestions[0].label);
 for (const preservedKey of [
-  "requiredQuestions",
   "conditionalQuestions",
   "requiredExam",
   "conditionalExam",
-  "safetyChecks",
-  "initialTests",
-  "clinical_cutoff_criteria",
-  "redFlags",
-  "dispositionRules",
-  "decisionTrees",
-  "treatmentOptions",
-  "differentialBuckets",
   "source_ids",
   "population",
   "triggers",
@@ -138,30 +101,28 @@ for (const preservedKey of [
   assert.deepEqual(
     changedEnvelope.module[preservedKey],
     originalModule[preservedKey],
-    `Pathway-only change sets must preserve module.${preservedKey}.`
+    `History-only change sets must preserve module.${preservedKey}.`
   );
 }
 
 const changedSnapshot = buildWorkupAuthoringSnapshot({
   ...source,
-  changeSets: [treeChangeSet]
+  changeSets: [historyChangeSet]
 });
 const changedExport = exportModuleEntriesFromSnapshot(changedSnapshot).find((entry) => entry.workup_id === originalModule.id);
 assert.ok(changedExport, "Approved change set should export the changed workup.");
-assert.equal(changedExport.envelope.module.clinical_pathway_tree_v1.title, afterTree.title);
-assert.deepEqual(changedExport.envelope.module.requiredQuestions, originalModule.requiredQuestions);
+assert.equal(changedExport.envelope.module.requiredQuestions[0].label, afterHistoryPayload.requiredQuestions[0].label);
 assert.deepEqual(changedExport.envelope.module.requiredExam, originalModule.requiredExam);
-assert.deepEqual(changedExport.envelope.module.initialTests, originalModule.initialTests);
-assert.deepEqual(changedExport.envelope.module.redFlags, originalModule.redFlags);
+assert.deepEqual(changedExport.envelope.module.conditionalQuestions, originalModule.conditionalQuestions);
 
 const draftSnapshot = buildWorkupAuthoringSnapshot({
   ...source,
-  changeSets: [{ ...treeChangeSet, reviewStatus: "draft", review_status: "draft", exportReady: false, export_ready: false }]
+  changeSets: [{ ...historyChangeSet, reviewStatus: "draft", review_status: "draft", exportReady: false, export_ready: false }]
 });
 const draftExport = exportModuleEntriesFromSnapshot(draftSnapshot).find((entry) => entry.workup_id === originalModule.id);
 assert.deepEqual(
-  draftExport.envelope.module.clinical_pathway_tree_v1,
-  originalModule.clinical_pathway_tree_v1,
+  draftExport.envelope.module.requiredQuestions,
+  originalModule.requiredQuestions,
   "Draft change sets should not export unless explicitly included."
 );
 
@@ -333,23 +294,23 @@ assert.throws(
 
 const approvedButNotReadySnapshot = buildWorkupAuthoringSnapshot({
   ...source,
-  changeSets: [{ ...treeChangeSet, exportReady: false, export_ready: false }]
+  changeSets: [{ ...historyChangeSet, exportReady: false, export_ready: false }]
 });
 const approvedButNotReadyExport = exportModuleEntriesFromSnapshot(approvedButNotReadySnapshot).find((entry) => entry.workup_id === originalModule.id);
 assert.deepEqual(
-  approvedButNotReadyExport.envelope.module.clinical_pathway_tree_v1,
-  originalModule.clinical_pathway_tree_v1,
+  approvedButNotReadyExport.envelope.module.requiredQuestions,
+  originalModule.requiredQuestions,
   "Approved change sets must still require export_ready=true before writing JSON."
 );
 
 const readyButDraftSnapshot = buildWorkupAuthoringSnapshot({
   ...source,
-  changeSets: [{ ...treeChangeSet, reviewStatus: "draft", review_status: "draft" }]
+  changeSets: [{ ...historyChangeSet, reviewStatus: "draft", review_status: "draft" }]
 });
 const readyButDraftExport = exportModuleEntriesFromSnapshot(readyButDraftSnapshot).find((entry) => entry.workup_id === originalModule.id);
 assert.deepEqual(
-  readyButDraftExport.envelope.module.clinical_pathway_tree_v1,
-  originalModule.clinical_pathway_tree_v1,
+  readyButDraftExport.envelope.module.requiredQuestions,
+  originalModule.requiredQuestions,
   "Export-ready change sets must still require reviewer approval before writing JSON."
 );
 
@@ -364,8 +325,6 @@ for (const requiredSnippet of [
   "create table if not exists public.workup_author_assignments",
   "create table if not exists public.workup_sections",
   "create table if not exists public.workup_items",
-  "create table if not exists public.pathway_trees",
-  "create table if not exists public.pathway_nodes",
   "create table if not exists public.sources",
   "create table if not exists public.review_cases",
   "create table if not exists public.change_sets",
@@ -374,7 +333,6 @@ for (const requiredSnippet of [
   "can_edit_workup_content",
   "assigned authors can draft their own change sets",
   "assigned authors can read workups",
-  "assigned authors can read pathway nodes",
   "revoke execute on function public.can_edit_workup_content(text) from public",
   "grant execute on function public.can_edit_workup_content(text) to authenticated, service_role",
   "reviewers can approve exportable change sets",

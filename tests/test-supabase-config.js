@@ -133,7 +133,6 @@ assert.ok(deployWorkflow.includes("Settings -> Secrets and variables -> Actions 
 
 assert.ok(importScript.includes('"workup_id,case_type,case_id"'), "Supabase import should upsert review cases by their natural unique key.");
 assert.ok(importScript.includes('"workup_id,group_key,item_id"'), "Supabase import should upsert workup items by their natural unique key.");
-assert.ok(importScript.includes('"tree_id,node_id"'), "Supabase import should upsert pathway nodes by their natural unique key.");
 
 assert.ok(existsSync(path.join(repoRoot, ".github", "workflows", "supabase-public-catalog-readiness.yml")), "GitHub Actions workflow should exist for credential-free public catalog readiness.");
 const publicCatalogWorkflow = read(".github/workflows/supabase-public-catalog-readiness.yml");
@@ -163,19 +162,9 @@ assert.ok(!html.includes("/auth/v1/settings"), "Workup Studio should not require
 assert.ok(!html.includes("auth/v1/authorize"), "Workup Studio should not require a social OAuth provider before sign-in.");
 assert.ok(html.includes("Backend: Workup Studio Supabase"), "Workup Studio should explain that backend access is configured by the app.");
 assert.ok(html.includes("workupStudioOpenEvidencePromptOutput"), "Workup Studio should expose generated OpenEvidence section prompts.");
-assert.ok(html.includes("workupStudioSourceBuilderPanel"), "Workup Studio should expose the Build From Source pathway flow.");
-assert.ok(html.includes("workupStudioBuildSourcePromptButton"), "Build From Source should generate an extraction prompt from source metadata and transient text.");
-assert.ok(html.includes("workupStudioCreateSourceDraftButton"), "Build From Source should create a review draft from a source packet without requiring manual JSON editing.");
-assert.ok(html.includes("workupStudioSourceFileInput"), "Build From Source should support transient source text uploads.");
-assert.ok(html.includes("loadWorkupStudioSourceFile"), "Source upload handling should keep source files transient.");
-assert.ok(html.includes("createWorkupStudioSourceDraft"), "Workup Studio should provide a no-manual-JSON source-to-draft path.");
-assert.ok(html.includes("workup_studio_source_packet_draft"), "Source packet drafts should be auditable separately from pasted AI JSON.");
+assert.ok(html.includes("workupStudioSourceBuilderPanel"), "Workup Studio should expose the source builder panel.");
 assert.ok(html.includes("workupStudioSourceAttestationCheckbox"), "Reviewer publish should require explicit source paraphrase attestation.");
 assert.ok(html.includes('output.dataset.sourcePrompt === "true"'), "Source-backed prompts must not be persisted into localStorage prompt templates.");
-assert.ok(html.includes("workupStudioPathwayProvenanceAudit"), "Pathway publish should audit node-level source coverage.");
-assert.ok(html.includes("workupStudioPathwaySchemaIssues"), "Pathway publish should run explicit schema validation before canonical writes.");
-assert.ok(html.includes("workupStudioPathwayPublishIssues"), "Pathway publish should collect provenance and attestation blockers before canonical writes.");
-assert.ok(html.includes("WORKUP_STUDIO_SOURCE_TO_LIVE_TARGET_MS = 600000"), "Build From Source should encode a measurable under-10-minute source-to-live target.");
 assert.ok(html.includes("WORKUP_STUDIO_PUBLIC_VISIBILITY_TARGET_MS = 60000"), "Reviewer publish should encode a measurable 60-second fresh-device visibility target.");
 assert.ok(html.includes("workup_section_update_v1"), "OpenEvidence prompt should request a section-scoped JSON schema.");
 assert.ok(html.includes("workupStudioPublishImportButton"), "Workup Studio should expose save-and-publish for reviewer users.");
@@ -226,8 +215,6 @@ for (const table of [
   "workups",
   "workup_sections",
   "workup_items",
-  "pathway_trees",
-  "pathway_nodes",
   "review_cases",
   "change_sets"
 ]) {

@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
 const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
+const phoneTransferCodec = readFileSync(new URL("../src/codecs/phone-transfer-codec.js", import.meta.url), "utf8");
 
 const requiredSnippets = [
   "Open local patient vault",
@@ -29,7 +30,6 @@ const requiredSnippets = [
   "Copy bundle",
   "Download",
   "My service is not listed",
-  "Bundle code mismatch",
   "Returned phone bundle code",
   "PHI review before copy",
   "code-paired local bundle"
@@ -47,6 +47,12 @@ const requiredPrivacySnippets = [
 for (const snippet of requiredSnippets) {
   assert.ok(html.includes(snippet), `Expected vault entry markup/script to include: ${snippet}`);
 }
+
+// The bundle-code guard moved into the codec module during the repo reorg.
+assert.ok(
+  phoneTransferCodec.includes("Bundle code mismatch"),
+  "Phone transfer codec should reject mismatched bundle codes."
+);
 
 for (const snippet of requiredPrivacySnippets) {
   assert.ok(html.includes(snippet), `Expected vault/privacy copy to include: ${snippet}`);

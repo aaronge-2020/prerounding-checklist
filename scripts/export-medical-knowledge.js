@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import {
   buildWorkupAuthoringSnapshot,
   exportModuleEntriesFromSnapshot
-} from "../workup-authoring.js";
+} from "../src/workup/workup-authoring.js";
 import { loadSupabaseEnvFiles, hasSupabaseServiceConfig } from "../utils/supabase/env.js";
 import { createSupabaseServiceClient } from "../utils/supabase/node.js";
 

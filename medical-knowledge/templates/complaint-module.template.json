@@ -16,28 +16,9 @@
     "triggers": [
       "replace with trigger"
     ],
-    "differentialBuckets": [
-      {
-        "id": "replace_differential_bucket",
-        "label": "Replace with diagnostic distinction or bucket.",
-        "source": {
-          "source_id": "REPLACE_SOURCE_ID",
-          "source_section": "replace with guideline section",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "replace with source year",
-          "last_reviewed": "YYYY-MM-DD",
-          "clinical_owner": "replace_with_reviewer",
-          "implementation_notes": ""
-        }
-      }
-    ],
-    "redFlags": [],
-    "safetyChecks": [],
     "requiredQuestions": [],
     "conditionalQuestions": [],
     "requiredExam": [],
-    "conditionalExam": [],
-    "initialTests": [],
-    "dispositionRules": []
+    "conditionalExam": []
   }
 }

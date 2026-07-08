@@ -7,7 +7,7 @@ import {
   OPENMED_MODEL_ID,
   createDeidentifier,
   deidentifyTextStructuredOnly
-} from "../deid.js";
+} from "../src/vault/deid.js";
 import { makeSyntheticCases } from "../scripts/deid-fixtures.js";
 
 env.allowLocalModels = false;

@@ -4,7 +4,7 @@ import {
   formatLabChronologyPromptBlock,
   formatLabTimelinePreview,
   parseLabTimeline
-} from "../labs.js";
+} from "../src/clinical/labs.js";
 
 function fixture(name) {
   return readFileSync(new URL(`./fixtures/labs/${name}`, import.meta.url), "utf8");

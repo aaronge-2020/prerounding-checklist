@@ -14,7 +14,7 @@ import {
   normalizeDailyInputs,
   smartSectionsToDailyInputs,
   stripRawDailyInputsForStorage
-} from "../continuity.js";
+} from "../src/clinical/continuity.js";
 
 assert.equal(CONTINUITY_STORAGE_KEY, "preRoundPatientCasesV1");
 

@@ -1,0 +1,11 @@
+# Conventions
+- Prefer pure functions for new logic; push DOM/state/storage/network side effects to thin edge call sites.
+- Keep changes minimal and feature-contiguous; avoid scattered additions in `index.html`.
+- For prompt wording, edit `prompts/` first, not orchestration code.
+- For CSS lookups, use the generated CSS region map before reading ranges in `styles.css`.
+- Before nontrivial edits to `index.html` or `styles.css`, check line counts; after edits regenerate the corresponding map.
+- Do not hand-edit generated bundles/data (`medical-knowledge-db.js`, generated reports).
+- Clinical recommendations/data changes need source traceability; Workup section edits should remain atomic.
+- Supabase service-role credentials belong only in local/CI scripts, never browser code.
+- Keep PHI out of repo; fixtures must be synthetic or de-identified.
+- Default to ASCII in edits unless file/context already justifies Unicode.

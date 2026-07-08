@@ -8,10 +8,8 @@ const outputPath = path.join(repoRoot, "medical-knowledge-db.js");
 const databaseSchemaVersion = "medical_knowledge_database_v1";
 const placeholderExamTechniquePattern = /\bperform the named (?:bedside item|maneuver) directly\b/i;
 const placeholderDiagnosticTargetPattern = /\bfocused bedside finding relevant to\b|^\s*$/i;
-const basicBedsideDataPattern = /\b(?:measure|check|document|calculate|obtain|record)\s+(?:blood pressure|bp|heart rate|hr|respiratory rate|rr|oxygen saturation|spo2|pulse oximetry|temperature|temp|current weight|weight|body mass index|bmi|waist circumference|orthostatic|bedside glucose|point-of-care glucose|fingerstick glucose|pain score|mental status|intake|oral intake|fluid intake|urine output|wet napp(?:y|ies))\b|\b(?:assess|document|observe)\s+(?:general appearance|mental status|ability to protect airway|airway protection|intake and urine output|intake\/output)\b|\b(?:check|document|verify)\s+(?:ability to protect airway|airway protection)\b|^\s*mental status\s*$/i;
 const bundledExamPattern = /[,;:]|\/|\band\s*\/\s*or\b|\b(?:focused exam|acuity screen|add repeat vitals|trigger exam|work-of-breathing|screen|assessment|vital signs including|cardiac exam|pulmonary exam|perfusion and pulses|volume status)\b/i;
 const vagueExamActionPattern = /^(?:Check|Assess|Evaluate|Screen|Review|Document|Perform)\b/i;
-const weakSafetyCheckLabelPattern = /^(?:Assess|Check|Evaluate)\b|^(?:Mental status|General appearance)$/i;
 const staleGeneratedProvenancePattern = /\bgenerated endocrine workup\b|Generated from guideline-backed endocrine workup automation/i;
 const sourceGovernanceCurrencyStatuses = new Set([
   "reviewed_current_for_scope",
@@ -68,33 +66,19 @@ function itemSourceId(item) {
 
 function collectModuleItems(module) {
   return [
-    "redFlags",
-    "safetyChecks",
     "requiredQuestions",
     "conditionalQuestions",
     "requiredExam",
-    "conditionalExam",
-    "initialTests",
-    "dispositionRules",
-    "decisionTrees",
-    "treatmentOptions",
-    "differentialBuckets"
+    "conditionalExam"
   ].flatMap((group) => (module[group] || []).map((item) => ({ group, item })));
 }
 
 function mapModuleItemGroups(module, mapper) {
   const groups = [
-    "redFlags",
-    "safetyChecks",
     "requiredQuestions",
     "conditionalQuestions",
     "requiredExam",
-    "conditionalExam",
-    "initialTests",
-    "dispositionRules",
-    "decisionTrees",
-    "treatmentOptions",
-    "differentialBuckets"
+    "conditionalExam"
   ];
   return groups.reduce((nextModule, group) => {
     if (!Array.isArray(nextModule[group])) {
@@ -168,7 +152,7 @@ function validateItemMetadataValues(issues, moduleId, group, item = {}) {
     }
   });
 
-  if (group === "safetyChecks" || isExamGroup(group)) {
+  if (isExamGroup(group)) {
     const minutes = Number(item.time_burden_minutes);
     if (!Number.isFinite(minutes) || minutes < 0 || minutes > 30) {
       issues.push(`${moduleId}.${group}.${item.id || "missing"} invalid time_burden_minutes: ${item.time_burden_minutes}`);
@@ -185,50 +169,9 @@ function validateItemMetadataValues(issues, moduleId, group, item = {}) {
 }
 
 function expectedItemTypeForGroup(group = "") {
-  if (group === "safetyChecks") return "safety_check";
   if (isQuestionGroup(group)) return "history_question";
   if (isExamGroup(group)) return "physical_exam_maneuver";
-  if (group === "redFlags") return "red_flag";
-  if (group === "initialTests") return "diagnostic_test";
-  if (group === "dispositionRules") return "management_change";
-  if (group === "decisionTrees" || group === "treatmentOptions") return "management_change";
-  if (group === "differentialBuckets") return "diagnostic_frame";
   return "";
-}
-
-function isBasicBedsideDataItem(item = {}) {
-  const text = `${item.id || ""} ${item.label || ""} ${item.action || ""}`;
-  return basicBedsideDataPattern.test(text)
-    || /(?:_measure_bp|_measure_hr|_measure_rr|_measure_spo2|_measure_temperature|_measure_weight|orthostatic|bedside_glucose|fingerstick|pain_score|mental_status|assess_mental_status|airway_protection)/i.test(text);
-}
-
-function expectedBasicBedsideEquipment(item = {}) {
-  const text = `${item.id || ""} ${item.label || ""}`.toLowerCase();
-  if (/\bblood pressure|\bbp\b|orthostatic|standing blood pressure/.test(text)) return "blood pressure cuff";
-  if (/\bheart rate\b|\bhr\b|pulse rate/.test(text)) return "watch/timer or bedside monitor";
-  if (/\brespiratory rate\b|\brr\b/.test(text)) return "watch/timer or bedside monitor";
-  if (/oxygen saturation|spo2|pulse oximetry/.test(text)) return "pulse oximeter";
-  if (/temperature|temp/.test(text)) return "thermometer";
-  if (/waist circumference/.test(text)) return "tape measure";
-  if (/body mass index|bmi/.test(text)) return "scale and height measurement";
-  if (/current weight|\bweight\b/.test(text)) return "scale";
-  if (/glucose|fingerstick/.test(text)) return "glucometer";
-  if (/general appearance|mental status|pain score/.test(text)) return "none";
-  return "";
-}
-
-function safetyEquipmentIssue(item = {}) {
-  const expected = expectedBasicBedsideEquipment(item);
-  if (!expected) return "";
-  const actual = String(item.equipment_needed || "").trim().toLowerCase();
-  const normalizedExpected = expected.toLowerCase();
-  if (!actual) return `expected ${expected}`;
-  if (normalizedExpected === "none") {
-    return actual === "none" ? "" : `expected ${expected}, got ${item.equipment_needed}`;
-  }
-  const expectedAny = normalizedExpected.split(/\s+or\s+|,\s*/).map((value) => value.trim()).filter(Boolean);
-  const matches = expectedAny.some((option) => actual.includes(option)) || actual.includes(normalizedExpected);
-  return matches ? "" : `expected ${expected}, got ${item.equipment_needed}`;
 }
 
 function questionLikelihoodRatioNote(item = {}) {
@@ -239,114 +182,8 @@ function questionLikelihoodRatioNote(item = {}) {
   return "Question-level LR+/LR- is not available unless the cited evidence validates the exact response; use this answer to localize the source, assess severity, and guide management.";
 }
 
-function cleanSupportLabel(value = "") {
-  return String(value || "")
-    .replace(/\s+/g, " ")
-    .replace(/[.;\s]+$/g, "")
-    .trim();
-}
-
-function supportLabelList(items = [], max = 3) {
-  return items
-    .map((item) => cleanSupportLabel(item?.label || item?.action || item?.management_change || item?.text || ""))
-    .filter(Boolean)
-    .slice(0, max)
-    .join("; ");
-}
-
-function supportTags(module = {}, label = "") {
-  return `${module.id || ""} ${module.label || ""} ${label}`
-    .toLowerCase()
-    .replace(/[()]/g, " ")
-    .split(/[^a-z0-9+]+/)
-    .filter((term) => term.length >= 4)
-    .slice(0, 14);
-}
-
-function sourceForDerivedSupport(module = {}, preferredItem = {}, section = "") {
-  const fallbackItem = preferredItem?.source
-    ? preferredItem
-    : [
-      ...(module.initialTests || []),
-      ...(module.dispositionRules || []),
-      ...(module.redFlags || []),
-      ...(module.differentialBuckets || [])
-    ].find((item) => item?.source);
-  const source = fallbackItem?.source || {};
-  return {
-    ...source,
-    source_section: section || source.source_section || "derived clinical decision support from module evidence"
-  };
-}
-
-function derivedSupportItem(module = {}, id = "", label = "", sourceItem = {}, section = "", rationale = "") {
-  const source = sourceForDerivedSupport(module, sourceItem, section);
-  return {
-    id,
-    label,
-    item_type: "management_change",
-    source,
-    action: label,
-    rationale: rationale || `${module.label || "Selected workup"}: connects this action to the cited result, risk feature, treatment step, or disposition rule in the module.`,
-    diagnostic_target: `${label}: patient data that changes testing, treatment, monitoring, referral, or disposition for ${module.label || "the active module"}.`,
-    management_change: label,
-    LR_plus: "n/a",
-    LR_minus: "n/a",
-    likelihood_ratio_note: "LR+/LR- are not calculated for this management row; use the cited item to guide testing, treatment, monitoring, referral, or disposition.",
-    limitations: `Requires clinician judgment, local protocols, patient-specific risks, and reassessment for ${module.label || "the active module"}.`,
-    tags: supportTags(module, label)
-  };
-}
-
-function deriveDecisionTrees(module = {}) {
-  const tests = module.initialTests || [];
-  const redFlags = module.redFlags || [];
-  const dispositions = module.dispositionRules || [];
-  const differentials = module.differentialBuckets || [];
-  const escalation = cleanSupportLabel(redFlags[0]?.label || dispositions[0]?.label || "unstable or high-risk presentation");
-  const testList = supportLabelList(tests, 4) || "module-cited initial diagnostic tests";
-  const riskFrame = cleanSupportLabel(differentials[0]?.label || tests[0]?.label || "the highest-risk diagnostic frame");
-  const management = cleanSupportLabel(dispositions[0]?.label || redFlags[0]?.action || "the module-cited escalation route");
-  return [
-    derivedSupportItem(module, "decision_01", `${module.label}: danger features or monitored-care triggers: ${escalation}.`, redFlags[0] || dispositions[0] || tests[0], `${module.label} derived decision tree: triage and escalation`),
-    derivedSupportItem(module, "decision_02", `${module.label}: initial diagnostic data to obtain and interpret together: ${testList}.`, tests[0] || dispositions[0], `${module.label} derived decision tree: initial tests`),
-    derivedSupportItem(module, "decision_03", `${module.label}: leading diagnostic frame and mimics to resolve: ${riskFrame}.`, differentials[0] || tests[0], `${module.label} derived decision tree: diagnostic branching`),
-    derivedSupportItem(module, "decision_04", `${module.label}: escalation or disposition rule triggered by abnormal results or worsening status: ${management}.`, dispositions[0] || redFlags[0] || tests[0], `${module.label} derived decision tree: management routing`)
-  ];
-}
-
-function deriveTreatmentOptions(module = {}) {
-  const tests = module.initialTests || [];
-  const redFlags = module.redFlags || [];
-  const dispositions = module.dispositionRules || [];
-  const firstDisposition = cleanSupportLabel(dispositions[0]?.label || redFlags[0]?.action || "urgent escalation route");
-  const secondDisposition = cleanSupportLabel(dispositions[1]?.label || dispositions[0]?.action || "lower-risk treatment or follow-up route when criteria are met");
-  const monitoring = cleanSupportLabel(tests[0]?.label || "module-cited monitoring data");
-  const safety = cleanSupportLabel(redFlags[0]?.label || "clinical worsening or unresolved diagnostic uncertainty");
-  return [
-    derivedSupportItem(module, "treatment_01", `${module.label}: immediate stabilization or escalation trigger: ${safety}.`, redFlags[0] || dispositions[0] || tests[0], `${module.label} derived treatment options: urgent care`),
-    derivedSupportItem(module, "treatment_02", `${module.label}: treatment or disposition for high-risk or confirmed disease: ${firstDisposition}.`, dispositions[0] || redFlags[0] || tests[0], `${module.label} derived treatment options: high-risk pathway`),
-    derivedSupportItem(module, "treatment_03", `${module.label}: outpatient or safety-net route after exclusion criteria and follow-up access are documented: ${secondDisposition}.`, dispositions[1] || dispositions[0] || tests[0], `${module.label} derived treatment options: lower-risk pathway`),
-    derivedSupportItem(module, "treatment_04", `${module.label}: monitoring data for response, complications, and reassessment: ${monitoring}.`, tests[0] || dispositions[0], `${module.label} derived treatment options: monitoring`)
-  ];
-}
-
-function deriveDecisionSupportForBuild(module = {}) {
-  const decisionTrees = Array.isArray(module.decisionTrees) && module.decisionTrees.length
-    ? module.decisionTrees
-    : deriveDecisionTrees(module);
-  const treatmentOptions = Array.isArray(module.treatmentOptions) && module.treatmentOptions.length
-    ? module.treatmentOptions
-    : deriveTreatmentOptions(module);
-  return {
-    ...module,
-    decisionTrees,
-    treatmentOptions
-  };
-}
-
 function normalizeMedicalKnowledgeModuleForBuild(module = {}) {
-  const normalized = mapModuleItemGroups(module, (item, group) => {
+  return mapModuleItemGroups(module, (item, group) => {
     if (!isQuestionGroup(group)) {
       return item;
     }
@@ -355,7 +192,6 @@ function normalizeMedicalKnowledgeModuleForBuild(module = {}) {
       likelihood_ratio_note: questionLikelihoodRatioNote(item)
     };
   });
-  return deriveDecisionSupportForBuild(normalized);
 }
 
 export function loadMedicalKnowledgeDatabase() {
@@ -499,9 +335,6 @@ export function validateMedicalKnowledgeDatabase(database = loadMedicalKnowledge
         }
       }
       if (isExamGroup(group)) {
-        if (isBasicBedsideDataItem(item)) {
-          issues.push(`${module.id}.${group}.${item.id || "missing"} basic bedside data/safety item belongs in safetyChecks, not physical exam: ${item.label}`);
-        }
         if (bundledExamPattern.test(item.label || "")) {
           issues.push(`${module.id}.${group}.${item.id || "missing"} exam label appears bundled or vague: ${item.label}`);
         }
@@ -525,45 +358,6 @@ export function validateMedicalKnowledgeDatabase(database = loadMedicalKnowledge
         if (/\bDocuments focused endocrine signs and complications that help distinguish severity, mimics, and management priorities\b/i.test(item.rationale || "")) {
           issues.push(`${module.id}.${group}.${item.id || "missing"} has generic exam rationale`);
         }
-      }
-      if (group === "redFlags") {
-        requireItemFields(issues, module.id, group, item, ["action", "rationale", "diagnostic_target", "management_change", "LR_plus", "LR_minus", "likelihood_ratio_note", "limitations", "tags"]);
-      }
-      if (group === "safetyChecks") {
-        if (weakSafetyCheckLabelPattern.test(item.label || "")) {
-          issues.push(`${module.id}.${group}.${item.id || "missing"} safety-check label should name a specific bedside action: ${item.label}`);
-        }
-        requireItemFields(
-          issues,
-          module.id,
-          group,
-          item,
-          [
-            "action",
-            "rationale",
-            "management_change",
-            "difficulty",
-            "time_burden_minutes",
-            "equipment_needed",
-            "patient_cooperation_required",
-            "limitations",
-            "likelihood_ratio_note",
-            "tags"
-          ]
-        );
-        const equipmentIssue = safetyEquipmentIssue(item);
-        if (equipmentIssue) {
-          issues.push(`${module.id}.${group}.${item.id || "missing"} safety-check equipment mismatch: ${equipmentIssue}`);
-        }
-      }
-      if (group === "initialTests") {
-        requireItemFields(issues, module.id, group, item, ["action", "rationale", "diagnostic_target", "management_change", "LR_plus", "LR_minus", "likelihood_ratio_note", "limitations", "tags"]);
-      }
-      if (group === "dispositionRules" || group === "decisionTrees" || group === "treatmentOptions") {
-        requireItemFields(issues, module.id, group, item, ["action", "rationale", "diagnostic_target", "management_change", "LR_plus", "LR_minus", "likelihood_ratio_note", "limitations", "tags"]);
-      }
-      if (group === "differentialBuckets") {
-        requireItemFields(issues, module.id, group, item, ["action", "rationale", "diagnostic_target", "management_change", "LR_plus", "LR_minus", "likelihood_ratio_note", "limitations", "tags"]);
       }
     }
   }

@@ -1,4 +1,4 @@
-import { deidentifyTextStructuredOnly } from "../deid.js";
+import { deidentifyTextStructuredOnly } from "../src/vault/deid.js";
 
 const text = `SOAP Note #1
 

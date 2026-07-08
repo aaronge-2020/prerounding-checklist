@@ -9,10 +9,13 @@ Purpose: let an agent answer "where is X" and "what should I run" without greppi
 3. For CSS lookups, use `docs/index-html-css-region-map.md` (covers `styles.css`, extracted from `index.html`'s former inline stylesheet) to find the selector-prefix range, then read that range directly.
 4. Prefer Serena symbolic tools for the smaller first-party `.js` modules (everything except `index.html`, `styles.css`, and `medical-knowledge-db.js`) — they're small enough (under ~11k lines, most under 3.5k) for normal symbolic navigation.
 5. On this Windows workspace, prefer `npm.cmd run <script>` if plain `npm run <script>` is blocked.
+6. **Do not run full test suites** (`npm test` or `npm run test:clinical`) unless explicitly requested. They execute heavy, verbose browser-based Playwright/UI tests that dump thousands of lines of logs, consuming massive tokens. Always run targeted unit tests (e.g., `npm run test:deid` or `node tests/test-labs.js`).
+7. **Do not read entire test files** sequentially. If you need to check assertions, use `grep` or read specific line ranges.
+8. **Minimize command output**: If a test script is noisy, run it with silent/summary flags or filter the output to show only errors/failures.
 
 ## Do Not Grow The Monoliths Further
 
-`index.html` (~25k lines) and `styles.css` (~14.9k lines) got this large because past sessions pasted new code wherever was convenient instead of creating new modules. Do not repeat that pattern:
+`index.html` (~20.6k lines) and `styles.css` (~14.3k lines) got this large because past sessions pasted new code wherever was convenient instead of creating new modules. Do not repeat that pattern:
 
 1. **New feature logic goes in a new `.js` module**, imported by `index.html`'s `<script type="module">`, not pasted into the inline script. The inline script should only gain the few lines needed to call into the new module. Same idea for CSS: prefer a scoped block or, for anything nontrivial, consider whether it belongs in a new stylesheet rather than appended to `styles.css`.
 2. **Before editing `index.html` or `styles.css`, check size first** (`wc -l index.html styles.css` or PowerShell equivalent) and mention the before/after line count if the change is nontrivial (more than ~50 lines). If a change would add more than ~150 lines to either file, stop and propose extracting it into a new module instead of asking forgiveness after the fact.
@@ -28,27 +31,26 @@ Write new logic as pure functions wherever the task allows, and favor a function
 
 1. **Prefer pure functions**: given the same inputs, always return the same output, with no side effects (no mutating arguments, no reading/writing shared/global/module state, no DOM access, no network calls). Push side effects (DOM updates, `state` mutation, network/storage I/O) to thin call sites at the edges, and keep the actual logic (parsing, formatting, validation, ranking, transforms) pure and testable in isolation.
 2. **Favor composition over mutation**: build results with `map`/`filter`/`reduce`/spread and return new objects/arrays rather than mutating inputs in place or accumulating into shared variables.
-3. **New pure helpers belong in the relevant `.js` module, not the inline script.** This aligns with "Do Not Grow The Monoliths Further" below — pure logic is exactly what's easiest to extract and unit-test, so there's rarely a reason to leave it inline. `phone-transfer-codec.js` and `qr-codec.js` are examples of this pattern already applied (pure codec/crypto helpers extracted; only stateful orchestration stays inline in `index.html`).
+3. **New pure helpers belong in the relevant `.js` module, not the inline script.** This aligns with "Do Not Grow The Monoliths Further" below — pure logic is exactly what's easiest to extract and unit-test, so there's rarely a reason to leave it inline. `src/codecs/phone-transfer-codec.js` and `src/codecs/qr-codec.js` are examples of this pattern already applied (pure codec/crypto helpers extracted; only stateful orchestration stays inline in `index.html`).
 4. **It's fine to stay impure at the edges.** Code that inherently needs to touch `state`, the DOM, `localStorage`, or the network (event handlers, render functions, RPC calls) doesn't need to be forced into a pure shape — just keep such code thin and delegate real logic to pure helpers it calls.
 
 ## Do Not Re-Read
 
 | Path | Why | Check this instead |
 |---|---|---|
-| `medical-knowledge-db.js` | Generated bundle, ~407k lines / ~24 MB | Source JSON in `medical-knowledge/`; rebuild with `npm run build:medical-knowledge` |
-| `index.html` (whole file, sequentially) | ~24.9k lines: ~1.7k lines DOM, ~23.1k lines inline JS. CSS was extracted to `styles.css` (~14.9k lines) — see below | `docs/index-html-js-symbol-map.md`, `docs/index-html-css-region-map.md`, or the line ranges in "index.html Structure" below |
-| `styles.css` (whole file, sequentially) | ~14.9k lines, extracted from `index.html`'s former inline `<style>` block | `docs/index-html-css-region-map.md` for a selector-prefix table of contents |
+| `medical-knowledge-db.js` | Generated bundle, ~60k lines / ~3.3 MB | Source JSON in `medical-knowledge/`; rebuild with `npm run build:medical-knowledge` |
+| `index.html` (whole file, sequentially) | ~20.6k lines: ~1.6k lines DOM, ~19k lines inline JS. CSS was extracted to `styles.css` (~14.3k lines) — see below | `docs/index-html-js-symbol-map.md`, `docs/index-html-css-region-map.md`, or the line ranges in "index.html Structure" below |
+| `styles.css` (whole file, sequentially) | ~14.3k lines, extracted from `index.html`'s former inline `<style>` block | `docs/index-html-css-region-map.md` for a selector-prefix table of contents |
 | `reports/*.json`, `reports/clinical-workup-audit-*.md` | Generated audit output, large | `reports/README.md` or the `*-latest.md` file for the relevant report |
-| `scripts/hand-polish-clinical-pathway-trees.js` (8.1k lines), `scripts/iterate-clinical-workups.js` (3.6k lines), `scripts/install-endocrine-workups.js`, `scripts/generate-endocrine-workups.js` | Large generators/auditors | Their `--check`/report output, or a symbol overview instead of a full read |
+| `scripts/install-endocrine-workups.js`, `scripts/generate-endocrine-workups.js` | Large generators | Their `--check`/report output, or a symbol overview instead of a full read |
 | `node_modules/`, `python-deid/venv/`, `models/`, `vendor/` | Dependencies, local model files, vendored browser bundles | Not app source; `scripts/check-syntax.js` verifies vendor scripts are actually wired up |
-| `evidence.js` (11.3k lines) — read fully only when necessary | Second-largest first-party file; no symbol map exists for it yet | Grep for the specific export/function name first; see "Recommended Next Split" at the end of this file |
 
 ## index.html Structure
 
 As of the CSS extraction, `index.html` has two physical parts. Line numbers drift as the file is edited — regenerate the maps (below) rather than trusting a stale number.
 
-1. **DOM body**: from `<body>` through the vendor `<script src="...">` tags, currently around lines 15-1762 (~1.7k lines). This is plain markup; grep for the element `id` you care about (`data-view="..."` attributes mark the top-level app views: `vaultAccess`, `intake`, `workspace`, `workup`, `bedside`, `evidence`, `deid`, `handoff`, `studio`, `final`, `privacy`).
-2. **Inline module script**: `<script type="module">` currently at lines 1763-24960 (~23.1k lines — this is almost the entire app's client-side logic: Workup Studio, evidence panel, de-id UI wiring, vault, QR/phone handoff, layout, etc., all in one script, not organized into sub-sections). Symbol lookup: `docs/index-html-js-symbol-map.md` (1000+ entries, name → line → heuristic feature tag).
+1. **DOM body**: from `<body>` through the vendor `<script src="...">` tags, currently around lines 15-1634 (~1.6k lines). This is plain markup; grep for the element `id` you care about (`data-view="..."` attributes mark the top-level app views: `vaultAccess`, `intake`, `workspace`, `workup`, `bedside`, `evidence`, `deid`, `handoff`, `studio`, `final`, `privacy`).
+2. **Inline module script**: `<script type="module">` currently at lines 1635-20599 (~19k lines — this is almost the entire app's client-side logic: Workup Studio, de-id UI wiring, vault, QR/phone handoff, layout, etc., all in one script, not organized into sub-sections; the standalone evidence-retrieval engine was removed, see "Removed subsystem" below). Symbol lookup: `docs/index-html-js-symbol-map.md` (874 entries as of the last regen, name → line → heuristic feature tag).
 
 CSS lives in `styles.css` (a standalone stylesheet loaded via `<link rel="stylesheet" href="./styles.css">` in `<head>`), not inline in `index.html`. Table of contents: `docs/index-html-css-region-map.md`. CSS is written in mostly feature-contiguous runs, so a selector-prefix range is a reasonable place to jump to directly.
 
@@ -56,25 +58,7 @@ Regenerate either map after an edit:
 - `npm run build:index-html-symbol-map`
 - `npm run build:index-html-css-map`
 
-**Important caveat**: functions belonging to the same feature are *not* generally contiguous in the inline script — the file grew by pasting new code wherever was convenient, not by feature section. The table below gives the min/max line span per feature tag so you know roughly which part of the file to expect something in, but the exhaustive per-function table in `docs/index-html-js-symbol-map.md` is the only reliable per-symbol coordinate.
-
-| Feature area (heuristic tag) | Approx. line span | Function count |
-|---|---|---|
-| Workup Studio & Contribution (authoring UI, review, GitHub issue handoff) | 2386-20894 | 255 |
-| Checklist / Complaint CDS / Clinical Intent | 1777-24938 | 196 |
-| QR / Phone Handoff | 9788-23594 | 121 |
-| Patient Roster / Admission | 3015-19223 | 40 |
-| Evidence & Physical Exam | 4747-23446 | 31 |
-| De-identification & Vault (crypto, encrypt/decrypt) | 2099-20664 | 28 |
-| Service Preferences & Picker | 3138-3459 | 23 |
-| Lab Timeline | 3154-21881 | 16 |
-| Clinical Pathway Graph (cytoscape trees) | 4997-12697 | 15 |
-| Generic Utilities (search/filter/parse/format/validate) | 4811-22307 | 13 |
-| Layout & Navigation Chrome | 3712-11065 | 9 |
-| Supabase & Auth (browser side uses `@supabase/supabase-js` via CDN ESM import for Workup Studio auth) | 4094-6181 | 5 |
-| Continuity (day-over-day carry-forward) | 14398-15031 | 4 |
-| Notes / H&P / Discharge / Presentation | 4359-23211 | 3 |
-| General/App State (uncategorized) | scattered | ~272 |
+**Important caveat**: functions belonging to the same feature are *not* generally contiguous in the inline script — the file grew by pasting new code wherever was convenient, not by feature section. A previous version of this file had a hand-copied "feature area → line span" table here; it went stale (line numbers pointed past the current end of file) and was **removed** rather than re-verified by guesswork. Do not grep `index.html` for a function name — grep `docs/index-html-js-symbol-map.md` instead, which has a per-function `Feature area` column generated by name-keyword matching (itself a heuristic hint, not verified — see the caveat at the top of `scripts/gen-index-html-symbol-map.js`). That per-function table is the only reliably current coordinate source; regenerate it (`npm run build:index-html-symbol-map`) after any `index.html` edit before trusting it.
 
 ## Module Dependency Map
 
@@ -82,28 +66,46 @@ First-party `.js` modules and what they import from each other (verified from so
 
 ```
 index.html (browser entry, <script type="module">)
-├── deid.js                     (no first-party imports)
-├── complaint-cds.js            → medical-knowledge-db.js
-├── checklist.js                → checklist-organ-system-schema.js
-├── clinical-intents.js         → medical-knowledge-db.js
-├── open-evidence-workflows.js  → open-evidence-results.js
-├── open-evidence-results.js    (no first-party imports)
-├── continuity.js               → labs.js
-├── workup-authoring.js         (no first-party imports)
-├── workup-contribution.js      (no first-party imports)
-├── physical-exam-catalog.js    (no first-party imports)
-├── qr-codec.js                 → vendor/zstd-wasm/index.web.js, vendor/qr-zstd-dictionary.js
-├── phone-transfer-codec.js     → qr-codec.js (base64UrlDecodeBytes)
+├── src/vault/deid.js                   → ./deid/model-config.js, ./deid/lexicons.js
+├── src/clinical/complaint-cds.js       → ../../medical-knowledge-db.js, ./clinical-intents.js
+├── src/clinical/checklist.js           → ./checklist-organ-system-schema.js, ../../prompts/checklist-generation.js (re-export only)
+├── src/clinical/clinical-intents.js    → ../../medical-knowledge-db.js
+├── src/clinical/continuity.js          → ./labs.js
+├── open-evidence-workflows.js          → open-evidence-results.js, prompts/open-evidence/*.js
+├── open-evidence-results.js            (no first-party imports)
+├── src/workup/workup-authoring.js      (no first-party imports)
+├── src/workup/workup-contribution.js   → ../vault/physical-exam-catalog.js; exports cleanString/stringArray used by prompts/chat-ai-workup-handoff.js
+├── prompts/chat-ai-workup-handoff.js   → src/workup/workup-contribution.js (cleanString, slugifyContributionId, stringArray, WORKUP_CONTRIBUTION_SCHEMA)
+├── src/vault/physical-exam-catalog.js  (no first-party imports; PHYSICAL_EXAM_REFERENCE_PATH/PHYSICAL_EXAM_EVIDENCE_OVERLAY_PATH are browser fetch() paths relative to index.html's page URL, not module-relative — unaffected by this file's own directory)
+├── src/codecs/qr-codec.js              → vendor/zstd-wasm/index.web.js, vendor/qr-zstd-dictionary.js
+├── src/codecs/phone-transfer-codec.js  → src/codecs/qr-codec.js (base64UrlDecodeBytes)
 └── vendor/zstd-wasm/index.web.js, vendor/qr-zstd-dictionary.js
 
-Not wired into index.html (Node-side / test-only today):
-├── embedding-recall.js  → complaint-cds.js, evidence.js
-├── workup-report.js     → medical-knowledge-db.js
-└── evidence.js          (no first-party imports; loads data/evidence/*.csv itself)
-    used by: embedding-recall.js, scripts/evidence-eval.js, scripts/iterate-clinical-workups.js
+prompts/ (pure prompt-text builders — see "Prompt Files" section below)
+├── open-evidence/shared.js                      (no first-party imports)
+├── open-evidence/initial-rounds-report.js       → open-evidence/shared.js
+├── open-evidence/full-rounds-report.js          → open-evidence/shared.js
+├── open-evidence/final-rounds-update.js         → open-evidence/shared.js
+├── open-evidence/medication-safety.js           → open-evidence/shared.js
+├── open-evidence/teaching-explanation.js        → open-evidence/shared.js
+├── open-evidence/discharge-checklist.js         → open-evidence/shared.js
+├── open-evidence/attending-discharge-plan.js    → open-evidence/shared.js
+├── chat-ai-workup-handoff.js   → ../src/workup/workup-contribution.js
+└── checklist-generation.js     (no first-party imports; consumed by src/clinical/checklist.js re-export)
 ```
 
-Consequence for editing: changing `complaint-cds.js` or `clinical-intents.js` behavior can affect `embedding-recall.js` even though `embedding-recall.js` isn't loaded by the browser app — check its tests too if you touch either file. `evidence.js` and `labs.js` have no reverse dependents inside `index.html` directly; they're reached only through `continuity.js` (labs) or not at all in the browser bundle (evidence — evidence retrieval in the running app goes through `complaint-cds.js`/`checklist.js`, not `evidence.js`; confirm this hasn't changed before assuming it).
+`evidence.js`, `embedding-recall.js`, and `workup-report.js` (the standalone evidence-retrieval engine, its embedding-recall consumer, and compact report formatting) were removed along with their tests and scripts (`scripts/evidence-eval.js`, `scripts/iterate-clinical-workups.js`, `tests/test-evidence*.js`, `tests/test-embedding-recall.js`, `tests/benchmark-embedding-models.js`) — evidence retrieval in the running app goes through `src/clinical/complaint-cds.js`/`src/clinical/checklist.js` only now. `src/clinical/labs.js` has no reverse dependents inside `index.html` directly; it's reached only through `src/clinical/continuity.js`.
+
+## Prompt Files
+
+Every LLM/OpenEvidence prompt template lives in its own file under `prompts/`, one prompt per file, so wording can be edited without touching orchestration logic. **If you need to edit what a prompt says to an LLM, find it here first — do not grep `index.html` for it.**
+
+- `prompts/open-evidence/shared.js`: shared text fragments (`EVIDENCE_GUARDRAILS`, `NOTE_STANDARD_GUIDANCE`, `PLAIN_OPEN_EVIDENCE_OUTPUT`) and pure composition helpers (`block`, `taskBoundary`, `sourceContextBlock`, `findingsContextBlock`, `buildPatientPrompt`, `buildSameConversationPrompt`) shared by every OpenEvidence task prompt below.
+- `prompts/open-evidence/initial-rounds-report.js`, `full-rounds-report.js`, `final-rounds-update.js`, `medication-safety.js`, `teaching-explanation.js`, `discharge-checklist.js`, `attending-discharge-plan.js`: one file per OpenEvidence task, each exporting a single `xPrompt(context)` function with the task's exact wording. `open-evidence-workflows.js` imports all seven and wires them into the `openEvidenceTasks` registry; it also owns context-compaction (`compactOpenEvidenceContext`, char-limit logic) since that's plumbing, not prompt wording.
+- `prompts/chat-ai-workup-handoff.js`: `buildChatAiHandoffPrompt` — the ChatGPT/Claude handoff prompt for drafting/tailoring a workup contribution (schema example, privacy rules, output rules). Imports `cleanString`/`slugifyContributionId`/`stringArray`/`WORKUP_CONTRIBUTION_SCHEMA` from `src/workup/workup-contribution.js`. `index.html` and `tests/test-workup-contribution.js` import it directly from this file, not from `src/workup/workup-contribution.js`.
+- `prompts/checklist-generation.js`: `checklistContract`, `checklistPrompt`, `newAdmissionChecklistPrompt`, `buildCleanupPrompt` — the local (non-OpenEvidence) bedside-checklist generation contract. **Not currently wired into `index.html`'s live UI** — still consumed by `scripts/build-qr-zstd-dictionary.js` and `tests/test-checklist.js`/`tests/test-continuity.js`. `src/clinical/checklist.js` re-exports these names for backward compatibility; import from `prompts/checklist-generation.js` directly in new code.
+
+Prompt-building logic that stays *inline* in `index.html` (not extracted, because it's tightly coupled to `state`/DOM/catalog lookups rather than being a static or near-static template): `workupStudioOpenEvidencePrompt()` (~line 6147, Workup Studio section-patch prompt), `patientChecklistPatchPrompt()` (~line 10275, bedside checklist patch prompt). `src/clinical/clinical-intents.js`'s `buildValidatedClinicalIntentPromptBlock`/`buildClinicalIntentRetrievalContext` also stay in place — they're dynamic context-block formatters keyed to the intent schema, not swappable instruction text, and are only ~60 lines tightly coupled to that module's own private helpers.
 
 ## Project In One Screen
 
@@ -118,29 +120,33 @@ Privacy-first static browser app for inpatient pre-rounding. Pasted chart contex
 
 - `index.html`: static app UI DOM and all client-side workflow logic (inline module script). See "index.html Structure" above before opening it.
 - `styles.css`: all app CSS, loaded via `<link>` from `index.html`. See `docs/index-html-css-region-map.md`.
-- `deid.js`: browser de-id pipeline. Key exports: `createDeidentifier`, `deidentifyTextStructuredOnly`. Regex/structured PHI detection, optional model entities, date generalization, identity aliases, residual PHI warnings, clinical false-positive guards.
-- `labs.js`: lab timeline parser — analyte aliases, value/unit/timestamp extraction, timeline events, prompt formatting.
-- `checklist.js`: checklist prompt/parse/validate, local checklist construction from workups, bedside/exam item expansion, organ-system grouping, traceability audits.
-- `continuity.js`: continuity case/day model, carry-forward blocks, daily input normalization, smart update classification, continuity prompt builders.
-- `clinical-intents.js`: validated/staged clinical intent registry — resolves free text to intents, aliases/avoid/suppress rules, validated intent context.
-- `complaint-cds.js`: complaint/workup selection — evaluates complaint modules, modifier add-ons, partitions history/safety/exam/tests/red flags, formats CDS reports.
-- `evidence.js`: evidence retrieval/recommendation engine — loads CSV catalog, ranks candidates, builds recommended exam checklists, audits domain coverage, catalog gaps.
-- `embedding-recall.js`: browser embedding retrieval plus staged clinical knowledge-pack validation/activation gate (name is misleading — it's also the knowledge-pack gate). Not wired into `index.html` today.
-- `open-evidence-workflows.js` / `open-evidence-results.js`: OpenEvidence task registry/prompt builders (with prompt limits, same-conversation enforcement) and paste-back/result parsing for rounds, med safety, discharge readiness, blind spots, guideline exceptions, workup patches.
-- `workup-authoring.js`: Workup Studio authoring data model — normalized snapshots, section patches, change sets, export rows, no-patient-data validation.
-- `workup-contribution.js`: community contribution schema/validation and GitHub issue / chat-AI handoff prompt builders for submitting new workups.
-- `physical-exam-catalog.js`: loads the physical exam maneuver catalog for the browser app.
-- `qr-codec.js`: QR/phone-handoff binary codec — base64url, BASE42/legacy-BASE45 QR-safe encodings, gzip, minimal CBOR encode/decode, zstd-dictionary compression (via `vendor/zstd-wasm/`). Extracted from `index.html`'s inline script; all consumers remain in `index.html`.
-- `phone-transfer-codec.js`: pure phone-handoff transfer-code/payload/mailbox helpers — `randomCode`, `encodePayload`/`decodePayload`, `normalizeTransferCode`, `assertMatchingBundleCode`, `phoneTransferCryptoKey`, `decryptEncryptedPhonePayloadTransferText` (PBKDF2 + AES-GCM), `phoneHandoffMailboxLinkFromText`, `importAesGcmMailboxKey`, `encryptPhoneHandoffMailboxPayload`/`decryptPhoneHandoffMailboxPayload`. Extracted from `index.html`; the stateful phone-handoff orchestration (`state`/`activePatient`-dependent functions like `currentPhonePayload`, `encryptedPhonePayloadTransferText`, mailbox RPC network calls) stays inline since it isn't pure. The compact QR checklist manifest/patch cluster (`expandCompactPhoneHandoffPayloadForQr` and neighbors, ~line 20500) is also NOT extracted — it's tightly coupled to checklist-catalog helpers (`checklistOptionsForItem`, `itemText`, `checklistKind`, `buildPhoneChecklistManifest`) used well beyond phone-handoff, so pulling it out needs a real catalog module boundary, not a mechanical cut.
-- `workup-report.js`: compact clinical workup/report formatting. Not wired into `index.html` today (test-only).
-- `checklist-organ-system-schema.js`: organ-system grouping schema used by `checklist.js`.
-- `clinical-intents.js`, `complaint-cds.js`, `evidence.js`, and `medical-knowledge/` are tightly coupled for clinical workup behavior — check them together.
+- `src/vault/deid.js` (~2.7k lines): browser de-id pipeline. Key exports: `createDeidentifier`, `deidentifyTextStructuredOnly`. Regex/structured PHI detection, optional model entities, date generalization, identity aliases, residual PHI warnings, clinical false-positive guards. Moved into `src/vault/` (was root-level `deid.js`). Imports pure leaf constants from `src/vault/deid/model-config.js` and `src/vault/deid/lexicons.js` (split out — see below); re-exports `MODEL_PROFILES`/`OPENMED_MODEL_ID`/`DEFAULT_DTYPE`/etc. for `tests/benchmark-deid.js`. The remaining ~2.7k lines (false-positive guards, structured/model entity detection, temporal/date handling, name/alias identity graph, orchestration) were **not** split further — a call-graph analysis found a genuine 3-way cycle between the guard functions, structured-entity functions, and name/alias functions (e.g. `isProtectedClinicalEntityFalsePositive` calls `parsePersonName`, which calls guard functions, which are also called by structured-entity functions that call `pushPatternEntity`, which is called back by the name/alias functions). No acyclic 3-way module split exists along those lines; splitting further would require merging those three concerns into one module and only pulling out the (one-way-dependent) temporal logic, which was judged too risky to attempt unattended given this is medical PHI-redaction code — a subtle bug here could leak patient data. See `src/vault/deid/` below for what's already split and how it was verified.
+- `src/vault/deid/model-config.js`: leaf module — `DEFAULT_PRIMARY_MODEL_ID`, `DEFAULT_FALLBACK_MODEL_ID`, `OPENMED_MODEL_ID`, `MULTILANG_PII_MODEL_ID`, `I2B2_CLINICALBERT_MODEL_ID`, `DEFAULT_DTYPE`, `MODEL_PROFILES`. No first-party imports. Extracted from `deid.js` lines 1-39.
+- `src/vault/deid/lexicons.js`: leaf module — PHI label mapping (`phiLabelMap`) and every clinical-text lexicon `deid.js` uses (`nonNameClinicalWords`, `nonNameClinicalPhrases`, `commonFirstNames`, `clinicalAnchorWords`, `protectedClinicalAcronyms`, medication word lists, name-pattern regex sources, etc.). No first-party imports; all bindings are read-only `const`s built once at module init (no mutable shared state). Extracted from `deid.js` lines 41-686. Verified byte-for-byte identical to the original (diffed programmatically; only difference was 2 collapsed blank lines) before wiring in the import.
+- `src/clinical/labs.js`: lab timeline parser — analyte aliases, value/unit/timestamp extraction, timeline events, prompt formatting. Moved into `src/clinical/` (was root-level `labs.js`).
+- `src/clinical/checklist.js`: checklist prompt/parse/validate, local checklist construction from workups, bedside/exam item expansion, organ-system grouping, traceability audits. Moved into `src/clinical/` (was root-level `checklist.js`).
+- `src/clinical/continuity.js`: continuity case/day model, carry-forward blocks, daily input normalization, smart update classification, continuity prompt builders. Moved into `src/clinical/` (was root-level `continuity.js`).
+- `src/clinical/clinical-intents.js`: validated/staged clinical intent registry — resolves free text to intents, aliases/avoid/suppress rules, validated intent context. Moved into `src/clinical/` (was root-level `clinical-intents.js`).
+- `src/clinical/complaint-cds.js`: complaint/workup selection — evaluates complaint modules, modifier add-ons, partitions history/safety/exam/tests/red flags, formats CDS reports. Moved into `src/clinical/` (was root-level `complaint-cds.js`).
+- `open-evidence-workflows.js` / `open-evidence-results.js`: OpenEvidence task registry (wires prompt builders from `prompts/open-evidence/`, applies prompt char limits, same-conversation enforcement) and paste-back/result parsing for rounds, med safety, discharge readiness, blind spots, guideline exceptions, workup patches. See "Prompt Files" above for where the actual prompt wording lives.
+- `src/workup/workup-authoring.js`: Workup Studio authoring data model — normalized snapshots, section patches, change sets, export rows, no-patient-data validation. Moved into `src/workup/` (was root-level `workup-authoring.js`).
+- `src/workup/workup-contribution.js`: community contribution schema/validation, GitHub issue body builder. Imports `src/vault/physical-exam-catalog.js`. Exports `cleanString`/`stringArray`/`slugifyContributionId` used by `prompts/chat-ai-workup-handoff.js` for the chat-AI handoff prompt (moved there — see "Prompt Files"). Moved into `src/workup/` (was root-level `workup-contribution.js`).
+- `src/vault/physical-exam-catalog.js`: loads the physical exam maneuver catalog for the browser app. Moved into `src/vault/` (was root-level `physical-exam-catalog.js`).
+- `src/codecs/qr-codec.js`: QR/phone-handoff binary codec — base64url, BASE42/legacy-BASE45 QR-safe encodings, gzip, minimal CBOR encode/decode, zstd-dictionary compression (via `vendor/zstd-wasm/`). Extracted from `index.html`'s inline script; all consumers remain in `index.html`. Moved into `src/codecs/` (was root-level `qr-codec.js`).
+- `src/codecs/phone-transfer-codec.js`: pure phone-handoff transfer-code/payload/mailbox helpers — `randomCode`, `encodePayload`/`decodePayload`, `normalizeTransferCode`, `assertMatchingBundleCode`, `phoneTransferCryptoKey`, `decryptEncryptedPhonePayloadTransferText` (PBKDF2 + AES-GCM), `phoneHandoffMailboxLinkFromText`, `importAesGcmMailboxKey`, `encryptPhoneHandoffMailboxPayload`/`decryptPhoneHandoffMailboxPayload`. Extracted from `index.html`; the stateful phone-handoff orchestration (`state`/`activePatient`-dependent functions like `currentPhonePayload`, `encryptedPhonePayloadTransferText`, mailbox RPC network calls) stays inline since it isn't pure. The compact QR checklist manifest/patch cluster (`expandCompactPhoneHandoffPayloadForQr` and neighbors, ~line 20500) is also NOT extracted — it's tightly coupled to checklist-catalog helpers (`checklistOptionsForItem`, `itemText`, `checklistKind`, `buildPhoneChecklistManifest`) used well beyond phone-handoff, so pulling it out needs a real catalog module boundary, not a mechanical cut. Moved into `src/codecs/` (was root-level `phone-transfer-codec.js`).
+- `src/clinical/checklist-organ-system-schema.js`: organ-system grouping schema used by `src/clinical/checklist.js`. Moved into `src/clinical/` (was root-level `checklist-organ-system-schema.js`).
+- Clinical-decision-tree node/graph helpers (`sanitizeClinicalPathwayNode`, `titleFromId`, `slugId`, `ensureUniqueTreeId`, `normalizeTreeChildren`, and neighbors) are currently **inline in `index.html`**, not in a separate module — an earlier session extracted them into a standalone `clinical-pathway-graph.js`, but that file does not exist in the current working tree or git history (never committed; likely lost when other uncommitted work was reconciled). Re-verify with `grep -n "function titleFromId" index.html` before assuming either state. `sanitizeClinicalPathwayGraph`/`parseClinicalPathwayGraph`/`feverSepsisFallbackGraph` (callers) read `state.selectedWorkupModuleId` and call `moduleById`/`moduleLabel`, themselves tied to module-scope catalog caches — a future extraction needs to also carve out the workup-catalog lookup layer, not just the pure node helpers, to stay safe.
+- `src/clinical/clinical-intents.js`, `src/clinical/complaint-cds.js`, and `medical-knowledge/` are tightly coupled for clinical workup behavior — check them together. **`evidence.js` was removed** (see below) — evidence retrieval now goes through `src/clinical/complaint-cds.js`/`src/clinical/checklist.js` only.
+
+### Removed subsystem: standalone evidence retrieval engine
+
+`evidence.js`, `embedding-recall.js`, and `workup-report.js` — along with their tests (`tests/test-evidence.js`, `tests/test-evidence-eval.js`, `tests/test-evidence-adversarial.js`, `tests/test-embedding-recall.js`, `tests/benchmark-embedding-models.js`) and scripts (`scripts/evidence-eval.js`, `scripts/iterate-clinical-workups.js`, `scripts/hand-polish-clinical-pathway-trees.js`) — were deleted together in the current uncommitted working tree. `package.json`'s `test:clinical` chain no longer references `test:evidence-suite`/`test:embedding`, confirming this was a deliberate, consistent removal, not an accidental partial deletion. **`data/evidence/*.csv` still exists on disk but now has no code reader** — flag this to a human before deleting the data directory, since it may still be wanted for a future reimplementation.
 
 ## Generated And Source Data
 
 - `medical-knowledge/`: source of truth. `manifest.json` (included files), `source-registry.json` (provenance), `complaint-modules/*.json` (reviewed modules; `complaint-modules/endocrine/*.json` is generated/installed with active `mvp` status), `schema/*.schema.json`, `templates/`.
 - `medical-knowledge-db.js`: generated from the above — never hand-edit.
-- `data/evidence/`: evidence CSVs, source registry rows, tag dictionary, catalog gaps, accepted additions, eval fixtures — used by `evidence.js` and evidence tests.
+- `data/evidence/`: evidence CSVs, source registry rows, tag dictionary, catalog gaps, accepted additions, eval fixtures. **Orphaned** — its former reader (`evidence.js`) was removed; nothing in the current codebase reads this directory. Confirm with a human before deleting.
 - `data/physical-exam/`: `physical_exam_reference.csv` (source of truth) and `physical_exam_evidence_overlay.csv` (generated by `npm run build:evidence`).
 - `data/clinical-guard-*.json`, `data/clinical-guard-export.js`: de-id clinical guard vocabularies, installed by `scripts/apply-clinical-guard-vocabulary.js`.
 - `data/test-notes/`: synthetic clinical notes for local testing — keep PHI-free.
@@ -158,15 +164,15 @@ Privacy-first static browser app for inpatient pre-rounding. Pasted chart contex
 - `python-deid/bridge.js`: Node bridge — checks local Python availability, calls the Python CLI.
 - `python-deid/deid_pipeline.py`: optional local Presidio/spaCy/transformers de-id pipeline with clinical guard lists and custom recognizers. `python-deid/run_deid.py` is its CLI wrapper.
 - `python-deid/venv/`: local virtualenv — do not scan.
-- The browser path in `deid.js` is the default app path; the Python path is optional local tooling, not part of the shipped app.
+- The browser path in `src/vault/deid.js` is the default app path; the Python path is optional local tooling, not part of the shipped app.
 
 ## Script Catalog
 
-- `scripts/apply-clinical-guard-vocabulary.js`: installs generated clinical guard words/phrases into `deid.js`, writes `data/clinical-guard-export.js`.
+- `scripts/apply-clinical-guard-vocabulary.js`: installs generated clinical guard words/phrases into `src/vault/deid.js`, writes `data/clinical-guard-export.js`. (Its `--install` mode source-code-inserts an import block into `deid.js` if not already present — the `DEID_FILE` path, the generated import's relative path to `data/clinical-guard-export.js`, and the insertion-point marker were all updated for the `src/vault/deid.js` + `src/vault/deid/lexicons.js` split — the marker is now `export function normalizePhiLabel(entityOrLabel) {` since `medicationClassOrStemPattern`, the old marker text, moved into `lexicons.js` and is now only an imported binding in `deid.js`, not a local declaration. Verified in isolation: spliced the generated import block into a scratch copy of the post-split `deid.js` and confirmed it still loads and its `../../data/clinical-guard-export.js` import resolves. `deid.js` does not currently have this import installed, so this is dormant/optional tooling, not a live dependency — rerun the isolation check above if you change `deid.js`'s import header shape again.)
 - `scripts/build-clinical-guard-vocabulary.js`: builds clinical guard vocabulary from RxNorm/fallback medication lists and medical abbreviations/conditions.
 - `scripts/build-medical-knowledge-db.js`: reads `medical-knowledge/`, validates modules/source registry, derives support items, writes `medical-knowledge-db.js`.
 - `scripts/build-mesh-vocabulary.js`: downloads/parses MeSH vocabulary into clinical guard words/phrases.
-- `scripts/build-physical-exam-evidence.js`: builds the physical exam evidence overlay CSV from the reference CSV and curated inference rules.
+- `scripts/build-physical-exam-evidence.js`: builds the physical exam evidence overlay CSV from the reference CSV and curated inference rules. (Overlay output is generated; `data/evidence/` inputs it might have used are orphaned — see "Removed subsystem" above. Verify this script's actual CSV inputs before assuming they still exist.)
 - `scripts/build-qr-zstd-dictionary.js`: builds the QR zstd dictionary/metadata from representative workup payloads and medical knowledge sources.
 - `scripts/check-qr-dictionary.js`: checks whether the QR dictionary is stale relative to workup library changes.
 - `scripts/check-supabase-auth-readiness.js`: verifies public catalog readiness and, unless `--public-only`, deployment credentials/service-role readiness.
@@ -174,31 +180,29 @@ Privacy-first static browser app for inpatient pre-rounding. Pasted chart contex
 - `scripts/deid-adversarial.js`, `scripts/deid-fixtures.js`: shared de-id fixtures/adversarial runner used by de-id tests/benchmarks.
 - `scripts/deploy-supabase-workup-authoring.js`: one-command Supabase authoring deploy — pushes config/migrations, imports current workups, optionally grants reviewer, reruns readiness checks.
 - `scripts/download-deid-models.js`: downloads local de-id model artifacts into `models/`.
-- `scripts/evidence-eval.js`: evidence retrieval evaluation runner — loads catalog/eval CSVs, computes pass/fail metrics, writes reports.
 - `scripts/export-medical-knowledge.js`: exports approved Supabase/local snapshot change sets back to `medical-knowledge/`, then runs build/test unless skipped.
 - `scripts/generate-endocrine-workups.js` / `scripts/install-endocrine-workups.js`: generate then install the endocrine workup dataset into `medical-knowledge/complaint-modules/endocrine/`.
 - `scripts/grant-workup-access.js`: grants reviewer/admin or delegated author access in Supabase for Workup Studio.
-- `scripts/hand-polish-clinical-pathway-trees.js`: large pathway-tree generation/polish/check script — use `--check` for validation, don't read it fully.
 - `scripts/import-medical-knowledge.js`: seeds Supabase authoring tables from local JSON when a service-role key is present, otherwise writes a local dry-run snapshot.
-- `scripts/iterate-clinical-workups.js`: audits validated clinical workups (intents, evidence, module coverage, traceability, gaps, suppressions, readiness); writes markdown/json reports.
 - `scripts/gen-index-html-symbol-map.js` / `scripts/gen-index-html-css-region-map.js`: regenerate the two `docs/index-html-*-map.md` lookup tables used above — rerun after editing `index.html`'s inline script or `styles.css`.
 - `scripts/README.md`: short command grouping reference.
 
 ## Focused Validation Recipes
 
-- Changed `deid.js`, clinical guard data, `python-deid/`, or model handling: `npm run test:syntax`, `npm run test:deid`, optionally `npm run benchmark:deid`.
-- Changed `labs.js`: `npm run test:labs`, `npm run test:core`.
+- Changed `src/vault/deid.js`, clinical guard data, `python-deid/`, or model handling: `npm run test:syntax`, `npm run test:deid`, optionally `npm run benchmark:deid`.
+- Changed `src/clinical/labs.js`: `npm run test:labs`, `npm run test:core`.
 - Changed checklist construction/parsing: `npm run test:checklist`, `npm run test:clinical-intents`, `npm run test:complaint-cds`.
-- Changed `clinical-intents.js`, `complaint-cds.js`, or `evidence.js`: `npm run test:clinical-intents`, `npm run test:complaint-cds`, `npm run test:evidence-suite`. Also check `embedding-recall.js` tests (`npm run test:embedding`) since it imports `complaint-cds.js`/`evidence.js` even though it's not wired into `index.html`.
-- Changed `data/evidence/`: `npm run test:syntax`, `npm run test:evidence-suite`, `npm run test:clinical-intents`.
+- Changed `src/clinical/clinical-intents.js` or `src/clinical/complaint-cds.js`: `npm run test:clinical-intents`, `npm run test:complaint-cds`.
 - Changed `medical-knowledge/` JSON: `npm run build:medical-knowledge`, `npm run test:medical-knowledge`, then `npm run test:complaint-cds` and `npm run test:clinical-intents`.
 - Changed endocrine generator/installed modules: `npm run refresh:endocrine-workups`, or at minimum `npm run build:medical-knowledge && npm run test:endocrine-knowledge`.
 - Changed Workup Studio authoring code: `npm run test:workup-authoring`, `npm run test:workup-studio-auth`, `npm run test:workup-studio-ui`.
 - Changed Supabase migrations/config/scripts: `npm run check:supabase-public`, `npm run test:supabase-config`, relevant catalog race/refresh/empty tests.
-- Changed OpenEvidence workflows/results: `npm run test:open-evidence`; also `npm run test:complaint-cds` if workup prompts changed.
+- Changed an OpenEvidence prompt file (`prompts/open-evidence/*.js`) or `open-evidence-workflows.js`/`open-evidence-results.js`: `npm run test:open-evidence`; also `npm run test:complaint-cds` if workup prompts changed.
+- Changed `prompts/chat-ai-workup-handoff.js` or `src/workup/workup-contribution.js`: `node tests/test-workup-contribution.js` (no dedicated npm script yet).
+- Changed `prompts/checklist-generation.js` or `src/clinical/checklist.js`: `npm run test:checklist`, `npm run test:continuity` (both consume the re-exported prompt constants).
 - Changed `styles.css` or the inline JS in `index.html`: `npm run test:syntax`, `npm run test:clinical-ui`, `npm run test:desktop-ui` for layout/responsive work, and regenerate the affected map (`npm run build:index-html-symbol-map` / `npm run build:index-html-css-map`).
 - Changed QR sharing/compression: `npm run test:qr-optimizer`, `npm run check:qr-dictionary`.
-- `npm test` runs everything (`test:core && test:clinical && test:evidence-suite`); use the targeted commands above during iteration and `npm test` before finishing.
+- `npm test` runs everything currently wired (`test:core && test:clinical`); use the targeted commands above during iteration and `npm test` before finishing. (`evidence.js`'s test suite was removed along with the module — see "Removed subsystem" above.)
 
 ## Test File Map
 
@@ -211,11 +215,8 @@ Privacy-first static browser app for inpatient pre-rounding. Pasted chart contex
 - `tests/test-complaint-cds.js`: complaint CDS/workup output.
 - `tests/test-medical-knowledge-db.js`: generated bundle and source medical knowledge.
 - `tests/test-endocrine-knowledge.js`: endocrine module coverage/quality.
-- `tests/test-embedding-recall.js`, `tests/benchmark-embedding-models.js`: embedding recall, knowledge-pack validation, model benchmark.
-- `tests/test-open-evidence-workflows.js`: OpenEvidence prompts/result handling.
-- `tests/test-evidence.js`, `tests/test-evidence-eval.js`, `tests/test-evidence-adversarial.js`: evidence ranking/catalog logic, eval runner, adversarial retrieval.
-- `tests/test-clinical-workup-quality.js`, `tests/test-clinical-intent-workup-audit.js`: clinical workup quality regression, validated intent/workup audit.
-- `tests/audit-clinical-pathway-trees.js`, `tests/audit-clinical-cutoff-gaps.js`: pathway tree audit, cutoff-gap audit.
+- `tests/test-open-evidence-workflows.js`: OpenEvidence prompt registry/result handling — imports prompt builders indirectly via `open-evidence-workflows.js`, not from `prompts/` directly.
+- `tests/test-workup-contribution.js`: workup contribution schema validation, GitHub issue body, and the chat-AI handoff prompt (imports `buildChatAiHandoffPrompt` from `../prompts/chat-ai-workup-handoff.js`). No dedicated `npm run` script — run with `node tests/test-workup-contribution.js`.
 - `tests/test-workup-authoring.js`, `tests/test-workup-studio-auth.js`, `tests/test-workup-studio-ui.js`: authoring model, Workup Studio auth, Workup Studio UI.
 - `tests/test-supabase-config.js`, `tests/test-supabase-catalog-race.js`, `tests/test-supabase-catalog-refresh.js`, `tests/test-supabase-catalog-empty.js`: Supabase config/defaults, catalog race/refresh/empty-fail-closed behavior.
 - `tests/test-clinical-ui-browser.js`, `tests/test-desktop-responsive-ui.js`: Playwright browser UI regression and desktop/responsive regression — these are what actually exercise `index.html` end to end.
@@ -242,21 +243,41 @@ Privacy-first static browser app for inpatient pre-rounding. Pasted chart contex
 ## Where To Look First
 
 - App startup/UI behavior: symbol map → `index.html` line range → the imported module it calls into.
-- De-id behavior: `deid.js`, then `data/clinical-guard-*`, then `python-deid/` only for the optional Python path.
-- Lab parsing: `labs.js`, `tests/fixtures/`, `tests/test-labs.js`.
-- Checklist output: `checklist.js`, `complaint-cds.js`, `evidence.js`.
-- Clinical intent matching: `clinical-intents.js`.
-- Workup selection: `complaint-cds.js` and `medical-knowledge/complaint-modules/`.
-- Evidence recommendations: `evidence.js` and `data/evidence/`.
+- De-id behavior: `src/vault/deid.js`, then `data/clinical-guard-*`, then `python-deid/` only for the optional Python path.
+- Lab parsing: `src/clinical/labs.js`, `tests/fixtures/`, `tests/test-labs.js`.
+- Checklist output: `src/clinical/checklist.js`, `src/clinical/complaint-cds.js`.
+- Clinical intent matching: `src/clinical/clinical-intents.js`.
+- Workup selection: `src/clinical/complaint-cds.js` and `medical-knowledge/complaint-modules/`.
 - Medical knowledge source changes: `medical-knowledge/`, then rebuild the generated bundle.
-- Workup authoring: `workup-authoring.js`, `docs/supabase-workup-authoring.md`, Supabase scripts.
-- Community workup contribution flow: `workup-contribution.js`.
-- OpenEvidence prompt/result behavior: `open-evidence-workflows.js`, `open-evidence-results.js`.
-- Embedding retrieval or staged knowledge packs: `embedding-recall.js` (not wired into the browser app today).
+- Workup authoring: `src/workup/workup-authoring.js`, `docs/supabase-workup-authoring.md`, Supabase scripts.
+- Community workup contribution flow: `src/workup/workup-contribution.js` (schema/validation), `prompts/chat-ai-workup-handoff.js` (the handoff prompt itself).
+- OpenEvidence prompt/result behavior: `prompts/open-evidence/*.js` (prompt wording), `open-evidence-workflows.js` (task registry/context compaction), `open-evidence-results.js` (paste-back parsing).
+- Any LLM/AI prompt wording: `prompts/` — see "Prompt Files" above before grepping `index.html` or any other module.
 - QR sharing/compression: `vendor/qr-zstd-dictionary.js`, `scripts/build-qr-zstd-dictionary.js`, QR tests.
-- Physical exam maneuvers and evidence overlays: `data/physical-exam/physical_exam_reference.csv` and `physical_exam_evidence_overlay.csv`.
+- Physical exam maneuvers: `data/physical-exam/physical_exam_reference.csv` and `physical_exam_evidence_overlay.csv`.
 - Presentation and note style conventions: `docs/presentation-note-standard.md`.
 
 ## Recommended Next Split
 
-CSS has been extracted to `styles.css`. `index.html`'s ~23k-line inline JS module script is now the largest remaining monolith — the 1000+ functions in it are not organized by feature and are not yet split into ES modules. Check `git log` for recent `index.html` extraction commits before assuming this file is still one big inline script; regenerate `docs/index-html-js-symbol-map.md` if it isn't. `evidence.js` (11.3k lines) is the next largest single first-party file and has no symbol map yet — if it becomes a frequent point of confusion, generate one following the same pattern as `scripts/gen-index-html-symbol-map.js`.
+CSS has been extracted to `styles.css`. `index.html`'s ~20.6k-line inline JS module script is still the largest remaining monolith — the 800+ functions in it are not organized by feature and are not yet split into ES modules. Check `git log` for recent `index.html` extraction commits before assuming this file is still one big inline script; regenerate `docs/index-html-js-symbol-map.md` if it isn't. Within the currently-tracked first-party `.js` files, `src/vault/deid.js` (~3.4k lines), `src/clinical/complaint-cds.js` (~2.9k lines), and `src/clinical/checklist.js` (~2.6k lines) are the largest single files and have no symbol maps yet — if any becomes a frequent point of confusion, generate one following the same pattern as `scripts/gen-index-html-symbol-map.js`. See "Proposed Directory Reorganization" below for a repo-wide restructuring plan.
+
+## Directory Reorganization (complete)
+
+The repo root used to mix first-party `.js` modules of very different concerns (crypto/codecs, clinical logic, Supabase auth, UI catalogs) as flat siblings. This was restructured in independently-testable slices — one topic directory at a time, full test run after each, `AGENTS.md` updated before moving to the next slice — rather than one large unattended pass, since moving many interdependent modules at once has a large blast radius with no human available to catch a mid-flight mistake.
+
+All planned slices are done:
+- `prompts/` — every LLM/OpenEvidence prompt template, one file per prompt (see "Prompt Files" above).
+- `src/codecs/` — `qr-codec.js`, `phone-transfer-codec.js`.
+- `src/clinical/` — `checklist.js`, `checklist-organ-system-schema.js`, `clinical-intents.js`, `complaint-cds.js`, `continuity.js`, `labs.js`.
+- `src/workup/` — `workup-authoring.js`, `workup-contribution.js`.
+- `src/vault/` — `deid.js`, `physical-exam-catalog.js`.
+- `index.html`, `styles.css`, `medical-knowledge-db.js` stay at root (entry point / generated bundle) — the current Module Dependency Map above reflects the final state.
+
+Every slice was moved with `git mv` (history preserved), had every importer updated (`index.html`, tests, `scripts/*.js`, and any cross-imports between moved modules), and was verified with `test:syntax` plus the tests touching that module's feature area, plus a browser-driven test (`node tests/test-qr-zstd-dictionary.js`, which loads `index.html` in a real headless browser) to confirm actual module resolution, not just syntax-checking. Final full-suite result after all four slices: identical pass/fail set to the pre-reorg baseline — no new failures were introduced by any move.
+
+**Lessons for future moves in this repo** (e.g. if `open-evidence-workflows.js`/`open-evidence-results.js` or `physical-exam-catalog.js`'s catalog-loading logic are split further):
+1. Grep for the filename as a bare string literal too (e.g. `"complaint-cds.js"`), not just `import ... from "..."` — `tests/test-medical-knowledge-db.js` had a hidden `readFileSync("complaint-cds.js", ...)` that a pure `import`-statement grep missed, plus a regex checked against file *contents* (`/from\s+["']\.\/medical-knowledge-db\.js["']/`) that also needed updating once the target's own import path changed depth.
+2. `scripts/check-syntax.js` hardcodes a `coreFiles` list and a couple of direct `readFileSync` calls — check it for every moved file.
+3. Code-generation scripts that write into a moved file's source (e.g. `scripts/apply-clinical-guard-vocabulary.js`, which can insert an import block into `deid.js`) need both their target-file path constant and their generated-code import-path template updated.
+4. A file's own string constants that look like paths (e.g. `physical-exam-catalog.js`'s `PHYSICAL_EXAM_REFERENCE_PATH`) may be browser `fetch()` URLs relative to the page (`index.html`), not Node/ESM import paths relative to the module — don't "fix" those; confirm which kind it is first.
+5. Always confirm end-to-end with a browser-driven test, not just `test:syntax` — syntax checks don't catch a wrong relative import path that still parses as valid JS.

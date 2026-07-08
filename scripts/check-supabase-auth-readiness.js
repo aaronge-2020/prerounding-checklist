@@ -128,8 +128,6 @@ async function checkPublicSupabaseReadiness({ supabaseUrl, publishableKey }) {
     ["workups", "id"],
     ["workup_sections", "workup_id"],
     ["workup_items", "workup_id"],
-    ["pathway_trees", "workup_id"],
-    ["pathway_nodes", "tree_id"],
     ["review_cases", "workup_id"],
     ["change_sets", "id"]
   ];

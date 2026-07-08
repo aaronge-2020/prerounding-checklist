@@ -1,4 +1,4 @@
-import { deidentifyTextStructuredOnly } from "../deid.js";
+import { deidentifyTextStructuredOnly } from "../src/vault/deid.js";
 
 const text = `Hospital Course by Date
 12/31: Admitted overnight

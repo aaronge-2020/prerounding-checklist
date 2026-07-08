@@ -1,480 +1,210 @@
-# Presentation and Note Standard
+# Clinical Documentation Standard
 
 ## Purpose
 
-Use this document as the canonical standard for how H&Ps, oral presentations, and follow-up progress updates should be written and delivered in this repo.
+Use this document to write History and Physical reports and daily progress notes. Tell a clear clinical story. Summarize available data. Facilitate the creation of a differential diagnosis. Present factual data without distortion to support clinical arguments. Write complete documentation for the chart. Keep the text concise and functional. The reader must find relevant data fast.
 
-The goal is to make outputs clinically useful, concise, and easy for another clinician to act on.
+## Rule of Separation
 
-## Core Principle
+Place information in the designated section. Never repeat data across sections. Maintain strict boundaries between subjective reports, objective data, clinical reasoning, and action steps.
 
-Written notes and oral presentations are not the same product.
+## The Full Admission Report
 
-The written H&P should be more complete and detailed. It should preserve the clinical data, relevant background, and reasoning needed to understand the patient.
+Write the History and Physical to establish the baseline clinical picture.
 
-The oral presentation should be a concise, edited version of the most essential information. It should tell the patient's story clearly, highlight the most relevant data, and support the team's next decision.
+### Identifying Information and Chief Complaint
 
-Do not read the write-up aloud. Present the curated essentials.
+* Write a single opening sentence.
+* State the patient age, sex, chief complaint, and reason for admission.
 
-## Written H&P
 
-### 1. Identifying Information and Chief Complaint
+* Include active diagnoses relevant to the current admission.
 
-Start with a clear one-liner.
 
-Example:
 
-`Mr./Ms. ___ is a ___-year-old person with a history of ___ presenting with ___.`
+### History of Present Illness
 
-Include only relevant active diagnoses in the opening line. Do not list every past problem unless it matters to the current presentation.
+* Write the symptom story in chronological order.
+* Define time points relative to the admission time.
 
-### 2. History of Present Illness
 
-The HPI should tell the story of the current illness in a logical timeline.
+* Characterize the main presenting symptoms using standard acronyms.
 
-Use time points relative to admission, such as:
 
-- Two days prior to admission
-- One week prior to presentation
+* Document patient beliefs regarding symptom causes, exacerbating factors, and relieving factors.
 
-Avoid calendar-day phrasing when possible because it becomes confusing later.
 
-Include:
+* List pertinent positive and negative review of systems responses.
 
-- Main presenting symptom or concern
-- Onset, progression, and severity
-- What the patient thinks is causing the symptoms
-- What worsens or relieves the symptoms
-- Relevant OPQRST or CLEARAST details
-- Pertinent positive and negative review of systems
-- Prior evaluation for the same symptoms
-- Recent ED visits, admissions, or outpatient workup related to the presentation
-- Brief ED course if relevant
 
-The HPI should read like a clinical story, not a random list of facts.
+* Summarize prior emergency department visits and previous outpatient evaluations related to the presentation.
 
-### 3. Past Medical History
 
-For the written H&P, include a comprehensive list of medical problems, but remove irrelevant EMR clutter.
+* Summarize the current emergency department course.
 
-For relevant active problems, include useful details, not just diagnoses.
 
-Examples:
+* Exclude random facts.
 
-- Cancer: stage, metastases, prior treatment, remission status
-- Coronary artery disease: prior PCI, stents, CABG, MI
-- Diabetes: last A1c, neuropathy, retinopathy, kidney disease
-- HIV: antiretroviral therapy, last CD4 count, viral load
-- CKD: stage, baseline creatinine
-- COPD: GOLD stage, home oxygen requirement
-- Heart failure: HFrEF, HFpEF, or HFrecEF; last LVEF
+### Past Medical History
 
-Show that you understand the patient’s medical background, not just the copied problem list.
+* List active medical problems.
+* Remove imported text from the electronic medical record.
 
-### 4. Medications and Allergies
 
-For each medication, include:
+* Add clinical details to active problems.
+* State the cancer stage, metastasis presence, and remission status.
 
-- Generic name
-- Dose
-- Route
-- Frequency
-- Whether the patient is actually taking it as prescribed
 
-Get medication information from both the patient and the chart.
+* Detail prior coronary interventions.
 
-Include over-the-counter medications, supplements, herbals, and non-prescribed substances when relevant.
 
-For allergies, include the reaction if known.
+* Record the recent hemoglobin A1c and specific diabetic complications.
 
-Remove irrelevant auto-populated EMR clutter.
 
-### 5. Social History
+* List the human immunodeficiency virus CD4 count and viral load.
 
-Write social history in paragraph form rather than disconnected bullets.
 
-Include:
+* Record the chronic kidney disease stage and baseline creatinine.
 
-- Living situation
-- Support system
-- Current or former occupation
-- Substance use
-- Functional status when relevant
-- Other social factors that affect care, safety, discharge planning, adherence, or access
 
-Keep the language patient-centered and nonjudgmental.
+* State the chronic obstructive pulmonary disease stage and home oxygen requirement.
 
-### 6. Physical Exam
 
-Always start with vitals.
+* Define the heart failure classification and the recent ejection fraction.
 
-Then include a general statement describing what the patient looked like when you entered the room.
 
-Example:
 
-`The patient was sitting upright in bed, speaking in full sentences, and appeared mildly uncomfortable.`
+### Medications and Allergies
 
-Document pertinent positives and negatives, especially those related to the current presentation.
+* List the generic name, dose, route, and frequency for each medication.
 
-Do not include a bloated normal exam if it does not help the reader understand the patient.
 
-### 7. Labs and Imaging
+* Confirm patient adherence to the prescribed regimen.
 
-Summarize the important findings.
 
-Do not over-interpret in the data section.
+* Document over the counter supplements and herbal products.
 
-Good:
 
-`Labs are notable for stable renal function and new hyperglycemia.`
+* State the specific allergic reaction for each allergy.
 
-Less good:
 
-`Labs are notable for stable renal function and new hyperglycemia because the patient was started on steroids yesterday.`
+* Remove imported text from the electronic medical record.
 
-Save interpretation for the assessment.
 
-### 8. Assessment
 
-The assessment is where your thinking comes together.
+### Social History
 
-It should answer:
+* Write this section in comprehensive paragraph form.
 
-`Who is this patient today, and what am I most concerned about?`
 
-Aim for 1 to 2 high-yield sentences.
+* Detail the living situation, support system, current occupation, former occupation, and substance use.
 
-A strong assessment:
 
-- Synthesizes the story
-- Commits to what you think is going on
-- Identifies the most likely diagnosis or leading concern
-- Reflects clinical reasoning
-- Changes day to day as the patient changes
+* State the functional baseline.
 
-Example:
+### Physical Exam
 
-`Mr. Smith is a 62-year-old man with COPD, CAD, and HFpEF presenting with shortness of breath and URI symptoms, most concerning for COPD exacerbation triggered by viral infection.`
+* Record vital signs first.
 
-### 9. Problem List and Plan
 
-List problems in order of acuity, not necessarily the order the patient mentioned them.
+* Write a general appearance statement detailing the patient presentation upon room entry.
 
-For each acute problem:
 
-- State the problem clearly
-- Include a differential diagnosis when appropriate
-- Give a specific management plan
-- Include monitoring, reassessment, and treatment goals
+* Document pertinent positive findings and pertinent negative findings relative to the presentation.
 
-Avoid vague plans.
 
-Weak:
+* Exclude normal exam findings unrelated to the clinical decision.
 
-`Diurese.`
+### Data
 
-Strong:
+* Summarize important laboratory and imaging results.
 
-`Diurese with furosemide 40 mg IV now and assess response. Re-dose every six hours as needed to achieve goal net negative fluid balance of 1 to 2 L today.`
 
-For stable chronic problems, include them in the written plan, but prioritize what actually needs to be managed during hospitalization.
+* State the findings without editorial interpretation.
 
-## Oral Presentation
 
-### Core Rules
-
-An oral presentation should be:
-
-- Concise
-- Edited
-- Organized
-- Patient-centered
-- Focused on relevant positives and negatives
-- Delivered as a story, not read from the H&P
-
-Aim for 3 to 5 minutes for a new patient presentation.
-
-Present from memory when possible, using notes only as a reference.
-
-Know your attending’s expectations. Different attendings may want different levels of detail.
-
-Adjust to the setting. Bedside rounds and table rounds may require different language and emphasis.
-
-### New Patient Structure
-
-Use this order:
-
-1. Identifying information and chief complaint
-2. HPI with relevant ROS only
-3. Relevant past medical history
-4. Medications, allergies, and substance use
-5. Relevant social history
-6. Physical exam with pertinent positives and negatives
-7. Labs and imaging summary
-8. One-line assessment
-9. Problem list and plan
-
-### 1. Identifying Information and Chief Complaint
-
-Open with:
-
-`Mr./Ms. ___ is a ___-year-old person with a history of ___ who presented with ___.`
-
-Or:
-
-`Mr./Ms. ___ is a ___-year-old person admitted for evaluation of ___.`
-
-Include only diagnoses relevant to the presentation.
-
-### 2. HPI for Oral Presentation
-
-Your oral HPI should be shorter than the written HPI.
-
-Include:
-
-- Timeline relative to admission
-- Main symptoms
-- Key symptom characteristics
-- Pertinent positive and negative ROS
-- Relevant prior evaluations or admissions
-- Brief ED summary if important
-
-Do not include every negative ROS item. Include only what helps shape the differential.
-
-### 3. Past Medical History
-
-Mention only relevant active medical problems.
-
-Add details only if they matter.
-
-Example:
-
-Instead of:
-
-`History of heart failure.`
-
-Say:
-
-`HFpEF with last LVEF 60%.`
-
-Instead of:
-
-`Diabetes.`
-
-Say:
-
-`Type 2 diabetes with last A1c 9.2%, complicated by CKD.`
-
-### 4. Medications, Allergies, and Substance Use
-
-Include medications that are relevant to the current problem or inpatient management.
-
-For key medications, include name, dose, route, and frequency.
-
-Mention whether the patient is actually taking the medication as prescribed if it matters.
-
-Include allergies with reaction if relevant.
-
-Mention substance use when clinically relevant to the presentation or plan.
-
-### 5. Social History
-
-Keep it concise but meaningful.
-
-Include details that affect:
-
-- Diagnosis
-- Safety
-- Function
-- Treatment plan
-- Discharge planning
-- Follow-up
-
-Avoid judgmental language. Check your own biases.
-
-### 6. Physical Exam
-
-Start with vitals.
-
-Then give the most relevant exam findings.
-
-Include both pertinent positives and pertinent negatives.
-
-Do not recite a full normal exam unless your attending asks for it.
-
-Example:
-
-`Vitals were notable for tachycardia to 112 and oxygen saturation 90% on room air. On exam, he appeared mildly dyspneic, had diffuse expiratory wheezing, no JVD, and no lower-extremity edema.`
-
-### 7. Labs and Imaging
-
-Summarize. Do not editorialize.
-
-Good:
-
-`Labs are notable for WBC 14, creatinine at baseline, and new hyperglycemia. Chest x-ray showed no focal infiltrate.`
-
-Avoid adding interpretation too early if it distracts from the data.
-
-### 8. Assessment
-
-Your oral assessment should be brief, synthesized, and specific.
-
-It should answer:
-
-`Who is the patient today, and what am I most concerned about?`
-
-It is not the same as the opening line.
-
-Commit to what you think is happening.
-
-Example:
-
-`Mr. Smith is a 62-year-old man with COPD, CAD, and HFpEF presenting with shortness of breath and URI symptoms, most concerning for COPD exacerbation triggered by viral infection.`
-
-### 9. Problem List and Plan
-
-Present problems in order of acuity.
-
-For each acute problem:
-
-- State the problem
-- Give the differential if relevant
-- Give a specific plan
-- Include treatment goals and reassessment
-
-Example:
-
-`For suspected COPD exacerbation, we will continue prednisone 40 mg daily for five days, give scheduled duonebs every four hours with albuterol as needed, maintain oxygen saturation goal 88 to 92%, and follow respiratory status closely.`
-
-For stable chronic problems, discuss them out loud only if changes need to be made.
-
-Example:
-
-`Diabetes is well controlled outpatient. We will hold metformin while admitted and use sliding scale insulin with goal glucose 140 to 180.`
-
-## Follow-Up Patients
-
-Use SOAP format.
-
-### Subjective
-
-Start with how the patient feels today.
-
-Include important overnight events and interval updates since the last rounds, such as:
-
-- New symptoms
-- Symptom improvement or worsening
-- Overnight events
-- Consultant recommendations
-- Procedures
-- Major nursing concerns
-
-### Objective
-
-Include:
-
-- Vitals
-- Pertinent physical exam findings
-- Relevant labs
-- Relevant imaging
-- Other new data
+* Save all interpretation for the assessment section.
 
 ### Assessment
 
-Do not repeat yesterday’s assessment automatically.
+* Synthesize the clinical picture in one or two sentences.
 
-Update the assessment based on what has changed.
 
-Ask:
+* Define the current patient state and identify the primary clinical concern.
 
-`What is the patient’s current clinical status today?`
+
+* Prevent restatement of the history, physical exam, or data sections.
+
+
 
 ### Plan
 
-Reprioritize the problem list daily.
+* List problems by acuity order.
 
-Move the most acute or active issues to the top.
 
-Update the plan based on new data, response to treatment, and discharge needs.
+* Provide a differential diagnosis for each acute problem.
 
-## How To Sound Excellent On Rounds
 
-### Be concise and synthesize
+* State specific management steps, including specific drugs, doses, intervals, and quantitative goals.
 
-Do not dump data. Select the most important information and explain why it matters.
 
-### Tell the story logically
+* Detail stable chronic problems when altering the home management strategy.
 
-The listener should be able to follow the patient’s course without getting lost.
 
-### Highlight relevance
 
-Emphasize the points that support your assessment and plan.
+## The Daily Progress Note
 
-### Be specific
+Write daily progress notes using the Subjective Objective Assessment Plan format. Enforce strict separation between these four sections. Prevent information repetition.
 
-Avoid vague plans like `monitor`, `diurese`, or `optimize meds`.
+### Subjective
 
-Say what you will do, how much, how often, and what goal you are targeting.
+* Record patient statements regarding their current state.
 
-### Be patient-centered
 
-Use respectful language.
+* Summarize events occurring since the previous day.
 
-Avoid judgmental phrasing.
 
-Describe behavior or facts neutrally.
+* Note consultant recommendations.
 
-### Know your audience
 
-Ask your attending what they expect.
+* Exclude vital signs.
+* Exclude physical exam findings.
+* Exclude provider plans.
 
-Some attendings want more detail; others want a shorter synthesis.
+### Objective
 
-### Practice
+* Record current vital signs.
 
-Practice before rounds.
 
-Reflect after rounds:
+* Record pertinent physical exam updates.
 
-- What went well?
-- What could have been clearer?
-- What would you do differently next time?
-- What feedback did you receive?
 
-Consider recording yourself to improve pacing, organization, and clarity.
+* Record new diagnostic test results.
 
-## Pocket Checklist
 
-### Written H&P
+* Exclude patient statements.
+* Exclude diagnostic theories.
+* Exclude treatment plans.
 
-- Clear one-liner with relevant history only
-- Logical HPI timeline
-- Pertinent positive and negative ROS
-- Relevant prior workup and ED course
-- PMH with useful details, not EMR clutter
-- Medications with dose, route, frequency, adherence
-- Allergies with reactions
-- Comprehensive social history in paragraph form
-- Vitals first in physical exam
-- Pertinent exam findings
-- Labs and imaging summarized clearly
-- Synthesized assessment
-- Specific, prioritized problem-based plan
+### Assessment
 
-### Oral Presentation
+* State the updated clinical trajectory.
+* Formulate a new assessment distinct from the prior day.
 
-- 3 to 5 minutes for new patients
-- Do not read the H&P
-- Present from memory when possible
-- Start with identifying information and chief complaint
-- Give concise HPI with relevant ROS only
-- Include only relevant PMH, meds, allergies, substance use, and social history
-- Start exam with vitals
-- Give pertinent exam findings only
-- Summarize labs and imaging without over-interpreting
-- Deliver a clear 1 to 2 sentence assessment
-- Present problems in order of acuity
-- Give specific management plans
-- Update assessment and plan daily for follow-up patients
+
+* Explain the clinical reasoning derived from new objective data.
+* Exclude subjective complaints.
+* Exclude objective data repetition.
+* Exclude action steps.
+
+### Plan
+
+* Reprioritize the problem list.
+
+
+* List specific daily interventions.
+* Order treatments and diagnostics.
+* Detail the discharge strategy.
+* Exclude clinical reasoning.
+* Exclude patient history.
+* Exclude test results.

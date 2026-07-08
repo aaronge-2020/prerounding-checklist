@@ -1,7 +1,7 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
-import { clinicalIntentRegistry, resolveClinicalIntents } from "../clinical-intents.js";
-import { evaluateComplaintCds, isBasicBedsideDataItem } from "../complaint-cds.js";
+import { clinicalIntentRegistry, resolveClinicalIntents } from "../src/clinical/clinical-intents.js";
+import { evaluateComplaintCds, isBasicBedsideDataItem } from "../src/clinical/complaint-cds.js";
 import { moduleFromWorkup } from "./install-endocrine-workups.js";
 
 const generatedAt = new Date().toISOString();

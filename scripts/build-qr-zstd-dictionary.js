@@ -2,10 +2,10 @@ import { spawn } from "node:child_process";
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { complaintModules, evaluateComplaintCds } from "../complaint-cds.js";
-import { buildLocalChecklistFromWorkup, checklistItemOptions, checklistPrompt, groupChecklistSectionsByOrganSystem, newAdmissionChecklistPrompt, parseChecklist } from "../checklist.js";
+import { complaintModules, evaluateComplaintCds } from "../src/clinical/complaint-cds.js";
+import { buildLocalChecklistFromWorkup, checklistItemOptions, checklistPrompt, groupChecklistSectionsByOrganSystem, newAdmissionChecklistPrompt, parseChecklist } from "../src/clinical/checklist.js";
 import { openEvidenceTasks } from "../open-evidence-workflows.js";
-import { clinicalIntentRegistry } from "../clinical-intents.js";
+import { clinicalIntentRegistry } from "../src/clinical/clinical-intents.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, "..");

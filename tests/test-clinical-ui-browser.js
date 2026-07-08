@@ -7,6 +7,7 @@ const root = process.cwd();
 const mimeTypes = new Map([
   [".html", "text/html; charset=utf-8"],
   [".js", "text/javascript; charset=utf-8"],
+  [".css", "text/css; charset=utf-8"],
   [".json", "application/json; charset=utf-8"]
 ]);
 const browserDiagnostics = [];
@@ -205,21 +206,15 @@ try {
   await clickPatientTab(page, "workup");
   await page.waitForSelector("#patientWorkupPanel:not([hidden])");
   await page.waitForSelector("#patientWorkupOrdersPanel:not([hidden])");
-  await page.waitForSelector("#patientDecisionTreePanel:not([hidden])");
 
   const liveWorkupAudit = await page.evaluate(() => ({
     rowCount: document.querySelectorAll(".workup-row").length,
     modifierCount: document.querySelectorAll(".modifier-chip").length,
-    ordersText: document.querySelector("#patientWorkupOrdersPanel")?.textContent || "",
-    treeText: document.querySelector("#patientDecisionTreePanel")?.textContent || "",
-    activeTreeNodes: document.querySelectorAll("#patientDecisionTreePanel .decision-tree-node[data-state='active']").length,
-    pendingTreeNodes: document.querySelectorAll("#patientDecisionTreePanel .decision-tree-node[data-state='pending']").length
+    ordersText: document.querySelector("#patientWorkupOrdersPanel")?.textContent || ""
   }));
   assert(liveWorkupAudit.rowCount === 0, `clinical workup should remove the old full-workup row drilldown: ${JSON.stringify(liveWorkupAudit)}`);
   assert(liveWorkupAudit.modifierCount === 0, `clinical workup should remove clinical modifier chips: ${JSON.stringify(liveWorkupAudit)}`);
   assert(/Orders and results/i.test(liveWorkupAudit.ordersText) && /Beta-hydroxybutyrate/i.test(liveWorkupAudit.ordersText), `workup should show necessary labs/exams and result fields: ${JSON.stringify(liveWorkupAudit)}`);
-  assert(/Live decision tree/i.test(liveWorkupAudit.treeText) && /Active branch/i.test(liveWorkupAudit.treeText) && /Adult hyperglycemia pathway|DKA\/HHS urgency|adult DKA\/HHS context|hyperglycemic crisis/i.test(liveWorkupAudit.treeText), `workup should render a live decision tree with traversal summary: ${JSON.stringify(liveWorkupAudit)}`);
-  assert(liveWorkupAudit.activeTreeNodes >= 1 && liveWorkupAudit.pendingTreeNodes >= 1, `decision tree should expose lit and pending path states: ${JSON.stringify(liveWorkupAudit)}`);
 
   await clickPatientTab(page, "context");
   await page.waitForSelector("#patientObjectiveDataPanel:not([hidden])");
@@ -262,22 +257,12 @@ try {
   assert(/Beta-hydroxybutyrate[\s\S]*4\.2/i.test(objectiveSummaryText) && /Anion gap[\s\S]*22/i.test(objectiveSummaryText), "entered DKA labs should update the patient summary");
   await clickPatientTab(page, "workup");
   await page.waitForSelector("#patientWorkupPanel:not([hidden]) #patientWorkupOrdersPanel:not([hidden])");
-  await page.waitForSelector("#patientWorkupPanel:not([hidden]) #patientDecisionTreePanel:not([hidden])");
   const patientLiveWorkup = await page.evaluate(() => ({
     orders: document.querySelector("#patientWorkupOrdersPanel")?.textContent || "",
     bhbValue: document.querySelector("#patientWorkupOrdersPanel [data-objective-field='betaHydroxybutyrate']")?.value || "",
-    anionGapValue: document.querySelector("#patientWorkupOrdersPanel [data-objective-field='anionGap']")?.value || "",
-    tree: document.querySelector("#patientDecisionTreePanel")?.textContent || "",
-    visibleTreeText: document.querySelector("#patientDecisionTreePanel")?.innerText || "",
-    dataGapDisclosureOpen: document.querySelector("#patientDecisionTreePanel .decision-tree-data-gaps")?.open ?? false,
-    dataGapDisclosureCount: document.querySelectorAll("#patientDecisionTreePanel .decision-tree-data-gaps").length,
-    activeNodes: Array.from(document.querySelectorAll("#patientDecisionTreePanel .decision-tree-node[data-state='active']")).map((node) => node.textContent || ""),
-    warningNodes: Array.from(document.querySelectorAll("#patientDecisionTreePanel .decision-tree-node[data-state='warning']")).map((node) => node.textContent || "")
+    anionGapValue: document.querySelector("#patientWorkupOrdersPanel [data-objective-field='anionGap']")?.value || ""
   }));
   assert(/4\.2 mmol\/L/i.test(patientLiveWorkup.bhbValue) && /22/i.test(patientLiveWorkup.anionGapValue), `patient Workup tab should show entered DKA labs in orders/results inputs: ${JSON.stringify(patientLiveWorkup)}`);
-  assert(/(?:Live|Editable) decision tree|Decision pathway/i.test(patientLiveWorkup.tree) && /Active branch/i.test(patientLiveWorkup.tree) && /Adult hyperglycemia|DKA\/HHS urgency|hyperglycemic crisis/i.test(patientLiveWorkup.tree), `patient Workup tab should show the DKA pathway traversal summary from entered labs: ${JSON.stringify(patientLiveWorkup)}`);
-  assert(!/Missing data needed|Cannot distinguish|Cannot classify/i.test(patientLiveWorkup.visibleTreeText), `patient-facing pathway text should not expose placeholder missing-data endpoint prose: ${JSON.stringify(patientLiveWorkup)}`);
-  assert(patientLiveWorkup.dataGapDisclosureCount === 0 || patientLiveWorkup.dataGapDisclosureOpen === false, `branch-critical data details should be collapsed by default: ${JSON.stringify(patientLiveWorkup)}`);
   assert(/Auto from chart|Manual override|Missing/i.test(patientLiveWorkup.orders), `patient Workup tab should expose objective data source states: ${JSON.stringify(patientLiveWorkup)}`);
   const workupSelectorHandle = page.locator('[data-layout-resize-key="patientWorkupSelector"]');
   await workupSelectorHandle.waitFor({ state: "visible" });
@@ -294,58 +279,41 @@ try {
   assert(resizedWorkupColumns.selectorWidth > startWorkupSelectorWidth && resizedWorkupColumns.storedSelectorWidth >= resizedWorkupColumns.selectorWidth - 2 && resizedWorkupColumns.handleCount >= 2, `patient Workup columns should resize and persist: ${JSON.stringify({ startWorkupSelectorWidth, resizedWorkupColumns })}`);
   await page.setViewportSize({ width: 1024, height: 820 });
   await page.waitForFunction(() => getComputedStyle(document.querySelector("#patientWorkupPanel .target-pane-switcher")).display !== "none");
-  await assertNoHorizontalOverflow(page, "patient Workup tab 1024px pathway pane");
-  const smallPathwayAudit = await page.evaluate(() => {
+  await assertNoHorizontalOverflow(page, "patient Workup tab 1024px workups pane");
+  const smallDefaultPaneAudit = await page.evaluate(() => {
     const panel = document.querySelector("#patientWorkupPanel");
-    const pathway = document.querySelector("#patientWorkupPanel .target-pathway-main");
     const orders = document.querySelector("#patientWorkupPanel .target-inspector-rail");
     const workups = document.querySelector("#patientWorkupPanel .target-workup-selector");
     const buildButton = document.querySelector("#patientBuildChecklistButton");
     const actionBar = document.querySelector("#patientWorkupPanel .target-pathway-bottom-actions");
     const body = document.querySelector("#patientWorkupPanel .target-workup-body");
-    const controls = Array.from(document.querySelectorAll("#patientWorkupPanel .target-pathway-toolbar input, #patientWorkupPanel .target-pathway-toolbar button, #patientWorkupPanel .target-pathway-toolbar select"))
-      .filter((node) => getComputedStyle(node).display !== "none");
-    const clippedControls = controls.map((node) => {
-      const box = node.getBoundingClientRect();
-      return {
-        id: node.id || node.getAttribute("aria-label") || node.textContent?.trim() || node.tagName,
-        left: Math.round(box.left),
-        right: Math.round(box.right),
-        top: Math.round(box.top),
-        bottom: Math.round(box.bottom),
-        clipped: box.left < -1 || box.right > window.innerWidth + 1 || box.top < -1
-      };
-    }).filter((entry) => entry.clipped);
     const buildBox = buildButton?.getBoundingClientRect();
     const actionBox = actionBar?.getBoundingClientRect();
     const bodyBox = body?.getBoundingClientRect();
     return {
       activePane: panel?.dataset.activePane || "",
-      pathwayVisible: Boolean(pathway && getComputedStyle(pathway).display !== "none" && pathway.getBoundingClientRect().height > 0),
+      workupsVisible: Boolean(workups && getComputedStyle(workups).display !== "none" && workups.getBoundingClientRect().height > 0),
       ordersHidden: Boolean(orders && getComputedStyle(orders).display === "none"),
-      workupsHidden: Boolean(workups && getComputedStyle(workups).display === "none"),
       buildChecklistVisible: Boolean(buildBox && buildBox.width > 0 && buildBox.height > 0 && buildBox.right <= window.innerWidth + 1),
-      actionBarBeforeBody: Boolean(actionBox && bodyBox && actionBox.bottom <= bodyBox.top + 1),
-      clippedControls
+      actionBarBeforeBody: Boolean(actionBox && bodyBox && actionBox.bottom <= bodyBox.top + 1)
     };
   });
-  assert(smallPathwayAudit.activePane === "pathway" && smallPathwayAudit.pathwayVisible && smallPathwayAudit.ordersHidden && smallPathwayAudit.workupsHidden, `1024px workup default pane should keep the pathway visible: ${JSON.stringify(smallPathwayAudit)}`);
-  assert(smallPathwayAudit.buildChecklistVisible, `Build checklist should remain visible at 1024px: ${JSON.stringify(smallPathwayAudit)}`);
-  assert(smallPathwayAudit.actionBarBeforeBody, `Workup action bar should sit before the pane body instead of floating over the pathway: ${JSON.stringify(smallPathwayAudit)}`);
-  assert(smallPathwayAudit.clippedControls.length === 0, `Decision-tree controls should not be clipped at 1024px: ${JSON.stringify(smallPathwayAudit)}`);
+  assert(smallDefaultPaneAudit.activePane === "workups" && smallDefaultPaneAudit.workupsVisible && smallDefaultPaneAudit.ordersHidden, `1024px workup default pane should keep the workup selector visible: ${JSON.stringify(smallDefaultPaneAudit)}`);
+  assert(smallDefaultPaneAudit.buildChecklistVisible, `Build checklist should remain visible at 1024px: ${JSON.stringify(smallDefaultPaneAudit)}`);
+  assert(smallDefaultPaneAudit.actionBarBeforeBody, `Workup action bar should sit before the pane body: ${JSON.stringify(smallDefaultPaneAudit)}`);
   await page.click('#patientWorkupPanel .target-pane-switcher [data-workup-pane-target="orders"]');
   await page.waitForFunction(() => document.querySelector("#patientWorkupPanel")?.dataset.activePane === "orders");
   await assertNoHorizontalOverflow(page, "patient Workup tab 1024px orders pane");
   const smallOrdersAudit = await page.evaluate(() => ({
     activePane: document.querySelector("#patientWorkupPanel")?.dataset.activePane || "",
     ordersVisible: getComputedStyle(document.querySelector("#patientWorkupPanel .target-inspector-rail")).display !== "none",
-    pathwayHidden: getComputedStyle(document.querySelector("#patientWorkupPanel .target-pathway-main")).display === "none",
+    workupsHidden: getComputedStyle(document.querySelector("#patientWorkupPanel .target-workup-selector")).display === "none",
     ordersText: document.querySelector("#patientWorkupOrdersPanel")?.innerText || "",
     visibleOrderHeadings: Array.from(document.querySelectorAll("#patientWorkupPanel .target-inspector-head strong, #patientWorkupOrdersPanel .workup-orders-head strong"))
       .filter((node) => getComputedStyle(node).display !== "none" && node.getBoundingClientRect().height > 0)
       .map((node) => node.textContent?.trim() || "")
   }));
-  assert(smallOrdersAudit.activePane === "orders" && smallOrdersAudit.ordersVisible && smallOrdersAudit.pathwayHidden && /Beta-hydroxybutyrate|Orders/i.test(smallOrdersAudit.ordersText), `Orders pane should be accessible at 1024px: ${JSON.stringify(smallOrdersAudit)}`);
+  assert(smallOrdersAudit.activePane === "orders" && smallOrdersAudit.ordersVisible && smallOrdersAudit.workupsHidden && /Beta-hydroxybutyrate|Orders/i.test(smallOrdersAudit.ordersText), `Orders pane should be accessible at 1024px: ${JSON.stringify(smallOrdersAudit)}`);
   assert(smallOrdersAudit.visibleOrderHeadings.length === 1, `Orders pane should show one clear heading at tablet width: ${JSON.stringify(smallOrdersAudit)}`);
   await page.click('#patientWorkupPanel .target-pane-switcher [data-workup-pane-target="workups"]');
   await page.waitForFunction(() => document.querySelector("#patientWorkupPanel")?.dataset.activePane === "workups");
@@ -358,11 +326,9 @@ try {
     resultCount: document.querySelectorAll("#patientWorkupResults .workup-result-row").length
   }));
   assert(smallWorkupsAudit.activePane === "workups" && smallWorkupsAudit.workupsVisible && smallWorkupsAudit.railBuildButtonCount === 0 && smallWorkupsAudit.searchVisible && smallWorkupsAudit.resultCount > 0, `Workup selector pane should remain usable without redundant checklist actions at 1024px: ${JSON.stringify(smallWorkupsAudit)}`);
-  await page.click('#patientWorkupPanel .target-pane-switcher [data-workup-pane-target="pathway"]');
-  await page.waitForFunction(() => document.querySelector("#patientWorkupPanel")?.dataset.activePane === "pathway");
   await page.setViewportSize({ width: 760, height: 900 });
   await page.waitForFunction(() => document.body.dataset.navCollapsed === "true");
-  await assertNoHorizontalOverflow(page, "patient Workup tab 760px pathway pane");
+  await assertNoHorizontalOverflow(page, "patient Workup tab 760px workups pane");
   const mobileWorkupClosedAudit = await page.evaluate(() => {
     const panel = document.querySelector("#patientWorkupPanel");
     const sidebar = document.querySelector("#primarySidebar");
@@ -403,236 +369,6 @@ try {
   await page.setViewportSize({ width: 1440, height: 1024 });
   await page.waitForFunction(() => document.body.dataset.navCollapsed === "false");
   await page.waitForSelector("#patientWorkupPanel:not([hidden]) #patientWorkupOrdersPanel:not([hidden])");
-  const editModeAudit = await page.evaluate(() => ({
-    editButtonCount: document.querySelectorAll("#toggleDecisionTreeEditButton").length,
-    toolbarExportCount: document.querySelectorAll("#exportDecisionTreeJsonButton").length,
-    saveSourceVisible: Boolean(document.querySelector("#saveDecisionTreeSourceButton")) && getComputedStyle(document.querySelector("#saveDecisionTreeSourceButton")).display !== "none",
-    editorHidden: document.querySelector("#decisionTreeEditorPanel")?.hidden,
-    editorDisplay: getComputedStyle(document.querySelector("#decisionTreeEditorPanel")).display,
-    cytoscapeRenderer: document.querySelector("#patientDecisionTreePanel .cytoscape-tree-shell")?.dataset.renderer || "",
-    renderedTreeNodes: document.querySelector("#patientDecisionTreePanel")?._cytoscape?.nodes().length || 0,
-    readableOutlineCount: document.querySelectorAll("#patientDecisionTreePanel .decision-tree-readable-outline li").length,
-    outlineCollapsed: document.querySelector("#patientDecisionTreePanel .decision-tree-readable-outline")?.classList.contains("is-collapsed"),
-    outlineToggleText: document.querySelector("#patientDecisionTreePanel .decision-tree-outline-toggle")?.textContent || "",
-    previewCardCount: document.querySelectorAll("#patientDecisionTreePanel .workup-pathway-preview li").length,
-    treeHeading: document.querySelector("#patientDecisionTreePanel .workup-tree-head")?.textContent || "",
-    focused: document.activeElement?.id || ""
-  }));
-  assert(editModeAudit.editButtonCount === 0 && editModeAudit.toolbarExportCount === 0 && editModeAudit.saveSourceVisible === false, `patient workup toolbar should remove edit/export/source-authoring buttons: ${JSON.stringify(editModeAudit)}`);
-  assert(editModeAudit.editorHidden === true && editModeAudit.cytoscapeRenderer === "cytoscape" && editModeAudit.renderedTreeNodes > 0 && editModeAudit.readableOutlineCount > 0 && editModeAudit.previewCardCount === 0 && /Live decision tree/i.test(editModeAudit.treeHeading), `patient decision tree should be a live Cytoscape viewer with authoring chrome hidden: ${JSON.stringify(editModeAudit)}`);
-  assert(editModeAudit.outlineCollapsed && /expand/i.test(editModeAudit.outlineToggleText), `pathway outline should be collapsed by default with an expand control: ${JSON.stringify(editModeAudit)}`);
-  const patientSummaryBranchAudit = await page.evaluate(() => ({
-    dkaState: document.querySelector("#patientDecisionTreePanel")?._cytoscape?.$id("adult_dka_hhs_dka_action")?.data("state") || "",
-    hhsState: document.querySelector("#patientDecisionTreePanel")?._cytoscape?.$id("adult_dka_hhs_hhs_action")?.data("state") || "",
-    missingState: document.querySelector("#patientDecisionTreePanel")?._cytoscape?.$id("patient_canvas_missing_data")?.data("state") || "",
-    summaryText: document.querySelector("#patientDecisionTreePanel .decision-tree-traversal-summary")?.textContent || "",
-    objectiveStatusText: document.querySelector(".target-objective-status")?.textContent || ""
-  }));
-  assert(patientSummaryBranchAudit.dkaState === "active" && patientSummaryBranchAudit.hhsState === "inactive", `patient summary canvas should show active DKA and muted HHS branches: ${JSON.stringify(patientSummaryBranchAudit)}`);
-  if (/missing/i.test(patientSummaryBranchAudit.objectiveStatusText) && patientSummaryBranchAudit.missingState) {
-    assert(patientSummaryBranchAudit.missingState === "warning", `patient summary canvas should show a warning missing-data branch while objective data is missing: ${JSON.stringify(patientSummaryBranchAudit)}`);
-  }
-  assert(/DKA likely/i.test(patientSummaryBranchAudit.summaryText) && /Adult DKA protocol active/i.test(patientSummaryBranchAudit.summaryText), `patient pathway summary strip should describe the active DKA branch: ${JSON.stringify(patientSummaryBranchAudit)}`);
-  await page.click("#patientDecisionTreePanel .decision-tree-outline-toggle");
-  await page.waitForFunction(() => {
-    const outline = document.querySelector("#patientDecisionTreePanel .decision-tree-readable-outline");
-    return Boolean(outline && !outline.classList.contains("is-collapsed") && getComputedStyle(outline.querySelector("ol")).display !== "none");
-  });
-  await page.selectOption("#decisionTreeZoomSelect", "7");
-  await page.waitForFunction(() => {
-    const zoom = document.querySelector("#patientDecisionTreePanel")?._cytoscape?.zoom() || 0;
-    return Number.isFinite(zoom) && Math.abs(zoom - 7) < 0.02;
-  });
-  const zoomBeforeOut = await page.evaluate(() => document.querySelector("#patientDecisionTreePanel")?._cytoscape?.zoom() || 0);
-  await page.click("#zoomOutDecisionTreeButton");
-  await page.waitForFunction((previousZoom) => {
-    const zoom = document.querySelector("#patientDecisionTreePanel")?._cytoscape?.zoom() || 0;
-    return Number.isFinite(zoom) && zoom < previousZoom - 0.05;
-  }, zoomBeforeOut);
-  await page.click("#fitDecisionTreeButton");
-  await page.waitForFunction(() => {
-    const zoom = document.querySelector("#patientDecisionTreePanel")?._cytoscape?.zoom() || 1;
-    return Number.isFinite(zoom) && zoom < 1;
-  });
-  const branchDecisionRect = await page.evaluate(() => {
-    const node = document.querySelector("#patientDecisionTreePanel")?._cytoscape?.$id("adult_dka_hhs_classification_decision");
-    if (!node?.nonempty()) return null;
-    const box = node.renderedBoundingBox();
-    return { left: box.x1, right: box.x2, top: box.y1, bottom: box.y2, width: box.w, height: box.h };
-  });
-  assert(branchDecisionRect?.width > 0 && branchDecisionRect?.height > 0, "patient summary decision-tree canvas should start at the visible branch decision");
-  const dynamicTreeAudit = await page.evaluate(() => {
-    const cy = document.querySelector("#patientDecisionTreePanel")?._cytoscape;
-    const boxes = cy ? cy.nodes().map((node) => {
-      const box = node.renderedBoundingBox();
-      return {
-        left: box.x1,
-        right: box.x2,
-        top: box.y1,
-        bottom: box.y2,
-        width: box.w,
-        height: box.h,
-        dataWidth: Number(node.data("width") || "0"),
-        dataHeight: Number(node.data("height") || "0")
-      };
-    }) : [];
-    const overlaps = [];
-    boxes.forEach((a, index) => {
-      boxes.slice(index + 1).forEach((b, offset) => {
-        const separate = a.right <= b.left + 1 || b.right <= a.left + 1 || a.bottom <= b.top + 1 || b.bottom <= a.top + 1;
-        if (!separate) overlaps.push([index, index + offset + 1]);
-      });
-    });
-    const nodeTexts = cy ? cy.nodes().map((node) => node.data("label") || "") : [];
-    const edgeLabels = cy ? cy.edges().map((edge) => edge.data("label") || "") : [];
-    return {
-      maxWidth: boxes.reduce((max, box) => Math.max(max, box.dataWidth), 0),
-      maxHeight: boxes.reduce((max, box) => Math.max(max, box.dataHeight), 0),
-      truncatedNodeTexts: nodeTexts.filter((text) => /\.{3}|…/.test(text)),
-      longEdgeLabels: edgeLabels.filter((text) => text.length > 34 || text.split(/\s+/).filter(Boolean).length > 5),
-      overlapCount: overlaps.length
-    };
-  });
-  assert(dynamicTreeAudit.maxWidth > 196 || dynamicTreeAudit.maxHeight > 92, `decision-tree boxes should resize beyond the old fixed dimensions when labels need more room: ${JSON.stringify(dynamicTreeAudit)}`);
-  assert(dynamicTreeAudit.truncatedNodeTexts.length === 0, `decision-tree node text should not be ellipsis-truncated: ${JSON.stringify(dynamicTreeAudit)}`);
-  assert(dynamicTreeAudit.longEdgeLabels.length === 0, `decision-tree arrow labels should stay short and readable: ${JSON.stringify(dynamicTreeAudit)}`);
-  assert(dynamicTreeAudit.overlapCount === 0, `decision-tree node boxes should not overlap after dynamic sizing: ${JSON.stringify(dynamicTreeAudit)}`);
-  const patientAuthoringChromeAudit = await page.evaluate(() => ({
-    sourceSaveVisible: Boolean(document.querySelector("#saveDecisionTreeSourceButton")) && getComputedStyle(document.querySelector("#saveDecisionTreeSourceButton")).display !== "none",
-    editorHidden: document.querySelector("#decisionTreeEditorPanel")?.hidden,
-    nodeEditorVisible: Boolean(document.querySelector("#decisionTreeNodeEditor")) && getComputedStyle(document.querySelector("#decisionTreeNodeEditor")).display !== "none",
-    treeHeading: document.querySelector("#patientDecisionTreePanel .workup-tree-head")?.textContent || ""
-  }));
-  assert(patientAuthoringChromeAudit.sourceSaveVisible === false, `patient workup should not expose source-file authoring actions: ${JSON.stringify(patientAuthoringChromeAudit)}`);
-  assert(patientAuthoringChromeAudit.editorHidden === true && patientAuthoringChromeAudit.nodeEditorVisible === false, `patient workup should keep node-editing controls out of the normal pathway view: ${JSON.stringify(patientAuthoringChromeAudit)}`);
-  assert(/Live decision tree/i.test(patientAuthoringChromeAudit.treeHeading) && !/Editable/i.test(patientAuthoringChromeAudit.treeHeading), `patient tree heading should be live/read-only, not authoring copy: ${JSON.stringify(patientAuthoringChromeAudit)}`);
-  const importedTreeJson = JSON.stringify({
-    schema: "clinical_pathway_tree_v1",
-    workupId: "hyperglycemia_possible_dka_v1",
-    title: "Imported DKA pathway",
-    root: {
-      id: "root",
-      label: "Imported DKA pathway root",
-      type: "decision",
-      children: [
-        {
-          edgeLabel: "Ketosis plus acidosis",
-          id: "dka_branch",
-          label: "Treat as DKA when criteria are met",
-          type: "endpoint",
-          children: []
-        }
-      ]
-    },
-    activationRules: {}
-  });
-  await page.click("#patientWorkupPanel .target-more-actions summary");
-  await page.waitForSelector("#openDecisionTreeImportButton", { state: "visible" });
-  const moreMenuAudit = await page.evaluate(() => {
-    const summary = document.querySelector("#patientWorkupPanel .target-more-actions summary");
-    const menu = document.querySelector("#patientWorkupPanel .target-more-menu");
-    const summaryBox = summary?.getBoundingClientRect();
-    const menuBox = menu?.getBoundingClientRect();
-    return {
-      summaryBottom: Math.round(summaryBox?.bottom || 0),
-      menuTop: Math.round(menuBox?.top || 0),
-      opensDown: Boolean(summaryBox && menuBox && menuBox.top >= summaryBox.bottom - 1)
-    };
-  });
-  assert(moreMenuAudit.opensDown, `More menu should open downward from the action bar: ${JSON.stringify(moreMenuAudit)}`);
-  await page.click("#openDecisionTreeImportButton");
-  await page.waitForFunction(() => {
-    const input = document.querySelector("#decisionTreeJsonInput");
-    return Boolean(input && getComputedStyle(input).display !== "none");
-  });
-  const importDrawerAudit = await page.evaluate(() => ({
-    importing: document.querySelector("#patientWorkupPanel")?.classList.contains("is-importing"),
-    editorHidden: document.querySelector("#decisionTreeEditorPanel")?.hidden,
-    inputVisible: getComputedStyle(document.querySelector("#decisionTreeJsonInput")).display !== "none",
-    nodeEditorVisible: getComputedStyle(document.querySelector("#decisionTreeNodeEditor")).display !== "none",
-    focused: document.activeElement?.id || "",
-    overflowingButtons: Array.from(document.querySelectorAll("#decisionTreeEditorPanel .btn"))
-      .filter((button) => getComputedStyle(button).display !== "none" && button.scrollWidth > button.clientWidth + 1)
-      .map((button) => button.textContent.trim())
-  }));
-  assert(importDrawerAudit.importing && importDrawerAudit.editorHidden === false && importDrawerAudit.inputVisible && importDrawerAudit.nodeEditorVisible === false && importDrawerAudit.focused === "decisionTreeJsonInput", `import button should open only the pathway JSON drawer: ${JSON.stringify(importDrawerAudit)}`);
-  assert(importDrawerAudit.overflowingButtons.length === 0, `right-panel decision-tree buttons should not overflow: ${JSON.stringify(importDrawerAudit)}`);
-  await page.setViewportSize({ width: 1024, height: 820 });
-  await page.waitForFunction(() => document.querySelector("#decisionTreeEditorPanel")?.hidden === false);
-  const longWrappedTreeJson = JSON.stringify({
-    schema: "clinical_pathway_tree_v1",
-    workupId: "hyperglycemia_possible_dka_v1",
-    title: "Long import containment test",
-    root: {
-      id: "root",
-      label: `Import drawer containment root ${"criterion_without_spaces_".repeat(24)}`,
-      type: "decision",
-      children: []
-    },
-    activationRules: {}
-  }, null, 2);
-  await page.fill("#decisionTreeJsonInput", `\`\`\`json\n${longWrappedTreeJson}\n\`\`\``);
-  await assertNoHorizontalOverflow(page, "patient decision-tree import drawer 1024px");
-  const importDrawerContainmentAudit = await page.evaluate(() => {
-    const editor = document.querySelector("#decisionTreeEditorPanel");
-    const card = document.querySelector("#patientWorkupPanel.is-importing .decision-tree-json-panel");
-    const textarea = document.querySelector("#decisionTreeJsonInput");
-    const cardRect = card?.getBoundingClientRect();
-    const editorRect = editor?.getBoundingClientRect();
-    const textareaRect = textarea?.getBoundingClientRect();
-    const controls = Array.from(document.querySelectorAll("#decisionTreeEditorPanel textarea, #decisionTreeEditorPanel button"))
-      .filter((node) => {
-        const rect = node.getBoundingClientRect();
-        return getComputedStyle(node).display !== "none" && rect.width > 0 && rect.height > 0;
-      })
-      .map((node) => {
-        const rect = node.getBoundingClientRect();
-        return {
-          id: node.id || node.textContent?.trim() || node.tagName,
-          left: Math.round(rect.left),
-          right: Math.round(rect.right),
-          top: Math.round(rect.top),
-          bottom: Math.round(rect.bottom),
-          overflowsCard: Boolean(cardRect && (rect.left < cardRect.left - 1 || rect.right > cardRect.right + 1)),
-          overflowsViewport: rect.left < -1 || rect.right > window.innerWidth + 1
-        };
-      });
-    return {
-      viewportWidth: document.documentElement.clientWidth,
-      editor: editorRect ? {
-        left: Math.round(editorRect.left),
-        right: Math.round(editorRect.right),
-        width: Math.round(editorRect.width)
-      } : null,
-      card: cardRect ? {
-        left: Math.round(cardRect.left),
-        right: Math.round(cardRect.right),
-        width: Math.round(cardRect.width)
-      } : null,
-      textarea: textareaRect ? {
-        left: Math.round(textareaRect.left),
-        right: Math.round(textareaRect.right),
-        width: Math.round(textareaRect.width),
-        scrollOverflow: Math.round((textarea?.scrollWidth || 0) - (textarea?.clientWidth || 0))
-      } : null,
-      overflowingControls: controls.filter((entry) => entry.overflowsCard || entry.overflowsViewport)
-    };
-  });
-  assert(importDrawerContainmentAudit.editor?.width > 0 && importDrawerContainmentAudit.card?.width > 0, `decision-tree import editor should remain visible at 1024px: ${JSON.stringify(importDrawerContainmentAudit)}`);
-  assert(importDrawerContainmentAudit.textarea?.scrollOverflow <= 2, `decision-tree JSON textarea should wrap long pasted content instead of creating horizontal scroll: ${JSON.stringify(importDrawerContainmentAudit)}`);
-  assert(importDrawerContainmentAudit.overflowingControls.length === 0, `decision-tree import controls should stay inside the drawer card and viewport: ${JSON.stringify(importDrawerContainmentAudit)}`);
-  await page.setViewportSize({ width: 1440, height: 1024 });
-  await page.waitForFunction(() => document.querySelector("#decisionTreeEditorPanel")?.hidden === false);
-  await page.fill("#decisionTreeJsonInput", `\`\`\`json\n${importedTreeJson}\n\`\`\``);
-  await page.click("#applyDecisionTreeJsonButton");
-  await page.waitForFunction(() => /Imported DKA pathway root/i.test(document.querySelector("#patientDecisionTreePanel")?.textContent || ""));
-  const postImportAudit = await page.evaluate(() => ({
-    importing: document.querySelector("#patientWorkupPanel")?.classList.contains("is-importing"),
-    editorHidden: document.querySelector("#decisionTreeEditorPanel")?.hidden,
-    nodeEditorVisible: getComputedStyle(document.querySelector("#decisionTreeNodeEditor")).display !== "none",
-    treeText: document.querySelector("#patientDecisionTreePanel")?.textContent || ""
-  }));
-  assert(postImportAudit.importing === false && postImportAudit.editorHidden === true && postImportAudit.nodeEditorVisible === false && /Imported DKA pathway root/i.test(postImportAudit.treeText), `applying JSON should return to the live patient pathway without node-editing chrome: ${JSON.stringify(postImportAudit)}`);
   await page.goto(`${baseUrl}/index.html?page=workup&afterObjectiveDataAudit=${Date.now()}`);
   await unlockVaultIfNeeded(page, vaultPassword);
   await page.waitForSelector("#workspaceView:not([hidden])");

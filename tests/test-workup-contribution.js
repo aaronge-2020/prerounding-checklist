@@ -2,12 +2,12 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import {
   WORKUP_CONTRIBUTION_SCHEMA,
-  buildChatAiHandoffPrompt,
   buildGithubIssueUrl,
   prepareGithubIssueBody,
   validateWorkupContributionDraft
-} from "../workup-contribution.js";
-import { physicalExamCatalogFromCsv } from "../physical-exam-catalog.js";
+} from "../src/workup/workup-contribution.js";
+import { buildChatAiHandoffPrompt } from "../prompts/chat-ai-workup-handoff.js";
+import { physicalExamCatalogFromCsv } from "../src/vault/physical-exam-catalog.js";
 
 const referenceCsv = readFileSync("data/physical-exam/physical_exam_reference.csv", "utf8");
 const overlayCsv = readFileSync("data/physical-exam/physical_exam_evidence_overlay.csv", "utf8");
@@ -51,38 +51,6 @@ const validDraft = {
       source_ids: ["source_1"]
     }
   ],
-  diagnostic_tests: [
-    {
-      id: "test_neuroimaging_threshold",
-      item_type: "diagnostic_test",
-      label: "Neuroimaging threshold",
-      test_name: "Neuroimaging when focal deficit is present",
-      order_when: "new focal neurologic deficit or red flag",
-      diagnostic_target: "secondary headache or focal neurologic process",
-      interpretation: "positive focal findings increase urgency for localization",
-      result_changes_management: "abnormal findings should prompt escalation and specialty input",
-      source_ids: ["source_1"]
-    }
-  ],
-  safety_checks: [],
-  red_flags: [
-    {
-      id: "redflag_focal_deficit",
-      item_type: "red_flag",
-      label: "New focal neurologic deficit",
-      action: "Escalate urgently",
-      source_ids: ["source_1"]
-    }
-  ],
-  management_disposition: [
-    {
-      id: "mgmt_escalate_deficit",
-      item_type: "management_change",
-      label: "Escalate new focal findings",
-      action: "Discuss urgent localization and escalation with the supervising clinician",
-      source_ids: ["source_1"]
-    }
-  ],
   sources: [
     {
       source_id: "source_1",
@@ -113,44 +81,6 @@ const promptAliasValidation = validateWorkupContributionDraft(promptAliasDraft, 
 assert.equal(promptAliasValidation.ok, true, promptAliasValidation.issues.join("\n"));
 assert.equal(promptAliasValidation.draft.history_questions[0].question, promptAliasDraft.history_questions[0].prompt);
 assert.ok(!promptAliasValidation.issues.some((issue) => issue.includes("history_questions[0].prompt")));
-
-const nonHistoryAliasDraft = JSON.parse(JSON.stringify(validDraft));
-nonHistoryAliasDraft.safety_checks = [
-  {
-    id: "sc_neuro_symptoms",
-    item_type: "safety_check",
-    label: "Check for severe neurologic symptoms",
-    check: "Assess for seizure, severe confusion, or impaired consciousness.",
-    why_it_matters: "These findings require urgent escalation.",
-    source_ids: ["source_1"]
-  }
-];
-nonHistoryAliasDraft.red_flags = [
-  {
-    id: "rf_severe_symptoms",
-    item_type: "red_flag",
-    label: "Severe neurologic symptoms",
-    finding: "Seizure, coma, or marked confusion.",
-    action: "Escalate urgently for monitored treatment.",
-    source_ids: ["source_1"]
-  }
-];
-nonHistoryAliasDraft.management_disposition = [
-  {
-    id: "md_escalate",
-    item_type: "management_disposition",
-    label: "Escalate new findings",
-    disposition: "Discuss urgent escalation with the supervising clinician.",
-    source_ids: ["source_1"]
-  }
-];
-const nonHistoryAliasValidation = validateWorkupContributionDraft(nonHistoryAliasDraft, { examCatalog });
-assert.equal(nonHistoryAliasValidation.ok, true, nonHistoryAliasValidation.issues.join("\n"));
-assert.equal(nonHistoryAliasValidation.draft.safety_checks[0].action, nonHistoryAliasDraft.safety_checks[0].check);
-assert.equal(nonHistoryAliasValidation.draft.safety_checks[0].rationale, nonHistoryAliasDraft.safety_checks[0].why_it_matters);
-assert.equal(nonHistoryAliasValidation.draft.red_flags[0].action, nonHistoryAliasDraft.red_flags[0].action);
-assert.equal(nonHistoryAliasValidation.draft.management_disposition[0].item_type, "management_change");
-assert.equal(nonHistoryAliasValidation.draft.management_disposition[0].action, nonHistoryAliasDraft.management_disposition[0].disposition);
 
 const unsupported = validateWorkupContributionDraft({
   ...validDraft,
@@ -203,9 +133,7 @@ assert.ok(prompt.includes(WORKUP_CONTRIBUTION_SCHEMA));
 assert.ok(prompt.includes("pending_review"));
 assert.ok(prompt.includes('"question": "Focused bedside question?"'));
 assert.ok(prompt.includes("history_questions: question (never prompt)"));
-assert.ok(prompt.includes("item_type must be \"management_change\" (never \"management_disposition\")"));
-assert.ok(prompt.includes('"item_type": "safety_check"'));
-assert.ok(prompt.includes('"item_type": "red_flag"'));
+assert.ok(prompt.includes('"item_type": "physical_exam_maneuver"'));
 assert.ok(!prompt.includes("John Smith"));
 
 const body = prepareGithubIssueBody(validation.draft, validation);

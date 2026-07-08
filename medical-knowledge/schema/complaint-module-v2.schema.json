@@ -46,31 +46,6 @@
       "type": "array",
       "items": { "$ref": "#/$defs/physicalExam" }
     },
-    "safetyChecks": {
-      "type": "array",
-      "items": { "$ref": "#/$defs/commonItem" }
-    },
-    "initialTests": {
-      "type": "array",
-      "items": { "$ref": "#/$defs/diagnosticTest" }
-    },
-    "redFlags": {
-      "type": "array",
-      "items": { "$ref": "#/$defs/commonItem" }
-    },
-    "dispositionRules": {
-      "type": "array",
-      "items": { "$ref": "#/$defs/commonItem" }
-    },
-    "treatmentOptions": {
-      "type": "array",
-      "items": { "$ref": "#/$defs/commonItem" }
-    },
-    "differentialBuckets": {
-      "type": "array",
-      "items": { "$ref": "#/$defs/commonItem" }
-    },
-    "clinical_pathway_tree_v1": { "type": "object" },
     "source_registry_refs": {
       "description": "Source IDs must resolve against medical-knowledge/source-registry.json during build/test validation.",
       "$ref": "#/$defs/stringArray"
@@ -117,14 +92,7 @@
         "item_type": {
           "enum": [
             "history_question",
-            "physical_exam_maneuver",
-            "diagnostic_test",
-            "safety_check",
-            "red_flag",
-            "management_change",
-            "diagnostic_frame",
-            "reference_threshold",
-            "catalog_gap"
+            "physical_exam_maneuver"
           ]
         },
         "label": { "type": "string", "minLength": 1 },
@@ -190,24 +158,6 @@
             "properties": { "custom_exam": { "const": false } }
           },
           "then": { "required": ["exam_id"] }
-        }
-      ]
-    },
-    "diagnosticTest": {
-      "allOf": [
-        { "$ref": "#/$defs/commonItem" },
-        {
-          "type": "object",
-          "required": ["test_name", "order_when", "diagnostic_target", "interpretation", "result_changes_management"],
-          "properties": {
-            "item_type": { "const": "diagnostic_test" },
-            "test_name": { "type": "string", "minLength": 1 },
-            "order_when": { "type": "string", "minLength": 1 },
-            "diagnostic_target": { "type": "string", "minLength": 1 },
-            "interpretation": { "type": "string", "minLength": 1 },
-            "result_changes_management": { "type": "string", "minLength": 1 },
-            "threshold_ids": { "$ref": "#/$defs/stringArray" }
-          }
         }
       ]
     }

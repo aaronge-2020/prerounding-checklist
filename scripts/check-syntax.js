@@ -6,23 +6,24 @@ import { spawnSync } from "node:child_process";
 const packageJson = JSON.parse(readFileSync("package.json", "utf8"));
 
 const coreFiles = [
-  "checklist.js",
-  "clinical-intents.js",
-  "complaint-cds.js",
-  "continuity.js",
-  "deid.js",
-  "embedding-recall.js",
-  "evidence.js",
-  "labs.js",
+  "src/clinical/checklist.js",
+  "src/clinical/clinical-intents.js",
+  "src/clinical/complaint-cds.js",
+  "src/clinical/continuity.js",
+  "src/clinical/labs.js",
+  "src/codecs/qr-codec.js",
+  "src/codecs/phone-transfer-codec.js",
+  "src/vault/deid.js",
+  "src/vault/physical-exam-catalog.js",
   "medical-knowledge-db.js",
   "open-evidence-results.js",
   "open-evidence-workflows.js",
-  "workup-authoring.js",
+  "src/workup/workup-authoring.js",
+  "src/workup/workup-contribution.js",
   "utils/supabase/env.js",
   "utils/supabase/node.js",
   "scripts/deid-adversarial.js",
-  "scripts/deid-fixtures.js",
-  "scripts/evidence-eval.js"
+  "scripts/deid-fixtures.js"
 ];
 
 const packageScriptFiles = Object.values(packageJson.scripts || {}).flatMap((command) => (
@@ -162,29 +163,18 @@ for (const requiredId of [
   "lockVaultButton",
   "sidebarAdmitPatientButton",
   "sidebarQuickDeidButton",
-  "patientWorkupConcernInput",
-  "patientWorkupOrdersPanel",
-  "patientDecisionTreePanel",
-  "patientBuildChecklistButton",
-  "patientCopyWorkupButton",
   "sharedPromptWorkbench",
   "patientEvidenceTaskStrip",
   "promptVariableBar",
   "copyPromptButton",
   "savePromptTemplateButton",
-  "decisionTreeJsonInput",
-  "decisionTreeImportPreview",
-  "saveDecisionTreeSourceButton",
-  "decisionTreeZoomSelect",
-  "zoomInDecisionTreeButton",
-  "zoomOutDecisionTreeButton",
-  "saveDecisionTreeDefaultButton",
-  "saveDecisionTreeLocalFileButton",
   "workupStudioSearchInput",
   "workupStudioStatusFilter",
   "workupStudioList",
-  "workupStudioSectionTabs",
   "workupStudioEditor",
+  "workupStudioPromptToggleButton",
+  "workupStudioImportToggleButton",
+  "workupStudioInspectorToggleButton",
   "workupStudioImportInput",
   "workupStudioOpenEvidencePromptOutput",
   "workupStudioCopyPromptButton",
@@ -207,7 +197,6 @@ for (const requiredId of [
   "bedsideCompletionPanel",
   "maximizeBedsideReturnQrButton",
   "completionCopyPhoneReturnPayloadButton",
-  "workspaceChecklistPhoneButton",
   "showPhoneReturnQrButton",
   "copyPhoneReturnPayloadButton",
   "useLaptopChecklistButton",
@@ -241,7 +230,7 @@ if (!moduleMatch) {
   throw new Error("index.html must contain a module script for the local app shell.");
 }
 const moduleScript = moduleMatch[1];
-const checklistModule = readFileSync("checklist.js", "utf8");
+const checklistModule = readFileSync("src/clinical/checklist.js", "utf8");
 for (const checklistSnippet of ["BEDSIDE QUESTION CHECKLIST", "TARGETED PHYSICAL EXAM CHECKLIST"]) {
   if (!checklistModule.includes(checklistSnippet)) {
     throw new Error(`Expected checklist module contract missing: ${checklistSnippet}`);

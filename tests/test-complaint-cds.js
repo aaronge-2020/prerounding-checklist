@@ -3,21 +3,20 @@ import {
   buildLocalChecklistFromWorkup,
   hasGenericOnlyChecklistOptions,
   parseChecklist
-} from "../checklist.js";
+} from "../src/clinical/checklist.js";
 import {
   complaintModules,
   complaintSourceRegistry,
   evaluateComplaintCds,
   formatComplaintCdsReport,
-  isBasicBedsideDataItem,
   selectComplaintModule,
   validateComplaintModules
-} from "../complaint-cds.js";
+} from "../src/clinical/complaint-cds.js";
 import {
   buildClinicalIntentRetrievalContext,
   getClinicalIntentById,
   selectedValidatedClinicalIntents
-} from "../clinical-intents.js";
+} from "../src/clinical/clinical-intents.js";
 
 const audit = validateComplaintModules();
 assert.ok(audit.ok, audit.issues.join("\n"));
@@ -38,12 +37,6 @@ const badModuleAudit = validateComplaintModules([
     version: "0.0.1",
     status: "draft",
     triggers: ["bad module"],
-    redFlags: [
-      { id: "bad_red_flag", label: "Bad red flag", item_type: "history_question", source: syntheticSource }
-    ],
-    safetyChecks: [
-      { id: "bad_safety", label: "Measure blood pressure", item_type: "physical_exam_maneuver", source: syntheticSource }
-    ],
     requiredQuestions: [
       { id: "bad_question", label: "Chest pain onset", item_type: "history_question", text: "Chest pain onset", options: [{ value: "unknown", label: "Unknown" }], when_to_ask: "Always", diagnostic_purpose: "Test", management_implication: "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety.", tags: ["test"], source: syntheticSource }
     ],
@@ -58,16 +51,10 @@ const badModuleAudit = validateComplaintModules([
       { id: "bad_exam_tremor", label: "Assess tremor with outstretched hands", item_type: "physical_exam_maneuver", technique: "Ask patient to hold hands out and observe.", findings_options: ["Fine tremor"], when_to_perform: "Pheochromocytoma concern", diagnostic_target: "Growth hormone excess phenotype with acral soft-tissue enlargement", LR_plus: "n/a", LR_minus: "n/a", management_change: "Order IGF-1", difficulty: "easy", time_burden_minutes: 1, equipment_needed: "none", patient_cooperation_required: "low", limitations: "Context", tags: ["pheochromocytoma"], source: syntheticSource }
     ],
     conditionalQuestions: [],
-    conditionalExam: [],
-    initialTests: [],
-    dispositionRules: [],
-    differentialBuckets: []
+    conditionalExam: []
   }
 ], complaintSourceRegistry);
 assert.equal(badModuleAudit.ok, false, "bad synthetic module should fail validation");
-assert.match(badModuleAudit.issues.join("\n"), /redFlags\.bad_red_flag item_type must be red_flag/, "validator should enforce item_type by section");
-assert.match(badModuleAudit.issues.join("\n"), /safetyChecks\.bad_safety item_type must be safety_check/, "validator should reject wrong safety item_type");
-assert.match(badModuleAudit.issues.join("\n"), /basic bedside data\/safety item belongs in safetyChecks/, "validator should keep vitals out of physical exam sections");
 assert.match(badModuleAudit.issues.join("\n"), /exam label appears bundled or vague/, "validator should reject bundled physical exam labels");
 assert.match(badModuleAudit.issues.join("\n"), /invalid LR_plus/, "validator should reject non-numeric/non-n\/a LR values");
 assert.match(badModuleAudit.issues.join("\n"), /invalid time_burden_minutes/, "validator should reject non-numeric time burden metadata");
@@ -138,18 +125,11 @@ function assertHas(items, pattern, message) {
 
 function combinedWorkupText(result) {
   return [
-    ...(result.safetyChecks || []),
     ...(result.requiredQuestions || []),
     ...(result.conditionalQuestions || []),
     ...(result.focusedExam || []),
     ...(result.requiredExam || []),
-    ...(result.conditionalExam || []),
-    ...(result.initialTests || []),
-    ...(result.dispositionRules || []),
-    ...(result.decisionTrees || []),
-    ...(result.treatmentOptions || []),
-    ...(result.redFlags || []),
-    ...(result.differentialBuckets || [])
+    ...(result.conditionalExam || [])
   ]
     .map((item) => JSON.stringify(item))
     .join("\n")
@@ -169,9 +149,7 @@ function assertFeverWorkupMeetsGeneralClinicianFloor(result) {
     ["lung auscultation", /auscultate posterior lung fields|lung sounds|breath sounds/],
     ["skin/wound source inspection", /inspect skin for infection source|wound|line site|cellulitis/],
     ["HEENT source inspection", /inspect oropharynx|sore throat|ear|sinus|dental/],
-    ["mental status and perfusion exam", /mental status[\s\S]*(perfusion|altered)|palpate radial pulses/],
-    ["source-directed tests", /source-directed infection studies|chest imaging|urinalysis|urine culture|blood cultures/],
-    ["escalation and safety-net disposition", /escalate unstable fever|outpatient follow-up only when low risk|sepsis pathway/]
+    ["mental status and perfusion exam", /mental status[\s\S]*(perfusion|altered)|palpate radial pulses/]
   ].forEach(([label, pattern]) => {
     assert.match(text, pattern, `fever workup should meet clinician-floor coverage for ${label}`);
   });
@@ -195,8 +173,7 @@ const checklistOptionSourceGroups = [
   ["requiredQuestions", "bedside"],
   ["conditionalQuestions", "bedside"],
   ["requiredExam", "exam"],
-  ["conditionalExam", "exam"],
-  ["safetyChecks", "exam"]
+  ["conditionalExam", "exam"]
 ];
 
 function optionControlValue(item = {}) {
@@ -508,14 +485,10 @@ const chestPain = evaluateComplaintCds(
 );
 assert.equal(chestPain.matched, true, "chest pain case should match");
 assert.equal(chestPain.module.id, "chest_pain_v1");
-assert.ok(chestPain.triggeredRedFlags.length >= 2, "high-risk chest pain should trigger red flags");
 assertHas(chestPain.requiredQuestions, /onset|radiate|exertional|shortness/, "chest pain should ask core history");
 assertHas(chestPain.conditionalQuestions, /unilateral leg swelling|pregnancy|reproducible/, "chest pain should activate conditional history");
-assertHas(chestPain.safetyChecks, /measure blood pressure|measure heart rate|measure respiratory rate|measure oxygen saturation/, "chest pain should separate basic bedside safety checks from the exam");
+assertHas(chestPain.focusedExam, /measure blood pressure|measure heart rate|measure respiratory rate|measure oxygen saturation/, "chest pain exam checklist should include basic bedside vitals alongside exam maneuvers");
 assertHas(chestPain.focusedExam, /auscultate heart rhythm|auscultate lung sounds|inspect unilateral leg swelling|assess jugular venous pressure/, "chest pain should recommend atomic cardiopulmonary and VTE exam maneuvers");
-assert.ok(!/measure blood pressure|measure heart rate|measure respiratory rate|measure oxygen saturation/i.test(labels(chestPain.focusedExam)), "chest pain focused exam should not contain vital signs");
-assertHas(chestPain.initialTests, /ecg|troponin|ct pulmonary|d-dimer|chest x-ray/, "chest pain should recommend immediate tests");
-assertHas(chestPain.dispositionRules, /emergency|structured chest pain/, "chest pain should include disposition cues");
 assert.ok(chestPain.sources.every((source) => source.url.startsWith("http")), "sources should include URLs");
 const chestPainChecklist = buildLocalChecklistFromWorkup({ complaintResult: chestPain }, { maxBedsideQuestions: 18 });
 assert.match(
@@ -603,25 +576,19 @@ const dka = evaluateComplaintCds(
 );
 assert.equal(dka.matched, true, "DKA case should match");
 assert.equal(dka.module.id, "hyperglycemia_possible_dka_v1");
-assert.ok(dka.triggeredRedFlags.length >= 3, "severe DKA should trigger multiple red flags");
 assertHas(dka.requiredQuestions, /insulin|ketone|polyuria|infection|confusion/, "DKA should ask core crisis history");
 assertHas(dka.conditionalQuestions, /hyperosmolar|infection/, "DKA should ask conditional HHS/source history");
-assertHas(dka.safetyChecks, /measure blood pressure|measure heart rate|measure respiratory rate|measure oxygen saturation|measure temperature|assess mental status/, "DKA should separate basic bedside safety checks and mental status from the exam");
+assertHas(dka.focusedExam, /measure blood pressure|measure heart rate|measure respiratory rate|measure oxygen saturation|measure temperature|assess mental status/, "DKA exam checklist should include basic bedside vitals and mental status alongside exam maneuvers");
 assertHas(dka.focusedExam, /inspect mucous membranes|observe kussmaul breathing|test capillary refill|palpate distal extremity warmth|palpate abdomen|auscultate lungs/, "DKA should recommend atomic volume, respiratory, perfusion, abdominal, and source exam maneuvers");
-assert.doesNotMatch(labels(dka.focusedExam), /mental status/i, "DKA mental status should remain basic safety/acuity data, not a physical exam maneuver");
 assertNoVagueRenderedExamLabels("hyperglycemia_possible_dka_v1", dka.focusedExam);
 assert.ok(
   dka.focusedExam.some((item) => !item.original_label && item.label === "Observe Kussmaul breathing"),
   "DKA source module should store action-specific Kussmaul breathing wording without requiring display-time label repair"
 );
-assert.ok(!/measure blood pressure|measure heart rate|measure respiratory rate|measure oxygen saturation|measure temperature|measure current weight/i.test(labels(dka.focusedExam)), "DKA focused exam should not contain vital signs or basic measurements");
 const dkaSkinTurgor = dka.focusedExam.find((item) => /skin turgor/i.test(item.label));
 assert.ok(dkaSkinTurgor, "DKA should include skin turgor as a dehydration/perfusion maneuver");
 assert.match(dkaSkinTurgor.diagnostic_target, /dehydration|perfusion|shock/i, "DKA skin turgor should target dehydration/perfusion");
 assert.doesNotMatch(dkaSkinTurgor.findings_options.join(" "), /wound|drainage|ulcer/i, "DKA skin turgor findings should not inherit wound metadata");
-assertHas(dka.initialTests, /point-of-care glucose|beta-hydroxybutyrate|metabolic panel|blood gas|osmolality|ecg|cbc|a1c/, "DKA should recommend immediate crisis labs/tests");
-assertHas(dka.dispositionRules, /urgent|icu|high-acuity|potassium|basal overlap|discharge/, "DKA should include high-acuity and transition/discharge cues");
-assertHas(dka.differentialBuckets, /glucose >=200|beta-hydroxybutyrate >=3.0|glucose >=600|osmolality >300|mixed dka\/hhs/, "DKA/HHS differential should include current diagnostic thresholds");
 const dkaChecklist = buildLocalChecklistFromWorkup({ complaintResult: dka }, { maxBedsideQuestions: 18 });
 assert.match(
   dkaChecklist,
@@ -661,7 +628,7 @@ const fever = evaluateComplaintCds(
 );
 assert.equal(fever.matched, true, "fever case should match");
 assert.equal(fever.module.id, "fever_infection_sepsis_v1");
-assertHas(fever.safetyChecks, /measure blood pressure|measure heart rate|measure respiratory rate|measure oxygen saturation|measure temperature/, "fever should separate basic bedside safety checks from the exam");
+assertHas(fever.focusedExam, /measure blood pressure|measure heart rate|measure respiratory rate|measure oxygen saturation|measure temperature/, "fever exam checklist should include basic bedside vitals alongside exam maneuvers");
 assertHas(fever.requiredQuestions, /fever.*measured/, "fever should ask timeline and measurement history");
 assertHas(fever.requiredQuestions, /throat.*ear.*sinus.*dental|dysuria.*flank|abdominal.*gi|skin.*wound.*line|cns.*joint.*spine|cough.*sputum.*shortness|immunosuppression.*pregnancy.*travel/, "fever should ask atomic source-domain and host/exposure questions");
 assert.ok(
@@ -677,10 +644,6 @@ assertHas(
 assertHas(fever.focusedExam, /check mental status|observe work of breathing|auscultate posterior lung fields|inspect skin for infection source|inspect oropharynx|palpate radial pulses/, "fever should recommend atomic severity, respiratory, skin, HEENT, and perfusion maneuvers");
 assertNoVagueRenderedExamLabels("fever_infection_sepsis_v1", fever.focusedExam);
 assertHas(fever.focusedExam, /palpate cva tenderness|percuss posterior lung fields/, "fever should activate source-directed urinary and pulmonary add-on exams when context supports them");
-assert.ok(!/measure blood pressure|measure heart rate|measure respiratory rate|measure oxygen saturation|measure temperature/i.test(labels(fever.focusedExam)), "fever focused exam should not contain vital signs or basic measurements");
-assertHas(fever.initialTests, /sepsis severity labs|source-directed infection studies|respiratory source imaging/, "fever should include sepsis severity, source-directed, and respiratory-source testing");
-assertHas(fever.dispositionRules, /escalate unstable fever|outpatient follow-up only when low risk/, "fever should include escalation and low-risk safety-net disposition rules");
-assertHas(fever.differentialBuckets, /sepsis|respiratory source|urinary or flank source|skin.*heent.*cns.*abdominal/i, "fever differential should cover serious infection plus likely source categories");
 assert.ok((fever.limitationsAndInterpretationCautions || []).length >= 6, "fever should expose exam and source interpretation limitations");
 assertFeverWorkupMeetsGeneralClinicianFloor(fever);
 
@@ -737,21 +700,11 @@ assertHas(
   "structured fever patient modifiers should activate urinary and focal-pulmonary source add-on exams"
 );
 
-const euDka = evaluateComplaintCds(
-  "Adult diabetes on SGLT2 inhibitor with vomiting, abdominal pain, ketones, and only moderately elevated glucose",
-  answerMap([["dka_sglt2_pregnancy", "yes"]])
-);
-assert.equal(euDka.module.id, "hyperglycemia_possible_dka_v1", "SGLT2 ketotic symptoms should route to DKA module");
-assertHas(euDka.redFlags.filter((item) => item.triggered), /sglt2|lower glucose/, "SGLT2 case should trigger euglycemic DKA warning");
-assertHas(euDka.dispositionRules, /ketones\/acidosis|glucose is <200|stop sglt2/i, "SGLT2 case should include euglycemic disposition cue");
-
 const report = formatComplaintCdsReport(dka);
 assert.ok(report.includes("Guideline Complaint CDS"), "report should have title");
 assert.ok(report.includes("ADA_HYPERGLYCEMIC_CRISES_2024"), "report should include source ids");
-assert.ok(report.includes("Basic bedside data / safety checks"), "report should separate bedside safety checks");
 assert.ok(report.includes("Core physical exam maneuvers"), "report should separate core physical exam maneuvers");
 assert.ok(report.includes("Conditional exam add-ons"), "report should separate conditional exam add-ons from core exams");
-assert.ok(report.includes("Management-changing findings / disposition cues"), "report should name management-changing findings explicitly");
 assert.ok(report.includes("Suppressed/not-recommended items"), "report should include suppressed/not-recommended section even when no selected intent was passed");
 assert.ok(report.includes("Catalog gaps needing review"), "report should include catalog gaps section even when none are active");
 assert.ok(!report.includes("\nPhysical exam maneuvers\n"), "report should not merge core and conditional exam maneuvers into one copied section");
@@ -780,7 +733,6 @@ assert.ok(!/patient name|mrn|date of birth/i.test(report), "report should not in
 const feverReport = formatComplaintCdsReport(fever);
 assert.ok(feverReport.includes("Fever, infection, or sepsis"), "fever report should include module title");
 assert.ok(feverReport.includes("Auscultate posterior lung fields"), "fever report should copy lung auscultation");
-assert.ok(feverReport.includes("Source-directed infection studies"), "fever report should copy source-directed testing");
 assert.ok(feverReport.includes("Likelihood-ratio note: Question-level LR+/LR-"), "fever report should copy history question LR interpretation notes");
 assert.ok(feverReport.includes("trace fever_infection_sepsis_v1"), "fever report should include compact module/item traceability");
 assert.ok(feverReport.includes("intent fever_sepsis_v1"), "fever report should include validated intent traceability");
@@ -801,20 +753,13 @@ complaintModules.forEach((module) => {
   assert.equal(result.matched, true, `${module.id} should evaluate directly by module`);
   assertNoGenericGeneratedChecklistModifiers(module);
   [
-    ["redFlags", result.redFlags || []],
-    ["safetyChecks", result.safetyChecks || []],
     ["requiredQuestions", result.requiredQuestions || []],
     ["conditionalQuestions", result.conditionalQuestions || []],
     ["requiredExam", result.requiredExam || []],
     ["conditionalExam", result.conditionalExam || []],
-    ["initialTests", result.initialTests || []],
-    ["dispositionRules", result.dispositionRules || []],
-    ["decisionTrees", result.decisionTrees || []],
-    ["treatmentOptions", result.treatmentOptions || []],
     ["limitationsAndInterpretationCautions", result.limitationsAndInterpretationCautions || []],
     ["suppressedNotRecommendedItems", result.suppressedNotRecommendedItems || []],
-    ["catalogGapsNeedingReview", result.catalogGapsNeedingReview || []],
-    ["differentialBuckets", result.differentialBuckets || []]
+    ["catalogGapsNeedingReview", result.catalogGapsNeedingReview || []]
   ].forEach(([group, items]) => {
     items.forEach((item) => assertTraceableComplaintItem(module, item, group));
   });
@@ -832,19 +777,11 @@ complaintModules.forEach((module) => {
     assert.ok(item.likelihood_ratio_note, `${module.id}.${item.id} should preserve likelihood-ratio interpretation note`);
   });
   [...(module.requiredExam || []), ...(module.conditionalExam || [])].forEach((item) => {
-    assert.ok(
-      !isBasicBedsideDataItem(item),
-      `${module.id} source physical exam sections should exclude basic bedside data: ${item.label}`
-    );
     for (const field of ["technique", "findings_options", "when_to_perform", "diagnostic_target", "LR_plus", "LR_minus", "management_change", "difficulty", "time_burden_minutes", "equipment_needed", "patient_cooperation_required", "limitations", "tags"]) {
       const value = item[field];
       assert.ok(value && (!Array.isArray(value) || value.length), `${module.id}.${item.id} source exam missing ${field}`);
     }
   });
-  assert.ok(
-    result.focusedExam.every((item) => !isBasicBedsideDataItem(item)),
-    `${module.id} focused physical exam should exclude basic bedside data: ${labels(result.focusedExam)}`
-  );
   assertNoVagueRenderedExamLabels(module.id, result.focusedExam || []);
   [...(module.requiredQuestions || []), ...(module.conditionalQuestions || [])].forEach((item) => {
     assert.ok(item.text && /\?$/.test(item.text.trim()), `${module.id}.${item.id} should have askable question text`);
@@ -864,7 +801,7 @@ complaintModules.forEach((module) => {
     assert.ok(item.likelihood_ratio_note, `${module.id}.${item.id} evaluated history question should preserve LR interpretation note`);
   });
   assertHistoryDetailPrompts(module.id, [...(result.requiredQuestions || []), ...(result.conditionalQuestions || [])]);
-  [...(result.safetyChecks || []), ...(result.focusedExam || [])].forEach((item) => {
+  (result.focusedExam || []).forEach((item) => {
     assert.ok(item.management_change, `${module.id}.${item.id} missing management-change metadata`);
     assert.ok(Object.prototype.hasOwnProperty.call(item, "LR_plus"), `${module.id}.${item.id} missing LR_plus field`);
     assert.ok(Object.prototype.hasOwnProperty.call(item, "LR_minus"), `${module.id}.${item.id} missing LR_minus field`);
