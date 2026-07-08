@@ -27,7 +27,6 @@
       --patient-workup-selector-w: 292px;
       --patient-workup-orders-w: 370px;
       --studio-workups-w: 250px;
-      --studio-sections-w: 190px;
       --studio-inspector-w: 340px;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
     }
@@ -1459,14 +1458,14 @@
       margin: 0;
     }
 
-    body[data-view="studio"] #studioView {
+    body[data-view="studio"] #patientWorkupPanel {
       height: 100vh;
       min-height: 100vh;
       overflow: hidden;
       background: #ffffff;
     }
 
-    body[data-view="studio"] #studioView:not([hidden]) {
+    body[data-view="studio"] #patientWorkupPanel:not([hidden]) {
       display: grid;
       grid-template-rows: auto auto minmax(0, 1fr);
     }
@@ -3472,7 +3471,7 @@
 
     .studio-shell {
       display: grid;
-      grid-template-columns: minmax(220px, var(--studio-workups-w)) 12px minmax(170px, var(--studio-sections-w)) 12px minmax(360px, 1fr) 12px minmax(320px, var(--studio-inspector-w));
+      grid-template-columns: minmax(260px, var(--studio-workups-w)) 12px minmax(360px, 1fr);
       width: 100%;
       height: 100%;
       min-height: 0;
@@ -3480,6 +3479,10 @@
       border-radius: 0;
       background: var(--surface);
       overflow: hidden;
+    }
+
+    body[data-studio-inspector-open="true"] .studio-shell {
+      grid-template-columns: minmax(260px, var(--studio-workups-w)) 12px minmax(360px, 1fr) 12px minmax(320px, var(--studio-inspector-w));
     }
 
     .studio-rail,
@@ -3491,7 +3494,6 @@
     }
 
     .studio-rail,
-    .studio-section-rail,
     .studio-editor {
       border-right: 1px solid var(--line);
     }
@@ -3500,6 +3502,14 @@
       border-right: 1px solid var(--line);
       border-left: 1px solid var(--line);
       background: #f6faf9;
+    }
+
+    .studio-shell > [data-layout-resize-key="studioInspector"] {
+      display: none;
+    }
+
+    body[data-studio-inspector-open="true"] .studio-shell > [data-layout-resize-key="studioInspector"] {
+      display: block;
     }
 
     .studio-rail {
@@ -3543,18 +3553,12 @@
       padding-right: 2px;
     }
 
-    .studio-section-rail {
+    .studio-workup-item-container {
       display: grid;
-      grid-template-rows: auto minmax(0, 1fr) auto;
-      gap: 10px;
+      gap: 6px;
       min-width: 0;
-      min-height: 0;
-      padding: 18px 14px;
-      background: #ffffff;
-      overflow: hidden;
     }
 
-    .studio-section-rail h3,
     .studio-pane-title h3 {
       margin: 0;
       color: #18323c;
@@ -3602,10 +3606,97 @@
 
     .studio-editor {
       display: grid;
-      grid-template-rows: auto minmax(0, 1fr);
+      grid-template-rows: auto auto minmax(0, 1fr);
       gap: 12px;
       background: #ffffff;
       overflow: hidden;
+    }
+
+    #workupStudioSelectedTitle {
+      margin: 0;
+      color: #113644;
+      font-size: 26px;
+      font-weight: 800;
+      line-height: 1.12;
+    }
+
+    .studio-context-toolbar {
+      display: grid;
+      gap: 10px;
+      border: 1px solid rgba(15, 118, 110, 0.18);
+      border-radius: 12px;
+      background: linear-gradient(180deg, #fbfdfd 0%, #f5faf9 100%);
+      padding: 10px;
+      box-shadow: 0 10px 24px rgba(17, 54, 68, 0.06);
+    }
+
+    .studio-context-toolbar-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .studio-context-toolbar-actions .btn {
+      min-height: 34px;
+      padding: 7px 10px;
+      white-space: normal;
+    }
+
+    .toolbar-expand-panel {
+      display: grid;
+      gap: 8px;
+      border: 1px solid #d6e5e6;
+      border-radius: 10px;
+      background: #ffffff;
+      padding: 10px;
+      animation: studioToolbarSlideDown 160ms ease-out;
+    }
+
+    .toolbar-expand-panel[hidden] {
+      display: none;
+    }
+
+    .toolbar-expand-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .toolbar-expand-panel label {
+      color: #24404a;
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .toolbar-expand-panel textarea {
+      width: 100%;
+      min-height: 154px;
+      border: 1px solid #c9dbde;
+      border-radius: 8px;
+      padding: 10px;
+      font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+      line-height: 1.4;
+      resize: vertical;
+      overflow-wrap: anywhere;
+    }
+
+    #workupStudioImportPanel textarea {
+      min-height: 96px;
+    }
+
+    @keyframes studioToolbarSlideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .studio-section-tabs {
@@ -3695,6 +3786,40 @@
       border-color: rgba(8, 125, 117, 0.34);
       color: var(--teal-dark);
       background: #ffffff;
+    }
+
+    .studio-section-tabs-nested {
+      margin: 0 0 2px 14px;
+      padding: 8px 0 2px 10px;
+      border-left: 2px solid #cfe3e4;
+      overflow: visible;
+    }
+
+    .studio-section-tabs-nested button {
+      min-height: 42px;
+      grid-template-columns: 24px minmax(0, 1fr) 16px;
+      border-color: #e4eeee;
+      border-radius: 8px;
+      background: #fbfdfd;
+      padding: 7px 9px;
+    }
+
+    .studio-section-tabs-nested button:hover {
+      border-color: #b9d8d8;
+      background: #f0f8f7;
+    }
+
+    .studio-section-tabs-nested .section-tab-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      background: #ffffff;
+    }
+
+    .studio-section-tabs-nested .section-tab-icon svg,
+    .studio-section-tabs-nested .section-tab-status svg {
+      width: 14px;
+      height: 14px;
     }
 
     .studio-editor-body {
@@ -4014,13 +4139,21 @@
 
     .studio-item-button {
       width: 100%;
-      min-height: 44px;
+      min-height: 58px;
       border: 0;
       border-bottom: 1px solid var(--line);
       border-radius: 0;
       background: #ffffff;
-      padding: 8px 12px;
+      padding: 12px 16px;
       text-align: left;
+    }
+
+    .studio-item-button:nth-of-type(even) {
+      background: #f7faf9;
+    }
+
+    .studio-item-button:nth-of-type(odd) {
+      background: #ffffff;
     }
 
     .studio-item-button:hover {
@@ -4071,6 +4204,28 @@
       padding: 12px;
     }
 
+    #workupStudioEditor {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 150;
+      width: min(480px, 92vw);
+      max-width: 100vw;
+      border: 0;
+      border-left: 1px solid #c7dadd;
+      border-radius: 0;
+      box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      pointer-events: none;
+    }
+
+    body[data-studio-editor-open="true"] #workupStudioEditor {
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
     .studio-form > *,
     .studio-form-grid > *,
     .decision-tree-rule-grid > *,
@@ -4096,7 +4251,34 @@
       padding-bottom: 8px;
     }
 
-    .studio-form-header span:first-child {
+    .studio-form-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .studio-drawer-close {
+      display: inline-grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border: 1px solid #cfe0e2;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #24404a;
+      font-size: 24px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .studio-drawer-close:hover,
+    .studio-drawer-close:focus-visible {
+      border-color: #78bdb5;
+      background: #eefaf8;
+      outline: 0;
+    }
+
+    .studio-form-header > div:first-child > span:first-child {
       display: block;
       color: var(--muted);
       font-size: 11px;
@@ -4141,13 +4323,10 @@
     }
 
     .studio-pathway-summary,
-    .studio-save-panel,
     .studio-validation-list,
     .studio-source-builder,
     .studio-source-diff,
-    .studio-provenance,
-    .studio-prompt-panel,
-    .studio-paste-panel {
+    .studio-provenance {
       min-width: 0;
       border: 1px solid var(--line);
       border-radius: 7px;
@@ -4212,11 +4391,15 @@
     }
 
     .studio-inspector {
-      display: grid;
+      display: none;
       align-content: start;
       gap: 8px;
       overflow: auto;
       background: #fbfdfd;
+    }
+
+    body[data-studio-inspector-open="true"] .studio-inspector {
+      display: grid;
     }
 
     .studio-inspector textarea {
@@ -4225,16 +4408,9 @@
       overflow-wrap: anywhere;
     }
 
-    .studio-prompt-panel,
-    .studio-paste-panel,
-    .studio-save-panel,
     .studio-backend-panel {
       display: grid;
       gap: 7px;
-    }
-
-    .studio-workbench-step {
-      position: relative;
     }
 
     .studio-workbench-head {
@@ -4261,55 +4437,13 @@
       line-height: 1;
     }
 
-    .studio-workbench-step[data-step="2"] .studio-step-mark {
-      background: #315bb9;
-    }
-
-    .studio-workbench-step[data-step="3"] .studio-step-mark {
-      background: #c47a0a;
-    }
-
-    .studio-workbench-step h2 {
-      margin: 0;
-      color: #18323c;
-      font-size: 16px;
-      line-height: 1.2;
-    }
-
-    .studio-prompt-panel textarea {
-      min-height: 188px;
-      font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
-      font-size: 12px;
-      line-height: 1.35;
-      overflow-wrap: anywhere;
-    }
-
-    .studio-paste-panel textarea {
-      min-height: 94px;
-      font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
-      font-size: 12px;
-      line-height: 1.35;
-      overflow-wrap: anywhere;
-    }
-
-    .studio-save-panel .button-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .studio-inspector .button-row .btn,
-    .studio-save-panel .button-row .btn {
+    .studio-inspector .button-row .btn {
       flex: 1 1 140px;
       min-width: 0;
       overflow: visible;
       overflow-wrap: anywhere;
       text-overflow: clip;
       white-space: normal;
-    }
-
-    .studio-save-panel #workupStudioPublishImportButton {
-      flex-basis: 100%;
     }
 
     .studio-backend-panel {
@@ -4479,7 +4613,11 @@
       }
 
       .studio-shell {
-        grid-template-columns: minmax(220px, var(--studio-workups-w)) 12px minmax(170px, var(--studio-sections-w)) 12px minmax(320px, 1fr) 12px minmax(300px, var(--studio-inspector-w));
+        grid-template-columns: minmax(240px, var(--studio-workups-w)) 12px minmax(320px, 1fr);
+      }
+
+      body[data-studio-inspector-open="true"] .studio-shell {
+        grid-template-columns: minmax(240px, var(--studio-workups-w)) 12px minmax(320px, 1fr) 12px minmax(300px, var(--studio-inspector-w));
       }
 
       .studio-editor-body {
@@ -4489,11 +4627,11 @@
 
     @media (max-width: 1180px) {
       body[data-view="studio"] .workspace,
-      body[data-view="studio"] #studioView {
+      body[data-view="studio"] #patientWorkupPanel {
         overflow: hidden;
       }
 
-      body[data-view="studio"] #studioView:not([hidden]) {
+      body[data-view="studio"] #patientWorkupPanel:not([hidden]) {
         height: 100vh;
         min-height: 100vh;
         grid-template-rows: auto auto minmax(0, 1fr);
@@ -4517,11 +4655,16 @@
       }
 
       .studio-shell {
-        grid-template-columns: minmax(200px, var(--studio-workups-w)) 8px minmax(170px, var(--studio-sections-w)) 8px minmax(0, 1fr);
-        grid-template-rows: minmax(0, 1fr) minmax(180px, 280px);
+        grid-template-columns: minmax(220px, var(--studio-workups-w)) 8px minmax(0, 1fr);
+        grid-template-rows: minmax(0, 1fr);
         height: 100%;
         min-width: 0;
         overflow: hidden;
+      }
+
+      body[data-studio-inspector-open="true"] .studio-shell {
+        grid-template-columns: minmax(220px, var(--studio-workups-w)) 8px minmax(0, 1fr);
+        grid-template-rows: minmax(0, 1fr) minmax(180px, 280px);
       }
 
       .studio-shell > .column-resize-handle {
@@ -4529,12 +4672,11 @@
         min-width: 8px;
       }
 
-      .studio-shell > .column-resize-handle:nth-child(6) {
+      .studio-shell > [data-layout-resize-key="studioInspector"] {
         display: none;
       }
 
       .studio-rail,
-      .studio-section-rail,
       .studio-editor,
       .studio-inspector {
         padding: 10px;
@@ -4549,6 +4691,10 @@
         grid-column: 1 / -1;
         border-top: 1px solid var(--line);
         overflow: auto;
+      }
+
+      body[data-studio-inspector-open="true"] .studio-inspector {
+        display: grid;
       }
 
       .studio-topbar .btn,
@@ -4589,11 +4735,11 @@
 
     @media (max-width: 900px) {
       body[data-view="studio"] .workspace,
-      body[data-view="studio"] #studioView {
+      body[data-view="studio"] #patientWorkupPanel {
         overflow: auto;
       }
 
-      body[data-view="studio"] #studioView:not([hidden]) {
+      body[data-view="studio"] #patientWorkupPanel:not([hidden]) {
         display: block;
         height: auto;
         min-height: 100vh;
@@ -4612,14 +4758,12 @@
       }
 
       .studio-rail,
-      .studio-section-rail,
       .studio-editor {
         border-right: 0;
         border-bottom: 1px solid var(--line);
       }
 
       .studio-rail,
-      .studio-section-rail,
       .studio-editor,
       .studio-inspector {
         overflow: visible;
@@ -4711,9 +4855,6 @@
         display: none;
       }
 
-      .studio-prompt-panel textarea {
-        min-height: 220px;
-      }
     }
 
     .studio-stat-grid {
@@ -4737,11 +4878,11 @@
 
     @media (min-width: 1181px) and (max-width: 1500px) {
       body[data-view="studio"] .workspace,
-      body[data-view="studio"] #studioView {
+      body[data-view="studio"] #patientWorkupPanel {
         overflow: hidden;
       }
 
-      body[data-view="studio"] #studioView:not([hidden]) {
+      body[data-view="studio"] #patientWorkupPanel:not([hidden]) {
         height: 100vh;
         min-height: 100vh;
         grid-template-rows: auto auto minmax(0, 1fr);
@@ -4761,13 +4902,17 @@
       }
 
       .studio-shell {
-        grid-template-columns: minmax(220px, var(--studio-workups-w)) 12px minmax(180px, var(--studio-sections-w)) 12px minmax(0, 1fr);
-        grid-template-rows: minmax(0, 1fr) minmax(180px, 300px);
+        grid-template-columns: minmax(240px, var(--studio-workups-w)) 12px minmax(0, 1fr);
+        grid-template-rows: minmax(0, 1fr);
         height: 100%;
         overflow: hidden;
       }
 
-      .studio-shell > .column-resize-handle:nth-child(6) {
+      body[data-studio-inspector-open="true"] .studio-shell {
+        grid-template-rows: minmax(0, 1fr) minmax(180px, 300px);
+      }
+
+      .studio-shell > [data-layout-resize-key="studioInspector"] {
         display: none;
       }
 
@@ -4780,6 +4925,10 @@
         border-top: 1px solid var(--line);
         min-height: 0;
         overflow: auto;
+      }
+
+      body[data-studio-inspector-open="true"] .studio-inspector {
+        display: grid;
       }
     }
 
@@ -5401,7 +5550,7 @@
       margin-top: 12px;
     }
 
-    #bedsideView {
+    #patientChecklistPanel {
       width: 100%;
       max-width: none;
       margin: 0;
@@ -5441,7 +5590,7 @@
       background: #ffffff;
     }
 
-    #bedsideView:not([hidden]) {
+    #patientChecklistPanel:not([hidden]) {
       height: 100%;
       min-height: 0;
       display: grid;
@@ -5622,7 +5771,7 @@
       outline: 0;
     }
 
-    #bedsideView .page-head {
+    #patientChecklistPanel .page-head {
       display: grid;
       grid-template-columns: minmax(150px, 0.42fr) minmax(0, 1.58fr);
       align-items: center;
@@ -5633,12 +5782,12 @@
       background: #f3fbfa;
     }
 
-    #bedsideView .lede {
+    #patientChecklistPanel .lede {
       max-width: 720px;
       font-size: 14px;
     }
 
-    #bedsideView #bedsideItemNoteHelp {
+    #patientChecklistPanel #bedsideItemNoteHelp {
       display: none;
       font-size: 13px;
     }
@@ -9367,15 +9516,6 @@
       color: var(--target-accent);
     }
 
-    .target-pathway-actions .btn {
-      min-height: 42px;
-      border-radius: 6px;
-      padding: 8px 12px;
-      font-size: 12px;
-      font-weight: 850;
-      white-space: normal;
-    }
-
     .target-pane-switcher {
       display: none;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -9435,6 +9575,14 @@
       background: #ffffff;
     }
 
+    .target-workup-body > [data-layout-resize-key="patientWorkupOrders"] {
+      grid-column: 4;
+    }
+
+    .target-workup-body > .target-inspector-rail {
+      grid-column: 5;
+    }
+
     #patientWorkupPanel[data-workup-selected="false"] .target-workup-topbar {
       grid-template-columns: minmax(250px, 0.8fr) minmax(360px, 1.2fr);
     }
@@ -9452,19 +9600,7 @@
       display: none;
     }
 
-    #patientWorkupPanel[data-workup-selected="false"] .target-pathway-main {
-      border-right: 0;
-    }
-
-    #patientWorkupPanel[data-workup-selected="false"] .target-pathway-toolbar {
-      display: none;
-    }
-
     #patientWorkupPanel[data-workup-selected="false"] .target-pathway-bottom-actions {
-      display: none;
-    }
-
-    #patientWorkupPanel[data-workup-selected="false"] #decisionTreeEditorPanel {
       display: none;
     }
 
@@ -9487,7 +9623,6 @@
     }
 
     .target-rail-head,
-    .target-pathway-head,
     .workup-orders-head {
       display: flex;
       align-items: center;
@@ -9496,20 +9631,11 @@
       min-width: 0;
     }
 
-    .target-rail-head h4,
-    .target-pathway-head h4 {
+    .target-rail-head h4 {
       margin: 0;
       color: #18323c;
       font-size: 16px;
       line-height: 1.2;
-    }
-
-    .target-pathway-head p {
-      max-width: 520px;
-      margin: 5px 0 0;
-      color: #63777f;
-      font-size: 12px;
-      line-height: 1.35;
     }
 
     .target-icon-button {
@@ -9677,27 +9803,6 @@
       cursor: pointer;
     }
 
-    .target-pathway-main {
-      display: grid;
-      grid-template-rows: auto auto minmax(0, 1fr);
-      min-width: 0;
-      min-height: 0;
-      border-right: 1px solid var(--target-grid);
-      background: #ffffff;
-    }
-
-    .target-pathway-head {
-      min-height: 84px;
-      padding: 18px 24px;
-      border-bottom: 1px solid var(--target-grid);
-    }
-
-    .target-pathway-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
     .target-pathway-bottom-actions {
       position: relative;
       z-index: 7;
@@ -9775,290 +9880,6 @@
       padding: 8px;
       box-shadow: 0 10px 28px rgba(20, 45, 54, 0.16);
       z-index: 20;
-    }
-
-    .target-pathway-toolbar {
-      display: grid;
-      grid-template-columns: minmax(150px, 0.8fr) auto auto 34px 34px minmax(150px, 0.9fr);
-      gap: 8px;
-      align-items: center;
-      padding: 12px 24px 8px;
-      border-bottom: 1px solid var(--target-grid);
-      background: #ffffff;
-    }
-
-    .target-search-box {
-      display: grid;
-      grid-template-columns: 24px minmax(0, 1fr) auto;
-      align-items: center;
-      gap: 6px;
-      min-height: 36px;
-      border: 1px solid #d2dee0;
-      border-radius: 5px;
-      background: #ffffff;
-      padding: 0 8px;
-    }
-
-    .target-search-box input {
-      width: 100%;
-      height: 32px;
-      border: 0;
-      background: transparent;
-      box-shadow: none;
-      font-size: 12px;
-    }
-
-    .target-search-box kbd {
-      min-width: 18px;
-      border: 1px solid #d2dee0;
-      border-radius: 4px;
-      color: #7a8b91;
-      text-align: center;
-      font-size: 11px;
-      font-family: inherit;
-    }
-
-    .target-zoom-select {
-      min-height: 36px;
-      border: 1px solid #d2dee0;
-      border-radius: 5px;
-      background: #ffffff;
-      color: #273f48;
-      padding: 0 10px;
-      font-weight: 750;
-    }
-
-    .target-active-toggle {
-      display: flex;
-      align-items: center;
-      justify-content: end;
-      gap: 10px;
-      color: #263f48;
-      font-size: 12px;
-      font-weight: 820;
-    }
-
-    .target-toggle {
-      position: relative;
-      width: 32px;
-      height: 18px;
-      border: 0;
-      border-radius: 999px;
-      background: var(--target-accent);
-      cursor: pointer;
-    }
-
-    .target-toggle::after {
-      content: "";
-      position: absolute;
-      top: 3px;
-      right: 3px;
-      width: 12px;
-      height: 12px;
-      border-radius: 999px;
-      background: #ffffff;
-      transition: left 120ms ease, right 120ms ease;
-    }
-
-    .target-toggle[aria-pressed="false"] {
-      background: #aabec4;
-    }
-
-    .target-toggle[aria-pressed="false"]::after {
-      right: auto;
-      left: 3px;
-    }
-
-    .target-path-legend {
-      grid-column: 1 / -1;
-      display: flex;
-      justify-content: end;
-      gap: 14px;
-      color: #61757c;
-      font-size: 11px;
-    }
-
-    .target-path-legend span {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .target-path-legend i {
-      width: 18px;
-      height: 2px;
-      background: #a7b5ba;
-    }
-
-    .target-path-legend i.is-active {
-      background: var(--target-accent);
-    }
-
-    .target-path-legend i.is-warning {
-      background: #d88417;
-      background-image: linear-gradient(90deg, #d88417 50%, transparent 50%);
-      background-size: 6px 2px;
-    }
-
-    #patientDecisionTreePanel {
-      border: 0;
-      border-radius: 0;
-      padding: 0;
-      background: #ffffff;
-      overflow: hidden;
-      position: relative;
-    }
-
-    #patientDecisionTreePanel .workup-tree-head {
-      display: none;
-    }
-
-    #patientDecisionTreePanel .d3-decision-tree {
-      min-height: 0;
-      height: 100%;
-      border: 0;
-      border-radius: 0;
-      background-color: #ffffff;
-      background-image: radial-gradient(circle at 1px 1px, rgba(151, 177, 184, 0.26) 1px, transparent 0);
-      background-size: 18px 18px;
-    }
-
-    #patientDecisionTreePanel .cytoscape-tree-shell {
-      min-height: 0;
-      height: 100%;
-      border: 0;
-      border-radius: 0;
-      background-color: #ffffff;
-      background-image: radial-gradient(circle at 1px 1px, rgba(151, 177, 184, 0.26) 1px, transparent 0);
-      background-size: 18px 18px;
-    }
-
-    #patientDecisionTreePanel .d3-decision-tree svg {
-      height: 100%;
-      min-height: 0;
-      background: transparent;
-    }
-
-    #patientDecisionTreePanel .decision-tree-readable-outline {
-      position: absolute;
-      right: 16px;
-      top: 88px;
-      bottom: auto;
-      z-index: 3;
-      width: min(460px, calc(100% - 32px));
-      max-height: min(42%, 420px);
-      box-shadow: 0 12px 26px rgba(15, 32, 42, 0.14);
-    }
-
-    #patientDecisionTreePanel .decision-tree-readable-outline.is-collapsed {
-      width: auto;
-      max-height: none;
-    }
-
-    #patientDecisionTreePanel .decision-tree-link {
-      stroke: #9aa8ad;
-      stroke-width: 1.5;
-    }
-
-    #patientDecisionTreePanel .decision-tree-link[data-state="active"] {
-      stroke: var(--target-accent);
-      stroke-width: 2;
-    }
-
-    #patientDecisionTreePanel .decision-tree-link[data-state="warning"] {
-      stroke: #d88417;
-      stroke-width: 2;
-      stroke-dasharray: 5 4;
-    }
-
-    #patientDecisionTreePanel .decision-tree-edge-label {
-      fill: #466168;
-      font-size: 12.5px;
-      font-weight: 820;
-      stroke: #ffffff;
-      stroke-width: 5px;
-    }
-
-    #patientDecisionTreePanel .decision-tree-node-g rect {
-      fill: #ffffff;
-      stroke: #9aa8ad;
-      stroke-width: 1.4;
-      rx: 6;
-      cursor: grab;
-    }
-
-    #patientDecisionTreePanel .decision-tree-node-g.is-dragging rect {
-      cursor: grabbing;
-    }
-
-    #patientDecisionTreePanel .decision-tree-node-g[data-state="active"] rect {
-      fill: #f0fbf9;
-      stroke: var(--target-accent);
-      stroke-width: 2;
-    }
-
-    #patientDecisionTreePanel .decision-tree-node-g[data-state="warning"] rect {
-      fill: #fff8ed;
-      stroke: #d88417;
-      stroke-width: 2;
-    }
-
-    #patientDecisionTreePanel .decision-tree-node-g[data-selected="true"] rect {
-      stroke: #073f4a;
-      stroke-width: 2.4;
-    }
-
-    #patientDecisionTreePanel .decision-tree-node-g text {
-      fill: #18323c;
-      font-size: 12.25px;
-      font-weight: 780;
-    }
-
-    #patientDecisionTreePanel .decision-tree-node-menu circle {
-      fill: #536970;
-      stroke: none;
-    }
-
-    #patientDecisionTreePanel .decision-tree-node-type {
-      fill: #3f5962;
-      font-size: 10.25px;
-      font-weight: 900;
-      text-transform: uppercase;
-    }
-
-    .target-workup-empty-canvas {
-      display: grid;
-      place-items: center;
-      min-height: 100%;
-      padding: 24px;
-      background:
-        linear-gradient(#ffffff, #ffffff) padding-box,
-        radial-gradient(circle at 1px 1px, rgba(151, 177, 184, 0.22) 1px, transparent 0);
-      background-size: auto, 18px 18px;
-    }
-
-    .target-workup-empty-card {
-      display: grid;
-      gap: 12px;
-      width: min(100%, 520px);
-      border: 1px solid #cadbdd;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.94);
-      padding: 18px;
-      box-shadow: 0 16px 36px rgba(22, 55, 63, 0.09);
-    }
-
-    .target-workup-empty-card strong {
-      color: #17323b;
-      font-size: 18px;
-      line-height: 1.2;
-    }
-
-    .target-workup-empty-card p {
-      margin: 0;
-      color: #60747b;
-      font-size: 13px;
-      line-height: 1.45;
     }
 
     .target-inspector-rail {
@@ -10163,41 +9984,6 @@
       display: none;
     }
 
-    #decisionTreeEditorPanel {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      gap: 10px;
-      width: 100%;
-      max-width: 100%;
-      min-width: 0;
-      margin: 0;
-      border-bottom: 1px solid var(--target-grid);
-      background: #f7fbfa;
-      padding: 12px 14px;
-      overflow: visible;
-      overflow-x: hidden;
-    }
-
-    #decisionTreeEditorPanel[hidden] {
-      display: none;
-    }
-
-    #patientWorkupPanel:not(.is-importing) .decision-tree-json-panel {
-      display: none;
-    }
-
-    #patientWorkupPanel.is-importing .decision-tree-json-panel {
-      display: grid;
-      width: 100%;
-      max-width: min(100%, 980px);
-      min-width: 0;
-      margin: 0;
-    }
-
-    #patientWorkupPanel .decision-tree-node-editor {
-      display: none;
-    }
-
     #patientWorkupPanel .target-inspector-rail #patientWorkupOrdersPanel {
       order: 0;
       max-height: none;
@@ -10219,156 +10005,6 @@
       display: none;
     }
 
-    .decision-tree-node-editor {
-      width: 100%;
-      max-width: 100%;
-      min-width: 0;
-      border-radius: 6px;
-      background: #ffffff;
-      padding: 14px 12px;
-      overflow: hidden;
-    }
-
-    .target-node-editor-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .target-node-editor-head strong {
-      font-size: 15px;
-    }
-
-    .target-node-editor-head .btn {
-      min-height: 24px;
-      padding: 0;
-      border: 0;
-      background: transparent;
-      color: #60747b;
-      font-size: 11px;
-      font-weight: 800;
-      box-shadow: none;
-    }
-
-    .decision-tree-node-editor textarea {
-      width: 100%;
-      max-width: 100%;
-      min-width: 0;
-      min-height: 40px !important;
-      max-height: 72px;
-      overflow: auto;
-      overflow-wrap: anywhere;
-      white-space: pre-wrap;
-      font-family: inherit;
-      font-size: 12px;
-    }
-
-    #patientWorkupPanel .decision-tree-node-editor textarea {
-      min-height: 40px !important;
-    }
-
-    .decision-tree-node-editor label {
-      color: #334e58;
-      font-size: 11px;
-      font-weight: 760;
-    }
-
-    .decision-tree-rule-grid {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
-    }
-
-    .decision-tree-rule-grid label:first-child {
-      grid-column: auto;
-    }
-
-    .decision-tree-node-editor .button-row {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px;
-    }
-
-    .decision-tree-node-editor .button-row .btn {
-      min-width: 0;
-      min-height: 34px;
-      padding: 7px 8px;
-      font-size: 12px;
-      white-space: normal;
-      overflow-wrap: anywhere;
-      text-align: center;
-      line-height: 1.15;
-    }
-
-    #updateDecisionTreeNodeButton,
-    #moveDecisionTreeNodeUpButton,
-    #moveDecisionTreeNodeDownButton {
-      display: none;
-    }
-
-    #deleteDecisionTreeNodeButton {
-      border-color: #efb6b6;
-      color: #b4232a;
-    }
-
-    .target-node-footer {
-      display: grid;
-      grid-template-columns: 1fr 1fr 0.45fr;
-      gap: 10px;
-      margin: 12px -12px -14px;
-      padding: 12px;
-      border-top: 1px solid var(--target-grid);
-      background: #fbfcfc;
-      color: #60747b;
-      font-size: 10.5px;
-    }
-
-    .target-node-footer label,
-    .target-node-footer div {
-      display: grid;
-      gap: 5px;
-    }
-
-    .target-node-footer input {
-      min-height: 30px;
-      border: 1px solid #d4e0e2;
-      border-radius: 4px;
-      background: #ffffff;
-      color: #50666f;
-      padding: 4px 8px;
-      font-size: 11px;
-    }
-
-    #patientWorkupPanel.is-importing .decision-tree-json-panel textarea {
-      width: 100%;
-      max-width: 100%;
-      min-width: 0;
-      min-height: 112px;
-      max-height: 160px;
-      overflow: auto;
-      overflow-wrap: anywhere;
-      resize: vertical;
-      white-space: pre-wrap;
-    }
-
-    #patientWorkupPanel.is-importing .decision-tree-json-panel .button-row,
-    #patientWorkupPanel.is-importing .decision-tree-local-actions {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px;
-    }
-
-    #patientWorkupPanel.is-importing .decision-tree-json-panel .btn {
-      min-width: 0;
-      min-height: 32px;
-      padding: 6px 8px;
-      font-size: 11.5px;
-      white-space: normal;
-      overflow-wrap: anywhere;
-      text-align: center;
-      line-height: 1.15;
-    }
-
-    .target-refinement-drawer,
     #patientWorkupRefinementPanel,
     #patientWorkupBuildStatus,
     .patient-workup-summary {
@@ -10394,10 +10030,6 @@
 
     #patientWorkupPanel[data-orders-collapsed="true"][data-mobile-workup-layout="false"] .target-workup-body {
       grid-template-columns: minmax(230px, var(--patient-workup-selector-w)) 12px minmax(320px, 1fr);
-    }
-
-    #patientWorkupPanel[data-orders-collapsed="true"][data-mobile-workup-layout="false"] .target-pathway-main {
-      border-right: 0;
     }
 
     .target-orders-expand-button {
@@ -10514,18 +10146,13 @@
       }
 
       .target-workup-selector,
-      .target-pathway-main,
       .target-inspector-rail {
         min-height: 620px;
         border-right: 0;
       }
 
-      #patientWorkupPanel[data-active-pane="workups"] .target-pathway-main,
       #patientWorkupPanel[data-active-pane="workups"] .target-inspector-rail,
-      #patientWorkupPanel[data-active-pane="pathway"] .target-workup-selector,
-      #patientWorkupPanel[data-active-pane="pathway"] .target-inspector-rail,
-      #patientWorkupPanel[data-active-pane="orders"] .target-workup-selector,
-      #patientWorkupPanel[data-active-pane="orders"] .target-pathway-main {
+      #patientWorkupPanel[data-active-pane="orders"] .target-workup-selector {
         display: none;
       }
 
@@ -10534,7 +10161,6 @@
       }
 
       #patientWorkupPanel[data-active-pane="workups"] .target-workup-selector,
-      #patientWorkupPanel[data-active-pane="pathway"] .target-pathway-main,
       #patientWorkupPanel[data-active-pane="orders"] .target-inspector-rail {
         display: grid;
       }
@@ -10542,51 +10168,6 @@
       .target-workup-selector,
       .target-inspector-rail {
         padding: 14px;
-      }
-
-      .target-pathway-main {
-        grid-template-rows: auto auto minmax(360px, 1fr);
-      }
-
-      .target-pathway-head {
-        min-height: 0;
-        padding: 10px 14px;
-      }
-
-      .target-pathway-head p {
-        display: none;
-      }
-
-      .target-pathway-head h2 {
-        margin-bottom: 0;
-      }
-
-      .target-pathway-toolbar {
-        grid-template-columns: minmax(180px, 1fr) auto auto auto auto;
-        padding: 8px 14px;
-      }
-
-      #patientDecisionTreePanel .decision-tree-traversal-summary {
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-        padding: 6px 8px;
-        font-size: 11px;
-      }
-
-      .target-path-legend {
-        display: none;
-      }
-
-      .target-active-toggle {
-        grid-column: 1 / -1;
-        justify-content: start;
-      }
-
-      #patientDecisionTreePanel .d3-decision-tree {
-        min-height: 360px;
-      }
-
-      #patientDecisionTreePanel .cytoscape-tree-shell {
-        min-height: 360px;
       }
 
       .target-inspector-head {
@@ -10634,7 +10215,6 @@
         gap: 6px 10px;
       }
 
-      .target-pathway-actions .btn,
       .target-pathway-bottom-actions .btn,
       .target-more-actions summary,
       .target-pane-switcher button {
@@ -10656,33 +10236,10 @@
         width: 100%;
       }
 
-      .target-pathway-head,
       .target-rail-head {
         display: grid;
         grid-template-columns: minmax(0, 1fr) auto;
         align-items: start;
-      }
-
-      .target-pathway-actions {
-        grid-column: 1 / -1;
-        display: grid;
-        grid-template-columns: 1fr;
-        width: 100%;
-      }
-
-      .target-pathway-toolbar {
-        grid-template-columns: minmax(0, 1fr) auto auto;
-      }
-
-      .target-search-box,
-      .target-pathway-toolbar #fitDecisionTreeButton,
-      .target-pathway-toolbar .target-zoom-select {
-        grid-column: 1 / -1;
-      }
-
-      .target-pathway-toolbar .target-icon-button {
-        width: 40px;
-        height: 36px;
       }
 
       #patientWorkupPanel .target-inspector-rail #patientWorkupOrdersPanel .workup-order-row,
@@ -11573,7 +11130,7 @@
         overflow: auto;
       }
 
-      #bedsideView:not([hidden]) {
+      #patientChecklistPanel:not([hidden]) {
         height: auto;
       }
 
@@ -11789,7 +11346,7 @@
         background: #ffffff;
       }
 
-      #bedsideView:not([hidden]) {
+      #patientChecklistPanel:not([hidden]) {
         display: block;
         min-height: 100vh;
         padding-bottom: 120px;
@@ -11904,7 +11461,7 @@
         text-overflow: clip;
       }
 
-      #bedsideView .page-head {
+      #patientChecklistPanel .page-head {
         display: grid;
         grid-template-columns: minmax(0, 1fr);
         gap: 18px;
@@ -11915,12 +11472,12 @@
         background: #ffffff;
       }
 
-      #bedsideView .page-head h1 {
+      #patientChecklistPanel .page-head h1 {
         font-size: 29px;
         line-height: 1.1;
       }
 
-      #bedsideView .lede,
+      #patientChecklistPanel .lede,
       #bedsideItemNoteHelp {
         display: none;
       }
@@ -12323,7 +11880,7 @@
       background: #ffffff;
     }
 
-    body[data-view="bedside"] #bedsideView:not([hidden]) {
+    #patientChecklistPanel:not([hidden]) {
       height: 100vh;
       width: 100%;
       display: grid;
@@ -12392,7 +11949,7 @@
       border: 0;
     }
 
-    body[data-view="bedside"] #bedsideView .page-head {
+    #patientChecklistPanel .page-head {
       display: block;
       margin: 0;
       padding: 0;
@@ -12402,7 +11959,7 @@
       background: #ffffff;
     }
 
-    body[data-view="bedside"] #bedsideView .page-head > div:first-child {
+    #patientChecklistPanel .page-head > div:first-child {
       display: none;
     }
 
@@ -13243,7 +12800,7 @@
         overflow: visible;
       }
 
-      body[data-view="bedside"] #bedsideView:not([hidden]) {
+      #patientChecklistPanel:not([hidden]) {
         display: block;
         height: auto;
         min-height: 100dvh;
@@ -13323,7 +12880,7 @@
         font-weight: 650;
       }
 
-      body[data-view="bedside"] #bedsideView .page-head {
+      #patientChecklistPanel .page-head {
         margin: 0;
         padding: 10px 12px 8px;
         border: 0;
@@ -13661,7 +13218,7 @@
         width: 100%;
       }
 
-      body[data-view="bedside"] #bedsideView:not([hidden]) {
+      #patientChecklistPanel:not([hidden]) {
         padding-bottom: 96px;
       }
 
@@ -13765,7 +13322,7 @@
         display: none;
       }
 
-      body[data-view="bedside"] #bedsideView .page-head {
+      #patientChecklistPanel .page-head {
         display: none;
       }
 
@@ -14161,7 +13718,7 @@
         display: none;
       }
 
-      body[data-view="bedside"][data-bedside-complete="true"] #bedsideView:not([hidden]) {
+      #patientChecklistPanel[data-bedside-complete="true"]:not([hidden]) {
         padding-bottom: 0;
       }
 
@@ -14396,7 +13953,7 @@
     }
 
     @media (max-width: 640px) {
-      body[data-view="bedside"] #bedsideView:not([hidden]) {
+      #patientChecklistPanel:not([hidden]) {
           padding-bottom: 96px;
         }
 

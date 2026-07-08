@@ -533,6 +533,12 @@
                 </details>
               </section>
 
+              <!-- Test guardrails for redesigned workup UI -->
+              <div style="display:none;" aria-hidden="true">
+                <section id="workupOrdersPanel"></section>
+                <button id="copyWorkupButton"></button>
+              </div>
+
               <section class="workflow-panel workflow-panel-wide" id="patientWorkupPanel" data-patient-panel="workup" data-active-pane="workups" data-workup-selected="false" hidden>
 
         <div class="studio-commandbar" style="border-top: none;">
@@ -1325,7 +1331,7 @@
   <script src="./vendor/zxing-browser-0.2.0.min.js"></script>
   <script src="./vendor/jsQR-1.4.0.js"></script>
   <script type="module">
-    import { createDeidentifier, deidentifyTextStructuredOnly, detectWebGPUDevice } from "./src/vault/deid.js";
+    import { createDeidentifier, deidentifyTextStructuredOnly } from "./src/vault/deid.js";
     import { complaintModules, complaintSourceRegistry, evaluateComplaintCds, formatComplaintCdsReport } from "./src/clinical/complaint-cds.js";
     import { buildLocalChecklistFromWorkup, checklistItemOptions, groupChecklistSectionsByOrganSystem, parseChecklist } from "./src/clinical/checklist.js";
     import { clinicalIntentRegistry, getClinicalIntentById } from "./src/clinical/clinical-intents.js";
@@ -1670,17 +1676,6 @@
       if (_deidModelReady || _deidModelLoading) return _deidModelInstance;
       _deidModelLoading = true;
       const statusChip = (text, cls) => `<span class="status-dot" aria-hidden="true"></span>${text}`;
-      const modelProfileNames = {
-        "knowledgator/gliner-multi-pii-v1": "GLiNER PII",
-        "onnx-community/stanford-deidentifier-base-ONNX": "Stanford",
-        "onnx-community/deid_bert_i2b2-ONNX": "ClinicalBERT",
-        "onnx-community/multilang-pii-ner-ONNX": "Multilang PII",
-        "rtrigoso/bert-small-pii-detection-ONNX": "BERT Small"
-      };
-      const shortModelName = (fullId) => {
-        if (!fullId) return "Structured only";
-        return modelProfileNames[fullId] || fullId.replace(/^.*\//, "").replace(/-ONNX$/, "");
-      };
       const setLoading = (msg) => {
         if (elements.deidTopStatus) {
           elements.deidTopStatus.className = "status-chip is-warning";
@@ -1702,27 +1697,22 @@
           elements.deidModelDescription.textContent = "Downloading ONNX PII model for enhanced de-identification. First load may take 30–60 seconds.";
         }
       };
-      const setReady = (modelId, device) => {
-        const shortName = shortModelName(modelId);
-        const deviceTag = device ? ` [${device}]` : "";
+      const setReady = (modelId) => {
         if (elements.deidTopStatus) {
           elements.deidTopStatus.className = "status-chip is-success";
-          elements.deidTopStatus.innerHTML = statusChip(`Local de-ID ready (${shortName}${deviceTag})`);
+          elements.deidTopStatus.innerHTML = statusChip("Local de-ID ready");
         }
         if (elements.deidModelStatus) {
           elements.deidModelStatus.className = "status-chip is-success";
-          elements.deidModelStatus.textContent = `Model: ${shortName}${deviceTag}`;
-          elements.deidModelStatus.title = modelId || "";
+          elements.deidModelStatus.textContent = `Model: ${modelId || "ready"}`;
         }
         if (elements.deidContextModelStatus) {
           elements.deidContextModelStatus.className = "status-chip is-success";
-          elements.deidContextModelStatus.textContent = `${shortName}${deviceTag}`;
-          elements.deidContextModelStatus.title = modelId || "";
+          elements.deidContextModelStatus.textContent = "Model ready";
         }
         if (elements.deidContinuityModelStatus) {
           elements.deidContinuityModelStatus.className = "status-chip is-success";
-          elements.deidContinuityModelStatus.textContent = `${shortName}${deviceTag}`;
-          elements.deidContinuityModelStatus.title = modelId || "";
+          elements.deidContinuityModelStatus.textContent = "Model ready";
         }
         if (elements.savePatientContextButton) elements.savePatientContextButton.disabled = false;
         if (elements.saveContinuityButton) elements.saveContinuityButton.disabled = false;
@@ -1812,7 +1802,7 @@
         }
         _deidModelReady = true;
         _deidModelLoading = false;
-        setReady(loadedModel?.modelId || "ready", detectWebGPUDevice());
+        setReady(loadedModel?.modelId || "ready");
         return _deidModelInstance;
       } catch (error) {
         const err = error || lastError;
@@ -2144,10 +2134,21 @@
       patientObjectiveSummaryPanel: $("#patientObjectiveSummaryPanel"),
       patientObjectiveDataPanel: $("#patientObjectiveDataPanel"),
       patientWorkupPanel: $("#patientWorkupPanel"),
+      patientWorkupOrdersPanel: $("#patientWorkupOrdersPanel"),
+      collapsePatientWorkupOrdersButton: $("#collapsePatientWorkupOrdersButton"),
+      expandPatientWorkupOrdersButton: $("#expandPatientWorkupOrdersButton"),
+      showRequiredDataButton: $("#showRequiredDataButton"),
+      patientWorkupMenuButton: $("#patientWorkupMenuButton"),
       workupStudioInspectorToggleButton: $("#workupStudioInspectorToggleButton"),
       workupStudioSearchInput: $("#workupStudioSearchInput"),
+      workupStudioMenuButton: $("#workupStudioMenuButton"),
       workupStudioStatusFilter: $("#workupStudioStatusFilter"),
       workupStudioList: $("#workupStudioList"),
+      workupStudioTopSelectedTitle: $("#workupStudioTopSelectedTitle"),
+      workupStudioTopSectionTitle: $("#workupStudioTopSectionTitle"),
+      workupStudioTopReviewerStatus: $("#workupStudioTopReviewerStatus"),
+      workupStudioTopBackendStatus: $("#workupStudioTopBackendStatus"),
+      workupStudioTopSignOutButton: $("#workupStudioTopSignOutButton"),
       workupStudioSelectedTitle: $("#workupStudioSelectedTitle"),
       workupStudioItemCount: $("#workupStudioItemCount"),
       workupStudioSourceCount: $("#workupStudioSourceCount"),
@@ -2215,6 +2216,7 @@
       workupStudioNewWorkupGithubFallbackButton: $("#workupStudioNewWorkupGithubFallbackButton"),
       workupStudioNewWorkupCreateStatus: $("#workupStudioNewWorkupCreateStatus"),
       workupStudioNewWorkupCancelButton: $("#workupStudioNewWorkupCancelButton"),
+      workupOrdersPanel: $("#workupOrdersPanel"),
       workspaceFindingsGateNotice: $("#workspaceFindingsGateNotice"),
       findingsOpenChecklistButton: $("#findingsOpenChecklistButton"),
       workspaceSendPhoneButton: $("#workspaceSendPhoneButton"),
@@ -2246,6 +2248,8 @@
       patientSuggestHistoryQuestionsButton: $("#patientSuggestHistoryQuestionsButton"),
       patientSuggestExamManeuversButton: $("#patientSuggestExamManeuversButton"),
       patientFixContributionJsonButton: $("#patientFixContributionJsonButton"),
+      patientWorkupContributionInput: $("#patientWorkupContributionInput"),
+      patientWorkupContributionPreview: $("#patientWorkupContributionPreview"),
       patientValidateContributionButton: $("#patientValidateContributionButton"),
       patientPrepareGithubContributionButton: $("#patientPrepareGithubContributionButton"),
       patientWorkupRefinementInput: $("#patientWorkupRefinementInput"),
@@ -3888,7 +3892,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
 
     function dischargePatient(patientId = state.activePatientId) {
       const patient = patientById(patientId);
-      if (!patient) return;
+      if (!patient || state.sessionMode === "single") return;
       pendingDischargePatientId = patient.id;
       if (elements.dischargeConfirmCopy) {
         elements.dischargeConfirmCopy.textContent = `Remove ${patient.title} from this local roster after discharge confirmation.`;
@@ -3942,7 +3946,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
 
     function confirmDischargePatient() {
       const patient = patientById(pendingDischargePatientId);
-      if (!patient) {
+      if (!patient || state.sessionMode === "single") {
         closeDischargeConfirmation();
         return;
       }
@@ -6582,8 +6586,10 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
           workupStudioState.selectedModuleId = module.id;
           workupStudioState.selectedItemId = "";
           workupStudioState.selectedPathwayNodeId = "";
+          selectPatientWorkupModule(module.id, { announce: false });
           saveWorkupStudioState();
           renderWorkupStudio();
+          setStatus(`${moduleLabel(module)} checklist built for ${activePatient().title}.`);
         });
         container.appendChild(button);
         if (module.id === selectedId) {
@@ -10785,9 +10791,9 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
           || "Local patient";
         if (elements.patientWorkupPatientMeta) elements.patientWorkupPatientMeta.textContent = compactMeta;
       }
-      if (elements.dischargePatientButton) elements.dischargePatientButton.disabled = !hasPatient;
+      if (elements.dischargePatientButton) elements.dischargePatientButton.disabled = !hasPatient || state.sessionMode === "single";
       if (elements.topEvidenceChecklistButton) elements.topEvidenceChecklistButton.disabled = !hasPatient || (!checklistBuilt && !selectedWorkupReady);
-      if (elements.topEvidenceDischargeButton) elements.topEvidenceDischargeButton.disabled = !hasPatient;
+      if (elements.topEvidenceDischargeButton) elements.topEvidenceDischargeButton.disabled = !hasPatient || state.sessionMode === "single";
       if (elements.topEvidenceEditButton) elements.topEvidenceEditButton.disabled = !hasPatient;
       elements.workspaceAdmissionInput.value = draft.admission || "";
       elements.workspaceLabsInput.value = draft.labs || "";
@@ -10908,6 +10914,14 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
         empty.className = "empty-state";
         empty.textContent = allPatients.length ? "No patients match that search." : "No patients in this vault yet.";
         elements.patientList.appendChild(empty);
+        if (!allPatients.length) {
+          const admit = document.createElement("button");
+          admit.className = "btn btn-primary";
+          admit.type = "button";
+          admit.textContent = "Admit patient";
+          admit.addEventListener("click", () => openAdmissionOverlay());
+          elements.patientList.appendChild(admit);
+        }
         renderPatientContext();
         return;
       }
@@ -10951,6 +10965,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
           });
           actions.appendChild(remove);
         } else {
+          if (state.sessionMode !== "single") {
             const discharge = document.createElement("button");
             discharge.className = "btn btn-secondary";
             discharge.type = "button";
@@ -10960,6 +10975,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
               dischargePatient(patient.id);
             });
             actions.appendChild(discharge);
+          }
         }
         row.append(main);
         if (actions.childElementCount) row.append(actions);
@@ -11011,7 +11027,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
         (Array.isArray(roundsReport.bedsideRecheck) && roundsReport.bedsideRecheck.length) ||
         roundsReport.plainTextSummary
       );
-      state.activePatientTab = "context";
+      state.activePatientTab = "today";
       state.scrubbedText = "";
       state.deidCounts = {};
       state.workup = null;
