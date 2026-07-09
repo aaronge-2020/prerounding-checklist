@@ -263,6 +263,40 @@
               <button type="button" role="tab" data-patient-tab="handoff" aria-selected="false" aria-label="Phone handoff" aria-hidden="true" tabindex="-1" hidden>Phone</button>
             </div>
             <div class="patient-workflow-grid">
+              <section class="workflow-panel workflow-panel-wide" id="patientWorkupPickerPanel" data-patient-panel="context" hidden>
+                <div class="panel-title-row">
+                  <h3>Select workup</h3>
+                  <span class="meta-tag">Drives the bedside checklist</span>
+                </div>
+                <div class="selected-workup-card is-empty" id="patientSelectedWorkupCard">
+                  <div class="selected-workup-top">
+                    <span class="icon-box" data-icon="stethoscope" aria-hidden="true"></span>
+                    <span>
+                      <strong id="patientValidatedIntentLabel">No validated workup selected</strong>
+                      <span id="patientSelectedWorkupMeta">Select a reviewed workup from the results list before building.</span>
+                    </span>
+                    <span class="workup-match-badge is-low" id="patientSelectedWorkupBadge">Waiting</span>
+                  </div>
+                  <div class="selected-workup-metrics">
+                    <div class="selected-workup-metric"><span>Items</span><strong id="patientSelectedWorkupItemCount">0</strong></div>
+                    <div class="selected-workup-metric"><span>Population</span><strong id="patientSelectedWorkupPopulation">Not set</strong></div>
+                    <div class="selected-workup-metric"><span>Version</span><strong id="patientSelectedWorkupVersion">-</strong></div>
+                  </div>
+                </div>
+                <label class="sr-only" for="patientWorkupConcernInput">Search workups by complaint</label>
+                <div class="checklist-search-box">
+                  <span class="icon-box" data-icon="search" aria-hidden="true"></span>
+                  <input id="patientWorkupConcernInput" type="search" autocomplete="off" placeholder="Search by complaint or condition, e.g. chest pain">
+                  <button class="checklist-search-clear" id="patientClearConcernButton" type="button">Clear</button>
+                </div>
+                <label class="sr-only" for="patientWorkupSelect">Or choose a validated workup directly</label>
+                <select id="patientWorkupSelect"></select>
+                <div class="workup-result-list" id="patientWorkupResults"></div>
+                <div class="button-row">
+                  <button class="btn btn-primary" id="patientBuildChecklistButton" type="button">Build bedside checklist</button>
+                </div>
+              </section>
+
               <section class="workflow-panel" id="patientAdmissionPanel" data-patient-panel="context" hidden>
                 <div class="panel-title-row">
                   <h3>New admission context</h3>
@@ -306,37 +340,9 @@
 
               <section class="workflow-panel workflow-panel-wide objective-data-panel" id="patientObjectiveDataPanel" data-patient-panel="context" hidden></section>
 
-              <section class="workflow-panel workflow-panel-wide" id="patientWorkupPickerPanel" data-patient-panel="context" hidden>
-                <div class="panel-title-row">
-                  <h3>Select workup</h3>
-                  <span class="meta-tag">Drives the bedside checklist</span>
-                </div>
-                <div class="selected-workup-card is-empty" id="patientSelectedWorkupCard">
-                  <div class="selected-workup-top">
-                    <span class="icon-box" data-icon="stethoscope" aria-hidden="true"></span>
-                    <span>
-                      <strong id="patientValidatedIntentLabel">No validated workup selected</strong>
-                      <span id="patientSelectedWorkupMeta">Select a reviewed workup from the results list before building.</span>
-                    </span>
-                    <span class="workup-match-badge is-low" id="patientSelectedWorkupBadge">Waiting</span>
-                  </div>
-                  <div class="selected-workup-metrics">
-                    <div class="selected-workup-metric"><span>Items</span><strong id="patientSelectedWorkupItemCount">0</strong></div>
-                    <div class="selected-workup-metric"><span>Population</span><strong id="patientSelectedWorkupPopulation">Not set</strong></div>
-                    <div class="selected-workup-metric"><span>Version</span><strong id="patientSelectedWorkupVersion">-</strong></div>
-                  </div>
-                </div>
-                <label class="sr-only" for="patientWorkupConcernInput">Search workups by complaint</label>
-                <div class="checklist-search-box">
-                  <span class="icon-box" data-icon="search" aria-hidden="true"></span>
-                  <input id="patientWorkupConcernInput" type="search" autocomplete="off" placeholder="Search by complaint or condition, e.g. chest pain">
-                  <button class="checklist-search-clear" id="patientClearConcernButton" type="button">Clear</button>
-                </div>
-                <div class="workup-result-list" id="patientWorkupResults"></div>
-                <div class="button-row">
-                  <button class="btn btn-primary" id="patientBuildChecklistButton" type="button">Build bedside checklist</button>
-                </div>
-              </section>
+              <div class="objective-data-panel" id="patientObjectiveSummaryPanel" data-patient-panel="context" hidden></div>
+
+              <section class="workflow-panel workflow-panel-wide" id="patientWorkupOrdersPanel" data-patient-panel="context" hidden></section>
 
               <section class="workflow-panel workflow-panel-wide" id="patientPhonePanel" data-patient-panel="handoff" hidden>
                 <div class="panel-title-row">
@@ -432,20 +438,6 @@
                   </div>
                 </details>
               </section>
-
-              <!-- Test guardrails for redesigned workup UI -->
-              <div style="display:none;" aria-hidden="true">
-                <input id="patientWorkupConcernInput" tabindex="-1">
-                <select id="patientWorkupSelect" tabindex="-1"></select>
-                <section id="patientObjectiveSummaryPanel"></section>
-                <section id="patientWorkupOrdersPanel"></section>
-                <section id="workupOrdersPanel"></section>
-                <button id="workspaceOpenBedsideChecklistButton">Answer bedside checklist</button>
-                <button id="workspaceChecklistSecondaryButton">Select workup first</button>
-                <span>Choose a validated workup to build checklist rows automatically.</span>
-                <span>History and physical exam answers</span>
-                <button id="copyWorkupButton"></button>
-              </div>
 
               <section class="workflow-panel workflow-panel-wide" id="patientWorkupPanel" data-patient-panel="workup" data-active-pane="workups" data-workup-selected="false" hidden>
 
@@ -712,8 +704,16 @@
 </section>
 
               <section class="workflow-panel workflow-panel-wide" id="patientChecklistPanel" data-patient-panel="checklist" hidden>
-
-</section>
+                <div class="panel-title-row">
+                  <h3>Bedside checklist</h3>
+                </div>
+                <span>Choose a validated workup to build checklist rows automatically.</span>
+                <div class="button-row">
+                  <button class="btn btn-primary" id="workspaceOpenBedsideChecklistButton" type="button">Select workup first</button>
+                  <button class="btn btn-secondary" id="workspaceChecklistSecondaryButton" type="button">Select workup</button>
+                </div>
+                <p class="muted">History and physical exam answers become findings once the checklist is complete.</p>
+              </section>
 
               <section class="workflow-panel workflow-panel-wide" id="patientEvidencePanel" data-patient-panel="evidence" hidden>
                 <div class="panel-title-row">
@@ -2050,6 +2050,7 @@
       workspaceHistoryFindingInput: $("#workspaceHistoryFindingInput"),
       workspaceExamFindingInput: $("#workspaceExamFindingInput"),
       patientObjectiveDataPanel: $("#patientObjectiveDataPanel"),
+      patientObjectiveSummaryPanel: $("#patientObjectiveSummaryPanel"),
       patientWorkupPanel: $("#patientWorkupPanel"),
       patientWorkupOrdersPanel: $("#patientWorkupOrdersPanel"),
       collapsePatientWorkupOrdersButton: $("#collapsePatientWorkupOrdersButton"),
@@ -10340,7 +10341,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
           row.addEventListener("click", () => {
             phoneChecklistWorkupSearch = moduleLabel(module);
             selectPatientWorkupModule(module.id, { announce: false });
-            setPatientTab("checklist", { announce: false });
+            openChecklistExperience();
             setStatus(`${moduleLabel(module)} selected for the phone checklist.`);
           });
           rows.appendChild(row);
@@ -12737,8 +12738,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
       }
       saveSelectedPatientDrafts();
       if (state.sections.length && !isChecklistStaleForCurrentWorkup()) {
-        showView("workspace");
-        setPatientTab("checklist", { announce: false });
+        showView("bedside");
         setStatus(`${activePatient().title} checklist is ready for bedside answers.`);
         return;
       }
@@ -12746,10 +12746,34 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
         ? rebuildChecklistWithConfirmation({ source: "workspace" })
         : buildChecklistFromWorkup({ navigate: false });
       if (!built) return;
-      showView("workspace");
-      setPatientTab("checklist", { announce: false });
+      showView("bedside");
       setStatus(`${activePatient().title} checklist built and ready for bedside answers.`);
       saveState();
+    }
+
+    function openChecklistExperience() {
+      if (!activePatient().id) {
+        setStatus("Admit or open a patient before opening the checklist.");
+        openAdmissionOverlay();
+        return;
+      }
+      if (state.sections.length && !isChecklistStaleForCurrentWorkup()) {
+        showView("bedside");
+        return;
+      }
+      if (state.selectedWorkupModuleId) {
+        const built = buildChecklistFromWorkup({ navigate: false, announce: false });
+        if (built) {
+          showView("bedside");
+          return;
+        }
+      }
+      setPatientTab("context", { focusPanel: true });
+      setStatus(`Select a workup for ${activePatient().title} before opening the bedside checklist.`);
+      requestAnimationFrame(() => {
+        elements.patientWorkupConcernInput?.scrollIntoView({ block: "center", behavior: "smooth" });
+        elements.patientWorkupConcernInput?.focus();
+      });
     }
 
     function answerKey(sectionIndex, itemIndex) {
@@ -19123,10 +19147,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
     function preparePhoneHandoff({ navigate = true } = {}) {
       if (isChecklistStaleForCurrentWorkup()) {
         setStatus("Rebuild the checklist from the current server workup before sending it to a phone.");
-        if (navigate) {
-          showView("workspace");
-          setPatientTab("checklist", { announce: false });
-        }
+        if (navigate) openChecklistExperience();
         renderPatientWorkspace();
         return false;
       }
@@ -19861,7 +19882,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
       $("#patientBuildChecklistButton")?.addEventListener("click", buildPatientChecklistInWorkspace);
       elements.patientBuildChecklistRailButton?.addEventListener("click", buildPatientChecklistInWorkspace);
       elements.patientOpenEvidenceFromWorkupButton?.addEventListener("click", () => setPatientTab("evidence", { focusPanel: true }));
-      elements.patientWorkupMarkNormalButton?.addEventListener("click", () => setPatientTab("checklist", { focusPanel: true }));
+      elements.patientWorkupMarkNormalButton?.addEventListener("click", () => openChecklistExperience());
       elements.patientCopyChecklistRefinementPromptButton?.addEventListener("click", copyPatientChecklistPatchPrompt);
       elements.patientCopyChecklistRefinementPromptDrawerButton?.addEventListener("click", copyPatientChecklistPatchPrompt);
       elements.patientOpenEvidenceFromRefinementButton?.addEventListener("click", () => {
@@ -19938,12 +19959,12 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
       });
       elements.patientApplyWorkupRefinementButton?.addEventListener("click", () => {
         if (applyChecklistReviewPasteBack(elements.patientWorkupRefinementInput?.value || "", "patient")) {
-          setPatientTab("checklist", { focusPanel: true });
+          openChecklistExperience();
         }
       });
       elements.patientSaveDefaultWorkupRefinementButton?.addEventListener("click", () => {
         if (applyStructuredRefinementText(elements.patientWorkupRefinementInput?.value || "", "default")) {
-          setPatientTab("checklist", { focusPanel: true });
+          openChecklistExperience();
         }
       });
       $("#workspaceOpenBedsideChecklistButton")?.addEventListener("click", () => {
@@ -19955,8 +19976,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
         buildPatientChecklistInWorkspace();
       });
       $("#workspaceChecklistSecondaryButton")?.addEventListener("click", () => {
-        setPatientTab("workup", { focusPanel: true });
-        setPatientWorkupPane("workups");
+        setPatientTab("context", { focusPanel: true });
         requestAnimationFrame(() => elements.patientWorkupConcernInput?.focus());
       });
       elements.workspaceChecklistPhoneButton?.addEventListener("click", () => {
@@ -20013,7 +20033,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
           requestAnimationFrame(() => elements.patientEvidencePromptPreview?.focus());
 	      });
 	      elements.patientEvidenceToChecklistButton?.addEventListener("click", () => {
-	        setPatientTab("checklist", { focusPanel: true });
+	        openChecklistExperience();
 	      });
         elements.topEvidenceChecklistButton?.addEventListener("click", () => {
           buildPatientChecklistInWorkspace();
@@ -20065,7 +20085,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
             return;
           }
           if (applyChecklistReviewPasteBack(text, "patient")) {
-            setPatientTab("checklist", { focusPanel: true });
+            openChecklistExperience();
           }
         });
         elements.patientSaveDefaultEvidenceRefinementButton?.addEventListener("click", () => {
@@ -20080,13 +20100,13 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
             return;
           }
           if (applyChecklistReviewPasteBack(text, "default")) {
-            setPatientTab("checklist", { focusPanel: true });
+            openChecklistExperience();
           }
         });
 	      for (const button of $$("button[data-patient-tab]")) {
 	        button.addEventListener("click", () => {
 	          if (button.dataset.patientTab === "checklist") {
-	            showView("bedside");
+	            openChecklistExperience();
 	            return;
 	          }
 	          setPatientTab(button.dataset.patientTab, { focusPanel: true });
