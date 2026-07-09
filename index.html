@@ -13,7 +13,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon.png">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-src 'none'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://cdn.jsdelivr.net blob:; worker-src 'self' blob:; connect-src 'self' https://*.supabase.co http://127.0.0.1:* http://localhost:* https://cdn.jsdelivr.net https://huggingface.co https://*.huggingface.co https://*.hf.co https://cdn-lfs.huggingface.co https://cas-bridge.xethub.hf.co https://*.xethub.hf.co https://huggingface.co/* https://cdn-lfs.hf.co https://hf-mirror.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-src 'none'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://cdn.jsdelivr.net blob:; script-src-attr 'none'; worker-src 'self' blob:; connect-src 'self' https://hajjuzpnlvpetsleuxwb.supabase.co https://*.supabase.co http://127.0.0.1:* http://localhost:* https://cdn.jsdelivr.net https://huggingface.co https://*.huggingface.co https://*.hf.co https://cdn-lfs.huggingface.co https://cas-bridge.xethub.hf.co https://*.xethub.hf.co https://cdn-lfs.hf.co https://hf-mirror.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; trusted-types prerounding-app">
   <title>Pre-Rounding Checklist Builder</title>
   <link rel="stylesheet" href="./styles.css">
 </head>
@@ -53,6 +53,9 @@
           </form>
           <div class="vault-access-section-footer">
             <button class="btn btn-danger" id="deleteVaultButton" type="button">Delete vault &amp; start over</button>
+            <button class="btn btn-secondary" id="exportVaultBackupButton" type="button">Export encrypted backup</button>
+            <button class="btn btn-secondary" id="restoreVaultBackupButton" type="button">Restore encrypted backup</button>
+            <input id="restoreVaultBackupInput" type="file" accept="application/json,.json" hidden>
           </div>
         </section>
 
@@ -96,6 +99,9 @@
             </div>
             <button class="btn btn-primary" id="createVaultButton" type="submit">Create new vault</button>
             <div class="vault-status-line" id="createVaultStatus" aria-live="polite"></div>
+            <div class="vault-access-section-footer">
+              <button class="btn btn-secondary" id="restoreVaultBackupCreateButton" type="button">Restore encrypted backup</button>
+            </div>
           </form>
         </section>
 
@@ -211,6 +217,7 @@
 
     <section class="workspace" id="workspaceRoot" tabindex="-1">
       <div id="statusLive" class="sr-only" aria-live="polite"></div>
+      <div id="visibleStatusToast" class="status-toast" role="status" aria-live="polite" hidden></div>
       <p id="localTextEntryHelp" class="sr-only">Use reviewed or de-identified text only. Maximum 8000 characters.</p>
 
       <section class="view" id="workspaceView" aria-labelledby="workspaceTitle">
@@ -280,6 +287,7 @@
                   <span class="status-chip" id="deidModelStatus">Waiting</span>
                   <pre id="deidPreview" aria-label="Reviewed redacted context preview">Run local de-ID to create a reviewed redacted preview.</pre>
                   <div class="deid-counts" id="deidCounts"></div>
+                  <div class="deid-residual-warnings" id="deidResidualWarnings" hidden></div>
                 </details>
               </section>
 
@@ -297,6 +305,38 @@
               </section>
 
               <section class="workflow-panel workflow-panel-wide objective-data-panel" id="patientObjectiveDataPanel" data-patient-panel="context" hidden></section>
+
+              <section class="workflow-panel workflow-panel-wide" id="patientWorkupPickerPanel" data-patient-panel="context" hidden>
+                <div class="panel-title-row">
+                  <h3>Select workup</h3>
+                  <span class="meta-tag">Drives the bedside checklist</span>
+                </div>
+                <div class="selected-workup-card is-empty" id="patientSelectedWorkupCard">
+                  <div class="selected-workup-top">
+                    <span class="icon-box" data-icon="stethoscope" aria-hidden="true"></span>
+                    <span>
+                      <strong id="patientValidatedIntentLabel">No validated workup selected</strong>
+                      <span id="patientSelectedWorkupMeta">Select a reviewed workup from the results list before building.</span>
+                    </span>
+                    <span class="workup-match-badge is-low" id="patientSelectedWorkupBadge">Waiting</span>
+                  </div>
+                  <div class="selected-workup-metrics">
+                    <div class="selected-workup-metric"><span>Items</span><strong id="patientSelectedWorkupItemCount">0</strong></div>
+                    <div class="selected-workup-metric"><span>Population</span><strong id="patientSelectedWorkupPopulation">Not set</strong></div>
+                    <div class="selected-workup-metric"><span>Version</span><strong id="patientSelectedWorkupVersion">-</strong></div>
+                  </div>
+                </div>
+                <label class="sr-only" for="patientWorkupConcernInput">Search workups by complaint</label>
+                <div class="checklist-search-box">
+                  <span class="icon-box" data-icon="search" aria-hidden="true"></span>
+                  <input id="patientWorkupConcernInput" type="search" autocomplete="off" placeholder="Search by complaint or condition, e.g. chest pain">
+                  <button class="checklist-search-clear" id="patientClearConcernButton" type="button">Clear</button>
+                </div>
+                <div class="workup-result-list" id="patientWorkupResults"></div>
+                <div class="button-row">
+                  <button class="btn btn-primary" id="patientBuildChecklistButton" type="button">Build bedside checklist</button>
+                </div>
+              </section>
 
               <section class="workflow-panel workflow-panel-wide" id="patientPhonePanel" data-patient-panel="handoff" hidden>
                 <div class="panel-title-row">
@@ -395,7 +435,15 @@
 
               <!-- Test guardrails for redesigned workup UI -->
               <div style="display:none;" aria-hidden="true">
+                <input id="patientWorkupConcernInput" tabindex="-1">
+                <select id="patientWorkupSelect" tabindex="-1"></select>
+                <section id="patientObjectiveSummaryPanel"></section>
+                <section id="patientWorkupOrdersPanel"></section>
                 <section id="workupOrdersPanel"></section>
+                <button id="workspaceOpenBedsideChecklistButton">Answer bedside checklist</button>
+                <button id="workspaceChecklistSecondaryButton">Select workup first</button>
+                <span>Choose a validated workup to build checklist rows automatically.</span>
+                <span>History and physical exam answers</span>
                 <button id="copyWorkupButton"></button>
               </div>
 
@@ -830,6 +878,10 @@
               <span class="icon-box" data-icon="check-square" aria-hidden="true"></span>
               <span>Mark all reviewed</span>
             </button>
+            <button class="bedside-toolbar-button" id="exportBedsideAuditButton" type="button">
+              <span class="icon-box" data-icon="download" aria-hidden="true"></span>
+              <span>Export audit</span>
+            </button>
             <button class="bedside-toolbar-button" id="bedsideHeaderSettingsButton" type="button">
               <span class="icon-box" data-icon="settings" aria-hidden="true"></span>
               <span>Settings</span>
@@ -1226,6 +1278,7 @@
     import { QR_DEFAULT_REGISTRY_HASH, QR_ZSTD_DICTIONARY_HASH } from "./vendor/qr-zstd-dictionary.js";
     import { base64UrlEncodeBytes, base64UrlDecodeBytes, base64UrlEncodeText, base64UrlDecodeText, baseQrEncodeBytes, baseQrDecodeBytes, base45EncodeBytes, base45DecodeBytes, gzipTextToBytes, gunzipBytesToText, gunzipBase64UrlToText, optimizedCborQrToken, decodeOptimizedCborQrToken, inflateCborValue, currentPhoneQrBaseUrl, randomBase64Url } from "./src/codecs/qr-codec.js";
     import { randomCode, encodePayload, decodePayload, normalizeTransferCode, assertMatchingBundleCode, phoneTransferCryptoKey, decryptEncryptedPhonePayloadTransferText, phoneHandoffMailboxLinkFromText, encryptPhoneHandoffMailboxPayload, decryptPhoneHandoffMailboxPayload } from "./src/codecs/phone-transfer-codec.js";
+    import { PERSISTED_VAULT_FIELDS, persistedVaultPayload } from "./src/app/state-schema.js";
 
     function titleFromId(id) {
       return String(id || "").split("_").map((part) => part ? part[0].toUpperCase() + part.slice(1) : "").join(" ");
@@ -1395,6 +1448,7 @@
       focusNotes: ""
     });
     const VAULT_KDF_ITERATIONS = 210000;
+    const VAULT_AUTO_LOCK_TIMEOUT_MS = 15 * 60 * 1000;
     const CHECKLIST_IMPROVEMENT_TASK_ID = "checklist_improvement_review";
     const DECISION_TREE_TASK_ID = "decision_tree_builder";
     const PREFILLED_GITHUB_ISSUE_URL_MAX_CHARS = 7600;
@@ -1519,7 +1573,7 @@
       "older adult frailty"
     ]);
     const modifierOptions = clinicalModifierOptions.map((option) => option.label);
-    const views = ["workspace", "handoff", "privacy"];
+    const views = ["workspace", "handoff", "privacy", "bedside"];
     const patientTabOrder = ["context", "workup", "checklist", "findings", "evidence", "handoff"];
     const desktopPatientTabFallbacks = {
       handoff: "checklist"
@@ -1730,14 +1784,17 @@
             onProgress: callbacks.onProgress || null
           });
           return result;
-        } catch {
+        } catch (error) {
           _deidModelReady = false;
+          reportRecoverableError("Enhanced de-ID model failed during processing. Falling back to structured-only redaction.", error);
         } finally {
           _deidRunning = false;
         }
       }
       if (!_deidModelInstance) {
-        _loadDeidModel().then(() => {}).catch(() => {});
+        _loadDeidModel().catch((error) => {
+          reportRecoverableError("Enhanced de-ID model could not load. Structured-only redaction is still available.", error);
+        });
       }
       return deidentifyTextStructuredOnly(rawText, new Date());
     }
@@ -1756,6 +1813,7 @@
       population: "Adult (>=18 years)",
       scrubbedText: "",
       deidCounts: {},
+      residualPhiWarnings: [],
       workup: null,
       workupRows: [],
       selectedWorkupRow: "history",
@@ -1768,7 +1826,8 @@
       answers: {},
       itemNotes: {},
       reviewedChecklistKeys: {},
-	      bedsideNote: "",
+      bedsideAuditLogByPatientId: {},
+      bedsideNote: "",
 	      selectedTaskId: "initial_rounds_report",
 	      evidenceCatalog: null,
 	      openEvidenceSummaries: {},
@@ -1781,7 +1840,7 @@
       importedPhoneAnswerSummary: [],
       activePatientId: "",
       patientSearch: "",
-      activePatientTab: "overview",
+      activePatientTab: "context",
       todayModeByPatientId: {},
       patientRosterExpanded: false,
       patientDrafts: {},
@@ -1927,7 +1986,12 @@
       vaultSettingsButton: $("#vaultSettingsButton"),
       lockVaultButton: $("#lockVaultButton"),
       deleteVaultButton: $("#deleteVaultButton"),
+      exportVaultBackupButton: $("#exportVaultBackupButton"),
+      restoreVaultBackupButton: $("#restoreVaultBackupButton"),
+      restoreVaultBackupCreateButton: $("#restoreVaultBackupCreateButton"),
+      restoreVaultBackupInput: $("#restoreVaultBackupInput"),
       statusLive: $("#statusLive"),
+      visibleStatusToast: $("#visibleStatusToast"),
       patientSearchInput: $("#patientSearchInput"),
       patientSearchButton: $("#patientSearchButton"),
       patientList: $("#patientList"),
@@ -2159,6 +2223,7 @@
       workspaceDeidReviewPanel: $("#workspaceDeidReviewPanel"),
       deidPreview: $("#deidPreview"),
       deidCounts: $("#deidCounts"),
+      deidResidualWarnings: $("#deidResidualWarnings"),
       deidModelStatus: $("#deidModelStatus"),
       deidModelDescription: $("#deidModelDescription"),
       deidContextModelStatus: $("#deidContextModelStatus"),
@@ -2248,6 +2313,7 @@
       bedsideRebuildChecklistButton: $("#bedsideRebuildChecklistButton"),
       bedsideHeaderResetButton: $("#bedsideHeaderResetButton"),
       markAllReviewedButton: $("#markAllReviewedButton"),
+      exportBedsideAuditButton: $("#exportBedsideAuditButton"),
       bedsideHeaderSettingsButton: $("#bedsideHeaderSettingsButton"),
       bedsideMoreActionsButton: $("#bedsideMoreActionsButton"),
       checklistSearchInput: $("#checklistSearchInput"),
@@ -2386,6 +2452,7 @@
     let bedsideCompletionReviewMode = false;
     let activeChecklistKey = "";
     let openChecklistNoteKey = "";
+    let checklistRenderFrame = 0;
     const expandedPhoneAnswerKeys = new Set();
     let decisionTreeResizeTimer = null;
     let standaloneWorkupSearchTimer = null;
@@ -2396,6 +2463,8 @@
     const effectiveModuleByIdCache = new Map();
     const workupSearchTextCache = new Map();
     let copyFindingsResetTimer = null;
+    let statusToastTimer = null;
+    let vaultAutoLockTimer = null;
     let vaultCryptoKey = null;
     let pendingVaultSave = Promise.resolve();
 
@@ -2495,6 +2564,74 @@
         localStorage.removeItem(VAULT_DATA_KEY);
         return null;
       }
+    }
+
+    function validEncryptedVaultBackup(candidate) {
+      return candidate
+        && candidate.schema === "prerounding_encrypted_vault_backup_v1"
+        && candidate.meta?.version === 2
+        && typeof candidate.meta.salt === "string"
+        && candidate.data?.algorithm === "AES-GCM"
+        && typeof candidate.data.iv === "string"
+        && typeof candidate.data.ciphertext === "string";
+    }
+
+    async function exportEncryptedVaultBackup() {
+      const meta = vaultMeta();
+      const data = encryptedVaultRecord();
+      if (!meta?.salt || !data?.ciphertext) {
+        setVaultStatus(elements.openVaultStatus, "No encrypted vault exists to export.", "error");
+        setStatus("No encrypted vault exists to export.");
+        return;
+      }
+      await flushVaultSave();
+      const backup = {
+        schema: "prerounding_encrypted_vault_backup_v1",
+        exportedAt: new Date().toISOString(),
+        meta: vaultMeta(),
+        data: encryptedVaultRecord()
+      };
+      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+      const link = document.createElement("a");
+      const url = URL.createObjectURL(blob);
+      const date = new Date().toISOString().slice(0, 10);
+      link.href = url;
+      link.download = `prerounding-encrypted-vault-${date}.json`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+      setVaultStatus(elements.openVaultStatus, "Encrypted vault backup exported.", "success");
+      setStatus("Encrypted vault backup exported. The file still requires the vault password to open.");
+    }
+
+    async function restoreEncryptedVaultBackupFromFile(file) {
+      if (!file) return;
+      let parsed;
+      try {
+        parsed = JSON.parse(await file.text());
+      } catch (error) {
+        setVaultStatus(elements.openVaultStatus, "Backup file is not valid JSON.", "error");
+        reportRecoverableError("Backup restore failed because the selected file is not valid JSON.", error);
+        return;
+      }
+      if (!validEncryptedVaultBackup(parsed)) {
+        setVaultStatus(elements.openVaultStatus, "Backup file is not a recognized encrypted vault backup.", "error");
+        setStatus("Backup file is not a recognized encrypted vault backup.");
+        return;
+      }
+      if (vaultMeta()?.salt && !window.confirm("Replace the encrypted vault stored in this browser with the selected backup?")) {
+        setStatus("Encrypted vault restore canceled.");
+        return;
+      }
+      clearVaultAutoLockTimer();
+      vaultCryptoKey = null;
+      localStorage.setItem(VAULT_META_KEY, JSON.stringify(parsed.meta));
+      localStorage.setItem(VAULT_DATA_KEY, JSON.stringify(parsed.data));
+      normalizeState({ lock: true });
+      showVaultAccess();
+      setVaultStatus(elements.openVaultStatus, "Encrypted backup restored. Enter its vault password to open it.", "success");
+      setStatus("Encrypted vault backup restored. Enter the backup vault password to open it.");
     }
 
     function patientList({ includeDischarged = false } = {}) {
@@ -2873,6 +3010,7 @@
     function resetWorkflowArtifacts() {
       state.scrubbedText = "";
       state.deidCounts = {};
+      state.residualPhiWarnings = [];
       state.workup = null;
       state.workupRows = [];
       state.selectedWorkupRow = "history";
@@ -2883,8 +3021,8 @@
       state.checklistCatalogStale = false;
       state.answers = {};
       state.itemNotes = {};
-	      state.reviewedChecklistKeys = {};
-	      state.bedsideNote = "";
+      state.reviewedChecklistKeys = {};
+      state.bedsideNote = "";
 	      state.openEvidenceSummaries = {};
 	      state.lastChecklistRefinementCount = 0;
 	      state.lastChecklistRefinementAdditionCount = 0;
@@ -2906,6 +3044,9 @@
       if (!state.answers || typeof state.answers !== "object" || Array.isArray(state.answers)) {
         state.answers = {};
       }
+      if (!Array.isArray(state.residualPhiWarnings)) {
+        state.residualPhiWarnings = [];
+      }
       state.checklistWorkupModuleId = String(state.checklistWorkupModuleId || "");
       state.checklistWorkupSignature = String(state.checklistWorkupSignature || "");
       state.checklistCatalogStale = Boolean(state.checklistCatalogStale);
@@ -2923,7 +3064,7 @@
       state.vaultName = String(state.vaultName || vaultMeta()?.name || "");
       state.patientSearch = String(state.patientSearch || "");
       if (!patientTabOrder.includes(state.activePatientTab)) {
-        state.activePatientTab = "overview";
+        state.activePatientTab = "context";
       }
       if (!views.includes(state.currentView)) {
         state.currentView = "workspace";
@@ -2948,6 +3089,9 @@
       }
       if (!state.patientObjectiveData || typeof state.patientObjectiveData !== "object" || Array.isArray(state.patientObjectiveData)) {
         state.patientObjectiveData = {};
+      }
+      if (!state.bedsideAuditLogByPatientId || typeof state.bedsideAuditLogByPatientId !== "object" || Array.isArray(state.bedsideAuditLogByPatientId)) {
+        state.bedsideAuditLogByPatientId = {};
       }
       if (!state.decisionTreeGraphsByModuleId || typeof state.decisionTreeGraphsByModuleId !== "object" || Array.isArray(state.decisionTreeGraphsByModuleId)) {
         state.decisionTreeGraphsByModuleId = {};
@@ -2992,6 +3136,13 @@
           delete state.patientObjectiveData[patientId];
         }
       }
+      for (const patientId of Object.keys(state.bedsideAuditLogByPatientId)) {
+        if (!validPatientIds.has(patientId) || !Array.isArray(state.bedsideAuditLogByPatientId[patientId])) {
+          delete state.bedsideAuditLogByPatientId[patientId];
+        } else {
+          state.bedsideAuditLogByPatientId[patientId] = state.bedsideAuditLogByPatientId[patientId].slice(-500);
+        }
+      }
       for (const [moduleId, graph] of Object.entries(state.decisionTreeGraphsByModuleId)) {
         if (!moduleById(moduleId) || !graph || typeof graph !== "object" || Array.isArray(graph)) {
           delete state.decisionTreeGraphsByModuleId[moduleId];
@@ -3011,55 +3162,7 @@
     }
 
     function applyVaultPayload(saved = {}) {
-      const vaultFields = [
-        "vaultName",
-        "patients",
-        "lastPatientSeq",
-        "scrubbedText",
-        "deidCounts",
-        "workup",
-        "workupRows",
-        "selectedWorkupRow",
-        "selectedWorkupModuleId",
-        "checklistText",
-        "sections",
-        "checklistWorkupModuleId",
-        "checklistWorkupSignature",
-        "checklistCatalogStale",
-        "answers",
-        "itemNotes",
-        "reviewedChecklistKeys",
-	        "bedsideNote",
-	        "selectedTaskId",
-	        "openEvidenceSummaries",
-	        "lastChecklistRefinementCount",
-	        "lastChecklistRefinementAdditionCount",
-	        "lastChecklistRefinementRemovalCount",
-	        "transferCode",
-        "phonePayload",
-        "importedFindings",
-        "importedPhoneAnswerSummary",
-        "activePatientId",
-        "patientSearch",
-        "activePatientTab",
-        "todayModeByPatientId",
-        "patientDrafts",
-        "patientContinuityCases",
-        "patientWorkupSelections",
-        "workupRefinementsByModuleId",
-        "patientWorkupRefinements",
-        "patientObjectiveData",
-        "decisionTreeGraphsByModuleId",
-        "promptTemplatesByTaskId",
-        "currentView",
-        "sourceMode",
-        "concern",
-        "modifiers",
-        "clinicalModifierDetails",
-        "setting",
-        "population"
-      ];
-      for (const key of vaultFields) {
+      for (const key of PERSISTED_VAULT_FIELDS) {
         if (Object.prototype.hasOwnProperty.call(saved, key)) state[key] = saved[key];
       }
       normalizeState();
@@ -3072,28 +3175,49 @@
     }
 
     function vaultPayload() {
-	      const { vaultName, patients, lastPatientSeq, scrubbedText, deidCounts, workup, workupRows, selectedWorkupRow, selectedWorkupModuleId, checklistText, sections, checklistWorkupModuleId, checklistWorkupSignature, checklistCatalogStale, answers, itemNotes, reviewedChecklistKeys, bedsideNote, selectedTaskId, openEvidenceSummaries, lastChecklistRefinementCount, lastChecklistRefinementAdditionCount, lastChecklistRefinementRemovalCount, transferCode, phonePayload, importedFindings, importedPhoneAnswerSummary, activePatientId, patientSearch, activePatientTab, todayModeByPatientId, patientDrafts, patientContinuityCases, patientWorkupSelections, workupRefinementsByModuleId, patientWorkupRefinements, patientObjectiveData, decisionTreeGraphsByModuleId, promptTemplatesByTaskId, currentView, sourceMode, concern, modifiers, clinicalModifierDetails, setting, population } = state;
-	      return { vaultName, patients, lastPatientSeq, scrubbedText, deidCounts, workup, workupRows, selectedWorkupRow, selectedWorkupModuleId, checklistText, sections, checklistWorkupModuleId, checklistWorkupSignature, checklistCatalogStale, answers, itemNotes, reviewedChecklistKeys, bedsideNote, selectedTaskId, openEvidenceSummaries, lastChecklistRefinementCount, lastChecklistRefinementAdditionCount, lastChecklistRefinementRemovalCount, transferCode, phonePayload, importedFindings, importedPhoneAnswerSummary, activePatientId, patientSearch, activePatientTab, todayModeByPatientId, patientDrafts, patientContinuityCases, patientWorkupSelections, workupRefinementsByModuleId, patientWorkupRefinements, patientObjectiveData, decisionTreeGraphsByModuleId, promptTemplatesByTaskId, currentView, sourceMode, concern, modifiers, clinicalModifierDetails, setting, population };
+      return persistedVaultPayload(state);
     }
 
     function saveState() {
       if (state.sessionMode !== "vault" || !vaultCryptoKey) return Promise.resolve();
       const snapshot = vaultPayload();
       pendingVaultSave = pendingVaultSave
-        .catch(() => {})
+        .catch((error) => {
+          reportRecoverableError("Previous vault save failed. Retrying encrypted save now.", error);
+        })
         .then(async () => {
           const encrypted = await encryptVaultPayload(vaultCryptoKey, snapshot);
           localStorage.setItem(VAULT_DATA_KEY, JSON.stringify(encrypted));
+        })
+        .catch((error) => {
+          reportRecoverableError("Vault save failed. Keep this tab open and try again before locking or closing.", error);
         });
       return pendingVaultSave;
     }
 
     async function flushVaultSave() {
-      await pendingVaultSave.catch(() => {});
+      await pendingVaultSave.catch((error) => {
+        reportRecoverableError("Vault save is still pending or failed; verify the vault saved before closing.", error);
+      });
     }
 
     function setStatus(message) {
-      elements.statusLive.textContent = message;
+      const text = String(message || "");
+      elements.statusLive.textContent = text;
+      if (!elements.visibleStatusToast || !text) return;
+      elements.visibleStatusToast.textContent = text;
+      elements.visibleStatusToast.hidden = false;
+      if (statusToastTimer) window.clearTimeout(statusToastTimer);
+      statusToastTimer = window.setTimeout(() => {
+        if (elements.visibleStatusToast) elements.visibleStatusToast.hidden = true;
+      }, 4200);
+    }
+
+    function reportRecoverableError(userMessage, error) {
+      if (error) {
+        console.warn(userMessage, error);
+      }
+      setStatus(userMessage);
     }
 
     function clampLayoutSize(key, value) {
@@ -3316,6 +3440,9 @@
       if (elements.openVaultSection) elements.openVaultSection.hidden = compactEntry || !hasVault;
       if (elements.createVaultSection) elements.createVaultSection.hidden = compactEntry || hasVault;
       if (elements.deleteVaultButton) elements.deleteVaultButton.hidden = compactEntry || !hasVault;
+      if (elements.exportVaultBackupButton) elements.exportVaultBackupButton.hidden = compactEntry || !hasVault;
+      if (elements.restoreVaultBackupButton) elements.restoreVaultBackupButton.hidden = compactEntry;
+      if (elements.restoreVaultBackupCreateButton) elements.restoreVaultBackupCreateButton.hidden = compactEntry;
       if (elements.singlePatientWorkflowButton?.closest("section")) {
         elements.singlePatientWorkflowButton.closest("section").hidden = compactEntry;
       }
@@ -3391,9 +3518,29 @@
       }
     }
 
+    function clearVaultAutoLockTimer() {
+      if (vaultAutoLockTimer) {
+        window.clearTimeout(vaultAutoLockTimer);
+        vaultAutoLockTimer = null;
+      }
+    }
+
+    function resetVaultAutoLockTimer() {
+      clearVaultAutoLockTimer();
+      if (state.sessionMode !== "vault" || !vaultCryptoKey) return;
+      vaultAutoLockTimer = window.setTimeout(() => {
+        void lockVault({ reason: "Vault auto-locked after 15 minutes of inactivity." });
+      }, VAULT_AUTO_LOCK_TIMEOUT_MS);
+    }
+
+    function handleVaultUserActivity() {
+      if (state.sessionMode === "vault" && vaultCryptoKey) resetVaultAutoLockTimer();
+    }
+
     function unlockVault({ mode = "vault", name = "", route = routeForNamedView("workspace") } = {}) {
       state.sessionMode = mode;
       state.vaultName = name || state.vaultName || "Local vault";
+      resetVaultAutoLockTimer();
       if (elements.deidTopStatus) {
         elements.deidTopStatus.innerHTML = '<span class="status-dot" aria-hidden="true"></span>' + (mode === "single" ? "No-save session" : "Vault open");
       }
@@ -3464,6 +3611,7 @@
       state.workupRefinementsByModuleId = {};
       state.patientWorkupRefinements = {};
       state.decisionTreeGraphsByModuleId = {};
+      state.bedsideAuditLogByPatientId = {};
       state.patientSearch = "";
       resetWorkflowArtifacts();
       await saveState();
@@ -3486,6 +3634,7 @@
       state.patientWorkupRefinements = {};
       state.patientObjectiveData = {};
       state.decisionTreeGraphsByModuleId = {};
+      state.bedsideAuditLogByPatientId = {};
       state.patientSearch = "";
       state.patientRosterExpanded = false;
       state.currentView = "workspace";
@@ -3617,13 +3766,17 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
       setStatus("Synthetic demo case loaded. It is fake and disappears on reload or lock.");
     }
 
-    async function lockVault() {
+    async function lockVault(options = {}) {
+      const lockOptions = options && !options.type ? options : {};
+      const reason = String(lockOptions.reason || "");
+      clearVaultAutoLockTimer();
       if (state.sessionMode === "single") {
         state.patients = [];
         state.activePatientId = "";
-        state.patientDrafts = {};
-        state.patientWorkupSelections = {};
-        resetWorkflowArtifacts();
+      state.patientDrafts = {};
+      state.patientWorkupSelections = {};
+      state.bedsideAuditLogByPatientId = {};
+      resetWorkflowArtifacts();
       } else {
         await saveState();
         await flushVaultSave();
@@ -3635,13 +3788,20 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
       state.patientContinuityCases = {};
       state.todayModeByPatientId = {};
       state.patientWorkupSelections = {};
+      state.bedsideAuditLogByPatientId = {};
       state.patientSearch = "";
       resetWorkflowArtifacts();
       state.sessionMode = "locked";
       showVaultAccess();
+      if (reason) setStatus(reason);
     }
 
     function deleteVault() {
+      if (!window.confirm("Delete the encrypted vault stored in this browser? Export an encrypted backup first if you need to keep it.")) {
+        setStatus("Vault deletion canceled.");
+        return;
+      }
+      clearVaultAutoLockTimer();
       localStorage.removeItem(VAULT_META_KEY);
       localStorage.removeItem(VAULT_DATA_KEY);
       vaultCryptoKey = null;
@@ -3651,6 +3811,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
       state.patientContinuityCases = {};
       state.todayModeByPatientId = {};
       state.patientWorkupSelections = {};
+      state.bedsideAuditLogByPatientId = {};
       state.patientSearch = "";
       state.vaultName = "";
       resetWorkflowArtifacts();
@@ -3815,7 +3976,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
         if (state.activePatientId) {
           selectPatient(state.activePatientId);
         } else {
-          state.activePatientTab = "overview";
+          state.activePatientTab = "context";
           renderPatientRail();
           renderPatientWorkspace();
           renderChecklist();
@@ -8196,13 +8357,13 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
     }
 
     function coercePatientTabForDevice(tabName = state.activePatientTab) {
-      const requested = patientTabOrder.includes(tabName) ? tabName : "overview";
+      const requested = patientTabOrder.includes(tabName) ? tabName : "context";
       if (isPhoneWorkflowDevice()) {
         if (phonePatientTabs.has(requested)) return requested;
         return phonePatientTabFallbacks[requested] || "checklist";
       }
       if (patientTabAvailableOnDevice(requested)) return requested;
-      return desktopPatientTabFallbacks[requested] || "overview";
+      return desktopPatientTabFallbacks[requested] || "context";
     }
 
     function ensureFindingsPhoneHandoffReady() {
@@ -8213,7 +8374,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
     }
 
     function setPatientTab(tabName, { announce = true, focusPanel = false } = {}) {
-      const requestedTab = patientTabOrder.includes(tabName) ? tabName : "overview";
+      const requestedTab = patientTabOrder.includes(tabName) ? tabName : "context";
       state.activePatientTab = coercePatientTabForDevice(requestedTab);
       renderPatientTabs();
       if (state.activePatientTab === "workup") {
@@ -10902,19 +11063,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
       state.concern = selectedModule ? moduleLabel(selectedModule) : patient.concern || "";
       phoneChecklistWorkupSearch = state.concern;
       state.modifiers = Array.isArray(patient.modifiers) && patient.modifiers.length ? [...patient.modifiers] : ["Vomiting", "Poor intake"];
-      const patientCase = patientContinuityCase(patient, { create: false });
-      const todayDay = currentContinuityDay(patientCase);
-      const roundsReport = todayDay?.roundsPasteBack;
-      const hasSummary = roundsReport && (
-        roundsReport.oneLiner ||
-        (Array.isArray(roundsReport.subjective) && roundsReport.subjective.length) ||
-        (Array.isArray(roundsReport.objective) && roundsReport.objective.length) ||
-        (Array.isArray(roundsReport.assessmentPlan) && roundsReport.assessmentPlan.length) ||
-        (Array.isArray(roundsReport.followUpTasks) && roundsReport.followUpTasks.length) ||
-        (Array.isArray(roundsReport.bedsideRecheck) && roundsReport.bedsideRecheck.length) ||
-        roundsReport.plainTextSummary
-      );
-      state.activePatientTab = hasSummary ? "overview" : "context";
+      state.activePatientTab = "context";
       state.scrubbedText = "";
       state.deidCounts = {};
       state.workup = null;
@@ -11044,9 +11193,28 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
       state.sourceMode = nextMode;
     }
 
+    function renderResidualPhiWarnings(warnings = state.residualPhiWarnings) {
+      if (!elements.deidResidualWarnings) return;
+      const items = Array.isArray(warnings) ? warnings.slice(0, 8) : [];
+      elements.deidResidualWarnings.innerHTML = "";
+      elements.deidResidualWarnings.hidden = items.length === 0;
+      if (!items.length) return;
+      const title = document.createElement("strong");
+      title.textContent = "Residual PHI review required";
+      const list = document.createElement("ul");
+      for (const warning of items) {
+        const li = document.createElement("li");
+        const severity = warning.severity === "high" ? "High" : warning.severity === "medium" ? "Medium" : "Review";
+        li.textContent = `${severity}: ${warning.type || "possible identifier"}${warning.snippet ? ` - ${warning.snippet}` : ""}`;
+        list.appendChild(li);
+      }
+      elements.deidResidualWarnings.append(title, list);
+    }
+
     function applyDeidResult(result, { announce = false } = {}) {
       state.scrubbedText = result.text || "";
       state.deidCounts = result.counts || {};
+      state.residualPhiWarnings = Array.isArray(result.residualWarnings) ? result.residualWarnings : [];
       if (elements.deidPreview) elements.deidPreview.textContent = state.scrubbedText || "No redacted text was produced.";
       if (elements.deidModelStatus) {
         const modelUsed = result.modelId && result.modelStatus !== "structured only";
@@ -11071,9 +11239,14 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
         }
       }
       if (elements.deidTopStatus) {
-        elements.deidTopStatus.innerHTML = '<span class="status-dot" aria-hidden="true"></span>Local de-ID complete';
+        elements.deidTopStatus.innerHTML = `<span class="status-dot" aria-hidden="true"></span>${state.residualPhiWarnings.length ? "PHI review needed" : "Local de-ID complete"}`;
       }
-      if (announce) setStatus("Local de-ID complete. Review the redacted preview before copying.");
+      renderResidualPhiWarnings();
+      if (announce) {
+        setStatus(state.residualPhiWarnings.length
+          ? "Local de-ID complete with residual PHI warnings. Review the warning list and preview before copying."
+          : "Local de-ID complete. Review the redacted preview before copying.");
+      }
       saveState();
     }
 
@@ -11091,7 +11264,8 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
         }
       } else if (elements.deidPreview) {
         elements.deidPreview.textContent = state.scrubbedText;
-        elements.deidTopStatus.innerHTML = '<span class="status-dot" aria-hidden="true"></span>Local de-ID complete';
+        elements.deidTopStatus.innerHTML = `<span class="status-dot" aria-hidden="true"></span>${state.residualPhiWarnings.length ? "PHI review needed" : "Local de-ID complete"}`;
+        renderResidualPhiWarnings();
       }
     }
 
@@ -11142,7 +11316,8 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
         setStatus("Patient context saved and de-identified locally. Review the redacted preview below.");
         setPatientTab("context");
         elements.workspaceDeidReviewPanel?.setAttribute("open", "");
-      }).catch(() => {
+      }).catch((error) => {
+        console.warn("Workspace de-identification failed.", error);
         if (saveBtn) saveBtn.disabled = false;
         if (elements.deidPreview) elements.deidPreview.textContent = "De-identification failed. Try again.";
         setStatus("De-identification failed.");
@@ -11197,7 +11372,8 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
         setStatus("Continuity update saved and de-identified locally. Review the redacted preview below.");
         setPatientTab("context");
         elements.workspaceDeidReviewPanel?.setAttribute("open", "");
-      }).catch(() => {
+      }).catch((error) => {
+        console.warn("Continuity de-identification failed.", error);
         if (saveBtn) saveBtn.disabled = false;
         if (elements.deidPreview) elements.deidPreview.textContent = "De-identification failed. Try again.";
         setStatus("De-identification failed.");
@@ -12921,7 +13097,63 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
       }
     }
 
+    function appendBedsideAuditLog(action, key, detail = {}) {
+      const patient = activePatient();
+      if (!patient?.id || !key) return;
+      const entry = checklistEntryForKey(key);
+      const patientLog = Array.isArray(state.bedsideAuditLogByPatientId?.[patient.id])
+        ? state.bedsideAuditLogByPatientId[patient.id]
+        : [];
+      const record = {
+        at: new Date().toISOString(),
+        patientId: patient.id,
+        action,
+        key,
+        section: entry?.section?.shortTitle || entry?.section?.title || "",
+        item: entry?.item?.label || (entry?.item ? itemText(entry.item) : ""),
+        detail
+      };
+      state.bedsideAuditLogByPatientId = {
+        ...(state.bedsideAuditLogByPatientId || {}),
+        [patient.id]: [...patientLog, record].slice(-500)
+      };
+    }
+
+    function exportBedsideAuditLog() {
+      const patient = activePatient();
+      if (!patient?.id) {
+        setStatus("Open a patient before exporting a bedside audit log.");
+        return;
+      }
+      const records = Array.isArray(state.bedsideAuditLogByPatientId?.[patient.id])
+        ? state.bedsideAuditLogByPatientId[patient.id]
+        : [];
+      const audit = {
+        schema: "bedside_checklist_audit_v1",
+        exportedAt: new Date().toISOString(),
+        patient: {
+          id: patient.id,
+          title: patient.title || "",
+          concern: patient.concern || ""
+        },
+        checklistWorkupModuleId: state.checklistWorkupModuleId || state.selectedWorkupModuleId || "",
+        recordCount: records.length,
+        records
+      };
+      const blob = new Blob([JSON.stringify(audit, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `bedside-checklist-audit-${patient.id}-${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+      setStatus(records.length ? "Bedside checklist audit JSON exported." : "Bedside audit exported with no recorded checklist changes yet.");
+    }
+
     function commitChecklistAnswer(key, nextValue) {
+      const previous = JSON.stringify(state.answers?.[key] ?? "");
       const values = answerValueList(nextValue);
       const normalizedValue = values.length > 1 ? values : values[0] || "";
       const nextAnswers = { ...state.answers };
@@ -12934,6 +13166,10 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
       }
       state.answers = nextAnswers;
       delete state.reviewedChecklistKeys[key];
+      const current = JSON.stringify(state.answers?.[key] ?? "");
+      if (previous !== current) {
+        appendBedsideAuditLog("answer", key, { value: nextAnswers[key] || "" });
+      }
     }
 
     function updateChecklistAnswer(key, updater) {
@@ -13605,6 +13841,9 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
       if (!entry) return;
       for (const [itemIndex] of entry.section.items.entries()) {
         const key = answerKey(entry.sectionIndex, itemIndex);
+        if (state.answers[key] || state.itemNotes[key] || state.reviewedChecklistKeys[key]) {
+          appendBedsideAuditLog("clear", key, { scope: "section" });
+        }
         delete state.answers[key];
         delete state.itemNotes[key];
         delete state.reviewedChecklistKeys[key];
@@ -13620,6 +13859,9 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
 
     function clearAllChecklistAnswers() {
       for (const { key } of allChecklistEntries()) {
+        if (state.answers[key] || state.itemNotes[key] || state.reviewedChecklistKeys[key]) {
+          appendBedsideAuditLog("clear", key, { scope: "all" });
+        }
         delete state.answers[key];
         delete state.itemNotes[key];
         delete state.reviewedChecklistKeys[key];
@@ -13646,7 +13888,10 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
       const nextReviewed = { ...state.reviewedChecklistKeys };
       for (const { key } of allChecklistEntries()) {
         if (hasChecklistFinding(key)) continue;
-        if (!nextReviewed[key]) reviewedCount += 1;
+        if (!nextReviewed[key]) {
+          reviewedCount += 1;
+          appendBedsideAuditLog("reviewed", key, { value: true });
+        }
         nextReviewed[key] = true;
       }
       state.reviewedChecklistKeys = nextReviewed;
@@ -13827,6 +14072,10 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
     }
 
     function renderChecklist() {
+      if (checklistRenderFrame) {
+        window.cancelAnimationFrame(checklistRenderFrame);
+        checklistRenderFrame = 0;
+      }
       elements.checklistSections.innerHTML = "";
       if (!activeChecklistKey && state.sections[0]?.items?.length) {
         activeChecklistKey = answerKey(0, 0);
@@ -14085,6 +14334,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
           noteInput.rows = 1;
           noteInput.maxLength = 1200;
           noteInput.value = state.itemNotes[key] || "";
+          noteInput.dataset.initialValue = noteInput.value;
           noteInput.placeholder = "Add bedside note";
           noteInput.dataset.answerKey = key;
           noteInput.setAttribute("aria-label", `Note for ${question.textContent}`);
@@ -14109,6 +14359,12 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
             updateChecklistMetrics(totalItems);
             renderChecklistInspector();
             renderFinalUpdate();
+            saveState();
+          });
+          noteInput.addEventListener("blur", () => {
+            if (noteInput.dataset.initialValue === noteInput.value) return;
+            appendBedsideAuditLog("note", key, { hasNote: Boolean(noteInput.value.trim()) });
+            noteInput.dataset.initialValue = noteInput.value;
             saveState();
           });
           notePanel.append(noteLabel, notePreview, noteInput);
@@ -14166,6 +14422,15 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
 	      renderChecklistNavigation();
 	      renderChecklistInspector();
 	    }
+
+    function scheduleChecklistRender({ refocusSearch = false } = {}) {
+      if (checklistRenderFrame) window.cancelAnimationFrame(checklistRenderFrame);
+      checklistRenderFrame = window.requestAnimationFrame(() => {
+        checklistRenderFrame = 0;
+        renderChecklist();
+        if (refocusSearch) elements.checklistSearchInput?.focus();
+      });
+    }
 
     function selectedTask() {
       return openEvidenceTasks.find((task) => task.id === state.selectedTaskId) || openEvidenceTasks[0];
@@ -19249,6 +19514,9 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
     }
 
     function bindEvents() {
+      for (const eventName of ["pointerdown", "keydown", "input", "focusin"]) {
+        window.addEventListener(eventName, handleVaultUserActivity, { passive: true, capture: true });
+      }
       elements.openVaultForm?.addEventListener("submit", openVaultFromPassword);
       elements.createVaultForm?.addEventListener("submit", createVaultFromPassword);
       elements.singlePatientWorkflowButton?.addEventListener("click", startSinglePatientWorkflow);
@@ -19268,9 +19536,22 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
       window.addEventListener("pagehide", () => {
         stopPhoneQrScanner({ announce: false });
         stopReturnQrScanner({ announce: false });
+        void flushVaultSave();
       });
       elements.lockVaultButton?.addEventListener("click", lockVault);
       elements.deleteVaultButton?.addEventListener("click", deleteVault);
+      elements.exportVaultBackupButton?.addEventListener("click", () => {
+        void exportEncryptedVaultBackup();
+      });
+      const openRestorePicker = () => elements.restoreVaultBackupInput?.click();
+      elements.restoreVaultBackupButton?.addEventListener("click", openRestorePicker);
+      elements.restoreVaultBackupCreateButton?.addEventListener("click", openRestorePicker);
+      elements.restoreVaultBackupInput?.addEventListener("change", () => {
+        const file = elements.restoreVaultBackupInput?.files?.[0] || null;
+        void restoreEncryptedVaultBackupFromFile(file).finally(() => {
+          if (elements.restoreVaultBackupInput) elements.restoreVaultBackupInput.value = "";
+        });
+      });
       elements.patientAdmissionForm?.addEventListener("submit", admitPatientFromForm);
       elements.closeAdmissionOverlayButton?.addEventListener("click", closeAdmissionOverlay);
       elements.cancelAdmissionButton?.addEventListener("click", closeAdmissionOverlay);
@@ -19803,7 +20084,13 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
           }
         });
 	      for (const button of $$("button[data-patient-tab]")) {
-	        button.addEventListener("click", () => setPatientTab(button.dataset.patientTab, { focusPanel: true }));
+	        button.addEventListener("click", () => {
+	          if (button.dataset.patientTab === "checklist") {
+	            showView("bedside");
+	            return;
+	          }
+	          setPatientTab(button.dataset.patientTab, { focusPanel: true });
+	        });
 	      }
         window.addEventListener("resize", () => {
           window.clearTimeout(decisionTreeResizeTimer);
@@ -19910,13 +20197,14 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
       }
       $("#bedsideCaseSelectButton").addEventListener("click", () => {
         showView("workspace");
-        setPatientTab("overview");
+        setPatientTab("context");
       });
       elements.bedsideHeaderResetButton?.addEventListener("click", clearAllChecklistAnswers);
       elements.markAllReviewedButton?.addEventListener("click", markAllOpenChecklistItemsReviewed);
+      elements.exportBedsideAuditButton?.addEventListener("click", exportBedsideAuditLog);
       elements.bedsideHeaderSettingsButton?.addEventListener("click", () => {
         showView("workspace");
-        setPatientTab("overview");
+        setPatientTab("context");
       });
       elements.bedsideMoreActionsButton?.addEventListener("click", () => preparePhoneHandoff());
       elements.copyFindingsToBedsideNoteButton?.addEventListener("click", copyFindingsToBedsideNote);
@@ -19957,7 +20245,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
           return;
         }
         showView("workspace");
-        setPatientTab("overview");
+        setPatientTab("context");
       });
       for (const button of $$("[data-checklist-filter]")) {
         button.addEventListener("click", () => {
@@ -19970,8 +20258,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
         if (checklistSearch) checklistSectionFocus = false;
         const firstMatch = visibleChecklistEntries()[0];
         if (firstMatch) activeChecklistKey = firstMatch.key;
-        renderChecklist();
-        elements.checklistSearchInput.focus();
+        scheduleChecklistRender({ refocusSearch: true });
       });
       elements.clearChecklistSearchButton?.addEventListener("click", () => {
         checklistSearch = "";
@@ -20036,7 +20323,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
       }));
       $("#changeCaseButton").addEventListener("click", () => {
         showView("workspace");
-        setPatientTab("overview");
+        setPatientTab("context");
         elements.patientList.scrollIntoView({ block: "nearest" });
         elements.patientSearchInput.focus();
         setStatus("Select a patient from the local vault roster.");
@@ -20244,6 +20531,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
     bindEvents();
     window.addEventListener("beforeunload", () => {
       saveWorkupStudioStateNow();
+      void flushVaultSave();
     });
     loadLocalDraftWorkupsOnStartup();
     void hydratePublicWorkupCatalogOnStartup();
@@ -20255,7 +20543,9 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
     }
     showVaultAccess();
     void loadPhoneQrDeepLinkFromLocation();
-    void _loadDeidModel().catch(() => {});
+    void _loadDeidModel().catch((error) => {
+      reportRecoverableError("Enhanced de-ID model preload failed. Structured-only redaction is still available.", error);
+    });
   </script>
 </body>
 </html>

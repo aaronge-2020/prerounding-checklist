@@ -7,11 +7,14 @@ on:
     paths:
       - ".github/workflows/deploy-pages.yml"
       - "index.html"
+      - "styles.css"
       - "favicon.ico"
       - "*.js"
       - "assets/**"
       - "data/**"
       - "medical-knowledge/**"
+      - "prompts/**"
+      - "src/**"
       - "vendor/**"
   workflow_dispatch:
 
@@ -41,8 +44,8 @@ jobs:
           rm -rf _site
           mkdir -p _site
           touch _site/.nojekyll
-          cp index.html favicon.ico ./*.js _site/
-          cp -R assets data medical-knowledge vendor _site/
+          cp index.html styles.css favicon.ico ./*.js _site/
+          cp -R assets data medical-knowledge prompts src vendor _site/
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

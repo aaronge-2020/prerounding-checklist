@@ -76,6 +76,7 @@ const bannedAnchorWords = new Set([
   "terry", "theresa", "thomas", "tiffany", "timothy", "tina", "todd", "tom",
   "tony", "travis", "tyler", "victor", "victoria", "vincent", "virginia",
   "walter", "wanda", "wayne", "wendy", "william", "willie", "zachary",
+  "bob", "delgado", "marcus", "okafor", "rosa", "whitfield",
   // Common English surnames overlapping MeSH eponymous diseases
   "smith", "jones", "williams", "brown", "davis", "miller", "wilson",
   "moore", "taylor", "anderson", "thomas", "jackson", "white", "harris",

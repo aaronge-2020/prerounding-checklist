@@ -10,8 +10,14 @@
     "build:evidence": "node scripts/build-physical-exam-evidence.js",
     "build:index-html-symbol-map": "node scripts/gen-index-html-symbol-map.js",
     "build:index-html-css-map": "node scripts/gen-index-html-css-region-map.js",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "test": "npm run test:core && npm run test:clinical",
-    "test:core": "npm run test:syntax && npm run test:deid && npm run test:labs && npm run test:checklist && npm run test:vault-entry && npm run test:vault-state && npm run test:continuity",
+    "test:ci": "npm run lint && npm run test:syntax && npm run test:core && npm run test:clinical-intents && npm run test:complaint-cds && npm run test:open-evidence",
+    "test:core": "npm run test:syntax && npm run test:state-schema && npm run test:medication-safety && npm run test:deid && npm run test:labs && npm run test:checklist && npm run test:vault-entry && npm run test:vault-state && npm run test:continuity",
+    "test:state-schema": "node tests/test-state-schema.js",
+    "test:medication-safety": "node tests/test-medication-safety.js",
     "test:clinical": "npm run test:clinical-intents && npm run test:medical-knowledge && npm run test:workup-authoring && npm run test:workup-studio-auth && npm run test:workup-studio-ui && npm run test:supabase-config && npm run test:supabase-catalog-race && npm run test:supabase-catalog-refresh && npm run test:supabase-catalog-empty && npm run test:complaint-cds && npm run test:open-evidence && npm run test:endocrine-knowledge && npm run test:clinical-ui",
     "test:deid": "node tests/test-deid.js",
     "test:labs": "node tests/test-labs.js",
@@ -55,12 +61,16 @@
   },
   "dependencies": {
     "@bokuweb/zstd-wasm": "^0.0.27",
+    "@huggingface/transformers": "4.2.0",
     "@supabase/ssr": "^0.12.0",
     "@supabase/supabase-js": "^2.108.2",
     "@zxing/browser": "^0.2.0",
     "jsqr": "^1.4.0"
   },
   "devDependencies": {
-    "playwright": "^1.61.0"
+    "@eslint/js": "^9.31.0",
+    "eslint": "^9.31.0",
+    "playwright": "^1.61.0",
+    "prettier": "^3.6.2"
   }
 }

@@ -13,6 +13,8 @@ const coreFiles = [
   "src/clinical/labs.js",
   "src/codecs/qr-codec.js",
   "src/codecs/phone-transfer-codec.js",
+  "src/app/state-schema.js",
+  "src/clinical/medication-safety.js",
   "src/vault/deid.js",
   "src/vault/physical-exam-catalog.js",
   "medical-knowledge-db.js",
@@ -44,6 +46,18 @@ function runNodeCheck(file) {
 
 for (const file of files) {
   runNodeCheck(file);
+}
+
+for (const mapCheckScript of [
+  "scripts/gen-index-html-symbol-map.js",
+  "scripts/gen-index-html-css-region-map.js"
+]) {
+  const result = spawnSync(process.execPath, [mapCheckScript, "--check"], { encoding: "utf8" });
+  if (result.status !== 0) {
+    process.stderr.write(result.stdout || "");
+    process.stderr.write(result.stderr || "");
+    throw new Error(`Generated lookup map is stale: ${mapCheckScript}`);
+  }
 }
 
 const html = readFileSync("index.html", "utf8");
@@ -100,10 +114,12 @@ for (const requiredDirective of [
   "form-action 'none'",
   "frame-src 'none'",
   "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'",
+  "script-src-attr 'none'",
   "worker-src 'self'",
   "connect-src 'self'",
   "style-src 'self' 'unsafe-inline'",
-  "font-src 'self'"
+  "font-src 'self'",
+  "trusted-types prerounding-app"
 ]) {
   if (!csp.includes(requiredDirective)) {
     throw new Error(`Content Security Policy missing required directive: ${requiredDirective}`);
@@ -115,7 +131,7 @@ if (csp.includes("frame-ancestors")) {
 
 for (const requiredSnippet of [
   '<meta name="theme-color" content="#f4f7f7">',
-  "color-scheme: light;",
+  "color-scheme: light dark;",
   "--bg: #f4f7f7;",
   "Pre-Rounding Checklist Builder",
   "Local-first",
@@ -203,7 +219,13 @@ for (const requiredId of [
   "checklistSections",
   "reviewFindingsButton",
   "phiOverlay",
-  "quickDeidOverlay"
+  "quickDeidOverlay",
+  "exportVaultBackupButton",
+  "restoreVaultBackupButton",
+  "restoreVaultBackupCreateButton",
+  "deidResidualWarnings",
+  "visibleStatusToast",
+  "exportBedsideAuditButton"
 ]) {
   if (!html.includes(`id="${requiredId}"`)) {
     throw new Error(`Expected reachable workflow control missing: ${requiredId}`);

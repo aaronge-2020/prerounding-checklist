@@ -47,6 +47,74 @@ labNormalizationDictionary.forEach((entry) => {
 });
 aliases.sort((left, right) => right.alias.length - left.alias.length);
 
+const labReferenceRanges = Object.freeze({
+  sodium: { low: 135, high: 145, criticalLow: 120, criticalHigh: 160, unit: "mEq/L" },
+  potassium: { low: 3.5, high: 5.1, criticalLow: 2.8, criticalHigh: 6, unit: "mEq/L" },
+  chloride: { low: 96, high: 106, unit: "mEq/L" },
+  co2: { low: 22, high: 29, criticalLow: 10, unit: "mEq/L" },
+  bun: { low: 7, high: 20, unit: "mg/dL" },
+  creatinine: { low: 0.6, high: 1.3, criticalHigh: 4, unit: "mg/dL" },
+  glucose: { low: 70, high: 180, criticalLow: 54, criticalHigh: 400, unit: "mg/dL" },
+  calcium: { low: 8.5, high: 10.5, criticalLow: 7, criticalHigh: 13, unit: "mg/dL" },
+  albumin: { low: 3.5, high: 5.0, unit: "g/dL" },
+  ast: { low: 0, high: 40, criticalHigh: 1000, unit: "U/L" },
+  alt: { low: 0, high: 40, criticalHigh: 1000, unit: "U/L" },
+  alk_phos: { low: 40, high: 130, unit: "U/L" },
+  bilirubin: { low: 0, high: 1.2, criticalHigh: 5, unit: "mg/dL" },
+  wbc: { low: 4, high: 11, criticalLow: 1, criticalHigh: 30, unit: "K/uL" },
+  hemoglobin: { low: 12, high: 17.5, criticalLow: 7, criticalHigh: 20, unit: "g/dL" },
+  hematocrit: { low: 36, high: 52, unit: "%" },
+  platelets: { low: 150, high: 450, criticalLow: 20, criticalHigh: 1000, unit: "K/uL" },
+  rbc: { low: 4.0, high: 5.9, unit: "M/uL" },
+  mcv: { low: 80, high: 100, unit: "fL" },
+  a1c: { low: 0, high: 5.7, criticalHigh: 10, unit: "%" },
+  magnesium: { low: 1.7, high: 2.4, criticalLow: 1.2, criticalHigh: 4, unit: "mg/dL" },
+  phosphorus: { low: 2.5, high: 4.5, criticalLow: 1, criticalHigh: 8, unit: "mg/dL" },
+  lactate: { low: 0, high: 2, criticalHigh: 4, unit: "mmol/L" },
+  inr: { low: 0.8, high: 1.2, criticalHigh: 5, unit: "" },
+  anion_gap: { low: 4, high: 12, criticalHigh: 24, unit: "mEq/L" },
+  beta_hydroxybutyrate: { low: 0, high: 0.5, criticalHigh: 3, unit: "mmol/L" }
+});
+
+/**
+ * Parses the numeric component of a lab value while preserving leading
+ * inequality direction for interpretation.
+ *
+ * @param {string} value
+ * @returns {{ number: number, comparator: string } | null}
+ */
+function numericLabValue(value) {
+  const match = String(value || "").trim().match(/^([<>]=?)?\s*(-?\d+(?:\.\d+)?)/);
+  if (!match) return null;
+  const number = Number(match[2]);
+  return Number.isFinite(number) ? { number, comparator: match[1] || "" } : null;
+}
+
+function interpretLabValue(analyte, value) {
+  const range = labReferenceRanges[analyte];
+  const parsed = numericLabValue(value);
+  if (!range || !parsed) return null;
+  const { number } = parsed;
+  const criticalLow = Number.isFinite(range.criticalLow) && number <= range.criticalLow;
+  const criticalHigh = Number.isFinite(range.criticalHigh) && number >= range.criticalHigh;
+  const low = Number.isFinite(range.low) && number < range.low;
+  const high = Number.isFinite(range.high) && number > range.high;
+  if (!criticalLow && !criticalHigh && !low && !high) {
+    return {
+      status: "normal",
+      severity: "normal",
+      direction: "",
+      reference: range
+    };
+  }
+  return {
+    status: criticalLow || criticalHigh ? "critical" : "abnormal",
+    severity: criticalLow || criticalHigh ? "critical" : "abnormal",
+    direction: criticalLow || low ? "low" : "high",
+    reference: range
+  };
+}
+
 const monthNameToNumber = new Map([
   ["jan", 1], ["january", 1], ["feb", 2], ["february", 2], ["mar", 3], ["march", 3],
   ["apr", 4], ["april", 4], ["may", 5], ["jun", 6], ["june", 6], ["jul", 7], ["july", 7],
@@ -355,11 +423,16 @@ function rowConfidence(collectionTime, value) {
 
 function createRow({ entry, value, unit, collectionTime, resultTime, sourceLine, sourceIndex, panel }) {
   const warnings = timestampWarnings(collectionTime, resultTime);
+  const interpretation = interpretLabValue(entry.canonical, value);
   return {
     analyte: entry.canonical,
     displayName: entry.displayName,
     value,
     unit: unit || "",
+    interpretation,
+    referenceRange: interpretation?.reference || labReferenceRanges[entry.canonical] || null,
+    abnormal: interpretation?.severity === "abnormal" || interpretation?.severity === "critical",
+    critical: interpretation?.severity === "critical",
     collectionTime,
     resultTime,
     sourceLine: String(sourceLine || "").trim(),
@@ -655,6 +728,28 @@ function ambiguousRows(rows) {
   return rows.filter((row) => row.warnings.length);
 }
 
+function abnormalRows(rows) {
+  return rows.filter((row) => row.abnormal || row.critical);
+}
+
+function labFlagForRow(row) {
+  const direction = row.interpretation?.direction || "";
+  const severity = row.critical ? "critical" : "abnormal";
+  const reference = row.referenceRange
+    ? `${row.referenceRange.low ?? ""}-${row.referenceRange.high ?? ""}${row.referenceRange.unit ? ` ${row.referenceRange.unit}` : ""}`.replace(/^-|-\s*$/g, "")
+    : "";
+  return {
+    analyte: row.displayName,
+    value: row.value,
+    unit: row.unit,
+    direction,
+    severity,
+    time: row.collectionTime,
+    sourceLine: row.sourceLine,
+    text: `${row.displayName} ${row.value}${row.unit ? ` ${row.unit}` : ""} is ${severity}${direction ? ` ${direction}` : ""}${reference ? ` (reference ${reference})` : ""}`
+  };
+}
+
 function updateContextFromLine(line, context, referenceYear) {
   const detectedPanel = detectPanel(line);
   if (detectedPanel && !parseInlineRows(line, { ...context, panel: detectedPanel }, referenceYear, 0).length) {
@@ -711,6 +806,7 @@ export function parseLabTimeline(sourceText) {
   const anchorDateKey = anchorTimestampLabels(rows);
   const events = buildEvents(rows);
   const ambiguous = ambiguousRows(rows);
+  const abnormal = abnormalRows(rows);
   const warnings = ambiguous.map((row) => ({
     analyte: row.displayName,
     panel: row.panel,
@@ -724,6 +820,8 @@ export function parseLabTimeline(sourceText) {
     ambiguousRows: ambiguous,
     latestByLabel: latestEventsByLabel(events),
     warnings,
+    abnormalFlags: abnormal.map(labFlagForRow),
+    criticalFlags: abnormal.filter((row) => row.critical).map(labFlagForRow),
     anchorDateKey,
     hasLabs: rows.length > 0
   };
@@ -787,11 +885,18 @@ export function formatLabTimelinePreview(timeline) {
     text: `${formatTimestampForPreview(row.collectionTime)}: ${rowValueLabel(row)} - ${row.warnings[0]}`,
     warning: true
   }));
+  const abnormalWarnings = (timeline.abnormalFlags || []).slice(0, 12).map((flag) => ({
+    label: flag.analyte,
+    time: formatTimestampForPreview(flag.time),
+    text: `${formatTimestampForPreview(flag.time)}: ${flag.text}`,
+    warning: true,
+    severity: flag.severity
+  }));
 
   return {
     summary: `${timeline.rows.length} lab row${timeline.rows.length === 1 ? "" : "s"} parsed; ${timeline.events.length} timed event${timeline.events.length === 1 ? "" : "s"}`,
     items,
-    warnings
+    warnings: [...abnormalWarnings, ...warnings]
   };
 }
 
@@ -832,6 +937,13 @@ export function formatLabChronologyPromptBlock(timeline) {
     if (timeline.ambiguousRows.length > 12) {
       lines.push(`- ${timeline.ambiguousRows.length - 12} additional ambiguous lab row(s) omitted from this chronology block.`);
     }
+  }
+
+  if (timeline.abnormalFlags?.length) {
+    lines.push("Automated lab range screen; verify against local reference ranges and clinical context:");
+    timeline.abnormalFlags.slice(0, 12).forEach((flag) => {
+      lines.push(`- ${flag.text} at ${formatTimestampForPrompt(flag.time)}.`);
+    });
   }
 
   lines.push("</lab_chronology>");

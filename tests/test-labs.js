@@ -36,6 +36,7 @@ Glucose 06/06/2026 12:00 220 mg/dL
 Glucose 06/06/2026 16:02 180 mg/dL`);
 assert.equal(latestFor(glucoseQ4h, "Glucose")?.collectionTime.timeLabel, "16:02", "q4h glucose should sort by collection clock time");
 assert.deepEqual(eventsFor(glucoseQ4h, "Glucose").map((event) => event.collectionTime.timeLabel), ["04:02", "08:01", "12:00", "16:02"], "q4h glucose events should remain chronological");
+assert.ok(glucoseQ4h.abnormalFlags.some((flag) => flag.analyte === "Glucose" && flag.direction === "high"), "high glucose values should be flagged against the screening range");
 
 const duplicateNames = parseLabTimeline(`Glucose 06/06/2026 08:00 180 mg/dL
 Glucose 06/06/2026 12:00 210 mg/dL
@@ -46,6 +47,8 @@ assert.deepEqual(eventsFor(duplicateNames, "Glucose").map((event) => event.colle
 const resultedAfterCollection = parseLabTimeline(`BMP Collected: 06/06/2026 06:00 Resulted: 06/06/2026 11:00 Na 132, K 3.4, Cl 98, CO2 20, BUN 21, Cr 1.5, Glucose 412
 BMP Collected: 06/06/2026 08:00 Resulted: 06/06/2026 09:00 Na 134, K 3.8, Cl 100, CO2 22, BUN 20, Cr 1.4, Glucose 250`);
 assert.equal(latestFor(resultedAfterCollection, "BMP")?.collectionTime.timeLabel, "08:00", "collection time should outrank resulted time for recency");
+assert.ok(resultedAfterCollection.criticalFlags.some((flag) => flag.analyte === "Glucose" && flag.severity === "critical"), "glucose >= 400 should be flagged as a critical screening value");
+assert.ok(formatLabTimelinePreview(resultedAfterCollection).warnings.some((warning) => /critical high/.test(warning.text)), "preview should include critical lab screening warnings");
 
 const midnight = parseLabTimeline(fixture("midnight-rollover.txt"));
 assert.deepEqual(eventsFor(midnight, "Glucose").map((event) => `${event.collectionTime.dayLabel} ${event.collectionTime.timeLabel}`), ["Day -1 23:58", "Day 0 00:12", "Day 0 04:00"], "midnight rollover should preserve date boundary chronology");

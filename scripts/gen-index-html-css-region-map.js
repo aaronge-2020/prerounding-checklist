@@ -65,5 +65,15 @@ Columns: line range in styles.css, dominant class/id/media prefix in that range,
 \`\`\`
 `;
 
-fs.writeFileSync(outPath, header + rows + "\n```\n");
-console.log(`Wrote ${regions.length} regions to ${path.relative(repoRoot, outPath)}`);
+const output = header + rows + "\n```\n";
+
+if (process.argv.includes("--check")) {
+  const current = fs.existsSync(outPath) ? fs.readFileSync(outPath, "utf8") : "";
+  if (current !== output) {
+    throw new Error(`${path.relative(repoRoot, outPath)} is out of date. Run npm run build:index-html-css-map.`);
+  }
+  console.log(`${path.relative(repoRoot, outPath)} is current.`);
+} else {
+  fs.writeFileSync(outPath, output);
+  console.log(`Wrote ${regions.length} regions to ${path.relative(repoRoot, outPath)}`);
+}

@@ -14,12 +14,15 @@ Privacy-first browser app for inpatient pre-rounding. The app helps turn pasted 
 ## Repo Map
 
 - `index.html`: the browser app UI and workflow wiring.
-- `deid.js`, `deid-worker.js`: local de-identification pipeline.
-- `labs.js`, `checklist.js`, `continuity.js`: shared workflow modules.
-- `clinical-intents.js`: validated and partial clinical intent registry.
-- `complaint-cds.js`: complaint/workup selection and formatting logic.
-- `evidence.js`: evidence catalog ranking and recommended bedside checklist logic.
-- `data/`: CSV reference data for physical exam maneuvers, evidence retrieval, source rows, and evidence evaluation.
+- `styles.css`: app stylesheet loaded by `index.html`.
+- `src/vault/deid.js`: local browser de-identification pipeline.
+- `src/clinical/labs.js`, `src/clinical/checklist.js`, `src/clinical/continuity.js`: shared workflow modules.
+- `src/clinical/clinical-intents.js`: validated and partial clinical intent registry.
+- `src/clinical/complaint-cds.js`: complaint/workup selection and formatting logic.
+- `src/clinical/medication-safety.js`: lightweight medication safety screening helpers.
+- `src/app/state-schema.js`: persisted vault field schema used by the app shell.
+- `open-evidence-workflows.js` and `open-evidence-results.js`: OpenEvidence task prompt wiring and result parsing.
+- `data/`: physical exam reference data, clinical guard data, test notes, and legacy/orphaned evidence CSVs.
 - `docs/`: maintainer notes that should stay reviewable and hand-edited.
 - `docs/presentation-note-standard.md`: canonical standard for H&Ps, oral presentations, and follow-up note style.
 - `data/physical-exam/physical_exam_reference.csv`: source physical exam maneuver reference.
@@ -74,7 +77,7 @@ The generated endocrine modules are marked `review_ready`, not automatically val
 Run the focused checks after changing app wiring or clinical content:
 
 ```bash
-npm test
+npm run test:ci
 npm run test:syntax
 npm run test:clinical-intents
 npm run test:complaint-cds
@@ -82,7 +85,7 @@ npm run test:medical-knowledge
 npm run test:endocrine-knowledge
 ```
 
-Use `npm run test:evidence-suite` when touching `data/evidence/` or evidence ranking, and `npm run test:core` when touching de-identification, labs, checklist parsing, vault storage, or continuity.
+Use `npm run test:core` when touching de-identification, labs, checklist parsing, vault storage, state schema, medication safety screening, or continuity. The former standalone evidence retrieval engine and `test:evidence-suite` script have been removed; `data/evidence/` is retained as legacy/orphaned reference material until a maintainer decides whether to archive it.
 
 ## Security And Privacy
 

@@ -47,6 +47,21 @@ import {
 import { buildZoneMap, zoneTypeForSpan, isProtectedZoneType } from "./deid/zones.js";
 import { collectDictionaryNameCandidates } from "./deid/name-recall.js";
 
+
+// ── Auto-import clinical guard vocabulary (built from MeSH + RxNorm) ──
+// To update: npm run build:clinical-guard-full
+import {
+  medicationWords as _vwMedicationWords,
+  nonNameClinicalWords as _vwNonNameClinicalWords,
+  nonNameClinicalPhrases as _vwNonNameClinicalPhrases,
+  clinicalAnchorWords as _vwClinicalAnchorWords
+} from "../../data/clinical-guard-export.js";
+
+_vwMedicationWords.forEach((w) => medicationNameWords.add(w));
+_vwNonNameClinicalWords.forEach((w) => nonNameClinicalWords.add(w));
+_vwNonNameClinicalPhrases.forEach((p) => nonNameClinicalPhrases.add(p));
+_vwClinicalAnchorWords.forEach((w) => clinicalAnchorWords.add(w));
+
 export function normalizePhiLabel(entityOrLabel) {
   const rawLabel = typeof entityOrLabel === "string"
     ? entityOrLabel

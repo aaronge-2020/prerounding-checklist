@@ -89,6 +89,15 @@ Covers ${withBucket.length} top-level function/class/const-fn declarations found
 `;
 
 const rows = withBucket.map((s) => `| ${s.name} | ${s.line} | ${s.bucket} |`).join("\n");
+const output = header + rows + "\n";
 
-fs.writeFileSync(outPath, header + rows + "\n");
-console.log(`Wrote ${withBucket.length} symbols to ${path.relative(repoRoot, outPath)}`);
+if (process.argv.includes("--check")) {
+  const current = fs.existsSync(outPath) ? fs.readFileSync(outPath, "utf8") : "";
+  if (current !== output) {
+    throw new Error(`${path.relative(repoRoot, outPath)} is out of date. Run npm run build:index-html-symbol-map.`);
+  }
+  console.log(`${path.relative(repoRoot, outPath)} is current.`);
+} else {
+  fs.writeFileSync(outPath, output);
+  console.log(`Wrote ${withBucket.length} symbols to ${path.relative(repoRoot, outPath)}`);
+}
