@@ -16,7 +16,8 @@ export function buildChatAiHandoffPrompt({
   deidentifiedContext = "",
   currentChecklist = "",
   validatorErrors = [],
-  pastedJson = ""
+  pastedJson = "",
+  sourceRecommendations = ""
 } = {}) {
   const normalizedTitle = cleanString(title) || "the requested clinical problem";
   const targetId = cleanString(workupId) || slugifyContributionId(normalizedTitle, "new_workup_v1");
@@ -26,7 +27,8 @@ export function buildChatAiHandoffPrompt({
     history_questions: `Suggest source-backed history questions for ${normalizedTitle}.`,
     physical_exam: `Suggest physical exam maneuvers for ${normalizedTitle}. Prefer exam_id values from the app's finite physical exam catalog.`,
     convert_text: "Convert the provided free-text suggestions into workup_contribution_v1 JSON.",
-    fix_json: "Revise the pasted JSON so it passes the validator errors."
+    fix_json: "Revise the pasted JSON so it passes the validator errors.",
+    format_recommendations: `This is a formatting task only, not a clinical reasoning task. Convert the clinical recommendations below for ${normalizedTitle} into workup_contribution_v1 JSON. Do not add, remove, or change any history question, exam maneuver, or clinical judgment beyond what is explicitly stated in the recommendations. Do not invent citations or source IDs — if a source is not named in the recommendations, use the placeholder value "reviewer_to_confirm_source" and note it in reviewer_notes.`
   }[mode] || `Create a draft workup contribution for ${normalizedTitle}.`;
   const schemaExample = {
     schema: WORKUP_CONTRIBUTION_SCHEMA,
@@ -85,6 +87,7 @@ export function buildChatAiHandoffPrompt({
     currentChecklist ? `Current checklist or section being edited.\n${String(currentChecklist).slice(0, 3000)}` : "",
     validatorErrors.length ? `Validator errors to fix.\n${validatorErrors.map((issue) => `- ${issue}`).join("\n")}` : "",
     pastedJson ? `Pasted JSON to revise.\n${String(pastedJson).slice(0, 6000)}` : "",
+    sourceRecommendations ? `Clinical recommendations to format (do not add to or change this content).\n${String(sourceRecommendations).slice(0, 8000)}` : "",
     "Privacy rules: no raw chart text, patient identifiers, exact dates, room numbers, MRNs, addresses, contact info, or unnecessary demographics.",
     [
       "Required field names — use exactly these, no synonyms:",

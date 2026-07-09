@@ -1244,8 +1244,7 @@
     @media (max-width: 760px) {
       body[data-view="workspace"][data-patient-tab="workup"] .topbar,
       body[data-view="workspace"][data-patient-tab="workup"] .safety-bar,
-      body[data-view="workspace"][data-patient-tab="workup"] .patient-workspace-head,
-      body[data-view="workspace"][data-patient-tab="workup"] .patient-task-strip {
+      body[data-view="workspace"][data-patient-tab="workup"] .patient-workspace-head {
         display: none !important;
       }
     }
@@ -3549,6 +3548,7 @@
       align-content: start;
       gap: 7px;
       min-height: 0;
+      max-height: min(60vh, 520px);
       overflow: auto;
       padding-right: 2px;
     }
@@ -4205,25 +4205,16 @@
     }
 
     #workupStudioEditor {
-      position: fixed;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 150;
-      width: min(480px, 92vw);
-      max-width: 100vw;
-      border: 0;
-      border-left: 1px solid #c7dadd;
-      border-radius: 0;
-      box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
-      transform: translateX(100%);
-      transition: transform 0.3s ease;
-      pointer-events: none;
+      max-height: min(60vh, 620px);
     }
 
-    body[data-studio-editor-open="true"] #workupStudioEditor {
-      transform: translateX(0);
-      pointer-events: auto;
+    .studio-form-empty {
+      display: grid;
+      align-content: start;
+      gap: 4px;
+      padding: 22px 12px;
+      color: var(--muted);
+      text-align: center;
     }
 
     .studio-form > *,
@@ -4258,16 +4249,18 @@
     }
 
     .studio-drawer-close {
-      display: inline-grid;
-      place-items: center;
-      width: 34px;
-      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      height: 30px;
       border: 1px solid #cfe0e2;
       border-radius: 999px;
       background: #ffffff;
-      color: #24404a;
-      font-size: 24px;
+      color: #567078;
+      font-size: 12px;
+      font-weight: 700;
       line-height: 1;
+      padding: 0 12px;
       cursor: pointer;
     }
 
@@ -4320,6 +4313,131 @@
       grid-template-columns: minmax(0, 1fr) auto auto;
       gap: 8px;
       align-items: center;
+    }
+
+    .studio-required-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #f8fbfb;
+      font-size: 13px;
+      font-weight: 700;
+      color: #24404a;
+      cursor: pointer;
+    }
+
+    .studio-required-toggle input {
+      width: 17px;
+      height: 17px;
+      accent-color: var(--teal);
+    }
+
+    .studio-choice-editor {
+      display: grid;
+      gap: 8px;
+    }
+
+    .studio-choice-editor-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .studio-multi-toggle {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #33454d;
+      cursor: pointer;
+    }
+
+    .studio-multi-toggle input {
+      width: 15px;
+      height: 15px;
+      accent-color: var(--teal);
+    }
+
+    .studio-choice-list {
+      display: grid;
+      gap: 6px;
+    }
+
+    .studio-choice-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .studio-choice-row input[type="text"] {
+      min-width: 0;
+      height: 36px;
+      border: 1px solid #c9dbde;
+      border-radius: 7px;
+      padding: 0 10px;
+      font-size: 13px;
+    }
+
+    .studio-choice-row-normal {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+      font-size: 11px;
+      font-weight: 700;
+      color: #567078;
+      cursor: pointer;
+    }
+
+    .studio-choice-row-normal input {
+      width: 14px;
+      height: 14px;
+      accent-color: var(--teal);
+    }
+
+    .studio-choice-row-remove {
+      display: inline-grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border: 1px solid #e3c9c9;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #a13f3f;
+      font-size: 16px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .studio-choice-row-remove:hover {
+      background: #fdf1f1;
+    }
+
+    .studio-choice-add-button {
+      justify-self: start;
+      border: 1px dashed #99c4c0;
+      border-radius: 7px;
+      background: transparent;
+      color: var(--teal-dark);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 7px 12px;
+      cursor: pointer;
+    }
+
+    .studio-choice-add-button:hover {
+      background: var(--teal-soft);
+    }
+
+    .studio-choice-empty {
+      font-size: 12px;
+      color: var(--muted);
     }
 
     .studio-pathway-summary,
@@ -7246,165 +7364,6 @@
       display: none;
     }
 
-    .today-cockpit {
-      display: grid;
-      gap: 12px;
-    }
-
-    .today-cockpit-head {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 12px;
-      align-items: start;
-    }
-
-    .today-mode-toggle {
-      display: inline-grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 4px;
-      padding: 4px;
-      border: 1px solid var(--line);
-      border-radius: 7px;
-      background: #ffffff;
-    }
-
-    .today-mode-toggle button {
-      min-height: 34px;
-      border: 0;
-      border-radius: 5px;
-      background: transparent;
-      padding: 6px 10px;
-      font-size: 12px;
-      font-weight: 850;
-      color: #33525a;
-      white-space: nowrap;
-    }
-
-    .today-mode-toggle button[aria-pressed="true"] {
-      background: var(--teal-soft);
-      color: var(--teal-dark);
-    }
-
-    .today-status-grid {
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 8px;
-    }
-
-    .today-status-card {
-      min-width: 0;
-      border: 1px solid var(--line);
-      border-radius: 7px;
-      background: #ffffff;
-      padding: 9px 10px;
-    }
-
-    .today-status-card span {
-      display: block;
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0;
-    }
-
-    .today-status-card strong {
-      display: block;
-      margin-top: 2px;
-      font-size: 13px;
-      line-height: 1.25;
-      overflow-wrap: anywhere;
-    }
-
-    .today-paste-grid,
-    .today-input-grid,
-    .today-baseline-grid {
-      display: grid;
-      gap: 10px;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .today-paste-grid {
-      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-    }
-
-    .today-cockpit textarea {
-      width: 100%;
-      min-height: 92px;
-      resize: vertical;
-    }
-
-    .today-cockpit #todaySmartPasteInput,
-    .today-cockpit #todayRoundsPromptPreview {
-      min-height: 208px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size: 12px;
-      line-height: 1.45;
-    }
-
-    .today-review-list {
-      display: grid;
-      gap: 6px;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .today-review-list li {
-      display: grid;
-      grid-template-columns: 92px minmax(0, 1fr);
-      gap: 8px;
-      align-items: start;
-      padding: 8px 9px;
-      border: 1px solid var(--line);
-      border-radius: 7px;
-      background: #ffffff;
-      color: #27434b;
-    }
-
-    .today-review-list strong {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0;
-    }
-
-    .today-review-list span {
-      min-width: 0;
-      overflow-wrap: anywhere;
-      color: var(--muted);
-    }
-
-    .today-review-list [data-status="changed"],
-    .today-review-list [data-status="new"] {
-      color: var(--teal-dark);
-    }
-
-    .today-review-list [data-status="missing"] {
-      color: var(--amber);
-    }
-
-    .today-review-list [data-status="unchanged"] {
-      color: var(--muted);
-    }
-
-    .today-prompt-actions {
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    @media (max-width: 760px) {
-      .today-cockpit-head,
-      .today-paste-grid,
-      .today-input-grid,
-      .today-baseline-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .today-status-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
     .patient-evidence-grid {
       display: grid;
       grid-template-columns: minmax(300px, 0.34fr) minmax(0, 1fr);
@@ -8772,10 +8731,6 @@
     @media (max-width: 760px) {
       :root {
         --app-nav-rail-w: 48px;
-      }
-
-      .patient-task-strip {
-        display: none;
       }
 
       .patient-task-strip button {

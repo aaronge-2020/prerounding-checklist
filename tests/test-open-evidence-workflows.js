@@ -114,9 +114,9 @@ openEvidenceTasks.forEach((task) => {
 });
 
 const builtPromptById = Object.fromEntries(openEvidenceTasks.map((task) => [task.id, buildOpenEvidencePrompt(task.id, baseContext).prompt]));
-assert.ok(builtPromptById.initial_rounds_report.includes("docs/presentation-note-standard.md"), "initial rounds prompt should reference the canonical note standard");
-assert.ok(builtPromptById.full_rounds_report.includes("docs/presentation-note-standard.md"), "full rounds prompt should reference the canonical note standard");
-assert.ok(builtPromptById.final_rounds_update.includes("docs/presentation-note-standard.md"), "final update prompt should reference the canonical note standard");
+assert.ok(builtPromptById.initial_rounds_report.includes("Rule of separation"), "initial rounds prompt should embed the canonical note standard's rules, not just reference the file");
+assert.ok(builtPromptById.full_rounds_report.includes("Rule of separation"), "full rounds prompt should embed the canonical note standard's rules, not just reference the file");
+assert.ok(builtPromptById.final_rounds_update.includes("Rule of separation"), "final update prompt should embed the canonical note standard's rules, not just reference the file");
 assert.ok(!ids.has("confirm_guideline"), "Confirm guideline task should be removed because attending-level plan covers guideline-based recommendations");
 assert.ok(!ids.has("checklist_improvement_review"), "checklist evidence-review task should be removed with the cut workup-tree/red-flag features");
 assert.ok(!ids.has("decision_tree_builder"), "decision-tree builder task should be removed with the clinical pathway graph");

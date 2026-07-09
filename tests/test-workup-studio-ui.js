@@ -1170,14 +1170,31 @@ try {
   await page.locator("#workupStudioSectionTabs button", { hasText: "History questions" }).click();
   await page.waitForSelector("#workupStudioItemLabelInput");
   assert.match(await page.textContent("#workupStudioItemList"), /Supabase current missed insulin question/, "Supabase section hydration should populate current canonical history questions.");
-  assert.ok(await page.locator("#workupStudioItemGroupSelect").isVisible(), "History item editor should expose editable row scope.");
-  assert.ok(await page.locator("#workupStudioItemAnswerModeSelect").isVisible(), "History item editor should expose answer mode.");
-  assert.ok(await page.locator("#workupStudioItemOptionsInput").isVisible(), "History item editor should expose structured answer options.");
-  assert.ok(await page.locator("#workupStudioItemNormalAnswersInput").isVisible(), "History item editor should expose normal/default answers.");
+  assert.ok(await page.locator("#workupStudioItemRequiredInput").isVisible(), "History item editor should expose a required toggle.");
+  assert.ok(await page.locator("#workupStudioItemMultiSelectInput").isVisible(), "History item editor should expose a multi-select toggle.");
+  assert.ok(await page.locator("#workupStudioItemChoicesList").isVisible(), "History item editor should expose structured answer choices.");
   assert.ok(await page.locator("#workupStudioDeleteItemButton").isVisible(), "History item editor should expose row removal.");
-  assert.equal(await page.inputValue("#workupStudioItemGroupSelect"), "requiredQuestions");
-  assert.equal(await page.inputValue("#workupStudioItemAnswerModeSelect"), "single");
-  assert.match(await page.inputValue("#workupStudioItemOptionsInput"), /Missed basal insulin/, "History editor should hydrate answer options.");
+  assert.equal(await page.isChecked("#workupStudioItemRequiredInput"), true);
+  assert.equal(await page.isChecked("#workupStudioItemMultiSelectInput"), false);
+  const readStudioChoiceRows = () => page.evaluate(() => Array.from(document.querySelectorAll("#workupStudioItemChoicesList .studio-choice-row")).map((row) => ({
+    text: row.querySelector("input[type='text']").value,
+    normal: row.querySelector("input[type='checkbox']").checked
+  })));
+  const setStudioChoiceRows = (choices) => page.evaluate((rows) => {
+    document.getElementById("workupStudioItemAddChoiceButton");
+    const list = document.getElementById("workupStudioItemChoicesList");
+    list.innerHTML = "";
+    for (const { text, normal } of rows) {
+      const row = document.createElement("div");
+      row.className = "studio-choice-row";
+      row.innerHTML = `<input type="text" maxlength="240"><label class="studio-choice-row-normal"><input type="checkbox"></label><button class="studio-choice-row-remove" type="button">&times;</button>`;
+      row.querySelector("input[type='text']").value = text;
+      row.querySelector("input[type='checkbox']").checked = Boolean(normal);
+      row.querySelector(".studio-choice-row-remove").addEventListener("click", () => row.remove());
+      list.appendChild(row);
+    }
+  }, choices);
+  assert.match((await readStudioChoiceRows()).map((row) => row.text).join("\n"), /Missed basal insulin/, "History editor should hydrate answer options.");
   const historyToolbarAudit = await page.evaluate(() => ({
     toolbarVisible: Boolean(document.querySelector("#workupStudioItemSearchInput")?.getBoundingClientRect().height),
     addVisible: Boolean(document.querySelector("#workupStudioToolbarAddItemButton")?.getBoundingClientRect().height),
@@ -1331,11 +1348,17 @@ try {
   )), "Supabase physical exam patch import draft insert");
   await page.locator("#workupStudioSectionTabs button", { hasText: "History questions" }).click();
   await page.waitForSelector("#workupStudioItemLabelInput");
-  await page.selectOption("#workupStudioItemGroupSelect", "conditionalQuestions");
-  await page.selectOption("#workupStudioItemAnswerModeSelect", "multi");
+  await page.uncheck("#workupStudioItemRequiredInput");
+  await page.check("#workupStudioItemMultiSelectInput");
   await page.fill("#workupStudioItemLabelInput", "Studio test: ask about missed insulin, vomiting, and oral intake?");
-  await page.fill("#workupStudioItemOptionsInput", "No missed doses\nMissed basal insulin\nMissed bolus insulin\nVomiting\nPoor oral intake\nOther ___");
-  await page.fill("#workupStudioItemNormalAnswersInput", "No missed doses");
+  await setStudioChoiceRows([
+    { text: "No missed doses", normal: true },
+    { text: "Missed basal insulin" },
+    { text: "Missed bolus insulin" },
+    { text: "Vomiting" },
+    { text: "Poor oral intake" },
+    { text: "Other ___" }
+  ]);
   await page.click("#workupStudioSaveItemDraftButton");
   await page.waitForFunction(() => Number(document.querySelector("#workupStudioDraftCount")?.textContent || "0") >= 2);
   await waitForCondition(() => supabaseRequests.postedRows.some((row) => row.section_key === "history_questions"), "Supabase history draft insert");
@@ -1396,11 +1419,15 @@ try {
   assert.doesNotMatch(storedDrafts, /raw chart|MRN|DOB|patient identifier|room number/i, "Workup Studio local drafts should stay PHI-free.");
 
   await page.locator("#workupStudioSectionTabs button", { hasText: "Physical exam" }).click();
-  await page.waitForSelector("#workupStudioItemOptionsInput");
-  assert.match(await page.inputValue("#workupStudioItemOptionsInput"), /Kussmaul pattern/, "Physical exam editor should hydrate findings_options into the option editor.");
-  await page.selectOption("#workupStudioItemAnswerModeSelect", "single");
-  await page.fill("#workupStudioItemOptionsInput", "Comfortable\nMildly increased work\nKussmaul pattern\nUnable to assess");
-  await page.fill("#workupStudioItemNormalAnswersInput", "Comfortable");
+  await page.waitForSelector("#workupStudioItemChoicesList");
+  assert.match((await readStudioChoiceRows()).map((row) => row.text).join("\n"), /Kussmaul pattern/, "Physical exam editor should hydrate findings_options into the option editor.");
+  await page.uncheck("#workupStudioItemMultiSelectInput");
+  await setStudioChoiceRows([
+    { text: "Comfortable", normal: true },
+    { text: "Mildly increased work" },
+    { text: "Kussmaul pattern" },
+    { text: "Unable to assess" }
+  ]);
   await page.click("#workupStudioSaveItemDraftButton");
   await waitForCondition(() => supabaseRequests.postedRows.some((row) => row.section_key === "physical_exam"), "Supabase physical exam draft insert");
   const examRow = supabaseRequests.postedRows.filter((row) => row.section_key === "physical_exam").at(-1);

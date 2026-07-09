@@ -248,8 +248,7 @@
               </div>
             </div>
             <div class="patient-task-strip" role="tablist" aria-label="Selected patient workspace tabs">
-              <button type="button" role="tab" data-patient-tab="today" aria-selected="true"><span class="tab-icon icon-box" data-icon="list" aria-hidden="true"></span><span>Today</span></button>
-              <button type="button" role="tab" data-patient-tab="context" aria-selected="false"><span class="tab-icon icon-box" data-icon="users" aria-hidden="true"></span><span>Context</span></button>
+              <button type="button" role="tab" data-patient-tab="context" aria-selected="true"><span class="tab-icon icon-box" data-icon="users" aria-hidden="true"></span><span>Context</span></button>
               <button type="button" role="tab" data-patient-tab="workup" aria-selected="false"><span class="tab-icon icon-box" data-icon="file-text" aria-hidden="true"></span><span>Workup</span></button>
               <button type="button" role="tab" data-patient-tab="checklist" aria-selected="false"><span class="tab-icon icon-box" data-icon="check-square" aria-hidden="true"></span><span>Checklist</span></button>
               <button type="button" role="tab" data-patient-tab="findings" aria-selected="false"><span class="tab-icon icon-box" data-icon="activity" aria-hidden="true"></span><span>Findings</span></button>
@@ -257,145 +256,6 @@
               <button type="button" role="tab" data-patient-tab="handoff" aria-selected="false" aria-label="Phone handoff" aria-hidden="true" tabindex="-1" hidden>Phone</button>
             </div>
             <div class="patient-workflow-grid">
-              <section class="workflow-panel workflow-panel-wide" id="patientOverviewPanel" data-patient-panel="overview">
-                <div class="panel-title-row">
-                  <h3>Selected patient overview</h3>
-                  <span class="meta-tag">Local vault patient</span>
-                </div>
-                <div class="patient-workup-summary">
-                  <div>
-                    <p class="muted" id="patientOverviewText">Selected vault patient. Work through context, workup, checklist, findings, OpenEvidence prompts, handoff, and final review here.</p>
-                    <div class="button-row">
-                      <button class="btn btn-secondary" id="patientOverviewContextButton" type="button">Update context</button>
-                      <button class="btn btn-secondary" id="patientOverviewWorkupButton" type="button">Open workup</button>
-                      <button class="btn btn-primary" id="patientOverviewChecklistButton" type="button">Build checklist</button>
-                    </div>
-                    <div class="objective-data-panel" id="patientObjectiveSummaryPanel" hidden></div>
-                  </div>
-                  <div class="summary-box workflow-help">
-                    <h3>Patient workflow</h3>
-                    <ul class="compact-list">
-                      <li>Admission and continuity stay in the patient context tab.</li>
-                      <li>Workup search and modifiers are patient-specific.</li>
-                      <li>History and physical exam answers create findings; OpenEvidence prompts are reviewed from the patient tab.</li>
-                    </ul>
-                  </div>
-                </div>
-                <div class="rounds-report-section" id="patientOverviewRoundsReportSection" hidden>
-                  <div class="panel-title-row" style="margin-top: 20px; border-top: 1px solid var(--line); padding-top: 16px;">
-                    <h3>Saved Concise Rounds Report</h3>
-                    <div class="button-row">
-                      <button class="btn btn-secondary" id="patientOverviewCopyRoundsReportButton" type="button">
-                        <span class="icon-box" data-icon="copy" aria-hidden="true"></span>Copy presentation
-                      </button>
-                    </div>
-                  </div>
-                  <div class="rounds-report-card" id="patientOverviewRoundsReportCard"></div>
-                </div>
-                <div class="rounds-report-section" id="patientOverviewPasteBackSection" hidden>
-                  <div class="panel-title-row" style="margin-top: 20px; border-top: 1px solid var(--line); padding-top: 16px;">
-                    <h3>Saved Task Results</h3>
-                  </div>
-                  <div class="rounds-report-card" id="patientOverviewPasteBackCard"></div>
-                </div>
-              </section>
-
-              <section class="workflow-panel workflow-panel-wide today-cockpit" id="patientTodayPanel" data-patient-panel="today" hidden>
-                <div class="today-cockpit-head">
-                  <div>
-                    <div class="panel-title-row">
-                      <h3>Today's pre-round cockpit</h3>
-                      <span class="meta-tag" id="todayDateLabel">Today</span>
-                    </div>
-                    <p class="muted" id="todayModeHelp" style="margin: 2px 0 0;">Paste today's reviewed chart details, save the local update, then build the bedside checklist and rounds prompt.</p>
-                  </div>
-                  <div class="today-mode-toggle" aria-label="Today's workflow mode">
-                    <button type="button" data-today-mode="new" aria-pressed="true">New patient</button>
-                    <button type="button" data-today-mode="returning" aria-pressed="false">24h update</button>
-                  </div>
-                </div>
-
-                <div class="today-status-grid" id="todayStatusGrid" aria-label="Pre-round readiness">
-                  <div class="today-status-card"><span>Baseline</span><strong id="todayBaselineStatus">Not saved</strong></div>
-                  <div class="today-status-card"><span>Today</span><strong id="todayInputStatus">No update</strong></div>
-                  <div class="today-status-card"><span>Workup</span><strong id="todayWorkupStatus">Not selected</strong></div>
-                  <div class="today-status-card"><span>Bedside</span><strong id="todayChecklistStatus">Not built</strong></div>
-                  <div class="today-status-card"><span>Prompt</span><strong id="todayPromptStatus">Not ready</strong></div>
-                </div>
-
-                <div class="today-paste-grid">
-                  <div>
-                    <label for="todaySmartPasteInput">Smart paste</label>
-                    <textarea id="todaySmartPasteInput" maxlength="16000" aria-describedby="localTextEntryHelp" placeholder="Optional: paste one block with headings like Today note:, Labs:, Updated MAR:, Overnight events:, Subjective change:."></textarea>
-                    <div class="button-row">
-                      <button class="btn btn-secondary" id="todaySortPasteButton" type="button">Sort paste into fields</button>
-                      <button class="btn btn-secondary" id="todayClearPasteButton" type="button">Clear paste</button>
-                    </div>
-                  </div>
-                  <div>
-                    <label for="todayRoundsPromptPreview">Rounds SOAP prompt preview</label>
-                    <textarea id="todayRoundsPromptPreview" spellcheck="false" readonly aria-label="De-identified oral rounds SOAP prompt preview"></textarea>
-                    <div class="button-row today-prompt-actions">
-                      <button class="btn btn-primary" id="todayCopyRoundsPromptButton" type="button">Copy rounds prompt</button>
-                      <button class="btn btn-secondary" id="todayOpenEvidenceButton" type="button">Open OpenEvidence</button>
-                    </div>
-                    <label for="todayOpenEvidencePasteInput">OpenEvidence returned presentation</label>
-                    <textarea id="todayOpenEvidencePasteInput" maxlength="30000" aria-describedby="localTextEntryHelp" placeholder="Paste the full plain-language OpenEvidence result. The app saves it locally as the returned summary."></textarea>
-                    <div class="button-row">
-                      <button class="btn btn-secondary" id="todayApplyOpenEvidenceButton" type="button">Record returned summary</button>
-                      <span class="meta-tag" id="todayPasteBackStatus">No returned summary</span>
-                    </div>
-                    <div class="evidence-change-preview" id="todayRoundsPasteBackPreview" data-status="empty" aria-live="polite">No concise rounds report saved yet.</div>
-                  </div>
-                </div>
-
-                <div class="today-baseline-grid">
-                  <div>
-                    <label for="todayBaselineSummaryInput">Stable baseline summary</label>
-                    <textarea id="todayBaselineSummaryInput" maxlength="4000" aria-describedby="localTextEntryHelp" placeholder="One-liner, hospital course, stable background to carry forward."></textarea>
-                  </div>
-                  <div>
-                    <label for="todayActiveProblemsInput">Active problems and selected workups</label>
-                    <textarea id="todayActiveProblemsInput" maxlength="4000" aria-describedby="localTextEntryHelp" placeholder="Problem list, selected workup, current major management questions."></textarea>
-                  </div>
-                  <div>
-                    <label for="todayYesterdayPlanInput">Yesterday plan</label>
-                    <textarea id="todayYesterdayPlanInput" maxlength="4000" aria-describedby="localTextEntryHelp" placeholder="Plans or contingencies you want today's update to carry forward."></textarea>
-                  </div>
-                  <div>
-                    <label for="todayPendingItemsInput">Pending items</label>
-                    <textarea id="todayPendingItemsInput" maxlength="4000" aria-describedby="localTextEntryHelp" placeholder="Pending labs, imaging, consult questions, discharge barriers, or watch items."></textarea>
-                  </div>
-                </div>
-
-                <div class="today-input-grid">
-                  <div>
-                    <label for="todayNoteInput">Recent note or SOAP update</label>
-                    <textarea id="todayNoteInput" maxlength="8000" aria-describedby="localTextEntryHelp"></textarea>
-                  </div>
-                  <div>
-                    <label for="todayLabsInput">Most recent labs/results</label>
-                    <textarea id="todayLabsInput" maxlength="8000" aria-describedby="localTextEntryHelp"></textarea>
-                  </div>
-                  <div>
-                    <label for="todayMarInput">MAR / meds in last 24 hours</label>
-                    <textarea id="todayMarInput" maxlength="8000" aria-describedby="localTextEntryHelp"></textarea>
-                  </div>
-                  <div>
-                    <label for="todayOvernightInput">Overnight events and subjective changes</label>
-                    <textarea id="todayOvernightInput" maxlength="8000" aria-describedby="localTextEntryHelp"></textarea>
-                  </div>
-                </div>
-
-                <div class="button-row">
-                  <button class="btn btn-primary" id="saveTodayUpdateButton" type="button">Save today's update</button>
-                  <button class="btn btn-secondary" id="todayBuildChecklistButton" type="button">Build bedside checklist</button>
-                  <button class="btn btn-secondary" id="todayAnswerChecklistButton" type="button">Answer checklist</button>
-                  <button class="btn btn-secondary" id="todayOpenPromptWorkbenchButton" type="button">Open prompt workbench</button>
-                </div>
-                <ul class="today-review-list" id="todayUpdateReviewList" aria-live="polite"></ul>
-              </section>
-
               <section class="workflow-panel" id="patientAdmissionPanel" data-patient-panel="context" hidden>
                 <div class="panel-title-row">
                   <h3>New admission context</h3>
@@ -728,7 +588,7 @@
                 <button class="studio-modal-close" id="workupStudioNewWorkupDialogClose" type="button" aria-label="Close">&times;</button>
               </div>
               <div class="studio-modal-body">
-                <p class="muted">Create a new clinical workup module using AI. Enter the complaint details below, generate an AI prompt, paste the structured response, and the workup will be saved locally (and to Supabase for others if you are signed in).</p>
+                <p class="muted">Create a new clinical workup module in three steps: ask OpenEvidence what a thorough bedside workup needs (clinical reasoning, no JSON), ask ChatGPT or Claude to format that into the app's schema (formatting only, no new clinical content), then paste the JSON to create the workup.</p>
                 <div class="studio-source-grid">
                   <label for="workupStudioNewWorkupComplaintInput">Complaint / condition name
                     <input id="workupStudioNewWorkupComplaintInput" maxlength="180" placeholder="e.g. Hyperglycemia, possible DKA">
@@ -757,16 +617,35 @@
                 <label for="workupStudioNewWorkupTriggersInput">Trigger keywords (comma-separated)
                   <input id="workupStudioNewWorkupTriggersInput" maxlength="420" placeholder="e.g. dka, hyperglycemia, diabetes, high blood sugar, anion gap">
                 </label>
+
+                <div class="panel-title-row" style="margin-top: 16px; border-top: 1px solid var(--line); padding-top: 12px;"><h3>Step 1 &middot; Ask OpenEvidence what to include</h3></div>
                 <div class="button-row">
-                  <button class="btn btn-primary" id="workupStudioNewWorkupGeneratePromptButton" type="button">Generate AI prompt</button>
+                  <button class="btn btn-primary" id="workupStudioNewWorkupGeneratePromptButton" type="button">Generate OpenEvidence prompt</button>
                 </div>
-                <label for="workupStudioNewWorkupPromptOutput">AI prompt (copy this to ChatGPT or Claude)
-                  <textarea id="workupStudioNewWorkupPromptOutput" readonly spellcheck="false" rows="8" placeholder="Fill in the fields above and click Generate AI prompt."></textarea>
+                <label for="workupStudioNewWorkupPromptOutput">OpenEvidence prompt (clinical reasoning only, no JSON)
+                  <textarea id="workupStudioNewWorkupPromptOutput" readonly spellcheck="false" rows="6" placeholder="Fill in the complaint above and click Generate OpenEvidence prompt."></textarea>
                 </label>
                 <div class="button-row">
                   <button class="btn btn-secondary" id="workupStudioNewWorkupCopyPromptButton" type="button">Copy prompt</button>
-                  <button class="btn btn-secondary" id="workupStudioNewWorkupOpenEvidenceButton" type="button">Open ChatGPT</button>
+                  <button class="btn btn-secondary" id="workupStudioNewWorkupOpenEvidenceButton" type="button">Open OpenEvidence</button>
                 </div>
+                <label for="workupStudioNewWorkupRecommendationsInput">Paste OpenEvidence's plain-language recommendations
+                  <textarea id="workupStudioNewWorkupRecommendationsInput" spellcheck="false" rows="8" placeholder="Paste OpenEvidence's history-question and physical-exam recommendations here."></textarea>
+                </label>
+
+                <div class="panel-title-row" style="margin-top: 16px; border-top: 1px solid var(--line); padding-top: 12px;"><h3>Step 2 &middot; Convert to JSON with ChatGPT or Claude</h3></div>
+                <div class="button-row">
+                  <button class="btn btn-primary" id="workupStudioNewWorkupGenerateFormatPromptButton" type="button" disabled>Generate JSON-formatting prompt</button>
+                </div>
+                <label for="workupStudioNewWorkupFormatPromptOutput">Formatting prompt (JSON structure only, no new clinical content)
+                  <textarea id="workupStudioNewWorkupFormatPromptOutput" readonly spellcheck="false" rows="6" placeholder="Paste OpenEvidence's recommendations above, then click Generate JSON-formatting prompt."></textarea>
+                </label>
+                <div class="button-row">
+                  <button class="btn btn-secondary" id="workupStudioNewWorkupCopyFormatPromptButton" type="button">Copy prompt</button>
+                  <button class="btn btn-secondary" id="workupStudioNewWorkupOpenGptButton" type="button">Open ChatGPT</button>
+                </div>
+
+                <div class="panel-title-row" style="margin-top: 16px; border-top: 1px solid var(--line); padding-top: 12px;"><h3>Step 3 &middot; Create the workup</h3></div>
                 <label for="workupStudioNewWorkupPasteInput">Paste AI-generated workup JSON
                   <textarea id="workupStudioNewWorkupPasteInput" spellcheck="false" rows="10" placeholder="Paste workup_contribution_v1 JSON here. It will be validated locally, then made usable on this device immediately while it syncs for review."></textarea>
                 </label>
@@ -1341,6 +1220,7 @@
     import { applySectionPayloadToModule, applyWorkupChangeSet, applyWorkupSectionPatch, collectModuleSourceIds, collectSourceIdsFromValue, makeWorkupChangeSet, sectionPayloadFromModule, workupSectionDefinitions, workupSectionPatchSchema } from "./src/workup/workup-authoring.js";
     import { WORKUP_CONTRIBUTION_SCHEMA, buildGithubIssueUrl, moduleFromWorkupContributionDraft, prepareGithubIssueBody, sourceRowsFromWorkupContributionDraft, validateWorkupContributionDraft } from "./src/workup/workup-contribution.js";
     import { buildChatAiHandoffPrompt } from "./prompts/chat-ai-workup-handoff.js";
+    import { workupContentPrompt } from "./prompts/open-evidence/workup-content-recommendations.js";
     import { loadPhysicalExamCatalog } from "./src/vault/physical-exam-catalog.js";
     import { createClient as createSupabaseClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
     import { QR_DEFAULT_REGISTRY_HASH, QR_ZSTD_DICTIONARY_HASH } from "./vendor/qr-zstd-dictionary.js";
@@ -1640,15 +1520,12 @@
     ]);
     const modifierOptions = clinicalModifierOptions.map((option) => option.label);
     const views = ["workspace", "handoff", "privacy"];
-    const patientTabOrder = ["today", "context", "workup", "checklist", "findings", "evidence", "handoff"];
+    const patientTabOrder = ["context", "workup", "checklist", "findings", "evidence", "handoff"];
     const desktopPatientTabFallbacks = {
-      today: "context",
       handoff: "checklist"
     };
     const phonePatientTabs = new Set(["checklist", "handoff"]);
     const phonePatientTabFallbacks = {
-      overview: "checklist",
-      today: "checklist",
       context: "checklist",
       workup: "checklist",
       findings: "checklist",
@@ -1672,6 +1549,13 @@
     let _deidModelReady = false;
     let _deidModelInstance = null;
     let _deidModelLoading = false;
+    function withTimeout(promise, ms, label) {
+      let timer;
+      const timeout = new Promise((_, reject) => {
+        timer = setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms);
+      });
+      return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+    }
     async function _loadDeidModel() {
       if (_deidModelReady || _deidModelLoading) return _deidModelInstance;
       _deidModelLoading = true;
@@ -1766,7 +1650,7 @@
                 if (!update.ready && update.message) setLoading(update.message);
               }
             });
-            loadedModel = await _deidModelInstance.loadModel();
+            loadedModel = await withTimeout(_deidModelInstance.loadModel(), 12000, "Local de-ID model load");
           } catch (localError) {
             lastError = localError;
             console.warn("Local model load failed, trying CDN...", localError.message);
@@ -1785,7 +1669,7 @@
             }
           });
           try {
-            loadedModel = await _deidModelInstance.loadModel();
+            loadedModel = await withTimeout(_deidModelInstance.loadModel(), 12000, "CDN de-ID model load");
           } catch (cdnError) {
             console.warn("HuggingFace CDN unavailable, trying mirror...", cdnError.message);
             transformers.env.remoteHost = "https://hf-mirror.com";
@@ -1797,7 +1681,7 @@
                 if (!update.ready && update.message) setLoading(update.message);
               }
             });
-            loadedModel = await _deidModelInstance.loadModel();
+            loadedModel = await withTimeout(_deidModelInstance.loadModel(), 12000, "Mirror de-ID model load");
           }
         }
         _deidModelReady = true;
@@ -1897,7 +1781,7 @@
       importedPhoneAnswerSummary: [],
       activePatientId: "",
       patientSearch: "",
-      activePatientTab: "today",
+      activePatientTab: "overview",
       todayModeByPatientId: {},
       patientRosterExpanded: false,
       patientDrafts: {},
@@ -2099,39 +1983,8 @@
       workspaceMedsInput: $("#workspaceMedsInput"),
       workspaceNotesInput: $("#workspaceNotesInput"),
       workspaceContinuityInput: $("#workspaceContinuityInput"),
-      todayDateLabel: $("#todayDateLabel"),
-      todayModeHelp: $("#todayModeHelp"),
-      todayBaselineStatus: $("#todayBaselineStatus"),
-      todayInputStatus: $("#todayInputStatus"),
-      todayWorkupStatus: $("#todayWorkupStatus"),
-      todayChecklistStatus: $("#todayChecklistStatus"),
-      todayPromptStatus: $("#todayPromptStatus"),
-      todaySmartPasteInput: $("#todaySmartPasteInput"),
-      todaySortPasteButton: $("#todaySortPasteButton"),
-      todayClearPasteButton: $("#todayClearPasteButton"),
-      todayRoundsPromptPreview: $("#todayRoundsPromptPreview"),
-      todayCopyRoundsPromptButton: $("#todayCopyRoundsPromptButton"),
-      todayOpenEvidenceButton: $("#todayOpenEvidenceButton"),
-      todayOpenEvidencePasteInput: $("#todayOpenEvidencePasteInput"),
-      todayApplyOpenEvidenceButton: $("#todayApplyOpenEvidenceButton"),
-      todayPasteBackStatus: $("#todayPasteBackStatus"),
-      todayRoundsPasteBackPreview: $("#todayRoundsPasteBackPreview"),
-      todayBaselineSummaryInput: $("#todayBaselineSummaryInput"),
-      todayActiveProblemsInput: $("#todayActiveProblemsInput"),
-      todayYesterdayPlanInput: $("#todayYesterdayPlanInput"),
-      todayPendingItemsInput: $("#todayPendingItemsInput"),
-      todayNoteInput: $("#todayNoteInput"),
-      todayLabsInput: $("#todayLabsInput"),
-      todayMarInput: $("#todayMarInput"),
-      todayOvernightInput: $("#todayOvernightInput"),
-      saveTodayUpdateButton: $("#saveTodayUpdateButton"),
-      todayBuildChecklistButton: $("#todayBuildChecklistButton"),
-      todayAnswerChecklistButton: $("#todayAnswerChecklistButton"),
-      todayOpenPromptWorkbenchButton: $("#todayOpenPromptWorkbenchButton"),
-      todayUpdateReviewList: $("#todayUpdateReviewList"),
       workspaceHistoryFindingInput: $("#workspaceHistoryFindingInput"),
       workspaceExamFindingInput: $("#workspaceExamFindingInput"),
-      patientObjectiveSummaryPanel: $("#patientObjectiveSummaryPanel"),
       patientObjectiveDataPanel: $("#patientObjectiveDataPanel"),
       patientWorkupPanel: $("#patientWorkupPanel"),
       patientWorkupOrdersPanel: $("#patientWorkupOrdersPanel"),
@@ -2210,6 +2063,11 @@
       workupStudioNewWorkupPromptOutput: $("#workupStudioNewWorkupPromptOutput"),
       workupStudioNewWorkupCopyPromptButton: $("#workupStudioNewWorkupCopyPromptButton"),
       workupStudioNewWorkupOpenEvidenceButton: $("#workupStudioNewWorkupOpenEvidenceButton"),
+      workupStudioNewWorkupRecommendationsInput: $("#workupStudioNewWorkupRecommendationsInput"),
+      workupStudioNewWorkupGenerateFormatPromptButton: $("#workupStudioNewWorkupGenerateFormatPromptButton"),
+      workupStudioNewWorkupFormatPromptOutput: $("#workupStudioNewWorkupFormatPromptOutput"),
+      workupStudioNewWorkupCopyFormatPromptButton: $("#workupStudioNewWorkupCopyFormatPromptButton"),
+      workupStudioNewWorkupOpenGptButton: $("#workupStudioNewWorkupOpenGptButton"),
       workupStudioNewWorkupPasteInput: $("#workupStudioNewWorkupPasteInput"),
       workupStudioNewWorkupParseStatus: $("#workupStudioNewWorkupParseStatus"),
       workupStudioNewWorkupCreateButton: $("#workupStudioNewWorkupCreateButton"),
@@ -2222,12 +2080,6 @@
       workspaceSendPhoneButton: $("#workspaceSendPhoneButton"),
       workspaceHandoffButton: $("#workspaceHandoffButton"),
       workspaceChecklistStatus: $("#workspaceChecklistStatus"),
-      patientOverviewText: $("#patientOverviewText"),
-      patientOverviewRoundsReportSection: $("#patientOverviewRoundsReportSection"),
-      patientOverviewRoundsReportCard: $("#patientOverviewRoundsReportCard"),
-      patientOverviewCopyRoundsReportButton: $("#patientOverviewCopyRoundsReportButton"),
-      patientOverviewPasteBackSection: $("#patientOverviewPasteBackSection"),
-      patientOverviewPasteBackCard: $("#patientOverviewPasteBackCard"),
       patientWorkupPatientLabel: $("#patientWorkupPatientLabel"),
       patientWorkupPatientMeta: $("#patientWorkupPatientMeta"),
       patientObjectiveStatusText: $("#patientObjectiveStatusText"),
@@ -3071,7 +2923,7 @@
       state.vaultName = String(state.vaultName || vaultMeta()?.name || "");
       state.patientSearch = String(state.patientSearch || "");
       if (!patientTabOrder.includes(state.activePatientTab)) {
-        state.activePatientTab = "today";
+        state.activePatientTab = "overview";
       }
       if (!views.includes(state.currentView)) {
         state.currentView = "workspace";
@@ -3963,7 +3815,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
         if (state.activePatientId) {
           selectPatient(state.activePatientId);
         } else {
-          state.activePatientTab = "today";
+          state.activePatientTab = "overview";
           renderPatientRail();
           renderPatientWorkspace();
           renderChecklist();
@@ -6586,10 +6438,8 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
           workupStudioState.selectedModuleId = module.id;
           workupStudioState.selectedItemId = "";
           workupStudioState.selectedPathwayNodeId = "";
-          selectPatientWorkupModule(module.id, { announce: false });
           saveWorkupStudioState();
           renderWorkupStudio();
-          setStatus(`${moduleLabel(module)} checklist built for ${activePatient().title}.`);
         });
         container.appendChild(button);
         if (module.id === selectedId) {
@@ -6826,18 +6676,6 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
       return true;
     }
 
-    function populateWorkupStudioItemGroupSelect(select, definition = studioSectionDefinition(), selectedGroup = "") {
-      if (!select || definition.kind !== "items") return;
-      select.innerHTML = "";
-      for (const groupKey of definition.moduleFields) {
-        const option = document.createElement("option");
-        option.value = groupKey;
-        option.textContent = titleFromId(groupKey);
-        option.selected = groupKey === selectedGroup;
-        select.appendChild(option);
-      }
-    }
-
     function workupStudioItemSearchText(entry = {}) {
       const item = entry.item || {};
       return [
@@ -6873,6 +6711,76 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
 
     function formatStudioOptionList(value) {
       return parseStudioOptionList(value).join("\n");
+    }
+
+    function studioChoiceRowElement(value = "", isNormal = false) {
+      const row = document.createElement("div");
+      row.className = "studio-choice-row";
+      row.innerHTML = `
+        <input type="text" maxlength="240" placeholder="Answer choice">
+        <label class="studio-choice-row-normal">
+          <input type="checkbox">
+          Normal
+        </label>
+        <button class="studio-choice-row-remove" type="button" aria-label="Remove choice">&times;</button>
+      `;
+      $("input[type='text']", row).value = value;
+      $("input[type='checkbox']", row).checked = isNormal;
+      $(".studio-choice-row-remove", row).addEventListener("click", () => {
+        row.remove();
+        refreshStudioChoiceEmptyState();
+      });
+      return row;
+    }
+
+    function refreshStudioChoiceEmptyState() {
+      const list = $("#workupStudioItemChoicesList");
+      if (!list) return;
+      let empty = $(".studio-choice-empty", list);
+      if (!$(".studio-choice-row", list)) {
+        if (!empty) {
+          empty = document.createElement("p");
+          empty.className = "studio-choice-empty";
+          empty.textContent = "No choices yet - this will be a free-text item.";
+          list.appendChild(empty);
+        }
+      } else if (empty) {
+        empty.remove();
+      }
+    }
+
+    function addStudioChoiceRow(value = "", isNormal = false) {
+      const list = $("#workupStudioItemChoicesList");
+      if (!list) return null;
+      const row = studioChoiceRowElement(value, isNormal);
+      list.appendChild(row);
+      refreshStudioChoiceEmptyState();
+      $("input[type='text']", row).focus();
+      return row;
+    }
+
+    function renderStudioChoiceRows(choices = [], normalAnswerSet = new Set()) {
+      const list = $("#workupStudioItemChoicesList");
+      if (!list) return;
+      list.innerHTML = "";
+      for (const choice of choices) {
+        list.appendChild(studioChoiceRowElement(choice, normalAnswerSet.has(choice.toLowerCase())));
+      }
+      refreshStudioChoiceEmptyState();
+    }
+
+    function collectStudioChoiceRows() {
+      const list = $("#workupStudioItemChoicesList");
+      const rows = list ? $$(".studio-choice-row", list) : [];
+      const options = [];
+      const normalAnswers = [];
+      for (const row of rows) {
+        const value = $("input[type='text']", row)?.value.trim();
+        if (!value) continue;
+        options.push(value);
+        if ($("input[type='checkbox']", row)?.checked) normalAnswers.push(value);
+      }
+      return { options, normalAnswers };
     }
 
     function studioItemOptions(item = {}, definition = studioSectionDefinition()) {
@@ -6982,43 +6890,21 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
         workupStudioState.selectedItemId = firstRemaining ? `${firstRemaining.field}:${firstRemaining.item.id || firstRemaining.item.item_id || firstRemaining.index}` : "";
         return next;
       }
-      const targetGroupValue = $("#workupStudioItemGroupSelect")?.value || entry.groupKey;
-      const targetGroup = definition.moduleFields.includes(targetGroupValue) ? targetGroupValue : entry.groupKey;
+      const requiredChecked = $("#workupStudioItemRequiredInput")?.checked ?? entry.groupKey === definition.moduleFields[0];
+      const targetGroup = requiredChecked ? definition.moduleFields[0] : definition.moduleFields[1];
       const item = { ...(next[entry.groupKey]?.[entry.index] || entry.item) };
       const label = $("#workupStudioItemLabelInput")?.value.trim();
-      const primary = $("#workupStudioItemPrimaryInput")?.value.trim();
-      const rationale = $("#workupStudioItemRationaleInput")?.value.trim();
-      const sourceId = $("#workupStudioItemSourceInput")?.value.trim();
-      const tags = $("#workupStudioItemTagsInput")?.value.split(",").map((tag) => tag.trim()).filter(Boolean);
-      const itemType = $("#workupStudioItemTypeInput")?.value.trim() || item.item_type || studioDefaultItemType(definition, targetGroup);
-      const answerMode = $("#workupStudioItemAnswerModeSelect")?.value || "";
-      const answerOptions = parseStudioOptionList($("#workupStudioItemOptionsInput")?.value || "");
-      const normalAnswers = parseStudioOptionList($("#workupStudioItemNormalAnswersInput")?.value || "");
+      const itemType = item.item_type || studioDefaultItemType(definition, targetGroup);
+      const { options: answerOptions, normalAnswers } = collectStudioChoiceRows();
+      const multiSelect = Boolean($("#workupStudioItemMultiSelectInput")?.checked);
+      const answerMode = answerOptions.length ? (multiSelect ? "multi" : "single") : "free_text";
       item.item_type = itemType;
-      item.id = item.id || item.item_id || studioGeneratedItemId(label || primary || itemType);
+      item.id = item.id || item.item_id || studioGeneratedItemId(label || itemType);
       if (label) {
         item.label = label;
         if (item.text || item.item_type === "history_question") item.text = label.endsWith("?") ? label : `${label}?`;
       }
-      if (primary) {
-        if (item.action !== undefined || /red_flag|diagnostic_test|management_change|diagnostic_frame/.test(item.item_type || "")) item.action = primary;
-        else if (item.technique !== undefined || item.item_type === "physical_exam_maneuver") item.technique = primary;
-        else item.text = primary.endsWith("?") ? primary : `${primary}?`;
-      }
-      if (rationale || item.rationale || item.management_change || item.management_implication || item.diagnostic_purpose) {
-        item.rationale = rationale;
-        item.diagnostic_purpose = item.diagnostic_purpose || rationale;
-        item.management_implication = item.management_implication || rationale;
-        item.management_change = item.management_change || rationale;
-      }
-      if (sourceId) {
-        item.source = { ...(item.source || {}), source_id: sourceId };
-      } else if (item.source?.source_id) {
-        item.source = { ...item.source };
-        delete item.source.source_id;
-      }
-      item.tags = tags || [];
-      if (answerMode) item.answerMode = answerMode;
+      item.answerMode = answerMode;
       if (answerOptions.length) {
         if (definition.key === "physical_exam") {
           item.findings_options = answerOptions;
@@ -7191,7 +7077,6 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
         return;
       }
       const item = selected.item;
-      const primaryValue = item.action || item.technique || item.text || item.management_change || "";
       const itemOptions = studioItemOptions(item, definition);
       const normalAnswers = studioItemNormalAnswers(item);
       const answerMode = studioItemAnswerMode(item, itemOptions);
@@ -7200,6 +7085,8 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
         : definition.key === "physical_exam"
           ? "Physical exam editor"
           : definition.label;
+      const questionLabel = definition.key === "physical_exam" ? "Exam item" : "Question";
+      const choicesLabel = definition.key === "physical_exam" ? "Finding options" : "Answer choices";
       elements.workupStudioEditor.innerHTML = `
         <div class="studio-form-header">
           <div>
@@ -7207,46 +7094,25 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
             <h3>${editorTitle}</h3>
           </div>
           <div class="studio-form-header-actions">
-            <span class="status-chip">${titleFromId(selected.groupKey)}</span>
-            <button class="studio-drawer-close" id="workupStudioEditorCloseButton" type="button" aria-label="Close editor">&times;</button>
+            <button class="studio-drawer-close" id="workupStudioEditorCloseButton" type="button">Deselect</button>
           </div>
         </div>
-        <div class="studio-form-grid">
-          <label for="workupStudioItemGroupSelect">Section group
-            <select id="workupStudioItemGroupSelect"></select>
-          </label>
-          <label for="workupStudioItemTypeInput">Item type
-            <input id="workupStudioItemTypeInput" maxlength="120">
-          </label>
-        </div>
-        <label for="workupStudioItemLabelInput">Question / exam item label</label>
+        <label class="studio-required-toggle" for="workupStudioItemRequiredInput">
+          <input id="workupStudioItemRequiredInput" type="checkbox">
+          Required for this workup
+        </label>
+        <label for="workupStudioItemLabelInput">${questionLabel}</label>
         <textarea id="workupStudioItemLabelInput" maxlength="1200"></textarea>
-        <label for="workupStudioItemPrimaryInput">Prompted action, question, or technique</label>
-        <textarea id="workupStudioItemPrimaryInput" maxlength="1800"></textarea>
-        <div class="studio-form-grid">
-          <label for="workupStudioItemAnswerModeSelect">Answer mode
-            <select id="workupStudioItemAnswerModeSelect">
-              <option value="single">Single choice</option>
-              <option value="multi">Multi-select</option>
-              <option value="endorsement">Endorsement chips</option>
-              <option value="free_text">Free text</option>
-            </select>
-          </label>
-          <label for="workupStudioItemNormalAnswersInput">Normal answers
-            <textarea id="workupStudioItemNormalAnswersInput" maxlength="1200"></textarea>
-          </label>
-        </div>
-        <label for="workupStudioItemOptionsInput">${definition.key === "physical_exam" ? "Finding options" : "Answer options"}</label>
-        <textarea id="workupStudioItemOptionsInput" maxlength="2400"></textarea>
-        <label for="workupStudioItemRationaleInput">Clinical rationale / management impact</label>
-        <textarea id="workupStudioItemRationaleInput" maxlength="1800"></textarea>
-        <div class="studio-form-grid">
-          <label for="workupStudioItemSourceInput">Primary source ID
-            <input id="workupStudioItemSourceInput" maxlength="120">
-          </label>
-          <label for="workupStudioItemTagsInput">Tags
-            <input id="workupStudioItemTagsInput" maxlength="500">
-          </label>
+        <div class="studio-choice-editor">
+          <div class="studio-choice-editor-head">
+            <span>${choicesLabel}</span>
+            <label class="studio-multi-toggle" for="workupStudioItemMultiSelectInput">
+              <input id="workupStudioItemMultiSelectInput" type="checkbox">
+              Allow multiple answers
+            </label>
+          </div>
+          <div class="studio-choice-list" id="workupStudioItemChoicesList"></div>
+          <button class="studio-choice-add-button" id="workupStudioItemAddChoiceButton" type="button">+ Add choice</button>
         </div>
         <div class="studio-form-actions">
           <button class="btn btn-primary" id="workupStudioSaveItemDraftButton" type="button">Save section draft</button>
@@ -7254,21 +7120,16 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
           <button class="btn btn-danger" id="workupStudioDeleteItemButton" type="button">Remove</button>
         </div>
       `;
-      const groupSelect = $("#workupStudioItemGroupSelect");
       $("#workupStudioEditorCloseButton")?.addEventListener("click", closeWorkupStudioEditorDrawer);
-      populateWorkupStudioItemGroupSelect(groupSelect, definition, selected.groupKey);
-      groupSelect.value = selected.groupKey;
-      $("#workupStudioItemTypeInput").value = item.item_type || studioDefaultItemType(definition, selected.groupKey);
-      $("#workupStudioItemAnswerModeSelect").value = answerMode;
+      $("#workupStudioItemRequiredInput").checked = selected.groupKey === definition.moduleFields[0];
       $("#workupStudioItemLabelInput").value = item.label || item.text || item.action || "";
-      $("#workupStudioItemPrimaryInput").value = primaryValue;
-      $("#workupStudioItemOptionsInput").value = formatStudioOptionList(itemOptions);
-      $("#workupStudioItemNormalAnswersInput").value = formatStudioOptionList(normalAnswers);
-      $("#workupStudioItemRationaleInput").value = item.rationale || item.management_change || item.management_implication || item.diagnostic_purpose || "";
-      $("#workupStudioItemSourceInput").value = item.source?.source_id || item.source_id || "";
-      $("#workupStudioItemTagsInput").value = (item.tags || []).join(", ");
+      $("#workupStudioItemMultiSelectInput").checked = answerMode === "multi";
+      const normalAnswerSet = new Set(normalAnswers.map((value) => value.toLowerCase()));
+      renderStudioChoiceRows(itemOptions, normalAnswerSet);
+      $("#workupStudioItemAddChoiceButton").addEventListener("click", () => addStudioChoiceRow(""));
       $("#workupStudioAddItemButton").addEventListener("click", () => {
-        addWorkupStudioSectionItem($("#workupStudioItemGroupSelect")?.value || selected.groupKey, {
+        const targetGroup = $("#workupStudioItemRequiredInput")?.checked ? definition.moduleFields[0] : definition.moduleFields[1];
+        addWorkupStudioSectionItem(targetGroup, {
           basePayload: updateItemPayloadFromForm(selected)
         });
       });
@@ -7439,6 +7300,9 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
       elements.workupStudioNewWorkupIdInput.value = "";
       elements.workupStudioNewWorkupTriggersInput.value = "";
       elements.workupStudioNewWorkupPromptOutput.value = "";
+      if (elements.workupStudioNewWorkupRecommendationsInput) elements.workupStudioNewWorkupRecommendationsInput.value = "";
+      if (elements.workupStudioNewWorkupFormatPromptOutput) elements.workupStudioNewWorkupFormatPromptOutput.value = "";
+      refreshNewWorkupFormatPromptButton();
       elements.workupStudioNewWorkupPasteInput.value = "";
       elements.workupStudioNewWorkupCreateButton.disabled = true;
       elements.workupStudioNewWorkupParseStatus.textContent = "";
@@ -7622,38 +7486,73 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
       return true;
     }
 
-    function generateNewWorkupAIPrompt() {
+    function newWorkupComplaintAndId() {
       const complaint = String(elements.workupStudioNewWorkupComplaintInput?.value || "").trim();
       const workupId = String(elements.workupStudioNewWorkupIdInput?.value || "").trim().toLowerCase().replace(/[^a-z0-9_]+/g, "_").replace(/_+/g, "_").replace(/^_|_$/g, "");
+      return { complaint, workupId };
+    }
+
+    function generateNewWorkupAIPrompt() {
+      const { complaint, workupId } = newWorkupComplaintAndId();
       const triggersRaw = String(elements.workupStudioNewWorkupTriggersInput?.value || complaint).trim();
       const triggers = triggersRaw.split(/[,;]+/).map((s) => s.trim()).filter(Boolean);
-      const population = elements.workupStudioNewWorkupPopulationSelect?.value || "adult";
-      const setting = elements.workupStudioNewWorkupSettingSelect?.value || "clinician support";
 
       if (!complaint) {
-        setStatus("Enter a complaint name before generating the AI prompt.");
+        setStatus("Enter a complaint name before generating the OpenEvidence prompt.");
         return;
       }
       if (!workupId) {
-        setStatus("Enter a workup ID (slug) before generating the AI prompt.");
+        setStatus("Enter a workup ID (slug) before generating the OpenEvidence prompt.");
         return;
       }
 
       elements.workupStudioNewWorkupIdInput.value = workupId;
       elements.workupStudioNewWorkupTriggersInput.value = triggers.join(", ");
 
+      const prompt = workupContentPrompt({
+        selectedWorkupTitle: complaint,
+        userContext: "",
+        sourceContext: minimalContributionContext()
+      });
+      elements.workupStudioNewWorkupPromptOutput.value = prompt;
+      setStatus("OpenEvidence clinical-content prompt generated for: " + complaint);
+    }
+
+    function generateNewWorkupFormatPrompt() {
+      const { complaint, workupId } = newWorkupComplaintAndId();
+      const triggersRaw = String(elements.workupStudioNewWorkupTriggersInput?.value || complaint).trim();
+      const triggers = triggersRaw.split(/[,;]+/).map((s) => s.trim()).filter(Boolean);
+      const population = elements.workupStudioNewWorkupPopulationSelect?.value || "adult";
+      const setting = elements.workupStudioNewWorkupSettingSelect?.value || "clinician support";
+      const recommendations = String(elements.workupStudioNewWorkupRecommendationsInput?.value || "").trim();
+
+      if (!complaint || !workupId) {
+        setStatus("Fill in the complaint and workup ID before generating the JSON-formatting prompt.");
+        return;
+      }
+      if (!recommendations) {
+        setStatus("Paste OpenEvidence's recommendations before generating the JSON-formatting prompt.");
+        return;
+      }
+
       const prompt = buildChatAiHandoffPrompt({
-        mode: "new_workup",
+        mode: "format_recommendations",
         model: "ChatGPT or Claude",
         title: complaint,
         workupId,
         triggers: triggers.length ? triggers : [complaint.toLowerCase()],
         population,
         setting,
-        deidentifiedContext: minimalContributionContext()
+        sourceRecommendations: recommendations
       });
-      elements.workupStudioNewWorkupPromptOutput.value = prompt;
-      setStatus("Contribution prompt generated for new workup: " + complaint);
+      elements.workupStudioNewWorkupFormatPromptOutput.value = prompt;
+      setStatus("JSON-formatting prompt generated for: " + complaint);
+    }
+
+    function refreshNewWorkupFormatPromptButton() {
+      if (!elements.workupStudioNewWorkupGenerateFormatPromptButton) return;
+      const hasRecommendations = Boolean(String(elements.workupStudioNewWorkupRecommendationsInput?.value || "").trim());
+      elements.workupStudioNewWorkupGenerateFormatPromptButton.disabled = !hasRecommendations;
     }
 
     function validateNewWorkupPasteInput() {
@@ -8046,7 +7945,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
     }
 
     function renderPatientWorkupResults(query = state.concern) {
-      if (!elements.patientWorkupResults) return;
+      if (false) return;
       const patient = activePatient();
       const queryText = normalizedWorkupQuery(query);
       const selectedId = state.selectedWorkupModuleId || "";
@@ -8297,7 +8196,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
     }
 
     function coercePatientTabForDevice(tabName = state.activePatientTab) {
-      const requested = patientTabOrder.includes(tabName) ? tabName : "today";
+      const requested = patientTabOrder.includes(tabName) ? tabName : "overview";
       if (isPhoneWorkflowDevice()) {
         if (phonePatientTabs.has(requested)) return requested;
         return phonePatientTabFallbacks[requested] || "checklist";
@@ -8314,7 +8213,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
     }
 
     function setPatientTab(tabName, { announce = true, focusPanel = false } = {}) {
-      const requestedTab = patientTabOrder.includes(tabName) ? tabName : "today";
+      const requestedTab = patientTabOrder.includes(tabName) ? tabName : "overview";
       state.activePatientTab = coercePatientTabForDevice(requestedTab);
       renderPatientTabs();
       if (state.activePatientTab === "workup") {
@@ -9029,10 +8928,6 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
       let rows = objectiveDataRows();
       if (!rows.length && state.workup?.module?.id && !state.selectedWorkupModuleId) {
         setSelectedWorkupModuleId(state.workup.module.id);
-        rows = objectiveDataRows();
-      }
-      if (!rows.length && moduleById(state.selectedWorkupModuleId)) {
-        ensureWorkup();
         rows = objectiveDataRows();
       }
       for (const container of [elements.patientObjectiveSummaryPanel].filter(Boolean)) {
@@ -10775,14 +10670,6 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
       const checklistBuilt = state.sections.length > 0;
       const checklistStale = isChecklistStaleForCurrentWorkup();
       const selectedWorkupReady = Boolean(moduleById(state.selectedWorkupModuleId));
-      const selectedWorkup = moduleById(state.selectedWorkupModuleId);
-      elements.patientOverviewText.textContent = hasPatient
-        ? [
-          state.concern || patient.concern || "No concern entered",
-          selectedWorkupReady ? `Workup: ${moduleLabel(selectedWorkup)}` : "No workup selected",
-          checklistStale ? "Checklist needs server refresh" : checklistBuilt ? `${checklistTotalCount()} checklist items ready` : "Checklist not built"
-        ].join(" - ")
-        : "Open a saved patient from the vault or admit a new patient to start the workflow.";
       if (elements.patientWorkupPatientLabel) elements.patientWorkupPatientLabel.textContent = patient.title;
       if (elements.patientWorkupPatientMeta) {
         const compactMeta = patient.meta
@@ -11027,7 +10914,7 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
         (Array.isArray(roundsReport.bedsideRecheck) && roundsReport.bedsideRecheck.length) ||
         roundsReport.plainTextSummary
       );
-      state.activePatientTab = "today";
+      state.activePatientTab = hasSummary ? "overview" : "context";
       state.scrubbedText = "";
       state.deidCounts = {};
       state.workup = null;
@@ -19530,10 +19417,24 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
         const prompt = elements.workupStudioNewWorkupPromptOutput?.value || "";
         if (prompt) {
           copyText(prompt);
-          setStatus("AI prompt copied for new workup creation.");
+          setStatus("OpenEvidence prompt copied for new workup creation.");
         }
       });
       elements.workupStudioNewWorkupOpenEvidenceButton?.addEventListener("click", () => {
+        window.open("https://www.openevidence.com/", "_blank", "noopener,noreferrer");
+      });
+      elements.workupStudioNewWorkupRecommendationsInput?.addEventListener("input", () => {
+        refreshNewWorkupFormatPromptButton();
+      });
+      elements.workupStudioNewWorkupGenerateFormatPromptButton?.addEventListener("click", generateNewWorkupFormatPrompt);
+      elements.workupStudioNewWorkupCopyFormatPromptButton?.addEventListener("click", () => {
+        const prompt = elements.workupStudioNewWorkupFormatPromptOutput?.value || "";
+        if (prompt) {
+          copyText(prompt);
+          setStatus("JSON-formatting prompt copied for new workup creation.");
+        }
+      });
+      elements.workupStudioNewWorkupOpenGptButton?.addEventListener("click", () => {
         window.open("https://chatgpt.com/", "_blank", "noopener,noreferrer");
       });
       elements.workupStudioNewWorkupPasteInput?.addEventListener("input", () => {
@@ -19762,18 +19663,6 @@ Acetaminophen          650 mg    PO      q6h PRN pain`;
       elements.patientSaveDefaultWorkupRefinementButton?.addEventListener("click", () => {
         if (applyStructuredRefinementText(elements.patientWorkupRefinementInput?.value || "", "default")) {
           setPatientTab("checklist", { focusPanel: true });
-        }
-      });
-      $("#patientOverviewContextButton").addEventListener("click", () => setPatientTab("context", { focusPanel: true }));
-      $("#patientOverviewWorkupButton").addEventListener("click", () => setPatientTab("workup", { focusPanel: true }));
-      $("#patientOverviewChecklistButton")?.addEventListener("click", () => {
-        buildPatientChecklistInWorkspace();
-      });
-      elements.patientOverviewCopyRoundsReportButton?.addEventListener("click", () => {
-        const todayDay = currentContinuityDay(patientContinuityCase(activePatient(), { create: false }));
-        if (todayDay?.roundsPasteBack) {
-          const text = formatRoundsReportAsText(todayDay.roundsPasteBack);
-          copyText(text);
         }
       });
       $("#workspaceOpenBedsideChecklistButton")?.addEventListener("click", () => {
