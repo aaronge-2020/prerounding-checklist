@@ -3,7 +3,7 @@ import { activePatient, archivePatient, createPatientRecord, removeWorkupOverrid
 import { deleteEncryptedVaultRecord, downloadJson, loadOrCreateVault, readEncryptedVaultRecord, saveEncryptedVault, writeEncryptedVaultRecord } from "../app/state/persistence.js?v=20260711-functional-remediation-15";
 import { authorizeWorkupWorkspaceMirror, disconnectWorkupWorkspaceMirror, getWorkupWorkspaceMirrorState, mirrorWorkupOverridesToWorkspace } from "../app/state/workspace-mirror.js?v=20260711-functional-remediation-15";
 import { addSection, removeSection, reorderSections, reorderSectionsById, replaceSectionsFromFormAsync, sectionWarningSummary, sectionsToPromptBlock } from "../patient-context/sections.js?v=20260711-functional-remediation-15";
-import { createEphemeralRedactionReview, reviewKey, synchronizeReviewPlaceholders } from "../patient-context/review.js?v=20260711-functional-remediation-15";
+import { createEphemeralRedactionReview, nextPendingReviewTarget, pendingReviewTargets, reviewKey, synchronizeReviewPlaceholders } from "../patient-context/review.js?v=20260711-functional-remediation-15";
 import { deidentifyText, getAdvancedDeidStatus, getSelectedDeidModelStatus, preloadAdvancedDeidModel, resetAdvancedDeidWorker, verifyAdvancedDeidModel } from "../patient-context/deid-client.js?v=20260711-functional-remediation-15";
 import { DEFAULT_DEID_MODEL_KEY, DEID_MODEL_OPTIONS, STRUCTURED_DEID_MODE, deidModelOptionByKey } from "../patient-context/deid-model-options.js?v=20260711-functional-remediation-15";
 import { canAutomaticallyInstallModel, ensureModelPackServiceWorker, getModelPackState, importModelPack, installModelPack, markModelPackVerified, modelFilesFromDirectoryHandle, modelFilesFromInput, removeModelPack, requestPersistentModelStorage } from "../patient-context/model-pack-storage.js?v=20260711-functional-remediation-15";
@@ -64,6 +64,11 @@ const app = {
   smartMenuOpen: false,
   quickDeid: { input: "", output: "", warnings: [], status: "", review: null },
   phiReviews: new Map(),
+  // Session-only edits remain outside the encrypted vault until the user
+  // explicitly saves the containing packet.
+  sectionDrafts: new Map(),
+  sectionEditingKeys: new Set(),
+  pendingSectionReviewFocus: null,
   workupThoroughness: "standard",
   workupImportDraft: "",
   workupApiBusy: false,
@@ -553,6 +558,7 @@ function render() {
   renderQuickDeid();
   renderSettings();
   renderStatusBar();
+  if (app.view === "daily" && app.pendingSectionReviewFocus) requestAnimationFrame(focusPendingSectionReview);
 }
 
 function renderStatusBar() {
@@ -764,14 +770,75 @@ function sectionReviewFor(scope, sectionId) {
   return app.phiReviews.get(reviewKey(scope, sectionId)) || null;
 }
 
+function sectionDraftText(scope, sectionId, fallback = "") {
+  const key = reviewKey(scope, sectionId);
+  return app.sectionDrafts.has(key) ? String(app.sectionDrafts.get(key) || "") : String(fallback || "");
+}
+
+function setSectionDraftText(scope, sectionId, value) {
+  app.sectionDrafts.set(reviewKey(scope, sectionId), String(value || ""));
+}
+
+function sectionListId(scope) {
+  return scope === "daily" ? "dailySections" : "contextSections";
+}
+
+function isSectionTextEditing(scope, sectionId) {
+  return app.sectionEditingKeys.has(reviewKey(scope, sectionId));
+}
+
+function reviewSectionsForScope(scope) {
+  const patient = active();
+  if (!patient) return [];
+  return scope === "daily"
+    ? selectedChecklistDay(patient)?.sections || []
+    : patient.contextSections || [];
+}
+
+function pendingSectionReviewTargets(scope) {
+  return pendingReviewTargets(
+    reviewSectionsForScope(scope).map((section) => ({
+      scope,
+      sectionId: section.id,
+      review: sectionReviewFor(scope, section.id)
+    }))
+  );
+}
+
+function activateSectionReviewTarget(scope, target, { queueFocus = false } = {}) {
+  if (!target?.sectionId || !Number.isInteger(target.redactionIndex) || target.redactionIndex < -1) return null;
+  const review = sectionReviewFor(scope, target.sectionId);
+  if (!review || (target.redactionIndex >= 0 && !review.redactions?.[target.redactionIndex])) return null;
+  review.inspectedRedactionIndex = target.redactionIndex;
+  app.sectionEditingKeys.delete(reviewKey(scope, target.sectionId));
+  const activeTarget = { ...target, scope };
+  if (queueFocus) app.pendingSectionReviewFocus = activeTarget;
+  return activeTarget;
+}
+
+function beginSectionReview(scope) {
+  const target = nextPendingReviewTarget(pendingSectionReviewTargets(scope));
+  return activateSectionReviewTarget(scope, target, { queueFocus: true });
+}
+
 function clearPhiReviews(scope = "") {
   if (!scope) {
     app.phiReviews.clear();
+    app.sectionDrafts.clear();
+    app.sectionEditingKeys.clear();
+    app.pendingSectionReviewFocus = null;
     return;
   }
   for (const key of app.phiReviews.keys()) {
     if (key.startsWith(`${scope}:`)) app.phiReviews.delete(key);
   }
+  for (const key of app.sectionDrafts.keys()) {
+    if (key.startsWith(`${scope}:`)) app.sectionDrafts.delete(key);
+  }
+  for (const key of [...app.sectionEditingKeys]) {
+    if (key.startsWith(`${scope}:`)) app.sectionEditingKeys.delete(key);
+  }
+  if (app.pendingSectionReviewFocus?.scope === scope) app.pendingSectionReviewFocus = null;
 }
 
 function clearQuickDeidSession() {
@@ -898,12 +965,33 @@ function renderSectionReview(section, scope) {
   `;
 }
 
-function renderSectionEditor(section, scope) {
-  const characterCount = section.deidentifiedText?.length || 0;
+function renderSectionSurface(section, scope) {
   const review = sectionReviewFor(scope, section.id);
+  const editing = review && isSectionTextEditing(scope, section.id);
+  const draftText = sectionDraftText(scope, section.id, section.deidentifiedText);
   const documentId = `sectionRedactionDocument-${section.id}`;
   return `
-    <article class="section-editor" data-section-id="${escapeHtml(section.id)}" data-section-scope="${escapeHtml(scope)}" data-created-at="${escapeHtml(section.createdAt)}">
+    <div class="section-review-surface" data-section-review-surface>
+      ${review && !editing
+        ? `<input class="section-text" type="hidden" value="${escapeHtml(draftText)}">${renderRedactionDocument(draftText, review, { id: documentId, scope, sectionId: section.id, label: `${section.label} redaction review` })}`
+        : `<textarea class="section-text" rows="5" spellcheck="false">${escapeHtml(draftText)}</textarea>`}
+      <div class="section-review-tools">
+        ${review ? `<button class="button--quiet" type="button" data-action="${editing ? "resume-section-review" : "edit-section-text"}" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}">${editing ? "Return to redaction review" : "Edit field text"}</button>` : ""}
+        <button class="button--quiet" type="button" data-action="manual-redact-selection" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}">${icon("wand")} Redact selected text</button>
+        <span class="muted">${review && !editing ? "Review changes here, or edit this field text without leaving Hospital Stay." : "Edit this de-identified field, then save changes to re-run the local review."}</span>
+      </div>
+      ${review && !editing ? renderSectionReview({ ...section, deidentifiedText: draftText }, scope) : ""}
+    </div>
+  `;
+}
+
+function renderSectionEditor(section, scope) {
+  const characterCount = section.deidentifiedText?.length || 0;
+  const pendingFocus = app.pendingSectionReviewFocus;
+  const isInitialReviewTarget = pendingFocus?.scope === scope && pendingFocus.sectionId === section.id;
+  const isExpanded = isSectionTextEditing(scope, section.id) || isInitialReviewTarget;
+  return `
+    <article class="section-editor ${isExpanded ? "is-expanded" : ""}" data-section-id="${escapeHtml(section.id)}" data-section-scope="${escapeHtml(scope)}" data-created-at="${escapeHtml(section.createdAt)}">
       <div class="section-toolbar">
         <span class="section-grip section-drag-handle" draggable="true" title="Drag to reorder sections" aria-label="Drag to reorder sections" role="img">${icon("grip")}</span>
         <input class="section-label" value="${escapeHtml(section.label)}" aria-label="Section label">
@@ -915,14 +1003,7 @@ function renderSectionEditor(section, scope) {
           <button class="icon-button" type="button" data-action="remove-section" data-scope="${scope}" data-section-id="${escapeHtml(section.id)}" title="Remove">${icon("trash")}</button>
         </div>
       </div>
-      ${review
-        ? `<input class="section-text" type="hidden" value="${escapeHtml(section.deidentifiedText)}">${renderRedactionDocument(section.deidentifiedText, review, { id: documentId, scope, sectionId: section.id, label: `${section.label} redaction review` })}`
-        : `<textarea class="section-text" rows="5" spellcheck="false">${escapeHtml(section.deidentifiedText)}</textarea>`}
-      <div class="section-review-tools">
-        <button class="button--quiet" type="button" data-action="manual-redact-selection" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}">${icon("wand")} Redact selected text</button>
-        <span class="muted">Highlight a remaining identifier in the ${review ? "document" : "field"}, then redact it before saving.</span>
-      </div>
-      ${renderSectionReview(section, scope)}
+      ${renderSectionSurface(section, scope)}
     </article>
   `;
 }
@@ -950,7 +1031,7 @@ function renderWarnings(sections, scope) {
   });
   if (sessionWarnings.length) {
     return `
-      <div class="warning-box residual-review">
+      <div id="residualWarnings-${escapeHtml(scope)}" class="warning-box residual-review">
         <strong>Residual PHI review needed</strong>
         <span class="muted">These details are available only for this active review; decide whether to redact or dismiss each item before leaving Hospital Stay.</span>
         <div class="residual-warning-list">
@@ -970,9 +1051,9 @@ function renderWarnings(sections, scope) {
     `;
   }
   const warnings = sectionWarningSummary(sections);
-  if (!warnings.length) return `<div class="notice">No residual PHI warnings from the last save.</div>`;
+  if (!warnings.length) return `<div id="residualWarnings-${escapeHtml(scope)}" class="notice">No residual PHI warnings from the last save.</div>`;
   return `
-    <div class="warning-box residual-review">
+    <div id="residualWarnings-${escapeHtml(scope)}" class="warning-box residual-review">
       <strong>Residual PHI review needed</strong>
       <div class="residual-warning-list">
         ${warnings
@@ -1125,8 +1206,17 @@ function renderWorkups() {
   byId("workupsContent").innerHTML = `
     <section class="panel workup-editor-surface">
       <div class="workup-topline">
-        <input id="workupTitleInput" class="workup-title-input" value="${escapeHtml(editorWorkup.title)}" aria-label="Workup title">
-        <button class="icon-button" type="button" title="Current workup">${icon("workup")}</button>
+        <div class="workup-editor-heading">
+          <input id="workupTitleInput" class="workup-title-input" value="${escapeHtml(editorWorkup.title)}" aria-label="Workup title">
+          <label class="workup-editor-select">Editing
+            <select id="workupEditorSelect" data-action="select-workup-editor" aria-label="Edit workup">
+              ${catalog.map((workup) => `<option value="${escapeHtml(workup.id)}" ${workup.id === editorWorkup.id && !app.draftWorkup ? "selected" : ""}>${escapeHtml(workup.title)}</option>`).join("")}
+            </select>
+          </label>
+          <div class="workup-editor-header-actions">
+            <button class="button--primary" type="button" data-action="build-checklist" ${selectedIds.size ? "" : "disabled"}>Build checklist${selectedIds.size ? ` (${selectedIds.size})` : ""}</button>
+          </div>
+        </div>
         <label class="workup-alias-control">Aliases
           <input id="workupAliasesInput" value="${escapeHtml((editorWorkup.aliases || []).join(", "))}" placeholder="Gen Admit, Adult Admit">
         </label>
@@ -1140,13 +1230,13 @@ function renderWorkups() {
               </div>
               <button class="button--secondary" type="button" data-action="new-workup">${icon("plus")} New</button>
             </div>
-            <select id="workupEditorSelect" data-action="select-workup-editor" aria-label="Edit workup">
-              ${catalog.map((workup) => `<option value="${escapeHtml(workup.id)}" ${workup.id === editorWorkup.id && !app.draftWorkup ? "selected" : ""}>Edit: ${escapeHtml(workup.title)}</option>`).join("")}
-            </select>
+            <div class="workup-catalog-actions">
+              <button class="button--primary" type="button" data-action="build-checklist" ${selectedIds.size ? "" : "disabled"}>Build checklist</button>
+              <span class="muted">${selectedIds.size ? `${selectedIds.size} selected` : "Select one or more workups"}</span>
+            </div>
             <div class="workup-list">
               ${catalog.map((workup) => renderWorkupRow(workup, selectedIds)).join("")}
             </div>
-            <button class="button--primary" type="button" data-action="build-checklist" ${selectedIds.size ? "" : "disabled"}>Build checklist</button>
           </div>
         </details>
       </div>
@@ -1236,14 +1326,16 @@ function renderWorkups() {
 
 function renderWorkupRow(workup, selectedIds) {
   return `
-    <label class="check-row">
+    <div class="workup-catalog-row ${selectedIds.has(workup.id) ? "is-selected" : ""}">
+      <label class="check-row">
       <input type="checkbox" class="workup-checkbox" value="${escapeHtml(workup.id)}" ${selectedIds.has(workup.id) ? "checked" : ""}>
       <span>
         <strong>${escapeHtml(workup.title)}</strong>
         <span class="muted">${workup.items.filter((item) => item.kind === "history").length} history · ${workup.items.filter((item) => item.kind === "exam").length} exam</span>
       </span>
-        <button class="button--quiet" type="button" data-action="edit-workup" data-workup-id="${escapeHtml(workup.id)}">${icon("edit")} Edit</button>
-    </label>
+      </label>
+      <button class="button--quiet" type="button" data-action="edit-workup" data-workup-id="${escapeHtml(workup.id)}">${icon("edit")} Edit</button>
+    </div>
   `;
 }
 
@@ -1277,7 +1369,7 @@ function renderWorkupItemEditor(item, kind, index = 0) {
     <article class="workup-editor-card" data-workup-item-row data-kind="${kind}">
       <span class="icon-button workup-drag-handle" draggable="true" title="Drag to reorder ${kind} items" aria-label="Drag to reorder ${kind} item" role="img">${icon("grip")}</span>
       <span class="workup-row-number" aria-hidden="true">${index + 1}</span>
-      <input data-field="item-text" value="${escapeHtml(item.text)}" aria-label="${kind} item text">
+      <textarea data-field="item-text" rows="2" aria-label="${kind} item text">${escapeHtml(item.text)}</textarea>
       <input data-field="item-choices" value="${escapeHtml(choicesToText(item.choices))}" placeholder="Baseline answer, then positive or abnormal" aria-label="${kind} answer choices, baseline first">
       <select data-field="item-select" aria-label="${kind} select mode">
         <option value="one" ${item.select !== "many" ? "selected" : ""}>One</option>
@@ -1958,6 +2050,8 @@ async function handleClick(event) {
     if (action === "redact-section-warning") redactSectionWarning(target.dataset.scope, target.dataset.sectionId, Number(target.dataset.warningIndex));
     if (action === "dismiss-section-warning") dismissSectionWarning(target.dataset.scope, target.dataset.sectionId, Number(target.dataset.warningIndex));
     if (action === "manual-redact-selection") redactSelectedSectionText(target.dataset.scope, target.dataset.sectionId);
+    if (action === "edit-section-text") editSectionText(target.dataset.scope, target.dataset.sectionId);
+    if (action === "resume-section-review") resumeSectionReview(target.dataset.scope, target.dataset.sectionId);
     if (action === "inspect-redaction") inspectRedaction(target.dataset.scope, target.dataset.sectionId, Number(target.dataset.redactionIndex));
     if (action === "keep-reviewed-redaction") keepReviewedRedaction(target.dataset.scope, target.dataset.sectionId);
     if (action === "confirm-all-section-redactions") confirmAllSectionRedactions(target.dataset.scope, target.dataset.sectionId);
@@ -2170,8 +2264,8 @@ function focusWarningText(textarea, warning) {
   return true;
 }
 
-function expandSectionEditor(sectionId) {
-  const editor = document.querySelector(`.section-editor[data-section-id="${CSS.escape(sectionId || "")}"]`);
+function expandSectionEditor(scope, sectionId) {
+  const editor = document.querySelector(`#${sectionListId(scope)} .section-editor[data-section-id="${CSS.escape(sectionId || "")}"]`);
   if (!editor) return null;
   editor.classList.add("is-expanded");
   const button = editor.querySelector('[data-action="toggle-section-editor"]');
@@ -2183,36 +2277,58 @@ function expandSectionEditor(sectionId) {
   return editor;
 }
 
+function scrollableAncestors(node) {
+  const owners = [];
+  for (let current = node?.parentElement; current; current = current.parentElement) {
+    const overflowY = window.getComputedStyle(current).overflowY;
+    if (/(auto|scroll|overlay)/.test(overflowY) && current.scrollHeight > current.clientHeight) owners.push(current);
+  }
+  const documentOwner = document.scrollingElement;
+  if (documentOwner && documentOwner.scrollHeight > documentOwner.clientHeight && !owners.includes(documentOwner)) owners.push(documentOwner);
+  return owners;
+}
+
+function captureScrollChain(node) {
+  return scrollableAncestors(node).map((owner) => ({ owner, top: owner.scrollTop, left: owner.scrollLeft }));
+}
+
+function restoreScrollChain(snapshot = []) {
+  snapshot.forEach(({ owner, top, left }) => {
+    if (!owner?.isConnected) return;
+    owner.scrollTop = top;
+    owner.scrollLeft = left;
+  });
+}
+
+function centerElementInNearestScrollOwner(element) {
+  const owner = scrollableAncestors(element)[0];
+  if (!element || !owner) return;
+  const ownerRect = owner.getBoundingClientRect();
+  const elementRect = element.getBoundingClientRect();
+  owner.scrollTop = Math.max(0, owner.scrollTop + elementRect.top - ownerRect.top - (owner.clientHeight / 2) + (Math.min(elementRect.height, owner.clientHeight) / 2));
+}
+
 function refreshSectionReviewInEditor(editor, scope, sectionId) {
   if (!editor) return;
-  const existing = editor.querySelector("[data-redaction-review]");
-  const text = editor.querySelector(".section-text")?.value || "";
-  const review = sectionReviewFor(scope, sectionId);
-  const documentElement = editor.querySelector("[data-redaction-document]");
-  if (documentElement && review) {
-    documentElement.outerHTML = renderRedactionDocument(text, review, {
-      id: `sectionRedactionDocument-${sectionId}`,
-      scope,
-      sectionId,
-      label: "Redaction review"
-    });
-  }
-  const replacement = renderSectionReview({ id: sectionId, deidentifiedText: text }, scope);
-  if (existing) existing.outerHTML = replacement;
-  else if (replacement) editor.insertAdjacentHTML("beforeend", replacement);
+  const field = editor.querySelector(".section-text");
+  const text = field ? field.value : sectionDraftText(scope, sectionId);
+  setSectionDraftText(scope, sectionId, text);
+  const label = editor.querySelector(".section-label")?.value || "Section";
+  const surface = editor.querySelector("[data-section-review-surface]");
+  const replacement = renderSectionSurface({ id: sectionId, label, deidentifiedText: text }, scope);
+  if (surface) surface.outerHTML = replacement;
+  else editor.insertAdjacentHTML("beforeend", replacement);
 }
 
 function refreshSectionReviewAtCurrentPosition(editor, scope, sectionId, focusRedactionIndex = -1) {
-  const routeScrollOwner = scope === "daily" ? byId("dailyView") : byId("dailyView");
-  const routeTop = routeScrollOwner?.scrollTop ?? window.scrollY;
+  const scrollSnapshot = captureScrollChain(editor);
   const priorDocument = editor?.querySelector("[data-redaction-document]");
   const documentTop = priorDocument?.scrollTop ?? 0;
   refreshSectionReviewInEditor(editor, scope, sectionId);
-  if (routeScrollOwner) routeScrollOwner.scrollTop = routeTop;
+  restoreScrollChain(scrollSnapshot);
   const nextDocument = editor?.querySelector("[data-redaction-document]");
   const finish = () => {
-    if (routeScrollOwner) routeScrollOwner.scrollTop = routeTop;
-    else window.scrollTo({ top: routeTop, behavior: "auto" });
+    restoreScrollChain(scrollSnapshot);
   };
   if (focusRedactionIndex >= 0) centerRedactionDocument(nextDocument, focusRedactionIndex, finish);
   else {
@@ -2221,8 +2337,103 @@ function refreshSectionReviewAtCurrentPosition(editor, scope, sectionId, focusRe
   }
 }
 
+function reviewTargetAt(scope, sectionId, redactionIndex) {
+  const sectionIndex = reviewSectionsForScope(scope).findIndex((section) => section.id === sectionId);
+  return sectionIndex < 0 ? null : { scope, sectionId, sectionIndex, redactionIndex };
+}
+
+function moveToSectionReviewTarget(scope, originSectionId, target) {
+  const origin = document.querySelector(`#${sectionListId(scope)} .section-editor[data-section-id="${CSS.escape(originSectionId || "")}"]`);
+  const originSnapshot = captureScrollChain(origin);
+  const activeTarget = activateSectionReviewTarget(scope, target);
+
+  if (!activeTarget) {
+    if (origin) refreshSectionReviewAtCurrentPosition(origin, scope, originSectionId);
+    return null;
+  }
+
+  const destination = expandSectionEditor(scope, activeTarget.sectionId);
+  if (origin) refreshSectionReviewInEditor(origin, scope, originSectionId);
+  if (destination && destination !== origin) refreshSectionReviewInEditor(destination, scope, activeTarget.sectionId);
+
+  requestAnimationFrame(() => {
+    const destinationDocument = destination?.querySelector("[data-redaction-document]");
+    if (destination !== origin) centerElementInNearestScrollOwner(destination);
+    else restoreScrollChain(originSnapshot);
+    centerRedactionDocument(destinationDocument, activeTarget.redactionIndex, () => {
+      if (destination === origin) restoreScrollChain(originSnapshot);
+    });
+  });
+  return activeTarget;
+}
+
+function advanceSectionReview(scope, sectionId, redactionIndex) {
+  const current = reviewTargetAt(scope, sectionId, redactionIndex);
+  if (!current) return null;
+  const pending = pendingSectionReviewTargets(scope);
+  const nextPending = pending.find((target) => (
+    target.sectionIndex > current.sectionIndex
+    || (target.sectionIndex === current.sectionIndex && target.redactionIndex > current.redactionIndex)
+  ));
+  if (nextPending) return moveToSectionReviewTarget(scope, sectionId, nextPending);
+
+  // When the final change in one field is accepted/rejected, move into the
+  // next saved textbox even when it has no model detections. This keeps the
+  // review flow field-by-field instead of closing the active editor.
+  const sections = reviewSectionsForScope(scope);
+  const nextSectionIndex = current.sectionIndex + 1;
+  const nextSection = sections.slice(nextSectionIndex).find((section) => sectionReviewFor(scope, section.id));
+  if (!nextSection) return moveToSectionReviewTarget(scope, sectionId, null);
+  const nextReview = sectionReviewFor(scope, nextSection.id);
+  const nextRedactionIndex = nextPendingRedactionIndex(nextReview);
+  return moveToSectionReviewTarget(scope, sectionId, {
+    scope,
+    sectionId: nextSection.id,
+    sectionIndex: nextSectionIndex + sections.slice(nextSectionIndex).findIndex((section) => section.id === nextSection.id),
+    redactionIndex: nextRedactionIndex
+  });
+}
+
+function focusPendingSectionReview() {
+  const target = app.pendingSectionReviewFocus;
+  app.pendingSectionReviewFocus = null;
+  if (!target || app.view !== "daily") return;
+  const activeTarget = activateSectionReviewTarget(target.scope, target);
+  if (!activeTarget) return;
+  const editor = expandSectionEditor(activeTarget.scope, activeTarget.sectionId);
+  if (!editor) return;
+  refreshSectionReviewInEditor(editor, activeTarget.scope, activeTarget.sectionId);
+  requestAnimationFrame(() => {
+    centerElementInNearestScrollOwner(editor);
+    centerRedactionDocument(editor.querySelector("[data-redaction-document]"), activeTarget.redactionIndex);
+  });
+}
+
+function editSectionText(scope, sectionId) {
+  const editor = expandSectionEditor(scope, sectionId);
+  if (!editor || !sectionReviewFor(scope, sectionId)) return;
+  const scrollSnapshot = captureScrollChain(editor);
+  app.sectionEditingKeys.add(reviewKey(scope, sectionId));
+  refreshSectionReviewInEditor(editor, scope, sectionId);
+  restoreScrollChain(scrollSnapshot);
+  const field = editor.querySelector(".section-text");
+  requestAnimationFrame(() => {
+    restoreScrollChain(scrollSnapshot);
+    field?.focus();
+  });
+}
+
+function resumeSectionReview(scope, sectionId) {
+  const editor = expandSectionEditor(scope, sectionId);
+  if (!editor || !sectionReviewFor(scope, sectionId)) return;
+  app.sectionEditingKeys.delete(reviewKey(scope, sectionId));
+  const review = sectionReviewFor(scope, sectionId);
+  if (inspectedRedactionIndex(review) < 0) review.inspectedRedactionIndex = nextPendingRedactionIndex(review);
+  refreshSectionReviewAtCurrentPosition(editor, scope, sectionId, review.inspectedRedactionIndex);
+}
+
 function redactSelectedSectionText(scope, sectionId) {
-  const editor = expandSectionEditor(sectionId);
+  const editor = expandSectionEditor(scope, sectionId);
   const textarea = editor?.querySelector(".section-text");
   const review = sectionReviewFor(scope, sectionId);
   const documentElement = editor?.querySelector("[data-redaction-document]");
@@ -2246,9 +2457,7 @@ function redactSelectedSectionText(scope, sectionId) {
 function inspectRedaction(scope, sectionId, redactionIndex) {
   const review = sectionReviewFor(scope, sectionId);
   if (!review?.redactions[redactionIndex]) return;
-  review.inspectedRedactionIndex = redactionIndex;
-  const editor = expandSectionEditor(sectionId);
-  refreshSectionReviewAtCurrentPosition(editor, scope, sectionId, redactionIndex);
+  moveToSectionReviewTarget(scope, sectionId, reviewTargetAt(scope, sectionId, redactionIndex));
 }
 
 function keepReviewedRedaction(scope, sectionId) {
@@ -2256,10 +2465,8 @@ function keepReviewedRedaction(scope, sectionId) {
   const reviewedIndex = inspectedRedactionIndex(review);
   if (!review || reviewedIndex < 0 || !review.redactions[reviewedIndex]) return;
   review.redactions[reviewedIndex].state = "confirmed";
-  review.inspectedRedactionIndex = nextPendingRedactionIndex(review, reviewedIndex);
-  const editor = expandSectionEditor(sectionId);
-  refreshSectionReviewAtCurrentPosition(editor, scope, sectionId, review.inspectedRedactionIndex);
-  setStatus(review.inspectedRedactionIndex >= 0 ? "Redaction accepted. Moved to the next pending item." : "All redactions accepted. You can click any highlighted replacement to undo it.");
+  const next = advanceSectionReview(scope, sectionId, reviewedIndex);
+  setStatus(next ? `Redaction accepted. Reviewing the next change in ${reviewSectionsForScope(scope).find((section) => section.id === next.sectionId)?.label || "the next field"}.` : "All redactions accepted. You can click any highlighted replacement to undo it.");
 }
 
 function confirmAllSectionRedactions(scope, sectionId) {
@@ -2268,7 +2475,7 @@ function confirmAllSectionRedactions(scope, sectionId) {
   const pending = review.redactions.filter((redaction) => redaction.state === "pending");
   pending.forEach((redaction) => { redaction.state = "confirmed"; });
   review.inspectedRedactionIndex = -1;
-  const editor = expandSectionEditor(sectionId);
+  const editor = expandSectionEditor(scope, sectionId);
   refreshSectionReviewAtCurrentPosition(editor, scope, sectionId);
   setStatus(pending.length ? `${pending.length} redaction${pending.length === 1 ? "" : "s"} accepted. Click any highlighted replacement to undo it.` : "All redactions were already accepted.");
 }
@@ -2276,22 +2483,31 @@ function confirmAllSectionRedactions(scope, sectionId) {
 function allowReviewedNonPhi(scope, sectionId, redactionIndex) {
   const review = sectionReviewFor(scope, sectionId);
   const redaction = review?.redactions[redactionIndex];
-  const editor = expandSectionEditor(sectionId);
-  const textarea = editor?.querySelector(".section-text");
-  if (!review || !redaction || !textarea) return;
-  const position = redactionPosition(textarea.value, redaction);
+  const editor = expandSectionEditor(scope, sectionId);
+  const field = editor?.querySelector(".section-text");
+  if (!review || !redaction || !field) return;
+  const currentText = sectionDraftText(scope, sectionId, field.value);
+  const position = redactionPosition(currentText, redaction);
   if (position < 0) {
     throw new Error("This redaction cannot be restored inline. Keep it redacted or edit the de-identified field manually.");
   }
-  textarea.setRangeText(redaction.original, position, position + redaction.placeholder.length, "select");
+  const nextText = `${currentText.slice(0, position)}${redaction.original}${currentText.slice(position + redaction.placeholder.length)}`;
+  field.value = nextText;
+  setSectionDraftText(scope, sectionId, nextText);
   review.approvedRedactionIndexes.add(redactionIndex);
   redaction.state = "restored";
   review.redactions.forEach((entry, index) => {
     if (index !== redactionIndex && entry.placeholder === redaction.placeholder && entry.occurrence > redaction.occurrence) entry.occurrence -= 1;
   });
-  review.inspectedRedactionIndex = null;
-  refreshSectionReviewAtCurrentPosition(editor, scope, sectionId, nextPendingRedactionIndex(review, redactionIndex));
-  setStatus("Marked as non-PHI for the next save. Confirm it is not identifying before saving.");
+  review.inspectedRedactionIndex = -1;
+  const next = advanceSectionReview(scope, sectionId, redactionIndex);
+  setStatus(next ? "Marked as non-PHI. Reviewing the next remaining change." : "Marked as non-PHI for the next save. Confirm it is not identifying before saving.");
+}
+
+function refreshResidualWarningSummary(scope) {
+  const current = byId(`residualWarnings-${scope}`);
+  if (!current) return;
+  current.outerHTML = renderWarnings(reviewSectionsForScope(scope), scope);
 }
 
 function dismissSectionWarning(scope, sectionId, warningIndex) {
@@ -2299,22 +2515,26 @@ function dismissSectionWarning(scope, sectionId, warningIndex) {
   if (!review?.warnings[warningIndex]) return;
   review.dismissedWarningIndexes.add(warningIndex);
   setStatus("Warning dismissed for this review only. The decision is not stored.");
-  renderDaily();
-  expandSectionEditor(sectionId);
+  const editor = expandSectionEditor(scope, sectionId);
+  refreshSectionReviewAtCurrentPosition(editor, scope, sectionId);
+  refreshResidualWarningSummary(scope);
 }
 
 function redactSectionWarning(scope, sectionId, warningIndex) {
   const review = sectionReviewFor(scope, sectionId);
   const warning = review?.warnings[warningIndex];
-  const editor = expandSectionEditor(sectionId);
+  const editor = expandSectionEditor(scope, sectionId);
   if (!warning || !editor) return;
   const field = editor.querySelector(".section-text");
   const snippet = warningSnippet(warning);
   const position = field?.value?.indexOf(snippet);
   if (!field || !snippet || position < 0) throw new Error("The flagged text is no longer present. Highlight the remaining identifier in the document and redact it manually.");
-  field.value = insertManualRedaction(field.value, review, position, position + snippet.length, "residual PHI review");
+  const nextText = insertManualRedaction(field.value, review, position, position + snippet.length, "residual PHI review");
+  field.value = nextText;
+  setSectionDraftText(scope, sectionId, nextText);
   review.dismissedWarningIndexes.add(warningIndex);
   refreshSectionReviewAtCurrentPosition(editor, scope, sectionId, review.redactions.length - 1);
+  refreshResidualWarningSummary(scope);
 }
 
 function reviewSectionWarning({ scope, sectionId, warningIndex }) {
@@ -2323,19 +2543,29 @@ function reviewSectionWarning({ scope, sectionId, warningIndex }) {
   const section = (sections || []).find((entry) => entry.id === sectionId);
   const review = sectionReviewFor(scope, sectionId);
   const warning = review?.warnings?.[Number(warningIndex)] || section?.residualWarnings?.[Number(warningIndex)];
-  const editor = expandSectionEditor(sectionId);
+  const editor = expandSectionEditor(scope, sectionId);
   if (!section || !editor) return;
-  const documentElement = editor.querySelector("[data-redaction-document]");
   const snippet = warningSnippet(warning);
-  const matchingNode = [...(documentElement?.querySelectorAll(".redaction-document-text") || [])]
-    .find((node) => snippet && node.textContent.includes(snippet));
-  if (matchingNode && documentElement) {
-    documentElement.scrollTop = Math.max(0, matchingNode.offsetTop - (documentElement.clientHeight / 2) + (matchingNode.offsetHeight / 2));
+  const matchingRedactionIndex = (review?.redactions || []).findIndex((redaction) => (
+    redaction.state !== "restored" && snippet && String(redaction.original || "").includes(snippet)
+  ));
+  if (matchingRedactionIndex >= 0) {
+    moveToSectionReviewTarget(scope, sectionId, reviewTargetAt(scope, sectionId, matchingRedactionIndex));
+    setStatus("Opened the flagged redaction in context.");
+    return;
+  }
+  app.sectionEditingKeys.delete(reviewKey(scope, sectionId));
+  refreshSectionReviewInEditor(editor, scope, sectionId);
+  const documentElement = editor.querySelector("[data-redaction-document]");
+  if (documentElement && centerTextSnippetInDocument(documentElement, snippet)) {
+    centerElementInNearestScrollOwner(editor);
     setStatus("Flagged text centered for manual review.");
     return;
   }
+  if (review) editSectionText(scope, sectionId);
   const didSelect = focusWarningText(editor.querySelector(".section-text"), warning);
-  setStatus(didSelect ? "Flagged text selected for manual review." : "Opened the flagged field for manual review.");
+  centerElementInNearestScrollOwner(editor);
+  setStatus(didSelect ? "Flagged text selected for manual review." : "Opened the flagged field. The detailed flag is no longer available in this review session.");
 }
 
 function reviewQuickWarning(warningIndex) {
@@ -2343,12 +2573,8 @@ function reviewQuickWarning(warningIndex) {
   if (app.quickDeid.review?.warnings?.[warningIndex]) app.quickDeid.review.activeWarningIndex = warningIndex;
   const snippet = warningSnippet(warning);
   const documentElement = byId("quickDeidReviewDocument");
-  const matchingNode = [...(documentElement?.querySelectorAll(".redaction-document-text") || [])]
-    .find((node) => snippet && node.textContent.includes(snippet));
-  if (matchingNode && documentElement) {
-    documentElement.scrollTop = Math.max(0, matchingNode.offsetTop - (documentElement.clientHeight / 2) + (matchingNode.offsetHeight / 2));
-  }
-  setStatus(matchingNode ? "Flagged text centered for manual review." : "The flagged text is not currently visible. Highlight any remaining identifier in the document to redact it.");
+  const centered = centerTextSnippetInDocument(documentElement, snippet);
+  setStatus(centered ? "Flagged text centered for manual review." : "The flagged text is not currently visible. Highlight any remaining identifier in the document to redact it.");
 }
 
 function nextPendingRedactionIndex(review, afterIndex = -1) {
@@ -2407,6 +2633,32 @@ function centerRedactionDocument(documentElement, redactionIndex, afterCenter) {
     documentElement.scrollTop = Math.max(0, target);
     finish();
   });
+}
+
+function centerTextSnippetInDocument(documentElement, snippet) {
+  const needle = String(snippet || "");
+  if (!documentElement || !needle) return false;
+  const walker = document.createTreeWalker(documentElement, NodeFilter.SHOW_TEXT);
+  let node = walker.nextNode();
+  while (node) {
+    if (!node.parentElement?.closest(".redaction-change")) {
+      const index = String(node.nodeValue || "").indexOf(needle);
+      if (index >= 0) {
+        const range = document.createRange();
+        range.setStart(node, index);
+        range.setEnd(node, index + needle.length);
+        const rect = range.getBoundingClientRect();
+        const documentRect = documentElement.getBoundingClientRect();
+        documentElement.scrollTop = Math.max(0, documentElement.scrollTop + rect.top - documentRect.top - (documentElement.clientHeight / 2) + (rect.height / 2));
+        const selection = window.getSelection();
+        selection?.removeAllRanges();
+        selection?.addRange(range);
+        return true;
+      }
+    }
+    node = walker.nextNode();
+  }
+  return false;
 }
 
 function renderQuickReviewAtCurrentPosition(focusRedactionIndex = inspectedRedactionIndex(app.quickDeid.review)) {
@@ -2605,7 +2857,13 @@ function applyApprovedRedactions(scope, sections) {
   return (sections || []).map((section) => {
     const key = reviewKey(scope, section.id);
     const review = app.phiReviews.get(key);
-    if (!review?.approvedRedactionIndexes?.size) return section;
+    if (!review?.approvedRedactionIndexes?.size) {
+      // A completed save establishes a new canonical de-identified value;
+      // discard the pre-save textarea draft while retaining the new review.
+      setSectionDraftText(scope, section.id, section.deidentifiedText);
+      return section;
+    }
+    let nextSection = section;
     let text = section.deidentifiedText;
     for (const redactionIndex of review.approvedRedactionIndexes) {
       const redaction = review.redactions[redactionIndex];
@@ -2614,10 +2872,12 @@ function applyApprovedRedactions(scope, sections) {
         text = `${text.slice(0, position)}${redaction.original}${text.slice(position + redaction.placeholder.length)}`;
       }
     }
+    nextSection = { ...section, deidentifiedText: text };
     // The user has explicitly classified these values as non-PHI. Remove the
     // in-memory source text once the approved de-identified text is committed.
     app.phiReviews.delete(key);
-    return { ...section, deidentifiedText: text };
+    app.sectionDrafts.delete(key);
+    return nextSection;
   });
 }
 
@@ -2650,6 +2910,7 @@ async function saveContext() {
   try {
     const sections = await deidentifySectionRows("context", "contextSections");
     app.vault = updateActivePatient(app.vault, (patient) => ({ ...patient, contextSections: sections }));
+    beginSectionReview("context");
     await persistVault("Context saved as de-identified local text.");
     updateDeidOperation({ active: false, message: "Admission packet de-identified and saved locally." });
     render();
@@ -2681,6 +2942,7 @@ async function saveDay() {
     const sections = await deidentifySectionRows("daily", "dailySections");
     const nextDay = { ...day, sections, updatedAt: new Date().toISOString() };
     app.vault = updateActivePatient(app.vault, (current) => ({ ...current, days: upsertDay(current.days, nextDay) }));
+    beginSectionReview("daily");
     await persistVault("Daily update saved as de-identified local text.");
     updateDeidOperation({ active: false, message: "Hospital day de-identified and saved locally." });
     render();
@@ -3007,7 +3269,7 @@ async function commitWorkupOverride(workup, message) {
 }
 
 function isWorkupEditorControl(target) {
-  return Boolean(target?.closest?.("#workupsContent") && target.matches?.("#workupTitleInput, #workupAliasesInput, [data-workup-item-row] input, [data-workup-item-row] select"));
+  return Boolean(target?.closest?.("#workupsContent") && target.matches?.("#workupTitleInput, #workupAliasesInput, [data-workup-item-row] input, [data-workup-item-row] textarea, [data-workup-item-row] select"));
 }
 
 function queueWorkupAutosave() {
@@ -3217,10 +3479,15 @@ function reorderWorkupRowAtPointer(row, clientX, clientY) {
     const sourceGroup = row.closest(".workup-system-group");
     const targetGroup = list.closest(".workup-system-group");
     if (!sourceGroup || !targetGroup) return false;
-    const targetRect = targetGroup.getBoundingClientRect();
-    if (clientY < targetRect.top + targetRect.height / 2) targetGroup.parentElement.insertBefore(sourceGroup, targetGroup);
-    else targetGroup.parentElement.insertBefore(sourceGroup, targetGroup.nextElementSibling);
+    const dropTarget = workupDropTarget(list, clientY);
+    if (dropTarget) list.insertBefore(row, dropTarget);
+    else list.append(row);
+    const targetSystem = targetGroup.dataset.workupSystem || "general";
+    const systemField = row.querySelector('[data-field="item-system"]');
+    if (systemField) systemField.value = targetSystem;
+    if (!sourceList.querySelector("[data-workup-item-row]")) sourceGroup.remove();
     updateWorkupRowNumbers(list);
+    updateWorkupRowNumbers(sourceList);
     return true;
   }
   const dropTarget = workupDropTarget(list, clientY);
@@ -3655,6 +3922,13 @@ function handleInput(event) {
   }
   if (event.target.id === "workupJsonImport") {
     app.workupImportDraft = event.target.value;
+    return;
+  }
+  if (event.target.matches(".section-editor .section-text")) {
+    const editor = event.target.closest(".section-editor");
+    const scope = editor?.dataset.sectionScope || "context";
+    const sectionId = editor?.dataset.sectionId || "";
+    if (sectionId) setSectionDraftText(scope, sectionId, event.target.value);
     return;
   }
   if (isWorkupEditorControl(event.target)) {

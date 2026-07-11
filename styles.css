@@ -2886,11 +2886,15 @@ p {
   border-radius: 0;
   background: transparent;
   padding: 7px 3px;
+  grid-template-columns: 28px 18px minmax(0, 1fr) auto;
+  grid-template-rows: auto auto auto auto;
+  align-items: start;
 }
 
 .workup-editor-card:hover { background: #fbfcfc; }
 
 .workup-editor-card input,
+.workup-editor-card textarea,
 .workup-editor-card select {
   min-height: 30px;
   border-color: transparent;
@@ -2899,6 +2903,8 @@ p {
 
 .workup-editor-card input:hover,
 .workup-editor-card input:focus,
+.workup-editor-card textarea:hover,
+.workup-editor-card textarea:focus,
 .workup-editor-card select:hover,
 .workup-editor-card select:focus { border-color: var(--border); background: var(--surface); }
 
@@ -4198,4 +4204,202 @@ body.vault-locked .vault-access {
   .settings-field-wide {
     grid-column: auto;
   }
+}
+
+/* Hospital Stay review and the workup editor are each an independent working
+   surface.  These final rules intentionally replace earlier transitional
+   layout variants so a nested scroll area never hides its own actions. */
+.section-review-surface { min-width: 0; }
+
+.section-review-surface > .section-text {
+  box-sizing: border-box;
+  min-height: 220px;
+  width: 100%;
+}
+
+.workup-editor-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(190px, 320px) auto;
+  align-items: center;
+  gap: 14px;
+}
+
+.workup-editor-select {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.workup-editor-select select { min-width: 0; }
+
+.workup-editor-header-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+}
+
+.workup-catalog-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px;
+}
+
+.workup-catalog-actions .muted { font-size: 11px; }
+
+.workup-catalog-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.workup-catalog-row .check-row {
+  min-width: 0;
+  min-height: 50px;
+  border: 0;
+  border-radius: 0;
+  padding: 8px 2px;
+}
+
+.workup-catalog-row.is-selected {
+  background: var(--surface-tint);
+}
+
+.workup-catalog-row > button {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.workup-catalog-row .check-row > span {
+  display: grid;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 1041px) {
+  .workup-editor-surface {
+    grid-template-rows: auto auto auto auto minmax(460px, 62dvh) auto auto auto auto auto;
+    height: auto;
+    min-height: 100%;
+    overflow: visible;
+  }
+
+  .workup-editor-heading {
+    grid-column: 2;
+    grid-row: 1;
+    margin: 16px 20px 0;
+  }
+
+  .workup-title-input {
+    width: 100%;
+    margin: 0;
+    min-width: 0;
+  }
+
+  .workup-editor-select { justify-self: stretch; }
+
+  .workup-catalog-menu {
+    align-self: start;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    min-height: 0;
+    height: min(760px, calc(100dvh - 116px));
+    max-height: calc(100dvh - 116px);
+    overflow: hidden;
+  }
+
+  .workup-catalog-popover,
+  .workup-catalog-menu:not([open]) > .workup-catalog-popover {
+    display: grid !important;
+    grid-template-rows: auto auto minmax(0, 1fr);
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .workup-catalog-popover .workup-list {
+    max-height: none;
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+  }
+
+  .workup-columns {
+    min-height: 0;
+    height: min(760px, 62dvh);
+    overflow: hidden;
+    align-items: stretch;
+  }
+
+  .workup-column,
+  .workup-item-scroll { min-height: 0; }
+
+  .workup-column { height: 100%; }
+
+  .workup-item-scroll {
+    max-height: none;
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+  }
+
+  .workup-footer-actions { position: static; }
+}
+
+@media (max-width: 1040px) {
+  .workup-editor-heading {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .workup-editor-header-actions { justify-content: stretch; }
+
+  .workup-editor-header-actions button { width: 100%; }
+
+  .workup-title-input { width: 100%; margin: 0; }
+
+  .workup-editor-select { grid-template-columns: auto minmax(0, 1fr); }
+}
+
+/* Each editable workup item gets a readable question row, an answer-choice
+   row, and a compact action row. Textarea questions wrap instead of being
+   clipped into a single narrow input beside the controls. */
+.workup-editor-card [data-field="item-text"] {
+  grid-column: 3 / -1;
+  grid-row: 1;
+  min-height: 48px;
+  resize: vertical;
+}
+
+.workup-editor-card [data-field="item-choices"] {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.workup-editor-card [data-field="item-select"] {
+  grid-column: 4;
+  grid-row: 2;
+  width: 82px;
+}
+
+.workup-editor-card .button-row {
+  grid-column: 3 / -1;
+  grid-row: 3;
+  justify-content: flex-end;
+}
+
+.workup-editor-card .workup-item-details {
+  grid-column: 3 / -1;
+  grid-row: 4;
 }

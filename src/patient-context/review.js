@@ -168,3 +168,36 @@ export function synchronizeReviewPlaceholders(review, outputText) {
 export function reviewKey(scope, sectionId) {
   return `${String(scope || "context")}:${String(sectionId || "")}`;
 }
+
+// The review UI owns the mutable review objects, while this module owns the
+// deterministic traversal rules.  Keeping the cursor calculation pure makes
+// it possible to advance from one admission field to the next without tying
+// ordering to a DOM position or a rendered list of buttons.
+export function pendingReviewTargets(sectionEntries = []) {
+  return (sectionEntries || []).flatMap((entry, sectionIndex) =>
+    (entry?.review?.redactions || [])
+      .map((redaction, redactionIndex) => ({
+        scope: String(entry?.scope || "context"),
+        sectionId: String(entry?.sectionId || ""),
+        sectionIndex,
+        redactionIndex,
+        redaction
+      }))
+      .filter((target) => target.sectionId && target.redaction?.state === "pending")
+  );
+}
+
+// Return the next remaining review target in document order.  If a clinician
+// manually opens a later item, wrapping makes sure earlier unreviewed fields
+// are not silently skipped.
+export function nextPendingReviewTarget(targets = [], current = null) {
+  const ordered = [...(targets || [])].sort((left, right) => (
+    left.sectionIndex - right.sectionIndex || left.redactionIndex - right.redactionIndex
+  ));
+  if (!ordered.length) return null;
+  if (!current) return ordered[0];
+  return ordered.find((target) => (
+    target.sectionIndex > current.sectionIndex
+    || (target.sectionIndex === current.sectionIndex && target.redactionIndex > current.redactionIndex)
+  )) || ordered[0];
+}

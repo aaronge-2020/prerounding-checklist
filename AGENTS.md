@@ -29,6 +29,7 @@ Purpose: a compact, current map for future work on this local-first app.
   - `workspace-mirror.js` stores an explicitly granted workup-folder handle in IndexedDB and performs only authorized workup writes.
 - `src/patient-context/`: section handling, worker/client/service model integration, model packs, and active-tab redaction reviews.
   - `review.js` holds originals and review choices only in memory for the current active tab.
+  - `app.js` keeps per-section de-identified edit drafts in a session-only map so review re-renders cannot discard edits; clear those drafts with the review session.
 - `src/daily-updates/days.js`: hospital-day CRUD and trajectory source assembly.
 - `src/workups/`: pure workup schema, systems, editor conversion, portable libraries, checklist conversion, generated Core 50 runtime catalog, and workspace-mirror plan.
   - `admission-core.js` is generated; do not hand-edit it.
@@ -56,7 +57,15 @@ Purpose: a compact, current map for future work on this local-first app.
 - Keep all model metadata URL fetching local during inference: `deid-service.js` remaps allowed model metadata to the selected local pack and rejects other external model fetches. The CSP allows Hugging Face only for explicit, pinned model-download actions.
 - The worker inference self-test is mandatory before ready state. A load, self-test, or inference failure revokes verification but retains files for explicit retry.
 - Quick De-ID and Hospital Stay use one active-tab-only annotated review document. Pending redactions show original struck through beside the safe replacement; accepted redactions show only the safe highlighted replacement and expose Undo on click. Support Confirm all, manual selected-text redaction, residual-flag Redact/Not PHI, and preserving outer/document scroll while focusing the current decision.
+- Hospital Stay review is scoped by packet (`context` versus `daily`) and traverses fields in document order. After save, the first pending redaction opens automatically; Accept/Reject advances to the next redaction or next packet field without collapsing the editor. Residual-warning clicks must select the exact flagged range using a text-range anchor, not a whole inline span.
+- Edits made while a review is open remain available through `Edit field text` / `Return to redaction review`; input events update the session draft immediately. Do not make a saved review field permanently read-only or force the user back to the top of a route.
 - Deduplicate overlapping/nested detector spans into one review choice, retaining the most specific label. Distinct source occurrences remain distinct review choices.
+
+## Workup Editor Interaction Rules
+
+- The catalog rail and editor columns are independent scroll surfaces. Keep `workup-item-scroll` constrained to the editor row height and use `scrollbar-gutter: stable`; never let a long condition expand the entire page and hide the footer.
+- Workup catalog rows must keep the checkbox and Edit action as separate controls; do not nest a button inside a label. Individual rows can be dragged across system groups, updating the controlled system ID and removing empty groups.
+- Keep a visible `Build checklist` action in the editor header as well as the catalog selection area. Selecting workups is not enough; building the checklist must be explicit and must navigate to Checklist.
 
 ## Prompts And Data
 

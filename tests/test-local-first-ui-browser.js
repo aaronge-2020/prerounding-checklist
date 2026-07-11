@@ -129,9 +129,19 @@ try {
   await page.locator("#contextSections .section-editor").nth(1).locator(".section-text").fill("Furosemide 40 mg PO daily. Lisinopril 10 mg PO daily.");
   await page.locator("#contextSections .section-editor").nth(2).locator('[data-action="toggle-section-editor"]').click();
   await page.locator("#contextSections .section-editor").nth(2).locator(".section-text").fill("Creatinine 1.4 today.");
+  await page.locator("#contextSections .section-editor").nth(3).locator('[data-action="toggle-section-editor"]').click();
+  await page.locator("#contextSections .section-editor").nth(3).locator(".section-text").fill("AM Labs reviewed with the team.");
   await page.click('[data-action="save-context"]');
   await page.waitForFunction(() => document.querySelector("#contextSections")?.textContent.includes("[MRN]"));
-  await page.locator("#contextSections .section-editor").nth(0).locator('[data-action="toggle-section-editor"]').click();
+  await page.waitForSelector("#contextSections .redaction-review");
+  assert.equal(await page.locator("#contextSections .section-editor").nth(0).evaluate((node) => node.classList.contains("is-expanded")), true, "the first review field should open automatically after save");
+  const residualWarning = page.locator('#residualWarnings-context .residual-warning').first();
+  assert.equal(await residualWarning.count() > 0, true, "the saved review should expose residual PHI flags");
+  await residualWarning.click();
+  assert.equal(await page.evaluate(() => window.getSelection()?.toString()), "AM Labs", "residual review should select the flagged phrase in its own field");
+  await page.locator("#contextSections [data-action=\"edit-section-text\"]").first().click();
+  assert.equal(await page.locator("#contextSections .section-editor").nth(0).locator(".section-text").isVisible(), true, "a saved field must remain editable");
+  await page.locator("#contextSections [data-action=\"resume-section-review\"]").first().click();
   await page.waitForSelector("#contextSections .redaction-review");
   assert.equal(await page.locator("#contextSections .redaction-change").count() > 0, true);
   await page.locator("#contextSections .redaction-change").first().click();
@@ -142,6 +152,8 @@ try {
   assert.equal(await acceptedContextToken.locator("del").count(), 0, "Hospital Stay should also hide an accepted original");
   assert.equal(await acceptedContextToken.locator("mark").count(), 1, "Hospital Stay should retain the safe replacement as a clickable highlight");
   assert.equal(await acceptedContextToken.getAttribute("data-original"), null, "Hospital Stay must not leave an accepted original in the DOM");
+  await page.locator('#contextSections [data-action="keep-reviewed-redaction"]').first().click();
+  assert.equal(await page.locator("#contextSections .section-editor").nth(1).evaluate((node) => node.classList.contains("is-expanded")), true, "finishing one field should advance into the next field without closing review");
   await page.locator("#contextSections [data-redaction-document]").first().evaluate((node) => {
     const textNode = [...node.querySelectorAll(".redaction-document-text")].find((candidate) => candidate.textContent.includes("dyspnea"))?.firstChild;
     const start = textNode?.textContent.indexOf("dyspnea") ?? -1;
@@ -172,8 +184,11 @@ try {
   await page.waitForSelector("#dailySections");
 
   await page.click('[data-view-target="workups"]');
+  await page.selectOption("#workupEditorSelect", { label: "Acute kidney injury" });
   assert.equal(await page.locator('[data-workup-kind] .workup-item-scroll').count(), 2);
   assert.equal(await page.locator('[data-workup-kind="history"] .workup-system-group').count() > 1, true);
+  assert.equal(await page.locator('[data-workup-kind="history"] .workup-item-scroll').evaluate((node) => node.scrollHeight > node.clientHeight), true, "history questions must have their own scroll surface");
+  assert.equal(await page.locator('[data-action="build-checklist"]').first().isVisible(), true, "Build checklist must remain visible while editing a workup");
   assert.equal(await page.locator('[data-field="item-system"]').first().evaluate((node) => node.tagName), "SELECT");
   const historyRows = page.locator('[data-workup-kind="history"] [data-workup-item-row]');
   const thirdHistoryText = await historyRows.nth(2).locator('[data-field="item-text"]').inputValue();
