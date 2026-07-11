@@ -1,5 +1,6 @@
 import { createTextSection, normalizeSection } from "../app/state/vault.js";
 import { sanitizeResidualWarningMetadata } from "./review.js";
+import { naturalLanguagePrompt } from "../prompts/natural-language.js";
 
 export function reorderSections(sections, sectionId, direction) {
   const index = sections.findIndex((section) => section.id === sectionId);
@@ -75,8 +76,9 @@ export async function replaceSectionsFromFormAsync(rows, deidentify, { onResult,
 export function sectionsToPromptBlock(sections = [], title = "Patient context") {
   const entries = sections
     .filter((section) => String(section.deidentifiedText || "").trim())
-    .map((section) => `## ${section.label}\n${section.deidentifiedText.trim()}`);
-  return entries.length ? `# ${title}\n\n${entries.join("\n\n")}` : `# ${title}\n\nNo saved de-identified text.`;
+    .map((section) => `${section.label || "Saved information"}: ${section.deidentifiedText.trim()}`);
+  const body = entries.length ? entries.join("\n\n") : "No saved de-identified text.";
+  return naturalLanguagePrompt(`${title}.\n\n${body}`);
 }
 
 export function sectionWarningSummary(sections = []) {

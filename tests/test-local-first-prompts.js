@@ -32,33 +32,35 @@ patient = {
 assert.equal(openEvidenceTasks[["final", "rounds", "update"].join("_")], undefined);
 
 const admission = buildOpenEvidencePrompt("initial_admission_rounds", { patient, guidelines });
-assert.match(admission, /Admission \/ HPI Documentation Standard/);
-assert.match(admission, /Rule of Separation/);
-assert.match(admission, /The Full Admission Report/);
+assert.match(admission, /clear admission report/i);
+assert.match(admission, /clinical reasoning, and action steps separate/i);
 assert.match(admission, /Admission context/);
 
 const progress = buildOpenEvidencePrompt("daily_progress_note", { patient, selectedDayId: day.id, guidelines });
-assert.match(progress, /Daily Progress-Note Documentation Standard/);
-assert.match(progress, /The Daily Progress Note/);
+assert.match(progress, /daily progress note/i);
 assert.match(progress, /Subjective, Objective, Assessment, and Plan/);
 assert.match(progress, /Feels less short of breath/);
 
 const teaching = buildOpenEvidencePrompt("teaching_case_trajectory", { patient, selectedDayId: day.id });
-assert.match(teaching, /entire patient case and trajectory/i);
-assert.match(teaching, /Chronological hospital trajectory/);
-assert.match(teaching, /Do not claim a trend unless/);
+assert.match(teaching, /full case and hospital course/i);
+assert.match(teaching, /Do not write a clinical note or claim a trend/i);
 
 const medicationOrganizer = buildOpenEvidencePrompt("medication_explainer_by_problem", { patient });
 assert.match(medicationOrganizer, /disease, condition, symptom, or clinical purpose/);
-assert.match(medicationOrganizer, /what the medication does/);
+assert.match(medicationOrganizer, /brief explanation of what it does/);
 assert.match(medicationOrganizer, /confirmed from context, inferred, or uncertain/);
 
 const medicationSafety = buildOpenEvidencePrompt("medication_safety_audit", { patient });
-assert.match(medicationSafety, /Indication/);
-assert.match(medicationSafety, /Dosage/);
-assert.match(medicationSafety, /Route/);
-assert.match(medicationSafety, /Frequency/);
+assert.match(medicationSafety, /indication/i);
+assert.match(medicationSafety, /dose/i);
+assert.match(medicationSafety, /route/i);
+assert.match(medicationSafety, /frequency/i);
 assert.match(medicationSafety, /insufficient information/);
+
+for (const prompt of [admission, progress, teaching, medicationOrganizer, medicationSafety, buildOpenEvidencePrompt("checklist_workup_refinement", { patient })]) {
+  assert.doesNotMatch(prompt, /[\[\]{}<>()`]/, "OpenEvidence prompts must stay in natural language without brackets or code syntax");
+  assert.doesNotMatch(prompt, /^\s*(?:#|[-*]|\d+[.)])\s/m, "OpenEvidence prompts must not use Markdown or numbered-list syntax");
+}
 
 assert.throws(() => buildOpenEvidencePrompt("daily_progress_note", { patient, guidelines: "" }), /task-specific documentation standard/);
 
@@ -86,6 +88,15 @@ const directFieldPrompt = buildCustomOpenEvidencePrompt({
 });
 assert.match(directFieldPrompt, /Admitted for dyspnea and edema\./);
 assert.doesNotMatch(directFieldPrompt, /Furosemide 40 mg/);
+
+const plainCustomPrompt = buildCustomOpenEvidencePrompt({
+  taskId: "teaching_case_trajectory",
+  template: "Explain [this] {saved context} for @admission-context.",
+  patient,
+  selectedDayId: day.id
+});
+assert.match(plainCustomPrompt, /Admitted for dyspnea and edema\./);
+assert.doesNotMatch(plainCustomPrompt, /[\[\]{}<>()`]/, "custom OpenEvidence prompts must remove bracketed template syntax");
 
 const olderDay = createDailyRecord({ date: "2026-07-08", label: "Hospital day 1" });
 const patientWithTwoDays = {
@@ -122,7 +133,7 @@ const directAdmission = buildCustomOpenEvidencePrompt({
   selectedDayId: day.id,
   guidelines
 });
-assert.match(directAdmission, /Admission \/ HPI Documentation Standard/);
+assert.match(directAdmission, /clear admission report/i);
 assert.doesNotMatch(directAdmission, /Privacy rules:/);
 
 const directGuidelines = buildCustomOpenEvidencePrompt({
@@ -132,7 +143,7 @@ const directGuidelines = buildCustomOpenEvidencePrompt({
   selectedDayId: day.id,
   guidelines
 });
-assert.match(directGuidelines, /Admission \/ HPI Documentation Standard/);
+assert.match(directGuidelines, /clear admission report/i);
 assert.doesNotMatch(directGuidelines, /@guidelines/);
 
 const consultPrompt = buildCustomOpenEvidencePrompt({
@@ -151,5 +162,6 @@ assert.match(consultPrompt, /Consult service/);
 assert.match(consultPrompt, /consulted clinical question/i);
 assert.match(consultPrompt, /arrhythmia question/);
 assert.match(consultPrompt, /Start with the one-liner/);
+assert.doesNotMatch(consultPrompt, /[\[\]{}<>()`]/);
 
 console.log("local-first prompt tests passed");

@@ -2,7 +2,8 @@ import { checklistAnswersSummary } from "../checklist/state.js";
 import { buildTrajectoryBlock } from "../daily-updates/days.js";
 import { sectionsToPromptBlock } from "../patient-context/sections.js";
 import { buildTeamPreferencesPromptBlock } from "../app/preferences.js";
-import { OPEN_EVIDENCE_TASKS } from "./open-evidence.js";
+import { documentationInstructionForTask, OPEN_EVIDENCE_TASKS } from "./open-evidence.js";
+import { naturalLanguagePrompt } from "./natural-language.js";
 
 export const PROMPT_TEMPLATE_STORAGE_KEY = "prerounding_prompt_templates_v1";
 
@@ -63,13 +64,6 @@ function sectionByLabel(sections = [], pattern) {
   return sections.find((section) => pattern.test(section.label || "")) || null;
 }
 
-export function documentationStandardForTask(taskId, guidelines) {
-  if (typeof guidelines === "string") return String(guidelines || "").trim();
-  if (taskId === "initial_admission_rounds") return String(guidelines?.admission || "").trim();
-  if (taskId === "daily_progress_note") return String(guidelines?.progress || "").trim();
-  return "";
-}
-
 function taskRequiresGuidelines(taskId) {
   return OPEN_EVIDENCE_TASKS.some((task) => task.id === taskId && task.requiresGuidelines);
 }
@@ -125,7 +119,7 @@ export function buildPromptVariableMap({ taskId, patient, selectedDayId, guideli
     "@hospital-stay": buildTrajectoryBlock(patient, { selectedDayId: selectedDay?.id, includeAllDays: false }),
     "@selected-day": selectedDay ? sectionsToPromptBlock(selectedDay.sections || [], `Selected day: ${selectedDay.date} - ${selectedDay.label}`) : "No saved hospital day.",
     "@checklist-answers": checklistAnswersSummary(snapshot, answers),
-    "@guidelines": documentationStandardForTask(taskId, guidelines)
+    "@guidelines": taskRequiresGuidelines(taskId) ? documentationInstructionForTask(taskId, guidelines) : ""
   };
 }
 
@@ -138,16 +132,13 @@ export function interpolatePromptTemplate(template, variables) {
 
 export function ensureRequiredGuidelines({ taskId, prompt, guidelines }) {
   if (!taskRequiresGuidelines(taskId)) return prompt;
-  const text = documentationStandardForTask(taskId, guidelines);
-  if (!text) throw new Error("The task-specific documentation standard must be loaded for this prompt.");
-  if (prompt.includes(text)) return prompt;
-  const source = taskId === "initial_admission_rounds" ? "Guidelines-admission.md" : "Guidelines-progress.md";
-  return `<documentation_standard source="${source}">\n${text}\n</documentation_standard>\n\n${prompt}`;
+  const instruction = documentationInstructionForTask(taskId, guidelines);
+  return prompt.includes(instruction) ? prompt : `${instruction}\n\n${prompt}`;
 }
 
 export function buildCustomOpenEvidencePrompt({ taskId, template, patient, selectedDayId, guidelines, teamPreferences }) {
   const variables = buildPromptVariableMap({ taskId, patient, selectedDayId, guidelines });
   const interpolated = interpolatePromptTemplate(template, variables);
   const prompt = ensureRequiredGuidelines({ taskId, prompt: interpolated, guidelines });
-  return `${buildTeamPreferencesPromptBlock(teamPreferences)}\n\n${prompt}`;
+  return naturalLanguagePrompt(`${buildTeamPreferencesPromptBlock(teamPreferences)}\n\n${prompt}`);
 }

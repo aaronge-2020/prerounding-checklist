@@ -2,6 +2,7 @@ import { checklistAnswersSummary } from "../checklist/state.js";
 import { buildTrajectoryBlock } from "../daily-updates/days.js";
 import { sectionsToPromptBlock } from "../patient-context/sections.js";
 import { buildTeamPreferencesPromptBlock } from "../app/preferences.js";
+import { naturalLanguagePrompt } from "./natural-language.js";
 
 export const OPEN_EVIDENCE_TASKS = [
   {
@@ -43,17 +44,20 @@ function compactText(text, limit = 42000) {
   if (value.length <= limit) return value;
   const head = value.slice(0, Math.floor(limit * 0.55));
   const tail = value.slice(value.length - Math.floor(limit * 0.35));
-  return `${head}\n\n[Context compacted by the local app. Middle content omitted; documentation guidelines were not compacted.]\n\n${tail}`;
+  return `${head}\n\nThe middle of this context was omitted to keep the request manageable.\n\n${tail}`;
 }
 
-function documentationStandardBlock(taskId, guidelines) {
+export function documentationInstructionForTask(taskId, guidelines) {
+  // Guidelines-admission.md and Guidelines-progress.md remain the canonical
+  // sources. OpenEvidence receives only their concise natural-language rules.
   const legacy = typeof guidelines === "string" ? guidelines : "";
   const text = taskId === "initial_admission_rounds"
     ? String(legacy || guidelines?.admission || "").trim()
     : String(legacy || guidelines?.progress || "").trim();
   if (!text) throw new Error("The task-specific documentation standard must be loaded before building this prompt.");
-  const source = taskId === "initial_admission_rounds" ? "Guidelines-admission.md" : "Guidelines-progress.md";
-  return `<documentation_standard source="${source}">\n${text}\n</documentation_standard>`;
+  return taskId === "initial_admission_rounds"
+    ? "Write a clear admission report with the presenting concern, symptom story, relevant medical and social history, medications and allergies, examination and data, then a concise assessment and prioritized plan. Keep subjective information, objective findings, clinical reasoning, and action steps separate."
+    : "Write a concise daily progress note with Subjective, Objective, Assessment, and Plan. Keep patient statements, objective findings, clinical reasoning, and action steps separate, and make the assessment distinct from the prior day.";
 }
 
 function patientBlocks(patient, selectedDayId = "") {
@@ -69,82 +73,45 @@ function patientBlocks(patient, selectedDayId = "") {
   };
 }
 
-function baseHeader(taskName) {
-  return `Task: ${taskName}`;
-}
-
 export function buildInitialAdmissionPrompt({ patient, guidelines }) {
   const blocks = patientBlocks(patient);
-  return `${baseHeader("Initial admission rounds prompt")}
-
-${documentationStandardBlock("initial_admission_rounds", guidelines)}
-
-Follow the documentation standard exactly for the full admission report. Use the Rule of Separation. Do not repeat history, data, reasoning, and action steps across sections.
+  return `Write a concise, chart-ready initial admission note from this de-identified information. ${documentationInstructionForTask("initial_admission_rounds", guidelines)} Do not repeat information.
 
 ${compactText(blocks.patientContext)}
 
-Checklist answers available for context:
+Here are the checklist answers for context.
 ${compactText(blocks.checklist, 10000)}
-
-Return a concise, chart-ready initial admission rounds draft.`;
+`;
 }
 
 export function buildDailyProgressPrompt({ patient, selectedDayId, guidelines }) {
   const blocks = patientBlocks(patient, selectedDayId);
-  return `${baseHeader("Daily progress-note update prompt")}
-
-${documentationStandardBlock("daily_progress_note", guidelines)}
-
-Follow the Daily Progress Note section of the documentation standard exactly. Enforce Subjective, Objective, Assessment, and Plan separation. The Assessment must be concise and distinct from the prior day. The Plan must include differentials for acute problems as requested in the standard.
+  return `Write a concise daily progress note for the selected hospital day from this de-identified information. ${documentationInstructionForTask("daily_progress_note", guidelines)} Include differentials for acute problems when the available information supports them.
 
 ${compactText(blocks.patientContext, 18000)}
 
 ${compactText(blocks.trajectory, 24000)}
 
-Checklist answers available for today's rounds:
+Here are the checklist answers from today's rounds.
 ${compactText(blocks.checklist, 10000)}
-
-Return a daily progress-note update for the selected hospital day.`;
+`;
 }
 
 export function buildTeachingTrajectoryPrompt({ patient, selectedDayId }) {
   const blocks = patientBlocks(patient, selectedDayId);
-  return `${baseHeader("Teaching prompt for the entire patient case and trajectory")}
-
-Explain the patient's case as a teaching script for a clinician in training.
-
-Required structure:
-1. One-sentence illness script.
-2. Chronological hospital trajectory using only provided context.
-3. Key pathophysiology and clinical reasoning.
-4. Diagnostic uncertainty and competing explanations.
-5. Why each major management decision or pending question matters.
-6. Teaching pearls tied directly to this patient's context.
-
-Do not write a final note. Do not claim a trend unless the user-provided text states it.
+  return `Teach this patient's full case and hospital course to a clinician in training. Start with a one-sentence illness script, then explain the course, key pathophysiology, clinical reasoning, uncertainty, and why the major decisions or pending questions matter. Tie teaching points directly to this patient. Do not write a clinical note or claim a trend that the provided information does not state.
 
 ${compactText(blocks.patientContext, 22000)}
 
 ${compactText(blocks.trajectory, 26000)}
 
-Checklist answers:
+Here are the checklist answers.
 ${compactText(blocks.checklist, 10000)}`;
 }
 
 export function buildMedicationExplainerPrompt({ patient, selectedDayId }) {
   const blocks = patientBlocks(patient, selectedDayId);
-  return `${baseHeader("Medication organization and explanation prompt")}
-
-Organize every medication mentioned in the context by the disease, condition, symptom, or clinical purpose it appears intended to treat.
-
-For each medication:
-- Generic medication name if available.
-- Dose, route, and frequency if provided.
-- Problem/condition/symptom being treated.
-- Brief background on what the medication does and why it may be used.
-- Whether the indication is confirmed from context, inferred, or uncertain.
-
-If a medication's purpose is unclear, put it under "Unclear or needs verification" and explain what information is missing. Do not guess.
+  return `Organize the medications by the disease, condition, symptom, or clinical purpose they appear intended to treat. For each medication, give its generic name when available, dose, route, frequency, intended problem, a brief explanation of what it does, and whether the intended purpose is confirmed from context, inferred, or uncertain. If the purpose is unclear, say what information is needed. Do not guess.
 
 ${compactText(blocks.patientContext, 24000)}
 
@@ -153,24 +120,7 @@ ${compactText(blocks.trajectory, 22000)}`;
 
 export function buildMedicationSafetyPrompt({ patient, selectedDayId }) {
   const blocks = patientBlocks(patient, selectedDayId);
-  return `${baseHeader("Medication safety audit prompt")}
-
-Check each medication for medication errors or safety concerns.
-
-For each medication, explicitly review:
-- Indication.
-- Dosage.
-- Route.
-- Frequency.
-- Duplications or overlapping therapy.
-- Important interactions.
-- Contraindications or cautions.
-- Renal/hepatic adjustment needs when relevant data is provided.
-- Monitoring parameters or missing information.
-
-Use the exact phrase "insufficient information" when the chart context does not provide enough data. Do not guess doses, routes, indications, renal function, allergies, or interactions.
-
-Return a table followed by a prioritized safety checklist.
+  return `Review each medication for safety concerns. Consider its indication, dose, route, frequency, duplications or overlapping therapy, interactions, contraindications, renal or hepatic adjustment when relevant information is available, monitoring needs, and missing information. Use the exact phrase insufficient information when the chart does not provide enough data. Do not guess doses, routes, indications, kidney function, allergies, or interactions. Finish with the most important safety concerns first.
 
 ${compactText(blocks.patientContext, 24000)}
 
@@ -179,17 +129,7 @@ ${compactText(blocks.trajectory, 22000)}`;
 
 export function buildChecklistRefinementPrompt({ patient, selectedDayId }) {
   const blocks = patientBlocks(patient, selectedDayId);
-  return `${baseHeader("Checklist/workup refinement prompt")}
-
-Review the current workup-derived checklist against the de-identified patient context.
-
-Return:
-1. Checklist questions or exam items that should be added.
-2. Items that are redundant, too vague, or not patient-relevant.
-3. Suggested answer choices for any new item.
-4. A valid prerounding_workup_v1 JSON patch if a new local workup should be created.
-
-Only propose history questions and physical exam items. Do not add orders, treatment plans, diagnoses, or citations to the workup JSON.
+  return `Review this workup-derived checklist against the de-identified patient context. Suggest useful history questions or physical exam items, identify items that are redundant, vague, or not relevant, and offer short answer choices for new items. Use plain language only. Do not suggest orders, treatment plans, diagnoses, citations, code, or structured data.
 
 ${compactText(blocks.patientContext, 22000)}
 
@@ -210,5 +150,5 @@ export function buildOpenEvidencePrompt(taskId, options = {}) {
   };
   const builder = builders[taskId];
   if (!builder) throw new Error(`Unknown OpenEvidence prompt task: ${taskId}`);
-  return `${buildTeamPreferencesPromptBlock(options.teamPreferences)}\n\n${builder(options)}`;
+  return naturalLanguagePrompt(`${buildTeamPreferencesPromptBlock(options.teamPreferences)}\n\n${builder(options)}`);
 }

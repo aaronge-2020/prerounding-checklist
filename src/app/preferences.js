@@ -1,3 +1,5 @@
+import { naturalLanguagePrompt } from "../prompts/natural-language.js";
+
 export const MEDICAL_SERVICE_OPTIONS = [
   {
     value: "primary",
@@ -134,14 +136,7 @@ export function buildTeamPreferencesPromptBlock(preferences = {}) {
   const serviceName = normalized.medicalService === "other" && normalized.customServiceName
     ? normalized.customServiceName
     : service.label;
-  const focus = normalized.serviceFocus || "No additional service focus was saved.";
-  const attending = normalized.attendingPreferences || "No additional attending-specific preferences were saved.";
-  return `<team_presentation_preferences>
-Medical service: ${serviceName}
-Service approach: ${service.prompt}
-Stated service focus: ${focus}
-Presentation detail: ${detail.label}. ${detail.prompt}
-Attending-specific preferences: ${attending}
-Apply these preferences to relevance, organization, and level of detail. Do not invent requirements that are not stated here.
-</team_presentation_preferences>`;
+  const focus = normalized.serviceFocus ? `Use this clinical focus: ${normalized.serviceFocus}` : "";
+  const attending = normalized.attendingPreferences ? `Also follow this attending preference: ${normalized.attendingPreferences}` : "";
+  return naturalLanguagePrompt(`Write for the ${serviceName}. ${service.prompt} ${detail.prompt} ${focus} ${attending} Do not invent requirements that are not stated here.`);
 }

@@ -49,12 +49,12 @@ export function buildTrajectoryBlock(patient, { selectedDayId = "", includeAllDa
   const days = sortDays(patient?.days || []);
   const selected = selectedDayId ? days.filter((day) => day.id === selectedDayId) : [];
   const includedDays = includeAllDays ? days : selected;
-  if (!includedDays.length) return "# Hospital trajectory\n\nNo saved daily updates.";
+  if (!includedDays.length) return "Hospital trajectory. No saved daily updates.";
   const rendered = includedDays.map((day) => {
     const body = sectionsToPromptBlock(day.sections, `${day.date} - ${day.label}`);
     return body;
   });
-  return `# Hospital trajectory\n\n${rendered.join("\n\n")}`;
+  return `Hospital trajectory.\n\n${rendered.join("\n\n")}`;
 }
 
 export function saveOpenEvidenceOutput(day, taskId, text) {

@@ -72,11 +72,14 @@ assert.deepEqual(bulkResult.answers.answered, { selected: ["Abnormal"], note: "E
 assert.match(buildWorkupAuthoringPrompt(workup), /Return only valid JSON/);
 assert.match(buildWorkupAuthoringPrompt(workup), /history questions and physical exam items/);
 assert.match(buildWorkupAuthoringPrompt(workup), /first choice must always be the negative, normal, absent, reassuring, or baseline finding/i);
-assert.match(buildOpenEvidenceWorkupDraftPrompt(), /first answer choice must always be the negative, normal, absent, reassuring, or otherwise baseline finding/i);
+assert.match(buildOpenEvidenceWorkupDraftPrompt(), /Put the negative, normal, absent, reassuring, or other baseline answer first/i);
 assert.match(buildOpenEvidenceWorkupDraftPrompt({ thoroughness: "focused" }), /focused fast-rounds scope/i);
 assert.match(buildOpenEvidenceWorkupDraftPrompt({ thoroughness: "thorough" }), /thorough teaching-level scope/i);
 assert.match(buildOpenEvidenceWorkupDraftPrompt({ teamPreferences: { medicalService: "consult", serviceFocus: "Focus on infection source control." } }), /consulted clinical question/i);
 assert.match(buildOpenEvidenceWorkupDraftPrompt({ teamPreferences: { medicalService: "consult", serviceFocus: "Focus on infection source control." } }), /infection source control/);
+assert.doesNotMatch(buildOpenEvidenceWorkupDraftPrompt(), /[\[\]{}<>()`]/);
+assert.doesNotMatch(buildOpenEvidenceWorkupDraftPrompt(), /^\s*(?:#|[-*]|\d+[.)])\s/m);
+assert.doesNotMatch(buildOpenEvidenceWorkupDraftPrompt({ patientContext: "[De-identified] context", dailyTrajectory: "<Daily update>" }), /[\[\]{}<>()`]/, "workup prompts must remove bracketed patient-context syntax");
 assert.match(buildJsonFormatterPrompt(), /first choice for every item must be the negative, normal, absent, reassuring, or baseline finding/i);
 
 console.log("local-first workup/checklist tests passed");

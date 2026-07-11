@@ -1,6 +1,7 @@
 import { normalizeWorkup } from "./schema.js";
 import { isWorkupSystem, workupSystemPromptList } from "./systems.js";
 import { buildTeamPreferencesPromptBlock } from "../app/preferences.js";
+import { naturalLanguagePrompt } from "../prompts/natural-language.js";
 
 export const WORKUP_ITEM_KINDS = ["history", "exam"];
 
@@ -130,24 +131,11 @@ export function collectWorkupDraftFromDocument(root = document) {
 
 export function buildOpenEvidenceWorkupDraftPrompt({ patientContext = "", dailyTrajectory = "", workupTitle = "", thoroughness = "standard", teamPreferences } = {}) {
   const scope = WORKUP_THOROUGHNESS[workupThoroughnessOption(thoroughness)];
-  return `Review the de-identified patient context below and produce a comprehensive bedside workup for ${workupTitle || "this patient"}.
+  return naturalLanguagePrompt(`Review this de-identified information and suggest a practical bedside workup for ${workupTitle || "this patient"}. ${buildTeamPreferencesPromptBlock(teamPreferences)} Include useful history questions and physical exam items with short answer choices that a clinician can tap on a phone. Put the negative, normal, absent, reassuring, or other baseline answer first, followed by positive or concerning findings. Never put not assessed or unable to assess first. ${scope.prompt} Do not include labs, imaging, orders, diagnoses, treatment plans, citations, or note prose. Use only the de-identified information provided here.
 
-${buildTeamPreferencesPromptBlock(teamPreferences)}
+Patient context. ${patientContext || "No saved patient context."}
 
-Return two clearly separated sections only:
-1. History questions
-2. Physical exam items
-
-For every item, include concise answer choices appropriate for a clinician to tap on a phone checklist. The first answer choice must always be the negative, normal, absent, reassuring, or otherwise baseline finding. Put positive, abnormal, present, or concerning findings after it. Never put "not assessed" or "unable to assess" first.
-${scope.prompt}
-Do not include labs, imaging, orders, diagnoses, treatment plans, citations, or note prose.
-Use only the de-identified context below.
-
-Patient context:
-${patientContext || "No saved patient context."}
-
-Daily trajectory:
-${dailyTrajectory || "No daily updates selected."}`;
+Daily trajectory. ${dailyTrajectory || "No daily updates selected."}`);
 }
 
 export function buildJsonFormatterPrompt({ sourceText = "", workupTitle = "" } = {}) {
