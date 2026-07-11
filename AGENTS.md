@@ -66,7 +66,7 @@ Purpose: a compact, current map for future work on this local-first app.
 - The catalog rail and editor columns are independent scroll surfaces. Keep `workup-item-scroll` constrained to the editor row height and use `scrollbar-gutter: stable`; never let a long condition expand the entire page and hide the footer.
 - Workup catalog rows must keep the checkbox and Edit action as separate controls; do not nest a button inside a label. Individual rows can be dragged across system groups, updating the controlled system ID and removing empty groups.
 - Keep a visible `Build checklist` action in the editor header as well as the catalog selection area. Selecting workups is not enough; building the checklist must be explicit and must navigate to Checklist.
-- The catalog rail includes an in-place search over workup title, aliases, and ID. Filtering must not re-render the editor or change selected workups; preserve focus while typing and keep clear/no-match states accessible.
+- The catalog rail uses the vendored Fuse.js 7 search index over workup title, aliases, and ID. Filtering must not re-render the editor or change selected workups; preserve focus while typing and keep clear/no-match states accessible. Keep the explicit `[hidden]` row rule because the catalog row has an author `display` rule that otherwise overrides the browser default.
 
 ## Prompts And Data
 

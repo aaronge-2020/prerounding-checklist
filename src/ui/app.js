@@ -32,6 +32,7 @@ import {
 } from "../checklist/state.js?v=20260711-functional-remediation-15";
 import { groupChecklistItemsBySystem } from "../checklist/grouping.js?v=20260711-functional-remediation-15";
 import { icon } from "./icons.js?v=20260711-functional-remediation-15";
+import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
 
 const app = {
   vault: null,
@@ -77,6 +78,7 @@ const app = {
   workupImportError: "",
   workupCatalogOpen: false,
   workupCatalogQuery: "",
+  workupCatalogSearch: null,
   workupWorkspace: { status: "unconfigured", message: "Choose a workspace folder to mirror local workups." },
   workupWorkspaceBusy: false,
   pendingArchivePatientId: "",
@@ -1177,38 +1179,32 @@ function renderDaily() {
   bindSectionReordering();
 }
 
-function workupCatalogSearchText(workup) {
-  return [workup?.id, workup?.title, ...(workup?.aliases || [])]
-    .filter(Boolean)
-    .join(" ")
-    .toLocaleLowerCase();
-}
-
 function workupCatalogQueryValue(query) {
   return String(query || "").trim().toLocaleLowerCase();
 }
 
-function workupCatalogMatches(workup, query) {
+function workupCatalogMatchIds(query) {
   const normalizedQuery = workupCatalogQueryValue(query);
-  return !normalizedQuery || workupCatalogSearchText(workup).includes(normalizedQuery);
+  if (!normalizedQuery) return null;
+  return new Set((app.workupCatalogSearch?.search(normalizedQuery) || []).map((result) => result.item.id));
 }
 
 function updateWorkupCatalogFilter() {
   const list = document.querySelector("[data-workup-catalog-list]");
   if (!list) return;
-  const query = workupCatalogQueryValue(app.workupCatalogQuery);
+  const matchingIds = workupCatalogMatchIds(app.workupCatalogQuery);
   const rows = [...list.querySelectorAll(".workup-catalog-row")];
   const visible = rows.filter((row) => {
-    const matches = !query || String(row.dataset.workupSearch || "").includes(query);
+    const matches = !matchingIds || matchingIds.has(row.dataset.workupId);
     row.hidden = !matches;
     return matches;
   });
   const count = document.querySelector("[data-workup-catalog-count]");
-  if (count) count.textContent = query ? `${visible.length} of ${rows.length} workups` : `${rows.length} workups`;
+  if (count) count.textContent = matchingIds ? `${visible.length} of ${rows.length} workups` : `${rows.length} workups`;
   const empty = document.querySelector("[data-workup-catalog-empty]");
   if (empty) empty.hidden = visible.length > 0;
   const clear = document.querySelector('[data-action="clear-workup-search"]');
-  if (clear) clear.hidden = !query;
+  if (clear) clear.hidden = !matchingIds;
 }
 
 function renderDayRow(day, selectedDayId, index) {
@@ -1232,6 +1228,17 @@ function renderWorkups() {
   }
   const catalog = effectiveWorkupCatalog(app.vault.workupOverrides);
   const selectedIds = new Set(app.vault.selectedWorkupIds);
+  app.workupCatalogSearch = new Fuse(catalog, {
+    keys: [
+      { name: "title", weight: 0.55 },
+      { name: "aliases", weight: 0.3 },
+      { name: "id", weight: 0.15 }
+    ],
+    ignoreLocation: true,
+    minMatchCharLength: 1,
+    threshold: 0.35
+  });
+  const matchingWorkupIds = workupCatalogMatchIds(app.workupCatalogQuery);
   const editorWorkup = app.draftWorkup || catalog.find((workup) => workup.id === app.selectedWorkupEditorId) || catalog[0] || createBlankWorkup();
   app.selectedWorkupEditorId = editorWorkup.id;
   const grouped = groupWorkupItems(editorWorkup);
@@ -1276,11 +1283,11 @@ function renderWorkups() {
                   <button class="button--quiet" type="button" data-action="clear-workup-search" ${app.workupCatalogQuery ? "" : "hidden"}>Clear</button>
                 </span>
               </label>
-              <span class="muted" data-workup-catalog-count>${workupCatalogQueryValue(app.workupCatalogQuery) ? `${catalog.filter((workup) => workupCatalogMatches(workup, app.workupCatalogQuery)).length} of ${catalog.length} workups` : `${catalog.length} workups`}</span>
+              <span class="muted" data-workup-catalog-count>${matchingWorkupIds ? `${matchingWorkupIds.size} of ${catalog.length} workups` : `${catalog.length} workups`}</span>
             </div>
             <div class="workup-list" data-workup-catalog-list>
-              ${catalog.map((workup) => renderWorkupRow(workup, selectedIds, app.workupCatalogQuery)).join("")}
-              <div class="empty-state" data-workup-catalog-empty ${catalog.some((workup) => workupCatalogMatches(workup, app.workupCatalogQuery)) ? "hidden" : ""}>No workups match this search.</div>
+              ${catalog.map((workup) => renderWorkupRow(workup, selectedIds, matchingWorkupIds)).join("")}
+              <div class="empty-state" data-workup-catalog-empty ${matchingWorkupIds && matchingWorkupIds.size === 0 ? "" : "hidden"}>No workups match this search.</div>
             </div>
           </div>
         </details>
@@ -1369,10 +1376,10 @@ function renderWorkups() {
   bindWorkupReordering();
 }
 
-function renderWorkupRow(workup, selectedIds, query = "") {
-  const matches = workupCatalogMatches(workup, query);
+function renderWorkupRow(workup, selectedIds, matchingWorkupIds = null) {
+  const matches = !matchingWorkupIds || matchingWorkupIds.has(workup.id);
   return `
-    <div class="workup-catalog-row ${selectedIds.has(workup.id) ? "is-selected" : ""}" data-workup-search="${escapeHtml(workupCatalogSearchText(workup))}" ${matches ? "" : "hidden"}>
+    <div class="workup-catalog-row ${selectedIds.has(workup.id) ? "is-selected" : ""}" data-workup-id="${escapeHtml(workup.id)}" ${matches ? "" : "hidden"}>
       <label class="check-row">
       <input type="checkbox" class="workup-checkbox" value="${escapeHtml(workup.id)}" ${selectedIds.has(workup.id) ? "checked" : ""}>
       <span>

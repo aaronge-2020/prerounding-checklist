@@ -191,15 +191,15 @@ try {
   assert.equal(await page.locator('[data-action="build-checklist"]').first().isVisible(), true, "Build checklist must remain visible while editing a workup");
   assert.equal(await page.locator('[data-field="item-system"]').first().evaluate((node) => node.tagName), "SELECT");
   await page.fill("#workupCatalogSearch", "acute kidney");
-  assert.equal(await page.locator('.workup-catalog-row:not([hidden])').count(), 1, "catalog search should narrow the rail without rebuilding the editor");
-  assert.match(await page.locator('.workup-catalog-row:not([hidden])').first().innerText(), /Acute kidney injury/i);
+  assert.equal(await page.locator('.workup-catalog-row:visible').count(), 1, "catalog search should narrow the displayed rail without rebuilding the editor");
+  assert.match(await page.locator('.workup-catalog-row:visible').first().innerText(), /Acute kidney injury/i);
   assert.match(await page.locator('[data-workup-catalog-count]').innerText(), /1 of/);
   assert.equal(await page.locator("#workupCatalogSearch").evaluate((node) => document.activeElement === node), true, "catalog search should retain focus while filtering");
   await page.fill("#workupCatalogSearch", "zzzz-not-a-workup");
   assert.equal(await page.locator('[data-workup-catalog-empty]').isVisible(), true, "catalog search should explain when no workup matches");
   await page.click('[data-action="clear-workup-search"]');
   assert.equal(await page.locator("#workupCatalogSearch").inputValue(), "");
-  assert.equal(await page.locator('.workup-catalog-row:not([hidden])').count() >= 52, true, "clearing the catalog search should restore the full list");
+  assert.equal(await page.locator('.workup-catalog-row:visible').count() >= 52, true, "clearing the catalog search should restore the full list");
   const historyRows = page.locator('[data-workup-kind="history"] [data-workup-item-row]');
   const thirdHistoryText = await historyRows.nth(2).locator('[data-field="item-text"]').inputValue();
   await historyRows.nth(2).locator(".workup-drag-handle").dragTo(historyRows.nth(0).locator(".workup-drag-handle"));

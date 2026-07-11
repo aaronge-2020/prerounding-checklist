@@ -4301,6 +4301,8 @@ body.vault-locked .vault-access {
   border-bottom: 1px solid var(--border);
 }
 
+.workup-catalog-row[hidden] { display: none; }
+
 .workup-catalog-row .check-row {
   min-width: 0;
   min-height: 50px;
