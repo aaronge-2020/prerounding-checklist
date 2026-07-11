@@ -15,7 +15,7 @@ Purpose: a compact, current map for future work on this local-first app.
 ## Start Here
 
 1. Run `npm.cmd run test:ci` on Windows before considering the workspace healthy.
-2. Start at `index.html`, then `src/ui/app.js`. Do not inspect vendored runtimes or model binaries unless the change is specifically about them.
+2. Start at `index.html`, then `src/ui/app.js` for composition, followed by the relevant feature module under `src/ui/`. Do not inspect vendored runtimes or model binaries unless the change is specifically about them.
 3. Put pure parsing, validation, prompt assembly, redaction-review normalization, workup conversion, and mirror planning in `src/` modules outside DOM/storage code.
 4. Keep DOM, browser storage, crypto, clipboard, File System Access, QR, workers, and fetch at UI or persistence edges.
 5. Before a workup-contract change, read `docs/workup-system-contract.md` and the applicable JSON under `workups/admission/`.
@@ -24,7 +24,11 @@ Purpose: a compact, current map for future work on this local-first app.
 
 - `index.html`: shell, restrictive CSP, navigation, confirmation dialogs, QR vendor.
 - `styles.css`: visual layout. `.view` owns route scroll; preserve the scroll owners used by Hospital Stay, Checklist, and the annotated redaction document.
-- `src/ui/app.js`: rendering and event wiring only. It owns no persistence format or redaction logic.
+- `src/ui/app.js`: composition, event-routing, and session-bound UI orchestration layer. It owns no persistence format or feature templates; move pure derivation and markup into the scoped modules below, and keep only browser/session interactions at this edge. Do not add new feature markup or browser-transfer behavior here.
+  - `src/ui/checklist/presentation.js` is a pure checklist markup/view-model factory.
+  - `src/ui/checklist/transfer.js` is the injected browser share/download adapter; it must remain independent of DOM and vault state.
+  - `src/ui/redaction/presentation.js` is pure annotated-review and residual-warning markup. Active-tab review state remains in `src/patient-context/review.js`.
+  - `src/ui/workups/presentation.js` is pure workup-catalog/editor markup. Workspace mirror, file import, autosave, and drag behavior stay at UI/persistence edges.
 - `src/app/state/`: vault records, migrations, AES-GCM persistence, encrypted preferences, and the workspace-folder persistence edge.
   - `workspace-mirror.js` stores an explicitly granted workup-folder handle in IndexedDB and performs only authorized workup writes.
 - `src/patient-context/`: section handling, worker/client/service model integration, model packs, and active-tab redaction reviews.
@@ -86,6 +90,8 @@ npm.cmd run test:ci
 - `test:deid`: structured de-identification and review-dedup regression coverage.
 - `test:prompts`: task-specific standards, dynamic fields, selected-day prompt scope, and task registry.
 - `test:workups`: workup validation, checklist conversion, baseline fill, and phone round trip.
+- `test:ui-features`: pure checklist, phone-transfer, redaction, and workup UI module contracts.
+- `test:ui-boundaries`: `app.js` size ceiling plus pure-presentation module boundary guardrails.
 - `test:workup-systems`: controlled-system contract and formatter prompt coverage.
 - `test:workup-libraries`: all 50 individual workups and generated portable library.
 - `test:workup-mirror`: pure mirror plan and File System Access write edge.

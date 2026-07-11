@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { createChecklistReturnBundle, decodeChecklistReturnBundle, decodePhoneChecklistBundle, encodeChecklistReturnBundle, encodePhoneChecklistBundle, fillNegativeChecklistAnswers, mergeReturnedAnswers, setChecklistChoice } from "../src/checklist/state.js";
+import { createChecklistReturnBundle, createChecklistReturnTransferFile, createPhoneChecklistTransferFile, decodeChecklistReturnBundle, decodeChecklistReturnTransferFile, decodePhoneChecklistBundle, decodePhoneChecklistTransferFile, encodeChecklistReturnBundle, encodePhoneChecklistBundle, fillNegativeChecklistAnswers, mergeReturnedAnswers, setChecklistChoice } from "../src/checklist/state.js";
 import { BUNDLED_WORKUPS } from "../src/workups/catalog.js";
 import { createChecklistSnapshot } from "../src/workups/checklist-conversion.js";
 import { buildWorkupAuthoringPrompt, effectiveWorkupCatalog, normalizeWorkup, parseWorkupJson, validateWorkup } from "../src/workups/schema.js";
@@ -49,10 +49,22 @@ const encodedPhone = encodePhoneChecklistBundle({
 const decodedPhone = decodePhoneChecklistBundle(encodedPhone);
 assert.equal(decodedPhone.checklist.id, "checklist_test");
 assert.equal(decodedPhone.checklist.items[0].system, snapshot.items[0].system);
+const phoneTransferFile = createPhoneChecklistTransferFile({
+  schema: "prerounding_phone_checklist_bundle_v1",
+  patientLabel: "Room 1",
+  checklist: snapshot,
+  answers
+});
+assert.deepEqual(decodePhoneChecklistTransferFile(JSON.stringify(phoneTransferFile)).answers, answers);
+assert.equal(decodePhoneChecklistTransferFile(JSON.stringify({ bundle: encodedPhone })).checklist.id, snapshot.id);
 
 const returnBundle = createChecklistReturnBundle(snapshot, answers);
 const decodedReturn = decodeChecklistReturnBundle(encodeChecklistReturnBundle(returnBundle));
 assert.deepEqual(mergeReturnedAnswers({}, decodedReturn, snapshot), answers);
+const returnTransferFile = createChecklistReturnTransferFile(returnBundle);
+assert.deepEqual(decodeChecklistReturnTransferFile(JSON.stringify(returnTransferFile)).answers, answers);
+assert.deepEqual(decodeChecklistReturnTransferFile(JSON.stringify({ bundle: encodeChecklistReturnBundle(returnBundle) })).answers, answers);
+assert.throws(() => decodeChecklistReturnTransferFile(JSON.stringify({ ...phoneTransferFile, type: "checklist" })), /valid returned checklist bundle file/);
 
 const bulkItems = [
   { id: "normal", choices: ["Normal", "Abnormal"] },

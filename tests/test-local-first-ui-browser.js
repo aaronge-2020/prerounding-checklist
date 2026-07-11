@@ -139,6 +139,9 @@ try {
   assert.equal(await residualWarning.count() > 0, true, "the saved review should expose residual PHI flags");
   await residualWarning.click();
   assert.equal(await page.evaluate(() => window.getSelection()?.toString()), "AM Labs", "residual review should select the flagged phrase in its own field");
+  const dismissContextWarnings = page.locator('#residualWarnings-context [data-action="dismiss-section-warning"]');
+  while (await dismissContextWarnings.count()) await dismissContextWarnings.first().click();
+  assert.equal(await page.locator("#residualWarnings-context").count(), 0, "dismissing every residual warning should remove the warning panel");
   await page.locator("#contextSections [data-action=\"edit-section-text\"]").first().click();
   assert.equal(await page.locator("#contextSections .section-editor").nth(0).locator(".section-text").isVisible(), true, "a saved field must remain editable");
   await page.locator("#contextSections [data-action=\"resume-section-review\"]").first().click();
@@ -193,6 +196,7 @@ try {
   await page.fill("#workupCatalogSearch", "acute kidney");
   assert.equal(await page.locator('.workup-catalog-row:visible').count(), 1, "catalog search should narrow the displayed rail without rebuilding the editor");
   assert.match(await page.locator('.workup-catalog-row:visible').first().innerText(), /Acute kidney injury/i);
+  assert.equal(await page.locator('.workup-catalog-row').filter({ hasText: "Abdominal pain" }).evaluate((node) => getComputedStyle(node).display), "none", "non-matching catalog rows must be removed from layout");
   assert.match(await page.locator('[data-workup-catalog-count]').innerText(), /1 of/);
   assert.equal(await page.locator("#workupCatalogSearch").evaluate((node) => document.activeElement === node), true, "catalog search should retain focus while filtering");
   await page.fill("#workupCatalogSearch", "zzzz-not-a-workup");
@@ -273,6 +277,11 @@ try {
   assert.equal(await page.locator("#checklistSections .checklist-system").count() > 0, true);
   await page.click('[data-action="fill-section-negatives"][data-kind="exam"]');
   await page.waitForFunction(() => [...document.querySelectorAll("#checklistSections .checklist-answer-select")].some((select) => select.value) || document.querySelectorAll("#checklistSections .checklist-answer:checked").length > 0);
+  assert.equal(await page.locator('[data-action="share-phone-bundle"]').count(), 1, "desktop should offer native link sharing");
+  assert.equal(await page.locator('[data-action="download-phone-bundle"]').count(), 1, "desktop should offer a file fallback");
+  const checklistDownloadPromise = page.waitForEvent("download");
+  await page.click('[data-action="download-phone-bundle"]');
+  assert.equal((await checklistDownloadPromise).suggestedFilename(), "prerounding-checklist.bundle.json");
 
   await page.setViewportSize({ width: 390, height: 720 });
   const scrollWorked = await page.evaluate(() => {
@@ -291,8 +300,21 @@ try {
   assert.equal(await phonePage.locator("#returnQr").count(), 0);
   await phonePage.click('[data-action="show-phone-return"]');
   await phonePage.waitForSelector("#returnQr");
+  assert.equal(await phonePage.locator('[data-action="share-phone-return"]').count(), 1, "phone should offer native file sharing");
+  assert.equal(await phonePage.locator('[data-action="download-phone-return"]').count(), 1, "phone should offer a file fallback");
   const returnBundle = await phonePage.locator("#phoneReturnBundle").inputValue();
   await phonePage.close();
+
+  await page.setInputFiles("#phoneReturnFileInput", {
+    name: "prerounding-checklist-return.bundle.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify({
+      schema: "prerounding_phone_transfer_file_v1",
+      type: "return",
+      payload: returnBundle
+    }))
+  });
+  await page.waitForFunction(() => /Returned phone answers imported/.test(document.querySelector("#statusLine")?.textContent || ""));
 
   await page.fill("#phoneReturnText", returnBundle);
   await page.click('[data-action="import-phone-return"]');
@@ -365,6 +387,14 @@ try {
   const quickFirstToken = page.locator("#quickDeidContent .redaction-change").first();
   await quickFirstToken.hover();
   assert.match(await quickFirstToken.getAttribute("data-original"), /Jane|Patient|123456/);
+  const quickTokenLayout = await quickFirstToken.evaluate((node) => {
+    const style = getComputedStyle(node);
+    const rect = node.getBoundingClientRect();
+    return { display: style.display, minHeight: style.minHeight, height: rect.height, lineHeight: parseFloat(style.lineHeight) };
+  });
+  assert.equal(quickTokenLayout.display, "inline", "redaction choices should remain inline with surrounding document text");
+  assert.equal(quickTokenLayout.minHeight, "0px", "inline redaction choices must not inherit the global button height");
+  assert.equal(quickTokenLayout.height <= quickTokenLayout.lineHeight * 1.5, true, "inline redaction choices must not add a large blank block");
   assert.equal(await page.locator("#quickDeidContent .redaction-change del").count() > 0, true, "the original should be crossed out inline beside the replacement");
   await page.click('[data-action="confirm-quick-redaction"]');
   const acceptedQuickToken = page.locator("#quickDeidContent .redaction-change--confirmed").first();

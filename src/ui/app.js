@@ -2,7 +2,7 @@ import { createDailyRecord, latestDay, localCalendarDate, removeDay, sortDays, u
 import { activePatient, archivePatient, createPatientRecord, removeWorkupOverride, setActivePatient, setSelectedWorkups, setWorkupOverride, setWorkupOverrides, updateActivePatient } from "../app/state/vault.js?v=20260711-functional-remediation-15";
 import { deleteEncryptedVaultRecord, downloadJson, loadOrCreateVault, readEncryptedVaultRecord, saveEncryptedVault, writeEncryptedVaultRecord } from "../app/state/persistence.js?v=20260711-functional-remediation-15";
 import { authorizeWorkupWorkspaceMirror, disconnectWorkupWorkspaceMirror, getWorkupWorkspaceMirrorState, mirrorWorkupOverridesToWorkspace } from "../app/state/workspace-mirror.js?v=20260711-functional-remediation-15";
-import { addSection, removeSection, reorderSections, reorderSectionsById, replaceSectionsFromFormAsync, sectionWarningSummary, sectionsToPromptBlock } from "../patient-context/sections.js?v=20260711-functional-remediation-15";
+import { addSection, removeSection, reorderSections, reorderSectionsById, replaceSectionsFromFormAsync, sectionsToPromptBlock } from "../patient-context/sections.js?v=20260711-functional-remediation-15";
 import { createEphemeralRedactionReview, nextPendingReviewTarget, pendingReviewTargets, reviewKey, synchronizeReviewPlaceholders } from "../patient-context/review.js?v=20260711-functional-remediation-15";
 import { deidentifyText, getAdvancedDeidStatus, getSelectedDeidModelStatus, preloadAdvancedDeidModel, resetAdvancedDeidWorker, verifyAdvancedDeidModel } from "../patient-context/deid-client.js?v=20260711-functional-remediation-15";
 import { DEFAULT_DEID_MODEL_KEY, DEID_MODEL_OPTIONS, STRUCTURED_DEID_MODE, deidModelOptionByKey } from "../patient-context/deid-model-options.js?v=20260711-functional-remediation-15";
@@ -13,25 +13,28 @@ import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260711-func
 import { MEDICAL_SERVICE_OPTIONS, OPENAI_WORKUP_MODEL_OPTIONS, PRESENTATION_DETAIL_OPTIONS, normalizeUserPreferences, openAiWorkupModelOption } from "../app/preferences.js?v=20260711-functional-remediation-15";
 import { effectiveWorkupCatalog, findWorkupsById, normalizeWorkup, parseWorkupJson } from "../workups/schema.js?v=20260711-functional-remediation-15";
 import { mergeWorkupLibraryIntoOverrides, parseWorkupLibraryJson, workupLibraryFromOverrides } from "../workups/library.js?v=20260711-functional-remediation-15";
-import { WORKUP_SYSTEMS, workupSystemLabel } from "../workups/systems.js?v=20260711-functional-remediation-15";
-import { createBlankWorkup, createBlankWorkupItem, buildJsonFormatterPrompt, buildOpenEvidenceWorkupDraftPrompt, choicesToText, collectWorkupDraftFromDocument, groupWorkupItems, WORKUP_THOROUGHNESS, workupFromEditorDraft, workupThoroughnessOption } from "../workups/editor.js?v=20260711-functional-remediation-15";
+import { createBlankWorkup, createBlankWorkupItem, buildJsonFormatterPrompt, buildOpenEvidenceWorkupDraftPrompt, collectWorkupDraftFromDocument, workupFromEditorDraft, workupThoroughnessOption } from "../workups/editor.js?v=20260711-functional-remediation-15";
 import { formatWorkupDraftWithOpenAi } from "./openai-workup-api.js?v=20260711-functional-remediation-15";
 import { createChecklistSnapshot } from "../workups/checklist-conversion.js?v=20260711-functional-remediation-15";
 import {
   createChecklistReturnBundle,
   createPhoneChecklistBundle,
   decodeChecklistReturnBundle,
+  decodeChecklistReturnTransferFile,
   decodePhoneChecklistBundle,
+  decodePhoneChecklistTransferFile,
   emptyChecklistAnswers,
-  encodeChecklistReturnBundle,
-  encodePhoneChecklistBundle,
   fillNegativeChecklistAnswers,
   mergeReturnedAnswers,
   setChecklistChoice,
   setChecklistNote
-} from "../checklist/state.js?v=20260711-functional-remediation-15";
-import { groupChecklistItemsBySystem } from "../checklist/grouping.js?v=20260711-functional-remediation-15";
+} from "../checklist/state.js?v=20260711-functional-remediation-19";
+import { groupChecklistItemsBySystem } from "../checklist/grouping.js?v=20260711-functional-remediation-19";
 import { icon } from "./icons.js?v=20260711-functional-remediation-15";
+import { createChecklistPresentation } from "./checklist/presentation.js?v=20260711-functional-remediation-19";
+import { createPhoneTransferController } from "./checklist/transfer.js?v=20260711-functional-remediation-19";
+import { createRedactionPresentation, redactionPosition, warningDescription, warningSnippet } from "./redaction/presentation.js?v=20260711-functional-remediation-19";
+import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260711-functional-remediation-19";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
 
 const app = {
@@ -114,6 +117,10 @@ function escapeHtml(value = "") {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 }
+
+const checklistPresentation = createChecklistPresentation({ escapeHtml, icon });
+const redactionPresentation = createRedactionPresentation({ escapeHtml, icon });
+const workupPresentation = createWorkupPresentation({ escapeHtml, icon });
 
 function selectedDeidOption() {
   return app.deidMode === STRUCTURED_DEID_MODE ? null : deidModelOptionByKey(app.deidMode);
@@ -449,6 +456,16 @@ function setStatus(message) {
   if (status) status.textContent = message;
 }
 
+const phoneTransfer = createPhoneTransferController({
+  FileConstructor: typeof File === "undefined" ? null : File,
+  getChecklistBundle: currentPhoneChecklistBundle,
+  getReturnBundle: currentPhoneReturnBundle,
+  location: window.location,
+  navigatorObject: navigator,
+  downloadJson,
+  setStatus
+});
+
 async function persistVault(message = "Saved.") {
   if (!app.vault || !app.passphrase) return;
   await saveEncryptedVault(app.vault, app.passphrase);
@@ -469,11 +486,12 @@ async function loadGuidelines() {
   return { admission: await admission.text(), progress: await progress.text() };
 }
 
-function patientRequiredMessage() {
+function patientRequiredMessage({ allowPhoneBundleImport = false } = {}) {
   return `
     <div class="empty-state next-step">
       <strong>Next step: unlock the vault and add a patient.</strong>
       <span>Use a de-identified room label to begin a new hospital stay.</span>
+      ${allowPhoneBundleImport ? `<div class="button-row"><button class="button--secondary" type="button" data-action="choose-phone-bundle-file">${icon("upload")} Open shared checklist file</button><input id="phoneBundleFileInput" type="file" accept="application/json,.json" hidden></div>` : ""}
     </div>
   `;
 }
@@ -848,239 +866,40 @@ function clearQuickDeidSession() {
   app.quickDeid = { input: "", output: "", warnings: [], status: "", review: null };
 }
 
-function redactionPosition(text, redaction) {
-  const source = String(text || "");
-  const placeholder = String(redaction?.placeholder || "");
-  if (!placeholder) return -1;
-  let cursor = 0;
-  for (let occurrence = 0; occurrence <= Number(redaction?.occurrence || 0); occurrence += 1) {
-    const position = source.indexOf(placeholder, cursor);
-    if (position < 0) return -1;
-    if (occurrence === Number(redaction?.occurrence || 0)) return position;
-    cursor = position + placeholder.length;
-  }
-  return -1;
-}
-
-function _renderRedactionPreview(text, review, { action = "inspect-redaction", attributes = "" } = {}) {
-  const source = String(text || "");
-  const usedRedactions = new Set();
-  const tokenPattern = /\[(?:[A-Z][A-Z _-]*|MANUAL REDACTION)\]/g;
-  let cursor = 0;
-  let match;
-  let output = "";
-  while ((match = tokenPattern.exec(source)) !== null) {
-    output += escapeHtml(source.slice(cursor, match.index));
-    const token = match[0];
-    const index = (review?.redactions || []).findIndex((redaction, redactionIndex) =>
-      redaction.state !== "restored" && !usedRedactions.has(redactionIndex) && redaction.placeholder.toUpperCase() === token.toUpperCase()
-    );
-    if (index >= 0) {
-      usedRedactions.add(index);
-      const redaction = review.redactions[index];
-      output += `<button type="button" class="redacted-token" data-action="${escapeHtml(action)}" ${attributes} data-redaction-index="${index}" data-original="${escapeHtml(redaction.original)}" title="Original in this tab: ${escapeHtml(redaction.original)}" aria-label="Inspect ${escapeHtml(token)}; original is available only in this tab">${escapeHtml(token)}</button>`;
-    } else {
-      output += `<mark class="redacted-token redacted-token--static">${escapeHtml(token)}</mark>`;
-    }
-    cursor = match.index + token.length;
-  }
-  output += escapeHtml(source.slice(cursor));
-  return output || `<span class="muted">No de-identified text yet.</span>`;
-}
-
 // The same annotated document is used by Quick De-ID and Hospital Stay. It is
 // deliberately a read-only review field: it shows the active-tab original
 // crossed out beside the safe replacement, while the canonical copy/save text
 // remains the de-identified string in state.
 function renderRedactionDocument(text, review, { id = "", scope = "", sectionId = "", action = "inspect-redaction", label = "De-identified text review" } = {}) {
-  const output = String(text || "");
-  synchronizeReviewPlaceholders(review, output);
-  const attributes = [
-    scope ? `data-scope="${escapeHtml(scope)}"` : "",
-    sectionId ? `data-section-id="${escapeHtml(sectionId)}"` : ""
-  ].filter(Boolean).join(" ");
-  const resolved = (review?.redactions || [])
-    .map((redaction, index) => ({ redaction, index, position: redactionPosition(output, redaction) }))
-    .filter(({ redaction, position }) => redaction.state !== "restored" && position >= 0)
-    .sort((left, right) => left.position - right.position || left.index - right.index);
-
-  let cursor = 0;
-  let markup = "";
-  for (const { redaction, index, position } of resolved) {
-    if (position < cursor) continue;
-    const before = output.slice(cursor, position);
-    if (before) {
-      markup += `<span class="redaction-document-text" data-output-start="${cursor}" data-output-end="${position}">${escapeHtml(before)}</span>`;
-    }
-    const replacementEnd = position + String(redaction.placeholder || "").length;
-    const inspected = review?.inspectedRedactionIndex === index ? "is-inspected" : "";
-    if (redaction.state === "confirmed") {
-      // Once accepted, avoid repeatedly revealing the memory-only source. The
-      // safe replacement remains clickable so the user can explicitly undo it.
-      markup += `
-        <button type="button" class="redaction-change redaction-change--confirmed ${inspected}" data-action="${escapeHtml(action)}" ${attributes} data-redaction-index="${index}" title="Accepted redaction. Click to review or undo it." aria-label="Review accepted redaction ${escapeHtml(redaction.placeholder)}">
-          <mark>${escapeHtml(redaction.placeholder)}</mark>
-        </button>`;
-    } else {
-      markup += `
-      <button type="button" class="redaction-change ${review?.inspectedRedactionIndex === index ? "is-inspected" : ""}" data-action="${escapeHtml(action)}" ${attributes} data-redaction-index="${index}" data-original="${escapeHtml(redaction.original)}" title="Original in this active tab: ${escapeHtml(redaction.original)}" aria-label="Review replacement ${escapeHtml(redaction.placeholder)}">
-        <del>${escapeHtml(redaction.original)}</del><span class="redaction-change-arrow" aria-hidden="true">→</span><ins>${escapeHtml(redaction.placeholder)}</ins>
-      </button>`;
-    }
-    cursor = replacementEnd;
-  }
-  const remainder = output.slice(cursor);
-  if (remainder) {
-    markup += `<span class="redaction-document-text" data-output-start="${cursor}" data-output-end="${output.length}">${escapeHtml(remainder)}</span>`;
-  }
-  if (!markup) markup = `<span class="redaction-document-text" data-output-start="0" data-output-end="${output.length}">${escapeHtml(output || "No de-identified text yet.")}</span>`;
-  return `<div${id ? ` id="${escapeHtml(id)}"` : ""} class="redaction-document" data-redaction-document role="textbox" aria-readonly="true" aria-multiline="true" tabindex="0" aria-label="${escapeHtml(label)}">${markup}</div>`;
-}
-
-function renderSectionReview(section, scope) {
-  const review = sectionReviewFor(scope, section.id);
-  if (!review) return "";
-  const inspected = review.redactions[review.inspectedRedactionIndex] || null;
-  const inspectedIsConfirmed = inspected?.state === "confirmed";
-  const pending = review.redactions.filter((redaction) => redaction.state === "pending").length;
-  return `
-    <div class="redaction-review" data-redaction-review data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}">
-      <div class="redaction-review-heading">
-        <div>
-          <strong>${pending ? `${pending} change${pending === 1 ? "" : "s"} to review` : "Review complete"}</strong>
-          <span class="muted">Click a crossed-out value in the document. Original values remain only in this active tab.</span>
-        </div>
-        ${pending ? `<button class="button--quiet" type="button" data-action="confirm-all-section-redactions" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}">Confirm all (${pending})</button>` : ""}
-      </div>
-      ${inspected ? `
-        <div class="redaction-inspector redaction-inline-actions">
-          <div>
-            <strong>${inspectedIsConfirmed ? "Accepted redaction" : `Review ${escapeHtml(inspected.placeholder)}`}</strong>
-            <span>${inspectedIsConfirmed ? "The document shows only the safe replacement. Undo restores the source in this active tab." : "Choose whether to keep the replacement or restore the source in this active tab."}</span>
-          </div>
-          <div class="button-row">
-            ${inspectedIsConfirmed ? "" : `<button class="button--secondary" type="button" data-action="keep-reviewed-redaction" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}">Accept redaction</button>`}
-            <button class="button--quiet" type="button" data-action="allow-reviewed-non-phi" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}" data-redaction-index="${review.inspectedRedactionIndex}">${inspectedIsConfirmed ? "Undo redaction" : "Reject — restore source"}</button>
-          </div>
-          <small>${inspectedIsConfirmed ? "Undo only if this value is not identifying. It will be restored in the de-identified text for the next save." : "Reject only if this value is not identifying. The source will be restored in the de-identified text for the next save."}</small>
-        </div>` : ""}
-    </div>
-  `;
+  synchronizeReviewPlaceholders(review, text);
+  return redactionPresentation.renderRedactionDocument(text, review, { id, scope, sectionId, action, label });
 }
 
 function renderSectionSurface(section, scope) {
   const review = sectionReviewFor(scope, section.id);
   const editing = review && isSectionTextEditing(scope, section.id);
   const draftText = sectionDraftText(scope, section.id, section.deidentifiedText);
-  const documentId = `sectionRedactionDocument-${section.id}`;
-  return `
-    <div class="section-review-surface" data-section-review-surface>
-      ${review && !editing
-        ? `<input class="section-text" type="hidden" value="${escapeHtml(draftText)}">${renderRedactionDocument(draftText, review, { id: documentId, scope, sectionId: section.id, label: `${section.label} redaction review` })}`
-        : `<textarea class="section-text" rows="5" spellcheck="false">${escapeHtml(draftText)}</textarea>`}
-      <div class="section-review-tools">
-        ${review ? `<button class="button--quiet" type="button" data-action="${editing ? "resume-section-review" : "edit-section-text"}" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}">${editing ? "Return to redaction review" : "Edit field text"}</button>` : ""}
-        <button class="button--quiet" type="button" data-action="manual-redact-selection" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}">${icon("wand")} Redact selected text</button>
-        <span class="muted">${review && !editing ? "Review changes here, or edit this field text without leaving Hospital Stay." : "Edit this de-identified field, then save changes to re-run the local review."}</span>
-      </div>
-      ${review && !editing ? renderSectionReview({ ...section, deidentifiedText: draftText }, scope) : ""}
-    </div>
-  `;
+  synchronizeReviewPlaceholders(review, draftText);
+  return redactionPresentation.renderSectionSurface({ section, scope, review, editing, draftText });
 }
 
 function renderSectionEditor(section, scope) {
-  const characterCount = section.deidentifiedText?.length || 0;
-  const pendingFocus = app.pendingSectionReviewFocus;
-  const isInitialReviewTarget = pendingFocus?.scope === scope && pendingFocus.sectionId === section.id;
-  const isExpanded = isSectionTextEditing(scope, section.id) || isInitialReviewTarget;
-  return `
-    <article class="section-editor ${isExpanded ? "is-expanded" : ""}" data-section-id="${escapeHtml(section.id)}" data-section-scope="${escapeHtml(scope)}" data-created-at="${escapeHtml(section.createdAt)}">
-      <div class="section-toolbar">
-        <span class="section-grip section-drag-handle" draggable="true" title="Drag to reorder sections" aria-label="Drag to reorder sections" role="img">${icon("grip")}</span>
-        <input class="section-label" value="${escapeHtml(section.label)}" aria-label="Section label">
-        <span class="section-meta">${characterCount ? `${characterCount} chars` : "Empty"}</span>
-        <div class="button-row">
-          <button class="icon-button" type="button" data-action="toggle-section-editor" title="Edit section" aria-label="Edit section" aria-expanded="false">${icon("edit")}</button>
-          <button class="icon-button" type="button" data-action="move-section-up" data-scope="${scope}" data-section-id="${escapeHtml(section.id)}" title="Move up">↑</button>
-          <button class="icon-button" type="button" data-action="move-section-down" data-scope="${scope}" data-section-id="${escapeHtml(section.id)}" title="Move down">↓</button>
-          <button class="icon-button" type="button" data-action="remove-section" data-scope="${scope}" data-section-id="${escapeHtml(section.id)}" title="Remove">${icon("trash")}</button>
-        </div>
-      </div>
-      ${renderSectionSurface(section, scope)}
-    </article>
-  `;
-}
-
-function warningDescription(warning) {
-  if (typeof warning === "string") return warning;
-  if (!warning || typeof warning !== "object") return "Potential residual PHI";
-  const type = String(warning.type || "Potential residual PHI");
-  const snippet = String(warning.snippet || "").trim();
-  return snippet ? `${type}: ${snippet}` : type;
-}
-
-function warningSnippet(warning) {
-  if (!warning || typeof warning !== "object") return "";
-  return String(warning.snippet || "").trim();
+  const review = sectionReviewFor(scope, section.id);
+  const editing = isSectionTextEditing(scope, section.id);
+  const draftText = sectionDraftText(scope, section.id, section.deidentifiedText);
+  synchronizeReviewPlaceholders(review, draftText);
+  return redactionPresentation.renderSectionEditor({
+    section,
+    scope,
+    editing,
+    pendingFocus: app.pendingSectionReviewFocus,
+    review,
+    draftText
+  });
 }
 
 function renderWarnings(sections, scope) {
-  const sessionWarnings = (sections || []).flatMap((section) => {
-    const review = sectionReviewFor(scope, section.id);
-    if (!review) return [];
-    return review.warnings
-      .map((warning, warningIndex) => ({ section, warning, warningIndex, review }))
-      .filter(({ warningIndex, review: currentReview }) => !currentReview.dismissedWarningIndexes.has(warningIndex));
-  });
-  if (sessionWarnings.length) {
-    return `
-      <div id="residualWarnings-${escapeHtml(scope)}" class="warning-box residual-review">
-        <strong>Residual PHI review needed</strong>
-        <span class="muted">These details are available only for this active review; decide whether to redact or dismiss each item before leaving Hospital Stay.</span>
-        <div class="residual-warning-list">
-          ${sessionWarnings.map(({ section, warning, warningIndex }) => `
-            <div class="residual-warning-entry">
-              <button type="button" class="residual-warning" data-action="review-section-warning" data-session-warning="true" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}" data-warning-index="${warningIndex}" title="Open and select this flagged text">
-                <span>${escapeHtml(section.label)}</span>
-                <strong>${escapeHtml(warningDescription(warning))}</strong>
-              </button>
-              <div class="button-row">
-                <button class="button--quiet" type="button" data-action="redact-section-warning" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}" data-warning-index="${warningIndex}">Redact</button>
-                <button class="button--quiet" type="button" data-action="dismiss-section-warning" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}" data-warning-index="${warningIndex}">Not PHI</button>
-              </div>
-            </div>`).join("")}
-        </div>
-      </div>
-    `;
-  }
-  const warnings = sectionWarningSummary(sections);
-  if (!warnings.length) return `<div id="residualWarnings-${escapeHtml(scope)}" class="notice">No residual PHI warnings from the last save.</div>`;
-  return `
-    <div id="residualWarnings-${escapeHtml(scope)}" class="warning-box residual-review">
-      <strong>Residual PHI review needed</strong>
-      <div class="residual-warning-list">
-        ${warnings
-          .map(
-            (warning) => `
-              <button
-                type="button"
-                class="residual-warning"
-                data-action="review-section-warning"
-                data-scope="${escapeHtml(scope)}"
-                data-section-id="${escapeHtml(warning.sectionId)}"
-                data-warning-index="${warning.warningIndex}"
-                title="Open this field and select the flagged text"
-              >
-                <span>${escapeHtml(warning.sectionLabel)}</span>
-                <strong>${escapeHtml(warningDescription(warning.warning))}</strong>
-              </button>
-            `
-          )
-          .join("")}
-      </div>
-      <span class="muted">Detailed warning text is not retained after this tab’s review session.</span>
-    </div>
-  `;
+  return redactionPresentation.renderWarnings({ sections, scope, reviewFor: sectionReviewFor });
 }
 
 function renderDaily() {
@@ -1180,7 +999,7 @@ function renderDaily() {
 }
 
 function workupCatalogQueryValue(query) {
-  return String(query || "").trim().toLocaleLowerCase();
+  return normalizeWorkupCatalogQuery(query);
 }
 
 function workupCatalogMatchIds(query) {
@@ -1197,6 +1016,7 @@ function updateWorkupCatalogFilter() {
   const visible = rows.filter((row) => {
     const matches = !matchingIds || matchingIds.has(row.dataset.workupId);
     row.hidden = !matches;
+    row.style.display = matches ? "" : "none";
     return matches;
   });
   const count = document.querySelector("[data-workup-catalog-count]");
@@ -1241,208 +1061,26 @@ function renderWorkups() {
   const matchingWorkupIds = workupCatalogMatchIds(app.workupCatalogQuery);
   const editorWorkup = app.draftWorkup || catalog.find((workup) => workup.id === app.selectedWorkupEditorId) || catalog[0] || createBlankWorkup();
   app.selectedWorkupEditorId = editorWorkup.id;
-  const grouped = groupWorkupItems(editorWorkup);
-  const hasSavedOpenAiKey = Boolean(currentPreferences().openAiApiKey);
-  const workspace = app.workupWorkspace || { status: "unconfigured" };
-  const workspaceReady = workspace.status === "ready";
-  byId("workupsContent").innerHTML = `
-    <section class="panel workup-editor-surface">
-      <div class="workup-topline">
-        <div class="workup-editor-heading">
-          <input id="workupTitleInput" class="workup-title-input" value="${escapeHtml(editorWorkup.title)}" aria-label="Workup title">
-          <label class="workup-editor-select">Editing
-            <select id="workupEditorSelect" data-action="select-workup-editor" aria-label="Edit workup">
-              ${catalog.map((workup) => `<option value="${escapeHtml(workup.id)}" ${workup.id === editorWorkup.id && !app.draftWorkup ? "selected" : ""}>${escapeHtml(workup.title)}</option>`).join("")}
-            </select>
-          </label>
-          <div class="workup-editor-header-actions">
-            <button class="button--primary" type="button" data-action="build-checklist" ${selectedIds.size ? "" : "disabled"}>Build checklist${selectedIds.size ? ` (${selectedIds.size})` : ""}</button>
-          </div>
-        </div>
-        <label class="workup-alias-control">Aliases
-          <input id="workupAliasesInput" value="${escapeHtml((editorWorkup.aliases || []).join(", "))}" placeholder="Gen Admit, Adult Admit">
-        </label>
-        <details class="workup-catalog-menu" open>
-          <summary title="Open workup catalog"><span><strong>Workup catalog</strong><span class="muted">Choose workups for the checklist.</span></span>${icon("settings")}</summary>
-          <div class="workup-catalog-popover">
-            <div class="section-heading tight">
-              <div>
-                <h3>Workup catalog</h3>
-                <p class="muted">Next: select one or more workups, then build the checklist.</p>
-              </div>
-              <button class="button--secondary" type="button" data-action="new-workup">${icon("plus")} New</button>
-            </div>
-            <div class="workup-catalog-actions">
-              <button class="button--primary" type="button" data-action="build-checklist" ${selectedIds.size ? "" : "disabled"}>Build checklist</button>
-              <span class="muted">${selectedIds.size ? `${selectedIds.size} selected` : "Select one or more workups"}</span>
-            </div>
-            <div class="workup-catalog-search">
-              <label for="workupCatalogSearch">Find a workup
-                <span class="workup-search-control">
-                  <input id="workupCatalogSearch" type="search" value="${escapeHtml(app.workupCatalogQuery)}" placeholder="Search title, alias, or ID" autocomplete="off">
-                  <button class="button--quiet" type="button" data-action="clear-workup-search" ${app.workupCatalogQuery ? "" : "hidden"}>Clear</button>
-                </span>
-              </label>
-              <span class="muted" data-workup-catalog-count>${matchingWorkupIds ? `${matchingWorkupIds.size} of ${catalog.length} workups` : `${catalog.length} workups`}</span>
-            </div>
-            <div class="workup-list" data-workup-catalog-list>
-              ${catalog.map((workup) => renderWorkupRow(workup, selectedIds, matchingWorkupIds)).join("")}
-              <div class="empty-state" data-workup-catalog-empty ${matchingWorkupIds && matchingWorkupIds.size === 0 ? "" : "hidden"}>No workups match this search.</div>
-            </div>
-          </div>
-        </details>
-      </div>
-      <div class="workup-subtitle">The first choice in each row is the normal or negative baseline. Drag rows or use arrow controls to reorder.</div>
-      <div class="workup-scope-control">
-        <label>OpenEvidence detail
-          <select id="workupThoroughness" aria-label="OpenEvidence workup detail">
-            ${Object.entries(WORKUP_THOROUGHNESS).map(([value, option]) => `<option value="${value}" ${workupThoroughnessOption(app.workupThoroughness) === value ? "selected" : ""}>${escapeHtml(option.label)}</option>`).join("")}
-          </select>
-        </label>
-        <span class="muted">${escapeHtml(WORKUP_THOROUGHNESS[workupThoroughnessOption(app.workupThoroughness)].helper)}</span>
-      </div>
-
-        <div class="workflow-strip">
-          <div class="workflow-step"><strong>1 OpenEvidence draft</strong><span class="muted">Create H&P item set</span></div>
-          <span class="muted" aria-hidden="true">→</span>
-          <div class="workflow-step"><strong>2 Format as JSON</strong><span class="muted">Saved key or ChatGPT fallback</span></div>
-          <span class="muted" aria-hidden="true">→</span>
-          <div class="workflow-step"><strong>Parse & review</strong><span class="muted">Editable rows saved locally</span></div>
-        </div>
-
-        <input id="workupIdInput" value="${escapeHtml(editorWorkup.id)}" hidden>
-
-        <div class="workup-columns">
-          ${renderWorkupColumn("history", "History questions", grouped.history)}
-          ${renderWorkupColumn("exam", "Physical exam items", grouped.exam)}
-        </div>
-
-        <div class="workup-footer-actions">
-          <button class="button--secondary" type="button" data-action="copy-open-evidence-workup-prompt">OpenEvidence draft</button>
-          <button class="button--secondary" type="button" data-action="copy-json-formatter-prompt">Copy ChatGPT formatter prompt</button>
-          <button class="button--secondary" type="button" data-action="export-workup-json">${icon("download")} Download workup</button>
-          <button class="button--secondary" type="button" data-action="export-workup-library">${icon("download")} Download local library</button>
-          <button class="button--secondary" type="button" data-action="choose-workup-library-file">${icon("upload")} Import library</button>
-          <input id="workupLibraryFileInput" type="file" accept="application/json" hidden>
-          <button class="button--secondary" type="button" data-action="save-workup-ui">Save to catalog</button>
-        </div>
-        <p class="muted">Library files contain workups only. They do not include patient data and never build a checklist automatically.</p>
-        <section class="workup-workspace-mirror" aria-live="polite">
-          <div>
-            <strong>Workspace mirror</strong>
-            <p class="muted">${workspaceReady ? `Mirrors ${Object.keys(app.vault.workupOverrides || {}).length} local workup${Object.keys(app.vault.workupOverrides || {}).length === 1 ? "" : "s"} to <code>workups/local/</code>. Browser saves remain encrypted and canonical.` : escapeHtml(workspace.message || "Choose a workspace folder to mirror local workups.")}</p>
-          </div>
-          <div class="button-row">
-            ${workspaceReady ? `<button class="button--secondary" type="button" data-action="sync-workup-workspace" ${app.workupWorkspaceBusy ? "disabled" : ""}>${app.workupWorkspaceBusy ? "Syncing…" : "Sync now"}</button><button class="button--quiet" type="button" data-action="choose-workup-workspace" ${app.workupWorkspaceBusy ? "disabled" : ""}>Change folder</button><button class="button--quiet" type="button" data-action="disconnect-workup-workspace" ${app.workupWorkspaceBusy ? "disabled" : ""}>Disconnect</button>` : `<button class="button--secondary" type="button" data-action="choose-workup-workspace" ${app.workupWorkspaceBusy || workspace.status === "unsupported" ? "disabled" : ""}>Choose workspace folder</button>`}
-          </div>
-          <small>Writes only workup JSON and a mirror manifest. It never writes patient data, stages files, commits, or deletes workspace files.</small>
-        </section>
-
-        <details class="utility-panel workup-import" ${app.workupImportError || app.workupApiBusy ? "open" : ""}>
-          <summary>
-            <strong>Format or import a workup</strong>
-            <span class="muted">Paste a de-identified OpenEvidence draft for automatic formatting, or paste completed JSON to import directly.</span>
-          </summary>
-          <div class="workup-import-body">
-          <div class="section-heading tight">
-            <div>
-              <h3>Format into editable workup rows</h3>
-              <p class="muted">Automatic formatting uses only the pasted draft. Completed JSON can still be parsed directly.</p>
-            </div>
-            <div class="button-row">
-              <button type="button" data-action="parse-workup-json">Parse & save</button>
-              <button type="button" data-action="choose-workup-file">${icon("upload")} Import file</button>
-              <input id="workupJsonFileInput" type="file" accept="application/json" hidden>
-            </div>
-          </div>
-          <textarea id="workupJsonImport" class="json-import" spellcheck="false" placeholder="Paste a reviewed, de-identified OpenEvidence workup draft or prerounding_workup_v1 JSON here.">${escapeHtml(app.workupImportDraft)}</textarea>
-          ${hasSavedOpenAiKey ? `<div class="workup-api-formatting">
-            <label class="check-row">
-              <input id="workupApiDeidConfirmed" type="checkbox" ${app.workupApiDeidConfirmed ? "checked" : ""}>
-              <span>I confirm this draft is de-identified and may be sent to OpenAI using my saved API key.</span>
-            </label>
-            <div class="button-row">
-              <button type="button" data-action="format-workup-json-api" ${app.workupApiDeidConfirmed && !app.workupApiBusy ? "" : "disabled"}>${app.workupApiBusy ? "Formatting with saved key..." : "Format & load with saved API key"}</button>
-              <span class="muted">Ready to use ${escapeHtml(openAiWorkupModelOption(currentPreferences().openAiModel).label)} after you confirm the draft is de-identified.</span>
-            </div>
-          </div>` : `<div class="notice workup-api-guidance"><span>To format a de-identified draft automatically, save an OpenAI API key in Settings.</span><button class="button--quiet" type="button" data-action="go-settings">Open Settings</button></div>`}
-          ${app.workupImportError ? `<div class="warning-box">${escapeHtml(app.workupImportError)}</div>` : `<div class="notice">JSON import is parsed into editable rows. No raw JSON editing in the main flow.</div>`}
-          <textarea id="workupPromptOutput" rows="7" readonly placeholder="Copied AI workflow prompt appears here."></textarea>
-          </div>
-        </details>
-        <button type="button" class="text-button" data-action="reset-workup-json">Remove local override</button>
-      </section>
-  `;
-  bindWorkupReordering();
-}
-
-function renderWorkupRow(workup, selectedIds, matchingWorkupIds = null) {
-  const matches = !matchingWorkupIds || matchingWorkupIds.has(workup.id);
-  return `
-    <div class="workup-catalog-row ${selectedIds.has(workup.id) ? "is-selected" : ""}" data-workup-id="${escapeHtml(workup.id)}" ${matches ? "" : "hidden"}>
-      <label class="check-row">
-      <input type="checkbox" class="workup-checkbox" value="${escapeHtml(workup.id)}" ${selectedIds.has(workup.id) ? "checked" : ""}>
-      <span>
-        <strong>${escapeHtml(workup.title)}</strong>
-        <span class="muted">${workup.items.filter((item) => item.kind === "history").length} history · ${workup.items.filter((item) => item.kind === "exam").length} exam</span>
-      </span>
-      </label>
-      <button class="button--quiet" type="button" data-action="edit-workup" data-workup-id="${escapeHtml(workup.id)}">${icon("edit")} Edit</button>
-    </div>
-  `;
-}
-
-function renderWorkupColumn(kind, title, items) {
-  const groups = new Map();
-  items.forEach((item, index) => {
-    const system = String(item.system || "").trim() || "general";
-    groups.set(system, [...(groups.get(system) || []), { item, index }]);
+  const preferences = currentPreferences();
+  byId("workupsContent").innerHTML = workupPresentation.renderWorkups({
+    catalog,
+    selectedIds,
+    matchingWorkupIds,
+    editorWorkup,
+    hasDraftWorkup: Boolean(app.draftWorkup),
+    catalogQuery: app.workupCatalogQuery,
+    thoroughness: app.workupThoroughness,
+    hasSavedOpenAiKey: Boolean(preferences.openAiApiKey),
+    openAiModelLabel: openAiWorkupModelOption(preferences.openAiModel).label,
+    workspace: app.workupWorkspace || { status: "unconfigured" },
+    workspaceBusy: app.workupWorkspaceBusy,
+    workupOverrides: app.vault.workupOverrides,
+    workupImportError: app.workupImportError,
+    workupApiBusy: app.workupApiBusy,
+    workupApiDeidConfirmed: app.workupApiDeidConfirmed,
+    workupImportDraft: app.workupImportDraft
   });
-  return `
-    <div class="workup-column" data-workup-kind="${kind}">
-      <div class="section-heading tight">
-        <h3>${escapeHtml(title)}</h3>
-        <button class="button--quiet" type="button" data-action="add-workup-item" data-kind="${kind}">${icon("plus")} Add</button>
-      </div>
-      <div class="workup-item-scroll">
-        ${[...groups.entries()].map(([system, entries]) => `
-          <section class="workup-system-group" data-workup-system="${escapeHtml(system)}">
-            <div class="workup-system-group-header"><h4>${escapeHtml(workupSystemLabel(system))}</h4><span class="muted">${entries.length} item${entries.length === 1 ? "" : "s"}</span></div>
-            <div class="list-stack" data-workup-system-list="${escapeHtml(system)}">
-              ${entries.map(({ item, index }) => renderWorkupItemEditor(item, kind, index)).join("")}
-            </div>
-          </section>`).join("")}
-      </div>
-    </div>
-  `;
-}
-
-function renderWorkupItemEditor(item, kind, index = 0) {
-  return `
-    <article class="workup-editor-card" data-workup-item-row data-kind="${kind}">
-      <span class="icon-button workup-drag-handle" draggable="true" title="Drag to reorder ${kind} items" aria-label="Drag to reorder ${kind} item" role="img">${icon("grip")}</span>
-      <span class="workup-row-number" aria-hidden="true">${index + 1}</span>
-      <textarea data-field="item-text" rows="2" aria-label="${kind} item text">${escapeHtml(item.text)}</textarea>
-      <input data-field="item-choices" value="${escapeHtml(choicesToText(item.choices))}" placeholder="Baseline answer, then positive or abnormal" aria-label="${kind} answer choices, baseline first">
-      <select data-field="item-select" aria-label="${kind} select mode">
-        <option value="one" ${item.select !== "many" ? "selected" : ""}>One</option>
-        <option value="many" ${item.select === "many" ? "selected" : ""}>Many</option>
-      </select>
-      <div class="button-row">
-        <button class="icon-button" type="button" data-action="move-workup-item" data-direction="up" title="Move up" aria-label="Move ${kind} item up">${icon("moveUp")}</button>
-        <button class="icon-button" type="button" data-action="move-workup-item" data-direction="down" title="Move down" aria-label="Move ${kind} item down">${icon("moveDown")}</button>
-        <button class="icon-button" type="button" data-action="duplicate-workup-item" title="Duplicate">${icon("copy")}</button>
-        <button class="icon-button" type="button" data-action="remove-workup-item" title="Remove">${icon("trash")}</button>
-      </div>
-      <details class="workup-item-details">
-        <summary>Item details</summary>
-        <div class="workup-item-detail-grid">
-          <label>System<select data-field="item-system">${WORKUP_SYSTEMS.map((system) => `<option value="${escapeHtml(system.id)}" ${item.system === system.id ? "selected" : ""}>${escapeHtml(system.label)}</option>`).join("")}</select></label>
-          <label>Item ID<input data-field="item-id" value="${escapeHtml(item.id)}"></label>
-        </div>
-      </details>
-    </article>
-  `;
+  bindWorkupReordering();
 }
 
 function selectedChecklistDay(patient) {
@@ -1450,165 +1088,39 @@ function selectedChecklistDay(patient) {
   return days.find((day) => day.id === app.selectedDayId) || [...days].reverse().find((day) => day.checklistSnapshot) || days.at(-1) || null;
 }
 
-function groupChecklistItems(snapshot) {
-  const items = snapshot?.items || [];
-  return {
-    history: items.filter((item) => item.kind === "history"),
-    exam: items.filter((item) => item.kind === "exam")
-  };
-}
-
-function completedCount(items, answers) {
-  return items.filter((item) => answers?.[item.id]?.selected?.length || answers?.[item.id]?.note).length;
-}
-
 function renderChecklist() {
   const patient = active();
   if (!patient) {
-    byId("checklistContent").innerHTML = patientRequiredMessage();
+    byId("checklistContent").innerHTML = patientRequiredMessage({ allowPhoneBundleImport: true });
     return;
   }
   const day = selectedChecklistDay(patient);
   const snapshot = day?.checklistSnapshot || null;
   const answers = day?.answers || {};
-  const totalItems = snapshot?.items.length || 0;
-  const completedItems = completedCount(snapshot?.items || [], answers);
-  byId("checklistContent").innerHTML = `
-    <div class="checklist-shell">
-      <section class="panel checklist-panel">
-        <div class="section-heading">
-          <div>
-            <h2>Checklist</h2>
-            <p class="muted">${snapshot ? `${escapeHtml(day.label)} · ${completedItems} / ${totalItems} completed · ${escapeHtml(snapshot.workupTitles.join(", "))}` : "Build a checklist from the Workups page."}</p>
-          </div>
-          <button class="button--secondary" type="button" data-action="go-workups">Build from workups</button>
-        </div>
-        ${
-          snapshot
-            ? `<div id="checklistSections" class="checklist-scroll">
-                ${renderChecklistSection("History", groupChecklistItems(snapshot).history, answers)}
-                ${renderChecklistSection("Physical Exam", groupChecklistItems(snapshot).exam, answers)}
-              </div>`
-            : `<div class="empty-state next-step"><strong>Next step: build a checklist.</strong><span>Select one or more workups, then return here to record history and exam findings.</span></div>`
-        }
-      </section>
-      ${snapshot ? renderPhoneTransfer(day) : `<section class="panel"><h3>Send to phone</h3><p class="muted">Build a checklist first.</p></section>`}
-    </div>
-  `;
+  byId("checklistContent").innerHTML = checklistPresentation.renderDesktopChecklist({
+    day,
+    snapshot,
+    answers,
+    phoneLink: snapshot ? phoneTransfer.currentChecklistUrl() : ""
+  });
   if (snapshot) renderChecklistQr(day);
 }
 
-function renderChecklistSection(title, items, answers, { showBulkControls = true } = {}) {
-  const kind = items[0]?.kind || (title === "Physical Exam" ? "exam" : "history");
-  const fillLabel = kind === "exam" ? "Fill remaining normal" : "Fill remaining negative";
-  return `
-    <section class="checklist-section">
-      <div class="checklist-section-header">
-        <h3>${escapeHtml(title)}</h3>
-        <div class="button-row">
-          <span class="muted">${completedCount(items, answers)} / ${items.length}</span>
-          ${showBulkControls ? `<button class="button--quiet" type="button" data-action="fill-section-negatives" data-kind="${escapeHtml(kind)}" title="Uses the first, baseline answer choice for each unanswered item">${escapeHtml(fillLabel)}</button>` : ""}
-        </div>
-      </div>
-      ${
-        items.length
-          ? `
-              <div class="checklist-column-head" aria-hidden="true">
-                <span>${escapeHtml(title)}</span><span>Answer</span><span>Notes</span><span>Status</span>
-              </div>
-              ${groupChecklistItemsBySystem(items).map(({ system, items: groupedItems }) => renderChecklistSystem(system, groupedItems, answers, kind, { showBulkControls })).join("")}
-            `
-          : `<div class="empty-state">No ${escapeHtml(title.toLowerCase())} items in this checklist.</div>`
-      }
-    </section>
-  `;
-}
-
-function renderChecklistSystem(system, items, answers, kind, { showBulkControls = true } = {}) {
-  const fillLabel = kind === "exam" ? "Mark remaining normal" : "Mark remaining negative";
-  return `
-    <section class="checklist-system">
-      <div class="checklist-system-header">
-        <h4>${escapeHtml(system)}</h4>
-        <div class="button-row">
-          <span class="muted">${completedCount(items, answers)} / ${items.length}</span>
-          ${showBulkControls ? `<button class="button--quiet" type="button" data-action="fill-system-negatives" data-kind="${escapeHtml(kind)}" data-system="${escapeHtml(system)}" title="Uses the first, baseline answer choice for each unanswered item">${escapeHtml(fillLabel)}</button>` : ""}
-        </div>
-      </div>
-      <div class="checklist-table">
-        ${items.map((item) => renderChecklistItem(item, answers)).join("")}
-      </div>
-    </section>
-  `;
-}
-
-function renderChecklistItem(item, answers) {
-  const answer = answers[item.id] || { selected: [], note: "" };
-  const multiple = item.select === "many";
-  return `
-    <article class="checklist-item" data-item-id="${escapeHtml(item.id)}">
-      <div>
-        <strong>${escapeHtml(item.text)}</strong>
-        <div class="muted">${escapeHtml(item.workupTitle)}</div>
-      </div>
-      <div class="choice-row">
-        ${
-          multiple
-            ? item.choices
-                .map(
-                  (choice, index) => `
-                    <label class="${index === 0 ? "baseline-choice" : ""}">
-                      <input type="checkbox" class="checklist-answer" name="${escapeHtml(item.id)}" value="${escapeHtml(choice)}" ${answer.selected?.includes(choice) ? "checked" : ""}>
-                      ${escapeHtml(choice)}
-                    </label>
-                  `
-                )
-                .join("")
-            : `
-                <select class="checklist-answer checklist-answer-select" name="${escapeHtml(item.id)}" aria-label="Answer for ${escapeHtml(item.text)}">
-                  <option value="">--</option>
-                  ${item.choices.map((choice) => `<option value="${escapeHtml(choice)}" ${answer.selected?.includes(choice) ? "selected" : ""}>${escapeHtml(choice)}</option>`).join("")}
-                </select>
-              `
-        }
-      </div>
-      <textarea class="item-note-input" rows="2" placeholder="Optional note">${escapeHtml(answer.note || "")}</textarea>
-      <span class="status-dot">${answer.selected?.length || answer.note ? "✓" : "○"}</span>
-    </article>
-  `;
-}
-
-function renderPhoneTransfer(day) {
+function currentPhoneChecklistBundle() {
   const patient = active();
-  const bundle = encodePhoneChecklistBundle(createPhoneChecklistBundle(patient, day.checklistSnapshot, day.answers || {}));
-  const phoneLink = `${window.location.origin}${window.location.pathname}#phone=${bundle}`;
-  return `
-    <aside class="panel phone-transfer">
-      <div>
-        <h3>Send to phone</h3>
-        <p class="muted">Scan, copy bundle, download fallback, then import returned answers.</p>
-      </div>
-      <div id="phoneQr" class="qr-box"></div>
-      <label>Bundle link
-        <textarea id="phoneBundleText" readonly rows="4">${escapeHtml(phoneLink)}</textarea>
-      </label>
-      <div class="button-row">
-        <button class="button--secondary" type="button" data-action="copy-phone-bundle" data-bundle="${escapeHtml(phoneLink)}">${icon("copy")} Copy bundle</button>
-        <button class="button--secondary" type="button" data-action="download-phone-bundle" data-bundle="${escapeHtml(bundle)}">${icon("download")} Download</button>
-      </div>
-      <label>Returned phone answers
-        <textarea id="phoneReturnText" rows="5" placeholder="Paste return bundle"></textarea>
-      </label>
-      <button class="button--secondary" type="button" data-action="import-phone-return">Import from phone</button>
-    </aside>
-  `;
+  const day = selectedChecklistDay(patient);
+  if (!day?.checklistSnapshot) throw new Error("Build a checklist first.");
+  return createPhoneChecklistBundle(patient, day.checklistSnapshot, day.answers || {});
 }
 
-function renderChecklistQr(day) {
-  const patient = active();
-  const bundle = encodePhoneChecklistBundle(createPhoneChecklistBundle(patient, day.checklistSnapshot, day.answers || {}));
-  const phoneLink = `${window.location.origin}${window.location.pathname}#phone=${bundle}`;
-  renderQr(byId("phoneQr"), phoneLink);
+function currentPhoneReturnBundle() {
+  const snapshot = app.phoneBundle?.checklist;
+  if (!snapshot) throw new Error("Open a phone checklist first.");
+  return createChecklistReturnBundle(snapshot, app.phoneAnswers);
+}
+
+function renderChecklistQr() {
+  renderQr(byId("phoneQr"), phoneTransfer.currentChecklistUrl());
 }
 
 function renderPrompts() {
@@ -1961,48 +1473,19 @@ function renderQuickDeid() {
 
 function renderPhoneChecklist() {
   const snapshot = app.phoneBundle.checklist;
-  const allItems = snapshot?.items || [];
-  const completed = completedCount(allItems, app.phoneAnswers);
-  const remaining = Math.max(0, allItems.length - completed);
-  const readyToReturn = allItems.length > 0 && remaining === 0;
+  const returnBundle = phoneTransfer.currentReturnCode();
+  const phoneView = checklistPresentation.buildPhoneChecklistView({
+    patientLabel: app.phoneBundle.patientLabel,
+    snapshot,
+    answers: app.phoneAnswers,
+    phoneReturnReady: app.phoneReturnReady,
+    returnBundle
+  });
   document.querySelectorAll(".view").forEach((view) => view.classList.remove("active"));
   byId("checklistView").classList.add("active");
-  byId("checklistContent").innerHTML = `
-    <div class="checklist-shell">
-      <section class="panel checklist-panel">
-        <div class="section-heading">
-          <div>
-            <h2>${escapeHtml(app.phoneBundle.patientLabel || "Patient")}</h2>
-            <p class="muted">Phone checklist · answers stay on this phone until returned.</p>
-          </div>
-          <div class="button-row">
-            <button class="button--secondary" type="button" data-action="fill-all-negatives" ${remaining ? "" : "disabled"}>Fill all remaining baseline</button>
-            ${app.phoneReturnReady && readyToReturn ? `<button type="button" data-action="copy-phone-return">Copy return bundle</button>` : ""}
-          </div>
-        </div>
-        <div class="phone-completion-bar ${readyToReturn ? "ready" : ""}">
-          <div>
-            <strong>${readyToReturn ? "Checklist complete." : `${remaining} item${remaining === 1 ? "" : "s"} remain.`}</strong>
-            <span>${readyToReturn ? "Confirm when you are ready to generate the return code." : "The return code stays hidden until every history and exam item has an answer."}</span>
-          </div>
-          ${readyToReturn && !app.phoneReturnReady ? `<button class="button--primary" type="button" data-action="show-phone-return">Finish & show return code</button>` : ""}
-        </div>
-        <div id="checklistSections" class="checklist-scroll">
-          ${renderChecklistSection("History", groupChecklistItems(snapshot).history, app.phoneAnswers, { showBulkControls: false })}
-          ${renderChecklistSection("Physical Exam", groupChecklistItems(snapshot).exam, app.phoneAnswers, { showBulkControls: false })}
-        </div>
-      </section>
-      ${app.phoneReturnReady && readyToReturn ? `
-        <section class="panel phone-transfer phone-return-ready">
-          <h3>Return answers</h3>
-          <p class="muted">Scan or copy this code only after finishing the bedside checklist.</p>
-          <div id="returnQr" class="qr-box"></div>
-          <textarea id="phoneReturnBundle" rows="6" readonly>${escapeHtml(encodeChecklistReturnBundle(createChecklistReturnBundle(snapshot, app.phoneAnswers)))}</textarea>
-        </section>` : ""}
-    </div>
-  `;
-  if (app.phoneReturnReady && readyToReturn) {
-    renderQr(byId("returnQr"), `#return=${encodeChecklistReturnBundle(createChecklistReturnBundle(snapshot, app.phoneAnswers))}`);
+  byId("checklistContent").innerHTML = phoneView.markup;
+  if (app.phoneReturnReady && phoneView.readyToReturn) {
+    renderQr(byId("returnQr"), `#return=${returnBundle}`);
   }
   renderStatusBar();
 }
@@ -2160,9 +1643,14 @@ async function handleClick(event) {
       app.view = "settings";
       render();
     }
+    if (action === "choose-phone-bundle-file") byId("phoneBundleFileInput")?.click();
+    if (action === "share-phone-bundle") await phoneTransfer.shareChecklist();
     if (action === "copy-phone-bundle") await copyText(target.dataset.bundle || byId("phoneBundleText")?.value || "");
-    if (action === "download-phone-bundle") downloadJson("phone-checklist-bundle.json", { bundle: target.dataset.bundle || "" });
+    if (action === "download-phone-bundle") phoneTransfer.downloadChecklist();
+    if (action === "choose-phone-return-file") byId("phoneReturnFileInput")?.click();
     if (action === "import-phone-return") await importPhoneReturn();
+    if (action === "share-phone-return") await phoneTransfer.shareReturn();
+    if (action === "download-phone-return") phoneTransfer.downloadReturn();
     if (action === "copy-phone-return") await copyText(byId("phoneReturnBundle")?.value || "");
     if (action === "show-phone-return") showPhoneReturn();
     if (action === "fill-all-negatives") await fillChecklistNegatives();
@@ -3771,15 +3259,29 @@ async function buildChecklist() {
   render();
 }
 
-async function importPhoneReturn() {
+async function importPhoneReturnBundle(bundle) {
   const patient = active();
   const day = selectedChecklistDay(patient);
   if (!day?.checklistSnapshot) throw new Error("Build a checklist first.");
-  const bundle = decodeChecklistReturnBundle(byId("phoneReturnText").value);
   const answers = mergeReturnedAnswers(day.answers || {}, bundle, day.checklistSnapshot);
   const nextDay = { ...day, answers, updatedAt: new Date().toISOString() };
   app.vault = updateActivePatient(app.vault, (current) => ({ ...current, days: upsertDay(current.days, nextDay) }));
   await persistVault("Returned phone answers imported.");
+  render();
+}
+
+async function importPhoneReturn() {
+  await importPhoneReturnBundle(decodeChecklistReturnBundle(byId("phoneReturnText").value));
+}
+
+async function importPhoneReturnFile(file) {
+  await importPhoneReturnBundle(decodeChecklistReturnTransferFile(await file.text()));
+}
+
+async function importPhoneBundleFile(file) {
+  app.phoneBundle = decodePhoneChecklistTransferFile(await file.text());
+  app.phoneAnswers = app.phoneBundle.answers || emptyChecklistAnswers(app.phoneBundle.checklist);
+  app.phoneReturnReady = false;
   render();
 }
 
@@ -3915,6 +3417,22 @@ function handleChange(event) {
     void importWorkupLibraryFile(event.target.files[0]);
     event.target.value = "";
   }
+  if (event.target.id === "phoneBundleFileInput" && event.target.files?.[0]) {
+    const file = event.target.files[0];
+    event.target.value = "";
+    void importPhoneBundleFile(file).catch((error) => {
+      setStatus(error instanceof Error ? error.message : "Unable to open the phone checklist file.");
+      render();
+    });
+  }
+  if (event.target.id === "phoneReturnFileInput" && event.target.files?.[0]) {
+    const file = event.target.files[0];
+    event.target.value = "";
+    void importPhoneReturnFile(file).catch((error) => {
+      setStatus(error instanceof Error ? error.message : "Unable to import the returned checklist file.");
+      render();
+    });
+  }
   if (event.target.id === "modelPackFolderInput" && event.target.files?.length && app.pendingModelPackKey) {
     void importSelectedModelPack(app.pendingModelPackKey, modelFilesFromInput(event.target.files));
     event.target.value = "";
@@ -3965,7 +3483,7 @@ async function fillChecklistNegatives({ kind = "", system = "" } = {}) {
 function showPhoneReturn() {
   const snapshot = app.phoneBundle?.checklist;
   const total = snapshot?.items?.length || 0;
-  if (!total || completedCount(snapshot.items, app.phoneAnswers) !== total) {
+  if (!total || checklistPresentation.completedCount(snapshot.items, app.phoneAnswers) !== total) {
     throw new Error("Finish every history and physical exam item before generating the return code.");
   }
   app.phoneReturnReady = true;
@@ -4024,7 +3542,7 @@ function handleInput(event) {
   if (app.phoneBundle) {
     app.phoneAnswers = setChecklistNote(app.phoneAnswers, itemId, event.target.value);
     const returnBundle = byId("phoneReturnBundle");
-    if (returnBundle) returnBundle.value = encodeChecklistReturnBundle(createChecklistReturnBundle(app.phoneBundle.checklist, app.phoneAnswers));
+    if (returnBundle) returnBundle.value = phoneTransfer.currentReturnCode();
     return;
   }
   const patient = active();

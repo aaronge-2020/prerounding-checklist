@@ -3896,6 +3896,9 @@ body.vault-locked .vault-access {
 
 .redaction-change {
   display: inline;
+  min-height: 0;
+  line-height: inherit;
+  vertical-align: baseline;
   border: 0;
   border-radius: 0;
   background: transparent;

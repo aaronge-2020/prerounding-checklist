@@ -169,6 +169,45 @@ function expandPhoneChecklistBundle(bundle) {
   };
 }
 
+export const PHONE_TRANSFER_FILE_SCHEMA = "prerounding_phone_transfer_file_v1";
+
+function transferFilePayload(type, payload) {
+  return {
+    schema: PHONE_TRANSFER_FILE_SCHEMA,
+    type,
+    payload
+  };
+}
+
+function decodeTransferFile(text, expectedType, decodePayload, message) {
+  let file;
+  try {
+    file = JSON.parse(String(text || ""));
+  } catch {
+    throw new Error(message);
+  }
+  // Keep files downloaded by earlier app versions importable. Those files
+  // contained only { bundle: encodedPayload } and did not declare a type.
+  if (file?.schema === undefined && typeof file?.bundle === "string") return decodePayload(file.bundle);
+  if (file?.schema !== PHONE_TRANSFER_FILE_SCHEMA || file?.type !== expectedType || typeof file?.payload !== "string") {
+    throw new Error(message);
+  }
+  return decodePayload(file.payload);
+}
+
+export function createPhoneChecklistTransferFile(bundle) {
+  return transferFilePayload("checklist", encodePhoneChecklistBundle(bundle));
+}
+
+export function decodePhoneChecklistTransferFile(text) {
+  return decodeTransferFile(
+    text,
+    "checklist",
+    decodePhoneChecklistBundle,
+    "This is not a valid phone checklist bundle file."
+  );
+}
+
 export function encodePhoneChecklistBundle(bundle) {
   return encodeJsonUrlSafe(compactPhoneChecklistBundle(bundle));
 }
@@ -206,6 +245,19 @@ export function decodeChecklistReturnBundle(text) {
     answers: expandAnswers(bundle.a),
     createdAt: bundle.d || ""
   };
+}
+
+export function createChecklistReturnTransferFile(bundle) {
+  return transferFilePayload("return", encodeChecklistReturnBundle(bundle));
+}
+
+export function decodeChecklistReturnTransferFile(text) {
+  return decodeTransferFile(
+    text,
+    "return",
+    decodeChecklistReturnBundle,
+    "This is not a valid returned checklist bundle file."
+  );
 }
 
 export function mergeReturnedAnswers(currentAnswers, returnBundle, snapshot) {
