@@ -1,0 +1,252 @@
+{
+  "schema": "prerounding_workup_v1",
+  "id": "acute-decompensated-heart-failure",
+  "title": "Congestive heart failure exacerbation (ADHF)",
+  "aliases": [
+    "heart failure",
+    "ADHF",
+    "fluid overload"
+  ],
+  "items": [
+    {
+      "id": "history-01",
+      "kind": "history",
+      "system": "general",
+      "text": "Ask about onset, tempo, severity, triggers, relieving factors, and change from baseline.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-02",
+      "kind": "history",
+      "system": "infectious",
+      "text": "Ask about chest discomfort, palpitations, syncope, diaphoresis, cough, fever, and hemoptysis.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-03",
+      "kind": "history",
+      "system": "respiratory",
+      "text": "Ask about prior heart or lung disease, prior admissions, baseline exertional tolerance, and home oxygen use.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-04",
+      "kind": "history",
+      "system": "functional",
+      "text": "Ask about tobacco or vaping exposure, immobility, thromboembolic risk, and relevant family history.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-05",
+      "kind": "history",
+      "system": "medication",
+      "text": "Ask about recent medication changes, adherence, inhaler or diuretic use, and anticoagulant use when relevant.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-06",
+      "kind": "history",
+      "system": "functional",
+      "text": "Ask about baseline ambulation, sleep position, activity limitation, and new functional decline.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-07",
+      "kind": "history",
+      "system": "gastrointestinal",
+      "text": "Ask about worsening dyspnea, orthopnea, paroxysmal nocturnal dyspnea, edema, abdominal fullness, and rapid weight change.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-08",
+      "kind": "history",
+      "system": "medication",
+      "text": "Ask about dietary change, missed diuretics or other medications, infection symptoms, chest pain, arrhythmia symptoms, and new kidney symptoms.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-09",
+      "kind": "history",
+      "system": "medication",
+      "text": "Ask about known ejection fraction, prior admissions, baseline weight, diuretic response, home oxygen, and activity tolerance.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-10",
+      "kind": "history",
+      "system": "neurologic",
+      "text": "Ask about lightheadedness, syncope, cool extremities, confusion, low urine output, and reduced exercise tolerance.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-01",
+      "kind": "exam",
+      "system": "respiratory",
+      "text": "Assess general appearance, respiratory rate and pattern, heart rate and rhythm, blood pressure, temperature, and oxygenation.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-02",
+      "kind": "exam",
+      "system": "respiratory",
+      "text": "Inspect work of breathing and auscultate all lung fields for air movement and focal or diffuse adventitious sounds.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-03",
+      "kind": "exam",
+      "system": "cardiovascular",
+      "text": "Assess cardiac rate and rhythm, heart sounds, murmurs, and signs of impaired peripheral perfusion.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-04",
+      "kind": "exam",
+      "system": "cardiovascular",
+      "text": "Assess jugular venous pressure when feasible, mucous membranes, edema, and other bedside signs of volume status.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-05",
+      "kind": "exam",
+      "system": "cardiovascular",
+      "text": "Inspect extremities for asymmetry, edema, cyanosis, calf tenderness, and distal pulses.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-06",
+      "kind": "exam",
+      "system": "neurologic",
+      "text": "Assess alertness, orientation, and focal neurologic change that could accompany hypoxemia or poor perfusion.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-07",
+      "kind": "exam",
+      "system": "cardiovascular",
+      "text": "Assess jugular venous pressure and hepatojugular reflux when feasible and appropriate.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-08",
+      "kind": "exam",
+      "system": "respiratory",
+      "text": "Auscultate for bibasilar crackles, wheeze, diminished breath sounds, and assess work of breathing.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-09",
+      "kind": "exam",
+      "system": "gastrointestinal",
+      "text": "Inspect and palpate for pitting edema, sacral edema, ascites, and weight-related volume change when available.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-10",
+      "kind": "exam",
+      "system": "neurologic",
+      "text": "Assess extremity warmth, pulses, capillary refill, mental status, and other signs of reduced cardiac output.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    }
+  ]
+}

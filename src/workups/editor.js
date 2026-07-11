@@ -1,6 +1,30 @@
 import { normalizeWorkup } from "./schema.js";
+import { isWorkupSystem, workupSystemPromptList } from "./systems.js";
+import { buildTeamPreferencesPromptBlock } from "../app/preferences.js";
 
 export const WORKUP_ITEM_KINDS = ["history", "exam"];
+
+export const WORKUP_THOROUGHNESS = {
+  focused: {
+    label: "Fast rounds",
+    helper: "6–10 priority history questions and 6–10 focused exam items for a busy morning.",
+    prompt: "Use a focused fast-rounds scope: provide 6 to 10 highest-yield history questions and 6 to 10 focused physical-exam items. Omit lower-yield routine items."
+  },
+  standard: {
+    label: "Standard",
+    helper: "12–18 targeted items per section for a balanced pre-round.",
+    prompt: "Use a standard scope: provide roughly 12 to 18 targeted history questions and 12 to 18 targeted physical-exam items, prioritizing the active problems."
+  },
+  thorough: {
+    label: "Thorough",
+    helper: "A broad, teaching-level review when there is time for a full bedside assessment.",
+    prompt: "Use a thorough teaching-level scope: cover all clinically relevant history questions and physical-exam items, including important systems beyond the immediate complaint."
+  }
+};
+
+export function workupThoroughnessOption(value = "standard") {
+  return WORKUP_THOROUGHNESS[value] ? value : "standard";
+}
 
 export function slugifyId(value, fallback = "workup") {
   const slug = String(value || "")
@@ -20,8 +44,8 @@ export function createBlankWorkup({ id = "", title = "New Workup" } = {}) {
     title,
     aliases: [],
     items: [
-      createBlankWorkupItem("history", { id: "chief_concern", system: "General", text: "Chief concern", choices: ["Absent", "Present", "Unclear"] }),
-      createBlankWorkupItem("exam", { id: "general_appearance", system: "General", text: "General appearance", choices: ["Normal", "Abnormal", "Not assessed"] })
+      createBlankWorkupItem("history", { id: "chief_concern", system: "general", text: "Chief concern", choices: ["Absent", "Present", "Unclear"] }),
+      createBlankWorkupItem("exam", { id: "general_appearance", system: "general", text: "General appearance", choices: ["Normal", "Abnormal", "Not assessed"] })
     ]
   });
 }
@@ -32,7 +56,7 @@ export function createBlankWorkupItem(kind = "history", overrides = {}) {
   return {
     id: overrides.id || slugifyId(text, `${kind}_item`),
     kind: WORKUP_ITEM_KINDS.includes(kind) ? kind : "history",
-    system: String(overrides.system || "").trim(),
+    system: isWorkupSystem(overrides.system) ? overrides.system : "general",
     text,
     choices: overrides.choices || ["No", "Yes", "Unclear"],
     select: overrides.select || "one"
@@ -104,14 +128,18 @@ export function collectWorkupDraftFromDocument(root = document) {
   };
 }
 
-export function buildOpenEvidenceWorkupDraftPrompt({ patientContext = "", dailyTrajectory = "", workupTitle = "" } = {}) {
+export function buildOpenEvidenceWorkupDraftPrompt({ patientContext = "", dailyTrajectory = "", workupTitle = "", thoroughness = "standard", teamPreferences } = {}) {
+  const scope = WORKUP_THOROUGHNESS[workupThoroughnessOption(thoroughness)];
   return `Review the de-identified patient context below and produce a comprehensive bedside workup for ${workupTitle || "this patient"}.
+
+${buildTeamPreferencesPromptBlock(teamPreferences)}
 
 Return two clearly separated sections only:
 1. History questions
 2. Physical exam items
 
 For every item, include concise answer choices appropriate for a clinician to tap on a phone checklist. The first answer choice must always be the negative, normal, absent, reassuring, or otherwise baseline finding. Put positive, abnormal, present, or concerning findings after it. Never put "not assessed" or "unable to assess" first.
+${scope.prompt}
 Do not include labs, imaging, orders, diagnoses, treatment plans, citations, or note prose.
 Use only the de-identified context below.
 
@@ -134,7 +162,7 @@ export function buildJsonFormatterPrompt({ sourceText = "", workupTitle = "" } =
     {
       "id": "url_safe_item_id",
       "kind": "history",
-      "system": "Cardiovascular",
+      "system": "cardiovascular",
       "text": "Specific history question or physical exam item",
       "choices": ["No", "Yes", "Unclear"],
       "select": "one"
@@ -144,7 +172,8 @@ export function buildJsonFormatterPrompt({ sourceText = "", workupTitle = "" } =
 
 Rules:
 - Use only kind "history" or "exam".
-- Add a concise system when it helps group bedside rounds items.
+- Every item must include one exact system ID from this controlled vocabulary; do not invent, abbreviate, combine, or qualify IDs:
+${workupSystemPromptList()}
 - Include only history questions and physical exam items.
 - Keep answer choices short and phone-friendly. The first choice for every item must be the negative, normal, absent, reassuring, or baseline finding; positive/abnormal/present choices must follow it.
 - Return JSON only, no markdown.

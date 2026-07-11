@@ -10,12 +10,15 @@ on:
       - "styles.css"
       - "favicon.ico"
       - "Guidelines.md"
+      - "Guidelines-admission.md"
+      - "Guidelines-progress.md"
       - ".gitattributes"
       - "assets/**"
       - "data/**"
       - "models/**"
       - "src/**"
       - "vendor/**"
+      - "workups/**"
   workflow_dispatch:
 
 permissions:
@@ -47,8 +50,8 @@ jobs:
           mkdir -p _site
           mkdir -p _site/models
           touch _site/.nojekyll
-          cp index.html styles.css favicon.ico Guidelines.md _site/
-          cp -R assets data src vendor _site/
+          cp index.html styles.css favicon.ico Guidelines.md Guidelines-admission.md Guidelines-progress.md service-worker.js _site/
+          cp -R assets data src vendor workups _site/
           cp -R models/onnx-community models/rtrigoso _site/models/
 
       - name: Setup Pages

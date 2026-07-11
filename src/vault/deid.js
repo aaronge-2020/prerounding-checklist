@@ -1693,23 +1693,55 @@ function chooseCurrentSourceDate(temporalEntities, currentDate = null) {
   ), null);
 }
 
+function formatRelativeCalendarRelation(date, currentSourceDate, timeBucket = "", clockTime = "", useExactClockTime = false) {
+  if (!date || !currentSourceDate) return "relative date";
+  const dayDiff = Math.round((date.getTime() - currentSourceDate.getTime()) / 86400000);
+  if (dayDiff === 0) {
+    if (useExactClockTime && clockTime) return `${clockTime} today`;
+    return timeBucket ? `${timeBucket} today` : "today";
+  }
+
+  const isPast = dayDiff < 0;
+  const earlier = isPast ? date : currentSourceDate;
+  const later = isPast ? currentSourceDate : date;
+  let years = later.getUTCFullYear() - earlier.getUTCFullYear();
+  let months = later.getUTCMonth() - earlier.getUTCMonth();
+  let days = later.getUTCDate() - earlier.getUTCDate();
+  if (days < 0) {
+    months -= 1;
+    days += new Date(Date.UTC(later.getUTCFullYear(), later.getUTCMonth(), 0)).getUTCDate();
+  }
+  if (months < 0) {
+    years -= 1;
+    months += 12;
+  }
+
+  const pieces = [];
+  if (years) pieces.push(`${years} year${years === 1 ? "" : "s"}`);
+  if (months) pieces.push(`${months} month${months === 1 ? "" : "s"}`);
+  if (days || !pieces.length) pieces.push(`${days} day${days === 1 ? "" : "s"}`);
+  const body = pieces.length === 1
+    ? pieces[0]
+    : `${pieces.slice(0, -1).join(" ")} and ${pieces.at(-1)}`;
+  const timeText = useExactClockTime && clockTime ? ` at ${clockTime}` : timeBucket ? ` ${timeBucket}` : "";
+  return `${body} ${isPast ? "ago" : "from now"}${timeText}`;
+}
+
 function formatMonthRelation(date, currentSourceDate, year) {
   if (!date || !currentSourceDate) {
     return year ? `month in ${year}` : "relative month";
   }
-  const dayDiff = Math.round((date.getTime() - currentSourceDate.getTime()) / 86400000);
-  return formatRelativeDayDiff(dayDiff, "", "", year);
+  return formatRelativeCalendarRelation(date, currentSourceDate);
 }
 
 function formatDayRelation(date, currentSourceDate, year, timeBucket = "", clockTime = "", useExactClockTime = false) {
   if (!date || !currentSourceDate) {
     return year ? `relative day (${year})` : "relative day";
   }
-  const dayDiff = Math.round((date.getTime() - currentSourceDate.getTime()) / 86400000);
-  return formatRelativeDayDiff(dayDiff, timeBucket, clockTime, year, useExactClockTime);
+  return formatRelativeCalendarRelation(date, currentSourceDate, timeBucket, clockTime, useExactClockTime);
 }
 
-function formatRelativeDayDiff(dayDiff, timeBucket = "", clockTime = "", year = null, useExactClockTime = false) {
+function _formatRelativeDayDiff(dayDiff, timeBucket = "", clockTime = "", _year = null, useExactClockTime = false) {
   const absDiff = Math.abs(dayDiff);
   const isPast = dayDiff <= 0;
   const suffix = isPast ? "ago" : "from now";
@@ -1797,8 +1829,9 @@ function formatRelativeTemporalPlaceholder(entity, currentSourceDate, fallbackYe
   );
 }
 
-function buildDateTimeline(rawText, entities, currentDate = null) {
-  const dateEntities = mergeEntities([...entities, ...collectTemporalEntities(rawText)], rawText)
+function buildDateTimeline(rawText, entities, currentDate = null, { includeTemporalFallback = true } = {}) {
+  const fallbackTemporalEntities = includeTemporalFallback ? collectTemporalEntities(rawText) : [];
+  const dateEntities = mergeEntities([...entities, ...fallbackTemporalEntities], rawText)
     .filter((entity) => entity.label === "DATE")
     .map((entity) => {
       const span = rawText.slice(entity.start, entity.end).trim();
@@ -1831,23 +1864,34 @@ function makeDateTimelinePlaceholder(entity, dateTimeline) {
   return dateTimeline.get(`${entity.start}:${entity.end}`) || "[DATE]";
 }
 
-export function redactFromEntities(rawText, entities, currentDate = null) {
+function resolvedRedactionEntities(rawText, entities, currentDate = null, { includeTemporalFallback = true } = {}) {
+  const temporalEntities = includeTemporalFallback ? collectTemporalEntities(rawText) : [];
+  const allEntities = mergeEntities([...entities, ...temporalEntities], rawText);
+  const dateTimeline = buildDateTimeline(rawText, allEntities, currentDate, { includeTemporalFallback });
+  return allEntities.map((entity) => ({
+    ...entity,
+    renderedPlaceholder: entity.label === "DATE"
+      ? makeDateTimelinePlaceholder(entity, dateTimeline)
+      : entity.placeholder || placeholderForLabel(entity.label)
+  }));
+}
+
+function redactResolvedEntities(rawText, entities) {
   let cursor = 0;
   let output = "";
-  const temporalEntities = collectTemporalEntities(rawText);
-  const allEntities = mergeEntities([...entities, ...temporalEntities], rawText);
-  const dateTimeline = buildDateTimeline(rawText, allEntities, currentDate);
 
-  allEntities.forEach((entity) => {
+  entities.forEach((entity) => {
     output += rawText.slice(cursor, entity.start);
-    output += entity.label === "DATE"
-      ? makeDateTimelinePlaceholder(entity, dateTimeline)
-      : entity.placeholder || placeholderForLabel(entity.label);
+    output += entity.renderedPlaceholder || entity.placeholder || placeholderForLabel(entity.label);
     cursor = entity.end;
   });
 
   output += rawText.slice(cursor);
   return cleanupDeidArtifacts(normalizeResidualTemporalPhi(generalizeAgesOver89(output.trim())));
+}
+
+export function redactFromEntities(rawText, entities, currentDate = null, options = {}) {
+  return redactResolvedEntities(rawText, resolvedRedactionEntities(rawText, entities, currentDate, options));
 }
 
 function oldTimelinePlaceholderToRelative(year, relation = "") {
@@ -2603,9 +2647,10 @@ function expandIdentityGraphEntities(rawText, seedEntities, maxPasses = 3) {
   return { entities, graph };
 }
 
-function deidentifyFromEntities(rawText, entities, modelResult = { modelId: null, modelStatus: "structured only" }, currentDate = null) {
-  const text = redactFromEntities(rawText, entities, currentDate);
-  const counts = summarizeEntities(entities);
+function deidentifyFromEntities(rawText, entities, modelResult = { modelId: null, modelStatus: "structured only" }, currentDate = null, options = {}) {
+  const renderedEntities = resolvedRedactionEntities(rawText, entities, currentDate, options);
+  const text = redactResolvedEntities(rawText, renderedEntities);
+  const counts = summarizeEntities(renderedEntities);
   const residualWarnings = scanResidualPhi(text);
   const residualFlags = residualWarnings.slice(0, 12).map(formatPhiWarning);
   const modelFlag = modelResult.modelStatus === "Model unavailable; structured redaction only." || modelResult.modelStatus === "structured only"
@@ -2615,10 +2660,10 @@ function deidentifyFromEntities(rawText, entities, modelResult = { modelId: null
   return {
     text,
     counts,
-    redactionTotal: entities.length,
+    redactionTotal: renderedEntities.length,
     residualWarnings,
-    flags: [...modelFlag, ...residualFlags, ...entityFlags(rawText, entities)],
-    entities,
+    flags: [...modelFlag, ...residualFlags, ...entityFlags(rawText, renderedEntities)],
+    entities: renderedEntities,
     modelId: modelResult.modelId,
     modelStatus: modelResult.modelStatus
   };
@@ -2826,7 +2871,7 @@ export function createDeidentifier(options = {}) {
             return;
           }
           failedChunks.push({ offset: chunk.offset, length: chunk.text.length, error });
-          console.warn("Skipped one de-ID model chunk; structured redaction still runs for the full text.", error);
+          console.warn("Skipped one de-ID model chunk.", error);
         }
       }
       for (const chunk of chunks) {
@@ -2845,8 +2890,8 @@ export function createDeidentifier(options = {}) {
         modelChunkFailures: failedChunks.length
       };
     } catch (error) {
-      console.warn("Model unavailable; structured redaction only.", error);
-      reportProgress(onProgress, { stage: "structured-fallback", message: "Model unavailable; using structured redaction.", percent: 0.2 });
+      console.warn("Model unavailable.", error);
+      reportProgress(onProgress, { stage: "model-unavailable", message: "Local PII model unavailable.", percent: 0.2 });
       return {
         entities: [],
         modelId: null,
@@ -2869,11 +2914,13 @@ export function createDeidentifier(options = {}) {
 
     const modelResult = await detectModelEntities(rawText, { onProgress });
     reportProgress(onProgress, { stage: "filtering", message: "Filtering model findings...", percent: 0.7 });
-    let modelEntities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(modelResult.entities, rawText));
+    let modelEntities = mergeEntities(modelResult.entities, rawText);
 
     if (mode === "model-only") {
       reportProgress(onProgress, { stage: "redacting", message: "Creating redacted preview...", percent: 0.9 });
-      return deidentifyFromEntities(rawText, modelEntities, modelResult, new Date());
+      return deidentifyFromEntities(rawText, modelEntities, modelResult, new Date(), {
+        includeTemporalFallback: runOptions.includeTemporalFallback !== false
+      });
     }
 
     reportProgress(onProgress, { stage: "structured", message: "Running structured redaction and date conversion...", percent: 0.76 });

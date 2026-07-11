@@ -1,0 +1,251 @@
+{
+  "schema": "prerounding_workup_v1",
+  "id": "acute-pancreatitis",
+  "title": "Acute pancreatitis",
+  "aliases": [
+    "pancreatitis",
+    "epigastric pain"
+  ],
+  "items": [
+    {
+      "id": "history-01",
+      "kind": "history",
+      "system": "gastrointestinal",
+      "text": "Ask about onset, location, radiation, severity, timing, and relationship to meals, movement, or bowel movements.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-02",
+      "kind": "history",
+      "system": "medication",
+      "text": "Ask about oral intake, nausea, vomiting, fluid losses, urine output, and ability to tolerate medications.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-03",
+      "kind": "history",
+      "system": "hematologic",
+      "text": "Ask about stool frequency and character, flatus, bleeding, dysuria, hematuria, and change from baseline.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-04",
+      "kind": "history",
+      "system": "skin",
+      "text": "Ask about prior surgery, obstruction, gallstones, liver disease, ulcers, inflammatory bowel disease, and prior episodes.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-05",
+      "kind": "history",
+      "system": "medication",
+      "text": "Ask about NSAIDs, anticoagulants, alcohol, new medications, antibiotics, toxins, and relevant dietary exposures.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-06",
+      "kind": "history",
+      "system": "reproductive",
+      "text": "Ask about pregnancy possibility and gynecologic symptoms when clinically relevant.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-07",
+      "kind": "history",
+      "system": "general",
+      "text": "Ask about severe epigastric pain, radiation to the back, onset, persistence, relief with position, and prior similar episodes.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-08",
+      "kind": "history",
+      "system": "infectious",
+      "text": "Ask about nausea, vomiting, fever, poor intake, abdominal distention, jaundice, pale stools, and dark urine.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-09",
+      "kind": "history",
+      "system": "medication",
+      "text": "Ask about alcohol use, gallstones, prior biliary disease, high triglyceride history, new medications, trauma, and prior pancreatitis.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-10",
+      "kind": "history",
+      "system": "neurologic",
+      "text": "Ask about dyspnea, dizziness, syncope, reduced urine output, confusion, and inability to tolerate oral intake.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-01",
+      "kind": "exam",
+      "system": "cardiovascular",
+      "text": "Assess appearance, vital signs, mucous membranes, orthostatic symptoms when safe, and bedside perfusion.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-02",
+      "kind": "exam",
+      "system": "skin",
+      "text": "Inspect for scars, distention, asymmetry, visible hernia, skin changes, and respiratory movement of the abdomen.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-03",
+      "kind": "exam",
+      "system": "gastrointestinal",
+      "text": "Auscultate and palpate systematically for focal tenderness, guarding, rebound, mass, organ enlargement, or pulsatility.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-04",
+      "kind": "exam",
+      "system": "genitourinary",
+      "text": "Assess for costovertebral-angle tenderness and examine relevant hernia sites when indicated.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-05",
+      "kind": "exam",
+      "system": "reproductive",
+      "text": "Perform rectal, perianal, or pelvic examination only when clinically indicated and appropriate.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-06",
+      "kind": "exam",
+      "system": "hematologic",
+      "text": "Inspect for jaundice, pallor, edema, bruising, chronic liver-disease stigmata, and other systemic findings when relevant.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-07",
+      "kind": "exam",
+      "system": "general",
+      "text": "Inspect and palpate for epigastric tenderness, guarding, distention, mass, and peritoneal signs.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-08",
+      "kind": "exam",
+      "system": "gastrointestinal",
+      "text": "Inspect for jaundice and assess right-upper-quadrant tenderness when biliary disease is possible.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-09",
+      "kind": "exam",
+      "system": "neurologic",
+      "text": "Assess hydration, heart rate, blood pressure, mental status, extremity temperature, and capillary refill.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-10",
+      "kind": "exam",
+      "system": "respiratory",
+      "text": "Assess work of breathing, lung sounds, pleural findings, and oxygenation for systemic complications.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    }
+  ]
+}

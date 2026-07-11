@@ -1,4 +1,5 @@
 import { BUNDLED_WORKUPS } from "./catalog.js";
+import { isWorkupSystem, workupSystemPromptList } from "./systems.js";
 
 const VALID_ITEM_KINDS = new Set(["history", "exam"]);
 const VALID_SELECT_MODES = new Set(["one", "many"]);
@@ -41,6 +42,8 @@ export function validateWorkup(workup) {
     if (seenIds.has(item.id)) errors.push(`duplicate item id: ${item.id}`);
     seenIds.add(item.id);
     if (!VALID_ITEM_KINDS.has(item.kind)) errors.push(`items[${index}].kind must be history or exam`);
+    if (!item.system) errors.push(`items[${index}].system is required`);
+    if (item.system && !isWorkupSystem(item.system)) errors.push(`items[${index}].system must use a controlled workup-system id`);
     if (!item.text) errors.push(`items[${index}].text is required`);
     if (!Array.isArray(item.choices) || item.choices.length < 2) errors.push(`items[${index}].choices must include at least two choices`);
     if (!VALID_SELECT_MODES.has(item.select || "one")) errors.push(`items[${index}].select must be one or many`);
@@ -81,6 +84,7 @@ Return only valid JSON matching this schema:
     {
       "id": "url_safe_item_id",
       "kind": "history",
+      "system": "cardiovascular",
       "text": "Specific history or exam question/item",
       "choices": ["No", "Yes", "Unclear"],
       "select": "one"
@@ -90,6 +94,8 @@ Return only valid JSON matching this schema:
 
 Rules:
 - Include only history questions and physical exam items.
+- Every item must use one exact system from the controlled vocabulary in the formatter prompt.
+- Allowed systems:\n${workupSystemPromptList()}
 - Do not include orders, imaging, labs, treatments, plan steps, citations, diagnoses, or narrative teaching.
 - Each item needs patient-facing answer choices.
 - The first choice must always be the negative, normal, absent, reassuring, or baseline finding. Positive, abnormal, present, or concerning choices come after it.

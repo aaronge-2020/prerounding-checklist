@@ -1,0 +1,251 @@
+{
+  "schema": "prerounding_workup_v1",
+  "id": "acute-kidney-injury",
+  "title": "Acute kidney injury",
+  "aliases": [
+    "AKI",
+    "renal failure"
+  ],
+  "items": [
+    {
+      "id": "history-01",
+      "kind": "history",
+      "system": "general",
+      "text": "Ask about onset, progression, severity, recent acute illness, and change from usual health.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-02",
+      "kind": "history",
+      "system": "genitourinary",
+      "text": "Ask about oral intake, thirst, vomiting, diarrhea, urine volume, urinary retention, and recent weight change.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-03",
+      "kind": "history",
+      "system": "medication",
+      "text": "Ask about new or missed medications, insulin, diuretics, ACE inhibitors, NSAIDs, steroids, laxatives, and supplements.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-04",
+      "kind": "history",
+      "system": "endocrine",
+      "text": "Ask about chronic kidney disease, diabetes, adrenal or thyroid disease, prior electrolyte disorders, and baseline glucose control.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-05",
+      "kind": "history",
+      "system": "medication",
+      "text": "Ask about infection symptoms, ischemic symptoms, recent procedures or contrast exposure, alcohol use, and dietary change.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-06",
+      "kind": "history",
+      "system": "neurologic",
+      "text": "Ask about weakness, cramps, paresthesias, palpitations, confusion, seizures, and exercise intolerance.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-07",
+      "kind": "history",
+      "system": "genitourinary",
+      "text": "Ask about reduced urine output, dysuria, hematuria, retention, hesitancy, flank pain, stones, and catheter problems.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-08",
+      "kind": "history",
+      "system": "medication",
+      "text": "Ask about vomiting, diarrhea, poor intake, bleeding, fever, diuretic use, and recent weight change.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-09",
+      "kind": "history",
+      "system": "medication",
+      "text": "Ask about NSAIDs, antibiotics, ACE inhibitors or ARBs, contrast, herbal products, supplements, and new medications.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-10",
+      "kind": "history",
+      "system": "endocrine",
+      "text": "Ask about chronic kidney disease, dialysis, heart failure, liver disease, diabetes, hypertension, and prior kidney injury.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-01",
+      "kind": "exam",
+      "system": "respiratory",
+      "text": "Assess appearance, heart rate, blood pressure, respiratory rate and pattern, temperature, and bedside perfusion.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-02",
+      "kind": "exam",
+      "system": "skin",
+      "text": "Assess mucous membranes, jugular venous pressure when feasible, edema, skin turgor, and orthostatic symptoms when safe.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-03",
+      "kind": "exam",
+      "system": "neurologic",
+      "text": "Assess alertness, orientation, attention, behavior, and change from baseline.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-04",
+      "kind": "exam",
+      "system": "cardiovascular",
+      "text": "Assess rate, rhythm, heart sounds, peripheral pulses, capillary refill, and signs of volume overload or depletion.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-05",
+      "kind": "exam",
+      "system": "respiratory",
+      "text": "Assess work of breathing, lung sounds, and abnormal respiratory pattern including deep or rapid breathing.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-06",
+      "kind": "exam",
+      "system": "musculoskeletal",
+      "text": "Assess gross strength, tremor, reflexes, sensation, tetany, asterixis, and gait only when safe and relevant.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-07",
+      "kind": "exam",
+      "system": "cardiovascular",
+      "text": "Assess for dehydration, edema, jugular venous pressure when feasible, pulmonary congestion, and orthostatic symptoms when safe.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-08",
+      "kind": "exam",
+      "system": "genitourinary",
+      "text": "Assess suprapubic fullness, bladder distention, costovertebral-angle tenderness, and flank tenderness.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-09",
+      "kind": "exam",
+      "system": "endocrine",
+      "text": "Assess mental status, asterixis, pruritic excoriations, pericardial symptoms by history, and gross neurologic change.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-10",
+      "kind": "exam",
+      "system": "skin",
+      "text": "Assess heart rhythm, lung findings, skin rash, joint findings, and peripheral perfusion for systemic causes.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    }
+  ]
+}

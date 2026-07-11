@@ -1,4 +1,5 @@
 import { createTextSection, normalizeSection } from "../app/state/vault.js";
+import { sanitizeResidualWarningMetadata } from "./review.js";
 
 export function reorderSections(sections, sectionId, direction) {
   const index = sections.findIndex((section) => section.id === sectionId);
@@ -8,6 +9,13 @@ export function reorderSections(sections, sectionId, direction) {
   const next = [...sections];
   [next[index], next[nextIndex]] = [next[nextIndex], next[index]];
   return next;
+}
+
+export function reorderSectionsById(sections, orderedSectionIds = []) {
+  const byId = new Map((sections || []).map((section) => [section.id, section]));
+  const ordered = (orderedSectionIds || []).map((id) => byId.get(id)).filter(Boolean);
+  const included = new Set(ordered.map((section) => section.id));
+  return [...ordered, ...(sections || []).filter((section) => !included.has(section.id))];
 }
 
 export function removeSection(sections, sectionId) {
@@ -26,7 +34,7 @@ export function replaceSectionsFromForm(rows, deidentify) {
         id: row.id,
         label: row.label || `Section ${index + 1}`,
         deidentifiedText: result.text || "",
-        residualWarnings: result.residualWarnings || result.flags || [],
+        residualWarnings: sanitizeResidualWarningMetadata(result.residualWarnings || result.flags || []),
         createdAt: row.createdAt,
         updatedAt: new Date().toISOString()
       },
@@ -35,16 +43,27 @@ export function replaceSectionsFromForm(rows, deidentify) {
   });
 }
 
-export async function replaceSectionsFromFormAsync(rows, deidentify) {
-  const results = await Promise.all(rows.map((row) => deidentify(String(row.text || ""))));
+export async function replaceSectionsFromFormAsync(rows, deidentify, { onResult, onProgress } = {}) {
+  let completed = 0;
+  const total = rows.length;
+  const results = await Promise.all(rows.map(async (row, index) => {
+    onProgress?.({ phase: "started", index, completed, total, row });
+    const result = await deidentify(String(row.text || ""));
+    completed += 1;
+    onProgress?.({ phase: "completed", index, completed, total, row });
+    return result;
+  }));
   return rows.map((row, index) => {
     const result = results[index] || {};
+    onResult?.({ row, result, index });
     return normalizeSection(
       {
         id: row.id,
         label: row.label || `Section ${index + 1}`,
         deidentifiedText: result.text || "",
-        residualWarnings: result.residualWarnings || result.flags || [],
+        // Warning snippets can themselves contain residual PHI. Persist only
+        // the metadata; detailed review remains in the active browser tab.
+        residualWarnings: sanitizeResidualWarningMetadata(result.residualWarnings || result.flags || []),
         createdAt: row.createdAt,
         updatedAt: new Date().toISOString()
       },

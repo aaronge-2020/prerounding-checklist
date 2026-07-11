@@ -1,6 +1,7 @@
 import { checklistAnswersSummary } from "../checklist/state.js";
-import { buildTrajectoryBlock, dayById, latestDay } from "../daily-updates/days.js";
+import { buildTrajectoryBlock } from "../daily-updates/days.js";
 import { sectionsToPromptBlock } from "../patient-context/sections.js";
+import { buildTeamPreferencesPromptBlock } from "../app/preferences.js";
 
 export const OPEN_EVIDENCE_TASKS = [
   {
@@ -45,20 +46,25 @@ function compactText(text, limit = 42000) {
   return `${head}\n\n[Context compacted by the local app. Middle content omitted; documentation guidelines were not compacted.]\n\n${tail}`;
 }
 
-function documentationStandardBlock(guidelines) {
-  const text = String(guidelines || "").trim();
-  if (!text) throw new Error("Guidelines.md must be loaded before building admission or progress prompts.");
-  return `<documentation_standard source="Guidelines.md">\n${text}\n</documentation_standard>`;
+function documentationStandardBlock(taskId, guidelines) {
+  const legacy = typeof guidelines === "string" ? guidelines : "";
+  const text = taskId === "initial_admission_rounds"
+    ? String(legacy || guidelines?.admission || "").trim()
+    : String(legacy || guidelines?.progress || "").trim();
+  if (!text) throw new Error("The task-specific documentation standard must be loaded before building this prompt.");
+  const source = taskId === "initial_admission_rounds" ? "Guidelines-admission.md" : "Guidelines-progress.md";
+  return `<documentation_standard source="${source}">\n${text}\n</documentation_standard>`;
 }
 
 function patientBlocks(patient, selectedDayId = "") {
-  const selectedDay = dayById(patient?.days || [], selectedDayId) || latestDay(patient?.days || []);
-  const snapshot = selectedDay?.checklistSnapshot || null;
-  const answers = selectedDay?.answers || {};
+  const days = [...(patient?.days || [])].sort((left, right) => `${left.date || ""} ${left.createdAt || ""}`.localeCompare(`${right.date || ""} ${right.createdAt || ""}`));
+  const currentDay = days.find((day) => day.id === selectedDayId) || days.at(-1) || null;
+  const snapshot = currentDay?.checklistSnapshot || null;
+  const answers = currentDay?.answers || {};
   return {
     patientContext: sectionsToPromptBlock(patient?.contextSections || [], "Saved patient context"),
-    trajectory: buildTrajectoryBlock(patient, { selectedDayId, includeAllDays: true }),
-    selectedDay: selectedDay ? sectionsToPromptBlock(selectedDay.sections || [], `Selected day: ${selectedDay.date} - ${selectedDay.label}`) : "",
+    trajectory: buildTrajectoryBlock(patient, { selectedDayId: currentDay?.id, includeAllDays: false }),
+    selectedDay: currentDay ? sectionsToPromptBlock(currentDay.sections || [], `Latest day: ${currentDay.date} - ${currentDay.label}`) : "",
     checklist: checklistAnswersSummary(snapshot, answers)
   };
 }
@@ -71,7 +77,7 @@ export function buildInitialAdmissionPrompt({ patient, guidelines }) {
   const blocks = patientBlocks(patient);
   return `${baseHeader("Initial admission rounds prompt")}
 
-${documentationStandardBlock(guidelines)}
+${documentationStandardBlock("initial_admission_rounds", guidelines)}
 
 Follow the documentation standard exactly for the full admission report. Use the Rule of Separation. Do not repeat history, data, reasoning, and action steps across sections.
 
@@ -87,7 +93,7 @@ export function buildDailyProgressPrompt({ patient, selectedDayId, guidelines })
   const blocks = patientBlocks(patient, selectedDayId);
   return `${baseHeader("Daily progress-note update prompt")}
 
-${documentationStandardBlock(guidelines)}
+${documentationStandardBlock("daily_progress_note", guidelines)}
 
 Follow the Daily Progress Note section of the documentation standard exactly. Enforce Subjective, Objective, Assessment, and Plan separation. The Assessment must be concise and distinct from the prior day. The Plan must include differentials for acute problems as requested in the standard.
 
@@ -204,5 +210,5 @@ export function buildOpenEvidencePrompt(taskId, options = {}) {
   };
   const builder = builders[taskId];
   if (!builder) throw new Error(`Unknown OpenEvidence prompt task: ${taskId}`);
-  return builder(options);
+  return `${buildTeamPreferencesPromptBlock(options.teamPreferences)}\n\n${builder(options)}`;
 }

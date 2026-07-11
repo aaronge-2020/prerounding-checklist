@@ -1,0 +1,251 @@
+{
+  "schema": "prerounding_workup_v1",
+  "id": "fever-of-unknown-origin",
+  "title": "Fever of unknown origin",
+  "aliases": [
+    "FUO",
+    "persistent fever"
+  ],
+  "items": [
+    {
+      "id": "history-01",
+      "kind": "history",
+      "system": "infectious",
+      "text": "Ask about fever, chills, rigors, duration, antipyretic use, and change in symptoms over time.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-02",
+      "kind": "history",
+      "system": "infectious",
+      "text": "Ask about localizing respiratory, urinary, gastrointestinal, skin, dental, line, and neurologic symptoms.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-03",
+      "kind": "history",
+      "system": "medication",
+      "text": "Ask about recent antibiotics, prior resistant organisms, recurrent infections, and medication allergies.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-04",
+      "kind": "history",
+      "system": "infectious",
+      "text": "Ask about recent hospitalization, procedures, sick contacts, travel, animal or environmental exposures, and food or water exposures.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-05",
+      "kind": "history",
+      "system": "infectious",
+      "text": "Ask about diabetes, immunosuppression, malignancy, chronic organ disease, and other infection-risk conditions.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-06",
+      "kind": "history",
+      "system": "skin",
+      "text": "Ask about indwelling devices, wounds, surgery, injections, aspiration risk, and other possible portals of entry.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-07",
+      "kind": "history",
+      "system": "medication",
+      "text": "Ask about duration, pattern, measured temperatures, rigors, night sweats, weight loss, response to medications, and symptom-free intervals.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-08",
+      "kind": "history",
+      "system": "infectious",
+      "text": "Ask about travel, animal or insect exposure, food or water exposure, sick contacts, occupation, hobbies, sexual history, and tuberculosis risk.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-09",
+      "kind": "history",
+      "system": "skin",
+      "text": "Ask about respiratory, urinary, gastrointestinal, skin, joint, neurologic, dental, cardiac, and constitutional symptoms.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-10",
+      "kind": "history",
+      "system": "medication",
+      "text": "Ask about new medications, antibiotics, supplements, implanted devices, immunosuppression, malignancy, autoimmune disease, and prior cultures.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-01",
+      "kind": "exam",
+      "system": "respiratory",
+      "text": "Assess appearance, temperature, heart rate, blood pressure, respiratory pattern, oxygenation, and bedside perfusion.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-02",
+      "kind": "exam",
+      "system": "neurologic",
+      "text": "Assess alertness, orientation, capillary refill, extremity temperature, and diaphoresis.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-03",
+      "kind": "exam",
+      "system": "infectious",
+      "text": "Inspect skin, pressure areas, wounds, intravenous sites, drains, and indwelling devices for focal infection findings.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-04",
+      "kind": "exam",
+      "system": "respiratory",
+      "text": "Inspect work of breathing and auscultate lungs for focal breath-sound changes, crackles, wheeze, or pleural findings.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-05",
+      "kind": "exam",
+      "system": "genitourinary",
+      "text": "Inspect and palpate the abdomen and assess for suprapubic or costovertebral-angle tenderness when relevant.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-06",
+      "kind": "exam",
+      "system": "reproductive",
+      "text": "Perform a focused examination of the symptom-directed source, including oral, joint, neurologic, or pelvic findings when indicated.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-07",
+      "kind": "exam",
+      "system": "hematologic",
+      "text": "Inspect skin and mucosa and assess cervical, axillary, epitrochlear, and inguinal lymph nodes when appropriate.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-08",
+      "kind": "exam",
+      "system": "skin",
+      "text": "Assess for new or changed murmur, peripheral edema, embolic skin findings, pulse deficits, and signs of heart failure.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-09",
+      "kind": "exam",
+      "system": "genitourinary",
+      "text": "Assess for hepatosplenomegaly, tenderness, mass, ascites, and flank tenderness.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-10",
+      "kind": "exam",
+      "system": "musculoskeletal",
+      "text": "Inspect joints and spine for inflammation and assess focused neurologic findings, meningismus, and temporal tenderness when relevant.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    }
+  ]
+}

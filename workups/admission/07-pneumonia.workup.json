@@ -1,0 +1,251 @@
+{
+  "schema": "prerounding_workup_v1",
+  "id": "pneumonia",
+  "title": "Pneumonia (community- or hospital-acquired)",
+  "aliases": [
+    "pneumonia",
+    "lower respiratory infection"
+  ],
+  "items": [
+    {
+      "id": "history-01",
+      "kind": "history",
+      "system": "infectious",
+      "text": "Ask about fever, chills, rigors, duration, antipyretic use, and change in symptoms over time.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-02",
+      "kind": "history",
+      "system": "infectious",
+      "text": "Ask about localizing respiratory, urinary, gastrointestinal, skin, dental, line, and neurologic symptoms.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-03",
+      "kind": "history",
+      "system": "medication",
+      "text": "Ask about recent antibiotics, prior resistant organisms, recurrent infections, and medication allergies.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-04",
+      "kind": "history",
+      "system": "infectious",
+      "text": "Ask about recent hospitalization, procedures, sick contacts, travel, animal or environmental exposures, and food or water exposures.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-05",
+      "kind": "history",
+      "system": "infectious",
+      "text": "Ask about diabetes, immunosuppression, malignancy, chronic organ disease, and other infection-risk conditions.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-06",
+      "kind": "history",
+      "system": "skin",
+      "text": "Ask about indwelling devices, wounds, surgery, injections, aspiration risk, and other possible portals of entry.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-07",
+      "kind": "history",
+      "system": "infectious",
+      "text": "Ask about cough, sputum, dyspnea, pleuritic pain, hemoptysis, wheeze, fever, and rigors.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-08",
+      "kind": "history",
+      "system": "gastrointestinal",
+      "text": "Ask about dysphagia, vomiting, impaired consciousness, reflux, tube feeding, and prior aspiration events.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-09",
+      "kind": "history",
+      "system": "medication",
+      "text": "Ask about recent hospitalization, ventilation, long-term care, prior antibiotics, and prior resistant respiratory organisms.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-10",
+      "kind": "history",
+      "system": "infectious",
+      "text": "Ask about COPD, asthma, heart failure, smoking exposure, home oxygen, and baseline exertional capacity.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-01",
+      "kind": "exam",
+      "system": "respiratory",
+      "text": "Assess appearance, temperature, heart rate, blood pressure, respiratory pattern, oxygenation, and bedside perfusion.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-02",
+      "kind": "exam",
+      "system": "neurologic",
+      "text": "Assess alertness, orientation, capillary refill, extremity temperature, and diaphoresis.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-03",
+      "kind": "exam",
+      "system": "infectious",
+      "text": "Inspect skin, pressure areas, wounds, intravenous sites, drains, and indwelling devices for focal infection findings.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-04",
+      "kind": "exam",
+      "system": "respiratory",
+      "text": "Inspect work of breathing and auscultate lungs for focal breath-sound changes, crackles, wheeze, or pleural findings.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-05",
+      "kind": "exam",
+      "system": "genitourinary",
+      "text": "Inspect and palpate the abdomen and assess for suprapubic or costovertebral-angle tenderness when relevant.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-06",
+      "kind": "exam",
+      "system": "reproductive",
+      "text": "Perform a focused examination of the symptom-directed source, including oral, joint, neurologic, or pelvic findings when indicated.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-07",
+      "kind": "exam",
+      "system": "respiratory",
+      "text": "Auscultate all lung fields for focal crackles, bronchial breath sounds, egophony, wheeze, or diminished air movement.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-08",
+      "kind": "exam",
+      "system": "respiratory",
+      "text": "Inspect work of breathing, speaking ability, accessory-muscle use, fatigue, cyanosis, and oxygenation.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-09",
+      "kind": "exam",
+      "system": "musculoskeletal",
+      "text": "Assess oral condition, swallowing safety, cough strength, and neurologic deficits when aspiration is a concern.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-10",
+      "kind": "exam",
+      "system": "respiratory",
+      "text": "Assess for asymmetric chest expansion, dullness or hyperresonance when appropriate, and pleuritic tenderness.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    }
+  ]
+}

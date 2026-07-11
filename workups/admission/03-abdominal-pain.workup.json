@@ -1,0 +1,251 @@
+{
+  "schema": "prerounding_workup_v1",
+  "id": "abdominal-pain",
+  "title": "Abdominal pain",
+  "aliases": [
+    "acute abdomen",
+    "stomach pain"
+  ],
+  "items": [
+    {
+      "id": "history-01",
+      "kind": "history",
+      "system": "gastrointestinal",
+      "text": "Ask about onset, location, radiation, severity, timing, and relationship to meals, movement, or bowel movements.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-02",
+      "kind": "history",
+      "system": "medication",
+      "text": "Ask about oral intake, nausea, vomiting, fluid losses, urine output, and ability to tolerate medications.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-03",
+      "kind": "history",
+      "system": "hematologic",
+      "text": "Ask about stool frequency and character, flatus, bleeding, dysuria, hematuria, and change from baseline.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-04",
+      "kind": "history",
+      "system": "skin",
+      "text": "Ask about prior surgery, obstruction, gallstones, liver disease, ulcers, inflammatory bowel disease, and prior episodes.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-05",
+      "kind": "history",
+      "system": "medication",
+      "text": "Ask about NSAIDs, anticoagulants, alcohol, new medications, antibiotics, toxins, and relevant dietary exposures.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-06",
+      "kind": "history",
+      "system": "reproductive",
+      "text": "Ask about pregnancy possibility and gynecologic symptoms when clinically relevant.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-07",
+      "kind": "history",
+      "system": "general",
+      "text": "Ask about location, migration, radiation to back or shoulder, severity, duration, and relationship to food or movement.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-08",
+      "kind": "history",
+      "system": "infectious",
+      "text": "Ask about nausea, vomiting, fever, anorexia, constipation, diarrhea, urinary symptoms, and bleeding.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-09",
+      "kind": "history",
+      "system": "gastrointestinal",
+      "text": "Ask about prior abdominal surgery, hernias, inflammatory bowel disease, malignancy, and inability to pass stool or flatus.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-10",
+      "kind": "history",
+      "system": "reproductive",
+      "text": "Ask about pregnancy possibility, vaginal bleeding or discharge, flank pain, hematuria, and testicular symptoms when relevant.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-01",
+      "kind": "exam",
+      "system": "cardiovascular",
+      "text": "Assess appearance, vital signs, mucous membranes, orthostatic symptoms when safe, and bedside perfusion.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-02",
+      "kind": "exam",
+      "system": "skin",
+      "text": "Inspect for scars, distention, asymmetry, visible hernia, skin changes, and respiratory movement of the abdomen.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-03",
+      "kind": "exam",
+      "system": "gastrointestinal",
+      "text": "Auscultate and palpate systematically for focal tenderness, guarding, rebound, mass, organ enlargement, or pulsatility.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-04",
+      "kind": "exam",
+      "system": "genitourinary",
+      "text": "Assess for costovertebral-angle tenderness and examine relevant hernia sites when indicated.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-05",
+      "kind": "exam",
+      "system": "reproductive",
+      "text": "Perform rectal, perianal, or pelvic examination only when clinically indicated and appropriate.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-06",
+      "kind": "exam",
+      "system": "hematologic",
+      "text": "Inspect for jaundice, pallor, edema, bruising, chronic liver-disease stigmata, and other systemic findings when relevant.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-07",
+      "kind": "exam",
+      "system": "general",
+      "text": "Palpate all quadrants systematically for focal tenderness, guarding, rebound, rigidity, mass, or organ enlargement.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-08",
+      "kind": "exam",
+      "system": "respiratory",
+      "text": "Assess for pain with movement, cough, percussion, or release and document peritoneal signs when present.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-09",
+      "kind": "exam",
+      "system": "gastrointestinal",
+      "text": "Inspect for distention and auscultate for bowel-sound change before deep palpation.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-10",
+      "kind": "exam",
+      "system": "reproductive",
+      "text": "Perform pelvic, rectal, or genital examination only when clinically indicated and appropriate.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    }
+  ]
+}

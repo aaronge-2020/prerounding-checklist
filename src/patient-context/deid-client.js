@@ -1,7 +1,7 @@
 import {
   DEFAULT_DEID_MODEL_KEY,
   deidModelOptionByKey
-} from "./deid-model-options.js";
+} from "./deid-model-options.js?v=20260711-functional-remediation-15";
 
 const statuses = new Map();
 const requests = new Map();
@@ -39,7 +39,7 @@ function rejectAll(error) {
 
 function getWorker() {
   if (worker) return worker;
-  worker = new Worker(new URL("./deid-worker.js", import.meta.url), { type: "module" });
+  worker = new Worker(new URL("./deid-worker.js?v=20260711-functional-remediation-15", import.meta.url), { type: "module" });
   worker.addEventListener("message", (event) => {
     const { type, id, value } = event.data || {};
     const request = requests.get(id);
@@ -88,9 +88,21 @@ export function getLoadedDeidModelStatuses() {
   return [...statuses.values()].filter((status) => status.ready).map((status) => ({ ...status }));
 }
 
-export async function preloadAdvancedDeidModel({ modelKey = DEFAULT_DEID_MODEL_KEY, onStatus, onProgress } = {}) {
+export async function preloadAdvancedDeidModel({ modelKey = DEFAULT_DEID_MODEL_KEY, assetSource = "auto", onStatus, onProgress } = {}) {
   activeModelKey = deidModelOptionByKey(modelKey).key;
-  return request("preload", { modelKey: activeModelKey }, { onStatus, onProgress });
+  return request("preload", { modelKey: activeModelKey, assetSource }, { onStatus, onProgress });
+}
+
+export async function verifyAdvancedDeidModel({ modelKey = DEFAULT_DEID_MODEL_KEY, assetSource = "auto", onStatus, onProgress } = {}) {
+  activeModelKey = deidModelOptionByKey(modelKey).key;
+  return request("verify", { modelKey: activeModelKey, assetSource }, { onStatus, onProgress });
+}
+
+export function resetAdvancedDeidWorker() {
+  worker?.terminate();
+  worker = null;
+  rejectAll(new Error("The local de-identification worker was restarted."));
+  statuses.clear();
 }
 
 export async function deidentifyText(rawText, { mode = "advanced", allowStructuredFallback = false, onStatus, onProgress } = {}) {

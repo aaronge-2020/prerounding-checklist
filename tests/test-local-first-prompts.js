@@ -5,7 +5,10 @@ import { createPatientRecord } from "../src/app/state/vault.js";
 import { buildOpenEvidencePrompt, openEvidenceTasks } from "../src/prompts/open-evidence.js";
 import { buildCustomOpenEvidencePrompt, promptVariablesForPatient } from "../src/prompts/custom-templates.js";
 
-const guidelines = readFileSync("Guidelines.md", "utf8");
+const guidelines = {
+  admission: readFileSync("Guidelines-admission.md", "utf8"),
+  progress: readFileSync("Guidelines-progress.md", "utf8")
+};
 let patient = createPatientRecord("Room 7", { id: "patient_prompt" });
 patient = {
   ...patient,
@@ -29,13 +32,13 @@ patient = {
 assert.equal(openEvidenceTasks[["final", "rounds", "update"].join("_")], undefined);
 
 const admission = buildOpenEvidencePrompt("initial_admission_rounds", { patient, guidelines });
-assert.match(admission, /Clinical Documentation Standard/);
+assert.match(admission, /Admission \/ HPI Documentation Standard/);
 assert.match(admission, /Rule of Separation/);
 assert.match(admission, /The Full Admission Report/);
 assert.match(admission, /Admission context/);
 
 const progress = buildOpenEvidencePrompt("daily_progress_note", { patient, selectedDayId: day.id, guidelines });
-assert.match(progress, /Clinical Documentation Standard/);
+assert.match(progress, /Daily Progress-Note Documentation Standard/);
 assert.match(progress, /The Daily Progress Note/);
 assert.match(progress, /Subjective, Objective, Assessment, and Plan/);
 assert.match(progress, /Feels less short of breath/);
@@ -57,12 +60,23 @@ assert.match(medicationSafety, /Route/);
 assert.match(medicationSafety, /Frequency/);
 assert.match(medicationSafety, /insufficient information/);
 
-assert.throws(() => buildOpenEvidencePrompt("daily_progress_note", { patient, guidelines: "" }), /Guidelines\.md/);
+assert.throws(() => buildOpenEvidencePrompt("daily_progress_note", { patient, guidelines: "" }), /task-specific documentation standard/);
 
 const fieldVariables = promptVariablesForPatient(patient);
 assert.equal(fieldVariables.filter((variable) => variable.sectionId).length, patient.contextSections.length);
 assert.equal(fieldVariables.find((variable) => variable.sectionId === patient.contextSections[0].id)?.token, "@admission-context");
-assert.equal(fieldVariables.find((variable) => variable.token === "@guidelines")?.label, "Guidelines.md");
+assert.equal(fieldVariables.find((variable) => variable.token === "@guidelines")?.label, "Task documentation standard");
+
+const dayVariables = promptVariablesForPatient(patient, { selectedDayId: day.id });
+const firstDayVariable = dayVariables.find((variable) => variable.daySectionId === day.sections[0].id);
+assert.ok(firstDayVariable, "saved hospital-day fields should become dynamic prompt variables");
+const directDayFieldPrompt = buildCustomOpenEvidencePrompt({
+  taskId: "teaching_case_trajectory",
+  template: `Use ${firstDayVariable.token} only.`,
+  patient,
+  selectedDayId: day.id
+});
+assert.match(directDayFieldPrompt, /Feels less short of breath/);
 
 const directFieldPrompt = buildCustomOpenEvidencePrompt({
   taskId: "teaching_case_trajectory",
@@ -73,6 +87,34 @@ const directFieldPrompt = buildCustomOpenEvidencePrompt({
 assert.match(directFieldPrompt, /Admitted for dyspnea and edema\./);
 assert.doesNotMatch(directFieldPrompt, /Furosemide 40 mg/);
 
+const olderDay = createDailyRecord({ date: "2026-07-08", label: "Hospital day 1" });
+const patientWithTwoDays = {
+  ...patient,
+  days: upsertDay(upsertDay([], {
+    ...olderDay,
+    sections: olderDay.sections.map((section, index) => index === 0 ? { ...section, deidentifiedText: "Older day finding." } : section)
+  }), {
+    ...day,
+    sections: day.sections.map((section, index) => index === 0 ? { ...section, deidentifiedText: "Latest day finding." } : section)
+  })
+};
+const selectedDayOnly = buildCustomOpenEvidencePrompt({
+  taskId: "teaching_case_trajectory",
+  template: "Use @hospital-stay only.",
+  patient: patientWithTwoDays,
+  selectedDayId: olderDay.id
+});
+assert.match(selectedDayOnly, /Older day finding\./);
+assert.doesNotMatch(selectedDayOnly, /Latest day finding\./);
+
+const latestOpenEvidenceDay = buildOpenEvidencePrompt("daily_progress_note", {
+  patient: patientWithTwoDays,
+  selectedDayId: olderDay.id,
+  guidelines
+});
+assert.match(latestOpenEvidenceDay, /Older day finding\./);
+assert.doesNotMatch(latestOpenEvidenceDay, /Latest day finding\./);
+
 const directAdmission = buildCustomOpenEvidencePrompt({
   taskId: "initial_admission_rounds",
   template: "Create the note from @admission-packet.",
@@ -80,17 +122,34 @@ const directAdmission = buildCustomOpenEvidencePrompt({
   selectedDayId: day.id,
   guidelines
 });
-assert.match(directAdmission, /Clinical Documentation Standard/);
+assert.match(directAdmission, /Admission \/ HPI Documentation Standard/);
 assert.doesNotMatch(directAdmission, /Privacy rules:/);
 
 const directGuidelines = buildCustomOpenEvidencePrompt({
-  taskId: "teaching_case_trajectory",
+  taskId: "initial_admission_rounds",
   template: "Use @guidelines before explaining the case.",
   patient,
   selectedDayId: day.id,
   guidelines
 });
-assert.match(directGuidelines, /Clinical Documentation Standard/);
+assert.match(directGuidelines, /Admission \/ HPI Documentation Standard/);
 assert.doesNotMatch(directGuidelines, /@guidelines/);
+
+const consultPrompt = buildCustomOpenEvidencePrompt({
+  taskId: "teaching_case_trajectory",
+  template: "Use @admission-context only.",
+  patient,
+  selectedDayId: day.id,
+  teamPreferences: {
+    medicalService: "consult",
+    serviceFocus: "Focus on the consulted arrhythmia question.",
+    presentationDetail: "detailed",
+    attendingPreferences: "Start with the one-liner."
+  }
+});
+assert.match(consultPrompt, /Consult service/);
+assert.match(consultPrompt, /consulted clinical question/i);
+assert.match(consultPrompt, /arrhythmia question/);
+assert.match(consultPrompt, /Start with the one-liner/);
 
 console.log("local-first prompt tests passed");

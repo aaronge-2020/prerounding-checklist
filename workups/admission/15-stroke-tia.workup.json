@@ -1,0 +1,252 @@
+{
+  "schema": "prerounding_workup_v1",
+  "id": "stroke-tia",
+  "title": "Stroke (CVA) or TIA",
+  "aliases": [
+    "stroke",
+    "CVA",
+    "TIA"
+  ],
+  "items": [
+    {
+      "id": "history-01",
+      "kind": "history",
+      "system": "functional",
+      "text": "Establish last known well or symptom onset, progression, baseline cognition, baseline neurologic function, and functional status.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-02",
+      "kind": "history",
+      "system": "neurologic",
+      "text": "Ask about weakness, numbness, facial asymmetry, speech or vision change, imbalance, dysphagia, and severe headache.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-03",
+      "kind": "history",
+      "system": "neurologic",
+      "text": "Ask about loss of consciousness, seizure-like activity, prodrome, post-event confusion, incontinence, tongue injury, and witness observations.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-04",
+      "kind": "history",
+      "system": "medication",
+      "text": "Ask about falls, head or neck injury, anticoagulant or antiplatelet use, and bleeding symptoms.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-05",
+      "kind": "history",
+      "system": "medication",
+      "text": "Ask about recent medication changes, sedatives, alcohol, recreational substances, withdrawal risk, and toxic exposures.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-06",
+      "kind": "history",
+      "system": "infectious",
+      "text": "Ask about fever, poor intake, glucose symptoms, renal or liver disease, and other systemic symptoms that may affect cognition.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-07",
+      "kind": "history",
+      "system": "general",
+      "text": "Establish last known well, exact onset or discovery time, symptom progression, and whether symptoms resolved.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-08",
+      "kind": "history",
+      "system": "eyes",
+      "text": "Ask about facial droop, unilateral weakness or numbness, speech or language change, vision loss, imbalance, and dysphagia.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-09",
+      "kind": "history",
+      "system": "endocrine",
+      "text": "Ask about prior stroke or TIA, atrial fibrillation, hypertension, diabetes, smoking, carotid disease, and recent cardiac symptoms.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-10",
+      "kind": "history",
+      "system": "medication",
+      "text": "Ask about anticoagulant or antiplatelet use, head trauma, seizure at onset, glucose symptoms, migraine, and recent infection.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-01",
+      "kind": "exam",
+      "system": "endocrine",
+      "text": "Assess vital signs, general appearance, glucose status if available at bedside, and signs of cardiorespiratory instability.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-02",
+      "kind": "exam",
+      "system": "neurologic",
+      "text": "Assess level of consciousness, attention, orientation, language, memory, behavior, and fluctuation from baseline.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-03",
+      "kind": "exam",
+      "system": "neurologic",
+      "text": "Assess pupils, visual fields when feasible, ocular movements, facial symmetry, speech, palate, and swallowing safety as indicated.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-04",
+      "kind": "exam",
+      "system": "musculoskeletal",
+      "text": "Assess pronator drift, limb strength, tone, sensation, reflex asymmetry, and neglect when appropriate.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-05",
+      "kind": "exam",
+      "system": "musculoskeletal",
+      "text": "Assess coordination, truncal stability, gait, and Romberg only when it is safe to do so.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-06",
+      "kind": "exam",
+      "system": "skin",
+      "text": "Inspect for head or neck injury and assess neck stiffness or rash when the presentation makes this relevant.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-07",
+      "kind": "exam",
+      "system": "neurologic",
+      "text": "Assess level of consciousness, orientation, language, neglect, dysarthria, and ability to follow commands.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-08",
+      "kind": "exam",
+      "system": "neurologic",
+      "text": "Assess pupils, visual fields when feasible, gaze, facial symmetry, palate, speech, and swallowing safety as indicated.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-09",
+      "kind": "exam",
+      "system": "musculoskeletal",
+      "text": "Assess pronator drift, limb strength, sensation, tone, and asymmetry in all extremities.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-10",
+      "kind": "exam",
+      "system": "musculoskeletal",
+      "text": "Assess dysmetria, truncal stability, and gait only when safe and clinically appropriate.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    }
+  ]
+}

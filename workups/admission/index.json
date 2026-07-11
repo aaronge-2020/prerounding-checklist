@@ -1,0 +1,302 @@
+[
+  {
+    "rank": 1,
+    "id": "dyspnea",
+    "title": "Shortness of breath / dyspnea",
+    "filename": "01-dyspnea.workup.json"
+  },
+  {
+    "rank": 2,
+    "id": "chest-pain",
+    "title": "Chest pain",
+    "filename": "02-chest-pain.workup.json"
+  },
+  {
+    "rank": 3,
+    "id": "abdominal-pain",
+    "title": "Abdominal pain",
+    "filename": "03-abdominal-pain.workup.json"
+  },
+  {
+    "rank": 4,
+    "id": "fever-suspected-infection",
+    "title": "Fever / suspected infection",
+    "filename": "04-fever-suspected-infection.workup.json"
+  },
+  {
+    "rank": 5,
+    "id": "generalized-weakness",
+    "title": "Generalized weakness / non-specific decline",
+    "filename": "05-generalized-weakness.workup.json"
+  },
+  {
+    "rank": 6,
+    "id": "sepsis-septic-shock",
+    "title": "Sepsis / septic shock",
+    "filename": "06-sepsis-septic-shock.workup.json"
+  },
+  {
+    "rank": 7,
+    "id": "pneumonia",
+    "title": "Pneumonia (community- or hospital-acquired)",
+    "filename": "07-pneumonia.workup.json"
+  },
+  {
+    "rank": 8,
+    "id": "acute-decompensated-heart-failure",
+    "title": "Congestive heart failure exacerbation (ADHF)",
+    "filename": "08-acute-decompensated-heart-failure.workup.json"
+  },
+  {
+    "rank": 9,
+    "id": "copd-exacerbation",
+    "title": "COPD exacerbation",
+    "filename": "09-copd-exacerbation.workup.json"
+  },
+  {
+    "rank": 10,
+    "id": "urinary-tract-infection",
+    "title": "Urinary tract infection",
+    "filename": "10-urinary-tract-infection.workup.json"
+  },
+  {
+    "rank": 11,
+    "id": "altered-mental-status-delirium",
+    "title": "Altered mental status / delirium",
+    "filename": "11-altered-mental-status-delirium.workup.json"
+  },
+  {
+    "rank": 12,
+    "id": "syncope-presyncope",
+    "title": "Syncope or presyncope",
+    "filename": "12-syncope-presyncope.workup.json"
+  },
+  {
+    "rank": 13,
+    "id": "atrial-fibrillation-rvr",
+    "title": "Atrial fibrillation with rapid ventricular rate",
+    "filename": "13-atrial-fibrillation-rvr.workup.json"
+  },
+  {
+    "rank": 14,
+    "id": "acute-coronary-syndrome",
+    "title": "Acute coronary syndrome / NSTEMI/STEMI",
+    "filename": "14-acute-coronary-syndrome.workup.json"
+  },
+  {
+    "rank": 15,
+    "id": "stroke-tia",
+    "title": "Stroke (CVA) or TIA",
+    "filename": "15-stroke-tia.workup.json"
+  },
+  {
+    "rank": 16,
+    "id": "cellulitis-ssti",
+    "title": "Cellulitis / skin and soft tissue infection",
+    "filename": "16-cellulitis-ssti.workup.json"
+  },
+  {
+    "rank": 17,
+    "id": "dka-hhs",
+    "title": "Diabetes mellitus with complications (DKA, HHS)",
+    "filename": "17-dka-hhs.workup.json"
+  },
+  {
+    "rank": 18,
+    "id": "acute-kidney-injury",
+    "title": "Acute kidney injury",
+    "filename": "18-acute-kidney-injury.workup.json"
+  },
+  {
+    "rank": 19,
+    "id": "upper-gastrointestinal-bleeding",
+    "title": "Gastrointestinal bleeding (upper)",
+    "filename": "19-upper-gastrointestinal-bleeding.workup.json"
+  },
+  {
+    "rank": 20,
+    "id": "lower-gastrointestinal-bleeding",
+    "title": "Gastrointestinal bleeding (lower)",
+    "filename": "20-lower-gastrointestinal-bleeding.workup.json"
+  },
+  {
+    "rank": 21,
+    "id": "hyponatremia",
+    "title": "Electrolyte abnormality – hyponatremia",
+    "filename": "21-hyponatremia.workup.json"
+  },
+  {
+    "rank": 22,
+    "id": "hyperkalemia",
+    "title": "Electrolyte abnormality – hyperkalemia",
+    "filename": "22-hyperkalemia.workup.json"
+  },
+  {
+    "rank": 23,
+    "id": "falls-fall-related-injury",
+    "title": "Falls / fall-related injury",
+    "filename": "23-falls-fall-related-injury.workup.json"
+  },
+  {
+    "rank": 24,
+    "id": "dizziness-vertigo",
+    "title": "Dizziness / vertigo",
+    "filename": "24-dizziness-vertigo.workup.json"
+  },
+  {
+    "rank": 25,
+    "id": "severe-new-headache",
+    "title": "Headache (severe or new-onset)",
+    "filename": "25-severe-new-headache.workup.json"
+  },
+  {
+    "rank": 26,
+    "id": "anemia",
+    "title": "Anemia (symptomatic or unexplained)",
+    "filename": "26-anemia.workup.json"
+  },
+  {
+    "rank": 27,
+    "id": "alcohol-withdrawal",
+    "title": "Alcohol withdrawal",
+    "filename": "27-alcohol-withdrawal.workup.json"
+  },
+  {
+    "rank": 28,
+    "id": "acute-pancreatitis",
+    "title": "Acute pancreatitis",
+    "filename": "28-acute-pancreatitis.workup.json"
+  },
+  {
+    "rank": 29,
+    "id": "venous-thromboembolism",
+    "title": "Venous thromboembolism (DVT/PE)",
+    "filename": "29-venous-thromboembolism.workup.json"
+  },
+  {
+    "rank": 30,
+    "id": "asthma-exacerbation",
+    "title": "Asthma exacerbation",
+    "filename": "30-asthma-exacerbation.workup.json"
+  },
+  {
+    "rank": 31,
+    "id": "clostridioides-difficile-colitis",
+    "title": "Clostridium difficile colitis",
+    "filename": "31-clostridioides-difficile-colitis.workup.json"
+  },
+  {
+    "rank": 32,
+    "id": "diabetic-foot-infection",
+    "title": "Diabetic foot infection",
+    "filename": "32-diabetic-foot-infection.workup.json"
+  },
+  {
+    "rank": 33,
+    "id": "hypertensive-urgency-emergency",
+    "title": "Hypertensive urgency/emergency",
+    "filename": "33-hypertensive-urgency-emergency.workup.json"
+  },
+  {
+    "rank": 34,
+    "id": "uncontrolled-nausea-vomiting",
+    "title": "Nausea and vomiting (uncontrolled)",
+    "filename": "34-uncontrolled-nausea-vomiting.workup.json"
+  },
+  {
+    "rank": 35,
+    "id": "severe-diarrhea",
+    "title": "Diarrhea (severe/dehydrating)",
+    "filename": "35-severe-diarrhea.workup.json"
+  },
+  {
+    "rank": 36,
+    "id": "failure-to-thrive-functional-decline",
+    "title": "Failure to thrive / functional decline (elderly)",
+    "filename": "36-failure-to-thrive-functional-decline.workup.json"
+  },
+  {
+    "rank": 37,
+    "id": "back-pain-red-flags",
+    "title": "Back pain (with red flags/neuro deficits)",
+    "filename": "37-back-pain-red-flags.workup.json"
+  },
+  {
+    "rank": 38,
+    "id": "cirrhosis-liver-complications",
+    "title": "Cirrhosis/liver disease complications",
+    "filename": "38-cirrhosis-liver-complications.workup.json"
+  },
+  {
+    "rank": 39,
+    "id": "adrenal-insufficiency-crisis",
+    "title": "Adrenal insufficiency / adrenal crisis",
+    "filename": "39-adrenal-insufficiency-crisis.workup.json"
+  },
+  {
+    "rank": 40,
+    "id": "seizure-new-onset",
+    "title": "Seizure / new-onset seizure disorder",
+    "filename": "40-seizure-new-onset.workup.json"
+  },
+  {
+    "rank": 41,
+    "id": "hyperglycemia-non-dka",
+    "title": "Hyperglycemia (non-DKA)",
+    "filename": "41-hyperglycemia-non-dka.workup.json"
+  },
+  {
+    "rank": 42,
+    "id": "bowel-obstruction",
+    "title": "Bowel obstruction",
+    "filename": "42-bowel-obstruction.workup.json"
+  },
+  {
+    "rank": 43,
+    "id": "cholecystitis-biliary-colic",
+    "title": "Cholecystitis / biliary colic",
+    "filename": "43-cholecystitis-biliary-colic.workup.json"
+  },
+  {
+    "rank": 44,
+    "id": "osteoarthritis-joint-pain",
+    "title": "Osteoarthritis-related admission/joint pain",
+    "filename": "44-osteoarthritis-joint-pain.workup.json"
+  },
+  {
+    "rank": 45,
+    "id": "rheumatoid-arthritis-flare-joint-infection",
+    "title": "Rheumatoid arthritis flare/joint infection",
+    "filename": "45-rheumatoid-arthritis-flare-joint-infection.workup.json"
+  },
+  {
+    "rank": 46,
+    "id": "psychiatric-crisis-medical-comorbidity",
+    "title": "Psychiatric crisis with medical comorbidity",
+    "filename": "46-psychiatric-crisis-medical-comorbidity.workup.json"
+  },
+  {
+    "rank": 47,
+    "id": "substance-use-complications",
+    "title": "Substance use disorder complications",
+    "filename": "47-substance-use-complications.workup.json"
+  },
+  {
+    "rank": 48,
+    "id": "social-admission-placement-caregiver-failure",
+    "title": "Social admission (placement/caregiver failure)",
+    "filename": "48-social-admission-placement-caregiver-failure.workup.json"
+  },
+  {
+    "rank": 49,
+    "id": "fever-of-unknown-origin",
+    "title": "Fever of unknown origin",
+    "filename": "49-fever-of-unknown-origin.workup.json"
+  },
+  {
+    "rank": 50,
+    "id": "subacute-bacterial-endocarditis",
+    "title": "Subacute bacterial endocarditis",
+    "filename": "50-subacute-bacterial-endocarditis.workup.json"
+  }
+]

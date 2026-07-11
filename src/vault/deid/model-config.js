@@ -1,10 +1,15 @@
 export const DEFAULT_PRIMARY_MODEL_ID = "onnx-community/stanford-deidentifier-base-ONNX";
-export const GLINER_PII_MODEL_ID = "knowledgator/gliner-multi-pii-v1";
+export const GLINER_PII_MODEL_ID = "onnx-community/gliner_multi_pii-v1";
 export const OPENAI_PRIVACY_FILTER_MODEL_ID = "openai/privacy-filter";
 export const ETTIN_68M_NEMOTRON_PII_MODEL_ID = "kalyan-ks/ettin-68m-nemotron-pii";
 export const KNOWLEDGATOR_GLINER_PII_MODEL_ID = "knowledgator/gliner-pii-base-v1.0";
 export const DEFAULT_FALLBACK_MODEL_ID = "rtrigoso/bert-small-pii-detection-ONNX";
-export const OPENMED_MODEL_ID = "sidupadhyay/OpenMed-PII-SuperClinical-Small-44M-v1-ONNX";
+// This is a direct ONNX export of OpenMed/OpenMed-PII-SuperClinical-Large-434M-v1.
+// Keep the converted repository and immutable revision together in the model-pack
+// registry so browser inference never resolves a mutable remote `main` revision.
+export const OPENMED_MODEL_ID = "Wismut/openmed-onnx/large";
+export const OPENMED_BASE_MODEL_ID = "Wismut/openmed-onnx/base";
+export const OPENMED_SMALL_MODEL_ID = "Wismut/openmed-onnx/small";
 export const MULTILANG_PII_MODEL_ID = "onnx-community/multilang-pii-ner-ONNX";
 export const I2B2_CLINICALBERT_MODEL_ID = "onnx-community/deid_bert_i2b2-ONNX";
 export const DEFAULT_DTYPE = "q8";
@@ -25,8 +30,20 @@ export const MODEL_PROFILES = {
   openmed: {
     id: OPENMED_MODEL_ID,
     mobileFeasible: false,
-    expectedQuantizedBytes: 283404624,
-    notes: "Large clinical PII model; metadata-only in normal benchmark."
+    expectedQuantizedBytes: 1738303341,
+    notes: "Direct ONNX export of OpenMed SuperClinical Large (434M). The FP32 model is approximately 1.6 GB and is intended for a desktop browser with sufficient memory."
+  },
+  openmedBase: {
+    id: OPENMED_BASE_MODEL_ID,
+    mobileFeasible: false,
+    expectedQuantizedBytes: 736561517,
+    notes: "Direct ONNX export of OpenMed SuperClinical Base (184M). FP32 WebGPU fallback for devices that cannot fit Large."
+  },
+  openmedSmall: {
+    id: OPENMED_SMALL_MODEL_ID,
+    mobileFeasible: true,
+    expectedQuantizedBytes: 171750792,
+    notes: "Direct ONNX export of OpenMed SuperClinical Small (44M). Its int8 export is the explicit CPU/WASM fallback for older devices."
   },
   multilang: {
     id: MULTILANG_PII_MODEL_ID,
@@ -43,8 +60,8 @@ export const MODEL_PROFILES = {
   gliner: {
     id: GLINER_PII_MODEL_ID,
     mobileFeasible: false,
-    expectedQuantizedBytes: 50000000,
-    notes: "GLiNER multi-PII zero-shot NER; ~40+ entity types (SSN, ethnicity, profession, URL, IP, vehicle plate, etc.) in a single ~50MB ONNX-quantized model. Adopted by Microsoft Presidio late 2024."
+    expectedQuantizedBytes: 349120924,
+    notes: "ONNX Community GLiNER multi-PII model with a Transformers.js-ready ONNX layout; use as the mature local cross-check for broad PII coverage."
   },
   openaiPrivacyFilter: {
     id: OPENAI_PRIVACY_FILTER_MODEL_ID,
@@ -62,6 +79,6 @@ export const MODEL_PROFILES = {
     id: KNOWLEDGATOR_GLINER_PII_MODEL_ID,
     mobileFeasible: false,
     expectedQuantizedBytes: null,
-    notes: "Knowledgator GLiNER PII base has ONNX assets but needs a GLiNER-specific browser adapter rather than the generic token-classification pipeline."
+    notes: "Legacy Knowledgator GLiNER pack retained for existing local installs; new installs should use the ONNX Community multi-PII option."
   }
 };

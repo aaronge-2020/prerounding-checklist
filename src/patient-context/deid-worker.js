@@ -1,7 +1,8 @@
 import {
   deidentifyText,
-  preloadAdvancedDeidModel
-} from "./deid-service.js";
+  preloadAdvancedDeidModel,
+  verifyAdvancedDeidModel
+} from "./deid-service.js?v=20260711-functional-remediation-15";
 
 function post(type, id, value) {
   self.postMessage({ type, id, value });
@@ -15,7 +16,9 @@ self.addEventListener("message", async (event) => {
   try {
     const value = action === "preload"
       ? await preloadAdvancedDeidModel({ ...payload, onStatus, onProgress })
-      : await deidentifyText(payload.rawText, { ...payload.options, onStatus, onProgress });
+      : action === "verify"
+        ? await verifyAdvancedDeidModel({ ...payload, onStatus, onProgress })
+        : await deidentifyText(payload.rawText, { ...payload.options, onStatus, onProgress });
     post("result", id, value);
   } catch (error) {
     post("error", id, error instanceof Error ? error.message : "De-identification failed.");

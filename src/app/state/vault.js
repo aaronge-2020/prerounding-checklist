@@ -1,4 +1,6 @@
-export const VAULT_SCHEMA_VERSION = 1;
+import { normalizeUserPreferences } from "../preferences.js";
+
+export const VAULT_SCHEMA_VERSION = 2;
 
 export const DEFAULT_CONTEXT_SECTION_LABELS = ["Admission context", "Medications", "Labs", "Other"];
 export const DEFAULT_DAILY_SECTION_LABELS = [
@@ -25,6 +27,7 @@ export function createEmptyVaultState({ now = timestampNow } = {}) {
     patients: [],
     workupOverrides: {},
     selectedWorkupIds: [],
+    preferences: normalizeUserPreferences(),
     updatedAt: now()
   };
 }
@@ -130,6 +133,7 @@ export function migrateVaultState(value, { now = timestampNow } = {}) {
     patients,
     workupOverrides: base.workupOverrides && typeof base.workupOverrides === "object" ? { ...base.workupOverrides } : {},
     selectedWorkupIds: Array.isArray(base.selectedWorkupIds) ? base.selectedWorkupIds.map(String) : [],
+    preferences: normalizeUserPreferences(base.preferences),
     updatedAt: String(base.updatedAt || now())
   };
 }
@@ -188,6 +192,15 @@ export function setWorkupOverride(vault, workup, { now = timestampNow } = {}) {
   return {
     ...current,
     workupOverrides: { ...current.workupOverrides, [workup.id]: workup },
+    updatedAt: now()
+  };
+}
+
+export function setWorkupOverrides(vault, workupOverrides, { now = timestampNow } = {}) {
+  const current = migrateVaultState(vault, { now });
+  return {
+    ...current,
+    workupOverrides: { ...(workupOverrides || {}) },
     updatedAt: now()
   };
 }

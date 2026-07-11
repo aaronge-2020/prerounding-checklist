@@ -1,0 +1,251 @@
+{
+  "schema": "prerounding_workup_v1",
+  "id": "seizure-new-onset",
+  "title": "Seizure / new-onset seizure disorder",
+  "aliases": [
+    "new seizure",
+    "convulsion"
+  ],
+  "items": [
+    {
+      "id": "history-01",
+      "kind": "history",
+      "system": "functional",
+      "text": "Establish last known well or symptom onset, progression, baseline cognition, baseline neurologic function, and functional status.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-02",
+      "kind": "history",
+      "system": "neurologic",
+      "text": "Ask about weakness, numbness, facial asymmetry, speech or vision change, imbalance, dysphagia, and severe headache.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-03",
+      "kind": "history",
+      "system": "neurologic",
+      "text": "Ask about loss of consciousness, seizure-like activity, prodrome, post-event confusion, incontinence, tongue injury, and witness observations.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-04",
+      "kind": "history",
+      "system": "medication",
+      "text": "Ask about falls, head or neck injury, anticoagulant or antiplatelet use, and bleeding symptoms.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-05",
+      "kind": "history",
+      "system": "medication",
+      "text": "Ask about recent medication changes, sedatives, alcohol, recreational substances, withdrawal risk, and toxic exposures.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-06",
+      "kind": "history",
+      "system": "infectious",
+      "text": "Ask about fever, poor intake, glucose symptoms, renal or liver disease, and other systemic symptoms that may affect cognition.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-07",
+      "kind": "history",
+      "system": "eyes",
+      "text": "Ask witnesses about onset, focal features, duration, eye deviation, movements, responsiveness, injuries, recovery, and post-event confusion.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-08",
+      "kind": "history",
+      "system": "medication",
+      "text": "Ask about aura, tongue injury, incontinence, automatisms, prior episodes, known epilepsy, and medication adherence.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-09",
+      "kind": "history",
+      "system": "medication",
+      "text": "Ask about fever, head trauma, infection symptoms, sleep deprivation, alcohol or benzodiazepine withdrawal, substances, and glucose symptoms.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-10",
+      "kind": "history",
+      "system": "reproductive",
+      "text": "Ask about headache, focal deficits, cancer, stroke, pregnancy when relevant, family history, and prior central nervous system disease.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-01",
+      "kind": "exam",
+      "system": "endocrine",
+      "text": "Assess vital signs, general appearance, glucose status if available at bedside, and signs of cardiorespiratory instability.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-02",
+      "kind": "exam",
+      "system": "neurologic",
+      "text": "Assess level of consciousness, attention, orientation, language, memory, behavior, and fluctuation from baseline.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-03",
+      "kind": "exam",
+      "system": "neurologic",
+      "text": "Assess pupils, visual fields when feasible, ocular movements, facial symmetry, speech, palate, and swallowing safety as indicated.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-04",
+      "kind": "exam",
+      "system": "musculoskeletal",
+      "text": "Assess pronator drift, limb strength, tone, sensation, reflex asymmetry, and neglect when appropriate.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-05",
+      "kind": "exam",
+      "system": "musculoskeletal",
+      "text": "Assess coordination, truncal stability, gait, and Romberg only when it is safe to do so.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-06",
+      "kind": "exam",
+      "system": "skin",
+      "text": "Inspect for head or neck injury and assess neck stiffness or rash when the presentation makes this relevant.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-07",
+      "kind": "exam",
+      "system": "neurologic",
+      "text": "Assess arousal, attention, orientation, language, behavior, memory, and return toward baseline.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-08",
+      "kind": "exam",
+      "system": "musculoskeletal",
+      "text": "Assess pupils, gaze, facial symmetry, strength, sensation, reflexes, coordination, and gait only when safe.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-09",
+      "kind": "exam",
+      "system": "skin",
+      "text": "Inspect scalp, face, tongue, shoulders, skin, and extremities for injury or tongue bite.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-10",
+      "kind": "exam",
+      "system": "medication",
+      "text": "Assess temperature, neck stiffness, rash, tremor, diaphoresis, pupils, and signs of intoxication or withdrawal.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    }
+  ]
+}

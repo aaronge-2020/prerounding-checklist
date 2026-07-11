@@ -1,0 +1,251 @@
+{
+  "schema": "prerounding_workup_v1",
+  "id": "generalized-weakness",
+  "title": "Generalized weakness / non-specific decline",
+  "aliases": [
+    "weakness",
+    "decline"
+  ],
+  "items": [
+    {
+      "id": "history-01",
+      "kind": "history",
+      "system": "functional",
+      "text": "Ask about baseline cognition, activities of daily living, ambulation, assistive devices, continence, and recent functional change.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-02",
+      "kind": "history",
+      "system": "medication",
+      "text": "Ask about home setting, caregivers, available supports, medication access, food access, transportation, and barriers to care.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-03",
+      "kind": "history",
+      "system": "medication",
+      "text": "Ask about recent medication changes, sedatives, analgesics, alcohol, other substances, and adherence.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-04",
+      "kind": "history",
+      "system": "psychiatric",
+      "text": "Ask about depression, anxiety, delirium symptoms, self-harm risk when relevant, abuse or neglect concerns, and immediate safety.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-05",
+      "kind": "history",
+      "system": "functional",
+      "text": "Ask about appetite, weight change, swallowing, hydration, sleep, fatigue, and symptoms limiting participation in care.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-06",
+      "kind": "history",
+      "system": "infectious",
+      "text": "Ask about fever, pain, falls, trauma, bleeding, focal symptoms, and other acute changes that may explain decline.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-07",
+      "kind": "history",
+      "system": "general",
+      "text": "Ask whether weakness is generalized or focal, sudden or progressive, symmetric or asymmetric, and activity-limiting.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-08",
+      "kind": "history",
+      "system": "infectious",
+      "text": "Ask about fever, weight change, dyspnea, chest pain, palpitations, diarrhea, vomiting, and urinary symptoms.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-09",
+      "kind": "history",
+      "system": "musculoskeletal",
+      "text": "Ask about numbness, vision or speech change, gait change, dysphagia, headache, and new bowel or bladder dysfunction.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-10",
+      "kind": "history",
+      "system": "medication",
+      "text": "Ask about sedatives, antihypertensives, diuretics, diabetes medications, new prescriptions, and missed doses.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-01",
+      "kind": "exam",
+      "system": "respiratory",
+      "text": "Assess appearance, vital signs, hydration, pain behavior, and evidence of acute cardiorespiratory instability.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-02",
+      "kind": "exam",
+      "system": "psychiatric",
+      "text": "Assess alertness, attention, orientation, mood, thought process, agitation, and ability to participate in the examination.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-03",
+      "kind": "exam",
+      "system": "functional",
+      "text": "Inspect oral cavity, mucous membranes, body habitus, skin integrity, bruising, edema, and pressure areas.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-04",
+      "kind": "exam",
+      "system": "functional",
+      "text": "Assess bed mobility, transfers, strength, balance, gait, and assistive-device use only when safe.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-05",
+      "kind": "exam",
+      "system": "musculoskeletal",
+      "text": "Inspect and palpate symptomatic joints, spine, and muscles for tenderness, swelling, deformity, range-of-motion limitation, or injury.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-06",
+      "kind": "exam",
+      "system": "medication",
+      "text": "Assess focal strength, sensation, coordination, tremor, and signs of withdrawal or intoxication when relevant.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-07",
+      "kind": "exam",
+      "system": "musculoskeletal",
+      "text": "Assess proximal and distal strength, pronator drift, symmetry, tone, and fatigability.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-08",
+      "kind": "exam",
+      "system": "functional",
+      "text": "Assess bed mobility, sit-to-stand, balance, and gait only when safe and with assistance as needed.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-09",
+      "kind": "exam",
+      "system": "respiratory",
+      "text": "Assess heart rhythm, lung sounds, oxygenation, edema, and signs of reduced perfusion.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-10",
+      "kind": "exam",
+      "system": "functional",
+      "text": "Assess mucous membranes, body habitus, edema, skin turgor, and oral condition for signs of poor intake.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    }
+  ]
+}

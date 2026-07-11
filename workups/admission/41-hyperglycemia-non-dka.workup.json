@@ -1,0 +1,251 @@
+{
+  "schema": "prerounding_workup_v1",
+  "id": "hyperglycemia-non-dka",
+  "title": "Hyperglycemia (non-DKA)",
+  "aliases": [
+    "hyperglycemia",
+    "high blood glucose"
+  ],
+  "items": [
+    {
+      "id": "history-01",
+      "kind": "history",
+      "system": "general",
+      "text": "Ask about onset, progression, severity, recent acute illness, and change from usual health.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-02",
+      "kind": "history",
+      "system": "genitourinary",
+      "text": "Ask about oral intake, thirst, vomiting, diarrhea, urine volume, urinary retention, and recent weight change.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-03",
+      "kind": "history",
+      "system": "medication",
+      "text": "Ask about new or missed medications, insulin, diuretics, ACE inhibitors, NSAIDs, steroids, laxatives, and supplements.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-04",
+      "kind": "history",
+      "system": "endocrine",
+      "text": "Ask about chronic kidney disease, diabetes, adrenal or thyroid disease, prior electrolyte disorders, and baseline glucose control.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-05",
+      "kind": "history",
+      "system": "medication",
+      "text": "Ask about infection symptoms, ischemic symptoms, recent procedures or contrast exposure, alcohol use, and dietary change.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-06",
+      "kind": "history",
+      "system": "neurologic",
+      "text": "Ask about weakness, cramps, paresthesias, palpitations, confusion, seizures, and exercise intolerance.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-07",
+      "kind": "history",
+      "system": "infectious",
+      "text": "Ask about polyuria, polydipsia, polyphagia, blurry vision, fatigue, weight change, recurrent infection, and dehydration.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-08",
+      "kind": "history",
+      "system": "medication",
+      "text": "Ask about insulin or medication adherence, pump or monitor problems, recent dose changes, access barriers, diet change, and steroid use.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-09",
+      "kind": "history",
+      "system": "genitourinary",
+      "text": "Ask about nausea, vomiting, abdominal pain, deep breathing, confusion, severe weakness, and markedly reduced intake or urine output.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-10",
+      "kind": "history",
+      "system": "medication",
+      "text": "Ask about infection, ischemic symptoms, stress, trauma, surgery, pancreatitis symptoms, alcohol use, and other substance use.",
+      "choices": [
+        "No",
+        "Yes",
+        "Unclear"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-01",
+      "kind": "exam",
+      "system": "respiratory",
+      "text": "Assess appearance, heart rate, blood pressure, respiratory rate and pattern, temperature, and bedside perfusion.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-02",
+      "kind": "exam",
+      "system": "skin",
+      "text": "Assess mucous membranes, jugular venous pressure when feasible, edema, skin turgor, and orthostatic symptoms when safe.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-03",
+      "kind": "exam",
+      "system": "neurologic",
+      "text": "Assess alertness, orientation, attention, behavior, and change from baseline.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-04",
+      "kind": "exam",
+      "system": "cardiovascular",
+      "text": "Assess rate, rhythm, heart sounds, peripheral pulses, capillary refill, and signs of volume overload or depletion.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-05",
+      "kind": "exam",
+      "system": "respiratory",
+      "text": "Assess work of breathing, lung sounds, and abnormal respiratory pattern including deep or rapid breathing.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-06",
+      "kind": "exam",
+      "system": "musculoskeletal",
+      "text": "Assess gross strength, tremor, reflexes, sensation, tetany, asterixis, and gait only when safe and relevant.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-07",
+      "kind": "exam",
+      "system": "neurologic",
+      "text": "Assess mucous membranes, heart rate, blood pressure, peripheral perfusion, mental status, and orthostatic symptoms when safe.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-08",
+      "kind": "exam",
+      "system": "gastrointestinal",
+      "text": "Assess respiratory pattern, fruity breath odor when present, lung findings, abdominal tenderness, and distention.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-09",
+      "kind": "exam",
+      "system": "infectious",
+      "text": "Inspect lungs, skin, feet, urinary symptoms by examination when relevant, and indwelling devices for possible infection.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-10",
+      "kind": "exam",
+      "system": "musculoskeletal",
+      "text": "Assess alertness, orientation, focal deficits, strength, and gait only when safe.",
+      "choices": [
+        "Normal",
+        "Abnormal",
+        "Not assessed"
+      ],
+      "select": "one"
+    }
+  ]
+}

@@ -72,6 +72,10 @@ export function writeEncryptedVaultRecord(record, storage = localStorage) {
   return record;
 }
 
+export function deleteEncryptedVaultRecord(storage = localStorage) {
+  storage.removeItem(VAULT_DATA_KEY);
+}
+
 export async function saveEncryptedVault(vaultState, passphrase, storage = localStorage) {
   const record = await encryptVaultPayload(vaultState, passphrase);
   writeEncryptedVaultRecord(record, storage);

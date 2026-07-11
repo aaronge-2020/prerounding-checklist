@@ -152,8 +152,8 @@ async function main() {
   }
 
   console.log(`\nDone. Models are in ${MODELS_DIR}/`);
-  console.log("The app will load them locally when deployed next to index.html.");
-  console.log("Serve the repository statically to load the installed local assets.");
+  console.log("For the public static app, open Quick De-ID and import the downloaded model folder.");
+  console.log("The app validates required files and runs local inference before enabling the model.");
 }
 
 main().catch((error) => {

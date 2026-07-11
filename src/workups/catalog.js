@@ -1,4 +1,6 @@
-export const BUNDLED_WORKUPS = [
+import { CORE_ADMISSION_WORKUPS } from "./admission-core.js";
+
+const FOUNDATION_WORKUPS = [
   {
     schema: "prerounding_workup_v1",
     id: "general-admission",
@@ -8,7 +10,7 @@ export const BUNDLED_WORKUPS = [
       {
         id: "presenting_symptoms",
         kind: "history",
-        system: "Presenting problem",
+        system: "general",
         text: "Clarify the primary symptom timeline, triggers, relieving factors, and associated symptoms.",
         choices: ["Not asked", "Asked, no concern", "Positive", "Unclear"],
         select: "one"
@@ -16,7 +18,7 @@ export const BUNDLED_WORKUPS = [
       {
         id: "baseline_function",
         kind: "history",
-        system: "Functional status",
+        system: "functional",
         text: "Document baseline function, living situation, supports, and assistive devices.",
         choices: ["Independent", "Needs help", "Facility-level care", "Unclear"],
         select: "one"
@@ -24,7 +26,7 @@ export const BUNDLED_WORKUPS = [
       {
         id: "medication_reconciliation",
         kind: "history",
-        system: "Medications",
+        system: "medication",
         text: "Reconcile home medications, recent changes, adherence, allergies, OTC products, and supplements.",
         choices: ["Complete", "Partial", "Unable to verify"],
         select: "one"
@@ -32,7 +34,7 @@ export const BUNDLED_WORKUPS = [
       {
         id: "general_appearance",
         kind: "exam",
-        system: "General",
+        system: "general",
         text: "General appearance, distress level, mentation, work of breathing, and room-entry impression.",
         choices: ["Normal", "Abnormal", "Not assessed"],
         select: "one"
@@ -40,7 +42,7 @@ export const BUNDLED_WORKUPS = [
       {
         id: "focused_exam",
         kind: "exam",
-        system: "Focused exam",
+        system: "general",
         text: "Focused exam tied to the presenting problem with relevant positives and negatives.",
         choices: ["Complete", "Partial", "Deferred"],
         select: "one"
@@ -56,7 +58,7 @@ export const BUNDLED_WORKUPS = [
       {
         id: "pain_character",
         kind: "history",
-        system: "Cardiovascular",
+        system: "cardiovascular",
         text: "Characterize chest pain using onset, provocation, quality, radiation, severity, timing, and exertional relationship.",
         choices: ["Absent", "Typical", "Atypical", "Unclear"],
         select: "one"
@@ -64,7 +66,7 @@ export const BUNDLED_WORKUPS = [
       {
         id: "associated_symptoms",
         kind: "history",
-        system: "Cardiopulmonary",
+        system: "cardiovascular",
         text: "Ask about dyspnea, diaphoresis, nausea, syncope, palpitations, pleuritic features, and infectious symptoms.",
         choices: ["None", "Present", "Mixed", "Unclear"],
         select: "one"
@@ -72,7 +74,7 @@ export const BUNDLED_WORKUPS = [
       {
         id: "cardiopulmonary_exam",
         kind: "exam",
-        system: "Cardiopulmonary",
+        system: "cardiovascular",
         text: "Assess cardiopulmonary exam including murmurs, volume status, lung findings, pulses, and chest wall tenderness.",
         choices: ["Reassuring", "Abnormal", "Not assessed"],
         select: "one"
@@ -88,7 +90,7 @@ export const BUNDLED_WORKUPS = [
       {
         id: "source_review",
         kind: "history",
-        system: "Infectious symptoms",
+        system: "infectious",
         text: "Review localizing infectious symptoms across pulmonary, urinary, abdominal, skin/soft tissue, line, and neurologic sources.",
         choices: ["No source", "Likely source", "Multiple possible", "Unclear"],
         select: "one"
@@ -96,7 +98,7 @@ export const BUNDLED_WORKUPS = [
       {
         id: "antibiotic_history",
         kind: "history",
-        system: "Infectious history",
+        system: "infectious",
         text: "Confirm recent antibiotics, cultures, resistant organisms, allergies, and immunosuppression.",
         choices: ["Reviewed", "Partial", "Unable"],
         select: "one"
@@ -104,7 +106,7 @@ export const BUNDLED_WORKUPS = [
       {
         id: "sepsis_exam",
         kind: "exam",
-        system: "Sepsis exam",
+        system: "infectious",
         text: "Assess perfusion, mental status, skin, lines, lungs, abdomen, CVA tenderness, and focal source findings.",
         choices: ["Reassuring", "Abnormal", "Not assessed"],
         select: "one"
@@ -112,3 +114,8 @@ export const BUNDLED_WORKUPS = [
     ]
   }
 ];
+
+// The 50 independently authored workups are packaged in the static app rather
+// than fetched from a public catalog. Local overrides still replace a bundled
+// entry by stable ID, and the vault remains the only user-data store.
+export const BUNDLED_WORKUPS = [...CORE_ADMISSION_WORKUPS, ...FOUNDATION_WORKUPS];

@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-src 'none'; script-src 'self' blob: 'unsafe-inline' 'wasm-unsafe-eval'; script-src-attr 'none'; worker-src 'self' blob:; connect-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; trusted-types prerounding-app"
+      content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-src 'none'; script-src 'self' blob: 'unsafe-inline' 'wasm-unsafe-eval'; script-src-attr 'none'; worker-src 'self' blob:; connect-src 'self' https://huggingface.co https://*.hf.co https://api.openai.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; trusted-types prerounding-app"
     >
-    <meta name="theme-color" content="#f7f8f8">
+    <meta name="theme-color" content="#f7f6f2">
     <title>Pre-Rounding Checklist Builder</title>
-    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="./styles.css?v=20260711-functional-remediation-15">
   </head>
-  <body>
+  <body class="vault-locked">
     <div class="app-shell">
       <aside class="side-nav">
         <div class="brand-lockup">
@@ -29,6 +29,7 @@
           <button type="button" data-view-target="checklist" data-icon="checklist">Checklist</button>
           <button type="button" data-view-target="prompts" data-icon="prompt">OpenEvidence Prompts</button>
           <button type="button" data-view-target="quickDeid" data-icon="wand">Quick De-ID</button>
+          <button type="button" data-view-target="settings" data-icon="settings">Settings</button>
         </nav>
 
         <div class="side-footer">
@@ -49,14 +50,18 @@
             <label class="patient-switcher">Current patient
               <select id="patientSwitcher" aria-label="Current patient"></select>
             </label>
-            <span class="status-pill">Local only</span>
-            <span class="status-pill">Advanced de-id models</span>
+            <span class="topbar-trust">Local only</span>
           </div>
         </header>
 
         <main class="workspace">
           <section id="vaultView" class="view active" aria-labelledby="vault-heading">
-            <div id="vaultContent"></div>
+            <div id="vaultContent">
+              <section class="locked-vault-shell surface-panel" aria-live="polite">
+                <h2 id="vault-heading">Preparing secure vault</h2>
+                <p class="muted">Patient data is unavailable until the local vault is unlocked.</p>
+              </section>
+            </div>
           </section>
           <section id="dailyView" class="view" aria-labelledby="daily-heading">
             <div id="dailyContent"></div>
@@ -72,6 +77,9 @@
           </section>
           <section id="quickDeidView" class="view" aria-labelledby="quick-deid-heading">
             <div id="quickDeidContent"></div>
+          </section>
+          <section id="settingsView" class="view" aria-labelledby="settings-heading">
+            <div id="settingsContent"></div>
           </section>
         </main>
       </div>
@@ -99,8 +107,23 @@
       </form>
     </dialog>
 
+    <dialog id="deleteVaultConfirmDialog" class="confirm-dialog danger-confirm-dialog" aria-labelledby="deleteVaultConfirmTitle">
+      <form method="dialog">
+        <h2 id="deleteVaultConfirmTitle">Delete this local vault?</h2>
+        <p>This permanently removes all encrypted patients, hospital days, checklist answers, and local workup overrides from this browser. It cannot be undone or recovered.</p>
+        <label>Type DELETE to confirm
+          <input id="deleteVaultConfirmation" autocomplete="off" spellcheck="false" placeholder="DELETE">
+        </label>
+        <div class="button-row">
+          <button value="cancel">Cancel</button>
+          <button id="confirmDeleteVaultButton" type="button" data-action="confirm-delete-vault" class="danger-button" disabled>Delete vault</button>
+        </div>
+      </form>
+    </dialog>
+
     <script src="./vendor/qrcode-generator-2.0.4.js"></script>
     <script>if (typeof qrcode !== "undefined") window.qrcode = qrcode;</script>
-    <script type="module" src="./src/ui/app.js"></script>
+    <input id="modelPackFolderInput" type="file" webkitdirectory multiple hidden>
+    <script type="module" src="./src/ui/app.js?v=20260711-functional-remediation-15"></script>
   </body>
 </html>

@@ -1,13 +1,15 @@
 import {
   createDeidentifier,
   deidentifyTextStructuredOnly
-} from "../vault/deid.js";
+} from "../vault/deid.js?v=20260711-functional-remediation-15";
 import {
   DEFAULT_DEID_MODEL_KEY,
   STRUCTURED_DEID_MODE,
   deidModelCandidates,
   deidModelOptionByKey
-} from "./deid-model-options.js";
+} from "./deid-model-options.js?v=20260711-functional-remediation-15";
+import { getModelPackState, invalidateModelPackVerification, readModelPackFileResponse } from "./model-pack-storage.js?v=20260711-functional-remediation-15";
+import { importedModelBaseUrl } from "./model-packs.js?v=20260711-functional-remediation-15";
 
 const deidentifierPromises = new Map();
 let activeModelKey = DEFAULT_DEID_MODEL_KEY;
@@ -80,30 +82,103 @@ function setStatus(update, onStatus) {
   if (typeof onStatus === "function") onStatus(nextStatus);
 }
 
-async function loadTransformersRuntime() {
+async function ensureWebGpuRuntime(option) {
+  if (!option?.requiresWebGpu) return;
+  if (!globalThis.navigator?.gpu?.requestAdapter) {
+    throw new Error(`${option.label} requires WebGPU in the local de-identification worker.`);
+  }
+  const adapter = await globalThis.navigator.gpu.requestAdapter({ powerPreference: "high-performance" });
+  if (!adapter) throw new Error(`${option.label} could not obtain a local WebGPU adapter.`);
+}
+
+function bundledModelBaseUrl() {
+  return new URL("../../models/", import.meta.url).href;
+}
+
+function modelBaseUrl(assetSource) {
+  return assetSource === "imported" || assetSource === "handles" || assetSource === "opfs" ? importedModelBaseUrl() : bundledModelBaseUrl();
+}
+
+export function wasmRuntimePaths(option = {}) {
+  const runtimeName = option.wasmRuntime === "standard"
+    ? "ort-wasm-simd-threaded"
+    : "ort-wasm-simd-threaded.asyncify";
+  return {
+    mjs: new URL(`../../vendor/onnxruntime-web/${runtimeName}.mjs`, import.meta.url).href,
+    wasm: new URL(`../../vendor/onnxruntime-web/${runtimeName}.wasm`, import.meta.url).href
+  };
+}
+
+async function invalidateRuntimeVerification(option, error) {
+  if (option?.assetMode !== "installable") return;
+  try {
+    await invalidateModelPackVerification(option, error);
+  } catch (storageError) {
+    console.warn("Could not clear a failed local model verification state.", storageError);
+  }
+}
+
+function localOnlyModelFetch(modelRoot, assetSource, modelId) {
+  const nativeFetch = fetch.bind(globalThis);
+  const root = new URL(modelRoot);
+  const fetchLocalFile = async (url, init) => {
+    if ((assetSource === "handles" || assetSource === "opfs") && url.origin === root.origin && url.href.startsWith(root.href)) {
+      const relative = decodeURIComponent(url.pathname.slice(root.pathname.length));
+      const prefix = `${modelId}/`;
+      if (relative.startsWith(prefix)) {
+        const response = await readModelPackFileResponse(modelId, relative.slice(prefix.length));
+        if (response) return response;
+      }
+    }
+    return nativeFetch(url, init);
+  };
+  return async (input, init) => {
+    const requested = new URL(typeof input === "string" ? input : input.url, root);
+    const marker = "/resolve/main/";
+    if (requested.hostname === "huggingface.co" && requested.pathname.includes(marker)) {
+      const [modelId, fileName] = requested.pathname.slice(1).split(marker);
+      return fetchLocalFile(new URL(`${modelId}/${fileName}`, root), init);
+    }
+    if (requested.origin === root.origin && requested.href.startsWith(root.href)) {
+      return fetchLocalFile(requested, init);
+    }
+    return new Response("External model requests are disabled.", { status: 403, statusText: "Forbidden" });
+  };
+}
+
+async function resolveAssetSource(option, requestedSource = "auto") {
+  if (["imported", "handles", "opfs", "bundled"].includes(requestedSource)) return requestedSource;
+  if (option.assetMode !== "installable") return "bundled";
+  const pack = await getModelPackState(option);
+  return pack.ready && ["imported", "handles", "opfs"].includes(pack.source) ? pack.source : "bundled";
+}
+
+async function loadTransformersRuntime(option, assetSource) {
   const runtime = await import("../../vendor/transformers/transformers.web.js");
   runtime.env.allowLocalModels = true;
-  runtime.env.allowRemoteModels = false;
-  runtime.env.localModelPath = new URL("../../models/", import.meta.url).href;
+  // Transformers.js uses its remote metadata path to discover tokenizer files.
+  // Every Hugging Face request is remapped to the selected same-origin pack.
+  runtime.env.allowRemoteModels = true;
+  runtime.env.localModelPath = modelBaseUrl(assetSource);
+  runtime.env.fetch = localOnlyModelFetch(runtime.env.localModelPath, assetSource, option.modelId);
   runtime.env.useBrowserCache = true;
   if (runtime.env.backends?.onnx?.wasm) {
-    runtime.env.backends.onnx.wasm.wasmPaths = {
-      mjs: new URL("../../vendor/onnxruntime-web/ort-wasm-simd-threaded.asyncify.mjs", import.meta.url).href,
-      wasm: new URL("../../vendor/onnxruntime-web/ort-wasm-simd-threaded.asyncify.wasm", import.meta.url).href
-    };
+    runtime.env.backends.onnx.wasm.wasmPaths = wasmRuntimePaths(option);
     runtime.env.backends.onnx.wasm.proxy = false;
+    if (option.wasmRuntime === "standard") runtime.env.backends.onnx.wasm.numThreads = 1;
   }
   return runtime;
 }
 
-async function loadGlinerRuntime() {
+async function loadGlinerRuntime(option, assetSource) {
   const [{ Gliner }, xenovaRuntime] = await Promise.all([
     import("../../vendor/gliner/index.mjs"),
     import("../../vendor/xenova-transformers/transformers.min.js")
   ]);
   xenovaRuntime.env.allowLocalModels = true;
   xenovaRuntime.env.allowRemoteModels = false;
-  xenovaRuntime.env.localModelPath = new URL("../../models/", import.meta.url).href;
+  xenovaRuntime.env.localModelPath = modelBaseUrl(assetSource);
+  xenovaRuntime.env.fetch = localOnlyModelFetch(xenovaRuntime.env.localModelPath, assetSource, option.modelId);
   xenovaRuntime.env.useBrowserCache = true;
   return { Gliner };
 }
@@ -118,18 +193,24 @@ function normalizeGlinerSpan(span = {}) {
   };
 }
 
-function glinerModelPath(modelId) {
-  return new URL(`../../models/${modelId}/onnx/model_quint8.onnx`, import.meta.url).href;
+async function glinerModelPath(option, assetSource) {
+  const modelPath = option.onnxModelPath || "onnx/model_quint8.onnx";
+  if (assetSource === "handles" || assetSource === "opfs") {
+    const response = await readModelPackFileResponse(option.modelId, modelPath);
+    if (!response) throw new Error("The selected GLiNER folder no longer contains its ONNX model.");
+    return URL.createObjectURL(await response.blob());
+  }
+  return new URL(`${option.modelId}/${modelPath}`, modelBaseUrl(assetSource)).href;
 }
 
-async function createGlinerPipelineFactory(option) {
-  const { Gliner } = await loadGlinerRuntime();
+async function createGlinerPipelineFactory(option, assetSource) {
+  const { Gliner } = await loadGlinerRuntime(option, assetSource);
   const candidate = deidModelCandidates(option)[0];
   const executionProvider = candidate?.options?.device || "wasm";
   const gliner = new Gliner({
     tokenizerPath: option.modelId,
     onnxSettings: {
-      modelPath: glinerModelPath(option.modelId),
+      modelPath: await glinerModelPath(option, assetSource),
       executionProvider,
       wasmPaths: new URL("../../vendor/gliner/onnxruntime-web/", import.meta.url).href,
       fetchBinary: executionProvider === "wasm",
@@ -169,7 +250,7 @@ export function getLoadedDeidModelStatuses() {
     .map((status) => ({ ...status }));
 }
 
-export async function getAdvancedDeidentifier({ modelKey = DEFAULT_DEID_MODEL_KEY, onStatus } = {}) {
+export async function getAdvancedDeidentifier({ modelKey = DEFAULT_DEID_MODEL_KEY, assetSource = "auto", onStatus } = {}) {
   const option = deidModelOptionByKey(modelKey);
   activeModelKey = option.key;
   if (!option.browserRunnable) {
@@ -183,7 +264,10 @@ export async function getAdvancedDeidentifier({ modelKey = DEFAULT_DEID_MODEL_KE
     }, onStatus);
     throw new Error(option.disabledReason || `${option.label} cannot run in this browser build.`);
   }
-  if (!deidentifierPromises.has(option.key)) {
+  await ensureWebGpuRuntime(option);
+  const resolvedSource = await resolveAssetSource(option, assetSource);
+  const deidentifierKey = `${option.key}:${resolvedSource}`;
+  if (!deidentifierPromises.has(deidentifierKey)) {
     setStatus({
       message: `Loading ${option.shortLabel || option.label} runtime...`,
       ready: false,
@@ -193,12 +277,12 @@ export async function getAdvancedDeidentifier({ modelKey = DEFAULT_DEID_MODEL_KE
       label: option.label
     }, onStatus);
     const runtimePromise = option.engine === "gliner"
-      ? createGlinerPipelineFactory(option).then((glinerPipeline) => ({ pipeline: async () => glinerPipeline }))
-      : loadTransformersRuntime();
+      ? createGlinerPipelineFactory(option, resolvedSource).then((glinerPipeline) => ({ pipeline: async () => glinerPipeline }))
+      : loadTransformersRuntime(option, resolvedSource);
     const deidentifierPromise = runtimePromise.then((runtime) =>
       createDeidentifier({
         pipelineFactory: runtime.pipeline,
-        mode: "hybrid",
+        mode: "model-only",
         modelCandidates: deidModelCandidates(option),
         onModelStatus: (status) => setStatus({
           ...status,
@@ -208,7 +292,7 @@ export async function getAdvancedDeidentifier({ modelKey = DEFAULT_DEID_MODEL_KE
         }, onStatus)
       })
     ).catch((error) => {
-      deidentifierPromises.delete(option.key);
+      deidentifierPromises.delete(deidentifierKey);
       setStatus({
         message: `${option.shortLabel || option.label} failed to initialize: ${error instanceof Error ? error.message : "unknown error"}`,
         ready: false,
@@ -219,18 +303,19 @@ export async function getAdvancedDeidentifier({ modelKey = DEFAULT_DEID_MODEL_KE
       }, onStatus);
       throw error;
     });
-    deidentifierPromises.set(option.key, deidentifierPromise);
+    deidentifierPromises.set(deidentifierKey, deidentifierPromise);
   }
-  return deidentifierPromises.get(option.key);
+  return deidentifierPromises.get(deidentifierKey);
 }
 
-export async function preloadAdvancedDeidModel({ modelKey = DEFAULT_DEID_MODEL_KEY, onStatus, onProgress } = {}) {
+export async function preloadAdvancedDeidModel({ modelKey = DEFAULT_DEID_MODEL_KEY, assetSource = "auto", onStatus, onProgress } = {}) {
   const option = deidModelOptionByKey(modelKey);
   try {
-    const deidentifier = await getAdvancedDeidentifier({ modelKey: option.key, onStatus });
+    const deidentifier = await getAdvancedDeidentifier({ modelKey: option.key, assetSource, onStatus });
     await deidentifier.loadModel({ onProgress });
     return getSelectedDeidModelStatus(option.key);
   } catch (error) {
+    await invalidateRuntimeVerification(option, error);
     setStatus({
       message: `${option.shortLabel || option.label} failed to load: ${error instanceof Error ? error.message : "unknown error"}`,
       ready: false,
@@ -243,18 +328,38 @@ export async function preloadAdvancedDeidModel({ modelKey = DEFAULT_DEID_MODEL_K
   }
 }
 
-export async function deidentifyText(rawText, { mode = "advanced", allowStructuredFallback = false, onStatus, onProgress } = {}) {
+export async function verifyAdvancedDeidModel({ modelKey = DEFAULT_DEID_MODEL_KEY, assetSource = "auto", onStatus, onProgress } = {}) {
+  const option = deidModelOptionByKey(modelKey);
+  try {
+    const deidentifier = await getAdvancedDeidentifier({ modelKey: option.key, assetSource, onStatus });
+    await deidentifier.loadModel({ onProgress });
+    const result = await deidentifier.detectModelEntities("Synthetic Patient Jane Smith MRN 123456.", { onProgress });
+    if (!result.modelId || result.modelChunkFailures) {
+      throw new Error(`${option.label} loaded but could not complete its local inference self-test.`);
+    }
+    return getSelectedDeidModelStatus(option.key);
+  } catch (error) {
+    await invalidateRuntimeVerification(option, error);
+    throw error;
+  }
+}
+
+export async function deidentifyText(rawText, { mode = "advanced", allowStructuredFallback = false, assetSource = "auto", onStatus, onProgress } = {}) {
   if (mode === STRUCTURED_DEID_MODE) {
     return deidentifyTextStructuredOnly(rawText, new Date());
   }
   const option = deidModelOptionByKey(mode === "advanced" ? DEFAULT_DEID_MODEL_KEY : mode);
   try {
-    const deidentifier = await getAdvancedDeidentifier({ modelKey: option.key, onStatus });
-    // Advanced mode is fail-closed: do not let the lower-level hybrid helper
-    // return structured-only output as though the selected model ran.
+    const deidentifier = await getAdvancedDeidentifier({ modelKey: option.key, assetSource, onStatus });
+    // Selected-model runs are fail-closed: do not substitute the legacy
+    // structured fallback or an incomplete model pass for the chosen model.
     await deidentifier.loadModel({ onProgress });
-    const result = await deidentifier.deidentifyText(rawText, { onProgress });
-    if (!result.modelId && /Model unavailable/i.test(result.modelStatus || "")) {
+    const result = await deidentifier.deidentifyText(rawText, {
+      mode: "model-only",
+      includeTemporalFallback: false,
+      onProgress
+    });
+    if (!result.modelId || result.modelChunkFailures) {
       const message = `${option.shortLabel || option.label} unavailable. Select Structured only if you want to run the fallback redactor.`;
       setStatus({
         message,
@@ -270,6 +375,7 @@ export async function deidentifyText(rawText, { mode = "advanced", allowStructur
     }
     return result;
   } catch (error) {
+    await invalidateRuntimeVerification(option, error);
     const detail = error instanceof Error && error.message ? ` (${error.message})` : "";
     const message = `${option.shortLabel || option.label} unavailable${detail}. Select Structured only if you want to run the fallback redactor.`;
     setStatus({
