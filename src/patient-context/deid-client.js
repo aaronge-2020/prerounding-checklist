@@ -1,0 +1,104 @@
+import {
+  DEFAULT_DEID_MODEL_KEY,
+  deidModelOptionByKey
+} from "./deid-model-options.js";
+
+const statuses = new Map();
+const requests = new Map();
+let worker = null;
+let activeModelKey = DEFAULT_DEID_MODEL_KEY;
+let nextRequestId = 1;
+
+function defaultStatus(modelKey = DEFAULT_DEID_MODEL_KEY) {
+  const option = deidModelOptionByKey(modelKey);
+  return {
+    message: `${option.shortLabel || option.label} not loaded.`,
+    ready: false,
+    modelId: option.modelId || "",
+    modelStatus: "not loaded",
+    modelKey: option.key,
+    label: option.label
+  };
+}
+
+function statusFor(modelKey = activeModelKey) {
+  return statuses.get(modelKey) || defaultStatus(modelKey);
+}
+
+function updateStatus(status, callback) {
+  const modelKey = status?.modelKey || activeModelKey;
+  const next = { ...statusFor(modelKey), ...status, modelKey };
+  statuses.set(modelKey, next);
+  callback?.(next);
+}
+
+function rejectAll(error) {
+  for (const request of requests.values()) request.reject(error);
+  requests.clear();
+}
+
+function getWorker() {
+  if (worker) return worker;
+  worker = new Worker(new URL("./deid-worker.js", import.meta.url), { type: "module" });
+  worker.addEventListener("message", (event) => {
+    const { type, id, value } = event.data || {};
+    const request = requests.get(id);
+    if (!request) return;
+    if (type === "status") {
+      updateStatus(value, request.onStatus);
+      return;
+    }
+    if (type === "progress") {
+      request.onProgress?.(value);
+      return;
+    }
+    requests.delete(id);
+    if (type === "result") {
+      if (value?.modelKey) updateStatus(value, request.onStatus);
+      request.resolve(value);
+      return;
+    }
+    request.reject(new Error(String(value || "De-identification failed.")));
+  });
+  worker.addEventListener("error", (event) => {
+    rejectAll(new Error(event.message || "The local de-identification worker stopped."));
+    worker?.terminate();
+    worker = null;
+  });
+  return worker;
+}
+
+function request(action, payload, { onStatus, onProgress } = {}) {
+  const id = `deid_${nextRequestId++}`;
+  return new Promise((resolve, reject) => {
+    requests.set(id, { resolve, reject, onStatus, onProgress });
+    getWorker().postMessage({ id, action, payload });
+  });
+}
+
+export function getAdvancedDeidStatus() {
+  return { ...statusFor(activeModelKey) };
+}
+
+export function getSelectedDeidModelStatus(modelKey = activeModelKey) {
+  return { ...statusFor(modelKey) };
+}
+
+export function getLoadedDeidModelStatuses() {
+  return [...statuses.values()].filter((status) => status.ready).map((status) => ({ ...status }));
+}
+
+export async function preloadAdvancedDeidModel({ modelKey = DEFAULT_DEID_MODEL_KEY, onStatus, onProgress } = {}) {
+  activeModelKey = deidModelOptionByKey(modelKey).key;
+  return request("preload", { modelKey: activeModelKey }, { onStatus, onProgress });
+}
+
+export async function deidentifyText(rawText, { mode = "advanced", allowStructuredFallback = false, onStatus, onProgress } = {}) {
+  const modelKey = mode === "advanced" ? DEFAULT_DEID_MODEL_KEY : mode;
+  if (mode !== "structured") activeModelKey = deidModelOptionByKey(modelKey).key;
+  return request(
+    "deidentify",
+    { rawText: String(rawText || ""), options: { mode, allowStructuredFallback } },
+    { onStatus, onProgress }
+  );
+}

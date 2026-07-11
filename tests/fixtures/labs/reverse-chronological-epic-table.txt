@@ -1,8 +1,0 @@
-Component | 06/06/2026 14:48 | 06/06/2026 06:12
-Sodium | 136 | 132
-Potassium | 4.2 | 3.4
-Chloride | 102 | 98
-CO2 | 24 | 20
-BUN | 18 | 21
-Creatinine | 1.2 | 1.5
-Glucose | 210 | 412

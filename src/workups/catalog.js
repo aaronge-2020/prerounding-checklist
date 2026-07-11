@@ -1,0 +1,114 @@
+export const BUNDLED_WORKUPS = [
+  {
+    schema: "prerounding_workup_v1",
+    id: "general-admission",
+    title: "General admission",
+    aliases: ["new admission", "h&p", "initial rounds"],
+    items: [
+      {
+        id: "presenting_symptoms",
+        kind: "history",
+        system: "Presenting problem",
+        text: "Clarify the primary symptom timeline, triggers, relieving factors, and associated symptoms.",
+        choices: ["Not asked", "Asked, no concern", "Positive", "Unclear"],
+        select: "one"
+      },
+      {
+        id: "baseline_function",
+        kind: "history",
+        system: "Functional status",
+        text: "Document baseline function, living situation, supports, and assistive devices.",
+        choices: ["Independent", "Needs help", "Facility-level care", "Unclear"],
+        select: "one"
+      },
+      {
+        id: "medication_reconciliation",
+        kind: "history",
+        system: "Medications",
+        text: "Reconcile home medications, recent changes, adherence, allergies, OTC products, and supplements.",
+        choices: ["Complete", "Partial", "Unable to verify"],
+        select: "one"
+      },
+      {
+        id: "general_appearance",
+        kind: "exam",
+        system: "General",
+        text: "General appearance, distress level, mentation, work of breathing, and room-entry impression.",
+        choices: ["Normal", "Abnormal", "Not assessed"],
+        select: "one"
+      },
+      {
+        id: "focused_exam",
+        kind: "exam",
+        system: "Focused exam",
+        text: "Focused exam tied to the presenting problem with relevant positives and negatives.",
+        choices: ["Complete", "Partial", "Deferred"],
+        select: "one"
+      }
+    ]
+  },
+  {
+    schema: "prerounding_workup_v1",
+    id: "chest-pain",
+    title: "Chest pain",
+    aliases: ["acs", "troponin", "angina"],
+    items: [
+      {
+        id: "pain_character",
+        kind: "history",
+        system: "Cardiovascular",
+        text: "Characterize chest pain using onset, provocation, quality, radiation, severity, timing, and exertional relationship.",
+        choices: ["Absent", "Typical", "Atypical", "Unclear"],
+        select: "one"
+      },
+      {
+        id: "associated_symptoms",
+        kind: "history",
+        system: "Cardiopulmonary",
+        text: "Ask about dyspnea, diaphoresis, nausea, syncope, palpitations, pleuritic features, and infectious symptoms.",
+        choices: ["None", "Present", "Mixed", "Unclear"],
+        select: "one"
+      },
+      {
+        id: "cardiopulmonary_exam",
+        kind: "exam",
+        system: "Cardiopulmonary",
+        text: "Assess cardiopulmonary exam including murmurs, volume status, lung findings, pulses, and chest wall tenderness.",
+        choices: ["Reassuring", "Abnormal", "Not assessed"],
+        select: "one"
+      }
+    ]
+  },
+  {
+    schema: "prerounding_workup_v1",
+    id: "infection-sepsis",
+    title: "Infection / sepsis",
+    aliases: ["fever", "sepsis", "bacteremia"],
+    items: [
+      {
+        id: "source_review",
+        kind: "history",
+        system: "Infectious symptoms",
+        text: "Review localizing infectious symptoms across pulmonary, urinary, abdominal, skin/soft tissue, line, and neurologic sources.",
+        choices: ["No source", "Likely source", "Multiple possible", "Unclear"],
+        select: "one"
+      },
+      {
+        id: "antibiotic_history",
+        kind: "history",
+        system: "Infectious history",
+        text: "Confirm recent antibiotics, cultures, resistant organisms, allergies, and immunosuppression.",
+        choices: ["Reviewed", "Partial", "Unable"],
+        select: "one"
+      },
+      {
+        id: "sepsis_exam",
+        kind: "exam",
+        system: "Sepsis exam",
+        text: "Assess perfusion, mental status, skin, lines, lungs, abdomen, CVA tenderness, and focal source findings.",
+        choices: ["Reassuring", "Abnormal", "Not assessed"],
+        select: "one"
+      }
+    ]
+  }
+];

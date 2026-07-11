@@ -71,6 +71,10 @@ for (const clinicalTerm of ["polyuria", "glucose 412", "Type 2 diabetes"]) {
   assert.ok(firstNameAliasResult.text.includes(clinicalTerm), `clinical term should be preserved: ${clinicalTerm}`);
 }
 
+const inlinePatientHeaderResult = deidentifyTextStructuredOnly("Patient Jane Smith MRN 123456 was seen today.");
+assert.ok(!inlinePatientHeaderResult.text.includes("Jane Smith"), "inline patient header names should be redacted");
+assert.ok(!inlinePatientHeaderResult.text.includes("123456"), "inline patient header MRNs should be redacted");
+
 const cases = makeSyntheticCases(250);
 for (const caseItem of cases) {
   assertCaseClean(caseItem);
@@ -804,4 +808,3 @@ for (const [caseName, caseText, mustRedact, mustKeep] of recallCases) {
 }
 
 console.log(`De-ID tests passed for ${cases.length} synthetic cases plus targeted guards.`);
-

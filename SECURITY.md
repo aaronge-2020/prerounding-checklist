@@ -1,58 +1,22 @@
-# Security And HIPAA Posture
+# Security Posture
 
-This project is a local-first clinical workflow aid. It is designed to reduce PHI exposure, but the codebase and GitHub Pages deployment do not by themselves satisfy HIPAA obligations for a covered entity, business associate, deployment, or user workflow.
+This project is a browser-local clinical workflow aid. It reduces exposure of patient data but does not independently make a covered entity, deployment, or user workflow compliant with HIPAA or any other regulation.
 
-## Current App Safeguards
+## Implemented Safeguards
 
-- Pasted chart text, saved vault data, patient workspaces, and generated prompts are not uploaded for routine local review.
-- Phone handoff QR codes use direct local QR payloads when they fit. If the laptop-to-phone bundle is too large for one QR, the default deployment allows at most three local animated QR frames; larger bundles fall back to encrypted local copy/share/download rather than uploading patient handoff data to a cloud mailbox.
-- Local copy/share/download phone handoff bundles are encrypted with AES-GCM using a key derived from the displayed handoff code. The phone prompts for that code before opening the bundle.
-- The cloud mailbox implementation remains disabled in the default HIPAA-restricted build. If an organization re-enables it for faster one-scan handoff, it should treat mailbox payloads that contain ePHI as cloud handling of ePHI even though the stored payload is encrypted.
-- No analytics, telemetry, tracking pixels, ad scripts, or third-party font loads are included.
-- The default de-identification mode is structured-only and does not download model assets.
-- The optional enhanced de-identification model is explicit opt-in and may download third-party code/model assets before running locally in the browser.
-- Raw chart text is not saved to the vault.
-- Saved patient workspaces use browser-local AES-GCM encryption with a key derived from the local password.
-- Prompt copy actions run a PHI safety check before copying text intended for an external clinical AI tool.
-- Encrypted context export is user-initiated and gated by the PHI safety check before a file is created.
-- A Content Security Policy meta tag blocks object/embed content, forms, frames, and unexpected default resource loads.
+- AES-GCM encrypted browser-local vault storage derived from a user-provided passphrase.
+- No account system, remote database, API, telemetry, trackers, or third-party font loads.
+- Raw pasted chart text is not written to the vault.
+- User-directed QR, copy, and download handoff bundles stay local and are encrypted before transfer.
+- Advanced de-identification runs inside a browser worker and fails closed when its selected local model is unavailable.
+- A restrictive static CSP limits the app to same-origin code, workers, assets, and fetches.
 
-## HIPAA Boundaries
+## Operational Boundary
 
-HIPAA compliance depends on the full operating environment, not only app code. Before using this with real patients, the deploying organization should document:
+Deployers remain responsible for device management, access control, risk analysis, approved external-tool use, incident response, retention, and staff training. Do not paste identifiers into unapproved systems.
 
-- HIPAA Security Rule risk analysis and risk management for the deployed workflow.
-- Which users may access the app and on which managed devices.
-- Whether any external tool receiving pasted text is approved for the intended use.
-- Business Associate Agreement status for vendors that create, receive, maintain, or transmit PHI on behalf of the organization, including any re-enabled cloud mailbox used for QR handoff.
-- Audit, incident response, breach notification, retention, backup, and device loss procedures.
-- Training and policy language that tells users not to paste PHI into unapproved external tools.
+Useful official references:
 
-Official HHS references:
-
-- HIPAA Security Rule: https://www.hhs.gov/hipaa/for-professionals/security/index.html
-- Security risk analysis guidance: https://www.hhs.gov/hipaa/for-professionals/security/guidance/guidance-risk-analysis/index.html
-- De-identification guidance: https://www.hhs.gov/hipaa/for-professionals/special-topics/de-identification/index.html
-- Business associate guidance: https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/business-associates/index.html
-- Cloud computing guidance: https://www.hhs.gov/hipaa/for-professionals/special-topics/health-information-technology/cloud-computing/
-- Tracking technology guidance: https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/hipaa-online-tracking/index.html
-- Breach notification: https://www.hhs.gov/hipaa/for-professionals/breach-notification/index.html
-
-## Deployment Headers
-
-The app includes a CSP meta tag for static hosting. Prefer server headers when possible because headers are stronger and can set directives not reliably enforced by meta tags.
-
-Recommended deployment headers:
-
-```text
-Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-ancestors 'none'; frame-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; worker-src 'self' blob:; connect-src 'self' https://cdn.jsdelivr.net https://huggingface.co https://*.huggingface.co https://*.hf.co https://cdn-lfs.huggingface.co https://cas-bridge.xethub.hf.co https://*.xethub.hf.co; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; manifest-src 'self' blob:; media-src 'none'
-Referrer-Policy: strict-origin-when-cross-origin
-X-Content-Type-Options: nosniff
-Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
-```
-
-If the enhanced model is not approved, remove the third-party model/CDN entries from `script-src` and `connect-src`, and leave structured-only de-identification enabled.
-
-## Reporting Issues
-
-Do not include patient identifiers or raw chart text in bug reports, issues, commits, screenshots, or test fixtures. Use synthetic examples only.
+- [HHS HIPAA Security Rule](https://www.hhs.gov/hipaa/for-professionals/security/index.html)
+- [HHS risk analysis guidance](https://www.hhs.gov/hipaa/for-professionals/security/guidance/guidance-risk-analysis/index.html)
+- [HHS de-identification guidance](https://www.hhs.gov/hipaa/for-professionals/special-topics/de-identification/index.html)

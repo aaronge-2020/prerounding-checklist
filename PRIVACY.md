@@ -1,31 +1,31 @@
 # Privacy Notes
 
-This app is built for local review before prompts are copied elsewhere. It should be treated as a PHI risk-reduction tool, not a legal de-identification certification service.
+This app is a local PHI risk-reduction tool, not a legal de-identification certification service.
 
-## Local-First Defaults
+## Local-First Behavior
 
-- Pasted chart text is processed in the browser and is not saved into the vault.
-- Structured-only de-identification is the default and does not download model assets.
-- Single-patient mode does not create a saved vault or write workflow state to local storage.
-- Vault mode stores encrypted patient workspaces in this browser profile using the local password.
-- Raw chart text is not saved to the vault. Patient roster labels and saved workflow state are encrypted before browser-local storage.
-- OpenEvidence paste-back review stores reviewed summaries in browser storage only after a PHI safety check. The raw pasted answer is not persisted.
+- Pasted text is processed in the browser.
+- Raw chart text is never saved to the encrypted vault.
+- Saved patient labels, de-identified admission packets, hospital-day packets, checklist answers, and optional pasted OpenEvidence output remain encrypted in browser-local storage.
+- The app has no account system, telemetry, analytics, or routine network API calls.
+- Text leaves the browser only when the user deliberately copies, exports, downloads, or pastes it into another system.
 
-## Data That Can Leave The Browser
+## De-Identification
 
-- Text leaves the browser only when a user intentionally copies and pastes it into another site.
-- Encrypted context exports leave the browser only when a user intentionally downloads or shares those files.
-- If enhanced model de-identification is enabled, the browser may download third-party code/model assets. Chart text is still intended to be processed locally, but the asset requests expose ordinary network metadata such as IP address and user agent to those providers.
-- External clinical AI tools, including OpenEvidence, are separate systems with their own privacy, security, and contracting requirements.
+- Structured redaction is available locally.
+- Advanced model inference runs locally in a browser worker after its asset pack is available beside the static app.
+- The public static build includes baseline local model assets. Larger optional packs must be installed by the operator for a self-hosted copy; the app does not fetch them at runtime.
+- A selected advanced model that cannot load fails closed. Select Structured only to intentionally use the fallback redactor.
+- Review residual warnings before saving or sharing any text.
 
 ## User Responsibilities
 
-- Review every copied prompt for possible PHI before using it outside the app.
-- Do not paste PHI into an external clinical AI tool unless the workflow is approved by your institution.
-- Use managed devices and approved browsers when handling real patient information.
-- Export only encrypted files when moving context between devices.
-- Delete local browser data or reset the vault when a device is reassigned, lost, or no longer authorized.
+- Review every generated prompt for possible identifiers before use outside the browser.
+- Use only institution-approved external tools for clinical information.
+- Use managed devices and approved browsers for real patient workflows.
+- Export encrypted vault data only when moving between authorized devices.
+- Clear local browser data or reset the vault before reassigning a device.
 
-## De-Identification Limits
+## Limits
 
-The scrubber can miss identifiers, especially unusual names, rare locations, free-text narrative clues, and institution-specific IDs. It can also over-redact clinically useful terms. Manual review remains required.
+The scrubber can miss unusual names, rare locations, institution-specific identifiers, and narrative clues. It can also over-redact clinically useful text. Manual review remains required.

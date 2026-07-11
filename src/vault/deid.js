@@ -4,6 +4,9 @@ export {
   OPENMED_MODEL_ID,
   MULTILANG_PII_MODEL_ID,
   GLINER_PII_MODEL_ID,
+  OPENAI_PRIVACY_FILTER_MODEL_ID,
+  ETTIN_68M_NEMOTRON_PII_MODEL_ID,
+  KNOWLEDGATOR_GLINER_PII_MODEL_ID,
   I2B2_CLINICALBERT_MODEL_ID,
   DEFAULT_DTYPE,
   MODEL_PROFILES
@@ -942,6 +945,7 @@ export function addStructuredSafeHarborEntities(rawText, entities = []) {
     { label: "CONTACT NAME", regex: /^\s*(?:Emergency contact|Mother|Father|Spouse|Daughter|Son|Guardian|Caregiver)\s*[:#]\s*([A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){1,3})/gmi },
     { label: "ORGANIZATION", regex: /^\s*Preferred pharmacy\s*[:#]\s*([^,\n\r]{2,80})/gmi },
     { label: "DOB", regex: new RegExp(String.raw`\b(?:DOB|D\.O\.B\.|Date of birth|Birth date)\s*[:#]\s*(${dateValue})`, "gi") },
+    { label: "PATIENT NAME", regex: /\b(?:Patient(?: Name)?|Pt(?: Name)?)\s+(?!is\b|was\b|reports\b|states\b)([A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){1,3})(?=\s+(?:MRN|Medical Record(?: Number)?|DOB|Date of birth|Birth date)\b|[,:;\n\r]|$)/gi },
     { label: "MRN", regex: /\b(?:MRN|Medical Record(?: Number)?)(?:\s*[:#]\s*|\s+)((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})/gi },
     { label: "ENCOUNTER ID", regex: /\b(?:CSN|FIN|HAR|Encounter(?: ID| Number))(?:\s*[:#]\s*|\s+)((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})/gi },
     { label: "ID", regex: /\b(?:Account(?: Number)?|Acct|Guarantor|Policy(?: Number)?|Member(?: ID| Number)?|Insurance(?: ID| Number)?|Subscriber(?: ID| Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Chart(?: ID| Number)?|Case(?: ID| Number)?|Visit(?: ID| Number)?)(?:\s*[:#]\s*|\s+)((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})/gi },
@@ -2771,7 +2775,8 @@ export function createDeidentifier(options = {}) {
             loadedModel = {
               pipeline: loadedPipeline,
               modelId: candidate.modelId,
-              modelStatus: candidate.modelId === DEFAULT_FALLBACK_MODEL_ID ? "fallback model" : "primary model"
+              modelStatus: candidate.modelId === DEFAULT_FALLBACK_MODEL_ID ? "fallback model" : "primary model",
+              inferenceOptions: { ...(candidate.inferenceOptions || {}) }
             };
             setStatus({
               message: `Local PII model ready.${loadedModel.modelStatus === "fallback model" ? " Fallback model in use." : ""}`,
@@ -2811,7 +2816,7 @@ export function createDeidentifier(options = {}) {
             message: `Scanning with local model (${Math.min(completedChunks + 1, chunks.length)} of ${chunks.length})...`,
             percent: 0.18 + (completedChunks / Math.max(1, chunks.length)) * 0.5
           });
-          const predictions = await model.pipeline(chunk.text, { ignore_labels: [] });
+          const predictions = await model.pipeline(chunk.text, { ignore_labels: [], ...model.inferenceOptions });
           entities.push(...modelPredictionsToEntities(chunk.text, predictions || [], chunk.offset));
         } catch (error) {
           if (chunk.text.length > 180 && depth < 4 && looksLikeModelLengthError(error)) {

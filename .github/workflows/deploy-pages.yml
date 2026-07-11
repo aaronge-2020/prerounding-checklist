@@ -9,11 +9,11 @@ on:
       - "index.html"
       - "styles.css"
       - "favicon.ico"
-      - "*.js"
+      - "Guidelines.md"
+      - ".gitattributes"
       - "assets/**"
       - "data/**"
-      - "medical-knowledge/**"
-      - "prompts/**"
+      - "models/**"
       - "src/**"
       - "vendor/**"
   workflow_dispatch:
@@ -36,6 +36,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          lfs: true
 
       - name: Build static artifact
         shell: bash
@@ -43,9 +45,11 @@ jobs:
           set -euo pipefail
           rm -rf _site
           mkdir -p _site
+          mkdir -p _site/models
           touch _site/.nojekyll
-          cp index.html styles.css favicon.ico ./*.js _site/
-          cp -R assets data medical-knowledge prompts src vendor _site/
+          cp index.html styles.css favicon.ico Guidelines.md _site/
+          cp -R assets data src vendor _site/
+          cp -R models/onnx-community models/rtrigoso _site/models/
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

@@ -1,10 +1,10 @@
-// Downloads ONNX de-identification models for self-hosted deployment.
-// Run: node scripts/download-deid-models.js
+// Installs optional ONNX de-identification asset packs for a local self-hosted copy.
+// Run: node scripts/download-deid-models.js --model=openai/privacy-filter
 //
 // Places files under ./models/ so the browser loads them locally
 // with no CDN, no CORS — works on any device on the local network.
 
-import { writeFileSync, mkdirSync, existsSync, readFileSync } from "node:fs";
+import { writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -53,6 +53,43 @@ const MODELS = [
     ]
   },
   {
+    // OpenAI Privacy Filter: larger context-aware open-weight model (q4, ~945MB with tokenizer)
+    // Browser-compatible via Transformers.js token-classification.
+    id: "openai/privacy-filter",
+    files: [
+      "config.json",
+      "tokenizer.json",
+      "tokenizer_config.json",
+      "viterbi_calibration.json",
+      "onnx/model_q4.onnx",
+      "onnx/model_q4.onnx_data"
+    ]
+  },
+  {
+    // Ettin 68M Nemotron PII: source repo ships safetensors only.
+    // Run the ONNX export step after download to create onnx/model.onnx for browser use.
+    id: "kalyan-ks/ettin-68m-nemotron-pii",
+    files: [
+      "config.json",
+      "model.safetensors",
+      "tokenizer.json",
+      "tokenizer_config.json"
+    ]
+  },
+  {
+    // Knowledgator GLiNER PII Base: GLiNER.js adapter consumes the local quantized ONNX model.
+    id: "knowledgator/gliner-pii-base-v1.0",
+    files: [
+      "added_tokens.json",
+      "gliner_config.json",
+      "special_tokens_map.json",
+      "spm.model",
+      "tokenizer.json",
+      "tokenizer_config.json",
+      "onnx/model_quint8.onnx"
+    ]
+  },
+  {
     // Fallback: small PII detection model (q8 quantized, ~29MB)
     // Mobile-feasible, works on constrained devices
     id: "rtrigoso/bert-small-pii-detection-ONNX",
@@ -98,16 +135,25 @@ async function downloadModel(model) {
 }
 
 async function main() {
-  console.log("Downloading de-identification ONNX models for self-hosted deployment...");
+  console.log("Installing local de-identification model assets...");
   mkdirSync(MODELS_DIR, { recursive: true });
 
-  for (const model of MODELS) {
+  const requestedModel = process.argv.find((arg) => arg.startsWith("--model="))?.slice("--model=".length);
+  if (!requestedModel) {
+    throw new Error(`Choose one model with --model=<id>. Available: ${MODELS.map((model) => model.id).join(", ")}`);
+  }
+  const selectedModels = MODELS.filter((model) => model.id === requestedModel);
+  if (!selectedModels.length) {
+    throw new Error(`Unknown model '${requestedModel}'. Known models: ${MODELS.map((model) => model.id).join(", ")}`);
+  }
+
+  for (const model of selectedModels) {
     await downloadModel(model);
   }
 
   console.log(`\nDone. Models are in ${MODELS_DIR}/`);
   console.log("The app will load them locally when deployed next to index.html.");
-  console.log("Set <html data-model-path=\"./models/\"> to point to this directory (already default).");
+  console.log("Serve the repository statically to load the installed local assets.");
 }
 
 main().catch((error) => {

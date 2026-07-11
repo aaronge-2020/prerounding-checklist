@@ -1,101 +1,61 @@
-# Pre-Rounding Checklist Builder
+# Local Prerounding Workspace
 
-Privacy-first browser app for inpatient pre-rounding. The app helps turn pasted chart context into a de-identified rounds workspace, bedside checklist, OpenEvidence prompt handoffs, and guideline-backed clinical workups.
+Static, server-free browser workspace for inpatient pre-rounding. It keeps de-identified patient packets in an encrypted browser-local vault, organizes hospital-day updates, builds bedside checklists, and assembles copy-ready OpenEvidence prompts.
 
-## What The App Does
+The app does not create accounts, synchronize data, host patient records, infer a clinical timeline, or author clinical notes.
 
-- Starts from either a local encrypted de-identified case vault or a single-patient workspace.
-- Accepts chart notes, labs, handoff text, medication orders, and MAR context.
-- De-identifies pasted text locally in the browser before prompts are copied elsewhere.
-- Builds a structured workflow: chart info -> checklist -> bedside findings -> final update.
-- Supports validated clinical-intent workups, evidence retrieval, and medical knowledge review proposals.
-- Keeps accepted medical knowledge as JSON source files under `medical-knowledge/`.
+## Workspace
 
-## Repo Map
+- **Vault / Roster**: create or unlock the local vault; admit, select, archive, export, and restore patients.
+- **Hospital Stay**: maintain the admission packet and labeled day-by-day updates in one place.
+- **Workups**: create, edit, import, export, order, and explicitly convert local workups into a checklist.
+- **Checklist**: answer grouped History and Physical Exam items on a laptop or phone; transfer answers with an encrypted local bundle.
+- **OpenEvidence Prompts**: edit prompt text directly and insert labeled smart variables with `@`. Admission and daily-progress prompts always include `Guidelines.md`.
+- **Quick De-ID**: process one-off text without saving it to a patient.
 
-- `index.html`: the browser app UI and workflow wiring.
-- `styles.css`: app stylesheet loaded by `index.html`.
-- `src/vault/deid.js`: local browser de-identification pipeline.
-- `src/clinical/labs.js`, `src/clinical/checklist.js`, `src/clinical/continuity.js`: shared workflow modules.
-- `src/clinical/clinical-intents.js`: validated and partial clinical intent registry.
-- `src/clinical/complaint-cds.js`: complaint/workup selection and formatting logic.
-- `src/clinical/medication-safety.js`: lightweight medication safety screening helpers.
-- `src/app/state-schema.js`: persisted vault field schema used by the app shell.
-- `open-evidence-workflows.js` and `open-evidence-results.js`: OpenEvidence task prompt wiring and result parsing.
-- `data/`: physical exam reference data, clinical guard data, test notes, and legacy/orphaned evidence CSVs.
-- `docs/`: maintainer notes that should stay reviewable and hand-edited.
-- `docs/presentation-note-standard.md`: canonical standard for H&Ps, oral presentations, and follow-up note style.
-- `data/physical-exam/physical_exam_reference.csv`: source physical exam maneuver reference.
-- `data/physical-exam/physical_exam_evidence_overlay.csv`: generated physical exam evidence overlay used by the app.
-- `medical-knowledge/`: reviewed source-of-truth clinical knowledge JSON.
-- `medical-knowledge-db.js`: generated app bundle built from `medical-knowledge/`.
-- `scripts/`: tests, generators, validators, and build helpers.
-- `vendor/`: local browser bundles used directly by `index.html`; `npm run test:syntax` fails if a vendored `.js` file is no longer loaded.
-- `reports/`: validation/provenance reports that need to stay with the repo; routine generated reports are ignored.
+## Repository Map
 
-## Medical Knowledge Workflow
+- `index.html`: static shell, CSP, navigation, and dialogs.
+- `styles.css`: app layout and component styles.
+- `src/ui/`: DOM rendering, event wiring, and icons.
+- `src/app/state/`: encrypted local vault persistence and state normalization.
+- `src/patient-context/`: admission sections and browser-worker de-identification.
+- `src/daily-updates/`: hospital-day records and trajectory assembly.
+- `src/workups/`: catalog, editable schema, validation, and checklist conversion.
+- `src/checklist/`: answers, grouped display helpers, and phone transfer bundles.
+- `src/prompts/`: pure OpenEvidence prompt and template functions.
+- `src/vault/deid/`: structured redaction rules and local model configuration.
+- `data/clinical-guard-*`: generated vocabulary used by the structured redactor.
+- `models/onnx-community/` and `models/rtrigoso/`: Git LFS baseline de-identification assets published with the static site.
+- `models/openai/`, `models/kalyan-ks/`, and `models/knowledgator/`: optional local-only asset packs, intentionally ignored so large model binaries never enter ordinary Git history or the Pages artifact.
 
-Reviewed JSON in `medical-knowledge/` is the release artifact, not the preferred authoring surface. Use Workup Studio in the app for section-scoped edits so changing a pathway tree cannot overwrite history questions, exam maneuvers, red flags, tests, or source metadata.
+## Local Models
 
-```bash
-npm run import:medical-knowledge
-npm run export:medical-knowledge
-npm run build:medical-knowledge
-npm run test:medical-knowledge
-npm run test:workup-authoring
+The browser never fetches models from a third party at runtime. The included baseline assets run locally in the browser. Larger optional model packs may be installed beside `index.html` for a self-hosted copy:
+
+```powershell
+node scripts/download-deid-models.js --model=openai/privacy-filter
 ```
 
-`npm run import:medical-knowledge` seeds the Supabase authoring tables when `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are set; otherwise it writes a local dry-run snapshot for review. `npm run export:medical-knowledge` exports approved, section-scoped change sets back into the existing JSON module envelopes and then runs the medical knowledge build/test path unless skipped.
-
-The app also has a local Medical knowledge base editor under Tools. Use it to inspect a module, edit recommendation cards, add or remove local items, and save a device-local override that the clinical workup uses immediately. Those local edits stay in the browser until reset. Use Suggest to maintainer to export and stage a review proposal; use Submit source text or clinical script for pasted guideline/pathway material that needs reviewer extraction.
-
-Workup Studio is the maintainer-facing replacement for full-file JSON editing. It has tabs for pathway tree, history, physical exam, safety checks, tests and thresholds, red flags, management/disposition, sources, and review tests. Drafts are saved as `workup_change_set_v1` patches and only reviewed/approved change sets are export-ready. Patient vault data remains browser-local and is not sent to Supabase.
-
-Backend setup:
-
-```bash
-cp .env.example .env
-supabase db push
-npm run import:medical-knowledge
-```
-
-In the app, open Tools -> Workup Studio -> Backend sync. Enter `SUPABASE_URL`, the public anon key, and a Supabase Auth user email/password. Section saves insert `change_sets` rows through Supabase RLS. Reviewers need a row in `workup_author_profiles` with `role = 'reviewer'` or `role = 'admin'` before they can approve export-ready changes. Never put the service-role key into the browser UI; it is only for import/export commands.
-
-Endocrine workup expansion has a separate generator/install path:
-
-```bash
-npm run generate:endocrine-workups
-npm run install:endocrine-workups
-npm run build:medical-knowledge
-npm run test:endocrine-knowledge
-```
-
-The generated endocrine modules are marked `review_ready`, not automatically validated clinical intents.
+Use the equivalent model identifier for the Ettin or GLiNER pack. When an optional pack is missing, the app fails closed and asks the user to select an available model or Structured only; it never silently presents fallback redaction as the selected model result.
 
 ## Validation
 
-Run the focused checks after changing app wiring or clinical content:
-
-```bash
-npm run test:ci
-npm run test:syntax
-npm run test:clinical-intents
-npm run test:complaint-cds
-npm run test:medical-knowledge
-npm run test:endocrine-knowledge
+```powershell
+npm.cmd run test:ci
 ```
 
-Use `npm run test:core` when touching de-identification, labs, checklist parsing, vault storage, state schema, medication safety screening, or continuity. The former standalone evidence retrieval engine and `test:evidence-suite` script have been removed; `data/evidence/` is retained as legacy/orphaned reference material until a maintainer decides whether to archive it.
+Focused commands:
 
-## Security And Privacy
+```powershell
+npm.cmd run test:state
+npm.cmd run test:deid
+npm.cmd run test:prompts
+npm.cmd run test:workups
+npm.cmd run test:deid-model-options
+npm.cmd run test:local-ui
+```
 
-The app is local-first by default: structured-only de-identification runs without model downloads, no analytics/tracking scripts are included, no cloud backend receives patient data by default, and saved vault records are encrypted browser-local patient workspaces. Raw chart text is not saved to the vault. See `SECURITY.md` and `PRIVACY.md` before using or deploying the app with real patient information.
+## Deployment
 
-This app can reduce PHI exposure, but it does not by itself certify HIPAA de-identification or satisfy HIPAA obligations for an external AI workflow. Institutional policy, approved tool use, required Business Associate Agreements, and documented risk analysis still govern.
-
-## Safety Notes
-
-- Do not commit patient identifiers, raw chart text, or raw proprietary guideline text.
-- Keep source provenance compact: source IDs, citations, URLs, dates, and section notes.
-- Treat generated workups as clinical-review candidates until a reviewer promotes them.
-- Review every copied prompt/output before pasting into an external clinical AI tool.
+Pushing `main` runs CI and deploys GitHub Pages. The deployment workflow publishes the static shell, `Guidelines.md`, `assets/`, `data/`, `models/`, `src/`, and `vendor/`. It checks out the tracked baseline model assets through Git LFS before building the Pages artifact.

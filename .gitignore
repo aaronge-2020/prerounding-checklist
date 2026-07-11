@@ -1,26 +1,23 @@
 node_modules/
 
-# Local env and secrets
+# Local configuration
 .env
 .env.*
-!.env.example
+
+# Optional local de-identification asset packs. The deployable baseline assets
+# remain tracked through Git LFS under models/onnx-community and models/rtrigoso.
+models/openai/
+models/kalyan-ks/
+models/knowledgator/
 
 # Raw name-dictionary sources (downloaded by scripts/build-name-dictionary.js)
 data/name-sources/
 
 # Generated/local outputs
-supabase/.temp/
 benchmark-results/
 qa-screenshots/
-archive/
-UI Design/
-reports/design-qa/
 reports/*.json
 reports/*.md
-!reports/README.md
-!reports/endocrine-workups-2026-06-06.json
-!reports/endocrine-workups-2026-06-06.md
-!reports/endocrine-workup-completion-2026-06-06.md
 coverage/
 .nyc_output/
 dist/
