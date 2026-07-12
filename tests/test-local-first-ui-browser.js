@@ -323,7 +323,7 @@ try {
   await page.setViewportSize({ width: 1280, height: 820 });
   await page.click('[data-view-target="prompts"]');
   await page.waitForSelector("#promptOutput");
-  assert.match(await page.locator("#promptOutput").inputValue(), /Write a clear admission report/);
+  assert.match(await page.locator("#promptOutput").inputValue(), /Rule of Separation/);
   assert.doesNotMatch(await page.locator("#promptOutput").inputValue(), /Privacy rules:/);
   await page.locator("#promptPreview").fill("@");
   await page.waitForSelector("#smartVariableMenu.open");

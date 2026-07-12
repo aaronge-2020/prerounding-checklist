@@ -32,13 +32,14 @@ patient = {
 assert.equal(openEvidenceTasks[["final", "rounds", "update"].join("_")], undefined);
 
 const admission = buildOpenEvidencePrompt("initial_admission_rounds", { patient, guidelines });
-assert.match(admission, /clear admission report/i);
-assert.match(admission, /clinical reasoning, and action steps separate/i);
+assert.match(admission, /Rule of Separation/);
+assert.match(admission, /History of Present Illness/);
 assert.match(admission, /Admission context/);
 
 const progress = buildOpenEvidencePrompt("daily_progress_note", { patient, selectedDayId: day.id, guidelines });
 assert.match(progress, /daily progress note/i);
-assert.match(progress, /Subjective, Objective, Assessment, and Plan/);
+assert.match(progress, /Record current vital signs/);
+assert.match(progress, /Enforce strict separation between these four sections/);
 assert.match(progress, /Feels less short of breath/);
 
 const teaching = buildOpenEvidencePrompt("teaching_case_trajectory", { patient, selectedDayId: day.id });
@@ -133,7 +134,7 @@ const directAdmission = buildCustomOpenEvidencePrompt({
   selectedDayId: day.id,
   guidelines
 });
-assert.match(directAdmission, /clear admission report/i);
+assert.match(directAdmission, /Rule of Separation/);
 assert.doesNotMatch(directAdmission, /Privacy rules:/);
 
 const directGuidelines = buildCustomOpenEvidencePrompt({
@@ -143,7 +144,7 @@ const directGuidelines = buildCustomOpenEvidencePrompt({
   selectedDayId: day.id,
   guidelines
 });
-assert.match(directGuidelines, /clear admission report/i);
+assert.match(directGuidelines, /Rule of Separation/);
 assert.doesNotMatch(directGuidelines, /@guidelines/);
 
 const consultPrompt = buildCustomOpenEvidencePrompt({

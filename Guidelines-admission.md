@@ -2,7 +2,7 @@
 
 ## **Purpose**
 
-Use this document to write History and Physical reports and daily progress notes. Tell a clear clinical story. Summarize available data. Facilitate the creation of a differential diagnosis. Present factual data without distortion to support clinical arguments. Write complete documentation for the chart. Keep the text concise and functional. The reader must find relevant data fast.
+Use this document to write History and Physical reports. Tell a clear clinical story. Summarize available data. Facilitate the creation of a differential diagnosis. Present factual data without distortion to support clinical arguments. Write complete documentation for the chart. Keep the text concise and functional. The reader must find relevant data fast.
 
 ## **Rule of Separation**
 

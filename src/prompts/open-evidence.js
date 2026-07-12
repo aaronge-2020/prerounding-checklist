@@ -48,16 +48,15 @@ function compactText(text, limit = 42000) {
 }
 
 export function documentationInstructionForTask(taskId, guidelines) {
-  // Guidelines-admission.md and Guidelines-progress.md remain the canonical
-  // sources. OpenEvidence receives only their concise natural-language rules.
+  // Guidelines-admission.md and Guidelines-progress.md are the canonical
+  // documentation standards; embed their full text so OpenEvidence receives
+  // the exact standard rather than a paraphrase of it.
   const legacy = typeof guidelines === "string" ? guidelines : "";
   const text = taskId === "initial_admission_rounds"
     ? String(legacy || guidelines?.admission || "").trim()
     : String(legacy || guidelines?.progress || "").trim();
   if (!text) throw new Error("The task-specific documentation standard must be loaded before building this prompt.");
-  return taskId === "initial_admission_rounds"
-    ? "Write a clear admission report with the presenting concern, symptom story, relevant medical and social history, medications and allergies, examination and data, then a concise assessment and prioritized plan. Keep subjective information, objective findings, clinical reasoning, and action steps separate."
-    : "Write a concise daily progress note with Subjective, Objective, Assessment, and Plan. Keep patient statements, objective findings, clinical reasoning, and action steps separate, and make the assessment distinct from the prior day.";
+  return text;
 }
 
 function patientBlocks(patient, selectedDayId = "") {
@@ -75,7 +74,9 @@ function patientBlocks(patient, selectedDayId = "") {
 
 export function buildInitialAdmissionPrompt({ patient, guidelines }) {
   const blocks = patientBlocks(patient);
-  return `Write a concise, chart-ready initial admission note from this de-identified information. ${documentationInstructionForTask("initial_admission_rounds", guidelines)} Do not repeat information.
+  return `Write a concise, chart-ready initial admission note from this de-identified information. Do not repeat information.
+
+${documentationInstructionForTask("initial_admission_rounds", guidelines)}
 
 ${compactText(blocks.patientContext)}
 
@@ -86,7 +87,9 @@ ${compactText(blocks.checklist, 10000)}
 
 export function buildDailyProgressPrompt({ patient, selectedDayId, guidelines }) {
   const blocks = patientBlocks(patient, selectedDayId);
-  return `Write a concise daily progress note for the selected hospital day from this de-identified information. ${documentationInstructionForTask("daily_progress_note", guidelines)} Include differentials for acute problems when the available information supports them.
+  return `Write a concise daily progress note for the selected hospital day from this de-identified information. Include differentials for acute problems when the available information supports them.
+
+${documentationInstructionForTask("daily_progress_note", guidelines)}
 
 ${compactText(blocks.patientContext, 18000)}
 
