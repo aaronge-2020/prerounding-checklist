@@ -320,13 +320,13 @@ try {
 
   // An AirDropped return file's raw JSON contents (not just the short code)
   // pasted into the paste box must import correctly, same as the code alone.
+  await page.evaluate(() => { document.querySelector("#statusLine").textContent = "Waiting for JSON import..."; });
   await page.fill("#phoneReturnText", returnTransferFileJson);
-  page.on("console", msg => console.log("BROWSER:", msg.text()));
   await page.click('[data-action="import-phone-return"]');
   await page.waitForFunction(() => /Returned phone answers imported/.test(document.querySelector("#statusLine")?.textContent || ""));
 
+  await page.evaluate(() => { document.querySelector("#statusLine").textContent = "Waiting for code import..."; });
   await page.fill("#phoneReturnText", returnBundle);
-  page.on("console", msg => console.log("BROWSER:", msg.text()));
   await page.click('[data-action="import-phone-return"]');
   await page.waitForFunction(() => /Returned phone answers imported/.test(document.querySelector("#statusLine")?.textContent || ""));
 
