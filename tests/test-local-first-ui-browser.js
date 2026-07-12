@@ -295,11 +295,11 @@ try {
   const phonePage = await browser.newPage({ viewport: { width: 390, height: 720 } });
   await phonePage.goto(phoneLink);
   await phonePage.waitForSelector(".phone-mode #checklistSections .checklist-item");
-  assert.equal(await phonePage.locator("#returnQr").count(), 0);
+  assert.equal(await phonePage.locator("#phoneReturnBundle").count(), 0);
   await phonePage.click('[data-action="fill-all-negatives"]');
-  assert.equal(await phonePage.locator("#returnQr").count(), 0);
+  assert.equal(await phonePage.locator("#phoneReturnBundle").count(), 0);
   await phonePage.click('[data-action="show-phone-return"]');
-  await phonePage.waitForSelector("#returnQr");
+  await phonePage.waitForSelector("#phoneReturnBundle");
   assert.equal(await phonePage.locator('[data-action="share-phone-return"]').count(), 1, "phone should offer native file sharing");
   assert.equal(await phonePage.locator('[data-action="download-phone-return"]').count(), 1, "phone should offer a file fallback");
   const returnBundle = await phonePage.locator("#phoneReturnBundle").inputValue();

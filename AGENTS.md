@@ -17,12 +17,12 @@ Purpose: a compact, current map for future work on this local-first app.
 1. Run `npm.cmd run test:ci` on Windows before considering the workspace healthy.
 2. Start at `index.html`, then `src/ui/app.js` for composition, followed by the relevant feature module under `src/ui/`. Do not inspect vendored runtimes or model binaries unless the change is specifically about them.
 3. Put pure parsing, validation, prompt assembly, redaction-review normalization, workup conversion, and mirror planning in `src/` modules outside DOM/storage code.
-4. Keep DOM, browser storage, crypto, clipboard, File System Access, QR, workers, and fetch at UI or persistence edges.
+4. Keep DOM, browser storage, crypto, clipboard, File System Access, workers, and fetch at UI or persistence edges.
 5. Before a workup-contract change, read `docs/workup-system-contract.md` and the applicable JSON under `workups/admission/`.
 
 ## Module Map
 
-- `index.html`: shell, restrictive CSP, navigation, confirmation dialogs, QR vendor.
+- `index.html`: shell, restrictive CSP, navigation, confirmation dialogs.
 - `styles.css`: visual layout. `.view` owns route scroll; preserve the scroll owners used by Hospital Stay, Checklist, and the annotated redaction document.
 - `src/ui/app.js`: composition, event-routing, and session-bound UI orchestration layer. It owns no persistence format or feature templates; move pure derivation and markup into the scoped modules below, and keep only browser/session interactions at this edge. Do not add new feature markup or browser-transfer behavior here.
   - `src/ui/checklist/presentation.js` is a pure checklist markup/view-model factory.

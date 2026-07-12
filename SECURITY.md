@@ -7,7 +7,7 @@ This project is a browser-local clinical workflow aid. It reduces exposure of pa
 - AES-GCM encrypted browser-local vault storage derived from a user-provided passphrase.
 - No account system, remote database, API, telemetry, trackers, or third-party font loads.
 - Raw pasted chart text is not written to the vault.
-- User-directed QR, copy, and download handoff bundles stay local and are encrypted before transfer.
+- User-directed copy and download handoff bundles stay local and are encrypted before transfer.
 - Advanced de-identification runs inside a browser worker and fails closed when its selected local model is unavailable.
 - A restrictive static CSP limits the app to same-origin code, workers, assets, and fetches.
 

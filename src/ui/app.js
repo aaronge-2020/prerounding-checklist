@@ -1103,7 +1103,6 @@ function renderChecklist() {
     answers,
     phoneLink: snapshot ? phoneTransfer.currentChecklistUrl() : ""
   });
-  if (snapshot) renderChecklistQr(day);
 }
 
 function currentPhoneChecklistBundle() {
@@ -1117,10 +1116,6 @@ function currentPhoneReturnBundle() {
   const snapshot = app.phoneBundle?.checklist;
   if (!snapshot) throw new Error("Open a phone checklist first.");
   return createChecklistReturnBundle(snapshot, app.phoneAnswers);
-}
-
-function renderChecklistQr() {
-  renderQr(byId("phoneQr"), phoneTransfer.currentChecklistUrl());
 }
 
 function renderPrompts() {
@@ -1484,23 +1479,7 @@ function renderPhoneChecklist() {
   document.querySelectorAll(".view").forEach((view) => view.classList.remove("active"));
   byId("checklistView").classList.add("active");
   byId("checklistContent").innerHTML = phoneView.markup;
-  if (app.phoneReturnReady && phoneView.readyToReturn) {
-    renderQr(byId("returnQr"), `#return=${returnBundle}`);
-  }
   renderStatusBar();
-}
-
-function renderQr(container, text) {
-  if (!container) return;
-  try {
-    if (!window.qrcode) throw new Error("QR generator unavailable.");
-    const qr = window.qrcode(0, "L");
-    qr.addData(text);
-    qr.make();
-    container.innerHTML = qr.createSvgTag(4, 2);
-  } catch (error) {
-    container.innerHTML = `<div class="qr-fallback">${escapeHtml(error instanceof Error ? error.message : "QR unavailable. Use copy/download.")}</div>`;
-  }
 }
 
 function collectSectionRows(containerId) {

@@ -102,7 +102,6 @@ export function createChecklistPresentation({ escapeHtml, icon }) {
           <h3>Send to phone</h3>
           <p class="muted">Share the link when supported. Download the file if the browser has no native share sheet.</p>
         </div>
-        <div id="phoneQr" class="qr-box"></div>
         <label>Bundle link
           <textarea id="phoneBundleText" readonly rows="4">${escapeHtml(phoneLink)}</textarea>
         </label>
@@ -164,7 +163,6 @@ export function createChecklistPresentation({ escapeHtml, icon }) {
           <section class="panel phone-transfer phone-return-ready">
             <h3>Return answers</h3>
             <p class="muted">Share the file back to the computer, or download it and import it there.</p>
-            <div id="returnQr" class="qr-box"></div>
             <textarea id="phoneReturnBundle" rows="6" readonly>${escapeHtml(returnBundle)}</textarea>
             <div class="button-row">
               <button class="button--primary" type="button" data-action="share-phone-return">${icon("share")} Share return file</button>

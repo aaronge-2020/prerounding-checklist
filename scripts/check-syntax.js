@@ -51,7 +51,6 @@ for (const required of [
   "Content-Security-Policy",
   "connect-src 'self'",
   "./src/ui/app.js",
-  "./vendor/qrcode-generator-2.0.4.js",
   "Guidelines-admission.md",
   "Guidelines-progress.md",
   "initial_admission_rounds",

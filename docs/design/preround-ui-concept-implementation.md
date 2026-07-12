@@ -111,7 +111,7 @@ Update `renderChecklist()`, `renderChecklistSection()`, `renderChecklistSystem()
 - Render History and Physical Exam as section headings, then render systems as muted, compact bands. Use dividers for individual checklist items; do not make each item a mini-card.
 - Give the response control a fixed visual column. For select-mode items, keep the native select but use a lighter border and consistent 32px height; for multi-select items, style choice labels as compact segmented controls. Keep baseline negative/normal semantics exactly unchanged.
 - Keep optional notes collapsed or visually secondary until used. The existing status dot should become a clear teal completion mark and a neutral outlined circle when unanswered.
-- Keep `renderPhoneTransfer()` as the narrow right utility rail: QR, copy link, download fallback, and returned-bundle import. Use a single outer surface and divider-separated blocks. Do not introduce remote phone sync.
+- Keep `renderPhoneTransfer()` as the narrow right utility rail: copy link, download fallback, and returned-bundle import. Use a single outer surface and divider-separated blocks. Do not introduce remote phone sync.
 
 ### OpenEvidence Prompts
 

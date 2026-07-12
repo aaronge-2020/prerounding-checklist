@@ -1229,22 +1229,6 @@ p {
   gap: 12px;
 }
 
-.qr-box {
-  min-height: 176px;
-  border: 1px solid var(--border);
-  border-radius: 5px;
-  display: grid;
-  place-items: center;
-  background: #ffffff;
-  overflow: auto;
-  padding: 8px;
-}
-
-.qr-box svg {
-  max-width: 100%;
-  height: auto;
-}
-
 .phone-preview {
   border: 5px solid #172224;
   border-radius: 28px;
@@ -3039,8 +3023,6 @@ p {
 .phone-transfer > * + * { border-top: 1px solid var(--border); padding-top: 12px; }
 
 .phone-transfer .button-row { gap: 6px; }
-
-.qr-box { background: var(--surface-muted); }
 
 /* OpenEvidence prompt builder */
 .prompt-layout {
