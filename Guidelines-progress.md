@@ -2,36 +2,50 @@
 
 ## Purpose
 
-Use this standard only for daily progress notes. Write concise Subjective, Objective, Assessment, and Plan sections with strict separation and no repetition.
+Use this standard only for daily progress notes. Write daily progress notes using the Subjective Objective Assessment Plan format. Enforce strict separation between these four sections. Prevent information repetition.
 
-## Rule of Separation
+### **Subjective**
 
-Place information in its designated section. Never repeat data across sections. Maintain strict boundaries between subjective reports, objective data, clinical reasoning, and action steps.
+* Oneliner to recap age, sex, and the top 3-4 most relevant PMH and reason with admission in one concise sentence.  
+* Record patient statements regarding their current state.  
+* Summarize events occurring since the previous day.  
+* Significant events that the nursing staff and management team reported overnight  
+* Exclude vital signs.  
+* Exclude physical exam findings.  
+* Exclude provider plans.  
+* Exclude consultant recommendations  
+* Remember that attendings have short attention spans so only include details that either signal a problem we need to address or relevant subjective findings. You don’t have to list out fifteen negative findings, if you can use one sentence to include them all. 
 
-## The Daily Progress Note
+### **Objective**
 
-### Subjective
+* Record current vital signs.  
+* Record pertinent physical exam updates.  
+* Record new diagnostic test results.  
+* Exclude patient statements.  
+* Exclude diagnostic theories.  
+* Exclude treatment plans.  
+* Exclude any editorialization or interpretation of any objective findings
 
-* Record patient statements regarding current state.
-* Summarize overnight events reported by nursing staff and the management team.
-* Include only details that signal a problem to address or relevant findings; compress repeated negatives when possible.
-* Exclude vital signs, physical exam findings, provider plans, and consultant recommendations.
+### **Assessment**
 
-### Objective
+* Briefly recap age, sex, and the top 3-4 most relevant PMH and reason with admission in one concise sentence.  
+* State the updated clinical trajectory.  
+* Formulate a new assessment distinct from the prior day.  
+* Explain the clinical reasoning derived from new objective data.  
+* Should be highly concise with at most 1-2 sentences.  
+* Exclude subjective complaints.  
+* Exclude objective data repetition.  
+* Exclude action steps.
 
-* Record current vital signs, pertinent physical-exam updates, and new diagnostic results.
-* Exclude patient statements, diagnostic theories, treatment plans, and editorial interpretation.
+### **Plan**
 
-### Assessment
+* Reprioritize the problem list.  
+* Separate out the acute, chronic, and preventative (mostly for primary care) problems. For every single acute (not chronic condition) problem, I need a one-liner like diagnosis 1 vs diagnosis 2 vs diagnosis 3 vs diagnosis 4, with a paragraph underneath explaining what the most likely diagnosis is and why.   
+* Note consultant recommendations when applicable  
+* List specific daily interventions.  
+* Order treatments and diagnostics.  
+* Detail the discharge strategy, which should consider the patient’s hemodynamic stability, labs, whether their clinical trajectory is improving, whether they’re likely to come back to the ED, their housing situation, need for PT/OT, and whether their conditions can be managed outside the hospital. You don’t need to note all of this, you just need to provide a single sentence that explains what the disposition of this patient should be and why.   
+* Exclude clinical reasoning.  
+* Exclude patient history.  
+* Exclude test results.
 
-* Briefly recap age, sex, the 3–4 most relevant PMH, and reason for admission in one concise sentence.
-* State the updated trajectory and formulate an assessment distinct from the prior day.
-* Explain clinical reasoning from new objective data in at most 1–2 sentences.
-* Exclude subjective complaints, objective-data repetition, and action steps.
-
-### Plan
-
-* Reprioritize acute, chronic, and preventative problems.
-* For each acute problem, state a concise differential and explain the leading diagnosis.
-* Note consultant recommendations, specific daily interventions, treatments, diagnostics, and a one-sentence disposition strategy when relevant.
-* Exclude clinical reasoning, patient history, and test-result repetition.
