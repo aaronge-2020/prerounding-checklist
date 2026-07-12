@@ -139,7 +139,7 @@ function localOnlyModelFetch(modelRoot, assetSource, modelId) {
       const [modelId, fileName] = requested.pathname.slice(1).split(marker);
       return fetchLocalFile(new URL(`${modelId}/${fileName}`, root), init);
     }
-    if (requested.origin === root.origin && requested.href.startsWith(root.href)) {
+    if (requested.origin === root.origin) {
       return fetchLocalFile(requested, init);
     }
     return new Response("External model requests are disabled.", { status: 403, statusText: "Forbidden" });

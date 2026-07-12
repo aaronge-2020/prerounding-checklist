@@ -9,6 +9,7 @@
     >
     <meta name="theme-color" content="#f7f6f2">
     <title>Pre-Rounding Checklist Builder</title>
+    <link rel="icon" href="./favicon.ico">
     <link rel="stylesheet" href="./styles.css?v=20260711-functional-remediation-19">
   </head>
   <body class="vault-locked">
@@ -59,7 +60,7 @@
             <div id="vaultContent">
               <section class="locked-vault-shell surface-panel" aria-live="polite">
                 <h2 id="vault-heading">Preparing secure vault</h2>
-                <p class="muted">Patient data is unavailable until the local vault is unlocked.</p>
+                <p class="muted">Unlock the local vault to load patient data.</p>
               </section>
             </div>
           </section>
@@ -87,19 +88,19 @@
 
     <dialog id="archiveConfirmDialog" class="confirm-dialog" aria-labelledby="archiveConfirmTitle">
       <form method="dialog">
-        <h2 id="archiveConfirmTitle">Archive / discharge patient?</h2>
-        <p id="archiveConfirmText">This patient will be removed from the local roster.</p>
+        <h2 id="archiveConfirmTitle">Archive this patient?</h2>
+        <p id="archiveConfirmText">This permanently removes the patient and their saved data from this device. This can't be undone.</p>
         <div class="button-row">
           <button value="cancel">Cancel</button>
-          <button type="button" data-action="confirm-archive-patient" class="danger-button">Archive / discharge</button>
+          <button type="button" data-action="confirm-archive-patient" class="danger-button">Archive patient</button>
         </div>
       </form>
     </dialog>
 
     <dialog id="removeDayConfirmDialog" class="confirm-dialog" aria-labelledby="removeDayConfirmTitle">
       <form method="dialog">
-        <h2 id="removeDayConfirmTitle">Remove hospital day?</h2>
-        <p id="removeDayConfirmText">This hospital-day packet will be removed from the selected patient.</p>
+        <h2 id="removeDayConfirmTitle">Remove this hospital day?</h2>
+        <p id="removeDayConfirmText">This permanently removes the day and its saved checklist answers from this patient.</p>
         <div class="button-row">
           <button value="cancel">Cancel</button>
           <button type="button" data-action="confirm-remove-day" class="danger-button">Remove hospital day</button>
@@ -110,7 +111,7 @@
     <dialog id="deleteVaultConfirmDialog" class="confirm-dialog danger-confirm-dialog" aria-labelledby="deleteVaultConfirmTitle">
       <form method="dialog">
         <h2 id="deleteVaultConfirmTitle">Delete this local vault?</h2>
-        <p>This permanently removes all encrypted patients, hospital days, checklist answers, and local workup overrides from this browser. It cannot be undone or recovered.</p>
+        <p>This permanently deletes every patient, hospital day, checklist answer, and workup override stored in this browser. It can't be undone or recovered.</p>
         <label>Type DELETE to confirm
           <input id="deleteVaultConfirmation" autocomplete="off" spellcheck="false" placeholder="DELETE">
         </label>

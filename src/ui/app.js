@@ -19,12 +19,14 @@ import { createChecklistSnapshot } from "../workups/checklist-conversion.js?v=20
 import {
   createChecklistReturnBundle,
   createPhoneChecklistBundle,
-  decodeChecklistReturnBundle,
+  decodeChecklistReturnInput,
   decodeChecklistReturnTransferFile,
   decodePhoneChecklistBundle,
   decodePhoneChecklistTransferFile,
   emptyChecklistAnswers,
+  emptyQuickNotes,
   fillNegativeChecklistAnswers,
+  mergeQuickNotes,
   mergeReturnedAnswers,
   setChecklistChoice,
   setChecklistNote
@@ -33,6 +35,9 @@ import { groupChecklistItemsBySystem } from "../checklist/grouping.js?v=20260711
 import { icon } from "./icons.js?v=20260711-functional-remediation-15";
 import { createChecklistPresentation } from "./checklist/presentation.js?v=20260711-functional-remediation-19";
 import { createPhoneTransferController } from "./checklist/transfer.js?v=20260711-functional-remediation-19";
+import { createChecklistSearchController, toggleItemNote } from "./checklist/search.js?v=20260711-functional-remediation-19";
+import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-functional-remediation-19";
+import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260711-functional-remediation-19";
 import { createRedactionPresentation, redactionPosition, warningDescription, warningSnippet } from "./redaction/presentation.js?v=20260711-functional-remediation-19";
 import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260711-functional-remediation-19";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
@@ -49,6 +54,8 @@ const app = {
   guidelines: { admission: "", progress: "" },
   phoneBundle: null,
   phoneAnswers: {},
+  phoneQuickNotes: [],
+  phoneResumeOffer: null,
   status: "",
   vaultUnlockError: "",
   deidMode: DEFAULT_DEID_MODEL_KEY,
@@ -77,7 +84,10 @@ const app = {
   workupImportDraft: "",
   workupApiBusy: false,
   workupApiDeidConfirmed: false,
+  workupImportPanelOpen: false,
   phoneReturnReady: false,
+  checklistSearchQuery: "",
+  checklistOpenNoteIds: new Set(),
   workupImportError: "",
   workupCatalogOpen: false,
   workupCatalogQuery: "",
@@ -121,6 +131,9 @@ function escapeHtml(value = "") {
 const checklistPresentation = createChecklistPresentation({ escapeHtml, icon });
 const redactionPresentation = createRedactionPresentation({ escapeHtml, icon });
 const workupPresentation = createWorkupPresentation({ escapeHtml, icon });
+const checklistSearch = createChecklistSearchController({ Fuse, normalizeQuery: normalizeWorkupCatalogQuery, byId });
+const phoneAutosave = createPhoneAutosave(localStorage);
+const phoneSession = createPhoneSessionController({ phoneAutosave, state: app, active, selectedChecklistDay, persistVault, renderPhoneChecklist, renderChecklist });
 
 function selectedDeidOption() {
   return app.deidMode === STRUCTURED_DEID_MODE ? null : deidModelOptionByKey(app.deidMode);
@@ -450,10 +463,12 @@ function active() {
   return activePatient(app.vault);
 }
 
-function setStatus(message) {
+function setStatus(message, { icon: iconName } = {}) {
   app.status = message;
   const status = byId("statusLine");
-  if (status) status.textContent = message;
+  if (!status) return;
+  if (iconName) status.innerHTML = `${icon(iconName)}${escapeHtml(message)}`;
+  else status.textContent = message;
 }
 
 const phoneTransfer = createPhoneTransferController({
@@ -528,11 +543,16 @@ function clearSensitiveSession() {
   app.draftWorkup = null;
   app.phoneBundle = null;
   app.phoneAnswers = {};
+  app.phoneQuickNotes = [];
+  app.phoneResumeOffer = null;
   app.phoneReturnReady = false;
+  app.checklistSearchQuery = "";
+  app.checklistOpenNoteIds = new Set();
   app.workupImportError = "";
   app.workupImportDraft = "";
   app.workupApiBusy = false;
   app.workupApiDeidConfirmed = false;
+  app.workupImportPanelOpen = false;
   app.promptDrafts = {};
   app.promptDayId = "";
   clearPhiReviews();
@@ -552,6 +572,8 @@ function render() {
     app.view = "vault";
     app.phoneBundle = null;
     app.phoneAnswers = {};
+    app.phoneQuickNotes = [];
+    app.phoneResumeOffer = null;
     app.phoneReturnReady = false;
     clearPhiReviews();
     clearQuickDeidSession();
@@ -589,7 +611,7 @@ function renderStatusBar() {
   byId("vaultStateLabel").textContent = app.vault ? "Vault unlocked" : record ? "Vault locked" : "No vault on this device";
   const deidStatus = selectedDeidStatus();
   byId("deidStateLabel").textContent = `De-ID: ${deidModelLabel(app.deidMode)} - ${deidStatus.ready ? "ready locally" : "not loaded"}`;
-  byId("statusLine").textContent = app.status || "All data encrypted locally. No cloud sync. External transmission requires an explicit user action.";
+  byId("statusLine").textContent = app.status || "All data is encrypted and stays on this device. Nothing leaves without your explicit action.";
   const switcher = byId("patientSwitcher");
   if (!switcher) return;
   const patients = app.vault?.patients || [];
@@ -661,7 +683,7 @@ function renderVault() {
           <div class="section-heading vault-access-heading">
             <div>
               <h2 id="vault-heading">Unlock local vault</h2>
-              <p class="muted">No patient, roster, workup, checklist, or prompt data is loaded until this passphrase decrypts the vault on this device.</p>
+              <p class="muted">Your passphrase decrypts patient, workup, checklist, and prompt data stored on this device. Nothing loads until you unlock it.</p>
             </div>
             <div class="button-row">
               <button class="button--secondary" type="button" data-action="restore-vault">${icon("upload")} Restore encrypted vault</button>
@@ -676,7 +698,7 @@ function renderVault() {
             record
               ? `<div class="vault-recovery">
                   <strong>Forgot the passphrase?</strong>
-                  <span>It cannot be recovered. Permanently remove this encrypted vault to start over.</span>
+                  <span>It can't be recovered — delete this vault to start over.</span>
                   <button class="button--quiet" type="button" data-action="request-delete-vault">Delete vault and start over</button>
                 </div>`
               : `<div class="next-step compact-next-step"><strong>Next step: create a passphrase.</strong><span>This creates an encrypted local vault on this device.</span></div>`
@@ -736,9 +758,9 @@ function renderVault() {
         </div>
         <div class="roster-column-head" aria-hidden="true"><span>Patient</span><span>Status</span><span>Hospital days</span><span></span></div>
         <div class="patient-list">
-          ${patients.length ? patients.map(renderPatientRow).join("") : `<div class="empty-state">No patients in this local vault.</div>`}
+          ${patients.length ? patients.map(renderPatientRow).join("") : `<div class="empty-state">No patients yet. Add one above to get started.</div>`}
         </div>
-        <div class="local-vault-note"><strong>Local encryption</strong><span>All vault data stays encrypted and stored only on this device.</span></div>
+        <div class="local-vault-note"><strong>Local encryption</strong><span>This vault lives only in this browser. Export it to create a portable encrypted backup.</span></div>
       </section>
     </div>
   `;
@@ -918,12 +940,12 @@ function renderDaily() {
         <div class="section-heading tight">
           <div>
             <h2>Hospital day</h2>
-            <p class="muted">User-labeled packets only.</p>
+            <p class="muted">You choose the label for each day.</p>
           </div>
         </div>
         <div class="next-step compact-next-step">
           <strong>${days.length ? "Next: keep this stay current." : "Next: add the first hospital day."}</strong>
-          <span>${days.length ? "Select a day, add de-identified updates, then save changes." : "Add a user-labeled packet before building a workup."}</span>
+          <span>${days.length ? "Select a day, add de-identified updates, then save changes." : "Add a hospital day before building a workup."}</span>
         </div>
         <div class="timeline-rail">
           ${days.length ? days.map((day, index) => renderDayRow(day, selected?.id, index)).join("") : `<div class="empty-state">No hospital days saved.</div>`}
@@ -945,14 +967,14 @@ function renderDaily() {
         <section class="panel admission-packet packet-surface">
           <details class="admission-packet-details" open>
             <summary>
-              <span><strong>Admission packet</strong><span class="muted">Patient-level de-identified context</span></span>
+              <span><strong>Admission packet</strong><span class="muted">De-identified background for this stay</span></span>
               <span class="muted">${patient.contextSections.length} fields</span>
             </summary>
             <div class="admission-packet-body">
               <div class="section-heading">
                 <div>
                   <h2>Admission packet</h2>
-                  <p class="muted">Patient-level de-identified context used throughout this stay.</p>
+                  <p class="muted">De-identified background information used throughout this hospital stay.</p>
                 </div>
                 <div class="button-row">
                   <button class="button--secondary" type="button" data-action="add-context-section">${icon("plus")} Add field</button>
@@ -976,7 +998,7 @@ function renderDaily() {
                 <div class="section-heading">
                   <div>
                     <h2>${escapeHtml(selected.label)}</h2>
-                    <p class="muted">${escapeHtml(selected.date)} · User-labeled packets only. No automatic trend detection.</p>
+                    <p class="muted">${escapeHtml(selected.date)} · No automatic trend detection — you write and label each day's findings yourself.</p>
                   </div>
                   <div class="button-row">
                     <button class="button--secondary" type="button" data-action="add-daily-section">${icon("plus")} Add field</button>
@@ -1078,6 +1100,7 @@ function renderWorkups() {
     workupImportError: app.workupImportError,
     workupApiBusy: app.workupApiBusy,
     workupApiDeidConfirmed: app.workupApiDeidConfirmed,
+    workupImportPanelOpen: app.workupImportPanelOpen,
     workupImportDraft: app.workupImportDraft
   });
   bindWorkupReordering();
@@ -1097,25 +1120,30 @@ function renderChecklist() {
   const day = selectedChecklistDay(patient);
   const snapshot = day?.checklistSnapshot || null;
   const answers = day?.answers || {};
+  checklistSearch.buildIndex(snapshot);
   byId("checklistContent").innerHTML = checklistPresentation.renderDesktopChecklist({
     day,
     snapshot,
     answers,
+    quickNotes: day?.quickNotes || [],
+    openNoteIds: app.checklistOpenNoteIds,
+    searchQuery: app.checklistSearchQuery,
     phoneLink: snapshot ? phoneTransfer.currentChecklistUrl() : ""
   });
+  checklistSearch.updateFilter(app.checklistSearchQuery);
 }
 
 function currentPhoneChecklistBundle() {
   const patient = active();
   const day = selectedChecklistDay(patient);
   if (!day?.checklistSnapshot) throw new Error("Build a checklist first.");
-  return createPhoneChecklistBundle(patient, day.checklistSnapshot, day.answers || {});
+  return createPhoneChecklistBundle(patient, day.checklistSnapshot, day.answers || {}, day.quickNotes || []);
 }
 
 function currentPhoneReturnBundle() {
   const snapshot = app.phoneBundle?.checklist;
   if (!snapshot) throw new Error("Open a phone checklist first.");
-  return createChecklistReturnBundle(snapshot, app.phoneAnswers);
+  return createChecklistReturnBundle(snapshot, app.phoneAnswers, app.phoneQuickNotes);
 }
 
 function renderPrompts() {
@@ -1164,7 +1192,7 @@ function renderPrompts() {
           </div>
         </div>
         <div class="prompt-template-footer">
-          <div class="notice">${task.requiresGuidelines ? "@guidelines is included by default and required for this prompt type." : "Insert only the saved context you want included."}</div>
+          <div class="notice">${task.requiresGuidelines ? "@guidelines is included by default and required for this prompt type." : "Insert only the saved context you want to include."}</div>
           <div class="button-row">
             <button class="button--secondary" type="button" data-action="save-prompt-template">Save prompt</button>
             <button class="button--quiet" type="button" data-action="reset-prompt-template">Reset</button>
@@ -1205,7 +1233,7 @@ function renderSettings() {
         <div class="section-heading">
           <div>
             <h2 id="settings-heading">Team and presentation preferences</h2>
-            <p class="muted">These preferences are appended to every OpenEvidence prompt and workup-draft request.</p>
+            <p class="muted">These are added to every OpenEvidence prompt and workup-draft request.</p>
           </div>
         </div>
         <div class="settings-fields">
@@ -1238,12 +1266,12 @@ function renderSettings() {
         <div class="section-heading">
           <div>
             <h2>Bring your own OpenAI key</h2>
-            <p class="muted">Use your key to turn a reviewed, de-identified OpenEvidence workup draft into editable workup JSON.</p>
+            <p class="muted">Use your own key to turn a reviewed, de-identified OpenEvidence workup draft into editable workup rows.</p>
           </div>
         </div>
         <div class="notice settings-security-note">
           <strong>${apiKeySaved ? "An API key is saved in the encrypted vault." : "No API key is saved."}</strong>
-          <span>The key is never displayed again, is encrypted at rest inside this browser's vault record, and is used only after you explicitly start a conversion. While the vault is unlocked, the browser must hold it in memory to make that request.</span>
+          <span>The key is never shown again. It's encrypted at rest in this browser's vault record and only used when you start a conversion. While the vault is unlocked, the browser keeps it in memory to make that request.</span>
         </div>
         <div class="settings-fields">
           <label class="settings-field-wide">OpenAI API key
@@ -1259,7 +1287,7 @@ function renderSettings() {
           <button class="button--primary" type="button" data-action="save-openai-byok">Save encrypted key</button>
           <button class="button--quiet" type="button" data-action="clear-openai-byok" ${apiKeySaved ? "" : "disabled"}>Remove saved key</button>
         </div>
-        <p class="muted settings-helper">Without a saved key, the Workups screen keeps the existing copy-and-paste ChatGPT formatter prompt as the fallback.</p>
+        <p class="muted settings-helper">Without a saved key, the Workups page falls back to the copy-and-paste ChatGPT formatter prompt.</p>
       </section>
     </div>
   `;
@@ -1291,7 +1319,7 @@ async function saveOpenAiByok() {
   const preferences = currentPreferences();
   const replacementKey = String(byId("openAiApiKeyInput")?.value || "").trim();
   const apiKey = replacementKey || preferences.openAiApiKey;
-  if (!apiKey) throw new Error("Enter an OpenAI API key before saving BYOK settings.");
+  if (!apiKey) throw new Error("Enter an OpenAI API key before saving.");
   setVaultPreferences({
     ...preferences,
     openAiApiKey: apiKey,
@@ -1358,7 +1386,7 @@ function renderQuickDeidReview() {
       <div class="redaction-review-heading">
         <div>
           <strong>${queueStatus}</strong>
-          <span class="muted">${pendingRedactions.length} unconfirmed redaction${pendingRedactions.length === 1 ? "" : "s"}; ${activeWarnings.length} remaining flag${activeWarnings.length === 1 ? "" : "s"}. Originals clear when this tab closes or you leave this tool.</span>
+          <span class="muted">${pendingRedactions.length} unconfirmed redaction${pendingRedactions.length === 1 ? "" : "s"}, ${activeWarnings.length} remaining flag${activeWarnings.length === 1 ? "" : "s"}. Originals disappear when you close this tab or leave this tool.</span>
         </div>
         <div class="button-row">
           ${pendingRedactions.length ? `<button class="button--quiet" type="button" data-action="confirm-all-quick-redactions">Confirm all (${pendingRedactions.length})</button>` : ""}
@@ -1366,16 +1394,16 @@ function renderQuickDeidReview() {
         </div>
       </div>
       ${renderRedactionDocument(app.quickDeid.output, review, { id: "quickDeidReviewDocument", action: "inspect-quick-redaction", label: "Annotated de-identified text" })}
-      <p class="muted quick-review-instruction">The crossed-out value is the memory-only original; its replacement is safe to copy. Highlight any unmarked identifier in this one document, then choose Redact highlighted text.</p>
+      <p class="muted quick-review-instruction">The crossed-out text is the original — kept only in memory, never saved. Its replacement is safe to copy. To catch anything the model missed, highlight it here, then choose Redact highlighted text.</p>
       ${activeRedaction ? `
         <div class="redaction-inspector quick-review-current redaction-inline-actions">
           <div>
             <strong>${activeRedactionIsConfirmed ? "Accepted redaction" : `Review ${escapeHtml(activeRedaction.placeholder)}`}</strong>
-            <span>${activeRedactionIsConfirmed ? "Only the safe replacement is shown. Undo restores the source in this active tab." : "Accept keeps the replacement. Reject restores the source, then the next pending redaction opens in the center of this document."}</span>
+            <span>${activeRedactionIsConfirmed ? "Only the safe replacement is shown. Undo brings back the original in this tab." : "Accept keeps the replacement. Reject restores the original, then the next pending redaction opens in the middle of the document."}</span>
           </div>
           <div class="button-row">
             ${activeRedactionIsConfirmed ? "" : `<button class="button--secondary" type="button" data-action="confirm-quick-redaction">Accept redaction</button>`}
-            <button class="button--quiet" type="button" data-action="restore-quick-non-phi" data-redaction-index="${activeRedactionIndex}">${activeRedactionIsConfirmed ? "Undo redaction" : "Reject — restore source"}</button>
+            <button class="button--quiet" type="button" data-action="restore-quick-non-phi" data-redaction-index="${activeRedactionIndex}">${activeRedactionIsConfirmed ? "Undo redaction" : "Reject — restore original"}</button>
           </div>
         </div>
       ` : ""}
@@ -1383,7 +1411,7 @@ function renderQuickDeidReview() {
         <div class="quick-residual-review quick-review-current">
           <div>
             <strong>Residual PHI flag</strong>
-            <span class="muted">Choose once; the next remaining flag opens automatically.</span>
+            <span class="muted">Choose once — the next remaining flag opens automatically.</span>
           </div>
           <strong>${escapeHtml(warningDescription(activeWarning))}</strong>
           <div class="button-row">
@@ -1392,7 +1420,7 @@ function renderQuickDeidReview() {
           </div>
         </div>
       ` : ""}
-      ${!activeRedaction && !activeWarning ? `<div class="quick-review-complete notice"><strong>Ready to copy</strong><p class="quick-deid-step-helper">You can still highlight any missed identifier in the document and redact it before copying.</p></div>` : ""}
+      ${!activeRedaction && !activeWarning ? `<div class="quick-review-complete notice"><strong>Ready to copy</strong><p class="quick-deid-step-helper">You can still highlight anything the model missed and redact it before copying.</p></div>` : ""}
     </div>
   `;
 }
@@ -1413,16 +1441,16 @@ function renderQuickModelControl() {
   } else if (option) {
     action = `<span class="model-selection-message model-selection-message--ready">${icon("shield")} Verified and ready locally.</span>`;
   } else {
-    action = `<span class="model-selection-message">Structured rules run locally without a model download.</span>`;
+    action = `<span class="model-selection-message">Ready — no download needed.</span>`;
   }
   return `
-    <section class="quick-model-control" aria-label="Local PII model">
-      <label for="quickDeidMode">Local PII model</label>
+    <section class="quick-model-control" aria-label="Local de-identification model">
+      <label for="quickDeidMode">Local de-identification model</label>
       <div class="quick-model-control-row">
         <select id="quickDeidMode" aria-label="Local model">${deidModelSelectOptions()}</select>
         ${action}
       </div>
-      <p class="muted">${escapeHtml(option?.description || "Use structured local redaction without a downloaded model.")}</p>
+      <p class="muted">${escapeHtml(option?.description || "Uses structured local rules to redact identifiers without a downloaded model.")}</p>
       ${app.quickDeid.status ? `<span class="model-selection-message" aria-live="polite">${escapeHtml(app.quickDeid.status)}</span>` : ""}
       ${progress ? `<div class="model-selection-progress" aria-live="polite"><progress data-active-model-progress value="${Math.max(0, progress.completedBytes)}" max="${Math.max(1, progress.totalBytes)}"></progress><span data-active-model-progress-text>${escapeHtml(modelPackProgressText(option))}</span></div>` : ""}
       ${error ? `<div class="model-selection-message model-selection-message--error" role="alert">${escapeHtml(error)}</div>${renderOpenMedSmallFallback(option)}` : ""}
@@ -1447,7 +1475,7 @@ function renderQuickDeid() {
         <section class="quick-review-workspace">
           ${renderQuickDeidReview()}
           <div class="quick-copy-footer">
-            <span class="muted">Copy after you have corrected or accepted the marked changes.</span>
+            <span class="muted">Copy after you've reviewed and accepted the marked changes.</span>
             <button class="button--primary" type="button" data-action="copy-quick-deid-output">${icon("copy")} Copy result</button>
           </div>
         </section>
@@ -1456,7 +1484,7 @@ function renderQuickDeid() {
           <label for="quickDeidInput">Source text</label>
           <textarea id="quickDeidInput" aria-label="Source text" spellcheck="false" placeholder="Paste text from any source">${escapeHtml(app.quickDeid.input)}</textarea>
           <div class="quick-deid-start-footer">
-            <span class="muted">The selected model runs locally. Your text is not saved by this tool.</span>
+            <span class="muted">The selected model runs locally. Your text isn't saved by this tool.</span>
             <button class="button--primary" type="button" data-action="run-quick-deid" ${deidReady ? "" : "disabled"}>${icon("shield")} Run de-identification</button>
           </div>
         </section>
@@ -1469,16 +1497,22 @@ function renderQuickDeid() {
 function renderPhoneChecklist() {
   const snapshot = app.phoneBundle.checklist;
   const returnBundle = phoneTransfer.currentReturnCode();
+  checklistSearch.buildIndex(snapshot);
   const phoneView = checklistPresentation.buildPhoneChecklistView({
     patientLabel: app.phoneBundle.patientLabel,
     snapshot,
     answers: app.phoneAnswers,
+    quickNotes: app.phoneQuickNotes,
+    openNoteIds: app.checklistOpenNoteIds,
+    searchQuery: app.checklistSearchQuery,
     phoneReturnReady: app.phoneReturnReady,
+    resumeOffer: app.phoneResumeOffer,
     returnBundle
   });
   document.querySelectorAll(".view").forEach((view) => view.classList.remove("active"));
   byId("checklistView").classList.add("active");
   byId("checklistContent").innerHTML = phoneView.markup;
+  checklistSearch.updateFilter(app.checklistSearchQuery);
   renderStatusBar();
 }
 
@@ -1635,6 +1669,12 @@ async function handleClick(event) {
     if (action === "fill-all-negatives") await fillChecklistNegatives();
     if (action === "fill-section-negatives") await fillChecklistNegatives({ kind: target.dataset.kind });
     if (action === "fill-system-negatives") await fillChecklistNegatives({ kind: target.dataset.kind, system: target.dataset.system });
+    if (action === "toggle-item-note") toggleItemNote(target, app.checklistOpenNoteIds);
+    if (action === "clear-checklist-search") clearChecklistSearch();
+    if (action === "add-quick-note") await phoneSession.addQuickNoteText(byId("quickNoteInput")?.value);
+    if (action === "delete-quick-note") await phoneSession.deleteQuickNoteById(target.dataset.noteId);
+    if (action === "resume-phone-autosave") phoneSession.resumeAutosave();
+    if (action === "discard-phone-autosave") phoneSession.discardAutosave();
     if (action === "save-prompt-template") savePromptTemplate();
     if (action === "reset-prompt-template") resetPromptTemplate();
     if (action === "insert-prompt-variable") insertPromptVariable(target.dataset.token);
@@ -1659,7 +1699,7 @@ async function handleClick(event) {
     if (action === "dismiss-quick-warning") dismissQuickWarning(Number(target.dataset.warningIndex));
   } catch (error) {
     app.workupImportError = action.includes("workup") ? error.message : app.workupImportError;
-    setStatus(error instanceof Error ? error.message : "Action failed.");
+    setStatus(error instanceof Error ? error.message : "Something went wrong. Try again.");
     render();
   }
 }
@@ -1744,7 +1784,7 @@ async function archiveSelectedPatient(patientId) {
   app.vault = archivePatient(app.vault, patientId);
   app.pendingArchivePatientId = "";
   byId("archiveConfirmDialog")?.close();
-  await persistVault("Patient removed from the local roster.");
+  await persistVault("Patient archived.");
   render();
 }
 
@@ -1752,7 +1792,7 @@ function requestArchivePatient(patientId) {
   const patient = app.vault?.patients?.find((entry) => entry.id === patientId);
   if (!patient) return;
   app.pendingArchivePatientId = patientId;
-  byId("archiveConfirmText").textContent = `${patient.displayLabel} will be removed from this local roster.`;
+  byId("archiveConfirmText").textContent = `This permanently removes ${patient.displayLabel} and their saved data from this device. This can't be undone.`;
   byId("archiveConfirmDialog")?.showModal();
 }
 
@@ -1760,7 +1800,7 @@ function requestRemoveDay(dayId) {
   const day = active()?.days?.find((entry) => entry.id === dayId);
   if (!day) return;
   app.pendingRemoveDayId = dayId;
-  byId("removeDayConfirmText").textContent = `${day.label} (${day.date}) and its saved checklist answers will be removed from this patient.`;
+  byId("removeDayConfirmText").textContent = `This permanently removes ${day.label} (${day.date}) and its saved checklist answers from this patient.`;
   byId("removeDayConfirmDialog")?.showModal();
 }
 
@@ -3151,6 +3191,7 @@ async function parseAndSaveWorkupJson(text) {
   app.workupImportError = "";
   app.workupImportDraft = "";
   app.workupApiDeidConfirmed = false;
+  app.workupImportPanelOpen = false;
   render();
 }
 
@@ -3179,6 +3220,8 @@ async function copyOpenEvidenceWorkupPrompt() {
   });
   byId("workupPromptOutput").value = prompt;
   await copyText(prompt);
+  setStatus("Copied prompt. Opening OpenEvidence...", { icon: "externalLink" });
+  window.open("https://www.openevidence.com/", "_blank", "noopener,noreferrer");
 }
 
 async function copyJsonFormatterPrompt() {
@@ -3188,6 +3231,9 @@ async function copyJsonFormatterPrompt() {
   });
   byId("workupPromptOutput").value = prompt;
   await copyText(prompt);
+  if (currentPreferences().openAiApiKey) return;
+  setStatus("Copied prompt. Opening ChatGPT...", { icon: "externalLink" });
+  window.open("https://chatgpt.com/", "_blank", "noopener,noreferrer");
 }
 
 async function formatWorkupJsonWithSavedKey() {
@@ -3229,6 +3275,7 @@ async function buildChecklist() {
     ...day,
     checklistSnapshot: snapshot,
     answers: emptyChecklistAnswers(snapshot),
+    quickNotes: day.quickNotes || emptyQuickNotes(),
     updatedAt: new Date().toISOString()
   };
   app.selectedDayId = nextDay.id;
@@ -3243,14 +3290,15 @@ async function importPhoneReturnBundle(bundle) {
   const day = selectedChecklistDay(patient);
   if (!day?.checklistSnapshot) throw new Error("Build a checklist first.");
   const answers = mergeReturnedAnswers(day.answers || {}, bundle, day.checklistSnapshot);
-  const nextDay = { ...day, answers, updatedAt: new Date().toISOString() };
+  const quickNotes = mergeQuickNotes(day.quickNotes || [], bundle.quickNotes || []);
+  const nextDay = { ...day, answers, quickNotes, updatedAt: new Date().toISOString() };
   app.vault = updateActivePatient(app.vault, (current) => ({ ...current, days: upsertDay(current.days, nextDay) }));
   await persistVault("Returned phone answers imported.");
   render();
 }
 
 async function importPhoneReturn() {
-  await importPhoneReturnBundle(decodeChecklistReturnBundle(byId("phoneReturnText").value));
+  await importPhoneReturnBundle(decodeChecklistReturnInput(byId("phoneReturnText").value));
 }
 
 async function importPhoneReturnFile(file) {
@@ -3258,9 +3306,7 @@ async function importPhoneReturnFile(file) {
 }
 
 async function importPhoneBundleFile(file) {
-  app.phoneBundle = decodePhoneChecklistTransferFile(await file.text());
-  app.phoneAnswers = app.phoneBundle.answers || emptyChecklistAnswers(app.phoneBundle.checklist);
-  app.phoneReturnReady = false;
+  phoneSession.enterPhoneMode(decodePhoneChecklistTransferFile(await file.text()));
   render();
 }
 
@@ -3369,6 +3415,7 @@ function handleChange(event) {
   }
   if (event.target.id === "workupApiDeidConfirmed") {
     app.workupApiDeidConfirmed = event.target.checked;
+    app.workupImportPanelOpen = true;
     renderWorkups();
   }
   if (isWorkupEditorControl(event.target)) queueWorkupAutosave();
@@ -3422,6 +3469,7 @@ async function updateChecklistAnswer(input) {
   if (app.phoneBundle) {
     const item = app.phoneBundle.checklist.items.find((entry) => entry.id === input.name);
     app.phoneAnswers = setChecklistChoice(app.phoneAnswers, item, input.value, input.tagName === "SELECT" ? Boolean(input.value) : input.checked);
+    phoneSession.saveAutosave();
     renderPhoneChecklist();
     return;
   }
@@ -3448,6 +3496,7 @@ async function fillChecklistNegatives({ kind = "", system = "" } = {}) {
   }
   if (app.phoneBundle) {
     app.phoneAnswers = result.answers;
+    phoneSession.saveAutosave();
     renderPhoneChecklist();
     return;
   }
@@ -3467,6 +3516,11 @@ function showPhoneReturn() {
   }
   app.phoneReturnReady = true;
   renderPhoneChecklist();
+}
+
+function clearChecklistSearch() {
+  app.checklistSearchQuery = "";
+  checklistSearch.clear();
 }
 
 function handleInput(event) {
@@ -3515,11 +3569,17 @@ function handleInput(event) {
     app.quickDeid.output = event.target.value;
     return;
   }
+  if (event.target.id === "checklistSearchInput") {
+    app.checklistSearchQuery = event.target.value;
+    checklistSearch.updateFilter(app.checklistSearchQuery);
+    return;
+  }
   if (!event.target.classList.contains("item-note-input")) return;
   const itemId = event.target.closest(".checklist-item")?.dataset.itemId;
   if (!itemId) return;
   if (app.phoneBundle) {
     app.phoneAnswers = setChecklistNote(app.phoneAnswers, itemId, event.target.value);
+    phoneSession.saveAutosave();
     const returnBundle = byId("phoneReturnBundle");
     if (returnBundle) returnBundle.value = phoneTransfer.currentReturnCode();
     return;
@@ -3543,6 +3603,9 @@ function handleToggle(event) {
     event.target.open = true;
     app.workupCatalogOpen = true;
   }
+  if (event.target.matches?.(".workup-import")) {
+    app.workupImportPanelOpen = event.target.open;
+  }
 }
 
 function bindEvents() {
@@ -3551,6 +3614,14 @@ function bindEvents() {
   document.addEventListener("change", handleChange);
   document.addEventListener("input", handleInput);
   document.addEventListener("toggle", handleToggle, true);
+  // Enter submits a quick note without needing the on-screen keyboard's
+  // return key to double as a form submit.
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" && event.target.id === "quickNoteInput") {
+      event.preventDefault();
+      void phoneSession.addQuickNoteText(event.target.value);
+    }
+  });
   document.querySelectorAll("[data-view-target]").forEach((button) => {
     button.addEventListener("click", () => {
       if (!vaultIsUnlocked() && button.dataset.viewTarget !== "vault") {
@@ -3569,8 +3640,7 @@ function bindEvents() {
 async function init() {
   const params = new URLSearchParams(window.location.hash.replace(/^#/, ""));
   if (params.has("phone")) {
-    app.phoneBundle = decodePhoneChecklistBundle(params.get("phone"));
-    app.phoneAnswers = app.phoneBundle.answers || emptyChecklistAnswers(app.phoneBundle.checklist);
+    phoneSession.enterPhoneMode(decodePhoneChecklistBundle(params.get("phone")));
   }
   bindEvents();
   render();

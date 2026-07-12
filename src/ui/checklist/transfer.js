@@ -65,6 +65,8 @@ export function createPhoneTransferController({
     }
   }
 
+  // A file (not a link) so AirDropping it never opens a second tab/instance
+  // of the app - it just lands as a file to import, same as a download.
   async function shareReturn() {
     const file = transferFile(FileConstructor, "prerounding-checklist-return.bundle.json", createChecklistReturnTransferFile(getReturnBundle()));
     if (!file || typeof navigatorObject?.share !== "function" || (navigatorObject.canShare && !navigatorObject.canShare({ files: [file] }))) {

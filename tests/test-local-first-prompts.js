@@ -19,13 +19,24 @@ patient = {
   ]
 };
 const day = createDailyRecord({ date: "2026-07-09", label: "Hospital day 2" });
+const checklistSnapshot = {
+  schema: "prerounding_checklist_v1",
+  id: "checklist_prompt_test",
+  createdAt: "2026-07-09T12:00:00.000Z",
+  workupIds: ["test-workup"],
+  workupTitles: ["Test workup"],
+  items: [{ id: "item_1", workupId: "test-workup", workupTitle: "Test workup", itemId: "item_1", kind: "history", text: "Chest pain?", choices: ["No", "Yes"], select: "one", system: "Cardiovascular" }]
+};
 patient = {
   ...patient,
   days: upsertDay(patient.days, {
     ...day,
     sections: day.sections.map((section, index) =>
       index === 0 ? { ...section, deidentifiedText: "Feels less short of breath after diuresis." } : section
-    )
+    ),
+    checklistSnapshot,
+    answers: { item_1: { selected: ["No"], note: "" } },
+    quickNotes: [{ id: "note_1", text: "Patient mentioned new hip pain unrelated to admission.", createdAt: "2026-07-09T12:05:00.000Z" }]
   })
 };
 
@@ -35,11 +46,15 @@ const admission = buildOpenEvidencePrompt("initial_admission_rounds", { patient,
 assert.match(admission, /Rule of Separation/);
 assert.match(admission, /History of Present Illness/);
 assert.match(admission, /Admission context/);
+assert.match(admission, /Chest pain\?/);
+assert.match(admission, /Additional notes not tied to a specific checklist item/);
+assert.match(admission, /Patient mentioned new hip pain unrelated to admission\./);
 
 const progress = buildOpenEvidencePrompt("daily_progress_note", { patient, selectedDayId: day.id, guidelines });
 assert.match(progress, /daily progress note/i);
 assert.match(progress, /Record current vital signs/);
 assert.match(progress, /Enforce strict separation between these four sections/);
+assert.match(progress, /Patient mentioned new hip pain unrelated to admission\./);
 assert.match(progress, /Feels less short of breath/);
 
 const teaching = buildOpenEvidencePrompt("teaching_case_trajectory", { patient, selectedDayId: day.id });
@@ -64,6 +79,15 @@ for (const prompt of [admission, progress, teaching, medicationOrganizer, medica
 }
 
 assert.throws(() => buildOpenEvidencePrompt("daily_progress_note", { patient, guidelines: "" }), /task-specific documentation standard/);
+
+const checklistAnswersPrompt = buildCustomOpenEvidencePrompt({
+  taskId: "checklist_workup_refinement",
+  template: "Review @checklist-answers only.",
+  patient,
+  selectedDayId: day.id
+});
+assert.match(checklistAnswersPrompt, /Chest pain\?/);
+assert.match(checklistAnswersPrompt, /Patient mentioned new hip pain unrelated to admission\./);
 
 const fieldVariables = promptVariablesForPatient(patient);
 assert.equal(fieldVariables.filter((variable) => variable.sectionId).length, patient.contextSections.length);

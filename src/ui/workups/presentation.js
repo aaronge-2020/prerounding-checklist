@@ -95,6 +95,7 @@ export function createWorkupPresentation({ escapeHtml, icon }) {
     workupImportError,
     workupApiBusy,
     workupApiDeidConfirmed,
+    workupImportPanelOpen,
     workupImportDraft
   }) {
     const grouped = groupWorkupItems(editorWorkup);
@@ -150,7 +151,7 @@ export function createWorkupPresentation({ escapeHtml, icon }) {
             </div>
           </details>
         </div>
-        <div class="workup-subtitle">The first choice in each row is the normal or negative baseline. Drag rows or use arrow controls to reorder.</div>
+        <div class="workup-subtitle">The first choice in each row is always the normal or negative baseline. Drag rows or use the arrow buttons to reorder them.</div>
         <div class="workup-scope-control">
           <label>OpenEvidence detail
             <select id="workupThoroughness" aria-label="OpenEvidence workup detail">
@@ -162,7 +163,7 @@ export function createWorkupPresentation({ escapeHtml, icon }) {
         <div class="workflow-strip">
           <div class="workflow-step"><strong>1 OpenEvidence draft</strong><span class="muted">Create H&P item set</span></div>
           <span class="muted" aria-hidden="true">→</span>
-          <div class="workflow-step"><strong>2 Format as JSON</strong><span class="muted">Saved key or ChatGPT fallback</span></div>
+          <div class="workflow-step"><strong>2 Format as JSON</strong><span class="muted">Use your saved key, or ChatGPT as a fallback</span></div>
           <span class="muted" aria-hidden="true">→</span>
           <div class="workflow-step"><strong>Parse & review</strong><span class="muted">Editable rows saved locally</span></div>
         </div>
@@ -180,7 +181,7 @@ export function createWorkupPresentation({ escapeHtml, icon }) {
           <input id="workupLibraryFileInput" type="file" accept="application/json" hidden>
           <button class="button--secondary" type="button" data-action="save-workup-ui">Save to catalog</button>
         </div>
-        <p class="muted">Library files contain workups only. They do not include patient data and never build a checklist automatically.</p>
+        <p class="muted">Library files contain workups only — no patient data — and never build a checklist automatically.</p>
         <section class="workup-workspace-mirror" aria-live="polite">
           <div>
             <strong>Workspace mirror</strong>
@@ -189,18 +190,18 @@ export function createWorkupPresentation({ escapeHtml, icon }) {
           <div class="button-row">
             ${workspaceReady ? `<button class="button--secondary" type="button" data-action="sync-workup-workspace" ${workspaceBusy ? "disabled" : ""}>${workspaceBusy ? "Syncing…" : "Sync now"}</button><button class="button--quiet" type="button" data-action="choose-workup-workspace" ${workspaceBusy ? "disabled" : ""}>Change folder</button><button class="button--quiet" type="button" data-action="disconnect-workup-workspace" ${workspaceBusy ? "disabled" : ""}>Disconnect</button>` : `<button class="button--secondary" type="button" data-action="choose-workup-workspace" ${workspaceBusy || workspace.status === "unsupported" ? "disabled" : ""}>Choose workspace folder</button>`}
           </div>
-          <small>Writes only workup JSON and a mirror manifest. It never writes patient data, stages files, commits, or deletes workspace files.</small>
+          <small>Writes only workup JSON and a mirror manifest — never patient data, and never stages, commits, or deletes files in your workspace.</small>
         </section>
-        <details class="utility-panel workup-import" ${workupImportError || workupApiBusy ? "open" : ""}>
+        <details class="utility-panel workup-import" ${workupImportError || workupApiBusy || workupApiDeidConfirmed || workupImportPanelOpen ? "open" : ""}>
           <summary>
             <strong>Format or import a workup</strong>
-            <span class="muted">Paste a de-identified OpenEvidence draft for automatic formatting, or paste completed JSON to import directly.</span>
+            <span class="muted">Paste a de-identified OpenEvidence draft to format it automatically, or paste finished JSON to import directly.</span>
           </summary>
           <div class="workup-import-body">
             <div class="section-heading tight">
               <div>
                 <h3>Format into editable workup rows</h3>
-                <p class="muted">Automatic formatting uses only the pasted draft. Completed JSON can still be parsed directly.</p>
+                <p class="muted">Automatic formatting uses only the pasted draft. You can also paste finished JSON to parse it directly.</p>
               </div>
               <div class="button-row">
                 <button type="button" data-action="parse-workup-json">Parse & save</button>
@@ -219,7 +220,7 @@ export function createWorkupPresentation({ escapeHtml, icon }) {
                 <span class="muted">Ready to use ${escapeHtml(openAiModelLabel)} after you confirm the draft is de-identified.</span>
               </div>
             </div>` : `<div class="notice workup-api-guidance"><span>To format a de-identified draft automatically, save an OpenAI API key in Settings.</span><button class="button--quiet" type="button" data-action="go-settings">Open Settings</button></div>`}
-            ${workupImportError ? `<div class="warning-box">${escapeHtml(workupImportError)}</div>` : `<div class="notice">JSON import is parsed into editable rows. No raw JSON editing in the main flow.</div>`}
+            ${workupImportError ? `<div class="warning-box">${escapeHtml(workupImportError)}</div>` : `<div class="notice">JSON import is parsed into editable rows — there's no raw JSON editor in this view.</div>`}
             <textarea id="workupPromptOutput" rows="7" readonly placeholder="Copied AI workflow prompt appears here."></textarea>
           </div>
         </details>

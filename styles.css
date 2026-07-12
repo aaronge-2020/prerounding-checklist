@@ -1052,11 +1052,42 @@ p {
 
 .checklist-panel {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
   height: 100%;
   min-height: 0;
   margin: 0;
   overflow: hidden;
+}
+
+.checklist-toolbar-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.checklist-toolbar-row .notice {
+  flex: 1 1 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.checklist-search-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1 1 200px;
+  min-width: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.checklist-search-field input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 32px;
 }
 
 .checklist-scroll {
@@ -1219,9 +1250,103 @@ p {
   min-height: 34px;
 }
 
+/* The note field stays always-visible at desktop widths (unchanged today);
+   the tap-to-reveal toggle only takes over once a narrower layout hides it
+   (see the phone-mode and max-width:680px overrides below). */
+.note-toggle {
+  display: none;
+  color: var(--muted);
+}
+
+.checklist-item.has-note .note-toggle {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
 .status-dot {
   color: var(--success);
   font-weight: 700;
+}
+
+/* Lives outside .checklist-scroll (its own grid row on .checklist-panel) so
+   it stays reachable without scrolling through the question list. */
+.quick-notes-panel {
+  display: grid;
+  gap: 8px;
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+  margin-top: 4px;
+}
+
+.quick-notes-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.quick-notes-header h4 {
+  margin: 0;
+  font-size: 13px;
+}
+
+.quick-notes-header .muted {
+  font-size: 11px;
+}
+
+.quick-notes-empty {
+  margin: 0;
+  font-size: 12px;
+}
+
+.quick-notes-list {
+  display: grid;
+  gap: 6px;
+  max-height: 160px;
+  overflow: auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.quick-notes-list li {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-muted);
+  padding: 6px 8px;
+  font-size: 12px;
+}
+
+.quick-note-meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+}
+
+.quick-note-meta .muted {
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.quick-note-compose {
+  display: flex;
+  gap: 6px;
+}
+
+.quick-note-compose input {
+  flex: 1 1 auto;
+  min-height: 40px;
+}
+
+.phone-resume-notice {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0;
 }
 
 .phone-transfer {
@@ -1351,12 +1476,32 @@ p {
   stroke-linejoin: round;
 }
 
+#statusLine {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#statusLine .icon {
+  flex: none;
+  width: 14px;
+  height: 14px;
+}
+
 .icon-button {
   display: inline-grid;
   place-items: center;
   min-width: 30px;
   min-height: 30px;
   padding: 4px;
+}
+
+/* iOS HIG's ~44px minimum tap target - a live conversation leaves no room
+   for mis-taps on a note toggle or a quick-note delete button. */
+.phone-mode .icon-button,
+.phone-mode .choice-row label,
+.phone-mode .checklist-answer-select {
+  min-height: 40px;
 }
 
 .phone-mode .side-nav,
@@ -2380,13 +2525,22 @@ p {
 }
 
 .phone-mode .checklist-item {
-  grid-template-columns: minmax(0, 1.15fr) minmax(106px, 0.85fr) 16px;
+  grid-template-columns: minmax(0, 1.15fr) minmax(106px, 0.85fr) 30px 16px;
   gap: 7px;
   padding: 8px 10px;
 }
 
+.phone-mode .checklist-item .note-toggle {
+  display: inline-grid;
+}
+
 .phone-mode .checklist-item .item-note-input {
   display: none;
+}
+
+.phone-mode .checklist-item.note-open .item-note-input {
+  display: block;
+  grid-column: 1 / -1;
 }
 
 .phone-mode .checklist-item:has(.checklist-answer-select) .choice-row select {
@@ -2401,12 +2555,21 @@ p {
   }
 
   .checklist-item {
-    grid-template-columns: minmax(0, 1.15fr) minmax(106px, 0.85fr) 16px;
+    grid-template-columns: minmax(0, 1.15fr) minmax(106px, 0.85fr) 30px 16px;
     gap: 7px;
+  }
+
+  .checklist-item .note-toggle {
+    display: inline-grid;
   }
 
   .checklist-item .item-note-input {
     display: none;
+  }
+
+  .checklist-item.note-open .item-note-input {
+    display: block;
+    grid-column: 1 / -1;
   }
 }
 
@@ -2823,9 +2986,9 @@ p {
 
 .workup-catalog-popover .section-heading { margin-bottom: 0; }
 
-.workup-catalog-popover .workup-list { max-height: calc(100dvh - 300px); overflow: auto; }
+.workup-catalog-popover .workup-list { max-height: 320px; overflow: auto; }
 
-.workup-list { gap: 0; }
+.workup-list { gap: 0; align-content: start; }
 
 .check-row {
   min-height: 50px;
@@ -2934,6 +3097,15 @@ p {
 .checklist-panel { padding: 18px 20px; }
 
 .checklist-panel > .section-heading { align-items: center; }
+
+/* Explicit row assignment (rather than relying on document-order
+   auto-placement) so the layout holds even when the toolbar row is omitted
+   entirely (no checklist built yet, nothing to search or import). */
+.checklist-panel > .section-heading { grid-row: 1; }
+.checklist-panel > .checklist-toolbar-row { grid-row: 2; }
+.checklist-panel > .checklist-scroll,
+.checklist-panel > .empty-state.next-step { grid-row: 3; }
+.checklist-panel > .quick-notes-panel { grid-row: 4; }
 
 .checklist-scroll { gap: 14px; padding-right: 0; }
 
@@ -3303,9 +3475,17 @@ p {
   .checklist-panel { padding: 14px; }
 
   .checklist-item,
-  .phone-mode .checklist-item { grid-template-columns: minmax(0, 1.1fr) minmax(108px, 0.9fr) 18px; }
+  .phone-mode .checklist-item { grid-template-columns: minmax(0, 1.1fr) minmax(108px, 0.9fr) 30px 18px; }
+
+  .checklist-item .note-toggle { display: inline-grid; }
 
   .checklist-item .item-note-input { display: none; }
+
+  .checklist-item.note-open .item-note-input { display: block; grid-column: 1 / -1; }
+
+  .icon-button,
+  .choice-row label,
+  .checklist-answer-select { min-height: 40px; }
 
   .quick-deid-panel { padding: 14px; }
 
@@ -3701,6 +3881,7 @@ p {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  flex: 1 1 100%;
   border: 1px solid var(--border);
   background: var(--surface-muted);
   margin: 4px 0 12px;

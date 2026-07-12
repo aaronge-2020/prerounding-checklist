@@ -305,15 +305,23 @@ try {
   const returnBundle = await phonePage.locator("#phoneReturnBundle").inputValue();
   await phonePage.close();
 
+  const returnTransferFileJson = JSON.stringify({
+    schema: "prerounding_phone_transfer_file_v1",
+    type: "return",
+    payload: returnBundle
+  });
+
   await page.setInputFiles("#phoneReturnFileInput", {
     name: "prerounding-checklist-return.bundle.json",
     mimeType: "application/json",
-    buffer: Buffer.from(JSON.stringify({
-      schema: "prerounding_phone_transfer_file_v1",
-      type: "return",
-      payload: returnBundle
-    }))
+    buffer: Buffer.from(returnTransferFileJson)
   });
+  await page.waitForFunction(() => /Returned phone answers imported/.test(document.querySelector("#statusLine")?.textContent || ""));
+
+  // An AirDropped return file's raw JSON contents (not just the short code)
+  // pasted into the paste box must import correctly, same as the code alone.
+  await page.fill("#phoneReturnText", returnTransferFileJson);
+  await page.click('[data-action="import-phone-return"]');
   await page.waitForFunction(() => /Returned phone answers imported/.test(document.querySelector("#statusLine")?.textContent || ""));
 
   await page.fill("#phoneReturnText", returnBundle);
@@ -450,7 +458,7 @@ try {
   await page.click('[data-action="archive-patient"]');
   await page.waitForFunction(() => document.querySelector("#archiveConfirmDialog")?.open === true);
   await page.click('[data-action="confirm-archive-patient"]');
-  await page.waitForFunction(() => /No patients in this local vault/.test(document.querySelector("#vaultContent")?.textContent || ""));
+  await page.waitForFunction(() => /No patients yet/.test(document.querySelector("#vaultContent")?.textContent || ""));
 
   await page.click('[data-action="lock-vault"]');
   await page.waitForFunction(() => /Vault locked/.test(document.querySelector("#statusLine")?.textContent || ""));

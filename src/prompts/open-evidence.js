@@ -64,11 +64,12 @@ function patientBlocks(patient, selectedDayId = "") {
   const currentDay = days.find((day) => day.id === selectedDayId) || days.at(-1) || null;
   const snapshot = currentDay?.checklistSnapshot || null;
   const answers = currentDay?.answers || {};
+  const quickNotes = currentDay?.quickNotes || [];
   return {
     patientContext: sectionsToPromptBlock(patient?.contextSections || [], "Saved patient context"),
     trajectory: buildTrajectoryBlock(patient, { selectedDayId: currentDay?.id, includeAllDays: false }),
     selectedDay: currentDay ? sectionsToPromptBlock(currentDay.sections || [], `Latest day: ${currentDay.date} - ${currentDay.label}`) : "",
-    checklist: checklistAnswersSummary(snapshot, answers)
+    checklist: checklistAnswersSummary(snapshot, answers, quickNotes)
   };
 }
 

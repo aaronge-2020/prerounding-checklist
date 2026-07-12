@@ -77,7 +77,7 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
         <div class="redaction-review-heading">
           <div>
             <strong>${pending ? `${pending} change${pending === 1 ? "" : "s"} to review` : "Review complete"}</strong>
-            <span class="muted">Click a crossed-out value in the document. Original values remain only in this active tab.</span>
+            <span class="muted">Click a crossed-out value in the document below. The original stays only in this tab.</span>
           </div>
           ${pending ? `<button class="button--quiet" type="button" data-action="confirm-all-section-redactions" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}">Confirm all (${pending})</button>` : ""}
         </div>
@@ -85,13 +85,13 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
           <div class="redaction-inspector redaction-inline-actions">
             <div>
               <strong>${inspectedIsConfirmed ? "Accepted redaction" : `Review ${escapeHtml(inspected.placeholder)}`}</strong>
-              <span>${inspectedIsConfirmed ? "The document shows only the safe replacement. Undo restores the source in this active tab." : "Choose whether to keep the replacement or restore the source in this active tab."}</span>
+              <span>${inspectedIsConfirmed ? "The document shows only the safe replacement. Undo brings back the original in this tab." : "Choose whether to keep the replacement or restore the original in this tab."}</span>
             </div>
             <div class="button-row">
               ${inspectedIsConfirmed ? "" : `<button class="button--secondary" type="button" data-action="keep-reviewed-redaction" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}">Accept redaction</button>`}
-              <button class="button--quiet" type="button" data-action="allow-reviewed-non-phi" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}" data-redaction-index="${review.inspectedRedactionIndex}">${inspectedIsConfirmed ? "Undo redaction" : "Reject — restore source"}</button>
+              <button class="button--quiet" type="button" data-action="allow-reviewed-non-phi" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}" data-redaction-index="${review.inspectedRedactionIndex}">${inspectedIsConfirmed ? "Undo redaction" : "Reject — restore original"}</button>
             </div>
-            <small>${inspectedIsConfirmed ? "Undo only if this value is not identifying. It will be restored in the de-identified text for the next save." : "Reject only if this value is not identifying. The source will be restored in the de-identified text for the next save."}</small>
+            <small>${inspectedIsConfirmed ? "Undo only if this value isn't identifying — it will be restored in the de-identified text for the next save." : "Reject only if this value isn't identifying — the original will be restored in the de-identified text for the next save."}</small>
           </div>` : ""}
       </div>
     `;
@@ -107,7 +107,7 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
         <div class="section-review-tools">
           ${review ? `<button class="button--quiet" type="button" data-action="${editing ? "resume-section-review" : "edit-section-text"}" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}">${editing ? "Return to redaction review" : "Edit field text"}</button>` : ""}
           <button class="button--quiet" type="button" data-action="manual-redact-selection" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}">${icon("wand")} Redact selected text</button>
-          <span class="muted">${review && !editing ? "Review changes here, or edit this field text without leaving Hospital Stay." : "Edit this de-identified field, then save changes to re-run the local review."}</span>
+          <span class="muted">${review && !editing ? "Review changes here, or edit the text without leaving Hospital Stay." : "Edit this de-identified field, then save to re-run the local review."}</span>
         </div>
         ${review && !editing ? renderSectionReview({ section: { ...section, deidentifiedText: draftText }, scope, review }) : ""}
       </div>
@@ -151,7 +151,7 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
       return `
         <div id="residualWarnings-${escapeHtml(scope)}" class="warning-box residual-review">
           <strong>Residual PHI review needed</strong>
-          <span class="muted">These details are available only for this active review; decide whether to redact or dismiss each item before leaving Hospital Stay.</span>
+          <span class="muted">These details are only available during this review. Decide whether to redact or dismiss each item before leaving Hospital Stay.</span>
           <div class="residual-warning-list">
             ${sessionWarnings.map(({ section, warning, warningIndex }) => `
               <div class="residual-warning-entry">
@@ -182,7 +182,7 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
             </button>
           `).join("")}
         </div>
-        <span class="muted">Detailed warning text is not retained after this tab’s review session.</span>
+        <span class="muted">Detailed warning text isn’t kept after this tab’s review session.</span>
       </div>
     `;
   }

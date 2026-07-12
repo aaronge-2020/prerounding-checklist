@@ -22,7 +22,8 @@ const iconPaths = {
   alert: '<path d="M12 3 2 21h20L12 3z"/><path d="M12 9v5M12 17h.01"/>',
   chevron: '<path d="M9 6l6 6-6 6"/>',
   moveUp: '<path d="M12 20V4"/><path d="m7 9 5-5 5 5"/>',
-  moveDown: '<path d="M12 4v16"/><path d="m17 15-5 5-5-5"/>'
+  moveDown: '<path d="M12 4v16"/><path d="m17 15-5 5-5-5"/>',
+  externalLink: '<path d="M14 4h6v6"/><path d="M20 4 10 14"/><path d="M18 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6"/>'
 };
 
 export function icon(name, className = "icon") {

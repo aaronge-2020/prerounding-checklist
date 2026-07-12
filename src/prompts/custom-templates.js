@@ -90,6 +90,7 @@ export function buildPromptVariableMap({ taskId, patient, selectedDayId, guideli
   const selectedDay = selectedPromptDay(patient, selectedDayId);
   const snapshot = selectedDay?.checklistSnapshot || null;
   const answers = selectedDay?.answers || {};
+  const quickNotes = selectedDay?.quickNotes || [];
   const medicationSection = sectionByLabel(patient?.contextSections || [], /medication/i);
   const labSection = sectionByLabel(patient?.contextSections || [], /lab|result/i);
   const sectionValues = Object.fromEntries(
@@ -118,7 +119,7 @@ export function buildPromptVariableMap({ taskId, patient, selectedDayId, guideli
     // only @selected-day so there is one clear choice of hospital-day scope.
     "@hospital-stay": buildTrajectoryBlock(patient, { selectedDayId: selectedDay?.id, includeAllDays: false }),
     "@selected-day": selectedDay ? sectionsToPromptBlock(selectedDay.sections || [], `Selected day: ${selectedDay.date} - ${selectedDay.label}`) : "No saved hospital day.",
-    "@checklist-answers": checklistAnswersSummary(snapshot, answers),
+    "@checklist-answers": checklistAnswersSummary(snapshot, answers, quickNotes),
     "@guidelines": taskRequiresGuidelines(taskId) ? documentationInstructionForTask(taskId, guidelines) : ""
   };
 }

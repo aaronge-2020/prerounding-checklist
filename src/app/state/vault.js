@@ -97,6 +97,7 @@ export function normalizeDay(day, index = 0, { now = timestampNow } = {}) {
     sections,
     checklistSnapshot: day?.checklistSnapshot || null,
     answers: day?.answers && typeof day.answers === "object" ? day.answers : {},
+    quickNotes: Array.isArray(day?.quickNotes) ? day.quickNotes : [],
     openEvidenceOutputs: day?.openEvidenceOutputs && typeof day.openEvidenceOutputs === "object" ? day.openEvidenceOutputs : {},
     createdAt: String(day?.createdAt || timestamp),
     updatedAt: String(day?.updatedAt || day?.createdAt || timestamp)

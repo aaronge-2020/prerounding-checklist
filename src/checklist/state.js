@@ -47,6 +47,38 @@ export function setChecklistNote(answers, itemId, note) {
   };
 }
 
+// Quick notes capture something the patient said that doesn't map to any
+// checklist item. They travel alongside answers through the same phone
+// bundle / return bundle / merge pipeline but are never tied to an item id.
+export function emptyQuickNotes() {
+  return [];
+}
+
+function quickNoteId() {
+  return `note_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+}
+
+export function addQuickNote(quickNotes, text) {
+  const trimmed = String(text || "").trim();
+  if (!trimmed) return quickNotes || [];
+  return [...(quickNotes || []), { id: quickNoteId(), text: trimmed, createdAt: new Date().toISOString() }];
+}
+
+export function removeQuickNote(quickNotes, noteId) {
+  return (quickNotes || []).filter((note) => note.id !== noteId);
+}
+
+export function mergeQuickNotes(currentQuickNotes, incomingQuickNotes) {
+  const merged = [...(currentQuickNotes || [])];
+  const seenIds = new Set(merged.map((note) => note.id));
+  for (const note of incomingQuickNotes || []) {
+    if (seenIds.has(note.id)) continue;
+    seenIds.add(note.id);
+    merged.push(note);
+  }
+  return merged.sort((left, right) => String(left.createdAt).localeCompare(String(right.createdAt)));
+}
+
 export function negativeChoiceForItem(item) {
   const choices = Array.isArray(item?.choices) ? item.choices : [];
   // Workup authoring requires the baseline negative/normal finding to be first.
@@ -67,9 +99,9 @@ export function fillNegativeChecklistAnswers(answers, items = []) {
   return { answers: next, changed };
 }
 
-export function checklistAnswersSummary(snapshot, answers = {}) {
+export function checklistAnswersSummary(snapshot, answers = {}, quickNotes = []) {
   if (!snapshot?.items?.length) return "No checklist has been built.";
-  return snapshot.items
+  const itemLines = snapshot.items
     .map((item) => {
       const answer = answers[item.id] || { selected: [], note: "" };
       const selected = answer.selected?.length ? answer.selected.join(", ") : "No answer";
@@ -77,14 +109,18 @@ export function checklistAnswersSummary(snapshot, answers = {}) {
       return `- [${item.kind}] ${item.workupTitle}: ${item.text}\n  Answer: ${selected}${note}`;
     })
     .join("\n");
+  if (!quickNotes?.length) return itemLines;
+  const quickNoteLines = quickNotes.map((note) => `- ${note.text}`).join("\n");
+  return `${itemLines}\n\nAdditional notes (not tied to a specific checklist item):\n${quickNoteLines}`;
 }
 
-export function createPhoneChecklistBundle(patient, snapshot, answers = {}) {
+export function createPhoneChecklistBundle(patient, snapshot, answers = {}, quickNotes = []) {
   return {
     schema: "prerounding_phone_checklist_bundle_v1",
     patientLabel: patient?.displayLabel || "Patient",
     checklist: snapshot,
     answers,
+    quickNotes,
     createdAt: new Date().toISOString()
   };
 }
@@ -103,6 +139,18 @@ function expandAnswers(answers = {}) {
       itemId,
       Array.isArray(answer) ? { selected: answer[0] || [], note: answer[1] || "" } : { selected: answer?.selected || [], note: answer?.note || "" }
     ])
+  );
+}
+
+function compactQuickNotes(quickNotes = []) {
+  return (quickNotes || []).map((note) => [note.id, note.text, note.createdAt]);
+}
+
+function expandQuickNotes(quickNotes = []) {
+  return (quickNotes || []).map((note) =>
+    Array.isArray(note)
+      ? { id: note[0] || "", text: note[1] || "", createdAt: note[2] || "" }
+      : { id: note?.id || "", text: note?.text || "", createdAt: note?.createdAt || "" }
   );
 }
 
@@ -153,18 +201,22 @@ function compactPhoneChecklistBundle(bundle) {
     p: bundle.patientLabel || "Patient",
     c: compactSnapshot(bundle.checklist),
     a: compactAnswers(bundle.answers),
+    n: compactQuickNotes(bundle.quickNotes),
     d: bundle.createdAt || ""
   };
 }
 
 function expandPhoneChecklistBundle(bundle) {
-  if (bundle?.schema === "prerounding_phone_checklist_bundle_v1") return { ...bundle, answers: expandAnswers(bundle.answers) };
+  if (bundle?.schema === "prerounding_phone_checklist_bundle_v1") {
+    return { ...bundle, answers: expandAnswers(bundle.answers), quickNotes: expandQuickNotes(bundle.quickNotes) };
+  }
   if (bundle?.s !== "pc1") throw new Error("This is not a phone checklist bundle.");
   return {
     schema: "prerounding_phone_checklist_bundle_v1",
     patientLabel: bundle.p || "Patient",
     checklist: expandSnapshot(bundle.c),
     answers: expandAnswers(bundle.a),
+    quickNotes: expandQuickNotes(bundle.n),
     createdAt: bundle.d || ""
   };
 }
@@ -217,11 +269,12 @@ export function decodePhoneChecklistBundle(text) {
   return expandPhoneChecklistBundle(bundle);
 }
 
-export function createChecklistReturnBundle(snapshot, answers = {}) {
+export function createChecklistReturnBundle(snapshot, answers = {}, quickNotes = []) {
   return {
     schema: "prerounding_phone_checklist_return_v1",
     checklistId: snapshot?.id || "",
     answers,
+    quickNotes,
     createdAt: new Date().toISOString()
   };
 }
@@ -231,18 +284,22 @@ export function encodeChecklistReturnBundle(bundle) {
     s: "pr1",
     c: bundle?.checklistId || "",
     a: compactAnswers(bundle?.answers || {}),
+    n: compactQuickNotes(bundle?.quickNotes || []),
     d: bundle?.createdAt || ""
   });
 }
 
 export function decodeChecklistReturnBundle(text) {
   const bundle = decodeJsonUrlSafe(String(text || "").trim().replace(/^#?return=/, ""));
-  if (bundle?.schema === "prerounding_phone_checklist_return_v1") return { ...bundle, answers: expandAnswers(bundle.answers) };
+  if (bundle?.schema === "prerounding_phone_checklist_return_v1") {
+    return { ...bundle, answers: expandAnswers(bundle.answers), quickNotes: expandQuickNotes(bundle.quickNotes) };
+  }
   if (bundle?.s !== "pr1") throw new Error("This is not a returned checklist bundle.");
   return {
     schema: "prerounding_phone_checklist_return_v1",
     checklistId: bundle.c || "",
     answers: expandAnswers(bundle.a),
+    quickNotes: expandQuickNotes(bundle.n),
     createdAt: bundle.d || ""
   };
 }
@@ -258,6 +315,15 @@ export function decodeChecklistReturnTransferFile(text) {
     decodeChecklistReturnBundle,
     "This is not a valid returned checklist bundle file."
   );
+}
+
+// Phones can hand back either the short return code or the full transfer
+// file JSON (e.g. pasted from an AirDropped .bundle.json). Accept both so a
+// pasted file's contents import the same way a pasted code would.
+export function decodeChecklistReturnInput(text) {
+  const raw = String(text || "").trim();
+  if (raw.startsWith("{")) return decodeChecklistReturnTransferFile(raw);
+  return decodeChecklistReturnBundle(raw);
 }
 
 export function mergeReturnedAnswers(currentAnswers, returnBundle, snapshot) {

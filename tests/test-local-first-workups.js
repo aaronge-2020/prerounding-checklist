@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { createChecklistReturnBundle, createChecklistReturnTransferFile, createPhoneChecklistTransferFile, decodeChecklistReturnBundle, decodeChecklistReturnTransferFile, decodePhoneChecklistBundle, decodePhoneChecklistTransferFile, encodeChecklistReturnBundle, encodePhoneChecklistBundle, fillNegativeChecklistAnswers, mergeReturnedAnswers, setChecklistChoice } from "../src/checklist/state.js";
+import { createChecklistReturnBundle, createChecklistReturnTransferFile, createPhoneChecklistTransferFile, decodeChecklistReturnBundle, decodeChecklistReturnInput, decodeChecklistReturnTransferFile, decodePhoneChecklistBundle, decodePhoneChecklistTransferFile, encodeChecklistReturnBundle, encodePhoneChecklistBundle, fillNegativeChecklistAnswers, mergeQuickNotes, mergeReturnedAnswers, setChecklistChoice } from "../src/checklist/state.js";
 import { BUNDLED_WORKUPS } from "../src/workups/catalog.js";
 import { createChecklistSnapshot } from "../src/workups/checklist-conversion.js";
 import { buildWorkupAuthoringPrompt, effectiveWorkupCatalog, normalizeWorkup, parseWorkupJson, validateWorkup } from "../src/workups/schema.js";
@@ -40,31 +40,50 @@ let answers = {};
 answers = setChecklistChoice(answers, snapshot.items[0], snapshot.items[0].choices[1], true);
 assert.deepEqual(answers[snapshot.items[0].id].selected, [snapshot.items[0].choices[1]]);
 
+const deskQuickNotes = [{ id: "note_desk", text: "Reports new hip pain, not admission-related.", createdAt: "2026-07-09T12:00:00.000Z" }];
 const encodedPhone = encodePhoneChecklistBundle({
   schema: "prerounding_phone_checklist_bundle_v1",
   patientLabel: "Room 1",
   checklist: snapshot,
-  answers
+  answers,
+  quickNotes: deskQuickNotes
 });
 const decodedPhone = decodePhoneChecklistBundle(encodedPhone);
 assert.equal(decodedPhone.checklist.id, "checklist_test");
 assert.equal(decodedPhone.checklist.items[0].system, snapshot.items[0].system);
+assert.deepEqual(decodedPhone.quickNotes, deskQuickNotes);
 const phoneTransferFile = createPhoneChecklistTransferFile({
   schema: "prerounding_phone_checklist_bundle_v1",
   patientLabel: "Room 1",
   checklist: snapshot,
-  answers
+  answers,
+  quickNotes: deskQuickNotes
 });
 assert.deepEqual(decodePhoneChecklistTransferFile(JSON.stringify(phoneTransferFile)).answers, answers);
+assert.deepEqual(decodePhoneChecklistTransferFile(JSON.stringify(phoneTransferFile)).quickNotes, deskQuickNotes);
 assert.equal(decodePhoneChecklistTransferFile(JSON.stringify({ bundle: encodedPhone })).checklist.id, snapshot.id);
+// Bundles created before quick notes existed must still decode cleanly.
+assert.deepEqual(decodePhoneChecklistTransferFile(JSON.stringify({ bundle: encodedPhone })).quickNotes, deskQuickNotes);
 
-const returnBundle = createChecklistReturnBundle(snapshot, answers);
+const phoneQuickNotes = [{ id: "note_phone", text: "Patient mentions occasional palpitations.", createdAt: "2026-07-09T13:00:00.000Z" }];
+const returnBundle = createChecklistReturnBundle(snapshot, answers, phoneQuickNotes);
 const decodedReturn = decodeChecklistReturnBundle(encodeChecklistReturnBundle(returnBundle));
 assert.deepEqual(mergeReturnedAnswers({}, decodedReturn, snapshot), answers);
+assert.deepEqual(decodedReturn.quickNotes, phoneQuickNotes);
+assert.deepEqual(mergeQuickNotes(deskQuickNotes, decodedReturn.quickNotes), [...deskQuickNotes, ...phoneQuickNotes]);
+// Merging the same return twice must not duplicate notes already saved.
+assert.deepEqual(mergeQuickNotes(mergeQuickNotes(deskQuickNotes, decodedReturn.quickNotes), decodedReturn.quickNotes), [...deskQuickNotes, ...phoneQuickNotes]);
 const returnTransferFile = createChecklistReturnTransferFile(returnBundle);
 assert.deepEqual(decodeChecklistReturnTransferFile(JSON.stringify(returnTransferFile)).answers, answers);
+assert.deepEqual(decodeChecklistReturnTransferFile(JSON.stringify(returnTransferFile)).quickNotes, phoneQuickNotes);
 assert.deepEqual(decodeChecklistReturnTransferFile(JSON.stringify({ bundle: encodeChecklistReturnBundle(returnBundle) })).answers, answers);
 assert.throws(() => decodeChecklistReturnTransferFile(JSON.stringify({ ...phoneTransferFile, type: "checklist" })), /valid returned checklist bundle file/);
+
+// The paste box must accept either the short return code or a pasted
+// AirDropped transfer file's raw JSON contents.
+assert.deepEqual(decodeChecklistReturnInput(encodeChecklistReturnBundle(returnBundle)).answers, answers);
+assert.deepEqual(decodeChecklistReturnInput(JSON.stringify(returnTransferFile)).answers, answers);
+assert.deepEqual(decodeChecklistReturnInput(`  ${JSON.stringify(returnTransferFile)}  `).answers, answers);
 
 const bulkItems = [
   { id: "normal", choices: ["Normal", "Abnormal"] },
