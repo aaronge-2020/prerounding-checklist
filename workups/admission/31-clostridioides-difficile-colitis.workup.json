@@ -4,42 +4,41 @@
   "title": "Clostridium difficile colitis",
   "aliases": [
     "C. diff",
-    "CDI"
+    "pseudomembranous colitis"
   ],
   "items": [
     {
       "id": "history-01",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about fever, chills, rigors, duration, antipyretic use, and change in symptoms over time.",
+      "system": "medication",
+      "text": "Have you taken any antibiotics in the past eight weeks?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No recent antibiotic use",
+        "Recent antibiotic course within 8 weeks"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about localizing respiratory, urinary, gastrointestinal, skin, dental, line, and neurologic symptoms.",
+      "system": "gastrointestinal",
+      "text": "How many loose stools have you been having per day?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Fewer than 3 loose stools per day",
+        "3 to 9 loose stools per day",
+        "10 or more loose stools per day"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recent antibiotics, prior resistant organisms, recurrent infections, and medication allergies.",
+      "system": "gastrointestinal",
+      "text": "Do you have belly pain or cramping?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "None",
+        "Mild cramping",
+        "Severe abdominal pain"
       ],
       "select": "one"
     },
@@ -47,203 +46,214 @@
       "id": "history-04",
       "kind": "history",
       "system": "infectious",
-      "text": "Ask about recent hospitalization, procedures, sick contacts, travel, animal or environmental exposures, and food or water exposures.",
+      "text": "Have you had a fever with shaking chills?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No fever",
+        "Subjective fever",
+        "Documented fever with rigors"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about diabetes, immunosuppression, malignancy, chronic organ disease, and other infection-risk conditions.",
+      "system": "hematologic",
+      "text": "Have you noticed blood in your stool?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No blood in stool",
+        "Blood in stool"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "skin",
-      "text": "Ask about indwelling devices, wounds, surgery, injections, aspiration risk, and other possible portals of entry.",
+      "system": "infectious",
+      "text": "Have you been hospitalized or stayed in a nursing home or long-term care facility recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Recent hospitalization",
+        "Long-term care facility stay"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about stool frequency, volume, urgency, nocturnal stools, abdominal pain, fever, blood, mucus, and timing.",
+      "system": "gastrointestinal",
+      "text": "Have you had C. diff before?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "First episode",
+        "Recurrent episode"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recent antibiotics, hospitalization, long-term care, procedures, proton-pump inhibitors, and prior C. difficile infection.",
+      "system": "gastrointestinal",
+      "text": "Do you have inflammatory bowel disease, like Crohn's or ulcerative colitis?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known inflammatory bowel disease",
+        "Known inflammatory bowel disease"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about worsening pain, distention, vomiting, reduced stool output, dizziness, poor intake, fever, and confusion.",
+      "system": "medication",
+      "text": "Are you on chemotherapy, a transplant medication, or long-term steroids?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No chronic immunosuppression",
+        "Chronic immunosuppression"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about sick contacts, food exposures, travel, inflammatory bowel disease, immunosuppression, and laxative use.",
+      "system": "medication",
+      "text": "Do you regularly take an acid reducer like omeprazole or another proton pump inhibitor?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No chronic PPI use",
+        "Chronic PPI use"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "gastrointestinal",
+      "text": "Has your belly become more swollen or distended while your bowel movements have actually slowed down or stopped?",
+      "choices": [
+        "No distention or decreased output",
+        "Distention with decreased stool output despite ongoing diarrhea"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "neurologic",
+      "text": "Have you or your family noticed any confusion or unusual sleepiness?",
+      "choices": [
+        "Neither",
+        "Confusion",
+        "Lethargy"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess appearance, temperature, heart rate, blood pressure, respiratory pattern, oxygenation, and bedside perfusion.",
+      "system": "gastrointestinal",
+      "text": "Palpate the abdomen for tenderness.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Nontender",
+        "Diffuse tenderness",
+        "Tenderness with guarding or rigidity"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess alertness, orientation, capillary refill, extremity temperature, and diaphoresis.",
+      "system": "gastrointestinal",
+      "text": "Assess for abdominal distention.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No distention",
+        "Distention present"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "infectious",
-      "text": "Inspect skin, pressure areas, wounds, intravenous sites, drains, and indwelling devices for focal infection findings.",
+      "system": "gastrointestinal",
+      "text": "Auscultate bowel sounds.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal bowel sounds",
+        "Hyperactive bowel sounds",
+        "Hypoactive or absent bowel sounds"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Inspect work of breathing and auscultate lungs for focal breath-sound changes, crackles, wheeze, or pleural findings.",
+      "system": "general",
+      "text": "Assess hemodynamic stability.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normotensive",
+        "Tachycardic",
+        "Hypotensive or in shock"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "genitourinary",
-      "text": "Inspect and palpate the abdomen and assess for suprapubic or costovertebral-angle tenderness when relevant.",
+      "system": "general",
+      "text": "Assess for fever.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Afebrile",
+        "Febrile"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "reproductive",
-      "text": "Perform a focused examination of the symptom-directed source, including oral, joint, neurologic, or pelvic findings when indicated.",
+      "system": "skin",
+      "text": "Assess hydration status.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal hydration",
+        "Dry mucous membranes or poor skin turgor"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "gastrointestinal",
-      "text": "Inspect for distention and palpate for diffuse or focal tenderness, guarding, rebound, mass, and peritoneal signs.",
+      "system": "neurologic",
+      "text": "Assess mental status.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Alert and oriented",
+        "Confused or lethargic"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess mucous membranes, heart rate, blood pressure, mental status, extremity perfusion, and orthostatic symptoms when safe.",
+      "system": "gastrointestinal",
+      "text": "Perform a rectal examination when indicated.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal or deferred as not indicated",
+        "Gross blood on examination"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "skin",
-      "text": "Inspect skin for dehydration-related changes and perineal skin for irritation or breakdown when appropriate.",
+      "system": "gastrointestinal",
+      "text": "Assess for peritoneal signs suggesting perforation.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Absent",
+        "Rebound or rigidity present"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "infectious",
-      "text": "Assess temperature, respiratory status, mental status, and focal findings that suggest another infectious source.",
+      "system": "genitourinary",
+      "text": "Assess urine output.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal urine output",
+        "Decreased urine output"
       ],
       "select": "one"
     }

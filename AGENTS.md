@@ -20,27 +20,70 @@ Purpose: a compact, current map for future work on this local-first app.
 4. Keep DOM, browser storage, crypto, clipboard, File System Access, workers, and fetch at UI or persistence edges.
 5. Before a workup-contract change, read `docs/workup-system-contract.md` and the applicable JSON under `workups/admission/`.
 
+## Token-Saving Rules
+
+1. **Do not run full test suites** (`npm test` or `npm run test:ci`) unless specifically requested or verifying the final build. The browser/UI tests (`npm run test:local-ui`) are heavy, slow, and dump verbose log outputs that consume massive tokens. Always run targeted unit tests (e.g., `npm run test:deid`, `npm run test:prompts`, `npm run test:workups`) to verify your specific changes.
+2. **Do not read entire test files** sequentially. If you need to check assertions or structure, use `grep_search` or view specific line ranges.
+3. **Minimize command output**: When running tests or build commands, avoid capturing and printing excessive output.
+4. **Use `npm.cmd` on Windows**: On this Windows workspace, standard shell scripts and commands might require running `npm.cmd` instead of `npm`.
+
 ## Module Map
 
 - `index.html`: shell, restrictive CSP, navigation, confirmation dialogs.
 - `styles.css`: visual layout. `.view` owns route scroll; preserve the scroll owners used by Hospital Stay, Checklist, and the annotated redaction document.
-- `src/ui/app.js`: composition, event-routing, and session-bound UI orchestration layer. It owns no persistence format or feature templates; move pure derivation and markup into the scoped modules below, and keep only browser/session interactions at this edge. Do not add new feature markup or browser-transfer behavior here.
+- `src/ui/app.js`: composition, event-routing, and session-bound UI orchestration layer. It owns no persistence format or feature templates; move pure derivation and markup into the scoped modules below, and keep only browser/session interactions at this edge. Do not add new feature markup or browser-transfer behavior here. It maintains session drafts (`sectionDrafts`) so review re-renders do not discard user edits before save.
   - `src/ui/checklist/presentation.js` is a pure checklist markup/view-model factory.
   - `src/ui/checklist/transfer.js` is the injected browser share/download adapter; it must remain independent of DOM and vault state.
+  - `src/ui/checklist/phone-autosave.js` handles autosave operations for checklist sessions.
+  - `src/ui/checklist/phone-session.js` manages checklist transfer sessions and encoding/decoding.
+  - `src/ui/checklist/search.js` implements local checklist search logic.
   - `src/ui/redaction/presentation.js` is pure annotated-review and residual-warning markup. Active-tab review state remains in `src/patient-context/review.js`.
   - `src/ui/workups/presentation.js` is pure workup-catalog/editor markup. Workspace mirror, file import, autosave, and drag behavior stay at UI/persistence edges.
+  - `src/ui/daily/presentation.js` renders the hospital-day trajectory and progress note sections.
+  - `src/ui/deid/presentation.js` renders model status, active download progress, and de-identification controls.
+  - `src/ui/prompts/presentation.js` renders the prompt builder, customized templates, and task registry.
+  - `src/ui/quick-deid/presentation.js` renders the standalone text de-identification review playground.
+  - `src/ui/settings/presentation.js` renders user preferences, workspace mirror configuration, and vault controls.
+  - `src/ui/vault/presentation.js` renders locked, unlocked, restore, and destruct recovery screens.
+  - `src/ui/openai-workup-api.js` wraps the OpenAI-compatible structured response endpoint to help authors generate workup configurations.
+- `src/app/preferences.js`: handles user preference keys (e.g. current model pack name, dark mode).
 - `src/app/state/`: vault records, migrations, AES-GCM persistence, encrypted preferences, and the workspace-folder persistence edge.
+  - `persistence.js` implements encrypt/decrypt actions for local storage keys.
+  - `vault.js` exposes core vault crud operations (e.g. patients, admission, daily packets).
   - `workspace-mirror.js` stores an explicitly granted workup-folder handle in IndexedDB and performs only authorized workup writes.
 - `src/patient-context/`: section handling, worker/client/service model integration, model packs, and active-tab redaction reviews.
+  - `deid-client.js` is the worker wrapper for model execution.
+  - `deid-model-options.js` defines the registry of supported models (e.g. GLiNER, Stanford, OpenMed).
+  - `deid-service.js` registers worker lifecycle, CSP-compliant metadata fetching, and inference self-test verification.
+  - `deid-worker.js` is the worker script bootstrapping model runner execution.
+  - `model-packs.js` defines download plans and URLs.
+  - `model-pack-storage.js` manages OPFS files and tracks download progress.
   - `review.js` holds originals and review choices only in memory for the current active tab.
-  - `app.js` keeps per-section de-identified edit drafts in a session-only map so review re-renders cannot discard edits; clear those drafts with the review session.
+  - `sections.js` provides helper functions to split, update, and manage note sections.
 - `src/daily-updates/days.js`: hospital-day CRUD and trajectory source assembly.
 - `src/workups/`: pure workup schema, systems, editor conversion, portable libraries, checklist conversion, generated Core 50 runtime catalog, and workspace-mirror plan.
   - `admission-core.js` is generated; do not hand-edit it.
   - `workspace-mirror-plan.js` produces a pure, non-destructive workup-only JSON plan.
+  - `catalog.js`: Workup search and filtering index.
+  - `checklist-conversion.js`: Translates workup items to checklist structures.
+  - `editor.js`: Handles draft creation, editing, and prompt generation for workup creation.
+  - `library.js`: Import/export and merging of workup libraries.
+  - `schema.js`: Validates and normalizes `prerounding_workup_v1` objects.
+  - `systems.js`: System classification registry and validation.
 - `src/checklist/`: answer state, baseline fill behavior, and phone transfer bundles.
+  - `state.js`: Manages answer selections, baseline fills, checklist serializations, and mobile transfer packages.
+  - `grouping.js`: Groups checklist items by system IDs for presentation.
 - `src/prompts/`: task registry, dynamic variables, templates, and task-specific guideline enforcement.
+  - `custom-templates.js`: Custom prompt templates and prompt builders.
+  - `natural-language.js`: Helper for parsing natural language and dates.
+  - `open-evidence.js`: OpenEvidence query prompts and formatting helper.
 - `src/vault/deid.js` and `src/vault/deid/`: existing structured compatibility redactor and model integration support. Do not add new in-house detection heuristics.
+  - `deid.js`: Main structured compatibility de-identifier logic.
+  - `deid/lexicons.js`: Lexicon arrays for clinical keywords.
+  - `deid/model-config.js`: Configuration for custom NLP model mapping.
+  - `deid/name-dictionary.js`: Dictionary of names/words for name detection.
+  - `deid/name-recall.js`: Recall helpers for names in text.
+  - `deid/zones.js`: Structured note parser/builder zones.
 
 ## Workups And Workspace Mirroring
 
@@ -95,6 +138,7 @@ npm.cmd run test:ci
 - `test:workup-systems`: controlled-system contract and formatter prompt coverage.
 - `test:workup-libraries`: all 50 individual workups and generated portable library.
 - `test:workup-mirror`: pure mirror plan and File System Access write edge.
+- `test:openai-workup`: OpenAI prompt structure and format validation.
 - `test:deid-model-options` and `test:model-packs`: supported model registry, pinned packs, and stale-import behavior.
 - `test:local-ui`: locked-vault boundary, Hospital Stay, model readiness gates, workups, mobile checklist, prompts, redaction review, and backend-free network behavior.
 

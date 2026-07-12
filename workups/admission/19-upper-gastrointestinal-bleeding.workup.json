@@ -4,127 +4,165 @@
   "title": "Gastrointestinal bleeding (upper)",
   "aliases": [
     "upper GI bleed",
-    "hematemesis",
-    "melena"
+    "hematemesis"
   ],
   "items": [
     {
       "id": "history-01",
       "kind": "history",
-      "system": "gastrointestinal",
-      "text": "Ask about onset, location, radiation, severity, timing, and relationship to meals, movement, or bowel movements.",
+      "system": "hematologic",
+      "text": "Have you vomited anything that looked like blood or coffee grounds?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No hematemesis",
+        "Coffee-ground emesis",
+        "Bright red blood hematemesis"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about oral intake, nausea, vomiting, fluid losses, urine output, and ability to tolerate medications.",
+      "system": "hematologic",
+      "text": "Have your stools been black and tarry?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No melena",
+        "Melena"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "hematologic",
-      "text": "Ask about stool frequency and character, flatus, bleeding, dysuria, hematuria, and change from baseline.",
+      "system": "medication",
+      "text": "Do you regularly take ibuprofen or another NSAID, or aspirin?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "NSAID use",
+        "Aspirin or antiplatelet use"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "skin",
-      "text": "Ask about prior surgery, obstruction, gallstones, liver disease, ulcers, inflammatory bowel disease, and prior episodes.",
+      "system": "medication",
+      "text": "Are you on a blood thinner?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No anticoagulant use",
+        "Anticoagulant use"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about NSAIDs, anticoagulants, alcohol, new medications, antibiotics, toxins, and relevant dietary exposures.",
+      "system": "gastrointestinal",
+      "text": "Do you have cirrhosis or known varices in your esophagus?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Known cirrhosis",
+        "Known esophageal varices"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "reproductive",
-      "text": "Ask about pregnancy possibility and gynecologic symptoms when clinically relevant.",
+      "system": "medication",
+      "text": "Do you drink alcohol heavily?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No heavy alcohol use",
+        "Heavy alcohol use"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "hematologic",
-      "text": "Ask about hematemesis, coffee-ground emesis, melena, hematochezia, timing, amount, and prior bleeding episodes.",
+      "system": "gastrointestinal",
+      "text": "Did you have forceful retching or vomiting right before you noticed the blood?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No preceding retching or vomiting",
+        "Forceful retching or vomiting preceded the bleeding"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "neurologic",
-      "text": "Ask about dizziness, syncope, dyspnea, chest pain, palpitations, weakness, reduced urine output, and thirst.",
+      "system": "gastrointestinal",
+      "text": "Have you been diagnosed with a stomach ulcer or an H. pylori infection?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Known peptic ulcer disease",
+        "Known Helicobacter pylori infection"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about ulcers, cirrhosis or varices, retching, NSAIDs, antiplatelets, anticoagulants, alcohol use, and prior endoscopy.",
+      "system": "hematologic",
+      "text": "Have you been diagnosed with a cancer of the stomach or esophagus?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known malignancy",
+        "Known upper gastrointestinal malignancy"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "hematologic",
-      "text": "Ask about ascites, jaundice, encephalopathy, edema, easy bruising, and prior portal-hypertension complications.",
+      "system": "cardiovascular",
+      "text": "Have you had surgery on your aorta, like a graft or aneurysm repair?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known aortic graft or repair",
+        "Known prior aortic graft or aneurysm repair"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "gastrointestinal",
+      "text": "Do you have trouble swallowing?",
+      "choices": [
+        "No dysphagia",
+        "Dysphagia"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "gastrointestinal",
+      "text": "Have you lost weight without trying?",
+      "choices": [
+        "No unintentional weight loss",
+        "Unintentional weight loss"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "neurologic",
+      "text": "Have you felt like you were going to pass out, or did you actually pass out with this bleeding?",
+      "choices": [
+        "Neither",
+        "Presyncope",
+        "Syncope"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-14",
+      "kind": "history",
+      "system": "gastrointestinal",
+      "text": "Do you have pain in your upper belly along with the bleeding?",
+      "choices": [
+        "No epigastric pain",
+        "Epigastric pain"
       ],
       "select": "one"
     },
@@ -132,119 +170,115 @@
       "id": "exam-01",
       "kind": "exam",
       "system": "cardiovascular",
-      "text": "Assess appearance, vital signs, mucous membranes, orthostatic symptoms when safe, and bedside perfusion.",
+      "text": "Assess hemodynamic stability.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normotensive, stable",
+        "Tachycardic",
+        "Hypotensive or in shock"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "skin",
-      "text": "Inspect for scars, distention, asymmetry, visible hernia, skin changes, and respiratory movement of the abdomen.",
+      "system": "cardiovascular",
+      "text": "Assess orthostatic vital signs when safe.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Negative orthostatics",
+        "Positive orthostatic hypotension"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "gastrointestinal",
-      "text": "Auscultate and palpate systematically for focal tenderness, guarding, rebound, mass, organ enlargement, or pulsatility.",
+      "system": "hematologic",
+      "text": "Inspect conjunctiva and nail beds for pallor.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal color",
+        "Conjunctival or nail-bed pallor"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "genitourinary",
-      "text": "Assess for costovertebral-angle tenderness and examine relevant hernia sites when indicated.",
+      "system": "gastrointestinal",
+      "text": "Palpate the abdomen for tenderness.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Nontender",
+        "Epigastric tenderness",
+        "Diffuse tenderness with peritoneal signs"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "reproductive",
-      "text": "Perform rectal, perianal, or pelvic examination only when clinically indicated and appropriate.",
+      "system": "skin",
+      "text": "Inspect for stigmata of chronic liver disease.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No stigmata of liver disease",
+        "Spider angiomata or palmar erythema",
+        "Jaundice"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "hematologic",
-      "text": "Inspect for jaundice, pallor, edema, bruising, chronic liver-disease stigmata, and other systemic findings when relevant.",
+      "system": "gastrointestinal",
+      "text": "Assess the abdomen for ascites or splenomegaly.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Neither",
+        "Ascites",
+        "Splenomegaly"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "hematologic",
-      "text": "Assess vital signs, orthostatic symptoms when safe, pallor, diaphoresis, mental status, and peripheral perfusion.",
+      "system": "gastrointestinal",
+      "text": "Perform a rectal examination.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal, guaiac negative, or deferred as not indicated",
+        "Melena on examination",
+        "Bright red blood on examination"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "gastrointestinal",
-      "text": "Inspect and palpate for tenderness, distention, ascites, hepatosplenomegaly, mass, and peritoneal signs.",
+      "system": "neurologic",
+      "text": "Assess mental status.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Alert and oriented",
+        "Confused or altered"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "hematologic",
-      "text": "Perform rectal examination when clinically indicated and appropriate to assess stool color or gross blood.",
+      "system": "gastrointestinal",
+      "text": "Assess nasogastric aspirate, if placed.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Not performed or clear aspirate",
+        "Coffee-ground aspirate",
+        "Bright red blood aspirate"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "hematologic",
-      "text": "Inspect for jaundice, spider angiomas, bruising, edema, caput medusae, asterixis, and other stigmata when relevant.",
+      "system": "skin",
+      "text": "Inspect skin and mucosa for bleeding suggesting coagulopathy.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No ecchymosis or petechiae",
+        "Ecchymosis or petechiae present"
       ],
       "select": "one"
     }

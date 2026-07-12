@@ -10,48 +10,46 @@
     {
       "id": "history-01",
       "kind": "history",
-      "system": "gastrointestinal",
-      "text": "Ask about onset, location, radiation, severity, timing, and relationship to meals, movement, or bowel movements.",
+      "system": "hematologic",
+      "text": "What did the blood from your rectum look like — bright red, or dark maroon?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No rectal bleeding",
+        "Bright red blood per rectum",
+        "Dark maroon stool"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about oral intake, nausea, vomiting, fluid losses, urine output, and ability to tolerate medications.",
+      "system": "hematologic",
+      "text": "Was the blood only on the toilet paper, coating the outside of the stool, or mixed throughout it?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Blood on toilet paper only",
+        "Blood coating the outside of the stool",
+        "Blood mixed within the stool"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "hematologic",
-      "text": "Ask about stool frequency and character, flatus, bleeding, dysuria, hematuria, and change from baseline.",
+      "system": "gastrointestinal",
+      "text": "Is the bleeding painful, or painless?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Painless bleeding",
+        "Painful bleeding with defecation"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "skin",
-      "text": "Ask about prior surgery, obstruction, gallstones, liver disease, ulcers, inflammatory bowel disease, and prior episodes.",
+      "system": "medication",
+      "text": "Are you on a blood thinner?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No anticoagulant use",
+        "Anticoagulant use"
       ],
       "select": "one"
     },
@@ -59,71 +57,113 @@
       "id": "history-05",
       "kind": "history",
       "system": "medication",
-      "text": "Ask about NSAIDs, anticoagulants, alcohol, new medications, antibiotics, toxins, and relevant dietary exposures.",
+      "text": "Do you regularly take ibuprofen or another NSAID, or aspirin?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "NSAID use",
+        "Aspirin or antiplatelet use"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "reproductive",
-      "text": "Ask about pregnancy possibility and gynecologic symptoms when clinically relevant.",
+      "system": "gastrointestinal",
+      "text": "Have you been told you have diverticulosis?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known diverticulosis",
+        "Known diverticulosis"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "hematologic",
-      "text": "Ask about hematochezia, maroon stool, melena, clots, frequency, amount, abdominal pain, and change in bowel habits.",
+      "system": "gastrointestinal",
+      "text": "Do you have inflammatory bowel disease, like Crohn's or ulcerative colitis?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known inflammatory bowel disease",
+        "Known inflammatory bowel disease"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about diarrhea, constipation, urgency, tenesmus, fever, weight loss, nocturnal symptoms, and rectal pain.",
+      "system": "medication",
+      "text": "Have you had a colonoscopy or polyp removed recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No recent colonoscopy or polypectomy",
+        "Recent colonoscopy or polypectomy"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about diverticular disease, hemorrhoids, inflammatory bowel disease, cancer history, prior colonoscopy, anticoagulants, and NSAIDs.",
+      "system": "hematologic",
+      "text": "Have you been diagnosed with colon cancer, or does anyone in your family have a history of colon cancer?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Known colorectal malignancy",
+        "Family history of colorectal cancer"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "neurologic",
-      "text": "Ask about dizziness, syncope, dyspnea, chest pain, weakness, palpitations, and decreased urine output.",
+      "system": "gastrointestinal",
+      "text": "Have your bowel habits changed recently, or has the shape of your stool gotten narrower?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No change in bowel habits",
+        "Change in bowel habits or stool caliber"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "cardiovascular",
+      "text": "Have you had an episode of very low blood pressure recently?",
+      "choices": [
+        "No recent hypotensive episode",
+        "Recent hypotensive episode"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "gastrointestinal",
+      "text": "Have you ever had radiation therapy to your pelvis?",
+      "choices": [
+        "No prior pelvic radiation therapy",
+        "Prior pelvic radiation therapy"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "neurologic",
+      "text": "Have you felt like you were going to pass out, or did you actually pass out with this bleeding?",
+      "choices": [
+        "Neither",
+        "Presyncope",
+        "Syncope"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-14",
+      "kind": "history",
+      "system": "infectious",
+      "text": "Have you had diarrhea or a fever along with the bleeding?",
+      "choices": [
+        "Neither",
+        "Diarrhea",
+        "Fever"
       ],
       "select": "one"
     },
@@ -131,119 +171,114 @@
       "id": "exam-01",
       "kind": "exam",
       "system": "cardiovascular",
-      "text": "Assess appearance, vital signs, mucous membranes, orthostatic symptoms when safe, and bedside perfusion.",
+      "text": "Assess hemodynamic stability.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normotensive, stable",
+        "Tachycardic",
+        "Hypotensive or in shock"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "skin",
-      "text": "Inspect for scars, distention, asymmetry, visible hernia, skin changes, and respiratory movement of the abdomen.",
+      "system": "cardiovascular",
+      "text": "Assess orthostatic vital signs when safe.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Negative orthostatics",
+        "Positive orthostatic hypotension"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "gastrointestinal",
-      "text": "Auscultate and palpate systematically for focal tenderness, guarding, rebound, mass, organ enlargement, or pulsatility.",
+      "system": "hematologic",
+      "text": "Inspect conjunctiva and nail beds for pallor.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal color",
+        "Conjunctival or nail-bed pallor"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "genitourinary",
-      "text": "Assess for costovertebral-angle tenderness and examine relevant hernia sites when indicated.",
+      "system": "gastrointestinal",
+      "text": "Palpate the abdomen for tenderness.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Nontender",
+        "Focal tenderness",
+        "Diffuse tenderness with peritoneal signs"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "reproductive",
-      "text": "Perform rectal, perianal, or pelvic examination only when clinically indicated and appropriate.",
+      "system": "gastrointestinal",
+      "text": "Inspect the perianal area.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal appearance",
+        "Visible hemorrhoids",
+        "Anal fissure"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "hematologic",
-      "text": "Inspect for jaundice, pallor, edema, bruising, chronic liver-disease stigmata, and other systemic findings when relevant.",
+      "system": "gastrointestinal",
+      "text": "Perform a rectal examination.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal or deferred as not indicated",
+        "Gross blood on examination",
+        "Palpable mass on examination"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "hematologic",
-      "text": "Assess vital signs, pallor, mental status, perfusion, orthostatic symptoms when safe, and signs of significant blood loss.",
+      "system": "gastrointestinal",
+      "text": "Assess stool color and character.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal brown stool",
+        "Bright red blood",
+        "Maroon stool or melena"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "gastrointestinal",
-      "text": "Inspect and palpate for tenderness, distention, mass, organ enlargement, and peritoneal signs.",
+      "system": "neurologic",
+      "text": "Assess mental status.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Alert and oriented",
+        "Confused or altered"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "gastrointestinal",
-      "text": "Perform external perianal and rectal examination when clinically indicated and appropriate.",
+      "system": "skin",
+      "text": "Inspect skin and mucosa for bleeding suggesting coagulopathy.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No ecchymosis or petechiae",
+        "Ecchymosis or petechiae present"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "hematologic",
-      "text": "Inspect for bruising, petechiae, liver-disease stigmata, rash, joint findings, and other clues to systemic disease.",
+      "system": "gastrointestinal",
+      "text": "Assess for abdominal distention.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No distention",
+        "Distention present"
       ],
       "select": "one"
     }

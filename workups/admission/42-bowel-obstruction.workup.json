@@ -12,95 +12,90 @@
       "id": "history-01",
       "kind": "history",
       "system": "gastrointestinal",
-      "text": "Ask about onset, location, radiation, severity, timing, and relationship to meals, movement, or bowel movements.",
+      "text": "Is your belly pain crampy and coming in waves, or is it constant?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Crampy, intermittent, colicky pain",
+        "Constant, unrelenting pain"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about oral intake, nausea, vomiting, fluid losses, urine output, and ability to tolerate medications.",
+      "system": "gastrointestinal",
+      "text": "Are you able to pass gas or have a bowel movement?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Passing flatus and stool normally",
+        "Passing flatus but no stool",
+        "Unable to pass gas or stool"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "hematologic",
-      "text": "Ask about stool frequency and character, flatus, bleeding, dysuria, hematuria, and change from baseline.",
+      "system": "gastrointestinal",
+      "text": "Have you been vomiting, and if so, does it look greenish-yellow or like stool?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No vomiting",
+        "Bilious vomiting",
+        "Feculent-appearing vomiting"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "skin",
-      "text": "Ask about prior surgery, obstruction, gallstones, liver disease, ulcers, inflammatory bowel disease, and prior episodes.",
+      "system": "gastrointestinal",
+      "text": "Has your belly become visibly more swollen or distended?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No distention",
+        "Distention present"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about NSAIDs, anticoagulants, alcohol, new medications, antibiotics, toxins, and relevant dietary exposures.",
+      "system": "gastrointestinal",
+      "text": "Have you had abdominal surgery in the past?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No prior abdominal surgery",
+        "Prior abdominal surgery"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "reproductive",
-      "text": "Ask about pregnancy possibility and gynecologic symptoms when clinically relevant.",
+      "system": "gastrointestinal",
+      "text": "Have you noticed a bulge in your groin or at a prior surgical scar that you can push back in, or that's stuck out and painful?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No bulge noticed",
+        "Reducible bulge",
+        "Painful, irreducible bulge"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "gastrointestinal",
-      "text": "Ask about cramping or constant pain, distention, vomiting, bilious or feculent emesis, and inability to pass stool or flatus.",
+      "system": "hematologic",
+      "text": "Have you been diagnosed with cancer, especially of the colon, ovary, or stomach?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known malignancy",
+        "Known malignancy"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "reproductive",
-      "text": "Ask about prior abdominal or pelvic surgery, hernias, prior obstruction, inflammatory bowel disease, radiation, and malignancy.",
+      "system": "gastrointestinal",
+      "text": "Do you have Crohn's disease or another condition that has caused bowel narrowing before?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known inflammatory bowel disease or stricture",
+        "Known Crohn's disease or prior bowel stricture"
       ],
       "select": "one"
     },
@@ -108,47 +103,70 @@
       "id": "history-09",
       "kind": "history",
       "system": "infectious",
-      "text": "Ask about fever, persistent focal pain, bloody stool, syncope, reduced urine output, and inability to tolerate oral intake.",
+      "text": "Do you have a fever, or has the pain become constant and severe in one specific spot?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Fever",
+        "Constant severe localized pain"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about opioids, anticholinergics, laxatives, baseline bowel pattern, constipation, and recent change in medications.",
+      "system": "hematologic",
+      "text": "Have you noticed blood in your stool, or had unintentional weight loss recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Blood in stool",
+        "Unintentional weight loss"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "medication",
+      "text": "Are you on opioid pain medication, or have you been unusually constipated before this started?",
+      "choices": [
+        "Neither",
+        "Regular opioid use",
+        "Chronic constipation at baseline"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "genitourinary",
+      "text": "Have you noticed a change in how much you're urinating?",
+      "choices": [
+        "Normal urine output",
+        "Decreased urine output"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess appearance, vital signs, mucous membranes, orthostatic symptoms when safe, and bedside perfusion.",
+      "system": "gastrointestinal",
+      "text": "Inspect the abdomen for distention and visible peristalsis.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No distention",
+        "Distention present",
+        "Distention with visible peristaltic waves"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "skin",
-      "text": "Inspect for scars, distention, asymmetry, visible hernia, skin changes, and respiratory movement of the abdomen.",
+      "system": "gastrointestinal",
+      "text": "Auscultate bowel sounds.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal bowel sounds",
+        "High-pitched, hyperactive bowel sounds",
+        "Absent bowel sounds"
       ],
       "select": "one"
     },
@@ -156,59 +174,57 @@
       "id": "exam-03",
       "kind": "exam",
       "system": "gastrointestinal",
-      "text": "Auscultate and palpate systematically for focal tenderness, guarding, rebound, mass, organ enlargement, or pulsatility.",
+      "text": "Palpate the abdomen for tenderness, guarding, and rebound.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Soft, nontender",
+        "Diffusely tender without guarding",
+        "Focal tenderness, guarding, or rigidity"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "genitourinary",
-      "text": "Assess for costovertebral-angle tenderness and examine relevant hernia sites when indicated.",
+      "system": "gastrointestinal",
+      "text": "Examine the inguinal, femoral, and umbilical hernia sites for a bulge and its reducibility.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No hernia identified",
+        "Reducible hernia",
+        "Tender, irreducible or incarcerated hernia"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "reproductive",
-      "text": "Perform rectal, perianal, or pelvic examination only when clinically indicated and appropriate.",
+      "system": "skin",
+      "text": "Inspect the abdomen for surgical scars.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No surgical scars",
+        "Prior surgical scars present"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "hematologic",
-      "text": "Inspect for jaundice, pallor, edema, bruising, chronic liver-disease stigmata, and other systemic findings when relevant.",
+      "system": "general",
+      "text": "Assess temperature for fever.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Afebrile",
+        "Febrile"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "skin",
-      "text": "Inspect for distention, scars, asymmetry, visible peristalsis, hernias, and skin changes.",
+      "system": "cardiovascular",
+      "text": "Assess hemodynamic stability.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normotensive, stable",
+        "Tachycardic",
+        "Hypotensive or in shock"
       ],
       "select": "one"
     },
@@ -216,35 +232,33 @@
       "id": "exam-08",
       "kind": "exam",
       "system": "gastrointestinal",
-      "text": "Auscultate bowel sounds and palpate for tenderness, guarding, rebound, rigidity, mass, and tympany.",
+      "text": "Perform a rectal examination to assess for stool, mass, or blood.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal, stool present, guaiac negative",
+        "Empty rectal vault",
+        "Mass or gross blood on examination"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "gastrointestinal",
-      "text": "Examine relevant inguinal, femoral, umbilical, and incisional hernia sites when appropriate.",
+      "system": "general",
+      "text": "Assess hydration status and mucous membranes.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Euvolemic, moist mucous membranes",
+        "Dry mucous membranes or poor turgor"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "gastrointestinal",
-      "text": "Perform rectal examination when clinically indicated and appropriate to assess stool, mass, blood, or impaction.",
+      "system": "genitourinary",
+      "text": "Assess urine output.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal urine output",
+        "Decreased urine output"
       ],
       "select": "one"
     }

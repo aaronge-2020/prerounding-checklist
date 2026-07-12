@@ -3,31 +3,30 @@
   "id": "hyperkalemia",
   "title": "Electrolyte abnormality – hyperkalemia",
   "aliases": [
-    "high potassium",
-    "hyperkalemia"
+    "high potassium"
   ],
   "items": [
     {
       "id": "history-01",
       "kind": "history",
-      "system": "general",
-      "text": "Ask about onset, progression, severity, recent acute illness, and change from usual health.",
+      "system": "genitourinary",
+      "text": "Do you have kidney disease, and if you're on dialysis, have you missed a session?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Known chronic kidney disease, no missed dialysis",
+        "Known dialysis dependence with a missed session"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "genitourinary",
-      "text": "Ask about oral intake, thirst, vomiting, diarrhea, urine volume, urinary retention, and recent weight change.",
+      "system": "medication",
+      "text": "Do you take a blood pressure medication ending in -pril or -sartan, or a potassium-sparing water pill like spironolactone?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "ACE inhibitor or ARB use",
+        "Potassium-sparing diuretic use"
       ],
       "select": "one"
     },
@@ -35,23 +34,21 @@
       "id": "history-03",
       "kind": "history",
       "system": "medication",
-      "text": "Ask about new or missed medications, insulin, diuretics, ACE inhibitors, NSAIDs, steroids, laxatives, and supplements.",
+      "text": "Have you taken any ibuprofen or other NSAIDs recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No NSAID use",
+        "NSAID use"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "endocrine",
-      "text": "Ask about chronic kidney disease, diabetes, adrenal or thyroid disease, prior electrolyte disorders, and baseline glucose control.",
+      "system": "medication",
+      "text": "Have you taken the antibiotic trimethoprim-sulfamethoxazole (Bactrim) recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No recent trimethoprim-sulfamethoxazole use",
+        "Recent trimethoprim-sulfamethoxazole use"
       ],
       "select": "one"
     },
@@ -59,95 +56,130 @@
       "id": "history-05",
       "kind": "history",
       "system": "medication",
-      "text": "Ask about infection symptoms, ischemic symptoms, recent procedures or contrast exposure, alcohol use, and dietary change.",
+      "text": "Do you take a potassium supplement, or use a salt substitute?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Potassium supplement use",
+        "Salt substitute use"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "neurologic",
-      "text": "Ask about weakness, cramps, paresthesias, palpitations, confusion, seizures, and exercise intolerance.",
+      "system": "musculoskeletal",
+      "text": "Have you had significant muscle pain, or has your urine looked dark like tea or cola?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Muscle pain",
+        "Dark, tea-colored urine"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "neurologic",
-      "text": "Ask about palpitations, chest discomfort, lightheadedness, weakness, paresthesias, paralysis, and syncope.",
+      "system": "hematologic",
+      "text": "Have you been diagnosed with cancer, or started chemotherapy recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Known malignancy",
+        "Recently started chemotherapy"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "genitourinary",
-      "text": "Ask about chronic kidney disease, dialysis schedule, missed dialysis, reduced urine output, retention, and recent kidney injury.",
+      "system": "neurologic",
+      "text": "Have you felt weak or noticed numbness or tingling?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Mild weakness or paresthesias",
+        "Severe weakness or paralysis"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about ACE inhibitors, ARBs, mineralocorticoid antagonists, NSAIDs, trimethoprim, potassium supplements, and salt substitutes.",
+      "system": "cardiovascular",
+      "text": "Have you felt your heart racing, or did you pass out?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Palpitations",
+        "Syncope or near-syncope"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about trauma, crush injury, prolonged immobility, infection, uncontrolled diabetes, and symptoms of acidosis.",
+      "system": "endocrine",
+      "text": "Have you lost weight without trying, or noticed new darkening of your skin?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No adrenal insufficiency symptoms",
+        "Fatigue and unintentional weight loss",
+        "New skin darkening"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "endocrine",
+      "text": "Do you have diabetes, and have you noticed excessive thirst, urination, or a fruity breath smell?",
+      "choices": [
+        "No known diabetes",
+        "Known diabetes with polyuria or polydipsia",
+        "Known diabetes with symptoms of diabetic ketoacidosis"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "hematologic",
+      "text": "Have you received a large blood transfusion recently?",
+      "choices": [
+        "No recent transfusion",
+        "Recent large-volume blood transfusion"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "musculoskeletal",
+      "text": "Were you crushed under something heavy, or stuck in one position for a long time?",
+      "choices": [
+        "Neither",
+        "Crush injury",
+        "Prolonged immobilization or extended down time"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess appearance, heart rate, blood pressure, respiratory rate and pattern, temperature, and bedside perfusion.",
+      "system": "cardiovascular",
+      "text": "Assess cardiac rhythm.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Regular rate and rhythm",
+        "Bradycardic",
+        "Irregular rhythm"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "skin",
-      "text": "Assess mucous membranes, jugular venous pressure when feasible, edema, skin turgor, and orthostatic symptoms when safe.",
+      "system": "neurologic",
+      "text": "Assess muscle strength.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal strength",
+        "Mild weakness",
+        "Severe weakness or flaccid paralysis"
       ],
       "select": "one"
     },
@@ -155,71 +187,66 @@
       "id": "exam-03",
       "kind": "exam",
       "system": "neurologic",
-      "text": "Assess alertness, orientation, attention, behavior, and change from baseline.",
+      "text": "Assess deep tendon reflexes.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal reflexes",
+        "Diminished or absent reflexes"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess rate, rhythm, heart sounds, peripheral pulses, capillary refill, and signs of volume overload or depletion.",
+      "system": "general",
+      "text": "Assess overall volume status.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Euvolemic",
+        "Hypervolemic, with edema",
+        "Hypovolemic"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess work of breathing, lung sounds, and abnormal respiratory pattern including deep or rapid breathing.",
+      "system": "musculoskeletal",
+      "text": "Palpate muscle groups for focal tenderness or swelling suggesting rhabdomyolysis.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No focal muscle tenderness or swelling",
+        "Focal muscle tenderness or swelling"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess gross strength, tremor, reflexes, sensation, tetany, asterixis, and gait only when safe and relevant.",
+      "system": "genitourinary",
+      "text": "Inspect the dialysis access site, if present.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No dialysis access or site normal and functioning",
+        "Dialysis access with concern for thrombosis or infection"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess pulse rate and regularity, blood pressure, perfusion, and symptoms or signs of instability.",
+      "system": "skin",
+      "text": "Inspect the skin for hyperpigmentation.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal skin color",
+        "Skin hyperpigmentation"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess proximal and distal strength, reflexes, sensation, and ability to transfer or walk only when safe.",
+      "system": "neurologic",
+      "text": "Assess mental status.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Alert",
+        "Confused or lethargic"
       ],
       "select": "one"
     },
@@ -227,23 +254,21 @@
       "id": "exam-09",
       "kind": "exam",
       "system": "genitourinary",
-      "text": "Assess edema, hydration, pulmonary congestion, bladder fullness, and signs of uremia.",
+      "text": "Assess urine output.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal urine output",
+        "Decreased or absent urine output"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "infectious",
-      "text": "Inspect painful or injured muscle groups, pressure areas, swelling, and signs of infection or ischemia when relevant.",
+      "system": "cardiovascular",
+      "text": "Palpate peripheral pulses for regularity and quality.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Regular, normal pulses",
+        "Irregular or weak pulses"
       ],
       "select": "one"
     }

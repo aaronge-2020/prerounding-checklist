@@ -10,168 +10,171 @@
     {
       "id": "history-01",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about baseline cognition, activities of daily living, ambulation, assistive devices, continence, and recent functional change.",
+      "system": "musculoskeletal",
+      "text": "Which joints are bothering you, and have you had this same pain in these joints for months or years?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "New joint pain, not present before",
+        "Chronic joint pain, similar to baseline",
+        "Chronic joint pain, but this feels worse or different"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about home setting, caregivers, available supports, medication access, food access, transportation, and barriers to care.",
+      "system": "musculoskeletal",
+      "text": "Is your joint stiffness worst first thing in the morning, and if so, how long does it last?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Morning stiffness less than 30 minutes",
+        "Morning stiffness more than an hour"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recent medication changes, sedatives, analgesics, alcohol, other substances, and adherence.",
+      "system": "musculoskeletal",
+      "text": "Does the pain get worse with activity and better with rest?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Worse with activity, better with rest",
+        "Pain present even at rest"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "psychiatric",
-      "text": "Ask about depression, anxiety, delirium symptoms, self-harm risk when relevant, abuse or neglect concerns, and immediate safety.",
+      "system": "infectious",
+      "text": "Do you have a fever along with the joint pain?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No fever",
+        "Fever"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about appetite, weight change, swallowing, hydration, sleep, fatigue, and symptoms limiting participation in care.",
+      "system": "musculoskeletal",
+      "text": "Has one joint become suddenly hot, red, and swollen?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No acute hot, red, swollen joint",
+        "Single joint acutely hot, red, and swollen"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about fever, pain, falls, trauma, bleeding, focal symptoms, and other acute changes that may explain decline.",
+      "system": "musculoskeletal",
+      "text": "Have you had a recent joint injection, surgery, or skin infection near this joint?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "None of these",
+        "Recent joint injection or surgery",
+        "Nearby skin infection"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "musculoskeletal",
-      "text": "Ask about affected joints, pain quality, duration, stiffness duration, activity relationship, swelling, instability, and mechanical symptoms.",
+      "system": "functional",
+      "text": "Has this pain made it harder for you to walk, get up from a chair, or care for yourself at home?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No functional change",
+        "New difficulty with walking or transfers",
+        "New difficulty with self-care"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about walking, stairs, transfers, sleep, self-care, work, driving, falls, assistive devices, and baseline activity.",
+      "system": "musculoskeletal",
+      "text": "Have you fallen or injured the joint recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No recent fall or trauma",
+        "Recent fall or trauma to the joint"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about fever, redness, warmth, prolonged morning stiffness, acute severe swelling, rash, and recent infection.",
+      "system": "medication",
+      "text": "Have you been taking NSAIDs or other pain medications regularly for this?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No regular NSAID or analgesic use",
+        "Regular NSAID use",
+        "Regular opioid use"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about prior surgery, injections, trauma, physical therapy, analgesics, NSAIDs, opioids, and medication adverse effects.",
+      "system": "musculoskeletal",
+      "text": "Have multiple small joints in your hands or feet become swollen and painful, on both sides of your body?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No symmetric small-joint involvement",
+        "Symmetric small-joint swelling and pain"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "musculoskeletal",
+      "text": "Has your big toe or another single joint suddenly become extremely painful, often overnight?",
+      "choices": [
+        "No sudden severe monoarticular pain",
+        "Sudden severe pain, often in the big toe"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess appearance, vital signs, hydration, pain behavior, and evidence of acute cardiorespiratory instability.",
+      "system": "musculoskeletal",
+      "text": "Inspect the affected joint for erythema, warmth, and swelling.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No erythema, warmth, or swelling",
+        "Swelling without erythema or warmth",
+        "Erythema and warmth present"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "psychiatric",
-      "text": "Assess alertness, attention, orientation, mood, thought process, agitation, and ability to participate in the examination.",
+      "system": "musculoskeletal",
+      "text": "Palpate for a joint effusion.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No effusion",
+        "Effusion present"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "functional",
-      "text": "Inspect oral cavity, mucous membranes, body habitus, skin integrity, bruising, edema, and pressure areas.",
+      "system": "musculoskeletal",
+      "text": "Assess active and passive range of motion of the affected joint.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Full range of motion",
+        "Limited range of motion from pain or stiffness",
+        "Unable to move the joint at all"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "functional",
-      "text": "Assess bed mobility, transfers, strength, balance, gait, and assistive-device use only when safe.",
+      "system": "musculoskeletal",
+      "text": "Assess for crepitus with joint movement.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No crepitus",
+        "Crepitus present"
       ],
       "select": "one"
     },
@@ -179,23 +182,21 @@
       "id": "exam-05",
       "kind": "exam",
       "system": "musculoskeletal",
-      "text": "Inspect and palpate symptomatic joints, spine, and muscles for tenderness, swelling, deformity, range-of-motion limitation, or injury.",
+      "text": "Assess joint stability with stress testing when appropriate.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Stable joint",
+        "Instability present"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "medication",
-      "text": "Assess focal strength, sensation, coordination, tremor, and signs of withdrawal or intoxication when relevant.",
+      "system": "general",
+      "text": "Assess temperature for fever.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Afebrile",
+        "Febrile"
       ],
       "select": "one"
     },
@@ -203,11 +204,11 @@
       "id": "exam-07",
       "kind": "exam",
       "system": "musculoskeletal",
-      "text": "Inspect symptomatic joints for alignment, swelling, effusion, erythema, warmth, deformity, muscle wasting, and scars.",
+      "text": "Assess for bony deformity, joint malalignment, and muscle wasting around the joint.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No deformity or wasting",
+        "Bony deformity or malalignment",
+        "Surrounding muscle wasting"
       ],
       "select": "one"
     },
@@ -215,11 +216,10 @@
       "id": "exam-08",
       "kind": "exam",
       "system": "musculoskeletal",
-      "text": "Palpate for tenderness and assess active and passive range of motion, crepitus, stability, and pain limitation.",
+      "text": "Assess distal pulses, capillary refill, and sensation distal to the affected joint.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal distal perfusion and sensation",
+        "Diminished distal perfusion or sensation"
       ],
       "select": "one"
     },
@@ -227,11 +227,11 @@
       "id": "exam-09",
       "kind": "exam",
       "system": "functional",
-      "text": "Assess sit-to-stand, gait, weight bearing, balance, and assistive-device use only when safe.",
+      "text": "Assess gait and ability to bear weight when safe.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal gait, full weight bearing",
+        "Antalgic gait",
+        "Unable to bear weight"
       ],
       "select": "one"
     },
@@ -239,11 +239,10 @@
       "id": "exam-10",
       "kind": "exam",
       "system": "musculoskeletal",
-      "text": "Assess distal pulses, capillary refill, sensation, strength, and focal neurologic deficits beyond the affected joint.",
+      "text": "Examine other joints for symmetric involvement.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Isolated joint involvement",
+        "Symmetric polyarticular involvement"
       ],
       "select": "one"
     }

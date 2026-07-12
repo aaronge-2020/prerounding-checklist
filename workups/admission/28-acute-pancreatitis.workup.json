@@ -3,19 +3,18 @@
   "id": "acute-pancreatitis",
   "title": "Acute pancreatitis",
   "aliases": [
-    "pancreatitis",
-    "epigastric pain"
+    "pancreatitis"
   ],
   "items": [
     {
       "id": "history-01",
       "kind": "history",
       "system": "gastrointestinal",
-      "text": "Ask about onset, location, radiation, severity, timing, and relationship to meals, movement, or bowel movements.",
+      "text": "Where is your belly pain, and does it spread through to your back?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Epigastric pain radiating to the back",
+        "Epigastric pain without radiation",
+        "Diffuse abdominal pain"
       ],
       "select": "one"
     },
@@ -23,35 +22,32 @@
       "id": "history-02",
       "kind": "history",
       "system": "medication",
-      "text": "Ask about oral intake, nausea, vomiting, fluid losses, urine output, and ability to tolerate medications.",
+      "text": "Did you drink heavily or binge drink before this pain started?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No heavy alcohol use",
+        "Heavy or binge alcohol use preceding symptoms"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "hematologic",
-      "text": "Ask about stool frequency and character, flatus, bleeding, dysuria, hematuria, and change from baseline.",
+      "system": "gastrointestinal",
+      "text": "Do you have any prior episodes of abdominal pain that occurs specifically after you eat, or have you been told you have gallstones?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "None known",
+        "Known gallstones or biliary colic"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "skin",
-      "text": "Ask about prior surgery, obstruction, gallstones, liver disease, ulcers, inflammatory bowel disease, and prior episodes.",
+      "system": "endocrine",
+      "text": "Have you been told you have high triglycerides?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known hypertriglyceridemia",
+        "Known hypertriglyceridemia"
       ],
       "select": "one"
     },
@@ -59,35 +55,32 @@
       "id": "history-05",
       "kind": "history",
       "system": "medication",
-      "text": "Ask about NSAIDs, anticoagulants, alcohol, new medications, antibiotics, toxins, and relevant dietary exposures.",
+      "text": "Have you had a procedure recently to look at your bile ducts, called an ERCP?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No recent ERCP",
+        "Recent ERCP procedure"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "reproductive",
-      "text": "Ask about pregnancy possibility and gynecologic symptoms when clinically relevant.",
+      "system": "medication",
+      "text": "Have you started a new medication recently, like a weight-loss or diabetes injection, an immune-suppressing drug, or a seizure medication?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No new pancreatitis-associated medication",
+        "New pancreatitis-associated medication started"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "general",
-      "text": "Ask about severe epigastric pain, radiation to the back, onset, persistence, relief with position, and prior similar episodes.",
+      "system": "gastrointestinal",
+      "text": "Have you been vomiting along with the pain?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No vomiting",
+        "Vomiting"
       ],
       "select": "one"
     },
@@ -95,119 +88,145 @@
       "id": "history-08",
       "kind": "history",
       "system": "infectious",
-      "text": "Ask about nausea, vomiting, fever, poor intake, abdominal distention, jaundice, pale stools, and dark urine.",
+      "text": "Have you had a fever along with the pain?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No fever",
+        "Fever"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about alcohol use, gallstones, prior biliary disease, high triglyceride history, new medications, trauma, and prior pancreatitis.",
+      "system": "hematologic",
+      "text": "Have you lost weight without trying, or been told you have a mass on your pancreas?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Unintentional weight loss",
+        "Known pancreatic mass or malignancy"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "neurologic",
-      "text": "Ask about dyspnea, dizziness, syncope, reduced urine output, confusion, and inability to tolerate oral intake.",
+      "system": "gastrointestinal",
+      "text": "Have you had pancreatitis before?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "First episode",
+        "Recurrent episodes"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "gastrointestinal",
+      "text": "Does anyone in your family have a history of pancreatitis?",
+      "choices": [
+        "No known family history",
+        "Known family history of pancreatitis"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "musculoskeletal",
+      "text": "Have you had a recent injury to your abdomen?",
+      "choices": [
+        "No recent abdominal trauma",
+        "Recent abdominal trauma"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "endocrine",
+      "text": "Do you have diabetes?",
+      "choices": [
+        "No known diabetes",
+        "Known diabetes"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess appearance, vital signs, mucous membranes, orthostatic symptoms when safe, and bedside perfusion.",
+      "system": "gastrointestinal",
+      "text": "Palpate the abdomen for epigastric tenderness.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Nontender",
+        "Epigastric tenderness",
+        "Diffuse tenderness with guarding or rigidity"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "skin",
-      "text": "Inspect for scars, distention, asymmetry, visible hernia, skin changes, and respiratory movement of the abdomen.",
+      "system": "gastrointestinal",
+      "text": "Auscultate bowel sounds.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal bowel sounds",
+        "Hypoactive or absent bowel sounds"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "gastrointestinal",
-      "text": "Auscultate and palpate systematically for focal tenderness, guarding, rebound, mass, organ enlargement, or pulsatility.",
+      "system": "skin",
+      "text": "Inspect skin and sclerae for jaundice.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Absent",
+        "Present"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "genitourinary",
-      "text": "Assess for costovertebral-angle tenderness and examine relevant hernia sites when indicated.",
+      "system": "skin",
+      "text": "Inspect the flanks and periumbilical area for Grey Turner or Cullen sign.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Absent",
+        "Present"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "reproductive",
-      "text": "Perform rectal, perianal, or pelvic examination only when clinically indicated and appropriate.",
+      "system": "general",
+      "text": "Assess hemodynamic stability.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normotensive, stable",
+        "Tachycardic",
+        "Hypotensive or in shock"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "hematologic",
-      "text": "Inspect for jaundice, pallor, edema, bruising, chronic liver-disease stigmata, and other systemic findings when relevant.",
+      "system": "general",
+      "text": "Assess for fever or toxic appearance.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Well-appearing, afebrile",
+        "Febrile or toxic-appearing"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "general",
-      "text": "Inspect and palpate for epigastric tenderness, guarding, distention, mass, and peritoneal signs.",
+      "system": "respiratory",
+      "text": "Assess oxygenation for a pulmonary complication.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal oxygenation",
+        "Hypoxemic"
       ],
       "select": "one"
     },
@@ -215,35 +234,32 @@
       "id": "exam-08",
       "kind": "exam",
       "system": "gastrointestinal",
-      "text": "Inspect for jaundice and assess right-upper-quadrant tenderness when biliary disease is possible.",
+      "text": "Assess for abdominal distention.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No distention",
+        "Distention present"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess hydration, heart rate, blood pressure, mental status, extremity temperature, and capillary refill.",
+      "system": "gastrointestinal",
+      "text": "Assess for a Murphy sign.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Negative",
+        "Positive"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess work of breathing, lung sounds, pleural findings, and oxygenation for systemic complications.",
+      "system": "neurologic",
+      "text": "Assess mental status.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Alert and oriented",
+        "Confused or altered"
       ],
       "select": "one"
     }

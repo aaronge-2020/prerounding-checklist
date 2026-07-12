@@ -3,31 +3,31 @@
   "id": "asthma-exacerbation",
   "title": "Asthma exacerbation",
   "aliases": [
-    "asthma flare",
-    "acute asthma"
+    "asthma attack",
+    "reactive airway"
   ],
   "items": [
     {
       "id": "history-01",
       "kind": "history",
-      "system": "general",
-      "text": "Ask about onset, tempo, severity, triggers, relieving factors, and change from baseline.",
+      "system": "respiratory",
+      "text": "Did anything seem to trigger this — an allergen, a cold, or exercise?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No clear trigger identified",
+        "Known allergen exposure",
+        "Viral upper respiratory infection",
+        "Exercise-induced"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about chest discomfort, palpitations, syncope, diaphoresis, cough, fever, and hemoptysis.",
+      "system": "medication",
+      "text": "Do you have a known sensitivity to aspirin or NSAIDs like ibuprofen?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known sensitivity",
+        "Known NSAID or aspirin sensitivity"
       ],
       "select": "one"
     },
@@ -35,23 +35,23 @@
       "id": "history-03",
       "kind": "history",
       "system": "respiratory",
-      "text": "Ask about prior heart or lung disease, prior admissions, baseline exertional tolerance, and home oxygen use.",
+      "text": "Do you take a daily controller inhaler for your asthma, and has it been keeping you well controlled?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Well-controlled on a controller medication",
+        "Poorly controlled, frequent rescue inhaler use",
+        "No controller medication prescribed"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about tobacco or vaping exposure, immobility, thromboembolic risk, and relevant family history.",
+      "system": "respiratory",
+      "text": "Have you ever been hospitalized or put on a breathing machine for an asthma attack before?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No prior severe exacerbation",
+        "Prior hospitalization without ICU admission",
+        "Prior ICU admission or intubation"
       ],
       "select": "one"
     },
@@ -59,71 +59,92 @@
       "id": "history-05",
       "kind": "history",
       "system": "medication",
-      "text": "Ask about recent medication changes, adherence, inhaler or diuretic use, and anticoagulant use when relevant.",
+      "text": "How often have you been using your rescue inhaler?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Fewer than twice a week",
+        "Daily use",
+        "Using the rescue inhaler more than every few hours currently"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about baseline ambulation, sleep position, activity limitation, and new functional decline.",
+      "system": "respiratory",
+      "text": "Are you able to speak in full sentences right now, or do you have to stop and catch your breath?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Able to speak in full sentences",
+        "Speaks in phrases",
+        "Speaks in single words or unable to speak"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about dyspnea, chest tightness, cough, wheeze, nocturnal symptoms, speaking limitation, and trigger exposure.",
+      "system": "respiratory",
+      "text": "Have you been waking up at night because of your asthma?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No nighttime awakening",
+        "Occasional nighttime awakening",
+        "Frequent nighttime awakening"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "general",
-      "text": "Ask about usual symptoms, rescue-inhaler use, controller access and adherence, prior exacerbations, ICU care, intubation, and action plan.",
+      "system": "respiratory",
+      "text": "Do you feel tightness in your chest?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No chest tightness",
+        "Chest tightness"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about viral symptoms, allergens, smoke, occupational exposure, exercise, NSAID sensitivity, reflux, and anaphylaxis symptoms.",
+      "system": "medication",
+      "text": "Do you smoke, or are you regularly around someone else's smoke?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No smoke exposure",
+        "Active smoking or secondhand smoke exposure"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about fever, sputum, pleuritic pain, chest pain, palpitations, leg swelling, aspiration, and heart-failure symptoms.",
+      "system": "medication",
+      "text": "Have you taken a course of oral steroids for your asthma recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No recent oral steroid course",
+        "Recent oral steroid course"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "skin",
+      "text": "Did you break out in hives or notice facial swelling along with this episode?",
+      "choices": [
+        "Neither",
+        "Hives",
+        "Facial swelling"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "ent",
+      "text": "Does it feel like your throat is tight, or has your voice changed?",
+      "choices": [
+        "Neither",
+        "Throat tightness",
+        "Voice change"
       ],
       "select": "one"
     },
@@ -131,11 +152,11 @@
       "id": "exam-01",
       "kind": "exam",
       "system": "respiratory",
-      "text": "Assess general appearance, respiratory rate and pattern, heart rate and rhythm, blood pressure, temperature, and oxygenation.",
+      "text": "Assess work of breathing and ability to speak in full sentences.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal work of breathing, speaks in full sentences",
+        "Accessory muscle use",
+        "Unable to speak in full sentences"
       ],
       "select": "one"
     },
@@ -143,23 +164,23 @@
       "id": "exam-02",
       "kind": "exam",
       "system": "respiratory",
-      "text": "Inspect work of breathing and auscultate all lung fields for air movement and focal or diffuse adventitious sounds.",
+      "text": "Auscultate for wheeze and air movement.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal air entry, no wheeze",
+        "Wheeze with adequate air movement",
+        "Minimal air movement, silent chest"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess cardiac rate and rhythm, heart sounds, murmurs, and signs of impaired peripheral perfusion.",
+      "system": "respiratory",
+      "text": "Assess oxygen saturation.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal saturation",
+        "Mildly hypoxemic",
+        "Severely hypoxemic"
       ],
       "select": "one"
     },
@@ -167,83 +188,76 @@
       "id": "exam-04",
       "kind": "exam",
       "system": "cardiovascular",
-      "text": "Assess jugular venous pressure when feasible, mucous membranes, edema, and other bedside signs of volume status.",
+      "text": "Assess for pulsus paradoxus.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Absent",
+        "Present"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Inspect extremities for asymmetry, edema, cyanosis, calf tenderness, and distal pulses.",
+      "system": "neurologic",
+      "text": "Assess mental status for fatigue or drowsiness.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Alert",
+        "Drowsy or fatigued"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess alertness, orientation, and focal neurologic change that could accompany hypoxemia or poor perfusion.",
+      "system": "respiratory",
+      "text": "Assess breath sounds for asymmetry suggesting pneumothorax.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Symmetric breath sounds",
+        "Unilateral decreased breath sounds"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Inspect speech, posture, accessory-muscle use, respiratory rate, fatigue, cyanosis, and oxygenation.",
+      "system": "skin",
+      "text": "Inspect the skin for hives or angioedema.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "None",
+        "Hives or angioedema present"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Auscultate for wheeze, prolonged expiration, diminished air movement, focal crackles, or silent chest.",
+      "system": "ent",
+      "text": "Assess for stridor.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Absent",
+        "Present"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Inspect for stridor, facial or tongue swelling, urticaria, flushing, and other signs of anaphylaxis when relevant.",
+      "system": "cardiovascular",
+      "text": "Assess for an S3 gallop or elevated jugular venous pressure suggesting a cardiac contributor.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Neither",
+        "S3 gallop or elevated jugular venous pressure"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "infectious",
-      "text": "Assess heart rhythm, edema, chest-wall tenderness, fever, and focal lung findings.",
+      "system": "skin",
+      "text": "Assess for cyanosis.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Absent",
+        "Present"
       ],
       "select": "one"
     }

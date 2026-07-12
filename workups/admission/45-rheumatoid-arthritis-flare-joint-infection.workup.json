@@ -10,96 +10,92 @@
     {
       "id": "history-01",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about baseline cognition, activities of daily living, ambulation, assistive devices, continence, and recent functional change.",
+      "system": "musculoskeletal",
+      "text": "Do you have rheumatoid arthritis, and does this pain feel like your usual flares?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known rheumatoid arthritis",
+        "Known rheumatoid arthritis, feels like a typical flare",
+        "Known rheumatoid arthritis, feels different from prior flares"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about home setting, caregivers, available supports, medication access, food access, transportation, and barriers to care.",
+      "system": "musculoskeletal",
+      "text": "Are multiple joints affected on both sides of your body, or is it just one joint?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Symmetric, multiple joints",
+        "Single joint only"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recent medication changes, sedatives, analgesics, alcohol, other substances, and adherence.",
+      "system": "infectious",
+      "text": "Do you have a fever or chills along with the joint pain?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Fever",
+        "Shaking chills"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "psychiatric",
-      "text": "Ask about depression, anxiety, delirium symptoms, self-harm risk when relevant, abuse or neglect concerns, and immediate safety.",
+      "system": "musculoskeletal",
+      "text": "Did this joint pain come on suddenly and get severe within a day or two?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Gradual onset over days to weeks",
+        "Rapid onset over hours to a day"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about appetite, weight change, swallowing, hydration, sleep, fatigue, and symptoms limiting participation in care.",
+      "system": "musculoskeletal",
+      "text": "Is the affected joint too painful to move or bear weight on at all?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Painful but still able to move or bear some weight",
+        "Unable to move the joint or bear weight at all"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about fever, pain, falls, trauma, bleeding, focal symptoms, and other acute changes that may explain decline.",
+      "system": "skin",
+      "text": "Have you had a skin infection, cut, or wound near this joint recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No nearby skin infection or wound",
+        "Recent nearby skin infection or wound"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about monoarticular versus polyarticular pain, swelling, warmth, stiffness, symmetry, duration, and functional limitation.",
+      "system": "musculoskeletal",
+      "text": "Have you had a joint injection, joint surgery, or a joint replacement in this joint?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "None of these",
+        "Recent joint injection",
+        "Prosthetic or previously operated joint"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about fever, chills, rapidly worsening pain, inability to bear weight, skin infection, recent procedure, prosthetic joint, and bacteremia history.",
+      "system": "medication",
+      "text": "Are you on a biologic medication, steroids, or another medication that suppresses your immune system?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No immunosuppressive medication",
+        "On biologic or DMARD therapy",
+        "On chronic steroids"
       ],
       "select": "one"
     },
@@ -107,11 +103,10 @@
       "id": "history-09",
       "kind": "history",
       "system": "musculoskeletal",
-      "text": "Ask about rheumatoid arthritis activity, extra-articular symptoms, prior flares, erosive disease, and baseline joint function.",
+      "text": "How long does your morning stiffness in this joint usually last?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Less than 30 minutes",
+        "More than an hour"
       ],
       "select": "one"
     },
@@ -119,95 +114,113 @@
       "id": "history-10",
       "kind": "history",
       "system": "medication",
-      "text": "Ask about biologics, steroids, DMARDs, missed doses, recent antibiotics, tuberculosis exposure, and other immunosuppression.",
+      "text": "Have you missed doses of your rheumatoid arthritis medication recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Taking medication as prescribed",
+        "Missed one or more doses"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "cardiovascular",
+      "text": "Do you inject drugs, or have you had a recent bloodstream infection?",
+      "choices": [
+        "Neither",
+        "Intravenous drug use",
+        "Recent bloodstream infection"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "general",
+      "text": "Have you had fatigue, dry eyes, dry mouth, or rashes along with the joint symptoms?",
+      "choices": [
+        "None of these",
+        "Fatigue with dry eyes or mouth",
+        "New rash"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess appearance, vital signs, hydration, pain behavior, and evidence of acute cardiorespiratory instability.",
+      "system": "musculoskeletal",
+      "text": "Inspect the affected joint for erythema, warmth, and swelling.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No erythema or warmth",
+        "Warmth and erythema present"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "psychiatric",
-      "text": "Assess alertness, attention, orientation, mood, thought process, agitation, and ability to participate in the examination.",
+      "system": "musculoskeletal",
+      "text": "Palpate for a joint effusion.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No effusion",
+        "Effusion present"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "functional",
-      "text": "Inspect oral cavity, mucous membranes, body habitus, skin integrity, bruising, edema, and pressure areas.",
+      "system": "musculoskeletal",
+      "text": "Assess active and passive range of motion of the affected joint.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Full range of motion, tolerated",
+        "Limited range of motion from pain",
+        "Refuses any passive movement due to pain"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "functional",
-      "text": "Assess bed mobility, transfers, strength, balance, gait, and assistive-device use only when safe.",
+      "system": "musculoskeletal",
+      "text": "Examine contralateral and other joints for symmetric synovitis.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Isolated joint involvement",
+        "Symmetric polyarticular synovitis"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Inspect and palpate symptomatic joints, spine, and muscles for tenderness, swelling, deformity, range-of-motion limitation, or injury.",
+      "system": "general",
+      "text": "Assess temperature for fever.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Afebrile",
+        "Febrile"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "medication",
-      "text": "Assess focal strength, sensation, coordination, tremor, and signs of withdrawal or intoxication when relevant.",
+      "system": "cardiovascular",
+      "text": "Assess hemodynamic stability.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normotensive, stable",
+        "Tachycardic",
+        "Hypotensive or in shock"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Inspect and palpate involved and contralateral joints for warmth, erythema, effusion, tenderness, deformity, and synovitis.",
+      "system": "skin",
+      "text": "Inspect for a nearby skin portal of entry such as a wound, ulcer, or cellulitis.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No skin portal identified",
+        "Skin portal of entry present"
       ],
       "select": "one"
     },
@@ -215,23 +228,21 @@
       "id": "exam-08",
       "kind": "exam",
       "system": "musculoskeletal",
-      "text": "Assess active and passive range of motion, pain with movement, ability to bear weight, and function only when safe.",
+      "text": "Inspect for chronic rheumatoid deformities such as ulnar deviation or swan-neck deformity.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No chronic deformity",
+        "Chronic rheumatoid deformity present"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "infectious",
-      "text": "Assess vital signs, skin portals, heart murmur, lung findings, mental status, and peripheral perfusion.",
+      "system": "cardiovascular",
+      "text": "Auscultate the heart for a new murmur suggesting endocarditis as a source of septic arthritis.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No murmur",
+        "New murmur present"
       ],
       "select": "one"
     },
@@ -239,11 +250,10 @@
       "id": "exam-10",
       "kind": "exam",
       "system": "musculoskeletal",
-      "text": "Assess distal pulses, capillary refill, sensation, strength, and compartment-related pain or swelling.",
+      "text": "Assess distal pulses, capillary refill, sensation, and strength distal to the affected joint.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal distal perfusion, sensation, and strength",
+        "Diminished distal perfusion, sensation, or strength"
       ],
       "select": "one"
     }

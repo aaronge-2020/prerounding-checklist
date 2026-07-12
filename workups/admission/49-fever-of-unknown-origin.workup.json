@@ -4,90 +4,91 @@
   "title": "Fever of unknown origin",
   "aliases": [
     "FUO",
-    "persistent fever"
+    "persistent fever",
+    "unexplained fever"
   ],
   "items": [
     {
       "id": "history-01",
       "kind": "history",
       "system": "infectious",
-      "text": "Ask about fever, chills, rigors, duration, antipyretic use, and change in symptoms over time.",
+      "text": "How long have you had this fever, how high does it go, and does it come and go in a specific pattern?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Short-duration fever less than 2 weeks",
+        "Persistent fever of 2 to 3 weeks",
+        "Chronic fever lasting more than 3 weeks"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about localizing respiratory, urinary, gastrointestinal, skin, dental, line, and neurologic symptoms.",
+      "system": "constitutional",
+      "text": "Have you had shaking chills, drenching night sweats, or significant unexplained weight loss?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No night sweats, chills, or weight loss",
+        "Chills or night sweats without weight loss",
+        "Unintentional weight loss with drenching night sweats"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recent antibiotics, prior resistant organisms, recurrent infections, and medication allergies.",
+      "system": "respiratory",
+      "text": "Have you had a persistent cough, shortness of breath, chest pain, or sinus congestion?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No respiratory symptoms",
+        "Cough or sinus congestion without dyspnea",
+        "Shortness of breath or pleuritic chest pain"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about recent hospitalization, procedures, sick contacts, travel, animal or environmental exposures, and food or water exposures.",
+      "system": "gastrointestinal",
+      "text": "Have you had abdominal pain, nausea, vomiting, diarrhea, or yellowing of your skin or eyes?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No gastrointestinal symptoms",
+        "Nausea or mild diarrhea",
+        "Severe abdominal pain, vomiting, or jaundice"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about diabetes, immunosuppression, malignancy, chronic organ disease, and other infection-risk conditions.",
+      "system": "genitourinary",
+      "text": "Have you had burning or pain when you urinate, frequent urination, or flank/back pain?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No urinary symptoms",
+        "Dysuria or urinary frequency",
+        "Flank pain or gross hematuria"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "skin",
-      "text": "Ask about indwelling devices, wounds, surgery, injections, aspiration risk, and other possible portals of entry.",
+      "system": "musculoskeletal",
+      "text": "Have you had new joint pain, joint swelling, muscle aches, or severe headache?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No joint or muscle pain",
+        "Diffuse muscle aches or mild joint pain",
+        "Joint swelling, severe headache, or neck stiffness"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about duration, pattern, measured temperatures, rigors, night sweats, weight loss, response to medications, and symptom-free intervals.",
+      "system": "skin",
+      "text": "Have you noticed any new rashes, skin lumps, color changes, or sores?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No rashes or skin changes",
+        "Localized rash or hives",
+        "Petechiae, purpura, or nodular skin lesions"
       ],
       "select": "one"
     },
@@ -95,23 +96,23 @@
       "id": "history-08",
       "kind": "history",
       "system": "infectious",
-      "text": "Ask about travel, animal or insect exposure, food or water exposure, sick contacts, occupation, hobbies, sexual history, and tuberculosis risk.",
+      "text": "Have you traveled outside the country recently, spent time in wooded areas, or had contact with sick individuals?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No recent travel, outdoor, or sick exposures",
+        "Domestic travel or sick contact",
+        "International travel to endemic area or tick/insect bite"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "skin",
-      "text": "Ask about respiratory, urinary, gastrointestinal, skin, joint, neurologic, dental, cardiac, and constitutional symptoms.",
+      "system": "infectious",
+      "text": "Have you had close contact with animals, drank unpasteurized milk, or eaten undercooked meat?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No animal or high-risk dietary exposures",
+        "Contact with domestic pets",
+        "Exposure to farm animals, wild animals, or unpasteurized dairy"
       ],
       "select": "one"
     },
@@ -119,131 +120,143 @@
       "id": "history-10",
       "kind": "history",
       "system": "medication",
-      "text": "Ask about new medications, antibiotics, supplements, implanted devices, immunosuppression, malignancy, autoimmune disease, and prior cultures.",
+      "text": "Have you started any new medications or supplements recently, or do you have any implanted medical devices?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No new medications or implanted devices",
+        "New medication without known drug fever risk",
+        "New drug fever risk medication or implanted device/line"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "hematologic",
+      "text": "Do you have a history of cancer, autoimmune disease, or any condition that suppresses your immune system?",
+      "choices": [
+        "No history of immunosuppression or malignancy",
+        "Autoimmune disease or solid tumor",
+        "Active hematologic malignancy, chemotherapy, or severe immunosuppression"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess appearance, temperature, heart rate, blood pressure, respiratory pattern, oxygenation, and bedside perfusion.",
+      "system": "general",
+      "text": "Assess body temperature, heart rate, blood pressure, and overall clinical appearance.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal vitals and appearing well",
+        "Tachycardic or febrile at assessment",
+        "Hypotensive or in septic shock"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess alertness, orientation, capillary refill, extremity temperature, and diaphoresis.",
+      "system": "skin",
+      "text": "Inspect skin, mucosal surfaces, and conjunctivae for rashes, petechiae, splinter hemorrhages, or jaundice.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Skin intact, no rash or lesions",
+        "Maculopapular or localized rash",
+        "Petechiae, purpura, splinter hemorrhages, or jaundice"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "infectious",
-      "text": "Inspect skin, pressure areas, wounds, intravenous sites, drains, and indwelling devices for focal infection findings.",
+      "system": "hematologic",
+      "text": "Palpate cervical, supraclavicular, axillary, and inguinal lymph nodes.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No lymphadenopathy",
+        "Localized mobile lymphadenopathy",
+        "Diffuse, fixed, or tender lymphadenopathy"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Inspect work of breathing and auscultate lungs for focal breath-sound changes, crackles, wheeze, or pleural findings.",
+      "system": "cardiovascular",
+      "text": "Auscultate the heart for murmurs, rubs, or gallops.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal heart sounds, no murmur",
+        "Systolic murmur, stable or known",
+        "New diastolic or changing murmur, or pericardial rub"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "genitourinary",
-      "text": "Inspect and palpate the abdomen and assess for suprapubic or costovertebral-angle tenderness when relevant.",
+      "system": "respiratory",
+      "text": "Auscultate lungs for crackles, wheezing, or decreased breath sounds.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Clear breath sounds bilaterally",
+        "Focal crackles or wheezing",
+        "Diffuse crackles, rub, or absent breath sounds"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "reproductive",
-      "text": "Perform a focused examination of the symptom-directed source, including oral, joint, neurologic, or pelvic findings when indicated.",
+      "system": "gastrointestinal",
+      "text": "Palpate the abdomen for tenderness, masses, or organomegaly (hepatosplenomegaly).",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Soft, nontender, no organomegaly",
+        "Mild diffuse tenderness",
+        "Focal tenderness, guarding, palpable mass, or hepatosplenomegaly"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "hematologic",
-      "text": "Inspect skin and mucosa and assess cervical, axillary, epitrochlear, and inguinal lymph nodes when appropriate.",
+      "system": "genitourinary",
+      "text": "Percuss the costovertebral angles for tenderness.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No costovertebral angle tenderness",
+        "Unilateral costovertebral angle tenderness",
+        "Bilateral costovertebral angle tenderness"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "skin",
-      "text": "Assess for new or changed murmur, peripheral edema, embolic skin findings, pulse deficits, and signs of heart failure.",
+      "system": "musculoskeletal",
+      "text": "Examine joints for swelling, erythema, warmth, or tenderness, and inspect temporal arteries.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No joint swelling or temporal artery tenderness",
+        "Mild joint tenderness without swelling",
+        "Active synovitis, joint effusion, or tender/thickened temporal arteries"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "genitourinary",
-      "text": "Assess for hepatosplenomegaly, tenderness, mass, ascites, and flank tenderness.",
+      "system": "neurologic",
+      "text": "Assess neck mobility for rigidity or signs of meningismus.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Supple neck, full range of motion",
+        "Neck discomfort with terminal flexion",
+        "Nuchal rigidity, positive Brudzinski or Kernig signs"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Inspect joints and spine for inflammation and assess focused neurologic findings, meningismus, and temporal tenderness when relevant.",
+      "system": "ent",
+      "text": "Inspect the dentition, pharynx, and sinuses.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal dentition, no pharyngeal erythema",
+        "Sinus tenderness or pharyngeal injection",
+        "Dental abscess, dental caries, or tonsillar exudates"
       ],
       "select": "one"
     }

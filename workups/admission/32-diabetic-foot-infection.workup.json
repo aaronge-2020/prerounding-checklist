@@ -3,43 +3,43 @@
   "id": "diabetic-foot-infection",
   "title": "Diabetic foot infection",
   "aliases": [
-    "diabetic foot",
-    "foot ulcer infection"
+    "diabetic foot ulcer",
+    "foot infection"
   ],
   "items": [
     {
       "id": "history-01",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about fever, chills, rigors, duration, antipyretic use, and change in symptoms over time.",
+      "system": "skin",
+      "text": "How long have you had this wound?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "New wound, under one week",
+        "Chronic wound present for weeks",
+        "Chronic non-healing wound present for months"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about localizing respiratory, urinary, gastrointestinal, skin, dental, line, and neurologic symptoms.",
+      "system": "skin",
+      "text": "Is anything draining from the wound?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No drainage",
+        "Serous drainage",
+        "Purulent drainage"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recent antibiotics, prior resistant organisms, recurrent infections, and medication allergies.",
+      "system": "neurologic",
+      "text": "Can you feel pain at the wound site, or do you have numbness there from neuropathy?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Pain present at the site",
+        "No pain due to known neuropathy",
+        "No pain reported despite a deep wound"
       ],
       "select": "one"
     },
@@ -47,203 +47,224 @@
       "id": "history-04",
       "kind": "history",
       "system": "infectious",
-      "text": "Ask about recent hospitalization, procedures, sick contacts, travel, animal or environmental exposures, and food or water exposures.",
+      "text": "Have you had a fever?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No fever",
+        "Fever"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about diabetes, immunosuppression, malignancy, chronic organ disease, and other infection-risk conditions.",
+      "system": "neurologic",
+      "text": "Have you been diagnosed with nerve damage or neuropathy in your feet?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known peripheral neuropathy",
+        "Known peripheral neuropathy"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "skin",
-      "text": "Ask about indwelling devices, wounds, surgery, injections, aspiration risk, and other possible portals of entry.",
+      "system": "cardiovascular",
+      "text": "Have you been diagnosed with poor circulation in your legs, or had an amputation before?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Known peripheral arterial disease",
+        "Prior amputation"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about ulcer onset, drainage, odor, redness, swelling, pain, fever, trauma, and recent change in the wound.",
+      "system": "endocrine",
+      "text": "How has your blood sugar control been recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Good glycemic control per patient report",
+        "Poor glycemic control"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "skin",
-      "text": "Ask about numbness, tingling, burning, claudication, rest pain, cold foot, color change, and prior ulcers or amputation.",
+      "system": "endocrine",
+      "text": "How long have you had diabetes?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Under 10 years",
+        "10 years or more"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "skin",
-      "text": "Ask about footwear, off-loading, daily inspection, podiatry care, walking barefoot, recent injury, and wound-care access.",
+      "system": "cardiovascular",
+      "text": "Do you get calf pain when you walk that goes away when you rest?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No claudication symptoms",
+        "Calf pain with walking, relieved by rest"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about glucose control, insulin access, prior osteomyelitis, prior cultures, resistant organisms, antibiotics, and vascular disease.",
+      "system": "skin",
+      "text": "Has the redness been spreading quickly, and have you been feeling sick overall?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Gradual, localized to the wound",
+        "Rapid spread with systemic illness"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "musculoskeletal",
+      "text": "Can you see bone in the wound, or has a doctor ever told you they could feel bone through it?",
+      "choices": [
+        "Neither",
+        "Visible bone or prior probe-to-bone finding"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "musculoskeletal",
+      "text": "Have you had a foot ulcer or amputation before?",
+      "choices": [
+        "Neither",
+        "Prior foot ulcer",
+        "Prior amputation"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "functional",
+      "text": "Could this have started from an ill-fitting shoe or an injury you didn't notice?",
+      "choices": [
+        "No identifiable trauma",
+        "Ill-fitting footwear or unnoticed trauma"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess appearance, temperature, heart rate, blood pressure, respiratory pattern, oxygenation, and bedside perfusion.",
+      "system": "skin",
+      "text": "Assess wound depth.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Superficial",
+        "Extends to subcutaneous tissue",
+        "Extends to bone or joint"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess alertness, orientation, capillary refill, extremity temperature, and diaphoresis.",
+      "system": "skin",
+      "text": "Measure the extent of surrounding erythema.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Under 2 cm of surrounding erythema",
+        "2 cm or more of surrounding erythema"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "infectious",
-      "text": "Inspect skin, pressure areas, wounds, intravenous sites, drains, and indwelling devices for focal infection findings.",
+      "system": "skin",
+      "text": "Inspect for purulent drainage.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "None",
+        "Purulent drainage present"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Inspect work of breathing and auscultate lungs for focal breath-sound changes, crackles, wheeze, or pleural findings.",
+      "system": "cardiovascular",
+      "text": "Palpate pedal pulses.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Palpable pedal pulses",
+        "Diminished pulses",
+        "Absent pulses"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "genitourinary",
-      "text": "Inspect and palpate the abdomen and assess for suprapubic or costovertebral-angle tenderness when relevant.",
+      "system": "neurologic",
+      "text": "Assess protective sensation with a monofilament.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Intact protective sensation",
+        "Loss of protective sensation"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "reproductive",
-      "text": "Perform a focused examination of the symptom-directed source, including oral, joint, neurologic, or pelvic findings when indicated.",
+      "system": "musculoskeletal",
+      "text": "Perform a probe-to-bone test.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Negative",
+        "Positive, bone palpable through the wound"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "skin",
-      "text": "Inspect and document ulcer location, size, depth, drainage, odor, surrounding erythema, callus, necrosis, and visible tissue.",
+      "system": "general",
+      "text": "Assess for systemic signs of infection.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Afebrile and hemodynamically stable",
+        "Febrile or tachycardic",
+        "Hypotensive or septic-appearing"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "medication",
-      "text": "Assess for fluctuance, crepitus, exposed bone, pain with movement, cellulitis spread, and systemic toxicity.",
+      "system": "skin",
+      "text": "Inspect for crepitus or necrotic tissue.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "None",
+        "Crepitus or necrotic tissue present"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "skin",
-      "text": "Assess skin temperature, color, capillary refill, dorsalis pedis and posterior tibial pulses, and edema.",
+      "system": "musculoskeletal",
+      "text": "Inspect the foot for deformity or Charcot changes.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal foot architecture",
+        "Deformity or Charcot changes present"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess protective sensation when feasible, deformity, range of motion, gait, and weight-bearing safety.",
+      "system": "skin",
+      "text": "Inspect for lymphangitic streaking.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "None",
+        "Lymphangitic streaking present"
       ],
       "select": "one"
     }

@@ -10,144 +10,223 @@
     {
       "id": "history-01",
       "kind": "history",
-      "system": "general",
-      "text": "Ask about onset, tempo, severity, triggers, relieving factors, and change from baseline.",
+      "system": "cardiovascular",
+      "text": "What does the pain feel like, and does it spread anywhere?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Pressure or squeezing radiating to the arm, jaw, or neck",
+        "Sharp, positional, pleuritic pain",
+        "Sudden tearing pain radiating to the back",
+        "Burning, retrosternal pain"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about chest discomfort, palpitations, syncope, diaphoresis, cough, fever, and hemoptysis.",
+      "system": "cardiovascular",
+      "text": "Does the pain come on with activity and go away with rest, or is it there all the time?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Worse with exertion, relieved by rest",
+        "Present at rest, unrelated to exertion",
+        "Reproducible with chest wall movement or palpation"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "respiratory",
-      "text": "Ask about prior heart or lung disease, prior admissions, baseline exertional tolerance, and home oxygen use.",
+      "system": "cardiovascular",
+      "text": "Have you been sweating along with the pain?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No diaphoresis",
+        "Diaphoresis accompanying the pain"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about tobacco or vaping exposure, immobility, thromboembolic risk, and relevant family history.",
+      "system": "gastrointestinal",
+      "text": "Have you felt nauseated along with the pain?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No nausea",
+        "Nausea accompanying the pain"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recent medication changes, adherence, inhaler or diuretic use, and anticoagulant use when relevant.",
+      "system": "neurologic",
+      "text": "Have you felt like you were going to pass out, or did you actually pass out?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No syncope or presyncope",
+        "Lightheadedness or presyncope",
+        "Frank syncope"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about baseline ambulation, sleep position, activity limitation, and new functional decline.",
+      "system": "cardiovascular",
+      "text": "Do you have high blood pressure, diabetes, high cholesterol, or a family history of heart disease, or have you had a heart attack or stent before?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known coronary risk factors",
+        "Multiple risk factors: hypertension, diabetes, hyperlipidemia, smoking, or family history",
+        "Known coronary artery disease, prior infarction, or revascularization"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "general",
-      "text": "Ask about location, quality, severity, radiation, onset, duration, and exertional, pleuritic, positional, or reproducible features.",
+      "system": "cardiovascular",
+      "text": "Do you have a known aneurysm, a connective tissue condition like Marfan syndrome, or have you used cocaine recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known dissection risk factor",
+        "Uncontrolled hypertension",
+        "Known aortic aneurysm, Marfan syndrome, or bicuspid aortic valve",
+        "Recent cocaine or stimulant use"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "neurologic",
-      "text": "Ask about dyspnea, diaphoresis, nausea, vomiting, palpitations, presyncope, and unusual fatigue.",
+      "system": "functional",
+      "text": "Have you traveled recently, had surgery, been hospitalized, or do you have cancer or a history of blood clots?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No provoking risk factor",
+        "Air travel over four hours, surgery, or hospitalization in the past month",
+        "Active malignancy or prior venous thromboembolism"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "musculoskeletal",
-      "text": "Ask about abrupt tearing pain, back pain, focal neurologic symptoms, hemoptysis, and unilateral leg swelling.",
+      "system": "cardiovascular",
+      "text": "Is the pain worse when you lie flat and better when you lean forward?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No positional change",
+        "Worse lying flat, improved leaning forward"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "endocrine",
-      "text": "Ask about known coronary disease, prior infarction or revascularization, hypertension, diabetes, and family history.",
+      "system": "infectious",
+      "text": "Were you sick with a cold or virus in the past week or two?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No preceding viral illness",
+        "Preceded by a viral illness"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "musculoskeletal",
+      "text": "Did you do any heavy lifting, start a new exercise, or hurt your chest before this started?",
+      "choices": [
+        "No preceding trauma or unusual exertion",
+        "Recent heavy lifting, new exercise, or repetitive strain",
+        "Recent direct chest trauma"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "skin",
+      "text": "Is the pain in a band on just one side, and have you noticed a rash there?",
+      "choices": [
+        "No dermatomal pain",
+        "Unilateral band-like pain without a visible rash",
+        "Unilateral band-like pain with a vesicular rash"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "gastrointestinal",
+      "text": "Is it a burning pain that's worse after eating or lying down, and does it get better with antacids?",
+      "choices": [
+        "No relationship to meals or antacids",
+        "Burning worse after meals or lying down, relieved by antacids"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-14",
+      "kind": "history",
+      "system": "gastrointestinal",
+      "text": "Did you have severe vomiting or retching right before the pain started?",
+      "choices": [
+        "No preceding vomiting or retching",
+        "Severe vomiting or retching immediately preceding the pain"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-15",
+      "kind": "history",
+      "system": "gastrointestinal",
+      "text": "Do you have pain in your right upper belly that spreads to your shoulder or back?",
+      "choices": [
+        "No right upper quadrant or shoulder-radiating pain",
+        "Right upper quadrant pain after fatty food",
+        "Right upper quadrant pain with fever or chills"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-16",
+      "kind": "history",
+      "system": "psychiatric",
+      "text": "Does this feel like a panic attack, with tingling around your mouth or hands?",
+      "choices": [
+        "No situational trigger or panic history",
+        "Situational trigger with paresthesias, resolves with reassurance",
+        "Known panic disorder with similar prior episodes"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-17",
+      "kind": "history",
+      "system": "medication",
+      "text": "Have you used cocaine, amphetamines, or other stimulants recently?",
+      "choices": [
+        "No stimulant use",
+        "Stimulant use more than 24 hours before onset",
+        "Stimulant use within 24 hours of onset"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess general appearance, respiratory rate and pattern, heart rate and rhythm, blood pressure, temperature, and oxygenation.",
+      "system": "cardiovascular",
+      "text": "Measure blood pressure in both arms.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Symmetric blood pressure between arms",
+        "Hypertensive on both sides without asymmetry",
+        "Blood pressure differential greater than 20 mmHg between arms"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Inspect work of breathing and auscultate all lung fields for air movement and focal or diffuse adventitious sounds.",
+      "system": "cardiovascular",
+      "text": "Palpate peripheral pulses for symmetry.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Symmetric pulses throughout",
+        "Diminished or absent pulse in one limb"
       ],
       "select": "one"
     },
@@ -155,11 +234,10 @@
       "id": "exam-03",
       "kind": "exam",
       "system": "cardiovascular",
-      "text": "Assess cardiac rate and rhythm, heart sounds, murmurs, and signs of impaired peripheral perfusion.",
+      "text": "Auscultate for a new diastolic murmur.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No murmur",
+        "New diastolic murmur of aortic regurgitation"
       ],
       "select": "one"
     },
@@ -167,11 +245,10 @@
       "id": "exam-04",
       "kind": "exam",
       "system": "cardiovascular",
-      "text": "Assess jugular venous pressure when feasible, mucous membranes, edema, and other bedside signs of volume status.",
+      "text": "Auscultate for a pericardial friction rub.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No friction rub",
+        "Pericardial friction rub present"
       ],
       "select": "one"
     },
@@ -179,71 +256,80 @@
       "id": "exam-05",
       "kind": "exam",
       "system": "cardiovascular",
-      "text": "Inspect extremities for asymmetry, edema, cyanosis, calf tenderness, and distal pulses.",
+      "text": "Assess jugular venous pressure and heart sounds for tamponade physiology.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal jugular venous pressure, normal heart sounds",
+        "Elevated jugular venous pressure with muffled heart sounds and hypotension"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess alertness, orientation, and focal neurologic change that could accompany hypoxemia or poor perfusion.",
+      "system": "respiratory",
+      "text": "Auscultate the lungs for asymmetry or focal findings.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Clear and symmetric bilaterally",
+        "Unilateral absent breath sounds with hyperresonance",
+        "Focal crackles or dullness",
+        "Diminished breath sounds with subcutaneous crepitus or a mediastinal crunch"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "skin",
-      "text": "Inspect and palpate the chest wall for tenderness, rash, trauma, crepitus, and reproducibility of pain.",
+      "system": "musculoskeletal",
+      "text": "Palpate the chest wall for reproducible tenderness.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Nontender, pain not reproduced",
+        "Focal chest wall tenderness reproducing the pain",
+        "Palpable crepitus or step-off"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess heart rate, rhythm, murmurs, extra sounds, and hemodynamic signs of poor perfusion.",
+      "system": "skin",
+      "text": "Inspect the skin over the painful dermatome for a vesicular rash.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No rash",
+        "Vesicular rash in a dermatomal distribution"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Compare upper-extremity pulses and blood pressure when appropriate and assess lower-extremity pulses.",
+      "system": "gastrointestinal",
+      "text": "Palpate the right upper quadrant for a Murphy sign.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Nontender, negative Murphy sign",
+        "Right upper quadrant tenderness with a positive Murphy sign"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Inspect respiratory effort and auscultate for asymmetric breath sounds, crackles, wheeze, or pleural findings.",
+      "system": "neurologic",
+      "text": "Assess mental status and perfusion.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Alert with normal color and perfusion",
+        "Diaphoretic, pale, or poorly perfused",
+        "Altered mental status with hypotension"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-11",
+      "kind": "exam",
+      "system": "cardiovascular",
+      "text": "Inspect and palpate the calves for asymmetric swelling or a palpable cord.",
+      "choices": [
+        "Symmetric, no tenderness or swelling",
+        "Unilateral swelling, tenderness, or palpable cord"
       ],
       "select": "one"
     }

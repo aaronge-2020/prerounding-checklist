@@ -10,12 +10,12 @@
     {
       "id": "history-01",
       "kind": "history",
-      "system": "functional",
-      "text": "Establish last known well or symptom onset, progression, baseline cognition, baseline neurologic function, and functional status.",
+      "system": "neurologic",
+      "text": "Does it feel like the room is spinning, like you're about to faint, or just unsteady without spinning?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Spinning, room-spinning vertigo",
+        "Lightheaded, near-fainting sensation",
+        "Unsteadiness or imbalance without spinning"
       ],
       "select": "one"
     },
@@ -23,11 +23,11 @@
       "id": "history-02",
       "kind": "history",
       "system": "neurologic",
-      "text": "Ask about weakness, numbness, facial asymmetry, speech or vision change, imbalance, dysphagia, and severe headache.",
+      "text": "Do the episodes last just a few seconds, several hours, or has it been constant for days?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Brief episodes lasting seconds",
+        "Continuous vertigo lasting days",
+        "Episodic vertigo lasting hours"
       ],
       "select": "one"
     },
@@ -35,107 +35,137 @@
       "id": "history-03",
       "kind": "history",
       "system": "neurologic",
-      "text": "Ask about loss of consciousness, seizure-like activity, prodrome, post-event confusion, incontinence, tongue injury, and witness observations.",
+      "text": "Does the dizziness happen when you roll over in bed or look up?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Not positional",
+        "Triggered by rolling over in bed or looking up"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about falls, head or neck injury, anticoagulant or antiplatelet use, and bleeding symptoms.",
+      "system": "ent",
+      "text": "Have you noticed any hearing loss or ringing in your ears?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Hearing loss",
+        "Tinnitus"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recent medication changes, sedatives, alcohol, recreational substances, withdrawal risk, and toxic exposures.",
+      "system": "neurologic",
+      "text": "Have you had double vision, facial numbness, weakness, or clumsiness in your arms or legs along with the dizziness?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "None of these",
+        "Double vision or facial numbness",
+        "Limb weakness or incoordination"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about fever, poor intake, glucose symptoms, renal or liver disease, and other systemic symptoms that may affect cognition.",
+      "system": "neurologic",
+      "text": "Do you have a headache along with the dizziness?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No headache",
+        "Headache accompanying the dizziness"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "neurologic",
-      "text": "Ask whether dizziness is spinning, lightheadedness, imbalance, presyncope, or nonspecific and clarify duration and triggers.",
+      "system": "infectious",
+      "text": "Did you have a cold or upper respiratory infection before this started?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No preceding upper respiratory infection",
+        "Preceding upper respiratory infection"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "gastrointestinal",
-      "text": "Ask about positional triggers, tinnitus, hearing loss, ear fullness, nausea, vomiting, and recent viral symptoms.",
+      "system": "cardiovascular",
+      "text": "Do you have coronary artery disease, an irregular heartbeat, or a family history of sudden cardiac death?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "None of these",
+        "Known coronary artery disease or arrhythmia",
+        "Family history of sudden cardiac death"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "neurologic",
-      "text": "Ask about severe headache, diplopia, dysarthria, dysphagia, weakness, numbness, incoordination, and inability to walk.",
+      "system": "medication",
+      "text": "Have you started a new blood pressure medication or an antibiotic that can affect hearing or balance?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "New antihypertensive",
+        "New ototoxic medication"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about palpitations, chest pain, syncope, poor intake, bleeding, antihypertensives, sedatives, and new medications.",
+      "system": "endocrine",
+      "text": "Do you have diabetes, and did you feel shaky, sweaty, or hungry along with the dizziness?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known diabetes",
+        "Known diabetes without hypoglycemic symptoms",
+        "Known diabetes with hypoglycemic symptoms"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "psychiatric",
+      "text": "Did this happen during a stressful moment when you were breathing fast?",
+      "choices": [
+        "No situational anxiety trigger",
+        "Situational anxiety trigger with hyperventilation"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "hematologic",
+      "text": "Have you been told you're anemic or have low blood counts?",
+      "choices": [
+        "No known anemia",
+        "Known anemia"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "neurologic",
+      "text": "Have you had episodes like this before?",
+      "choices": [
+        "First episode",
+        "Recurrent similar episodes"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "endocrine",
-      "text": "Assess vital signs, general appearance, glucose status if available at bedside, and signs of cardiorespiratory instability.",
+      "system": "neurologic",
+      "text": "Assess for nystagmus.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No nystagmus",
+        "Unidirectional horizontal nystagmus",
+        "Direction-changing or vertical nystagmus"
       ],
       "select": "one"
     },
@@ -143,107 +173,98 @@
       "id": "exam-02",
       "kind": "exam",
       "system": "neurologic",
-      "text": "Assess level of consciousness, attention, orientation, language, memory, behavior, and fluctuation from baseline.",
+      "text": "Assess for skew deviation.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Absent",
+        "Present"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess pupils, visual fields when feasible, ocular movements, facial symmetry, speech, palate, and swallowing safety as indicated.",
+      "system": "musculoskeletal",
+      "text": "Assess tandem gait when safe.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal tandem gait",
+        "Unable to walk tandem, ataxic gait"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess pronator drift, limb strength, tone, sensation, reflex asymmetry, and neglect when appropriate.",
+      "system": "cardiovascular",
+      "text": "Assess orthostatic vital signs when safe.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Negative orthostatics",
+        "Positive orthostatic hypotension"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess coordination, truncal stability, gait, and Romberg only when it is safe to do so.",
+      "system": "cardiovascular",
+      "text": "Assess cardiac rhythm.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Regular rhythm",
+        "Irregular rhythm"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "skin",
-      "text": "Inspect for head or neck injury and assess neck stiffness or rash when the presentation makes this relevant.",
+      "system": "neurologic",
+      "text": "Perform the Dix-Hallpike maneuver when clinically appropriate.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Negative or not indicated",
+        "Positive, reproduces vertigo with nystagmus"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess pupils, extraocular movements, spontaneous or gaze-evoked nystagmus, skew, and visual symptoms when feasible.",
+      "system": "ent",
+      "text": "Assess hearing.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal hearing bilaterally",
+        "Unilateral hearing loss"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess finger-to-nose, heel-to-shin, truncal stability, and gait only when safe.",
+      "system": "neurologic",
+      "text": "Assess for a focal neurologic deficit.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No focal deficit",
+        "Focal deficit present"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "ent",
-      "text": "Inspect external ears and perform focused ear examination when clinically relevant.",
+      "system": "hematologic",
+      "text": "Inspect conjunctiva and nail beds for pallor.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal color",
+        "Conjunctival or nail-bed pallor"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess orthostatic symptoms when safe, pulse rhythm, blood pressure, perfusion, and signs of volume depletion.",
+      "system": "neurologic",
+      "text": "Assess coordination with finger-to-nose testing.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal coordination",
+        "Dysmetria"
       ],
       "select": "one"
     }

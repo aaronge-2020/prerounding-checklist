@@ -10,36 +10,34 @@
     {
       "id": "history-01",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about baseline cognition, activities of daily living, ambulation, assistive devices, continence, and recent functional change.",
+      "system": "psychiatric",
+      "text": "Are you having any thoughts of hurting or killing yourself right now?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No suicidal ideation",
+        "Passive suicidal ideation without a plan",
+        "Active suicidal ideation with a plan or intent"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about home setting, caregivers, available supports, medication access, food access, transportation, and barriers to care.",
+      "system": "psychiatric",
+      "text": "Are you having any thoughts of hurting someone else?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No homicidal ideation",
+        "Homicidal ideation present"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recent medication changes, sedatives, analgesics, alcohol, other substances, and adherence.",
+      "system": "psychiatric",
+      "text": "Have you taken any pills, medications, or other substances in an attempt to harm yourself?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No ingestion",
+        "Reported ingestion or overdose attempt"
       ],
       "select": "one"
     },
@@ -47,35 +45,34 @@
       "id": "history-04",
       "kind": "history",
       "system": "psychiatric",
-      "text": "Ask about depression, anxiety, delirium symptoms, self-harm risk when relevant, abuse or neglect concerns, and immediate safety.",
+      "text": "Are you hearing voices or seeing things that other people don't, and if so, are they telling you to do anything?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No hallucinations",
+        "Hallucinations without command content",
+        "Command hallucinations"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about appetite, weight change, swallowing, hydration, sleep, fatigue, and symptoms limiting participation in care.",
+      "system": "neurologic",
+      "text": "Did this confusion or behavior change come on suddenly, over hours to days, or has it been your usual pattern for a long time?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Chronic, longstanding baseline",
+        "Sudden onset over hours to days"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about fever, pain, falls, trauma, bleeding, focal symptoms, and other acute changes that may explain decline.",
+      "system": "medication",
+      "text": "Have you been drinking alcohol or using drugs recently, or stopped using something you normally use?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Recent alcohol or drug use",
+        "Recent cessation of alcohol or drug use"
       ],
       "select": "one"
     },
@@ -83,119 +80,139 @@
       "id": "history-07",
       "kind": "history",
       "system": "psychiatric",
-      "text": "Ask about suicidal thoughts, self-harm, homicidal thoughts, command hallucinations, access to lethal means, and ability to stay safe.",
+      "text": "Do you have a diagnosed psychiatric condition, and have you been taking your psychiatric medications as prescribed?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known psychiatric diagnosis",
+        "Known psychiatric diagnosis, taking medications as prescribed",
+        "Known psychiatric diagnosis, missed medications"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "psychiatric",
-      "text": "Ask about mood change, anxiety, psychosis, mania, sleep, appetite, trauma symptoms, and change from usual mental state.",
+      "system": "infectious",
+      "text": "Have you had a fever or felt physically ill along with this?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No fever or physical illness",
+        "Fever or physical illness present"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about chest pain, dyspnea, fever, pain, head injury, neurologic symptoms, pregnancy when relevant, and medication adverse effects.",
+      "system": "neurologic",
+      "text": "Have you had a headache, weakness, or numbness along with this?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "None of these",
+        "Headache",
+        "Weakness or numbness"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about psychiatric-medication adherence, recent changes, overdose or ingestion, alcohol, drugs, withdrawal risk, and prior psychiatric admissions.",
+      "system": "endocrine",
+      "text": "Do you have diabetes or thyroid disease that could be affecting how you feel?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Known diabetes",
+        "Known thyroid disease"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "functional",
+      "text": "Do you have somewhere safe to go, and someone who can help keep you safe if you leave here today?",
+      "choices": [
+        "Safe environment and support available",
+        "No safe environment or support available"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "psychiatric",
+      "text": "Have you been hospitalized for a psychiatric reason before, and did anything specific trigger this episode?",
+      "choices": [
+        "No prior psychiatric hospitalization",
+        "Prior psychiatric hospitalization, similar trigger",
+        "Prior psychiatric hospitalization, new or unclear trigger"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess appearance, vital signs, hydration, pain behavior, and evidence of acute cardiorespiratory instability.",
+      "system": "neurologic",
+      "text": "Assess level of consciousness, attention, and orientation.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Alert, attentive, and fully oriented",
+        "Inattentive or fluctuating alertness",
+        "Obtunded"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "psychiatric",
-      "text": "Assess alertness, attention, orientation, mood, thought process, agitation, and ability to participate in the examination.",
+      "system": "general",
+      "text": "Assess vital signs for fever or hemodynamic abnormality.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal vital signs",
+        "Febrile",
+        "Tachycardic or hypertensive"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "functional",
-      "text": "Inspect oral cavity, mucous membranes, body habitus, skin integrity, bruising, edema, and pressure areas.",
+      "system": "endocrine",
+      "text": "Check fingerstick glucose.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal glucose",
+        "Hypoglycemic",
+        "Hyperglycemic"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "functional",
-      "text": "Assess bed mobility, transfers, strength, balance, gait, and assistive-device use only when safe.",
+      "system": "medication",
+      "text": "Assess pupil size and reactivity for signs of intoxication or withdrawal.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal pupils",
+        "Constricted pupils",
+        "Dilated pupils"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Inspect and palpate symptomatic joints, spine, and muscles for tenderness, swelling, deformity, range-of-motion limitation, or injury.",
+      "system": "medication",
+      "text": "Assess for tremor and diaphoresis suggesting withdrawal.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No tremor or diaphoresis",
+        "Tremor or diaphoresis present"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "medication",
-      "text": "Assess focal strength, sensation, coordination, tremor, and signs of withdrawal or intoxication when relevant.",
+      "system": "neurologic",
+      "text": "Assess for a focal neurologic deficit.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No focal deficit",
+        "Focal deficit present"
       ],
       "select": "one"
     },
@@ -203,47 +220,45 @@
       "id": "exam-07",
       "kind": "exam",
       "system": "psychiatric",
-      "text": "Assess appearance, behavior, speech, mood, affect, thought process, thought content, perception, insight, judgment, and attention.",
+      "text": "Assess speech, thought process, and thought content.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Linear, coherent thought process",
+        "Disorganized speech or thought process",
+        "Delusional content present"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "endocrine",
-      "text": "Assess vital signs, oxygenation, hydration, pain, glucose status if available at bedside, and signs of acute medical illness.",
+      "system": "skin",
+      "text": "Inspect the skin for self-harm injuries, needle marks, or evidence of trauma.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No injuries identified",
+        "Self-harm injuries or needle marks present"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "medication",
-      "text": "Assess pupils, tremor, diaphoresis, respiratory pattern, skin findings, level of consciousness, and gait only when safe.",
+      "system": "cardiovascular",
+      "text": "Assess heart rate and rhythm.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Regular rate and rhythm",
+        "Tachycardic",
+        "Irregular rhythm"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Inspect for injury and assess focal neurologic findings, strength, sensation, and coordination when clinically indicated.",
+      "system": "neurologic",
+      "text": "Assess gait and coordination when safe.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal gait and coordination",
+        "Ataxic or unsteady"
       ],
       "select": "one"
     }

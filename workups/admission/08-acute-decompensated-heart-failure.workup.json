@@ -11,48 +11,46 @@
     {
       "id": "history-01",
       "kind": "history",
-      "system": "general",
-      "text": "Ask about onset, tempo, severity, triggers, relieving factors, and change from baseline.",
+      "system": "cardiovascular",
+      "text": "Do you need extra pillows to breathe comfortably while lying down, or can you not lie flat at all?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No orthopnea",
+        "Needs one extra pillow to breathe comfortably",
+        "Cannot lie flat at all"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about chest discomfort, palpitations, syncope, diaphoresis, cough, fever, and hemoptysis.",
+      "system": "cardiovascular",
+      "text": "Have you woken up gasping for air and needed to sit up to catch your breath?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No nocturnal awakening with breathlessness",
+        "Wakes gasping for air, relieved by sitting up"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "respiratory",
-      "text": "Ask about prior heart or lung disease, prior admissions, baseline exertional tolerance, and home oxygen use.",
+      "system": "cardiovascular",
+      "text": "Have you noticed new or worsening swelling in your legs or belly?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No swelling",
+        "New or worsening leg swelling",
+        "New abdominal distention or early satiety"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about tobacco or vaping exposure, immobility, thromboembolic risk, and relevant family history.",
+      "system": "general",
+      "text": "Have you gained several pounds in less than a week?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No rapid weight gain",
+        "Weight gain of several pounds over less than a week"
       ],
       "select": "one"
     },
@@ -60,119 +58,161 @@
       "id": "history-05",
       "kind": "history",
       "system": "medication",
-      "text": "Ask about recent medication changes, adherence, inhaler or diuretic use, and anticoagulant use when relevant.",
+      "text": "Have you missed any doses of your water pill or other heart failure medications?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No missed doses",
+        "Missed one or more diuretic or heart failure medication doses"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about baseline ambulation, sleep position, activity limitation, and new functional decline.",
+      "system": "gastrointestinal",
+      "text": "Have you eaten anything unusually salty recently, like takeout or processed food?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No dietary indiscretion",
+        "Recent high-sodium meal or dietary indiscretion"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "gastrointestinal",
-      "text": "Ask about worsening dyspnea, orthopnea, paroxysmal nocturnal dyspnea, edema, abdominal fullness, and rapid weight change.",
+      "system": "cardiovascular",
+      "text": "Have you been told you have heart failure before, and if so, was your heart pumping normally or weakly?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known heart failure diagnosis",
+        "Known heart failure with preserved ejection fraction",
+        "Known heart failure with reduced ejection fraction"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about dietary change, missed diuretics or other medications, infection symptoms, chest pain, arrhythmia symptoms, and new kidney symptoms.",
+      "system": "cardiovascular",
+      "text": "Have you had any chest pressure with exertion along with the breathing trouble?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No chest pressure",
+        "Exertional chest pressure"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about known ejection fraction, prior admissions, baseline weight, diuretic response, home oxygen, and activity tolerance.",
+      "system": "cardiovascular",
+      "text": "Have you felt your heart racing or fluttering, or do you have a known history of atrial fibrillation?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No palpitations or known atrial fibrillation",
+        "New palpitations",
+        "Known atrial fibrillation, possibly with a fast rate"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "neurologic",
-      "text": "Ask about lightheadedness, syncope, cool extremities, confusion, low urine output, and reduced exercise tolerance.",
+      "system": "infectious",
+      "text": "Have you had a fever or a new or worsening cough?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No fever or cough",
+        "Fever",
+        "New or worsening cough"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "medication",
+      "text": "Have you taken any ibuprofen, naproxen, or other NSAID pain relievers recently?",
+      "choices": [
+        "No recent NSAID use",
+        "Recent NSAID use"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "genitourinary",
+      "text": "Have you noticed you're urinating less than usual?",
+      "choices": [
+        "No change in urine output",
+        "Decreased urine output"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "neurologic",
+      "text": "Have you felt lightheaded or actually passed out along with this?",
+      "choices": [
+        "No lightheadedness or syncope",
+        "Lightheadedness",
+        "Syncope"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-14",
+      "kind": "history",
+      "system": "cardiovascular",
+      "text": "Have you been hospitalized for heart failure before, and if so, does this feel similar or worse than those times?",
+      "choices": [
+        "First presentation of heart failure",
+        "Prior admissions, this episode feels similar",
+        "Prior admissions, this episode is more severe than usual"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess general appearance, respiratory rate and pattern, heart rate and rhythm, blood pressure, temperature, and oxygenation.",
+      "system": "cardiovascular",
+      "text": "Assess jugular venous pressure.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal jugular venous pressure",
+        "Elevated jugular venous pressure",
+        "Elevated jugular venous pressure with prominent v waves"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Inspect work of breathing and auscultate all lung fields for air movement and focal or diffuse adventitious sounds.",
+      "system": "cardiovascular",
+      "text": "Assess hepatojugular reflux.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Negative hepatojugular reflux",
+        "Positive hepatojugular reflux"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess cardiac rate and rhythm, heart sounds, murmurs, and signs of impaired peripheral perfusion.",
+      "system": "respiratory",
+      "text": "Auscultate the lungs for crackles.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Clear bilaterally",
+        "Bibasilar crackles",
+        "Crackles throughout both lung fields"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess jugular venous pressure when feasible, mucous membranes, edema, and other bedside signs of volume status.",
+      "system": "respiratory",
+      "text": "Assess work of breathing.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal work of breathing",
+        "Tachypneic with accessory muscle use",
+        "Severe respiratory distress"
       ],
       "select": "one"
     },
@@ -180,23 +220,21 @@
       "id": "exam-05",
       "kind": "exam",
       "system": "cardiovascular",
-      "text": "Inspect extremities for asymmetry, edema, cyanosis, calf tenderness, and distal pulses.",
+      "text": "Auscultate for an S3 gallop.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No S3 gallop",
+        "S3 gallop present"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess alertness, orientation, and focal neurologic change that could accompany hypoxemia or poor perfusion.",
+      "system": "cardiovascular",
+      "text": "Auscultate for a new or changed murmur.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No murmur",
+        "New or changed murmur"
       ],
       "select": "one"
     },
@@ -204,23 +242,24 @@
       "id": "exam-07",
       "kind": "exam",
       "system": "cardiovascular",
-      "text": "Assess jugular venous pressure and hepatojugular reflux when feasible and appropriate.",
+      "text": "Assess heart rate and rhythm regularity.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Regular rate and rhythm",
+        "Irregularly irregular rhythm",
+        "Regular tachycardia"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Auscultate for bibasilar crackles, wheeze, diminished breath sounds, and assess work of breathing.",
+      "system": "cardiovascular",
+      "text": "Inspect and palpate the lower extremities for edema.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No peripheral edema",
+        "Mild pitting edema to the ankles",
+        "Marked pitting edema extending above the knees",
+        "Anasarca including sacral edema"
       ],
       "select": "one"
     },
@@ -228,23 +267,47 @@
       "id": "exam-09",
       "kind": "exam",
       "system": "gastrointestinal",
-      "text": "Inspect and palpate for pitting edema, sacral edema, ascites, and weight-related volume change when available.",
+      "text": "Assess the abdomen for ascites or hepatomegaly.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No ascites or hepatomegaly",
+        "Hepatomegaly",
+        "Ascites with a fluid wave"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess extremity warmth, pulses, capillary refill, mental status, and other signs of reduced cardiac output.",
+      "system": "cardiovascular",
+      "text": "Assess extremity warmth and capillary refill for perfusion status.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Warm extremities, brisk capillary refill",
+        "Cool extremities with delayed capillary refill",
+        "Cool, mottled extremities with thready pulses"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-11",
+      "kind": "exam",
+      "system": "general",
+      "text": "Measure and compare weight to the documented dry weight.",
+      "choices": [
+        "At or near documented dry weight",
+        "Above documented dry weight",
+        "No dry weight on record"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-12",
+      "kind": "exam",
+      "system": "general",
+      "text": "Assess blood pressure for hypertensive or hypotensive decompensation.",
+      "choices": [
+        "Normotensive",
+        "Hypertensive",
+        "Hypotensive"
       ],
       "select": "one"
     }

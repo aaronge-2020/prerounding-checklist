@@ -11,143 +11,213 @@
       "id": "history-01",
       "kind": "history",
       "system": "gastrointestinal",
-      "text": "Ask about onset, location, radiation, severity, timing, and relationship to meals, movement, or bowel movements.",
+      "text": "Where did the pain start, and has it moved anywhere?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Periumbilical pain migrating to the right lower quadrant",
+        "Right upper quadrant pain, worse after fatty food",
+        "Epigastric pain radiating to the back",
+        "Diffuse pain without clear localization"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about oral intake, nausea, vomiting, fluid losses, urine output, and ability to tolerate medications.",
+      "system": "gastrointestinal",
+      "text": "How suddenly did the pain start, and how bad is it compared to any pain you've had before?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Gradual onset, mild to moderate severity",
+        "Sudden onset, worst pain of the patient's life",
+        "Pain out of proportion to the physical findings"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "hematologic",
-      "text": "Ask about stool frequency and character, flatus, bleeding, dysuria, hematuria, and change from baseline.",
+      "system": "gastrointestinal",
+      "text": "Did you vomit before the pain started, or after?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No vomiting",
+        "Vomiting preceded the pain",
+        "Vomiting began after the pain started"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "skin",
-      "text": "Ask about prior surgery, obstruction, gallstones, liver disease, ulcers, inflammatory bowel disease, and prior episodes.",
+      "system": "gastrointestinal",
+      "text": "Are you able to pass gas or have a bowel movement?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Passing flatus and stool normally",
+        "Obstipation with abdominal distention"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about NSAIDs, anticoagulants, alcohol, new medications, antibiotics, toxins, and relevant dietary exposures.",
+      "system": "hematologic",
+      "text": "Have you noticed black, tarry stools, red blood in your stool, or vomited blood?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No signs of gastrointestinal bleeding",
+        "Melena or hematochezia",
+        "Hematemesis"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "reproductive",
-      "text": "Ask about pregnancy possibility and gynecologic symptoms when clinically relevant.",
+      "system": "cardiovascular",
+      "text": "Do you have an irregular heartbeat, a clotting disorder, or a known aneurysm in your belly?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known risk factor",
+        "Known atrial fibrillation or hypercoagulable state",
+        "Known abdominal aortic aneurysm"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "general",
-      "text": "Ask about location, migration, radiation to back or shoulder, severity, duration, and relationship to food or movement.",
+      "system": "gastrointestinal",
+      "text": "Do you drink heavily, have gallstones, or have high triglycerides?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known risk factor",
+        "Heavy or binge alcohol use preceding symptom onset",
+        "Known gallstones or biliary colic",
+        "Known hypertriglyceridemia"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about nausea, vomiting, fever, anorexia, constipation, diarrhea, urinary symptoms, and bleeding.",
+      "system": "reproductive",
+      "text": "Is there any chance you could be pregnant, and have you had any vaginal bleeding or sudden one-sided pelvic pain?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Not applicable or none of these",
+        "Possible pregnancy with vaginal bleeding",
+        "Sudden severe unilateral pelvic pain with nausea"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "gastrointestinal",
-      "text": "Ask about prior abdominal surgery, hernias, inflammatory bowel disease, malignancy, and inability to pass stool or flatus.",
+      "system": "genitourinary",
+      "text": "Do you have any burning with urination, or pain in your side that spreads toward your groin?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No urinary symptoms",
+        "Dysuria and frequency with fever",
+        "Colicky flank pain radiating to the groin with hematuria"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "reproductive",
-      "text": "Ask about pregnancy possibility, vaginal bleeding or discharge, flank pain, hematuria, and testicular symptoms when relevant.",
+      "system": "gastrointestinal",
+      "text": "Do you have a hernia that has become painful, bulging, or that you can't push back in?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known hernia",
+        "Known hernia now painful, bulging, or irreducible"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "gastrointestinal",
+      "text": "Have you had abdominal surgery in the past?",
+      "choices": [
+        "No prior abdominal surgery",
+        "Prior abdominal surgery"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "reproductive",
+      "text": "Did you have sudden pain in one testicle along with nausea or vomiting?",
+      "choices": [
+        "Not applicable or none",
+        "Sudden unilateral testicular pain with nausea or vomiting"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "gastrointestinal",
+      "text": "Do you have inflammatory bowel disease, and does this feel like a prior flare, or have you had bloody diarrhea?",
+      "choices": [
+        "No known inflammatory bowel disease or bloody diarrhea",
+        "Known inflammatory bowel disease, pain resembles a prior flare",
+        "Bloody diarrhea accompanying the pain"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-14",
+      "kind": "history",
+      "system": "endocrine",
+      "text": "Do you have diabetes, and have you noticed excessive thirst, urination, or a fruity breath smell?",
+      "choices": [
+        "No known diabetes",
+        "Known diabetes with polyuria or polydipsia",
+        "Known diabetes with fruity breath odor or rapid, deep breathing"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-15",
+      "kind": "history",
+      "system": "medication",
+      "text": "Do you regularly take NSAIDs like ibuprofen, or a blood thinner?",
+      "choices": [
+        "Neither",
+        "Chronic NSAID use",
+        "Anticoagulant use"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-16",
+      "kind": "history",
+      "system": "cardiovascular",
+      "text": "Do you get a squeezing pain in your upper belly with exertion, or have you been diagnosed with heart disease?",
+      "choices": [
+        "No known coronary disease or exertional discomfort",
+        "Known coronary artery disease without exertional epigastric symptoms",
+        "Exertional epigastric discomfort"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess appearance, vital signs, mucous membranes, orthostatic symptoms when safe, and bedside perfusion.",
+      "system": "general",
+      "text": "Assess general appearance and vital signs.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Well-appearing, normotensive",
+        "Ill-appearing, tachycardic",
+        "Hypotensive or in shock"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "skin",
-      "text": "Inspect for scars, distention, asymmetry, visible hernia, skin changes, and respiratory movement of the abdomen.",
+      "system": "gastrointestinal",
+      "text": "Palpate the abdomen for tenderness, guarding, and rebound.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Soft, nontender",
+        "Focal tenderness without guarding",
+        "Guarding, rebound, or rigidity"
       ],
       "select": "one"
     },
@@ -155,95 +225,107 @@
       "id": "exam-03",
       "kind": "exam",
       "system": "gastrointestinal",
-      "text": "Auscultate and palpate systematically for focal tenderness, guarding, rebound, mass, organ enlargement, or pulsatility.",
+      "text": "Assess McBurney point tenderness and Rovsing, psoas, or obturator signs.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "All negative",
+        "Positive McBurney point tenderness",
+        "Positive Rovsing, psoas, or obturator sign"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "genitourinary",
-      "text": "Assess for costovertebral-angle tenderness and examine relevant hernia sites when indicated.",
+      "system": "gastrointestinal",
+      "text": "Assess the right upper quadrant for a Murphy sign or palpable mass.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Negative Murphy sign, no mass",
+        "Positive Murphy sign",
+        "Palpable gallbladder mass"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "reproductive",
-      "text": "Perform rectal, perianal, or pelvic examination only when clinically indicated and appropriate.",
+      "system": "gastrointestinal",
+      "text": "Inspect for distention and auscultate bowel sounds.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal bowel sounds, no distention",
+        "Distended with high-pitched or hyperactive bowel sounds",
+        "Distended and silent"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "hematologic",
-      "text": "Inspect for jaundice, pallor, edema, bruising, chronic liver-disease stigmata, and other systemic findings when relevant.",
+      "system": "cardiovascular",
+      "text": "Palpate the abdomen for a pulsatile mass.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No pulsatile mass",
+        "Palpable pulsatile mass, hemodynamically stable",
+        "Pulsatile mass with hypotension"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "general",
-      "text": "Palpate all quadrants systematically for focal tenderness, guarding, rebound, rigidity, mass, or organ enlargement.",
+      "system": "genitourinary",
+      "text": "Assess for costovertebral-angle tenderness.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "None",
+        "Unilateral costovertebral-angle tenderness",
+        "Bilateral costovertebral-angle tenderness"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess for pain with movement, cough, percussion, or release and document peritoneal signs when present.",
+      "system": "gastrointestinal",
+      "text": "Examine hernia sites for a bulge and reducibility.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No hernia identified",
+        "Reducible hernia",
+        "Tender, irreducible or incarcerated hernia"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "gastrointestinal",
-      "text": "Inspect for distention and auscultate for bowel-sound change before deep palpation.",
+      "system": "reproductive",
+      "text": "Perform a pelvic or testicular examination when clinically indicated.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal or deferred as not indicated",
+        "Cervical motion tenderness or adnexal mass or tenderness",
+        "High-riding, tender testicle with absent cremasteric reflex"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "reproductive",
-      "text": "Perform pelvic, rectal, or genital examination only when clinically indicated and appropriate.",
+      "system": "gastrointestinal",
+      "text": "Perform a rectal examination when clinically indicated.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal, guaiac negative, or deferred as not indicated",
+        "Gross blood or melena on examination",
+        "Palpable mass on examination"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-11",
+      "kind": "exam",
+      "system": "skin",
+      "text": "Inspect skin and sclerae for jaundice or flank/periumbilical ecchymosis.",
+      "choices": [
+        "Normal color, no ecchymosis",
+        "Jaundice or scleral icterus",
+        "Flank (Grey Turner) or periumbilical (Cullen) ecchymosis"
       ],
       "select": "one"
     }

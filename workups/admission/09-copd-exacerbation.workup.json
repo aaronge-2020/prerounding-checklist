@@ -10,24 +10,23 @@
     {
       "id": "history-01",
       "kind": "history",
-      "system": "general",
-      "text": "Ask about onset, tempo, severity, triggers, relieving factors, and change from baseline.",
+      "system": "respiratory",
+      "text": "Compared to how you normally breathe, is your shortness of breath a little worse or severe even at rest?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No change from baseline",
+        "Mild increase from baseline",
+        "Severe increase, dyspnea at rest"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about chest discomfort, palpitations, syncope, diaphoresis, cough, fever, and hemoptysis.",
+      "system": "respiratory",
+      "text": "Are you coughing up more phlegm than usual?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No change in sputum volume",
+        "Increased sputum volume"
       ],
       "select": "one"
     },
@@ -35,47 +34,43 @@
       "id": "history-03",
       "kind": "history",
       "system": "respiratory",
-      "text": "Ask about prior heart or lung disease, prior admissions, baseline exertional tolerance, and home oxygen use.",
+      "text": "Has the color of what you're coughing up changed, like turning yellow or green?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No change in sputum color",
+        "New purulent or discolored sputum"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about tobacco or vaping exposure, immobility, thromboembolic risk, and relevant family history.",
+      "system": "respiratory",
+      "text": "Is your wheezing worse than it usually is?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No change in wheeze",
+        "Increased wheeze"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recent medication changes, adherence, inhaler or diuretic use, and anticoagulant use when relevant.",
+      "system": "infectious",
+      "text": "Have you had a fever?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No fever",
+        "Fever"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about baseline ambulation, sleep position, activity limitation, and new functional decline.",
+      "system": "respiratory",
+      "text": "Did you have a sudden sharp chest pain that's worse when you breathe in?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No sudden pleuritic chest pain",
+        "Sudden pleuritic chest pain"
       ],
       "select": "one"
     },
@@ -83,11 +78,11 @@
       "id": "history-07",
       "kind": "history",
       "system": "respiratory",
-      "text": "Ask about change in dyspnea, cough, sputum volume or purulence, wheeze, and exertional tolerance.",
+      "text": "Do you use oxygen at home, and if so, have you needed to turn it up higher than usual?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No home oxygen use",
+        "Uses home oxygen at the usual baseline rate",
+        "Recently increased home oxygen requirement"
       ],
       "select": "one"
     },
@@ -95,11 +90,11 @@
       "id": "history-08",
       "kind": "history",
       "system": "respiratory",
-      "text": "Ask about baseline oxygen, inhalers, noninvasive ventilation, prior intubation, prior exacerbations, and usual activity level.",
+      "text": "Have you ever been admitted to the ICU or put on a breathing machine for a COPD flare before?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No prior hospitalization for COPD",
+        "Prior hospitalization without ICU admission",
+        "Prior ICU admission or intubation for COPD"
       ],
       "select": "one"
     },
@@ -107,23 +102,59 @@
       "id": "history-09",
       "kind": "history",
       "system": "medication",
-      "text": "Ask about respiratory infection symptoms, smoke or irritant exposure, medication access, inhaler technique concerns, and aspiration symptoms.",
+      "text": "Have you been using your daily inhalers as prescribed?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Adherent to maintenance inhalers",
+        "Missed inhaler doses",
+        "Unable to afford or access inhalers"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "neurologic",
-      "text": "Ask about morning headache, somnolence, confusion, reduced concentration, and sleep-related breathing symptoms.",
+      "system": "medication",
+      "text": "Are you still smoking, or were you recently exposed to smoke, fumes, or other lung irritants?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No smoking or irritant exposure",
+        "Ongoing active smoking",
+        "New occupational or environmental irritant exposure"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "neurologic",
+      "text": "Have you had morning headaches or felt unusually sleepy during the day?",
+      "choices": [
+        "Neither",
+        "Morning headache",
+        "Daytime somnolence or new confusion"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "cardiovascular",
+      "text": "Have you noticed leg swelling, or do you need extra pillows to breathe comfortably at night?",
+      "choices": [
+        "Neither",
+        "Leg swelling",
+        "Orthopnea"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "functional",
+      "text": "Have you been immobilized, had recent surgery, or do you have cancer or a history of blood clots?",
+      "choices": [
+        "No provoking risk factor",
+        "Recent immobilization or surgery",
+        "Active malignancy or prior venous thromboembolism"
       ],
       "select": "one"
     },
@@ -131,11 +162,11 @@
       "id": "exam-01",
       "kind": "exam",
       "system": "respiratory",
-      "text": "Assess general appearance, respiratory rate and pattern, heart rate and rhythm, blood pressure, temperature, and oxygenation.",
+      "text": "Assess work of breathing and ability to speak in full sentences.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal work of breathing, speaks in full sentences",
+        "Accessory muscle use",
+        "Tripod posture, unable to speak in full sentences"
       ],
       "select": "one"
     },
@@ -143,95 +174,91 @@
       "id": "exam-02",
       "kind": "exam",
       "system": "respiratory",
-      "text": "Inspect work of breathing and auscultate all lung fields for air movement and focal or diffuse adventitious sounds.",
+      "text": "Auscultate for wheeze and air movement.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal air entry, no wheeze",
+        "Wheeze with adequate air movement",
+        "Minimal air movement, silent chest"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess cardiac rate and rhythm, heart sounds, murmurs, and signs of impaired peripheral perfusion.",
+      "system": "respiratory",
+      "text": "Assess for pursed-lip breathing.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Absent",
+        "Present"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess jugular venous pressure when feasible, mucous membranes, edema, and other bedside signs of volume status.",
+      "system": "respiratory",
+      "text": "Percuss the chest for hyperresonance and assess diaphragmatic excursion.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal resonance and excursion",
+        "Hyperresonant with reduced diaphragmatic excursion"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Inspect extremities for asymmetry, edema, cyanosis, calf tenderness, and distal pulses.",
+      "system": "respiratory",
+      "text": "Assess breath sounds for asymmetry suggesting pneumothorax.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Symmetric breath sounds",
+        "Unilateral decreased or absent breath sounds"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess alertness, orientation, and focal neurologic change that could accompany hypoxemia or poor perfusion.",
+      "system": "respiratory",
+      "text": "Assess oxygenation.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal saturation on room air",
+        "Hypoxemic, requiring supplemental oxygen",
+        "Central cyanosis"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Auscultate for prolonged expiration, wheeze, diminished air movement, focal crackles, or silent chest.",
+      "system": "neurologic",
+      "text": "Assess mental status and asterixis for hypercapnic respiratory failure.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Alert, no asterixis",
+        "Somnolent or confused",
+        "Asterixis present"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Inspect for accessory-muscle use, pursed-lip breathing, tripod posture, fatigue, and ability to speak in full sentences.",
+      "system": "cardiovascular",
+      "text": "Assess jugular venous pressure and peripheral edema for right-sided congestion.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal jugular venous pressure, no edema",
+        "Elevated jugular venous pressure",
+        "Elevated jugular venous pressure with peripheral edema"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess oxygenation, cyanosis, mental status, asterixis, and somnolence for possible respiratory failure.",
+      "system": "cardiovascular",
+      "text": "Assess cardiac rhythm regularity.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Regular rhythm",
+        "Irregular rhythm"
       ],
       "select": "one"
     },
@@ -239,11 +266,10 @@
       "id": "exam-10",
       "kind": "exam",
       "system": "cardiovascular",
-      "text": "Assess jugular venous pressure, peripheral edema, cardiac rhythm, and signs of right-sided congestion.",
+      "text": "Inspect and palpate the calves for asymmetric swelling or tenderness.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Symmetric, no swelling or tenderness",
+        "Unilateral swelling or tenderness"
       ],
       "select": "one"
     }

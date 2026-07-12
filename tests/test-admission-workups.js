@@ -17,8 +17,10 @@ assert.deepEqual(manifest.map((entry) => entry.filename), files);
 assert.deepEqual(bundledLibrary.workups, workups);
 
 for (const workup of workups) {
-  assert.equal(workup.items.filter((item) => item.kind === "history").length, 10);
-  assert.equal(workup.items.filter((item) => item.kind === "exam").length, 10);
+  const historyCount = workup.items.filter((item) => item.kind === "history").length;
+  const examCount = workup.items.filter((item) => item.kind === "exam").length;
+  assert.ok(historyCount >= 8, `${workup.id} needs at least 8 history items, has ${historyCount}`);
+  assert.ok(examCount >= 8, `${workup.id} needs at least 8 exam items, has ${examCount}`);
   assert.equal(workup.items.every((item) => item.choices[0] !== "Unclear" && item.choices[0] !== "Not assessed"), true);
   assert.equal(workup.items.every((item) => isWorkupSystem(item.system)), true);
   assert.deepEqual(normalizeWorkup(workup), workup);

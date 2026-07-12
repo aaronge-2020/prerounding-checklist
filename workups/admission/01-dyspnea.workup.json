@@ -10,72 +10,74 @@
     {
       "id": "history-01",
       "kind": "history",
-      "system": "general",
-      "text": "Ask about onset, tempo, severity, triggers, relieving factors, and change from baseline.",
+      "system": "respiratory",
+      "text": "Did your shortness of breath come on gradually over days, or suddenly over minutes to hours?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Gradual, over days to weeks",
+        "Abrupt, over minutes to hours",
+        "Episodic, recurring in discrete attacks"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about chest discomfort, palpitations, syncope, diaphoresis, cough, fever, and hemoptysis.",
+      "system": "cardiovascular",
+      "text": "Do you need to prop yourself up on extra pillows to breathe comfortably at night?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No orthopnea",
+        "Needs one extra pillow to breathe comfortably",
+        "Cannot lie flat at all"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "respiratory",
-      "text": "Ask about prior heart or lung disease, prior admissions, baseline exertional tolerance, and home oxygen use.",
+      "system": "cardiovascular",
+      "text": "Have you ever woken up suddenly gasping for air that got better after you sat up?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No nocturnal awakening with breathlessness",
+        "Wakes gasping for air, relieved by sitting up"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about tobacco or vaping exposure, immobility, thromboembolic risk, and relevant family history.",
+      "system": "cardiovascular",
+      "text": "Do you have any chest discomfort along with the shortness of breath, and if so, what does it feel like?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No chest discomfort",
+        "Exertional pressure or tightness relieved by rest",
+        "Pleuritic pain, sharp and worse with inspiration",
+        "Sudden tearing pain radiating to the back"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recent medication changes, adherence, inhaler or diuretic use, and anticoagulant use when relevant.",
+      "system": "respiratory",
+      "text": "Have you had a cough?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No cough",
+        "Dry, nonproductive cough",
+        "Productive cough"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about baseline ambulation, sleep position, activity limitation, and new functional decline.",
+      "system": "respiratory",
+      "text": "Are you coughing anything up, and if so, what does it look like?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No sputum production",
+        "Clear or white sputum",
+        "Purulent or discolored sputum",
+        "Pink, frothy sputum",
+        "Blood-streaked sputum or hemoptysis"
       ],
       "select": "one"
     },
@@ -83,11 +85,11 @@
       "id": "history-07",
       "kind": "history",
       "system": "respiratory",
-      "text": "Ask about rest versus exertional dyspnea, orthopnea, paroxysmal nocturnal dyspnea, and positional change.",
+      "text": "Have you noticed any wheezing?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No wheeze",
+        "Wheeze consistent with prior diagnosed asthma or COPD",
+        "New wheeze with no prior reactive-airway history"
       ],
       "select": "one"
     },
@@ -95,35 +97,105 @@
       "id": "history-08",
       "kind": "history",
       "system": "infectious",
-      "text": "Ask about cough, sputum amount or color, wheeze, pleuritic pain, fever, and hemoptysis.",
+      "text": "Have you had a fever?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No fever",
+        "Subjective fever without chills",
+        "Fever with shaking chills or rigors"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "neurologic",
-      "text": "Ask about chest pressure, palpitations, edema, rapid weight change, presyncope, and syncope.",
+      "system": "cardiovascular",
+      "text": "Have you been told you have heart failure, and does this episode feel like a previous flare-up?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known heart failure",
+        "Known heart failure, this episode feels different from baseline",
+        "Known heart failure, this episode resembles a prior decompensation"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "cardiovascular",
-      "text": "Ask about recent immobilization, travel, surgery, cancer, prior DVT or PE, and unilateral leg symptoms.",
+      "system": "skin",
+      "text": "Have you broken out in hives, or noticed swelling of your lips, tongue, or throat after being exposed to something new?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No urticaria, angioedema, or exposure",
+        "Hives after a new exposure, no airway symptoms",
+        "Lip, tongue, or throat swelling after a new exposure"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "gastrointestinal",
+      "text": "Did you choke or aspirate on food or liquid right before this started?",
+      "choices": [
+        "No witnessed choking or aspiration",
+        "Witnessed choking or aspiration event"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "cardiovascular",
+      "text": "Have you noticed any swelling in one leg?",
+      "choices": [
+        "No leg swelling",
+        "Unilateral leg swelling"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "functional",
+      "text": "Have you traveled recently, had surgery, been hospitalized, or do you have cancer or a history of blood clots?",
+      "choices": [
+        "No provoking risk factor",
+        "Air travel over four hours in the past month",
+        "Surgery or hospitalization in the past month",
+        "Active malignancy or prior venous thromboembolism"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-14",
+      "kind": "history",
+      "system": "psychiatric",
+      "text": "Does this feel like a panic attack, with tingling around your mouth or hands that gets better once you calm down?",
+      "choices": [
+        "No situational trigger or panic history",
+        "Situational trigger with paresthesias, resolves with reassurance",
+        "Known panic disorder with similar prior episodes"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-15",
+      "kind": "history",
+      "system": "hematologic",
+      "text": "Have you been told you have anemia, and has your breathlessness been gradually getting worse with activity?",
+      "choices": [
+        "No known anemia",
+        "Known anemia with gradually worsening exertional dyspnea"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-16",
+      "kind": "history",
+      "system": "hematologic",
+      "text": "Have you noticed black, tarry stools, red blood in your stool, or vomited blood?",
+      "choices": [
+        "No signs of gastrointestinal bleeding",
+        "Melena or hematochezia",
+        "Hematemesis"
       ],
       "select": "one"
     },
@@ -131,11 +203,11 @@
       "id": "exam-01",
       "kind": "exam",
       "system": "respiratory",
-      "text": "Assess general appearance, respiratory rate and pattern, heart rate and rhythm, blood pressure, temperature, and oxygenation.",
+      "text": "Assess respiratory rate and work of breathing.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal rate, no accessory muscle use",
+        "Tachypneic with accessory muscle use",
+        "Severe distress with paradoxical or fatiguing respiratory pattern"
       ],
       "select": "one"
     },
@@ -143,35 +215,35 @@
       "id": "exam-02",
       "kind": "exam",
       "system": "respiratory",
-      "text": "Inspect work of breathing and auscultate all lung fields for air movement and focal or diffuse adventitious sounds.",
+      "text": "Assess oxygen saturation and response to supplemental oxygen.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal saturation on room air",
+        "Hypoxemic, corrected with low-flow supplemental oxygen",
+        "Hypoxemic despite high-flow oxygen or a non-rebreather mask"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess cardiac rate and rhythm, heart sounds, murmurs, and signs of impaired peripheral perfusion.",
+      "system": "ent",
+      "text": "Auscultate for stridor.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No stridor",
+        "Inspiratory stridor"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess jugular venous pressure when feasible, mucous membranes, edema, and other bedside signs of volume status.",
+      "system": "respiratory",
+      "text": "Auscultate the lungs for focal versus diffuse findings.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Clear bilaterally",
+        "Focal crackles or dullness in one region",
+        "Diffuse bilateral crackles",
+        "Diffuse wheeze or prolonged expiration"
       ],
       "select": "one"
     },
@@ -179,71 +251,114 @@
       "id": "exam-05",
       "kind": "exam",
       "system": "cardiovascular",
-      "text": "Inspect extremities for asymmetry, edema, cyanosis, calf tenderness, and distal pulses.",
+      "text": "Assess jugular venous pressure.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal jugular venous pressure",
+        "Elevated jugular venous pressure",
+        "Elevated jugular venous pressure with prominent v waves"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess alertness, orientation, and focal neurologic change that could accompany hypoxemia or poor perfusion.",
+      "system": "cardiovascular",
+      "text": "Auscultate heart sounds for a gallop.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal S1 and S2, no extra sounds",
+        "S3 gallop present"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Inspect ability to speak, accessory-muscle use, posture, respiratory fatigue, and audible wheeze or stridor.",
+      "system": "cardiovascular",
+      "text": "Auscultate the heart for a new murmur.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No murmur",
+        "New murmur"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Auscultate for focal crackles, diffuse wheeze, diminished breath sounds, and asymmetry.",
+      "system": "cardiovascular",
+      "text": "Assess for pulsus paradoxus and Beck triad findings suggesting tamponade.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No pulsus paradoxus, heart sounds normal",
+        "Pulsus paradoxus greater than 10 mmHg",
+        "Hypotension with elevated jugular venous pressure and muffled heart sounds"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess jugular venous pressure when feasible, peripheral edema, and other signs of congestion.",
+      "system": "respiratory",
+      "text": "Assess tracheal position and breath sounds for asymmetry.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Midline trachea, symmetric breath sounds",
+        "Unilateral decreased or absent breath sounds",
+        "Tracheal deviation with hyperresonance to percussion"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Compare both legs for swelling, tenderness, erythema, and asymmetry; assess distal pulses.",
+      "system": "skin",
+      "text": "Inspect the face and skin for urticaria or angioedema.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No hives or swelling",
+        "Urticaria without facial involvement",
+        "Facial, lip, or tongue angioedema"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-11",
+      "kind": "exam",
+      "system": "neurologic",
+      "text": "Assess mental status.",
+      "choices": [
+        "Alert and appropriate",
+        "Confused or somnolent"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-12",
+      "kind": "exam",
+      "system": "skin",
+      "text": "Assess lips and nail beds for central cyanosis.",
+      "choices": [
+        "Normal color",
+        "Central cyanosis"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-13",
+      "kind": "exam",
+      "system": "cardiovascular",
+      "text": "Inspect and palpate the calves for asymmetric swelling or a palpable cord.",
+      "choices": [
+        "Symmetric, no swelling or cord",
+        "Unilateral swelling",
+        "Unilateral swelling with tenderness or a palpable cord"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-14",
+      "kind": "exam",
+      "system": "hematologic",
+      "text": "Inspect the conjunctiva and nail beds for pallor.",
+      "choices": [
+        "Normal color",
+        "Conjunctival or nail-bed pallor"
       ],
       "select": "one"
     }

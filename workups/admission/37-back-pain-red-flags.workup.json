@@ -10,24 +10,23 @@
     {
       "id": "history-01",
       "kind": "history",
-      "system": "functional",
-      "text": "Establish last known well or symptom onset, progression, baseline cognition, baseline neurologic function, and functional status.",
+      "system": "musculoskeletal",
+      "text": "Did this pain start after a fall or injury, or did it come on without any trauma?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Gradual onset without trauma",
+        "Sudden onset after a fall or injury"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "neurologic",
-      "text": "Ask about weakness, numbness, facial asymmetry, speech or vision change, imbalance, dysphagia, and severe headache.",
+      "system": "musculoskeletal",
+      "text": "Does the pain wake you up at night, or is it worse when you're lying flat?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No night pain or positional worsening",
+        "Wakes you up at night",
+        "Worse lying flat"
       ],
       "select": "one"
     },
@@ -35,119 +34,156 @@
       "id": "history-03",
       "kind": "history",
       "system": "neurologic",
-      "text": "Ask about loss of consciousness, seizure-like activity, prodrome, post-event confusion, incontinence, tongue injury, and witness observations.",
+      "text": "Have you had any weakness or numbness in your legs?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No leg weakness or numbness",
+        "Leg weakness or numbness"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about falls, head or neck injury, anticoagulant or antiplatelet use, and bleeding symptoms.",
+      "system": "neurologic",
+      "text": "Have you noticed numbness around your groin or inner thighs, like the area you'd sit on a saddle?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No saddle numbness",
+        "Saddle numbness present"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recent medication changes, sedatives, alcohol, recreational substances, withdrawal risk, and toxic exposures.",
+      "system": "genitourinary",
+      "text": "Have you had any trouble controlling your bladder, or trouble starting your urine stream?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No bladder symptoms",
+        "New urinary retention or incontinence"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about fever, poor intake, glucose symptoms, renal or liver disease, and other systemic symptoms that may affect cognition.",
+      "system": "gastrointestinal",
+      "text": "Have you had any new trouble controlling your bowels?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No bowel symptoms",
+        "New bowel incontinence"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "general",
-      "text": "Ask about onset, trauma, location, radiation, severity, night pain, positional features, and progression.",
+      "system": "musculoskeletal",
+      "text": "Has your walking changed recently, like feeling unsteady or your legs giving out?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No gait change",
+        "New gait change or leg weakness"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "musculoskeletal",
-      "text": "Ask about weakness, numbness, saddle anesthesia, gait change, urinary retention or incontinence, bowel dysfunction, and sexual dysfunction.",
+      "system": "infectious",
+      "text": "Have you had a fever along with the back pain?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No fever",
+        "Fever"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about fever, intravenous drug use, immunosuppression, recent infection, cancer history, weight loss, and night sweats.",
+      "system": "medication",
+      "text": "Do you inject drugs?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No intravenous drug use",
+        "Active intravenous drug use"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about osteoporosis, steroid use, anticoagulants, trauma, falls, prior spine surgery, and known vertebral disease.",
+      "system": "hematologic",
+      "text": "Have you been diagnosed with cancer?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known malignancy",
+        "Known malignancy"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "general",
+      "text": "Have you lost weight without trying, or had night sweats?",
+      "choices": [
+        "Neither",
+        "Unintentional weight loss",
+        "Night sweats"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "medication",
+      "text": "Have you been diagnosed with osteoporosis, or are you on long-term steroids?",
+      "choices": [
+        "Neither",
+        "Known osteoporosis",
+        "Chronic steroid use"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "medication",
+      "text": "Are you on a blood thinner?",
+      "choices": [
+        "No anticoagulant use",
+        "Anticoagulant use"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-14",
+      "kind": "history",
+      "system": "musculoskeletal",
+      "text": "Have you had spine surgery in the past, or been told you have spinal disease like stenosis?",
+      "choices": [
+        "Neither",
+        "Prior spine surgery",
+        "Known spinal stenosis or other vertebral disease"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "endocrine",
-      "text": "Assess vital signs, general appearance, glucose status if available at bedside, and signs of cardiorespiratory instability.",
+      "system": "musculoskeletal",
+      "text": "Palpate the spine for focal tenderness or a step-off.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No focal tenderness or step-off",
+        "Focal vertebral tenderness or step-off"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess level of consciousness, attention, orientation, language, memory, behavior, and fluctuation from baseline.",
+      "system": "musculoskeletal",
+      "text": "Assess lower extremity strength for symmetry.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Symmetric strength throughout",
+        "Asymmetric or bilateral lower extremity weakness"
       ],
       "select": "one"
     },
@@ -155,47 +191,46 @@
       "id": "exam-03",
       "kind": "exam",
       "system": "neurologic",
-      "text": "Assess pupils, visual fields when feasible, ocular movements, facial symmetry, speech, palate, and swallowing safety as indicated.",
+      "text": "Assess sensation in the lower extremities and perineal region.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal sensation",
+        "Decreased sensation in the legs",
+        "Saddle anesthesia"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess pronator drift, limb strength, tone, sensation, reflex asymmetry, and neglect when appropriate.",
+      "system": "neurologic",
+      "text": "Assess deep tendon reflexes in the lower extremities.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal reflexes",
+        "Diminished or absent reflexes",
+        "Hyperreflexia or clonus"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess coordination, truncal stability, gait, and Romberg only when it is safe to do so.",
+      "system": "genitourinary",
+      "text": "Assess rectal tone and for a distended bladder when clinically indicated.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal tone, nondistended bladder, or deferred as not indicated",
+        "Decreased rectal tone",
+        "Distended, palpable bladder"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "skin",
-      "text": "Inspect for head or neck injury and assess neck stiffness or rash when the presentation makes this relevant.",
+      "system": "general",
+      "text": "Assess for fever.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Afebrile",
+        "Febrile"
       ],
       "select": "one"
     },
@@ -203,11 +238,10 @@
       "id": "exam-07",
       "kind": "exam",
       "system": "skin",
-      "text": "Inspect posture, alignment, skin changes, step-off, focal vertebral tenderness, paraspinal spasm, and sacroiliac tenderness.",
+      "text": "Inspect the back for a wound, needle track marks, or overlying skin infection.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal skin",
+        "Skin infection or needle track marks overlying the spine"
       ],
       "select": "one"
     },
@@ -215,11 +249,10 @@
       "id": "exam-08",
       "kind": "exam",
       "system": "musculoskeletal",
-      "text": "Assess hip, knee, ankle, and toe strength; sensation; reflexes; tone; and asymmetric findings.",
+      "text": "Assess straight leg raise for radicular reproduction of pain.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Negative",
+        "Positive"
       ],
       "select": "one"
     },
@@ -227,23 +260,21 @@
       "id": "exam-09",
       "kind": "exam",
       "system": "musculoskeletal",
-      "text": "Assess gait, heel and toe walking, transfers, and balance only when safe.",
+      "text": "Assess gait when safe.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal gait",
+        "Unsteady or unable to ambulate safely"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "skin",
-      "text": "Assess perineal sensation and rectal tone only when clinically indicated, appropriate, and consented.",
+      "system": "hematologic",
+      "text": "Palpate for lymphadenopathy or a palpable mass suggesting malignancy.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "None",
+        "Lymphadenopathy or palpable mass present"
       ],
       "select": "one"
     }

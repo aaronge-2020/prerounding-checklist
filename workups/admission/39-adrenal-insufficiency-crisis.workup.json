@@ -10,36 +10,34 @@
     {
       "id": "history-01",
       "kind": "history",
-      "system": "general",
-      "text": "Ask about onset, progression, severity, recent acute illness, and change from usual health.",
+      "system": "endocrine",
+      "text": "Have you been feeling profoundly weak or tired, out of proportion to how sick you feel otherwise?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No profound fatigue",
+        "Profound, out-of-proportion fatigue"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "genitourinary",
-      "text": "Ask about oral intake, thirst, vomiting, diarrhea, urine volume, urinary retention, and recent weight change.",
+      "system": "gastrointestinal",
+      "text": "Have you had nausea, vomiting, or belly pain along with the weakness?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "None of these",
+        "Nausea or vomiting",
+        "Abdominal pain"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about new or missed medications, insulin, diuretics, ACE inhibitors, NSAIDs, steroids, laxatives, and supplements.",
+      "system": "neurologic",
+      "text": "Have you felt dizzy or lightheaded, especially when standing up?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No dizziness",
+        "Dizzy or lightheaded on standing"
       ],
       "select": "one"
     },
@@ -47,11 +45,11 @@
       "id": "history-04",
       "kind": "history",
       "system": "endocrine",
-      "text": "Ask about chronic kidney disease, diabetes, adrenal or thyroid disease, prior electrolyte disorders, and baseline glucose control.",
+      "text": "Have you been craving salty foods, or lost weight without trying?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Salt craving",
+        "Unintentional weight loss"
       ],
       "select": "one"
     },
@@ -59,155 +57,170 @@
       "id": "history-05",
       "kind": "history",
       "system": "medication",
-      "text": "Ask about infection symptoms, ischemic symptoms, recent procedures or contrast exposure, alcohol use, and dietary change.",
+      "text": "Are you on a steroid medication like prednisone, and have you missed doses or run out recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Not on chronic steroids",
+        "On chronic steroids, taking as prescribed",
+        "On chronic steroids, missed doses or ran out"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "neurologic",
-      "text": "Ask about weakness, cramps, paresthesias, palpitations, confusion, seizures, and exercise intolerance.",
+      "system": "medication",
+      "text": "Have you been sick recently, had surgery, or gone through some other stress that would normally require extra steroid dosing?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No recent physiologic stress",
+        "Recent illness, surgery, or major stress without stress-dose steroids"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "endocrine",
-      "text": "Ask about profound fatigue, weakness, nausea, vomiting, abdominal pain, dizziness, salt craving, weight loss, and collapse.",
+      "system": "infectious",
+      "text": "Do you have a fever or symptoms of an infection right now?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No fever or infection symptoms",
+        "Fever or infection symptoms present"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about chronic glucocorticoids, recent dose reduction or missed doses, adrenal replacement, injections, inhaled steroids, and recent illness.",
+      "system": "skin",
+      "text": "Have you or others noticed your skin getting darker, especially in creases or scars?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No skin darkening",
+        "New hyperpigmentation"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about fever, infection symptoms, trauma, surgery, diarrhea, vomiting, dehydration, and inability to take oral medications.",
+      "system": "endocrine",
+      "text": "Do you have a known adrenal, pituitary, or autoimmune condition, or have you had an adrenal crisis before?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "None of these",
+        "Known adrenal or pituitary disease",
+        "Prior adrenal crisis"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "endocrine",
-      "text": "Ask about known adrenal disease, autoimmune disease, thyroid disease, pituitary disease, hyperpigmentation, and prior crisis.",
+      "system": "gastrointestinal",
+      "text": "Have you had vomiting or diarrhea that kept you from taking your usual medications?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No vomiting or diarrhea affecting medications",
+        "Vomiting or diarrhea preventing medication intake"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "neurologic",
+      "text": "Have you felt confused, or has anyone said you seem less alert than usual?",
+      "choices": [
+        "No confusion",
+        "New confusion or decreased alertness"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "musculoskeletal",
+      "text": "Have you had muscle or joint pain along with the weakness?",
+      "choices": [
+        "No muscle or joint pain",
+        "Diffuse muscle or joint pain"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess appearance, heart rate, blood pressure, respiratory rate and pattern, temperature, and bedside perfusion.",
+      "system": "cardiovascular",
+      "text": "Measure blood pressure lying and standing to assess for orthostatic hypotension.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No orthostatic change",
+        "Positive orthostatic hypotension",
+        "Hypotensive supine"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "skin",
-      "text": "Assess mucous membranes, jugular venous pressure when feasible, edema, skin turgor, and orthostatic symptoms when safe.",
+      "system": "cardiovascular",
+      "text": "Assess heart rate and overall hemodynamic stability.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal heart rate, hemodynamically stable",
+        "Tachycardic",
+        "In shock"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess alertness, orientation, attention, behavior, and change from baseline.",
+      "system": "general",
+      "text": "Assess temperature for fever.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Afebrile",
+        "Febrile"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess rate, rhythm, heart sounds, peripheral pulses, capillary refill, and signs of volume overload or depletion.",
+      "system": "skin",
+      "text": "Inspect skin, creases, and scars for hyperpigmentation.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No hyperpigmentation",
+        "Hyperpigmentation present"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess work of breathing, lung sounds, and abnormal respiratory pattern including deep or rapid breathing.",
+      "system": "skin",
+      "text": "Assess mucous membranes and skin turgor for dehydration.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Moist mucous membranes, normal turgor",
+        "Dry mucous membranes or poor turgor"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess gross strength, tremor, reflexes, sensation, tetany, asterixis, and gait only when safe and relevant.",
+      "system": "neurologic",
+      "text": "Assess mental status and orientation.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Alert and oriented",
+        "Confused or lethargic",
+        "Obtunded"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess blood pressure, orthostatic symptoms when safe, heart rate, peripheral perfusion, mental status, and signs of shock.",
+      "system": "gastrointestinal",
+      "text": "Palpate the abdomen for tenderness.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Soft, nontender",
+        "Diffuse tenderness",
+        "Guarding or rigidity"
       ],
       "select": "one"
     },
@@ -215,23 +228,21 @@
       "id": "exam-08",
       "kind": "exam",
       "system": "skin",
-      "text": "Assess mucous membranes, skin turgor, edema, jugular venous pressure when feasible, and abdominal tenderness.",
+      "text": "Inspect for vitiligo or other autoimmune skin findings.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "None present",
+        "Vitiligo present"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "hematologic",
-      "text": "Inspect for hyperpigmentation, vitiligo, rash, bruising, and other endocrine or autoimmune clues.",
+      "system": "endocrine",
+      "text": "Check fingerstick glucose.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal glucose",
+        "Hypoglycemic"
       ],
       "select": "one"
     },
@@ -239,11 +250,10 @@
       "id": "exam-10",
       "kind": "exam",
       "system": "musculoskeletal",
-      "text": "Assess cognition, weakness, reflexes, gait only when safe, abdominal tenderness, and peritoneal signs.",
+      "text": "Assess proximal muscle strength.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal strength",
+        "Proximal muscle weakness"
       ],
       "select": "one"
     }

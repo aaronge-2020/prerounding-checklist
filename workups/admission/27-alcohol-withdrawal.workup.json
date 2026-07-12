@@ -3,19 +3,19 @@
   "id": "alcohol-withdrawal",
   "title": "Alcohol withdrawal",
   "aliases": [
-    "alcohol withdrawal",
-    "ETOH withdrawal"
+    "delirium tremens",
+    "DTs"
   ],
   "items": [
     {
       "id": "history-01",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about baseline cognition, activities of daily living, ambulation, assistive devices, continence, and recent functional change.",
+      "system": "medication",
+      "text": "When was your last drink?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "More than 7 days since last drink",
+        "48 hours to 7 days since last drink",
+        "Within the past 48 hours"
       ],
       "select": "one"
     },
@@ -23,83 +23,80 @@
       "id": "history-02",
       "kind": "history",
       "system": "medication",
-      "text": "Ask about home setting, caregivers, available supports, medication access, food access, transportation, and barriers to care.",
+      "text": "How much do you typically drink in a day, and how long have you been drinking that much?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Light to moderate use",
+        "Heavy daily use",
+        "History of severe, long-standing dependence"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recent medication changes, sedatives, analgesics, alcohol, other substances, and adherence.",
+      "system": "neurologic",
+      "text": "Have you ever had a seizure from stopping alcohol before?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No prior withdrawal seizure",
+        "Prior withdrawal seizure"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "psychiatric",
-      "text": "Ask about depression, anxiety, delirium symptoms, self-harm risk when relevant, abuse or neglect concerns, and immediate safety.",
+      "system": "neurologic",
+      "text": "Have you ever had delirium tremens, or severe confusion and shaking, from stopping alcohol before?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No prior delirium tremens",
+        "Prior episode of delirium tremens"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about appetite, weight change, swallowing, hydration, sleep, fatigue, and symptoms limiting participation in care.",
+      "system": "neurologic",
+      "text": "Are you shaking, anxious, or feeling agitated right now?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "None of these",
+        "Mild tremor or anxiety",
+        "Marked agitation"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about fever, pain, falls, trauma, bleeding, focal symptoms, and other acute changes that may explain decline.",
+      "system": "psychiatric",
+      "text": "Have you been seeing or hearing things that aren't there?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No hallucinations",
+        "Auditory or visual hallucinations with intact orientation",
+        "Hallucinations with disorientation"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about usual amount, frequency, last drink, recent reduction, prior withdrawal, seizures, delirium tremens, and treatment history.",
+      "system": "gastrointestinal",
+      "text": "Have you had nausea or vomiting?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Nausea",
+        "Vomiting"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about tremor, sweating, anxiety, insomnia, nausea, vomiting, hallucinations, agitation, and seizure activity.",
+      "system": "hematologic",
+      "text": "Have you been eating regular meals recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Adequate nutrition",
+        "Poor nutrition or malnourishment"
       ],
       "select": "one"
     },
@@ -107,143 +104,169 @@
       "id": "history-09",
       "kind": "history",
       "system": "medication",
-      "text": "Ask about benzodiazepines, opioids, stimulants, cannabis, tobacco, sedatives, and risk of multiple withdrawals.",
+      "text": "Are you taking any benzodiazepines or opioids?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Concurrent benzodiazepine use",
+        "Concurrent opioid use"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "psychiatric",
-      "text": "Ask about falls, head injury, gastrointestinal bleeding, abdominal pain, liver disease, pancreatitis, depression, and self-harm risk.",
+      "system": "gastrointestinal",
+      "text": "Do you have cirrhosis or another liver disease?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known liver disease",
+        "Known cirrhosis or liver disease"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "medication",
+      "text": "Have you been trying to cut down on your own, on alcohol or a benzodiazepine, before coming in?",
+      "choices": [
+        "No recent self-tapering",
+        "Recent self-tapering or dose reduction"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "psychiatric",
+      "text": "Have you had any thoughts of harming yourself?",
+      "choices": [
+        "No suicidal ideation",
+        "Suicidal ideation present"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "gastrointestinal",
+      "text": "Have you been eating and drinking normally in the days before you came in?",
+      "choices": [
+        "Normal oral intake",
+        "Poor oral intake preceding admission"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess appearance, vital signs, hydration, pain behavior, and evidence of acute cardiorespiratory instability.",
+      "system": "neurologic",
+      "text": "Assess for tremor.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Absent",
+        "Mild tremor",
+        "Coarse or marked tremor"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "psychiatric",
-      "text": "Assess alertness, attention, orientation, mood, thought process, agitation, and ability to participate in the examination.",
+      "system": "skin",
+      "text": "Assess for diaphoresis.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Absent",
+        "Present"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "functional",
-      "text": "Inspect oral cavity, mucous membranes, body habitus, skin integrity, bruising, edema, and pressure areas.",
+      "system": "cardiovascular",
+      "text": "Assess vital sign stability.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal vital signs",
+        "Tachycardic or hypertensive",
+        "Severe autonomic instability"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "functional",
-      "text": "Assess bed mobility, transfers, strength, balance, gait, and assistive-device use only when safe.",
+      "system": "neurologic",
+      "text": "Assess orientation.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Oriented to person, place, and time",
+        "Disoriented"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Inspect and palpate symptomatic joints, spine, and muscles for tenderness, swelling, deformity, range-of-motion limitation, or injury.",
+      "system": "psychiatric",
+      "text": "Assess agitation level.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Calm and cooperative",
+        "Agitated",
+        "Combative"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "medication",
-      "text": "Assess focal strength, sensation, coordination, tremor, and signs of withdrawal or intoxication when relevant.",
+      "system": "neurologic",
+      "text": "Assess for hallucinations.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "None observed",
+        "Hallucinations observed"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "gastrointestinal",
-      "text": "Assess tremor, diaphoresis, tachycardia, hypertension, temperature, nausea behavior, and agitation.",
+      "system": "neurologic",
+      "text": "Assess for nystagmus, ataxia, or ophthalmoplegia suggesting Wernicke encephalopathy.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "None of these",
+        "Nystagmus or ataxia",
+        "Ophthalmoplegia"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "psychiatric",
-      "text": "Assess orientation, attention, hallucinations, anxiety, agitation, sleepiness, and delirium.",
+      "system": "skin",
+      "text": "Inspect for stigmata of chronic liver disease.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No stigmata of liver disease",
+        "Spider angiomata or jaundice"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess nystagmus, ocular movements, ataxia, strength, sensation, and gait only when safe.",
+      "system": "neurologic",
+      "text": "Assess for active or recent seizure activity.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "None observed",
+        "Active or recent seizure activity"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "hematologic",
-      "text": "Assess for jaundice, hepatomegaly, ascites, abdominal tenderness, bruising, and injuries from recent falls.",
+      "system": "skin",
+      "text": "Inspect the skin for bruising or needle marks.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "None",
+        "Bruising or needle marks present"
       ],
       "select": "one"
     }

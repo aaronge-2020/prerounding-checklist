@@ -3,7 +3,8 @@
   "id": "acute-coronary-syndrome",
   "title": "Acute coronary syndrome / NSTEMI/STEMI",
   "aliases": [
-    "ACS",
+    "heart attack",
+    "myocardial infarction",
     "NSTEMI",
     "STEMI"
   ],
@@ -11,144 +12,188 @@
     {
       "id": "history-01",
       "kind": "history",
-      "system": "general",
-      "text": "Ask about onset, tempo, severity, triggers, relieving factors, and change from baseline.",
+      "system": "cardiovascular",
+      "text": "Can you describe the pain — is it a pressure or squeezing feeling, does it feel sharp or worse with certain positions, or is it more of an ache in your jaw or stomach?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Pressure or squeezing, substernal, radiating to the arm or jaw",
+        "Atypical location, such as epigastric or jaw pain alone",
+        "Sharp, positional, or pleuritic pain"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about chest discomfort, palpitations, syncope, diaphoresis, cough, fever, and hemoptysis.",
+      "system": "cardiovascular",
+      "text": "How long did the pain last — did it go away in under 10 minutes, resolve within 20 minutes with rest or nitroglycerin, or is it still going on?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Under 10 minutes, fully resolved",
+        "10 to 20 minutes, resolved with rest or nitroglycerin",
+        "Persistent for more than 20 minutes"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "respiratory",
-      "text": "Ask about prior heart or lung disease, prior admissions, baseline exertional tolerance, and home oxygen use.",
+      "system": "cardiovascular",
+      "text": "Did you break out in a sweat along with the pain?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No diaphoresis",
+        "Diaphoresis accompanying the pain"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about tobacco or vaping exposure, immobility, thromboembolic risk, and relevant family history.",
+      "system": "gastrointestinal",
+      "text": "Did you feel nauseated or vomit along with the pain?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Nausea",
+        "Vomiting"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recent medication changes, adherence, inhaler or diuretic use, and anticoagulant use when relevant.",
+      "system": "cardiovascular",
+      "text": "Did the pain spread anywhere, like into your arm, jaw, neck, or back?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No radiation",
+        "Radiation to the arm, jaw, or neck",
+        "Radiation to the back"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about baseline ambulation, sleep position, activity limitation, and new functional decline.",
+      "system": "cardiovascular",
+      "text": "Have you been diagnosed with coronary artery disease, and have you had a stent or bypass surgery before?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known coronary artery disease",
+        "Known coronary artery disease, no prior intervention",
+        "Prior myocardial infarction, angioplasty, or bypass surgery"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "general",
-      "text": "Ask about chest pressure or discomfort, radiation, onset, duration, exertional relationship, and recurrent symptoms.",
+      "system": "cardiovascular",
+      "text": "Do you have high blood pressure, diabetes, high cholesterol, smoke, or have a family history of early heart disease?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known risk factors",
+        "One or two risk factors: hypertension, diabetes, hyperlipidemia, smoking, or family history",
+        "Three or more risk factors"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "neurologic",
-      "text": "Ask about dyspnea, diaphoresis, nausea, vomiting, palpitations, syncope, and atypical fatigue or upper-back discomfort.",
+      "system": "medication",
+      "text": "Have you used cocaine or another stimulant drug in the past day?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No stimulant use",
+        "Stimulant use within the preceding 24 hours"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "endocrine",
-      "text": "Ask about prior infarction, stent or bypass, known coronary disease, heart failure, diabetes, and vascular disease.",
+      "system": "respiratory",
+      "text": "Have you felt unusually short of breath, even without chest pain?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No dyspnea",
+        "Dyspnea as an anginal equivalent"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about antiplatelet or anticoagulant use, bleeding symptoms, recent surgery, medication adherence, and drug allergies.",
+      "system": "neurologic",
+      "text": "Did you feel like you were going to pass out, or did you actually pass out during this?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Near-syncope",
+        "Syncope"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "cardiovascular",
+      "text": "Do you need extra pillows to breathe at night, wake up gasping for air, or have new leg swelling?",
+      "choices": [
+        "None of these",
+        "Orthopnea or paroxysmal nocturnal dyspnea",
+        "Leg swelling"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "cardiovascular",
+      "text": "Did you feel your heart racing or fluttering along with this?",
+      "choices": [
+        "No palpitations",
+        "Palpitations"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "medication",
+      "text": "Are you on a blood thinner, or have you had a stomach or intestinal bleed in the past?",
+      "choices": [
+        "Neither",
+        "Current anticoagulant use",
+        "Prior gastrointestinal bleed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-14",
+      "kind": "history",
+      "system": "cardiovascular",
+      "text": "Have you had this same pain before, and if so, is it happening more often, getting worse, or coming on with less activity than it used to?",
+      "choices": [
+        "First episode of this pain",
+        "Recurrent episodes with a stable pattern",
+        "Crescendo pattern of increasing frequency, severity, or lower exertional threshold"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess general appearance, respiratory rate and pattern, heart rate and rhythm, blood pressure, temperature, and oxygenation.",
+      "system": "general",
+      "text": "Assess hemodynamic stability.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normotensive, warm and well-perfused",
+        "Hypotensive with cool extremities, concern for cardiogenic shock",
+        "Hypoxic with signs of pulmonary edema"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Inspect work of breathing and auscultate all lung fields for air movement and focal or diffuse adventitious sounds.",
+      "system": "cardiovascular",
+      "text": "Auscultate heart sounds for a gallop.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal S1 and S2, no gallop",
+        "S3 gallop",
+        "S4 gallop"
       ],
       "select": "one"
     },
@@ -156,23 +201,22 @@
       "id": "exam-03",
       "kind": "exam",
       "system": "cardiovascular",
-      "text": "Assess cardiac rate and rhythm, heart sounds, murmurs, and signs of impaired peripheral perfusion.",
+      "text": "Auscultate for a new murmur, which could indicate a mechanical complication.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No murmur",
+        "New murmur"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess jugular venous pressure when feasible, mucous membranes, edema, and other bedside signs of volume status.",
+      "system": "respiratory",
+      "text": "Auscultate the lungs for crackles.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Clear bilaterally",
+        "Bibasilar crackles",
+        "Diffuse crackles consistent with pulmonary edema"
       ],
       "select": "one"
     },
@@ -180,71 +224,65 @@
       "id": "exam-05",
       "kind": "exam",
       "system": "cardiovascular",
-      "text": "Inspect extremities for asymmetry, edema, cyanosis, calf tenderness, and distal pulses.",
+      "text": "Assess jugular venous pressure.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal jugular venous pressure",
+        "Elevated jugular venous pressure"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess alertness, orientation, and focal neurologic change that could accompany hypoxemia or poor perfusion.",
+      "system": "cardiovascular",
+      "text": "Palpate peripheral pulses for symmetry to help exclude aortic dissection.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Symmetric pulses",
+        "Asymmetric or diminished pulse"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess blood pressure, heart rate, perfusion, mental status, diaphoresis, and signs of shock.",
+      "system": "musculoskeletal",
+      "text": "Palpate the chest wall to help exclude a musculoskeletal cause.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Reproducible chest wall tenderness",
+        "Nontender chest wall"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess rhythm, new murmur, extra heart sounds, jugular venous pressure, and signs of mechanical complication.",
+      "system": "neurologic",
+      "text": "Assess mental status and perfusion.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Alert with good perfusion",
+        "Altered mental status or poor perfusion"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess work of breathing, crackles, wheeze, oxygenation, and signs of acute pulmonary edema.",
+      "system": "skin",
+      "text": "Assess skin for diaphoresis, pallor, or mottling.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal skin",
+        "Diaphoretic, pale, or mottled"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess peripheral pulses, extremity temperature, capillary refill, and asymmetric pulse findings.",
+      "system": "hematologic",
+      "text": "Inspect any vascular access site for active bleeding or hematoma.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No bleeding, no access site or site normal",
+        "Active bleeding or hematoma at an access site"
       ],
       "select": "one"
     }

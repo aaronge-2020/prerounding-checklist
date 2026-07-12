@@ -11,23 +11,23 @@
       "id": "history-01",
       "kind": "history",
       "system": "infectious",
-      "text": "Ask about fever, chills, rigors, duration, antipyretic use, and change in symptoms over time.",
+      "text": "Have you had persistent fevers, night sweats, fatigue, or unexplained weight loss?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No fevers or systemic symptoms",
+        "Low-grade fevers or fatigue",
+        "High fevers, night sweats, and weight loss"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about localizing respiratory, urinary, gastrointestinal, skin, dental, line, and neurologic symptoms.",
+      "system": "cardiovascular",
+      "text": "Do you have a history of valve disease, a heart murmur, a prosthetic valve, or a cardiac device?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No history of valve disease or cardiac device",
+        "Known heart murmur or valve disease",
+        "Prosthetic heart valve or implanted cardiac device"
       ],
       "select": "one"
     },
@@ -35,215 +35,212 @@
       "id": "history-03",
       "kind": "history",
       "system": "medication",
-      "text": "Ask about recent antibiotics, prior resistant organisms, recurrent infections, and medication allergies.",
+      "text": "Have you used intravenous drugs, or have you had recent dental work or surgeries?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No IV drug use or recent invasive procedures",
+        "Recent minor surgery or dental cleaning",
+        "Active intravenous drug use or major dental surgery/extraction"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about recent hospitalization, procedures, sick contacts, travel, animal or environmental exposures, and food or water exposures.",
+      "system": "cardiovascular",
+      "text": "Have you had new shortness of breath, chest pain, or swelling in your legs?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No cardiopulmonary symptoms",
+        "Mild exertional dyspnea or trace leg edema",
+        "Orthopnea, chest pain, or severe peripheral edema"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about diabetes, immunosuppression, malignancy, chronic organ disease, and other infection-risk conditions.",
+      "system": "skin",
+      "text": "Have you noticed any new painful or painless spots, bumps, or lines on your skin, fingers, or toes?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No skin or nail lesions",
+        "Nonspecific rash",
+        "Splinter hemorrhages, painful nodules on fingers, or painless red spots on palms/soles"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "skin",
-      "text": "Ask about indwelling devices, wounds, surgery, injections, aspiration risk, and other possible portals of entry.",
+      "system": "neurologic",
+      "text": "Have you had a sudden weakness, numbness, vision changes, or severe headache?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No neurologic symptoms",
+        "Transient dizziness or headache",
+        "Acute focal weakness, sensory loss, vision changes, or meningeal headache"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about persistent fever, fatigue, night sweats, weight loss, chills, arthralgias, myalgias, and reduced exercise tolerance.",
+      "system": "genitourinary",
+      "text": "Have you noticed blood in your urine or flank pain?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No hematuria or flank pain",
+        "Microscopic hematuria only",
+        "Gross hematuria or acute flank pain"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "neurologic",
-      "text": "Ask about new dyspnea, edema, chest pain, palpitations, focal neurologic symptoms, visual change, flank pain, and limb pain.",
+      "system": "musculoskeletal",
+      "text": "Have you had new joint pain or back pain?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No joint or back pain",
+        "Mild joint aches",
+        "Severe localized back pain or acute joint swelling"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "genitourinary",
-      "text": "Ask about prior valve disease, prosthetic valves, cardiac devices, prior endocarditis, dental procedures, injections, and intravascular catheters.",
+      "system": "medication",
+      "text": "Have you taken antibiotics recently before your blood cultures were drawn?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No recent antibiotic use",
+        "Completed antibiotic course over 2 weeks ago",
+        "Recent or active antibiotic use within past 2 weeks"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recent antibiotics, prior cultures, skin or dental infection, urinary infection, immunosuppression, and medication allergies.",
+      "system": "infectious",
+      "text": "Do you have an indwelling venous line, hemodialysis catheter, or a history of recurrent bloodstream infections?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No indwelling catheters or recurrent infections",
+        "Prior indwelling catheter, currently removed",
+        "Active central line, hemodialysis catheter, or prior bacteremia"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess appearance, temperature, heart rate, blood pressure, respiratory pattern, oxygenation, and bedside perfusion.",
+      "system": "cardiovascular",
+      "text": "Auscultate the heart for a new murmur or changes to an existing murmur.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No murmur or stable chronic murmur",
+        "New systolic murmur",
+        "New diastolic murmur or changing murmur severity"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess alertness, orientation, capillary refill, extremity temperature, and diaphoresis.",
+      "system": "general",
+      "text": "Assess body temperature, heart rate, blood pressure, and perfusion status.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Afebrile, stable hemodynamics",
+        "Febrile or tachycardic",
+        "Hypotensive or in decompensated shock"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "infectious",
-      "text": "Inspect skin, pressure areas, wounds, intravenous sites, drains, and indwelling devices for focal infection findings.",
+      "system": "skin",
+      "text": "Inspect palms and soles for painless, erythematous macular lesions (Janeway lesions).",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No Janeway lesions",
+        "Janeway lesions present"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Inspect work of breathing and auscultate lungs for focal breath-sound changes, crackles, wheeze, or pleural findings.",
+      "system": "skin",
+      "text": "Inspect pads of fingers and toes for painful, erythematous nodules (Osler nodes).",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No Osler nodes",
+        "Osler nodes present"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "genitourinary",
-      "text": "Inspect and palpate the abdomen and assess for suprapubic or costovertebral-angle tenderness when relevant.",
+      "system": "skin",
+      "text": "Inspect fingernails and toenails for linear dark red streaks (splinter hemorrhages).",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No splinter hemorrhages",
+        "Splinter hemorrhages present"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "reproductive",
-      "text": "Perform a focused examination of the symptom-directed source, including oral, joint, neurologic, or pelvic findings when indicated.",
+      "system": "eyes",
+      "text": "Examine the conjunctivae for petechiae and perform fundoscopy to assess for retinal hemorrhages (Roth spots) if trained.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal conjunctival and retinal exam",
+        "Conjunctival petechiae present",
+        "Roth spots present on fundoscopic exam"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess for a new or changed murmur, heart-failure signs, rhythm abnormality, peripheral perfusion, and pulse deficits.",
+      "system": "respiratory",
+      "text": "Auscultate lungs for crackles, wheezing, or evidence of pulmonary congestion.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Clear lung fields bilaterally",
+        "Focal crackles",
+        "Diffuse bilateral crackles indicating heart failure"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "skin",
-      "text": "Inspect skin, nails, palms, soles, conjunctivae, and extremities for embolic, hemorrhagic, or immune-complex findings.",
+      "system": "gastrointestinal",
+      "text": "Palpate the abdomen for splenomegaly or left upper quadrant tenderness.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No splenomegaly or left upper quadrant tenderness",
+        "Left upper quadrant tenderness without splenomegaly",
+        "Palpable splenomegaly or severe tender splenic infarct findings"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess mental status, cranial nerves, focal strength and sensation, vision symptoms, pulses, and focal ischemic findings.",
+      "system": "neurologic",
+      "text": "Perform a focused neurologic exam assessing strength, sensation, cranial nerves, and signs of embolic stroke.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No focal neurologic deficits",
+        "Mild or old neurologic deficit",
+        "New focal neurologic deficit (hemiparesis, aphasia) suggesting embolic event"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "infectious",
-      "text": "Assess for splenomegaly, abdominal or flank tenderness, skin infection, line sites, and cardiac-device pocket abnormalities.",
+      "system": "skin",
+      "text": "Inspect any indwelling catheter or line site for erythema, warmth, tenderness, or purulent drainage.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No indwelling lines, or line site is clean and quiet",
+        "Mild erythema without drainage at line site",
+        "Erythema, purulent drainage, or tenderness at line site"
       ],
       "select": "one"
     }

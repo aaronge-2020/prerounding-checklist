@@ -3,20 +3,19 @@
   "id": "altered-mental-status-delirium",
   "title": "Altered mental status / delirium",
   "aliases": [
-    "AMS",
-    "delirium",
-    "confusion"
+    "confusion",
+    "delirium"
   ],
   "items": [
     {
       "id": "history-01",
       "kind": "history",
-      "system": "functional",
-      "text": "Establish last known well or symptom onset, progression, baseline cognition, baseline neurologic function, and functional status.",
+      "system": "neurologic",
+      "text": "Has the confusion been a stable long-standing pattern, did it come on suddenly over hours, or does it come and go throughout the day?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Chronic, stable baseline confusion",
+        "Acute onset over hours",
+        "Fluctuating course over the day"
       ],
       "select": "one"
     },
@@ -24,35 +23,33 @@
       "id": "history-02",
       "kind": "history",
       "system": "neurologic",
-      "text": "Ask about weakness, numbness, facial asymmetry, speech or vision change, imbalance, dysphagia, and severe headache.",
+      "text": "Before the confusion started, did you or your family notice any weakness on one side, facial drooping, or trouble speaking?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "None",
+        "Unilateral weakness or facial droop",
+        "Speech change"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "neurologic",
-      "text": "Ask about loss of consciousness, seizure-like activity, prodrome, post-event confusion, incontinence, tongue injury, and witness observations.",
+      "system": "musculoskeletal",
+      "text": "Have you had a recent fall or hit your head?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No recent fall or head trauma",
+        "Recent fall or head trauma"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about falls, head or neck injury, anticoagulant or antiplatelet use, and bleeding symptoms.",
+      "system": "infectious",
+      "text": "Did you have a fever before the confusion started?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No fever",
+        "Fever"
       ],
       "select": "one"
     },
@@ -60,83 +57,138 @@
       "id": "history-05",
       "kind": "history",
       "system": "medication",
-      "text": "Ask about recent medication changes, sedatives, alcohol, recreational substances, withdrawal risk, and toxic exposures.",
+      "text": "Have you started any new sleep, anxiety, allergy, or pain medications recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No new sedating medication",
+        "New sedative or anticholinergic medication",
+        "New or increased opioid dose"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about fever, poor intake, glucose symptoms, renal or liver disease, and other systemic symptoms that may affect cognition.",
+      "system": "medication",
+      "text": "Do you drink alcohol regularly, and when was your last drink?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No regular alcohol use",
+        "Regular alcohol use, last drink more than 48 hours ago",
+        "Regular alcohol use, last drink within 48 hours"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "neurologic",
-      "text": "Ask a reliable historian about baseline cognition, independence, communication, hearing or vision needs, and time of change.",
+      "system": "endocrine",
+      "text": "Do you have diabetes, and has your insulin or diabetes pill dose changed recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known diabetes",
+        "Known diabetes without recent medication change",
+        "Known diabetes with a recent insulin or sulfonylurea dose change"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "psychiatric",
-      "text": "Ask about waxing and waning confusion, inattention, hallucinations, sleep-wake reversal, agitation, and lethargy.",
+      "system": "gastrointestinal",
+      "text": "Do you have cirrhosis or liver disease, and have you been constipated, had a stomach bleed, or felt sick recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known cirrhosis",
+        "Known cirrhosis without a clear trigger",
+        "Known cirrhosis with recent constipation, gastrointestinal bleeding, or infection"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about infection symptoms, pain, constipation, urinary retention, hypoxia symptoms, poor intake, and recent hospitalization.",
+      "system": "genitourinary",
+      "text": "Do you have kidney disease, and if you're on dialysis, have you missed a session?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known chronic kidney disease",
+        "Known chronic kidney disease, no missed dialysis",
+        "Known dialysis dependence with a missed session"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about new sedatives, anticholinergics, opioids, steroids, medication omissions, alcohol, and other substance use.",
+      "system": "genitourinary",
+      "text": "Do you have a history of being unable to empty your bladder?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known urinary retention",
+        "Known urinary retention"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "gastrointestinal",
+      "text": "Have you been severely constipated or had trouble having a bowel movement recently?",
+      "choices": [
+        "No known severe constipation",
+        "Known severe constipation or fecal impaction"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "general",
+      "text": "Are you in significant pain that hasn't been controlled?",
+      "choices": [
+        "No uncontrolled pain",
+        "Uncontrolled pain"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "neurologic",
+      "text": "Did anyone witness you having a seizure before the confusion started?",
+      "choices": [
+        "No witnessed seizure",
+        "Witnessed seizure activity"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-14",
+      "kind": "history",
+      "system": "neurologic",
+      "text": "Before this episode, did you or your family notice any memory or thinking problems as your normal baseline?",
+      "choices": [
+        "No known baseline cognitive impairment",
+        "Known mild baseline dementia",
+        "Known moderate to severe baseline dementia"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-15",
+      "kind": "history",
+      "system": "hematologic",
+      "text": "Have you been eating poorly or drinking heavily for an extended period?",
+      "choices": [
+        "No poor nutrition or alcohol use disorder",
+        "Poor nutrition or alcohol use disorder"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "endocrine",
-      "text": "Assess vital signs, general appearance, glucose status if available at bedside, and signs of cardiorespiratory instability.",
+      "system": "neurologic",
+      "text": "Assess the level of arousal.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Alert",
+        "Hypoactive or lethargic",
+        "Hyperactive or agitated"
       ],
       "select": "one"
     },
@@ -144,11 +196,10 @@
       "id": "exam-02",
       "kind": "exam",
       "system": "neurologic",
-      "text": "Assess level of consciousness, attention, orientation, language, memory, behavior, and fluctuation from baseline.",
+      "text": "Assess attention.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal attention",
+        "Inattentive"
       ],
       "select": "one"
     },
@@ -156,71 +207,68 @@
       "id": "exam-03",
       "kind": "exam",
       "system": "neurologic",
-      "text": "Assess pupils, visual fields when feasible, ocular movements, facial symmetry, speech, palate, and swallowing safety as indicated.",
+      "text": "Assess for focal motor weakness or facial asymmetry.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Symmetric, no focal weakness",
+        "Focal weakness or facial asymmetry"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess pronator drift, limb strength, tone, sensation, reflex asymmetry, and neglect when appropriate.",
+      "system": "neurologic",
+      "text": "Assess pupil size and reactivity.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal, reactive pupils",
+        "Pinpoint pupils",
+        "Dilated or sluggish pupils"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess coordination, truncal stability, gait, and Romberg only when it is safe to do so.",
+      "system": "endocrine",
+      "text": "Check fingerstick glucose.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal glucose",
+        "Hypoglycemic",
+        "Markedly hyperglycemic"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "skin",
-      "text": "Inspect for head or neck injury and assess neck stiffness or rash when the presentation makes this relevant.",
+      "system": "general",
+      "text": "Assess vital signs for fever or hemodynamic instability.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal vital signs",
+        "Febrile or tachycardic",
+        "Hypotensive"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "psychiatric",
-      "text": "Assess attention, orientation, arousal, language, memory, thought process, and fluctuation during the encounter.",
+      "system": "gastrointestinal",
+      "text": "Assess for asterixis.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Absent",
+        "Present"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess pupils, facial symmetry, speech, pronator drift, strength, sensation, coordination, and gait only when safe.",
+      "system": "neurologic",
+      "text": "Assess for nuchal rigidity.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Absent",
+        "Present"
       ],
       "select": "one"
     },
@@ -228,23 +276,44 @@
       "id": "exam-09",
       "kind": "exam",
       "system": "genitourinary",
-      "text": "Assess for bladder distention, abdominal tenderness, fecal impaction only when indicated, and uncontrolled pain.",
+      "text": "Assess for a distended, palpable bladder.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Nondistended",
+        "Distended, palpable bladder"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "medication",
-      "text": "Assess hydration, respiratory pattern, asterixis, tremor, skin findings, pupils, and signs of intoxication or withdrawal.",
+      "system": "gastrointestinal",
+      "text": "Perform a rectal examination for fecal impaction when indicated.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal or deferred as not indicated",
+        "Fecal impaction present"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-11",
+      "kind": "exam",
+      "system": "skin",
+      "text": "Inspect the skin for signs of trauma or intravenous drug use.",
+      "choices": [
+        "Normal skin",
+        "Bruising or signs of trauma",
+        "Needle track marks"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-12",
+      "kind": "exam",
+      "system": "neurologic",
+      "text": "Assess for tremor suggesting alcohol or sedative withdrawal.",
+      "choices": [
+        "Absent",
+        "Present"
       ],
       "select": "one"
     }

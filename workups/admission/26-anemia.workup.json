@@ -3,79 +3,77 @@
   "id": "anemia",
   "title": "Anemia (symptomatic or unexplained)",
   "aliases": [
-    "symptomatic anemia",
-    "low hemoglobin"
+    "low hemoglobin",
+    "low hematocrit"
   ],
   "items": [
     {
       "id": "history-01",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about baseline cognition, activities of daily living, ambulation, assistive devices, continence, and recent functional change.",
+      "system": "hematologic",
+      "text": "Have you noticed black, tarry stools, red blood in your stool, or vomited blood?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No signs of gastrointestinal bleeding",
+        "Melena or hematochezia",
+        "Hematemesis"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about home setting, caregivers, available supports, medication access, food access, transportation, and barriers to care.",
+      "system": "reproductive",
+      "text": "Have your periods been unusually heavy?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Not applicable or normal menses",
+        "Heavy menstrual bleeding"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recent medication changes, sedatives, analgesics, alcohol, other substances, and adherence.",
+      "system": "hematologic",
+      "text": "How is your diet — do you eat enough iron-rich or B12-rich foods, or are you vegan or vegetarian without supplements?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Adequate dietary intake",
+        "Poor dietary iron or B12 intake",
+        "Vegan or vegetarian diet without supplementation"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "psychiatric",
-      "text": "Ask about depression, anxiety, delirium symptoms, self-harm risk when relevant, abuse or neglect concerns, and immediate safety.",
+      "system": "general",
+      "text": "How severe has your fatigue been — mild, or bad enough to limit your daily activities?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No unusual fatigue",
+        "Mild fatigue",
+        "Severe fatigue limiting activity"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about appetite, weight change, swallowing, hydration, sleep, fatigue, and symptoms limiting participation in care.",
+      "system": "skin",
+      "text": "Have your skin or eyes turned yellow, or has your urine looked dark?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Jaundice",
+        "Dark urine"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about fever, pain, falls, trauma, bleeding, focal symptoms, and other acute changes that may explain decline.",
+      "system": "genitourinary",
+      "text": "Do you have chronic kidney disease?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known chronic kidney disease",
+        "Known chronic kidney disease"
       ],
       "select": "one"
     },
@@ -83,119 +81,159 @@
       "id": "history-07",
       "kind": "history",
       "system": "hematologic",
-      "text": "Ask about fatigue, exertional dyspnea, chest pain, palpitations, dizziness, syncope, headache, and reduced exercise tolerance.",
+      "text": "Have you been diagnosed with cancer?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known malignancy",
+        "Known malignancy"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "reproductive",
-      "text": "Ask about melena, hematochezia, hematemesis, hematuria, heavy menstrual bleeding, epistaxis, bruising, and recent procedures.",
+      "system": "hematologic",
+      "text": "Have you noticed easy bruising, or bleeding from your gums or nose?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Easy bruising",
+        "Bleeding gums or epistaxis"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about diet, weight loss, alcohol use, bariatric or gastrointestinal surgery, chronic diarrhea, and malabsorption symptoms.",
+      "system": "hematologic",
+      "text": "Does anyone in your family have sickle cell disease or thalassemia?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known family history",
+        "Known family history of sickle cell disease or thalassemia"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "hematologic",
-      "text": "Ask about jaundice, dark urine, kidney disease, liver disease, cancer, inflammatory disease, and prior anemia or transfusion.",
+      "system": "medication",
+      "text": "Do you drink alcohol heavily?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No heavy alcohol use",
+        "Heavy alcohol use"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "medication",
+      "text": "Do you regularly take ibuprofen or another NSAID, or aspirin?",
+      "choices": [
+        "Neither",
+        "NSAID use",
+        "Aspirin or antiplatelet use"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "neurologic",
+      "text": "Have you had numbness or tingling, or trouble with your balance while walking?",
+      "choices": [
+        "Neither",
+        "Paresthesias",
+        "Gait imbalance"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "musculoskeletal",
+      "text": "Have you had surgery or an injury recently?",
+      "choices": [
+        "Neither",
+        "Recent surgery",
+        "Recent trauma"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-14",
+      "kind": "history",
+      "system": "cardiovascular",
+      "text": "Have you been short of breath with activity, or had chest pain or palpitations?",
+      "choices": [
+        "Neither",
+        "Dyspnea on exertion",
+        "Chest pain or palpitations"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess appearance, vital signs, hydration, pain behavior, and evidence of acute cardiorespiratory instability.",
+      "system": "hematologic",
+      "text": "Inspect conjunctiva and palmar creases for pallor.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal color",
+        "Conjunctival or palmar crease pallor"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "psychiatric",
-      "text": "Assess alertness, attention, orientation, mood, thought process, agitation, and ability to participate in the examination.",
+      "system": "skin",
+      "text": "Inspect skin and sclerae for jaundice.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Absent",
+        "Present"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "functional",
-      "text": "Inspect oral cavity, mucous membranes, body habitus, skin integrity, bruising, edema, and pressure areas.",
+      "system": "cardiovascular",
+      "text": "Auscultate the heart for tachycardia or a flow murmur.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal rate, no murmur",
+        "Tachycardic",
+        "Flow murmur present"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "functional",
-      "text": "Assess bed mobility, transfers, strength, balance, gait, and assistive-device use only when safe.",
+      "system": "cardiovascular",
+      "text": "Assess orthostatic vital signs when safe.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Negative orthostatics",
+        "Positive orthostatic hypotension"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Inspect and palpate symptomatic joints, spine, and muscles for tenderness, swelling, deformity, range-of-motion limitation, or injury.",
+      "system": "ent",
+      "text": "Inspect the tongue and lips for glossitis or angular cheilitis.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal oral exam",
+        "Glossitis or angular cheilitis"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "medication",
-      "text": "Assess focal strength, sensation, coordination, tremor, and signs of withdrawal or intoxication when relevant.",
+      "system": "gastrointestinal",
+      "text": "Palpate the abdomen for splenomegaly.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No splenomegaly",
+        "Splenomegaly present"
       ],
       "select": "one"
     },
@@ -203,47 +241,43 @@
       "id": "exam-07",
       "kind": "exam",
       "system": "hematologic",
-      "text": "Inspect conjunctivae, oral mucosa, nail beds, skin color, heart rate, blood pressure, and peripheral perfusion.",
+      "text": "Palpate for lymphadenopathy.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No lymphadenopathy",
+        "Lymphadenopathy present"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "hematologic",
-      "text": "Inspect skin and mucosa for bruising, petechiae, bleeding, and perform directed rectal examination when appropriate.",
+      "system": "gastrointestinal",
+      "text": "Perform a rectal examination when indicated.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal, guaiac negative, or deferred as not indicated",
+        "Melena or gross blood on examination"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "hematologic",
-      "text": "Inspect for jaundice, hepatosplenomegaly, abdominal tenderness, edema, and chronic liver-disease stigmata.",
+      "system": "skin",
+      "text": "Inspect skin for petechiae or ecchymosis.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "None",
+        "Petechiae or ecchymosis present"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess heart rhythm, murmurs, lung sounds, oxygenation, exertional symptoms at rest, and signs of heart failure.",
+      "system": "neurologic",
+      "text": "Assess vibration sense, proprioception, and gait for B12-related neuropathy.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal sensation and gait",
+        "Decreased vibration or proprioception, or ataxic gait"
       ],
       "select": "one"
     }

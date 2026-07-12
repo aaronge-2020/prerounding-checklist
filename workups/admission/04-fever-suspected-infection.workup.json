@@ -11,59 +11,57 @@
       "id": "history-01",
       "kind": "history",
       "system": "infectious",
-      "text": "Ask about fever, chills, rigors, duration, antipyretic use, and change in symptoms over time.",
+      "text": "Has your fever been low-grade and coming and going, or high with shaking chills?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Low-grade, intermittent fever",
+        "High fever with shaking rigors",
+        "Subjective coldness or measured hypothermia instead of fever"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about localizing respiratory, urinary, gastrointestinal, skin, dental, line, and neurologic symptoms.",
+      "system": "respiratory",
+      "text": "Have you had a cough?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No cough",
+        "Cough"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recent antibiotics, prior resistant organisms, recurrent infections, and medication allergies.",
+      "system": "respiratory",
+      "text": "Do you have any sharp chest pain that's worse when you breathe in?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No pleuritic chest pain",
+        "Pleuritic chest pain"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about recent hospitalization, procedures, sick contacts, travel, animal or environmental exposures, and food or water exposures.",
+      "system": "genitourinary",
+      "text": "Do you have any burning with urination, going more often than usual, or pain in your side?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No urinary symptoms",
+        "Dysuria or urinary frequency",
+        "Flank pain"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about diabetes, immunosuppression, malignancy, chronic organ disease, and other infection-risk conditions.",
+      "system": "gastrointestinal",
+      "text": "Do you have belly pain, or has your skin or eyes turned yellow along with chills?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No abdominal pain or jaundice",
+        "Localized abdominal pain",
+        "Jaundice with right upper quadrant pain and rigors"
       ],
       "select": "one"
     },
@@ -71,35 +69,34 @@
       "id": "history-06",
       "kind": "history",
       "system": "skin",
-      "text": "Ask about indwelling devices, wounds, surgery, injections, aspiration risk, and other possible portals of entry.",
+      "text": "Do you have any redness on your skin, and does it hurt a lot more than it looks like it should?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No skin redness or disproportionate pain",
+        "Localized erythema and warmth",
+        "Rapidly spreading pain out of proportion to exam, with blistering or dark discoloration"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "skin",
-      "text": "Ask about new cough, urinary symptoms, abdominal symptoms, rash, wound pain, dental symptoms, and headache or neck pain.",
+      "system": "musculoskeletal",
+      "text": "Do you have a new swollen, painful joint that's hard to move?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No new joint symptoms",
+        "New joint swelling or pain with restricted motion"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about sick contacts, travel, insect or animal exposures, unpasteurized food, and recent water exposure.",
+      "system": "neurologic",
+      "text": "Do you have a stiff neck, or has any light been bothering your eyes?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No neck stiffness or photophobia",
+        "Neck stiffness",
+        "Photophobia"
       ],
       "select": "one"
     },
@@ -107,47 +104,140 @@
       "id": "history-09",
       "kind": "history",
       "system": "medication",
-      "text": "Ask about recent hospitalization, surgery, procedures, antibiotics, or new indwelling devices.",
+      "text": "Are you on chemotherapy, a transplant medication, a biologic, or long-term steroids?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No chronic immunosuppression",
+        "Chronic steroid or biologic therapy",
+        "Transplant history, chemotherapy, or known neutropenia"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about immunosuppressive medications, chemotherapy, transplant, HIV risk, diabetes, and neutropenia history.",
+      "system": "infectious",
+      "text": "Has anyone around you been sick with similar symptoms?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known sick contacts",
+        "Sick contacts with similar symptoms"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "infectious",
+      "text": "Have you traveled anywhere recently, especially outside the country?",
+      "choices": [
+        "No recent travel to an endemic area",
+        "Recent travel to an area with endemic infectious disease"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "infectious",
+      "text": "Have you been bitten by a tick or handled any animals recently?",
+      "choices": [
+        "No tick or animal exposure",
+        "Tick or animal exposure"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "medication",
+      "text": "Did you start a new antibiotic, seizure medication, or gout medication before the fever began?",
+      "choices": [
+        "No new drug-fever risk medication",
+        "New antibiotic started",
+        "New antiepileptic or allopurinol started"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-14",
+      "kind": "history",
+      "system": "medication",
+      "text": "Did you start a new antidepressant or antipsychotic medication before the fever began?",
+      "choices": [
+        "No new serotonergic agent or antipsychotic",
+        "New serotonergic agent started",
+        "New antipsychotic started"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-15",
+      "kind": "history",
+      "system": "endocrine",
+      "text": "Do you have an overactive thyroid, and have you been taking your thyroid medication as prescribed?",
+      "choices": [
+        "No known hyperthyroidism",
+        "Known hyperthyroidism, adherent to therapy",
+        "Known hyperthyroidism with missed thionamide doses"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-16",
+      "kind": "history",
+      "system": "cardiovascular",
+      "text": "Have you had a recent dental or vascular procedure, do you have a known heart valve problem, or do you inject drugs?",
+      "choices": [
+        "No known risk factor",
+        "Recent dental or vascular procedure",
+        "Known valvular disease",
+        "Intravenous drug use"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-17",
+      "kind": "history",
+      "system": "medication",
+      "text": "Do you have a catheter, port, or other implanted device, and is there any pain, redness, or drainage where it is?",
+      "choices": [
+        "No indwelling device",
+        "Indwelling device without local symptoms",
+        "Indwelling device with local pain, redness, or drainage"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-18",
+      "kind": "history",
+      "system": "infectious",
+      "text": "Have you been in the hospital or had surgery in the past month?",
+      "choices": [
+        "No recent hospitalization or surgery",
+        "Recent hospitalization or surgery within the preceding month"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess appearance, temperature, heart rate, blood pressure, respiratory pattern, oxygenation, and bedside perfusion.",
+      "system": "general",
+      "text": "Assess general appearance and hemodynamic stability.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Well-appearing, stable vital signs",
+        "Toxic-appearing, tachycardic",
+        "Hypotensive or in shock"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess alertness, orientation, capillary refill, extremity temperature, and diaphoresis.",
+      "system": "skin",
+      "text": "Inspect the skin for localized infection versus necrotizing changes.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal skin",
+        "Localized erythema and warmth consistent with cellulitis",
+        "Pain out of proportion with bullae, crepitus, or skin necrosis"
       ],
       "select": "one"
     },
@@ -155,11 +245,10 @@
       "id": "exam-03",
       "kind": "exam",
       "system": "infectious",
-      "text": "Inspect skin, pressure areas, wounds, intravenous sites, drains, and indwelling devices for focal infection findings.",
+      "text": "Inspect any wound, line, or device site.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal, no device or wound present",
+        "Purulent drainage or erythema at a wound or device site"
       ],
       "select": "one"
     },
@@ -167,71 +256,70 @@
       "id": "exam-04",
       "kind": "exam",
       "system": "respiratory",
-      "text": "Inspect work of breathing and auscultate lungs for focal breath-sound changes, crackles, wheeze, or pleural findings.",
+      "text": "Auscultate the lungs for focal or diffuse findings.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Clear bilaterally",
+        "Focal crackles or dullness",
+        "Diffuse bilateral findings"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "genitourinary",
-      "text": "Inspect and palpate the abdomen and assess for suprapubic or costovertebral-angle tenderness when relevant.",
+      "system": "gastrointestinal",
+      "text": "Palpate the abdomen for focal tenderness or peritoneal signs.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Soft, nontender",
+        "Right upper quadrant tenderness",
+        "Diffuse tenderness with guarding or rebound"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "reproductive",
-      "text": "Perform a focused examination of the symptom-directed source, including oral, joint, neurologic, or pelvic findings when indicated.",
+      "system": "genitourinary",
+      "text": "Assess for costovertebral-angle tenderness.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "None",
+        "Unilateral costovertebral-angle tenderness",
+        "Bilateral costovertebral-angle tenderness"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "hematologic",
-      "text": "Inspect oral cavity, pharynx, neck, and sinuses for focal tenderness, swelling, lesions, or lymphadenopathy.",
+      "system": "musculoskeletal",
+      "text": "Examine any symptomatic joint for effusion, warmth, and range of motion.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal range of motion, no effusion",
+        "Warm, swollen joint with restricted motion",
+        "Overlying erythema with inability to bear weight or move the joint"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "skin",
-      "text": "Inspect the full skin surface, wounds, pressure areas, and injection sites for erythema, drainage, fluctuance, or necrosis.",
+      "system": "neurologic",
+      "text": "Assess for nuchal rigidity and mental status change.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No nuchal rigidity, normal mental status",
+        "Nuchal rigidity",
+        "Altered mental status with a focal neurologic deficit"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "genitourinary",
-      "text": "Assess for suprapubic fullness or tenderness and costovertebral-angle tenderness when urinary symptoms are present.",
+      "system": "cardiovascular",
+      "text": "Auscultate for a new heart murmur.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No murmur",
+        "New murmur"
       ],
       "select": "one"
     },
@@ -239,11 +327,24 @@
       "id": "exam-10",
       "kind": "exam",
       "system": "skin",
-      "text": "Assess for altered mental status, neck stiffness, rash, and focal neurologic findings when indicated.",
+      "text": "Inspect the extremities and nail beds for embolic or immunologic stigmata of endocarditis.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No stigmata present",
+        "Janeway lesions or Osler nodes",
+        "Splinter hemorrhages"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-11",
+      "kind": "exam",
+      "system": "ent",
+      "text": "Inspect the oropharynx, teeth, and neck for a focal source.",
+      "choices": [
+        "Normal oropharynx and neck",
+        "Focal cervical lymphadenopathy",
+        "Oropharyngeal exudate",
+        "Dental abscess"
       ],
       "select": "one"
     }

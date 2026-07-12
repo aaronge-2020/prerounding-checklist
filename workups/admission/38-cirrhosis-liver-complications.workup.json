@@ -11,107 +11,101 @@
       "id": "history-01",
       "kind": "history",
       "system": "gastrointestinal",
-      "text": "Ask about onset, location, radiation, severity, timing, and relationship to meals, movement, or bowel movements.",
+      "text": "Do you have cirrhosis or liver disease, and do you know what caused it, like alcohol or hepatitis?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known liver disease",
+        "Known cirrhosis from alcohol",
+        "Known cirrhosis from viral hepatitis or another cause"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about oral intake, nausea, vomiting, fluid losses, urine output, and ability to tolerate medications.",
+      "system": "gastrointestinal",
+      "text": "Has your belly gotten more swollen or your pants tighter recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No increased abdominal girth",
+        "Increased abdominal girth or new ascites"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "hematologic",
-      "text": "Ask about stool frequency and character, flatus, bleeding, dysuria, hematuria, and change from baseline.",
+      "system": "neurologic",
+      "text": "Have family or friends said you seem more confused or are sleeping at the wrong times of day?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No noticed confusion or sleep-wake reversal",
+        "Family-noticed confusion or sleep-wake reversal"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "skin",
-      "text": "Ask about prior surgery, obstruction, gallstones, liver disease, ulcers, inflammatory bowel disease, and prior episodes.",
+      "system": "gastrointestinal",
+      "text": "Have you been constipated, or have you missed doses of your lactulose?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No constipation, taking lactulose as prescribed",
+        "Constipation or missed lactulose doses"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about NSAIDs, anticoagulants, alcohol, new medications, antibiotics, toxins, and relevant dietary exposures.",
+      "system": "hematologic",
+      "text": "Have you vomited blood, or had black, tarry stools?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Vomited blood",
+        "Black, tarry stools"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "reproductive",
-      "text": "Ask about pregnancy possibility and gynecologic symptoms when clinically relevant.",
+      "system": "skin",
+      "text": "Has your skin or the whites of your eyes looked more yellow recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No jaundice",
+        "New or worsening jaundice"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "genitourinary",
-      "text": "Ask about abdominal distention, edema, weight change, jaundice, pruritus, confusion, sleep reversal, and reduced urine output.",
+      "system": "infectious",
+      "text": "Do you have a fever or new belly pain, especially if you already have fluid in your belly?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Fever",
+        "New abdominal pain"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about hematemesis, melena, hematochezia, fever, abdominal pain, rigors, and prior spontaneous bacterial peritonitis.",
+      "system": "genitourinary",
+      "text": "Have you noticed a change in how much you're urinating?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Normal urine output",
+        "Decreased urine output"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about etiology, alcohol use, viral hepatitis, prior varices, ascites procedures, encephalopathy episodes, and transplant evaluation.",
+      "system": "hematologic",
+      "text": "Have you noticed new or worse bruising, or bleeding that's hard to stop?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No unusual bruising or bleeding",
+        "New or worsening bruising or bleeding"
       ],
       "select": "one"
     },
@@ -119,35 +113,69 @@
       "id": "history-10",
       "kind": "history",
       "system": "medication",
-      "text": "Ask about diuretics, lactulose or other bowel-regimen adherence, sedatives, NSAIDs, anticoagulants, supplements, and recent antibiotics.",
+      "text": "Have you been drinking alcohol recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No recent alcohol use",
+        "Recent alcohol use"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "medication",
+      "text": "Have you been taking your water pills as prescribed?",
+      "choices": [
+        "Taking diuretics as prescribed",
+        "Missed or stopped diuretic doses",
+        "Not on diuretics"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "gastrointestinal",
+      "text": "Have you ever had bleeding from varices or a fluid infection in your belly before?",
+      "choices": [
+        "Neither",
+        "Prior variceal bleed",
+        "Prior spontaneous bacterial peritonitis"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "gastrointestinal",
+      "text": "Have you lost weight without trying, or has your appetite gotten worse?",
+      "choices": [
+        "Neither",
+        "Unintentional weight loss",
+        "Decreased appetite"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess appearance, vital signs, mucous membranes, orthostatic symptoms when safe, and bedside perfusion.",
+      "system": "neurologic",
+      "text": "Assess attention, orientation, and level of consciousness.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Alert and fully oriented",
+        "Inattentive or disoriented",
+        "Lethargic or obtunded"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "skin",
-      "text": "Inspect for scars, distention, asymmetry, visible hernia, skin changes, and respiratory movement of the abdomen.",
+      "system": "neurologic",
+      "text": "Assess for asterixis by having the patient hold their arms out with wrists extended.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No asterixis",
+        "Asterixis present"
       ],
       "select": "one"
     },
@@ -155,95 +183,89 @@
       "id": "exam-03",
       "kind": "exam",
       "system": "gastrointestinal",
-      "text": "Auscultate and palpate systematically for focal tenderness, guarding, rebound, mass, organ enlargement, or pulsatility.",
+      "text": "Inspect and percuss the abdomen for distention and shifting dullness suggesting ascites.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No distention or shifting dullness",
+        "Distention with shifting dullness"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "genitourinary",
-      "text": "Assess for costovertebral-angle tenderness and examine relevant hernia sites when indicated.",
+      "system": "gastrointestinal",
+      "text": "Palpate the abdomen for tenderness or guarding suggesting spontaneous bacterial peritonitis.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Soft, nontender",
+        "Diffuse tenderness",
+        "Guarding or rebound"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "reproductive",
-      "text": "Perform rectal, perianal, or pelvic examination only when clinically indicated and appropriate.",
+      "system": "skin",
+      "text": "Inspect skin and sclerae for jaundice.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Absent",
+        "Present"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "hematologic",
-      "text": "Inspect for jaundice, pallor, edema, bruising, chronic liver-disease stigmata, and other systemic findings when relevant.",
+      "system": "skin",
+      "text": "Inspect for spider angiomas, palmar erythema, caput medusae, and gynecomastia.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "None of these stigmata",
+        "One or more stigmata of chronic liver disease present"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "gastrointestinal",
-      "text": "Inspect for distention and assess for fluid wave or shifting dullness when appropriate, tenderness, guarding, and organ enlargement.",
+      "system": "skin",
+      "text": "Inspect for bruising or petechiae suggesting coagulopathy.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No bruising or petechiae",
+        "Bruising or petechiae present"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess attention, orientation, sleepiness, behavior, asterixis, and focal neurologic deficits.",
+      "system": "cardiovascular",
+      "text": "Assess for lower extremity edema.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No peripheral edema",
+        "Peripheral edema present"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "hematologic",
-      "text": "Inspect for jaundice, bruising, spider angiomas, palmar erythema, muscle wasting, edema, and caput medusae.",
+      "system": "general",
+      "text": "Assess vital signs for fever or hemodynamic instability.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal vital signs",
+        "Febrile",
+        "Hypotensive or tachycardic"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "infectious",
-      "text": "Assess vital signs, perfusion, pallor, mental status, rectal findings when indicated, and focal infection signs.",
+      "system": "gastrointestinal",
+      "text": "Perform a rectal examination when indicated.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal, guaiac negative, or deferred as not indicated",
+        "Melena on rectal examination"
       ],
       "select": "one"
     }

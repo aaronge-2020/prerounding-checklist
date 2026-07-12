@@ -3,31 +3,30 @@
   "id": "atrial-fibrillation-rvr",
   "title": "Atrial fibrillation with rapid ventricular rate",
   "aliases": [
-    "AF RVR",
-    "rapid afib"
+    "afib with RVR",
+    "rapid atrial fibrillation"
   ],
   "items": [
     {
       "id": "history-01",
       "kind": "history",
-      "system": "general",
-      "text": "Ask about onset, tempo, severity, triggers, relieving factors, and change from baseline.",
+      "system": "cardiovascular",
+      "text": "Have you been diagnosed with atrial fibrillation before, and if so, does this feel like your usual episodes or is it your first time?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Known paroxysmal atrial fibrillation, similar to prior episodes",
+        "Known persistent or permanent atrial fibrillation",
+        "First-time, new-onset atrial fibrillation"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about chest discomfort, palpitations, syncope, diaphoresis, cough, fever, and hemoptysis.",
+      "system": "cardiovascular",
+      "text": "Do you have any chest pain along with the palpitations?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No chest pain",
+        "Chest pain"
       ],
       "select": "one"
     },
@@ -35,119 +34,159 @@
       "id": "history-03",
       "kind": "history",
       "system": "respiratory",
-      "text": "Ask about prior heart or lung disease, prior admissions, baseline exertional tolerance, and home oxygen use.",
+      "text": "Are you short of breath along with the palpitations?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No dyspnea",
+        "Dyspnea"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about tobacco or vaping exposure, immobility, thromboembolic risk, and relevant family history.",
+      "system": "neurologic",
+      "text": "Have you felt like you were going to pass out, or did you actually pass out?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Presyncope",
+        "Syncope"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recent medication changes, adherence, inhaler or diuretic use, and anticoagulant use when relevant.",
+      "system": "infectious",
+      "text": "Have you had a fever or felt sick before this started?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No fever or infectious symptoms",
+        "Fever or infectious symptoms"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about baseline ambulation, sleep position, activity limitation, and new functional decline.",
+      "system": "medication",
+      "text": "Did you binge drink alcohol recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No recent binge alcohol intake",
+        "Recent binge alcohol intake"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "cardiovascular",
-      "text": "Ask about onset, duration, rate awareness, triggers, prior episodes, cardioversion history, and spontaneous resolution.",
+      "system": "endocrine",
+      "text": "Have you noticed heat intolerance, tremor, or unexplained weight loss, or do you have a known thyroid problem?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No hyperthyroid symptoms",
+        "Known hyperthyroidism, stable",
+        "New heat intolerance, tremor, or unintentional weight loss"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "neurologic",
-      "text": "Ask about chest pain, dyspnea, dizziness, syncope, fatigue, edema, and reduced exercise tolerance.",
+      "system": "medication",
+      "text": "Are you on a blood thinner for your heart rhythm, and have you been taking it exactly as prescribed?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Therapeutic and adherent on anticoagulation",
+        "Subtherapeutic or missed anticoagulant doses",
+        "Not currently anticoagulated"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about fever, infection symptoms, dehydration, alcohol use, stimulant use, thyroid symptoms, and recent surgery.",
+      "system": "hematologic",
+      "text": "Have you had any unusual bruising or bleeding while on your blood thinner?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No bleeding symptoms",
+        "Bleeding symptoms while anticoagulated"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about prior stroke or TIA, anticoagulant use and adherence, bleeding, falls, and recent procedures.",
+      "system": "cardiovascular",
+      "text": "Do you have high blood pressure, diabetes, known blood vessel disease, or have you had a stroke or mini-stroke before?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "None of these",
+        "Hypertension, diabetes, or known vascular disease",
+        "Prior stroke or transient ischemic attack"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "medication",
+      "text": "Have you had surgery recently or been sick with another acute illness?",
+      "choices": [
+        "Neither",
+        "Recent surgery",
+        "Recent acute illness or infection"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "cardiovascular",
+      "text": "Have you been diagnosed with Wolff-Parkinson-White syndrome or another abnormal heart electrical pathway?",
+      "choices": [
+        "No known pre-excitation syndrome",
+        "Known Wolff-Parkinson-White or pre-excitation syndrome"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "medication",
+      "text": "Have you used any stimulant drugs or had a lot more caffeine than usual recently?",
+      "choices": [
+        "No recent stimulant or excess caffeine intake",
+        "Recent stimulant use or excess caffeine intake"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-14",
+      "kind": "history",
+      "system": "cardiovascular",
+      "text": "Do you need extra pillows to breathe at night, wake up gasping for air, or have new leg swelling?",
+      "choices": [
+        "None of these",
+        "Orthopnea or paroxysmal nocturnal dyspnea",
+        "Leg swelling"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess general appearance, respiratory rate and pattern, heart rate and rhythm, blood pressure, temperature, and oxygenation.",
+      "system": "cardiovascular",
+      "text": "Assess heart rate and rhythm regularity.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Regular rhythm",
+        "Irregularly irregular rhythm"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Inspect work of breathing and auscultate all lung fields for air movement and focal or diffuse adventitious sounds.",
+      "system": "general",
+      "text": "Assess hemodynamic stability.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normotensive and stable",
+        "Hypotensive or hemodynamically unstable"
       ],
       "select": "one"
     },
@@ -155,95 +194,87 @@
       "id": "exam-03",
       "kind": "exam",
       "system": "cardiovascular",
-      "text": "Assess cardiac rate and rhythm, heart sounds, murmurs, and signs of impaired peripheral perfusion.",
+      "text": "Assess jugular venous pressure and peripheral edema.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal jugular venous pressure, no edema",
+        "Elevated jugular venous pressure or peripheral edema"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess jugular venous pressure when feasible, mucous membranes, edema, and other bedside signs of volume status.",
+      "system": "respiratory",
+      "text": "Auscultate the lungs for crackles.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Clear bilaterally",
+        "Bibasilar crackles"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Inspect extremities for asymmetry, edema, cyanosis, calf tenderness, and distal pulses.",
+      "system": "endocrine",
+      "text": "Assess the thyroid for goiter or tremor.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal thyroid exam, no tremor",
+        "Goiter or fine tremor"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess alertness, orientation, and focal neurologic change that could accompany hypoxemia or poor perfusion.",
+      "system": "cardiovascular",
+      "text": "Compare the apical heart rate to the radial pulse rate for a pulse deficit.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Apical and radial rates concordant",
+        "Pulse deficit present"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess pulse rate and regularity, apical rhythm, blood pressure, and signs of unstable perfusion.",
+      "system": "neurologic",
+      "text": "Assess mental status and perfusion.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Alert with normal perfusion",
+        "Altered mental status or poor perfusion"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess jugular venous pressure, lung sounds, edema, hepatomegaly when relevant, and other congestion findings.",
+      "system": "cardiovascular",
+      "text": "Assess peripheral pulses for an acutely cool or pulseless limb suggesting embolism.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Symmetric, warm extremities",
+        "Cool or pulseless extremity"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "infectious",
-      "text": "Inspect for tremor, heat intolerance signs, weight change clues, fever, dehydration, and other precipitating illness findings.",
+      "system": "skin",
+      "text": "Inspect the skin for ecchymosis related to anticoagulation.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No ecchymosis",
+        "Ecchymosis present"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess for acute focal deficits, speech change, facial asymmetry, and altered mental status.",
+      "system": "cardiovascular",
+      "text": "Inspect and palpate the calves for asymmetric swelling or tenderness.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Symmetric, no swelling or tenderness",
+        "Unilateral swelling or tenderness"
       ],
       "select": "one"
     }

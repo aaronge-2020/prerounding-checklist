@@ -3,19 +3,18 @@
   "id": "severe-new-headache",
   "title": "Headache (severe or new-onset)",
   "aliases": [
-    "severe headache",
-    "new headache"
+    "worst headache of life",
+    "thunderclap headache"
   ],
   "items": [
     {
       "id": "history-01",
       "kind": "history",
-      "system": "functional",
-      "text": "Establish last known well or symptom onset, progression, baseline cognition, baseline neurologic function, and functional status.",
+      "system": "neurologic",
+      "text": "Did the headache build up gradually over hours, or hit you at full intensity within a minute?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Gradual onset over hours",
+        "Thunderclap onset, maximal intensity within a minute"
       ],
       "select": "one"
     },
@@ -23,119 +22,159 @@
       "id": "history-02",
       "kind": "history",
       "system": "neurologic",
-      "text": "Ask about weakness, numbness, facial asymmetry, speech or vision change, imbalance, dysphagia, and severe headache.",
+      "text": "Does this headache feel like the ones you usually get, or is this the worst headache of your life?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Similar to prior headaches",
+        "First-ever severe headache or worst of life"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "neurologic",
-      "text": "Ask about loss of consciousness, seizure-like activity, prodrome, post-event confusion, incontinence, tongue injury, and witness observations.",
+      "system": "infectious",
+      "text": "Do you have a fever along with the headache?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No fever",
+        "Fever"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about falls, head or neck injury, anticoagulant or antiplatelet use, and bleeding symptoms.",
+      "system": "neurologic",
+      "text": "Is your neck stiff along with the headache?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No neck stiffness",
+        "Neck stiffness"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recent medication changes, sedatives, alcohol, recreational substances, withdrawal risk, and toxic exposures.",
+      "system": "eyes",
+      "text": "Has your vision changed or blurred along with the headache?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No vision change",
+        "Blurred vision",
+        "Vision loss"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about fever, poor intake, glucose symptoms, renal or liver disease, and other systemic symptoms that may affect cognition.",
+      "system": "neurologic",
+      "text": "Have you had any weakness, numbness, or trouble speaking along with the headache?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "None of these",
+        "Weakness or numbness",
+        "Speech change"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "neurologic",
-      "text": "Ask about abrupt versus gradual onset, time to peak, location, severity, first or worst headache, and pattern change.",
+      "system": "musculoskeletal",
+      "text": "Does your jaw hurt when you chew, or is your scalp tender to touch?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Jaw claudication",
+        "Scalp tenderness"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "musculoskeletal",
-      "text": "Ask about vision change, focal weakness or numbness, speech change, seizure, syncope, confusion, and gait difficulty.",
+      "system": "general",
+      "text": "How old are you?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Under 50 years old",
+        "50 years or older"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about fever, neck stiffness, rash, vomiting, head trauma, anticoagulants, and immunosuppression.",
+      "system": "neurologic",
+      "text": "Does the headache get worse when you strain, cough, or bear down, or when you lie flat?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No positional or straining component",
+        "Worse with straining, coughing, or bearing down",
+        "Worse lying flat, improved standing"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about pregnancy or postpartum status, hypertension history, cancer, HIV risk, temporal pain, jaw claudication, and new medications.",
+      "system": "musculoskeletal",
+      "text": "Do you have neck pain, or did you have a recent neck injury or chiropractic adjustment?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Neck pain",
+        "Recent neck trauma or chiropractic manipulation"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "reproductive",
+      "text": "Are you currently pregnant or recently gave birth, and has your blood pressure been high?",
+      "choices": [
+        "Not pregnant or postpartum",
+        "Pregnant or postpartum with elevated blood pressure"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "hematologic",
+      "text": "Have you been diagnosed with cancer, or are you on medications that suppress your immune system?",
+      "choices": [
+        "Neither",
+        "Known malignancy",
+        "Known immunosuppression"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "medication",
+      "text": "Are you on a blood thinner?",
+      "choices": [
+        "No anticoagulant use",
+        "Anticoagulant use"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-14",
+      "kind": "history",
+      "system": "musculoskeletal",
+      "text": "Have you hit your head recently?",
+      "choices": [
+        "No recent head trauma",
+        "Recent head trauma"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "endocrine",
-      "text": "Assess vital signs, general appearance, glucose status if available at bedside, and signs of cardiorespiratory instability.",
+      "system": "neurologic",
+      "text": "Assess mental status.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Alert and oriented",
+        "Confused or altered"
       ],
       "select": "one"
     },
@@ -143,11 +182,10 @@
       "id": "exam-02",
       "kind": "exam",
       "system": "neurologic",
-      "text": "Assess level of consciousness, attention, orientation, language, memory, behavior, and fluctuation from baseline.",
+      "text": "Assess for nuchal rigidity.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Absent",
+        "Present"
       ],
       "select": "one"
     },
@@ -155,71 +193,65 @@
       "id": "exam-03",
       "kind": "exam",
       "system": "neurologic",
-      "text": "Assess pupils, visual fields when feasible, ocular movements, facial symmetry, speech, palate, and swallowing safety as indicated.",
+      "text": "Assess for a focal neurologic deficit.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No focal deficit",
+        "Focal deficit present"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess pronator drift, limb strength, tone, sensation, reflex asymmetry, and neglect when appropriate.",
+      "system": "neurologic",
+      "text": "Assess pupil size and symmetry.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal, reactive, and symmetric",
+        "Asymmetric or a fixed, dilated pupil"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess coordination, truncal stability, gait, and Romberg only when it is safe to do so.",
+      "system": "eyes",
+      "text": "Assess for papilledema on fundoscopic exam.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Absent",
+        "Present"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "skin",
-      "text": "Inspect for head or neck injury and assess neck stiffness or rash when the presentation makes this relevant.",
+      "system": "musculoskeletal",
+      "text": "Palpate the temporal arteries.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Nontender",
+        "Tender or thickened temporal artery"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess consciousness, attention, language, cranial nerves, strength, sensation, coordination, and gait only when safe.",
+      "system": "cardiovascular",
+      "text": "Measure blood pressure.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normotensive",
+        "Severely hypertensive"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "infectious",
-      "text": "Assess neck stiffness, photophobia behavior, rash, and focal infection signs when indicated.",
+      "system": "musculoskeletal",
+      "text": "Assess neck range of motion and tenderness.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal range of motion, nontender",
+        "Decreased range of motion or tenderness"
       ],
       "select": "one"
     },
@@ -227,23 +259,21 @@
       "id": "exam-09",
       "kind": "exam",
       "system": "eyes",
-      "text": "Assess pupils, visual fields when feasible, eye movements, and funduscopic findings when available and appropriate.",
+      "text": "Assess visual fields and acuity.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal fields and acuity",
+        "Visual field cut or reduced acuity"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Inspect and palpate scalp, sinuses, temporomandibular joints, and temporal arteries when clinically relevant.",
+      "system": "skin",
+      "text": "Inspect the skin for a petechial or purpuric rash.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No rash",
+        "Petechial or purpuric rash"
       ],
       "select": "one"
     }

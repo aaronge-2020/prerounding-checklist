@@ -4,246 +4,268 @@
   "title": "Cellulitis / skin and soft tissue infection",
   "aliases": [
     "cellulitis",
-    "SSTI"
+    "skin infection",
+    "abscess"
   ],
   "items": [
     {
       "id": "history-01",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about fever, chills, rigors, duration, antipyretic use, and change in symptoms over time.",
+      "system": "skin",
+      "text": "Has the redness spread slowly over days, or rapidly over just a few hours?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Gradual spread over days",
+        "Rapid spread over hours"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about localizing respiratory, urinary, gastrointestinal, skin, dental, line, and neurologic symptoms.",
+      "system": "skin",
+      "text": "Does the pain feel proportionate to how the area looks, or is it much more painful than it looks?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Pain proportionate to the redness",
+        "Pain out of proportion to the visible findings"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recent antibiotics, prior resistant organisms, recurrent infections, and medication allergies.",
+      "system": "infectious",
+      "text": "Have you had a fever with shaking chills?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No fever",
+        "Subjective fever",
+        "Fever with rigors"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about recent hospitalization, procedures, sick contacts, travel, animal or environmental exposures, and food or water exposures.",
+      "system": "skin",
+      "text": "Is any pus or fluid draining from the area?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No purulent drainage",
+        "Purulent drainage present"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about diabetes, immunosuppression, malignancy, chronic organ disease, and other infection-risk conditions.",
+      "system": "skin",
+      "text": "Did you have a cut, wound, bite, or injection at that spot before this started?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known preceding skin break",
+        "Known wound, bite, or injection site",
+        "Recent skin trauma"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "skin",
-      "text": "Ask about indwelling devices, wounds, surgery, injections, aspiration risk, and other possible portals of entry.",
+      "system": "endocrine",
+      "text": "Do you have diabetes, and if so, do you have numbness or reduced feeling in your feet?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known diabetes",
+        "Known diabetes without neuropathy",
+        "Known diabetes with peripheral neuropathy"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about onset, rate of spread, pain, itching, drainage, blistering, discoloration, and fever or chills.",
+      "system": "medication",
+      "text": "Are you on chemotherapy, a transplant medication, or long-term steroids?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No chronic immunosuppression",
+        "Chronic immunosuppression"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about trauma, wounds, bites, injection, surgery, ulcers, tinea, edema, lymphedema, and water exposure.",
+      "system": "medication",
+      "text": "Do you currently inject drugs?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No active intravenous drug use",
+        "Active intravenous drug use"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about rapidly escalating pain, numbness, bullae, systemic toxicity, and pain out of proportion.",
+      "system": "skin",
+      "text": "Have you had infections in this same spot before, or do you have chronic swelling in that limb?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "First episode at this site",
+        "Recurrent episodes at the same site",
+        "Known chronic lymphedema"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about diabetes, vascular disease, immunosuppression, prior MRSA, recurrent cellulitis, and recent antibiotics.",
+      "system": "cardiovascular",
+      "text": "Is the leg swollen without any redness or warmth?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Erythema and warmth present, typical of cellulitis",
+        "Isolated swelling without erythema or warmth"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "infectious",
+      "text": "Have you or your family noticed any new confusion along with this infection?",
+      "choices": [
+        "No confusion or altered mental status",
+        "Confusion or altered mental status"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "infectious",
+      "text": "Was the wound exposed to salt water, fresh water, or soil?",
+      "choices": [
+        "No relevant water or soil exposure",
+        "Salt water or fresh water exposure",
+        "Soil exposure"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "infectious",
+      "text": "Were you bitten by an animal or insect before this started?",
+      "choices": [
+        "Neither",
+        "Animal bite",
+        "Insect bite"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess appearance, temperature, heart rate, blood pressure, respiratory pattern, oxygenation, and bedside perfusion.",
+      "system": "skin",
+      "text": "Inspect the borders of the erythema.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Well-demarcated borders",
+        "Poorly demarcated, spreading borders"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess alertness, orientation, capillary refill, extremity temperature, and diaphoresis.",
+      "system": "skin",
+      "text": "Inspect for bullae, crepitus, or skin necrosis.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "None of these",
+        "Bullae present",
+        "Crepitus or skin necrosis"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "infectious",
-      "text": "Inspect skin, pressure areas, wounds, intravenous sites, drains, and indwelling devices for focal infection findings.",
+      "system": "skin",
+      "text": "Palpate for fluctuance suggesting an underlying abscess.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No fluctuance",
+        "Fluctuant mass"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Inspect work of breathing and auscultate lungs for focal breath-sound changes, crackles, wheeze, or pleural findings.",
+      "system": "skin",
+      "text": "Inspect for lymphangitic streaking.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No streaking",
+        "Lymphangitic streaking present"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "genitourinary",
-      "text": "Inspect and palpate the abdomen and assess for suprapubic or costovertebral-angle tenderness when relevant.",
+      "system": "hematologic",
+      "text": "Palpate for tender regional lymphadenopathy.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No regional lymphadenopathy",
+        "Tender regional lymphadenopathy"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "reproductive",
-      "text": "Perform a focused examination of the symptom-directed source, including oral, joint, neurologic, or pelvic findings when indicated.",
+      "system": "skin",
+      "text": "Assess whether the pain on exam is proportionate to the visible findings.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Pain proportionate to exam findings",
+        "Pain out of proportion to exam findings"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "skin",
-      "text": "Inspect and document location, extent, borders, erythema, warmth, tenderness, induration, edema, and drainage.",
+      "system": "neurologic",
+      "text": "Assess sensation over the affected area.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal sensation",
+        "Decreased sensation or anesthesia over the area"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "infectious",
-      "text": "Assess for fluctuance, crepitus, bullae, necrosis, anesthesia, severe pain, or pain with passive movement.",
+      "system": "general",
+      "text": "Assess general appearance and vital signs.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Well-appearing, normal vital signs",
+        "Toxic-appearing, tachycardic",
+        "Hypotensive or septic-appearing"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "hematologic",
-      "text": "Inspect for lymphangitic streaking, regional lymphadenopathy, adjacent joint effusion, and range-of-motion limitation.",
+      "system": "cardiovascular",
+      "text": "Assess distal pulses and perfusion of the affected limb.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal distal pulses and perfusion",
+        "Diminished pulses or poor perfusion"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "skin",
-      "text": "Assess distal pulses, capillary refill, sensation, motor function, and skin perfusion beyond the affected area.",
+      "system": "musculoskeletal",
+      "text": "Assess any adjacent joint for involvement.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No adjacent joint involvement",
+        "Adjacent joint swelling or restricted motion"
       ],
       "select": "one"
     }

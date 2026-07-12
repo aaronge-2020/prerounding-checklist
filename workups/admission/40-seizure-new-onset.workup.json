@@ -10,12 +10,12 @@
     {
       "id": "history-01",
       "kind": "history",
-      "system": "functional",
-      "text": "Establish last known well or symptom onset, progression, baseline cognition, baseline neurologic function, and functional status.",
+      "system": "neurologic",
+      "text": "Did you or a witness see your body shake or jerk, or did you just lose consciousness without movement?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No witnessed shaking or jerking",
+        "Witnessed rhythmic shaking or jerking",
+        "Loss of consciousness without movement"
       ],
       "select": "one"
     },
@@ -23,71 +23,68 @@
       "id": "history-02",
       "kind": "history",
       "system": "neurologic",
-      "text": "Ask about weakness, numbness, facial asymmetry, speech or vision change, imbalance, dysphagia, and severe headache.",
+      "text": "Did you feel a warning or strange sensation right before it happened, like a smell, taste, or rising feeling in your stomach?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No warning aura",
+        "Aura present before the event"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "neurologic",
-      "text": "Ask about loss of consciousness, seizure-like activity, prodrome, post-event confusion, incontinence, tongue injury, and witness observations.",
+      "system": "genitourinary",
+      "text": "Did you bite your tongue or lose control of your bladder or bowels during the event?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Tongue bite",
+        "Urinary or bowel incontinence"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about falls, head or neck injury, anticoagulant or antiplatelet use, and bleeding symptoms.",
+      "system": "neurologic",
+      "text": "After it happened, were you confused or extremely sleepy for a while before returning to normal?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No postictal confusion, back to baseline immediately",
+        "Postictal confusion or drowsiness lasting minutes to hours"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recent medication changes, sedatives, alcohol, recreational substances, withdrawal risk, and toxic exposures.",
+      "system": "neurologic",
+      "text": "Have you had seizures before, and if so, are you on seizure medication and taking it as prescribed?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No prior seizures",
+        "Known epilepsy, taking medication as prescribed",
+        "Known epilepsy, missed doses or stopped medication"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about fever, poor intake, glucose symptoms, renal or liver disease, and other systemic symptoms that may affect cognition.",
+      "system": "neurologic",
+      "text": "Have you had any weakness, numbness, trouble speaking, or vision changes since the event that haven't gone away?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No persistent focal symptoms",
+        "Persistent focal weakness, numbness, or speech change"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "eyes",
-      "text": "Ask witnesses about onset, focal features, duration, eye deviation, movements, responsiveness, injuries, recovery, and post-event confusion.",
+      "system": "medication",
+      "text": "Do you drink alcohol regularly, and if so, have you cut back or stopped recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No regular alcohol use",
+        "Regular alcohol use, no recent change",
+        "Regular alcohol use with recent reduction or cessation"
       ],
       "select": "one"
     },
@@ -95,35 +92,70 @@
       "id": "history-08",
       "kind": "history",
       "system": "medication",
-      "text": "Ask about aura, tongue injury, incontinence, automatisms, prior episodes, known epilepsy, and medication adherence.",
+      "text": "Have you used any recreational drugs recently, or missed doses of a benzodiazepine or other sedating medication?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Recent recreational drug use",
+        "Missed sedative or benzodiazepine dose"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about fever, head trauma, infection symptoms, sleep deprivation, alcohol or benzodiazepine withdrawal, substances, and glucose symptoms.",
+      "system": "neurologic",
+      "text": "Have you had a severe headache, fever, or stiff neck before or after the event?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "None of these",
+        "Severe headache",
+        "Fever or neck stiffness"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "reproductive",
-      "text": "Ask about headache, focal deficits, cancer, stroke, pregnancy when relevant, family history, and prior central nervous system disease.",
+      "system": "neurologic",
+      "text": "Have you had a head injury or fall recently, or are you on a blood thinner?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Recent head injury or fall",
+        "On anticoagulant or antiplatelet medication"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "hematologic",
+      "text": "Do you have a history of cancer, especially any cancer that could spread to the brain?",
+      "choices": [
+        "No known malignancy",
+        "Known malignancy"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "endocrine",
+      "text": "Do you have diabetes, and could your blood sugar have been very low or very high before this happened?",
+      "choices": [
+        "No known diabetes",
+        "Known diabetes, possible hypoglycemia",
+        "Known diabetes, possible severe hyperglycemia"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "reproductive",
+      "text": "Is there any chance you could be pregnant, and if so, have you had swelling or high blood pressure this pregnancy?",
+      "choices": [
+        "Not applicable or not pregnant",
+        "Pregnant without preeclampsia symptoms",
+        "Pregnant with swelling or high blood pressure"
       ],
       "select": "one"
     },
@@ -131,23 +163,22 @@
       "id": "exam-01",
       "kind": "exam",
       "system": "endocrine",
-      "text": "Assess vital signs, general appearance, glucose status if available at bedside, and signs of cardiorespiratory instability.",
+      "text": "Check fingerstick glucose.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal glucose",
+        "Hypoglycemic",
+        "Severely hyperglycemic"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess level of consciousness, attention, orientation, language, memory, behavior, and fluctuation from baseline.",
+      "system": "general",
+      "text": "Assess temperature for fever.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Afebrile",
+        "Febrile"
       ],
       "select": "one"
     },
@@ -155,35 +186,33 @@
       "id": "exam-03",
       "kind": "exam",
       "system": "neurologic",
-      "text": "Assess pupils, visual fields when feasible, ocular movements, facial symmetry, speech, palate, and swallowing safety as indicated.",
+      "text": "Assess level of consciousness and orientation.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Alert and fully oriented",
+        "Postictal confusion improving",
+        "Persistently obtunded"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess pronator drift, limb strength, tone, sensation, reflex asymmetry, and neglect when appropriate.",
+      "system": "neurologic",
+      "text": "Assess for a focal neurologic deficit such as asymmetric weakness or facial droop.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No focal deficit",
+        "Focal deficit present"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess coordination, truncal stability, gait, and Romberg only when it is safe to do so.",
+      "system": "neurologic",
+      "text": "Assess neck stiffness for meningismus.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No nuchal rigidity",
+        "Nuchal rigidity present"
       ],
       "select": "one"
     },
@@ -191,59 +220,55 @@
       "id": "exam-06",
       "kind": "exam",
       "system": "skin",
-      "text": "Inspect for head or neck injury and assess neck stiffness or rash when the presentation makes this relevant.",
+      "text": "Inspect the tongue for lateral bite marks.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No tongue trauma",
+        "Lateral tongue bite present"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess arousal, attention, orientation, language, behavior, memory, and return toward baseline.",
+      "system": "skin",
+      "text": "Inspect the scalp, face, and shoulders for injury from a fall.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No injury",
+        "Injury consistent with a fall"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess pupils, gaze, facial symmetry, strength, sensation, reflexes, coordination, and gait only when safe.",
+      "system": "neurologic",
+      "text": "Assess for tremor, diaphoresis, and pupil size suggesting intoxication or withdrawal.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "None of these",
+        "Tremor and diaphoresis suggesting withdrawal",
+        "Pupillary changes suggesting intoxication"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "skin",
-      "text": "Inspect scalp, face, tongue, shoulders, skin, and extremities for injury or tongue bite.",
+      "system": "cardiovascular",
+      "text": "Assess heart rate and rhythm for an arrhythmia that could explain a convulsive syncope.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Regular rate and rhythm",
+        "Irregular rhythm"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "medication",
-      "text": "Assess temperature, neck stiffness, rash, tremor, diaphoresis, pupils, and signs of intoxication or withdrawal.",
+      "system": "reproductive",
+      "text": "Assess for hyperreflexia or clonus when eclampsia is a concern.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Not applicable or normal reflexes",
+        "Hyperreflexia or clonus present"
       ],
       "select": "one"
     }

@@ -3,20 +3,19 @@
   "id": "stroke-tia",
   "title": "Stroke (CVA) or TIA",
   "aliases": [
-    "stroke",
-    "CVA",
-    "TIA"
+    "cerebrovascular accident",
+    "transient ischemic attack"
   ],
   "items": [
     {
       "id": "history-01",
       "kind": "history",
-      "system": "functional",
-      "text": "Establish last known well or symptom onset, progression, baseline cognition, baseline neurologic function, and functional status.",
+      "system": "neurologic",
+      "text": "What time were you last seen acting and looking completely normal?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Within the past 4.5 hours",
+        "Between 4.5 and 24 hours ago",
+        "More than 24 hours ago or unknown"
       ],
       "select": "one"
     },
@@ -24,11 +23,11 @@
       "id": "history-02",
       "kind": "history",
       "system": "neurologic",
-      "text": "Ask about weakness, numbness, facial asymmetry, speech or vision change, imbalance, dysphagia, and severe headache.",
+      "text": "Did your symptoms hit you all at once at their worst, get worse in sudden steps, or build up gradually over hours?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Sudden onset, maximal deficit immediately",
+        "Stepwise progression",
+        "Gradual progression over hours"
       ],
       "select": "one"
     },
@@ -36,71 +35,67 @@
       "id": "history-03",
       "kind": "history",
       "system": "neurologic",
-      "text": "Ask about loss of consciousness, seizure-like activity, prodrome, post-event confusion, incontinence, tongue injury, and witness observations.",
+      "text": "Are your symptoms still going on, or did they completely go away, and if so how quickly?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Symptoms persistent",
+        "Resolved completely within an hour",
+        "Resolved within 24 hours"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about falls, head or neck injury, anticoagulant or antiplatelet use, and bleeding symptoms.",
+      "system": "neurologic",
+      "text": "Do you have a headache along with this, and if so, is it the worst headache of your life?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No headache",
+        "Mild headache",
+        "Severe, worst-of-life headache"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recent medication changes, sedatives, alcohol, recreational substances, withdrawal risk, and toxic exposures.",
+      "system": "neurologic",
+      "text": "Did anyone see you shake or convulse when this started?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No witnessed seizure activity",
+        "Witnessed seizure activity"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about fever, poor intake, glucose symptoms, renal or liver disease, and other systemic symptoms that may affect cognition.",
+      "system": "medication",
+      "text": "Are you currently taking a blood thinner?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Not anticoagulated",
+        "Currently anticoagulated"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "general",
-      "text": "Establish last known well, exact onset or discovery time, symptom progression, and whether symptoms resolved.",
+      "system": "musculoskeletal",
+      "text": "Have you hit your head recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No recent head trauma",
+        "Recent head trauma"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "eyes",
-      "text": "Ask about facial droop, unilateral weakness or numbness, speech or language change, vision loss, imbalance, and dysphagia.",
+      "system": "cardiovascular",
+      "text": "Have you been diagnosed with atrial fibrillation?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known atrial fibrillation",
+        "Known atrial fibrillation"
       ],
       "select": "one"
     },
@@ -108,35 +103,80 @@
       "id": "history-09",
       "kind": "history",
       "system": "endocrine",
-      "text": "Ask about prior stroke or TIA, atrial fibrillation, hypertension, diabetes, smoking, carotid disease, and recent cardiac symptoms.",
+      "text": "Do you have diabetes, and could your blood sugar have dropped low before this started?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known diabetes",
+        "Known diabetes with possible hypoglycemia symptoms"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about anticoagulant or antiplatelet use, head trauma, seizure at onset, glucose symptoms, migraine, and recent infection.",
+      "system": "neurologic",
+      "text": "Do you get migraines with visual or sensory auras, and does this feel like one of those?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No history of migraine with aura",
+        "Known migraine with aura, resembles prior episodes"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "neurologic",
+      "text": "Have you had trouble finding the right words, or has your speech sounded slurred?",
+      "choices": [
+        "No speech change",
+        "Difficulty finding words",
+        "Slurred speech"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "eyes",
+      "text": "Have you had any change in your vision, like losing sight in one eye, a blind spot, or double vision?",
+      "choices": [
+        "No vision change",
+        "Monocular vision loss",
+        "Visual field cut or double vision"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "neurologic",
+      "text": "Have you felt dizzy, off-balance, or clumsy with your arms or legs?",
+      "choices": [
+        "None of these",
+        "Vertigo or imbalance",
+        "Limb incoordination"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-14",
+      "kind": "history",
+      "system": "cardiovascular",
+      "text": "Has your blood pressure been well controlled, and have you been told you have narrowing in your neck arteries?",
+      "choices": [
+        "Well-controlled hypertension, no known carotid disease",
+        "Poorly controlled hypertension",
+        "Known carotid artery disease"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "endocrine",
-      "text": "Assess vital signs, general appearance, glucose status if available at bedside, and signs of cardiorespiratory instability.",
+      "system": "neurologic",
+      "text": "Assess for facial droop.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Symmetric facial movement",
+        "Unilateral facial droop"
       ],
       "select": "one"
     },
@@ -144,11 +184,10 @@
       "id": "exam-02",
       "kind": "exam",
       "system": "neurologic",
-      "text": "Assess level of consciousness, attention, orientation, language, memory, behavior, and fluctuation from baseline.",
+      "text": "Assess for arm drift or weakness.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No drift or weakness",
+        "Unilateral arm drift or weakness"
       ],
       "select": "one"
     },
@@ -156,47 +195,44 @@
       "id": "exam-03",
       "kind": "exam",
       "system": "neurologic",
-      "text": "Assess pupils, visual fields when feasible, ocular movements, facial symmetry, speech, palate, and swallowing safety as indicated.",
+      "text": "Assess for leg weakness.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No leg weakness",
+        "Unilateral leg weakness"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess pronator drift, limb strength, tone, sensation, reflex asymmetry, and neglect when appropriate.",
+      "system": "neurologic",
+      "text": "Assess speech and language.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal speech and language",
+        "Dysarthria",
+        "Aphasia"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess coordination, truncal stability, gait, and Romberg only when it is safe to do so.",
+      "system": "eyes",
+      "text": "Assess visual fields.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Full visual fields",
+        "Visual field cut"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "skin",
-      "text": "Inspect for head or neck injury and assess neck stiffness or rash when the presentation makes this relevant.",
+      "system": "neurologic",
+      "text": "Assess for gaze deviation.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Midline gaze",
+        "Forced gaze deviation"
       ],
       "select": "one"
     },
@@ -204,11 +240,10 @@
       "id": "exam-07",
       "kind": "exam",
       "system": "neurologic",
-      "text": "Assess level of consciousness, orientation, language, neglect, dysarthria, and ability to follow commands.",
+      "text": "Assess sensation for a unilateral deficit.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal sensation",
+        "Unilateral sensory loss"
       ],
       "select": "one"
     },
@@ -216,35 +251,55 @@
       "id": "exam-08",
       "kind": "exam",
       "system": "neurologic",
-      "text": "Assess pupils, visual fields when feasible, gaze, facial symmetry, palate, speech, and swallowing safety as indicated.",
+      "text": "Assess coordination with finger-to-nose and heel-to-shin testing.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal coordination",
+        "Dysmetria or ataxia"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess pronator drift, limb strength, sensation, tone, and asymmetry in all extremities.",
+      "system": "neurologic",
+      "text": "Assess level of consciousness.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Alert",
+        "Drowsy",
+        "Unresponsive"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess dysmetria, truncal stability, and gait only when safe and clinically appropriate.",
+      "system": "cardiovascular",
+      "text": "Measure blood pressure.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normotensive",
+        "Hypertensive, requiring management before thrombolysis consideration"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-11",
+      "kind": "exam",
+      "system": "cardiovascular",
+      "text": "Assess cardiac rhythm.",
+      "choices": [
+        "Regular rhythm",
+        "Irregular rhythm"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-12",
+      "kind": "exam",
+      "system": "neurologic",
+      "text": "Assess pupil size and symmetry for a herniation syndrome.",
+      "choices": [
+        "Normal, reactive, and symmetric",
+        "Asymmetric or a fixed, dilated pupil"
       ],
       "select": "one"
     }

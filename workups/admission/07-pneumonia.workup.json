@@ -10,72 +10,72 @@
     {
       "id": "history-01",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about fever, chills, rigors, duration, antipyretic use, and change in symptoms over time.",
+      "system": "respiratory",
+      "text": "Did your cough come on gradually, and what color is what you're coughing up?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Gradual onset with mucoid sputum",
+        "Abrupt onset with rust-colored or purulent sputum",
+        "Chronic cough with weight loss or night sweats"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about localizing respiratory, urinary, gastrointestinal, skin, dental, line, and neurologic symptoms.",
+      "system": "respiratory",
+      "text": "Do you have any sharp chest pain that's worse when you breathe in, and has your fever kept coming back despite antibiotics?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No pleuritic pain",
+        "Pleuritic pain worse with breathing",
+        "Pleuritic pain with fever persisting despite antibiotics"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recent antibiotics, prior resistant organisms, recurrent infections, and medication allergies.",
+      "system": "respiratory",
+      "text": "How short of breath are you — only with activity, at rest, or so bad you can barely breathe?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Mild dyspnea with exertion",
+        "Dyspnea at rest",
+        "Severe respiratory distress"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about recent hospitalization, procedures, sick contacts, travel, animal or environmental exposures, and food or water exposures.",
+      "system": "gastrointestinal",
+      "text": "Do you have trouble swallowing or reflux, or did you choke or aspirate before this started?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "None of these",
+        "Chronic dysphagia or reflux",
+        "Witnessed aspiration event or impaired consciousness at symptom onset"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about diabetes, immunosuppression, malignancy, chronic organ disease, and other infection-risk conditions.",
+      "system": "medication",
+      "text": "Have you been in the hospital in the past three months, or are you currently admitted and on a ventilator?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No recent hospitalization",
+        "Hospitalized within the preceding 90 days",
+        "Currently hospitalized more than 48 hours or mechanically ventilated"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "skin",
-      "text": "Ask about indwelling devices, wounds, surgery, injections, aspiration risk, and other possible portals of entry.",
+      "system": "medication",
+      "text": "Are you on chronic steroids, do you have HIV, a transplant, or are you on chemotherapy?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "None of these",
+        "Chronic steroid therapy or COPD",
+        "HIV, transplant history, or chemotherapy"
       ],
       "select": "one"
     },
@@ -83,83 +83,107 @@
       "id": "history-07",
       "kind": "history",
       "system": "infectious",
-      "text": "Ask about cough, sputum, dyspnea, pleuritic pain, hemoptysis, wheeze, fever, and rigors.",
+      "text": "Have you been incarcerated, experienced homelessness, traveled somewhere with high rates of tuberculosis, or been around someone with TB?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "None of these",
+        "Incarceration, homelessness, or travel to a tuberculosis-endemic area",
+        "Known tuberculosis contact"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "gastrointestinal",
-      "text": "Ask about dysphagia, vomiting, impaired consciousness, reflux, tube feeding, and prior aspiration events.",
+      "system": "respiratory",
+      "text": "Do you smoke, have COPD, or have a lung condition like bronchiectasis?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "None of these",
+        "Active smoking or known COPD",
+        "Known bronchiectasis or other structural lung disease"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recent hospitalization, ventilation, long-term care, prior antibiotics, and prior resistant respiratory organisms.",
+      "system": "functional",
+      "text": "Are you able to manage your daily activities on your own, or do you need help?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Independent with activities of daily living",
+        "Needs assistance with activities of daily living",
+        "Bedbound or nursing home resident"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about COPD, asthma, heart failure, smoking exposure, home oxygen, and baseline exertional capacity.",
+      "system": "cardiovascular",
+      "text": "Do you have heart failure, and have you needed extra pillows or woken up gasping for air?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known heart failure",
+        "Known heart failure without acute decompensation symptoms",
+        "Known heart failure with orthopnea or paroxysmal nocturnal dyspnea"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "cardiovascular",
+      "text": "Have you traveled recently, had surgery, or do you have cancer or a history of blood clots?",
+      "choices": [
+        "None of these",
+        "Recent immobilization or surgery",
+        "Active malignancy or prior venous thromboembolism"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "neurologic",
+      "text": "Have you or your family noticed any new confusion?",
+      "choices": [
+        "No new confusion",
+        "Mild new confusion",
+        "Marked new confusion or disorientation"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess appearance, temperature, heart rate, blood pressure, respiratory pattern, oxygenation, and bedside perfusion.",
+      "system": "general",
+      "text": "Assess overall severity from vital signs.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Hemodynamically stable, normal oxygenation",
+        "Tachypneic or hypoxic",
+        "Hemodynamically unstable"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess alertness, orientation, capillary refill, extremity temperature, and diaphoresis.",
+      "system": "respiratory",
+      "text": "Auscultate the lungs for focal versus diffuse findings.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Clear bilaterally",
+        "Focal crackles, bronchial breath sounds, or egophony",
+        "Diffuse bilateral findings"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "infectious",
-      "text": "Inspect skin, pressure areas, wounds, intravenous sites, drains, and indwelling devices for focal infection findings.",
+      "system": "respiratory",
+      "text": "Percuss the chest for dullness suggesting consolidation or effusion.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Resonant throughout",
+        "Focal dullness to percussion",
+        "Dullness with absent breath sounds suggesting a large effusion"
       ],
       "select": "one"
     },
@@ -167,83 +191,79 @@
       "id": "exam-04",
       "kind": "exam",
       "system": "respiratory",
-      "text": "Inspect work of breathing and auscultate lungs for focal breath-sound changes, crackles, wheeze, or pleural findings.",
+      "text": "Assess work of breathing and ability to speak in full sentences.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal work of breathing, speaks in full sentences",
+        "Accessory muscle use",
+        "Unable to speak in full sentences"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "genitourinary",
-      "text": "Inspect and palpate the abdomen and assess for suprapubic or costovertebral-angle tenderness when relevant.",
+      "system": "neurologic",
+      "text": "Assess mental status.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Alert and oriented",
+        "New confusion"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "reproductive",
-      "text": "Perform a focused examination of the symptom-directed source, including oral, joint, neurologic, or pelvic findings when indicated.",
+      "system": "ent",
+      "text": "Assess swallowing safety, dentition, and pooling of secretions when aspiration is a concern.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal swallow and gag, good dentition",
+        "Poor dentition or pooled oral secretions",
+        "Overt aspiration observed"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Auscultate all lung fields for focal crackles, bronchial breath sounds, egophony, wheeze, or diminished air movement.",
+      "system": "cardiovascular",
+      "text": "Assess for jugular venous distension, an S3 gallop, or peripheral edema suggesting a cardiac contributor.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "None of these",
+        "Jugular venous distension or S3 gallop",
+        "Peripheral edema with jugular venous distension"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Inspect work of breathing, speaking ability, accessory-muscle use, fatigue, cyanosis, and oxygenation.",
+      "system": "skin",
+      "text": "Assess skin and lip color for cyanosis.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal color",
+        "Cyanosis"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess oral condition, swallowing safety, cough strength, and neurologic deficits when aspiration is a concern.",
+      "system": "respiratory",
+      "text": "Assess chest wall expansion for symmetry and tracheal position.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Symmetric expansion, midline trachea",
+        "Asymmetric expansion or tracheal shift"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess for asymmetric chest expansion, dullness or hyperresonance when appropriate, and pleuritic tenderness.",
+      "system": "general",
+      "text": "Assess body habitus and nutritional status.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal body habitus",
+        "Cachectic appearance"
       ],
       "select": "one"
     }

@@ -10,216 +10,251 @@
     {
       "id": "history-01",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about fever, chills, rigors, duration, antipyretic use, and change in symptoms over time.",
+      "system": "genitourinary",
+      "text": "Do you have any burning or pain when you urinate?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No dysuria",
+        "Dysuria"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about localizing respiratory, urinary, gastrointestinal, skin, dental, line, and neurologic symptoms.",
+      "system": "genitourinary",
+      "text": "Are you urinating more often than usual, or feeling like you have to go urgently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Increased frequency",
+        "Urgency"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recent antibiotics, prior resistant organisms, recurrent infections, and medication allergies.",
+      "system": "genitourinary",
+      "text": "Do you have any pain just above your pubic bone?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No suprapubic pain",
+        "Suprapubic pain"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about recent hospitalization, procedures, sick contacts, travel, animal or environmental exposures, and food or water exposures.",
+      "system": "genitourinary",
+      "text": "Have you seen blood in your urine?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No visible hematuria",
+        "Visible hematuria"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about diabetes, immunosuppression, malignancy, chronic organ disease, and other infection-risk conditions.",
+      "system": "genitourinary",
+      "text": "Do you have pain in one side of your back or flank?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No flank pain",
+        "Unilateral flank pain"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "skin",
-      "text": "Ask about indwelling devices, wounds, surgery, injections, aspiration risk, and other possible portals of entry.",
+      "system": "infectious",
+      "text": "Have you had a fever with shaking chills?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No fever",
+        "Subjective fever",
+        "Fever with rigors"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "genitourinary",
-      "text": "Ask about dysuria, frequency, urgency, suprapubic pain, hematuria, incontinence, and change in urine appearance.",
+      "system": "gastrointestinal",
+      "text": "Have you had nausea or vomiting along with the urinary symptoms?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Nausea",
+        "Vomiting"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about fever, chills, flank pain, nausea, vomiting, rigors, and systemic illness.",
+      "system": "genitourinary",
+      "text": "Do you currently have a urinary catheter in place?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No catheter",
+        "Indwelling catheter present"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "reproductive",
-      "text": "Ask about catheter use, retention, obstruction, stones, pregnancy, prostate symptoms, neurogenic bladder, and recent instrumentation.",
+      "system": "genitourinary",
+      "text": "Have you had trouble starting your stream or noticed it's weaker than usual, or do you have a history of urinary blockage or stones?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No voiding difficulty",
+        "Difficulty voiding or weak stream",
+        "Known obstruction or urinary stones"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recurrent UTI, prior cultures, resistant organisms, recent antibiotics, and medication allergies.",
+      "system": "reproductive",
+      "text": "Is there any chance you could be pregnant?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Not pregnant or not applicable",
+        "Pregnant"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "reproductive",
+      "text": "Have you noticed any vaginal discharge or irritation?",
+      "choices": [
+        "No vaginal discharge or irritation",
+        "Vaginal discharge or irritation"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "reproductive",
+      "text": "Do you have any pain in the area between your genitals and rectum, or any known prostate problems?",
+      "choices": [
+        "Not applicable or none",
+        "Perineal pain or prostate symptoms"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "medication",
+      "text": "Do you get urinary tract infections often, or were you told a prior infection was resistant to certain antibiotics?",
+      "choices": [
+        "No recurrent infections or known resistant organism",
+        "Recurrent urinary tract infections",
+        "Known resistant organism on prior culture"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-14",
+      "kind": "history",
+      "system": "genitourinary",
+      "text": "Do you have a bladder condition affecting how it empties, or have you had a recent procedure involving your bladder or urethra?",
+      "choices": [
+        "Neither",
+        "Known neurogenic bladder",
+        "Recent urologic instrumentation"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess appearance, temperature, heart rate, blood pressure, respiratory pattern, oxygenation, and bedside perfusion.",
+      "system": "genitourinary",
+      "text": "Palpate the suprapubic region for tenderness.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No suprapubic tenderness",
+        "Suprapubic tenderness"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess alertness, orientation, capillary refill, extremity temperature, and diaphoresis.",
+      "system": "genitourinary",
+      "text": "Assess for bladder distention.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No bladder distention",
+        "Palpable, distended bladder"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "infectious",
-      "text": "Inspect skin, pressure areas, wounds, intravenous sites, drains, and indwelling devices for focal infection findings.",
+      "system": "genitourinary",
+      "text": "Assess for costovertebral-angle tenderness.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "None",
+        "Unilateral costovertebral-angle tenderness",
+        "Bilateral costovertebral-angle tenderness"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Inspect work of breathing and auscultate lungs for focal breath-sound changes, crackles, wheeze, or pleural findings.",
+      "system": "general",
+      "text": "Assess general appearance and hemodynamic stability.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Well-appearing, normal vital signs",
+        "Ill-appearing, tachycardic",
+        "Hypotensive or septic-appearing"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "genitourinary",
-      "text": "Inspect and palpate the abdomen and assess for suprapubic or costovertebral-angle tenderness when relevant.",
+      "system": "neurologic",
+      "text": "Assess mental status, since urinary infection can present atypically as delirium in older adults.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No mental status change",
+        "New confusion"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "reproductive",
-      "text": "Perform a focused examination of the symptom-directed source, including oral, joint, neurologic, or pelvic findings when indicated.",
+      "system": "genitourinary",
+      "text": "Inspect the urine appearance, by catheter bag if present.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Clear, pale urine",
+        "Cloudy or foul-smelling urine",
+        "Grossly bloody urine"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "genitourinary",
-      "text": "Inspect and palpate for suprapubic fullness, tenderness, or bladder distention.",
+      "system": "reproductive",
+      "text": "Perform a pelvic examination when clinically indicated.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal or deferred as not indicated",
+        "Cervical motion tenderness or vaginal discharge"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "genitourinary",
-      "text": "Assess for costovertebral-angle tenderness and flank pain.",
+      "system": "reproductive",
+      "text": "Perform a prostate examination when clinically indicated.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal or deferred as not indicated",
+        "Tender, boggy prostate"
       ],
       "select": "one"
     },
@@ -227,23 +262,21 @@
       "id": "exam-09",
       "kind": "exam",
       "system": "skin",
-      "text": "Inspect catheter hardware, urine drainage, and perineal skin only when clinically indicated and appropriate.",
+      "text": "Inspect the catheter insertion site or perineal skin when a catheter is present.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal skin, no catheter or skin intact",
+        "Catheter site irritation or skin breakdown"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess temperature, hemodynamic appearance, hydration, mental status, and peripheral perfusion.",
+      "system": "general",
+      "text": "Assess mucous membranes and skin turgor for dehydration.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Moist mucous membranes, normal turgor",
+        "Dry mucous membranes or poor skin turgor"
       ],
       "select": "one"
     }

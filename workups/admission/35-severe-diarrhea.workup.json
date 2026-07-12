@@ -11,47 +11,46 @@
       "id": "history-01",
       "kind": "history",
       "system": "gastrointestinal",
-      "text": "Ask about onset, location, radiation, severity, timing, and relationship to meals, movement, or bowel movements.",
+      "text": "How many watery stools have you been having per day?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Fewer than 3 per day",
+        "3 to 9 per day",
+        "10 or more per day"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about oral intake, nausea, vomiting, fluid losses, urine output, and ability to tolerate medications.",
+      "system": "hematologic",
+      "text": "Have you noticed blood or mucus in your stool?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Blood in stool",
+        "Mucus in stool"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "hematologic",
-      "text": "Ask about stool frequency and character, flatus, bleeding, dysuria, hematuria, and change from baseline.",
+      "system": "infectious",
+      "text": "Have you had a fever along with the diarrhea?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No fever",
+        "Fever"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "skin",
-      "text": "Ask about prior surgery, obstruction, gallstones, liver disease, ulcers, inflammatory bowel disease, and prior episodes.",
+      "system": "gastrointestinal",
+      "text": "Do you have belly cramping or pain along with the diarrhea?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No abdominal pain",
+        "Mild cramping",
+        "Severe abdominal pain"
       ],
       "select": "one"
     },
@@ -59,95 +58,136 @@
       "id": "history-05",
       "kind": "history",
       "system": "medication",
-      "text": "Ask about NSAIDs, anticoagulants, alcohol, new medications, antibiotics, toxins, and relevant dietary exposures.",
+      "text": "Have you taken any antibiotics in the past eight weeks?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No recent antibiotic use",
+        "Recent antibiotic course"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "reproductive",
-      "text": "Ask about pregnancy possibility and gynecologic symptoms when clinically relevant.",
+      "system": "infectious",
+      "text": "Have you traveled anywhere recently, especially outside the country?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No recent travel",
+        "Recent travel to a diarrheal-illness-endemic area"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "gastrointestinal",
-      "text": "Ask about onset, frequency, volume, nocturnal stools, urgency, incontinence, blood, mucus, and stool color.",
+      "system": "infectious",
+      "text": "Has anyone around you been sick with similar symptoms, or have you eaten anything that might have been undercooked or spoiled?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Sick contacts with similar symptoms",
+        "Suspect food exposure"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about sick contacts, travel, food or water exposure, recent antibiotics, hospitalization, daycare, and animal exposure.",
+      "system": "gastrointestinal",
+      "text": "Do you have inflammatory bowel disease, and does this feel like a prior flare?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known inflammatory bowel disease",
+        "Known inflammatory bowel disease, resembles a prior flare",
+        "Known inflammatory bowel disease, feels different from prior flares"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about fever, abdominal pain, vomiting, weight loss, rash, joint pain, urinary symptoms, and reduced urine output.",
+      "system": "medication",
+      "text": "Are you on chemotherapy, a transplant medication, or long-term steroids?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No chronic immunosuppression",
+        "Chronic immunosuppression"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about inflammatory bowel disease, immunosuppression, malabsorption, laxatives, metformin, alcohol, and prior similar episodes.",
+      "system": "genitourinary",
+      "text": "Have you noticed a change in how much you're urinating?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Normal urine output",
+        "Decreased urine output"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "neurologic",
+      "text": "Have you felt lightheaded or dizzy, especially when standing up?",
+      "choices": [
+        "No lightheadedness",
+        "Lightheaded or dizzy on standing"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "gastrointestinal",
+      "text": "Are your stools waking you up at night?",
+      "choices": [
+        "No nocturnal stools",
+        "Nocturnal stools"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "gastrointestinal",
+      "text": "Have you lost weight without trying over the past several weeks?",
+      "choices": [
+        "No unintentional weight loss",
+        "Unintentional weight loss"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-14",
+      "kind": "history",
+      "system": "medication",
+      "text": "Do you take metformin or a laxative regularly?",
+      "choices": [
+        "Neither",
+        "Metformin use",
+        "Regular laxative use"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess appearance, vital signs, mucous membranes, orthostatic symptoms when safe, and bedside perfusion.",
+      "system": "general",
+      "text": "Assess hydration status and orthostatic vital signs when safe.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Euvolemic, no orthostatic change",
+        "Dry mucous membranes or poor turgor",
+        "Positive orthostatic hypotension"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "skin",
-      "text": "Inspect for scars, distention, asymmetry, visible hernia, skin changes, and respiratory movement of the abdomen.",
+      "system": "cardiovascular",
+      "text": "Assess hemodynamic stability.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normotensive, stable",
+        "Tachycardic",
+        "Hypotensive or in shock"
       ],
       "select": "one"
     },
@@ -155,95 +195,89 @@
       "id": "exam-03",
       "kind": "exam",
       "system": "gastrointestinal",
-      "text": "Auscultate and palpate systematically for focal tenderness, guarding, rebound, mass, organ enlargement, or pulsatility.",
+      "text": "Palpate the abdomen for tenderness, guarding, and rebound.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Soft, nontender",
+        "Focal tenderness without guarding",
+        "Guarding, rebound, or rigidity"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "genitourinary",
-      "text": "Assess for costovertebral-angle tenderness and examine relevant hernia sites when indicated.",
+      "system": "gastrointestinal",
+      "text": "Assess for abdominal distention.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No distention",
+        "Distention present"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "reproductive",
-      "text": "Perform rectal, perianal, or pelvic examination only when clinically indicated and appropriate.",
+      "system": "neurologic",
+      "text": "Assess mental status.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Alert and oriented",
+        "Confused or lethargic"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "hematologic",
-      "text": "Inspect for jaundice, pallor, edema, bruising, chronic liver-disease stigmata, and other systemic findings when relevant.",
+      "system": "gastrointestinal",
+      "text": "Perform a rectal examination when indicated.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal, guaiac negative, or deferred as not indicated",
+        "Gross blood on examination"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess mucous membranes, heart rate, blood pressure, mental status, capillary refill, and orthostatic symptoms when safe.",
+      "system": "skin",
+      "text": "Inspect for a new rash or joint swelling suggesting a systemic inflammatory cause.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Neither",
+        "New rash",
+        "Joint swelling"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "gastrointestinal",
-      "text": "Inspect for distention and palpate for focal tenderness, guarding, rebound, mass, and peritoneal signs.",
+      "system": "skin",
+      "text": "Inspect the perianal skin for irritation or breakdown from frequent stooling.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Skin intact",
+        "Perianal irritation or breakdown"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "hematologic",
-      "text": "Inspect for rash, bruising, edema, and joint inflammation that may suggest systemic disease.",
+      "system": "genitourinary",
+      "text": "Assess urine output.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal urine output",
+        "Decreased urine output"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "skin",
-      "text": "Inspect for perineal skin breakdown or rectal findings only when clinically indicated and appropriate.",
+      "system": "general",
+      "text": "Assess body habitus and nutritional status.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal body habitus",
+        "Cachectic appearance"
       ],
       "select": "one"
     }

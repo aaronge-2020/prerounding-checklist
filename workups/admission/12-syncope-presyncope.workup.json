@@ -4,18 +4,18 @@
   "title": "Syncope or presyncope",
   "aliases": [
     "fainting",
-    "near syncope"
+    "passing out"
   ],
   "items": [
     {
       "id": "history-01",
       "kind": "history",
-      "system": "functional",
-      "text": "Establish last known well or symptom onset, progression, baseline cognition, baseline neurologic function, and functional status.",
+      "system": "neurologic",
+      "text": "Did you have any warning, like nausea, sweating, or tunnel vision, before you passed out, or did it happen with no warning at all?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Warning prodrome with nausea, diaphoresis, or tunnel vision",
+        "No prodrome, sudden loss of consciousness",
+        "Preceded by palpitations"
       ],
       "select": "one"
     },
@@ -23,215 +23,253 @@
       "id": "history-02",
       "kind": "history",
       "system": "neurologic",
-      "text": "Ask about weakness, numbness, facial asymmetry, speech or vision change, imbalance, dysphagia, and severe headache.",
+      "text": "Were you standing for a long time, in the heat, in pain, or scared right before it happened, or was it triggered by coughing, urinating, or having a bowel movement?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No situational trigger",
+        "Prolonged standing, heat, pain, or fear",
+        "Cough, micturition, or defecation"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "neurologic",
-      "text": "Ask about loss of consciousness, seizure-like activity, prodrome, post-event confusion, incontinence, tongue injury, and witness observations.",
+      "system": "cardiovascular",
+      "text": "Were you lying down, sitting, standing up, or exercising when it happened?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Supine or seated",
+        "On standing",
+        "During exertion"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about falls, head or neck injury, anticoagulant or antiplatelet use, and bleeding symptoms.",
+      "system": "neurologic",
+      "text": "How long were you out, and did you feel back to normal right away or stay confused afterward?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Brief, under one minute, with rapid full recovery",
+        "Prolonged unconsciousness",
+        "Prolonged postictal confusion after regaining consciousness"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recent medication changes, sedatives, alcohol, recreational substances, withdrawal risk, and toxic exposures.",
+      "system": "neurologic",
+      "text": "Did anyone see you jerk or shake, bite your tongue, or lose control of your bladder during the episode?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "None of these",
+        "Brief myoclonic jerks (convulsive syncope)",
+        "Tongue biting or urinary incontinence"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about fever, poor intake, glucose symptoms, renal or liver disease, and other systemic symptoms that may affect cognition.",
+      "system": "cardiovascular",
+      "text": "Did you feel your heart racing or pounding right before you passed out?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No palpitations",
+        "Palpitations preceding the event"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "general",
-      "text": "Ask about posture, activity, prodrome, duration, witness observations, recovery time, and injuries.",
+      "system": "cardiovascular",
+      "text": "Did you have chest pain right before you passed out?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No chest pain",
+        "Chest pain preceding the event"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "neurologic",
-      "text": "Ask about palpitations, chest pain, exertional syncope, dyspnea, known arrhythmia, structural heart disease, and family history of sudden death.",
+      "system": "cardiovascular",
+      "text": "Have you been told you have a heart valve problem, a thickened heart muscle, or a weak heart?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known structural heart disease",
+        "Known valvular disease or hypertrophic cardiomyopathy",
+        "Known reduced ejection fraction or implanted defibrillator"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about poor intake, vomiting, diarrhea, melena, hematochezia, heavy menstrual bleeding, and medication-related fluid loss.",
+      "system": "cardiovascular",
+      "text": "Has anyone in your family died suddenly from a heart problem before age 50?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known family history",
+        "Family history of sudden cardiac death before age 50"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "neurologic",
-      "text": "Ask about tonic-clonic movements, tongue injury, incontinence, prolonged confusion, focal deficits, and prior seizures.",
+      "system": "medication",
+      "text": "Have you started a new blood pressure pill, water pill, or heart rhythm medication recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No relevant new medication",
+        "New antihypertensive or diuretic",
+        "New QT-prolonging medication"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "hematologic",
+      "text": "Have you noticed black, tarry stools, red blood in your stool, or vomited blood?",
+      "choices": [
+        "No signs of gastrointestinal bleeding",
+        "Melena or hematochezia",
+        "Hematemesis"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "musculoskeletal",
+      "text": "Did you hit your head when you fell?",
+      "choices": [
+        "No head strike",
+        "Head strike during the fall"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "endocrine",
+      "text": "Do you have diabetes, and did you feel shaky, sweaty, or hungry right before this happened?",
+      "choices": [
+        "No known diabetes",
+        "Known diabetes without hypoglycemic symptoms",
+        "Known diabetes with hypoglycemic symptoms preceding the event"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-14",
+      "kind": "history",
+      "system": "functional",
+      "text": "Have you been immobilized, had recent surgery or travel, or do you have cancer or a history of blood clots?",
+      "choices": [
+        "No provoking risk factor",
+        "Recent immobilization, surgery, or travel",
+        "Active malignancy or prior venous thromboembolism"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "endocrine",
-      "text": "Assess vital signs, general appearance, glucose status if available at bedside, and signs of cardiorespiratory instability.",
+      "system": "cardiovascular",
+      "text": "Assess orthostatic vital signs when safe.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Negative orthostatics",
+        "Positive orthostatic hypotension",
+        "Unable to safely assess"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess level of consciousness, attention, orientation, language, memory, behavior, and fluctuation from baseline.",
+      "system": "cardiovascular",
+      "text": "Auscultate the heart for a murmur.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No murmur",
+        "Systolic murmur",
+        "Diastolic murmur"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess pupils, visual fields when feasible, ocular movements, facial symmetry, speech, palate, and swallowing safety as indicated.",
+      "system": "cardiovascular",
+      "text": "Assess heart rate and rhythm.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Regular rate and rhythm",
+        "Irregular rhythm",
+        "Bradycardic"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess pronator drift, limb strength, tone, sensation, reflex asymmetry, and neglect when appropriate.",
+      "system": "cardiovascular",
+      "text": "Auscultate for a carotid bruit.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Absent",
+        "Present"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess coordination, truncal stability, gait, and Romberg only when it is safe to do so.",
+      "system": "neurologic",
+      "text": "Assess for a focal neurologic deficit.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No focal deficit",
+        "Focal deficit present"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "skin",
-      "text": "Inspect for head or neck injury and assess neck stiffness or rash when the presentation makes this relevant.",
+      "system": "ent",
+      "text": "Inspect the tongue for a lateral laceration suggesting seizure.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No tongue laceration",
+        "Lateral tongue laceration"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess heart rate and blood pressure with position change when safe and clinically appropriate.",
+      "system": "musculoskeletal",
+      "text": "Inspect for injury sustained during the fall.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No injury identified",
+        "Injury identified from the fall"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess rate, rhythm, murmurs, signs of valvular disease, pulse quality, and peripheral perfusion.",
+      "system": "gastrointestinal",
+      "text": "Perform a rectal examination when gastrointestinal bleeding is suspected.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal or deferred as not indicated",
+        "Melena on examination"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess mental status, cranial nerves, strength, sensation, coordination, and gait only when safe.",
+      "system": "hematologic",
+      "text": "Inspect conjunctiva and nail beds for pallor.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal color",
+        "Conjunctival or nail-bed pallor"
       ],
       "select": "one"
     },
@@ -239,11 +277,10 @@
       "id": "exam-10",
       "kind": "exam",
       "system": "skin",
-      "text": "Inspect head, neck, skin, extremities, and painful areas for trauma sustained during the event.",
+      "text": "Assess skin for diaphoresis or pallor at the time of evaluation.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal, dry skin",
+        "Diaphoretic or pale"
       ],
       "select": "one"
     }

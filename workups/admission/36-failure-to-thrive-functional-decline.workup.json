@@ -11,71 +11,66 @@
       "id": "history-01",
       "kind": "history",
       "system": "functional",
-      "text": "Ask about baseline cognition, activities of daily living, ambulation, assistive devices, continence, and recent functional change.",
+      "text": "Compared to a few months ago, are you able to bathe, dress, and use the bathroom on your own, or do you need help now?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Independent with activities of daily living",
+        "Newly needs assistance with activities of daily living",
+        "Bedbound or fully dependent"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about home setting, caregivers, available supports, medication access, food access, transportation, and barriers to care.",
+      "system": "functional",
+      "text": "Have you lost weight without trying over the past few months?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No unintentional weight loss",
+        "Unintentional weight loss"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recent medication changes, sedatives, analgesics, alcohol, other substances, and adherence.",
+      "system": "functional",
+      "text": "Has your appetite changed recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No change in appetite",
+        "Decreased appetite"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "psychiatric",
-      "text": "Ask about depression, anxiety, delirium symptoms, self-harm risk when relevant, abuse or neglect concerns, and immediate safety.",
+      "system": "gastrointestinal",
+      "text": "Do you have any trouble chewing or swallowing your food?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No difficulty chewing or swallowing",
+        "Difficulty chewing or swallowing"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about appetite, weight change, swallowing, hydration, sleep, fatigue, and symptoms limiting participation in care.",
+      "system": "psychiatric",
+      "text": "Have you been feeling down or lost interest in things you usually enjoy?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No low mood or anhedonia",
+        "Low mood or anhedonia"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about fever, pain, falls, trauma, bleeding, focal symptoms, and other acute changes that may explain decline.",
+      "system": "neurologic",
+      "text": "Have family or caregivers noticed your memory or thinking getting worse recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No noticed cognitive decline",
+        "Family-noticed cognitive decline"
       ],
       "select": "one"
     },
@@ -83,11 +78,11 @@
       "id": "history-07",
       "kind": "history",
       "system": "functional",
-      "text": "Ask about decline in eating, bathing, dressing, toileting, walking, transfers, continence, cognition, and time course.",
+      "text": "Who do you have helping you at home, and are you able to get the food, medications, and supplies you need?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Adequate supports, needs met",
+        "Living alone with limited supports",
+        "Unable to access food, medications, or supplies"
       ],
       "select": "one"
     },
@@ -95,155 +90,181 @@
       "id": "history-08",
       "kind": "history",
       "system": "functional",
-      "text": "Ask about appetite, weight loss, food access, dentition, dysphagia, choking, nausea, vomiting, diarrhea, and hydration.",
+      "text": "Have you fallen recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No recent fall",
+        "Recent fall"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "psychiatric",
-      "text": "Ask about memory change, delirium fluctuation, depression, grief, isolation, hallucinations, sleep, and self-harm risk when relevant.",
+      "system": "medication",
+      "text": "Have you started any new medications recently, especially anything for sleep, pain, or anxiety?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No new medication",
+        "New sedating medication started"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about caregiver capacity, home hazards, medication management, financial or food insecurity, neglect, and goals of care.",
+      "system": "infectious",
+      "text": "Have you had a fever or any new pain?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Fever",
+        "New pain"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "psychiatric",
+      "text": "Have you had any thoughts of harming yourself?",
+      "choices": [
+        "No suicidal ideation",
+        "Suicidal ideation present"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "functional",
+      "text": "Do you feel safe at home, and has anyone been physically rough with you or taken your money or belongings without permission?",
+      "choices": [
+        "Feels safe, no concerns",
+        "Concern for abuse, neglect, or financial exploitation"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "genitourinary",
+      "text": "Have you had any accidents with your bladder or bowels recently that are new for you?",
+      "choices": [
+        "No new incontinence",
+        "New urinary or bowel incontinence"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess appearance, vital signs, hydration, pain behavior, and evidence of acute cardiorespiratory instability.",
+      "system": "general",
+      "text": "Assess vital signs and hydration status.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal vital signs, euvolemic",
+        "Abnormal vital signs or signs of dehydration"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "psychiatric",
-      "text": "Assess alertness, attention, orientation, mood, thought process, agitation, and ability to participate in the examination.",
+      "system": "neurologic",
+      "text": "Assess attention and level of consciousness.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Alert and fully oriented",
+        "Inattentive or fluctuating alertness",
+        "Lethargic or obtunded"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "functional",
-      "text": "Inspect oral cavity, mucous membranes, body habitus, skin integrity, bruising, edema, and pressure areas.",
+      "system": "general",
+      "text": "Assess body habitus and nutritional status.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal body habitus",
+        "Cachectic appearance"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "functional",
-      "text": "Assess bed mobility, transfers, strength, balance, gait, and assistive-device use only when safe.",
+      "system": "ent",
+      "text": "Inspect the oral cavity and dentition.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Good dentition, moist mucous membranes",
+        "Poor dentition or oral lesions",
+        "Dry mucous membranes"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Inspect and palpate symptomatic joints, spine, and muscles for tenderness, swelling, deformity, range-of-motion limitation, or injury.",
+      "system": "skin",
+      "text": "Inspect skin and hygiene for evidence of neglect or pressure injury.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Skin intact, hygiene appropriate",
+        "Poor hygiene",
+        "Pressure ulcers or bruising in varying stages of healing"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "medication",
-      "text": "Assess focal strength, sensation, coordination, tremor, and signs of withdrawal or intoxication when relevant.",
+      "system": "musculoskeletal",
+      "text": "Assess gait, balance, and safety of ambulation when safe.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal gait and balance",
+        "Unsteady gait",
+        "Unable to ambulate safely"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "functional",
-      "text": "Assess body habitus, muscle wasting, oral cavity, hydration, edema, skin integrity, and pressure areas.",
+      "system": "musculoskeletal",
+      "text": "Assess proximal muscle strength.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal strength",
+        "Proximal muscle weakness"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "psychiatric",
-      "text": "Assess attention, orientation, hearing and vision aids, mood, behavior, and ability to participate in care.",
+      "system": "cardiovascular",
+      "text": "Auscultate the heart for rate, rhythm, and murmurs.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal rate and regular rhythm, no murmur",
+        "Irregular rhythm",
+        "Murmur present"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "functional",
-      "text": "Assess bed mobility, transfers, gait, balance, grip, and assistive-device use only when safe.",
+      "system": "respiratory",
+      "text": "Auscultate the lungs.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Clear bilaterally",
+        "Focal or diffuse abnormal findings"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "skin",
-      "text": "Perform focused cardiopulmonary, abdominal, urinary, skin, and neurologic examination for potentially reversible contributors.",
+      "system": "gastrointestinal",
+      "text": "Perform a rectal examination when indicated.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal, guaiac negative, or deferred as not indicated",
+        "Melena on rectal examination"
       ],
       "select": "one"
     }

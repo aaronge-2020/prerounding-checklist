@@ -3,92 +3,87 @@
   "id": "dka-hhs",
   "title": "Diabetes mellitus with complications (DKA, HHS)",
   "aliases": [
-    "DKA",
-    "HHS",
-    "hyperglycemic crisis"
+    "diabetic ketoacidosis",
+    "hyperosmolar hyperglycemic state"
   ],
   "items": [
     {
       "id": "history-01",
       "kind": "history",
-      "system": "general",
-      "text": "Ask about onset, progression, severity, recent acute illness, and change from usual health.",
+      "system": "endocrine",
+      "text": "Have you been urinating much more than usual?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No polyuria",
+        "Polyuria"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "genitourinary",
-      "text": "Ask about oral intake, thirst, vomiting, diarrhea, urine volume, urinary retention, and recent weight change.",
+      "system": "endocrine",
+      "text": "Have you been unusually thirsty?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No polydipsia",
+        "Polydipsia"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about new or missed medications, insulin, diuretics, ACE inhibitors, NSAIDs, steroids, laxatives, and supplements.",
+      "system": "endocrine",
+      "text": "Have you been diagnosed with diabetes before, and if so, do you take insulin or pills for it?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Known type 1 diabetes on insulin",
+        "Known type 2 diabetes",
+        "No prior diabetes diagnosis, possible new onset"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "endocrine",
-      "text": "Ask about chronic kidney disease, diabetes, adrenal or thyroid disease, prior electrolyte disorders, and baseline glucose control.",
+      "system": "medication",
+      "text": "Have you been taking your insulin as prescribed, or has your insulin pump had any problems?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Adherent, no pump issues",
+        "Missed insulin doses",
+        "Insulin pump malfunction or interruption"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about infection symptoms, ischemic symptoms, recent procedures or contrast exposure, alcohol use, and dietary change.",
+      "system": "gastrointestinal",
+      "text": "Do you have belly pain?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No abdominal pain",
+        "Abdominal pain"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "neurologic",
-      "text": "Ask about weakness, cramps, paresthesias, palpitations, confusion, seizures, and exercise intolerance.",
+      "system": "gastrointestinal",
+      "text": "Have you had nausea or vomiting?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Nausea",
+        "Vomiting"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "endocrine",
-      "text": "Ask about polyuria, polydipsia, weight loss, weakness, blurry vision, nausea, vomiting, abdominal pain, and confusion.",
+      "system": "infectious",
+      "text": "Have you had a fever or felt sick before this started?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No fever or infectious symptoms",
+        "Fever or infectious symptoms"
       ],
       "select": "one"
     },
@@ -96,155 +91,192 @@
       "id": "history-08",
       "kind": "history",
       "system": "medication",
-      "text": "Ask about insulin or pump use, missed doses, access barriers, recent dose changes, SGLT2 inhibitor use, and other diabetes medications.",
+      "text": "Are you taking a diabetes medication that ends in -gliflozin, like empagliflozin or canagliflozin?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Not on an SGLT2 inhibitor",
+        "Currently on an SGLT2 inhibitor"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about infection, ischemic symptoms, pancreatitis symptoms, trauma, surgery, steroid use, alcohol use, and substance use.",
+      "system": "neurologic",
+      "text": "Compared to normal, is the patient acting the same, a little more confused, or very sleepy and hard to wake up?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Alert and at baseline per family or caregiver",
+        "Mild new confusion",
+        "Significant lethargy or unresponsiveness"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "general",
-      "text": "Ask whether symptoms evolved over hours to days or more gradually over days to weeks and whether intake has been maintained.",
+      "system": "medication",
+      "text": "Have you been drinking a lot of alcohol recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No recent heavy alcohol use",
+        "Recent heavy alcohol use"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "cardiovascular",
+      "text": "Have you had any chest pain?",
+      "choices": [
+        "No chest pain",
+        "Chest pain"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "endocrine",
+      "text": "Have you lost weight without trying over the past few weeks?",
+      "choices": [
+        "No unintentional weight loss",
+        "Unintentional weight loss over recent weeks"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "functional",
+      "text": "Have you had trouble affording or getting access to your insulin?",
+      "choices": [
+        "No barrier identified",
+        "Cost or access barrier",
+        "Intentional nonadherence"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-14",
+      "kind": "history",
+      "system": "endocrine",
+      "text": "Have you had an episode like this before, where your blood sugar was dangerously high?",
+      "choices": [
+        "First episode",
+        "Recurrent episodes"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess appearance, heart rate, blood pressure, respiratory rate and pattern, temperature, and bedside perfusion.",
+      "system": "neurologic",
+      "text": "Assess mental status.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Alert and oriented",
+        "Lethargic",
+        "Obtunded or comatose"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "skin",
-      "text": "Assess mucous membranes, jugular venous pressure when feasible, edema, skin turgor, and orthostatic symptoms when safe.",
+      "system": "respiratory",
+      "text": "Assess respiratory pattern for Kussmaul breathing.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal breathing pattern",
+        "Rapid, deep Kussmaul breathing"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess alertness, orientation, attention, behavior, and change from baseline.",
+      "system": "ent",
+      "text": "Assess breath odor for a fruity or acetone smell.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Absent",
+        "Present"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess rate, rhythm, heart sounds, peripheral pulses, capillary refill, and signs of volume overload or depletion.",
+      "system": "general",
+      "text": "Assess hydration status.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Euvolemic",
+        "Dry mucous membranes or poor skin turgor",
+        "Severe dehydration with hypotension"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess work of breathing, lung sounds, and abnormal respiratory pattern including deep or rapid breathing.",
+      "system": "gastrointestinal",
+      "text": "Palpate the abdomen for tenderness.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Nontender",
+        "Diffuse tenderness without peritoneal signs"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess gross strength, tremor, reflexes, sensation, tetany, asterixis, and gait only when safe and relevant.",
+      "system": "endocrine",
+      "text": "Check fingerstick glucose.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Under 250 mg/dL",
+        "250 to 600 mg/dL",
+        "Over 600 mg/dL, suggesting hyperosmolar state"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "skin",
-      "text": "Assess mucous membranes, skin turgor, heart rate, blood pressure, peripheral perfusion, and orthostatic symptoms when safe.",
+      "system": "cardiovascular",
+      "text": "Assess vital signs for tachycardia or hypotension.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal vital signs",
+        "Tachycardic",
+        "Hypotensive"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Inspect respiratory depth and rate for deep or rapid breathing and assess for fruity breath odor when present.",
+      "system": "skin",
+      "text": "Assess skin turgor.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal skin turgor",
+        "Poor turgor or tenting"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "gastrointestinal",
-      "text": "Assess for tenderness, guarding, distention, and pain that could reflect DKA or a precipitating condition.",
+      "system": "infectious",
+      "text": "Examine for a focal infectious source.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No focal source identified",
+        "Focal source identified"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "infectious",
-      "text": "Perform focused lung, skin, urinary, cardiac, and neurologic examination for possible precipitants.",
+      "system": "neurologic",
+      "text": "Assess for a focal neurologic deficit or seizure activity, which can occur with hyperosmolar state.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No focal deficit or seizure",
+        "Focal neurologic deficit or seizure activity"
       ],
       "select": "one"
     }

@@ -3,32 +3,29 @@
   "id": "venous-thromboembolism",
   "title": "Venous thromboembolism (DVT/PE)",
   "aliases": [
-    "DVT",
-    "PE",
+    "deep vein thrombosis",
     "pulmonary embolism"
   ],
   "items": [
     {
       "id": "history-01",
       "kind": "history",
-      "system": "general",
-      "text": "Ask about onset, tempo, severity, triggers, relieving factors, and change from baseline.",
+      "system": "cardiovascular",
+      "text": "Is one of your legs more swollen than the other?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No leg swelling",
+        "Unilateral leg swelling"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about chest discomfort, palpitations, syncope, diaphoresis, cough, fever, and hemoptysis.",
+      "system": "cardiovascular",
+      "text": "Do you have pain or tenderness in your calf?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No calf pain or tenderness",
+        "Calf pain or tenderness"
       ],
       "select": "one"
     },
@@ -36,131 +33,172 @@
       "id": "history-03",
       "kind": "history",
       "system": "respiratory",
-      "text": "Ask about prior heart or lung disease, prior admissions, baseline exertional tolerance, and home oxygen use.",
+      "text": "Do you have any sharp chest pain that's worse when you breathe in?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No pleuritic chest pain",
+        "Pleuritic chest pain"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about tobacco or vaping exposure, immobility, thromboembolic risk, and relevant family history.",
+      "system": "respiratory",
+      "text": "Did your shortness of breath come on gradually, or suddenly?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No dyspnea",
+        "Gradual dyspnea",
+        "Sudden-onset dyspnea"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recent medication changes, adherence, inhaler or diuretic use, and anticoagulant use when relevant.",
+      "system": "respiratory",
+      "text": "Have you coughed up any blood?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No hemoptysis",
+        "Hemoptysis"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about baseline ambulation, sleep position, activity limitation, and new functional decline.",
+      "system": "neurologic",
+      "text": "Have you felt like you were going to pass out, or did you actually pass out?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Presyncope",
+        "Syncope"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "neurologic",
-      "text": "Ask about unilateral leg pain or swelling, dyspnea, pleuritic chest pain, hemoptysis, syncope, and palpitations.",
+      "system": "functional",
+      "text": "Have you had surgery or been hospitalized recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Recent surgery",
+        "Recent hospitalization"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "reproductive",
-      "text": "Ask about recent surgery, immobilization, hospitalization, travel, cancer, pregnancy, estrogen exposure, prior VTE, and family history.",
+      "system": "functional",
+      "text": "Have you been immobile for a long stretch, or traveled on a trip longer than four hours recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Prolonged immobilization",
+        "Long-distance travel over four hours"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about current or recent anticoagulants, adherence, bleeding, falls, procedures, and contraindication history.",
+      "system": "hematologic",
+      "text": "Do you have an active cancer diagnosis?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No active malignancy",
+        "Active malignancy"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about infection symptoms, heart failure history, COPD or asthma symptoms, chest-wall pain, and ischemic symptoms.",
+      "system": "cardiovascular",
+      "text": "Have you had a blood clot in your leg or lung before?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known prior VTE",
+        "Known prior deep vein thrombosis or pulmonary embolism"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "reproductive",
+      "text": "Are you on hormone therapy or birth control pills, or currently pregnant or recently gave birth?",
+      "choices": [
+        "None of these",
+        "Hormone therapy or oral contraceptive use",
+        "Pregnant or postpartum"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "hematologic",
+      "text": "Have you been diagnosed with a clotting disorder, or does anyone in your family have a history of blood clots?",
+      "choices": [
+        "Neither",
+        "Known thrombophilia",
+        "Family history of venous thromboembolism"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "medication",
+      "text": "Do you currently have, or did you recently have, a central line or PICC line?",
+      "choices": [
+        "No central venous catheter",
+        "Current or recent central venous catheter"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-14",
+      "kind": "history",
+      "system": "musculoskeletal",
+      "text": "Have you had a recent leg injury, or are you in a cast or brace?",
+      "choices": [
+        "Neither",
+        "Recent leg trauma",
+        "Recent cast or immobilization device"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess general appearance, respiratory rate and pattern, heart rate and rhythm, blood pressure, temperature, and oxygenation.",
+      "system": "cardiovascular",
+      "text": "Compare leg circumference for asymmetric swelling.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Symmetric legs",
+        "Unilateral swelling"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Inspect work of breathing and auscultate all lung fields for air movement and focal or diffuse adventitious sounds.",
+      "system": "cardiovascular",
+      "text": "Palpate the calf for tenderness or a cord.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "None",
+        "Tenderness",
+        "Palpable cord"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess cardiac rate and rhythm, heart sounds, murmurs, and signs of impaired peripheral perfusion.",
+      "system": "skin",
+      "text": "Assess the leg for warmth and erythema to help distinguish DVT from cellulitis.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Neither",
+        "Warmth and erythema present"
       ],
       "select": "one"
     },
@@ -168,35 +206,32 @@
       "id": "exam-04",
       "kind": "exam",
       "system": "cardiovascular",
-      "text": "Assess jugular venous pressure when feasible, mucous membranes, edema, and other bedside signs of volume status.",
+      "text": "Assess heart rate.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal rate",
+        "Tachycardic"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Inspect extremities for asymmetry, edema, cyanosis, calf tenderness, and distal pulses.",
+      "system": "respiratory",
+      "text": "Assess oxygen saturation.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal saturation",
+        "Hypoxemic"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess alertness, orientation, and focal neurologic change that could accompany hypoxemia or poor perfusion.",
+      "system": "general",
+      "text": "Assess hemodynamic stability.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normotensive",
+        "Hypotensive or in shock"
       ],
       "select": "one"
     },
@@ -204,11 +239,10 @@
       "id": "exam-07",
       "kind": "exam",
       "system": "cardiovascular",
-      "text": "Inspect and palpate both legs for asymmetric swelling, calf tenderness, erythema, superficial venous change, and edema.",
+      "text": "Assess jugular venous pressure and heart sounds for right heart strain.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal jugular venous pressure and heart sounds",
+        "Elevated jugular venous pressure or a loud pulmonic component of S2"
       ],
       "select": "one"
     },
@@ -216,35 +250,32 @@
       "id": "exam-08",
       "kind": "exam",
       "system": "respiratory",
-      "text": "Assess respiratory rate, work of breathing, oxygenation, lung sounds, and pleuritic splinting.",
+      "text": "Auscultate the lungs for focal findings.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Clear bilaterally",
+        "Focal findings, such as a pleural rub or decreased breath sounds"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess heart rate, rhythm, blood pressure, jugular venous pressure when feasible, perfusion, and signs of right-heart strain.",
+      "system": "skin",
+      "text": "Assess for cyanosis.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Absent",
+        "Present"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "infectious",
-      "text": "Assess chest wall tenderness, focal infection findings, edema, and other physical findings that may explain symptoms.",
+      "system": "neurologic",
+      "text": "Assess mental status and perfusion.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Alert with good perfusion",
+        "Altered mental status or poor perfusion"
       ],
       "select": "one"
     }

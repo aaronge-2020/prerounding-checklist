@@ -11,12 +11,12 @@
     {
       "id": "history-01",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about baseline cognition, activities of daily living, ambulation, assistive devices, continence, and recent functional change.",
+      "system": "medication",
+      "text": "What substance did you last use, how much, and when?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No recent substance use",
+        "Used within the past few hours",
+        "Used more than a day ago"
       ],
       "select": "one"
     },
@@ -24,11 +24,11 @@
       "id": "history-02",
       "kind": "history",
       "system": "medication",
-      "text": "Ask about home setting, caregivers, available supports, medication access, food access, transportation, and barriers to care.",
+      "text": "Do you inject the substance, and if so, where?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No injection use",
+        "Injection use, peripheral sites only",
+        "Injection use, including groin or neck sites"
       ],
       "select": "one"
     },
@@ -36,71 +36,70 @@
       "id": "history-03",
       "kind": "history",
       "system": "medication",
-      "text": "Ask about recent medication changes, sedatives, analgesics, alcohol, other substances, and adherence.",
+      "text": "When did you last drink alcohol, and how much do you typically drink per day?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No regular alcohol use",
+        "Regular use, still drinking",
+        "Regular heavy use, stopped in the past few days"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "psychiatric",
-      "text": "Ask about depression, anxiety, delirium symptoms, self-harm risk when relevant, abuse or neglect concerns, and immediate safety.",
+      "system": "neurologic",
+      "text": "Have you ever had a seizure or seen things that weren't there when stopping alcohol before?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No prior withdrawal seizures or hallucinations",
+        "Prior withdrawal seizure",
+        "Prior withdrawal hallucinations or delirium tremens"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about appetite, weight change, swallowing, hydration, sleep, fatigue, and symptoms limiting participation in care.",
+      "system": "gastrointestinal",
+      "text": "Are you having tremors, sweating, nausea, or anxiety since your last use?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "None of these",
+        "Mild tremor or anxiety",
+        "Significant sweating, nausea, or tremor"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about fever, pain, falls, trauma, bleeding, focal symptoms, and other acute changes that may explain decline.",
+      "system": "gastrointestinal",
+      "text": "Are you having body aches, runny nose, yawning, or diarrhea suggesting opioid withdrawal?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "None of these",
+        "Mild opioid withdrawal symptoms",
+        "Severe opioid withdrawal symptoms"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about substance type, route, amount, frequency, last use, recent change, co-ingestants, prescribed medications, and overdose history.",
+      "system": "cardiovascular",
+      "text": "Have you had chest pain or a racing heart since using?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Chest pain",
+        "Racing heart or palpitations"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about sedation, agitation, hallucinations, tremor, sweating, seizures, chest pain, dyspnea, vomiting, and severe anxiety.",
+      "system": "respiratory",
+      "text": "Has anyone had to give you naloxone or rescue breaths recently because you stopped breathing?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No recent overdose event",
+        "Recent overdose requiring naloxone or rescue breathing"
       ],
       "select": "one"
     },
@@ -108,11 +107,11 @@
       "id": "history-09",
       "kind": "history",
       "system": "infectious",
-      "text": "Ask about injection use, skin wounds, fever, endocarditis symptoms, falls, assault, head injury, and sexual-health risks.",
+      "text": "Do you have a fever, or redness and swelling at an injection site?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Fever",
+        "Redness or swelling at an injection site"
       ],
       "select": "one"
     },
@@ -120,131 +119,147 @@
       "id": "history-10",
       "kind": "history",
       "system": "psychiatric",
-      "text": "Ask about depression, self-harm risk, psychosis, housing, food access, recovery supports, treatment history, and goals.",
+      "text": "Are you having any thoughts of hurting or killing yourself?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No suicidal ideation",
+        "Suicidal ideation present"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "neurologic",
+      "text": "Have you taken multiple substances together, including any pills, sedatives, or other drugs?",
+      "choices": [
+        "No polysubstance use",
+        "Polysubstance use reported"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "psychiatric",
+      "text": "Are you interested in starting treatment or medication for your substance use, like methadone, buprenorphine, or naltrexone?",
+      "choices": [
+        "Not currently interested",
+        "Interested in starting treatment"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess appearance, vital signs, hydration, pain behavior, and evidence of acute cardiorespiratory instability.",
+      "system": "neurologic",
+      "text": "Assess level of consciousness and respiratory drive.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Alert with normal respiratory drive",
+        "Sedated but arousable",
+        "Unresponsive or inadequate respiratory drive"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "psychiatric",
-      "text": "Assess alertness, attention, orientation, mood, thought process, agitation, and ability to participate in the examination.",
+      "system": "medication",
+      "text": "Assess pupil size.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal pupils",
+        "Pinpoint pupils",
+        "Dilated pupils"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "functional",
-      "text": "Inspect oral cavity, mucous membranes, body habitus, skin integrity, bruising, edema, and pressure areas.",
+      "system": "medication",
+      "text": "Assess for tremor, diaphoresis, and agitation suggesting withdrawal.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "None present",
+        "Mild tremor or diaphoresis",
+        "Marked tremor, diaphoresis, or agitation"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "functional",
-      "text": "Assess bed mobility, transfers, strength, balance, gait, and assistive-device use only when safe.",
+      "system": "cardiovascular",
+      "text": "Assess heart rate and blood pressure.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal vital signs",
+        "Tachycardic or hypertensive",
+        "Bradycardic or hypotensive"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Inspect and palpate symptomatic joints, spine, and muscles for tenderness, swelling, deformity, range-of-motion limitation, or injury.",
+      "system": "general",
+      "text": "Assess temperature for fever.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Afebrile",
+        "Febrile"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "medication",
-      "text": "Assess focal strength, sensation, coordination, tremor, and signs of withdrawal or intoxication when relevant.",
+      "system": "skin",
+      "text": "Inspect injection sites and skin for track marks, abscess, or cellulitis.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No skin or soft tissue infection",
+        "Track marks without active infection",
+        "Abscess or cellulitis present"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "skin",
-      "text": "Assess level of consciousness, pupils, respiratory pattern, skin moisture, temperature, heart rate, blood pressure, and bowel sounds.",
+      "system": "cardiovascular",
+      "text": "Auscultate the heart for a new murmur suggesting endocarditis.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No murmur",
+        "New murmur present"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "medication",
-      "text": "Assess tremor, diaphoresis, agitation, anxiety, hallucinations, nausea behavior, piloerection, and seizure activity.",
+      "system": "psychiatric",
+      "text": "Assess for hallucinations or perceptual disturbance.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No hallucinations",
+        "Hallucinations present"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "infectious",
-      "text": "Inspect skin, track marks, wounds, abscesses, cardiac murmurs, lung findings, and peripheral stigmata of infection.",
+      "system": "neurologic",
+      "text": "Assess for tremor progressing to seizure activity or delirium.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No seizure activity or delirium",
+        "Active seizure or delirium tremens"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Inspect for injury and assess mental status, focal deficits, gait only when safe, and signs of head trauma.",
+      "system": "skin",
+      "text": "Inspect for injury or bruising suggesting a fall or assault while intoxicated.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No injury",
+        "Injury present"
       ],
       "select": "one"
     }

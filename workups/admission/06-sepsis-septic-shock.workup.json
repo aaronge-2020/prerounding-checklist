@@ -10,132 +10,181 @@
     {
       "id": "history-01",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about fever, chills, rigors, duration, antipyretic use, and change in symptoms over time.",
+      "system": "respiratory",
+      "text": "Have you had a cough, shortness of breath, or coughed up blood?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No respiratory symptoms",
+        "Cough",
+        "Dyspnea",
+        "Hemoptysis"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about localizing respiratory, urinary, gastrointestinal, skin, dental, line, and neurologic symptoms.",
+      "system": "genitourinary",
+      "text": "Do you have any burning with urination or pain in your side?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No urinary symptoms",
+        "Dysuria",
+        "Flank pain"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recent antibiotics, prior resistant organisms, recurrent infections, and medication allergies.",
+      "system": "gastrointestinal",
+      "text": "Do you have belly pain?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No abdominal pain",
+        "Localized abdominal pain",
+        "Diffuse abdominal pain"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about recent hospitalization, procedures, sick contacts, travel, animal or environmental exposures, and food or water exposures.",
+      "system": "skin",
+      "text": "Do you have any redness on your skin, and is it spreading or blistering?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No skin findings",
+        "Localized erythema and warmth",
+        "Rapidly spreading pain with blistering or dark discoloration"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about diabetes, immunosuppression, malignancy, chronic organ disease, and other infection-risk conditions.",
+      "system": "medication",
+      "text": "Do you have a catheter, port, or other implanted device, and is there any pain, redness, or drainage where it is?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No indwelling device",
+        "Indwelling device without local symptoms",
+        "Indwelling device with local pain, redness, or drainage"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "skin",
-      "text": "Ask about indwelling devices, wounds, surgery, injections, aspiration risk, and other possible portals of entry.",
+      "system": "neurologic",
+      "text": "Have you or your family noticed any change in your thinking or alertness since this started?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No mental status change",
+        "Subtle new confusion",
+        "Marked altered mental status or unresponsiveness"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about pulmonary, urinary, abdominal, skin, line, joint, dental, and neurologic symptoms that could identify a source.",
+      "system": "genitourinary",
+      "text": "Have you noticed a change in how much you're urinating?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Normal urine output",
+        "Decreased urine output",
+        "No urine output in the preceding several hours"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about confusion, decreased urine output, severe pain, chills, shortness of breath, dizziness, and inability to eat or drink.",
+      "system": "medication",
+      "text": "Are you on chemotherapy, a transplant medication, a biologic, or long-term steroids?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No chronic immunosuppression",
+        "Chronic steroid or biologic therapy",
+        "Transplant history, chemotherapy, or known neutropenia"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recent operations, procedures, hospitalization, antibiotics, central lines, catheters, drains, and wounds.",
+      "system": "infectious",
+      "text": "Did you get sick gradually over days, or did this hit you suddenly with shaking chills?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Gradual worsening over several days",
+        "Abrupt onset with rigors",
+        "Rapid deterioration over hours"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about prior cultures, resistant organisms, recent antibiotics, drug allergies, and immunosuppressive therapies.",
+      "system": "skin",
+      "text": "Did you break out in hives or have facial swelling after being exposed to something new, like a food or medication?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No new exposure or allergic symptoms",
+        "Hives after a new exposure, no airway symptoms",
+        "Throat tightness or facial swelling after a new exposure"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "cardiovascular",
+      "text": "Did you have chest pain before your blood pressure dropped, or do you have heart failure that's recently gotten worse?",
+      "choices": [
+        "Neither",
+        "Chest pain preceding the hypotension",
+        "Known heart failure with recent decompensation"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "hematologic",
+      "text": "Have you had severe vomiting, diarrhea, or been unable to eat or drink for several days?",
+      "choices": [
+        "None of these",
+        "Severe vomiting or diarrhea",
+        "Poor oral intake over several days"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "hematologic",
+      "text": "Have you had any bleeding, or a recent injury?",
+      "choices": [
+        "Neither",
+        "Gastrointestinal bleeding",
+        "Recent trauma"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-14",
+      "kind": "history",
+      "system": "medication",
+      "text": "Have you taken antibiotics recently, or been told you carry a resistant bacteria?",
+      "choices": [
+        "Neither",
+        "Recent antibiotic course",
+        "Known multidrug-resistant organism colonization"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess appearance, temperature, heart rate, blood pressure, respiratory pattern, oxygenation, and bedside perfusion.",
+      "system": "general",
+      "text": "Assess peripheral perfusion.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Warm, well-perfused extremities with brisk capillary refill",
+        "Cool, clammy extremities with delayed capillary refill",
+        "Mottled skin"
       ],
       "select": "one"
     },
@@ -143,107 +192,105 @@
       "id": "exam-02",
       "kind": "exam",
       "system": "neurologic",
-      "text": "Assess alertness, orientation, capillary refill, extremity temperature, and diaphoresis.",
+      "text": "Assess mental status.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Alert and fully oriented",
+        "New confusion",
+        "Unresponsive or minimally responsive"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "infectious",
-      "text": "Inspect skin, pressure areas, wounds, intravenous sites, drains, and indwelling devices for focal infection findings.",
+      "system": "general",
+      "text": "Assess blood pressure and response to initial fluid resuscitation.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normotensive",
+        "Tachycardic with narrowed pulse pressure",
+        "Hypotensive despite fluid resuscitation"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Inspect work of breathing and auscultate lungs for focal breath-sound changes, crackles, wheeze, or pleural findings.",
+      "system": "skin",
+      "text": "Inspect the skin for a source or for necrotizing changes.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal skin",
+        "Localized cellulitis",
+        "Bullae, crepitus, or skin necrosis"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "genitourinary",
-      "text": "Inspect and palpate the abdomen and assess for suprapubic or costovertebral-angle tenderness when relevant.",
+      "system": "infectious",
+      "text": "Inspect any line, catheter, or device site.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal, no device present",
+        "Erythema or purulence at a device site"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "reproductive",
-      "text": "Perform a focused examination of the symptom-directed source, including oral, joint, neurologic, or pelvic findings when indicated.",
+      "system": "respiratory",
+      "text": "Auscultate the lungs for focal or diffuse findings.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Clear bilaterally",
+        "Focal crackles or dullness",
+        "Diffuse findings with respiratory distress"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "skin",
-      "text": "Assess mental status, capillary refill, extremity temperature, skin mottling, urine-output history, and hemodynamic appearance.",
+      "system": "gastrointestinal",
+      "text": "Palpate the abdomen for a source of infection.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Soft, nontender",
+        "Focal tenderness",
+        "Diffuse tenderness with guarding or rebound"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "infectious",
-      "text": "Inspect respiratory effort and auscultate for focal findings suggesting a pulmonary source.",
+      "system": "genitourinary",
+      "text": "Assess for costovertebral-angle tenderness.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "None",
+        "Unilateral costovertebral-angle tenderness",
+        "Bilateral costovertebral-angle tenderness"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "infectious",
-      "text": "Assess for distention, focal tenderness, guarding, flank tenderness, and suprapubic tenderness.",
+      "system": "cardiovascular",
+      "text": "Assess jugular venous pressure and heart sounds to distinguish distributive from cardiogenic shock.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Flat neck veins, normal heart sounds",
+        "Elevated jugular venous pressure with a gallop"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "infectious",
-      "text": "Inspect all wounds, lines, drains, pressure areas, and soft tissues for focal infectious findings.",
+      "system": "genitourinary",
+      "text": "Assess urine output, by catheter if placed.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Adequate urine output",
+        "Oliguric",
+        "Anuric"
       ],
       "select": "one"
     }

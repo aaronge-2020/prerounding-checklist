@@ -4,18 +4,18 @@
   "title": "Acute kidney injury",
   "aliases": [
     "AKI",
-    "renal failure"
+    "acute renal failure"
   ],
   "items": [
     {
       "id": "history-01",
       "kind": "history",
-      "system": "general",
-      "text": "Ask about onset, progression, severity, recent acute illness, and change from usual health.",
+      "system": "gastrointestinal",
+      "text": "Have you been eating and drinking normally, or have you had vomiting or diarrhea?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Normal oral intake",
+        "Poor oral intake",
+        "Vomiting or diarrhea"
       ],
       "select": "one"
     },
@@ -23,35 +23,34 @@
       "id": "history-02",
       "kind": "history",
       "system": "genitourinary",
-      "text": "Ask about oral intake, thirst, vomiting, diarrhea, urine volume, urinary retention, and recent weight change.",
+      "text": "Have you noticed a change in how much you're urinating?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Normal urine output",
+        "Decreased urine output",
+        "No urine output"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about new or missed medications, insulin, diuretics, ACE inhibitors, NSAIDs, steroids, laxatives, and supplements.",
+      "system": "cardiovascular",
+      "text": "Do you have heart failure or cirrhosis?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Known heart failure",
+        "Known cirrhosis"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "endocrine",
-      "text": "Ask about chronic kidney disease, diabetes, adrenal or thyroid disease, prior electrolyte disorders, and baseline glucose control.",
+      "system": "medication",
+      "text": "Have you taken any ibuprofen, naproxen, or other NSAID pain relievers recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No recent NSAID use",
+        "Recent NSAID use"
       ],
       "select": "one"
     },
@@ -59,191 +58,230 @@
       "id": "history-05",
       "kind": "history",
       "system": "medication",
-      "text": "Ask about infection symptoms, ischemic symptoms, recent procedures or contrast exposure, alcohol use, and dietary change.",
+      "text": "Do you take a blood pressure medication ending in -pril or -sartan, or a water pill?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "None of these",
+        "ACE inhibitor or ARB use",
+        "Diuretic use"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "neurologic",
-      "text": "Ask about weakness, cramps, paresthesias, palpitations, confusion, seizures, and exercise intolerance.",
+      "system": "medication",
+      "text": "Have you had a CT scan or other imaging test with contrast dye recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No recent contrast administration",
+        "Recent intravenous contrast administration"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "genitourinary",
-      "text": "Ask about reduced urine output, dysuria, hematuria, retention, hesitancy, flank pain, stones, and catheter problems.",
+      "system": "medication",
+      "text": "Have you started a new antibiotic recently, along with a rash or fever?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No new antibiotic with rash or fever",
+        "New antibiotic with rash or fever"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about vomiting, diarrhea, poor intake, bleeding, fever, diuretic use, and recent weight change.",
+      "system": "genitourinary",
+      "text": "Have you had trouble starting your stream or noticed it's weaker than usual, or do you have an enlarged prostate, stones, or a bladder condition?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No voiding difficulty",
+        "Difficulty voiding or weak stream",
+        "Known benign prostatic hyperplasia, stones, or neurogenic bladder"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about NSAIDs, antibiotics, ACE inhibitors or ARBs, contrast, herbal products, supplements, and new medications.",
+      "system": "genitourinary",
+      "text": "Do you have a urinary catheter, and has it been draining normally?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No catheter",
+        "Catheter present, functioning normally",
+        "Catheter present, concern for blockage"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "endocrine",
-      "text": "Ask about chronic kidney disease, dialysis, heart failure, liver disease, diabetes, hypertension, and prior kidney injury.",
+      "system": "musculoskeletal",
+      "text": "Have you had significant muscle pain, or has your urine looked dark like tea or cola?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Muscle pain",
+        "Dark, tea-colored urine"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "musculoskeletal",
+      "text": "Were you stuck in one position for a long time, down on the floor for a while after a fall, or crushed under something heavy?",
+      "choices": [
+        "None of these",
+        "Prolonged immobilization or extended down time after a fall",
+        "Crush injury"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "genitourinary",
+      "text": "Have you seen blood in your urine, or noticed new swelling or high blood pressure?",
+      "choices": [
+        "None of these",
+        "Hematuria",
+        "New edema and hypertension"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "genitourinary",
+      "text": "Do you have chronic kidney disease, and has your kidney function been stable or worsening lately?",
+      "choices": [
+        "No known chronic kidney disease",
+        "Known chronic kidney disease, stable baseline",
+        "Known chronic kidney disease with a recent creatinine increase"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-14",
+      "kind": "history",
+      "system": "cardiovascular",
+      "text": "Have you had an episode of very low blood pressure recently, or lost a significant amount of blood?",
+      "choices": [
+        "Neither",
+        "Recent hypotensive episode",
+        "Recent significant blood loss"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess appearance, heart rate, blood pressure, respiratory rate and pattern, temperature, and bedside perfusion.",
+      "system": "general",
+      "text": "Assess overall volume status.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Euvolemic",
+        "Hypovolemic, with dry mucous membranes or poor turgor",
+        "Hypervolemic, with edema or elevated jugular venous pressure"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "skin",
-      "text": "Assess mucous membranes, jugular venous pressure when feasible, edema, skin turgor, and orthostatic symptoms when safe.",
+      "system": "cardiovascular",
+      "text": "Assess jugular venous pressure.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal jugular venous pressure",
+        "Elevated jugular venous pressure"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess alertness, orientation, attention, behavior, and change from baseline.",
+      "system": "cardiovascular",
+      "text": "Inspect and palpate the lower extremities for edema.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No peripheral edema",
+        "Peripheral edema present"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess rate, rhythm, heart sounds, peripheral pulses, capillary refill, and signs of volume overload or depletion.",
+      "system": "genitourinary",
+      "text": "Assess for bladder distention.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Nondistended",
+        "Distended, palpable bladder"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess work of breathing, lung sounds, and abnormal respiratory pattern including deep or rapid breathing.",
+      "system": "genitourinary",
+      "text": "Assess for costovertebral-angle tenderness.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "None",
+        "Unilateral costovertebral-angle tenderness",
+        "Bilateral costovertebral-angle tenderness"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess gross strength, tremor, reflexes, sensation, tetany, asterixis, and gait only when safe and relevant.",
+      "system": "skin",
+      "text": "Inspect the skin for a new rash.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No new rash",
+        "New rash present"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess for dehydration, edema, jugular venous pressure when feasible, pulmonary congestion, and orthostatic symptoms when safe.",
+      "system": "musculoskeletal",
+      "text": "Palpate muscle groups for focal tenderness or swelling suggesting rhabdomyolysis.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No focal muscle tenderness or swelling",
+        "Focal muscle tenderness or swelling"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "genitourinary",
-      "text": "Assess suprapubic fullness, bladder distention, costovertebral-angle tenderness, and flank tenderness.",
+      "system": "cardiovascular",
+      "text": "Assess orthostatic vital signs when safe.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Negative orthostatics",
+        "Positive orthostatic hypotension"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "endocrine",
-      "text": "Assess mental status, asterixis, pruritic excoriations, pericardial symptoms by history, and gross neurologic change.",
+      "system": "gastrointestinal",
+      "text": "Assess for ascites or jaundice suggesting hepatorenal physiology.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Neither",
+        "Ascites",
+        "Jaundice"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "skin",
-      "text": "Assess heart rhythm, lung findings, skin rash, joint findings, and peripheral perfusion for systemic causes.",
+      "system": "genitourinary",
+      "text": "Assess urine output, by catheter if placed.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Adequate urine output",
+        "Minimal or absent output despite a functioning catheter"
       ],
       "select": "one"
     }

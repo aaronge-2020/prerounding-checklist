@@ -10,108 +10,106 @@
     {
       "id": "history-01",
       "kind": "history",
-      "system": "general",
-      "text": "Ask about onset, progression, severity, recent acute illness, and change from usual health.",
+      "system": "endocrine",
+      "text": "Do you have diabetes, and if so, is it type 1 or type 2?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No known diabetes",
+        "Known type 2 diabetes",
+        "Known type 1 diabetes"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "genitourinary",
-      "text": "Ask about oral intake, thirst, vomiting, diarrhea, urine volume, urinary retention, and recent weight change.",
+      "system": "medication",
+      "text": "Have you missed doses of your insulin or diabetes medication recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Taking medication as prescribed",
+        "Missed one or more doses",
+        "Not on any diabetes medication"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about new or missed medications, insulin, diuretics, ACE inhibitors, NSAIDs, steroids, laxatives, and supplements.",
+      "system": "genitourinary",
+      "text": "Have you been urinating much more than usual or feeling unusually thirsty?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Increased urination",
+        "Increased thirst"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "endocrine",
-      "text": "Ask about chronic kidney disease, diabetes, adrenal or thyroid disease, prior electrolyte disorders, and baseline glucose control.",
+      "system": "neurologic",
+      "text": "Have you felt confused, unusually sleepy, or had trouble staying awake?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No confusion or altered alertness",
+        "Confusion or altered alertness"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about infection symptoms, ischemic symptoms, recent procedures or contrast exposure, alcohol use, and dietary change.",
+      "system": "gastrointestinal",
+      "text": "Have you had nausea, vomiting, or belly pain?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "None of these",
+        "Nausea or vomiting",
+        "Abdominal pain"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "neurologic",
-      "text": "Ask about weakness, cramps, paresthesias, palpitations, confusion, seizures, and exercise intolerance.",
+      "system": "respiratory",
+      "text": "Have you noticed your breathing becoming fast or deep, or a fruity smell to your breath?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Fast or deep breathing",
+        "Fruity breath odor"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about polyuria, polydipsia, polyphagia, blurry vision, fatigue, weight change, recurrent infection, and dehydration.",
+      "system": "genitourinary",
+      "text": "Have you been drinking enough fluids, or has your urine output dropped off?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Drinking normally, normal urine output",
+        "Poor oral intake",
+        "Decreased urine output"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about insulin or medication adherence, pump or monitor problems, recent dose changes, access barriers, diet change, and steroid use.",
+      "system": "infectious",
+      "text": "Do you have a fever, cough, or burning with urination that might explain your sugar running high?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "None of these",
+        "Fever or cough",
+        "Burning with urination"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "genitourinary",
-      "text": "Ask about nausea, vomiting, abdominal pain, deep breathing, confusion, severe weakness, and markedly reduced intake or urine output.",
+      "system": "medication",
+      "text": "Have you started a steroid medication recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No new steroid use",
+        "Recently started steroids"
       ],
       "select": "one"
     },
@@ -119,131 +117,146 @@
       "id": "history-10",
       "kind": "history",
       "system": "medication",
-      "text": "Ask about infection, ischemic symptoms, stress, trauma, surgery, pancreatitis symptoms, alcohol use, and other substance use.",
+      "text": "Have you been eating more sugary or carbohydrate-heavy food than usual, or drinking sugary drinks?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No significant dietary change",
+        "Increased sugar or carbohydrate intake"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "cardiovascular",
+      "text": "Have you had chest pain, or weakness on one side of your body, that could have triggered your sugar to rise?",
+      "choices": [
+        "Neither",
+        "Chest pain",
+        "New focal weakness"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "eyes",
+      "text": "Has your vision been blurry?",
+      "choices": [
+        "No visual change",
+        "Blurred vision"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess appearance, heart rate, blood pressure, respiratory rate and pattern, temperature, and bedside perfusion.",
+      "system": "neurologic",
+      "text": "Assess mental status and orientation.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Alert and fully oriented",
+        "Confused or lethargic",
+        "Obtunded or comatose"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "skin",
-      "text": "Assess mucous membranes, jugular venous pressure when feasible, edema, skin turgor, and orthostatic symptoms when safe.",
+      "system": "general",
+      "text": "Assess hydration status and skin turgor.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Euvolemic, normal turgor",
+        "Dry mucous membranes or poor turgor"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess alertness, orientation, attention, behavior, and change from baseline.",
+      "system": "cardiovascular",
+      "text": "Measure blood pressure lying and standing to assess for orthostatic hypotension.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No orthostatic change",
+        "Positive orthostatic hypotension"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess rate, rhythm, heart sounds, peripheral pulses, capillary refill, and signs of volume overload or depletion.",
+      "system": "respiratory",
+      "text": "Assess respiratory pattern for Kussmaul breathing and check for a fruity breath odor.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal breathing pattern, no fruity odor",
+        "Kussmaul breathing or fruity odor present"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess work of breathing, lung sounds, and abnormal respiratory pattern including deep or rapid breathing.",
+      "system": "gastrointestinal",
+      "text": "Palpate the abdomen for tenderness.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Soft, nontender",
+        "Diffuse tenderness",
+        "Focal tenderness or guarding"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess gross strength, tremor, reflexes, sensation, tetany, asterixis, and gait only when safe and relevant.",
+      "system": "general",
+      "text": "Assess temperature for fever.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Afebrile",
+        "Febrile"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess mucous membranes, heart rate, blood pressure, peripheral perfusion, mental status, and orthostatic symptoms when safe.",
+      "system": "skin",
+      "text": "Inspect the feet and skin for ulcers, cellulitis, or other infection sources.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No skin or wound infection identified",
+        "Skin or wound infection identified"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "gastrointestinal",
-      "text": "Assess respiratory pattern, fruity breath odor when present, lung findings, abdominal tenderness, and distention.",
+      "system": "neurologic",
+      "text": "Assess for a focal neurologic deficit.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No focal deficit",
+        "Focal deficit present"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "infectious",
-      "text": "Inspect lungs, skin, feet, urinary symptoms by examination when relevant, and indwelling devices for possible infection.",
+      "system": "respiratory",
+      "text": "Auscultate the lungs for a focal infiltrate.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Clear bilaterally",
+        "Focal crackles or decreased breath sounds"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess alertness, orientation, focal deficits, strength, and gait only when safe.",
+      "system": "cardiovascular",
+      "text": "Assess heart rate and rhythm.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Regular rate and rhythm",
+        "Tachycardic",
+        "Irregular rhythm"
       ],
       "select": "one"
     }

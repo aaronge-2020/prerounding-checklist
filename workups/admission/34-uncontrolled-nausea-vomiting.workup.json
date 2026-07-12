@@ -11,95 +11,88 @@
       "id": "history-01",
       "kind": "history",
       "system": "gastrointestinal",
-      "text": "Ask about onset, location, radiation, severity, timing, and relationship to meals, movement, or bowel movements.",
+      "text": "Have you vomited anything that looked like blood or coffee grounds, or bile that was bright green or yellow?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Coffee-ground or bloody emesis",
+        "Bilious emesis"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about oral intake, nausea, vomiting, fluid losses, urine output, and ability to tolerate medications.",
+      "system": "gastrointestinal",
+      "text": "Are you able to keep any liquids down?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Tolerating oral fluids",
+        "Unable to tolerate oral fluids"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "hematologic",
-      "text": "Ask about stool frequency and character, flatus, bleeding, dysuria, hematuria, and change from baseline.",
+      "system": "gastrointestinal",
+      "text": "Do you have belly pain along with the nausea?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No abdominal pain",
+        "Abdominal pain"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "skin",
-      "text": "Ask about prior surgery, obstruction, gallstones, liver disease, ulcers, inflammatory bowel disease, and prior episodes.",
+      "system": "gastrointestinal",
+      "text": "Are you able to pass gas or have a bowel movement?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Passing flatus and stool normally",
+        "Obstipation with abdominal distention"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about NSAIDs, anticoagulants, alcohol, new medications, antibiotics, toxins, and relevant dietary exposures.",
+      "system": "gastrointestinal",
+      "text": "Have you had abdominal surgery in the past?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No prior abdominal surgery",
+        "Prior abdominal surgery"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "reproductive",
-      "text": "Ask about pregnancy possibility and gynecologic symptoms when clinically relevant.",
+      "system": "neurologic",
+      "text": "Do you have a headache along with the nausea?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No headache",
+        "Headache"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "general",
-      "text": "Ask about onset, frequency, volume, bilious or bloody material, retching, relation to meals, and ability to tolerate fluids.",
+      "system": "neurologic",
+      "text": "Does the nausea come with dizziness or a spinning sensation?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No vertigo",
+        "Vertigo accompanying the nausea"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about abdominal pain, distention, diarrhea, constipation, flatus, fever, headache, vertigo, chest pain, and urinary symptoms.",
+      "system": "medication",
+      "text": "Have you started any new medications recently, including chemotherapy or a new pain medication?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No new medication",
+        "New medication started"
       ],
       "select": "one"
     },
@@ -107,11 +100,11 @@
       "id": "history-09",
       "kind": "history",
       "system": "medication",
-      "text": "Ask about new medications, antibiotics, chemotherapy, opioids, cannabis, alcohol, toxins, sick contacts, and food exposure.",
+      "text": "Do you use cannabis regularly, and if so, does hot showers relieve the nausea?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No regular cannabis use",
+        "Regular cannabis use, hot showers relieve symptoms",
+        "Regular cannabis use without symptom relief pattern"
       ],
       "select": "one"
     },
@@ -119,35 +112,92 @@
       "id": "history-10",
       "kind": "history",
       "system": "reproductive",
-      "text": "Ask about pregnancy possibility, glucose symptoms, polyuria, polydipsia, adrenal symptoms, and reduced urine output when relevant.",
+      "text": "Is there any chance you could be pregnant?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Not applicable or not pregnant",
+        "Possible pregnancy"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "endocrine",
+      "text": "Do you have diabetes, and have you noticed excessive thirst, urination, or a fruity breath smell?",
+      "choices": [
+        "No known diabetes",
+        "Known diabetes with polyuria or polydipsia",
+        "Known diabetes with fruity breath odor"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "gastrointestinal",
+      "text": "Do you have known gallstones or liver disease?",
+      "choices": [
+        "Neither",
+        "Known gallstones",
+        "Known liver disease"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "cardiovascular",
+      "text": "Do you have chest pain or a squeezing feeling along with the nausea?",
+      "choices": [
+        "No chest pain",
+        "Chest pain or pressure"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-14",
+      "kind": "history",
+      "system": "hematologic",
+      "text": "Are you currently on chemotherapy, or did you have chemotherapy recently?",
+      "choices": [
+        "No chemotherapy",
+        "Current or recent chemotherapy"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-15",
+      "kind": "history",
+      "system": "endocrine",
+      "text": "Have you lost weight without trying, or noticed new darkening of your skin?",
+      "choices": [
+        "No adrenal insufficiency symptoms",
+        "Fatigue and unintentional weight loss",
+        "New skin darkening"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess appearance, vital signs, mucous membranes, orthostatic symptoms when safe, and bedside perfusion.",
+      "system": "general",
+      "text": "Assess hydration status and orthostatic vital signs when safe.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Euvolemic, no orthostatic change",
+        "Dry mucous membranes or poor turgor",
+        "Positive orthostatic hypotension"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "skin",
-      "text": "Inspect for scars, distention, asymmetry, visible hernia, skin changes, and respiratory movement of the abdomen.",
+      "system": "gastrointestinal",
+      "text": "Palpate the abdomen for tenderness, guarding, and rebound.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Soft, nontender",
+        "Focal tenderness without guarding",
+        "Guarding, rebound, or rigidity"
       ],
       "select": "one"
     },
@@ -155,95 +205,92 @@
       "id": "exam-03",
       "kind": "exam",
       "system": "gastrointestinal",
-      "text": "Auscultate and palpate systematically for focal tenderness, guarding, rebound, mass, organ enlargement, or pulsatility.",
+      "text": "Inspect for distention and auscultate bowel sounds.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal bowel sounds, no distention",
+        "Distended with high-pitched or hyperactive bowel sounds",
+        "Distended and silent"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "genitourinary",
-      "text": "Assess for costovertebral-angle tenderness and examine relevant hernia sites when indicated.",
+      "system": "gastrointestinal",
+      "text": "Assess the right upper quadrant for a Murphy sign.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Negative Murphy sign",
+        "Positive Murphy sign"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "reproductive",
-      "text": "Perform rectal, perianal, or pelvic examination only when clinically indicated and appropriate.",
+      "system": "neurologic",
+      "text": "Assess for nystagmus or a focal neurologic deficit.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Neither",
+        "Nystagmus",
+        "Focal deficit present"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "hematologic",
-      "text": "Inspect for jaundice, pallor, edema, bruising, chronic liver-disease stigmata, and other systemic findings when relevant.",
+      "system": "skin",
+      "text": "Inspect skin and sclerae for jaundice.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Absent",
+        "Present"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "genitourinary",
-      "text": "Assess mucous membranes, heart rate, blood pressure, peripheral perfusion, orthostatic symptoms when safe, and urine-output history.",
+      "system": "endocrine",
+      "text": "Check fingerstick glucose.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal glucose",
+        "Hypoglycemic",
+        "Hyperglycemic"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "gastrointestinal",
-      "text": "Inspect and palpate for distention, tenderness, guarding, rebound, mass, hernia, and bowel-sound change.",
+      "system": "respiratory",
+      "text": "Assess respiratory pattern for Kussmaul breathing.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal breathing pattern",
+        "Rapid, deep Kussmaul breathing"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess mental status, nystagmus, focal deficits, gait only when safe, and signs of headache-related or vestibular disease.",
+      "system": "gastrointestinal",
+      "text": "Examine hernia sites for a bulge and reducibility.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No hernia identified",
+        "Reducible hernia",
+        "Tender, irreducible or incarcerated hernia"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "medication",
-      "text": "Assess respiratory pattern, fruity breath odor when present, tremor, skin changes, and signs of endocrine or toxic illness.",
+      "system": "cardiovascular",
+      "text": "Assess heart rate and rhythm.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Regular rate and rhythm",
+        "Tachycardic",
+        "Irregular rhythm"
       ],
       "select": "one"
     }

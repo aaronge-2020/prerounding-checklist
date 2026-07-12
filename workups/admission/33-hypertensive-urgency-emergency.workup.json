@@ -10,24 +10,24 @@
     {
       "id": "history-01",
       "kind": "history",
-      "system": "general",
-      "text": "Ask about onset, tempo, severity, triggers, relieving factors, and change from baseline.",
+      "system": "neurologic",
+      "text": "Do you have a headache, or has your vision changed?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Headache",
+        "Vision change"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about chest discomfort, palpitations, syncope, diaphoresis, cough, fever, and hemoptysis.",
+      "system": "cardiovascular",
+      "text": "Do you have chest pain, and does it feel like it's tearing through to your back?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No chest pain",
+        "Chest pain without radiation to the back",
+        "Chest pain tearing through to the back"
       ],
       "select": "one"
     },
@@ -35,59 +35,56 @@
       "id": "history-03",
       "kind": "history",
       "system": "respiratory",
-      "text": "Ask about prior heart or lung disease, prior admissions, baseline exertional tolerance, and home oxygen use.",
+      "text": "Are you short of breath?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No dyspnea",
+        "Mild dyspnea with exertion",
+        "Severe dyspnea at rest"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about tobacco or vaping exposure, immobility, thromboembolic risk, and relevant family history.",
+      "system": "neurologic",
+      "text": "Have you or your family noticed any new confusion?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No new confusion",
+        "New confusion"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about recent medication changes, adherence, inhaler or diuretic use, and anticoagulant use when relevant.",
+      "system": "neurologic",
+      "text": "Have you had any weakness, numbness, or trouble speaking on one side?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "None of these",
+        "Focal weakness or numbness",
+        "Speech change"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about baseline ambulation, sleep position, activity limitation, and new functional decline.",
+      "system": "medication",
+      "text": "Have you missed doses of your blood pressure medication recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No missed doses",
+        "Missed one or more doses of blood pressure medication"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "musculoskeletal",
-      "text": "Ask about chest pain, dyspnea, headache, vision change, focal weakness, confusion, seizure, reduced urine output, and back pain.",
+      "system": "reproductive",
+      "text": "Are you currently pregnant or did you recently give birth?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Not pregnant or postpartum",
+        "Pregnant or postpartum"
       ],
       "select": "one"
     },
@@ -95,107 +92,135 @@
       "id": "history-08",
       "kind": "history",
       "system": "medication",
-      "text": "Ask about usual blood pressure, prior crises, antihypertensive regimen, missed doses, recent medication changes, and home readings.",
+      "text": "Have you used cocaine, methamphetamine, or another stimulant recently?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No stimulant use",
+        "Recent stimulant use"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about NSAIDs, decongestants, stimulants, cocaine or amphetamines, steroids, supplements, and alcohol withdrawal.",
+      "system": "endocrine",
+      "text": "Have you had episodes of pounding headaches, sweating, and a racing heart that come and go?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No episodic symptoms",
+        "Episodic headache, diaphoresis, and palpitations"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "reproductive",
-      "text": "Ask about pregnancy when relevant, renal disease, endocrine symptoms, sleep-apnea symptoms, pain, and anxiety symptoms.",
+      "system": "general",
+      "text": "Are you in a lot of pain, or feeling especially anxious right now?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Significant pain",
+        "Significant anxiety"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "genitourinary",
+      "text": "Have you noticed a change in how much you're urinating?",
+      "choices": [
+        "Normal urine output",
+        "Decreased urine output"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "eyes",
+      "text": "Has your vision gotten blurry or spotty?",
+      "choices": [
+        "No visual change",
+        "Blurred or spotty vision"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "cardiovascular",
+      "text": "Do you have kidney disease, and has your blood pressure been consistently hard to control?",
+      "choices": [
+        "Neither",
+        "Known chronic kidney disease",
+        "Long-standing poorly controlled hypertension"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess general appearance, respiratory rate and pattern, heart rate and rhythm, blood pressure, temperature, and oxygenation.",
+      "system": "cardiovascular",
+      "text": "Measure blood pressure in both arms.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Concordant blood pressure in both arms",
+        "Significant discrepancy between arms"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Inspect work of breathing and auscultate all lung fields for air movement and focal or diffuse adventitious sounds.",
+      "system": "neurologic",
+      "text": "Assess mental status.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Alert and oriented",
+        "Confused or altered"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess cardiac rate and rhythm, heart sounds, murmurs, and signs of impaired peripheral perfusion.",
+      "system": "neurologic",
+      "text": "Assess for a focal neurologic deficit.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No focal deficit",
+        "Focal deficit present"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess jugular venous pressure when feasible, mucous membranes, edema, and other bedside signs of volume status.",
+      "system": "eyes",
+      "text": "Assess for papilledema or hemorrhages on fundoscopic exam.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal fundoscopic exam",
+        "Papilledema or retinal hemorrhages"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Inspect extremities for asymmetry, edema, cyanosis, calf tenderness, and distal pulses.",
+      "system": "respiratory",
+      "text": "Auscultate the lungs for crackles.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Clear bilaterally",
+        "Bibasilar crackles",
+        "Diffuse crackles consistent with pulmonary edema"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "neurologic",
-      "text": "Assess alertness, orientation, and focal neurologic change that could accompany hypoxemia or poor perfusion.",
+      "system": "cardiovascular",
+      "text": "Auscultate heart sounds for a gallop or new murmur.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal heart sounds",
+        "S3 or S4 gallop",
+        "New murmur"
       ],
       "select": "one"
     },
@@ -203,47 +228,43 @@
       "id": "exam-07",
       "kind": "exam",
       "system": "cardiovascular",
-      "text": "Measure blood pressure with appropriate technique and repeat in both arms when clinically appropriate.",
+      "text": "Palpate peripheral pulses for symmetry to help exclude aortic dissection.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Symmetric pulses",
+        "Asymmetric or diminished pulse"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess mental status, pupils, vision symptoms, focal strength, sensation, speech, and coordination.",
+      "system": "cardiovascular",
+      "text": "Inspect and palpate the lower extremities for edema.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No peripheral edema",
+        "Peripheral edema present"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess rhythm, murmurs, lung sounds, work of breathing, edema, jugular venous pressure when feasible, and perfusion.",
+      "system": "reproductive",
+      "text": "Assess for hyperreflexia or clonus when pregnancy-related hypertension is a concern.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Not applicable or normal reflexes",
+        "Hyperreflexia or clonus present"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess for retinal changes when available and examine peripheral pulses, bruits when appropriate, and extremity perfusion.",
+      "system": "genitourinary",
+      "text": "Assess urine output.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal urine output",
+        "Decreased urine output"
       ],
       "select": "one"
     }

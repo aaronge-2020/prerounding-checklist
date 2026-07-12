@@ -10,24 +10,24 @@
     {
       "id": "history-01",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about baseline cognition, activities of daily living, ambulation, assistive devices, continence, and recent functional change.",
+      "system": "neurologic",
+      "text": "Did the weakness come on gradually over days, suddenly on one side, or is it spreading upward from your legs?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Gradual, diffuse weakness over days to weeks",
+        "Sudden, asymmetric weakness of one side",
+        "Symmetric, ascending weakness starting in the legs"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about home setting, caregivers, available supports, medication access, food access, transportation, and barriers to care.",
+      "system": "infectious",
+      "text": "Have you had a fever?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No fever",
+        "Subjective fever",
+        "Documented fever with rigors"
       ],
       "select": "one"
     },
@@ -35,215 +35,304 @@
       "id": "history-03",
       "kind": "history",
       "system": "medication",
-      "text": "Ask about recent medication changes, sedatives, analgesics, alcohol, other substances, and adherence.",
+      "text": "Have you started a new medication or had a dose change in the past few days?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No recent medication change",
+        "New sedative or opioid started",
+        "New antihypertensive started",
+        "Dose change to an existing chronic medication"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "psychiatric",
-      "text": "Ask about depression, anxiety, delirium symptoms, self-harm risk when relevant, abuse or neglect concerns, and immediate safety.",
+      "system": "cardiovascular",
+      "text": "Have you felt like you were going to pass out, or did you actually pass out?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No syncope or near-syncope",
+        "Near-syncope or presyncope",
+        "Frank syncope"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "functional",
-      "text": "Ask about appetite, weight change, swallowing, hydration, sleep, fatigue, and symptoms limiting participation in care.",
+      "system": "gastrointestinal",
+      "text": "Have you been eating and drinking normally the past few days?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Normal oral intake",
+        "Poor oral intake",
+        "Vomiting or diarrhea limiting intake"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about fever, pain, falls, trauma, bleeding, focal symptoms, and other acute changes that may explain decline.",
+      "system": "endocrine",
+      "text": "Have you felt unusually cold, gained weight, or become more constipated than usual?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No hypothyroid symptoms",
+        "Cold intolerance",
+        "Weight gain and constipation"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "general",
-      "text": "Ask whether weakness is generalized or focal, sudden or progressive, symmetric or asymmetric, and activity-limiting.",
+      "system": "endocrine",
+      "text": "Have you lost weight without trying, or noticed new darkening of your skin?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No adrenal insufficiency symptoms",
+        "Fatigue and unintentional weight loss",
+        "New skin darkening or hyperpigmentation"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about fever, weight change, dyspnea, chest pain, palpitations, diarrhea, vomiting, and urinary symptoms.",
+      "system": "neurologic",
+      "text": "Have you noticed one side of your face drooping?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No facial droop",
+        "New facial droop"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "musculoskeletal",
-      "text": "Ask about numbness, vision or speech change, gait change, dysphagia, headache, and new bowel or bladder dysfunction.",
+      "system": "neurologic",
+      "text": "Has your speech changed or become slurred?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No speech change",
+        "New speech change"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about sedatives, antihypertensives, diuretics, diabetes medications, new prescriptions, and missed doses.",
+      "system": "neurologic",
+      "text": "Have you noticed numbness or tingling on both sides along with the weakness?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No numbness or paresthesias",
+        "Symmetric numbness or paresthesias"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "psychiatric",
+      "text": "Have you been feeling down or lost interest in things you usually enjoy over the past several weeks?",
+      "choices": [
+        "No low mood or anhedonia",
+        "Low mood or anhedonia over several weeks"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "neurologic",
+      "text": "Have family or caregivers noticed your attention or thinking coming and going over the past day or two?",
+      "choices": [
+        "No acute inattention or confusion",
+        "Acute inattention or confusion, fluctuating over hours to days"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "functional",
+      "text": "Who do you have helping you at home, and are you able to get the care and supplies you need?",
+      "choices": [
+        "Adequate supports, safe home environment",
+        "Living alone with limited supports",
+        "Signs of self-neglect or suspected abuse or neglect by a caregiver"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-14",
+      "kind": "history",
+      "system": "musculoskeletal",
+      "text": "Have you fallen recently?",
+      "choices": [
+        "No recent fall",
+        "Recent fall without injury",
+        "Recent fall with injury or head strike"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-15",
+      "kind": "history",
+      "system": "endocrine",
+      "text": "Do you have diabetes, and have you felt shaky, sweaty, or hungry along with the weakness?",
+      "choices": [
+        "No known diabetes",
+        "Known diabetes without hypoglycemic symptoms",
+        "Known diabetes with tremor, diaphoresis, or hunger"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-16",
+      "kind": "history",
+      "system": "hematologic",
+      "text": "Have you had a poor diet, heavy alcohol use, weight-loss surgery, or been told you're low in B12?",
+      "choices": [
+        "None of these",
+        "Poor diet, alcohol use, or bariatric surgery history",
+        "Known B12 deficiency with paresthesias or gait imbalance"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-17",
+      "kind": "history",
+      "system": "hematologic",
+      "text": "Have you lost weight without trying, or do you have a history of cancer with new symptoms?",
+      "choices": [
+        "No unintentional weight loss or known malignancy",
+        "Unintentional weight loss",
+        "Known malignancy with new or worsening symptoms"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess appearance, vital signs, hydration, pain behavior, and evidence of acute cardiorespiratory instability.",
+      "system": "general",
+      "text": "Assess vital signs and orthostatic change when safe.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal vital signs, no orthostatic change",
+        "Tachycardic or hypotensive at rest",
+        "Positive orthostatic hypotension"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "psychiatric",
-      "text": "Assess alertness, attention, orientation, mood, thought process, agitation, and ability to participate in the examination.",
+      "system": "neurologic",
+      "text": "Assess attention and level of consciousness.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Alert and fully oriented",
+        "Inattentive or fluctuating alertness",
+        "Lethargic or obtunded"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "functional",
-      "text": "Inspect oral cavity, mucous membranes, body habitus, skin integrity, bruising, edema, and pressure areas.",
+      "system": "neurologic",
+      "text": "Assess motor strength for symmetry.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Symmetric strength throughout",
+        "Unilateral weakness or facial droop",
+        "Symmetric distal weakness with diminished reflexes"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "functional",
-      "text": "Assess bed mobility, transfers, strength, balance, gait, and assistive-device use only when safe.",
+      "system": "cardiovascular",
+      "text": "Auscultate the heart for rate, rhythm, and murmurs.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal rate and regular rhythm, no murmur",
+        "Irregular rhythm",
+        "Murmur or gallop"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Inspect and palpate symptomatic joints, spine, and muscles for tenderness, swelling, deformity, range-of-motion limitation, or injury.",
+      "system": "general",
+      "text": "Assess mucous membranes and skin turgor for dehydration.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Moist mucous membranes, normal turgor",
+        "Dry mucous membranes or poor skin turgor"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "medication",
-      "text": "Assess focal strength, sensation, coordination, tremor, and signs of withdrawal or intoxication when relevant.",
+      "system": "skin",
+      "text": "Inspect the skin for hyperpigmentation.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal skin color",
+        "Skin hyperpigmentation"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "musculoskeletal",
-      "text": "Assess proximal and distal strength, pronator drift, symmetry, tone, and fatigability.",
+      "system": "endocrine",
+      "text": "Assess the thyroid and for other signs of thyroid dysfunction.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal thyroid exam",
+        "Goiter, dry skin, or delayed reflex relaxation",
+        "Exophthalmos or fine tremor"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "functional",
-      "text": "Assess bed mobility, sit-to-stand, balance, and gait only when safe and with assistance as needed.",
+      "system": "musculoskeletal",
+      "text": "Assess proximal muscle strength and safety of gait.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal gait and proximal strength",
+        "Proximal muscle weakness",
+        "Unable to ambulate safely"
       ],
       "select": "one"
     },
     {
       "id": "exam-09",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess heart rhythm, lung sounds, oxygenation, edema, and signs of reduced perfusion.",
+      "system": "skin",
+      "text": "Inspect skin and hygiene for evidence of neglect.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Skin intact, hygiene appropriate",
+        "Poor hygiene",
+        "Pressure ulcers or bruising in varying stages of healing"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "functional",
-      "text": "Assess mucous membranes, body habitus, edema, skin turgor, and oral condition for signs of poor intake.",
+      "system": "gastrointestinal",
+      "text": "Perform a rectal examination when indicated.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal, guaiac negative, or deferred as not indicated",
+        "Melena on rectal examination"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "exam-11",
+      "kind": "exam",
+      "system": "neurologic",
+      "text": "Assess deep tendon reflexes and sensation.",
+      "choices": [
+        "Normal reflexes and sensation",
+        "Diminished or absent reflexes",
+        "Sensory level or stocking-glove sensory loss"
       ],
       "select": "one"
     }

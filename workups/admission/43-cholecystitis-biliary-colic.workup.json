@@ -12,215 +12,239 @@
       "id": "history-01",
       "kind": "history",
       "system": "gastrointestinal",
-      "text": "Ask about onset, location, radiation, severity, timing, and relationship to meals, movement, or bowel movements.",
+      "text": "Does your pain come on specifically after eating, especially fatty food?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No relationship to eating",
+        "Pain specifically after fatty meals"
       ],
       "select": "one"
     },
     {
       "id": "history-02",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about oral intake, nausea, vomiting, fluid losses, urine output, and ability to tolerate medications.",
+      "system": "gastrointestinal",
+      "text": "Where is the pain, and does it radiate to your back or right shoulder blade?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No radiation",
+        "Radiates to the back",
+        "Radiates to the right shoulder blade"
       ],
       "select": "one"
     },
     {
       "id": "history-03",
       "kind": "history",
-      "system": "hematologic",
-      "text": "Ask about stool frequency and character, flatus, bleeding, dysuria, hematuria, and change from baseline.",
+      "system": "gastrointestinal",
+      "text": "Has this pain happened before and gone away on its own within a few hours?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "First episode",
+        "Prior similar episodes that resolved on their own"
       ],
       "select": "one"
     },
     {
       "id": "history-04",
       "kind": "history",
-      "system": "skin",
-      "text": "Ask about prior surgery, obstruction, gallstones, liver disease, ulcers, inflammatory bowel disease, and prior episodes.",
+      "system": "gastrointestinal",
+      "text": "Is the pain constant now, or has it lasted longer than six hours?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Pain resolved within a few hours as usual",
+        "Constant pain lasting more than six hours"
       ],
       "select": "one"
     },
     {
       "id": "history-05",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about NSAIDs, anticoagulants, alcohol, new medications, antibiotics, toxins, and relevant dietary exposures.",
+      "system": "infectious",
+      "text": "Do you have a fever or chills along with the pain?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Fever",
+        "Shaking chills"
       ],
       "select": "one"
     },
     {
       "id": "history-06",
       "kind": "history",
-      "system": "reproductive",
-      "text": "Ask about pregnancy possibility and gynecologic symptoms when clinically relevant.",
+      "system": "skin",
+      "text": "Has your skin or the whites of your eyes looked yellow?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No jaundice",
+        "Jaundice present"
       ],
       "select": "one"
     },
     {
       "id": "history-07",
       "kind": "history",
-      "system": "gastrointestinal",
-      "text": "Ask about right-upper-quadrant or epigastric pain, timing after meals, radiation to back or shoulder, duration, and recurrence.",
+      "system": "genitourinary",
+      "text": "Has your urine looked darker than usual, or your stool looked pale or clay-colored?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Dark urine",
+        "Pale or clay-colored stool"
       ],
       "select": "one"
     },
     {
       "id": "history-08",
       "kind": "history",
-      "system": "infectious",
-      "text": "Ask about fever, chills, nausea, vomiting, jaundice, pruritus, dark urine, pale stool, and poor intake.",
+      "system": "skin",
+      "text": "Has your skin been itchy?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "No pruritus",
+        "Pruritus present"
       ],
       "select": "one"
     },
     {
       "id": "history-09",
       "kind": "history",
-      "system": "reproductive",
-      "text": "Ask about prior gallstones, cholecystitis, pancreatitis, biliary procedures, pregnancy when relevant, and family history.",
+      "system": "gastrointestinal",
+      "text": "Do you have any prior episodes of abdominal pain that occurs specifically after you eat, or have you been told you have gallstones?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Prior episodes of postprandial pain",
+        "Known gallstones"
       ],
       "select": "one"
     },
     {
       "id": "history-10",
       "kind": "history",
-      "system": "medication",
-      "text": "Ask about chest pain, dyspnea, urinary symptoms, hepatitis risk, alcohol use, medications, and ulcer symptoms.",
+      "system": "gastrointestinal",
+      "text": "Do you have back pain that wraps around from your abdomen, or have you had pancreatitis before?",
       "choices": [
-        "No",
-        "Yes",
-        "Unclear"
+        "Neither",
+        "Pain radiating around to the back",
+        "Known prior pancreatitis"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-11",
+      "kind": "history",
+      "system": "cardiovascular",
+      "text": "Do you have chest pain or shortness of breath along with this pain?",
+      "choices": [
+        "Neither",
+        "Chest pain",
+        "Shortness of breath"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-12",
+      "kind": "history",
+      "system": "reproductive",
+      "text": "Is there any chance you could be pregnant?",
+      "choices": [
+        "Not applicable or not pregnant",
+        "Possible pregnancy"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "history-13",
+      "kind": "history",
+      "system": "gastrointestinal",
+      "text": "Do you have burning stomach pain that improves or worsens specifically with eating, suggesting an ulcer?",
+      "choices": [
+        "No ulcer-type pain pattern",
+        "Burning pain that improves with eating",
+        "Burning pain that worsens with eating"
       ],
       "select": "one"
     },
     {
       "id": "exam-01",
       "kind": "exam",
-      "system": "cardiovascular",
-      "text": "Assess appearance, vital signs, mucous membranes, orthostatic symptoms when safe, and bedside perfusion.",
+      "system": "gastrointestinal",
+      "text": "Assess the right upper quadrant for a Murphy sign.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Negative Murphy sign",
+        "Positive Murphy sign"
       ],
       "select": "one"
     },
     {
       "id": "exam-02",
       "kind": "exam",
-      "system": "skin",
-      "text": "Inspect for scars, distention, asymmetry, visible hernia, skin changes, and respiratory movement of the abdomen.",
+      "system": "gastrointestinal",
+      "text": "Palpate the abdomen for tenderness, guarding, and rebound.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Soft, nontender",
+        "Focal right upper quadrant tenderness without guarding",
+        "Guarding, rebound, or rigidity"
       ],
       "select": "one"
     },
     {
       "id": "exam-03",
       "kind": "exam",
-      "system": "gastrointestinal",
-      "text": "Auscultate and palpate systematically for focal tenderness, guarding, rebound, mass, organ enlargement, or pulsatility.",
+      "system": "general",
+      "text": "Assess temperature for fever.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Afebrile",
+        "Febrile"
       ],
       "select": "one"
     },
     {
       "id": "exam-04",
       "kind": "exam",
-      "system": "genitourinary",
-      "text": "Assess for costovertebral-angle tenderness and examine relevant hernia sites when indicated.",
+      "system": "skin",
+      "text": "Inspect skin and sclerae for jaundice.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Absent",
+        "Present"
       ],
       "select": "one"
     },
     {
       "id": "exam-05",
       "kind": "exam",
-      "system": "reproductive",
-      "text": "Perform rectal, perianal, or pelvic examination only when clinically indicated and appropriate.",
+      "system": "cardiovascular",
+      "text": "Assess hemodynamic stability.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normotensive, stable",
+        "Tachycardic",
+        "Hypotensive or in shock"
       ],
       "select": "one"
     },
     {
       "id": "exam-06",
       "kind": "exam",
-      "system": "hematologic",
-      "text": "Inspect for jaundice, pallor, edema, bruising, chronic liver-disease stigmata, and other systemic findings when relevant.",
+      "system": "gastrointestinal",
+      "text": "Palpate the epigastrium for tenderness suggesting pancreatitis.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Nontender",
+        "Epigastric tenderness"
       ],
       "select": "one"
     },
     {
       "id": "exam-07",
       "kind": "exam",
-      "system": "general",
-      "text": "Inspect and palpate the right upper quadrant and epigastrium for focal tenderness, guarding, mass, and pain with inspiration.",
+      "system": "gastrointestinal",
+      "text": "Assess for a palpable gallbladder or right upper quadrant mass.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No palpable mass",
+        "Palpable mass or distended gallbladder"
       ],
       "select": "one"
     },
     {
       "id": "exam-08",
       "kind": "exam",
-      "system": "infectious",
-      "text": "Inspect sclera and skin for jaundice, assess temperature, perfusion, mental status, and signs of systemic infection.",
+      "system": "cardiovascular",
+      "text": "Auscultate the heart and lungs to help exclude a cardiac or pulmonary source of pain.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Normal heart and lung sounds",
+        "Abnormal heart or lung findings"
       ],
       "select": "one"
     },
@@ -228,23 +252,21 @@
       "id": "exam-09",
       "kind": "exam",
       "system": "gastrointestinal",
-      "text": "Assess for distention, rebound, rigidity, diffuse tenderness, organ enlargement, and peritoneal signs.",
+      "text": "Assess for diffuse peritoneal signs suggesting perforation.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "No peritoneal signs",
+        "Diffuse guarding or rigidity"
       ],
       "select": "one"
     },
     {
       "id": "exam-10",
       "kind": "exam",
-      "system": "respiratory",
-      "text": "Assess heart rhythm, lung sounds, chest-wall tenderness, and signs of lower-lobe pulmonary disease.",
+      "system": "neurologic",
+      "text": "Assess mental status.",
       "choices": [
-        "Normal",
-        "Abnormal",
-        "Not assessed"
+        "Alert and oriented",
+        "Confused or lethargic"
       ],
       "select": "one"
     }
