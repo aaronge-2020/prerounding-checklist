@@ -1561,6 +1561,7 @@ async function deidentify(rawText) {
 
 async function handleClick(event) {
   const target = event.target.closest("[data-action]");
+  if (target && target.dataset.action === "import-phone-return") console.log("TEXTAREA VALUE IN HANDLER:", document.getElementById("phoneReturnText")?.value.length, document.getElementById("phoneReturnText")?.value.substring(0, 50));
   if (!target) return;
   const action = target.dataset.action;
   try {
@@ -3298,7 +3299,12 @@ async function importPhoneReturnBundle(bundle) {
 }
 
 async function importPhoneReturn() {
-  await importPhoneReturnBundle(decodeChecklistReturnInput(byId("phoneReturnText").value));
+  try {
+    await importPhoneReturnBundle(decodeChecklistReturnInput(byId("phoneReturnText").value));
+  } catch (error) {
+    console.error("IMPORT ERROR:", error);
+    throw error;
+  }
 }
 
 async function importPhoneReturnFile(file) {

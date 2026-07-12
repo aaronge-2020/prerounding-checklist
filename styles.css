@@ -737,6 +737,7 @@ p {
 
 .deid-strip {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
@@ -1253,7 +1254,7 @@ p {
 /* The note field stays always-visible at desktop widths (unchanged today);
    the tap-to-reveal toggle only takes over once a narrower layout hides it
    (see the phone-mode and max-width:680px overrides below). */
-.note-toggle {
+.checklist-item .note-toggle {
   display: none;
   color: var(--muted);
 }
@@ -1351,7 +1352,10 @@ p {
 
 .phone-transfer {
   display: grid;
+  align-content: start;
   gap: 12px;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .phone-preview {
@@ -2155,8 +2159,24 @@ p {
   gap: 10px;
 }
 
-.prompt-panel-header select {
-  width: min(248px, 44%);
+.prompt-panel-header {
+  flex-wrap: nowrap;
+}
+
+.prompt-panel-header > div:first-child {
+  flex: 1 1 200px;
+  min-width: 0;
+}
+
+.prompt-panel-header > select,
+.prompt-panel-header > .prompt-day-select {
+  flex: 1 1 200px;
+  max-width: 260px;
+  min-width: 0;
+}
+
+.prompt-day-select {
+  white-space: nowrap;
 }
 
 .prompt-template-wrap {
@@ -2216,8 +2236,9 @@ p {
     flex-direction: column;
   }
 
-  .prompt-panel-header select {
-    width: 100%;
+  .prompt-panel-header > select,
+  .prompt-panel-header > .prompt-day-select {
+    max-width: none;
   }
 }
 
@@ -2831,6 +2852,7 @@ p {
 .deid-operation {
   display: none;
   grid-column: 1 / -1;
+  flex-basis: 100%;
   grid-template-columns: minmax(80px, 180px) minmax(0, 1fr);
   gap: 8px;
   align-items: center;
@@ -2843,6 +2865,7 @@ p {
 
 .deid-readiness-note {
   grid-column: 1 / -1;
+  flex-basis: 100%;
   color: var(--muted);
   font-size: 11px;
 }
@@ -2850,6 +2873,7 @@ p {
 .deid-download-progress {
   display: grid;
   grid-column: 1 / -1;
+  flex-basis: 100%;
   grid-template-columns: minmax(100px, 180px) minmax(0, 1fr);
   gap: 8px;
   align-items: center;
@@ -4338,22 +4362,24 @@ body.vault-locked .vault-access {
 }
 
 .prompt-day-select {
-  display: grid;
-  grid-template-columns: auto minmax(160px, 1fr);
+  display: flex;
   align-items: center;
   gap: 6px;
   color: var(--muted);
   font-size: 11px;
 }
 
-.prompt-day-select select { min-width: 0; }
+.prompt-day-select select { 
+  min-width: 0; 
+  flex: 1;
+}
 
 @media (max-width: 680px) {
   .workup-workspace-mirror {
     grid-template-columns: 1fr;
   }
 
-  .prompt-day-select { grid-template-columns: 1fr; }
+  .prompt-day-select { flex-direction: column; align-items: stretch; }
 }
 
 @media (max-width: 880px) {

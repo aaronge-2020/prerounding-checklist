@@ -13,7 +13,7 @@ export const STRUCTURED_DEID_MODE = "structured";
 // offered in the clinician UI. Large WebGPU packs that repeatedly failed their
 // own self-test are deliberately not selectable; a model is useful only when
 // this app can verify a real local inference session.
-export const DEFAULT_DEID_MODEL_KEY = "stanford-clinical";
+export const DEFAULT_DEID_MODEL_KEY = "openmed-superclinical-small";
 
 const ALL_DEID_MODEL_OPTIONS = [
   {
