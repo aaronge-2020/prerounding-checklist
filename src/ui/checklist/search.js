@@ -71,7 +71,12 @@ export function toggleItemNote(button, openNoteIds) {
   button.setAttribute("aria-expanded", String(isOpen));
   if (isOpen) {
     openNoteIds.add(itemId);
-    item.querySelector(".item-note-input")?.focus();
+    const input = item.querySelector(".item-note-input");
+    if (input) {
+      // Force layout so iOS Safari recognizes it is no longer display: none
+      void input.offsetHeight; 
+      input.focus();
+    }
   } else {
     openNoteIds.delete(itemId);
   }
