@@ -13,9 +13,9 @@ export function checklistReturnCode(bundle) {
   return encodeChecklistReturnBundle(bundle);
 }
 
-function transferFile(FileConstructor, name, contents) {
+function transferFile(FileConstructor, name, contents, type = "application/json") {
   if (typeof FileConstructor !== "function") return null;
-  return new FileConstructor([JSON.stringify(contents, null, 2)], name, { type: "application/json" });
+  return new FileConstructor([JSON.stringify(contents, null, 2)], name, { type });
 }
 
 // The browser/OS APIs are injected so this boundary stays deterministic in
@@ -53,9 +53,29 @@ export function createPhoneTransferController({
       downloadChecklist();
       return;
     }
+
     try {
+      if (navigatorObject.canShare && !navigatorObject.canShare({ url })) {
+        throw new Error("Cannot share URL");
+      }
       await navigatorObject.share({ title: "Prerounding checklist", text: "Open this checklist on the phone.", url });
       setStatus("Checklist link shared.");
+      return;
+    } catch (error) {
+      if (error?.name === "AbortError") {
+        setStatus("Sharing cancelled.");
+        return;
+      }
+    }
+
+    const file = transferFile(FileConstructor, "prerounding-checklist.bundle.txt", createPhoneChecklistTransferFile(getChecklistBundle()), "text/plain");
+    if (!file || (navigatorObject.canShare && !navigatorObject.canShare({ files: [file] }))) {
+      downloadChecklist();
+      return;
+    }
+    try {
+      await navigatorObject.share({ title: "Prerounding checklist", files: [file] });
+      setStatus("Checklist file shared.");
     } catch (error) {
       if (error?.name === "AbortError") {
         setStatus("Sharing cancelled.");
@@ -68,7 +88,7 @@ export function createPhoneTransferController({
   // A file (not a link) so AirDropping it never opens a second tab/instance
   // of the app - it just lands as a file to import, same as a download.
   async function shareReturn() {
-    const file = transferFile(FileConstructor, "prerounding-checklist-return.bundle.json", createChecklistReturnTransferFile(getReturnBundle()));
+    const file = transferFile(FileConstructor, "prerounding-checklist-return.bundle.txt", createChecklistReturnTransferFile(getReturnBundle()), "text/plain");
     if (!file || typeof navigatorObject?.share !== "function" || (navigatorObject.canShare && !navigatorObject.canShare({ files: [file] }))) {
       downloadReturn();
       return;

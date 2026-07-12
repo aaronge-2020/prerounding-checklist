@@ -173,7 +173,7 @@ export function createChecklistPresentation({ escapeHtml, icon }) {
         <div class="button-row">
           <button class="button--secondary" type="button" data-action="import-phone-return">Import pasted answers</button>
           <button class="button--secondary" type="button" data-action="choose-phone-return-file">${icon("upload")} Import file</button>
-          <input id="phoneReturnFileInput" type="file" accept="application/json,.json" hidden>
+          <input id="phoneReturnFileInput" type="file" accept="application/json,.json,text/plain,.txt" hidden>
         </div>
         <p class="muted">Tip: on the phone, tap "Copy return code" instead of sharing a file. If the phone and this computer use the same Apple ID with Handoff on, the code appears on this computer's clipboard within a minute or two — just paste it above, right in this tab.</p>
       </aside>
@@ -194,7 +194,7 @@ export function createChecklistPresentation({ escapeHtml, icon }) {
             <div class="button-row">
               <button class="button--secondary" type="button" data-action="go-workups">Build from workups</button>
               <button class="button--secondary" type="button" data-action="choose-phone-bundle-file">${icon("upload")} Open shared file</button>
-              <input id="phoneBundleFileInput" type="file" accept="application/json,.json" hidden>
+              <input id="phoneBundleFileInput" type="file" accept="application/json,.json,text/plain,.txt" hidden>
             </div>
           </div>
           ${

@@ -129,7 +129,7 @@ export function createVaultPresentation({ escapeHtml, icon }) {
       <div class="empty-state next-step">
         <strong>Next step: unlock the vault and add a patient.</strong>
         <span>Use a de-identified room label to begin a new hospital stay.</span>
-        ${allowPhoneBundleImport ? `<div class="button-row"><button class="button--secondary" type="button" data-action="choose-phone-bundle-file">${icon("upload")} Open shared checklist file</button><input id="phoneBundleFileInput" type="file" accept="application/json,.json" hidden></div>` : ""}
+        ${allowPhoneBundleImport ? `<div class="button-row"><button class="button--secondary" type="button" data-action="choose-phone-bundle-file">${icon("upload")} Open shared checklist file</button><input id="phoneBundleFileInput" type="file" accept="application/json,.json,text/plain,.txt" hidden></div>` : ""}
       </div>
     `;
   }

@@ -107,6 +107,6 @@ const sharedTransfer = createPhoneTransferController({
   setStatus: () => {}
 });
 await sharedTransfer.shareReturn();
-assert.equal(shared[0].files[0].name, "prerounding-checklist-return.bundle.json");
+assert.equal(shared[0].files[0].name, "prerounding-checklist-return.bundle.txt");
 
 console.log("UI feature module tests passed");
