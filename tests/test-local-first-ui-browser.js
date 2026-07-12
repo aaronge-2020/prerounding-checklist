@@ -335,7 +335,7 @@ try {
   await page.waitForFunction(() => /PATIENT NAME/.test(document.querySelector("#promptOutput")?.value || ""));
   assert.doesNotMatch(await page.locator("#promptOutput").inputValue(), /[\[\]{}<>()`]/);
   await page.selectOption("#promptTaskSelect", "daily_progress_note");
-  assert.match(await page.locator("#promptOutput").inputValue(), /Write a concise daily progress note/);
+  assert.match(await page.locator("#promptOutput").inputValue(), /Daily Progress-Note Documentation Standard/);
   await page.selectOption("#promptTaskSelect", "teaching_case_trajectory");
   assert.match(await page.locator("#promptOutput").inputValue(), /Teach the full case trajectory/i);
   await page.selectOption("#promptTaskSelect", "medication_explainer_by_problem");
