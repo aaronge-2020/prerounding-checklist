@@ -152,6 +152,57 @@ export function createChecklistPresentation({ escapeHtml, icon }) {
     `;
   }
 
+  // Paste an OpenEvidence SOAP note, de-identify it locally, then let ChatGPT
+  // map it onto this checklist's answers - mirrors the Workups page's
+  // "Format or import a workup" panel (same dual saved-key/copy-prompt paths,
+  // same paste-draft-then-paste-JSON-back textarea) but for checklist answers.
+  function renderOpenEvidenceImportPanel({
+    input = "",
+    busy = false,
+    error = "",
+    deidConfirmed = false,
+    deidStatus = "",
+    hasSavedOpenAiKey = false,
+    openAiModelLabel = ""
+  }) {
+    return `
+      <details class="utility-panel openevidence-import" ${error || busy || deidConfirmed || deidStatus || input ? "open" : ""}>
+        <summary>
+          <strong>Fill from OpenEvidence note</strong>
+          <span class="muted">Paste the OpenEvidence SOAP note, de-identify it locally, then let ChatGPT map it onto this checklist.</span>
+        </summary>
+        <div class="workup-import-body">
+          <div class="section-heading tight">
+            <div>
+              <h3>Paste the OpenEvidence note</h3>
+              <p class="muted">De-identify it locally first. Anything that doesn't match a checklist item becomes a quick note automatically.</p>
+            </div>
+            <button class="button--secondary" type="button" data-action="run-openevidence-note-deid">${icon("shield")} De-identify locally</button>
+          </div>
+          <textarea id="openEvidenceImportInput" class="json-import" spellcheck="false" placeholder="Paste the OpenEvidence SOAP note here, then de-identify it locally before sending it anywhere.">${escapeHtml(input)}</textarea>
+          ${deidStatus ? `<span class="model-selection-message" aria-live="polite">${escapeHtml(deidStatus)}</span>` : ""}
+          ${hasSavedOpenAiKey ? `<div class="workup-api-formatting">
+            <label class="check-row">
+              <input id="openEvidenceImportDeidConfirmed" type="checkbox" ${deidConfirmed ? "checked" : ""}>
+              <span>I confirm this text is de-identified and may be sent to OpenAI using my saved API key.</span>
+            </label>
+            <div class="button-row">
+              <button type="button" data-action="format-checklist-answers-api" ${deidConfirmed && !busy ? "" : "disabled"}>${busy ? "Filling checklist with saved key..." : "Fill checklist with saved API key"}</button>
+              <span class="muted">Ready to use ${escapeHtml(openAiModelLabel)} after you confirm the text is de-identified.</span>
+            </div>
+          </div>` : `<div class="notice"><span>To fill the checklist automatically, save an OpenAI API key in Settings.</span><button class="button--quiet" type="button" data-action="go-settings">Open Settings</button></div>`}
+          <div class="button-row">
+            <button class="button--secondary" type="button" data-action="copy-checklist-answers-formatter-prompt">Copy ChatGPT prompt</button>
+            <button class="button--secondary" type="button" data-action="parse-checklist-answers-json">Parse pasted ChatGPT JSON</button>
+          </div>
+          <p class="muted">No saved key? Copy the prompt, paste it into ChatGPT yourself, then paste its JSON reply into the box above and choose Parse pasted ChatGPT JSON.</p>
+          ${error ? `<div class="warning-box">${escapeHtml(error)}</div>` : ""}
+          <textarea id="checklistImportPromptOutput" rows="6" readonly placeholder="Copied ChatGPT prompt appears here."></textarea>
+        </div>
+      </details>
+    `;
+  }
+
   function renderPhoneTransfer(phoneLink) {
     return `
       <aside class="panel phone-transfer">
@@ -180,7 +231,7 @@ export function createChecklistPresentation({ escapeHtml, icon }) {
     `;
   }
 
-  function renderDesktopChecklist({ day, snapshot, answers, quickNotes = [], openNoteIds = new Set(), searchQuery = "", phoneLink }) {
+  function renderDesktopChecklist({ day, snapshot, answers, quickNotes = [], openNoteIds = new Set(), searchQuery = "", phoneLink, openEvidenceImport }) {
     const totalItems = snapshot?.items.length || 0;
     const completedItems = completedCount(snapshot?.items || [], answers);
     return `
@@ -197,6 +248,7 @@ export function createChecklistPresentation({ escapeHtml, icon }) {
               <input id="phoneBundleFileInput" type="file" accept="application/json,.json,text/plain,.txt" hidden>
             </div>
           </div>
+          ${snapshot ? renderOpenEvidenceImportPanel(openEvidenceImport || {}) : ""}
           ${
             snapshot
               ? `<div class="checklist-toolbar-row">${renderChecklistSearch(searchQuery)}</div>`

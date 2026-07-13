@@ -18,7 +18,13 @@ export function normalizeWorkup(workup) {
       ? workup.items.map((item) => ({
           id: String(item?.id || "").trim(),
           kind: String(item?.kind || "").trim(),
-          system: String(item?.system || "").trim(),
+          // Legacy locally-saved workups predate the controlled system
+          // vocabulary and have no system at all - default those rather than
+          // reject them, so a stale item never blocks the whole catalog (and
+          // every view rendered after it - see render() in src/ui/app.js)
+          // from loading. A present-but-invalid value (e.g. a hallucinated
+          // system from a pasted draft) still fails validateWorkup below.
+          system: item?.system ? String(item.system).trim() : "general",
           text: String(item?.text || "").trim(),
           choices: normalizeChoiceList(item?.choices),
           select: VALID_SELECT_MODES.has(item?.select) ? item.select : "one"

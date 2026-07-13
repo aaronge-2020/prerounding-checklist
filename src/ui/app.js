@@ -1,8 +1,8 @@
-import { createDailyRecord, latestDay, localCalendarDate, removeDay, sortDays, upsertDay, buildTrajectoryBlock } from "../daily-updates/days.js?v=20260711-functional-remediation-15";
+import { createDailyRecord, latestDay, localCalendarDate, removeDay, sortDays, upsertDay } from "../daily-updates/days.js?v=20260711-functional-remediation-15";
 import { activePatient, archivePatient, createPatientRecord, removeWorkupOverride, setActivePatient, setSelectedWorkups, setWorkupOverride, setWorkupOverrides, updateActivePatient } from "../app/state/vault.js?v=20260711-functional-remediation-15";
 import { deleteEncryptedVaultRecord, downloadJson, loadOrCreateVault, readEncryptedVaultRecord, saveEncryptedVault, writeEncryptedVaultRecord } from "../app/state/persistence.js?v=20260711-functional-remediation-15";
 import { authorizeWorkupWorkspaceMirror, disconnectWorkupWorkspaceMirror, getWorkupWorkspaceMirrorState, mirrorWorkupOverridesToWorkspace } from "../app/state/workspace-mirror.js?v=20260711-functional-remediation-15";
-import { addSection, removeSection, reorderSections, reorderSectionsById, replaceSectionsFromFormAsync, sectionsToPromptBlock } from "../patient-context/sections.js?v=20260711-functional-remediation-15";
+import { addSection, removeSection, reorderSections, reorderSectionsById, replaceSectionsFromFormAsync } from "../patient-context/sections.js?v=20260711-functional-remediation-15";
 import { createEphemeralRedactionReview, nextPendingReviewTarget, pendingReviewTargets, reviewKey, synchronizeReviewPlaceholders } from "../patient-context/review.js?v=20260711-functional-remediation-15";
 import { deidentifyText, getAdvancedDeidStatus, getSelectedDeidModelStatus, preloadAdvancedDeidModel, resetAdvancedDeidWorker, verifyAdvancedDeidModel } from "../patient-context/deid-client.js?v=20260711-functional-remediation-15";
 import { DEFAULT_DEID_MODEL_KEY, DEID_MODEL_OPTIONS, STRUCTURED_DEID_MODE, deidModelOptionByKey } from "../patient-context/deid-model-options.js?v=20260711-functional-remediation-15";
@@ -13,8 +13,9 @@ import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260711-func
 import { MEDICAL_SERVICE_OPTIONS, OPENAI_WORKUP_MODEL_OPTIONS, PRESENTATION_DETAIL_OPTIONS, normalizeUserPreferences, openAiWorkupModelOption } from "../app/preferences.js?v=20260711-functional-remediation-15";
 import { effectiveWorkupCatalog, findWorkupsById, normalizeWorkup, parseWorkupJson } from "../workups/schema.js?v=20260711-functional-remediation-15";
 import { mergeWorkupLibraryIntoOverrides, parseWorkupLibraryJson, workupLibraryFromOverrides } from "../workups/library.js?v=20260711-functional-remediation-15";
-import { createBlankWorkup, createBlankWorkupItem, buildJsonFormatterPrompt, buildOpenEvidenceWorkupDraftPrompt, collectWorkupDraftFromDocument, workupFromEditorDraft, workupThoroughnessOption } from "../workups/editor.js?v=20260711-functional-remediation-15";
-import { formatWorkupDraftWithOpenAi } from "./openai-workup-api.js?v=20260711-functional-remediation-15";
+import { createBlankWorkup, createBlankWorkupItem, collectWorkupDraftFromDocument, workupFromEditorDraft, workupThoroughnessOption } from "../workups/editor.js?v=20260711-functional-remediation-15";
+import { createWorkupOpenAiImportController } from "./workups/openai-import-controller.js?v=20260712-openevidence-import";
+import { formatChecklistAnswersWithOpenAi } from "./openai-checklist-api.js?v=20260712-openevidence-import";
 import { createChecklistSnapshot } from "../workups/checklist-conversion.js?v=20260711-functional-remediation-15";
 import {
   createChecklistReturnBundle,
@@ -33,11 +34,12 @@ import {
 } from "../checklist/state.js?v=20260711-functional-remediation-19";
 import { groupChecklistItemsBySystem } from "../checklist/grouping.js?v=20260711-functional-remediation-19";
 import { icon } from "./icons.js?v=20260711-functional-remediation-15";
-import { createChecklistPresentation } from "./checklist/presentation.js?v=20260711-functional-remediation-19";
+import { createChecklistPresentation } from "./checklist/presentation.js?v=20260712-openevidence-import";
 import { createPhoneTransferController } from "./checklist/transfer.js?v=20260711-functional-remediation-19";
 import { createChecklistSearchController, toggleItemNote } from "./checklist/search.js?v=20260711-functional-remediation-19";
 import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-functional-remediation-19";
 import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260711-functional-remediation-19";
+import { createOpenEvidenceImportController } from "./checklist/openevidence-import-controller.js?v=20260712-openevidence-import";
 import { createRedactionPresentation, redactionPosition, warningDescription, warningSnippet } from "./redaction/presentation.js?v=20260711-functional-remediation-19";
 import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260711-functional-remediation-19";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
@@ -88,6 +90,7 @@ const app = {
   phoneReturnReady: false,
   checklistSearchQuery: "",
   checklistOpenNoteIds: new Set(),
+  openEvidenceImport: { input: "", busy: false, error: "", deidConfirmed: false, deidStatus: "" },
   workupImportError: "",
   workupCatalogOpen: false,
   workupCatalogQuery: "",
@@ -134,6 +137,8 @@ const workupPresentation = createWorkupPresentation({ escapeHtml, icon });
 const checklistSearch = createChecklistSearchController({ Fuse, normalizeQuery: normalizeWorkupCatalogQuery, byId });
 const phoneAutosave = createPhoneAutosave(localStorage);
 const phoneSession = createPhoneSessionController({ phoneAutosave, state: app, active, selectedChecklistDay, persistVault, renderPhoneChecklist, renderChecklist });
+const openEvidenceImport = createOpenEvidenceImportController({ state: app, active, selectedChecklistDay, persistVault, renderChecklist, byId, copyText, setStatus, currentPreferences, deidentify, formatChecklistAnswersWithOpenAi });
+const workupOpenAiImport = createWorkupOpenAiImportController({ state: app, active, byId, copyText, setStatus, currentPreferences, renderWorkups, parseAndSaveWorkupJson });
 
 function selectedDeidOption() {
   return app.deidMode === STRUCTURED_DEID_MODE ? null : deidModelOptionByKey(app.deidMode);
@@ -463,6 +468,14 @@ function active() {
   return activePatient(app.vault);
 }
 
+// Archiving a patient permanently removes them (see archivePatient in
+// app/state/vault.js), so archivedAt is only ever non-empty on data saved by
+// an older build. Filter those out everywhere patients are listed instead of
+// showing a permanently-disabled "Archived" row that can never be dismissed.
+function visiblePatients(vault) {
+  return (vault?.patients || []).filter((patient) => !patient.archivedAt);
+}
+
 function setStatus(message, { icon: iconName } = {}) {
   app.status = message;
   const status = byId("statusLine");
@@ -593,13 +606,18 @@ function render() {
     byId(`${id}View`)?.classList.toggle("active", app.view === id);
     document.querySelector(`[data-view-target="${id}"]`)?.classList.toggle("active", app.view === id);
   }
-  renderVault();
-  renderDaily();
-  renderWorkups();
-  renderChecklist();
-  renderPrompts();
-  renderQuickDeid();
-  renderSettings();
+  // Each view-renderer runs independently: one throwing (e.g. on bad locally
+  // cached data) must never prevent renderStatusBar() below from running -
+  // that's what reflects patient selection, so a single broken view previously
+  // made the whole app look like patient selection had stopped working.
+  for (const renderView of [renderVault, renderDaily, renderWorkups, renderChecklist, renderPrompts, renderQuickDeid, renderSettings]) {
+    try {
+      renderView();
+    } catch (error) {
+      console.error(error);
+      setStatus(error instanceof Error ? error.message : "Unable to render this view.");
+    }
+  }
   renderStatusBar();
   if (app.view === "daily" && app.pendingSectionReviewFocus) requestAnimationFrame(focusPendingSectionReview);
 }
@@ -614,11 +632,11 @@ function renderStatusBar() {
   byId("statusLine").textContent = app.status || "All data is encrypted and stays on this device. Nothing leaves without your explicit action.";
   const switcher = byId("patientSwitcher");
   if (!switcher) return;
-  const patients = app.vault?.patients || [];
+  const patients = visiblePatients(app.vault);
   switcher.disabled = !app.vault || !patients.length;
   switcher.innerHTML = patients.length
     ? patients
-        .map((entry) => `<option value="${escapeHtml(entry.id)}" ${entry.id === patient?.id ? "selected" : ""}>${escapeHtml(entry.displayLabel)}${entry.archivedAt ? " (archived)" : ""}</option>`)
+        .map((entry) => `<option value="${escapeHtml(entry.id)}" ${entry.id === patient?.id ? "selected" : ""}>${escapeHtml(entry.displayLabel)}</option>`)
         .join("")
     : `<option>No patient selected</option>`;
 }
@@ -708,7 +726,7 @@ function renderVault() {
     `;
     return;
   }
-  const patients = app.vault?.patients || [];
+  const patients = visiblePatients(app.vault);
   byId("vaultContent").innerHTML = `
     <div class="vault-screen">
       <section class="vault-access surface-panel">
@@ -768,19 +786,18 @@ function renderVault() {
 
 function renderPatientRow(patient) {
   const selected = patient.id === app.vault?.activePatientId;
-  const archived = Boolean(patient.archivedAt);
   const dayCount = patient.days?.length || 0;
   return `
     <div class="list-row roster-row ${selected ? "selected" : ""}">
       <div class="roster-patient-name">
         <strong>${escapeHtml(patient.displayLabel)}</strong>
-        <span class="muted">${archived ? `Archived ${escapeHtml(patient.archivedAt.slice(0, 10))}` : "Active"} · HD${Math.max(dayCount, 1)}</span>
+        <span class="muted">Active · HD${Math.max(dayCount, 1)}</span>
       </div>
-      <span class="roster-status ${archived ? "is-archived" : ""}">${archived ? `Archived ${escapeHtml(patient.archivedAt.slice(0, 10))}` : "Active stay"}</span>
+      <span class="roster-status">Active stay</span>
       <span class="muted roster-day-count">HD${Math.max(dayCount, 1)}</span>
       <div class="button-row roster-actions">
         <button class="button--secondary" type="button" data-action="select-patient" data-patient-id="${escapeHtml(patient.id)}">Select</button>
-        <button class="button--quiet" type="button" data-action="archive-patient" data-patient-id="${escapeHtml(patient.id)}" ${archived ? "disabled" : ""}>${icon("archive")} Archive</button>
+        <button class="button--quiet" type="button" data-action="archive-patient" data-patient-id="${escapeHtml(patient.id)}">${icon("archive")} Archive</button>
       </div>
     </div>
   `;
@@ -1120,6 +1137,7 @@ function renderChecklist() {
   const day = selectedChecklistDay(patient);
   const snapshot = day?.checklistSnapshot || null;
   const answers = day?.answers || {};
+  const preferences = currentPreferences();
   checklistSearch.buildIndex(snapshot);
   byId("checklistContent").innerHTML = checklistPresentation.renderDesktopChecklist({
     day,
@@ -1128,7 +1146,12 @@ function renderChecklist() {
     quickNotes: day?.quickNotes || [],
     openNoteIds: app.checklistOpenNoteIds,
     searchQuery: app.checklistSearchQuery,
-    phoneLink: snapshot ? phoneTransfer.currentChecklistUrl() : ""
+    phoneLink: snapshot ? phoneTransfer.currentChecklistUrl() : "",
+    openEvidenceImport: {
+      ...app.openEvidenceImport,
+      hasSavedOpenAiKey: Boolean(preferences.openAiApiKey),
+      openAiModelLabel: openAiWorkupModelOption(preferences.openAiModel).label
+    }
   });
   checklistSearch.updateFilter(app.checklistSearchQuery);
 }
@@ -1266,7 +1289,7 @@ function renderSettings() {
         <div class="section-heading">
           <div>
             <h2>Bring your own OpenAI key</h2>
-            <p class="muted">Use your own key to turn a reviewed, de-identified OpenEvidence workup draft into editable workup rows.</p>
+            <p class="muted">Use your own key to format a reviewed, de-identified OpenEvidence workup draft, or to fill checklist answers from a de-identified OpenEvidence note.</p>
           </div>
         </div>
         <div class="notice settings-security-note">
@@ -1287,7 +1310,7 @@ function renderSettings() {
           <button class="button--primary" type="button" data-action="save-openai-byok">Save encrypted key</button>
           <button class="button--quiet" type="button" data-action="clear-openai-byok" ${apiKeySaved ? "" : "disabled"}>Remove saved key</button>
         </div>
-        <p class="muted settings-helper">Without a saved key, the Workups page falls back to the copy-and-paste ChatGPT formatter prompt.</p>
+        <p class="muted settings-helper">Without a saved key, the Workups and Checklist pages fall back to the copy-and-paste ChatGPT formatter prompt.</p>
       </section>
     </div>
   `;
@@ -1631,7 +1654,7 @@ async function handleClick(event) {
     if (action === "export-workup-json") exportWorkupJson();
     if (action === "export-workup-library") exportWorkupLibrary();
     if (action === "parse-workup-json") await parseAndSaveWorkupJson(byId("workupJsonImport")?.value || "");
-    if (action === "format-workup-json-api") await formatWorkupJsonWithSavedKey();
+    if (action === "format-workup-json-api") await workupOpenAiImport.formatWorkupJsonWithSavedKey();
     if (action === "choose-workup-file") byId("workupJsonFileInput").click();
     if (action === "choose-workup-library-file") byId("workupLibraryFileInput").click();
     if (action === "choose-workup-workspace") await chooseWorkupWorkspace();
@@ -1646,9 +1669,13 @@ async function handleClick(event) {
       }
       updateWorkupCatalogFilter();
     }
-    if (action === "copy-open-evidence-workup-prompt") await copyOpenEvidenceWorkupPrompt();
-    if (action === "copy-json-formatter-prompt") await copyJsonFormatterPrompt();
+    if (action === "copy-open-evidence-workup-prompt") await workupOpenAiImport.copyOpenEvidenceWorkupPrompt();
+    if (action === "copy-json-formatter-prompt") await workupOpenAiImport.copyJsonFormatterPrompt();
     if (action === "build-checklist") await buildChecklist();
+    if (action === "run-openevidence-note-deid") await openEvidenceImport.runLocalDeid();
+    if (action === "format-checklist-answers-api") await openEvidenceImport.formatWithSavedKey();
+    if (action === "parse-checklist-answers-json") await openEvidenceImport.parseAndApply(byId("openEvidenceImportInput")?.value || "");
+    if (action === "copy-checklist-answers-formatter-prompt") await openEvidenceImport.copyFormatterPrompt();
     if (action === "go-workups") {
       app.view = "workups";
       render();
@@ -2437,7 +2464,7 @@ function applyApprovedRedactions(scope, sections) {
     let text = section.deidentifiedText;
     for (const redactionIndex of review.approvedRedactionIndexes) {
       const redaction = review.redactions[redactionIndex];
-      const position = redaction ? text.indexOf(redaction.placeholder) : -1;
+      const position = redaction ? redactionPosition(text, redaction) : -1;
       if (position >= 0) {
         text = `${text.slice(0, position)}${redaction.original}${text.slice(position + redaction.placeholder.length)}`;
       }
@@ -2451,18 +2478,26 @@ function applyApprovedRedactions(scope, sections) {
   });
 }
 
-async function deidentifySectionRows(scope, containerId) {
+async function deidentifySectionRows(scope, containerId, priorSections = []) {
   const rows = collectSectionRows(containerId);
   const retainedIds = new Set(rows.map((row) => row.id));
   for (const key of [...app.phiReviews.keys()]) {
     if (key.startsWith(`${scope}:`) && !retainedIds.has(key.slice(scope.length + 1))) app.phiReviews.delete(key);
   }
   const sections = await replaceSectionsFromFormAsync(rows, deidentify, {
-    onResult: ({ row, result }) => {
+    priorSections,
+    onResult: ({ row, result, prior, plan }) => {
       const key = reviewKey(scope, row.id);
       const existing = app.phiReviews.get(key);
       if (existing?.approvedRedactionIndexes?.size) return;
-      app.phiReviews.set(key, createEphemeralRedactionReview(row.text, result));
+      // Unchanged fields weren't reprocessed - leave whatever review (or lack
+      // of one) already existed for them alone rather than resetting it.
+      if (plan.mode === "unchanged") return;
+      if (plan.mode === "append") {
+        app.phiReviews.set(key, createEphemeralRedactionReview(plan.suffix, result.suffixResult || {}, { priorOutputText: prior?.deidentifiedText || "" }));
+      } else {
+        app.phiReviews.set(key, createEphemeralRedactionReview(row.text, result));
+      }
     },
     onProgress: ({ completed, total }) => updateDeidOperation({
       active: true,
@@ -2478,7 +2513,7 @@ async function saveContext() {
   assertSelectedDeidReady();
   updateDeidOperation({ active: true, message: "Preparing admission fields for local de-identification…", value: 0, total: 1 });
   try {
-    const sections = await deidentifySectionRows("context", "contextSections");
+    const sections = await deidentifySectionRows("context", "contextSections", active()?.contextSections || []);
     app.vault = updateActivePatient(app.vault, (patient) => ({ ...patient, contextSections: sections }));
     beginSectionReview("context");
     await persistVault("Context saved as de-identified local text.");
@@ -2509,7 +2544,7 @@ async function saveDay() {
   assertSelectedDeidReady();
   updateDeidOperation({ active: true, message: "Preparing daily fields for local de-identification…", value: 0, total: 1 });
   try {
-    const sections = await deidentifySectionRows("daily", "dailySections");
+    const sections = await deidentifySectionRows("daily", "dailySections", day.sections || []);
     const nextDay = { ...day, sections, updatedAt: new Date().toISOString() };
     app.vault = updateActivePatient(app.vault, (current) => ({ ...current, days: upsertDay(current.days, nextDay) }));
     beginSectionReview("daily");
@@ -3210,61 +3245,6 @@ async function importWorkupLibraryFile(file) {
   render();
 }
 
-async function copyOpenEvidenceWorkupPrompt() {
-  const patient = active();
-  const prompt = buildOpenEvidenceWorkupDraftPrompt({
-    patientContext: sectionsToPromptBlock(patient?.contextSections || [], "Saved patient context"),
-    dailyTrajectory: buildTrajectoryBlock(patient, { selectedDayId: latestDay(patient?.days || [])?.id, includeAllDays: false }),
-    workupTitle: byId("workupTitleInput")?.value || "",
-    thoroughness: app.workupThoroughness,
-    teamPreferences: app.vault.preferences
-  });
-  byId("workupPromptOutput").value = prompt;
-  await copyText(prompt);
-  setStatus("Copied prompt. Opening OpenEvidence...", { icon: "externalLink" });
-  window.open("https://www.openevidence.com/", "_blank", "noopener,noreferrer");
-}
-
-async function copyJsonFormatterPrompt() {
-  const prompt = buildJsonFormatterPrompt({
-    sourceText: byId("workupJsonImport")?.value || "",
-    workupTitle: byId("workupTitleInput")?.value || ""
-  });
-  byId("workupPromptOutput").value = prompt;
-  await copyText(prompt);
-  if (currentPreferences().openAiApiKey) return;
-  setStatus("Copied prompt. Opening ChatGPT...", { icon: "externalLink" });
-  window.open("https://chatgpt.com/", "_blank", "noopener,noreferrer");
-}
-
-async function formatWorkupJsonWithSavedKey() {
-  const preferences = currentPreferences();
-  const sourceText = byId("workupJsonImport")?.value || app.workupImportDraft;
-  const workupTitle = byId("workupTitleInput")?.value || "";
-  if (!app.workupApiDeidConfirmed) throw new Error("Confirm that the pasted workup draft is de-identified before sending it to OpenAI.");
-  app.workupImportDraft = sourceText;
-  app.workupApiBusy = true;
-  app.workupImportError = "";
-  setStatus("Formatting the de-identified workup draft with the saved API key...");
-  renderWorkups();
-  try {
-    const result = await formatWorkupDraftWithOpenAi({
-      apiKey: preferences.openAiApiKey,
-      model: preferences.openAiModel,
-      sourceText,
-      workupTitle
-    });
-    app.workupApiBusy = false;
-    await parseAndSaveWorkupJson(JSON.stringify(result));
-    setStatus("OpenAI formatted and loaded the workup JSON.");
-  } catch (error) {
-    app.workupApiBusy = false;
-    app.workupImportError = error instanceof Error ? error.message : "Unable to format the workup draft with OpenAI.";
-    setStatus(app.workupImportError);
-    renderWorkups();
-  }
-}
-
 async function buildChecklist() {
   const patient = active();
   const catalog = effectiveWorkupCatalog(app.vault.workupOverrides);
@@ -3423,6 +3403,10 @@ function handleChange(event) {
     app.workupApiDeidConfirmed = event.target.checked;
     app.workupImportPanelOpen = true;
     renderWorkups();
+  }
+  if (event.target.id === "openEvidenceImportDeidConfirmed") {
+    app.openEvidenceImport.deidConfirmed = event.target.checked;
+    renderChecklist();
   }
   if (isWorkupEditorControl(event.target)) queueWorkupAutosave();
   if (event.target.id === "settingsMedicalService") {

@@ -89,7 +89,24 @@ export function sanitizeResidualWarningMetadata(warnings = []) {
   });
 }
 
-export function createEphemeralRedactionReview(rawText, result = {}) {
+// Counts non-overlapping occurrences of a literal placeholder token. Used to
+// offset occurrence numbers when a review only covers newly-appended text
+// that will be displayed concatenated after already-committed text sharing
+// the same placeholder vocabulary (see createEphemeralRedactionReview).
+function countPlaceholderOccurrences(haystack, placeholder) {
+  const text = String(haystack || "");
+  if (!placeholder) return 0;
+  let count = 0;
+  let cursor = 0;
+  for (;;) {
+    const position = text.indexOf(placeholder, cursor);
+    if (position < 0) return count;
+    count += 1;
+    cursor = position + placeholder.length;
+  }
+}
+
+export function createEphemeralRedactionReview(rawText, result = {}, { priorOutputText = "" } = {}) {
   const source = String(rawText || "");
   const redactions = uniqueReviewEntities(source, result.entities, result.text)
     .map((redaction, index, entries) => {
@@ -98,10 +115,16 @@ export function createEphemeralRedactionReview(rawText, result = {}) {
       // replacement so the active-tab review can put the source and its
       // replacement next to each other in one annotated document.
       const placeholder = redaction.placeholder;
-      const occurrence = entries
-        .slice(0, index)
-        .filter((entry) => entry.placeholder === placeholder)
-        .length;
+      // When this review covers only appended text, prior already-committed
+      // text may contain earlier occurrences of the same placeholder. Those
+      // aren't part of `entries`, so the plain in-list count would understate
+      // the true occurrence position once this text is displayed appended
+      // after it - offset by however many times it already appears there.
+      const occurrence = countPlaceholderOccurrences(priorOutputText, placeholder)
+        + entries
+          .slice(0, index)
+          .filter((entry) => entry.placeholder === placeholder)
+          .length;
       return {
         ...redaction,
         id: `redaction_${index}`,
