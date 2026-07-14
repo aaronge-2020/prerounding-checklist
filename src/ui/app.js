@@ -16,7 +16,7 @@ import { MEDICAL_SERVICE_OPTIONS, OPENAI_WORKUP_MODEL_OPTIONS, PRESENTATION_DETA
 import { effectiveWorkupCatalog, findWorkupsById, normalizeWorkup, parseWorkupJson } from "../workups/schema.js?v=20260711-functional-remediation-15";
 import { mergeWorkupLibraryIntoOverrides, parseWorkupLibraryJson, workupLibraryFromOverrides } from "../workups/library.js?v=20260711-functional-remediation-15";
 import { createBlankWorkup, createBlankWorkupItem, collectWorkupDraftFromDocument, workupFromEditorDraft, workupThoroughnessOption } from "../workups/editor.js?v=20260711-functional-remediation-15";
-import { createWorkupOpenAiImportController } from "./workups/openai-import-controller.js?v=20260712-openevidence-import";
+import { createWorkupOpenAiImportController } from "./workups/openai-import-controller.js?v=20260714-deid-ux-polish";
 import { formatChecklistAnswersWithOpenAi } from "./openai-checklist-api.js?v=20260712-openevidence-import";
 import { createChecklistSnapshot } from "../workups/checklist-conversion.js?v=20260711-functional-remediation-15";
 import {
@@ -36,18 +36,18 @@ import {
 } from "../checklist/state.js?v=20260711-functional-remediation-19";
 import { groupChecklistItemsBySystem } from "../checklist/grouping.js?v=20260711-functional-remediation-19";
 import { icon } from "./icons.js?v=20260711-functional-remediation-15";
-import { createChecklistPresentation } from "./checklist/presentation.js?v=20260713-oe-panel-redesign";
+import { createChecklistPresentation } from "./checklist/presentation.js?v=20260714-deid-ux-polish";
 import { createPhoneTransferController } from "./checklist/transfer.js?v=20260711-functional-remediation-19";
 import { createChecklistSearchController, toggleItemNote } from "./checklist/search.js?v=20260711-functional-remediation-19";
 import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-functional-remediation-19";
 import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260711-functional-remediation-19";
-import { createOpenEvidenceImportController } from "./checklist/openevidence-import-controller.js?v=20260713-oe-panel-redesign";
+import { createOpenEvidenceImportController } from "./checklist/openevidence-import-controller.js?v=20260714-deid-ux-polish";
 import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260714-token-colors";
 import { createPromptTaskController, filterSmartVariableMenu, positionSmartVariableMenu } from "./prompts/controller.js?v=20260713-smart-menu-caret";
 import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260713-guideline-sets";
 import { createSettingsPresentation } from "./settings/presentation.js?v=20260713-guideline-sets";
 import { createRedactionPresentation, redactionPosition, warningDescription, warningSnippet } from "./redaction/presentation.js?v=20260711-functional-remediation-19";
-import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260711-functional-remediation-19";
+import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260714-deid-ux-polish";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
 
 const app = {
@@ -86,6 +86,7 @@ const app = {
   tokenColorOverrides: loadTokenColorOverrides(),
   smartMenuOpen: false,
   quickDeid: { input: "", output: "", warnings: [], status: "", review: null },
+  quickDeidBusy: false,
   phiReviews: new Map(),
   // Session-only edits remain outside the encrypted vault until the user
   // explicitly saves the containing packet.
@@ -100,7 +101,7 @@ const app = {
   phoneReturnReady: false,
   checklistSearchQuery: "",
   checklistOpenNoteIds: new Set(),
-  openEvidenceImport: { input: "", busy: false, error: "", deidConfirmed: false, deidStatus: "", deidResidualWarnings: [] },
+  openEvidenceImport: { input: "", busy: false, deidBusy: false, error: "", deidConfirmed: false, deidStatus: "", deidResidualWarnings: [] },
   workupImportError: "",
   workupCatalogOpen: false,
   workupCatalogQuery: "",
@@ -304,7 +305,7 @@ function deidLoadButtonDisabled() {
 }
 
 function deidLoadButtonLabel() {
-  return app.loadingDeidModelKey === app.deidMode ? "Loading model..." : "Load selected model";
+  return app.loadingDeidModelKey === app.deidMode ? '<span class="spinner" aria-hidden="true"></span> Loading model...' : `${icon("shield")} Load selected model`;
 }
 
 function renderDeidLoadButton() {
@@ -312,7 +313,8 @@ function renderDeidLoadButton() {
   if (!option) return `<span class="model-selection-message model-selection-message--ready">${icon("shield")} Ready locally</span>`;
   const pack = option ? modelPackStateFor(option) : null;
   if (pack?.state === "installed") {
-    return `<button type="button" data-action="verify-model-pack" data-model-key="${escapeHtml(option.key)}" ${app.modelPackBusyKey ? "disabled" : ""}>${icon("shield")} Verify ${escapeHtml(option.shortLabel || option.label)}</button>`;
+    const verifying = app.modelPackBusyKey === option.key;
+    return `<button type="button" data-action="verify-model-pack" data-model-key="${escapeHtml(option.key)}" ${app.modelPackBusyKey ? "disabled" : ""}>${verifying ? '<span class="spinner" aria-hidden="true"></span> Verifying...' : `${icon("shield")} Verify ${escapeHtml(option.shortLabel || option.label)}`}</button>`;
   }
   const canInstallSelected = Boolean(
     option
@@ -324,9 +326,9 @@ function renderDeidLoadButton() {
   );
   if (canInstallSelected) {
     const downloading = app.modelPackBusyKey === option.key;
-    return `<button type="button" data-action="download-model-pack" data-model-key="${escapeHtml(option.key)}" ${app.modelPackBusyKey ? "disabled" : ""}>${icon("download")} ${downloading ? "Downloading locally..." : `Download ${escapeHtml(option.shortLabel || option.label)} locally`}</button>`;
+    return `<button type="button" data-action="download-model-pack" data-model-key="${escapeHtml(option.key)}" ${app.modelPackBusyKey ? "disabled" : ""}>${downloading ? '<span class="spinner" aria-hidden="true"></span> Downloading locally...' : `${icon("download")} Download ${escapeHtml(option.shortLabel || option.label)} locally`}</button>`;
   }
-  return `<button type="button" data-action="load-advanced-deid" ${deidLoadButtonDisabled() ? "disabled" : ""}>${icon("shield")} ${escapeHtml(deidLoadButtonLabel())}</button>`;
+  return `<button type="button" data-action="load-advanced-deid" ${deidLoadButtonDisabled() ? "disabled" : ""}>${deidLoadButtonLabel()}</button>`;
 }
 
 async function selectedModelLoadBlocker(option) {
@@ -1479,7 +1481,7 @@ function renderQuickDeid() {
           <textarea id="quickDeidInput" aria-label="Source text" spellcheck="false" placeholder="Paste text from any source">${escapeHtml(app.quickDeid.input)}</textarea>
           <div class="quick-deid-start-footer">
             <span class="muted">The selected model runs locally. Your text isn't saved by this tool.</span>
-            <button class="button--primary" type="button" data-action="run-quick-deid" ${app.modelPackBusyKey ? "disabled" : ""}>${icon("shield")} Run de-identification</button>
+            <button class="button--primary" type="button" data-action="run-quick-deid" ${app.modelPackBusyKey || app.quickDeidBusy ? "disabled" : ""}>${app.quickDeidBusy ? '<span class="spinner" aria-hidden="true"></span> De-identifying...' : `${icon("shield")} Run de-identification`}</button>
           </div>
         </section>
       `}
@@ -3320,6 +3322,7 @@ async function runQuickDeid() {
   app.quickDeid.input = byId("quickDeidInput")?.value || "";
   app.deidMode = byId("quickDeidMode")?.value || app.deidMode;
   app.quickDeid.status = "Running de-identification...";
+  app.quickDeidBusy = true;
   renderQuickDeid();
   try {
     await ensureSelectedDeidReady();
@@ -3346,6 +3349,7 @@ async function runQuickDeid() {
     }
     setStatus(message);
   }
+  app.quickDeidBusy = false;
   renderQuickDeid();
   renderStatusBar();
 }

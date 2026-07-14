@@ -288,8 +288,9 @@ try {
   assert.equal(await page.locator("#workupEditorSelect option").count(), workupOptionCount);
   await page.selectOption("#workupThoroughness", "focused");
   await page.click('[data-action="copy-open-evidence-workup-prompt"]');
-  assert.match(await page.locator("#workupPromptOutput").inputValue(), /focused fast-rounds scope/i);
-  assert.match(await page.locator("#workupPromptOutput").inputValue(), /consulted rhythm question/);
+  const copiedWorkupPrompt = await page.evaluate(() => navigator.clipboard.readText());
+  assert.match(copiedWorkupPrompt, /focused fast-rounds scope/i);
+  assert.match(copiedWorkupPrompt, /consulted rhythm question/);
   // A successful "Parse & save" auto-collapses the import panel (its job is
   // done) - reopen it to paste a fresh draft for the OpenAI-formatting flow
   // below, same as a real user would.

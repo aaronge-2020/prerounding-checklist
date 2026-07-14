@@ -213,15 +213,14 @@ export function createWorkupPresentation({ escapeHtml, icon }) {
             ${hasSavedOpenAiKey ? `<div class="workup-api-formatting">
               <label class="check-row">
                 <input id="workupApiDeidConfirmed" type="checkbox" ${workupApiDeidConfirmed ? "checked" : ""}>
-                <span>I confirm this draft is de-identified and may be sent to OpenAI using my saved API key.</span>
+                <span>I've reviewed this draft and confirm it's de-identified.</span>
               </label>
               <div class="button-row">
-                <button type="button" data-action="format-workup-json-api" ${workupApiDeidConfirmed && !workupApiBusy ? "" : "disabled"}>${workupApiBusy ? "Formatting with saved key..." : "Format & load with saved API key"}</button>
+                <button type="button" data-action="format-workup-json-api" ${workupApiDeidConfirmed && !workupApiBusy ? "" : "disabled"}>${workupApiBusy ? '<span class="spinner" aria-hidden="true"></span> Formatting...' : "Format & load with saved API key"}</button>
                 <span class="muted">Ready to use ${escapeHtml(openAiModelLabel)} after you confirm the draft is de-identified.</span>
               </div>
             </div>` : `<div class="notice workup-api-guidance"><span>To format a de-identified draft automatically, save an OpenAI API key in Settings.</span><button class="button--quiet" type="button" data-action="go-settings">Open Settings</button></div>`}
             ${workupImportError ? `<div class="warning-box">${escapeHtml(workupImportError)}</div>` : `<div class="notice">JSON import is parsed into editable rows — there's no raw JSON editor in this view.</div>`}
-            <textarea id="workupPromptOutput" rows="7" readonly placeholder="Copied AI workflow prompt appears here."></textarea>
           </div>
         </details>
         <button type="button" class="text-button" data-action="reset-workup-json">Remove local override</button>

@@ -164,6 +164,7 @@ export function createChecklistPresentation({ escapeHtml, icon }) {
   function renderOpenEvidenceImportPanel({
     input = "",
     busy = false,
+    deidBusy = false,
     error = "",
     deidConfirmed = false,
     deidStatus = "",
@@ -193,7 +194,7 @@ export function createChecklistPresentation({ escapeHtml, icon }) {
             </div>
             <textarea id="openEvidenceImportInput" class="json-import" spellcheck="false" placeholder="Paste the OpenEvidence SOAP note here, then de-identify it locally before sending it anywhere.">${escapeHtml(input)}</textarea>
             <div class="button-row">
-              <button class="button--secondary" type="button" data-action="run-openevidence-note-deid">${icon("shield")} De-identify locally</button>
+              <button class="button--secondary" type="button" data-action="run-openevidence-note-deid" ${deidBusy ? "disabled" : ""}>${deidBusy ? '<span class="spinner" aria-hidden="true"></span> De-identifying...' : `${icon("shield")} De-identify locally`}</button>
               ${deidStatus ? `<span class="model-selection-message ${deidStatusClass}" aria-live="polite">${escapeHtml(deidStatus)}</span>` : ""}
             </div>
             ${!deidReady ? `<div class="notice"><span>${escapeHtml(deidReadyMessage)}</span></div>` : ""}
@@ -236,7 +237,6 @@ export function createChecklistPresentation({ escapeHtml, icon }) {
               </div>
             </div>
             <p class="muted">No saved key? Copy the prompt, paste it into ChatGPT yourself, then paste its JSON reply into the paste box above and choose "Parse pasted ChatGPT JSON".</p>
-            <textarea id="checklistImportPromptOutput" rows="4" readonly placeholder="Copied ChatGPT prompt appears here."></textarea>
           </div>
         </div>
       </details>

@@ -30,7 +30,7 @@ export function createOpenEvidenceImportController({
   }
 
   function resetPanel() {
-    state.openEvidenceImport = { input: "", busy: false, error: "", deidConfirmed: false, deidStatus: "", deidResidualWarnings: [] };
+    state.openEvidenceImport = { input: "", busy: false, deidBusy: false, error: "", deidConfirmed: false, deidStatus: "", deidResidualWarnings: [] };
   }
 
   async function runLocalDeid() {
@@ -38,6 +38,7 @@ export function createOpenEvidenceImportController({
     state.openEvidenceImport.input = text;
     if (!text.trim()) return;
     state.openEvidenceImport.error = "";
+    state.openEvidenceImport.deidBusy = true;
     // Load/download/verify the selected model automatically instead of
     // requiring a separate trip to Settings first - a no-op once a model is
     // already loaded, so repeat de-identifications don't reload anything.
@@ -46,6 +47,7 @@ export function createOpenEvidenceImportController({
     try {
       await ensureDeidReady?.();
     } catch (error) {
+      state.openEvidenceImport.deidBusy = false;
       state.openEvidenceImport.deidStatus = "";
       state.openEvidenceImport.error = error instanceof Error ? error.message : "De-identification is not ready yet.";
       setStatus(state.openEvidenceImport.error);
@@ -69,6 +71,7 @@ export function createOpenEvidenceImportController({
       state.openEvidenceImport.error = error instanceof Error ? error.message : "Unable to de-identify this text locally.";
       setStatus(state.openEvidenceImport.error);
     }
+    state.openEvidenceImport.deidBusy = false;
     renderChecklist();
   }
 
@@ -161,11 +164,12 @@ export function createOpenEvidenceImportController({
     const snapshot = currentSnapshot();
     if (!snapshot) throw new Error("Build a checklist before copying this prompt.");
     const prompt = buildChecklistAnswerImportPrompt({ snapshot, sourceText: currentInput() });
-    const output = byId("checklistImportPromptOutput");
-    if (output) output.value = prompt;
     await copyText(prompt);
-    if (currentPreferences().openAiApiKey) return;
-    setStatus("Copied prompt. Opening ChatGPT...");
+    if (currentPreferences().openAiApiKey) {
+      setStatus("Copied ChatGPT prompt.");
+      return;
+    }
+    setStatus("Copied prompt. Opening ChatGPT...", { icon: "externalLink" });
     window.open("https://chatgpt.com/", "_blank", "noopener,noreferrer");
   }
 

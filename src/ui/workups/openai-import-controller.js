@@ -22,7 +22,6 @@ export function createWorkupOpenAiImportController({ state, active, byId, copyTe
       teamPreferences: state.vault.preferences,
       guidelinesText
     });
-    byId("workupPromptOutput").value = prompt;
     await copyText(prompt);
     setStatus("Copied prompt. Opening OpenEvidence...", { icon: "externalLink" });
     window.open("https://www.openevidence.com/", "_blank", "noopener,noreferrer");
@@ -33,9 +32,11 @@ export function createWorkupOpenAiImportController({ state, active, byId, copyTe
       sourceText: byId("workupJsonImport")?.value || "",
       workupTitle: byId("workupTitleInput")?.value || ""
     });
-    byId("workupPromptOutput").value = prompt;
     await copyText(prompt);
-    if (currentPreferences().openAiApiKey) return;
+    if (currentPreferences().openAiApiKey) {
+      setStatus("Copied ChatGPT formatter prompt.");
+      return;
+    }
     setStatus("Copied prompt. Opening ChatGPT...", { icon: "externalLink" });
     window.open("https://chatgpt.com/", "_blank", "noopener,noreferrer");
   }

@@ -1672,6 +1672,23 @@ p {
   gap: 6px;
 }
 
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  opacity: 0.65;
+  flex: none;
+  vertical-align: -2px;
+  animation: spinner-rotate 0.7s linear infinite;
+}
+
+@keyframes spinner-rotate {
+  to { transform: rotate(360deg); }
+}
+
 #statusLine .icon {
   flex: none;
   width: 14px;
