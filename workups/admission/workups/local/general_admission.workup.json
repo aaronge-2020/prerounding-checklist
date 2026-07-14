@@ -1,0 +1,948 @@
+{
+  "schema": "prerounding_workup_v1",
+  "id": "general_admission",
+  "title": "General admission",
+  "aliases": [
+    "prerounding workup"
+  ],
+  "items": [
+    {
+      "id": "current_awareness",
+      "kind": "history",
+      "system": "general",
+      "text": "Current level of awareness",
+      "choices": [
+        "Alert",
+        "Confused",
+        "Drowsy",
+        "Unarousable"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "orientation_today",
+      "kind": "history",
+      "system": "general",
+      "text": "Orientation status today",
+      "choices": [
+        "Person/place/time",
+        "Person/year",
+        "Person only",
+        "Not oriented"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "abdominal_pain_present",
+      "kind": "history",
+      "system": "general",
+      "text": "Abdominal pain present",
+      "choices": [
+        "Localized",
+        "Diffuse",
+        "No",
+        "Unable"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "abdominal_pain_severity",
+      "kind": "history",
+      "system": "general",
+      "text": "Abdominal pain severity",
+      "choices": [
+        "Mild",
+        "Moderate",
+        "Severe",
+        "Unable"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "nausea_vomiting_since_last_assessment",
+      "kind": "history",
+      "system": "general",
+      "text": "Nausea or vomiting since last assessment",
+      "choices": [
+        "Bilious",
+        "Non-bilious",
+        "Feculent",
+        "No"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "last_flatus",
+      "kind": "history",
+      "system": "general",
+      "text": "Last flatus",
+      "choices": [
+        "<12 h",
+        "12-24 h",
+        ">24 h",
+        "Unknown"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "last_bowel_movement",
+      "kind": "history",
+      "system": "general",
+      "text": "Last bowel movement",
+      "choices": [
+        "Today",
+        "Yesterday",
+        "2-3 d",
+        ">3 d",
+        "Unknown"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "voided_since_foley_removal",
+      "kind": "history",
+      "system": "general",
+      "text": "Has patient voided since Foley removal",
+      "choices": [
+        "Normal",
+        "Small volume",
+        "No",
+        "Recatheterized"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "oral_intake_status",
+      "kind": "history",
+      "system": "general",
+      "text": "Oral intake status",
+      "choices": [
+        "Sips",
+        "NPO ok",
+        "NPO nausea",
+        "Refusing"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "new_worsening_overnight_symptoms",
+      "kind": "history",
+      "system": "general",
+      "text": "New or worsening symptoms overnight",
+      "choices": [
+        "Fever/chills",
+        "Chest pain",
+        "Shortness of breath",
+        "Confusion",
+        "None"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "speech_quality_today",
+      "kind": "history",
+      "system": "general",
+      "text": "Speech quality today",
+      "choices": [
+        "Normal",
+        "Intermittent aphasia",
+        "Persistent aphasia",
+        "Nonverbal"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "facial_asymmetry",
+      "kind": "history",
+      "system": "general",
+      "text": "Facial asymmetry noted by daughter or nurse",
+      "choices": [
+        "Stable",
+        "Worse",
+        "Better",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "arm_hand_weakness_today",
+      "kind": "history",
+      "system": "general",
+      "text": "Arm or hand weakness today",
+      "choices": [
+        "Stable",
+        "Worse",
+        "Better",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "hand_sensation",
+      "kind": "history",
+      "system": "general",
+      "text": "Abnormal hand sensation still present",
+      "choices": [
+        "Same",
+        "Worse",
+        "Resolved",
+        "Unable"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "new_focal_deficits",
+      "kind": "history",
+      "system": "general",
+      "text": "Any new focal deficits",
+      "choices": [
+        "Leg weakness",
+        "Visual changes",
+        "Dysarthria",
+        "None",
+        "Unable"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "seizure_like_activity",
+      "kind": "history",
+      "system": "general",
+      "text": "Any seizure-like activity observed",
+      "choices": [
+        "Tonic-clonic",
+        "Staring spell",
+        "Limb jerking",
+        "No"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "dysuria_suprapubic_pain",
+      "kind": "history",
+      "system": "general",
+      "text": "Dysuria or suprapubic pain",
+      "choices": [
+        "Yes",
+        "No",
+        "Unable"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "hematuria",
+      "kind": "history",
+      "system": "general",
+      "text": "Hematuria noted",
+      "choices": [
+        "Gross",
+        "Pink-tinged",
+        "Clear",
+        "N/A"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "vaginal_discharge_bleeding",
+      "kind": "history",
+      "system": "general",
+      "text": "Vaginal discharge or bleeding",
+      "choices": [
+        "Yes",
+        "No",
+        "Not assessed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "fever_chills",
+      "kind": "history",
+      "system": "general",
+      "text": "Fever or chills",
+      "choices": [
+        "Yes",
+        "No",
+        "Unable"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "cough_sputum",
+      "kind": "history",
+      "system": "general",
+      "text": "Cough or sputum production",
+      "choices": [
+        "Productive",
+        "Dry",
+        "No"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "shortness_of_breath",
+      "kind": "history",
+      "system": "general",
+      "text": "Shortness of breath",
+      "choices": [
+        "At rest",
+        "With exertion",
+        "None"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "chest_pain_palpitations",
+      "kind": "history",
+      "system": "general",
+      "text": "Chest pain or palpitations",
+      "choices": [
+        "Yes",
+        "No"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "skin_changes",
+      "kind": "history",
+      "system": "general",
+      "text": "Skin changes",
+      "choices": [
+        "Yes",
+        "No"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "lower_extremity_swelling",
+      "kind": "history",
+      "system": "general",
+      "text": "Lower extremity swelling",
+      "choices": [
+        "Unilateral",
+        "Bilateral",
+        "None"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "calf_pain_tenderness",
+      "kind": "history",
+      "system": "general",
+      "text": "Calf pain or tenderness",
+      "choices": [
+        "Yes",
+        "No"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "baseline_cognitive_function",
+      "kind": "history",
+      "system": "general",
+      "text": "Baseline cognitive function prior to admission",
+      "choices": [
+        "Independent",
+        "Forgetful",
+        "Dementia",
+        "Unknown"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "baseline_ambulatory_status",
+      "kind": "history",
+      "system": "general",
+      "text": "Baseline ambulatory status",
+      "choices": [
+        "Independent",
+        "Assist device",
+        "Wheelchair",
+        "Bedbound"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "poor_oral_intake_duration",
+      "kind": "history",
+      "system": "general",
+      "text": "Duration of poor oral intake prior to admission",
+      "choices": [
+        "<3 d",
+        "3-7 d",
+        ">7 d",
+        "Unknown"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "recent_falls",
+      "kind": "history",
+      "system": "general",
+      "text": "Any recent falls at home",
+      "choices": [
+        "Yes",
+        "No",
+        "Unknown"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "code_status_confirmed",
+      "kind": "history",
+      "system": "general",
+      "text": "Current code status confirmed with family",
+      "choices": [
+        "DNR/DNI",
+        "Revisit",
+        "Full code"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "appearance",
+      "kind": "exam",
+      "system": "general",
+      "text": "Appearance",
+      "choices": [
+        "Alert",
+        "Fatigued",
+        "Lethargic",
+        "Obtunded"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "sit_upright",
+      "kind": "exam",
+      "system": "general",
+      "text": "Ability to sit upright",
+      "choices": [
+        "Independent",
+        "Assist",
+        "Unable"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "distress_level",
+      "kind": "exam",
+      "system": "general",
+      "text": "Distress level",
+      "choices": [
+        "None",
+        "Mild",
+        "Moderate",
+        "Severe"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "temperature",
+      "kind": "exam",
+      "system": "general",
+      "text": "Temperature",
+      "choices": [
+        "Afebrile",
+        "Low-grade",
+        "Febrile",
+        "Hypothermic"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "heart_rate",
+      "kind": "exam",
+      "system": "general",
+      "text": "Heart rate",
+      "choices": [
+        "<60",
+        "60-100",
+        "101-120",
+        ">120"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "blood_pressure",
+      "kind": "exam",
+      "system": "general",
+      "text": "Blood pressure",
+      "choices": [
+        ">100",
+        "90-100",
+        "<90"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "respiratory_rate",
+      "kind": "exam",
+      "system": "general",
+      "text": "Respiratory rate",
+      "choices": [
+        "<20",
+        "20-24",
+        ">24"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "oxygen_saturation_room_air",
+      "kind": "exam",
+      "system": "general",
+      "text": "Oxygen saturation on room air",
+      "choices": [
+        "95%+",
+        "90-94%",
+        "<90%"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "pupils",
+      "kind": "exam",
+      "system": "general",
+      "text": "Pupils",
+      "choices": [
+        "Equal",
+        "Unequal",
+        "Fixed",
+        "Sluggish"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "oral_mucosa",
+      "kind": "exam",
+      "system": "general",
+      "text": "Oral mucosa",
+      "choices": [
+        "Moist",
+        "Dry",
+        "Cracked"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "tongue",
+      "kind": "exam",
+      "system": "general",
+      "text": "Tongue",
+      "choices": [
+        "Midline",
+        "Left",
+        "Right"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "jvd",
+      "kind": "exam",
+      "system": "general",
+      "text": "JVD",
+      "choices": [
+        "Present",
+        "Absent"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "gcs_eye",
+      "kind": "exam",
+      "system": "general",
+      "text": "GCS eye",
+      "choices": [
+        "Spontaneous",
+        "To voice",
+        "To pain",
+        "None"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "gcs_verbal",
+      "kind": "exam",
+      "system": "general",
+      "text": "GCS verbal",
+      "choices": [
+        "Oriented",
+        "Confused",
+        "Words",
+        "Sounds",
+        "None"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "gcs_motor",
+      "kind": "exam",
+      "system": "general",
+      "text": "GCS motor",
+      "choices": [
+        "Obeys",
+        "Localizes",
+        "Withdraws",
+        "Flexion",
+        "Extension",
+        "None"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "facial_symmetry_smile",
+      "kind": "exam",
+      "system": "general",
+      "text": "Facial symmetry on smile",
+      "choices": [
+        "Symmetric",
+        "Left droop stable",
+        "Left droop worse",
+        "Right droop new"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "pronator_drift_left",
+      "kind": "exam",
+      "system": "general",
+      "text": "Pronator drift, left arm",
+      "choices": [
+        "Absent",
+        "Present, corrects",
+        "Present, no correction"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "pronator_drift_right",
+      "kind": "exam",
+      "system": "general",
+      "text": "Pronator drift, right arm",
+      "choices": [
+        "Absent",
+        "Present, corrects",
+        "Present, no correction"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "grip_strength",
+      "kind": "exam",
+      "system": "general",
+      "text": "Grip strength bilateral",
+      "choices": [
+        "Symmetric",
+        "Left weak",
+        "Right weak",
+        "Bilateral weak"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "finger_to_nose",
+      "kind": "exam",
+      "system": "general",
+      "text": "Finger-to-nose",
+      "choices": [
+        "Normal",
+        "Left dysmetric",
+        "Right dysmetric",
+        "Unable"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "speech_assessment",
+      "kind": "exam",
+      "system": "general",
+      "text": "Speech assessment",
+      "choices": [
+        "Fluent",
+        "Non-fluent",
+        "Receptive",
+        "Global",
+        "Dysarthric"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "sensation_hands",
+      "kind": "exam",
+      "system": "general",
+      "text": "Sensation, hands",
+      "choices": [
+        "Normal",
+        "Bilateral decreased",
+        "Unilateral decreased",
+        "Paresthesias"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "plantar_reflex",
+      "kind": "exam",
+      "system": "general",
+      "text": "Plantar reflex (Babinski)",
+      "choices": [
+        "Downgoing bilat",
+        "Upgoing left",
+        "Upgoing right",
+        "Upgoing bilat",
+        "Equivocal"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "heart_sounds",
+      "kind": "exam",
+      "system": "general",
+      "text": "Heart sounds",
+      "choices": [
+        "RRR, no murmur",
+        "Irregular",
+        "New murmur",
+        "Gallop"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "capillary_refill",
+      "kind": "exam",
+      "system": "general",
+      "text": "Capillary refill",
+      "choices": [
+        "<2 s",
+        "2-3 s",
+        ">3 s"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "peripheral_pulses",
+      "kind": "exam",
+      "system": "general",
+      "text": "Peripheral pulses",
+      "choices": [
+        "2+ bilat",
+        "Diminished",
+        "Absent"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "lower_extremity_edema",
+      "kind": "exam",
+      "system": "general",
+      "text": "Lower extremity edema",
+      "choices": [
+        "None",
+        "Trace",
+        "1+",
+        "2+",
+        "Unilateral"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "anterior_lung_fields",
+      "kind": "exam",
+      "system": "general",
+      "text": "Anterior lung fields",
+      "choices": [
+        "Clear",
+        "Crackles",
+        "Wheezes",
+        "Diminished"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "posterior_lung_fields",
+      "kind": "exam",
+      "system": "general",
+      "text": "Posterior lung fields",
+      "choices": [
+        "Clear",
+        "Base crackles",
+        "Diminished",
+        "Deferred"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "work_of_breathing",
+      "kind": "exam",
+      "system": "general",
+      "text": "Work of breathing",
+      "choices": [
+        "Normal",
+        "Accessory muscles",
+        "Paradoxical"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "abdominal_inspection",
+      "kind": "exam",
+      "system": "general",
+      "text": "Abdominal inspection",
+      "choices": [
+        "Flat",
+        "Distended stable",
+        "Distended worse",
+        "Distended better"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "abdominal_rigidity",
+      "kind": "exam",
+      "system": "general",
+      "text": "Abdominal rigidity",
+      "choices": [
+        "Rigid",
+        "Voluntary guarding",
+        "Involuntary guarding",
+        "Soft"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "abdominal_tenderness_location",
+      "kind": "exam",
+      "system": "general",
+      "text": "Abdominal tenderness location",
+      "choices": [
+        "Epigastric",
+        "Diffuse",
+        "RLQ",
+        "LLQ",
+        "Suprapubic",
+        "None"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "rebound_tenderness",
+      "kind": "exam",
+      "system": "general",
+      "text": "Rebound tenderness",
+      "choices": [
+        "Present",
+        "Absent"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "abdominal_percussion",
+      "kind": "exam",
+      "system": "general",
+      "text": "Abdominal percussion",
+      "choices": [
+        "Tympanic",
+        "Dull",
+        "Mixed"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "bowel_sounds",
+      "kind": "exam",
+      "system": "general",
+      "text": "Bowel sounds",
+      "choices": [
+        "Normal",
+        "Hypoactive",
+        "Hyperactive",
+        "Absent"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "suprapubic_fullness",
+      "kind": "exam",
+      "system": "general",
+      "text": "Suprapubic fullness before bladder scan",
+      "choices": [
+        "Distended bladder",
+        "Not palpable",
+        "Equivocal"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "iv_site",
+      "kind": "exam",
+      "system": "general",
+      "text": "IV site",
+      "choices": [
+        "Clean",
+        "Erythema",
+        "Swelling",
+        "Needs replacement"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "enoxaparin_injection_sites",
+      "kind": "exam",
+      "system": "general",
+      "text": "Enoxaparin injection sites",
+      "choices": [
+        "No bruising",
+        "Ecchymosis",
+        "Hematoma"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "skin_turgor",
+      "kind": "exam",
+      "system": "general",
+      "text": "Skin turgor",
+      "choices": [
+        "Normal",
+        "Decreased"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "sacrum_coccyx",
+      "kind": "exam",
+      "system": "general",
+      "text": "Sacrum/coccyx pressure injury screen",
+      "choices": [
+        "Intact",
+        "Stage I",
+        "Stage II+"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "heels",
+      "kind": "exam",
+      "system": "general",
+      "text": "Heels pressure injury screen",
+      "choices": [
+        "Intact",
+        "Erythema",
+        "Breakdown"
+      ],
+      "select": "one"
+    },
+    {
+      "id": "post_void_residual_volume",
+      "kind": "exam",
+      "system": "general",
+      "text": "Post-void residual volume",
+      "choices": [
+        "<100 mL",
+        "100-300 mL",
+        "300-500 mL",
+        ">500 mL",
+        "Not done"
+      ],
+      "select": "one"
+    }
+  ]
+}

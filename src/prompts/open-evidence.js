@@ -34,6 +34,16 @@ export const OPEN_EVIDENCE_TASKS = [
     id: "checklist_workup_refinement",
     label: "Checklist/workup refinement",
     requiresGuidelines: false
+  },
+  {
+    id: "preround_bedside_exam",
+    label: "Pre-round bedside exam",
+    requiresGuidelines: true
+  },
+  {
+    id: "discharge_instructions",
+    label: "Discharge instructions",
+    requiresGuidelines: true
   }
 ];
 

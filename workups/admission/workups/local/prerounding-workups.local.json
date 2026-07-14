@@ -1,0 +1,14 @@
+{
+  "schema": "prerounding_workup_workspace_mirror_v1",
+  "description": "Browser-local workup override mirror. Contains no patient data and is not a source of truth for the encrypted vault.",
+  "workups": [
+    {
+      "id": "general_admission",
+      "file": "general_admission.workup.json"
+    },
+    {
+      "id": "general-admission",
+      "file": "general-admission.workup.json"
+    }
+  ]
+}

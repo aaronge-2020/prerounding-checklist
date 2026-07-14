@@ -117,8 +117,7 @@ Purpose: a compact, current map for future work on this local-first app.
 
 ## Prompts And Data
 
-- `Guidelines-admission.md` is the source for initial admission/HPI prompts; `Guidelines-progress.md` is the source for daily progress notes. `Guidelines.md` is compatibility-only and must not be injected at runtime.
-- Admission and daily-progress builders force-include only their task-specific standard, even if an editable template omits `@guidelines`.
+- Documentation-standard text lives as user-editable "guideline sets" (`src/prompts/guideline-sets.js`), each with its own stable `@<name>-guidelines` token - not hardcoded per task. `prompts/*.md` (`Guidelines-admission.md`, `Guidelines-progress.md`, `Pre-round_checklist.md`, `Discharge_Instructions.md`) are only the seed source, fetched once (and only once per file - see `loadOrMigrateGuidelineSets`/`ensureAdditionalGuidelineSets`) to prefill the first four sets; after that, Settings is the source of truth and the seed never re-runs, even if the user deletes a set.
 - Prompt variables derive from saved admission fields and the chosen hospital-day sections. `@selected-day` defaults to the latest saved day. `@hospital-stay` is a backward-compatible alias only; do not present it as competing UI.
 - Do not persist OpenEvidence output in the vault. Generate/copy only de-identified prompts.
 - Preserve `schema: "prerounding_workup_v1"` for workups and `schema: "prerounding_workup_library_v1"` for portable libraries.
@@ -145,7 +144,7 @@ npm.cmd run test:ci
 ## Deployment
 
 - `.github/workflows/ci.yml` runs the smoke suite on pushes and pull requests.
-- `.github/workflows/deploy-pages.yml` must publish every runtime file: `Guidelines.md`, `Guidelines-admission.md`, `Guidelines-progress.md`, `assets/`, `data/`, `models/`, `src/`, `vendor/`, and `workups/`.
+- `.github/workflows/deploy-pages.yml` must publish every runtime file: `assets/`, `data/`, `models/`, `prompts/`, `src/`, `vendor/`, and `workups/`.
 - `service-worker.js` remains in the static artifact for imported Cache Storage packs.
 - Keep `actions/checkout` configured with `lfs: true` while baseline assets are Git LFS content.
 - Cache-sensitive direct imports (UI, worker, model registry, service, storage adapter) use aligned revision query strings. Bump the relevant graph together whenever its model-runtime contract changes.

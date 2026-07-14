@@ -1053,7 +1053,7 @@ p {
 
 .checklist-panel {
   display: grid;
-  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  grid-template-rows: auto auto auto auto minmax(0, 1fr) auto;
   height: 100%;
   min-height: 0;
   margin: 0;
@@ -1401,23 +1401,34 @@ p {
   display: grid;
 }
 
-.smart-variable-menu button {
+.smart-variable-row {
   display: grid;
-  grid-template-columns: 12px 150px minmax(0, 1fr);
+  grid-template-columns: 16px minmax(0, 1fr);
   align-items: center;
   gap: 8px;
-  border: 0;
+  padding: 0 8px;
   border-bottom: 1px solid var(--border);
-  border-radius: 0;
-  text-align: left;
 }
 
-.smart-variable-menu button:last-child {
+.smart-variable-row:last-child {
   border-bottom: 0;
 }
 
-.smart-variable-menu button[hidden] {
+.smart-variable-row[hidden] {
   display: none;
+}
+
+.smart-variable-insert {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  text-align: left;
+  min-height: 30px;
+  padding: 0;
 }
 
 .variable-swatch {
@@ -1428,11 +1439,44 @@ p {
   flex: none;
 }
 
+.variable-color-input {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  min-height: 0;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  background: none;
+  flex: none;
+  justify-self: center;
+}
+
+.variable-color-input::-webkit-color-swatch-wrapper {
+  padding: 0;
+  border-radius: 50%;
+}
+
+.variable-color-input::-webkit-color-swatch {
+  border: none;
+  border-radius: 50%;
+}
+
+.variable-color-input::-moz-color-swatch {
+  border: none;
+  border-radius: 50%;
+}
+
 .prompt-preview,
 .prompt-output-highlighted {
   min-height: 430px;
   font-family: "Cascadia Mono", "SFMono-Regular", Consolas, monospace;
   font-size: 12px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .prompt-template-backdrop {
@@ -3195,10 +3239,16 @@ p {
    auto-placement) so the layout holds even when the toolbar row is omitted
    entirely (no checklist built yet, nothing to search or import). */
 .checklist-panel > .section-heading { grid-row: 1; }
-.checklist-panel > .checklist-toolbar-row { grid-row: 2; }
+.checklist-panel > p.muted { grid-row: 2; }
+.checklist-panel > .openevidence-import {
+  grid-row: 3;
+  max-height: 40vh;
+  overflow: auto;
+}
+.checklist-panel > .checklist-toolbar-row { grid-row: 4; }
 .checklist-panel > .checklist-scroll,
-.checklist-panel > .empty-state.next-step { grid-row: 3; }
-.checklist-panel > .quick-notes-panel { grid-row: 4; }
+.checklist-panel > .empty-state.next-step { grid-row: 5; }
+.checklist-panel > .quick-notes-panel { grid-row: 6; }
 
 .checklist-scroll { gap: 14px; padding-right: 0; }
 
@@ -3326,7 +3376,7 @@ p {
   box-shadow: var(--shadow);
 }
 
-.smart-variable-menu button { min-height: 30px; border-radius: 0; font-size: 12px; }
+.smart-variable-insert { min-height: 30px; border-radius: 0; font-size: 12px; }
 
 .prompt-template-footer .notice { background: var(--surface-muted); border-left-color: #c6d4da; }
 

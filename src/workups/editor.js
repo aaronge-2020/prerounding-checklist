@@ -129,9 +129,12 @@ export function collectWorkupDraftFromDocument(root = document) {
   };
 }
 
-export function buildOpenEvidenceWorkupDraftPrompt({ patientContext = "", dailyTrajectory = "", workupTitle = "", thoroughness = "standard", teamPreferences } = {}) {
+export function buildOpenEvidenceWorkupDraftPrompt({ patientContext = "", dailyTrajectory = "", workupTitle = "", thoroughness = "standard", teamPreferences, guidelinesText = "" } = {}) {
   const scope = WORKUP_THOROUGHNESS[workupThoroughnessOption(thoroughness)];
-  return naturalLanguagePrompt(`Review this de-identified information and suggest a practical bedside workup for ${workupTitle || "this patient"}. ${buildTeamPreferencesPromptBlock(teamPreferences)} Include useful history questions and physical exam items with short answer choices that a clinician can tap on a phone. Put the negative, normal, absent, reassuring, or other baseline answer first, followed by positive or concerning findings. Never put not assessed or unable to assess first. ${scope.prompt} Do not include labs, imaging, orders, diagnoses, treatment plans, citations, or note prose. Use only the de-identified information provided here.
+  const intro = guidelinesText
+    ? `Follow the guidelines above for ${workupTitle || "this patient"}.`
+    : `Review this de-identified information and suggest a practical bedside checklist for ${workupTitle || "this patient"}.`;
+  return naturalLanguagePrompt(`${guidelinesText ? `${guidelinesText}\n\n` : ""}${intro} ${buildTeamPreferencesPromptBlock(teamPreferences)} Put the negative, normal, absent, reassuring, or other baseline answer first, followed by positive or concerning findings, and never lead with not assessed or unable to assess. Use short, phone-tappable answer choices. ${scope.prompt} Exclude labs, imaging, orders, diagnoses, treatment plans, citations, and note prose. Use only the de-identified information provided here.
 
 Patient context. ${patientContext || "No saved patient context."}
 

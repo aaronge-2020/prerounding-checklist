@@ -11,12 +11,16 @@ import { formatWorkupDraftWithOpenAi } from "../openai-workup-api.js";
 export function createWorkupOpenAiImportController({ state, active, byId, copyText, setStatus, currentPreferences, renderWorkups, parseAndSaveWorkupJson }) {
   async function copyOpenEvidenceWorkupPrompt() {
     const patient = active();
+    const guidelinesText = (state.guidelineSets || [])
+      .find((set) => set.label.trim().toLowerCase() === "pre-round checklist")
+      ?.text?.trim() || "";
     const prompt = buildOpenEvidenceWorkupDraftPrompt({
       patientContext: sectionsToPromptBlock(patient?.contextSections || [], "Saved patient context"),
       dailyTrajectory: buildTrajectoryBlock(patient, { selectedDayId: latestDay(patient?.days || [])?.id, includeAllDays: false }),
       workupTitle: byId("workupTitleInput")?.value || "",
       thoroughness: state.workupThoroughness,
-      teamPreferences: state.vault.preferences
+      teamPreferences: state.vault.preferences,
+      guidelinesText
     });
     byId("workupPromptOutput").value = prompt;
     await copyText(prompt);

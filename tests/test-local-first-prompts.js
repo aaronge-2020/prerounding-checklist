@@ -7,8 +7,8 @@ import { buildCustomOpenEvidencePrompt, promptVariablesForPatient } from "../src
 import { createGuidelineSet } from "../src/prompts/guideline-sets.js";
 
 const guidelines = {
-  admission: readFileSync("Guidelines-admission.md", "utf8"),
-  progress: readFileSync("Guidelines-progress.md", "utf8")
+  admission: readFileSync("prompts/Guidelines-admission.md", "utf8"),
+  progress: readFileSync("prompts/Guidelines-progress.md", "utf8")
 };
 let patient = createPatientRecord("Room 7", { id: "patient_prompt" });
 patient = {
@@ -44,8 +44,8 @@ patient = {
 assert.equal(openEvidenceTasks[["final", "rounds", "update"].join("_")], undefined);
 
 const admission = buildOpenEvidencePrompt("initial_admission_rounds", { patient, guidelines });
-assert.match(admission, /Rule of Separation/);
-assert.match(admission, /History of Present Illness/);
+assert.match(admission, /Concise H&P Presentation/);
+assert.match(admission, /Past Surgical History/);
 assert.match(admission, /Admission context/);
 assert.match(admission, /Chest pain\?/);
 assert.match(admission, /Additional notes not tied to a specific checklist item/);
@@ -53,8 +53,8 @@ assert.match(admission, /Patient mentioned new hip pain unrelated to admission\.
 
 const progress = buildOpenEvidencePrompt("daily_progress_note", { patient, selectedDayId: day.id, guidelines });
 assert.match(progress, /daily progress note/i);
-assert.match(progress, /Record current vital signs/);
-assert.match(progress, /Enforce strict separation between these four sections/);
+assert.match(progress, /Current vital signs/);
+assert.match(progress, /strict separation/);
 assert.match(progress, /Patient mentioned new hip pain unrelated to admission\./);
 assert.match(progress, /Feels less short of breath/);
 
@@ -167,7 +167,7 @@ const directAdmission = buildCustomOpenEvidencePrompt({
   selectedDayId: day.id,
   guidelineSets
 });
-assert.doesNotMatch(directAdmission, /Rule of Separation/, "guidelines are only included where a template references their token - never force-injected");
+assert.doesNotMatch(directAdmission, /Concise H&P Presentation/, "guidelines are only included where a template references their token - never force-injected");
 assert.doesNotMatch(directAdmission, /Privacy rules:/);
 
 const directGuidelines = buildCustomOpenEvidencePrompt({
@@ -177,7 +177,7 @@ const directGuidelines = buildCustomOpenEvidencePrompt({
   selectedDayId: day.id,
   guidelineSets
 });
-assert.match(directGuidelines, /Rule of Separation/);
+assert.match(directGuidelines, /Concise H&P Presentation/);
 assert.doesNotMatch(directGuidelines, /@admission-guidelines/);
 
 const consultPrompt = buildCustomOpenEvidencePrompt({

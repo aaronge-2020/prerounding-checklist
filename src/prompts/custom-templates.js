@@ -16,7 +16,9 @@ export const DEFAULT_PROMPT_TEMPLATES = {
   teaching_case_trajectory: `Teach the full case trajectory using the admission packet and selected hospital day below. Explain the clinical reasoning, uncertainty, and major management decisions.\n\n@admission-packet\n\n@selected-day\n\n@checklist-answers`,
   medication_explainer_by_problem: `Organize the medications by treated disease, condition, symptom, or indication. Explain what each medication does and mark uncertain indications clearly.\n\n@medications\n\n@selected-day`,
   medication_safety_audit: `Check each medication for indication, dose, route, frequency, duplication, interactions, contraindications, and missing context. Say "insufficient information" rather than guessing.\n\n@medications\n\n@labs\n\n@selected-day`,
-  checklist_workup_refinement: `Review this checklist against the admission packet and selected hospital day. Suggest only history questions and physical exam items, organized by system when useful.\n\n@admission-packet\n\n@selected-day\n\n@checklist-answers`
+  checklist_workup_refinement: `Review this checklist against the admission packet and selected hospital day. Suggest only history questions and physical exam items, organized by system when useful.\n\n@admission-packet\n\n@selected-day\n\n@checklist-answers`,
+  preround_bedside_exam: `@pre-round-checklist-guidelines\n\nGenerate a focused bedside pre-rounding checklist for @selected-day.\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`,
+  discharge_instructions: `@discharge-instructions-guidelines\n\nWrite discharge instructions for this patient.\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`
 };
 
 export const SMART_PROMPT_VARIABLES = [
@@ -41,7 +43,15 @@ function promptToken(label, index, used) {
   return token;
 }
 
+// Selectable in the Hospital Day dropdown alongside real days so a user can
+// point @selected-day at the admission packet (contextSections) instead of a
+// daily record - admission info and days[] are separate concepts in this data
+// model (see vault.js), and before this there was no way to reference "the
+// admission" from that dropdown at all.
+export const ADMISSION_PSEUDO_DAY_ID = "__admission__";
+
 function selectedPromptDay(patient, selectedDayId = "") {
+  if (selectedDayId === ADMISSION_PSEUDO_DAY_ID) return null;
   const days = [...(patient?.days || [])].sort((left, right) => `${left.date || ""} ${left.createdAt || ""}`.localeCompare(`${right.date || ""} ${right.createdAt || ""}`));
   return days.find((day) => day.id === selectedDayId) || days.at(-1) || null;
 }
@@ -106,6 +116,7 @@ export function promptTemplateForTask(taskId, overrides = {}) {
 }
 
 export function buildPromptVariableMap({ patient, selectedDayId, guidelineSets = [] }) {
+  const usingAdmission = selectedDayId === ADMISSION_PSEUDO_DAY_ID;
   const selectedDay = selectedPromptDay(patient, selectedDayId);
   const snapshot = selectedDay?.checklistSnapshot || null;
   const answers = selectedDay?.answers || {};
@@ -142,7 +153,9 @@ export function buildPromptVariableMap({ patient, selectedDayId, guidelineSets =
     // Compatibility alias for a previously saved template. New templates use
     // only @selected-day so there is one clear choice of hospital-day scope.
     "@hospital-stay": buildTrajectoryBlock(patient, { selectedDayId: selectedDay?.id, includeAllDays: false }),
-    "@selected-day": selectedDay ? sectionsToPromptBlock(selectedDay.sections || [], `Selected day: ${selectedDay.date} - ${selectedDay.label}`) : "No saved hospital day.",
+    "@selected-day": usingAdmission
+      ? sectionsToPromptBlock(patient?.contextSections || [], "Admission")
+      : (selectedDay ? sectionsToPromptBlock(selectedDay.sections || [], `Selected day: ${selectedDay.date} - ${selectedDay.label}`) : "No saved hospital day."),
     "@checklist-answers": checklistAnswersSummary(snapshot, answers, quickNotes),
     "@openevidence-exam-note": selectedDay?.openEvidenceExamNote?.text?.trim() || "No saved OpenEvidence exam note.",
     "@exam-findings": examFindingsSummary(snapshot, answers, quickNotes, selectedDay?.openEvidenceExamNote?.text)
@@ -168,13 +181,75 @@ function hashToken(token) {
   return hash;
 }
 
-// One deterministic color per token (same token -> same color everywhere:
-// the insert-variable menu swatches and the highlighted output preview) so a
-// user can visually trace generated text back to the variable that produced
-// it, without needing any separate color-assignment state to persist.
-export function tokenAccentColor(token, { dot = false } = {}) {
-  const hue = hashToken(String(token || "")) % 360;
+export const TOKEN_COLOR_STORAGE_KEY = "prerounding_token_colors_v1";
+
+export function loadTokenColorOverrides(storage = localStorage) {
+  try {
+    const parsed = JSON.parse(storage.getItem(TOKEN_COLOR_STORAGE_KEY) || "{}");
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+export function saveTokenColorOverrides(overrides, storage = localStorage) {
+  storage.setItem(TOKEN_COLOR_STORAGE_KEY, JSON.stringify(overrides || {}));
+}
+
+export function setTokenColorOverride(overrides, token, hue) {
+  return { ...(overrides || {}), [token]: ((Math.round(hue) % 360) + 360) % 360 };
+}
+
+export function clearTokenColorOverride(overrides, token) {
+  const next = { ...(overrides || {}) };
+  delete next[token];
+  return next;
+}
+
+// One deterministic hue per token by default (same token -> same color
+// everywhere: the insert-variable menu swatches and the highlighted output
+// preview), but a user-chosen hue in `overrides` always wins - lets someone
+// nudge apart two tokens that happened to hash to similar, hard-to-tell-apart
+// hues without having to hand-manage every token's color.
+export function tokenAccentHue(token, overrides = {}) {
+  const stored = overrides?.[String(token || "")];
+  return Number.isFinite(stored) ? stored : hashToken(String(token || "")) % 360;
+}
+
+export function tokenAccentColor(token, { dot = false, overrides = {} } = {}) {
+  const hue = tokenAccentHue(token, overrides);
   return dot ? `hsl(${hue}, 62%, 45%)` : `hsl(${hue}, 70%, 90%)`;
+}
+
+// For the <input type="color"> swatch, which only speaks hex - shows/edits
+// the same hue this token already renders with (at the "dot" saturation/
+// lightness) so the picker's initial color always matches what's on screen.
+export function hueToHex(hue, saturation = 62, lightness = 45) {
+  const s = saturation / 100;
+  const l = lightness / 100;
+  const k = (n) => (n + hue / 30) % 12;
+  const a = s * Math.min(l, 1 - l);
+  const f = (n) => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+  const toHex = (n) => Math.round(f(n) * 255).toString(16).padStart(2, "0");
+  return `#${toHex(0)}${toHex(8)}${toHex(4)}`;
+}
+
+export function hexToHue(hex) {
+  const match = /^#?([0-9a-f]{6})$/i.exec(String(hex || "").trim());
+  if (!match) return 0;
+  const r = parseInt(match[1].slice(0, 2), 16) / 255;
+  const g = parseInt(match[1].slice(2, 4), 16) / 255;
+  const b = parseInt(match[1].slice(4, 6), 16) / 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const delta = max - min;
+  if (delta === 0) return 0;
+  let hue;
+  if (max === r) hue = ((g - b) / delta) % 6;
+  else if (max === g) hue = (b - r) / delta + 2;
+  else hue = (r - g) / delta + 4;
+  hue *= 60;
+  return Math.round((hue + 360) % 360);
 }
 
 function escapeRegExpLiteral(value) {

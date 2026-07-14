@@ -86,8 +86,8 @@ export async function loadOrMigrateGuidelineSets(storage = localStorage) {
   const seeded = [];
   try {
     const [admissionResponse, progressResponse] = await Promise.all([
-      fetch("./Guidelines-admission.md", { cache: "no-store" }),
-      fetch("./Guidelines-progress.md", { cache: "no-store" })
+      fetch("./prompts/Guidelines-admission.md", { cache: "no-store" }),
+      fetch("./prompts/Guidelines-progress.md", { cache: "no-store" })
     ]);
     if (admissionResponse.ok) {
       seeded.push(createGuidelineSet("Admission", await admissionResponse.text(), { existingTokens: seeded.map((set) => set.token) }));
@@ -101,4 +101,31 @@ export async function loadOrMigrateGuidelineSets(storage = localStorage) {
   }
   saveGuidelineSets(seeded, storage);
   return seeded;
+}
+
+export const GUIDELINE_SET_SEED_V2_KEY = "prerounding_guideline_sets_seed_v2";
+
+// A second, independent one-time seed - same never-re-seed-once-the-flag-is-
+// set guarantee as loadOrMigrateGuidelineSets above, kept as its own flag so
+// it doesn't disturb that already-shipped, already-tested migration. This
+// covers guideline files added after that original migration (bedside
+// pre-round checklist, discharge instructions), so a user who migrated
+// before these existed still gets them offered exactly once, without ever
+// reintroducing one they've since deleted.
+export async function ensureAdditionalGuidelineSets(sets, storage = localStorage) {
+  if (storage.getItem(GUIDELINE_SET_SEED_V2_KEY) !== null) return sets;
+  let next = sets;
+  try {
+    const [checklistResponse, dischargeResponse] = await Promise.all([
+      fetch("./prompts/Pre-round_checklist.md", { cache: "no-store" }),
+      fetch("./prompts/Discharge_Instructions.md", { cache: "no-store" })
+    ]);
+    if (checklistResponse.ok) next = addGuidelineSet(next, "Pre-round checklist", await checklistResponse.text());
+    if (dischargeResponse.ok) next = addGuidelineSet(next, "Discharge instructions", await dischargeResponse.text());
+  } catch {
+    // No network/file access - leave it for the user to add manually later.
+  }
+  storage.setItem(GUIDELINE_SET_SEED_V2_KEY, "1");
+  saveGuidelineSets(next, storage);
+  return next;
 }

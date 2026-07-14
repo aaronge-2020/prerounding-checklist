@@ -8,10 +8,10 @@ import { deidentifyText, getAdvancedDeidStatus, getSelectedDeidModelStatus, prel
 import { DEFAULT_DEID_MODEL_KEY, DEID_MODEL_OPTIONS, STRUCTURED_DEID_MODE, deidModelOptionByKey } from "../patient-context/deid-model-options.js?v=20260711-functional-remediation-15";
 import { canAutomaticallyInstallModel, ensureModelPackServiceWorker, getModelPackState, importModelPack, installModelPack, markModelPackVerified, modelFilesFromDirectoryHandle, modelFilesFromInput, removeModelPack, requestPersistentModelStorage } from "../patient-context/model-pack-storage.js?v=20260711-functional-remediation-15";
 import { formatBytes, hasAutomaticModelDownload, isInstallableModel, modelDownloadBytes } from "../patient-context/model-packs.js?v=20260711-functional-remediation-15";
-import { buildCustomOpenEvidencePrompt, buildPromptPreviewSegments, buildPromptVariableMap, loadPromptTemplateOverrides, promptTemplateForTask, promptVariablesForPatient, savePromptTemplateOverrides } from "../prompts/custom-templates.js?v=20260713-guideline-sets";
+import { ADMISSION_PSEUDO_DAY_ID, buildCustomOpenEvidencePrompt, buildPromptPreviewSegments, buildPromptVariableMap, hexToHue, loadPromptTemplateOverrides, loadTokenColorOverrides, promptTemplateForTask, promptVariablesForPatient, savePromptTemplateOverrides, saveTokenColorOverrides, setTokenColorOverride } from "../prompts/custom-templates.js?v=20260714-token-colors";
 import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260711-functional-remediation-15";
 import { allPromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260713-exam-note-prompts";
-import { loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260713-guideline-sets";
+import { ensureAdditionalGuidelineSets, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260714-preround-discharge-tasks";
 import { MEDICAL_SERVICE_OPTIONS, OPENAI_WORKUP_MODEL_OPTIONS, PRESENTATION_DETAIL_OPTIONS, normalizeUserPreferences, openAiWorkupModelOption } from "../app/preferences.js?v=20260711-functional-remediation-15";
 import { effectiveWorkupCatalog, findWorkupsById, normalizeWorkup, parseWorkupJson } from "../workups/schema.js?v=20260711-functional-remediation-15";
 import { mergeWorkupLibraryIntoOverrides, parseWorkupLibraryJson, workupLibraryFromOverrides } from "../workups/library.js?v=20260711-functional-remediation-15";
@@ -42,7 +42,7 @@ import { createChecklistSearchController, toggleItemNote } from "./checklist/sea
 import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-functional-remediation-19";
 import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260711-functional-remediation-19";
 import { createOpenEvidenceImportController } from "./checklist/openevidence-import-controller.js?v=20260713-oe-panel-redesign";
-import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260713-guideline-sets";
+import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260714-token-colors";
 import { createPromptTaskController, filterSmartVariableMenu, positionSmartVariableMenu } from "./prompts/controller.js?v=20260713-smart-menu-caret";
 import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260713-guideline-sets";
 import { createSettingsPresentation } from "./settings/presentation.js?v=20260713-guideline-sets";
@@ -83,6 +83,7 @@ const app = {
   webGpuAvailable: typeof navigator !== "undefined" && Boolean(navigator.gpu),
   promptTemplates: loadPromptTemplateOverrides(),
   promptDrafts: {},
+  tokenColorOverrides: loadTokenColorOverrides(),
   smartMenuOpen: false,
   quickDeid: { input: "", output: "", warnings: [], status: "", review: null },
   phiReviews: new Map(),
@@ -262,9 +263,8 @@ function updateDeidOperation({ active = false, message = "", value, total } = {}
     progress.max = Math.max(1, total || 1);
   }
   if (app.view === "daily") {
-    const ready = selectedDeidReadiness().ready && !active;
     document.querySelectorAll('[data-action="save-context"], [data-action="save-day"]').forEach((button) => {
-      button.disabled = !ready;
+      button.disabled = active;
       button.textContent = active ? "De-identifying…" : "Save changes";
     });
   }
@@ -978,7 +978,7 @@ function renderDaily() {
   }
   const days = sortDays(patient.days);
   const selected = days.find((day) => day.id === app.selectedDayId) || days.at(-1) || null;
-  const deidReady = selectedDeidReadiness().ready && !app.deidOperation.active;
+  const deidBusy = app.deidOperation.active;
   if (selected && selected.id !== app.selectedDayId) app.selectedDayId = selected.id;
   byId("dailyContent").innerHTML = `
     <div class="stay-layout">
@@ -1032,7 +1032,7 @@ function renderDaily() {
               </div>
               ${renderWarnings(patient.contextSections, "context")}
               <div class="packet-action-footer">
-                <button class="button--primary" type="button" data-action="save-context" ${deidReady ? "" : "disabled"}>${app.deidOperation.active ? "De-identifying…" : "Save changes"}</button>
+                <button class="button--primary" type="button" data-action="save-context" ${deidBusy ? "disabled" : ""}>${deidBusy ? "De-identifying…" : "Save changes"}</button>
               </div>
             </div>
           </details>
@@ -1048,7 +1048,7 @@ function renderDaily() {
                   </div>
                   <div class="button-row">
                     <button class="button--secondary" type="button" data-action="add-daily-section">${icon("plus")} Add field</button>
-                    <button class="button--primary" type="button" data-action="save-day" ${deidReady ? "" : "disabled"}>${app.deidOperation.active ? "De-identifying…" : "Save changes"}</button>
+                    <button class="button--primary" type="button" data-action="save-day" ${deidBusy ? "disabled" : ""}>${deidBusy ? "De-identifying…" : "Save changes"}</button>
                     <button type="button" class="button--quiet danger-subtle" data-action="remove-day">${icon("trash")} Remove</button>
                   </div>
                 </div>
@@ -1210,23 +1210,17 @@ function renderPrompts() {
   const tasks = allPromptTasks(OPEN_EVIDENCE_TASKS, app.customPromptTasks);
   const task = tasks.find((entry) => entry.id === app.selectedPromptTask) || tasks[0];
   const promptDays = sortDays(patient.days || []);
-  const selectedPromptDay = promptDays.find((day) => day.id === app.promptDayId) || promptDays.at(-1) || null;
-  if (selectedPromptDay && selectedPromptDay.id !== app.promptDayId) app.promptDayId = selectedPromptDay.id;
+  const isAdmissionSelected = app.promptDayId === ADMISSION_PSEUDO_DAY_ID;
+  if (!isAdmissionSelected) {
+    const selectedPromptDay = promptDays.find((day) => day.id === app.promptDayId) || promptDays.at(-1) || null;
+    app.promptDayId = selectedPromptDay ? selectedPromptDay.id : ADMISSION_PSEUDO_DAY_ID;
+  }
   const template = app.promptDrafts[task.id] ?? promptTemplateForTask(task.id, app.promptTemplates);
-  let prompt = "";
   let promptError = "";
   let previewSegments = [{ type: "text", value: "" }];
   try {
     const variableMap = buildPromptVariableMap({ patient, selectedDayId: app.promptDayId, guidelineSets: app.guidelineSets });
     previewSegments = buildPromptPreviewSegments(template, variableMap);
-    prompt = buildCustomOpenEvidencePrompt({
-      taskId: task.id,
-      template,
-      patient,
-      selectedDayId: app.promptDayId,
-      guidelineSets: app.guidelineSets,
-      teamPreferences: app.vault.preferences
-    });
   } catch (error) {
     promptError = error instanceof Error ? error.message : "Unable to build prompt.";
   }
@@ -1240,12 +1234,12 @@ function renderPrompts() {
     promptDays,
     selectedPromptDayId: app.promptDayId,
     template,
-    prompt,
     previewSegments,
     templateHighlightSegments,
     promptError,
     variables,
-    smartMenuOpen: app.smartMenuOpen
+    smartMenuOpen: app.smartMenuOpen,
+    colorOverrides: app.tokenColorOverrides
   });
   const templateEditor = byId("promptPreview");
   const templateBackdrop = byId("promptTemplateHighlight");
@@ -1320,20 +1314,29 @@ async function clearOpenAiByok() {
 
 function refreshPromptPreview() {
   const patient = active();
-  const output = byId("promptOutput");
-  if (!patient || !output) return;
+  const highlighted = byId("promptOutputHighlighted");
+  if (!patient || !highlighted) return;
   const template = app.promptDrafts[app.selectedPromptTask] ?? promptTemplateForTask(app.selectedPromptTask, app.promptTemplates);
   try {
     const variableMap = buildPromptVariableMap({ patient, selectedDayId: app.promptDayId, guidelineSets: app.guidelineSets });
-    const highlighted = byId("promptOutputHighlighted");
-    if (highlighted) highlighted.innerHTML = renderHighlightedSegments(buildPromptPreviewSegments(template, variableMap), escapeHtml);
+    highlighted.innerHTML = renderHighlightedSegments(buildPromptPreviewSegments(template, variableMap), escapeHtml, app.tokenColorOverrides);
     const templateBackdrop = byId("promptTemplateHighlight");
     if (templateBackdrop) {
       const variables = promptVariablesForPatient(patient, { selectedDayId: app.promptDayId, guidelineSets: app.guidelineSets });
       const identityMap = Object.fromEntries(variables.map((entry) => [entry.token, entry.token]));
-      templateBackdrop.innerHTML = renderHighlightedSegments(buildPromptPreviewSegments(template, identityMap), escapeHtml);
+      templateBackdrop.innerHTML = renderHighlightedSegments(buildPromptPreviewSegments(template, identityMap), escapeHtml, app.tokenColorOverrides);
     }
-    output.value = buildCustomOpenEvidencePrompt({
+  } catch (error) {
+    highlighted.textContent = error instanceof Error ? error.message : "Unable to build prompt.";
+  }
+}
+
+function currentPromptText() {
+  const patient = active();
+  if (!patient) return "";
+  const template = app.promptDrafts[app.selectedPromptTask] ?? promptTemplateForTask(app.selectedPromptTask, app.promptTemplates);
+  try {
+    return buildCustomOpenEvidencePrompt({
       taskId: app.selectedPromptTask,
       template,
       patient,
@@ -1341,8 +1344,8 @@ function refreshPromptPreview() {
       guidelineSets: app.guidelineSets,
       teamPreferences: app.vault.preferences
     });
-  } catch (error) {
-    output.value = error instanceof Error ? error.message : "Unable to build prompt.";
+  } catch {
+    return "";
   }
 }
 
@@ -1452,7 +1455,6 @@ function renderQuickModelControl() {
 
 function renderQuickDeid() {
   const hasReview = Boolean(app.quickDeid.review);
-  const deidReady = selectedDeidReadiness().ready;
   byId("quickDeidContent").innerHTML = `
     <section class="panel quick-deid-panel">
       <div class="section-heading quick-deid-heading">
@@ -1477,7 +1479,7 @@ function renderQuickDeid() {
           <textarea id="quickDeidInput" aria-label="Source text" spellcheck="false" placeholder="Paste text from any source">${escapeHtml(app.quickDeid.input)}</textarea>
           <div class="quick-deid-start-footer">
             <span class="muted">The selected model runs locally. Your text isn't saved by this tool.</span>
-            <button class="button--primary" type="button" data-action="run-quick-deid" ${deidReady ? "" : "disabled"}>${icon("shield")} Run de-identification</button>
+            <button class="button--primary" type="button" data-action="run-quick-deid" ${app.modelPackBusyKey ? "disabled" : ""}>${icon("shield")} Run de-identification</button>
           </div>
         </section>
       `}
@@ -1528,10 +1530,10 @@ function refreshDeidControlsInActiveView() {
   if (app.view === "daily") {
     const strip = document.querySelector("#dailyContent .deid-strip");
     if (strip) strip.outerHTML = renderDeidStrip();
-    const ready = selectedDeidReadiness().ready && !app.deidOperation.active;
+    const busy = app.deidOperation.active;
     document.querySelectorAll('[data-action="save-context"], [data-action="save-day"]').forEach((button) => {
-      button.disabled = !ready;
-      button.textContent = app.deidOperation.active ? "De-identifying…" : "Save changes";
+      button.disabled = busy;
+      button.textContent = busy ? "De-identifying…" : "Save changes";
     });
   }
   if (app.view === "quickDeid") renderQuickDeid();
@@ -1684,8 +1686,13 @@ async function handleClick(event) {
     if (action === "request-remove-guideline-set") guidelineSetsController.requestRemove(target.dataset.guidelineSetId);
     if (action === "confirm-remove-guideline-set") guidelineSetsController.confirmRemovePending();
     if (action === "insert-prompt-variable") insertPromptVariable(target.dataset.token);
-    if (action === "copy-prompt") await copyText(byId("promptOutput")?.value || "");
+    if (action === "copy-prompt") await copyText(currentPromptText());
     if (action === "open-open-evidence") window.open("https://www.openevidence.com/", "_blank", "noopener,noreferrer");
+    if (action === "reset-variable-colors") {
+      app.tokenColorOverrides = {};
+      saveTokenColorOverrides(app.tokenColorOverrides);
+      renderPrompts();
+    }
     if (action === "save-team-preferences") await saveTeamPreferences();
     if (action === "save-openai-byok") await saveOpenAiByok();
     if (action === "clear-openai-byok") await clearOpenAiByok();
@@ -3382,6 +3389,12 @@ function handleChange(event) {
     app.openEvidenceImport.deidConfirmed = event.target.checked;
     renderChecklist();
   }
+  if (event.target.classList.contains("variable-color-input")) {
+    const token = event.target.dataset.token;
+    app.tokenColorOverrides = setTokenColorOverride(app.tokenColorOverrides, token, hexToHue(event.target.value));
+    saveTokenColorOverrides(app.tokenColorOverrides);
+    renderPrompts();
+  }
   if (isWorkupEditorControl(event.target)) queueWorkupAutosave();
   if (event.target.id === "settingsMedicalService") {
     const customServiceWrap = byId("settingsCustomServiceWrap");
@@ -3652,5 +3665,6 @@ async function refreshWebGpuAvailability({ renderAfter = true } = {}) {
 }
 async function refreshGuidelines() {
   app.guidelineSets = await loadOrMigrateGuidelineSets();
+  app.guidelineSets = await ensureAdditionalGuidelineSets(app.guidelineSets);
   renderPrompts();
 }

@@ -1,8 +1,8 @@
-import { tokenAccentColor } from "../../prompts/custom-templates.js";
+import { ADMISSION_PSEUDO_DAY_ID, hueToHex, tokenAccentColor, tokenAccentHue } from "../../prompts/custom-templates.js";
 
-export function renderHighlightedSegments(segments, escapeHtml) {
+export function renderHighlightedSegments(segments, escapeHtml, colorOverrides = {}) {
   return segments.map((segment) => segment.type === "token"
-    ? `<span class="var-fill" style="background:${tokenAccentColor(segment.token)}" title="${escapeHtml(segment.token)}">${escapeHtml(segment.value)}</span>`
+    ? `<span class="var-fill" style="background:${tokenAccentColor(segment.token, { overrides: colorOverrides })}" title="${escapeHtml(segment.token)}">${escapeHtml(segment.value)}</span>`
     : escapeHtml(segment.value)).join("");
 }
 
@@ -15,12 +15,12 @@ export function createPromptsPresentation({ escapeHtml }) {
     promptDays,
     selectedPromptDayId,
     template,
-    prompt,
     previewSegments,
     templateHighlightSegments,
     promptError,
     variables,
-    smartMenuOpen
+    smartMenuOpen,
+    colorOverrides = {}
   }) {
     if (!patient) {
       return patientRequiredMessage;
@@ -37,17 +37,25 @@ export function createPromptsPresentation({ escapeHtml }) {
             <select id="promptTaskSelect" aria-label="Prompt type">
               ${tasks.map((entry) => `<option value="${escapeHtml(entry.id)}" ${entry.id === task.id ? "selected" : ""}>${escapeHtml(entry.label)}</option>`).join("")}
             </select>
-            ${promptDays.length ? `<label class="prompt-day-select">Hospital day <select id="promptDaySelect" aria-label="Hospital day for prompt">${promptDays.map((day, index) => `<option value="${escapeHtml(day.id)}" ${day.id === selectedPromptDayId ? "selected" : ""}>HD${index + 1} · ${escapeHtml(day.label)} · ${escapeHtml(day.date)}</option>`).join("")}</select></label>` : ""}
+            <label class="prompt-day-select">Hospital day <select id="promptDaySelect" aria-label="Hospital day for prompt">
+              <option value="${ADMISSION_PSEUDO_DAY_ID}" ${selectedPromptDayId === ADMISSION_PSEUDO_DAY_ID ? "selected" : ""}>Admission (before Hospital Day 1)</option>
+              ${promptDays.map((day, index) => `<option value="${escapeHtml(day.id)}" ${day.id === selectedPromptDayId ? "selected" : ""}>HD${index + 1} · ${escapeHtml(day.label)} · ${escapeHtml(day.date)}</option>`).join("")}
+            </select></label>
           </div>
           <div class="prompt-task-manage">
             <input id="newPromptTaskNameInput" type="text" placeholder="New prompt name" autocomplete="off">
             <button class="button--secondary" type="button" data-action="create-prompt-task">Create prompt</button>
           </div>
           <div class="prompt-template-wrap">
-            <div id="promptTemplateHighlight" class="prompt-preview prompt-template-backdrop" aria-hidden="true">${renderHighlightedSegments(templateHighlightSegments, escapeHtml)}</div>
+            <div id="promptTemplateHighlight" class="prompt-preview prompt-template-backdrop" aria-hidden="true">${renderHighlightedSegments(templateHighlightSegments, escapeHtml, colorOverrides)}</div>
             <textarea id="promptPreview" class="prompt-preview" rows="22" spellcheck="false">${escapeHtml(template)}</textarea>
             <div id="smartVariableMenu" class="smart-variable-menu ${smartMenuOpen ? "open" : ""}">
-              ${variables.map((variable) => `<button type="button" data-action="insert-prompt-variable" data-token="${escapeHtml(variable.token)}"><span class="variable-swatch" style="background:${tokenAccentColor(variable.token, { dot: true })}" aria-hidden="true"></span><strong>${escapeHtml(variable.token)}</strong><span>${escapeHtml(variable.description)}</span></button>`).join("")}
+              ${variables.map((variable) => `
+                <div class="smart-variable-row" data-token="${escapeHtml(variable.token)}">
+                  <input type="color" class="variable-color-input" data-action="set-token-color" data-token="${escapeHtml(variable.token)}" value="${hueToHex(tokenAccentHue(variable.token, colorOverrides))}" aria-label="Color for ${escapeHtml(variable.token)}" title="Change the color for ${escapeHtml(variable.token)}">
+                  <button type="button" class="smart-variable-insert" data-action="insert-prompt-variable" data-token="${escapeHtml(variable.token)}"><strong>${escapeHtml(variable.token)}</strong><span>${escapeHtml(variable.description)}</span></button>
+                </div>
+              `).join("")}
             </div>
           </div>
           <div class="prompt-template-footer">
@@ -69,14 +77,11 @@ export function createPromptsPresentation({ escapeHtml }) {
               <p class="muted">De-identified context only. Colors match each smart variable to the text it filled in.</p>
             </div>
           </div>
-          <div id="promptOutputHighlighted" class="prompt-output-highlighted" aria-label="Generated prompt with variables highlighted">${renderHighlightedSegments(previewSegments, escapeHtml)}</div>
-          <details class="prompt-output-plain" open>
-            <summary>Plain text (used for Copy / Open OpenEvidence)</summary>
-            <textarea id="promptOutput" rows="8" readonly spellcheck="false">${escapeHtml(prompt)}</textarea>
-          </details>
+          <div id="promptOutputHighlighted" class="prompt-output-highlighted" aria-label="Generated prompt with variables highlighted">${renderHighlightedSegments(previewSegments, escapeHtml, colorOverrides)}</div>
           <div class="button-row">
             <button class="button--primary" type="button" data-action="copy-prompt">Copy prompt</button>
             <button class="button--secondary" type="button" data-action="open-open-evidence">Open OpenEvidence</button>
+            <button class="button--quiet" type="button" data-action="reset-variable-colors">Reset colors</button>
           </div>
         </section>
       </div>

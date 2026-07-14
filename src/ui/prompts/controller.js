@@ -51,11 +51,11 @@ export function createPromptTaskController({ state, setStatus, renderPrompts, by
 export function filterSmartVariableMenu(menu, query) {
   if (!menu) return;
   const normalized = String(query || "").trim().toLowerCase();
-  const buttons = [...menu.querySelectorAll("button[data-token]")];
+  const rows = [...menu.querySelectorAll(".smart-variable-row[data-token]")];
   let visibleCount = 0;
-  buttons.forEach((button) => {
-    const matches = !normalized || button.dataset.token.replace(/^@/, "").toLowerCase().includes(normalized);
-    button.hidden = !matches;
+  rows.forEach((row) => {
+    const matches = !normalized || row.dataset.token.replace(/^@/, "").toLowerCase().includes(normalized);
+    row.hidden = !matches;
     if (matches) visibleCount += 1;
   });
   let empty = menu.querySelector(".smart-variable-empty");

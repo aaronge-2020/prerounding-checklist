@@ -10,7 +10,7 @@ The app does not create accounts, synchronize data, host patient records, infer 
 - **Hospital Stay**: maintain the admission packet and labeled day-by-day updates in one place.
 - **Workups**: create, edit, import, export, order, and explicitly convert local workups into a checklist. A saved BYOK option can format a reviewed, de-identified OpenEvidence draft into workup JSON; manual ChatGPT formatting remains available as the fallback.
 - **Checklist**: answer grouped History and Physical Exam items on a laptop or phone; transfer answers with an encrypted local bundle.
-- **OpenEvidence Prompts**: edit prompt text directly and insert labeled smart variables with `@`. Admission and daily-progress prompts always include `Guidelines.md`.
+- **OpenEvidence Prompts**: edit prompt text directly and insert labeled smart variables with `@`, including a named guideline-set variable (Settings) for any note type - H&P, progress, discharge instructions, a bedside pre-round checklist, or your own.
 - **Quick De-ID**: process one-off text without saving it to a patient.
 - **Settings**: select a medical-service focus, presentation detail, and attending preferences for OpenEvidence prompts; optionally save an OpenAI API key inside the encrypted local vault for explicit workup-formatting requests.
 
@@ -68,4 +68,4 @@ npm.cmd run test:local-ui
 
 ## Deployment
 
-Pushing `main` runs CI and deploys GitHub Pages. The deployment workflow publishes the static shell, `Guidelines.md`, `assets/`, `data/`, `models/`, `src/`, and `vendor/`. It checks out the tracked baseline model assets through Git LFS before building the Pages artifact.
+Pushing `main` runs CI and deploys GitHub Pages. The deployment workflow publishes the static shell, `assets/`, `data/`, `models/`, `prompts/`, `src/`, and `vendor/`. It checks out the tracked baseline model assets through Git LFS before building the Pages artifact.

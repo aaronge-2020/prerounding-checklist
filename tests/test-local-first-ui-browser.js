@@ -39,6 +39,17 @@ const { port } = server.address();
 const baseUrl = `http://127.0.0.1:${port}/`;
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1280, height: 820 } });
+await page.context().grantPermissions(["clipboard-read", "clipboard-write"], { origin: baseUrl });
+
+// The plain-text prompt textarea was removed (the highlighted preview made it
+// redundant) - the only remaining way to inspect the exact copy-ready text
+// (team preferences block, bracket-stripping, token de-tokenizing) is to
+// actually click "Copy prompt" and read what landed on the clipboard.
+async function copiedPromptText() {
+  await page.click('[data-action="copy-prompt"]');
+  return page.evaluate(() => navigator.clipboard.readText());
+}
+
 await page.addInitScript(() => {
   // The installer error path is tested before model execution. This gives the
   // static UI a WebGPU-capable device so its Large-model action is reachable.
@@ -97,7 +108,7 @@ try {
   await page.fill("#newPatientLabel", "Room 12");
   await page.click('[data-action="admit-patient"]');
   await page.waitForSelector("#contextSections");
-  assert.equal(await page.locator('[data-action="save-context"]').isDisabled(), true, "Hospital Stay must not de-identify raw text until the selected model is ready");
+  assert.equal(await page.locator('[data-action="save-context"]').isEnabled(), true, "Save changes must stay clickable even before the model has loaded - it loads the model itself instead of requiring a separate trip first");
   await page.selectOption("#deidModeSelect", "structured");
   assert.equal(await page.locator('[data-action="save-context"]').isEnabled(), true);
 
@@ -137,8 +148,8 @@ try {
   await page.locator("#promptPreview").fill("@discharge");
   await page.waitForSelector("#smartVariableMenu.open");
   assert.equal(await page.locator('#smartVariableMenu button[data-token="@discharge-summary-guidelines"]').isVisible(), true);
-  await page.locator('#smartVariableMenu [data-token="@discharge-summary-guidelines"]').click();
-  await page.waitForFunction(() => /Summarize the admission, hospital course, and discharge plan\./.test(document.querySelector("#promptOutput")?.value || ""));
+  await page.locator('#smartVariableMenu button[data-token="@discharge-summary-guidelines"]').click();
+  await page.waitForFunction(() => /Summarize the admission, hospital course, and discharge plan\./.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
   // Restore the default template - this test overwrote the draft for
   // "Initial admission rounds" above, and later assertions in this file
   // depend on that task's real default content still being there.
@@ -156,9 +167,12 @@ try {
   assert.equal(await page.locator(".guideline-set-card", { hasText: "Discharge summary" }).count(), 0);
 
   await page.click('[data-view-target="prompts"]');
-  await page.waitForSelector("#promptOutput");
-  assert.match(await page.locator("#promptOutput").inputValue(), /Consult service/);
-  assert.match(await page.locator("#promptOutput").inputValue(), /consulted rhythm question/);
+  await page.waitForSelector("#promptOutputHighlighted");
+  {
+    const copied = await copiedPromptText();
+    assert.match(copied, /Consult service/);
+    assert.match(copied, /consulted rhythm question/);
+  }
   await page.click('[data-view-target="daily"]');
 
   await page.locator("#contextSections .section-editor").nth(0).locator('[data-action="toggle-section-editor"]').click();
@@ -276,6 +290,10 @@ try {
   await page.click('[data-action="copy-open-evidence-workup-prompt"]');
   assert.match(await page.locator("#workupPromptOutput").inputValue(), /focused fast-rounds scope/i);
   assert.match(await page.locator("#workupPromptOutput").inputValue(), /consulted rhythm question/);
+  // A successful "Parse & save" auto-collapses the import panel (its job is
+  // done) - reopen it to paste a fresh draft for the OpenAI-formatting flow
+  // below, same as a real user would.
+  await page.locator(".workup-import summary").click();
   await page.route("https://api.openai.com/v1/responses", async (route) => {
     await route.fulfill({
       contentType: "application/json",
@@ -370,14 +388,17 @@ try {
 
   await page.setViewportSize({ width: 1280, height: 820 });
   await page.click('[data-view-target="prompts"]');
-  await page.waitForSelector("#promptOutput");
-  assert.match(await page.locator("#promptOutput").inputValue(), /Rule of Separation/);
-  assert.doesNotMatch(await page.locator("#promptOutput").inputValue(), /Privacy rules:/);
+  await page.waitForSelector("#promptOutputHighlighted");
+  {
+    const copied = await copiedPromptText();
+    assert.match(copied, /Concise H&P Presentation/);
+    assert.doesNotMatch(copied, /Privacy rules:/);
+  }
   await page.locator("#promptPreview").fill("@");
   await page.waitForSelector("#smartVariableMenu.open");
   assert.equal(await page.locator("#smartVariableMenu").filter({ hasText: "@admission-context" }).count(), 1);
   assert.equal(await page.locator("#smartVariableMenu").filter({ hasText: "@admission-guidelines" }).count(), 1);
-  await page.locator('#smartVariableMenu [data-token="@admission-guidelines"]').click();
+  await page.locator('#smartVariableMenu button[data-token="@admission-guidelines"]').click();
   assert.equal(await page.locator("#promptPreview").inputValue(), "@admission-guidelines");
 
   // Regression test: the dropdown must actually narrow as the user keeps
@@ -385,23 +406,27 @@ try {
   // just marked hidden while a CSS rule silently keeps them on screen).
   await page.locator("#promptPreview").fill("@admission-c");
   await page.waitForFunction(() => {
-    const visible = [...document.querySelectorAll("#smartVariableMenu button[data-token]")].filter((button) => !button.hidden);
+    const visible = [...document.querySelectorAll("#smartVariableMenu .smart-variable-row[data-token]")].filter((row) => !row.hidden);
     return visible.length === 1 && visible[0].dataset.token === "@admission-context";
   });
   assert.equal(await page.locator('#smartVariableMenu button[data-token="@admission-context"]').isVisible(), true);
   assert.equal(await page.locator('#smartVariableMenu button[data-token="@admission-guidelines"]').isVisible(), false);
 
   await page.locator("#promptPreview").fill("Use @admission-context");
-  await page.waitForFunction(() => /PATIENT NAME/.test(document.querySelector("#promptOutput")?.value || ""));
-  assert.doesNotMatch(await page.locator("#promptOutput").inputValue(), /[\[\]{}<>()`]/);
+  await page.waitForFunction(() => /PATIENT NAME/.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
+  {
+    const copied = await copiedPromptText();
+    assert.match(copied, /PATIENT NAME/);
+    assert.doesNotMatch(copied, /[\[\]{}<>()`]/);
+  }
   await page.selectOption("#promptTaskSelect", "daily_progress_note");
-  assert.match(await page.locator("#promptOutput").inputValue(), /Daily Progress-Note Documentation Standard/);
+  await page.waitForFunction(() => /Daily Progress Note Instructions/.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
   await page.selectOption("#promptTaskSelect", "teaching_case_trajectory");
-  assert.match(await page.locator("#promptOutput").inputValue(), /Teach the full case trajectory/i);
+  await page.waitForFunction(() => /Teach the full case trajectory/i.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
   await page.selectOption("#promptTaskSelect", "medication_explainer_by_problem");
-  assert.match(await page.locator("#promptOutput").inputValue(), /disease, condition, symptom/);
+  await page.waitForFunction(() => /disease, condition, symptom/.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
   await page.selectOption("#promptTaskSelect", "medication_safety_audit");
-  assert.match(await page.locator("#promptOutput").inputValue(), /insufficient information/);
+  await page.waitForFunction(() => /insufficient information/.test(document.querySelector("#promptOutputHighlighted")?.textContent || ""));
 
   await page.click('[data-view-target="quickDeid"]');
   await page.waitForSelector("#quickDeidMode");
