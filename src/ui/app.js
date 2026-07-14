@@ -8,8 +8,10 @@ import { deidentifyText, getAdvancedDeidStatus, getSelectedDeidModelStatus, prel
 import { DEFAULT_DEID_MODEL_KEY, DEID_MODEL_OPTIONS, STRUCTURED_DEID_MODE, deidModelOptionByKey } from "../patient-context/deid-model-options.js?v=20260711-functional-remediation-15";
 import { canAutomaticallyInstallModel, ensureModelPackServiceWorker, getModelPackState, importModelPack, installModelPack, markModelPackVerified, modelFilesFromDirectoryHandle, modelFilesFromInput, removeModelPack, requestPersistentModelStorage } from "../patient-context/model-pack-storage.js?v=20260711-functional-remediation-15";
 import { formatBytes, hasAutomaticModelDownload, isInstallableModel, modelDownloadBytes } from "../patient-context/model-packs.js?v=20260711-functional-remediation-15";
-import { buildCustomOpenEvidencePrompt, loadPromptTemplateOverrides, promptTemplateForTask, promptVariablesForPatient, savePromptTemplateOverrides } from "../prompts/custom-templates.js?v=20260711-functional-remediation-15";
+import { buildCustomOpenEvidencePrompt, buildPromptPreviewSegments, buildPromptVariableMap, loadPromptTemplateOverrides, promptTemplateForTask, promptVariablesForPatient, savePromptTemplateOverrides } from "../prompts/custom-templates.js?v=20260713-guideline-sets";
 import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260711-functional-remediation-15";
+import { allPromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260713-exam-note-prompts";
+import { loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260713-guideline-sets";
 import { MEDICAL_SERVICE_OPTIONS, OPENAI_WORKUP_MODEL_OPTIONS, PRESENTATION_DETAIL_OPTIONS, normalizeUserPreferences, openAiWorkupModelOption } from "../app/preferences.js?v=20260711-functional-remediation-15";
 import { effectiveWorkupCatalog, findWorkupsById, normalizeWorkup, parseWorkupJson } from "../workups/schema.js?v=20260711-functional-remediation-15";
 import { mergeWorkupLibraryIntoOverrides, parseWorkupLibraryJson, workupLibraryFromOverrides } from "../workups/library.js?v=20260711-functional-remediation-15";
@@ -34,12 +36,16 @@ import {
 } from "../checklist/state.js?v=20260711-functional-remediation-19";
 import { groupChecklistItemsBySystem } from "../checklist/grouping.js?v=20260711-functional-remediation-19";
 import { icon } from "./icons.js?v=20260711-functional-remediation-15";
-import { createChecklistPresentation } from "./checklist/presentation.js?v=20260712-openevidence-import";
+import { createChecklistPresentation } from "./checklist/presentation.js?v=20260713-oe-panel-redesign";
 import { createPhoneTransferController } from "./checklist/transfer.js?v=20260711-functional-remediation-19";
 import { createChecklistSearchController, toggleItemNote } from "./checklist/search.js?v=20260711-functional-remediation-19";
 import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-functional-remediation-19";
 import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260711-functional-remediation-19";
-import { createOpenEvidenceImportController } from "./checklist/openevidence-import-controller.js?v=20260712-openevidence-import";
+import { createOpenEvidenceImportController } from "./checklist/openevidence-import-controller.js?v=20260713-oe-panel-redesign";
+import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260713-guideline-sets";
+import { createPromptTaskController, filterSmartVariableMenu, positionSmartVariableMenu } from "./prompts/controller.js?v=20260713-smart-menu-caret";
+import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260713-guideline-sets";
+import { createSettingsPresentation } from "./settings/presentation.js?v=20260713-guideline-sets";
 import { createRedactionPresentation, redactionPosition, warningDescription, warningSnippet } from "./redaction/presentation.js?v=20260711-functional-remediation-19";
 import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260711-functional-remediation-19";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
@@ -51,9 +57,12 @@ const app = {
   selectedDayId: "",
   selectedPromptTask: "initial_admission_rounds",
   promptDayId: "",
+  customPromptTasks: loadCustomPromptTasks(),
+  pendingRemovePromptTaskId: "",
   selectedWorkupEditorId: "general-admission",
   draftWorkup: null,
-  guidelines: { admission: "", progress: "" },
+  guidelineSets: [],
+  pendingRemoveGuidelineSetId: "",
   phoneBundle: null,
   phoneAnswers: {},
   phoneQuickNotes: [],
@@ -90,7 +99,7 @@ const app = {
   phoneReturnReady: false,
   checklistSearchQuery: "",
   checklistOpenNoteIds: new Set(),
-  openEvidenceImport: { input: "", busy: false, error: "", deidConfirmed: false, deidStatus: "" },
+  openEvidenceImport: { input: "", busy: false, error: "", deidConfirmed: false, deidStatus: "", deidResidualWarnings: [] },
   workupImportError: "",
   workupCatalogOpen: false,
   workupCatalogQuery: "",
@@ -134,11 +143,15 @@ function escapeHtml(value = "") {
 const checklistPresentation = createChecklistPresentation({ escapeHtml, icon });
 const redactionPresentation = createRedactionPresentation({ escapeHtml, icon });
 const workupPresentation = createWorkupPresentation({ escapeHtml, icon });
+const promptsPresentation = createPromptsPresentation({ escapeHtml });
+const settingsPresentation = createSettingsPresentation({ escapeHtml });
 const checklistSearch = createChecklistSearchController({ Fuse, normalizeQuery: normalizeWorkupCatalogQuery, byId });
 const phoneAutosave = createPhoneAutosave(localStorage);
 const phoneSession = createPhoneSessionController({ phoneAutosave, state: app, active, selectedChecklistDay, persistVault, renderPhoneChecklist, renderChecklist });
-const openEvidenceImport = createOpenEvidenceImportController({ state: app, active, selectedChecklistDay, persistVault, renderChecklist, byId, copyText, setStatus, currentPreferences, deidentify, formatChecklistAnswersWithOpenAi });
+const openEvidenceImport = createOpenEvidenceImportController({ state: app, active, selectedChecklistDay, persistVault, renderChecklist, byId, copyText, setStatus, currentPreferences, deidentify, ensureDeidReady: ensureSelectedDeidReady, formatChecklistAnswersWithOpenAi });
 const workupOpenAiImport = createWorkupOpenAiImportController({ state: app, active, byId, copyText, setStatus, currentPreferences, renderWorkups, parseAndSaveWorkupJson });
+const promptTaskController = createPromptTaskController({ state: app, setStatus, renderPrompts, byId });
+const guidelineSetsController = createGuidelineSetsController({ state: app, setStatus, renderSettings, byId });
 
 function selectedDeidOption() {
   return app.deidMode === STRUCTURED_DEID_MODE ? null : deidModelOptionByKey(app.deidMode);
@@ -220,7 +233,12 @@ function selectedDeidReadiness() {
   const status = selectedDeidStatus();
   return status.ready
     ? { ready: true, message: `${deidModelLabel(app.deidMode)} is verified and ready locally.` }
-    : { ready: false, message: `Load and verify ${deidModelLabel(app.deidMode)} before de-identifying or saving text.` };
+    : { ready: false, message: `${deidModelLabel(app.deidMode)} hasn't loaded yet - it loads and verifies automatically the first time you use it (may take a moment).` };
+}
+
+function selectedDeidReadinessAsPanelProps() {
+  const readiness = selectedDeidReadiness();
+  return { deidReady: readiness.ready, deidReadyMessage: readiness.message };
 }
 
 function renderDeidOperation() {
@@ -252,10 +270,30 @@ function updateDeidOperation({ active = false, message = "", value, total } = {}
   }
 }
 
-function assertSelectedDeidReady() {
+// Loads/downloads/verifies the selected model automatically instead of
+// requiring a separate manual trip to Settings first - once a model has
+// loaded in this session, selectedDeidReadiness().ready is already true and
+// this resolves immediately without reloading anything.
+async function ensureSelectedDeidReady() {
   const readiness = selectedDeidReadiness();
-  if (!readiness.ready) throw new Error(readiness.message);
-  return readiness;
+  if (readiness.ready) return readiness;
+  const option = selectedDeidOption();
+  let caughtMessage = "";
+  try {
+    if (option && isInstallableModel(option) && hasAutomaticModelDownload(option)) {
+      const pack = await getModelPackState(option);
+      app.modelPacks = { ...app.modelPacks, [option.key]: pack };
+      if (pack.state === "installed") await verifyInstalledModelPack(option.key);
+      else await downloadSelectedModelPack(option.key);
+    } else {
+      await loadAdvancedModel();
+    }
+  } catch (error) {
+    caughtMessage = error instanceof Error ? error.message : "";
+  }
+  const finalReadiness = selectedDeidReadiness();
+  if (finalReadiness.ready) return finalReadiness;
+  throw new Error((option && app.modelPackErrors?.[option.key]) || caughtMessage || finalReadiness.message);
 }
 
 function deidLoadButtonDisabled() {
@@ -503,15 +541,6 @@ async function persistVault(message = "Saved.") {
 async function copyText(text) {
   await navigator.clipboard.writeText(text);
   setStatus("Copied.");
-}
-
-async function loadGuidelines() {
-  const [admission, progress] = await Promise.all([
-    fetch("./Guidelines-admission.md", { cache: "no-store" }),
-    fetch("./Guidelines-progress.md", { cache: "no-store" })
-  ]);
-  if (!admission.ok || !progress.ok) throw new Error("Unable to load the task-specific documentation standards.");
-  return { admission: await admission.text(), progress: await progress.text() };
 }
 
 function patientRequiredMessage({ allowPhoneBundleImport = false } = {}) {
@@ -1149,8 +1178,11 @@ function renderChecklist() {
     phoneLink: snapshot ? phoneTransfer.currentChecklistUrl() : "",
     openEvidenceImport: {
       ...app.openEvidenceImport,
+      ...selectedDeidReadinessAsPanelProps(),
       hasSavedOpenAiKey: Boolean(preferences.openAiApiKey),
-      openAiModelLabel: openAiWorkupModelOption(preferences.openAiModel).label
+      openAiModelLabel: openAiWorkupModelOption(preferences.openAiModel).label,
+      canSaveExamNote: Boolean(day && app.openEvidenceImport.input.trim() && app.openEvidenceImport.deidConfirmed),
+      savedExamNote: day?.openEvidenceExamNote || null
     }
   });
   checklistSearch.updateFilter(app.checklistSearchQuery);
@@ -1175,70 +1207,54 @@ function renderPrompts() {
     byId("promptsContent").innerHTML = patientRequiredMessage();
     return;
   }
-  const task = OPEN_EVIDENCE_TASKS.find((entry) => entry.id === app.selectedPromptTask) || OPEN_EVIDENCE_TASKS[0];
+  const tasks = allPromptTasks(OPEN_EVIDENCE_TASKS, app.customPromptTasks);
+  const task = tasks.find((entry) => entry.id === app.selectedPromptTask) || tasks[0];
   const promptDays = sortDays(patient.days || []);
   const selectedPromptDay = promptDays.find((day) => day.id === app.promptDayId) || promptDays.at(-1) || null;
   if (selectedPromptDay && selectedPromptDay.id !== app.promptDayId) app.promptDayId = selectedPromptDay.id;
   const template = app.promptDrafts[task.id] ?? promptTemplateForTask(task.id, app.promptTemplates);
   let prompt = "";
   let promptError = "";
+  let previewSegments = [{ type: "text", value: "" }];
   try {
+    const variableMap = buildPromptVariableMap({ patient, selectedDayId: app.promptDayId, guidelineSets: app.guidelineSets });
+    previewSegments = buildPromptPreviewSegments(template, variableMap);
     prompt = buildCustomOpenEvidencePrompt({
       taskId: task.id,
       template,
       patient,
       selectedDayId: app.promptDayId,
-      guidelines: app.guidelines,
+      guidelineSets: app.guidelineSets,
       teamPreferences: app.vault.preferences
     });
   } catch (error) {
     promptError = error instanceof Error ? error.message : "Unable to build prompt.";
   }
-  const variables = promptVariablesForPatient(patient, { selectedDayId: app.promptDayId });
-  byId("promptsContent").innerHTML = `
-    <div class="prompt-layout">
-      <section class="prompt-panel prompt-template-panel">
-        <div class="prompt-panel-header">
-          <div>
-            <h2>Prompt template (editable)</h2>
-            <p class="muted">Next: choose a task, adjust the template, then copy the de-identified prompt.</p>
-          </div>
-          <select id="promptTaskSelect" aria-label="Prompt type">
-            ${OPEN_EVIDENCE_TASKS.map((entry) => `<option value="${escapeHtml(entry.id)}" ${entry.id === task.id ? "selected" : ""}>${escapeHtml(entry.label)}</option>`).join("")}
-          </select>
-          ${promptDays.length ? `<label class="prompt-day-select">Hospital day <select id="promptDaySelect" aria-label="Hospital day for prompt">${promptDays.map((day, index) => `<option value="${escapeHtml(day.id)}" ${day.id === app.promptDayId ? "selected" : ""}>HD${index + 1} · ${escapeHtml(day.label)} · ${escapeHtml(day.date)}</option>`).join("")}</select></label>` : ""}
-        </div>
-        <div class="prompt-template-wrap">
-          <textarea id="promptPreview" class="prompt-preview" rows="22" spellcheck="false">${escapeHtml(template)}</textarea>
-          <div id="smartVariableMenu" class="smart-variable-menu ${app.smartMenuOpen ? "open" : ""}">
-            ${variables.map((variable) => `<button type="button" data-action="insert-prompt-variable" data-token="${escapeHtml(variable.token)}"><strong>${escapeHtml(variable.token)}</strong><span>${escapeHtml(variable.description)}</span></button>`).join("")}
-          </div>
-        </div>
-        <div class="prompt-template-footer">
-          <div class="notice">${task.requiresGuidelines ? "@guidelines is included by default and required for this prompt type." : "Insert only the saved context you want to include."}</div>
-          <div class="button-row">
-            <button class="button--secondary" type="button" data-action="save-prompt-template">Save prompt</button>
-            <button class="button--quiet" type="button" data-action="reset-prompt-template">Reset</button>
-          </div>
-        </div>
-        ${promptError ? `<div class="warning-box">${escapeHtml(promptError)}</div>` : ""}
-      </section>
-
-      <section class="prompt-panel prompt-output-panel">
-        <div class="section-heading tight">
-          <div>
-            <h2>Generated prompt preview</h2>
-            <p class="muted">De-identified context only.</p>
-          </div>
-        </div>
-        <textarea id="promptOutput" rows="22" readonly spellcheck="false">${escapeHtml(prompt)}</textarea>
-        <div class="button-row">
-          <button class="button--primary" type="button" data-action="copy-prompt">Copy prompt</button>
-          <button class="button--secondary" type="button" data-action="open-open-evidence">Open OpenEvidence</button>
-        </div>
-      </section>
-    </div>
-  `;
+  const variables = promptVariablesForPatient(patient, { selectedDayId: app.promptDayId, guidelineSets: app.guidelineSets });
+  const templateHighlightSegments = buildPromptPreviewSegments(template, Object.fromEntries(variables.map((entry) => [entry.token, entry.token])));
+  byId("promptsContent").innerHTML = promptsPresentation.renderPrompts({
+    patient,
+    patientRequiredMessage: patientRequiredMessage(),
+    task,
+    tasks,
+    promptDays,
+    selectedPromptDayId: app.promptDayId,
+    template,
+    prompt,
+    previewSegments,
+    templateHighlightSegments,
+    promptError,
+    variables,
+    smartMenuOpen: app.smartMenuOpen
+  });
+  const templateEditor = byId("promptPreview");
+  const templateBackdrop = byId("promptTemplateHighlight");
+  if (templateEditor && templateBackdrop) {
+    templateEditor.addEventListener("scroll", () => {
+      templateBackdrop.scrollTop = templateEditor.scrollTop;
+      templateBackdrop.scrollLeft = templateEditor.scrollLeft;
+    });
+  }
 }
 
 function currentPreferences() {
@@ -1249,71 +1265,14 @@ function renderSettings() {
   const container = byId("settingsContent");
   if (!container || !vaultIsUnlocked()) return;
   const preferences = currentPreferences();
-  const apiKeySaved = Boolean(preferences.openAiApiKey);
-  container.innerHTML = `
-    <div class="settings-layout">
-      <section class="panel settings-panel">
-        <div class="section-heading">
-          <div>
-            <h2 id="settings-heading">Team and presentation preferences</h2>
-            <p class="muted">These are added to every OpenEvidence prompt and workup-draft request.</p>
-          </div>
-        </div>
-        <div class="settings-fields">
-          <label>Medical service
-            <select id="settingsMedicalService">
-              ${MEDICAL_SERVICE_OPTIONS.map((option) => `<option value="${escapeHtml(option.value)}" ${preferences.medicalService === option.value ? "selected" : ""}>${escapeHtml(option.label)}</option>`).join("")}
-            </select>
-          </label>
-          <label id="settingsCustomServiceWrap" ${preferences.medicalService === "other" ? "" : "hidden"}>Service name
-            <input id="settingsCustomServiceName" value="${escapeHtml(preferences.customServiceName)}" placeholder="e.g., Cardiology consults">
-          </label>
-          <label class="settings-field-wide">Service focus
-            <textarea id="settingsServiceFocus" rows="3" placeholder="e.g., Evaluate new atrial fibrillation and rate-control strategy; omit unrelated chronic issues unless they affect this question.">${escapeHtml(preferences.serviceFocus)}</textarea>
-          </label>
-          <label>Presentation detail
-            <select id="settingsPresentationDetail">
-              ${PRESENTATION_DETAIL_OPTIONS.map((option) => `<option value="${escapeHtml(option.value)}" ${preferences.presentationDetail === option.value ? "selected" : ""}>${escapeHtml(option.label)}</option>`).join("")}
-            </select>
-          </label>
-          <label class="settings-field-wide">Attending preferences
-            <textarea id="settingsAttendingPreferences" rows="4" placeholder="e.g., Start with a one-liner, then problem-based assessment and plan. Include overnight events and pertinent negatives.">${escapeHtml(preferences.attendingPreferences)}</textarea>
-          </label>
-        </div>
-        <div class="button-row">
-          <button class="button--primary" type="button" data-action="save-team-preferences">Save team preferences</button>
-        </div>
-      </section>
-
-      <section class="panel settings-panel">
-        <div class="section-heading">
-          <div>
-            <h2>Bring your own OpenAI key</h2>
-            <p class="muted">Use your own key to format a reviewed, de-identified OpenEvidence workup draft, or to fill checklist answers from a de-identified OpenEvidence note.</p>
-          </div>
-        </div>
-        <div class="notice settings-security-note">
-          <strong>${apiKeySaved ? "An API key is saved in the encrypted vault." : "No API key is saved."}</strong>
-          <span>The key is never shown again. It's encrypted at rest in this browser's vault record and only used when you start a conversion. While the vault is unlocked, the browser keeps it in memory to make that request.</span>
-        </div>
-        <div class="settings-fields">
-          <label class="settings-field-wide">OpenAI API key
-            <input id="openAiApiKeyInput" type="password" autocomplete="new-password" spellcheck="false" placeholder="${apiKeySaved ? "Saved in encrypted vault; enter a new key to replace it" : "Paste an API key to enable automatic formatting"}">
-          </label>
-          <label>Model
-            <select id="openAiModelInput">
-              ${OPENAI_WORKUP_MODEL_OPTIONS.map((option) => `<option value="${escapeHtml(option.value)}" ${preferences.openAiModel === option.value ? "selected" : ""}>${escapeHtml(`${option.label} — ${option.description}`)}</option>`).join("")}
-            </select>
-          </label>
-        </div>
-        <div class="button-row">
-          <button class="button--primary" type="button" data-action="save-openai-byok">Save encrypted key</button>
-          <button class="button--quiet" type="button" data-action="clear-openai-byok" ${apiKeySaved ? "" : "disabled"}>Remove saved key</button>
-        </div>
-        <p class="muted settings-helper">Without a saved key, the Workups and Checklist pages fall back to the copy-and-paste ChatGPT formatter prompt.</p>
-      </section>
-    </div>
-  `;
+  container.innerHTML = settingsPresentation.renderSettings({
+    preferences,
+    apiKeySaved: Boolean(preferences.openAiApiKey),
+    guidelineSets: app.guidelineSets,
+    MEDICAL_SERVICE_OPTIONS,
+    PRESENTATION_DETAIL_OPTIONS,
+    OPENAI_WORKUP_MODEL_OPTIONS
+  });
 }
 
 function setVaultPreferences(nextPreferences) {
@@ -1363,13 +1322,23 @@ function refreshPromptPreview() {
   const patient = active();
   const output = byId("promptOutput");
   if (!patient || !output) return;
+  const template = app.promptDrafts[app.selectedPromptTask] ?? promptTemplateForTask(app.selectedPromptTask, app.promptTemplates);
   try {
+    const variableMap = buildPromptVariableMap({ patient, selectedDayId: app.promptDayId, guidelineSets: app.guidelineSets });
+    const highlighted = byId("promptOutputHighlighted");
+    if (highlighted) highlighted.innerHTML = renderHighlightedSegments(buildPromptPreviewSegments(template, variableMap), escapeHtml);
+    const templateBackdrop = byId("promptTemplateHighlight");
+    if (templateBackdrop) {
+      const variables = promptVariablesForPatient(patient, { selectedDayId: app.promptDayId, guidelineSets: app.guidelineSets });
+      const identityMap = Object.fromEntries(variables.map((entry) => [entry.token, entry.token]));
+      templateBackdrop.innerHTML = renderHighlightedSegments(buildPromptPreviewSegments(template, identityMap), escapeHtml);
+    }
     output.value = buildCustomOpenEvidencePrompt({
       taskId: app.selectedPromptTask,
-      template: app.promptDrafts[app.selectedPromptTask] ?? promptTemplateForTask(app.selectedPromptTask, app.promptTemplates),
+      template,
       patient,
       selectedDayId: app.promptDayId,
-      guidelines: app.guidelines,
+      guidelineSets: app.guidelineSets,
       teamPreferences: app.vault.preferences
     });
   } catch (error) {
@@ -1676,6 +1645,8 @@ async function handleClick(event) {
     if (action === "format-checklist-answers-api") await openEvidenceImport.formatWithSavedKey();
     if (action === "parse-checklist-answers-json") await openEvidenceImport.parseAndApply(byId("openEvidenceImportInput")?.value || "");
     if (action === "copy-checklist-answers-formatter-prompt") await openEvidenceImport.copyFormatterPrompt();
+    if (action === "save-openevidence-exam-note") await openEvidenceImport.saveExamNote();
+    if (action === "clear-openevidence-exam-note") await openEvidenceImport.clearExamNote();
     if (action === "go-workups") {
       app.view = "workups";
       render();
@@ -1705,6 +1676,13 @@ async function handleClick(event) {
     if (action === "discard-phone-autosave") phoneSession.discardAutosave();
     if (action === "save-prompt-template") savePromptTemplate();
     if (action === "reset-prompt-template") resetPromptTemplate();
+    if (action === "create-prompt-task") promptTaskController.createTaskFromInput();
+    if (action === "request-remove-prompt-task") promptTaskController.requestRemove(target.dataset.taskId);
+    if (action === "confirm-remove-prompt-task") promptTaskController.confirmRemovePending();
+    if (action === "create-guideline-set") guidelineSetsController.createFromInput();
+    if (action === "save-guideline-set") guidelineSetsController.saveEdit(target.dataset.guidelineSetId);
+    if (action === "request-remove-guideline-set") guidelineSetsController.requestRemove(target.dataset.guidelineSetId);
+    if (action === "confirm-remove-guideline-set") guidelineSetsController.confirmRemovePending();
     if (action === "insert-prompt-variable") insertPromptVariable(target.dataset.token);
     if (action === "copy-prompt") await copyText(byId("promptOutput")?.value || "");
     if (action === "open-open-evidence") window.open("https://www.openevidence.com/", "_blank", "noopener,noreferrer");
@@ -2510,7 +2488,7 @@ async function deidentifySectionRows(scope, containerId, priorSections = []) {
 }
 
 async function saveContext() {
-  assertSelectedDeidReady();
+  await ensureSelectedDeidReady();
   updateDeidOperation({ active: true, message: "Preparing admission fields for local de-identification…", value: 0, total: 1 });
   try {
     const sections = await deidentifySectionRows("context", "contextSections", active()?.contextSections || []);
@@ -2541,7 +2519,7 @@ async function saveDay() {
   const patient = active();
   const day = selectedChecklistDay(patient);
   if (!day) throw new Error("Add a hospital day first.");
-  assertSelectedDeidReady();
+  await ensureSelectedDeidReady();
   updateDeidOperation({ active: true, message: "Preparing daily fields for local de-identification…", value: 0, total: 1 });
   try {
     const sections = await deidentifySectionRows("daily", "dailySections", day.sections || []);
@@ -3334,14 +3312,10 @@ function insertPromptVariable(token) {
 async function runQuickDeid() {
   app.quickDeid.input = byId("quickDeidInput")?.value || "";
   app.deidMode = byId("quickDeidMode")?.value || app.deidMode;
-  assertSelectedDeidReady();
   app.quickDeid.status = "Running de-identification...";
   renderQuickDeid();
   try {
-    if (app.deidMode !== STRUCTURED_DEID_MODE) {
-      const blocker = await selectedModelLoadBlocker(selectedDeidOption());
-      if (blocker) throw new Error(blocker);
-    }
+    await ensureSelectedDeidReady();
     const result = await deidentify(app.quickDeid.input);
     app.quickDeid = {
       input: app.quickDeid.input,
@@ -3404,7 +3378,7 @@ function handleChange(event) {
     app.workupImportPanelOpen = true;
     renderWorkups();
   }
-  if (event.target.id === "openEvidenceImportDeidConfirmed") {
+  if (event.target.id === "openEvidenceDeidConfirmed") {
     app.openEvidenceImport.deidConfirmed = event.target.checked;
     renderChecklist();
   }
@@ -3545,9 +3519,13 @@ function handleInput(event) {
   }
   if (event.target.id === "promptPreview") {
     const beforeCursor = event.target.value.slice(0, event.target.selectionStart || event.target.value.length);
-    app.smartMenuOpen = /(^|\s)@[\w-]*$/.test(beforeCursor);
+    const tokenMatch = beforeCursor.match(/(^|\s)@([\w-]*)$/);
+    app.smartMenuOpen = Boolean(tokenMatch);
     app.promptDrafts[app.selectedPromptTask] = event.target.value;
-    byId("smartVariableMenu")?.classList.toggle("open", app.smartMenuOpen);
+    const menu = byId("smartVariableMenu");
+    menu?.classList.toggle("open", app.smartMenuOpen);
+    filterSmartVariableMenu(menu, tokenMatch ? tokenMatch[2] : "");
+    if (app.smartMenuOpen) positionSmartVariableMenu(menu, event.target);
     refreshPromptPreview();
     return;
   }
@@ -3673,11 +3651,6 @@ async function refreshWebGpuAvailability({ renderAfter = true } = {}) {
   return app.webGpuAvailable;
 }
 async function refreshGuidelines() {
-  try {
-    app.guidelines = await loadGuidelines();
-    renderPrompts();
-  } catch (error) {
-    app.guidelines = { admission: "", progress: "" };
-    setStatus(error instanceof Error ? error.message : "Unable to load the task-specific documentation standards.");
-  }
+  app.guidelineSets = await loadOrMigrateGuidelineSets();
+  renderPrompts();
 }

@@ -10,7 +10,7 @@
     <meta name="theme-color" content="#f7f6f2">
     <title>Pre-Rounding Checklist Builder</title>
     <link rel="icon" href="./favicon.ico">
-    <link rel="stylesheet" href="./styles.css?v=20260711-functional-remediation-19">
+    <link rel="stylesheet" href="./styles.css?v=20260713-guideline-sets">
   </head>
   <body class="vault-locked">
     <div class="app-shell">
@@ -108,6 +108,28 @@
       </form>
     </dialog>
 
+    <dialog id="removePromptTaskConfirmDialog" class="confirm-dialog" aria-labelledby="removePromptTaskConfirmTitle">
+      <form method="dialog">
+        <h2 id="removePromptTaskConfirmTitle">Delete this custom prompt?</h2>
+        <p id="removePromptTaskConfirmText">This permanently removes the custom prompt and its saved template.</p>
+        <div class="button-row">
+          <button value="cancel">Cancel</button>
+          <button type="button" data-action="confirm-remove-prompt-task" class="danger-button">Delete prompt</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="removeGuidelineSetConfirmDialog" class="confirm-dialog" aria-labelledby="removeGuidelineSetConfirmTitle">
+      <form method="dialog">
+        <h2 id="removeGuidelineSetConfirmTitle">Delete this guideline set?</h2>
+        <p id="removeGuidelineSetConfirmText">This permanently removes the saved guidelines and its variable token. Any template referencing that token will show it unresolved.</p>
+        <div class="button-row">
+          <button value="cancel">Cancel</button>
+          <button type="button" data-action="confirm-remove-guideline-set" class="danger-button">Delete guidelines</button>
+        </div>
+      </form>
+    </dialog>
+
     <dialog id="deleteVaultConfirmDialog" class="confirm-dialog danger-confirm-dialog" aria-labelledby="deleteVaultConfirmTitle">
       <form method="dialog">
         <h2 id="deleteVaultConfirmTitle">Delete this local vault?</h2>
@@ -123,6 +145,6 @@
     </dialog>
 
     <input id="modelPackFolderInput" type="file" webkitdirectory multiple hidden>
-    <script type="module" src="./src/ui/app.js?v=20260712-openevidence-import"></script>
+    <script type="module" src="./src/ui/app.js?v=20260713-guideline-sets"></script>
   </body>
 </html>

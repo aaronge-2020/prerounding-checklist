@@ -17,7 +17,8 @@ export function createDailyRecord({ date = localCalendarDate(), label = "", now 
       label: label || `Hospital day ${date}`,
       sections: createDefaultSections(DEFAULT_DAILY_SECTION_LABELS, { now }),
       answers: {},
-      openEvidenceOutputs: {}
+      openEvidenceOutputs: {},
+      openEvidenceExamNote: null
     },
     0,
     { now }
@@ -70,4 +71,22 @@ export function saveOpenEvidenceOutput(day, taskId, text) {
     },
     updatedAt: new Date().toISOString()
   };
+}
+
+export function saveOpenEvidenceExamNote(day, { text = "", residualWarnings = [], now = timestampNow } = {}) {
+  if (!day) return day;
+  return {
+    ...day,
+    openEvidenceExamNote: {
+      text: String(text || ""),
+      residualWarnings: Array.isArray(residualWarnings) ? residualWarnings : [],
+      savedAt: now()
+    },
+    updatedAt: now()
+  };
+}
+
+export function clearOpenEvidenceExamNote(day, { now = timestampNow } = {}) {
+  if (!day) return day;
+  return { ...day, openEvidenceExamNote: null, updatedAt: now() };
 }

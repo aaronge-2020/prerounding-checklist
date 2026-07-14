@@ -156,48 +156,88 @@ export function createChecklistPresentation({ escapeHtml, icon }) {
   // map it onto this checklist's answers - mirrors the Workups page's
   // "Format or import a workup" panel (same dual saved-key/copy-prompt paths,
   // same paste-draft-then-paste-JSON-back textarea) but for checklist answers.
+  function formatSavedTime(savedAt) {
+    const date = new Date(savedAt);
+    return Number.isNaN(date.getTime()) ? "" : date.toLocaleString([], { dateStyle: "short", timeStyle: "short" });
+  }
+
   function renderOpenEvidenceImportPanel({
     input = "",
     busy = false,
     error = "",
     deidConfirmed = false,
     deidStatus = "",
+    deidReady = true,
+    deidReadyMessage = "",
     hasSavedOpenAiKey = false,
-    openAiModelLabel = ""
+    openAiModelLabel = "",
+    canSaveExamNote = false,
+    savedExamNote = null
   }) {
+    const deidStatusClass = deidStatus && deidStatus !== "De-identifying locally..." ? "model-selection-message--ready" : "";
     return `
       <details class="utility-panel openevidence-import" ${error || busy || deidConfirmed || deidStatus || input ? "open" : ""}>
         <summary>
-          <strong>Fill from OpenEvidence note</strong>
-          <span class="muted">Paste the OpenEvidence SOAP note, de-identify it locally, then let ChatGPT map it onto this checklist.</span>
+          <strong>Physical exam: fill by hand, or paste an OpenEvidence note</strong>
+          <span class="muted">Capture the exam yourself in the checklist below, or paste a note transcribed live by OpenEvidence and de-identify it here.</span>
         </summary>
-        <div class="workup-import-body">
-          <div class="section-heading tight">
-            <div>
-              <h3>Paste the OpenEvidence note</h3>
-              <p class="muted">De-identify it locally first. Anything that doesn't match a checklist item becomes a quick note automatically.</p>
-            </div>
-            <button class="button--secondary" type="button" data-action="run-openevidence-note-deid">${icon("shield")} De-identify locally</button>
-          </div>
-          <textarea id="openEvidenceImportInput" class="json-import" spellcheck="false" placeholder="Paste the OpenEvidence SOAP note here, then de-identify it locally before sending it anywhere.">${escapeHtml(input)}</textarea>
-          ${deidStatus ? `<span class="model-selection-message" aria-live="polite">${escapeHtml(deidStatus)}</span>` : ""}
-          ${hasSavedOpenAiKey ? `<div class="workup-api-formatting">
-            <label class="check-row">
-              <input id="openEvidenceImportDeidConfirmed" type="checkbox" ${deidConfirmed ? "checked" : ""}>
-              <span>I confirm this text is de-identified and may be sent to OpenAI using my saved API key.</span>
-            </label>
-            <div class="button-row">
-              <button type="button" data-action="format-checklist-answers-api" ${deidConfirmed && !busy ? "" : "disabled"}>${busy ? "Filling checklist with saved key..." : "Fill checklist with saved API key"}</button>
-              <span class="muted">Ready to use ${escapeHtml(openAiModelLabel)} after you confirm the text is de-identified.</span>
-            </div>
-          </div>` : `<div class="notice"><span>To fill the checklist automatically, save an OpenAI API key in Settings.</span><button class="button--quiet" type="button" data-action="go-settings">Open Settings</button></div>`}
-          <div class="button-row">
-            <button class="button--secondary" type="button" data-action="copy-checklist-answers-formatter-prompt">Copy ChatGPT prompt</button>
-            <button class="button--secondary" type="button" data-action="parse-checklist-answers-json">Parse pasted ChatGPT JSON</button>
-          </div>
-          <p class="muted">No saved key? Copy the prompt, paste it into ChatGPT yourself, then paste its JSON reply into the box above and choose Parse pasted ChatGPT JSON.</p>
+        <div class="workup-import-body oe-import">
           ${error ? `<div class="warning-box">${escapeHtml(error)}</div>` : ""}
-          <textarea id="checklistImportPromptOutput" rows="6" readonly placeholder="Copied ChatGPT prompt appears here."></textarea>
+          <div class="oe-step">
+            <div class="oe-step-head">
+              <span class="oe-step-badge">1</span>
+              <div>
+                <h3>Paste &amp; de-identify</h3>
+                <p class="muted">Paste the OpenEvidence SOAP note, then de-identify it locally before doing anything else with it.</p>
+              </div>
+            </div>
+            <textarea id="openEvidenceImportInput" class="json-import" spellcheck="false" placeholder="Paste the OpenEvidence SOAP note here, then de-identify it locally before sending it anywhere.">${escapeHtml(input)}</textarea>
+            <div class="button-row">
+              <button class="button--secondary" type="button" data-action="run-openevidence-note-deid">${icon("shield")} De-identify locally</button>
+              ${deidStatus ? `<span class="model-selection-message ${deidStatusClass}" aria-live="polite">${escapeHtml(deidStatus)}</span>` : ""}
+            </div>
+            ${!deidReady ? `<div class="notice"><span>${escapeHtml(deidReadyMessage)}</span></div>` : ""}
+          </div>
+
+          <div class="oe-step">
+            <div class="oe-step-head">
+              <span class="oe-step-badge">2</span>
+              <div>
+                <h3>Review &amp; use it</h3>
+                <p class="muted">Confirm the text above is de-identified, then choose what to do with it.</p>
+              </div>
+            </div>
+            <label class="check-row">
+              <input id="openEvidenceDeidConfirmed" type="checkbox" ${deidConfirmed ? "checked" : ""}>
+              <span>I've reviewed this text and confirm it's de-identified.</span>
+            </label>
+            <div class="oe-destination-grid">
+              <div class="oe-destination-card">
+                <h4>Save as this day's exam note</h4>
+                <p class="muted">Skips the checklist entirely. Available later as @exam-findings or @openevidence-exam-note.</p>
+                <div class="button-row">
+                  <button type="button" data-action="save-openevidence-exam-note" ${canSaveExamNote ? "" : "disabled"}>Save as exam note</button>
+                </div>
+                ${savedExamNote ? `<p class="muted oe-saved-line">Saved ${escapeHtml(formatSavedTime(savedExamNote.savedAt))}${savedExamNote.residualWarnings.length ? ` · ${savedExamNote.residualWarnings.length} residual flag${savedExamNote.residualWarnings.length === 1 ? "" : "s"}` : ""} <button class="button--quiet" type="button" data-action="clear-openevidence-exam-note">Clear</button></p>` : ""}
+              </div>
+              <div class="oe-destination-card">
+                <h4>Fill the checklist instead</h4>
+                <p class="muted">Maps the note onto checklist items with ChatGPT.</p>
+                ${hasSavedOpenAiKey
+                  ? `<div class="button-row">
+                      <button type="button" data-action="format-checklist-answers-api" ${deidConfirmed && !busy ? "" : "disabled"}>${busy ? "Filling checklist..." : "Fill checklist with saved key"}</button>
+                    </div>
+                    <p class="muted">Uses ${escapeHtml(openAiModelLabel)}.</p>`
+                  : `<div class="notice"><span>Save an OpenAI API key in Settings to fill the checklist automatically.</span><button class="button--quiet" type="button" data-action="go-settings">Open Settings</button></div>`}
+                <div class="button-row">
+                  <button class="button--quiet" type="button" data-action="copy-checklist-answers-formatter-prompt">Copy ChatGPT prompt</button>
+                  <button class="button--quiet" type="button" data-action="parse-checklist-answers-json">Parse pasted ChatGPT JSON</button>
+                </div>
+              </div>
+            </div>
+            <p class="muted">No saved key? Copy the prompt, paste it into ChatGPT yourself, then paste its JSON reply into the paste box above and choose "Parse pasted ChatGPT JSON".</p>
+            <textarea id="checklistImportPromptOutput" rows="4" readonly placeholder="Copied ChatGPT prompt appears here."></textarea>
+          </div>
         </div>
       </details>
     `;
@@ -248,6 +288,7 @@ export function createChecklistPresentation({ escapeHtml, icon }) {
               <input id="phoneBundleFileInput" type="file" accept="application/json,.json,text/plain,.txt" hidden>
             </div>
           </div>
+          ${snapshot ? `<p class="muted">Two ways to capture the physical exam: fill in the checklist items below yourself, or paste an OpenEvidence-transcribed exam note from your live encounter into "Physical exam: fill by hand, or paste an OpenEvidence note" below and save it directly.</p>` : ""}
           ${snapshot ? renderOpenEvidenceImportPanel(openEvidenceImport || {}) : ""}
           ${
             snapshot

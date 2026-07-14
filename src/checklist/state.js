@@ -99,19 +99,42 @@ export function fillNegativeChecklistAnswers(answers, items = []) {
   return { answers: next, changed };
 }
 
+function meaningfulSelectedChoices(selected = []) {
+  return (selected || []).filter((choice) => String(choice).trim().toLowerCase() !== "not assessed");
+}
+
+// True when the checklist has at least one real answer or quick note - used
+// both to skip noise in the summary below and to decide, elsewhere, whether
+// a prompt should prefer the checklist over an alternate exam-capture source.
+export function hasAssessedChecklistContent(snapshot, answers = {}, quickNotes = []) {
+  const answered = (snapshot?.items || []).some((item) => {
+    const answer = answers[item.id] || {};
+    return Boolean(meaningfulSelectedChoices(answer.selected).length || String(answer.note || "").trim());
+  });
+  return answered || Boolean(quickNotes?.length);
+}
+
+// Items nobody answered, or that were explicitly marked "Not assessed", carry
+// no clinical information - including them just fills the note-writing prompt
+// with noise ("Answer: No answer" for half the exam). Skip them entirely
+// instead of emitting a line with nothing useful in it.
 export function checklistAnswersSummary(snapshot, answers = {}, quickNotes = []) {
   if (!snapshot?.items?.length) return "No checklist has been built.";
   const itemLines = snapshot.items
     .map((item) => {
       const answer = answers[item.id] || { selected: [], note: "" };
-      const selected = answer.selected?.length ? answer.selected.join(", ") : "No answer";
-      const note = answer.note ? ` | Note: ${answer.note}` : "";
-      return `- [${item.kind}] ${item.workupTitle}: ${item.text}\n  Answer: ${selected}${note}`;
+      const selected = meaningfulSelectedChoices(answer.selected);
+      const note = String(answer.note || "").trim();
+      if (!selected.length && !note) return null;
+      const parts = [selected.join(", "), note].filter(Boolean);
+      return `- [${item.kind}] ${item.workupTitle}: ${item.text}\n  Answer: ${parts.join(" | ")}`;
     })
+    .filter(Boolean)
     .join("\n");
-  if (!quickNotes?.length) return itemLines;
+  const body = itemLines || "No checklist items have been assessed yet.";
+  if (!quickNotes?.length) return body;
   const quickNoteLines = quickNotes.map((note) => `- ${note.text}`).join("\n");
-  return `${itemLines}\n\nAdditional notes (not tied to a specific checklist item):\n${quickNoteLines}`;
+  return `${body}\n\nAdditional notes (not tied to a specific checklist item):\n${quickNoteLines}`;
 }
 
 export function createPhoneChecklistBundle(patient, snapshot, answers = {}, quickNotes = []) {

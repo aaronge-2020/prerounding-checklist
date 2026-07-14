@@ -1,15 +1,18 @@
-import { checklistAnswersSummary } from "../checklist/state.js";
+import { checklistAnswersSummary, hasAssessedChecklistContent } from "../checklist/state.js";
 import { buildTrajectoryBlock } from "../daily-updates/days.js";
 import { sectionsToPromptBlock } from "../patient-context/sections.js";
 import { buildTeamPreferencesPromptBlock } from "../app/preferences.js";
-import { documentationInstructionForTask, OPEN_EVIDENCE_TASKS } from "./open-evidence.js";
 import { naturalLanguagePrompt } from "./natural-language.js";
 
 export const PROMPT_TEMPLATE_STORAGE_KEY = "prerounding_prompt_templates_v1";
 
+// These reference the tokens the migration in guideline-sets.js assigns to
+// the two seeded "Admission"/"Progress" sets. If a user deletes one of those
+// sets the token below simply won't resolve (same graceful degradation as
+// referencing any other deleted variable).
 export const DEFAULT_PROMPT_TEMPLATES = {
-  initial_admission_rounds: `@guidelines\n\nCreate an initial admission rounds note from the admission packet below.\n\n@admission-packet\n\n@selected-day\n\n@checklist-answers`,
-  daily_progress_note: `@guidelines\n\nCreate a daily progress note for @selected-day.\n\n@admission-packet\n\n@selected-day\n\n@checklist-answers`,
+  initial_admission_rounds: `@admission-guidelines\n\nCreate an initial admission rounds note from the admission packet below.\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`,
+  daily_progress_note: `@progress-guidelines\n\nCreate a daily progress note for @selected-day.\n\n@admission-packet\n\n@selected-day\n\n@exam-findings`,
   teaching_case_trajectory: `Teach the full case trajectory using the admission packet and selected hospital day below. Explain the clinical reasoning, uncertainty, and major management decisions.\n\n@admission-packet\n\n@selected-day\n\n@checklist-answers`,
   medication_explainer_by_problem: `Organize the medications by treated disease, condition, symptom, or indication. Explain what each medication does and mark uncertain indications clearly.\n\n@medications\n\n@selected-day`,
   medication_safety_audit: `Check each medication for indication, dose, route, frequency, duplication, interactions, contraindications, and missing context. Say "insufficient information" rather than guessing.\n\n@medications\n\n@labs\n\n@selected-day`,
@@ -17,10 +20,11 @@ export const DEFAULT_PROMPT_TEMPLATES = {
 };
 
 export const SMART_PROMPT_VARIABLES = [
-  { token: "@guidelines", label: "Task documentation standard", description: "Insert the admission/HPI or daily-progress standard required for this task." },
   { token: "@admission-packet", label: "Admission packet", description: "All saved admission fields, labeled." },
   { token: "@selected-day", label: "Selected hospital day", description: "The chosen hospital-day packet; defaults to the latest saved day." },
-  { token: "@checklist-answers", label: "Checklist answers", description: "History and physical exam answers." }
+  { token: "@checklist-answers", label: "Checklist answers", description: "History and physical exam answers." },
+  { token: "@exam-findings", label: "Exam findings (smart)", description: "Checklist answers/quick notes if any exist, else the saved OpenEvidence exam note, else a note that nothing is recorded." },
+  { token: "@openevidence-exam-note", label: "OpenEvidence exam note", description: "The saved de-identified OpenEvidence exam note for the selected hospital day, if any." }
 ];
 
 function promptToken(label, index, used) {
@@ -42,7 +46,16 @@ function selectedPromptDay(patient, selectedDayId = "") {
   return days.find((day) => day.id === selectedDayId) || days.at(-1) || null;
 }
 
-export function promptVariablesForPatient(patient, { selectedDayId = "" } = {}) {
+function guidelineSetVariables(guidelineSets = []) {
+  return guidelineSets.map((set) => ({
+    token: set.token,
+    label: set.label,
+    description: "Documentation guidelines you saved in Settings.",
+    guidelineSetId: set.id
+  }));
+}
+
+export function promptVariablesForPatient(patient, { selectedDayId = "", guidelineSets = [] } = {}) {
   const used = new Set(SMART_PROMPT_VARIABLES.map((variable) => variable.token));
   const sectionVariables = (patient?.contextSections || []).map((section, index) => ({
     token: promptToken(section.label, index, used),
@@ -57,15 +70,21 @@ export function promptVariablesForPatient(patient, { selectedDayId = "" } = {}) 
     description: "This selected hospital-day field.",
     daySectionId: section.id
   }));
-  return [...sectionVariables, ...daySectionVariables, ...SMART_PROMPT_VARIABLES];
+  return [...sectionVariables, ...daySectionVariables, ...guidelineSetVariables(guidelineSets), ...SMART_PROMPT_VARIABLES];
 }
 
 function sectionByLabel(sections = [], pattern) {
   return sections.find((section) => pattern.test(section.label || "")) || null;
 }
 
-function taskRequiresGuidelines(taskId) {
-  return OPEN_EVIDENCE_TASKS.some((task) => task.id === taskId && task.requiresGuidelines);
+// Prefers the checklist (it's what the clinician actually filled in) but
+// falls back to a directly-saved OpenEvidence exam note when the checklist
+// has nothing real in it, so a default note-writing prompt never goes empty
+// just because the user chose the paste-a-note path over the checklist.
+function examFindingsSummary(snapshot, answers, quickNotes, examNoteText) {
+  if (hasAssessedChecklistContent(snapshot, answers, quickNotes)) return checklistAnswersSummary(snapshot, answers, quickNotes);
+  const note = String(examNoteText || "").trim();
+  return note || "No exam findings recorded.";
 }
 
 export function loadPromptTemplateOverrides(storage = localStorage) {
@@ -86,32 +105,37 @@ export function promptTemplateForTask(taskId, overrides = {}) {
   return saved && saved !== "@default-prompt" ? saved : String(DEFAULT_PROMPT_TEMPLATES[taskId] || "");
 }
 
-export function buildPromptVariableMap({ taskId, patient, selectedDayId, guidelines }) {
+export function buildPromptVariableMap({ patient, selectedDayId, guidelineSets = [] }) {
   const selectedDay = selectedPromptDay(patient, selectedDayId);
   const snapshot = selectedDay?.checklistSnapshot || null;
   const answers = selectedDay?.answers || {};
   const quickNotes = selectedDay?.quickNotes || [];
   const medicationSection = sectionByLabel(patient?.contextSections || [], /medication/i);
   const labSection = sectionByLabel(patient?.contextSections || [], /lab|result/i);
+  const allVariables = promptVariablesForPatient(patient, { selectedDayId, guidelineSets });
   const sectionValues = Object.fromEntries(
-    promptVariablesForPatient(patient, { selectedDayId })
-      .filter((variable) => !SMART_PROMPT_VARIABLES.some((base) => base.token === variable.token))
+    allVariables
+      .filter((variable) => variable.sectionId)
       .map((variable) => {
         const section = (patient?.contextSections || []).find((entry) => entry.id === variable.sectionId);
         return [variable.token, section?.deidentifiedText?.trim() || `No saved ${variable.label.toLowerCase()} text.`];
       })
   );
   const selectedDayValues = Object.fromEntries(
-    promptVariablesForPatient(patient, { selectedDayId })
+    allVariables
       .filter((variable) => variable.daySectionId)
       .map((variable) => {
         const section = (selectedDay?.sections || []).find((entry) => entry.id === variable.daySectionId);
         return [variable.token, section?.deidentifiedText?.trim() || `No saved ${variable.label.toLowerCase()} text.`];
       })
   );
+  const guidelineValues = Object.fromEntries(
+    guidelineSets.map((set) => [set.token, set.text.trim() || `No saved "${set.label}" guidelines yet - add them in Settings.`])
+  );
   return {
     ...sectionValues,
     ...selectedDayValues,
+    ...guidelineValues,
     "@admission-packet": sectionsToPromptBlock(patient?.contextSections || [], "Admission packet"),
     "@medications": medicationSection?.deidentifiedText || "No saved medication text.",
     "@labs": labSection?.deidentifiedText || "No saved lab text.",
@@ -120,7 +144,8 @@ export function buildPromptVariableMap({ taskId, patient, selectedDayId, guideli
     "@hospital-stay": buildTrajectoryBlock(patient, { selectedDayId: selectedDay?.id, includeAllDays: false }),
     "@selected-day": selectedDay ? sectionsToPromptBlock(selectedDay.sections || [], `Selected day: ${selectedDay.date} - ${selectedDay.label}`) : "No saved hospital day.",
     "@checklist-answers": checklistAnswersSummary(snapshot, answers, quickNotes),
-    "@guidelines": taskRequiresGuidelines(taskId) ? documentationInstructionForTask(taskId, guidelines) : ""
+    "@openevidence-exam-note": selectedDay?.openEvidenceExamNote?.text?.trim() || "No saved OpenEvidence exam note.",
+    "@exam-findings": examFindingsSummary(snapshot, answers, quickNotes, selectedDay?.openEvidenceExamNote?.text)
   };
 }
 
@@ -131,15 +156,50 @@ export function interpolatePromptTemplate(template, variables) {
   );
 }
 
-export function ensureRequiredGuidelines({ taskId, prompt, guidelines }) {
-  if (!taskRequiresGuidelines(taskId)) return prompt;
-  const instruction = documentationInstructionForTask(taskId, guidelines);
-  return prompt.includes(instruction) ? prompt : `${instruction}\n\n${prompt}`;
+export function buildCustomOpenEvidencePrompt({ taskId, template, patient, selectedDayId, guidelineSets = [], teamPreferences }) {
+  const variables = buildPromptVariableMap({ taskId, patient, selectedDayId, guidelineSets });
+  const interpolated = interpolatePromptTemplate(template, variables);
+  return naturalLanguagePrompt(`${buildTeamPreferencesPromptBlock(teamPreferences)}\n\n${interpolated}`);
 }
 
-export function buildCustomOpenEvidencePrompt({ taskId, template, patient, selectedDayId, guidelines, teamPreferences }) {
-  const variables = buildPromptVariableMap({ taskId, patient, selectedDayId, guidelines });
-  const interpolated = interpolatePromptTemplate(template, variables);
-  const prompt = ensureRequiredGuidelines({ taskId, prompt: interpolated, guidelines });
-  return naturalLanguagePrompt(`${buildTeamPreferencesPromptBlock(teamPreferences)}\n\n${prompt}`);
+function hashToken(token) {
+  let hash = 0;
+  for (let index = 0; index < token.length; index += 1) hash = (hash * 31 + token.charCodeAt(index)) >>> 0;
+  return hash;
+}
+
+// One deterministic color per token (same token -> same color everywhere:
+// the insert-variable menu swatches and the highlighted output preview) so a
+// user can visually trace generated text back to the variable that produced
+// it, without needing any separate color-assignment state to persist.
+export function tokenAccentColor(token, { dot = false } = {}) {
+  const hue = hashToken(String(token || "")) % 360;
+  return dot ? `hsl(${hue}, 62%, 45%)` : `hsl(${hue}, 70%, 90%)`;
+}
+
+function escapeRegExpLiteral(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+// Splits a template into literal-text and resolved-variable segments (longest
+// token first, so e.g. "@admission-context-2" is never half-matched by
+// "@admission-context") for the color-highlighted preview only - the plain
+// copy/OpenEvidence-ready text still comes from interpolatePromptTemplate
+// above, untouched by this.
+export function buildPromptPreviewSegments(template, variables) {
+  const text = String(template || "");
+  const tokens = Object.keys(variables || {}).sort((left, right) => right.length - left.length);
+  if (!tokens.length) return [{ type: "text", value: text }];
+  const pattern = new RegExp(tokens.map(escapeRegExpLiteral).join("|"), "g");
+  const segments = [];
+  let lastIndex = 0;
+  let match = pattern.exec(text);
+  while (match) {
+    if (match.index > lastIndex) segments.push({ type: "text", value: text.slice(lastIndex, match.index) });
+    segments.push({ type: "token", token: match[0], value: String(variables[match[0]] || "") });
+    lastIndex = match.index + match[0].length;
+    match = pattern.exec(text);
+  }
+  if (lastIndex < text.length) segments.push({ type: "text", value: text.slice(lastIndex) });
+  return segments;
 }

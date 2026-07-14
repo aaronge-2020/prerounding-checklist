@@ -1,6 +1,6 @@
 import { applyChecklistAnswerImport, buildChecklistAnswerImportPrompt } from "../../checklist/openevidence-import.js";
 import { updateActivePatient } from "../../app/state/vault.js";
-import { upsertDay } from "../../daily-updates/days.js";
+import { upsertDay, saveOpenEvidenceExamNote, clearOpenEvidenceExamNote } from "../../daily-updates/days.js";
 
 // Coordinates "paste an OpenEvidence note, de-identify it locally, then let
 // ChatGPT fill in checklist answers" - kept out of app.js to respect the
@@ -18,6 +18,7 @@ export function createOpenEvidenceImportController({
   setStatus,
   currentPreferences,
   deidentify,
+  ensureDeidReady,
   formatChecklistAnswersWithOpenAi
 }) {
   function currentSnapshot() {
@@ -29,7 +30,7 @@ export function createOpenEvidenceImportController({
   }
 
   function resetPanel() {
-    state.openEvidenceImport = { input: "", busy: false, error: "", deidConfirmed: false, deidStatus: "" };
+    state.openEvidenceImport = { input: "", busy: false, error: "", deidConfirmed: false, deidStatus: "", deidResidualWarnings: [] };
   }
 
   async function runLocalDeid() {
@@ -37,18 +38,36 @@ export function createOpenEvidenceImportController({
     state.openEvidenceImport.input = text;
     if (!text.trim()) return;
     state.openEvidenceImport.error = "";
+    // Load/download/verify the selected model automatically instead of
+    // requiring a separate trip to Settings first - a no-op once a model is
+    // already loaded, so repeat de-identifications don't reload anything.
+    state.openEvidenceImport.deidStatus = "Preparing local model...";
+    renderChecklist();
+    try {
+      await ensureDeidReady?.();
+    } catch (error) {
+      state.openEvidenceImport.deidStatus = "";
+      state.openEvidenceImport.error = error instanceof Error ? error.message : "De-identification is not ready yet.";
+      setStatus(state.openEvidenceImport.error);
+      renderChecklist();
+      return;
+    }
     state.openEvidenceImport.deidStatus = "De-identifying locally...";
     renderChecklist();
     try {
       const result = await deidentify(text);
       state.openEvidenceImport.input = result.text || "";
-      const warningCount = (result.residualWarnings || result.flags || []).length;
+      const residualWarnings = result.residualWarnings || result.flags || [];
+      state.openEvidenceImport.deidResidualWarnings = residualWarnings;
+      const warningCount = residualWarnings.length;
       state.openEvidenceImport.deidStatus = warningCount
         ? `De-identified locally - ${warningCount} residual flag${warningCount === 1 ? "" : "s"} to review before sending.`
         : "De-identified locally.";
+      setStatus(state.openEvidenceImport.deidStatus);
     } catch (error) {
       state.openEvidenceImport.deidStatus = "";
       state.openEvidenceImport.error = error instanceof Error ? error.message : "Unable to de-identify this text locally.";
+      setStatus(state.openEvidenceImport.error);
     }
     renderChecklist();
   }
@@ -116,6 +135,28 @@ export function createOpenEvidenceImportController({
     }
   }
 
+  async function saveExamNote() {
+    const day = selectedChecklistDay(active());
+    const text = currentInput();
+    if (!day) throw new Error("Add a hospital day before saving an exam note.");
+    if (!text.trim()) throw new Error("De-identify the OpenEvidence note before saving it as this day's exam note.");
+    if (!state.openEvidenceImport.deidConfirmed) throw new Error("Confirm that the pasted note is de-identified before saving it.");
+    const nextDay = saveOpenEvidenceExamNote(day, { text, residualWarnings: state.openEvidenceImport.deidResidualWarnings || [] });
+    state.vault = updateActivePatient(state.vault, (current) => ({ ...current, days: upsertDay(current.days, nextDay) }));
+    await persistVault("Saved the de-identified OpenEvidence note as this day's exam note.");
+    state.openEvidenceImport.deidConfirmed = false;
+    renderChecklist();
+  }
+
+  async function clearExamNote() {
+    const day = selectedChecklistDay(active());
+    if (!day) return;
+    const nextDay = clearOpenEvidenceExamNote(day);
+    state.vault = updateActivePatient(state.vault, (current) => ({ ...current, days: upsertDay(current.days, nextDay) }));
+    await persistVault("Cleared the saved OpenEvidence exam note.");
+    renderChecklist();
+  }
+
   async function copyFormatterPrompt() {
     const snapshot = currentSnapshot();
     if (!snapshot) throw new Error("Build a checklist before copying this prompt.");
@@ -128,5 +169,5 @@ export function createOpenEvidenceImportController({
     window.open("https://chatgpt.com/", "_blank", "noopener,noreferrer");
   }
 
-  return Object.freeze({ runLocalDeid, formatWithSavedKey, parseAndApply, copyFormatterPrompt });
+  return Object.freeze({ runLocalDeid, formatWithSavedKey, parseAndApply, copyFormatterPrompt, saveExamNote, clearExamNote });
 }

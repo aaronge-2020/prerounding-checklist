@@ -41,11 +41,14 @@ Use this standard only for daily progress notes. Write daily progress notes usin
 
 * Reprioritize the problem list.  
 * Separate out the acute, chronic, and preventative (mostly for primary care) problems. For every single acute (not chronic condition) problem, I need a one-liner like diagnosis 1 vs diagnosis 2 vs diagnosis 3 vs diagnosis 4, with a paragraph underneath explaining what the most likely diagnosis is and why.   
-* Note consultant recommendations when applicable  
 * List specific daily interventions.  
 * Order treatments and diagnostics.  
-* Detail the discharge strategy, which should consider the patient’s hemodynamic stability, labs, whether their clinical trajectory is improving, whether they’re likely to come back to the ED, their housing situation, need for PT/OT, and whether their conditions can be managed outside the hospital. You don’t need to note all of this, you just need to provide a single sentence that explains what the disposition of this patient should be and why.   
+* Be specific about medication doses, utilizing the literature to support your choices  
+* Utilize If/Then statements when possible to anticipate any future events/results, and plan for what to do about them  
+* Note consultant recommendations when applicable  
 * Exclude clinical reasoning.  
 * Exclude patient history.  
 * Exclude test results.
 
+### **Disposition**
+* Detail the discharge strategy, which should consider the patient’s hemodynamic stability, labs, whether their clinical trajectory is improving, whether they’re likely to come back to the ED, their housing situation, need for PT/OT, and whether their conditions can be managed outside the hospital. You don’t need to note all of this, you just need to provide a single sentence that explains what the disposition of this patient should be and why.   

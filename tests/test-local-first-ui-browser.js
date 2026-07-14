@@ -117,6 +117,44 @@ try {
   await page.waitForFunction(() => /OpenAI key saved/.test(document.querySelector("#statusLine")?.textContent || ""));
   assert.match(await page.locator(".settings-security-note").innerText(), /API key is saved/i);
   assert.equal(await page.evaluate(() => Object.values(localStorage).join(" ").includes("test-local-openai-key")), false);
+
+  // Documentation guidelines must be user-manageable per note type (not one
+  // shared @guidelines token for both H&P and SOAP), and any new set created
+  // here must show up as its own smart variable on the Prompts page.
+  await page.waitForSelector("#newGuidelineSetNameInput");
+  assert.equal(await page.locator(".guideline-set-card code", { hasText: "@admission-guidelines" }).count(), 1);
+  assert.equal(await page.locator(".guideline-set-card code", { hasText: "@progress-guidelines" }).count(), 1);
+  await page.fill("#newGuidelineSetNameInput", "Discharge summary");
+  await page.click('[data-action="create-guideline-set"]');
+  await page.waitForFunction(() => /Discharge summary/.test(document.querySelector("#statusLine")?.textContent || ""));
+  const dischargeCard = page.locator(".guideline-set-card", { hasText: "Discharge summary" });
+  await dischargeCard.locator("summary").click();
+  await dischargeCard.locator("textarea").fill("Summarize the admission, hospital course, and discharge plan.");
+  await dischargeCard.locator('[data-action="save-guideline-set"]').click();
+  await page.waitForFunction(() => /Guidelines saved/.test(document.querySelector("#statusLine")?.textContent || ""));
+
+  await page.click('[data-view-target="prompts"]');
+  await page.locator("#promptPreview").fill("@discharge");
+  await page.waitForSelector("#smartVariableMenu.open");
+  assert.equal(await page.locator('#smartVariableMenu button[data-token="@discharge-summary-guidelines"]').isVisible(), true);
+  await page.locator('#smartVariableMenu [data-token="@discharge-summary-guidelines"]').click();
+  await page.waitForFunction(() => /Summarize the admission, hospital course, and discharge plan\./.test(document.querySelector("#promptOutput")?.value || ""));
+  // Restore the default template - this test overwrote the draft for
+  // "Initial admission rounds" above, and later assertions in this file
+  // depend on that task's real default content still being there.
+  await page.click('[data-action="reset-prompt-template"]');
+  await page.waitForFunction(() => /Prompt template reset/.test(document.querySelector("#statusLine")?.textContent || ""));
+
+  await page.click('[data-view-target="settings"]');
+  await page.waitForSelector("#newGuidelineSetNameInput");
+  const dischargeCardAgain = page.locator(".guideline-set-card", { hasText: "Discharge summary" });
+  await dischargeCardAgain.locator("summary").click();
+  await dischargeCardAgain.locator('[data-action="request-remove-guideline-set"]').click();
+  await page.waitForFunction(() => document.querySelector("#removeGuidelineSetConfirmDialog")?.open === true);
+  await page.click('[data-action="confirm-remove-guideline-set"]');
+  await page.waitForFunction(() => /Guideline set deleted/.test(document.querySelector("#statusLine")?.textContent || ""));
+  assert.equal(await page.locator(".guideline-set-card", { hasText: "Discharge summary" }).count(), 0);
+
   await page.click('[data-view-target="prompts"]');
   await page.waitForSelector("#promptOutput");
   assert.match(await page.locator("#promptOutput").inputValue(), /Consult service/);
@@ -338,9 +376,21 @@ try {
   await page.locator("#promptPreview").fill("@");
   await page.waitForSelector("#smartVariableMenu.open");
   assert.equal(await page.locator("#smartVariableMenu").filter({ hasText: "@admission-context" }).count(), 1);
-  assert.equal(await page.locator("#smartVariableMenu").filter({ hasText: "@guidelines" }).count(), 1);
-  await page.locator('#smartVariableMenu [data-token="@guidelines"]').click();
-  assert.equal(await page.locator("#promptPreview").inputValue(), "@guidelines");
+  assert.equal(await page.locator("#smartVariableMenu").filter({ hasText: "@admission-guidelines" }).count(), 1);
+  await page.locator('#smartVariableMenu [data-token="@admission-guidelines"]').click();
+  assert.equal(await page.locator("#promptPreview").inputValue(), "@admission-guidelines");
+
+  // Regression test: the dropdown must actually narrow as the user keeps
+  // typing after "@", and non-matching entries must be truly invisible (not
+  // just marked hidden while a CSS rule silently keeps them on screen).
+  await page.locator("#promptPreview").fill("@admission-c");
+  await page.waitForFunction(() => {
+    const visible = [...document.querySelectorAll("#smartVariableMenu button[data-token]")].filter((button) => !button.hidden);
+    return visible.length === 1 && visible[0].dataset.token === "@admission-context";
+  });
+  assert.equal(await page.locator('#smartVariableMenu button[data-token="@admission-context"]').isVisible(), true);
+  assert.equal(await page.locator('#smartVariableMenu button[data-token="@admission-guidelines"]').isVisible(), false);
+
   await page.locator("#promptPreview").fill("Use @admission-context");
   await page.waitForFunction(() => /PATIENT NAME/.test(document.querySelector("#promptOutput")?.value || ""));
   assert.doesNotMatch(await page.locator("#promptOutput").inputValue(), /[\[\]{}<>()`]/);

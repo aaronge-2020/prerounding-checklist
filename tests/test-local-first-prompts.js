@@ -4,6 +4,7 @@ import { createDailyRecord, upsertDay } from "../src/daily-updates/days.js";
 import { createPatientRecord } from "../src/app/state/vault.js";
 import { buildOpenEvidencePrompt, openEvidenceTasks } from "../src/prompts/open-evidence.js";
 import { buildCustomOpenEvidencePrompt, promptVariablesForPatient } from "../src/prompts/custom-templates.js";
+import { createGuidelineSet } from "../src/prompts/guideline-sets.js";
 
 const guidelines = {
   admission: readFileSync("Guidelines-admission.md", "utf8"),
@@ -92,7 +93,15 @@ assert.match(checklistAnswersPrompt, /Patient mentioned new hip pain unrelated t
 const fieldVariables = promptVariablesForPatient(patient);
 assert.equal(fieldVariables.filter((variable) => variable.sectionId).length, patient.contextSections.length);
 assert.equal(fieldVariables.find((variable) => variable.sectionId === patient.contextSections[0].id)?.token, "@admission-context");
-assert.equal(fieldVariables.find((variable) => variable.token === "@guidelines")?.label, "Task documentation standard");
+assert.equal(fieldVariables.some((variable) => variable.token === "@guidelines"), false, "H&P and SOAP guidelines must not share one variable");
+
+const guidelineSets = [
+  createGuidelineSet("Admission", guidelines.admission),
+  createGuidelineSet("Progress", guidelines.progress, { existingTokens: ["@admission-guidelines"] })
+];
+const fieldVariablesWithGuidelines = promptVariablesForPatient(patient, { guidelineSets });
+assert.equal(fieldVariablesWithGuidelines.find((variable) => variable.token === "@admission-guidelines")?.label, "Admission");
+assert.equal(fieldVariablesWithGuidelines.find((variable) => variable.token === "@progress-guidelines")?.label, "Progress");
 
 const dayVariables = promptVariablesForPatient(patient, { selectedDayId: day.id });
 const firstDayVariable = dayVariables.find((variable) => variable.daySectionId === day.sections[0].id);
@@ -156,20 +165,20 @@ const directAdmission = buildCustomOpenEvidencePrompt({
   template: "Create the note from @admission-packet.",
   patient,
   selectedDayId: day.id,
-  guidelines
+  guidelineSets
 });
-assert.match(directAdmission, /Rule of Separation/);
+assert.doesNotMatch(directAdmission, /Rule of Separation/, "guidelines are only included where a template references their token - never force-injected");
 assert.doesNotMatch(directAdmission, /Privacy rules:/);
 
 const directGuidelines = buildCustomOpenEvidencePrompt({
   taskId: "initial_admission_rounds",
-  template: "Use @guidelines before explaining the case.",
+  template: "Use @admission-guidelines before explaining the case.",
   patient,
   selectedDayId: day.id,
-  guidelines
+  guidelineSets
 });
 assert.match(directGuidelines, /Rule of Separation/);
-assert.doesNotMatch(directGuidelines, /@guidelines/);
+assert.doesNotMatch(directGuidelines, /@admission-guidelines/);
 
 const consultPrompt = buildCustomOpenEvidencePrompt({
   taskId: "teaching_case_trajectory",

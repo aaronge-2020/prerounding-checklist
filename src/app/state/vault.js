@@ -99,6 +99,17 @@ export function normalizeDay(day, index = 0, { now = timestampNow } = {}) {
     answers: day?.answers && typeof day.answers === "object" ? day.answers : {},
     quickNotes: Array.isArray(day?.quickNotes) ? day.quickNotes : [],
     openEvidenceOutputs: day?.openEvidenceOutputs && typeof day.openEvidenceOutputs === "object" ? day.openEvidenceOutputs : {},
+    // A de-identified OpenEvidence exam note the user pasted in as a
+    // physical-exam alternative to the checklist - source material like
+    // `sections`, never AI-generated output, so persisting it is consistent
+    // with "no OpenEvidence output in the vault."
+    openEvidenceExamNote: day?.openEvidenceExamNote && typeof day.openEvidenceExamNote === "object"
+      ? {
+          text: String(day.openEvidenceExamNote.text || ""),
+          residualWarnings: Array.isArray(day.openEvidenceExamNote.residualWarnings) ? day.openEvidenceExamNote.residualWarnings : [],
+          savedAt: String(day.openEvidenceExamNote.savedAt || "")
+        }
+      : null,
     createdAt: String(day?.createdAt || timestamp),
     updatedAt: String(day?.updatedAt || day?.createdAt || timestamp)
   };
