@@ -282,7 +282,7 @@ export async function getAdvancedDeidentifier({ modelKey = DEFAULT_DEID_MODEL_KE
     const deidentifierPromise = runtimePromise.then((runtime) =>
       createDeidentifier({
         pipelineFactory: runtime.pipeline,
-        mode: "model-only",
+        mode: "hybrid",
         modelCandidates: deidModelCandidates(option),
         onModelStatus: (status) => setStatus({
           ...status,
@@ -356,8 +356,7 @@ export async function deidentifyText(rawText, { mode = "advanced", allowStructur
     // structured fallback or an incomplete model pass for the chosen model.
     await deidentifier.loadModel({ onProgress });
     const result = await deidentifier.deidentifyText(rawText, {
-      mode: "model-only",
-      includeTemporalFallback: false,
+      mode: "hybrid",
       admissionDate: anchor,
       onProgress
     });

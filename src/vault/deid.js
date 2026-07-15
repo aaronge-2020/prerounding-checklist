@@ -2855,7 +2855,7 @@ export function createDeidentifier(options = {}) {
 
     const modelResult = await detectModelEntities(rawText, { onProgress });
     reportProgress(onProgress, { stage: "filtering", message: "Filtering model findings...", percent: 0.7 });
-    let modelEntities = mergeEntities(modelResult.entities, rawText);
+    let modelEntities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(modelResult.entities, rawText));
 
     if (mode === "model-only") {
       reportProgress(onProgress, { stage: "redacting", message: "Creating redacted preview...", percent: 0.9 });
