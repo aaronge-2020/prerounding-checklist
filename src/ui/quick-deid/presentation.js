@@ -73,7 +73,7 @@ export function createQuickDeidPresentation({ escapeHtml, icon }) {
             <span class="muted">${pendingRedactions.length} unconfirmed redaction${pendingRedactions.length === 1 ? "" : "s"}, ${activeWarnings.length} remaining flag${activeWarnings.length === 1 ? "" : "s"}. Originals disappear when you close this tab or leave this tool.</span>
           </div>
           <div class="button-row">
-            ${pendingRedactions.length ? `<button class="button--quiet" type="button" data-action="confirm-all-quick-redactions">Confirm all (${pendingRedactions.length})</button>` : ""}
+            ${pendingRedactions.length ? `<button class="button--quiet" type="button" data-action="confirm-all-quick-redactions">Confirm rest (${pendingRedactions.length})</button><button class="button--quiet" type="button" data-action="reject-all-quick-redactions">Reject rest (${pendingRedactions.length})</button>` : ""}
             <button class="button--quiet" type="button" data-action="manual-redact-quick-selection">${icon("wand")} Redact highlighted text</button>
           </div>
         </div>
@@ -111,7 +111,9 @@ export function createQuickDeidPresentation({ escapeHtml, icon }) {
 
   function renderQuickDeid({
     hasReview,
-    deidReady,
+    disabled,
+    busy,
+    admissionDate,
     quickDeidInput,
     renderQuickModelControlHtml,
     renderQuickDeidReviewHtml
@@ -125,22 +127,10 @@ export function createQuickDeidPresentation({ escapeHtml, icon }) {
           </div>
           ${hasReview ? `<button class="button--quiet" type="button" data-action="start-new-quick-deid">${icon("plus")} New text</button>` : ""}
         </div>
-        <details class="quick-deid-coverage-note">
-          <summary>What this tool does and does not catch</summary>
-          <p class="muted">
-            Detection combines local pattern rules with a locally-run clinical text-scanning model (OpenMed SuperClinical, when
-            selected below). Together they target most
-            <a href="https://www.dhcs.ca.gov/data-statistics/data-resources/list-of-hipaa-identifiers/" target="_blank" rel="noopener noreferrer">HIPAA Safe Harbor identifier categories</a>
-            — names, dates and ages 90+, phone/fax/email, SSNs, MRNs, health plan and account numbers, license/certificate
-            numbers, addresses, URLs/IP addresses, device identifiers, biometric identifiers, and other structured IDs.
-          </p>
-          <p class="muted">
-            It does <strong>not</strong> process images or photographs (this tool only ever handles pasted text), has no
-            dedicated detector for vehicle identifiers or license plates, and — like any rule- or model-based system — can miss
-            unusual phrasing it wasn't trained or written to expect. This is a risk-reduction aid, not a certified
-            guarantee that all identifying information has been removed. Always review flagged redactions before copying or sharing the result.
-          </p>
-        </details>
+        <p class="muted quick-deid-admission-date">
+          ${admissionDate ? `Admission date set for this session (used only to anchor Hospital Day labels, then discarded).` : `No admission date set yet — you'll be asked for it before the first run.`}
+          <button class="button--quiet" type="button" data-action="change-admission-date">${admissionDate ? "Change" : "Set now"}</button>
+        </p>
         ${renderQuickModelControlHtml}
         ${hasReview ? `
           <section class="quick-review-workspace">
@@ -156,7 +146,7 @@ export function createQuickDeidPresentation({ escapeHtml, icon }) {
             <textarea id="quickDeidInput" aria-label="Source text" spellcheck="false" placeholder="Paste text from any source">${escapeHtml(quickDeidInput)}</textarea>
             <div class="quick-deid-start-footer">
               <span class="muted">The selected model runs locally. Your text isn't saved by this tool.</span>
-              <button class="button--primary" type="button" data-action="run-quick-deid" ${deidReady ? "" : "disabled"}>${icon("shield")} Run de-identification</button>
+              <button class="button--primary" type="button" data-action="run-quick-deid" ${disabled ? "disabled" : ""}>${busy ? '<span class="spinner" aria-hidden="true"></span> De-identifying...' : `${icon("shield")} Run de-identification`}</button>
             </div>
           </section>
         `}

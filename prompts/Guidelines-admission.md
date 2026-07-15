@@ -4,6 +4,23 @@ Using the provided information, generate an H&P that is organized for rapid inpa
 
 ---
 
+# Section Ownership Rules (No Cross-Section Repetition)
+
+Each fact belongs in exactly **one** section — the section that "owns" that type of information. Never restate it elsewhere, even briefly.
+
+| Information | Owned by | Do NOT repeat in |
+|---|---|---|
+| Diagnosis/problem name, severity, relevant status (e.g., "stage IV," "s/p resection 2022") | Past Medical History | Medications, HPI, Assessment |
+| Drug name, dose, route, frequency, indication | Medications | PMH, PSH, HPI |
+| Procedure/operation name and date | Past Surgical History | PMH, Medications |
+| Social/functional factors (tobacco, alcohol, drugs, living situation, function) | Social History | HPI, PMH, Assessment |
+| Clinical reasoning / differential | Assessment | HPI, Plan |
+| Actions/orders | Plan | Assessment, HPI |
+
+**Rule of thumb:** PMH states *what* the patient has; Medications states *how* it's being treated. Never mention a drug in PMH (e.g., don't write "prostate cancer on leuprolide" in PMH — write "prostate cancer" in PMH and put leuprolide under an "Oncologic" heading in Medications). Never restate a diagnosis's full treatment history outside Medications, and never restate a surgery outside PSH.
+
+---
+
 # Chief Complaint
 
 * State the chief complaint in one short phrase.
@@ -28,19 +45,29 @@ Using the provided information, generate an H&P that is organized for rapid inpa
 
 # Past Medical History
 
-* List only clinically relevant diagnoses.
+* List only clinically relevant diagnoses — no medications, doses, or treatment details (those belong in Medications).
+* **Group related diagnoses under one clinical category** instead of listing each on its own line. Use categories such as Cardiovascular, Pulmonary, Endocrine/Metabolic, Renal, GI/Hepatic, Neuro/Psych, Oncologic, Rheum/MSK, etc. — only include categories that apply.
+* Within a category, state the diagnoses in a single line, including only qualifiers that matter clinically (severity, key dates, relevant sequelae).
+
+Example:
+
+**Cardiovascular:** HTN, HLD, paroxysmal AFib (CHA₂DS₂-VASc 3), CAD s/p DES to LAD (2021)
+**Endocrine:** T2DM (last A1c 8.2%), hypothyroidism
+**Oncologic:** Prostate cancer, Gleason 7, diagnosed 2023
+
+* If a diagnosis doesn't fit a shared category or stands alone, list it under its own single-item category rather than forcing a grouping.
 
 ---
 
 # Past Surgical History
 
-* List only surgeries relevant to current care.
+* List only surgeries relevant to current care (procedure + year). Do not restate the diagnosis that prompted the surgery if it's already covered in PMH.
 
 ---
 
 # Medications
 
-**Organize medications by disease rather than listing them alphabetically.**
+**Organize medications by disease rather than listing them alphabetically.** Use the diagnosis as a heading only — do not restate diagnosis details already given in PMH (e.g., severity, dates, staging).
 
 Example:
 
@@ -244,7 +271,8 @@ Keep this section brief and focused on medications that require action at discha
 # General Style Rules
 
 * Keep the presentation concise enough to deliver in **3–5 minutes**.
-* Eliminate repetition between sections.
+* Eliminate repetition between sections — apply the Section Ownership Rules above; each fact appears exactly once, in its owning section.
+* Group related items within a section (e.g., cluster comorbidities by organ system in PMH, cluster medications by disease) rather than listing each item as its own line.
 * Use headings and consistent formatting.
 * Organize medications under the disease they treat.
 * Include only information that changes diagnosis, management, or disposition.

@@ -1,10 +1,10 @@
 import { createDailyRecord, latestDay, localCalendarDate, removeDay, sortDays, upsertDay } from "../daily-updates/days.js?v=20260711-functional-remediation-15";
-import { activePatient, archivePatient, createPatientRecord, removeWorkupOverride, setActivePatient, setSelectedWorkups, setWorkupOverride, setWorkupOverrides, updateActivePatient } from "../app/state/vault.js?v=20260711-functional-remediation-15";
+import { activePatient, archivePatient, createPatientRecord, removeWorkupOverride, setActivePatient, setSelectedWorkups, setWorkupOverride, setWorkupOverrides, updateActivePatient } from "../app/state/vault.js?v=20260715-workup-delete";
 import { deleteEncryptedVaultRecord, downloadJson, loadOrCreateVault, readEncryptedVaultRecord, saveEncryptedVault, writeEncryptedVaultRecord } from "../app/state/persistence.js?v=20260711-functional-remediation-15";
 import { authorizeWorkupWorkspaceMirror, disconnectWorkupWorkspaceMirror, getWorkupWorkspaceMirrorState, mirrorWorkupOverridesToWorkspace } from "../app/state/workspace-mirror.js?v=20260711-functional-remediation-15";
 import { addSection, removeSection, reorderSections, reorderSectionsById, replaceSectionsFromFormAsync } from "../patient-context/sections.js?v=20260711-functional-remediation-15";
-import { createEphemeralRedactionReview, nextPendingReviewTarget, pendingReviewTargets, reviewKey, synchronizeReviewPlaceholders } from "../patient-context/review.js?v=20260711-functional-remediation-15";
-import { deidentifyText, getAdvancedDeidStatus, getSelectedDeidModelStatus, preloadAdvancedDeidModel, resetAdvancedDeidWorker, verifyAdvancedDeidModel } from "../patient-context/deid-client.js?v=20260711-functional-remediation-15";
+import { createEphemeralRedactionReview, inspectedRedactionIndex, nextPendingRedactionIndex, nextPendingReviewTarget, pendingReviewTargets, quickRedactionIndex, quickSelectedRedactionIndex, quickWarningIndex, reviewKey, synchronizeReviewPlaceholders } from "../patient-context/review.js?v=20260715-reject-rest";
+import { crossOriginIsolationBlocker, deidentifyText, getAdvancedDeidStatus, getSelectedDeidModelStatus, preloadAdvancedDeidModel, resetAdvancedDeidWorker, verifyAdvancedDeidModel } from "../patient-context/deid-client.js?v=20260715-cross-origin-isolation";
 import { DEFAULT_DEID_MODEL_KEY, DEID_MODEL_OPTIONS, STRUCTURED_DEID_MODE, deidModelOptionByKey } from "../patient-context/deid-model-options.js?v=20260711-functional-remediation-15";
 import { canAutomaticallyInstallModel, ensureModelPackServiceWorker, getModelPackState, importModelPack, installModelPack, markModelPackVerified, modelFilesFromDirectoryHandle, modelFilesFromInput, removeModelPack, requestPersistentModelStorage } from "../patient-context/model-pack-storage.js?v=20260711-functional-remediation-15";
 import { formatBytes, hasAutomaticModelDownload, isInstallableModel, modelDownloadBytes } from "../patient-context/model-packs.js?v=20260711-functional-remediation-15";
@@ -13,10 +13,11 @@ import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260711-func
 import { allPromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260713-exam-note-prompts";
 import { ensureAdditionalGuidelineSets, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260714-preround-discharge-tasks";
 import { MEDICAL_SERVICE_OPTIONS, OPENAI_WORKUP_MODEL_OPTIONS, PRESENTATION_DETAIL_OPTIONS, normalizeUserPreferences, openAiWorkupModelOption } from "../app/preferences.js?v=20260711-functional-remediation-15";
-import { effectiveWorkupCatalog, findWorkupsById, normalizeWorkup, parseWorkupJson } from "../workups/schema.js?v=20260711-functional-remediation-15";
+import { bundledWorkupById, effectiveWorkupCatalog, findWorkupsById, normalizeWorkup, parseWorkupJson } from "../workups/schema.js?v=20260715-workup-delete";
 import { mergeWorkupLibraryIntoOverrides, parseWorkupLibraryJson, workupLibraryFromOverrides } from "../workups/library.js?v=20260711-functional-remediation-15";
 import { createBlankWorkup, createBlankWorkupItem, collectWorkupDraftFromDocument, workupFromEditorDraft, workupThoroughnessOption } from "../workups/editor.js?v=20260711-functional-remediation-15";
 import { createWorkupOpenAiImportController } from "./workups/openai-import-controller.js?v=20260714-deid-ux-polish";
+import { createWorkupDeleteController } from "./workups/delete-controller.js?v=20260715-workup-delete";
 import { formatChecklistAnswersWithOpenAi } from "./openai-checklist-api.js?v=20260712-openevidence-import";
 import { createChecklistSnapshot } from "../workups/checklist-conversion.js?v=20260711-functional-remediation-15";
 import {
@@ -48,8 +49,9 @@ import { createGuidelineSetsController } from "./settings/guidelines-controller.
 import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
 import { createTokenColorPickerController } from "./token-color-picker.js?v=20260714-hue-picker";
 import { createSettingsPresentation } from "./settings/presentation.js?v=20260713-guideline-sets";
-import { createRedactionPresentation, redactionPosition, warningDescription, warningSnippet } from "./redaction/presentation.js?v=20260711-functional-remediation-19";
-import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260714-deid-ux-polish";
+import { createRedactionPresentation, redactionPosition, warningDescription, warningSnippet } from "./redaction/presentation.js?v=20260715-reject-rest";
+import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260715-reject-rest";
+import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260715-workup-delete";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
 
 const app = {
@@ -59,6 +61,7 @@ const app = {
   selectedDayId: "",
   selectedPromptTask: "initial_admission_rounds",
   promptDayId: "",
+  promptDayFollowsChecklist: true,
   customPromptTasks: loadCustomPromptTasks(),
   pendingRemovePromptTaskId: "",
   selectedWorkupEditorId: "general-admission",
@@ -112,6 +115,7 @@ const app = {
   workupWorkspaceBusy: false,
   pendingArchivePatientId: "",
   pendingRemoveDayId: "",
+  pendingDeleteWorkupId: "",
   admissionDate: "" // session-only Hospital Day anchor; never persisted
 };
 
@@ -147,6 +151,7 @@ function escapeHtml(value = "") {
 
 const checklistPresentation = createChecklistPresentation({ escapeHtml, icon });
 const redactionPresentation = createRedactionPresentation({ escapeHtml, icon });
+const quickDeidPresentation = createQuickDeidPresentation({ escapeHtml, icon });
 const workupPresentation = createWorkupPresentation({ escapeHtml, icon });
 const promptsPresentation = createPromptsPresentation({ escapeHtml });
 const settingsPresentation = createSettingsPresentation({ escapeHtml });
@@ -155,6 +160,7 @@ const phoneAutosave = createPhoneAutosave(localStorage);
 const phoneSession = createPhoneSessionController({ phoneAutosave, state: app, active, selectedChecklistDay, persistVault, renderPhoneChecklist, renderChecklist });
 const openEvidenceImport = createOpenEvidenceImportController({ state: app, active, selectedChecklistDay, persistVault, renderChecklist, byId, copyText, setStatus, currentPreferences, deidentify, ensureDeidReady: ensureSelectedDeidReady, formatChecklistAnswersWithOpenAi });
 const workupOpenAiImport = createWorkupOpenAiImportController({ state: app, active, byId, copyText, setStatus, currentPreferences, renderWorkups, parseAndSaveWorkupJson });
+const workupDeleteController = createWorkupDeleteController({ state: app, renderWorkups, persistWorkupChanges, byId });
 const promptTaskController = createPromptTaskController({ state: app, setStatus, renderPrompts, byId });
 const guidelineSetsController = createGuidelineSetsController({ state: app, setStatus, renderSettings, byId });
 const admissionDateGate = createAdmissionDateGate({ app, byId });
@@ -290,6 +296,7 @@ async function ensureSelectedDeidReady() {
   const readiness = selectedDeidReadiness();
   if (readiness.ready) return readiness;
   const option = selectedDeidOption();
+  if (crossOriginIsolationBlocker()) throw new Error(crossOriginIsolationBlocker());
   let caughtMessage = "";
   try {
     if (option && isInstallableModel(option) && hasAutomaticModelDownload(option)) {
@@ -350,7 +357,7 @@ async function selectedModelLoadBlocker(option) {
     app.modelPacks = { ...app.modelPacks, [option.key]: pack };
     if (!pack.ready) return pack.message;
   }
-  return webGpuRuntimeBlocker(option);
+  return crossOriginIsolationBlocker() || webGpuRuntimeBlocker(option);
 }
 
 async function webGpuRuntimeBlocker(option) {
@@ -587,6 +594,7 @@ function clearProtectedViewContent() {
   });
   byId("archiveConfirmDialog")?.close();
   byId("removeDayConfirmDialog")?.close();
+  byId("deleteWorkupConfirmDialog")?.close();
 }
 
 function clearSensitiveSession() {
@@ -1126,7 +1134,8 @@ function renderWorkups() {
     byId("workupsContent").innerHTML = patientRequiredMessage();
     return;
   }
-  const catalog = effectiveWorkupCatalog(app.vault.workupOverrides);
+  const catalog = effectiveWorkupCatalog(app.vault.workupOverrides, app.vault.hiddenWorkupIds);
+  const hiddenWorkups = app.vault.hiddenWorkupIds.map(bundledWorkupById).filter(Boolean);
   const selectedIds = new Set(app.vault.selectedWorkupIds);
   app.workupCatalogSearch = new Fuse(catalog, {
     keys: [
@@ -1159,7 +1168,8 @@ function renderWorkups() {
     workupApiBusy: app.workupApiBusy,
     workupApiDeidConfirmed: app.workupApiDeidConfirmed,
     workupImportPanelOpen: app.workupImportPanelOpen,
-    workupImportDraft: app.workupImportDraft
+    workupImportDraft: app.workupImportDraft,
+    hiddenWorkups
   });
   bindWorkupReordering();
 }
@@ -1222,13 +1232,11 @@ function renderPrompts() {
   const tasks = allPromptTasks(OPEN_EVIDENCE_TASKS, app.customPromptTasks);
   const task = tasks.find((entry) => entry.id === app.selectedPromptTask) || tasks[0];
   const promptDays = sortDays(patient.days || []);
+  // Follow the Checklist/Daily day until manually overridden here, so a
+  // note saved on a newly-added day doesn't look lost behind a stale pick.
+  if (app.promptDayFollowsChecklist && app.promptDayId !== app.selectedDayId) app.promptDayId = app.selectedDayId;
   const isAdmissionSelected = app.promptDayId === ADMISSION_PSEUDO_DAY_ID;
   if (!isAdmissionSelected) {
-    // Default to whatever day the Checklist page is currently showing
-    // (app.selectedDayId) rather than always jumping to the latest day -
-    // otherwise saving something (like an exam note) while viewing an
-    // earlier day makes it look lost the moment you open Prompts, since
-    // this page would silently default to a different, empty day.
     const selectedPromptDay = promptDays.find((day) => day.id === app.promptDayId)
       || promptDays.find((day) => day.id === app.selectedDayId)
       || promptDays.at(-1)
@@ -1376,14 +1384,7 @@ function renderQuickDeidReview() {
   const activeWarnings = warnings
     .map((warning, index) => ({ warning, index }))
     .filter(({ index }) => !review?.dismissedWarningIndexes?.has(index));
-  if (!review) {
-    return `
-      <div class="quick-review-empty notice">
-        <strong>No review session yet</strong>
-        <p class="quick-deid-step-helper">Run de-identification to inspect individual redactions and residual PHI flags.</p>
-      </div>
-    `;
-  }
+  if (!review) return quickDeidPresentation.renderQuickDeidReview({ review: null, activeWarnings, pendingRedactions: [] });
   const pendingRedactions = review.redactions.filter((redaction) => redaction.state === "pending");
   const activeRedactionIndex = quickSelectedRedactionIndex(review);
   const activeRedaction = review.redactions[activeRedactionIndex] || null;
@@ -1397,119 +1398,53 @@ function renderQuickDeidReview() {
     : activeWarning
       ? `Flag ${activeWarnings.findIndex(({ index }) => index === activeWarningIndex) + 1} of ${activeWarnings.length}`
       : "Review complete";
-  return `
-    <div class="redaction-review quick-redaction-review" data-redaction-review>
-      <div class="redaction-review-heading">
-        <div>
-          <strong>${queueStatus}</strong>
-          <span class="muted">${pendingRedactions.length} unconfirmed redaction${pendingRedactions.length === 1 ? "" : "s"}, ${activeWarnings.length} remaining flag${activeWarnings.length === 1 ? "" : "s"}. Originals disappear when you close this tab or leave this tool.</span>
-        </div>
-        <div class="button-row">
-          ${pendingRedactions.length ? `<button class="button--quiet" type="button" data-action="confirm-all-quick-redactions">Confirm all (${pendingRedactions.length})</button>` : ""}
-          <button class="button--quiet" type="button" data-action="manual-redact-quick-selection">${icon("wand")} Redact highlighted text</button>
-        </div>
-      </div>
-      ${renderRedactionDocument(app.quickDeid.output, review, { id: "quickDeidReviewDocument", action: "inspect-quick-redaction", label: "Annotated de-identified text" })}
-      <p class="muted quick-review-instruction">The crossed-out text is the original — kept only in memory, never saved. Its replacement is safe to copy. To catch anything the model missed, highlight it here, then choose Redact highlighted text.</p>
-      ${activeRedaction ? `
-        <div class="redaction-inspector quick-review-current redaction-inline-actions">
-          <div>
-            <strong>${activeRedactionIsConfirmed ? "Accepted redaction" : `Review ${escapeHtml(activeRedaction.placeholder)}`}</strong>
-            <span>${activeRedactionIsConfirmed ? "Only the safe replacement is shown. Undo brings back the original in this tab." : "Accept keeps the replacement. Reject restores the original, then the next pending redaction opens in the middle of the document."}</span>
-          </div>
-          <div class="button-row">
-            ${activeRedactionIsConfirmed ? "" : `<button class="button--secondary" type="button" data-action="confirm-quick-redaction">Accept redaction</button>`}
-            <button class="button--quiet" type="button" data-action="restore-quick-non-phi" data-redaction-index="${activeRedactionIndex}">${activeRedactionIsConfirmed ? "Undo redaction" : "Reject — restore original"}</button>
-          </div>
-        </div>
-      ` : ""}
-      ${!activeRedaction && activeWarning ? `
-        <div class="quick-residual-review quick-review-current">
-          <div>
-            <strong>Residual PHI flag</strong>
-            <span class="muted">Choose once — the next remaining flag opens automatically.</span>
-          </div>
-          <strong>${escapeHtml(warningDescription(activeWarning))}</strong>
-          <div class="button-row">
-            <button class="button--quiet" type="button" data-action="redact-quick-warning" data-warning-index="${activeWarningIndex}">Redact</button>
-            <button class="button--quiet" type="button" data-action="dismiss-quick-warning" data-warning-index="${activeWarningIndex}">Not PHI</button>
-          </div>
-        </div>
-      ` : ""}
-      ${!activeRedaction && !activeWarning ? `<div class="quick-review-complete notice"><strong>Ready to copy</strong><p class="quick-deid-step-helper">You can still highlight anything the model missed and redact it before copying.</p></div>` : ""}
-    </div>
-  `;
+  return quickDeidPresentation.renderQuickDeidReview({
+    review,
+    activeWarnings,
+    pendingRedactions,
+    activeRedactionIndex,
+    activeRedaction,
+    activeRedactionIsConfirmed,
+    activeWarningIndex,
+    activeWarning,
+    queueStatus,
+    renderRedactionDocumentHtml: renderRedactionDocument(app.quickDeid.output, review, { id: "quickDeidReviewDocument", action: "inspect-quick-redaction", label: "Annotated de-identified text" }),
+    warningDescriptionText: activeWarning ? warningDescription(activeWarning) : ""
+  });
 }
 
 function renderQuickModelControl() {
   const option = selectedDeidOption();
   const state = option ? modelPackStateFor(option) : null;
-  const busy = option && app.modelPackBusyKey === option.key;
+  const busy = Boolean(option && app.modelPackBusyKey === option.key);
   const progress = option ? app.modelPackProgress[option.key] : null;
   const error = option ? app.modelPackErrors[option.key] : "";
-  let action = "";
-  if (option?.requiresWebGpu && !app.webGpuAvailable) {
-    action = `<span class="model-selection-message model-selection-message--error">This model needs graphics acceleration that isn't available in this browser.</span>`;
-  } else if (option && isInstallableModel(option) && !state.ready) {
-    const actionName = state.state === "installed" ? "verify-model-pack" : "download-model-pack";
-    const label = state.state === "installed" ? "Verify model" : "Download and verify";
-    action = `<div class="button-row"><button type="button" data-action="${actionName}" data-model-key="${escapeHtml(option.key)}" ${app.modelPackBusyKey ? "disabled" : ""}>${icon(state.state === "installed" ? "shield" : "download")} ${label}</button><button class="button--quiet" type="button" data-action="import-model-pack" data-model-key="${escapeHtml(option.key)}" ${app.modelPackBusyKey ? "disabled" : ""}>Import folder</button>${busy ? `<button class="button--quiet" type="button" data-action="cancel-model-download" data-model-key="${escapeHtml(option.key)}">Cancel</button>` : ""}</div>`;
-  } else if (option) {
-    action = `<span class="model-selection-message model-selection-message--ready">${icon("shield")} Verified and ready locally.</span>`;
-  } else {
-    action = `<span class="model-selection-message">Ready — no download needed.</span>`;
-  }
-  return `
-    <section class="quick-model-control" aria-label="Local de-identification model">
-      <label for="quickDeidMode">Local de-identification model</label>
-      <div class="quick-model-control-row">
-        <select id="quickDeidMode" aria-label="Local model">${deidModelSelectOptions()}</select>
-        ${action}
-      </div>
-      <p class="muted">${escapeHtml(option?.description || "Uses structured local rules to redact identifiers without a downloaded model.")}</p>
-      ${app.quickDeid.status ? `<span class="model-selection-message" aria-live="polite">${escapeHtml(app.quickDeid.status)}</span>` : ""}
-      ${progress ? `<div class="model-selection-progress" aria-live="polite"><progress data-active-model-progress value="${Math.max(0, progress.completedBytes)}" max="${Math.max(1, progress.totalBytes)}"></progress><span data-active-model-progress-text>${escapeHtml(modelPackProgressText(option))}</span></div>` : ""}
-      ${error ? `<div class="model-selection-message model-selection-message--error" role="alert">${escapeHtml(error)}</div>${renderOpenMedSmallFallback(option)}` : ""}
-    </section>
-  `;
+  return quickDeidPresentation.renderQuickModelControl({
+    option,
+    state,
+    busy,
+    progress,
+    error,
+    webGpuAvailable: app.webGpuAvailable,
+    isInstallable: Boolean(option && isInstallableModel(option)),
+    modelPackBusyKey: app.modelPackBusyKey,
+    deidModelSelectOptionsHtml: deidModelSelectOptions(),
+    quickDeidStatus: app.quickDeid.status,
+    modelPackProgressText: option ? modelPackProgressText(option) : ""
+  });
 }
 
 function renderQuickDeid() {
   const hasReview = Boolean(app.quickDeid.review);
-  byId("quickDeidContent").innerHTML = `
-    <section class="panel quick-deid-panel">
-      <div class="section-heading quick-deid-heading">
-        <div>
-          <h2>Quick De-ID Tool</h2>
-          <p class="muted">Review stays in this tab only. Copy the de-identified result when you are done.</p>
-        </div>
-        ${hasReview ? `<button class="button--quiet" type="button" data-action="start-new-quick-deid">${icon("plus")} New text</button>` : ""}
-      </div>
-      <p class="muted quick-deid-admission-date">
-        ${app.admissionDate ? `Admission date set for this session (used only to anchor Hospital Day labels, then discarded).` : `No admission date set yet — you'll be asked for it before the first run.`}
-        <button class="button--quiet" type="button" data-action="change-admission-date">${app.admissionDate ? "Change" : "Set now"}</button>
-      </p>
-      ${renderQuickModelControl()}
-      ${hasReview ? `
-        <section class="quick-review-workspace">
-          ${renderQuickDeidReview()}
-          <div class="quick-copy-footer">
-            <span class="muted">Copy after you've reviewed and accepted the marked changes.</span>
-            <button class="button--primary" type="button" data-action="copy-quick-deid-output">${icon("copy")} Copy result</button>
-          </div>
-        </section>
-      ` : `
-        <section class="quick-deid-start">
-          <label for="quickDeidInput">Source text</label>
-          <textarea id="quickDeidInput" aria-label="Source text" spellcheck="false" placeholder="Paste text from any source">${escapeHtml(app.quickDeid.input)}</textarea>
-          <div class="quick-deid-start-footer">
-            <span class="muted">The selected model runs locally. Your text isn't saved by this tool.</span>
-            <button class="button--primary" type="button" data-action="run-quick-deid" ${app.modelPackBusyKey || app.quickDeidBusy ? "disabled" : ""}>${app.quickDeidBusy ? '<span class="spinner" aria-hidden="true"></span> De-identifying...' : `${icon("shield")} Run de-identification`}</button>
-          </div>
-        </section>
-      `}
-    </section>
-  `;
+  byId("quickDeidContent").innerHTML = quickDeidPresentation.renderQuickDeid({
+    hasReview,
+    disabled: Boolean(app.modelPackBusyKey || app.quickDeidBusy),
+    busy: app.quickDeidBusy,
+    admissionDate: app.admissionDate,
+    quickDeidInput: app.quickDeid.input,
+    renderQuickModelControlHtml: renderQuickModelControl(),
+    renderQuickDeidReviewHtml: hasReview ? renderQuickDeidReview() : ""
+  });
   scheduleQuickReviewFocus();
 }
 
@@ -1633,6 +1568,7 @@ async function handleClick(event) {
     if (action === "inspect-redaction") inspectRedaction(target.dataset.scope, target.dataset.sectionId, Number(target.dataset.redactionIndex));
     if (action === "keep-reviewed-redaction") keepReviewedRedaction(target.dataset.scope, target.dataset.sectionId);
     if (action === "confirm-all-section-redactions") confirmAllSectionRedactions(target.dataset.scope, target.dataset.sectionId);
+    if (action === "reject-all-section-redactions") rejectAllSectionRedactions(target.dataset.scope, target.dataset.sectionId);
     if (action === "allow-reviewed-non-phi") allowReviewedNonPhi(target.dataset.scope, target.dataset.sectionId, Number(target.dataset.redactionIndex));
     if (action === "save-context") await saveContext();
     if (action === "add-day") await addDay();
@@ -1650,6 +1586,9 @@ async function handleClick(event) {
     if (action === "remove-model-pack") await removeSelectedModelPack(target.dataset.modelKey);
     if (action === "new-workup") await newWorkup();
     if (action === "edit-workup") editWorkup(target.dataset.workupId);
+    if (action === "delete-workup") workupDeleteController.requestDelete(target.dataset.workupId);
+    if (action === "confirm-delete-workup") await workupDeleteController.confirmDeletePending();
+    if (action === "restore-hidden-workup") await workupDeleteController.restoreHidden(target.dataset.workupId);
     if (action === "add-workup-item") addWorkupItemRow(target.dataset.kind);
     if (action === "remove-workup-item") removeWorkupItemRow(target);
     if (action === "duplicate-workup-item") duplicateWorkupItemRow(target);
@@ -1737,6 +1676,7 @@ async function handleClick(event) {
     if (action === "inspect-quick-redaction") inspectQuickRedaction(Number(target.dataset.redactionIndex));
     if (action === "confirm-quick-redaction") confirmQuickRedaction();
     if (action === "confirm-all-quick-redactions") confirmAllQuickRedactions();
+    if (action === "reject-all-quick-redactions") rejectAllQuickRedactions();
     if (action === "restore-quick-non-phi") restoreQuickNonPhi(Number(target.dataset.redactionIndex));
     if (action === "manual-redact-quick-selection") redactSelectedQuickText();
     if (action === "redact-quick-warning") redactQuickWarning(Number(target.dataset.warningIndex));
@@ -2117,6 +2057,26 @@ function allowReviewedNonPhi(scope, sectionId, redactionIndex) {
   setStatus(next ? "Marked as non-PHI. Reviewing the next remaining change." : "Marked as non-PHI for the next save. Confirm it is not identifying before saving.");
 }
 
+// Repeatedly applies the single-item restore so every pending redaction gets
+// the exact same text-splice and occurrence-renumbering treatment as a
+// manual reject, rather than duplicating that logic for a bulk action.
+// Order matters: restoring one redaction decrements the occurrence counter
+// of any later same-placeholder entry, so processing highest-index (highest
+// occurrence) first means every not-yet-processed entry's own occurrence
+// number is never invalidated out from under it.
+function rejectAllSectionRedactions(scope, sectionId) {
+  const review = sectionReviewFor(scope, sectionId);
+  if (!review) return;
+  const pendingIndexes = review.redactions
+    .map((redaction, index) => (redaction.state === "pending" ? index : -1))
+    .filter((index) => index >= 0)
+    .reverse();
+  pendingIndexes.forEach((index) => allowReviewedNonPhi(scope, sectionId, index));
+  setStatus(pendingIndexes.length
+    ? `${pendingIndexes.length} redaction${pendingIndexes.length === 1 ? "" : "s"} marked as non-PHI. Confirm this before saving.`
+    : "All redactions are already decided.");
+}
+
 function refreshResidualWarningSummary(scope) {
   const current = byId(`residualWarnings-${scope}`);
   if (!current) return;
@@ -2188,42 +2148,6 @@ function reviewQuickWarning(warningIndex) {
   const documentElement = byId("quickDeidReviewDocument");
   const centered = centerTextSnippetInDocument(documentElement, snippet);
   setStatus(centered ? "Flagged text centered for manual review." : "The flagged text is not currently visible. Highlight any remaining identifier in the document to redact it.");
-}
-
-function nextPendingRedactionIndex(review, afterIndex = -1) {
-  const pending = (review?.redactions || [])
-    .map((redaction, index) => ({ redaction, index }))
-    .filter(({ redaction }) => redaction.state === "pending");
-  if (!pending.length) return -1;
-  return pending.find(({ index }) => index > afterIndex)?.index ?? pending[0].index;
-}
-
-function inspectedRedactionIndex(review) {
-  const index = review?.inspectedRedactionIndex;
-  return Number.isInteger(index) && index >= 0 && review?.redactions?.[index] ? index : -1;
-}
-
-function quickRedactionIndex(review, afterIndex = -1) {
-  const pending = (review?.redactions || [])
-    .map((redaction, index) => ({ redaction, index }))
-    .filter(({ redaction }) => redaction.state === "pending");
-  if (!pending.length) return -1;
-  const selected = inspectedRedactionIndex(review);
-  if (selected >= 0 && review.redactions[selected]?.state === "pending") return selected;
-  return nextPendingRedactionIndex(review, afterIndex);
-}
-
-function quickSelectedRedactionIndex(review) {
-  const selected = inspectedRedactionIndex(review);
-  if (selected >= 0 && review?.redactions?.[selected]?.state !== "restored") return selected;
-  return quickRedactionIndex(review);
-}
-
-function quickWarningIndex(review, activeWarnings, afterIndex = -1) {
-  if (!activeWarnings.length) return -1;
-  const selected = Number(review?.activeWarningIndex);
-  if (activeWarnings.some(({ index }) => index === selected)) return selected;
-  return activeWarnings.find(({ index }) => index > afterIndex)?.index ?? activeWarnings[0].index;
 }
 
 function centerRedactionDocument(documentElement, redactionIndex, afterCenter) {
@@ -2393,6 +2317,26 @@ function restoreQuickNonPhi(redactionIndex) {
   renderQuickReviewAtCurrentPosition();
 }
 
+// Repeatedly applies the single-item restore so every pending redaction gets
+// the exact same text-splice and occurrence-renumbering treatment as a
+// manual reject, rather than duplicating that logic for a bulk action.
+// Order matters: restoring one redaction decrements the occurrence counter
+// of any later same-placeholder entry, so processing highest-index (highest
+// occurrence) first means every not-yet-processed entry's own occurrence
+// number is never invalidated out from under it.
+function rejectAllQuickRedactions() {
+  const review = app.quickDeid.review;
+  if (!review) return;
+  const pendingIndexes = review.redactions
+    .map((redaction, index) => (redaction.state === "pending" ? index : -1))
+    .filter((index) => index >= 0)
+    .reverse();
+  pendingIndexes.forEach((index) => restoreQuickNonPhi(index));
+  setStatus(pendingIndexes.length
+    ? `${pendingIndexes.length} redaction${pendingIndexes.length === 1 ? "" : "s"} marked as non-PHI. Confirm this before saving.`
+    : "All redactions are already decided.");
+}
+
 function redactSelectedQuickText({ renderAfter = true } = {}) {
   const review = app.quickDeid.review;
   if (!review) throw new Error("Run de-identification before manually redacting text.");
@@ -2526,9 +2470,9 @@ async function deidentifySectionRows(scope, containerId, priorSections = []) {
 }
 
 async function saveContext() {
-  await ensureSelectedDeidReady();
   updateDeidOperation({ active: true, message: "Preparing admission fields for local de-identification…", value: 0, total: 1 });
   try {
+    await ensureSelectedDeidReady();
     const sections = await deidentifySectionRows("context", "contextSections", active()?.contextSections || []);
     app.vault = updateActivePatient(app.vault, (patient) => ({ ...patient, contextSections: sections }));
     beginSectionReview("context");
@@ -2557,9 +2501,9 @@ async function saveDay() {
   const patient = active();
   const day = selectedChecklistDay(patient);
   if (!day) throw new Error("Add a hospital day first.");
-  await ensureSelectedDeidReady();
   updateDeidOperation({ active: true, message: "Preparing daily fields for local de-identification…", value: 0, total: 1 });
   try {
+    await ensureSelectedDeidReady();
     const sections = await deidentifySectionRows("daily", "dailySections", day.sections || []);
     const nextDay = { ...day, sections, updatedAt: new Date().toISOString() };
     app.vault = updateActivePatient(app.vault, (current) => ({ ...current, days: upsertDay(current.days, nextDay) }));
@@ -2687,10 +2631,10 @@ function updateModelPackDownloadProgress(option, progress) {
 async function downloadSelectedModelPack(modelKey) {
   const option = deidModelOptionByKey(modelKey);
   if (!isInstallableModel(option) || !hasAutomaticModelDownload(option)) return;
-  const hardwareBlocker = await webGpuRuntimeBlocker(option);
-  if (hardwareBlocker) {
-    app.quickDeid.status = hardwareBlocker;
-    setStatus(hardwareBlocker);
+  const blocker = crossOriginIsolationBlocker() || await webGpuRuntimeBlocker(option);
+  if (blocker) {
+    app.quickDeid.status = blocker;
+    setStatus(blocker);
     refreshDeidControlsInActiveView();
     return;
   }
@@ -2772,10 +2716,10 @@ async function chooseModelPack(modelKey) {
 async function verifyInstalledModelPack(modelKey) {
   const option = deidModelOptionByKey(modelKey);
   if (!isInstallableModel(option)) return;
-  const hardwareBlocker = await webGpuRuntimeBlocker(option);
-  if (hardwareBlocker) {
-    app.quickDeid.status = hardwareBlocker;
-    setStatus(hardwareBlocker);
+  const blocker = crossOriginIsolationBlocker() || await webGpuRuntimeBlocker(option);
+  if (blocker) {
+    app.quickDeid.status = blocker;
+    setStatus(blocker);
     refreshDeidControlsInActiveView();
     return;
   }
@@ -3263,7 +3207,7 @@ async function importWorkupLibraryFile(file) {
 
 async function buildChecklist() {
   const patient = active();
-  const catalog = effectiveWorkupCatalog(app.vault.workupOverrides);
+  const catalog = effectiveWorkupCatalog(app.vault.workupOverrides, app.vault.hiddenWorkupIds);
   const workups = findWorkupsById(catalog, app.vault.selectedWorkupIds);
   if (!workups.length) throw new Error("Select at least one workup.");
   const day = latestDay(patient.days) || createDailyRecord();
@@ -3400,6 +3344,7 @@ function handleChange(event) {
   }
   if (event.target.id === "promptDaySelect") {
     app.promptDayId = event.target.value;
+    app.promptDayFollowsChecklist = event.target.value === app.selectedDayId;
     app.smartMenuOpen = false;
     renderPrompts();
   }

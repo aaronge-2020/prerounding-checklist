@@ -49,6 +49,28 @@ import {
 } from "./deid/lexicons.js";
 import { buildZoneMap, zoneTypeForSpan, isProtectedZoneType } from "./deid/zones.js";
 import { collectDictionaryNameCandidates } from "./deid/name-recall.js";
+// Free-text date/time detection and parsing runs entirely through chrono-node
+// (https://github.com/wanasit/chrono, vendored English-only build) rather
+// than hand-rolled regexes - it understands far more real-world phrasing
+// (ordinals, weekday-relative dates, "X days ago", military time, ...) than
+// a bespoke parser reasonably can. Only the "which detected date becomes
+// which Hospital Day/Historical placeholder" clinical logic below stays
+// bespoke - that part is specific to this app's de-identification scheme.
+import * as chrono from "../../vendor/chrono-node/index.js";
+
+// This app only ever anchors dates to a calendar day (Date.UTC, no
+// timezone-aware math anywhere in this file), so chrono's timezone-name
+// refiner is pure downside: it reads a 2-3 letter clinical acronym right
+// after a date (PET, CT, MRI-adjacent phrasing) as if it were a trailing
+// timezone abbreviation like "EST", silently absorbing that word into the
+// date span it replaces. Building one shared instance without it once, up
+// front, is simpler than special-casing every clinical acronym that
+// happens to collide with a real timezone name.
+const clinicalChrono = (() => {
+  const configuration = chrono.configuration.createCasualConfiguration(false);
+  configuration.refiners = configuration.refiners.filter((refiner) => !/Timezone/.test(refiner.constructor.name));
+  return new chrono.Chrono(configuration);
+})();
 
 
 // ── Auto-import clinical guard vocabulary (built from MeSH + RxNorm) ──
@@ -494,6 +516,15 @@ function isLikelyDateFalsePositive(rawText, start, end) {
     return true;
   }
 
+  // A bare clock time carries no calendar-date information - Safe Harbor's
+  // date-generalization requirement is about dates, not time-of-day, and
+  // collapsing a lone time into a Hospital Day/Historical placeholder (as
+  // happens whenever a model mistags a "Collection Time" column as DATE)
+  // destroys clinically useful timing the user wants kept exactly as-is.
+  if (/^\d{1,2}:\d{2}(?::\d{2})?\s*(?:[AP]\.?M\.?)?$/i.test(span)) {
+    return true;
+  }
+
   if (/(?:year[-\s]*old|years old|y\.?o\.?|yo)$/i.test(span) || /^[-\s]*(?:year[-\s]*old|years old|y\.?o\.?|yo)$/i.test(span)) {
     return true;
   }
@@ -513,6 +544,13 @@ function isLikelyDateFalsePositive(rawText, start, end) {
   // Dot-separated number.twoDigit (e.g. "5.25") — looks like M.YY date but
   // far more likely to be a decimal lab value unless in a date context line.
   if (/^\d{1,2}\.\d{2}$/.test(span) && !hasDateContext && !/(?:date|dos|collected|drawn|ordered|admit)/i.test(before + after)) {
+    return true;
+  }
+
+  // A dash-separated number range (e.g. "13.5-17.5") is almost always a lab
+  // reference range or dose range, not a date - chrono-node's general
+  // grammar occasionally reads these as a date interval.
+  if (/^\d{1,3}(?:\.\d+)?-\d{1,3}(?:\.\d+)?$/.test(span) && !hasDateContext) {
     return true;
   }
 
@@ -893,7 +931,7 @@ function constrainPatternEntitySpan(rawText, label, start, end) {
   return { start: constrainedStart, end: constrainedEnd };
 }
 
-export function addStructuredSafeHarborEntities(rawText, entities = []) {
+export function addStructuredSafeHarborEntities(rawText, entities = [], currentDate = null) {
   const dateValue = String.raw`(?:\d{4}-\d{1,2}-\d{1,2}|(?:0?[1-9]|1[0-2])[/-](?:0?[1-9]|[12]\d|3[01])(?:[/-](?:\d{2}|\d{4}))?|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2},?\s+\d{4})`;
 
   const capturedPatterns = [
@@ -944,42 +982,18 @@ export function addStructuredSafeHarborEntities(rawText, entities = []) {
     // US Passport (9 digits or letter+8 digits from Presidio)
     { label: "ID", regex: /\b[A-Z][0-9]{8}\b/g },
     { label: "PHONE", regex: /(?:\+?1[-.\s]?)?\(?\b\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g },
-    // ── Date patterns: comprehensive coverage of clinical date formats ──
-    // ISO 8601: 2026-06-17
-    { label: "DATE", regex: /\b\d{4}-[01]\d-[0-3]\d\b/g },
-    // m/d/yyyy, m/d/yy, mm/dd/yyyy, mm/dd/yy, m/d, mm/dd
-    { label: "DATE", regex: /\b(?:0?[1-9]|1[0-2])[/-](?:0?[1-9]|[12]\d|3[01])(?:[/-](?:\d{2}|\d{4}))?\b/g, skip: isLikelyDateFalsePositive },
-    // d/m/yyyy, dd/mm/yyyy, dd/mm/yy, d/m, dd/mm
-    { label: "DATE", regex: /\b(?:0?[1-9]|[12]\d|3[01])[./-](?:0?[1-9]|1[0-2])[./-](?:\d{2}|\d{4})\b/g, skip: isLikelyDateFalsePositive },
-    // yyyy/mm/dd, yyyy-mm-dd, yyyy.mm.dd
-    { label: "DATE", regex: /\b\d{4}[/.-](?:0?[1-9]|1[0-2])[/.-](?:0?[1-9]|[12]\d|3[01])\b/g },
-    // dd-MMM-yyyy, d-MMM-yyyy: 17-Jun-2026, 1-Jan-2026
-    { label: "DATE", regex: /\b(?:0?[1-9]|[12]\d|3[01])-(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)-\d{4}\b/gi },
-    // dd-MMM-yy, d-MMM-yy: 17-Jun-26
-    { label: "DATE", regex: /\b(?:0?[1-9]|[12]\d|3[01])-(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)-\d{2}\b/gi },
-    // dd-MMM, d-MMM: 17-Jun, 1-Jan (bare day+month with hyphen)
-    { label: "DATE", regex: /\b(?:0?[1-9]|[12]\d|3[01])-(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\b/gi },
-    // MMM-yyyy, MMM-yy: Jun-2026, Jun-26
-    { label: "DATE", regex: /\b(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)-(\d{4}|\d{2})\b/gi },
-    // m/yyyy, mm/yyyy: 6/2026, 06/2026
-    { label: "DATE", regex: /\b(?:0?[1-9]|1[0-2])\/\d{4}\b/g },
-    // m/yy, mm/yy: 6/26, 06/26
-    { label: "DATE", regex: /\b(?:0?[1-9]|1[0-2])\/\d{2}\b/g, skip: isLikelyDateFalsePositive },
-    // Month DD, YYYY or Month DD: June 17, 2026 / June 17 / Jun 17 / June 1st
-    { label: "DATE", regex: /\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2}(?:st|nd|rd|th)?(?:,?\s+\d{4})?\b/gi },
-    // Month YYYY / Month 'YY: June 2026, June '26
-    { label: "DATE", regex: /\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+['\u2019]?\d{2,4}\b/gi },
-    // Ordinal + Month: 1st of June, the 3rd of July, 17th of March
-    { label: "DATE", regex: /\b(?:the\s+)?\d{1,2}(?:st|nd|rd|th)\s+of\s+(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)(?:,?\s+\d{4})?\b/gi },
+    // Free-text date/time detection runs through chrono-node instead (see
+    // addTemporalPatternEntities below) - it covers every format this list
+    // used to enumerate by hand (ISO, slash/dash dates in any order, "Month
+    // Day, Year", ordinals, weekday-relative dates, "X days ago", ...) plus
+    // many phrasings this regex list never matched. What is left here is
+    // narrow clinical/fiscal shorthand chrono general-purpose grammar does
+    // not recognize at all: fiscal quarters and vague relative periods.
     // Fiscal quarter: Q1 2026, Q2/2026, 2nd Quarter 2026
     { label: "DATE", regex: /\bQ[1-4][/\s]?\d{2,4}\b/g },
     { label: "DATE", regex: /\b(?:1st|2nd|3rd|4th)\s+[Qq]uarter\s+\d{2,4}\b/g },
     // "last week", "next month", "previous quarter", "past year"
     { label: "DATE", regex: /\b(?:last|next|this|previous|prior|past|upcoming|following)\s+(?:week|month|quarter|year|semester|trimester|decade|century)\b/gi },
-    // "X days/weeks/months/years ago", "in X days/weeks/months/years"
-    { label: "DATE", regex: /\b(?:in\s+)?(?:\d+|a|one|two|three|four|five|six|seven|eight|nine|ten|several|few)\s+(?:day|week|month|year|hour)s?\s+(?:ago|from now|later|earlier|before|after|hence|henceforth)\b/gi },
-    // "earlier today", "later today", "this morning", "yesterday", "tomorrow"
-    { label: "DATE", regex: /\b(?:yesterday|today|tomorrow|tonight|this\s+(?:morning|afternoon|evening|am|pm))\b/gi },
     { label: "ADDRESS", regex: /\b\d{1,6}[ \t]+[A-Z0-9][A-Za-z0-9.'-]*(?:[ \t]+[A-Za-z0-9.'-]+){0,5}[ \t]+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl|Circle|Cir|Terrace|Ter|Parkway|Pkwy)\b(?:,?[ \t]+[A-Za-z .-]+)?(?:,?[ \t]+[A-Z]{2})?(?:[ \t]+\d{5}(?:-\d{4})?)?/gi, skip: isLikelyAddressFalsePositive },
     { label: "ROOM", regex: /\b(?:Room|Rm|Bed|ICU room|ED room)\b(?!\s*[:#])\s+[A-Z0-9-]*\d[A-Z0-9-]*\b/gi },
     { label: "LOCATION", regex: /\b[A-Z]{2}\s+\d{5}(?:-\d{4})?\b/g },
@@ -996,6 +1010,8 @@ export function addStructuredSafeHarborEntities(rawText, entities = []) {
   directPatterns.forEach(({ label, regex, skip }) => {
     addRegexEntities(rawText, entities, label, regex, "structured identifier", skip);
   });
+
+  addTemporalPatternEntities(rawText, entities, currentDate);
 
   return entities;
 }
@@ -1212,23 +1228,6 @@ function generalizeAgesOver89(text) {
     .replace(/(?<!\d)(?:9[0-9]|1[0-9]{2})\s*(?:M|F)\b/g, "90 or older");
 }
 
-function inferTwoDigitYear(twoDigitValue) {
-  const twoDigitYear = Number(twoDigitValue);
-  const currentYear = new Date().getFullYear();
-  const currentCentury = Math.floor(currentYear / 100) * 100;
-  const currentTwoDigitYear = currentYear % 100;
-  return twoDigitYear <= currentTwoDigitYear + 1
-    ? currentCentury + twoDigitYear
-    : currentCentury - 100 + twoDigitYear;
-}
-
-const monthNameToNumber = new Map([
-  ["jan", 1], ["january", 1], ["feb", 2], ["february", 2], ["mar", 3], ["march", 3],
-  ["apr", 4], ["april", 4], ["may", 5], ["jun", 6], ["june", 6], ["jul", 7], ["july", 7],
-  ["aug", 8], ["august", 8], ["sep", 9], ["sept", 9], ["september", 9], ["oct", 10],
-  ["october", 10], ["nov", 11], ["november", 11], ["dec", 12], ["december", 12]
-]);
-
 function monthDiff(left, right) {
   return (left.getUTCFullYear() - right.getUTCFullYear()) * 12 + (left.getUTCMonth() - right.getUTCMonth());
 }
@@ -1267,11 +1266,48 @@ function clockTimeFromValue(value) {
   };
 }
 
-function temporalTimeFields(value) {
-  const clock = clockTimeFromValue(value);
-  return {
-    clockTime: clock?.label || ""
+// A span like "6/17 0800" or "17-Jun-24 at 0800" is exactly the kind of
+// bare military time chrono-node's grammar doesn't recognize (it only
+// understands explicit "HH:MM" or AM/PM). Rewriting a trailing bare 3-4
+// digit military time into "at HH:MM" before handing the span to chrono
+// keeps that clinical shorthand working without hand-parsing the date part.
+function withExplicitClockTime(span) {
+  const match = span.match(/^(.*\S)\s+(?:at\s+)?(\d{3,4})$/i);
+  if (!match) return span;
+  const clock = clockTimeFromValue(match[2]);
+  if (!clock) return span;
+  return `${match[1]} at ${clock.label}`;
+}
+
+// Maps a chrono-node ParsingResult into this app's {kind, year, month, day,
+// hasExplicitYear, clockTime} shape, which the Hospital Day/Historical
+// placement logic below (unchanged) already knows how to consume. A
+// component only counts as "explicit"/known here when chrono itself marks
+// it "known" rather than an implied default - that distinguishes a bare
+// "6/17" (year implied, needs year inference below) from "2 days ago"
+// (chrono already resolved every component from the reference date) and
+// from "June 2020" (day implied - a month-only mention, never anchored to
+// a specific Hospital Day).
+function chronoResultToTemporal(result) {
+  const known = result?.start?.knownValues;
+  if (!known || !Number.isFinite(known.month)) {
+    return null;
+  }
+  const hasDay = Number.isFinite(known.day);
+  const temporal = {
+    kind: hasDay ? "day" : "month",
+    year: result.start.get("year"),
+    month: result.start.get("month"),
+    hasExplicitYear: Number.isFinite(known.year),
+    clockTime: ""
   };
+  if (hasDay) temporal.day = result.start.get("day");
+  if (Number.isFinite(known.hour)) {
+    const hour = result.start.get("hour");
+    const minute = result.start.get("minute") || 0;
+    temporal.clockTime = `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+  }
+  return temporal;
 }
 
 function contextAroundSpan(rawText, start, end) {
@@ -1301,96 +1337,45 @@ function isCourseDateLabel(rawText, start, end) {
   return /^\s*(?:[\-\u2022*]\s*)?$/.test(prefix) && /^\s*:/.test(after);
 }
 
-function isLikelyTwoPartMonthYear(rawText, start, end, first, second, separator) {
-  const span = rawText.slice(start, end);
-  const prefix = linePrefixBefore(rawText, start);
-  const before = rawText.slice(Math.max(0, start - 32), start).toLowerCase();
-  if (/^\s*(?:[\-\u2022*]\s*)?$/.test(prefix) || /^\s*:/.test(rawText.slice(end, end + 2))) {
-    return false;
-  }
-  if (second.length === 4) {
-    return true;
-  }
-  if (separator === "/" && /^0[1-9]$/.test(first) && /^\d{2}$/.test(second) && /\b(?:in|since|from|during|on|ct|mri|pet|imaging|stress|echo|scan|nodule|history|diagnosed)\s*$/.test(before)) {
-    return true;
-  }
-  return false;
+// chrono-node reads the reference date it's given back out through local
+// Date getters internally, while every date this app hands it (like the
+// admission date) is built as a UTC-midnight Date - the same UTC/local
+// mismatch flagged in chooseCurrentSourceDate below. On a machine west of
+// UTC that silently rolls the reference back a calendar day, throwing every
+// relative phrase ("tomorrow", "next week") off by exactly one day. Re-anchor
+// to a local-midnight Date carrying the same UTC calendar day first.
+function chronoReferenceDate(referenceDate) {
+  const base = referenceDate instanceof Date && !Number.isNaN(referenceDate.getTime()) ? referenceDate : new Date();
+  return new Date(base.getUTCFullYear(), base.getUTCMonth(), base.getUTCDate());
 }
 
-function parseTemporalSpan(value, context = {}) {
-  const span = String(value || "").replace(/[,]/g, " ").replace(/\s+/g, " ").trim();
-  const rawText = context.rawText || "";
-  const start = Number.isFinite(context.start) ? context.start : 0;
-  const end = Number.isFinite(context.end) ? context.end : start + span.length;
-
-  let match = span.match(/\b((?:19|20)\d{2})-(\d{1,2})-(\d{1,2})(?:[ T]+(\d{1,2}:\d{2})(?::\d{2})?)?\b/);
-  if (match) {
-    return {
-      kind: "day",
-      year: Number(match[1]),
-      month: Number(match[2]),
-      day: Number(match[3]),
-      hasExplicitYear: true,
-      ...temporalTimeFields(match[4])
-    };
+// Parses one already-matched date/time span (from any detector: the model,
+// a labeled field like "DOB:", or addTemporalPatternEntities below) into
+// this app's {kind, year, month, day, hasExplicitYear, clockTime} shape via
+// chrono-node. referenceDate anchors relative phrases ("2 days ago",
+// "tomorrow") - pass the admission date/current-source-date when known;
+// without one, chrono falls back to the real current date, which only
+// matters for entities whose year still needs inferring below anyway.
+function parseTemporalSpan(value, context = {}, referenceDate = null) {
+  const span = withExplicitClockTime(String(value || "").replace(/[,]/g, " ").replace(/\s+/g, " ").trim());
+  if (!span) {
+    return null;
   }
-
-  match = span.match(/\b(0?[1-9]|1[0-2])([/-])(0?[1-9]|[12]\d|3[01])(?:[/-]((?:19|20)?\d{2}))?(?:\s+(?:at\s+)?(\d{1,2}:\d{2}(?:\s*[AP]M)?|\d{3,4}))?\b/i);
-  if (match) {
-    if (!match[4] && isLikelyTwoPartMonthYear(rawText, start, end, match[1], match[3], match[2])) {
-      return {
-        kind: "month",
-        year: inferTwoDigitYear(match[3]),
-        month: Number(match[1]),
-        hasExplicitYear: true
-      };
-    }
-    const year = match[4]
-      ? match[4].length === 2 ? inferTwoDigitYear(match[4]) : Number(match[4])
-      : null;
-    return {
-      kind: "day",
-      year,
-      month: Number(match[1]),
-      day: Number(match[3]),
-      hasExplicitYear: Boolean(match[4]),
-      ...temporalTimeFields(match[5])
-    };
+  const ref = chronoReferenceDate(referenceDate);
+  let results;
+  try {
+    results = clinicalChrono.parse(span, ref, { forwardDate: false });
+  } catch {
+    return null;
   }
-
-  match = span.match(/\b(0?[1-9]|1[0-2])([/-])((?:19|20)\d{2})\b/);
-  if (match) {
-    return {
-      kind: "month",
-      year: Number(match[3]),
-      month: Number(match[1]),
-      hasExplicitYear: true
-    };
+  if (!results.length) {
+    return null;
   }
-
-  match = span.match(/\b(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t|tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+((?:19|20)\d{2})\b/i);
-  if (match) {
-    return {
-      kind: "month",
-      year: Number(match[2]),
-      month: monthNameToNumber.get(match[1].replace(/\.$/, "").toLowerCase()),
-      hasExplicitYear: true
-    };
-  }
-
-  match = span.match(/\b(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t|tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+(\d{1,2})(?:\s+((?:19|20)\d{2}))?(?:\s+(?:at\s+)?(\d{1,2}:\d{2}(?:\s*[AP]M)?|\d{3,4}))?\b/i);
-  if (match) {
-    return {
-      kind: "day",
-      year: match[3] ? Number(match[3]) : null,
-      month: monthNameToNumber.get(match[1].replace(/\.$/, "").toLowerCase()),
-      day: Number(match[2]),
-      hasExplicitYear: Boolean(match[3]),
-      ...temporalTimeFields(match[4])
-    };
-  }
-
-  return null;
+  // Prefer whichever result covers the most of the span - chrono can return
+  // more than one match for a compound phrase, but this function is only
+  // ever given text a caller already believes is a single date/time mention.
+  const best = results.reduce((widest, candidate) => (candidate.text.length > widest.text.length ? candidate : widest));
+  return chronoResultToTemporal(best);
 }
 
 function dateFromParts(parts, fallbackYear = null, referenceDate = null) {
@@ -1521,15 +1506,14 @@ function inferYearForMissingTemporal(temporal, temporalEntities, fallbackYear) {
   return candidates[0]?.year || fallbackYear;
 }
 
-function pushTemporalEntity(rawText, entities, start, end, source = "temporal", context = "") {
+function pushTemporalEntity(rawText, entities, start, end, source = "temporal", context = "", precomputedTemporal = null) {
   if (!Number.isFinite(start) || !Number.isFinite(end) || end <= start) {
     return;
   }
   if (isSpanCovered(start, end, entities)) {
     return;
   }
-  const span = rawText.slice(start, end);
-  const temporal = parseTemporalSpan(span, { rawText, start, end });
+  const temporal = precomputedTemporal || parseTemporalSpan(rawText.slice(start, end), { rawText, start, end });
   if (!temporal) {
     return;
   }
@@ -1548,32 +1532,94 @@ function pushTemporalEntity(rawText, entities, start, end, source = "temporal", 
   });
 }
 
-export function collectTemporalEntities(rawText) {
-  const text = String(rawText || "");
-  const entities = [];
-  const patterns = [
-    /\b(?:19|20)\d{2}-\d{1,2}-\d{1,2}(?:[ T]+\d{1,2}:\d{2}(?::\d{2})?)?\b/g,
-    /\b(?:0?[1-9]|1[0-2])[/-](?:0?[1-9]|[12]\d|3[01])(?:[/-](?:\d{2}|\d{4}))?(?:\s+(?:at\s+)?(?:\d{1,2}:\d{2}(?:\s*[AP]M)?|\d{3,4}))?\b/gi,
-    /\b(?:0?[1-9]|1[0-2])[/-](?:19|20)\d{2}\b/g,
-    /\b(?:0[1-9]|1[0-2])\/\d{2}\b/g,
-    /\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t|tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+(?:(?:0?[1-9]|[12]\d|3[01])(?:,?\s+(?:19|20)\d{2})?|(?:19|20)\d{2})(?:\s+(?:at\s+)?(?:\d{1,2}:\d{2}(?:\s*[AP]M)?|\d{3,4}))?\b/gi
-  ];
+// Detects every date/time mention in free text via chrono-node and turns
+// each into a DATE entity - the single source of free-text date detection
+// for both the "structured only" pipeline (addTemporalPatternEntities) and
+// the temporal fallback pass (buildDateTimeline/resolvedRedactionEntities).
+// referenceDate anchors relative phrases ("2 days ago") - pass the
+// admission date when known, since that already is this app's best guess
+// at "today" for a pasted note.
+// Chrono can misread a clinical value immediately before a date (a
+// flowsheet's "VALUE DATE" shape, e.g. "Troponin: 12 1/3/26" or
+// "pH, Arterial: 7.35 2/6/26") as that date's implied hour or "H.MM" clock
+// time, silently absorbing the value into the match it replaces - a lab
+// result, not a date. If the text is still a clean, equally-good date once
+// that leading number is dropped, treat the number as untouched
+// surrounding text instead of part of the date.
+function dropAbsorbedLeadingValue(text, result, referenceDate) {
+  const leading = result.text.match(/^\d{1,2}(?:\.\d{1,2})?\s+(?=\S)/);
+  if (!leading || !Number.isFinite(result.start.knownValues.hour)) {
+    return { result, start: result.index };
+  }
+  const trimmed = result.text.slice(leading[0].length);
+  let reparsed;
+  try {
+    reparsed = clinicalChrono.parse(trimmed, referenceDate, { forwardDate: false });
+  } catch {
+    return { result, start: result.index };
+  }
+  const [first] = reparsed;
+  if (first && first.index === 0 && first.text.length === trimmed.length) {
+    return { result: first, start: result.index + leading[0].length };
+  }
+  return { result, start: result.index };
+}
 
-  patterns.forEach((regex) => {
-    for (const match of text.matchAll(regex)) {
-      const start = match.index;
-      const end = start + match[0].length;
-      if (isLikelyNonDateSlashMeasurement(text, start, end)) {
-        continue;
-      }
-      if (isLikelyDateFalsePositive(text, start, end) && !isCourseDateLabel(text, start, end) && !hasClinicalTemporalContext(text, start, end)) {
-        continue;
-      }
-      pushTemporalEntity(text, entities, start, end, "temporal");
+export function collectTemporalEntities(rawText, referenceDate = null) {
+  const text = String(rawText || "");
+  const ref = chronoReferenceDate(referenceDate);
+  const entities = [];
+  let rawResults;
+  try {
+    rawResults = clinicalChrono.parse(text, ref, { forwardDate: false });
+  } catch {
+    rawResults = [];
+  }
+  const results = rawResults.map((rawResult) => dropAbsorbedLeadingValue(text, rawResult, ref));
+
+  results.forEach(({ result, start }) => {
+    const end = start + result.text.length;
+    if (isLikelyNonDateSlashMeasurement(text, start, end)) {
+      return;
     }
+    if (isLikelyDateFalsePositive(text, start, end) && !isCourseDateLabel(text, start, end) && !hasClinicalTemporalContext(text, start, end)) {
+      return;
+    }
+    const temporal = chronoResultToTemporal(result);
+    if (!temporal) {
+      return;
+    }
+    // A trailing time right after the date - bare military time like
+    // "6/17 0800", or a plain "HH:MM" chrono left as its own separate match
+    // instead of merging into the date (seen in flowsheet rows like
+    // "12 1/3/26 11:35") - falls outside this result's own match boundary.
+    // Fold it in here so the placeholder still carries the time.
+    let entityEnd = end;
+    if (!temporal.clockTime) {
+      const tail = text.slice(end, Math.min(text.length, end + 12)).match(/^\s+(?:at\s+)?(\d{1,2}:\d{2}(?:\s*[AP]M)?|\d{3,4})\b/i);
+      const clock = tail && clockTimeFromValue(tail[1]);
+      if (clock) {
+        entityEnd = end + tail[0].length;
+        temporal.clockTime = clock.label;
+      }
+    }
+    pushTemporalEntity(text, entities, start, entityEnd, "temporal", "", temporal);
   });
 
   return mergeEntities(entities, text);
+}
+
+// Feeds collectTemporalEntities' chrono-node detection into the structured
+// (regex-based) Safe Harbor pass, in the same {start,end,label:"DATE",...}
+// shape addRegexEntities/addCapturedEntity produce above, so it merges with
+// everything else in this function's output identically either way.
+function addTemporalPatternEntities(rawText, entities, currentDate = null) {
+  collectTemporalEntities(rawText, currentDate).forEach((entity) => {
+    if (isSpanCovered(entity.start, entity.end, entities)) {
+      return;
+    }
+    entities.push(entity);
+  });
 }
 
 function chooseCurrentSourceDate(temporalEntities, currentDate = null) {
@@ -1678,7 +1724,7 @@ function classifyTemporalPlacement(temporal, date, admissionDate, entity) {
 
 function formatRelativeTemporalPlaceholder(entity, currentSourceDate, fallbackYear = null) {
   const span = entity.span || "";
-  const temporal = entity.temporal || parseTemporalSpan(span, entity);
+  const temporal = entity.temporal || parseTemporalSpan(span, entity, currentSourceDate);
   if (!temporal) {
     return "[Historical date]";
   }
@@ -1695,12 +1741,12 @@ function formatRelativeTemporalPlaceholder(entity, currentSourceDate, fallbackYe
 }
 
 function buildDateTimeline(rawText, entities, currentDate = null, { includeTemporalFallback = true } = {}) {
-  const fallbackTemporalEntities = includeTemporalFallback ? collectTemporalEntities(rawText) : [];
+  const fallbackTemporalEntities = includeTemporalFallback ? collectTemporalEntities(rawText, currentDate) : [];
   const dateEntities = mergeEntities([...entities, ...fallbackTemporalEntities], rawText)
     .filter((entity) => entity.label === "DATE")
     .map((entity) => {
       const span = rawText.slice(entity.start, entity.end).trim();
-      const temporal = entity.temporal || parseTemporalSpan(span, { rawText, start: entity.start, end: entity.end });
+      const temporal = entity.temporal || parseTemporalSpan(span, { rawText, start: entity.start, end: entity.end }, currentDate);
       return { entity, span, temporal };
     });
 
@@ -1730,7 +1776,7 @@ function makeDateTimelinePlaceholder(entity, dateTimeline) {
 }
 
 function resolvedRedactionEntities(rawText, entities, currentDate = null, { includeTemporalFallback = true } = {}) {
-  const temporalEntities = includeTemporalFallback ? collectTemporalEntities(rawText) : [];
+  const temporalEntities = includeTemporalFallback ? collectTemporalEntities(rawText, currentDate) : [];
   const allEntities = mergeEntities([...entities, ...temporalEntities], rawText);
   const dateTimeline = buildDateTimeline(rawText, allEntities, currentDate, { includeTemporalFallback });
   return allEntities.map((entity) => ({
@@ -2570,7 +2616,7 @@ function formatPhiWarning(warning) {
 
 export function deidentifyTextStructuredOnly(rawText, currentDate = null) {
   const bracketEntities = collectBracketedPlaceholderEntities(rawText);
-  const { entities } = expandIdentityGraphEntities(rawText, addStructuredSafeHarborEntities(rawText, bracketEntities));
+  const { entities } = expandIdentityGraphEntities(rawText, addStructuredSafeHarborEntities(rawText, bracketEntities, currentDate));
   return deidentifyFromEntities(rawText, entities, { modelId: null, modelStatus: "structured only" }, currentDate);
 }
 
@@ -2819,7 +2865,7 @@ export function createDeidentifier(options = {}) {
     }
 
     reportProgress(onProgress, { stage: "structured", message: "Running structured redaction and date conversion...", percent: 0.76 });
-    let structuredEntities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(addStructuredSafeHarborEntities(rawText, bracketEntities), rawText));
+    let structuredEntities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(addStructuredSafeHarborEntities(rawText, bracketEntities, admissionDate), rawText));
     modelEntities = modelEntities.filter((entity) => !overlapsAny(entity, structuredEntities));
     reportProgress(onProgress, { stage: "aliases", message: "Checking repeated names and aliases...", percent: 0.84 });
     const { entities } = expandIdentityGraphEntities(rawText, [...structuredEntities, ...modelEntities]);

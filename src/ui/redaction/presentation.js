@@ -79,7 +79,7 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
             <strong>${pending ? `${pending} change${pending === 1 ? "" : "s"} to review` : "Review complete"}</strong>
             <span class="muted">Click a crossed-out value in the document below. The original stays only in this tab.</span>
           </div>
-          ${pending ? `<button class="button--quiet" type="button" data-action="confirm-all-section-redactions" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}">Confirm all (${pending})</button>` : ""}
+          ${pending ? `<button class="button--quiet" type="button" data-action="confirm-all-section-redactions" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}">Confirm rest (${pending})</button><button class="button--quiet" type="button" data-action="reject-all-section-redactions" data-scope="${escapeHtml(scope)}" data-section-id="${escapeHtml(section.id)}">Reject rest (${pending})</button>` : ""}
         </div>
         ${inspected ? `
           <div class="redaction-inspector redaction-inline-actions">

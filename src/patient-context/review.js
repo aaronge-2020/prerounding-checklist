@@ -224,3 +224,42 @@ export function nextPendingReviewTarget(targets = [], current = null) {
     || (target.sectionIndex === current.sectionIndex && target.redactionIndex > current.redactionIndex)
   )) || ordered[0];
 }
+
+// Below: pure index-lookup helpers shared by the section-field review and the
+// Quick De-ID review, which both store their pending/confirmed/restored
+// decisions on a single review.redactions array of the same shape.
+export function nextPendingRedactionIndex(review, afterIndex = -1) {
+  const pending = (review?.redactions || [])
+    .map((redaction, index) => ({ redaction, index }))
+    .filter(({ redaction }) => redaction.state === "pending");
+  if (!pending.length) return -1;
+  return pending.find(({ index }) => index > afterIndex)?.index ?? pending[0].index;
+}
+
+export function inspectedRedactionIndex(review) {
+  const index = review?.inspectedRedactionIndex;
+  return Number.isInteger(index) && index >= 0 && review?.redactions?.[index] ? index : -1;
+}
+
+export function quickRedactionIndex(review, afterIndex = -1) {
+  const pending = (review?.redactions || [])
+    .map((redaction, index) => ({ redaction, index }))
+    .filter(({ redaction }) => redaction.state === "pending");
+  if (!pending.length) return -1;
+  const selected = inspectedRedactionIndex(review);
+  if (selected >= 0 && review.redactions[selected]?.state === "pending") return selected;
+  return nextPendingRedactionIndex(review, afterIndex);
+}
+
+export function quickSelectedRedactionIndex(review) {
+  const selected = inspectedRedactionIndex(review);
+  if (selected >= 0 && review?.redactions?.[selected]?.state !== "restored") return selected;
+  return quickRedactionIndex(review);
+}
+
+export function quickWarningIndex(review, activeWarnings, afterIndex = -1) {
+  if (!activeWarnings.length) return -1;
+  const selected = Number(review?.activeWarningIndex);
+  if (activeWarnings.some(({ index }) => index === selected)) return selected;
+  return activeWarnings.find(({ index }) => index > afterIndex)?.index ?? activeWarnings[0].index;
+}

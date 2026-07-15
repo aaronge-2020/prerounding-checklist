@@ -21,8 +21,28 @@ export function createWorkupPresentation({ escapeHtml, icon }) {
             <span class="muted">${historyCount} history · ${examCount} exam</span>
           </span>
         </label>
-        <button class="button--quiet" type="button" data-action="edit-workup" data-workup-id="${escapeHtml(workup.id)}">${icon("edit")} Edit</button>
+        <div class="workup-row-actions">
+          <button class="button--quiet" type="button" data-action="edit-workup" data-workup-id="${escapeHtml(workup.id)}">${icon("edit")} Edit</button>
+          <button class="icon-button danger-subtle" type="button" data-action="delete-workup" data-workup-id="${escapeHtml(workup.id)}" title="Delete workup" aria-label="Delete ${escapeHtml(workup.title)}">${icon("trash")}</button>
+        </div>
       </div>
+    `;
+  }
+
+  function renderHiddenWorkups(hiddenWorkups) {
+    if (!hiddenWorkups.length) return "";
+    return `
+      <details class="workup-hidden-list">
+        <summary><span>${hiddenWorkups.length} hidden built-in workup${hiddenWorkups.length === 1 ? "" : "s"}</span></summary>
+        <div class="list-stack">
+          ${hiddenWorkups.map((workup) => `
+            <div class="workup-hidden-row">
+              <span>${escapeHtml(workup.title)}</span>
+              <button class="button--quiet" type="button" data-action="restore-hidden-workup" data-workup-id="${escapeHtml(workup.id)}">Restore</button>
+            </div>
+          `).join("")}
+        </div>
+      </details>
     `;
   }
 
@@ -96,7 +116,8 @@ export function createWorkupPresentation({ escapeHtml, icon }) {
     workupApiBusy,
     workupApiDeidConfirmed,
     workupImportPanelOpen,
-    workupImportDraft
+    workupImportDraft,
+    hiddenWorkups = []
   }) {
     const grouped = groupWorkupItems(editorWorkup);
     const workspaceReady = workspace.status === "ready";
@@ -148,6 +169,7 @@ export function createWorkupPresentation({ escapeHtml, icon }) {
                 ${catalog.map((workup) => renderWorkupRow(workup, selectedIds, matchingWorkupIds)).join("")}
                 <div class="empty-state" data-workup-catalog-empty ${matchingWorkupIds && matchingCount === 0 ? "" : "hidden"}>No workups match this search.</div>
               </div>
+              ${renderHiddenWorkups(hiddenWorkups)}
             </div>
           </details>
         </div>

@@ -27,6 +27,7 @@ export function createEmptyVaultState({ now = timestampNow } = {}) {
     patients: [],
     workupOverrides: {},
     selectedWorkupIds: [],
+    hiddenWorkupIds: [],
     preferences: normalizeUserPreferences(),
     updatedAt: now()
   };
@@ -145,6 +146,7 @@ export function migrateVaultState(value, { now = timestampNow } = {}) {
     patients,
     workupOverrides: base.workupOverrides && typeof base.workupOverrides === "object" ? { ...base.workupOverrides } : {},
     selectedWorkupIds: Array.isArray(base.selectedWorkupIds) ? base.selectedWorkupIds.map(String) : [],
+    hiddenWorkupIds: Array.isArray(base.hiddenWorkupIds) ? [...new Set(base.hiddenWorkupIds.map(String))] : [],
     preferences: normalizeUserPreferences(base.preferences),
     updatedAt: String(base.updatedAt || now())
   };
@@ -222,4 +224,14 @@ export function removeWorkupOverride(vault, workupId, { now = timestampNow } = {
   const nextOverrides = { ...current.workupOverrides };
   delete nextOverrides[workupId];
   return { ...current, workupOverrides: nextOverrides, updatedAt: now() };
+}
+
+export function hideWorkupId(vault, workupId, { now = timestampNow } = {}) {
+  const current = migrateVaultState(vault, { now });
+  return { ...current, hiddenWorkupIds: [...new Set([...current.hiddenWorkupIds, workupId])], updatedAt: now() };
+}
+
+export function unhideWorkupId(vault, workupId, { now = timestampNow } = {}) {
+  const current = migrateVaultState(vault, { now });
+  return { ...current, hiddenWorkupIds: current.hiddenWorkupIds.filter((id) => id !== workupId), updatedAt: now() };
 }

@@ -4775,6 +4775,30 @@ body.vault-locked .vault-access {
   white-space: nowrap;
 }
 
+.workup-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.workup-row-actions > button {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.workup-hidden-list {
+  margin-top: 8px;
+}
+
+.workup-hidden-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 2px;
+  border-bottom: 1px solid var(--border);
+}
+
 .workup-catalog-row .check-row > span {
   display: grid;
   min-width: 0;

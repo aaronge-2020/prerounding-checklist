@@ -62,13 +62,23 @@ export function parseWorkupJson(text) {
   return normalizeWorkup(JSON.parse(text));
 }
 
-export function effectiveWorkupCatalog(overrides = {}) {
-  const map = new Map(BUNDLED_WORKUPS.map((workup) => [workup.id, normalizeWorkup(workup)]));
+export function effectiveWorkupCatalog(overrides = {}, hiddenWorkupIds = []) {
+  const hidden = new Set(hiddenWorkupIds);
+  const map = new Map(BUNDLED_WORKUPS.filter((workup) => !hidden.has(workup.id)).map((workup) => [workup.id, normalizeWorkup(workup)]));
   for (const workup of Object.values(overrides || {})) {
+    if (hidden.has(workup.id)) continue;
     const normalized = normalizeWorkup(workup);
     map.set(normalized.id, normalized);
   }
   return [...map.values()].sort((a, b) => a.title.localeCompare(b.title));
+}
+
+export function isBundledWorkupId(workupId) {
+  return BUNDLED_WORKUPS.some((workup) => workup.id === workupId);
+}
+
+export function bundledWorkupById(workupId) {
+  return BUNDLED_WORKUPS.find((workup) => workup.id === workupId) || null;
 }
 
 export function findWorkupsById(workups, ids = []) {

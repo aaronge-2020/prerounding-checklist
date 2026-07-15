@@ -133,6 +133,17 @@
       </form>
     </dialog>
 
+    <dialog id="deleteWorkupConfirmDialog" class="confirm-dialog" aria-labelledby="deleteWorkupConfirmTitle">
+      <form method="dialog">
+        <h2 id="deleteWorkupConfirmTitle">Delete this workup?</h2>
+        <p id="deleteWorkupConfirmText">This permanently deletes the workup and its saved items.</p>
+        <div class="button-row">
+          <button value="cancel">Cancel</button>
+          <button id="confirmDeleteWorkupButton" type="button" data-action="confirm-delete-workup" class="danger-button">Delete workup</button>
+        </div>
+      </form>
+    </dialog>
+
     <dialog id="removeGuidelineSetConfirmDialog" class="confirm-dialog" aria-labelledby="removeGuidelineSetConfirmTitle">
       <form method="dialog">
         <h2 id="removeGuidelineSetConfirmTitle">Delete this guideline set?</h2>
@@ -169,6 +180,6 @@
     </div>
 
     <input id="modelPackFolderInput" type="file" webkitdirectory multiple hidden>
-    <script type="module" src="./src/ui/app.js?v=20260714-token-color-fixed-popover"></script>
+    <script type="module" src="./src/ui/app.js?v=20260715-workup-delete"></script>
   </body>
 </html>

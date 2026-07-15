@@ -98,6 +98,18 @@ export async function verifyAdvancedDeidModel({ modelKey = DEFAULT_DEID_MODEL_KE
   return request("verify", { modelKey: activeModelKey, assetSource }, { onStatus, onProgress });
 }
 
+// Every local model runs through onnxruntime-web's threaded WASM build,
+// which needs this page cross-origin isolated - without it, instantiating
+// the runtime crashes outright (an uncaught worker error) rather than
+// throwing a catchable one. This is what "the local redaction process
+// stopped unexpectedly" actually is. service-worker.js stamps on the
+// COOP/COEP headers this static site can't set itself, but that only takes
+// effect after one reload since the worker was installed.
+export function crossOriginIsolationBlocker() {
+  if (globalThis.crossOriginIsolated) return "";
+  return "Local redaction models need one browser refresh to finish a one-time setup step. Reload this page, then try again.";
+}
+
 export function resetAdvancedDeidWorker() {
   worker?.terminate();
   worker = null;

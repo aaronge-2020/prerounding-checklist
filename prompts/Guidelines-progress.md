@@ -2,6 +2,19 @@
 
 Write the note in **SOAP** format with **strict separation** between sections. Avoid repeating information across sections. Write concisely—the note should support a **2–3 minute attending presentation**.
 
+## Section Ownership Rules (No Cross-Section Repetition)
+
+Each fact belongs in exactly **one** section:
+
+| Information | Owned by | Do NOT repeat in |
+|---|---|---|
+| Patient-reported symptoms/status | Subjective | Objective, Assessment |
+| Vitals, exam, labs, imaging | Objective | Subjective, Assessment |
+| Clinical reasoning / trajectory | Assessment | Subjective, Objective, Plan |
+| Orders, medications, actions | Plan | Assessment |
+
+When multiple active problems relate to the same organ system or share management (e.g., several cardiac issues, several medications for the same problem), **group them under one problem heading** in the Plan rather than listing them as separate problems — organize the Plan by clinical category, not by isolated diagnosis line-items.
+
 ## **Subjective** *(High Yield for Rounds)*
 
 * **Begin with a one-line summary:** age, sex, 3–4 most relevant PMH, and reason for admission.
@@ -57,7 +70,7 @@ Prioritize problems from most to least important.
 
 For each acute problem:
 
-**Differential:** Diagnosis 1 vs Diagnosis 2 vs Diagnosis 3
+**Differential:** Diagnosis 1 (most likely) vs Diagnosis 2 vs Diagnosis 3 vs Diagnosis 4
 
 **Assessment:** One brief paragraph explaining why the leading diagnosis is most likely.
 
@@ -136,8 +149,9 @@ Keep this section brief and focused on medications that require action at discha
 
 # General Rules
 
-* Eliminate repetition.
+* Eliminate repetition — apply the Section Ownership Rules above; each fact appears exactly once, in its owning section.
 * Prioritize information that changes diagnosis, management, or disposition.
 * Use headings and bullet points for readability.
 * Organize medications under the disease they treat—not as a separate medication list.
+* Group related chronic/stable problems together when they share management, rather than listing each as its own bullet.
 * Assume the attending only wants the highest-yield clinical information.
