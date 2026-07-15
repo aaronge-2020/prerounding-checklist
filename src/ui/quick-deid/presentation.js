@@ -19,7 +19,7 @@ export function createQuickDeidPresentation({ escapeHtml, icon }) {
   }) {
     let action = "";
     if (option?.requiresWebGpu && !webGpuAvailable) {
-      action = `<span class="model-selection-message model-selection-message--error">This model requires WebGPU in this browser.</span>`;
+      action = `<span class="model-selection-message model-selection-message--error">This model needs graphics acceleration that isn't available in this browser.</span>`;
     } else if (option && isInstallable && !state?.ready) {
       const actionName = state?.state === "installed" ? "verify-model-pack" : "download-model-pack";
       const label = state?.state === "installed" ? "Verify model" : "Download and verify";
@@ -125,6 +125,22 @@ export function createQuickDeidPresentation({ escapeHtml, icon }) {
           </div>
           ${hasReview ? `<button class="button--quiet" type="button" data-action="start-new-quick-deid">${icon("plus")} New text</button>` : ""}
         </div>
+        <details class="quick-deid-coverage-note">
+          <summary>What this tool does and does not catch</summary>
+          <p class="muted">
+            Detection combines local pattern rules with a locally-run clinical text-scanning model (OpenMed SuperClinical, when
+            selected below). Together they target most
+            <a href="https://www.dhcs.ca.gov/data-statistics/data-resources/list-of-hipaa-identifiers/" target="_blank" rel="noopener noreferrer">HIPAA Safe Harbor identifier categories</a>
+            — names, dates and ages 90+, phone/fax/email, SSNs, MRNs, health plan and account numbers, license/certificate
+            numbers, addresses, URLs/IP addresses, device identifiers, biometric identifiers, and other structured IDs.
+          </p>
+          <p class="muted">
+            It does <strong>not</strong> process images or photographs (this tool only ever handles pasted text), has no
+            dedicated detector for vehicle identifiers or license plates, and — like any rule- or model-based system — can miss
+            unusual phrasing it wasn't trained or written to expect. This is a risk-reduction aid, not a certified
+            guarantee that all identifying information has been removed. Always review flagged redactions before copying or sharing the result.
+          </p>
+        </details>
         ${renderQuickModelControlHtml}
         ${hasReview ? `
           <section class="quick-review-workspace">

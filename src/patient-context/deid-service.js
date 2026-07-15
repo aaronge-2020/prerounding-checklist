@@ -85,10 +85,10 @@ function setStatus(update, onStatus) {
 async function ensureWebGpuRuntime(option) {
   if (!option?.requiresWebGpu) return;
   if (!globalThis.navigator?.gpu?.requestAdapter) {
-    throw new Error(`${option.label} requires WebGPU in the local de-identification worker.`);
+    throw new Error(`${option.label} needs graphics acceleration this browser doesn't support.`);
   }
   const adapter = await globalThis.navigator.gpu.requestAdapter({ powerPreference: "high-performance" });
-  if (!adapter) throw new Error(`${option.label} could not obtain a local WebGPU adapter.`);
+  if (!adapter) throw new Error(`${option.label} couldn't access this device's graphics hardware.`);
 }
 
 function bundledModelBaseUrl() {
@@ -197,7 +197,7 @@ async function glinerModelPath(option, assetSource) {
   const modelPath = option.onnxModelPath || "onnx/model_quint8.onnx";
   if (assetSource === "handles" || assetSource === "opfs") {
     const response = await readModelPackFileResponse(option.modelId, modelPath);
-    if (!response) throw new Error("The selected GLiNER folder no longer contains its ONNX model.");
+    if (!response) throw new Error("The selected model folder is missing files it needs — try reimporting it.");
     return URL.createObjectURL(await response.blob());
   }
   return new URL(`${option.modelId}/${modelPath}`, modelBaseUrl(assetSource)).href;
@@ -294,7 +294,7 @@ export async function getAdvancedDeidentifier({ modelKey = DEFAULT_DEID_MODEL_KE
     ).catch((error) => {
       deidentifierPromises.delete(deidentifierKey);
       setStatus({
-        message: `${option.shortLabel || option.label} failed to initialize: ${error instanceof Error ? error.message : "unknown error"}`,
+        message: `${option.shortLabel || option.label} couldn't start on this device${error instanceof Error && error.message ? `: ${error.message}` : "."}`,
         ready: false,
         modelId: option.modelId,
         modelStatus: "runtime failed",
@@ -317,7 +317,7 @@ export async function preloadAdvancedDeidModel({ modelKey = DEFAULT_DEID_MODEL_K
   } catch (error) {
     await invalidateRuntimeVerification(option, error);
     setStatus({
-      message: `${option.shortLabel || option.label} failed to load: ${error instanceof Error ? error.message : "unknown error"}`,
+      message: `${option.shortLabel || option.label} couldn't load on this device${error instanceof Error && error.message ? `: ${error.message}` : "."}`,
       ready: false,
       modelId: option.modelId,
       modelStatus: "load failed",
@@ -335,7 +335,7 @@ export async function verifyAdvancedDeidModel({ modelKey = DEFAULT_DEID_MODEL_KE
     await deidentifier.loadModel({ onProgress });
     const result = await deidentifier.detectModelEntities("Synthetic Patient Jane Smith MRN 123456.", { onProgress });
     if (!result.modelId || result.modelChunkFailures) {
-      throw new Error(`${option.label} loaded but could not complete its local inference self-test.`);
+      throw new Error(`${option.label} loaded but failed a quick check — try verifying it again.`);
     }
     return getSelectedDeidModelStatus(option.key);
   } catch (error) {
@@ -344,9 +344,10 @@ export async function verifyAdvancedDeidModel({ modelKey = DEFAULT_DEID_MODEL_KE
   }
 }
 
-export async function deidentifyText(rawText, { mode = "advanced", allowStructuredFallback = false, assetSource = "auto", onStatus, onProgress } = {}) {
+export async function deidentifyText(rawText, { mode = "advanced", allowStructuredFallback = false, assetSource = "auto", admissionDate = null, onStatus, onProgress } = {}) {
+  const anchor = admissionDate ? new Date(admissionDate) : null;
   if (mode === STRUCTURED_DEID_MODE) {
-    return deidentifyTextStructuredOnly(rawText, new Date());
+    return deidentifyTextStructuredOnly(rawText, anchor);
   }
   const option = deidModelOptionByKey(mode === "advanced" ? DEFAULT_DEID_MODEL_KEY : mode);
   try {
@@ -357,6 +358,7 @@ export async function deidentifyText(rawText, { mode = "advanced", allowStructur
     const result = await deidentifier.deidentifyText(rawText, {
       mode: "model-only",
       includeTemporalFallback: false,
+      admissionDate: anchor,
       onProgress
     });
     if (!result.modelId || result.modelChunkFailures) {
@@ -389,6 +391,6 @@ export async function deidentifyText(rawText, { mode = "advanced", allowStructur
     if (!allowStructuredFallback) {
       throw new Error(message);
     }
-    return deidentifyTextStructuredOnly(rawText, new Date());
+    return deidentifyTextStructuredOnly(rawText, anchor);
   }
 }

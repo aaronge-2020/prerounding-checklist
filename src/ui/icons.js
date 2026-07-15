@@ -19,6 +19,7 @@ const iconPaths = {
   grip: '<path d="M9 6h.01M15 6h.01M9 12h.01M15 12h.01M9 18h.01M15 18h.01"/>',
   phone: '<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>',
   check: '<path d="M20 6 9 17l-5-5"/>',
+  x: '<path d="M18 6 6 18"/><path d="M6 6l12 12"/>',
   alert: '<path d="M12 3 2 21h20L12 3z"/><path d="M12 9v5M12 17h.01"/>',
   chevron: '<path d="M9 6l6 6-6 6"/>',
   moveUp: '<path d="M12 20V4"/><path d="m7 9 5-5 5 5"/>',

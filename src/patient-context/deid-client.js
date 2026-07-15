@@ -58,10 +58,10 @@ function getWorker() {
       request.resolve(value);
       return;
     }
-    request.reject(new Error(String(value || "De-identification failed.")));
+    request.reject(new Error(String(value || "Redaction failed. Try again.")));
   });
   worker.addEventListener("error", (event) => {
-    rejectAll(new Error(event.message || "The local de-identification worker stopped."));
+    rejectAll(new Error(event.message || "The local redaction process stopped unexpectedly. Try again."));
     worker?.terminate();
     worker = null;
   });
@@ -101,16 +101,16 @@ export async function verifyAdvancedDeidModel({ modelKey = DEFAULT_DEID_MODEL_KE
 export function resetAdvancedDeidWorker() {
   worker?.terminate();
   worker = null;
-  rejectAll(new Error("The local de-identification worker was restarted."));
+  rejectAll(new Error("The local redaction process was restarted. Try again."));
   statuses.clear();
 }
 
-export async function deidentifyText(rawText, { mode = "advanced", allowStructuredFallback = false, onStatus, onProgress } = {}) {
+export async function deidentifyText(rawText, { mode = "advanced", allowStructuredFallback = false, admissionDate = null, onStatus, onProgress } = {}) {
   const modelKey = mode === "advanced" ? DEFAULT_DEID_MODEL_KEY : mode;
   if (mode !== "structured") activeModelKey = deidModelOptionByKey(modelKey).key;
   return request(
     "deidentify",
-    { rawText: String(rawText || ""), options: { mode, allowStructuredFallback } },
+    { rawText: String(rawText || ""), options: { mode, allowStructuredFallback, admissionDate } },
     { onStatus, onProgress }
   );
 }

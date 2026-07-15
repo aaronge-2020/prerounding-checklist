@@ -90,7 +90,11 @@ function caretOffsetWithinTextarea(textarea) {
   mirror.style.visibility = "hidden";
   mirror.style.whiteSpace = "pre-wrap";
   mirror.style.wordWrap = "break-word";
-  mirror.style.boxSizing = "content-box";
+  // Match the textarea's own box-sizing (border-box everywhere in this app)
+  // so the mirrored width copied below wraps text identically - mismatched
+  // box-sizing made the mirror wider than the real textarea, so the caret
+  // marker landed on the wrong line and the menu opened far from the caret.
+  mirror.style.boxSizing = computed.boxSizing;
   MIRRORED_TEXTAREA_PROPERTIES.forEach((prop) => { mirror.style[prop] = computed[prop]; });
   document.body.appendChild(mirror);
   const caretIndex = textarea.selectionStart || 0;
@@ -98,10 +102,20 @@ function caretOffsetWithinTextarea(textarea) {
   const marker = document.createElement("span");
   marker.textContent = textarea.value.slice(caretIndex) || ".";
   mirror.appendChild(marker);
+  // The marker holds all the *remaining* text after the caret so its top/left
+  // land on the right line - but when that remaining text wraps onto several
+  // lines (anything past the caret with more line breaks below it), the
+  // marker span itself spans that many line boxes. offsetHeight sums the
+  // bounding box across every one of those line boxes, not just the caret's
+  // own line - with a few hundred characters left in the textarea that
+  // inflated "line height" to several lines' worth, and the menu opened that
+  // much too low. getClientRects()[0] is just the first line box: the actual
+  // line the caret sits on.
+  const markerLineRect = marker.getClientRects()[0];
   const offset = {
     top: marker.offsetTop,
     left: marker.offsetLeft,
-    height: marker.offsetHeight || parseInt(computed.lineHeight, 10) || 16
+    height: markerLineRect?.height || parseInt(computed.lineHeight, 10) || 16
   };
   document.body.removeChild(mirror);
   return offset;

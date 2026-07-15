@@ -1,9 +1,9 @@
-import { tokenAccentColor } from "../../prompts/custom-templates.js";
+import { tokenColorSwatchButton } from "../token-color-picker.js";
 
 // Pure presentation module (scripts/check-ui-module-boundaries.js enforces
 // this stays free of document/window/navigator) - renders the "Documentation
 // guidelines" management section on the Settings page.
-export function renderGuidelineSets({ guidelineSets, escapeHtml }) {
+export function renderGuidelineSets({ guidelineSets, escapeHtml, colorOverrides = {} }) {
   return `
     <section class="panel settings-panel">
       <div class="section-heading">
@@ -19,7 +19,7 @@ export function renderGuidelineSets({ guidelineSets, escapeHtml }) {
       ${guidelineSets.length ? guidelineSets.map((set) => `
         <details class="guideline-set-card">
           <summary>
-            <span class="variable-swatch" style="background:${tokenAccentColor(set.token, { dot: true })}" aria-hidden="true"></span>
+            ${tokenColorSwatchButton(set.token, colorOverrides, escapeHtml)}
             <strong>${escapeHtml(set.label)}</strong>
             <code>${escapeHtml(set.token)}</code>
           </summary>

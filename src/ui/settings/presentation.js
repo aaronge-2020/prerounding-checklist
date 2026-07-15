@@ -7,7 +7,8 @@ export function createSettingsPresentation({ escapeHtml }) {
     guidelineSets,
     MEDICAL_SERVICE_OPTIONS,
     PRESENTATION_DETAIL_OPTIONS,
-    OPENAI_WORKUP_MODEL_OPTIONS
+    OPENAI_WORKUP_MODEL_OPTIONS,
+    colorOverrides = {}
   }) {
     return `
       <div class="settings-layout">
@@ -72,7 +73,7 @@ export function createSettingsPresentation({ escapeHtml }) {
           <p class="muted settings-helper">Without a saved key, the Workups and Checklist pages fall back to the copy-and-paste ChatGPT formatter prompt.</p>
         </section>
 
-        ${renderGuidelineSets({ guidelineSets, escapeHtml })}
+        ${renderGuidelineSets({ guidelineSets, escapeHtml, colorOverrides })}
       </div>
     `;
   }

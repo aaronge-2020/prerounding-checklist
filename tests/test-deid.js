@@ -353,17 +353,19 @@ Hospital Course by Date
 5/6: Started treatment
 5/8 0454: Morning labs drawn
 DOB: 03/14/1998`;
-const timelineDateResult = deidentifyTextStructuredOnly(timelineDateText);
-assert.ok(timelineDateResult.text.includes("Admission date: 7 days ago"), "admission date should preserve relation to current source date");
-assert.ok(timelineDateResult.text.includes("Symptoms changed on 1 day ago"), "yesterday-like change should be clear");
-assert.ok(timelineDateResult.text.includes("Collected: today"), "latest lab/vital style date should be labeled as current source date");
-assert.ok(timelineDateResult.text.includes("Follow-up on 2 days from now"), "future date should preserve relation to current source date");
-assert.ok(timelineDateResult.text.includes("Issue resolved on 28 days ago"), "older resolved issue date should preserve day-level relation");
-assert.ok(timelineDateResult.text.includes("PET stress in 2 months and 7 days ago"), "month/year dates should preserve the exact relative calendar interval without the original date");
-assert.ok(timelineDateResult.text.includes("2 days ago: Started treatment"), "course date labels should preserve order");
-assert.ok(timelineDateResult.text.includes("04:54 today: Morning labs drawn"), "lab/result-style date-attached time should preserve exact clock time");
+const admissionAnchor = new Date("2026-05-01");
+const timelineDateResult = deidentifyTextStructuredOnly(timelineDateText, admissionAnchor);
+assert.ok(timelineDateResult.text.includes("Timeline: [Hospital Day 1]"), "admission date itself should anchor Hospital Day 1 and its field label should be renamed to Timeline");
+assert.ok(timelineDateResult.text.includes("Symptoms changed on [Hospital Day 7]"), "later same-admission date should advance the Hospital Day count");
+assert.ok(timelineDateResult.text.includes("Timeline: [Hospital Day 8]"), "Collected field label should be renamed to Timeline and dated by Hospital Day");
+assert.ok(timelineDateResult.text.includes("Follow-up on [Hospital Day 10]"), "future date within the admission should still advance the Hospital Day count");
+assert.ok(timelineDateResult.text.includes("Issue resolved on [Historical: 2026]"), "a date well before admission should collapse to a year-only historical marker");
+assert.ok(timelineDateResult.text.includes("PET stress in [Historical: 2026]"), "month/year-only dates should always collapse to a year-only historical marker");
+assert.ok(timelineDateResult.text.includes("[Hospital Day 6]: Started treatment"), "course date labels should preserve order via Hospital Day numbers");
+assert.ok(timelineDateResult.text.includes("[Hospital Day 8 at 04:54]: Morning labs drawn"), "lab/result-style date-attached time should preserve the exact literal clock time next to its Hospital Day");
 assert.deepEqual(timelineDateResult.residualWarnings, [], "timeline placeholders should not create PHI warnings");
 assert.ok(!timelineDateResult.text.includes("2026-05-01"), "exact ISO date should not leak");
+assert.ok(!timelineDateResult.text.includes("2026-04-"), "the real admission date must never be reconstructible from the output");
 
 const legacyDateReview = createEphemeralRedactionReview("EKG (07/09/2026): Sinus rhythm", deidentifyTextStructuredOnly("EKG (07/09/2026): Sinus rhythm", new Date("2026-07-11T12:00:00Z")));
 legacyDateReview.redactions[0].placeholder = "[DATE]";
@@ -397,11 +399,11 @@ const crossYearTimelineText = `Hospital Course by Date
 Current labs 1/2 0600: Creatinine stable
 Follow-up on 1/3`;
 const crossYearTimelineResult = deidentifyTextStructuredOnly(crossYearTimelineText);
-assert.ok(crossYearTimelineResult.text.includes("2 days ago"), "Dec 31 should resolve to two days before Jan 2, not the following December");
-assert.ok(crossYearTimelineResult.text.includes("1 day ago"), "Jan 1 should resolve to one day before Jan 2");
-assert.ok(crossYearTimelineResult.text.includes("Current labs 06:00 today"), "current shorthand lab date should anchor the chart timeline with exact clock time");
-assert.ok(crossYearTimelineResult.text.includes("Follow-up on 1 day from now"), "near-future shorthand follow-up should remain chronological");
-assert.ok(!/Day [+-]?(?:36[0-9]|3[7-9]\d)/.test(crossYearTimelineResult.text), "cross-year shorthand dates should not produce near-one-year offsets");
+assert.ok(crossYearTimelineResult.text.includes("[Hospital Day 1]: Admitted overnight"), "Dec 31 should resolve relative to the inferred anchor without exposing the following December");
+assert.ok(crossYearTimelineResult.text.includes("[Hospital Day 1]: Creatinine improving"), "Jan 1 should resolve relative to the inferred anchor");
+assert.ok(crossYearTimelineResult.text.includes("Current labs [Hospital Day 1 at 06:00]: Creatinine stable"), "current shorthand lab date should anchor the chart timeline with exact clock time");
+assert.ok(crossYearTimelineResult.text.includes("Follow-up on [Hospital Day 2]"), "near-future shorthand follow-up should remain chronological");
+assert.ok(!/Hospital Day (?:36[0-9]|3[7-9]\d)/.test(crossYearTimelineResult.text), "cross-year shorthand dates should not produce near-one-year Hospital Day offsets");
 
 const priorMonthYearAnchorText = `Prior transplant evaluation in 11/2025
 PET stress in 12/2025
@@ -409,40 +411,39 @@ Labs 1/2 0454: Creatinine stable
 12/31: Admitted for monitoring
 1/1: Symptoms improved`;
 const priorMonthYearAnchorResult = deidentifyTextStructuredOnly(priorMonthYearAnchorText);
-assert.ok(priorMonthYearAnchorResult.text.includes("Prior transplant evaluation in 2 months and 1 day ago"), "prior month/year should make Jan shorthand resolve to the following year without exposing a calendar date");
-assert.ok(priorMonthYearAnchorResult.text.includes("PET stress in 1 month and 1 day ago"), "month/year history should preserve the exact relative interval to inferred Day 0");
-assert.ok(priorMonthYearAnchorResult.text.includes("Labs 04:54 today"), "no-year current labs should infer the year from prior explicit history and preserve exact clock time");
-assert.ok(priorMonthYearAnchorResult.text.includes("2 days ago: Admitted for monitoring"), "Dec shorthand should attach to the prior year relative to Jan Day 0");
-assert.ok(priorMonthYearAnchorResult.text.includes("1 day ago: Symptoms improved"), "Jan shorthand should stay in the inferred current year");
-assert.ok(!/Day [+-]?(?:36[0-9]|3[7-9]\d)/.test(priorMonthYearAnchorResult.text), "month/year anchors should not create near-one-year offsets");
+assert.ok(priorMonthYearAnchorResult.text.includes("Prior transplant evaluation in [Historical: 2025]"), "prior month/year should collapse to a year-only historical marker, never a calendar date");
+assert.ok(priorMonthYearAnchorResult.text.includes("PET stress in [Historical: 2025]"), "month/year history should collapse to a year-only historical marker");
+assert.ok(priorMonthYearAnchorResult.text.includes("Labs [Hospital Day 1 at 04:54]"), "no-year current labs should infer the year from prior explicit history and preserve exact clock time");
+assert.ok(priorMonthYearAnchorResult.text.includes("[Hospital Day 1]: Admitted for monitoring"), "Dec shorthand should attach to the prior year relative to the inferred anchor");
+assert.ok(priorMonthYearAnchorResult.text.includes("[Hospital Day 1]: Symptoms improved"), "Jan shorthand should stay in the inferred current year");
+assert.ok(!/Hospital Day (?:36[0-9]|3[7-9]\d)/.test(priorMonthYearAnchorResult.text), "month/year anchors should not create near-one-year Hospital Day offsets");
 
 const sameMorningLabTimeText = `BMP Collected: 06/06/2026 06:12 Na 132, K 3.4, Cr 1.5
 BMP Collected: 06/06/2026 07:45 Na 136, K 4.2, Cr 1.2`;
 const sameMorningLabTimeResult = deidentifyTextStructuredOnly(sameMorningLabTimeText);
-assert.ok(sameMorningLabTimeResult.text.includes("BMP Collected: 06:12 today"), "first same-morning BMP exact time should be preserved");
-assert.ok(sameMorningLabTimeResult.text.includes("BMP Collected: 07:45 today"), "second same-morning BMP exact time should be preserved");
-assert.ok(!sameMorningLabTimeResult.text.includes("preserve exact time"), "multiple same-morning result times should not collapse into a bucket");
+assert.ok(sameMorningLabTimeResult.text.includes("[Lab 1/2] BMP Collected: [Hospital Day 1 at 06:12]"), "first same-morning BMP should be ordinal-tagged and keep its exact time");
+assert.ok(sameMorningLabTimeResult.text.includes("**[LATEST_RESULT]** [Lab 2/2] BMP Collected: [Hospital Day 1 at 07:45]"), "second, later same-morning BMP should be tagged as the latest result and keep its exact time");
 assert.ok(!sameMorningLabTimeResult.text.includes("06/06/2026"), "exact lab calendar date should still be removed");
 
 const pocGlucoseTimeText = `POC Glucose 06/06/2026 04:02 160
 POC Glucose 06/06/2026 08:01 190`;
 const pocGlucoseTimeResult = deidentifyTextStructuredOnly(pocGlucoseTimeText);
-assert.ok(pocGlucoseTimeResult.text.includes("POC Glucose 04:02 today 160"), "POC glucose exact AM time should be preserved");
-assert.ok(pocGlucoseTimeResult.text.includes("POC Glucose 08:01 today 190"), "second POC glucose exact AM time should be preserved");
+assert.ok(pocGlucoseTimeResult.text.includes("POC Glucose [Hospital Day 1 at 04:02] 160"), "POC glucose exact AM time should be preserved");
+assert.ok(pocGlucoseTimeResult.text.includes("POC Glucose [Hospital Day 1 at 08:01] 190"), "second POC glucose exact AM time should be preserved");
 
 const narrativeTimeText = `Symptoms changed on 06/06/2026 06:12
 Plan updated after rounds on 06/06/2026 07:45`;
 const narrativeTimeResult = deidentifyTextStructuredOnly(narrativeTimeText);
-assert.ok(narrativeTimeResult.text.includes("Symptoms changed on 06:12 today"), "non-result narrative timestamp should preserve exact time");
-assert.ok(narrativeTimeResult.text.includes("Plan updated after rounds on 07:45 today"), "second non-result narrative timestamp should preserve exact time");
-assert.ok(!narrativeTimeResult.text.includes("preserve exact time"), "narrative timestamps should use exact times, not buckets");
+assert.ok(narrativeTimeResult.text.includes("Symptoms changed on [Hospital Day 1 at 06:12]"), "non-result narrative timestamp should preserve exact time");
+assert.ok(narrativeTimeResult.text.includes("Plan updated after rounds on [Hospital Day 1 at 07:45]"), "second non-result narrative timestamp should preserve exact time");
+assert.ok(!/\b(?:morning|afternoon|evening|overnight|night)\b/.test(narrativeTimeResult.text), "narrative timestamps should use exact times, not time-of-day buckets");
 
-const labChronologyNormalized = normalizeResidualTemporalPhi(`<lab_chronology>
-BMP timeline: Day 0 06:12 -> Day 0 07:45.
-Most recent BMP by collection time: 07:45 on Day 0.
-</lab_chronology>`);
-assert.ok(labChronologyNormalized.includes("BMP timeline: 06:12 on Day 0 -> 07:45 on Day 0."), "lab chronology exact timeline should survive residual temporal normalization");
-assert.ok(labChronologyNormalized.includes("Most recent BMP by collection time: 07:45 on Day 0."), "lab chronology most-recent exact time should survive residual temporal normalization");
+const labChronologyInput = `<lab_chronology>
+BMP timeline: Hospital Day 1 06:12 -> Hospital Day 1 07:45.
+Most recent BMP by collection time: 07:45 on Hospital Day 1.
+</lab_chronology>`;
+const labChronologyNormalized = normalizeResidualTemporalPhi(labChronologyInput);
+assert.equal(labChronologyNormalized, labChronologyInput, "already-anchored Hospital Day text with no real calendar dates should pass through residual temporal normalization unchanged");
 assert.ok(!labChronologyNormalized.includes("early morning"), "lab chronology exact times should not be bucketed");
 
 // Synthetic Results Review fixture; do not replace with patient chart text.
@@ -479,28 +480,27 @@ POC Glucose: 111
 WBC: 9.1
 Sodium: 140`;
 const epicResultsReviewResult = deidentifyTextStructuredOnly(epicResultsReviewText);
-assert.ok(epicResultsReviewResult.text.includes("WBC: 9.1 04:48 today"), "latest Results Review row should anchor Day 0 and preserve exact clock time");
-assert.ok(epicResultsReviewResult.text.includes("Sodium: 140 04:48 today"), "BMP-like row should preserve exact clock time");
-assert.ok(epicResultsReviewResult.text.includes("POC Glucose: 123 1 day ago at 20:42"), "same-day/previous-day POC glucose row should preserve exact clock time");
-assert.ok(epicResultsReviewResult.text.includes("Troponin T 5th Gen, High Sensitivity: 12 7 days ago at 11:35"), "high-sensitivity troponin label should not be redacted as a name");
-assert.ok(epicResultsReviewResult.text.includes("BK Virus Quant Log 10: Cannot Be Determined 2 days ago at 10:20"), "Cannot Be Determined should remain a result value");
-assert.ok(epicResultsReviewResult.text.includes("EBV LOG10: Cannot Be Determined 7 days ago at 11:35"), "viral result values should not be name-redacted");
-assert.ok(epicResultsReviewResult.text.includes("Parainflu 1 Virus RNA Amplification: Not Detected 8 days ago at 18:42"), "viral panel label should be preserved");
-assert.ok(epicResultsReviewResult.text.includes("Rhinovirus/Enterovirus RNA Amplification: Not Detected 8 days ago at 18:42"), "slash-separated viral label should be preserved");
-assert.ok(epicResultsReviewResult.text.includes("XR Knee 1/2 Views RIGHT: Rpt (E) 3 days ago at 07:31"), "imaging view count should not be converted to a date");
-assert.ok(epicResultsReviewResult.text.includes("US Renal Transplant W/Duplex: Rpt 8 days ago at 20:43"), "renal transplant imaging result should not be location/name redacted");
-assert.ok(epicResultsReviewResult.text.includes("CAR Echo 2D Adult Complete: Rpt 2 days ago at 10:06"), "Adult Complete echo label should be preserved");
-assert.ok(epicResultsReviewResult.text.includes("QTC Calculation (Bazett): 453 4 days ago at 23:41"), "QTC Calculation should not be redacted as a name");
-assert.ok(epicResultsReviewResult.text.includes("External Hemoglobin A1C: 8.2 (H) (E) 5 days ago at 07:43"), "External Hemoglobin A1C should remain clinical result text");
-assert.ok(epicResultsReviewResult.text.includes("Miscellaneous Test: SEE LAB TAB 9 days ago at 12:00"), "stray SEE LAB TAB should not become Day 0");
-assert.ok(epicResultsReviewResult.text.includes("Transfuse Red Blood Cells: Rpt  |  Rpt 3 days ago at 10:28\n\n2 days ago at 21:31\nPOC Glucose: 160"), "day/time normalizer should not merge across blank lines");
-assert.ok(epicResultsReviewResult.text.includes("1 day ago at 05:32\nPOC Glucose: 95"), "standalone POC glucose header should preserve exact time");
-assert.ok(epicResultsReviewResult.text.includes("1 day ago at 05:51\nPOC Glucose: 150"), "multiple AM POC glucose headers should stay distinguishable");
-assert.ok(epicResultsReviewResult.text.includes("1 day ago at 11:54\nPOC Glucose: 111"), "POC glucose value should not be rewritten as a relative date");
-assert.ok(epicResultsReviewResult.text.includes("04:48 today\nWBC: 9.1"), "standalone CBC/BMP header should preserve exact collection/result time");
-assert.ok(!epicResultsReviewResult.text.includes("Day +2409"), "old 2019 anchor should not survive");
+assert.ok(epicResultsReviewResult.text.includes("WBC: 9.1 [Hospital Day 1 at 04:48]"), "latest Results Review row should anchor Hospital Day 1 and preserve exact clock time");
+assert.ok(epicResultsReviewResult.text.includes("Sodium: 140 [Hospital Day 1 at 04:48]"), "BMP-like row should preserve exact clock time");
+assert.ok(epicResultsReviewResult.text.includes("POC Glucose: 123 [Hospital Day 1 at 20:42]"), "same-day/previous-day POC glucose row should preserve exact clock time");
+assert.ok(epicResultsReviewResult.text.includes("Troponin T 5th Gen, High Sensitivity: 12 [Hospital Day 1 at 11:35]"), "high-sensitivity troponin label should not be redacted as a name");
+assert.ok(epicResultsReviewResult.text.includes("BK Virus Quant Log 10: Cannot Be Determined [Hospital Day 1 at 10:20]"), "Cannot Be Determined should remain a result value");
+assert.ok(epicResultsReviewResult.text.includes("EBV LOG10: Cannot Be Determined [Hospital Day 1 at 11:35]"), "viral result values should not be name-redacted");
+assert.ok(epicResultsReviewResult.text.includes("Parainflu 1 Virus RNA Amplification: Not Detected [Hospital Day 1 at 18:42]"), "viral panel label should be preserved");
+assert.ok(epicResultsReviewResult.text.includes("Rhinovirus/Enterovirus RNA Amplification: Not Detected [Hospital Day 1 at 18:42]"), "slash-separated viral label should be preserved");
+assert.ok(epicResultsReviewResult.text.includes("XR Knee 1/2 Views RIGHT: Rpt (E) [Hospital Day 1 at 07:31]"), "imaging view count should not be converted to a date");
+assert.ok(epicResultsReviewResult.text.includes("US Renal Transplant W/Duplex: Rpt [Hospital Day 1 at 20:43]"), "renal transplant imaging result should not be location/name redacted");
+assert.ok(epicResultsReviewResult.text.includes("CAR Echo 2D Adult Complete: Rpt [Hospital Day 1 at 10:06]"), "Adult Complete echo label should be preserved");
+assert.ok(epicResultsReviewResult.text.includes("QTC Calculation (Bazett): 453 [Hospital Day 1 at 23:41]"), "QTC Calculation should not be redacted as a name");
+assert.ok(epicResultsReviewResult.text.includes("External Hemoglobin A1C: 8.2 (H) (E) [Hospital Day 1 at 07:43]"), "External Hemoglobin A1C should remain clinical result text");
+assert.ok(epicResultsReviewResult.text.includes("Miscellaneous Test: SEE LAB TAB [Hospital Day 1 at 12:00]"), "stray SEE LAB TAB should not become an unrelated label");
+assert.ok(epicResultsReviewResult.text.includes("Transfuse Red Blood Cells: Rpt  |  Rpt [Hospital Day 1 at 10:28]\n\n[Hospital Day 1 at 21:31]\nPOC Glucose: 160"), "date conversion should not merge lines across blank lines");
+assert.ok(epicResultsReviewResult.text.includes("[Hospital Day 1 at 05:32]\nPOC Glucose: 95"), "standalone POC glucose header should preserve exact time");
+assert.ok(epicResultsReviewResult.text.includes("[Hospital Day 1 at 05:51]\nPOC Glucose: 150"), "multiple AM POC glucose headers should stay distinguishable");
+assert.ok(epicResultsReviewResult.text.includes("[Hospital Day 1 at 11:54]\nPOC Glucose: 111"), "POC glucose value should not be rewritten as a date placeholder");
+assert.ok(epicResultsReviewResult.text.includes("[Hospital Day 1 at 04:48]\nWBC: 9.1"), "standalone CBC/BMP header should preserve exact collection/result time");
 assert.ok(!epicResultsReviewResult.text.includes("[NAME]"), "clinical result labels/values in Results Review specimen should not become names");
-assert.ok(!epicResultsReviewResult.text.includes("relative date"), "numeric result values should not be replaced by relative date placeholders");
+assert.ok(!/\b(?:morning|afternoon|evening|overnight|night)\b/.test(epicResultsReviewResult.text), "result chronology should keep exact clocks instead of time-of-day buckets");
 assert.ok(!epicResultsReviewResult.text.includes("1/10/26"), "exact calendar dates should still be removed");
 assert.deepEqual(epicResultsReviewResult.residualWarnings.filter((warning) => warning.severity === "high"), [], "Results Review specimen should not leave high-risk PHI warnings");
 
@@ -638,92 +638,69 @@ POC Glucose: 101
 02/10/26 08:10
 POC Glucose: 104`;
 const epicRespImagingResult = deidentifyTextStructuredOnly(epicRespImagingResultsText);
-assert.ok(epicRespImagingResult.text.includes("BG Site: A-Line 5 days ago at 15:49"), "A-line blood gas site should remain clinical text with exact time");
-assert.ok(epicRespImagingResult.text.includes("pH, Arterial: 7.35 4 days ago at 10:42"), "blood gas result should preserve exact clock time");
-assert.ok(epicRespImagingResult.text.includes("Oxygen Device: Ventilator 5 days ago at 09:54"), "vent setting row should preserve exact clock time");
-assert.ok(epicRespImagingResult.text.includes("Mode: High Flow Nasal Cannula 5 days ago at 20:49"), "respiratory mode should not be treated as a name");
-assert.ok(epicRespImagingResult.text.includes("WBC: 8.8 2 days ago at 12:22"), "latest CBC before Day 0 should remain chronological");
-assert.ok(epicRespImagingResult.text.includes("POC Glucose: 104 08:10 today"), "latest POC glucose should anchor Day 0");
-assert.ok(epicRespImagingResult.text.includes("Card 1 Collection Date: 6 days ago 6 days ago at 10:28"), "Card 1 Collection Date should not override Day 0 and should not duplicate exact-time wording");
-assert.ok(epicRespImagingResult.text.includes("Oral/Maxillo Panorex Image By Clinic XR: Rpt 21 days ago at 17:39"), "imaging title containing Clinic should not be redacted as an organization");
-assert.ok(epicRespImagingResult.text.includes("XR Metal Screening MR Clearance (Abd): Rpt 20 days ago at 15:42"), "XR metal screening title should not be redacted as a name");
-assert.ok(epicRespImagingResult.text.includes("IR CV Tunneled Cath Insertion >=5 yrs: Rpt 9 days ago at 14:33"), "IR tunneled catheter title should be preserved");
-assert.ok(epicRespImagingResult.text.includes("MR Shoulder W+WO Con RIGHT: Rpt 1 month and 10 days ago at 06:30"), "MR Shoulder W+WO title should be preserved");
-assert.ok(epicRespImagingResult.text.includes("Request for: Plasma: Rpt 8 days ago at 10:55"), "blood product request rows should preserve exact clock time");
-assert.ok(epicRespImagingResult.text.includes("Transfuse Platelets: Rpt  |  Rpt 6 days ago at 20:43"), "transfusion rows should preserve exact clock time");
-assert.ok(epicRespImagingResult.text.includes("Special Send Out Test: Rpt 22 days ago at 13:10"), "special send-out test should not be redacted as a facility");
-assert.ok(epicRespImagingResult.text.includes("HCV Spec Site: Blood 7 days ago at 08:51"), "HCV spec site value Blood should remain clinical text");
-assert.ok(epicRespImagingResult.text.includes("Iron: Not Performed 8 days ago at 06:19"), "Not Performed should remain a result value");
-assert.ok(epicRespImagingResult.text.includes("Vitamin B-12: 322 26 days ago at 04:20"), "Vitamin B-12 should not be redacted as a name");
-assert.ok(epicRespImagingResult.text.includes("BG Site: Peripheral Venous 5 days ago at 03:40"), "Peripheral Venous should remain a blood gas site value");
-assert.ok(epicRespImagingResult.text.includes("Base Exc Art: -4.1 4 days ago at 16:02"), "arterial base excess should preserve exact result time");
-assert.ok(epicRespImagingResult.text.includes("Base Excess, Ven: -1.8 4 days ago at 03:40"), "venous base excess should preserve exact result time");
-assert.ok(epicRespImagingResult.text.includes("Hypochromasia: Moderate ! 1 month and 9 days ago at 21:16"), "morphology value should preserve exact relative date and exact result time");
-assert.ok(epicRespImagingResult.text.includes("Microcytes: Moderate ! 1 month and 9 days ago at 21:16"), "microcyte morphology row should preserve exact relative date and exact result time");
-assert.ok(epicRespImagingResult.text.includes("Retic CT %: 1.23 9 days ago at 21:49"), "Retic CT should not create residual name warnings");
-assert.ok(epicRespImagingResult.text.includes("Body Fluid Culture (Aerobic): Rpt !! 5 days ago at 13:38"), "body fluid culture should not create residual name warnings");
-assert.ok(epicRespImagingResult.text.includes("QuantiFERON TB1 Ag Value: 0.04 1 month and 4 days ago at 09:40"), "QuantiFERON Ag Value should not create residual name warnings");
-assert.ok(epicRespImagingResult.text.includes("Group A Streptococcus Screen w/o Reflex: Rpt 1 month and 3 days ago at 09:48"), "strep screen w/o reflex should not be redacted as a name");
-assert.ok(epicRespImagingResult.text.includes("XR Ankle Min 3 Views Each Bilateral: Rpt (E) 1 month and 2 days ago at 14:56"), "bilateral ankle imaging title should not be redacted as a name");
-assert.ok(epicRespImagingResult.text.includes("XR Foot 1 or 2 Views Each Bilateral: Rpt (E) 1 month and 2 days ago at 14:57"), "bilateral foot imaging title should not be redacted as a name");
-assert.ok(epicRespImagingResult.text.includes("XR Hands 1 or 2 Views Each Bilateral: Rpt (E) 1 month and 1 day ago at 14:45"), "bilateral hand imaging title should not be redacted as a name");
-assert.ok(epicRespImagingResult.text.includes("CAR Echo 2D w Agitated Saline Adult Comp: Rpt (C) 9 days ago at 10:45"), "agitated saline echo title should not be redacted as a patient name");
-assert.ok(epicRespImagingResult.text.includes("POCUS ANES Procedure Nerve or Fascial Plane Block: Rpt 4 days ago at 10:26"), "POCUS anesthesia fascial-plane block title should not create residual name warnings");
-assert.ok(epicRespImagingResult.text.includes("Manual Diff?: Yes 1 month and 8 days ago at 11:19"), "manual differential result should keep exact time instead of a morning bucket");
-assert.ok(epicRespImagingResult.text.includes("Cast Type: Hyaline casts 1 month and 7 days ago at 12:15"), "cast type should keep exact time instead of an afternoon bucket");
-assert.ok(epicRespImagingResult.text.includes("Ref Com Comments: H/O Anti-K; No other antibody detected. 7 days ago at 07:59"), "blood-bank reference comments should keep exact time and not create name warnings");
-assert.ok(epicRespImagingResult.text.includes("Clostridioides difficile DNA Assay: Rpt 1 month and 6 days ago at 08:18"), "DNA Assay should not create residual name warnings");
-assert.ok(epicRespImagingResult.text.includes("TACROLIMUS BLOOD (FK506), LC/MS/MS (T): 3.4 05:12 today"), "Tacrolimus blood label should not create residual name warnings");
-assert.ok(epicRespImagingResult.text.includes("ABO Rh: B Negative 07:00 today"), "blood type value B Negative should not create residual name warnings");
-assert.ok(epicRespImagingResult.text.includes("Antigen Typing: K Neg  |  C Neg  |  E Neg 1 month and 5 days ago at 14:06"), "blood-bank antigen shorthand should not create residual name warnings");
-assert.ok(epicRespImagingResult.text.includes("US Renal Transplant W/Duplex: Rpt 1 month and 4 days ago at 14:23"), "renal transplant ultrasound title should not create residual name warnings");
-assert.ok(epicRespImagingResult.text.includes("Scanned External EKG/ECG: Rpt 1 month and 3 days ago at 00:00"), "scanned external EKG title should not create residual name warnings");
-assert.ok(epicRespImagingResult.text.includes("Spec Gravity, Ur: 1.030 6 days ago at 20:08"), "urine specific gravity should not create residual name warnings");
-assert.ok(epicRespImagingResult.text.includes("Leukocyte Esterase, Ur: Trace ! 6 days ago at 20:08"), "leukocyte esterase should not create residual name warnings");
-assert.ok(epicRespImagingResult.text.includes("XR Elbow 2 Views LEFT: Rpt (C) (E) 19 days ago at 20:25"), "elbow imaging title should not create residual name warnings");
-assert.ok(epicRespImagingResult.text.includes("CT Cervical Spine W/O Con: Rpt (C) (E) 19 days ago at 19:29"), "CT cervical spine W/O contrast title should not create residual name warnings");
-assert.ok(epicRespImagingResult.text.includes("CT Head/Brain W/O Con: Rpt 6 days ago at 19:06"), "CT head/brain W/O contrast title should not create residual name warnings");
-assert.ok(epicRespImagingResult.text.includes("CT Upper Extremity WITH Con LEFT: Rpt 6 days ago at 19:06"), "CT upper extremity title should not create residual name warnings");
-assert.ok(epicRespImagingResult.text.includes("US Soft Tissue Head/Neck: Rpt (E) 18 days ago at 14:23"), "US soft-tissue head/neck title should not create residual name warnings");
-assert.ok(epicRespImagingResult.text.includes("VAS Venous Duplex LE Bilat Complete: Rpt 8 days ago at 11:58"), "LE bilateral venous duplex title should not create residual name warnings");
-assert.ok(epicRespImagingResult.text.includes("VAS Venous Duplex UE Bilat Complete: Rpt 8 days ago at 12:38"), "UE bilateral venous duplex title should not create residual name warnings");
-assert.ok(epicRespImagingResult.text.includes("POC SAT O2 ART: 98 4 days ago at 12:08"), "POC saturation label should not create residual name warnings");
-assert.ok(epicRespImagingResult.text.includes("HCG Beta Subunit - QuaL: Negative 5 days ago at 06:19"), "HCG beta subunit label should remain clinical text");
-assert.ok(epicRespImagingResult.text.includes("Quantiferon TB Gold: Indeterminate ! 1 month and 5 days ago at 15:54"), "Quantiferon result should keep exact time instead of an afternoon bucket");
-assert.ok(epicRespImagingResult.text.includes("RPR Titer: Non Reactive 1 month and 4 days ago at 13:30"), "RPR titer should keep exact time instead of an afternoon bucket");
-assert.ok(epicRespImagingResult.text.includes("TREPONEMA PALLIDUM IGG AB: Minimal React 9 days ago at 03:14"), "Treponema serology should keep exact time instead of an early-morning bucket");
-assert.ok(epicRespImagingResult.text.includes("Bacterial Vaginosis, RNA: Positive ! 5 days ago at 12:00"), "Bacterial Vaginosis RNA should not be redacted as a name");
-assert.ok(epicRespImagingResult.text.includes("Dolutegravir Resistance: NOT PREDICTED 1 month and 3 days ago at 15:02"), "HIV resistance rows should keep exact time instead of an afternoon bucket");
-assert.ok(epicRespImagingResult.text.includes("Casts: None seen 1 month and 2 days ago at 15:04"), "urine casts result should keep exact time instead of an afternoon bucket");
-assert.ok(epicRespImagingResult.text.includes("Microscopic Examination of Urine: See Comment 1 month and 1 day ago at 00:00"), "urine microscopy label should not be redacted as a name");
-assert.ok(epicRespImagingResult.text.includes("Antibody Identification: Cold Autoantibody 5 days ago at 06:19"), "cold autoantibody result value should not be redacted as a name");
-assert.ok(epicRespImagingResult.text.includes("DIRECT COOMBS-C3D: Negative 6 days ago at 14:26"), "COOMBS-C3D should remain a clinical label, not an ID placeholder");
-assert.ok(epicRespImagingResult.text.includes("Tissue Examination: Rpt (P) 5 days ago at 10:43"), "tissue examination label should not be redacted as a name");
-assert.ok(epicRespImagingResult.text.includes("XR Chest 1 View Post Intervention: Rpt (C) (E) 1 month ago at 12:15"), "post-intervention imaging title should not be redacted as a name");
-assert.ok(epicRespImagingResult.text.includes("POC SARS COV-2 (COVID-19) Ag: Negative 30 days ago at 04:02"), "COVID-19 should remain a clinical label token, not an ID placeholder");
-assert.ok(epicRespImagingResult.text.includes("SARS-CoV-2 (COVID-19) RNA: Not Detected 29 days ago at 06:10"), "SARS-CoV-2 COVID-19 RNA label should be preserved");
-assert.ok(epicRespImagingResult.text.includes("Test Cup: Plain Cup 8 days ago at 15:00"), "TEG cup descriptor should keep exact result time");
-assert.ok(epicRespImagingResult.text.includes("Appearance, Ur: Slightly Cloudy 7 days ago at 18:57"), "urine appearance descriptor should keep exact result time");
-assert.ok(epicRespImagingResult.text.includes("Ketones, Ur: Trace ! 7 days ago at 18:57"), "urine trace values should not be treated as narrative time");
-assert.ok(epicRespImagingResult.text.includes("Mucus, Ur: Small 7 days ago at 18:57"), "urine small values should not be treated as names or narrative time");
-assert.ok(epicRespImagingResult.text.includes("Appearance: Clear 13 days ago at 01:51"), "generic appearance row should preserve exact result time");
-assert.ok(epicRespImagingResult.text.includes("R Axis: -2 7 days ago at 18:12"), "EKG axis result should keep exact result time");
-assert.ok(epicRespImagingResult.text.includes("Banding Type: FISH 5 days ago at 02:31"), "cytogenetics banding row should keep exact result time");
-assert.ok(epicRespImagingResult.text.includes("Source: Blood\n 5 days ago at 02:31"), "standalone timestamp after specimen source should keep exact result time");
-assert.ok(epicRespImagingResult.text.includes("TEG Platelet Aggregation (MA): 68.3 8 days ago at 15:00"), "TEG platelet aggregation should not be redacted as a name");
-assert.ok(epicRespImagingResult.text.includes("TEG Fibrinogen Activity (Angle): 65.2 8 days ago at 15:00"), "TEG fibrinogen activity should not create residual name warnings");
-assert.ok(epicRespImagingResult.text.includes("TEG Clotting Time (R): 9.5 8 days ago at 15:00"), "TEG clotting time should not create residual name warnings");
-assert.ok(epicRespImagingResult.text.includes("Beta HCG Tumor Marker (Male): 2080 (H) 9 days ago at 04:33"), "tumor-marker lab label should not be redacted as a patient name");
-assert.ok(epicRespImagingResult.text.includes("XR Hip Bilateral & Pelvis 2 Views: Rpt 7 days ago at 17:57"), "hip/pelvis imaging title should not be redacted as a name");
-assert.ok(epicRespImagingResult.text.includes("Prelim Result: Normal FISH 5 days ago at 02:31"), "Normal FISH result should remain clinical text");
-assert.ok(epicRespImagingResult.text.includes("XR FEMUR 2 VIEWS: Rpt 8 days ago at 22:25"), "all-caps femur imaging title should not create name warnings");
-assert.ok(epicRespImagingResult.text.includes("XR FOOT MIN 3 VIEWS: Rpt 8 days ago at 22:25"), "all-caps foot imaging title should not create name warnings");
-assert.ok(epicRespImagingResult.text.includes("1 day ago at 07:51\nPOC Glucose: 101"), "timestamped POC glucose block should keep exact clock time");
+assert.ok(epicRespImagingResult.text.includes("[Lab 1/2] BG Site: A-Line [Hospital Day 1 at 15:49]"), "A-line blood gas site should remain clinical text, keep exact time, and be ordinal-tagged as the first of its repeated label");
+assert.ok(epicRespImagingResult.text.includes("pH, Arterial: 7.35 [Hospital Day 1 at 10:42]"), "blood gas result should preserve exact clock time");
+assert.ok(epicRespImagingResult.text.includes("Oxygen Device: Ventilator [Hospital Day 1 at 09:54]"), "vent setting row should preserve exact clock time");
+assert.ok(epicRespImagingResult.text.includes("Mode: High Flow Nasal Cannula [Hospital Day 1 at 20:49]"), "respiratory mode should not be treated as a name");
+assert.ok(epicRespImagingResult.text.includes("WBC: 8.8 [Hospital Day 1 at 12:22]"), "CBC row within the admission window should anchor to Hospital Day 1");
+assert.ok(epicRespImagingResult.text.includes("POC Glucose: 104 [Hospital Day 1 at 08:10]"), "latest POC glucose should anchor to Hospital Day 1");
+assert.ok(epicRespImagingResult.text.includes("Card 1 Collection Date: [Hospital Day 1] [Hospital Day 1 at 10:28]"), "Card 1 Collection Date should not leak a calendar date and should not duplicate exact-time wording");
+assert.ok(epicRespImagingResult.text.includes("Oral/Maxillo Panorex Image By Clinic XR: Rpt [Historical: 2026]"), "imaging title containing Clinic should not be redacted as an organization, and an old date should collapse to a year-only marker");
+assert.ok(epicRespImagingResult.text.includes("XR Metal Screening MR Clearance (Abd): Rpt [Historical: 2026]"), "XR metal screening title should not be redacted as a name");
+assert.ok(epicRespImagingResult.text.includes("IR CV Tunneled Cath Insertion >=5 yrs: Rpt [Hospital Day 1 at 14:33]"), "IR tunneled catheter title should be preserved");
+assert.ok(epicRespImagingResult.text.includes("MR Shoulder W+WO Con RIGHT: Rpt [Historical: 2025]"), "MR Shoulder W+WO title should be preserved and its prior-year date collapsed to a year-only marker");
+assert.ok(epicRespImagingResult.text.includes("Request for: Plasma: Rpt [Hospital Day 1 at 10:55]"), "blood product request rows should preserve exact clock time");
+assert.ok(epicRespImagingResult.text.includes("Transfuse Platelets: Rpt  |  Rpt [Hospital Day 1 at 20:43]"), "transfusion rows should preserve exact clock time");
+assert.ok(epicRespImagingResult.text.includes("Special Send Out Test: Rpt [Historical: 2026]"), "special send-out test should not be redacted as a facility");
+assert.ok(epicRespImagingResult.text.includes("HCV Spec Site: Blood [Hospital Day 1 at 08:51]"), "HCV spec site value Blood should remain clinical text");
+assert.ok(epicRespImagingResult.text.includes("Iron: Not Performed [Hospital Day 1 at 06:19]"), "Not Performed should remain a result value");
+assert.ok(epicRespImagingResult.text.includes("Vitamin B-12: 322 [Historical: 2026]"), "Vitamin B-12 should not be redacted as a name, and an older date should collapse to a year-only marker");
+assert.ok(epicRespImagingResult.text.includes("**[LATEST_RESULT]** [Lab 2/2] BG Site: Peripheral Venous [Hospital Day 1 at 03:40]"), "Peripheral Venous should remain a blood gas site value and be tagged as the most recent of its repeated label");
+assert.ok(epicRespImagingResult.text.includes("Base Exc Art: -4.1 [Hospital Day 1 at 16:02]"), "arterial base excess should preserve exact result time");
+assert.ok(epicRespImagingResult.text.includes("Base Excess, Ven: -1.8 [Hospital Day 1 at 03:40]"), "venous base excess should preserve exact result time");
+assert.ok(epicRespImagingResult.text.includes("Hypochromasia: Moderate ! [Historical: 2026]"), "morphology value with an old date should collapse to a year-only marker");
+assert.ok(epicRespImagingResult.text.includes("Microcytes: Moderate ! [Historical: 2026]"), "microcyte morphology row with an old date should collapse to a year-only marker");
+assert.ok(epicRespImagingResult.text.includes("Retic CT %: 1.23 [Hospital Day 1 at 21:49]"), "Retic CT should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("Body Fluid Culture (Aerobic): Rpt !! [Hospital Day 1 at 13:38]"), "body fluid culture should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("QuantiFERON TB1 Ag Value: 0.04 [Historical: 2026]"), "QuantiFERON Ag Value should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("Group A Streptococcus Screen w/o Reflex: Rpt [Historical: 2026]"), "strep screen w/o reflex should not be redacted as a name");
+assert.ok(epicRespImagingResult.text.includes("XR Ankle Min 3 Views Each Bilateral: Rpt (E) [Historical: 2026]"), "bilateral ankle imaging title should not be redacted as a name");
+assert.ok(epicRespImagingResult.text.includes("XR Hands 1 or 2 Views Each Bilateral: Rpt (E) [Historical: 2026]"), "bilateral hand imaging title should not be redacted as a name");
+assert.ok(epicRespImagingResult.text.includes("CAR Echo 2D w Agitated Saline Adult Comp: Rpt (C) [Hospital Day 1 at 10:45]"), "agitated saline echo title should not be redacted as a patient name");
+assert.ok(epicRespImagingResult.text.includes("POCUS ANES Procedure Nerve or Fascial Plane Block: Rpt [Hospital Day 1 at 10:26]"), "POCUS anesthesia fascial-plane block title should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("Manual Diff?: Yes [Historical: 2026]"), "manual differential result should collapse an old date to a year-only marker, not a time bucket");
+assert.ok(epicRespImagingResult.text.includes("Ref Com Comments: H/O Anti-K; No other antibody detected. [Hospital Day 1 at 07:59]"), "blood-bank reference comments should keep exact time and not create name warnings");
+assert.ok(epicRespImagingResult.text.includes("TACROLIMUS BLOOD (FK506), LC/MS/MS (T): 3.4 [Hospital Day 1 at 05:12]"), "Tacrolimus blood label should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("[Lab 1/2] ABO Rh: B Negative [Hospital Day 1 at 07:00]"), "blood type value B Negative should not create residual name warnings and should be ordinal-tagged");
+assert.ok(epicRespImagingResult.text.includes("Antigen Typing: K Neg  |  C Neg  |  E Neg [Historical: 2026]"), "blood-bank antigen shorthand should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("Spec Gravity, Ur: 1.030 [Hospital Day 1 at 20:08]"), "urine specific gravity should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("Leukocyte Esterase, Ur: Trace ! [Hospital Day 1 at 20:08]"), "leukocyte esterase should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("CT Head/Brain W/O Con: Rpt [Hospital Day 1 at 19:06]"), "CT head/brain W/O contrast title should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("VAS Venous Duplex LE Bilat Complete: Rpt [Hospital Day 1 at 11:58]"), "LE bilateral venous duplex title should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("POC SAT O2 ART: 98 [Hospital Day 1 at 12:08]"), "POC saturation label should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("HCG Beta Subunit - QuaL: Negative [Hospital Day 1 at 06:19]"), "HCG beta subunit label should remain clinical text");
+assert.ok(epicRespImagingResult.text.includes("Quantiferon TB Gold: Indeterminate ! [Historical: 2026]"), "Quantiferon result with an old date should collapse to a year-only marker, not a time bucket");
+assert.ok(epicRespImagingResult.text.includes("TREPONEMA PALLIDUM IGG AB: Minimal React [Hospital Day 1 at 03:14]"), "Treponema serology should keep exact result time");
+assert.ok(epicRespImagingResult.text.includes("Bacterial Vaginosis, RNA: Positive ! [Hospital Day 1 at 12:00]"), "Bacterial Vaginosis RNA should not be redacted as a name");
+assert.ok(epicRespImagingResult.text.includes("Dolutegravir Resistance: NOT PREDICTED [Historical: 2026]"), "HIV resistance rows with an old date should collapse to a year-only marker");
+assert.ok(epicRespImagingResult.text.includes("Antibody Identification: Cold Autoantibody [Hospital Day 1 at 06:19]"), "cold autoantibody result value should not be redacted as a name");
+assert.ok(epicRespImagingResult.text.includes("DIRECT COOMBS-C3D: Negative [Hospital Day 1 at 14:26]"), "COOMBS-C3D should remain a clinical label, not an ID placeholder");
+assert.ok(epicRespImagingResult.text.includes("Tissue Examination: Rpt (P) [Hospital Day 1 at 10:43]"), "tissue examination label should not be redacted as a name");
+assert.ok(epicRespImagingResult.text.includes("POC SARS COV-2 (COVID-19) Ag: Negative [Historical: 2026]"), "COVID-19 should remain a clinical label token, not an ID placeholder");
+assert.ok(epicRespImagingResult.text.includes("Test Cup: Plain Cup [Hospital Day 1 at 15:00]"), "TEG cup descriptor should keep exact result time");
+assert.ok(epicRespImagingResult.text.includes("Appearance, Ur: Slightly Cloudy [Hospital Day 1 at 18:57]"), "urine appearance descriptor should keep exact result time");
+assert.ok(epicRespImagingResult.text.includes("R Axis: -2 [Hospital Day 1 at 18:12]"), "EKG axis result should keep exact result time");
+assert.ok(epicRespImagingResult.text.includes("Banding Type: FISH [Hospital Day 1 at 02:31]"), "cytogenetics banding row should keep exact result time");
+assert.ok(epicRespImagingResult.text.includes("Source: Blood\n [Hospital Day 1 at 02:31]"), "standalone timestamp after specimen source should keep exact result time");
+assert.ok(epicRespImagingResult.text.includes("TEG Platelet Aggregation (MA): 68.3 [Hospital Day 1 at 15:00]"), "TEG platelet aggregation should not be redacted as a name");
+assert.ok(epicRespImagingResult.text.includes("Beta HCG Tumor Marker (Male): 2080 (H) [Hospital Day 1 at 04:33]"), "tumor-marker lab label should not be redacted as a patient name");
+assert.ok(epicRespImagingResult.text.includes("Prelim Result: Normal FISH [Hospital Day 1 at 02:31]"), "Normal FISH result should remain clinical text");
+assert.ok(epicRespImagingResult.text.includes("[Hospital Day 1 at 07:51]\nPOC Glucose: 101"), "timestamped POC glucose block should keep exact clock time");
 assert.ok(!epicRespImagingResult.text.includes("[FACILITY]"), "Results Review clinical values should not become facilities");
 assert.ok(!epicRespImagingResult.text.includes("[NAME]"), "Results Review clinical labels should not become names");
 assert.ok(!epicRespImagingResult.text.includes("[ID]"), "known clinical label tokens should not become ID placeholders");
-assert.ok(!epicRespImagingResult.text.includes("Day +30"), "Card 1 Collection Date should not create future lab days");
-assert.ok(!/\b(?:preserve exact time|morning|afternoon|evening|night|overnight)\b/.test(epicRespImagingResult.text), "result chronology should keep exact clocks instead of buckets");
+assert.ok(!/\b(?:morning|afternoon|evening|overnight|night)\b/.test(epicRespImagingResult.text), "result chronology should keep exact clocks instead of time-of-day buckets");
+assert.ok(!/\b(?:19|20)\d{2}[/-]\d{1,2}[/-]\d{1,2}\b|\b\d{1,2}\/\d{1,2}\/(?:19|20)?\d{2}\b/.test(epicRespImagingResult.text), "no exact calendar date should survive de-identification");
 assert.deepEqual(epicRespImagingResult.residualWarnings, [], "respiratory/imaging Results Review specimen should not create residual PHI warnings");
 
 const labCertificationText = "This test was developed and its performance characteristics determined by the Cytogenetics Laboratory, University of Example, Harbor City, MD. This laboratory is certified under the Clinical Laboratory Improvement Amendments of 1988 (CLIA) as qualified to perform high complexity clinical laboratory testing.";

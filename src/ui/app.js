@@ -8,7 +8,7 @@ import { deidentifyText, getAdvancedDeidStatus, getSelectedDeidModelStatus, prel
 import { DEFAULT_DEID_MODEL_KEY, DEID_MODEL_OPTIONS, STRUCTURED_DEID_MODE, deidModelOptionByKey } from "../patient-context/deid-model-options.js?v=20260711-functional-remediation-15";
 import { canAutomaticallyInstallModel, ensureModelPackServiceWorker, getModelPackState, importModelPack, installModelPack, markModelPackVerified, modelFilesFromDirectoryHandle, modelFilesFromInput, removeModelPack, requestPersistentModelStorage } from "../patient-context/model-pack-storage.js?v=20260711-functional-remediation-15";
 import { formatBytes, hasAutomaticModelDownload, isInstallableModel, modelDownloadBytes } from "../patient-context/model-packs.js?v=20260711-functional-remediation-15";
-import { ADMISSION_PSEUDO_DAY_ID, buildCustomOpenEvidencePrompt, buildPromptPreviewSegments, buildPromptVariableMap, hexToHue, loadPromptTemplateOverrides, loadTokenColorOverrides, promptTemplateForTask, promptVariablesForPatient, savePromptTemplateOverrides, saveTokenColorOverrides, setTokenColorOverride } from "../prompts/custom-templates.js?v=20260714-token-colors";
+import { ADMISSION_PSEUDO_DAY_ID, buildCustomOpenEvidencePrompt, buildPromptPreviewSegments, buildPromptVariableMap, loadPromptTemplateOverrides, loadTokenColorOverrides, promptTemplateForTask, promptVariablesForPatient, savePromptTemplateOverrides, saveTokenColorOverrides } from "../prompts/custom-templates.js?v=20260714-hue-picker";
 import { OPEN_EVIDENCE_TASKS } from "../prompts/open-evidence.js?v=20260711-functional-remediation-15";
 import { allPromptTasks, loadCustomPromptTasks } from "../prompts/custom-tasks.js?v=20260713-exam-note-prompts";
 import { ensureAdditionalGuidelineSets, loadOrMigrateGuidelineSets } from "../prompts/guideline-sets.js?v=20260714-preround-discharge-tasks";
@@ -42,9 +42,11 @@ import { createChecklistSearchController, toggleItemNote } from "./checklist/sea
 import { createPhoneAutosave } from "./checklist/phone-autosave.js?v=20260711-functional-remediation-19";
 import { createPhoneSessionController } from "./checklist/phone-session.js?v=20260711-functional-remediation-19";
 import { createOpenEvidenceImportController } from "./checklist/openevidence-import-controller.js?v=20260714-deid-ux-polish";
-import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260714-token-colors";
-import { createPromptTaskController, filterSmartVariableMenu, positionSmartVariableMenu } from "./prompts/controller.js?v=20260713-smart-menu-caret";
+import { createPromptsPresentation, renderHighlightedSegments } from "./prompts/presentation.js?v=20260714-token-color-fixed-popover";
+import { createPromptTaskController, filterSmartVariableMenu, positionSmartVariableMenu } from "./prompts/controller.js?v=20260714-color-menu-reposition";
 import { createGuidelineSetsController } from "./settings/guidelines-controller.js?v=20260713-guideline-sets";
+import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
+import { createTokenColorPickerController } from "./token-color-picker.js?v=20260714-hue-picker";
 import { createSettingsPresentation } from "./settings/presentation.js?v=20260713-guideline-sets";
 import { createRedactionPresentation, redactionPosition, warningDescription, warningSnippet } from "./redaction/presentation.js?v=20260711-functional-remediation-19";
 import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260714-deid-ux-polish";
@@ -109,7 +111,8 @@ const app = {
   workupWorkspace: { status: "unconfigured", message: "Choose a workspace folder to mirror local workups." },
   workupWorkspaceBusy: false,
   pendingArchivePatientId: "",
-  pendingRemoveDayId: ""
+  pendingRemoveDayId: "",
+  admissionDate: "" // session-only Hospital Day anchor; never persisted
 };
 
 const viewIds = ["vault", "daily", "workups", "checklist", "prompts", "quickDeid", "settings"];
@@ -154,6 +157,14 @@ const openEvidenceImport = createOpenEvidenceImportController({ state: app, acti
 const workupOpenAiImport = createWorkupOpenAiImportController({ state: app, active, byId, copyText, setStatus, currentPreferences, renderWorkups, parseAndSaveWorkupJson });
 const promptTaskController = createPromptTaskController({ state: app, setStatus, renderPrompts, byId });
 const guidelineSetsController = createGuidelineSetsController({ state: app, setStatus, renderSettings, byId });
+const admissionDateGate = createAdmissionDateGate({ app, byId });
+const tokenColorPicker = createTokenColorPickerController({
+  byId, getOverrides: () => app.tokenColorOverrides,
+  saveOverrides: (overrides) => { app.tokenColorOverrides = overrides; saveTokenColorOverrides(overrides); },
+  // Not a renderPrompts(): commit() already repaints its own swatch, and a
+  // full re-render here would lose the menu's docked position/filter/focus.
+  onApplied: () => { if (app.view === "prompts") refreshPromptPreview(); }
+});
 
 function selectedDeidOption() {
   return app.deidMode === STRUCTURED_DEID_MODE ? null : deidModelOptionByKey(app.deidMode);
@@ -182,7 +193,7 @@ function modelPackStateFor(option) {
 
 function deidModelDisabledReason(option) {
   if (!option.browserRunnable) return option.disabledReason || "This model is not available in this browser build.";
-  if (option.requiresWebGpu && !app.webGpuAvailable) return "Requires browser WebGPU support for local inference.";
+  if (option.requiresWebGpu && !app.webGpuAvailable) return "This model needs graphics acceleration that isn't available in this browser.";
   const pack = modelPackStateFor(option);
   if (isInstallableModel(option) && !pack.ready) return pack.message;
   return "";
@@ -346,16 +357,16 @@ async function webGpuRuntimeBlocker(option) {
   if (!option?.requiresWebGpu) return "";
   const available = await refreshWebGpuAvailability({ renderAfter: false });
   if (available) return "";
-  return `${option.label} requires working WebGPU because its FP32 weights cannot safely run through the browser CPU/WASM backend. The downloaded model remains on this device; open this app in a WebGPU-enabled browser or use a device with compatible GPU support.`;
+  return `${option.label} needs graphics acceleration this browser doesn't support. The model stays downloaded on this device — try a different browser, or use a device with a compatible graphics card.`;
 }
 
 function modelPackFailureMessage(option, error) {
   const detail = error instanceof Error && error.message ? error.message : `${option.label} could not be verified.`;
   if (option?.key === DEFAULT_DEID_MODEL_KEY && /bad_alloc|can't create a session/i.test(detail)) {
-    return `${option.label} is already downloaded locally, but its WebGPU session could not allocate the published 1.63 GB FP32 weights. No re-download is needed. Close GPU-heavy apps, refresh, and verify again; if the allocation still fails, choose the explicit Base or Small OpenMed tier for this device.`;
+    return `${option.label} is already downloaded, but this device doesn't have enough graphics memory free to run it right now. No re-download is needed — close other heavy apps (video calls, other browser tabs), refresh, and verify again. If it still fails, use the Base or Small OpenMed option instead.`;
   }
   if (option?.key === "openmed-superclinical-small" && /unaligned accesses/i.test(detail)) {
-    return `${option.label} encountered a browser WASM compatibility failure. Its local files remain intact. Refresh once, then choose Verify model to test the standard single-threaded WASM runtime; no re-download is needed.`;
+    return `${option.label} hit a compatibility issue with this browser. Its downloaded files are unaffected — refresh the page, then choose "Verify model" to try again. No re-download is needed.`;
   }
   return detail;
 }
@@ -402,7 +413,7 @@ function _renderQuickInstallerFeedback() {
   const completedBytes = progress?.completedBytes || 0;
   const progressText = progress ? modelPackProgressText(option) : `${formatBytes(totalBytes)} local download required before first use.`;
   if (option.requiresWebGpu && !app.webGpuAvailable) {
-    return `<div class="quick-installer-feedback quick-installer-feedback--error" role="alert"><div><strong>WebGPU is required for ${escapeHtml(option.shortLabel || option.label)}</strong><span>The Large model remains downloaded locally, but this browser cannot run its FP32 weights without WebGPU. Open the app in a WebGPU-enabled browser on a device with sufficient GPU memory.</span></div>${renderOpenMedSmallFallback(option)}</div>`;
+    return `<div class="quick-installer-feedback quick-installer-feedback--error" role="alert"><div><strong>Graphics acceleration needed for ${escapeHtml(option.shortLabel || option.label)}</strong><span>The Large model stays downloaded on this device, but this browser can't run it without graphics acceleration. Try a different browser, or a device with more graphics memory.</span></div>${renderOpenMedSmallFallback(option)}</div>`;
   }
   if (error) {
     const verificationOnly = state.state === "installed";
@@ -426,8 +437,7 @@ function _renderQuickInstallerFeedback() {
     `;
   }
   if (!busy && state.state === "installed") {
-    const runtimeLabel = option.requiresWebGpu ? "WebGPU" : "CPU/WASM";
-    return `<div class="quick-installer-feedback"><div><strong>${escapeHtml(option.shortLabel || option.label)} is downloaded locally</strong><span>Run the required local ${runtimeLabel} inference check before using it. The model will not be downloaded again.</span></div><div class="button-row"><button type="button" data-action="verify-model-pack" data-model-key="${escapeHtml(option.key)}">${icon("shield")} Verify ${runtimeLabel}</button>${renderOpenMedSmallFallback(option)}</div></div>`;
+    return `<div class="quick-installer-feedback"><div><strong>${escapeHtml(option.shortLabel || option.label)} is downloaded locally</strong><span>Run a quick check to confirm this device can run the model before using it. The model will not be downloaded again.</span></div><div class="button-row"><button type="button" data-action="verify-model-pack" data-model-key="${escapeHtml(option.key)}">${icon("shield")} Verify model</button>${renderOpenMedSmallFallback(option)}</div></div>`;
   }
   if (!busy && !progress) {
     return `<div class="quick-installer-feedback"><strong>Local install required</strong><span>${escapeHtml(progressText)} The first run downloads only the pinned model package; patient text never leaves this browser.</span></div>`;
@@ -449,8 +459,8 @@ function renderModelPackCard(option) {
   const hardware = !option.browserRunnable
     ? option.disabledReason || "This model is not available in the browser."
     : option.requiresWebGpu && !app.webGpuAvailable
-      ? "WebGPU is unavailable in this browser."
-      : "Runs entirely in the local de-identification worker.";
+      ? "Graphics acceleration is unavailable in this browser."
+      : "Runs entirely on this device — nothing is uploaded.";
   const actionDisabled = app.modelPackBusyKey ? "disabled" : "";
   const primaryAction = state.state === "installed" ? "verify-model-pack" : "download-model-pack";
   const canRemove = ["handles", "imported", "opfs"].includes(state.source);
@@ -659,7 +669,7 @@ function renderStatusBar() {
   byId("currentPageTitle").textContent = viewTitles[app.view] || "Preround";
   byId("vaultStateLabel").textContent = app.vault ? "Vault unlocked" : record ? "Vault locked" : "No vault on this device";
   const deidStatus = selectedDeidStatus();
-  byId("deidStateLabel").textContent = `De-ID: ${deidModelLabel(app.deidMode)} - ${deidStatus.ready ? "ready locally" : "not loaded"}`;
+  byId("deidStateLabel").textContent = `Redaction model: ${deidModelLabel(app.deidMode)} — ${deidStatus.ready ? "ready" : "not loaded"}`;
   byId("statusLine").textContent = app.status || "All data is encrypted and stays on this device. Nothing leaves without your explicit action.";
   const switcher = byId("patientSwitcher");
   if (!switcher) return;
@@ -735,7 +745,7 @@ function renderVault() {
               <p class="muted">Your passphrase decrypts patient, workup, checklist, and prompt data stored on this device. Nothing loads until you unlock it.</p>
             </div>
             <div class="button-row">
-              <button class="button--secondary" type="button" data-action="restore-vault">${icon("upload")} Restore encrypted vault</button>
+              <button class="button--secondary" type="button" data-action="restore-vault">${icon("upload")} Restore from file</button>
               <input id="restoreVaultInput" type="file" accept="application/json" hidden>
             </div>
           </div>
@@ -768,7 +778,7 @@ function renderVault() {
           </div>
           <div class="button-row">
             <button class="button--secondary" type="button" data-action="export-vault" ${record ? "" : "disabled"}>${icon("download")} Export</button>
-            <button class="button--secondary" type="button" data-action="restore-vault">${icon("upload")} Restore</button>
+            <button class="button--secondary" type="button" data-action="restore-vault">${icon("upload")} Restore from file</button>
             <input id="restoreVaultInput" type="file" accept="application/json" hidden>
           </div>
         </div>
@@ -1214,7 +1224,15 @@ function renderPrompts() {
   const promptDays = sortDays(patient.days || []);
   const isAdmissionSelected = app.promptDayId === ADMISSION_PSEUDO_DAY_ID;
   if (!isAdmissionSelected) {
-    const selectedPromptDay = promptDays.find((day) => day.id === app.promptDayId) || promptDays.at(-1) || null;
+    // Default to whatever day the Checklist page is currently showing
+    // (app.selectedDayId) rather than always jumping to the latest day -
+    // otherwise saving something (like an exam note) while viewing an
+    // earlier day makes it look lost the moment you open Prompts, since
+    // this page would silently default to a different, empty day.
+    const selectedPromptDay = promptDays.find((day) => day.id === app.promptDayId)
+      || promptDays.find((day) => day.id === app.selectedDayId)
+      || promptDays.at(-1)
+      || null;
     app.promptDayId = selectedPromptDay ? selectedPromptDay.id : ADMISSION_PSEUDO_DAY_ID;
   }
   const template = app.promptDrafts[task.id] ?? promptTemplateForTask(task.id, app.promptTemplates);
@@ -1267,7 +1285,8 @@ function renderSettings() {
     guidelineSets: app.guidelineSets,
     MEDICAL_SERVICE_OPTIONS,
     PRESENTATION_DETAIL_OPTIONS,
-    OPENAI_WORKUP_MODEL_OPTIONS
+    OPENAI_WORKUP_MODEL_OPTIONS,
+    colorOverrides: app.tokenColorOverrides
   });
 }
 
@@ -1430,7 +1449,7 @@ function renderQuickModelControl() {
   const error = option ? app.modelPackErrors[option.key] : "";
   let action = "";
   if (option?.requiresWebGpu && !app.webGpuAvailable) {
-    action = `<span class="model-selection-message model-selection-message--error">This model requires WebGPU in this browser.</span>`;
+    action = `<span class="model-selection-message model-selection-message--error">This model needs graphics acceleration that isn't available in this browser.</span>`;
   } else if (option && isInstallableModel(option) && !state.ready) {
     const actionName = state.state === "installed" ? "verify-model-pack" : "download-model-pack";
     const label = state.state === "installed" ? "Verify model" : "Download and verify";
@@ -1466,6 +1485,10 @@ function renderQuickDeid() {
         </div>
         ${hasReview ? `<button class="button--quiet" type="button" data-action="start-new-quick-deid">${icon("plus")} New text</button>` : ""}
       </div>
+      <p class="muted quick-deid-admission-date">
+        ${app.admissionDate ? `Admission date set for this session (used only to anchor Hospital Day labels, then discarded).` : `No admission date set yet — you'll be asked for it before the first run.`}
+        <button class="button--quiet" type="button" data-action="change-admission-date">${app.admissionDate ? "Change" : "Set now"}</button>
+      </p>
       ${renderQuickModelControl()}
       ${hasReview ? `
         <section class="quick-review-workspace">
@@ -1543,8 +1566,12 @@ function refreshDeidControlsInActiveView() {
 }
 
 async function deidentify(rawText) {
+  if (!app.admissionDate) {
+    await admissionDateGate.requestAdmissionDateFromUser();
+  }
   return deidentifyText(rawText, {
     mode: app.deidMode,
+    admissionDate: app.admissionDate,
     onStatus: updateDeidStatus,
     onProgress: (progress) => {
       if (progress?.message) {
@@ -1570,6 +1597,11 @@ async function handleClick(event) {
     if (action === "request-delete-vault") requestVaultDeletion();
     if (action === "confirm-delete-vault") deleteVaultAndStartOver();
     if (action === "admit-patient") await admitPatient();
+    if (action === "change-admission-date") {
+      app.admissionDate = "";
+      try { await admissionDateGate.requestAdmissionDateFromUser(); } catch (_) { /* cancelled */ }
+      renderQuickDeid();
+    }
     if (action === "select-patient") selectPatient(target.dataset.patientId);
     if (action === "archive-patient") requestArchivePatient(target.dataset.patientId);
     if (action === "confirm-archive-patient") await archiveSelectedPatient(app.pendingArchivePatientId);
@@ -1690,11 +1722,8 @@ async function handleClick(event) {
     if (action === "insert-prompt-variable") insertPromptVariable(target.dataset.token);
     if (action === "copy-prompt") await copyText(currentPromptText());
     if (action === "open-open-evidence") window.open("https://www.openevidence.com/", "_blank", "noopener,noreferrer");
-    if (action === "reset-variable-colors") {
-      app.tokenColorOverrides = {};
-      saveTokenColorOverrides(app.tokenColorOverrides);
-      renderPrompts();
-    }
+    if (action === "reset-variable-colors") { app.tokenColorOverrides = {}; saveTokenColorOverrides(app.tokenColorOverrides); renderPrompts(); }
+    if (action === "open-token-color-picker") tokenColorPicker.open(target.dataset.token, target, event);
     if (action === "save-team-preferences") await saveTeamPreferences();
     if (action === "save-openai-byok") await saveOpenAiByok();
     if (action === "clear-openai-byok") await clearOpenAiByok();
@@ -2752,7 +2781,7 @@ async function verifyInstalledModelPack(modelKey) {
   }
   app.modelPackBusyKey = option.key;
   app.modelPackErrors = { ...app.modelPackErrors, [option.key]: "" };
-  app.quickDeid.status = `Verifying ${option.label} with local ${option.requiresWebGpu ? "WebGPU" : "CPU/WASM"} inference...`;
+  app.quickDeid.status = `Verifying ${option.label} on this device...`;
   refreshDeidControlsInActiveView();
   try {
     const state = await getModelPackState(option);
@@ -3393,12 +3422,6 @@ function handleChange(event) {
     app.openEvidenceImport.deidConfirmed = event.target.checked;
     renderChecklist();
   }
-  if (event.target.classList.contains("variable-color-input")) {
-    const token = event.target.dataset.token;
-    app.tokenColorOverrides = setTokenColorOverride(app.tokenColorOverrides, token, hexToHue(event.target.value));
-    saveTokenColorOverrides(app.tokenColorOverrides);
-    renderPrompts();
-  }
   if (isWorkupEditorControl(event.target)) queueWorkupAutosave();
   if (event.target.id === "settingsMedicalService") {
     const customServiceWrap = byId("settingsCustomServiceWrap");
@@ -3595,6 +3618,7 @@ function handleToggle(event) {
 
 function bindEvents() {
   decorateNavigation();
+  tokenColorPicker.init();
   document.addEventListener("click", handleClick);
   document.addEventListener("change", handleChange);
   document.addEventListener("input", handleInput);

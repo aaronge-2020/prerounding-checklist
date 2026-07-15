@@ -36,7 +36,7 @@
         <div class="side-footer">
           <div id="vaultStateLabel">Vault locked</div>
           <div>Local only. No sync.</div>
-          <div id="deidStateLabel">Advanced de-id models available</div>
+          <div id="deidStateLabel">Advanced redaction models available</div>
         </div>
       </aside>
 
@@ -85,6 +85,20 @@
         </main>
       </div>
     </div>
+
+    <dialog id="admissionDateDialog" class="confirm-dialog" aria-labelledby="admissionDateTitle">
+      <form method="dialog">
+        <h2 id="admissionDateTitle">Admission date</h2>
+        <p>Enter the real hospital admission date. It anchors every other date and time in this note to a Hospital Day number, then is discarded — it is never saved or shown again.</p>
+        <label>Admission date
+          <input type="date" id="admissionDateInput" required>
+        </label>
+        <div class="button-row">
+          <button value="cancel">Cancel</button>
+          <button type="submit" value="confirm">Continue</button>
+        </div>
+      </form>
+    </dialog>
 
     <dialog id="archiveConfirmDialog" class="confirm-dialog" aria-labelledby="archiveConfirmTitle">
       <form method="dialog">
@@ -144,7 +158,17 @@
       </form>
     </dialog>
 
+    <div id="tokenColorPicker" class="token-color-picker" hidden>
+      <div class="token-color-picker-track" data-role="hue-track">
+        <div class="token-color-picker-thumb" data-role="hue-thumb"></div>
+      </div>
+      <div class="token-color-picker-actions">
+        <button type="button" class="icon-button token-color-picker-cancel" data-action="cancel-token-color" aria-label="Cancel" title="Cancel"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button>
+        <button type="button" class="icon-button token-color-picker-accept" data-action="accept-token-color" aria-label="Apply color" title="Apply"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg></button>
+      </div>
+    </div>
+
     <input id="modelPackFolderInput" type="file" webkitdirectory multiple hidden>
-    <script type="module" src="./src/ui/app.js?v=20260713-guideline-sets"></script>
+    <script type="module" src="./src/ui/app.js?v=20260714-token-color-fixed-popover"></script>
   </body>
 </html>

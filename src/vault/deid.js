@@ -127,39 +127,6 @@ function sameLineContext(rawText, start, end) {
   return lineAroundSpan(rawText, start, end).toLowerCase();
 }
 
-function nextNonEmptyLineAfter(rawText, end) {
-  const text = String(rawText || "");
-  let cursor = text.indexOf("\n", Math.max(0, end));
-  while (cursor !== -1 && cursor < text.length) {
-    const nextStart = cursor + 1;
-    const nextEnd = text.indexOf("\n", nextStart);
-    const lineEnd = nextEnd === -1 ? text.length : nextEnd;
-    const line = text.slice(nextStart, lineEnd).trim();
-    if (line) {
-      return line;
-    }
-    cursor = nextEnd;
-  }
-  return "";
-}
-
-function previousNonEmptyLineBefore(rawText, start) {
-  const text = String(rawText || "");
-  let lineEnd = text.lastIndexOf("\n", Math.max(0, start - 1));
-  while (lineEnd !== -1) {
-    const lineStart = text.lastIndexOf("\n", Math.max(0, lineEnd - 1)) + 1;
-    const line = text.slice(lineStart, lineEnd).trim();
-    if (line) {
-      return line;
-    }
-    if (lineStart === 0) {
-      break;
-    }
-    lineEnd = text.lastIndexOf("\n", lineStart - 1);
-  }
-  return "";
-}
-
 function clinicalResultLabelFromLine(line) {
   const clean = String(line || "").trim();
   const delimiter = clean.match(/:\s+/);
@@ -1300,24 +1267,9 @@ function clockTimeFromValue(value) {
   };
 }
 
-function timeBucketFromValue(value) {
-  const clock = clockTimeFromValue(value);
-  if (!clock) {
-    return "";
-  }
-  const { hour } = clock;
-  if (hour < 3) return "overnight";
-  if (hour < 9) return "early morning";
-  if (hour < 12) return "morning";
-  if (hour < 17) return "afternoon";
-  if (hour < 21) return "evening";
-  return "night";
-}
-
 function temporalTimeFields(value) {
   const clock = clockTimeFromValue(value);
   return {
-    timeBucket: timeBucketFromValue(value),
     clockTime: clock?.label || ""
   };
 }
@@ -1627,7 +1579,10 @@ export function collectTemporalEntities(rawText) {
 function chooseCurrentSourceDate(temporalEntities, currentDate = null) {
   if (currentDate) {
     const d = new Date(currentDate);
-    return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    // Use UTC getters, not local getters: a date-only string like
+    // "2026-05-01" parses as UTC midnight, and reading it back with local
+    // getters can roll it back a calendar day west of UTC.
+    return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
   }
   const parsedEntities = temporalEntities
     .map((entity) => ({
@@ -1693,140 +1648,50 @@ function chooseCurrentSourceDate(temporalEntities, currentDate = null) {
   ), null);
 }
 
-function formatRelativeCalendarRelation(date, currentSourceDate, timeBucket = "", clockTime = "", useExactClockTime = false) {
-  if (!date || !currentSourceDate) return "relative date";
-  const dayDiff = Math.round((date.getTime() - currentSourceDate.getTime()) / 86400000);
-  if (dayDiff === 0) {
-    if (useExactClockTime && clockTime) return `${clockTime} today`;
-    return timeBucket ? `${timeBucket} today` : "today";
-  }
-
-  const isPast = dayDiff < 0;
-  const earlier = isPast ? date : currentSourceDate;
-  const later = isPast ? currentSourceDate : date;
-  let years = later.getUTCFullYear() - earlier.getUTCFullYear();
-  let months = later.getUTCMonth() - earlier.getUTCMonth();
-  let days = later.getUTCDate() - earlier.getUTCDate();
-  if (days < 0) {
-    months -= 1;
-    days += new Date(Date.UTC(later.getUTCFullYear(), later.getUTCMonth(), 0)).getUTCDate();
-  }
-  if (months < 0) {
-    years -= 1;
-    months += 12;
-  }
-
-  const pieces = [];
-  if (years) pieces.push(`${years} year${years === 1 ? "" : "s"}`);
-  if (months) pieces.push(`${months} month${months === 1 ? "" : "s"}`);
-  if (days || !pieces.length) pieces.push(`${days} day${days === 1 ? "" : "s"}`);
-  const body = pieces.length === 1
-    ? pieces[0]
-    : `${pieces.slice(0, -1).join(" ")} and ${pieces.at(-1)}`;
-  const timeText = useExactClockTime && clockTime ? ` at ${clockTime}` : timeBucket ? ` ${timeBucket}` : "";
-  return `${body} ${isPast ? "ago" : "from now"}${timeText}`;
+// True calendar history (a prior encounter, PMH, an old diagnosis) — as
+// opposed to an event narrated in past tense but still part of the current
+// admission ("was admitted", "started vancomycin 2 days ago").
+function isHistoricalTemporalContext(entity) {
+  const context = String(entity?.context || "").toLowerCase();
+  return /\b(?:prior to admission|pre-?admission|preadmission|previous(?:ly)? (?:diagnosed|admitted|admission|hospitalization|episode|visit)|history of|historical|remote history|past medical history|\bpmh\b|last (?:admission|hospitalization)|outpatient history|diagnosed (?:in|on|back in)|since (?:19|20)\d{2})\b/.test(context);
 }
 
-function formatMonthRelation(date, currentSourceDate, year) {
-  if (!date || !currentSourceDate) {
-    return year ? `month in ${year}` : "relative month";
-  }
-  return formatRelativeCalendarRelation(date, currentSourceDate);
-}
+// Anything more than two weeks before admission with no explicit narrative
+// tying it to this stay is treated as an unrelated past encounter rather
+// than guessed at as a Hospital Day offset.
+const HISTORICAL_LOOKBACK_DAYS = 14;
 
-function formatDayRelation(date, currentSourceDate, year, timeBucket = "", clockTime = "", useExactClockTime = false) {
-  if (!date || !currentSourceDate) {
-    return year ? `relative day (${year})` : "relative day";
+function classifyTemporalPlacement(temporal, date, admissionDate, entity) {
+  if (!admissionDate || !date || temporal.kind === "month") {
+    const year = temporal.year || date?.getUTCFullYear() || null;
+    return { historical: true, year };
   }
-  return formatRelativeCalendarRelation(date, currentSourceDate, timeBucket, clockTime, useExactClockTime);
-}
-
-function _formatRelativeDayDiff(dayDiff, timeBucket = "", clockTime = "", _year = null, useExactClockTime = false) {
-  const absDiff = Math.abs(dayDiff);
-  const isPast = dayDiff <= 0;
-  const suffix = isPast ? "ago" : "from now";
-
-  let body;
-  if (absDiff === 0) {
-    body = "today";
-  } else if (absDiff <= 30) {
-    body = absDiff === 1 ? "1 day" : `${absDiff} days`;
-  } else if (absDiff <= 365) {
-    const months = Math.round(absDiff / 30.44);
-    body = months === 1 ? "1 month" : `${months} months`;
-  } else {
-    const years = Math.floor(absDiff / 365.25);
-    const remainingDays = Math.round(absDiff - years * 365.25);
-    const months = Math.round(remainingDays / 30.44);
-    if (months === 12) {
-      body = `${years + 1} years`;
-    } else if (months === 0) {
-      body = years === 1 ? "1 year" : `${years} years`;
-    } else {
-      body = `${years} year${years === 1 ? "" : "s"} and ${months} month${months === 1 ? "" : "s"}`;
-    }
+  if (isHistoricalTemporalContext(entity)) {
+    return { historical: true, year: date.getUTCFullYear() };
   }
-
-  if (body === "today") {
-    if (useExactClockTime && clockTime) return `${clockTime} today`;
-    return timeBucket ? `${timeBucket} today` : "today";
+  const dayDiff = Math.round((date.getTime() - admissionDate.getTime()) / 86400000);
+  if (dayDiff < -HISTORICAL_LOOKBACK_DAYS) {
+    return { historical: true, year: date.getUTCFullYear() };
   }
-  const timeText = useExactClockTime && clockTime ? ` at ${clockTime}` : timeBucket ? ` ${timeBucket}` : "";
-  return `${body} ${suffix}${timeText}`;
-}
-
-function isInsideLabChronologyBlock(text, start) {
-  const sourceText = String(text || "");
-  const openIndex = sourceText.lastIndexOf("<lab_chronology>", start);
-  if (openIndex === -1) {
-    return false;
-  }
-  const closeIndex = sourceText.lastIndexOf("</lab_chronology>", start);
-  return closeIndex < openIndex;
-}
-
-function shouldPreserveExactClinicalTime(entity, rawText = "") {
-  const start = Number.isFinite(entity?.start) ? entity.start : 0;
-  const end = Number.isFinite(entity?.end) ? entity.end : start;
-  if (isInsideLabChronologyBlock(rawText, start)) {
-    return true;
-  }
-  const line = rawText ? lineAroundSpan(rawText, start, end) : "";
-  if (isLikelyClinicalResultLine(line)) {
-    return true;
-  }
-  if (/^\s*(?:\d{4}-\d{1,2}-\d{1,2}|(?:0?[1-9]|1[0-2])[/-](?:0?[1-9]|[12]\d|3[01])(?:[/-](?:\d{2}|\d{4}))?|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t|tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2}(?:,?\s+(?:19|20)\d{2})?)(?:\s+(?:at\s+)?(?:\d{1,2}:\d{2}(?:\s*[AP]M)?|\d{3,4}))?\s*$/i.test(line)) {
-    if (
-      isLikelyClinicalResultLine(nextNonEmptyLineAfter(rawText, end)) ||
-      isLikelyClinicalResultLine(previousNonEmptyLineBefore(rawText, start))
-    ) {
-      return true;
-    }
-  }
-  const context = `${entity?.context || ""} ${line}`.toLowerCase();
-  return /\b(?:lab|labs|result|results|resulted|issued|reported|verified|received|collected|collection|specimen|drawn|obtained|sample|poc|glucose|bmp|cmp|cbc|chem(?:istry)?|vital|vitals|temp|heart rate|hr\b|resp|spo2|oxygen|bp\b|map\b|wbc|hemoglobin|hematocrit|platelets|sodium|potassium|chloride|creatinine|bun|calcium|magnesium|phosphorus|inr|protime|troponin|lactate|vancomycin|tacrolimus)\b/.test(context);
+  return { historical: false, hospitalDay: dayDiff <= 0 ? 1 : dayDiff + 1 };
 }
 
 function formatRelativeTemporalPlaceholder(entity, currentSourceDate, fallbackYear = null) {
   const span = entity.span || "";
   const temporal = entity.temporal || parseTemporalSpan(span, entity);
   if (!temporal) {
-    return "relative date";
+    return "[Historical date]";
   }
   const year = temporal.year || fallbackYear || currentSourceDate?.getUTCFullYear() || null;
-  const timelineYear = currentSourceDate?.getUTCFullYear() || year;
   const date = dateFromParts(temporal, year, currentSourceDate);
-  if (temporal.kind === "month") {
-    return formatMonthRelation(date, currentSourceDate, timelineYear);
+  const placement = classifyTemporalPlacement(temporal, date, currentSourceDate, entity);
+  if (placement.historical) {
+    return placement.year ? `[Historical: ${placement.year}]` : "[Historical date]";
   }
-  return formatDayRelation(
-    date,
-    currentSourceDate,
-    timelineYear,
-    temporal.timeBucket || "",
-    temporal.clockTime || "",
-    Boolean(temporal.clockTime)
-  );
+  const clockTime = temporal.clockTime || "";
+  return clockTime
+    ? `[Hospital Day ${placement.hospitalDay} at ${clockTime}]`
+    : `[Hospital Day ${placement.hospitalDay}]`;
 }
 
 function buildDateTimeline(rawText, entities, currentDate = null, { includeTemporalFallback = true } = {}) {
@@ -1876,6 +1741,64 @@ function resolvedRedactionEntities(rawText, entities, currentDate = null, { incl
   }));
 }
 
+// Once a value on a "Date"/"Time"-labeled line has been converted to a
+// Hospital Day / Historical placeholder, the field label itself is renamed
+// so the column header can no longer be paired with a real calendar date.
+const TIMELINE_DATE_LABEL_SOURCE = String.raw`Encounter date|Admit(?:ted)?(?: date)?|Admission date|Discharge(?:d)?(?: date)?|Date of service|DOS|Collected|Collection(?: date| time| date\/time)?|Result(?:ed)?(?: date| time| date\/time)?|Received|Drawn|Specimen(?: collected)?|Ordered|Date`;
+
+function renameTimelineFieldLabels(text) {
+  return String(text || "")
+    .replace(new RegExp(String.raw`^(\s*(?:[-*]\s*)?)(?:${TIMELINE_DATE_LABEL_SOURCE})(\s*:\s*)(?=\[(?:Hospital Day|Historical))`, "gim"), "$1Timeline$2")
+    .replace(/^(\s*(?:[-*]\s*)?)Time(\s*:\s*)(?=\[(?:Hospital Day|Historical))/gim, "$1Elapsed Time$2");
+}
+
+// Numbers repeated same-label lab results in chronological (document) order
+// so a reader can scan a lab's trend without any of the entries carrying a
+// real date; the last occurrence of each repeated label is the newest draw.
+function applyLabOrdinalTags(text) {
+  const sourceText = String(text || "");
+  if (!/\[Hospital Day|\[Historical/.test(sourceText)) {
+    return sourceText;
+  }
+
+  const lines = sourceText.split("\n");
+  const groups = new Map();
+  lines.forEach((line, index) => {
+    if (!/\[Hospital Day|\[Historical/.test(line)) {
+      return;
+    }
+    const parsed = clinicalResultLabelFromLine(line);
+    // The value once carried the raw date/time that isLikelyClinicalResultLine
+    // keys off of; after redaction it starts with our placeholder instead, so
+    // only clinicalResultLabelFromLine's own name/header exclusions gate this.
+    if (!parsed || !/\[(?:Hospital Day|Historical)/.test(parsed.value)) {
+      return;
+    }
+    const key = normalizePhrase(parsed.label);
+    if (!key) {
+      return;
+    }
+    if (!groups.has(key)) {
+      groups.set(key, []);
+    }
+    groups.get(key).push(index);
+  });
+
+  groups.forEach((indices) => {
+    if (indices.length < 2) {
+      return;
+    }
+    const total = indices.length;
+    indices.forEach((lineIndex, position) => {
+      const ordinal = position + 1;
+      const tag = ordinal === total ? `**[LATEST_RESULT]** [Lab ${ordinal}/${total}]` : `[Lab ${ordinal}/${total}]`;
+      lines[lineIndex] = `${tag} ${lines[lineIndex]}`;
+    });
+  });
+
+  return lines.join("\n");
+}
+
 function redactResolvedEntities(rawText, entities) {
   let cursor = 0;
   let output = "";
@@ -1887,55 +1810,26 @@ function redactResolvedEntities(rawText, entities) {
   });
 
   output += rawText.slice(cursor);
-  return cleanupDeidArtifacts(normalizeResidualTemporalPhi(generalizeAgesOver89(output.trim())));
+  const cleaned = cleanupDeidArtifacts(normalizeResidualTemporalPhi(generalizeAgesOver89(output.trim())));
+  return applyLabOrdinalTags(renameTimelineFieldLabels(cleaned));
 }
 
 export function redactFromEntities(rawText, entities, currentDate = null, options = {}) {
   return redactResolvedEntities(rawText, resolvedRedactionEntities(rawText, entities, currentDate, options));
 }
 
-function oldTimelinePlaceholderToRelative(year, relation = "") {
-  const yearText = year ? ` (${year})` : "";
-  const normalized = String(relation || "").toLowerCase();
-  if (!normalized || /current source date/.test(normalized) && !/\b(?:before|after)\b/.test(normalized)) {
-    return `Day 0${yearText}`;
-  }
-
-  const match = normalized.match(/(\d+)\s+(day|days|week|weeks|month|months|year|years)\s+(before|after)\s+current source date/);
-  if (!match) {
-    return `relative date${yearText}`;
-  }
-
-  const amount = Number(match[1]);
-  const unit = match[2].replace(/s$/, "");
-  const direction = match[3];
-  if (unit === "day") {
-    const signed = direction === "before" ? -amount : amount;
-    return `Day ${signed === 0 ? "0" : signed > 0 ? `+${signed}` : String(signed)}${yearText}`;
-  }
-
-  return `about ${amount} ${unit}${amount === 1 ? "" : "s"} ${direction} Day 0${yearText}`;
+// Any legacy relative-date placeholder from a previous export (e.g. a note
+// that was already de-identified with an older version of this tool) is
+// collapsed to a year-only marker — there is no admission anchor available
+// at this point to recompute a trustworthy Hospital Day number from it.
+function oldTimelinePlaceholderToRelative(year) {
+  return year ? `[Historical: ${year}]` : "[Historical date]";
 }
 
 function normalizeLegacyDatePlaceholders(text) {
   return String(text || "")
-    .replace(/\[(CURRENT SOURCE DATE)(?:\s*-\s*((?:19|20)\d{2}))?\]/gi, (_, _label, year) => oldTimelinePlaceholderToRelative(year, "current source date"))
-    .replace(/\[DATE\s+\d+(?:\s*-\s*((?:19|20)\d{2}))?(?:,\s*([^\]]*?current source date))?\]/gi, (_, year, relation) => oldTimelinePlaceholderToRelative(year, relation));
-}
-
-function normalizeDayLabelTimes(text) {
-  const sourceText = String(text || "");
-  return sourceText.replace(/\b(Day[ \t]+[+-]?\d+)(?:[ \t]+\(((?:19|20)\d{2})\))?[ \t]+(?:at[ \t]+)?(\d{1,2}:\d{2}(?:[ \t]*[AP]M)?|\d{3,4})(?!\d|[ \t]+on[ \t]+Day\b)/gi, (match, dayLabel, year, timeValue, offset) => {
-    const bucket = timeBucketFromValue(timeValue);
-    if (!bucket) {
-      return match;
-    }
-    const clockTime = clockTimeFromValue(timeValue)?.label || "";
-    if (clockTime && shouldPreserveExactClinicalTime({ start: offset, end: offset + match.length }, sourceText)) {
-      return `${clockTime} on ${dayLabel}${year ? ` (${year})` : ""}`;
-    }
-    return `${dayLabel} ${bucket}${year ? ` (${year})` : ""}`;
-  });
+    .replace(/\[(CURRENT SOURCE DATE)(?:\s*-\s*((?:19|20)\d{2}))?\]/gi, (_, _label, year) => oldTimelinePlaceholderToRelative(year))
+    .replace(/\[DATE\s+\d+(?:\s*-\s*((?:19|20)\d{2}))?(?:,\s*[^\]]*)?\]/gi, (_, year) => oldTimelinePlaceholderToRelative(year));
 }
 
 function replaceTemporalEntitiesWithRelativeText(text, currentDate = null) {
@@ -1977,7 +1871,7 @@ export function normalizeResidualTemporalPhi(text, currentDate = null) {
   const withoutArtifacts = cleanupDeidArtifacts(text);
   const withoutLegacy = normalizeLegacyDatePlaceholders(withoutArtifacts);
   const withoutExactDates = replaceTemporalEntitiesWithRelativeText(withoutLegacy, currentDate);
-  return cleanupDeidArtifacts(normalizeDayLabelTimes(withoutExactDates));
+  return cleanupDeidArtifacts(withoutExactDates);
 }
 
 function summarizeEntities(entities) {
@@ -2903,13 +2797,14 @@ export function createDeidentifier(options = {}) {
   async function deidentifyText(rawText, runOptions = {}) {
     const mode = runOptions.mode || options.mode || "hybrid";
     const onProgress = runOptions.onProgress;
+    const admissionDate = runOptions.admissionDate || null;
     reportProgress(onProgress, { stage: "starting", message: "Starting local de-identification...", percent: 0.02 });
 
     const bracketEntities = collectBracketedPlaceholderEntities(rawText);
 
     if (mode === "structured-only") {
       reportProgress(onProgress, { stage: "structured", message: "Running structured redaction...", percent: 0.25 });
-      return deidentifyTextStructuredOnly(rawText, new Date());
+      return deidentifyTextStructuredOnly(rawText, admissionDate);
     }
 
     const modelResult = await detectModelEntities(rawText, { onProgress });
@@ -2918,7 +2813,7 @@ export function createDeidentifier(options = {}) {
 
     if (mode === "model-only") {
       reportProgress(onProgress, { stage: "redacting", message: "Creating redacted preview...", percent: 0.9 });
-      return deidentifyFromEntities(rawText, modelEntities, modelResult, new Date(), {
+      return deidentifyFromEntities(rawText, modelEntities, modelResult, admissionDate, {
         includeTemporalFallback: runOptions.includeTemporalFallback !== false
       });
     }
@@ -2929,7 +2824,7 @@ export function createDeidentifier(options = {}) {
     reportProgress(onProgress, { stage: "aliases", message: "Checking repeated names and aliases...", percent: 0.84 });
     const { entities } = expandIdentityGraphEntities(rawText, [...structuredEntities, ...modelEntities]);
     reportProgress(onProgress, { stage: "redacting", message: "Creating redacted preview...", percent: 0.92 });
-    const result = deidentifyFromEntities(rawText, entities, modelResult, new Date());
+    const result = deidentifyFromEntities(rawText, entities, modelResult, admissionDate);
     reportProgress(onProgress, { stage: "complete", message: "De-identified preview ready.", percent: 1 });
     return result;
   }

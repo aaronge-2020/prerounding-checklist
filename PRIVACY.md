@@ -21,6 +21,13 @@ This app is a local PHI risk-reduction tool, not a legal de-identification certi
 - After installation, the model runtime rejects external model requests and reads only the bundled or browser-local asset pack during inference.
 - A selected advanced model that cannot load fails closed. Select Structured only to intentionally use the fallback redactor.
 - Review residual warnings before saving or sharing any text.
+- Detection combines local regex rules with, when selected, a locally-run clinical NER model (OpenMed SuperClinical PII).
+  Together they target most [HIPAA Safe Harbor identifier categories](https://www.dhcs.ca.gov/data-statistics/data-resources/list-of-hipaa-identifiers/):
+  names, dates and ages 90+, phone/fax/email, SSNs, MRNs, health plan and account numbers, license/certificate numbers,
+  addresses, URLs/IP addresses, device identifiers, biometric identifiers, and other structured IDs.
+- It does not process images or photographs — this tool only ever handles pasted text — and has no dedicated detector
+  for vehicle identifiers or license plates. Like any regex/NER-based system, it can miss unusual phrasing it wasn't
+  trained or written to expect.
 
 ## User Responsibilities
 

@@ -29,7 +29,7 @@ const ALL_DEID_MODEL_OPTIONS = [
     sizeLabel: "1.63 GB ONNX",
     requiresWebGpu: true,
     localOnly: true,
-    description: "Recommended medical-note model. This is the direct ONNX export of OpenMed/OpenMed-PII-SuperClinical-Large-434M-v1. Its FP32 Large weights require local WebGPU inference; it downloads once, is pinned to an immutable revision, and then runs only from local browser storage.",
+    description: "Recommended medical-note model (OpenMed SuperClinical, Large). Needs graphics acceleration (WebGPU) to run. Downloads once, then always runs locally from this browser's storage.",
     candidates: [
       {
         modelId: OPENMED_MODEL_ID,
@@ -88,7 +88,7 @@ const ALL_DEID_MODEL_OPTIONS = [
     sizeLabel: "711 MB ONNX + WebGPU",
     requiresWebGpu: true,
     localOnly: true,
-    description: "184M OpenMed SuperClinical PII model. Use this WebGPU model when Large does not fit the device's available GPU memory.",
+    description: "Smaller OpenMed SuperClinical model. Still needs graphics acceleration (WebGPU) — use this when the Large model doesn't fit in the device's available graphics memory.",
     candidates: [
       {
         modelId: OPENMED_BASE_MODEL_ID,
@@ -126,7 +126,7 @@ const ALL_DEID_MODEL_OPTIONS = [
     // explicit; Small is the low-resource CPU/WASM option.
     wasmRuntime: "standard",
     localOnly: true,
-    description: "44M OpenMed SuperClinical PII model. The publisher's int8 ONNX export is the explicit local CPU/WASM option for older devices or browsers without WebGPU.",
+    description: "Smallest OpenMed SuperClinical model. Runs on the regular processor — no graphics acceleration needed, so it works on older devices or browsers without WebGPU support.",
     candidates: [
       {
         modelId: OPENMED_SMALL_MODEL_ID,
@@ -248,7 +248,7 @@ const ALL_DEID_MODEL_OPTIONS = [
     assetMode: "installable",
     sizeLabel: "373 MB ONNX",
     localOnly: true,
-    description: "Mature broad-PII GLiNER model with an ONNX Community Transformers.js layout. Use as the local alternate or cross-check.",
+    description: "Well-tested general identifier-detection model. Use as a local alternative or a second check.",
     candidates: [
       {
         modelId: "onnx-community/gliner_multi_pii-v1",

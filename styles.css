@@ -1410,6 +1410,90 @@ p {
   border-bottom: 1px solid var(--border);
 }
 
+.token-color-swatch {
+  width: 16px;
+  height: 16px;
+  min-height: 0; /* the global `button { min-height: 34px; }` reset otherwise
+    stretches this into a 16x34 pill instead of a 16x16 circle */
+  padding: 0;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 50%;
+  cursor: pointer;
+  flex: none;
+  justify-self: center;
+  /* the global `button` rule animates background-color over 140ms - with
+     paintPreview() repainting this on every pointermove during a drag, each
+     new target retargets the transition before the last one finishes, so the
+     swatch visibly lagged behind the drag instead of tracking it live */
+  transition: none;
+}
+
+/* Positioned via JS (position: fixed, top/left set to sit under whichever
+   swatch is active) - deliberately a single global element (see index.html),
+   not nested inside either the Prompts or Settings markup, so re-rendering
+   either page can't reset its position or interrupt an open pick, and it's
+   never clipped by an ancestor's overflow: auto (the smart-variable menu
+   scrolls; anything nested inside it that renders past its edge used to be
+   clipped, both visually and for hit-testing). */
+.token-color-picker {
+  position: fixed;
+  width: 220px;
+  padding: 10px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  z-index: 50;
+}
+
+.token-color-picker[hidden] {
+  display: none;
+}
+
+.token-color-picker-track {
+  position: relative;
+  height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+  background: linear-gradient(to right,
+    hsl(0, 62%, 45%), hsl(30, 62%, 45%), hsl(60, 62%, 45%), hsl(90, 62%, 45%),
+    hsl(120, 62%, 45%), hsl(150, 62%, 45%), hsl(180, 62%, 45%), hsl(210, 62%, 45%),
+    hsl(240, 62%, 45%), hsl(270, 62%, 45%), hsl(300, 62%, 45%), hsl(330, 62%, 45%), hsl(360, 62%, 45%));
+  touch-action: none;
+}
+
+.token-color-picker-thumb {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 4px;
+  border-radius: 2px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.token-color-picker-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.token-color-picker-accept {
+  background: #e6f4ea;
+  border-color: #2e7d32;
+  color: #2e7d32;
+}
+
+.token-color-picker-cancel:hover {
+  background: #fdecea;
+  border-color: #c62828;
+  color: #c62828;
+}
+
 .smart-variable-row:last-child {
   border-bottom: 0;
 }
@@ -1429,44 +1513,6 @@ p {
   text-align: left;
   min-height: 30px;
   padding: 0;
-}
-
-.variable-swatch {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  flex: none;
-}
-
-.variable-color-input {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 14px;
-  height: 14px;
-  min-height: 0;
-  padding: 0;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-  background: none;
-  flex: none;
-  justify-self: center;
-}
-
-.variable-color-input::-webkit-color-swatch-wrapper {
-  padding: 0;
-  border-radius: 50%;
-}
-
-.variable-color-input::-webkit-color-swatch {
-  border: none;
-  border-radius: 50%;
-}
-
-.variable-color-input::-moz-color-swatch {
-  border: none;
-  border-radius: 50%;
 }
 
 .prompt-preview,
@@ -2747,7 +2793,18 @@ p {
 
 .vault-access { display: grid; gap: 18px; }
 
-.vault-access-heading { margin: 0; }
+.vault-access-heading { margin: 0; align-items: center; }
+
+@media (max-width: 680px) {
+  .vault-access-heading {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .vault-access-heading .button-row {
+    justify-content: flex-start;
+  }
+}
 
 .vault-access-controls {
   display: grid;
@@ -4126,6 +4183,29 @@ body.vault-locked .vault-access {
    fragment is visible only in memory, struck through beside its replacement. */
 .quick-redaction-review {
   margin: 0;
+}
+
+.quick-deid-coverage-note {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-block: 2px 14px;
+}
+
+.quick-deid-coverage-note summary {
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.quick-deid-coverage-note p {
+  margin: 8px 0 0;
+  font-size: 12px;
+}
+
+.quick-deid-coverage-note a {
+  color: inherit;
 }
 
 .quick-model-control {

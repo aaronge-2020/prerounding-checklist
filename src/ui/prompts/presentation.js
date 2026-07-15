@@ -1,4 +1,5 @@
-import { ADMISSION_PSEUDO_DAY_ID, hueToHex, tokenAccentColor, tokenAccentHue } from "../../prompts/custom-templates.js";
+import { ADMISSION_PSEUDO_DAY_ID, tokenAccentColor } from "../../prompts/custom-templates.js";
+import { tokenColorSwatchButton } from "../token-color-picker.js";
 
 export function renderHighlightedSegments(segments, escapeHtml, colorOverrides = {}) {
   return segments.map((segment) => segment.type === "token"
@@ -52,7 +53,7 @@ export function createPromptsPresentation({ escapeHtml }) {
             <div id="smartVariableMenu" class="smart-variable-menu ${smartMenuOpen ? "open" : ""}">
               ${variables.map((variable) => `
                 <div class="smart-variable-row" data-token="${escapeHtml(variable.token)}">
-                  <input type="color" class="variable-color-input" data-action="set-token-color" data-token="${escapeHtml(variable.token)}" value="${hueToHex(tokenAccentHue(variable.token, colorOverrides))}" aria-label="Color for ${escapeHtml(variable.token)}" title="Change the color for ${escapeHtml(variable.token)}">
+                  ${tokenColorSwatchButton(variable.token, colorOverrides, escapeHtml)}
                   <button type="button" class="smart-variable-insert" data-action="insert-prompt-variable" data-token="${escapeHtml(variable.token)}"><strong>${escapeHtml(variable.token)}</strong><span>${escapeHtml(variable.description)}</span></button>
                 </div>
               `).join("")}
