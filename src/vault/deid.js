@@ -1381,7 +1381,21 @@ function isCasualChronoReference(result) {
   return typeof result?.tags === "function" && result.tags().has("parser/ENCasualDateParser");
 }
 
+// chrono's own NUMBER_PATTERN (vendor/chrono-node/locales/en/constants.js)
+// substitutes a fixed stand-in count for words that are inherently
+// approximate - "few" becomes exactly 3, "couple" exactly 2, "several"
+// exactly 7 (parseNumberPattern) - so "over the last few days" or "a
+// couple weeks ago" resolve to one specific calendar date that was never
+// actually written. That's the same fabricated-precision failure mode as
+// the casual-reference "now" case above, just from a different parser;
+// any match built on one of chrono's own fuzzy-count words gets the same
+// treatment - rejected outright rather than rendered as an exact day.
+const FUZZY_QUANTIFIER_PATTERN = /\b(?:few|couple|several)\b/i;
+
 function chronoResultToTemporal(result) {
+  if (FUZZY_QUANTIFIER_PATTERN.test(result?.text || "")) {
+    return null;
+  }
   const known = result?.start?.knownValues;
   if (!known || !Number.isFinite(known.month)) {
     return null;
@@ -1450,7 +1464,14 @@ function isCourseDateLabel(rawText, start, end) {
 // relative phrase ("tomorrow", "next week") off by exactly one day. Re-anchor
 // to a local-midnight Date carrying the same UTC calendar day first.
 function chronoReferenceDate(referenceDate) {
-  const base = referenceDate instanceof Date && !Number.isNaN(referenceDate.getTime()) ? referenceDate : new Date();
+  // Accept anything Date-coercible (a Date instance, or a plain "YYYY-MM-DD"
+  // string straight off an HTML date input) - not just Date instances.
+  // Silently falling back to the real wall-clock date for a valid string
+  // input meant losing the actual admission date anchor for any relative
+  // phrase ("yesterday", "2 days ago") re-parsed downstream of the entities
+  // that already carry it, quietly resolving them against today instead.
+  const candidate = referenceDate instanceof Date ? referenceDate : new Date(referenceDate);
+  const base = referenceDate != null && !Number.isNaN(candidate.getTime()) ? candidate : new Date();
   return new Date(base.getUTCFullYear(), base.getUTCMonth(), base.getUTCDate());
 }
 
@@ -1483,7 +1504,23 @@ function parseTemporalSpan(value, context = {}, referenceDate = null) {
   return chronoResultToTemporal(best);
 }
 
-function dateFromParts(parts, fallbackYear = null, referenceDate = null) {
+// A bare month/day with no year is ambiguous across every year, but only
+// the two or three candidates bracketing the reference date are ever
+// plausible. Nearest-by-distance is the right tiebreaker when every
+// candidate falls close to the reference (a presenting complaint dated a
+// day or two before admission, a plan item a few days after) - but once
+// the nearest candidate lands more than a month past the reference, it
+// stops being a good tiebreaker: this app's source text is chart
+// documentation, which is overwhelmingly retrospective (PMH/PSH lists,
+// prior encounters, "found to have X on Y"), and a document doesn't
+// casually cite a bare, yearless date many months ahead of itself. A
+// distant-future candidate is only trusted when the entity's own line
+// carries explicit forward-looking wording (follow-up/scheduled/planned -
+// see temporalContextDirection); otherwise the most recent
+// non-far-future candidate wins instead.
+const AMBIGUOUS_YEAR_FUTURE_GRACE_DAYS = 30;
+
+function dateFromParts(parts, fallbackYear = null, referenceDate = null, direction = "neutral") {
   if (!parts || !parts.month || (parts.kind !== "month" && !parts.day)) {
     return null;
   }
@@ -1505,9 +1542,11 @@ function dateFromParts(parts, fallbackYear = null, referenceDate = null) {
   if (parts.kind !== "month" && !parts.hasExplicitYear && referenceDate) {
     const referenceYear = referenceDate.getUTCFullYear();
     const candidateYears = [...new Set([year, referenceYear - 1, referenceYear, referenceYear + 1])];
-    return candidateYears
-      .map((candidateYear) => makeDate(candidateYear))
-      .filter(Boolean)
+    const candidates = candidateYears.map((candidateYear) => makeDate(candidateYear)).filter(Boolean);
+    const futureGraceMs = AMBIGUOUS_YEAR_FUTURE_GRACE_DAYS * 86400000;
+    const nonFarFutureCandidates = candidates.filter((candidate) => candidate.getTime() - referenceDate.getTime() <= futureGraceMs);
+    const pool = direction === "future" || !nonFarFutureCandidates.length ? candidates : nonFarFutureCandidates;
+    return pool
       .sort((left, right) => {
         const leftDiff = left.getTime() - referenceDate.getTime();
         const rightDiff = right.getTime() - referenceDate.getTime();
@@ -1754,6 +1793,12 @@ function addTemporalPatternEntities(rawText, entities, currentDate = null) {
   });
 }
 
+// Only used when chooseCurrentSourceDate has to guess an anchor with no
+// explicit admission/current-date signal in the text at all (see the final
+// fallback below) - how far back a date can be from the most recent one and
+// still plausibly belong to the same stay rather than to older history.
+const INFERRED_STAY_LOOKBACK_DAYS = 14;
+
 function chooseCurrentSourceDate(temporalEntities, currentDate = null) {
   if (currentDate) {
     const d = new Date(currentDate);
@@ -1794,7 +1839,7 @@ function chooseCurrentSourceDate(temporalEntities, currentDate = null) {
     const inferredYear = info.temporal.hasExplicitYear
       ? info.temporal.year
       : inferYearForMissingTemporal(info.temporal, temporalEntities, explicitAnchor?.getUTCFullYear() || fallbackYear);
-    return dateFromParts(info.temporal, inferredYear, explicitAnchor);
+    return dateFromParts(info.temporal, inferredYear, explicitAnchor, temporalContextDirection(info.entity));
   };
 
   const dayEntities = parsedEntities
@@ -1805,6 +1850,19 @@ function chooseCurrentSourceDate(temporalEntities, currentDate = null) {
     .filter((info) => info.temporal?.kind === "day" && info.date);
   if (!dayEntities.length) {
     return null;
+  }
+
+  // "Admitted"/"admission" wording names the admission event directly - a
+  // stronger, more specific anchor signal than the generic "current
+  // labs"/"today" cues below, which just mark whichever date a note happens
+  // to be read as of. Without this, a later "current labs" mention could
+  // outrank the actual "Admitted ..." line for which date becomes Hospital
+  // Day 1, folding the true admission day into a "days prior" phrase instead.
+  const admissionContextEntities = dayEntities.filter((info) => /\badmit(?:ted)?\b|\badmission\b/i.test(info.entity.context || ""));
+  if (admissionContextEntities.length) {
+    return admissionContextEntities.reduce((earliest, info) => (
+      !earliest || info.date < earliest ? info.date : earliest
+    ), null);
   }
 
   const prioritized = dayEntities.filter((info) => isCurrentSourceDateContext(info.entity));
@@ -1820,9 +1878,27 @@ function chooseCurrentSourceDate(temporalEntities, currentDate = null) {
     ), null).date;
   }
 
-  const pool = dayEntities;
-  return pool.reduce((latest, info) => (
+  // Last resort, no explicit "current"/"admitted" signal anywhere: a
+  // Results Review-style panel routinely mixes a run of recent, same-stay
+  // labs/imaging with much older outpatient history pulled into the same
+  // list. The most recent date in the set is the best available stand-in
+  // for "now"; anchoring Hospital Day 1 to the latest date itself (the old
+  // behavior) forces every earlier row - including ones from the same
+  // several-day stay - into "prior to hospital admission" phrasing. Anchoring
+  // to the earliest date in the *entire* set is just as wrong the other way,
+  // dragging genuinely old history into the current stay's day count. So the
+  // anchor is the earliest date that's still within a plausible single stay
+  // (INFERRED_STAY_LOOKBACK_DAYS) of the most recent one - the recent run
+  // gets sequenced from its own start, and anything older stays historical.
+  const mostRecentDate = dayEntities.reduce((latest, info) => (
     !latest || info.date > latest ? info.date : latest
+  ), null);
+  const recentCluster = dayEntities.filter((info) => (
+    mostRecentDate.getTime() - info.date.getTime() <= INFERRED_STAY_LOOKBACK_DAYS * 86400000
+  ));
+  const pool = recentCluster.length ? recentCluster : dayEntities;
+  return pool.reduce((earliest, info) => (
+    !earliest || info.date < earliest ? info.date : earliest
   ), null);
 }
 
@@ -1834,11 +1910,6 @@ function isHistoricalTemporalContext(entity) {
   return /\b(?:prior to admission|pre-?admission|preadmission|previous(?:ly)? (?:diagnosed|admitted|admission|hospitalization|episode|visit)|history of|historical|remote history|past medical history|\bpmh\b|last (?:admission|hospitalization)|outpatient history|diagnosed (?:in|on|back in)|since (?:19|20)\d{2})\b/.test(context);
 }
 
-// Anything more than two weeks before admission with no explicit narrative
-// tying it to this stay is treated as an unrelated past encounter rather
-// than guessed at as a Hospital Day offset.
-const HISTORICAL_LOOKBACK_DAYS = 14;
-
 function classifyTemporalPlacement(temporal, date, admissionDate, entity) {
   if (!admissionDate || !date || temporal.kind === "month") {
     const year = temporal.year || date?.getUTCFullYear() || null;
@@ -1848,10 +1919,16 @@ function classifyTemporalPlacement(temporal, date, admissionDate, entity) {
     return { historical: true, year: date.getUTCFullYear() };
   }
   const dayDiff = Math.round((date.getTime() - admissionDate.getTime()) / 86400000);
-  if (dayDiff < -HISTORICAL_LOOKBACK_DAYS) {
+  // Anything before the admission date itself is, by definition, before the
+  // hospitalization began - it belongs in the "N days/months/years prior to
+  // admission" phrasing below, never folded into "Hospital Day 1". (A
+  // one-day grace window here previously mapped presenting-complaint dates
+  // like "abnormal Hb on 7/13" - two days before a 7/15 admission - onto
+  // "Hospital Day 1", which is simply wrong: that lab predates the stay.)
+  if (dayDiff < 0) {
     return { historical: true, year: date.getUTCFullYear() };
   }
-  return { historical: false, hospitalDay: dayDiff <= 0 ? 1 : dayDiff + 1 };
+  return { historical: false, hospitalDay: dayDiff + 1 };
 }
 
 // Civil (calendar) years/months/days from `earlier` to `later`, the way a
@@ -1914,7 +1991,7 @@ function formatRelativeTemporalPlaceholder(entity, currentSourceDate, fallbackYe
     return "[Historical date]";
   }
   const year = temporal.year || fallbackYear || currentSourceDate?.getUTCFullYear() || null;
-  const date = dateFromParts(temporal, year, currentSourceDate);
+  const date = dateFromParts(temporal, year, currentSourceDate, temporalContextDirection(entity));
   const placement = classifyTemporalPlacement(temporal, date, currentSourceDate, entity);
   if (placement.historical) {
     const duration = historicalDurationBeforeAdmission(date, currentSourceDate, { hasDayPrecision: temporal.kind !== "month" });
