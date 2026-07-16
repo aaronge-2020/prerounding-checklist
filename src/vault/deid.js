@@ -187,9 +187,9 @@ function isLikelyClinicalSlashValue(rawText, start, end) {
   const before = rawText.slice(Math.max(0, start - 36), start).toLowerCase();
   const after = rawText.slice(end, Math.min(rawText.length, end + 36)).toLowerCase();
   const denominator = Number(span.split(/[/-]/)[1]);
-  return /(strength|motor|reflex|pain|score|rated|grade|gcs|glasgow|apgar|mrc|nihss)\s*(?:is|was|:)?\s*$/.test(before) ||
+  return /(strength|motor|reflex|pain|score|rated|grade|gcs|glasgow|apgar|mrc|nihss|day|cycle|course)\s*(?:is|was|#|:)?\s*$/.test(before) ||
     /^\s*(?:strength|motor|reflex|pain|score|out of|\/)/.test(after) ||
-    denominator <= 10 && /(strength|motor|pain|score|grade|rated|exam|neuro|mrc|nihss)/.test(`${before} ${after}`);
+    denominator <= 10 && /(strength|motor|pain|score|grade|rated|exam|neuro|mrc|nihss|murmur|systolic|diastolic)/.test(`${before} ${after}`);
 }
 
 function isLikelyNonDateSlashMeasurement(rawText, start, end) {
@@ -470,6 +470,16 @@ function isLikelyNonNamePhrase(rawText, start, end) {
     return true;
   }
 
+  // A whole-entity span that is just one closed-class English function word
+  // ("been", "had", "the"...) is never a real person's name, no matter which
+  // detector proposed it or how confident it was - a token classifier can
+  // mis-align onto a common word next to a genuine name mention, and no
+  // clinical-vocabulary check below is positioned to catch that since those
+  // only reason about clinical phrases, not ordinary prose.
+  if (!normalized.includes(" ") && COMMON_ENGLISH_PROSE_WORD_PATTERN.test(normalized)) {
+    return true;
+  }
+
   if (isLikelyPromptInstructionHeading(span)) {
     return true;
   }
@@ -531,7 +541,21 @@ function isLikelyDateFalsePositive(rawText, start, end) {
 
   const hasDateContext = /(admit|admitted|admission|discharge|date|dos|collected|collection|result|received|drawn|ordered|started|start|onset|began|developed|changed|resolved|improved|worsened|since|through|from|to|on)\W*$/.test(before);
 
-  if (/^\d{1,2}[/-]\d{1,2}$/.test(span) && !hasDateContext) {
+  // Dash-separated bare M-D ("7-15") is a rare way to write a real date in
+  // US clinical notes — dates here are written with slashes — so, like the
+  // wider numeric dash-range check below, it's only trusted as a date next
+  // to explicit date wording; absent that it's almost always a dose/lab
+  // range. A bare M/D *slash* pair ("7/7", "3/15") is the ordinary way
+  // clinicians write a dateless date, so it is judged on its own merits
+  // further down (isLikelyNonDateSlashMeasurement / isLikelyClinicalSlashValue)
+  // rather than gated on nearby wording here: the set of words that can
+  // legitimately precede a real date is unbounded (any clinical event —
+  // an EKG, a therapy day count, a chemo cycle — can be followed by one),
+  // so a positive-context allow-list can never stay complete. The set of
+  // non-date clinical fractions that share this shape (motor/reflex/pain
+  // scores, GCS, Apgar, murmur grade, imaging view counts, day-of-course
+  // counters) is small and enumerable, so that's the list worth maintaining.
+  if (/^\d{1,2}-\d{1,2}$/.test(span) && !hasDateContext) {
     return true;
   }
 
@@ -765,6 +789,27 @@ function constrainModelEntity(rawText, entity) {
   return { ...entity, start, end };
 }
 
+// The complete set of categories this app is built to redact and render a
+// placeholder for (Safe Harbor identifiers plus the couple of app-specific
+// buckets like ROOM/FACILITY) - every label phiLabelMap normalizes onto, and
+// exactly the set mergeEntities'/filterLikelyFalsePositiveEntities' per-label
+// branches know how to handle. A NER model trained on a broader annotation
+// scheme (e.g. i2b2/n2c2-style corpora) can also emit categories this app
+// never asked for, most notably OCCUPATION/PROFESSION - occupation isn't one
+// of the 18 Safe Harbor identifiers, so redacting it isn't required, and this
+// app already treats it deliberately as a soft "rare occupation" residual-PHI
+// *warning* (scanResidualPhi) rather than a hard redaction target. Accepting
+// an unrecognized label at face value here would silently redact things this
+// app was never designed to, generally to a partial/malformed span (a model
+// trained to spot "profession" phrases wasn't built with this app's own
+// span-completion rules for that category), so anything outside this set is
+// dropped rather than passed through.
+const SUPPORTED_PHI_LABELS = new Set([
+  "NAME", "PATIENT NAME", "PROVIDER NAME", "CONTACT NAME",
+  "LOCATION", "FACILITY", "ORGANIZATION", "ADDRESS", "ROOM", "AGE",
+  "DATE", "DOB", "EMAIL", "PHONE", "MRN", "ENCOUNTER ID", "ID", "URL", "IP"
+]);
+
 export function modelPredictionsToEntities(rawText, predictions, offset = 0) {
   const entities = [];
   let cursor = 0;
@@ -781,7 +826,7 @@ export function modelPredictionsToEntities(rawText, predictions, offset = 0) {
     cursor = Math.max(cursor, span.end);
     const label = normalizePhiLabel(prediction);
 
-    if (label === "O") {
+    if (label === "O" || !SUPPORTED_PHI_LABELS.has(label)) {
       return;
     }
 
@@ -1288,21 +1333,37 @@ function withExplicitClockTime(span) {
 // (chrono already resolved every component from the reference date) and
 // from "June 2020" (day implied - a month-only mention, never anchored to
 // a specific Hospital Day).
+// Chrono tags any "now/today/tonight/yesterday/tomorrow/tmr/tmrw/overmorrow/
+// last night" match with parser/ENCasualDateParser (see
+// vendor/chrono-node/locales/en/parsers/ENCasualDateParser.js). Those
+// resolve by copying every component - including hour/minute - wholesale
+// from the reference moment this app hands chrono, which is always a
+// time-less local midnight (chronoReferenceDate strips time-of-day). So
+// "known.hour"/"known.year" being finite for these matches doesn't mean the
+// clinician wrote an hour or a year - it means chrono copied 0 and the
+// reference's year off a date that never had a real clock time to begin
+// with. Trusting that as-is fabricates precision that isn't there (plain
+// "now" rendering as if the clinician wrote "at 00:00").
+function isCasualChronoReference(result) {
+  return typeof result?.tags === "function" && result.tags().has("parser/ENCasualDateParser");
+}
+
 function chronoResultToTemporal(result) {
   const known = result?.start?.knownValues;
   if (!known || !Number.isFinite(known.month)) {
     return null;
   }
+  const casual = isCasualChronoReference(result);
   const hasDay = Number.isFinite(known.day);
   const temporal = {
     kind: hasDay ? "day" : "month",
     year: result.start.get("year"),
     month: result.start.get("month"),
-    hasExplicitYear: Number.isFinite(known.year),
+    hasExplicitYear: Number.isFinite(known.year) && !casual,
     clockTime: ""
   };
   if (hasDay) temporal.day = result.start.get("day");
-  if (Number.isFinite(known.hour)) {
+  if (!casual && Number.isFinite(known.hour)) {
     const hour = result.start.get("hour");
     const minute = result.start.get("minute") || 0;
     temporal.clockTime = `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
@@ -1311,10 +1372,21 @@ function chronoResultToTemporal(result) {
 }
 
 function contextAroundSpan(rawText, start, end) {
+  // Bounded to the current line - a short clinical note is often a list of
+  // one-line bullets ("- Repeat CBC now" / "- CT head/c-spine..."), and a
+  // raw character-count slice crosses into a neighboring, unrelated bullet
+  // as easily as it reaches genuinely connected text. A keyword on the
+  // *next* bullet has no bearing on whether *this* line's span is a real
+  // date, so letting it "confirm" one is a bug, not a feature: it's how a
+  // later line's "CT" once talked isLikelyDateFalsePositive's override into
+  // treating a bare "now" as a real date, giving it an invented timestamp.
+  const lineStart = rawText.lastIndexOf("\n", Math.max(0, start - 1)) + 1;
+  const lineEndIndex = rawText.indexOf("\n", end);
+  const lineEnd = lineEndIndex === -1 ? rawText.length : lineEndIndex;
   return {
     line: lineAroundSpan(rawText, start, end),
-    before: rawText.slice(Math.max(0, start - 96), start),
-    after: rawText.slice(end, Math.min(rawText.length, end + 64))
+    before: rawText.slice(Math.max(lineStart, start - 96), start),
+    after: rawText.slice(end, Math.min(lineEnd, end + 64))
   };
 }
 
@@ -1515,9 +1587,6 @@ function pushTemporalEntity(rawText, entities, start, end, source = "temporal", 
   }
   const temporal = precomputedTemporal || parseTemporalSpan(rawText.slice(start, end), { rawText, start, end });
   if (!temporal) {
-    return;
-  }
-  if (temporal.kind === "day" && !temporal.hasExplicitYear && !hasClinicalTemporalContext(rawText, start, end)) {
     return;
   }
   entities.push({
@@ -1722,6 +1791,59 @@ function classifyTemporalPlacement(temporal, date, admissionDate, entity) {
   return { historical: false, hospitalDay: dayDiff <= 0 ? 1 : dayDiff + 1 };
 }
 
+// Civil (calendar) years/months/days from `earlier` to `later`, the way a
+// person counts them - respecting variable month lengths - not a
+// fixed-length duration divide. Assumes earlier <= later.
+function calendarDurationBetween(earlier, later) {
+  let years = later.getUTCFullYear() - earlier.getUTCFullYear();
+  let months = later.getUTCMonth() - earlier.getUTCMonth();
+  let days = later.getUTCDate() - earlier.getUTCDate();
+  if (days < 0) {
+    months -= 1;
+    const daysInPriorMonth = new Date(Date.UTC(later.getUTCFullYear(), later.getUTCMonth(), 0)).getUTCDate();
+    days += daysInPriorMonth;
+  }
+  if (months < 0) {
+    years -= 1;
+    months += 12;
+  }
+  return { years, months, days };
+}
+
+function formatDurationPhrase({ years, months, days }) {
+  const parts = [];
+  if (years > 0) parts.push(`${years} year${years === 1 ? "" : "s"}`);
+  if (months > 0) parts.push(`${months} month${months === 1 ? "" : "s"}`);
+  if (days > 0) parts.push(`${days} day${days === 1 ? "" : "s"}`);
+  if (!parts.length) {
+    return "less than a day";
+  }
+  if (parts.length === 1) {
+    return parts[0];
+  }
+  return parts.length === 2
+    ? `${parts[0]} and ${parts[1]}`
+    : `${parts[0]}, ${parts[1]}, and ${parts[2]}`;
+}
+
+// A month-only mention ("PET stress in 3/2026") has no real day component -
+// dateFromParts fills one in (the 1st) only so calendar math has something
+// to subtract, but surfacing that fabricated day back to the user would
+// overstate the precision we actually have, so it's dropped here.
+function historicalDurationBeforeAdmission(date, admissionDate, { hasDayPrecision = true } = {}) {
+  if (!date || !admissionDate) {
+    return null;
+  }
+  const duration = calendarDurationBetween(date, admissionDate);
+  if (!hasDayPrecision) {
+    if (!duration.years && !duration.months) {
+      return "less than a month";
+    }
+    return formatDurationPhrase({ ...duration, days: 0 });
+  }
+  return formatDurationPhrase(duration);
+}
+
 function formatRelativeTemporalPlaceholder(entity, currentSourceDate, fallbackYear = null) {
   const span = entity.span || "";
   const temporal = entity.temporal || parseTemporalSpan(span, entity, currentSourceDate);
@@ -1732,6 +1854,10 @@ function formatRelativeTemporalPlaceholder(entity, currentSourceDate, fallbackYe
   const date = dateFromParts(temporal, year, currentSourceDate);
   const placement = classifyTemporalPlacement(temporal, date, currentSourceDate, entity);
   if (placement.historical) {
+    const duration = historicalDurationBeforeAdmission(date, currentSourceDate, { hasDayPrecision: temporal.kind !== "month" });
+    if (duration) {
+      return `[${duration} prior to hospital admission]`;
+    }
     return placement.year ? `[Historical: ${placement.year}]` : "[Historical date]";
   }
   const clockTime = temporal.clockTime || "";
@@ -2386,10 +2512,18 @@ function findFuzzyIdentityForCandidate(candidate, graph) {
   )) || null;
 }
 
+// Closed-class English function words/common verbs - articles, prepositions,
+// conjunctions, pronouns, auxiliaries, and prose verbs. A real person's name
+// never coincides with one of these, unlike given/surname dictionary words
+// which occasionally do (Foley, Grant, Young...), so this set is safe to
+// treat as an absolute "not a name" signal rather than just supporting
+// context, wherever a single such token shows up as a whole entity span.
+const COMMON_ENGLISH_PROSE_WORD_PATTERN = /^(?:was|were|is|are|has|had|have|came|went|arrived|left|departed|presented|reported|stated|said|told|spoke|called|denied|endorsed|complained|asked|requested|received|underwent|developed|began|started|stopped|continued|remained|became|felt|noted|showed|demonstrated|required|needed|wanted|tried|failed|agreed|refused|decided|planned|expected|hoped|thought|believed|knew|found|gave|took|made|got|put|went|followed|walked|ran|sat|stood|lay|slept|ate|drank|used|tolerated|a|an|the|in|on|at|to|for|with|from|by|about|after|before|during|and|or|but|not|also|now|then|today|yesterday|will|would|should|could|can|may|might|who|that|which|this|these|those|his|her|their|our|my|your|its|no|yes|very|just|quite|rather|still|yet|already|soon|currently|initially|subsequently|eventually|finally|been|being|be|do|does|did|done|shall|must|it|he|she|they|we|i|you)$/i;
+
 function hasProseContinuationAfterName(rawText, end) {
   const after = rawText.slice(end, Math.min(rawText.length, end + 80));
   const firstWord = after.match(/^[\s,;:.!?-]*(\w+)/)?.[1] || "";
-  return /^(?:was|were|is|are|has|had|have|came|went|arrived|left|departed|presented|reported|stated|said|told|spoke|called|denied|endorsed|complained|asked|requested|received|underwent|developed|began|started|stopped|continued|remained|became|felt|noted|showed|demonstrated|required|needed|wanted|tried|failed|agreed|refused|decided|planned|expected|hoped|thought|believed|knew|found|gave|took|made|got|put|went|followed|walked|ran|sat|stood|lay|slept|ate|drank|used|tolerated|a|an|the|in|on|at|to|for|with|from|by|about|after|before|during|and|or|but|not|also|now|then|today|yesterday|will|would|should|could|can|may|might|who|that|which|this|these|those|his|her|their|our|my|your|its|no|yes|very|just|quite|rather|still|yet|already|soon|currently|currently|initially|subsequently|eventually|finally)$/i.test(firstWord);
+  return COMMON_ENGLISH_PROSE_WORD_PATTERN.test(firstWord);
 }
 
 function shouldAutoPromoteStandalonePersonName(candidate) {

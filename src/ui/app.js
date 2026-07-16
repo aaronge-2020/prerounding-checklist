@@ -868,6 +868,9 @@ function renderDeidStrip() {
         </select>
         ${renderDeidLoadButton()}
       </div>
+      <label class="deid-admission-date-inline">Admission date
+        <input type="date" id="dailyAdmissionDateInput" value="${escapeHtml(app.admissionDate || "")}">
+      </label>
       ${renderDeidOperation()}
       ${progress ? `<div class="deid-download-progress" aria-live="polite"><progress data-shared-model-progress value="${Math.max(0, progress.completedBytes)}" max="${Math.max(1, progress.totalBytes)}"></progress><span data-shared-model-progress-text>${escapeHtml(modelPackProgressText(option))}</span></div>` : ""}
       ${readiness.ready ? "" : `<span class="deid-readiness-note">${escapeHtml(readiness.message)}</span>`}
@@ -1532,11 +1535,6 @@ async function handleClick(event) {
     if (action === "request-delete-vault") requestVaultDeletion();
     if (action === "confirm-delete-vault") deleteVaultAndStartOver();
     if (action === "admit-patient") await admitPatient();
-    if (action === "change-admission-date") {
-      app.admissionDate = "";
-      try { await admissionDateGate.requestAdmissionDateFromUser(); } catch (_) { /* cancelled */ }
-      renderQuickDeid();
-    }
     if (action === "select-patient") selectPatient(target.dataset.patientId);
     if (action === "archive-patient") requestArchivePatient(target.dataset.patientId);
     if (action === "confirm-archive-patient") await archiveSelectedPatient(app.pendingArchivePatientId);
@@ -3376,6 +3374,11 @@ function handleChange(event) {
     app.deidMode = event.target.value;
     app.quickDeid.status = "";
     renderStatusBar();
+    if (app.view === "daily") refreshDeidControlsInActiveView();
+    if (app.view === "quickDeid") renderQuickDeid();
+  }
+  if (event.target.id === "quickDeidAdmissionDateInput" || event.target.id === "dailyAdmissionDateInput") {
+    app.admissionDate = event.target.value;
     if (app.view === "daily") refreshDeidControlsInActiveView();
     if (app.view === "quickDeid") renderQuickDeid();
   }

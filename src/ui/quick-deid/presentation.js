@@ -127,10 +127,14 @@ export function createQuickDeidPresentation({ escapeHtml, icon }) {
           </div>
           ${hasReview ? `<button class="button--quiet" type="button" data-action="start-new-quick-deid">${icon("plus")} New text</button>` : ""}
         </div>
-        <p class="muted quick-deid-admission-date">
-          ${admissionDate ? `Admission date set for this session (used only to anchor Hospital Day labels, then discarded).` : `No admission date set yet — you'll be asked for it before the first run.`}
-          <button class="button--quiet" type="button" data-action="change-admission-date">${admissionDate ? "Change" : "Set now"}</button>
-        </p>
+        <section class="quick-model-control quick-deid-admission-date" aria-label="Admission date">
+          <label for="quickDeidAdmissionDateInput">Admission date</label>
+          <div class="quick-model-control-row">
+            <input type="date" id="quickDeidAdmissionDateInput" value="${escapeHtml(admissionDate || "")}" aria-label="Admission date">
+            ${admissionDate ? "" : `<span class="model-selection-message">Set this before running de-identification.</span>`}
+          </div>
+          <p class="muted">Anchors dates in this note to Hospital Day numbers, then is discarded. Change it any time — it never affects text you've already de-identified.</p>
+        </section>
         ${renderQuickModelControlHtml}
         ${hasReview ? `
           <section class="quick-review-workspace">

@@ -773,6 +773,14 @@ p {
   justify-content: flex-end;
 }
 
+.deid-admission-date-inline {
+  flex: 0 0 auto;
+}
+
+.deid-admission-date-inline input {
+  min-height: 34px;
+}
+
 .model-help {
   margin-top: 4px;
   max-width: 760px;
