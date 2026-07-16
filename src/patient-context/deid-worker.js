@@ -2,7 +2,7 @@ import {
   deidentifyText,
   preloadAdvancedDeidModel,
   verifyAdvancedDeidModel
-} from "./deid-service.js?v=20260711-functional-remediation-15";
+} from "./deid-service.js?v=20260716-admission-anchor-fixes";
 
 function post(type, id, value) {
   self.postMessage({ type, id, value });
