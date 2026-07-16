@@ -151,13 +151,17 @@ function sameLineContext(rawText, start, end) {
 
 function clinicalResultLabelFromLine(line) {
   const clean = String(line || "").trim();
-  const delimiter = clean.match(/:\s+/);
+  // A flowsheet row ("Calculated Osmolality\t288\t291") carries the exact
+  // same label/value shape as a colon-delimited one - just tab-delimited
+  // instead of ": " - so it's recognized the same way rather than only
+  // ever matching text that happens to use a colon.
+  const delimiter = clean.match(/:\s+|\t/);
   const colonIndex = delimiter ? delimiter.index : -1;
   if (colonIndex <= 0 || colonIndex > 110) {
     return null;
   }
   const label = clean.slice(0, colonIndex).trim();
-  const value = clean.slice(colonIndex + 1).trim();
+  const value = clean.slice(colonIndex + delimiter[0].length).trim();
   if (!label || !value) {
     return null;
   }
@@ -184,6 +188,15 @@ function isLikelyClinicalResultLine(line) {
 
 function isLikelyClinicalSlashValue(rawText, start, end) {
   const span = rawText.slice(start, end);
+  // "2/2" is standard clinical shorthand for "secondary to" ("AKI 2/2
+  // dehydration") - a fixed idiom, unlike the score patterns below whose
+  // numerator/denominator vary, so it's excluded outright rather than
+  // gated on nearby wording. A genuine bare "2/2" calendar date (Feb 2,
+  // no year) is rare next to how often this abbreviation shows up in
+  // assessment/plan prose.
+  if (span === "2/2") {
+    return true;
+  }
   const before = rawText.slice(Math.max(0, start - 36), start).toLowerCase();
   const after = rawText.slice(end, Math.min(rawText.length, end + 36)).toLowerCase();
   const denominator = Number(span.split(/[/-]/)[1]);
@@ -488,16 +501,28 @@ function isLikelyNonNamePhrase(rawText, start, end) {
     return true;
   }
 
-  const lineStart = rawText.lastIndexOf("\n", Math.max(0, start - 1)) + 1;
   const lineEndIndex = rawText.indexOf("\n", end);
   const lineEnd = lineEndIndex === -1 ? rawText.length : lineEndIndex;
-  const beforeInLine = rawText.slice(lineStart, start);
   const afterInLine = rawText.slice(end, lineEnd);
-  if (/^\s*(?:#|[-*]|\d+\.)?\s*$/.test(beforeInLine) && /^\s*[:#]/.test(afterInLine)) {
+  // A NAME-class span immediately followed by a bare colon is a field
+  // label ("Name:", "Age:", "Attending:") almost every time, whether or
+  // not it opens its own line - dictated/imported reports routinely run
+  // several "Label: value" pairs together on one line ("Exam date and
+  // time: ... Age: 78 years old Clinical indication: ..."), so requiring
+  // the label to start the line misses every one of those but the first.
+  if (/^\s*[:#]/.test(afterInLine)) {
     return true;
   }
 
   if (isLikelyChartHeadingPhrase(rawText, start, end)) {
+    return true;
+  }
+
+  // Same idea as isLikelyIdentifierFalsePositive's use of this below: a
+  // span sitting on a line that's itself a label/value clinical result row
+  // (colon- or tab-delimited, e.g. a flowsheet's "Calculated Osmolality\t288")
+  // is that row's clinical label, not a person's name, regardless of source.
+  if (isLikelyClinicalResultLine(lineAroundSpan(rawText, start, end))) {
     return true;
   }
 
@@ -1241,6 +1266,14 @@ export function filterLikelyFalsePositiveEntities(rawText, entities) {
       return !isLikelyAddressFalsePositive(rawText, entity.start, entity.end);
     }
 
+    // Previously only wired into two structured ID regexes' own `skip`
+    // option, so a model-sourced ID prediction (e.g. a virus strain token
+    // like "NL63" or "COVID-19" inside "(Not related to COVID-19)" on a
+    // micro-panel result line) never got this same check at all.
+    if (entity.label === "ID") {
+      return !isLikelyIdentifierFalsePositive(rawText, entity.start, entity.end);
+    }
+
     if (entity.label === "NAME") {
       return !isLikelyNonNamePhrase(rawText, entity.start, entity.end);
     }
@@ -1634,17 +1667,47 @@ function dropAbsorbedLeadingValue(text, result, referenceDate) {
   return { result, start: result.index };
 }
 
+// Chrono's year/month/day separator grammar (e.g. ENYearMonthDayParser)
+// treats *any* whitespace the same as a literal "-"/"/" between date
+// components, since it's built for prose ("2024 07 15") where that's
+// correct. A tab-separated flowsheet row breaks that assumption: cell text
+// like "...0202\t07/15/26 0257..." reads as one bogus date whose "year" is
+// actually the previous cell's clock time, and the absorption chains into
+// every following cell. No legitimate single date/time mention in this
+// app's source text spans a table cell or line boundary, so chrono is fed
+// one tab/newline-delimited segment at a time instead of the whole
+// document - it can then never see two unrelated cells as one expression.
+function collectChronoResultsBySegment(text, referenceDate) {
+  const results = [];
+  const boundaryPattern = /[\t\n]/g;
+  let cursor = 0;
+  let boundary;
+  do {
+    boundary = boundaryPattern.exec(text);
+    const segmentEnd = boundary ? boundary.index : text.length;
+    const segment = text.slice(cursor, segmentEnd);
+    if (segment) {
+      let rawResults;
+      try {
+        rawResults = clinicalChrono.parse(segment, referenceDate, { forwardDate: false });
+      } catch {
+        rawResults = [];
+      }
+      rawResults.forEach((rawResult) => {
+        const { result, start } = dropAbsorbedLeadingValue(segment, rawResult, referenceDate);
+        results.push({ result, start: cursor + start });
+      });
+    }
+    cursor = segmentEnd + 1;
+  } while (boundary);
+  return results;
+}
+
 export function collectTemporalEntities(rawText, referenceDate = null) {
   const text = String(rawText || "");
   const ref = chronoReferenceDate(referenceDate);
   const entities = [];
-  let rawResults;
-  try {
-    rawResults = clinicalChrono.parse(text, ref, { forwardDate: false });
-  } catch {
-    rawResults = [];
-  }
-  const results = rawResults.map((rawResult) => dropAbsorbedLeadingValue(text, rawResult, ref));
+  const results = collectChronoResultsBySegment(text, ref);
 
   results.forEach(({ result, start }) => {
     const end = start + result.text.length;
@@ -2802,6 +2865,18 @@ function collectBracketedPlaceholderEntities(rawText) {
       const wordCount = bracketContent.split(/\s+/).filter(Boolean).length;
       if (wordCount > 4 || /[.;]/.test(bracketContent) ||
           /^(?:insert|enter|add|list|describe|include|specify|other|see|refer)\b/i.test(bracketContent)) {
+        continue;
+      }
+      // Only assume "unfilled name-placeholder template field" when the
+      // bracket content actually names a person-identity concept ("Patient
+      // Name", "Referring Physician", "Insert Provider"). Real EHR exports
+      // routinely bracket short, non-instructional, non-identity content
+      // that has nothing to do with a name — an order/accession number
+      // ("[168709014]"), a med-taper instruction ("[START ON 7/16/2026]") —
+      // and blindly rewriting every one of those to "[NAME]" destroys real
+      // clinical content far more often than it catches a genuine blank
+      // template marker.
+      if (!/\b(?:name|patient|provider|doctor|physician|nurse|np|pa|guardian|contact|caregiver|next of kin)\b/i.test(bracketContent)) {
         continue;
       }
       label = "NAME";
