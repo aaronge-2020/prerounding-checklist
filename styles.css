@@ -4303,7 +4303,10 @@ body.vault-locked .vault-access {
   outline-offset: 2px;
 }
 
-.redaction-document-text { white-space: pre-wrap; }
+.redaction-document-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
 
 .redaction-change {
   display: inline;
@@ -4318,6 +4321,16 @@ body.vault-locked .vault-access {
   font: inherit;
   padding: 0;
   text-align: inherit;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.redaction-change del,
+.redaction-change ins,
+.redaction-change mark {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .redaction-change del {
