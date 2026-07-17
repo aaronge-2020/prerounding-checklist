@@ -2,7 +2,7 @@ import {
   deidentifyText,
   preloadAdvancedDeidModel,
   verifyAdvancedDeidModel
-} from "./deid-service.js?v=20260716-admission-anchor-fixes";
+} from "./deid-service.js?v=20260716-auto-coi-reload";
 
 function post(type, id, value) {
   self.postMessage({ type, id, value });

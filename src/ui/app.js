@@ -4,7 +4,7 @@ import { deleteEncryptedVaultRecord, downloadJson, loadOrCreateVault, readEncryp
 import { authorizeWorkupWorkspaceMirror, disconnectWorkupWorkspaceMirror, getWorkupWorkspaceMirrorState, mirrorWorkupOverridesToWorkspace } from "../app/state/workspace-mirror.js?v=20260711-functional-remediation-15";
 import { addSection, removeSection, reorderSections, reorderSectionsById, replaceSectionsFromFormAsync } from "../patient-context/sections.js?v=20260711-functional-remediation-15";
 import { createEphemeralRedactionReview, inspectedRedactionIndex, nextPendingRedactionIndex, nextPendingReviewTarget, pendingReviewTargets, quickRedactionIndex, quickSelectedRedactionIndex, quickWarningIndex, reviewKey, synchronizeReviewPlaceholders } from "../patient-context/review.js?v=20260715-reject-rest";
-import { crossOriginIsolationBlocker, deidentifyText, getAdvancedDeidStatus, getSelectedDeidModelStatus, preloadAdvancedDeidModel, resetAdvancedDeidWorker, verifyAdvancedDeidModel } from "../patient-context/deid-client.js?v=20260716-admission-anchor-fixes";
+import { crossOriginIsolationBlocker, deidentifyText, getAdvancedDeidStatus, getSelectedDeidModelStatus, preloadAdvancedDeidModel, resetAdvancedDeidWorker, verifyAdvancedDeidModel } from "../patient-context/deid-client.js?v=20260716-auto-coi-reload";
 import { DEFAULT_DEID_MODEL_KEY, DEID_MODEL_OPTIONS, STRUCTURED_DEID_MODE, deidModelOptionByKey } from "../patient-context/deid-model-options.js?v=20260711-functional-remediation-15";
 import { canAutomaticallyInstallModel, ensureModelPackServiceWorker, getModelPackState, importModelPack, installModelPack, markModelPackVerified, modelFilesFromDirectoryHandle, modelFilesFromInput, removeModelPack, requestPersistentModelStorage } from "../patient-context/model-pack-storage.js?v=20260711-functional-remediation-15";
 import { formatBytes, hasAutomaticModelDownload, isInstallableModel, modelDownloadBytes } from "../patient-context/model-packs.js?v=20260711-functional-remediation-15";
@@ -3594,11 +3594,40 @@ function bindEvents() {
   });
 }
 
+// The isolation headers service-worker.js stamps on only apply to a
+// navigation the service worker is already controlling - never retroactively
+// to the page that just registered it. Historically that meant the very
+// first visit (or the first visit after any deploy that changes the worker)
+// needed a *manual* reload before any AI model would load, with only a
+// small status-line message explaining why - easy to miss, and easy to read
+// as "de-identification is just broken". Doing that one reload automatically
+// removes the manual step entirely. This only ever runs once per tab
+// (sessionStorage guard, since a reload that still isn't isolated - e.g. a
+// browser/extension stripping the headers - must not loop forever), and only
+// from this boot-time call site, never from the mid-session model-load
+// paths below: those run while the user may have unsaved text in a field,
+// where an automatic reload would silently discard it.
+async function ensureCrossOriginIsolationOnce() {
+  if (typeof navigator === "undefined" || !navigator.serviceWorker || globalThis.crossOriginIsolated) {
+    return;
+  }
+  const reloadKey = "prerounding-coi-reload-attempted";
+  if (typeof sessionStorage === "undefined" || sessionStorage.getItem(reloadKey)) {
+    return;
+  }
+  const service = await ensureModelPackServiceWorker().catch(() => null);
+  if (service?.ready && !globalThis.crossOriginIsolated) {
+    sessionStorage.setItem(reloadKey, "1");
+    window.location.reload();
+  }
+}
+
 async function init() {
   const params = new URLSearchParams(window.location.hash.replace(/^#/, ""));
   if (params.has("phone")) {
     phoneSession.enterPhoneMode(decodePhoneChecklistBundle(params.get("phone")));
   }
+  await ensureCrossOriginIsolationOnce();
   bindEvents();
   render();
   void refreshWebGpuAvailability();

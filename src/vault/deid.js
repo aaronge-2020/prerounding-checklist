@@ -216,6 +216,28 @@ function isLikelyNonDateSlashMeasurement(rawText, start, end) {
     /\b(?:xr|x-ray|xray|knee|chest|abdomen|foot|hand|shoulder|hip|views?)\s*$/.test(before) && /^\s*(?:views?|view|right|left|ap|pa|lat|lateral|portable)\b/.test(after);
 }
 
+// chrono's ENTimeUnitWithinFormatParser matches "for/within/in N
+// days/weeks/..." as a forward-looking relative date from the reference
+// ("follow up in 5 days", "will discharge within 2 days") - genuine
+// scheduling language. The exact same surface grammar also shows up in
+// ordinary clinical duration-of-symptom phrasing ("admitted 7/15 for 5 days
+// of abdominal pain", "3 days of fever"), which isn't a date reference at
+// all; chrono can't distinguish the two readings, since both are just
+// "for|within|in + duration" to it. What's unique to the duration-of-symptom
+// reading is the "of <noun>" continuation right after - genuine scheduling
+// phrases are never followed by "of". This is checked unconditionally,
+// not gated behind the surrounding-context override other false-positive
+// checks use, because a clinical-keyword-heavy line (like one containing
+// "admitted") is exactly where this phrasing shows up and must not defeat it.
+function isLikelyDurationOfConditionPhrase(rawText, start, end) {
+  const span = rawText.slice(start, end);
+  if (!/^(?:for|within|in)\b/i.test(span)) {
+    return false;
+  }
+  const after = rawText.slice(end, Math.min(rawText.length, end + 8));
+  return /^\s+of\b/i.test(after);
+}
+
 function isLikelyMedicationWord(word) {
   return medicationNameWords.has(word) || medicationClassOrStemPattern.test(word);
 }
@@ -1751,6 +1773,9 @@ export function collectTemporalEntities(rawText, referenceDate = null) {
   results.forEach(({ result, start }) => {
     const end = start + result.text.length;
     if (isLikelyNonDateSlashMeasurement(text, start, end)) {
+      return;
+    }
+    if (isLikelyDurationOfConditionPhrase(text, start, end)) {
       return;
     }
     if (isLikelyDateFalsePositive(text, start, end) && !isCourseDateLabel(text, start, end) && !hasClinicalTemporalContext(text, start, end)) {
