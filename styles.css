@@ -6337,3 +6337,54 @@ body.vault-locked .vault-access {
     width: 100%;
   }
 }
+
+/* Guided-demo targets need to be unmistakable without relying on motion. */
+.guided-demo-instructions {
+  display: grid;
+  gap: 3px;
+  margin-top: 5px;
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.guided-demo-instructions b {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.guided-demo-next {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.guided-demo-bar {
+  border-width: 2px;
+  border-left-width: 6px;
+}
+
+.demo-next-action {
+  position: relative;
+  z-index: 2;
+  border-color: var(--accent) !important;
+  outline: 3px solid var(--warning);
+  outline-offset: 4px;
+  box-shadow: 0 0 0 7px var(--surface);
+  scroll-margin-block: 160px;
+}
+
+.demo-next-action[data-demo-target="true"]:not(.primary-button):not(.button--primary) {
+  background-color: #fffdf2;
+}
+
+@media (max-width: 680px) {
+  .guided-demo-instructions {
+    font-size: 12px;
+  }
+
+  .demo-next-action {
+    outline-width: 2px;
+    outline-offset: 3px;
+    box-shadow: 0 0 0 5px var(--surface);
+  }
+}

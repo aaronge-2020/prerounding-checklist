@@ -30,9 +30,17 @@ assert.equal(demoStage("select-workup").targetSelector, `.workup-checkbox[value=
 assert.equal(demoStage("context-review").targetSelector, '[data-action="confirm-all-section-redactions"]');
 assert.equal(demoStage("daily-review").targetSelector, '[data-action="confirm-all-section-redactions"]');
 assert.equal(Object.keys(DEMO_GUIDE_STAGES).length, 11);
+Object.values(DEMO_GUIDE_STAGES).forEach((stage) => {
+  assert.ok(stage.what, `${stage.title} should explain what the user is doing`);
+  assert.ok(stage.why, `${stage.title} should explain why the step exists`);
+});
 const guide = presentation.renderGuide({ session: { stage: "answer-checklist" }, currentView: "checklist" });
 assert.match(guide, /Guided demo/);
 assert.match(guide, /Answer a checklist question/);
+assert.match(guide, /guided-demo-instructions/);
+assert.match(guide, /What:/);
+assert.match(guide, /Why:/);
+assert.match(guide, /Next:/);
 assert.match(guide, /real checklist/);
 assert.doesNotMatch(guide, /demo-answer|demo-generate-prompt|static/i);
 const handoffGuide = presentation.renderGuide({
@@ -43,6 +51,7 @@ const handoffGuide = presentation.renderGuide({
 });
 assert.match(handoffGuide, /Continue to next field/);
 assert.match(handoffGuide, /Medications/);
+assert.match(handoffGuide, /person must verify the draft/);
 
 const complete = presentation.renderGuide({ session: { stage: "done" }, currentView: "prompts" });
 assert.match(complete, /Demo complete/);
