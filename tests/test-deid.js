@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { createDeidentifier, deidentifyTextStructuredOnly, modelPredictionsToEntities, normalizeResidualTemporalPhi, scanResidualPhi } from "../src/vault/deid.js";
 import { createEphemeralRedactionReview, synchronizeReviewPlaceholders } from "../src/patient-context/review.js";
+import { DEMO_ADMISSION_DATE, DEMO_CONTEXT_TEXTS, DEMO_DAILY_TEXTS } from "../src/ui/demo/session.js";
 import { assertDeidCase } from "../scripts/deid-adversarial.js";
 import { clinicalGuardTerms, makeAdversarialCases, makeDemoLikeCase, makeSyntheticCases } from "../scripts/deid-fixtures.js";
 
@@ -56,6 +57,37 @@ assert.ok(!demoResult.text.includes("Mary Smith"), "demo should redact repeated 
 assert.ok(!demoResult.text.includes("Emily Johnson"), "demo should redact provider name");
 assert.ok(demoResult.text.includes("Patient Name: [PATIENT NAME]"), "demo should keep the patient header readable");
 assert.ok(demoResult.text.includes("Primary endocrinologist: [PROVIDER NAME]"), "demo should keep the provider header readable");
+
+const guidedDemoResults = [...DEMO_CONTEXT_TEXTS, ...DEMO_DAILY_TEXTS]
+  .map((text) => deidentifyTextStructuredOnly(text, DEMO_ADMISSION_DATE));
+const guidedDemoContext = guidedDemoResults[0].text;
+assert.match(guidedDemoContext, /Preferred Name: \[PATIENT NAME\]/, "preferred-name aliases must use the patient-name placeholder");
+assert.match(guidedDemoContext, /DOB: \[61 years, 7 months, and 25 days prior to hospital admission\]/, "DOB should become an age-relative phrase");
+assert.doesNotMatch(guidedDemoContext, /\[Lab \d+\/\d+\] Timeline:/, "timeline metadata must not be ordinalized as a lab result");
+assert.match(guidedDemoContext, /Admission Time: \[TIME\]/, "explicit admission times must not survive redaction");
+assert.match(guidedDemoContext, /Insurance: \[ORGANIZATION\] PPO/, "insurance plan names must redact only the organization and preserve the plan type");
+assert.match(guidedDemoContext, /Member ID: \[ID\]/, "member identifiers must be redacted");
+assert.match(guidedDemoContext, /Group Number: \[ID\]/, "group identifiers must be redacted");
+assert.match(guidedDemoContext, /Employer: \[ORGANIZATION\]/, "employer names must be redacted");
+assert.match(guidedDemoContext, /Occupation: \[OCCUPATION\]/, "occupation may be a unique identifying characteristic and must be redacted");
+assert.doesNotMatch(guidedDemoContext, /Mechanical Engineer/, "occupation values must not survive redaction");
+assert.doesNotMatch(guidedDemoContext, /\[ADDRESS\]-V6/, "ECG leads must not be mistaken for an address");
+assert.match(guidedDemoResults[3].text, /Coronary angiography within 24 hours\./, "durations must not be converted into calendar dates");
+assert.match(guidedDemoResults[7].text, /decreasing from 8\/10 at presentation to 2\/10 by evening\./, "pain scores must not be converted into calendar dates");
+assert.deepEqual(
+  guidedDemoResults.flatMap((result) => result.residualWarnings),
+  [],
+  "the shipped guided-demo notes must not emit residual warnings after structured redaction"
+);
+
+const explicitSensitiveFields = deidentifyTextStructuredOnly("Occupation: President of State University\nAdmission Time: 08:43");
+assert.match(explicitSensitiveFields.text, /Occupation: \[OCCUPATION\]/);
+assert.match(explicitSensitiveFields.text, /Admission Time: \[TIME\]/);
+assert.deepEqual(explicitSensitiveFields.residualWarnings, [], "redacted occupation and admission time should not leave residual warnings");
+assert.equal(modelPredictionsToEntities("Occupation: Mechanical Engineer", [{ word: "Mechanical Engineer", entity_group: "PROFESSION", score: 0.99 }])[0]?.label, "OCCUPATION");
+assert.equal(modelPredictionsToEntities("Admission Time: 08:43", [{ word: "08:43", entity_group: "TIME_OF_DAY", score: 0.99 }])[0]?.label, "TIME");
+assert.ok(scanResidualPhi("Occupation: President of State University").some((warning) => warning.type === "occupation"), "unredacted occupation should be surfaced as a residual warning");
+assert.ok(scanResidualPhi("Admission Time: 08:43").some((warning) => warning.type === "admission time"), "unredacted admission time should be surfaced as a residual warning");
 
 const firstNameAliasText = `Patient: John Smith
 MRN: 1234567

@@ -115,7 +115,8 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
   }
 
   function renderSectionEditor({ section, scope, editing, pendingFocus, review, draftText }) {
-    const characterCount = section.deidentifiedText?.length || 0;
+    const characterCount = draftText?.length || 0;
+    const draftMarker = draftText !== section.deidentifiedText ? " · draft" : "";
     const isInitialReviewTarget = pendingFocus?.scope === scope && pendingFocus.sectionId === section.id;
     const isExpanded = editing || isInitialReviewTarget;
     return `
@@ -123,7 +124,7 @@ export function createRedactionPresentation({ escapeHtml, icon }) {
         <div class="section-toolbar">
           <span class="section-grip section-drag-handle" draggable="true" title="Drag to reorder sections" aria-label="Drag to reorder sections" role="img">${icon("grip")}</span>
           <input class="section-label" value="${escapeHtml(section.label)}" aria-label="Section label">
-          <span class="section-meta">${characterCount ? `${characterCount} chars` : "Empty"}</span>
+          <span class="section-meta">${characterCount ? `${characterCount.toLocaleString()} chars${draftMarker}` : "Empty"}</span>
           <div class="button-row">
             <button class="icon-button" type="button" data-action="toggle-section-editor" title="Edit section" aria-label="Edit section" aria-expanded="false">${icon("edit")}</button>
             <button class="icon-button" type="button" data-action="move-section-up" data-scope="${scope}" data-section-id="${escapeHtml(section.id)}" title="Move up">↑</button>

@@ -165,7 +165,7 @@ function clinicalResultLabelFromLine(line) {
   if (!label || !value) {
     return null;
   }
-  if (/\b(?:patient(?: name)?|pt(?: name)?|name|dob|date of birth|mrn|medical record|csn|fin|har|account|phone|fax|email|address|room|bed|unit|provider|attending|resident|fellow|consultant|emergency contact|mother|father|spouse|daughter|son|guardian|caregiver)\b/i.test(label)) {
+  if (/\b(?:patient(?: name)?|pt(?: name)?|name|preferred name|dob|date of birth|birth date|date|timeline|admission date|discharge date|time|mrn|medical record|csn|fin|har|account|member|group|insurance|employer|occupation|phone|fax|email|address|room|bed|unit|provider|attending|resident|fellow|consultant|emergency contact|mother|father|spouse|daughter|son|guardian|caregiver)\b/i.test(label)) {
     return null;
   }
   if (/^(?:\(?[HLPE!]\)?|Rpt)$/i.test(label)) {
@@ -200,6 +200,10 @@ function isLikelyClinicalSlashValue(rawText, start, end) {
   const before = rawText.slice(Math.max(0, start - 36), start).toLowerCase();
   const after = rawText.slice(end, Math.min(rawText.length, end + 36)).toLowerCase();
   const denominator = Number(span.split(/[/-]/)[1]);
+  const scoreContext = `${before} ${after}`;
+  if (denominator <= 10 && /\b(?:pain|discomfort|rated|score|severity|presentation|evening)\b/.test(scoreContext)) {
+    return true;
+  }
   return /(strength|motor|reflex|pain|score|rated|grade|gcs|glasgow|apgar|mrc|nihss|day|cycle|course)\s*(?:is|was|#|:)?\s*$/.test(before) ||
     /^\s*(?:strength|motor|reflex|pain|score|out of|\/)/.test(after) ||
     denominator <= 10 && /(strength|motor|pain|score|grade|rated|exam|neuro|mrc|nihss|murmur|systolic|diastolic)/.test(`${before} ${after}`);
@@ -235,7 +239,8 @@ function isLikelyDurationOfConditionPhrase(rawText, start, end) {
     return false;
   }
   const after = rawText.slice(end, Math.min(rawText.length, end + 8));
-  return /^\s+of\b/i.test(after);
+  return /^\s+of\b/i.test(after) ||
+    /^(?:for|within|in)\s+\d+\s+(?:minutes?|hours?)$/i.test(span);
 }
 
 // chrono's "<duration> after/later" parser resolves a bare relative offset
@@ -462,7 +467,7 @@ function isLikelyFacilityPhrase(normalized) {
 function hasExplicitIdentifierContext(rawText, start, end) {
   const lineStart = rawText.lastIndexOf("\n", Math.max(0, start - 1)) + 1;
   const beforeInLine = rawText.slice(lineStart, start).toLowerCase();
-  return /\b(?:patient(?:\s+name)?|pt(?:\s+name)?|name|provider|attending|resident|fellow|consultant|surgeon|pcp|primary care provider|referring provider|ordering provider|primary endocrinologist|emergency contact|mother|father|spouse|daughter|son|guardian|caregiver)\s*[:#]\s*$/.test(beforeInLine);
+  return /\b(?:patient(?:\s+name)?|pt(?:\s+name)?|preferred name|name|provider|attending|resident|fellow|consultant|surgeon|pcp|primary care provider|referring provider|ordering provider|primary endocrinologist|emergency contact|mother|father|spouse|daughter|son|guardian|caregiver)\s*[:#]\s*$/.test(beforeInLine);
 }
 
 function isProtectedClinicalEntityFalsePositive(rawText, entity) {
@@ -475,6 +480,15 @@ function isProtectedClinicalEntityFalsePositive(rawText, entity) {
   const normalized = normalizePhrase(span);
   if ((label === "LOCATION" || label === "FACILITY" || label === "ORGANIZATION") && broadNonPhiLocationWords.has(normalized)) {
     return true;
+  }
+
+  // Structured organization/facility fields are explicit PHI evidence. Do
+  // not run the medication/clinical vocabulary guard over their values: the
+  // generated clinical lexicon contains ordinary words that can occur in an
+  // employer or insurer name. Model-produced organization spans in protected
+  // zones still go through the normal zone-aware filtering below.
+  if ((label === "FACILITY" || label === "ORGANIZATION") && !/model/.test(entity.source || "")) {
+    return false;
   }
 
   if (!isClinicalGuardOnlyText(span)) {
@@ -517,10 +531,46 @@ function isLikelyChartHeadingPhrase(rawText, start, end) {
   return false;
 }
 
+const CLINICAL_HEADING_WORDS = new Set([
+  "new", "initial", "hospital", "plan", "background", "information", "de-identified",
+  "labs", "results", "events", "medication", "changes", "patient-reported", "symptoms",
+  "physical", "examination", "imaging", "assessment", "differential", "diagnosis"
+]);
+
+function isLikelyClinicalHeadingPhrase(rawText, start, end) {
+  const lineStart = rawText.lastIndexOf("\n", Math.max(0, start - 1)) + 1;
+  if (rawText.slice(lineStart, start).trim()) {
+    return false;
+  }
+  const lineEndIndex = rawText.indexOf("\n", end);
+  const line = rawText.slice(lineStart, lineEndIndex === -1 ? rawText.length : lineEndIndex).trim();
+  const words = vocabularyWords(line);
+  return words.length >= 2 && words.length <= 7 &&
+    words.some((word) => CLINICAL_HEADING_WORDS.has(word)) &&
+    words.every((word) => CLINICAL_HEADING_WORDS.has(word) || nonNameClinicalWords.has(word) || COMMON_ENGLISH_PROSE_WORD_PATTERN.test(word));
+}
+
 function isLikelyNonNamePhrase(rawText, start, end) {
   const span = rawText.slice(start, end).replace(/\s+/g, " ").trim();
   const normalized = normalizePhrase(span);
   if (!normalized) {
+    return true;
+  }
+
+  // Do not join two ordinary sentence starts into a person name (for
+  // example, "Tachycardic. Regular" or "AM. Initially"). Real names with
+  // initials and honorifics are explicitly exempted by this helper.
+  if (sentenceBreakIndexForName(span) > 0) {
+    return true;
+  }
+
+  if (isLikelyClinicalHeadingPhrase(rawText, start, end)) {
+    return true;
+  }
+
+  const lineStart = rawText.lastIndexOf("\n", Math.max(0, start - 1)) + 1;
+  const fieldPrefix = rawText.slice(lineStart, start);
+  if (/\b(?:sex|gender identity|marital status|occupation|employer|insurance|member id|group number|department|admission time)\s*[:#]\s*$/i.test(fieldPrefix)) {
     return true;
   }
 
@@ -576,6 +626,11 @@ function isLikelyNonNamePhrase(rawText, start, end) {
   }
 
   const words = clinicalWordsFromNormalized(normalized);
+  if (words.length >= 2 &&
+      words.some((word) => clinicalInstructionWords.has(word)) &&
+      words.every((word) => clinicalInstructionWords.has(word) || nonNameClinicalWords.has(word) || medicationNameWords.has(word) || medicationSaltOrFormWords.has(word))) {
+    return true;
+  }
   return words.length >= 2 && words.length <= 5 && words.every((word) => (
     nonNameClinicalWords.has(word) ||
     COMMON_ENGLISH_PROSE_WORD_PATTERN.test(word)
@@ -675,6 +730,7 @@ function isLikelyOrganizationFalsePositive(rawText, start, end) {
   const line = lineAroundSpan(rawText, start, end);
   return broadNonPhiLocationWords.has(normalized) ||
     nonNameClinicalPhrases.has(normalized) ||
+    isLikelyClinicalHeadingPhrase(rawText, start, end) ||
     /\b(?:xr|xray|ct|cta|mr|mri|fl|ir|us|vas|echo|ekg|eeg|pocus)\b/i.test(line) && /\b(?:rpt|report|views?|con|w\/o|with|without|image|screening|clearance)\b/i.test(line) ||
     /^running hospital$/i.test(span) && /^\s+(?:course|stay|problems?)\b/i.test(after) ||
     /\bhospital$/i.test(span) && /^\s+(?:course|stay|problems?|day|progress note)\b/i.test(after);
@@ -682,8 +738,10 @@ function isLikelyOrganizationFalsePositive(rawText, start, end) {
 
 function isLikelyAddressFalsePositive(rawText, start, end) {
   const span = rawText.slice(start, end).replace(/\s+/g, " ").trim();
+  const line = lineAroundSpan(rawText, start, end);
   return /\b(?:creatinine|glucose|sodium|potassium|chloride|calcium|magnesium|phosphorus|bld|bun|egfr|labs?|vitals?|mmhg|mg|mcg|per dr)\b/i.test(span) ||
-    /\bDr\.\s+[A-Z]/.test(span);
+    /\bDr\.\s+[A-Z]/.test(span) ||
+    (!/\baddress\b/i.test(line) && /\bV\d(?:-V\d+)?\b|\b(?:ST|T[- ]wave)\s+(?:segment\s+)?(?:depressions?|elevations?)\b/i.test(line));
 }
 
 function isLikelyIdentifierFalsePositive(rawText, start, end) {
@@ -865,7 +923,7 @@ function constrainModelEntity(rawText, entity) {
     span = rawText.slice(start, end);
   }
 
-  const headerInside = span.search(/\b(?:DOB|D\.O\.B\.|Date of birth|MRN|CSN|FIN|HAR|Encounter date|Phone|Email|Address|Facility|Unit|Room|Primary endocrinologist|Referring Provider|Emergency contact|Preferred pharmacy|Insurance ID)\s*[:#]/i);
+  const headerInside = span.search(/\b(?:DOB|D\.O\.B\.|Date of birth|MRN|CSN|FIN|HAR|Encounter date|Phone|Email|Address|Facility|Unit|Room|Preferred Name|Primary endocrinologist|Referring Provider|Emergency contact|Preferred pharmacy|Insurance ID|Group Number|Employer|Occupation|Profession|Admission Time|Admit Time|Time of Admission)\s*[:#]/i);
   if (headerInside > 0) {
     end = start + headerInside;
   }
@@ -885,24 +943,14 @@ function constrainModelEntity(rawText, entity) {
 }
 
 // The complete set of categories this app is built to redact and render a
-// placeholder for (Safe Harbor identifiers plus the couple of app-specific
-// buckets like ROOM/FACILITY) - every label phiLabelMap normalizes onto, and
-// exactly the set mergeEntities'/filterLikelyFalsePositiveEntities' per-label
-// branches know how to handle. A NER model trained on a broader annotation
-// scheme (e.g. i2b2/n2c2-style corpora) can also emit categories this app
-// never asked for, most notably OCCUPATION/PROFESSION - occupation isn't one
-// of the 18 Safe Harbor identifiers, so redacting it isn't required, and this
-// app already treats it deliberately as a soft "rare occupation" residual-PHI
-// *warning* (scanResidualPhi) rather than a hard redaction target. Accepting
-// an unrecognized label at face value here would silently redact things this
-// app was never designed to, generally to a partial/malformed span (a model
-// trained to spot "profession" phrases wasn't built with this app's own
-// span-completion rules for that category), so anything outside this set is
-// dropped rather than passed through.
+// placeholder for (Safe Harbor identifiers plus app-specific buckets such as
+// ROOM, FACILITY, OCCUPATION, and TIME). A model may emit broader annotation
+// categories; only categories with a deliberate placeholder contract belong
+// here, so anything outside this set is dropped rather than passed through.
 const SUPPORTED_PHI_LABELS = new Set([
   "NAME", "PATIENT NAME", "PROVIDER NAME", "CONTACT NAME",
   "LOCATION", "FACILITY", "ORGANIZATION", "ADDRESS", "ROOM", "AGE",
-  "DATE", "DOB", "EMAIL", "PHONE", "MRN", "ENCOUNTER ID", "ID", "URL", "IP"
+  "OCCUPATION", "TIME", "DATE", "DOB", "EMAIL", "PHONE", "MRN", "ENCOUNTER ID", "ID", "URL", "IP"
 ]);
 
 export function modelPredictionsToEntities(rawText, predictions, offset = 0) {
@@ -1121,10 +1169,12 @@ export function addStructuredSafeHarborEntities(rawText, entities = [], currentD
 
   const capturedPatterns = [
     { label: "PATIENT NAME", regex: new RegExp(String.raw`^${mdFiller}(?:Patient(?: Name)?|Pt(?: Name)?|Name)${mdSep}([A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){1,3})\s*$`, "gmi") },
+    { label: "PATIENT NAME", regex: new RegExp(String.raw`^${mdFiller}Preferred Name${mdSepOptionalColon}([A-Z][A-Za-z.'-]+)\s*$`, "gmi") },
     { label: "DOB", regex: new RegExp(String.raw`^${mdFiller}(?:DOB|D\.O\.B\.|Date of birth|Birth date)${mdSepOptionalColon}(${dateValue})\s*$`, "gmi") },
     { label: "MRN", regex: new RegExp(String.raw`^${mdFiller}(?:MRN|Medical Record(?: Number)?)${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})\s*$`, "gmi") },
     { label: "ENCOUNTER ID", regex: new RegExp(String.raw`^${mdFiller}(?:CSN|FIN|HAR|Encounter(?: ID| Number))${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})\s*$`, "gmi") },
-    { label: "ID", regex: new RegExp(String.raw`^${mdFiller}(?:Account(?: Number)?|Acct|Guarantor|Policy(?: Number)?|Member(?: ID| Number)?|Insurance(?: ID| Number)?|Subscriber(?: ID| Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Chart(?: ID| Number)?|Case(?: ID| Number)?|Visit(?: ID| Number)?|License(?: Number)?|Certificate(?: Number)?|DEA|NPI|Device ID|Device Identifier|Serial Number|IMEI|VIN|Plate)${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})\s*$`, "gmi") },
+    { label: "ID", regex: new RegExp(String.raw`^${mdFiller}(?:Account(?: Number)?|Acct|Guarantor|Policy(?: Number)?|Member(?: ID| Number)?|Insurance(?: ID| Number)?|Subscriber(?: ID| Number)?|Group(?: Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Chart(?: ID| Number)?|Case(?: ID| Number)?|Visit(?: ID| Number)?|License(?: Number)?|Certificate(?: Number)?|DEA|NPI|Device ID|Device Identifier|Serial Number|IMEI|VIN|Plate)${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})\s*$`, "gmi") },
+    { label: "TIME", regex: new RegExp(String.raw`^${mdFiller}(?:Admission Time|Admit Time|Time of Admission)${mdSepOptionalColon}(\d{1,2}:\d{2}(?:\s*[AP]M)?|\d{3,4})\s*$`, "gmi") },
     { label: "DATE", regex: new RegExp(String.raw`^${mdFiller}(?:Encounter date|Admit(?:ted| date)?|Admission date|Discharge(?:d| date)?|Date of service|DOS|Collected|Collection(?: date| time| date\/time)?|Result(?:ed| date| time| date\/time)?|Received|Drawn|Specimen(?: collected)?|Ordered)${mdSep}(${dateValue}(?:\s+(?:at\s+)?\d{1,2}:\d{2}(?:\s*[AP]M)?)?)\s*$`, "gmi") },
     { label: "PHONE", regex: new RegExp(String.raw`^${mdFiller}(?:Phone|Fax|Pager|Callback|Cell|Mobile|Tel)${mdSepOptionalColon}((?:\+?1[-.\s]?)?(?:\(?\d{3}\)?[-.\s]?)\d{3}[-.\s]?\d{4})\s*$`, "gmi") },
     { label: "EMAIL", regex: new RegExp(String.raw`^${mdFiller}Email${mdSepOptionalColon}([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,})\s*$`, "gmi") },
@@ -1133,14 +1183,21 @@ export function addStructuredSafeHarborEntities(rawText, entities = [], currentD
     { label: "ROOM", regex: new RegExp(String.raw`^${mdFiller}(?:Room|Rm|Bed|ICU room|ED room|Unit|Floor|Ward|Pod|Bay|Location)${mdSep}([A-Z0-9][A-Z0-9 \t-]*\d?[A-Z0-9-]*)\s*$`, "gmi") },
     { label: "PROVIDER NAME", regex: new RegExp(String.raw`^${mdFiller}(?:Primary endocrinologist|Provider|Attending|Resident|Fellow|Consultant|Surgeon|PCP|Primary care provider|Referring provider|Ordering provider)${mdSepOptionalColon}((?:Dr|Doctor|Mr|Mrs|Ms|Miss)\.?\s+[A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){0,2}|[A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){1,2})`, "gmi") },
     { label: "CONTACT NAME", regex: new RegExp(String.raw`^${mdFiller}(?:Emergency contact|Mother|Father|Spouse|Daughter|Son|Guardian|Caregiver)${mdSepOptionalColon}([A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){1,3})`, "gmi") },
+    { label: "ORGANIZATION", regex: new RegExp(String.raw`^${mdFiller}Insurance${mdSepOptionalColon}([^,\n\r]+?)(?=\s+(?:PPO|HMO|EPO|POS|HDHP)\b\s*$|$)`, "gmi") },
+    { label: "ORGANIZATION", regex: new RegExp(String.raw`^${mdFiller}Employer${mdSepOptionalColon}([^\n\r]+?)\s*$`, "gmi") },
+    { label: "OCCUPATION", regex: new RegExp(String.raw`^${mdFiller}(?:Occupation|Profession|Job title)${mdSepOptionalColon}([^\n\r]+?)\s*$`, "gmi") },
     { label: "ORGANIZATION", regex: new RegExp(String.raw`^${mdFiller}Preferred pharmacy${mdSepOptionalColon}([^,\n\r]{2,80})`, "gmi") },
     { label: "DOB", regex: new RegExp(String.raw`\b(?:DOB|D\.O\.B\.|Date of birth|Birth date)${mdSepOptionalColon}(${dateValue})`, "gi") },
     { label: "PATIENT NAME", regex: /\b(?:Patient(?: Name)?|Pt(?: Name)?)\s+(?!is\b|was\b|reports\b|states\b)([A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){1,3})(?=\s+(?:MRN|Medical Record(?: Number)?|DOB|Date of birth|Birth date)\b|[,:;\n\r]|$)/gi },
+    { label: "PATIENT NAME", regex: new RegExp(String.raw`\bPreferred Name${mdSepOptionalColon}([A-Z][A-Za-z.'-]+)`, "gi") },
     { label: "MRN", regex: new RegExp(String.raw`\b(?:MRN|Medical Record(?: Number)?)${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})`, "gi") },
     { label: "ENCOUNTER ID", regex: new RegExp(String.raw`\b(?:CSN|FIN|HAR|Encounter(?: ID| Number))${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})`, "gi") },
-    { label: "ID", regex: new RegExp(String.raw`\b(?:Account(?: Number)?|Acct|Guarantor|Policy(?: Number)?|Member(?: ID| Number)?|Insurance(?: ID| Number)?|Subscriber(?: ID| Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Chart(?: ID| Number)?|Case(?: ID| Number)?|Visit(?: ID| Number)?)${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})`, "gi") },
+    { label: "ID", regex: new RegExp(String.raw`\b(?:Account(?: Number)?|Acct|Guarantor|Policy(?: Number)?|Member(?: ID| Number)?|Insurance(?: ID| Number)?|Subscriber(?: ID| Number)?|Group(?: Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Chart(?: ID| Number)?|Case(?: ID| Number)?|Visit(?: ID| Number)?)${mdSepOptionalColon}((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})`, "gi") },
     { label: "FACILITY", regex: new RegExp(String.raw`\b(?:Facility|Campus|Hospital|Clinic|Service location|Lab location|Ordering location)${mdSep}([^\n\r,]{2,80}?)(?=\s+(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed)\s*[:#]|[,;\n\r]|$)`, "gi") },
-    { label: "ROOM", regex: new RegExp(String.raw`\b(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed|ICU room|ED room|Location)${mdSep}([A-Z0-9][A-Z0-9 \t-]{0,30}?)(?=\s+(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed|Phone|Email|Address|Primary|Preferred)\s*[:#]|[.,;\n\r]|$)`, "gi") }
+    { label: "ROOM", regex: new RegExp(String.raw`\b(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed|ICU room|ED room|Location)${mdSep}([A-Z0-9][A-Z0-9 \t-]{0,30}?)(?=\s+(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed|Phone|Email|Address|Primary|Preferred)\s*[:#]|[.,;\n\r]|$)`, "gi") },
+    { label: "ORGANIZATION", regex: new RegExp(String.raw`\bInsurance${mdSepOptionalColon}([^,\n\r]+?)(?=\s+(?:PPO|HMO|EPO|POS|HDHP)\b(?:\s|$)|[\n\r]|$)`, "gi") },
+    { label: "ORGANIZATION", regex: new RegExp(String.raw`\bEmployer${mdSepOptionalColon}([^,\n\r]+)`, "gi") },
+    { label: "OCCUPATION", regex: new RegExp(String.raw`\b(?:Occupation|Profession|Job title)${mdSepOptionalColon}([^,\n\r]+)`, "gi") }
   ];
 
   capturedPatterns.forEach(({ label, regex }) => {
@@ -1213,7 +1270,7 @@ export function addStructuredSafeHarborEntities(rawText, entities = [], currentD
 }
 
 function labelPriority(label) {
-  const priorities = ["DOB", "EMAIL", "PHONE", "MRN", "ENCOUNTER ID", "ID", "ADDRESS", "ROOM", "PATIENT NAME", "PROVIDER NAME", "CONTACT NAME", "NAME", "FACILITY", "ORGANIZATION", "LOCATION", "DATE", "URL", "IP"];
+  const priorities = ["DOB", "EMAIL", "PHONE", "MRN", "ENCOUNTER ID", "ID", "ADDRESS", "ROOM", "PATIENT NAME", "PROVIDER NAME", "CONTACT NAME", "NAME", "OCCUPATION", "FACILITY", "ORGANIZATION", "LOCATION", "TIME", "DATE", "URL", "IP"];
   const index = priorities.indexOf(label);
   return index === -1 ? priorities.length : index;
 }
@@ -2412,8 +2469,10 @@ function addResidualWarning(warnings, severity, type, snippet, reason, start = n
 
 function isInsideBracketPlaceholder(text, start, end) {
   const open = text.lastIndexOf("[", start);
+  const closeBefore = text.lastIndexOf("]", start);
   const close = text.indexOf("]", start);
-  return open !== -1 && close !== -1 && close >= end && (text.indexOf("[", open + 1) === -1 || text.indexOf("[", open + 1) > start);
+  return open > closeBefore && close !== -1 && close >= end &&
+    (text.indexOf("[", open + 1) === -1 || text.indexOf("[", open + 1) > start);
 }
 
 function addResidualMatches(warnings, text, severity, type, regex, reason, shouldSkip = null) {
@@ -2451,7 +2510,7 @@ function cleanNameText(value) {
 // label is written without punctuation (for example, "Provider Dr Smith").
 // Keep the field label in the output and constrain the entity to the actual
 // person value before it reaches refinement and overlap merging.
-const NAME_FIELD_LABEL_PREFIX_PATTERN = /^(?:primary endocrinologist|primary care provider|referring provider|ordering provider|emergency contact|past medical history|history of present illness|physical exam(?:ination)?|chief complaint|assessment(?: and plan| & plan|\/plan)?|patient(?:\s+name)?|pt(?:\s+name)?|provider|attending|resident|fellow|consultant|surgeon|pcp|subjective|objective|plan|name|doctor|physician|nurse|signed|prepared|dictated|entered|verified|read|interpreted|performed|completed|cosigned)\s*(?::|#|-)?\s+/i;
+const NAME_FIELD_LABEL_PREFIX_PATTERN = /^(?:primary endocrinologist|primary care provider|referring provider|ordering provider|emergency contact|past medical history|history of present illness|physical exam(?:ination)?|chief complaint|assessment(?: and plan| & plan|\/plan)?|patient(?:\s+name)?|pt(?:\s+name)?|preferred name|provider|attending|resident|fellow|consultant|surgeon|pcp|subjective|objective|plan|name|doctor|physician|nurse|signed|prepared|dictated|entered|verified|read|interpreted|performed|completed|cosigned)\s*(?::|#|-)?\s+/i;
 
 function stripLeadingNameFieldLabel(rawText, start, end) {
   const span = rawText.slice(start, end);
@@ -2959,6 +3018,11 @@ export function scanResidualPhi(text) {
   const warnings = [];
   const sourceText = String(text || "");
 
+  addResidualMatches(warnings, sourceText, "high", "identifier", /\bGroup(?: Number)?\b(?:\s*[:#]\s*|\s+)(?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,}\b/gi, "record, insurance, device, or other unique code");
+  addResidualMatches(warnings, sourceText, "high", "employer", /\bEmployer\s*[:#]\s+(?!\[[^\]]+\])[^\n\r]+/gi, "employer is a direct identifier");
+  addResidualMatches(warnings, sourceText, "high", "occupation", /\b(?:Occupation|Profession|Job title)\s*[:#]\s+(?!\[[^\]]+\])[^\n\r]+/gi, "occupation may be a unique identifying characteristic");
+  addResidualMatches(warnings, sourceText, "high", "admission time", /\b(?:Admission Time|Admit Time|Time of Admission)\s*[:#]\s+(?!\[[^\]]+\])\S+/gi, "exact admission timestamp");
+
   addResidualMatches(warnings, sourceText, "high", "email", /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi, "direct contact identifier");
   addResidualMatches(warnings, sourceText, "high", "URL", /\b(?:https?:\/\/|www\.)[^\s<>()]+/gi, "web identifier");
   addResidualMatches(warnings, sourceText, "high", "IP address", /\b(?:25[0-5]|2[0-4]\d|1?\d?\d)(?:\.(?:25[0-5]|2[0-4]\d|1?\d?\d)){3}\b/g, "network identifier");
@@ -2977,7 +3041,7 @@ export function scanResidualPhi(text) {
   addResidualMatches(warnings, sourceText, "medium", "possible full name", new RegExp(String.raw`\b(?:${titledNamePatternSource}|${fullNamePatternSource})\b`, "g"), "capitalized name-like phrase", isLikelyNonNamePhrase);
   addResidualMatches(warnings, sourceText, "medium", "ID-like string", /\b(?=[A-Z0-9-]{8,}\b)(?=[A-Z0-9-]*[A-Z])(?=[A-Z0-9-]*\d)[A-Z0-9]+(?:-[A-Z0-9]+)*\b/g, "long alphanumeric code", isLikelyIdentifierFalsePositive);
   addResidualMatches(warnings, sourceText, "medium", "age over 89", /\b(?:Age\s*[:#]?\s*(?:9[0-9]|1[0-9]{2})|(?:9[0-9]|1[0-9]{2})\s*(?:yo|y\/o|years? old|M|F|male|female))\b/gi, "age must be generalized");
-  addResidualMatches(warnings, sourceText, "review", "rare identifying context", /\b(?:celebrity|publicized|news article|newspaper|police report|lawsuit|incarcerated|inmate|professional athlete|mayor|judge|teacher at|works at|employer|specific school|rare occupation|well-known)\b/gi, "context can identify a patient even without direct IDs");
+  addResidualMatches(warnings, sourceText, "review", "rare identifying context", /\b(?:celebrity|publicized|news article|newspaper|police report|lawsuit|incarcerated|inmate|professional athlete|mayor|judge|teacher at|works at|specific school|rare occupation|well-known)\b/gi, "context can identify a patient even without direct IDs");
 
   return warnings.map(({ key, ...warning }) => warning);
 }
@@ -3118,6 +3182,11 @@ const BRACKET_LABEL_MAP = {
   "FACILITY": "FACILITY",
   "HOSPITAL": "FACILITY",
   "CLINIC": "FACILITY",
+  "OCCUPATION": "OCCUPATION",
+  "PROFESSION": "OCCUPATION",
+  "JOB TITLE": "OCCUPATION",
+  "TIME": "TIME",
+  "TIME OF DAY": "TIME",
   "LOCATION": "LOCATION",
   "ADDRESS": "ADDRESS",
   "PHONE": "PHONE",

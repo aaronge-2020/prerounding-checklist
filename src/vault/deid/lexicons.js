@@ -70,6 +70,11 @@ export const phiLabelMap = {
   ORGANIZATION: "ORGANIZATION",
   COMPANY_NAME: "ORGANIZATION",
   VENDOR: "ORGANIZATION",
+  OCCUPATION: "OCCUPATION",
+  PROFESSION: "OCCUPATION",
+  JOB_TITLE: "OCCUPATION",
+  TIME: "TIME",
+  TIME_OF_DAY: "TIME",
   ROOM: "ROOM",
   UNIT: "ROOM",
   BED: "ROOM",
@@ -93,7 +98,6 @@ export const phiLabelMap = {
   BUILDINGNUMBER: "ADDRESS",
   TELEPHONENUM: "PHONE",
   TITLE: "NAME",
-  TIME: "DATE",
   USERNAME: "ID",
   PASSWORD: "ID",
   SECRET: "ID",
@@ -561,7 +565,7 @@ export const broadNonPhiLocationWords = new Set([
 export const medicationSaltOrFormWords = new Set([
   "acetate", "bromide", "calcium", "chloride", "citrate", "extended", "fumarate", "hcl",
   "hydrochloride", "injection", "lactate", "magnesium", "oral", "potassium", "sodium", "succinate",
-  "sulfate", "tartrate", "tablet", "topical"
+  "sulfate", "tartrate", "tablet", "topical", "er", "ir", "sr", "cr", "xr", "xl"
 ]);
 
 export const medicationNameWords = new Set([

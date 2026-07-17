@@ -1,5 +1,5 @@
-import { createDemoPresentation } from "./presentation.js?v=20260717-full-demo-case";
-import { DEMO_WORKUP_ID } from "./session.js?v=20260717-full-demo-case";
+import { createDemoPresentation } from "./presentation.js?v=20260717-guided-demo-ux";
+import { DEMO_WORKUP_ID } from "./session.js?v=20260717-guided-demo-ux";
 
 export function createDemoController({ byId, escapeHtml, getSession, getView }) {
   const presentation = createDemoPresentation({ escapeHtml });
@@ -18,7 +18,8 @@ export function createDemoController({ byId, escapeHtml, getSession, getView }) 
     const content = byId(`${view}Content`);
     if (!content) return;
     content.insertAdjacentHTML("afterbegin", presentation.renderGuide({ session, currentView: view }));
-    const stage = presentation.stageFor(session.stage);
+    const stageId = session.stage;
+    const stage = presentation.stageFor(stageId);
     const target = stage.navTarget
       ? document.querySelector(`button[data-view-target="${CSS.escape(stage.navTarget)}"]`)
       : view === stage.view
@@ -27,14 +28,25 @@ export function createDemoController({ byId, escapeHtml, getSession, getView }) 
     if (!target) return;
     target.classList.add("demo-next-action");
     target.dataset.demoTarget = "true";
-    requestAnimationFrame(() => target.focus({ preventScroll: true }));
+    requestAnimationFrame(() => {
+      target.focus({ preventScroll: true });
+      if (!stage.navTarget && view === stage.view) target.scrollIntoView({ block: "center", behavior: "smooth" });
+    });
+    setTimeout(() => {
+      if (getSession()?.stage !== stageId) return;
+      const currentTarget = stage.navTarget
+        ? document.querySelector(`button[data-view-target="${CSS.escape(stage.navTarget)}"]`)
+        : view === stage.view ? content.querySelector(stage.targetSelector) : document.querySelector(`button[data-view-target="${CSS.escape(stage.view)}"]`);
+      currentTarget?.classList.add("demo-next-action");
+      if (currentTarget) currentTarget.dataset.demoTarget = "true";
+    }, 250);
   }
 
   function observeAction(action) {
     const session = getSession();
     if (!session) return;
     if (action === "save-context") session.stage = document.querySelector('[data-action="keep-reviewed-redaction"]') ? "context-review" : "save-day";
-    if (action === "keep-reviewed-redaction" && !document.querySelector('[data-action="keep-reviewed-redaction"]')) session.stage = session.stage === "daily-review" ? "open-workups" : "save-day";
+    if ((action === "keep-reviewed-redaction" || action === "confirm-all-section-redactions") && !document.querySelector('[data-action="keep-reviewed-redaction"], [data-action="confirm-all-section-redactions"]')) session.stage = session.stage === "daily-review" ? "open-workups" : "save-day";
     if (action === "save-day") session.stage = document.querySelector('[data-action="keep-reviewed-redaction"]') ? "daily-review" : "open-workups";
     if (action === "build-checklist") session.stage = "answer-checklist";
     if (action === "copy-prompt") session.stage = "done";

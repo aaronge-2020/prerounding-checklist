@@ -4,7 +4,7 @@ import { deleteEncryptedVaultRecord, downloadJson, loadOrCreateVault, readEncryp
 import { authorizeWorkupWorkspaceMirror, disconnectWorkupWorkspaceMirror, getWorkupWorkspaceMirrorState, mirrorWorkupOverridesToWorkspace } from "../app/state/workspace-mirror.js?v=20260711-functional-remediation-15";
 import { addSection, removeSection, reorderSections, reorderSectionsById, replaceSectionsFromFormAsync } from "../patient-context/sections.js?v=20260711-functional-remediation-15";
 import { createEphemeralRedactionReview, inspectedRedactionIndex, nextPendingRedactionIndex, nextPendingReviewTarget, pendingReviewTargets, quickRedactionIndex, quickSelectedRedactionIndex, quickWarningIndex, reviewKey, synchronizeReviewPlaceholders } from "../patient-context/review.js?v=20260715-reject-rest";
-import { crossOriginIsolationBlocker, deidentifyText, getAdvancedDeidStatus, getSelectedDeidModelStatus, preloadAdvancedDeidModel, resetAdvancedDeidWorker, verifyAdvancedDeidModel } from "../patient-context/deid-client.js?v=20260716-redaction-fixes-2";
+import { crossOriginIsolationBlocker, deidentifyText, getAdvancedDeidStatus, getSelectedDeidModelStatus, preloadAdvancedDeidModel, resetAdvancedDeidWorker, verifyAdvancedDeidModel } from "../patient-context/deid-client.js?v=20260717-guided-demo-ux";
 import { DEFAULT_DEID_MODEL_KEY, DEID_MODEL_OPTIONS, STRUCTURED_DEID_MODE, deidModelOptionByKey } from "../patient-context/deid-model-options.js?v=20260711-functional-remediation-15";
 import { canAutomaticallyInstallModel, ensureModelPackServiceWorker, getModelPackState, importModelPack, installModelPack, markModelPackVerified, modelFilesFromDirectoryHandle, modelFilesFromInput, removeModelPack, requestPersistentModelStorage } from "../patient-context/model-pack-storage.js?v=20260711-functional-remediation-15";
 import { formatBytes, hasAutomaticModelDownload, isInstallableModel, modelDownloadBytes } from "../patient-context/model-packs.js?v=20260711-functional-remediation-15";
@@ -49,14 +49,13 @@ import { createGuidelineSetsController } from "./settings/guidelines-controller.
 import { createAdmissionDateGate } from "./admission-date-gate.js?v=20260714-admission-day-redaction";
 import { createTokenColorPickerController } from "./token-color-picker.js?v=20260714-hue-picker";
 import { createSettingsPresentation } from "./settings/presentation.js?v=20260713-guideline-sets";
-import { createRedactionPresentation, redactionPosition, warningDescription, warningSnippet } from "./redaction/presentation.js?v=20260715-reject-rest";
+import { createRedactionPresentation, redactionPosition, warningDescription, warningSnippet } from "./redaction/presentation.js?v=20260717-guided-demo-ux";
 import { createQuickDeidPresentation } from "./quick-deid/presentation.js?v=20260717-transfer-actions";
 import { createWorkupPresentation, normalizeWorkupCatalogQuery } from "./workups/presentation.js?v=20260717-workup-import-readable";
-import { createDemoController } from "./demo/controller.js?v=20260717-full-demo-case";
-import { createDemoPatient } from "./demo/session.js?v=20260717-full-demo-case";
-import { createDemoSessionController } from "./demo/session-controller.js?v=20260717-full-demo-case";
+import { createDemoController } from "./demo/controller.js?v=20260717-guided-demo-ux-3";
+import { createDemoPatient } from "./demo/session.js?v=20260717-guided-demo-ux";
+import { createDemoSessionController } from "./demo/session-controller.js?v=20260717-guided-demo-ux";
 import Fuse from "../../vendor/fuse-7.0.0.mjs?v=20260711-functional-remediation-16";
-
 const app = {
   vault: null,
   passphrase: "",
@@ -1057,7 +1056,7 @@ function renderDaily() {
               </div>
               ${renderWarnings(patient.contextSections, "context")}
               <div class="packet-action-footer">
-                <button class="button--primary" type="button" data-action="save-context" ${deidBusy ? "disabled" : ""}>${deidBusy ? "De-identifying…" : "Save changes"}</button>
+                <button class="button--primary" type="button" data-action="save-context" ${deidBusy ? "disabled" : ""}>${deidBusy ? "De-identifying…" : "Save admission packet"}</button>
               </div>
             </div>
           </details>
@@ -1073,7 +1072,7 @@ function renderDaily() {
                   </div>
                   <div class="button-row">
                     <button class="button--secondary" type="button" data-action="add-daily-section">${icon("plus")} Add field</button>
-                    <button class="button--primary" type="button" data-action="save-day" ${deidBusy ? "disabled" : ""}>${deidBusy ? "De-identifying…" : "Save changes"}</button>
+                    <button class="button--primary" type="button" data-action="save-day" ${deidBusy ? "disabled" : ""}>${deidBusy ? "De-identifying…" : "Save hospital day"}</button>
                     <button type="button" class="button--quiet danger-subtle" data-action="remove-day">${icon("trash")} Remove</button>
                   </div>
                 </div>
@@ -1933,15 +1932,15 @@ function advanceSectionReview(scope, sectionId, redactionIndex) {
   const current = reviewTargetAt(scope, sectionId, redactionIndex);
   if (!current) return null;
   const pending = pendingSectionReviewTargets(scope);
-  const nextPending = pending.find((target) => (
-    target.sectionIndex > current.sectionIndex
-    || (target.sectionIndex === current.sectionIndex && target.redactionIndex > current.redactionIndex)
+  const nextPendingInCurrent = pending.find((target) => (
+    target.sectionIndex === current.sectionIndex && target.redactionIndex > current.redactionIndex
   ));
-  if (nextPending) return moveToSectionReviewTarget(scope, sectionId, nextPending);
+  if (nextPendingInCurrent) return moveToSectionReviewTarget(scope, sectionId, nextPendingInCurrent);
 
   // When the final change in one field is accepted/rejected, move into the
   // next saved textbox even when it has no model detections. This keeps the
-  // review flow field-by-field instead of closing the active editor.
+  // review flow field-by-field instead of jumping over quiet fields to a
+  // later pending warning.
   const sections = reviewSectionsForScope(scope);
   const nextSectionIndex = current.sectionIndex + 1;
   const nextSection = sections.slice(nextSectionIndex).find((section) => sectionReviewFor(scope, section.id));
@@ -2037,9 +2036,10 @@ function confirmAllSectionRedactions(scope, sectionId) {
   const pending = review.redactions.filter((redaction) => redaction.state === "pending");
   pending.forEach((redaction) => { redaction.state = "confirmed"; });
   review.inspectedRedactionIndex = -1;
+  const next = pending.length ? advanceSectionReview(scope, sectionId, review.redactions.indexOf(pending[pending.length - 1])) : null;
   const editor = expandSectionEditor(scope, sectionId);
   refreshSectionReviewAtCurrentPosition(editor, scope, sectionId);
-  setStatus(pending.length ? `${pending.length} redaction${pending.length === 1 ? "" : "s"} accepted. Click any highlighted replacement to undo it.` : "All redactions were already accepted.");
+  setStatus(next ? "Redactions accepted. Reviewing the next field." : pending.length ? `${pending.length} redaction${pending.length === 1 ? "" : "s"} accepted. Click any highlighted replacement to undo it.` : "All redactions were already accepted.");
 }
 
 function allowReviewedNonPhi(scope, sectionId, redactionIndex) {

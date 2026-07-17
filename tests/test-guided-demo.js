@@ -22,8 +22,13 @@ const structuredDemo = deidentifyTextStructuredOnly(DEMO_CONTEXT_TEXTS.join("\n"
 assert.ok(structuredDemo.redactionTotal >= 10);
 assert.match(structuredDemo.text, /\[PATIENT NAME\]/);
 assert.match(structuredDemo.text, /\[MRN\]/);
+assert.match(structuredDemo.text, /Admission Time: \[TIME\]/);
+assert.match(structuredDemo.text, /Occupation: \[OCCUPATION\]/);
+assert.doesNotMatch(structuredDemo.text, /Mechanical Engineer/);
 
 assert.equal(demoStage("select-workup").targetSelector, `.workup-checkbox[value="${DEMO_WORKUP_ID}"]`);
+assert.equal(demoStage("context-review").targetSelector, '[data-action="confirm-all-section-redactions"]');
+assert.equal(demoStage("daily-review").targetSelector, '[data-action="confirm-all-section-redactions"]');
 assert.equal(Object.keys(DEMO_GUIDE_STAGES).length, 11);
 const guide = presentation.renderGuide({ session: { stage: "answer-checklist" }, currentView: "checklist" });
 assert.match(guide, /Guided demo/);

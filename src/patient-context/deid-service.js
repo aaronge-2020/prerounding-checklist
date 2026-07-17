@@ -1,7 +1,7 @@
 import {
   createDeidentifier,
   deidentifyTextStructuredOnly
-} from "../vault/deid.js?v=20260716-redaction-fixes-2";
+} from "../vault/deid.js?v=20260717-guided-demo-ux";
 import {
   DEFAULT_DEID_MODEL_KEY,
   STRUCTURED_DEID_MODE,

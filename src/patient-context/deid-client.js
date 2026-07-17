@@ -39,7 +39,7 @@ function rejectAll(error) {
 
 function getWorker() {
   if (worker) return worker;
-  worker = new Worker(new URL("./deid-worker.js?v=20260716-redaction-fixes-2", import.meta.url), { type: "module" });
+  worker = new Worker(new URL("./deid-worker.js?v=20260717-guided-demo-ux", import.meta.url), { type: "module" });
   worker.addEventListener("message", (event) => {
     const { type, id, value } = event.data || {};
     const request = requests.get(id);

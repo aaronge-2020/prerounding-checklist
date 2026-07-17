@@ -2271,6 +2271,11 @@ p {
     max-height: none;
   }
 
+  .workspace,
+  .view:not(#checklistView) {
+    overflow: visible;
+  }
+
   .top-bar {
     height: auto;
     min-height: 50px;
@@ -3910,6 +3915,9 @@ p {
 }
 
 .guided-demo-bar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto auto;
   align-items: center;

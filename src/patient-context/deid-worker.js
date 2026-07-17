@@ -2,7 +2,7 @@ import {
   deidentifyText,
   preloadAdvancedDeidModel,
   verifyAdvancedDeidModel
-} from "./deid-service.js?v=20260716-redaction-fixes-2";
+} from "./deid-service.js?v=20260717-guided-demo-ux";
 
 function post(type, id, value) {
   self.postMessage({ type, id, value });
